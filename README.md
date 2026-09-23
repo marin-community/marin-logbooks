@@ -1,7 +1,9 @@
 # Marin Logbooks
 
-This repository holds public, high-fidelity records for Marin research programs
-that explicitly request a logbook. Logbooks record decision-relevant attempts,
+This repository holds public, high-fidelity records for Marin experimental
+programs expected to produce reusable evidence. Typical examples include
+multi-launch kernel tuning, controlled systems comparisons, and evaluation of
+new modeling or training ideas. Logbooks record decision-relevant attempts,
 including negative results, with enough detail to reproduce the evidence.
 
 The coordinating GitHub issue remains the main public entry point:
@@ -12,8 +14,9 @@ The coordinating GitHub issue remains the main public entry point:
 | Issue comments | Milestones, material status changes, blockers, and decisions |
 | Issue body | Current conclusion, baseline, confidence, and overall status |
 
-Routine debugging, raw logs, and dense telemetry stay out of the logbook. Link
-Finelog, W&B, commits, and other source artifacts when they support a result.
+Routine debugging, ordinary implementation, raw logs, and dense telemetry stay
+out of the logbook. Link Finelog, W&B, commits, and other source artifacts when
+they support a result.
 
 ## Layout
 

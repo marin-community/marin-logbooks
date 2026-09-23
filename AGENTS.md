@@ -1,8 +1,21 @@
 # Logbook Guidelines
 
-Update this repository only when the user explicitly requests a public logbook
-or provides an existing logbook here. A multi-session task alone does not
-authorize creating one.
+Use this repository for experimental programs expected to require repeated
+launches or controlled comparisons and produce evidence worth reusing. Default
+to a logbook for kernel tuning across configurations or shapes, evaluation of a
+new modeling or training idea, and systems or evaluation experiments with
+several meaningful runs. Also use it when the user explicitly requests a public
+logbook or provides an existing one here.
+
+Do not start a logbook for ordinary implementation, debugging, incident
+response, a single reproduction or smoke test, or one-off validation. A task
+lasting multiple sessions does not by itself need a logbook. Start one if the
+work later becomes a qualifying experimental program.
+
+Create a logbook by default when qualifying work has a public coordinating
+issue. If the work is not already public, suggest the logbook and confirm the
+publication surface before writing here. Do not create a coordinating issue
+without explicit authorization.
 
 All content is public. Do not publish secrets, private results, credentials,
 personal data, or links that disclose restricted resources.
