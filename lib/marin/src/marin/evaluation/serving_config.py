@@ -264,6 +264,7 @@ def inference_config_for_model(
     geometry = serving_geometry(serve, accelerator)
     vllm_environment_variables = _vllm_environment_variables(serve, accelerator.platform)
     worker_env = dict(env_vars)
+    worker_env.update(NCCL_DEBUG="WARN", NCCL_DEBUG_SUBSYS="")
     if serve.hf_hub_disable_xet:
         worker_env["HF_HUB_DISABLE_XET"] = "1"
     extra_args = serve_config_vllm_args(serve)
