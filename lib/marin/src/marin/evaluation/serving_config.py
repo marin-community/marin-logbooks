@@ -285,6 +285,7 @@ def inference_config_for_model(
             ram=memory,
             disk=disk,
             regions=regions,
+            preemptible=False,
         )
         if serve.backend is ServeBackend.VLLM:
             engine: VllmEngineConfig | LevanterEngineConfig = _vllm_engine_config(
