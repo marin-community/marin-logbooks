@@ -31,6 +31,8 @@ when a push is rejected.
 Remove inherited workflows before the first research push and after upstream
 merges. Research CI requires explicit opt-in; do not change repository settings.
 Archive-only workflow removals must stay out of Marin contribution PRs.
+CI setup requires a separately reviewed default-branch workflow; adding a
+manual workflow only on a research branch is insufficient.
 
 Publish notebook and supporting evidence commits before posting issue updates.
 Use commit-pinned links. Change only the task assigned to you unless a broader

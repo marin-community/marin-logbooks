@@ -18,8 +18,10 @@ Marin-derived branch; these instructions carry its archive rules with the work.
 - Use explicit remote refspecs as described in
   [the branch procedure](https://github.com/marin-community/marin-logbooks/blob/main/WORKFLOW.md).
 - Keep inherited `.github/workflows` files removed before initial publication
-  and after upstream merges. Add CI only through an explicitly selected
-  `workflow_dispatch` workflow. Do not change repository settings or promote
+  and after upstream merges. CI setup is a separate reviewed change: GitHub
+  requires a manual workflow on the repository's default branch before it can
+  be dispatched for a research branch. Preserve only approved manual workflows
+  during upstream merges. Do not change repository settings or promote
   archive-only workflow removals into Marin.
 - Keep large artifacts in their existing stores. Record exact references,
   checksums when available, and access limitations. Publish no secrets,

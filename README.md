@@ -13,8 +13,8 @@ and evidence used, what happened, and what was learned.
 Marin's
 [`research-engineering`](https://github.com/marin-community/marin/blob/main/.agents/skills/research-engineering/SKILL.md)
 workflow owns the research process. This repository defines storage and Git
-mechanics. Background literature research can use Marin's separate research
-workflow.
+mechanics. Background literature research follows Marin's
+[experiment records guidance](https://github.com/marin-community/marin/blob/main/docs/dev-guide/experiment-records.md).
 
 ## Repository layout
 

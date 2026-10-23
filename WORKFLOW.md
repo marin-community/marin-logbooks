@@ -106,7 +106,8 @@ failure leaves the issue update pending; do not cite an unpublished local SHA.
 
 Work from a clean research checkout. Fetch Marin explicitly, capture the new
 revision, and merge it without committing so inherited workflows can be removed
-before the result is published.
+before the result is published. The following block applies to research branches
+with archive CI disabled.
 
 ```bash
 git fetch --no-tags marin refs/heads/main:refs/remotes/marin/main
@@ -114,21 +115,31 @@ marin_update=$(git rev-parse refs/remotes/marin/main)
 git merge --no-ff --no-commit "$marin_update"
 git rm -rf --ignore-unmatch .github/workflows
 test -z "$(git ls-files .github/workflows)"
-git commit -m "Merge Marin updates into research archive"
 ```
 
 The removal uses `-f` because the merge has staged incoming workflow files.
 If the merge conflicts, resolve the source conflicts and workflow removals,
-review the result, then complete the merge. Record the new Marin revision and
-any effects on comparisons in the notebook. Use the concurrent-writer publish
-procedure before posting an issue milestone. If the revision is already merged,
-there is no merge commit to create.
+then review the result. If this branch already has approved archive CI, restore
+its reviewed workflow definitions after removal and before committing; replace
+the empty-directory check with a review that only those definitions remain.
+Do not discard approved workflows or retain inherited automatic workflows.
 
-Research CI is opt-in. The commands above remove all inherited workflows. If a
-task needs CI, review and add only the selected checks with `workflow_dispatch`
-as their sole trigger. Preserve those deliberate workflows during later merges
-while removing inherited automatic workflows. Do not change repository settings
-or credentials to enable archive CI.
+```bash
+git commit -m "Merge Marin updates into research archive"
+```
+
+Record the new Marin revision and any effects on comparisons in the notebook.
+Use the concurrent-writer publish procedure before posting an issue milestone.
+If the revision is already merged, there is no merge commit to create.
+
+This procedure leaves archive CI disabled. CI setup is a separate, explicitly
+requested change. GitHub requires a
+[manually dispatched workflow](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)
+to exist on the repository's default branch; a research-branch file alone cannot
+be dispatched. Review the default-branch bootstrap and selected research-branch
+checks together, using `workflow_dispatch` as the sole trigger. Preserve those
+approved workflows during later merges while removing inherited automatic
+workflows. Do not change repository settings or credentials to enable archive CI.
 
 ## Extract the Marin contribution
 
