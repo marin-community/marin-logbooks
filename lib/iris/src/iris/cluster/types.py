@@ -767,6 +767,9 @@ class EnvironmentSpec:
             "TOKENIZERS_PARALLELISM": "false",
             "HF_TOKEN": os.getenv("HF_TOKEN"),
             "WANDB_API_KEY": os.getenv("WANDB_API_KEY"),
+            # Local backport of #10475: CoreWeave peers require the submitter's object-storage keys.
+            "CW_KEY_ID": os.getenv("CW_KEY_ID"),
+            "CW_KEY_SECRET": os.getenv("CW_KEY_SECRET"),
             # Launch provenance: a task running from a git-less bundle inherits the
             # submitter's identity via Provenance.capture(); transitive, since a task
             # re-submitting captures this same env value.
