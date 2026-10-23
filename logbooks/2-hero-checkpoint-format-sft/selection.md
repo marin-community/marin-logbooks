@@ -32,3 +32,9 @@ Two fresh reviewers independently inspected the complete proposed contribution a
 | `docs/references/hero-format-sft.md`, README addition, mkdocs entry, `.agents/projects/hero-checkpoint-averaging-format-sft.md` | Historical commands, proposed paths and research status belong with the archived source. They should not advertise an adopted maintained interface. |
 
 A future adoption of compact Hero SFT can promote a narrower backend with an actual maintained consumer and a base-checkpoint contract. Historical reproducibility is preserved by this branch regardless of that later decision.
+
+## Published contribution
+
+[Marin #10556](https://github.com/marin-community/marin/pull/10556) extracts the selected fixes onto current Marin base `86fc7b67c921ad4ac124835ca7379b04ffa1be25`. Its source commit is `467b8393773a143ad465fb421a98de4278b62faa`, with seven changed files (+286/−10). The original broad [PR #10539](https://github.com/marin-community/marin/pull/10539) is superseded; its full source remains in this research branch.
+
+Focused extracted-tree CPU validation passed 70 tests with 37 hardware-only cases skipped. The command was `uv run --no-sync pytest experiments/grug/moe_hero_ep/ops/test_export_vllm.py lib/levanter/tests/kernels/test_short_conv.py lib/fray/tests/test_iris.py -q -n 0`. Required changed-file lint/type checks passed. A fresh lint-catalog review of the extracted seven-file branch found zero findings. Existing context-parallel joint-gradient tolerances from main are retained. No accelerator execution was repeated for this extraction. Broader affected-suite and PR CI outcomes belong to the contribution review; this archive does not assert their success in advance.
