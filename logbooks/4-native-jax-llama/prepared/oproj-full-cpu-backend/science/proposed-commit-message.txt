@@ -1,0 +1,19 @@
+Prepare full Trainer replay with a host CPU backend
+
+Reuse the validated callback control's concrete provenance guard in the
+full Stage A child through an explicit field bridge. Preserve the historical
+fixture, source/runtime pins, numerical comparisons and placement checks,
+and require both target variants to retain 255 canonical gradients and 12
+raw gradient leaves.
+
+The new configuration requires untouched legacy/native historical replay
+under tpu,cpu before instrumented execution. Legacy uses Haliax named arrays
+and Auto mesh axes; native uses ordinary JAX arrays and Explicit mesh axes.
+Both run untouched and instrumented. Instrumentation identity remains fatal
+before interpreting layer-zero X, the attention output entering o_proj, and G,
+the incoming cotangent of the projection output. The full-model capture, Trainer math,
+controller and negative controls are unchanged from the retained source.
+
+Local CPU controller and abstract-shape checks validate preparation only.
+Full-target numerical acceptance and any dispatch require separate review
+and release with a new immutable source/configuration identity.

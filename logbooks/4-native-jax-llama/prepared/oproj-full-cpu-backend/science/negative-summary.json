@@ -1,0 +1,23 @@
+[
+  {
+    "case": "gradient-perturbation",
+    "exit_code": 1,
+    "expected_negative_observed": true,
+    "observed_error": "ValueError: Fatal instrumentation identity failure: native/gradients",
+    "supervisor_timed_out": false
+  },
+  {
+    "case": "duplicate-disagreement",
+    "exit_code": 1,
+    "expected_negative_observed": true,
+    "observed_error": "ValueError: [\"ValueError: Repeated/rematerialized callback differs: ('X', 1)\", \"ValueError: Repeated/rematerialized callback differs: ('X', 0)\", \"ValueError: Repeated/rematerialized callback differs: ('X', 3)\", \"ValueError: Repeated/rematerialized callback differs: ('X', 2)\", \"ValueError: Repeated/rematerialized callback differs: ('X', 'global')\"]",
+    "supervisor_timed_out": false
+  },
+  {
+    "case": "nonfinite",
+    "exit_code": 1,
+    "expected_negative_observed": true,
+    "observed_error": "ValueError: Nonfinite actual diagnostic: native/gradients",
+    "supervisor_timed_out": false
+  }
+]

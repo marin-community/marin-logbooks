@@ -1,0 +1,130 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Frozen full Stage A worker; stage outside Iris and copy only bounded diagnostics."""
+
+import hashlib
+import importlib.util
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+CONFIG_TEXT = "__CONFIG_TEXT__"
+CONFIG_SHA256 = "__CONFIG_SHA256__"
+SUPERVISOR_TEXT = "__SUPERVISOR_TEXT__"
+SUPERVISOR_SHA256 = "__SUPERVISOR_SHA256__"
+PARENT_SOURCE = "0be2ab8574125f932b18ab8ec5d04a564b432be5"
+RESEARCH_SOURCE = "__RESEARCH_SOURCE__"
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    root = Path.cwd()
+    if "jax" in sys.modules:
+        raise ValueError("Bootstrap must not initialize JAX")
+    if hashlib.sha256(CONFIG_TEXT.encode()).hexdigest() != CONFIG_SHA256:
+        raise ValueError("Frozen configuration bytes changed")
+    if hashlib.sha256(SUPERVISOR_TEXT.encode()).hexdigest() != SUPERVISOR_SHA256:
+        raise ValueError("Frozen supervisor bytes changed")
+    config = json.loads(CONFIG_TEXT)
+    for name, expected in {**config["source_file_sha256"], **config["research_source_sha256"]}.items():
+        if sha(root / name) != expected:
+            raise ValueError(f"Frozen worker source changed: {name}")
+    if any(os.environ.get(k) != v for k, v in config["scientific_environment"].items()):
+        raise ValueError("Exact tpu,cpu scientific environment required before child initialization")
+    output = Path(os.environ["IRIS_OUTPUT_DIR"])
+    output.mkdir(parents=True, exist_ok=True)
+    if any(output.iterdir()):
+        raise FileExistsError("Fresh empty Iris output directory required")
+    spec = importlib.util.spec_from_file_location("stage_a_retention", root / "research/oproj/diagnostic.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    retention = module.retention
+
+    with tempfile.TemporaryDirectory(prefix="oproj-full-stage-a-") as temporary:
+        workspace = Path(temporary)
+        stage = workspace / "diagnostics"
+        stage.mkdir()
+        config_path = workspace / "config.json"
+        config_path.write_text(CONFIG_TEXT)
+        supervisor = workspace / "supervisor.py"
+        supervisor.write_text(SUPERVISOR_TEXT)
+        argv = [
+            sys.executable,
+            str(supervisor),
+            "--timeout",
+            "900",
+            "--receipt",
+            str(stage / "supervisor.json"),
+            "--",
+            sys.executable,
+            "research/oproj/diagnostic.py",
+            "run",
+            "--mode",
+            "target",
+            "--config",
+            str(config_path),
+            "--output",
+            str(stage / "stage-a"),
+        ]
+        (stage / "worker-provenance.json").write_text(
+            json.dumps(
+                {
+                    "scientific_source": config["source_commit"],
+                    "research_source_parent": PARENT_SOURCE,
+                    "research_source_commit_declared": RESEARCH_SOURCE,
+                    "source_commit_not_checked_in_worker": True,
+                    "config_sha256": CONFIG_SHA256,
+                    "supervisor_sha256": SUPERVISOR_SHA256,
+                    "research_source_sha256": config["research_source_sha256"],
+                    "argv": argv,
+                    "parent_jax_imported": "jax" in sys.modules,
+                    "retention": "One regional Iris attempt archive; no direct backup or raw arrays",
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+        result = subprocess.run(argv, check=False)
+        try:
+            if any(p.is_symlink() or (not p.is_file() and not p.is_dir()) for p in stage.rglob("*")):
+                raise ValueError("Symlink or special file in diagnostic staging")
+            receipt = retention(stage)
+            (stage / "bootstrap-retention.json").write_text(json.dumps(receipt, indent=2) + "\n")
+            retention(stage)
+            if result.returncode == 0:
+                report = json.loads((stage / "stage-a/report.json").read_text())
+                bound = json.loads((stage / "supervisor.json").read_text())
+                if not report["completed"] or not report["identity"]["instrumentation_loss_all_raw_gradients_exact"]:
+                    raise ValueError("Successful worker lacks complete Stage A identity")
+                if not bound["completed"] or bound["timed_out"] or bound["worker_returncode"] != 0:
+                    raise ValueError("Successful worker lacks successful external supervisor")
+            shutil.copytree(stage, output / "diagnostics")
+        except Exception as error:
+            (output / "bootstrap-failure.json").write_text(
+                json.dumps(
+                    {
+                        "completed": False,
+                        "worker_returncode": result.returncode,
+                        "error_type": type(error).__name__,
+                        "error": str(error)[:2048],
+                        "staging_not_copied": not (output / "diagnostics").exists(),
+                        "no_direct_storage": True,
+                    },
+                    indent=2,
+                )
+                + "\n"
+            )
+            raise
+        raise SystemExit(result.returncode)
+
+
+if __name__ == "__main__":
+    main()

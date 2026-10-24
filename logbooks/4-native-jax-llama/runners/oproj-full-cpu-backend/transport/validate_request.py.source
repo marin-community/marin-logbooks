@@ -1,0 +1,113 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Capture the actual SDK request and ZIP locally; no network client constructor or RPC."""
+
+import hashlib
+import importlib.util
+import io
+import json
+import os
+import subprocess
+import zipfile
+from pathlib import Path
+
+from google.protobuf.json_format import MessageToDict
+from iris.client.client import IrisClient
+from iris.cluster.client.remote_client import RemoteClusterClient
+from iris.rpc import controller_pb2
+
+ROOT = Path("/private/tmp/marin-native-jax-oproj-full-cpu-backend")
+PREP = Path("/private/tmp/native-jax-oproj-full-cpu-backend-job-preparation")
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    if Path.cwd() != ROOT or os.environ.get("IRIS_JOB_ID") or os.environ.get("IRIS_TASK_ID"):
+        raise ValueError("Root workstation capture in the exact worktree required")
+    if (PREP / "submission-claim.json").exists() or (PREP / "submission-state.json").exists():
+        raise ValueError("An existing claim/state must be inspected, never captured as a fresh attempt")
+    spec = importlib.util.spec_from_file_location("prepared_full_stage_a", PREP / "submit_once.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    kwargs, validation = module.prepared_request()
+    captures = []
+
+    class CaptureOnlyLaunch:
+        def launch_job(self, request, *, timeout_ms):
+            captures.append((request, timeout_ms))
+            return controller_pb2.Controller.LaunchJobResponse(job_id=request.name)
+
+    remote = RemoteClusterClient.__new__(RemoteClusterClient)
+    remote._bundle_id = None
+    remote._workspace = ROOT
+    remote._extra_bundle_includes = ()
+    remote._bundle_exclude = None
+    remote._bundle_blob = None
+    remote._timeout_ms = 30000
+    remote._client = CaptureOnlyLaunch()
+    job = IrisClient(remote).submit(**kwargs)
+    if len(captures) != 1:
+        raise ValueError("Expected one successful local launch stub call")
+    request, timeout_ms = captures[0]
+    assert str(job.job_id) == request.name == validation["job_id"]
+    assert request.max_retries_failure == request.max_retries_preemption == request.max_task_failures == 0
+    assert request.replicas == 1 and request.existing_job_policy == module.job_pb2.EXISTING_JOB_POLICY_ERROR
+    assert not request.environment.secrets
+    command = json.loads((PREP / "command.json").read_text())
+    assert all(request.environment.env_vars[k] == v for k, v in command["environment"].items())
+    blob = bytes(request.bundle_blob)
+    assert len(blob) <= 25 * 1024**2
+    with zipfile.ZipFile(io.BytesIO(blob)) as archive:
+        names = archive.namelist()
+        assert len(names) == len(set(names))
+        for name in names:
+            path = Path(name)
+            assert not path.is_absolute() and ".." not in path.parts
+            assert not name.startswith((".git/", ".venv/", ".creds/", ".aws/", "logbooks/", "scratch/"))
+            assert "__pycache__" not in name
+            assert archive.getinfo(name).external_attr >> 16 & 0o170000 != 0o120000
+        for name, expected in command["source_sha256"].items():
+            assert hashlib.sha256(archive.read(name)).hexdigest() == expected, name
+        inventory = [
+            {"path": n, "bytes": archive.getinfo(n).file_size, "sha256": hashlib.sha256(archive.read(n)).hexdigest()}
+            for n in names
+        ]
+    (PREP / "source-bundle.zip").write_bytes(blob)
+    serialized = request.SerializeToString(deterministic=True)
+    (PREP / "request.pb").write_bytes(serialized)
+    wire = controller_pb2.Controller.LaunchJobRequest()
+    wire.CopyFrom(request)
+    wire.ClearField("bundle_blob")
+    proof = {
+        "status": "ACTUAL_SDK_REQUEST_CAPTURE_ONLY_NO_NETWORK_OR_CLIENT_CONSTRUCTOR",
+        "source_commit_at_capture": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+        "source_clean_at_capture": not subprocess.check_output(["git", "status", "--porcelain"], text=True).strip(),
+        "command_sha256": sha(PREP / "command.json"),
+        "wrapper_sha256": sha(PREP / "submit_once.py"),
+        "validator_sha256": sha(Path(__file__)),
+        "launch_stub_calls": 1,
+        "actual_IrisClient_submit_and_RemoteClusterClient_bundle_builder_executed": True,
+        "all_scientific_and_research_source_blobs_exact": len(command["source_sha256"]),
+        "bundle_bytes": len(blob),
+        "bundle_sha256": hashlib.sha256(blob).hexdigest(),
+        "serialized_request_bytes": len(serialized),
+        "serialized_request_sha256": hashlib.sha256(serialized).hexdigest(),
+        "request_without_bundle": MessageToDict(wire, preserving_proto_field_name=True),
+        "bundle_inventory": inventory,
+        "launch_timeout_ms": timeout_ms,
+        "submission_claim_release_RPC_network_or_storage_performed": False,
+        "local_bundle_and_proto_not_for_archive": True,
+        "post_publication_recapture_required": True,
+    }
+    (PREP / "request-validation.json").write_text(json.dumps(proof, indent=2) + "\n")
+    print(
+        json.dumps({k: v for k, v in proof.items() if k not in ("bundle_inventory", "request_without_bundle")}, indent=2)
+    )
+
+
+if __name__ == "__main__":
+    main()

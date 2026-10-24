@@ -1,0 +1,123 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Exercise actual bootstrap I/O boundaries with only the worker subprocess intercepted."""
+
+import json
+import os
+import runpy
+import subprocess
+import tempfile
+from pathlib import Path
+
+ROOT = Path("/private/tmp/marin-native-jax-oproj-full-cpu-backend")
+PREP = Path("/private/tmp/native-jax-oproj-full-cpu-backend-job-preparation")
+
+
+def main():
+    command = json.loads((PREP / "command.json").read_text())
+    previous = dict(os.environ)
+    os.environ.update(command["environment"])
+    original_run = subprocess.run
+    records = []
+    os.chdir(ROOT)
+    for case in (
+        "success",
+        "worker_failure",
+        "timeout",
+        "oversize_file",
+        "oversize_total",
+        "unexpected_file",
+        "symlink",
+    ):
+        status = {"worker_failure": 7, "timeout": 124}.get(case, 0)
+        with tempfile.TemporaryDirectory(prefix="full-stage-a-io-") as temporary:
+            output = Path(temporary) / "iris"
+            os.environ["IRIS_OUTPUT_DIR"] = str(output)
+            calls = []
+
+            def fake(argv, check, *, output=output, status=status, case=case, calls=calls):
+                assert check is False and argv[2:4] == ["--timeout", "900"]
+                stage = Path(argv[5]).parent
+                assert not stage.is_relative_to(output)
+                diagnostic = Path(argv[-1])
+                diagnostic.mkdir()
+                (stage / "supervisor.json").write_text(
+                    json.dumps(
+                        {
+                            "completed": status == 0,
+                            "timed_out": case == "timeout",
+                            "worker_returncode": status,
+                        }
+                    )
+                )
+                (diagnostic / "report.json").write_text(
+                    json.dumps(
+                        {
+                            "completed": status == 0,
+                            "identity": {"instrumentation_loss_all_raw_gradients_exact": status == 0},
+                        }
+                    )
+                )
+                if case == "oversize_file":
+                    (diagnostic / "oversize.stablehlo.txt").write_bytes(b"0" * (32 * 1024**2 + 1))
+                if case == "oversize_total":
+                    for i in range(5):
+                        (diagnostic / f"{i}.stablehlo.txt").write_bytes(b"0" * (32 * 1024**2))
+                if case == "unexpected_file":
+                    (diagnostic / "array.npy").write_bytes(b"not-an-array")
+                if case == "symlink":
+                    (diagnostic / "link.json").symlink_to(diagnostic / "report.json")
+                calls.append(argv)
+                return subprocess.CompletedProcess(argv, status)
+
+            subprocess.run = fake
+            code, error = None, None
+            try:
+                runpy.run_path(str(PREP / "bootstrap.py"), run_name="__main__")
+            except SystemExit as e:
+                code = e.code
+            except ValueError as e:
+                error = str(e)
+            finally:
+                subprocess.run = original_run
+            assert len(calls) == 1
+            bounded_failure = case in ("oversize_file", "oversize_total", "unexpected_file", "symlink")
+            if bounded_failure:
+                assert error and not (output / "diagnostics").exists()
+                assert (output / "bootstrap-failure.json").is_file()
+                assert sum(p.stat().st_size for p in output.rglob("*") if p.is_file()) < 65536
+            else:
+                assert code == status and (output / "diagnostics/stage-a/report.json").exists()
+                assert (
+                    json.loads((output / "diagnostics/worker-provenance.json").read_text())["parent_jax_imported"]
+                    is False
+                )
+            records.append(
+                {
+                    "case": case,
+                    "status": code,
+                    "error": error,
+                    "worker_calls": 1,
+                    "copied": (output / "diagnostics").exists(),
+                    "rejected_before_Iris_copy": bounded_failure,
+                }
+            )
+    os.environ.clear()
+    os.environ.update(previous)
+    (PREP / "bootstrap-io-controls.json").write_text(
+        json.dumps(
+            {
+                "status": "PASS_ACTUAL_BOOTSTRAP_LOCAL_IO_CONTROLS",
+                "cases": records,
+                "scope": "Only subprocess I/O intercepted; no scientific/JAX/TPU/client/RPC/storage execution",
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    print(json.dumps(records, indent=2))
+
+
+if __name__ == "__main__":
+    main()
