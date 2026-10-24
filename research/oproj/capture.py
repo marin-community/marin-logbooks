@@ -103,7 +103,9 @@ def emit(kind, label, value, index, ids, mesh):
         )
 
         def local_callback(v, i, d):
-            jax.debug.callback(lambda a, b, c: COLLECTORS[kind].receive(label, True, a, b, c), v, i, d, partitioned=True)
+            jax.debug.callback(
+                lambda a, b, c: COLLECTORS[kind].receive(label, True, a, b, c), v, i, d, partitioned=False
+            )
             return ()
 
         spec = P("data", "model", None, None) if label == "X" else P("data", None, None)
