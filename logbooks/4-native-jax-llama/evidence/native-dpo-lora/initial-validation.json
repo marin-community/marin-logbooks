@@ -1,0 +1,348 @@
+{
+  "initial_source": "f5b59c462f0731d3edfb42d04072cd3eac9b9b97",
+  "checks": [
+    {
+      "name": "cpu1-final",
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "JAX_PLATFORMS": "cpu",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "XLA_FLAGS": "--xla_force_host_platform_device_count=1"
+      },
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_dpo.py",
+        "lib/levanter/tests/test_lora_dpo.py",
+        "lib/levanter/tests/test_lora.py",
+        "-q",
+        "--basetemp=native-jax-dpo-lora-cpu1-final"
+      ],
+      "exit_code": 0,
+      "passed": 61,
+      "skipped": 3,
+      "warnings": 4,
+      "pytest_seconds": 80.31,
+      "log": "native-jax-dpo-lora-cpu1-final.log",
+      "log_sha256": "afb21abb32e3516c3df3e812745b81885965df68e11b5b8c9f934b0a74c725e4",
+      "default_safety_markers_retained": true,
+      "mesh": {
+        "data": 1,
+        "model": 1
+      },
+      "freeze_revision": 2
+    },
+    {
+      "name": "cpu4-final",
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "JAX_PLATFORMS": "cpu",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "XLA_FLAGS": "--xla_force_host_platform_device_count=4"
+      },
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_dpo.py",
+        "lib/levanter/tests/test_lora_dpo.py",
+        "lib/levanter/tests/test_lora.py",
+        "-q",
+        "--basetemp=native-jax-dpo-lora-cpu4-final"
+      ],
+      "exit_code": 0,
+      "passed": 62,
+      "skipped": 2,
+      "warnings": 4,
+      "pytest_seconds": 93.65,
+      "log": "native-jax-dpo-lora-cpu4-final.log",
+      "log_sha256": "9952efb3887a93b2fdd5d995e441abec114301e4a46b970d00b3a67402fd25ac",
+      "default_safety_markers_retained": true,
+      "mesh": {
+        "data": 2,
+        "model": 2
+      },
+      "freeze_revision": 2
+    },
+    {
+      "name": "lint-escalated",
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1"
+      },
+      "argv": [
+        "python",
+        "infra/pre-commit.py",
+        "--files",
+        "lib/levanter/src/levanter/main/train_dpo.py",
+        "--files",
+        "lib/levanter/tests/test_dpo.py",
+        "--files",
+        "lib/levanter/docs/Training-On-Your-Data.md",
+        "--fix"
+      ],
+      "exit_code": 0,
+      "sandbox_escalation_for_black_local_ipc": true,
+      "log": "native-jax-dpo-lora-lint-escalated.log",
+      "log_sha256": "e44691fcdbda0c310b81cb90bd3b02f67e314a6022cc12b1660d139e9b484598",
+      "freeze_revision": 2
+    },
+    {
+      "name": "doc-lint-final",
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1"
+      },
+      "argv": [
+        "python",
+        "infra/pre-commit.py",
+        "--files",
+        "lib/levanter/docs/guides/DPO-Training.md"
+      ],
+      "exit_code": 0,
+      "sandbox_escalation_for_black_local_ipc": false,
+      "log": "native-jax-dpo-lora-doc-lint-final.log",
+      "log_sha256": "76444d4998eefcbbdcd58a54103616a4aab7441506309f01113f92a4cef6ffce",
+      "freeze_revision": 2
+    },
+    {
+      "name": "cpu1-reference-distinct",
+      "freeze_revision": 3,
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "JAX_PLATFORMS": "cpu",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "XLA_FLAGS": "--xla_force_host_platform_device_count=1"
+      },
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "-q",
+        "--basetemp=native-jax-dpo-lora-cpu1-reference-distinct"
+      ],
+      "exit_code": 0,
+      "passed": 2,
+      "skipped": 0,
+      "warnings": 2,
+      "pytest_seconds": 25.43,
+      "log": "native-jax-dpo-lora-cpu1-reference-distinct.log",
+      "log_sha256": "308fff638173be1e44a3a41ec27b900ea970a86611addbe22356e9f452be8b5f",
+      "default_safety_markers_retained": true,
+      "mesh": {
+        "data": 1,
+        "model": 1
+      }
+    },
+    {
+      "name": "cpu4-reference-distinct",
+      "freeze_revision": 3,
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "JAX_PLATFORMS": "cpu",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "XLA_FLAGS": "--xla_force_host_platform_device_count=4"
+      },
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "-q",
+        "--basetemp=native-jax-dpo-lora-cpu4-reference-distinct"
+      ],
+      "exit_code": 0,
+      "passed": 2,
+      "skipped": 0,
+      "warnings": 2,
+      "pytest_seconds": 31.44,
+      "log": "native-jax-dpo-lora-cpu4-reference-distinct.log",
+      "log_sha256": "66416211bb14bf179fd4e9769f8767166c8ba8179debdcbdf541e3b7bb502cb8",
+      "default_safety_markers_retained": true,
+      "mesh": {
+        "data": 2,
+        "model": 2
+      }
+    },
+    {
+      "name": "lint-reference-distinct-final",
+      "freeze_revision": 3,
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1"
+      },
+      "argv": [
+        "python",
+        "infra/pre-commit.py",
+        "--files",
+        "lib/levanter/tests/test_dpo.py"
+      ],
+      "exit_code": 0,
+      "sandbox_escalation_for_black_local_ipc": true,
+      "log": "native-jax-dpo-lora-lint-reference-distinct-final.log",
+      "log_sha256": "fb2ba3dc2c65a6e9df7a5a8443679cdc305f989b364e7a9d10187292b6f66774"
+    }
+  ],
+  "environment": {
+    "python": "3.12.11",
+    "versions": {
+      "jax": "0.11.1",
+      "jaxlib": "0.11.1",
+      "equinox": "0.13.2",
+      "optax": "0.2.6",
+      "numpy": "2.3.5",
+      "pytest": "9.0.3",
+      "transformers": "5.12.1",
+      "safetensors": "0.6.2",
+      "torch": "2.11.0"
+    }
+  },
+  "behavior_evidence": [
+    "Both SeparateReferenceConfig and AdapterBaseReferenceConfig run the canonical train_dpo.main through actual Trainer training.",
+    "For each mode: uninterrupted3 updates equals checkpointed2 plus ordinary resumed next update3 exactly in final loss and every ordinary state array, including base/reference/model, optimizer, RNG and step.",
+    "Real saved partial checkpoints from uninterrupted and resumed runs are independently read by load_checkpoint and match final saveable state exactly.",
+    "For both uninterrupted and resumed runs, actual final frozen policy base equals original HF source; separate-reference values equal a distinct independently initialized HF source, while adapter-base reference equals the policy original source.",
+    "Both A and B contain changed factors compared to deterministic initialization under the same key; factors are the only trainables.",
+    "Actual model/reference full vocab32 remains greater than local tokenizer length31.",
+    "Independent safetensors reader sees exact trained factor values and base path; shared HF reader sees exact once-merged weights and forward parity atol=1e-5 rtol=1e-5.",
+    "Existing native full-DPO and named LoRA/DPO tests remain passing under CPU1/CPU4; no numerical tolerance was relaxed.",
+    "Native model core llama_native.py remains free of Haliax imports."
+  ],
+  "limits": [
+    "Author validation is single-host CPU only; CPU8 portability, fresh independent extraction review, broad final checks and publication belong to root.",
+    "No claim of GPU/TPU performance, multihost behavior, memory savings, or installed/deployed runtime.",
+    "Adapter checkpoint metadata does not validate base-source identity, LoRA alpha or target selection; resumed ordinary-state equality requires unchanged sources and config.",
+    "Separate reference checkpoint values are reconstructed from the unchanged configured source; they are not stored as trainable policy payload.",
+    "Optional peft-package consumer tests were skipped because peft is unavailable; factor files were read with safetensors, merged files with the existing shared HF loader. Existing independent Torch export tests are included in focused test_lora.py.",
+    "No native DPO guard is claimed as retained from PR24. The guard rejected adapters in PR21; the new path removes that composition barrier.",
+    "No commits, pushes, catalog changes, PR edits, branch moves, resets, GitHub merges, hardware jobs, or source history rewrites were performed."
+  ],
+  "review_response": {
+    "finding": "An identical separate-reference source could miss ignoring reference.model_path.",
+    "resolution": "Add a distinct real local HF reference source, same architecture/vocab but independently initialized under key97; check both actual uninterrupted and resumed references against that source while policy bases match original.",
+    "production_source_unchanged": true,
+    "docs_unchanged": true,
+    "test_scope": "Only the two changed canonical cases rerun; prior three-file focused suites retained as revision2 evidence."
+  },
+  "interrupted_runtime_controls": [
+    {
+      "name": "cpu1",
+      "exit_code": 130,
+      "reason": "Both new canonical cases displayed passed, but root default -n auto created extra workers and the command was interrupted in pytest cleanup. Not counted as clean validation.",
+      "log": "native-jax-dpo-lora-cpu1.log",
+      "log_sha256": "f6f9847f86bde70b62c6818042d5a0cd7d713292883889ac8649c8128354c6c3"
+    }
+  ],
+  "root_focused_proof": {
+    "status": "FINAL_FOCUSED_CPU_AND_NEGATIVE_CONTROLS_VERIFIED_BROAD_CATALOG_PENDING",
+    "source": "f5b59c462f0731d3edfb42d04072cd3eac9b9b97",
+    "final_files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": "1b6afe3d83e8775b0382e9b1f79fee18d2a4299bc35d4466b820055ed01b8de1",
+      "lib/levanter/docs/guides/DPO-Training.md": "92be3adfc7f98ec965168a1d06fdc3711bcc8265f49825bf29a4391341197c62",
+      "lib/levanter/src/levanter/main/model_init.py": "14c8c3c37d47fa7dccaad3a8180c08049f049d431ec991e2ffead47513fb592c",
+      "lib/levanter/src/levanter/main/train_dpo.py": "2c469f4fb5296788ef12c4364262b116c22d23e35e0ae69b3429e189d2602d38",
+      "lib/levanter/tests/test_dpo.py": "b46f4a77813e7b8daf1dd2156d39e8702f711ede042ced2847c41fce11ee38f6"
+    },
+    "final_test_only_response": "Distinct real reference source; production/docs identical to revision2",
+    "initial_full_CPU8": {
+      "tests": 64,
+      "passed": 62,
+      "skipped": 2,
+      "seconds": 81.933,
+      "xml_sha256": "1cdc970534502a895457dc71309f005b1c0643536c5a152b0b56353853fdf992"
+    },
+    "final_changed_CPU8": {
+      "status": "FINAL_DISTINCT_REFERENCE_CPU8_PASS",
+      "counts": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "2",
+        "time": "29.002",
+        "timestamp": "2026-10-24T14:52:29.029516-07:00"
+      },
+      "xml_sha256": "77f40926875d2ec20f6520376e8acbe3c8a118c662bce1e37a7ad37ef1ee7a1c",
+      "scope": "Two changed real-main cases only; complete initial CPU8 suite was62pass2skip, production unchanged"
+    },
+    "author_CPU1_4_handoff_sha256": "e6bafd69a48f8c5c7a44bd5a2afb46632875ef0b154a37443999e117b1e207d1",
+    "old_guard_negative": {
+      "status": "BOTH_NEW_REAL_MAIN_TESTS_REPRODUCE_OLD_NATIVE_ADAPTER_GUARD",
+      "baseline_tree": "3755e6c9e020beda97781ddadd7388c3c39761f7",
+      "candidate_test_file_only": true,
+      "CPU_devices": 4,
+      "cases": [
+        {
+          "case": "test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[separate]",
+          "failure": "ValueError: llama_native DPO does not support adapters yet"
+        },
+        {
+          "case": "test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[adapter_base]",
+          "failure": "ValueError: llama_native DPO does not support adapters yet"
+        }
+      ],
+      "xml_sha256": "e068a2fe78f21a90b9b0622ab1abd8542eb756e605649f655d69e4aae8e29fa4",
+      "no_production_changes_to_baseline": true
+    },
+    "actual_reconstruction_negative": {
+      "status": "ACTUAL_MAIN_RECONSTRUCTION_DISABLED_CONTROL_FAILS_CONTINUATION",
+      "counts": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "1",
+        "skipped": "0",
+        "tests": "1",
+        "time": "15.695",
+        "timestamp": "2026-10-24T14:53:06.679314-07:00"
+      },
+      "node": "test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[adapter_base]",
+      "control": "Only actual main adapter-resume base reconstruction branch disabled; candidate final tests unchanged",
+      "failure_metrics": [
+        "E       Mismatched elements: 1 / 1 (100%)",
+        "E       Max absolute difference among violations: 0.1543203",
+        "E       Max relative difference among violations: 0.22601373"
+      ],
+      "xml_sha256": "d9a0cef53aa18233848d88dc202da5d841cbde2dec1959c5b6bd6af4eee0f786",
+      "raw_XML_has_array_excerpts_do_not_publish_without_projection": true,
+      "not_for_adoption": true
+    },
+    "required_checks_exit": 0,
+    "fresh_extraction_and_response_reviews_zero_findings": true,
+    "no_numerical_threshold_change": true,
+    "no_accelerator_or_GCP_egress": true,
+    "canonical_defaults_unchanged": true,
+    "published": false
+  },
+  "_archive_note": "Original execution/status/source identities retained, including historical unpublished/pending fields. Local paths/hostnames removed as enumerated in manifest. Embedded artifact hashes identify original unsanitized inputs; copy hashes and lengths are in manifest. No new execution occurred."
+}

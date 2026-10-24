@@ -1,0 +1,186 @@
+{
+  "changes": [
+    {
+      "finding": "Native export support policy duplicated across training entrypoints",
+      "resolution": "AdaptorExportConfig.validate_native(model: NativeLlamaLmConfig) owns upload rejection, local path validation and architecture validation; both mains construct/reuse their existing export config and invoke it only for native models. Generation metadata is added to the same config for existing export hooks. Named behavior and native core imports are unchanged."
+    },
+    {
+      "finding": "Three copies of local HF checkpoint construction",
+      "resolution": "Importable levanter.testing.hf_checkpoints.write_llama_checkpoint(source,config,hf_config,*,key) and LocalLlamaCheckpoint replace both DPO fixture writers and the existing LM test writer. Initialization keys13/97, supplied config, serialization and exact fixture weights are preserved. No test-to-test imports or new training path."
+    }
+  ],
+  "exact_expanded_nodeids": [
+    "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[separate]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[adapter_base]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-silu]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-gelu_new]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-silu]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-gelu_new]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_exports_portable_local_weights[False-True-None]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_exports_portable_local_weights[True-True-bfloat16]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_exports_portable_local_weights[False-False-None]",
+    "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter"
+  ],
+  "extra_evidence": [
+    {
+      "description": "Real public main entrypoints reject all14 upload, remote destination and incompatible architecture probes before source/tokenizer I/O. Disposable probe only; no checked-in guard tests added.",
+      "exit_code": 0,
+      "artifact": {
+        "path": "evidence/native-dpo-lora/export-policy-probe.json",
+        "sha256": "4a44e6c8f4a32be7afdaa7d45a5f60b473bdaf5579cfc3e02843ec0186fe6148",
+        "bytes": 2677
+      }
+    },
+    {
+      "description": "Exact policy/reference source arrays equal the preserved pre-refactor CPU1 fixture artifacts for both modes (4 pairs, keys13 and97).",
+      "exit_code": 0,
+      "artifact": {
+        "path": "evidence/native-dpo-lora/fixture-preservation.json",
+        "sha256": "7431c583632e8886d091221b6fdb7d9415833dbce3fcea5150812f0fba9226ab",
+        "bytes": 2166
+      }
+    },
+    {
+      "description": "Exact trained factor and merged HF arrays equal preserved pre-refactor CPU1 final exports for both modes (4 pairs).",
+      "exit_code": 0,
+      "artifact": {
+        "path": "evidence/native-dpo-lora/output-preservation.json",
+        "sha256": "1a073a9ad444caf4500df123d618f7bb13429d0e224f3ab293a0ef74a8db2cf2",
+        "bytes": 2282
+      }
+    }
+  ],
+  "limits": [
+    "No broad suite run in this response clone; root original2162-case run validates original f5 source only. Root owns final-source validation.",
+    "No catalog rerun for this narrow response; root owns fresh independent response review.",
+    "CPU1/4 only in this response; original rootCPU8 proof does not become new-source CPU8 evidence automatically.",
+    "No hardware job, egress, commit, push, PR change, branch reset or history rewrite performed. Original final clone was never edited.",
+    "Original source/checkpoint/export limitations remain unchanged, including base-source identity and LoRA alpha/target validation limits.",
+    "Raw catalog stderr was not copied or archived."
+  ],
+  "checks": [
+    {
+      "name": "cpu1",
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "JAX_PLATFORMS": "cpu",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "XLA_FLAGS": "--xla_force_host_platform_device_count=1"
+      },
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_exports_portable_local_weights",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+        "-q",
+        "--basetemp=native-jax-dpo-lora-response-cpu1"
+      ],
+      "exit_code": 0,
+      "passed": 13,
+      "skipped": 0,
+      "warnings": 12,
+      "pytest_seconds": 66.09,
+      "log": {
+        "path": "native-jax-dpo-lora-response-cpu1.log",
+        "sha256": "2689a8c971d9307a0bded72b19d28a3e0f22b84305967d0db4c9c8d5ed6f461b",
+        "bytes": 2011
+      },
+      "root_safety_markers_unmodified": true
+    },
+    {
+      "name": "cpu4",
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1",
+        "JAX_PLATFORMS": "cpu",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "XLA_FLAGS": "--xla_force_host_platform_device_count=4"
+      },
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_exports_portable_local_weights",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+        "-q",
+        "--basetemp=native-jax-dpo-lora-response-cpu4"
+      ],
+      "exit_code": 0,
+      "passed": 13,
+      "skipped": 0,
+      "warnings": 12,
+      "pytest_seconds": 78.74,
+      "log": {
+        "path": "native-jax-dpo-lora-response-cpu4.log",
+        "sha256": "ac7dfe03a22678badd39ab858e261681dd14d98a465ba8577e21753c0b52c648",
+        "bytes": 2011
+      },
+      "root_safety_markers_unmodified": true
+    },
+    {
+      "name": "required-normal-lint",
+      "env": {
+        "GIT_NO_REPLACE_OBJECTS": "1"
+      },
+      "argv": [
+        "python",
+        "infra/pre-commit.py",
+        "--files",
+        "lib/levanter/src/levanter/adaptor/__init__.py",
+        "--files",
+        "lib/levanter/src/levanter/main/train_dpo.py",
+        "--files",
+        "lib/levanter/src/levanter/main/train_lm.py",
+        "--files",
+        "lib/levanter/src/levanter/testing/hf_checkpoints.py",
+        "--files",
+        "lib/levanter/tests/test_dpo.py",
+        "--files",
+        "lib/levanter/tests/test_train_lm.py"
+      ],
+      "exit_code": 0,
+      "black_local_ipc_escalation": true,
+      "log": {
+        "path": "native-jax-dpo-lora-catalog-response-lint-final.log",
+        "sha256": "ee091dac6e4ec256ed5790e1f3bb25f92b18898d84ed85718d5f1d33a5190011",
+        "bytes": 557
+      }
+    }
+  ],
+  "environment": {
+    "python": "3.12.11",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "uv": "0.13.5",
+    "platform": "macOS-arm64",
+    "repo_sources_explicit_on_pythonpath": true
+  },
+  "_archive_note": "Original execution/status/source identities retained, including historical unpublished/pending fields. Local paths/hostnames removed as enumerated in manifest. Embedded artifact hashes identify original unsanitized inputs; copy hashes and lengths are in manifest. No new execution occurred."
+}

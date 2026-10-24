@@ -1,0 +1,88 @@
+{
+  "review": "independent maintained-extraction source review",
+  "repository": "<local-checkout>",
+  "freeze_revision": 2,
+  "head": "2b547a0b4fd6892ab898bc439632192cebf2b5dd",
+  "merge_head": "1186ba4117d098af11d392441335ed0f720abcd0",
+  "comparison_base": "1186ba4117d098af11d392441335ed0f720abcd0",
+  "git_no_replace_objects": true,
+  "scope": "All five files in the full proposed contribution relative to PR24 base, including imported maintained native full-finetune DPO.",
+  "file_hashes_verified": {
+    "lib/levanter/docs/Training-On-Your-Data.md": "1b6afe3d83e8775b0382e9b1f79fee18d2a4299bc35d4466b820055ed01b8de1",
+    "lib/levanter/docs/guides/DPO-Training.md": "92be3adfc7f98ec965168a1d06fdc3711bcc8265f49825bf29a4391341197c62",
+    "lib/levanter/src/levanter/main/model_init.py": "14c8c3c37d47fa7dccaad3a8180c08049f049d431ec991e2ffead47513fb592c",
+    "lib/levanter/src/levanter/main/train_dpo.py": "2c469f4fb5296788ef12c4364262b116c22d23e35e0ae69b3429e189d2602d38",
+    "lib/levanter/tests/test_dpo.py": "68c5b9be5fcf1806b870ebf2f2b82a4bcfd06f7854d457e033acf9e214cd623a"
+  },
+  "patches_verified": {
+    "vs-pr24": {
+      "path": "native-jax-dpo-lora-vs-pr24-revision2.patch",
+      "sha256": "f09dcfc27a372d65abee606eb5ba99e725c73c10d8a76acafb81115d88e801ce",
+      "bytes": 41816
+    },
+    "task-vs-composition": {
+      "path": "native-jax-dpo-lora-task-vs-composition-revision2.patch",
+      "sha256": "075f5fa69d0108ca84d27246c4836aba0873e0db7b80c3bf48f17f0e05dd692d",
+      "bytes": 19002
+    }
+  },
+  "recomputed_complete_diff_matches_frozen_patch": true,
+  "findings": [],
+  "maintenance_disposition": [
+    {
+      "file": "lib/levanter/src/levanter/main/model_init.py",
+      "disposition": "maintain",
+      "reason": "Canonical native source initialization shared by policy and separate reference; carries explicit storage/compute roles and reuses maintained loaders.",
+      "lines": "33-39,79-105"
+    },
+    {
+      "file": "lib/levanter/src/levanter/main/train_dpo.py",
+      "disposition": "maintain",
+      "reason": "Canonical Trainer-based native full-parameter and zero-dropout LoRA DPO caller, including source vocabulary, references, masks, checkpoint reconstruction, local exports and public final StepInfo.",
+      "lines": "82-132,590-625,657-814,937-983"
+    },
+    {
+      "file": "lib/levanter/tests/test_dpo.py",
+      "disposition": "maintain",
+      "reason": "Real source-loading, update, frozen-reference, independent numerical comparison, persisted checkpoint, continuation and export regressions for the canonical caller. No new internal dispatch mocks or tolerance weakening.",
+      "lines": "890-1301"
+    },
+    {
+      "file": "lib/levanter/docs/Training-On-Your-Data.md",
+      "disposition": "maintain",
+      "reason": "User-facing native LoRA configuration, both DPO references, resume requirements, source-vocabulary preservation, local export constraints and evidence limits.",
+      "lines": "292-345"
+    },
+    {
+      "file": "lib/levanter/docs/guides/DPO-Training.md",
+      "disposition": "maintain",
+      "reason": "Current DPO entrypoint reference for native full fine-tuning and LoRA; final revision corrects the earlier adapter prohibition and states source/config/export boundaries.",
+      "lines": "181-205"
+    }
+  ],
+  "reviewed_contracts": [
+    "Fresh native HF initialization loads complete source vocabulary before a single adapter application; resumed templates derive Vocab from native checkpoint metadata.",
+    "Separate reference is unadapted and excluded from trainable/checkpointed model state; adapter_base unwraps the frozen policy base.",
+    "Resumed adapter factors overlay the configured reconstructed source policy; optimizer, step and RNG continue through ordinary Trainer state.",
+    "Native nonzero adapter dropout is rejected by existing ArrayLoraLinear.init; native uploads and remote export paths are rejected by caller validation.",
+    "main returns the ordinary final Trainer StepInfo after Trainer context exit and tracker finish.",
+    "New LoRA test variants exercise separate and adapter_base through canonical main and assert exact loss/state continuation, persisted partial-state equality, base/reference equality, both factors changed, file factor equality and merged-export numerical equivalence.",
+    "Raw native model/layer source files are unchanged by this five-file contribution and receive no new Haliax imports.",
+    "Corrected final documentation matches both supported reference modes, local factor/merged exports and unenforced resume source/config identity limitations."
+  ],
+  "validation_performed": [
+    "Read root AGENTS.md and TESTING.md, Levanter AGENTS.md, JIT safety, review-pr skill, writing index/reference/report/AI writing guides.",
+    "Read full five-file diff and relevant canonical surrounding model-loading, adapter, trainer and trainer-state contracts.",
+    "Verified initial and final frozen hashes; recomputed full diff against comparison base; verified actual HEAD and MERGE_HEAD.",
+    "git diff --check against comparison base passed."
+  ],
+  "validation_not_performed": [
+    "No tests run by this reviewer; parent owns reported lint and CPU runtime checks.",
+    "No service queries, model instantiation, source edits, commits, pushes or external comments.",
+    "No larger-model numerical acceptance, accelerator behavior, performance, memory-savings validation or campaign acceptance/cutover.",
+    "In freeze revision 2, separate-reference LoRA test uses the same HF weight source as the policy. It proves freezing but does not discriminate distinct reference-source selection; source review confirms the caller uses reference.model_path. Parent reports a forthcoming test-only strengthening, outside this frozen review."
+  ],
+  "conclusion": "No concrete actionable correctness defect or unsupported new claim found in the verified five-file maintained extraction. This is a source-review result only.",
+  "_archive_note": "Original execution/status/source identities retained, including historical unpublished/pending fields. Local paths/hostnames removed as enumerated in manifest. Embedded artifact hashes identify original unsanitized inputs; copy hashes and lengths are in manifest. No new execution occurred.",
+  "_historical_patch_references": "Review concerns revision2; named patch references designate historical inputs, whose hashes are retained, not final revision3 patch copies."
+}

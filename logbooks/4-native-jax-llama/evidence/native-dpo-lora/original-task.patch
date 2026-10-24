@@ -1,0 +1,326 @@
+diff --git a/lib/levanter/docs/Training-On-Your-Data.md b/lib/levanter/docs/Training-On-Your-Data.md
+index 961dfbf73d..6bf3d50588 100644
+--- a/lib/levanter/docs/Training-On-Your-Data.md
++++ b/lib/levanter/docs/Training-On-Your-Data.md
+@@ -291,12 +291,12 @@ use_hf_model_config: true
+ 
+ ### LoRA adapters
+ 
+-The canonical `train_lm` entrypoint accepts `adapter.type: lora` with
++The canonical `train_lm` and `train_dpo` entrypoints accept `adapter.type: lora` with
+ `model.type: llama_native`. Native adapters require `dropout: 0`; projections do
+ not receive the RNG keys needed for adapter dropout. The default targets are the
+ seven decoder projections (`q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`,
+ `up_proj`, `down_proj`), excluding the output head. Native output-head adaptation
+-and native LoRA-DPO remain unsupported.
++remains unsupported.
+ 
+ ```yaml
+ initialize_from_hf: ./base-weights
+@@ -320,6 +320,17 @@ with the original base source, model and adapter configuration: frozen base
+ weights are reconstructed before restoring the adapter. These checkpoints do not
+ validate adapter alpha, target selection or base-source identity. A different base
+ or adapter configuration can change the resumed model despite compatible shapes.
++For DPO, this also requires the unchanged reference source when using a separate
++reference; frozen reference weights are reloaded rather than stored in the
++training checkpoint.
++
++Native LoRA DPO uses the same preference dataset and Trainer as full-parameter
++DPO. Set `reference.type: separate` and `reference.model_path` for an independent
++frozen reference, or `reference.type: adapter_base` to use the policy's frozen
++unadapted base. The latter requires exactly one zero LoRA factor at initialization,
++as in the default A-zero convention above. Both modes preserve the HF source's
++full output vocabulary even when the tokenizer has fewer rows. Programmatic
++`train_dpo.main` returns the final ordinary Trainer step after saving checkpoints.
+ 
+ Use `peft_save_path` for canonical PEFT factor files, and
+ `merged_hf_save_path` for ordinary HF Llama weights with the delta merged once.
+diff --git a/lib/levanter/src/levanter/main/train_dpo.py b/lib/levanter/src/levanter/main/train_dpo.py
+index e9eaada3e5..c8f60d5929 100644
+--- a/lib/levanter/src/levanter/main/train_dpo.py
++++ b/lib/levanter/src/levanter/main/train_dpo.py
+@@ -587,21 +587,23 @@ def _install_separate_reference_export_hooks(
+     trainer.add_hook(save_policy_hf_checkpoint, every=export.hf_save_steps)
+ 
+ 
+-def main(config: TrainDpoConfig):
++def main(config: TrainDpoConfig) -> callbacks.StepInfo:
++    """Train a DPO policy and return its final ordinary Trainer step."""
+     _validate_dpo_config(config)
+     native = isinstance(config.model, NativeLlamaLmConfig)
+     explicit_layout = None
+     if native:
+-        if not isinstance(config.adapter, NoAdaptorConfig):
+-            raise ValueError("llama_native DPO does not support adapters yet")
++        if not isinstance(config.adapter, (NoAdaptorConfig, LoraAdaptorConfig)):
++            raise ValueError("llama_native DPO supports only full-parameter training and LoRA adapters")
+         if config.trainer.quantization is not None:
+             raise ValueError("llama_native DPO does not support Haliax quantization")
+-        if config.hf_upload:
++        if config.hf_upload or config.peft_hf_upload or config.merged_hf_upload:
+             raise ValueError("llama_native DPO supports local HF export only")
+-        if config.hf_save_path is not None:
+-            if StoragePath(config.hf_save_path).is_remote:
+-                raise ValueError("llama_native DPO hf_save_path must be a local directory")
+-            config.model.validate_hf_export()
++        for export_path in (config.hf_save_path, config.peft_save_path, config.merged_hf_save_path):
++            if export_path is not None:
++                if StoragePath(export_path).is_remote:
++                    raise ValueError("llama_native DPO export paths must be local directories")
++                config.model.validate_hf_export()
+         config = dataclasses.replace(config, trainer=dataclasses.replace(config.trainer, use_explicit_mesh_axes=True))
+         sharding = native_llama_sharding(
+             config.trainer.parameter_axis_mapping, config.trainer.compute_axis_mapping, config.trainer.batch_axis_name
+@@ -726,16 +728,15 @@ def main(config: TrainDpoConfig):
+             train_dataset = _build_dpo_dataset(config.data, Pos, key=data_key)
+             validation_specs = _build_validation_specs(config.data, Pos)
+ 
+-        initial_policy_model = (
+-            initial_policy_source
+-            if initial_policy_source is not None
+-            else _build_model(config.model, Vocab, policy_key, trainer)
+-        )
+-        initial_policy_model = config.adapter.apply(
+-            initial_policy_model,
+-            key=adapter_key,
+-            axis_mapping=parameter_axis_mapping,
+-        )
++        if initial_policy_source is not None:
++            # Source initialization already applies the adapter after loading the full vocabulary.
++            initial_policy_model = initial_policy_source
++        else:
++            initial_policy_model = config.adapter.apply(
++                _build_model(config.model, Vocab, policy_key, trainer),
++                key=adapter_key,
++                axis_mapping=parameter_axis_mapping,
++            )
+         if isinstance(config.reference, SeparateReferenceConfig):
+             initial_reference_model = _build_model(config.model, Vocab, model_key, trainer)
+             initial_model = DpoModel(policy=initial_policy_model, reference=initial_reference_model)
+@@ -972,13 +973,14 @@ def main(config: TrainDpoConfig):
+             for callback in initial_eval_callbacks:
+                 callback(initial_eval_info, force=True)
+ 
+-        trainer.train(state, train_loader)
++        final_info = trainer.train(state, train_loader)
+ 
+         if trainer.config.checkpointer is not None:
+             checkpointer = trainer.config.checkpointer.create(trainer.run_id)
+             checkpointer.wait_until_finished()
+ 
+     trainer.tracker.finish()
++    return final_info
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/lib/levanter/tests/test_dpo.py b/lib/levanter/tests/test_dpo.py
+index c4f6995f76..a9e20766f5 100644
+--- a/lib/levanter/tests/test_dpo.py
++++ b/lib/levanter/tests/test_dpo.py
+@@ -38,6 +38,7 @@ from levanter.data.text.preference import (
+     PreferencePairDataset,
+ )
+ from levanter.adaptor import AdaptorExportConfig, LoraAdaptorConfig, NoAdaptorConfig
++from levanter.adaptor.lora import lora_state_dict, merge_lora_modules, unwrap_lora_modules
+ from levanter.callbacks import StepInfo
+ from levanter.dpo import (
+     CachedDpoExample,
+@@ -55,6 +56,8 @@ from levanter.dpo import (
+ from levanter.checkpoint import CheckpointerConfig, latest_checkpoint_path, load_checkpoint, save_checkpoint
+ from levanter.distributed import DistributedConfig
+ from levanter.main.model_init import prepare_model_init_context
++from levanter.model_loading import load_hf_checkpoint
++from levanter.layers.attention import AttentionMask
+ from levanter.main.lora_dpo import LoraDpoConfig, _translate_legacy_lora_dpo_config
+ from levanter.main.train_dpo import (
+     AdapterBaseReferenceConfig,
+@@ -1095,36 +1098,10 @@ def test_native_dpo_policy_updates_frozen_reference_and_checkpoint_next_step(
+ @pytest.mark.tpu
+ @pytest.mark.timeout(120)
+ def test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint(
+-    tmp_path, dpo_llama_source, tiny_hf_tokenizer_path
++    tmp_path, dpo_llama_source, tiny_hf_tokenizer_path, dpo_preference_data
+ ):
+     config = _native_dpo_configuration(tmp_path / "full", dpo_llama_source, tiny_hf_tokenizer_path)
+-    tokenizer = load_marin_tokenizer(tiny_hf_tokenizer_path)
+-    format = PreferenceChatLmDatasetFormat(chat_template="{{ messages }}", mask_user_turns=False)
+-    processor = format.build_preprocessor(tokenizer)
+-    cache_path = tmp_path / "preference-cache"
+-    example_count = 2 * config.trainer.train_batch_size
+-    with SerialCacheWriter(
+-        str(cache_path), processor.output_exemplar, metadata=CacheMetadata(preprocessor_metadata=processor.metadata)
+-    ) as writer:
+-        writer.write_batch(
+-            {
+-                "chosen_input_ids": [((np.arange(8) + i) % 31).astype(np.int32) for i in range(example_count)],
+-                "rejected_input_ids": [
+-                    ((np.arange(8) * 3 + i + 2) % 31).astype(np.int32) for i in range(example_count)
+-                ],
+-                "chosen_assistant_masks": [np.ones(8, dtype=np.int32) for _ in range(example_count)],
+-                "rejected_assistant_masks": [np.ones(8, dtype=np.int32) for _ in range(example_count)],
+-            }
+-        )
+-    config = dataclasses.replace(
+-        config,
+-        data=PreferenceLmDataConfig(
+-            tokenizer=tiny_hf_tokenizer_path,
+-            shuffle=False,
+-            mixture_block_size=config.trainer.train_batch_size,
+-            components={"preference": DatasetComponent(cache_dir=str(cache_path), flat_cache=True, format=format)},
+-        ),
+-    )
++    config = dataclasses.replace(config, data=dpo_preference_data)
+     train_dpo_main(config)
+     split = dataclasses.replace(config, trainer=_dpo_trainer_config(tmp_path / "split", steps=1))
+     train_dpo_main(split)
+@@ -1175,3 +1152,150 @@ def test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint(
+         np.testing.assert_array_equal(value, expected)
+     metrics = json.loads((tmp_path / "continued/eval_results.json").read_text())
+     assert np.isfinite(metrics["train/loss"])
++
++
++@pytest.fixture
++def dpo_preference_data(tmp_path, tiny_hf_tokenizer_path):
++    batch_size = _dpo_trainer_config(tmp_path).train_batch_size
++    tokenizer = load_marin_tokenizer(tiny_hf_tokenizer_path)
++    format = PreferenceChatLmDatasetFormat(chat_template="{{ messages }}", mask_user_turns=False)
++    processor = format.build_preprocessor(tokenizer)
++    cache_path = tmp_path / "preference-cache"
++    example_count = 3 * batch_size
++    with SerialCacheWriter(
++        str(cache_path), processor.output_exemplar, metadata=CacheMetadata(preprocessor_metadata=processor.metadata)
++    ) as writer:
++        writer.write_batch(
++            {
++                "chosen_input_ids": [((np.arange(8) + i) % 31).astype(np.int32) for i in range(example_count)],
++                "rejected_input_ids": [
++                    ((np.arange(8) * 3 + i + 2) % 31).astype(np.int32) for i in range(example_count)
++                ],
++                "chosen_assistant_masks": [np.ones(8, dtype=np.int32) for _ in range(example_count)],
++                "rejected_assistant_masks": [np.ones(8, dtype=np.int32) for _ in range(example_count)],
++            }
++        )
++    return PreferenceLmDataConfig(
++        tokenizer=tiny_hf_tokenizer_path,
++        shuffle=False,
++        mixture_block_size=batch_size,
++        components={"preference": DatasetComponent(cache_dir=str(cache_path), flat_cache=True, format=format)},
++    )
++
++
++@pytest.mark.tpu
++@pytest.mark.timeout(180)
++@pytest.mark.parametrize("reference_type", ["separate", "adapter_base"])
++def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
++    tmp_path, dpo_llama_source, tiny_hf_tokenizer_path, dpo_preference_data, reference_type
++):
++    config = _native_dpo_configuration(tmp_path / "full", dpo_llama_source, tiny_hf_tokenizer_path)
++    config = dataclasses.replace(
++        config,
++        data=dpo_preference_data,
++        adapter=LoraAdaptorConfig(r=3, alpha=6, dropout=0),
++        reference=config.reference if reference_type == "separate" else AdapterBaseReferenceConfig(),
++        trainer=dataclasses.replace(config.trainer, num_train_steps=3, mp=jmp.get_policy("f32")),
++        peft_save_path=str(tmp_path / "full/peft"),
++        merged_hf_save_path=str(tmp_path / "full/merged"),
++        hf_save_steps=1,
++    )
++    full = train_dpo_main(config)
++    split_config = dataclasses.replace(
++        config,
++        trainer=dataclasses.replace(
++            config.trainer,
++            tracker=JsonFileTrackerConfig(output_path=str(tmp_path / "resumed")),
++            checkpointer=CheckpointerConfig(base_path=str(tmp_path / "resumed/checkpoints"), save_interval=None),
++            num_train_steps=2,
++        ),
++        peft_save_path=None,
++        merged_hf_save_path=None,
++    )
++    split = train_dpo_main(split_config)
++    assert int(split.state.step) == 2
++    resumed = train_dpo_main(
++        dataclasses.replace(
++            split_config, trainer=dataclasses.replace(split_config.trainer, num_train_steps=3, load_checkpoint=True)
++        )
++    )
++    assert int(full.state.step) == int(resumed.state.step) == 3
++    np.testing.assert_array_equal(full.loss, resumed.loss)
++    for actual, expected in zip(
++        jax.tree.leaves(eqx.filter(resumed.state, eqx.is_array)),
++        jax.tree.leaves(eqx.filter(full.state, eqx.is_array)),
++        strict=True,
++    ):
++        np.testing.assert_array_equal(actual, expected)
++
++    mesh_config = dataclasses.replace(config.trainer, use_explicit_mesh_axes=True)
++    with mesh_config.use_device_mesh():
++        # Read the persisted partial state independently of main's returned ordinary state.
++        for name in ("full", "resumed"):
++            saved = load_checkpoint(
++                full.state.saveable_state,
++                latest_checkpoint_path(tmp_path / name / "checkpoints/dpo"),
++                mesh=mesh_config.device_mesh,
++            )
++            for actual, expected in zip(
++                jax.tree.leaves(eqx.filter(saved, eqx.is_array)),
++                jax.tree.leaves(eqx.filter(full.state.saveable_state, eqx.is_array)),
++                strict=True,
++            ):
++                np.testing.assert_array_equal(actual, expected)
++
++        policy = full.state.model.policy if isinstance(full.state.model, DpoModel) else full.state.model
++        reference = (
++            full.state.model.reference
++            if isinstance(full.state.model, DpoModel)
++            else config.adapter.base_model_view(policy)
++        )
++        assert policy.Vocab.size == reference.Vocab.size == 32 > len(dpo_preference_data.the_tokenizer)
++        for model in (unwrap_lora_modules(policy), reference):
++            for name, value in model.to_state_dict().items():
++                np.testing.assert_array_equal(value, dpo_llama_source.weights[name])
++
++        base = load_hf_checkpoint(
++            config.model,
++            str(dpo_llama_source.path),
++            tokenizer=dpo_preference_data.the_tokenizer,
++            axis_mapping=config.trainer.parameter_axis_mapping,
++            compute_axis_mapping=config.trainer.compute_axis_mapping,
++            compute_dtype=jnp.float32,
++        )
++        _, _, _, adapter_key, _ = _derive_training_keys(config.trainer.seed)
++        initial_factors = lora_state_dict(config.adapter.apply(base, key=adapter_key))
++        factors = lora_state_dict(policy)
++        for factor in ("lora_A", "lora_B"):
++            assert any(
++                not np.array_equal(value, initial_factors[name])
++                for name, value in factors.items()
++                if f".{factor}." in name
++            )
++        exported_factors = safetensors.numpy.load_file(tmp_path / "full/peft/dpo/step-2/adapter_model.safetensors")
++        assert exported_factors.keys() == factors.keys()
++        for name, value in factors.items():
++            np.testing.assert_array_equal(exported_factors[name], value)
++        peft_config = json.loads((tmp_path / "full/peft/dpo/step-2/adapter_config.json").read_text())
++        assert peft_config["base_model_name_or_path"] == str(dpo_llama_source.path)
++        merged = merge_lora_modules(policy)
++        reloaded = load_hf_checkpoint(
++            config.model,
++            str(tmp_path / "full/merged/dpo/step-2"),
++            tokenizer=dpo_preference_data.the_tokenizer,
++            axis_mapping=config.trainer.parameter_axis_mapping,
++            compute_axis_mapping=config.trainer.compute_axis_mapping,
++            compute_dtype=jnp.float32,
++        )
++        for name, value in reloaded.to_state_dict().items():
++            np.testing.assert_array_equal(value, merged.to_state_dict()[name])
++        # Probe batches follow the data mesh, including CPU8's data4/model2 layout.
++        data_size = mesh_config.device_mesh.shape["data"]
++        axes = Axis("batch", 2 * data_size), Axis("position", 4)
++        tokens = hax.named(jnp.arange(8 * data_size).reshape(axes[0].size, axes[1].size) % 31, axes)
++        np.testing.assert_allclose(
++            policy(tokens, AttentionMask.causal()).array,
++            reloaded(tokens, AttentionMask.causal()).array,
++            atol=1e-5,
++            rtol=1e-5,
++        )

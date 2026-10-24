@@ -1,0 +1,315 @@
+diff --git a/lib/levanter/src/levanter/adaptor/__init__.py b/lib/levanter/src/levanter/adaptor/__init__.py
+index 67a63cca52..a9edae9b2e 100644
+--- a/lib/levanter/src/levanter/adaptor/__init__.py
++++ b/lib/levanter/src/levanter/adaptor/__init__.py
+@@ -25,6 +25,7 @@ from dataclasses import dataclass
+ import draccus
+ import jax.numpy as jnp
+ from haliax.partitioning import named_jit
++from rigging.filesystem.storage_path import StoragePath
+ 
+ from levanter.compat.hf_checkpoints import (
+     GenerationConfigDict,
+@@ -43,7 +44,7 @@ from levanter.adaptor.lora import (
+ )
+ from levanter.models.lm_model import LmHeadModel
+ from levanter.utils.types import FilterTree
+-from levanter.models.llama_native_lm import NativeLlamaLmHeadModel
++from levanter.models.llama_native_lm import NativeLlamaLmConfig, NativeLlamaLmHeadModel
+ 
+ 
+ logger = logging.getLogger(__name__)
+@@ -62,6 +63,16 @@ class AdaptorExportConfig:
+     merged_hf_save_path: str | None = None
+     merged_hf_upload: str | RepoRef | None = None
+ 
++    def validate_native(self, model: NativeLlamaLmConfig) -> None:
++        """Require local export destinations and an HF-compatible native architecture."""
++        if self.hf_upload or self.peft_hf_upload or self.merged_hf_upload:
++            raise ValueError("llama_native training supports local HF export only; Hub upload is unsupported")
++        for path in (self.hf_save_path, self.peft_save_path, self.merged_hf_save_path):
++            if path is not None:
++                if StoragePath(path).is_remote:
++                    raise ValueError("llama_native export paths must be local directories")
++                model.validate_hf_export()
++
+ 
+ class AdaptorConfig(abc.ABC, draccus.ChoiceRegistry):
+     @classmethod
+diff --git a/lib/levanter/src/levanter/main/train_dpo.py b/lib/levanter/src/levanter/main/train_dpo.py
+index c8f60d5929..4f6ea062ad 100644
+--- a/lib/levanter/src/levanter/main/train_dpo.py
++++ b/lib/levanter/src/levanter/main/train_dpo.py
+@@ -16,7 +16,6 @@ from haliax import Axis
+ from haliax.partitioning import named_jit, round_axis_for_partitioning
+ from jaxtyping import PRNGKeyArray
+ from jax.sharding import PartitionSpec as P
+-from rigging.filesystem.storage_path import StoragePath
+ 
+ import levanter
+ import levanter.config
+@@ -592,18 +591,22 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+     _validate_dpo_config(config)
+     native = isinstance(config.model, NativeLlamaLmConfig)
+     explicit_layout = None
++    export_config = AdaptorExportConfig(
++        hf_save_path=config.hf_save_path,
++        hf_upload=config.hf_upload,
++        hf_save_steps=config.hf_save_steps,
++        hf_save_dtype=config.hf_save_dtype,
++        peft_save_path=config.peft_save_path,
++        peft_hf_upload=config.peft_hf_upload,
++        merged_hf_save_path=config.merged_hf_save_path,
++        merged_hf_upload=config.merged_hf_upload,
++    )
+     if native:
+         if not isinstance(config.adapter, (NoAdaptorConfig, LoraAdaptorConfig)):
+             raise ValueError("llama_native DPO supports only full-parameter training and LoRA adapters")
+         if config.trainer.quantization is not None:
+             raise ValueError("llama_native DPO does not support Haliax quantization")
+-        if config.hf_upload or config.peft_hf_upload or config.merged_hf_upload:
+-            raise ValueError("llama_native DPO supports local HF export only")
+-        for export_path in (config.hf_save_path, config.peft_save_path, config.merged_hf_save_path):
+-            if export_path is not None:
+-                if StoragePath(export_path).is_remote:
+-                    raise ValueError("llama_native DPO export paths must be local directories")
+-                config.model.validate_hf_export()
++        export_config.validate_native(config.model)
+         config = dataclasses.replace(config, trainer=dataclasses.replace(config.trainer, use_explicit_mesh_axes=True))
+         sharding = native_llama_sharding(
+             config.trainer.parameter_axis_mapping, config.trainer.compute_axis_mapping, config.trainer.batch_axis_name
+@@ -934,17 +937,7 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+         else:
+             logger.warning("No validation datasets provided.")
+ 
+-        export_config = AdaptorExportConfig(
+-            hf_save_path=config.hf_save_path,
+-            hf_upload=config.hf_upload,
+-            hf_save_steps=config.hf_save_steps,
+-            hf_save_dtype=config.hf_save_dtype,
+-            generation_config=generation_config,
+-            peft_save_path=config.peft_save_path,
+-            peft_hf_upload=config.peft_hf_upload,
+-            merged_hf_save_path=config.merged_hf_save_path,
+-            merged_hf_upload=config.merged_hf_upload,
+-        )
++        export_config = dataclasses.replace(export_config, generation_config=generation_config)
+         if isinstance(config.reference, SeparateReferenceConfig) and isinstance(config.adapter, NoAdaptorConfig):
+             _install_separate_reference_export_hooks(
+                 trainer=trainer,
+diff --git a/lib/levanter/src/levanter/main/train_lm.py b/lib/levanter/src/levanter/main/train_lm.py
+index 0397207f70..2c01d631b3 100644
+--- a/lib/levanter/src/levanter/main/train_lm.py
++++ b/lib/levanter/src/levanter/main/train_lm.py
+@@ -15,7 +15,6 @@ import jax.random as jrandom
+ from haliax import Axis
+ from haliax.partitioning import named_jit, round_axis_for_partitioning
+ from jax.sharding import PartitionSpec as P
+-from rigging.filesystem.storage_path import StoragePath
+ 
+ import levanter
+ import levanter.analysis
+@@ -180,18 +179,22 @@ def _load_lm_model_from_configured_source(
+ def main(config: TrainLmConfig):
+     native = isinstance(config.model, NativeLlamaLmConfig)
+     explicit_layout = None
++    export_config = AdaptorExportConfig(
++        hf_save_path=config.hf_save_path,
++        hf_upload=config.hf_upload,
++        hf_save_steps=config.hf_save_steps,
++        hf_save_dtype=config.hf_save_dtype,
++        peft_save_path=config.peft_save_path,
++        peft_hf_upload=config.peft_hf_upload,
++        merged_hf_save_path=config.merged_hf_save_path,
++        merged_hf_upload=config.merged_hf_upload,
++    )
+     if native:
+         if config.use_hf_model_config or config.pad_tokenizer_to_match_model:
+             raise ValueError(
+                 "llama_native HF initialization requires an explicit model config and unchanged tokenizer"
+             )
+-        if config.hf_upload or config.peft_hf_upload or config.merged_hf_upload:
+-            raise ValueError("llama_native training supports local HF export only; Hub upload is unsupported")
+-        for export_path in (config.hf_save_path, config.peft_save_path, config.merged_hf_save_path):
+-            if export_path is not None:
+-                if StoragePath(export_path).is_remote:
+-                    raise ValueError("llama_native export paths must be local directories")
+-                config.model.validate_hf_export()
++        export_config.validate_native(config.model)
+         if config.trainer.quantization is not None:
+             raise ValueError("llama_native training does not support Haliax quantization")
+         config = dataclasses.replace(config, trainer=dataclasses.replace(config.trainer, use_explicit_mesh_axes=True))
+@@ -506,16 +509,9 @@ def main(config: TrainLmConfig):
+             trainer=trainer,
+             converter=export_converter,
+             tokenizer=tokenizer,
+-            export=AdaptorExportConfig(
+-                hf_save_path=config.hf_save_path,
+-                hf_upload=config.hf_upload,
+-                hf_save_steps=config.hf_save_steps,
+-                hf_save_dtype=config.hf_save_dtype,
++            export=dataclasses.replace(
++                export_config,
+                 generation_config=build_generation_config(tokenizer, config.hf_generation_eos_token_ids),
+-                peft_save_path=config.peft_save_path,
+-                peft_hf_upload=config.peft_hf_upload,
+-                merged_hf_save_path=config.merged_hf_save_path,
+-                merged_hf_upload=config.merged_hf_upload,
+             ),
+         )
+ 
+diff --git a/lib/levanter/src/levanter/testing/hf_checkpoints.py b/lib/levanter/src/levanter/testing/hf_checkpoints.py
+new file mode 100644
+index 0000000000..e297a67d0c
+--- /dev/null
++++ b/lib/levanter/src/levanter/testing/hf_checkpoints.py
+@@ -0,0 +1,37 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Local HF Llama sources for training and checkpoint tests."""
++
++from dataclasses import dataclass
++from pathlib import Path
++
++import numpy as np
++import safetensors.numpy
++from haliax import Axis
++from haliax.state_dict import to_torch_compatible_state_dict
++from jaxtyping import PRNGKeyArray
++from transformers import LlamaConfig as HfLlamaConfig
++
++from levanter.models.llama import LlamaConfig
++from levanter.testing.helpers import use_test_mesh
++
++
++@dataclass(frozen=True)
++class LocalLlamaCheckpoint:
++    path: Path
++    config: LlamaConfig
++    weights: dict[str, np.ndarray]
++
++
++def write_llama_checkpoint(
++    source: Path, config: LlamaConfig, hf_config: HfLlamaConfig, *, key: PRNGKeyArray
++) -> LocalLlamaCheckpoint:
++    """Write a real local HF checkpoint and retain its exact source weights."""
++    source.mkdir()
++    with use_test_mesh():
++        model = config.build(Axis("vocab", hf_config.vocab_size), key=key)
++        weights = to_torch_compatible_state_dict(model)
++    hf_config.save_pretrained(source)
++    safetensors.numpy.save_file(weights, source / "model.safetensors", metadata={"format": "pt"})
++    return LocalLlamaCheckpoint(source, config, weights)
+diff --git a/lib/levanter/tests/test_dpo.py b/lib/levanter/tests/test_dpo.py
+index 6da5f5261b..752e3879a0 100644
+--- a/lib/levanter/tests/test_dpo.py
++++ b/lib/levanter/tests/test_dpo.py
+@@ -90,6 +90,7 @@ from levanter.tracker import NoopTracker, current_tracker
+ from levanter.tracker.json_file import JsonFileTrackerConfig
+ from levanter.utils.mesh import MeshConfig
+ from levanter.testing.helpers import use_test_mesh
++from levanter.testing.hf_checkpoints import write_llama_checkpoint
+ from levanter.utils.jax_utils import local_cpu_mesh
+ from levanter.utils.tree_utils import inference_mode
+ 
+@@ -889,13 +890,6 @@ def test_vmapped_init_with_sharding_handles_layer_axis():
+         assert out.axes[0].name == "layers"
+ 
+ 
+-@dataclasses.dataclass(frozen=True)
+-class _DpoLlamaSource:
+-    path: Path
+-    config: LlamaConfig
+-    weights: dict[str, np.ndarray]
+-
+-
+ @pytest.fixture
+ def dpo_llama_source(tmp_path, tiny_hf_tokenizer_path):
+     config = LlamaConfig(
+@@ -908,27 +902,14 @@ def dpo_llama_source(tmp_path, tiny_hf_tokenizer_path):
+         tokenizer=tiny_hf_tokenizer_path,
+         reference_checkpoint=str(tmp_path / "hf-source"),
+     )
+-    source = tmp_path / "hf-source"
+-    source.mkdir()
+-    with use_test_mesh():
+-        model = config.build(Axis("vocab", 32), key=jrandom.PRNGKey(13))
+-        weights = to_torch_compatible_state_dict(model)
+-    config.to_hf_config(32).save_pretrained(source)
+-    safetensors.numpy.save_file(weights, source / "model.safetensors", metadata={"format": "pt"})
+-    return _DpoLlamaSource(source, config, weights)
++    return write_llama_checkpoint(tmp_path / "hf-source", config, config.to_hf_config(32), key=jrandom.PRNGKey(13))
+ 
+ 
+ @pytest.fixture
+ def dpo_separate_reference_source(tmp_path, dpo_llama_source):
+     source = tmp_path / "hf-reference"
+-    source.mkdir()
+     config = dataclasses.replace(dpo_llama_source.config, reference_checkpoint=str(source))
+-    with use_test_mesh():
+-        model = config.build(Axis("vocab", 32), key=jrandom.PRNGKey(97))
+-        weights = to_torch_compatible_state_dict(model)
+-    config.to_hf_config(32).save_pretrained(source)
+-    safetensors.numpy.save_file(weights, source / "model.safetensors", metadata={"format": "pt"})
+-    return _DpoLlamaSource(source, config, weights)
++    return write_llama_checkpoint(source, config, config.to_hf_config(32), key=jrandom.PRNGKey(97))
+ 
+ 
+ def _dpo_trainer_config(tmp_path, *, explicit=False, steps=2):
+diff --git a/lib/levanter/tests/test_train_lm.py b/lib/levanter/tests/test_train_lm.py
+index 32580efd26..961987aa4a 100644
+--- a/lib/levanter/tests/test_train_lm.py
++++ b/lib/levanter/tests/test_train_lm.py
+@@ -60,6 +60,7 @@ from levanter.tracker import NoopConfig, NoopTracker, current_tracker
+ from levanter.tracker.json_file import JsonFileTrackerConfig
+ from levanter.trainer_state import TrainerState, trainables_only
+ from levanter.testing.helpers import arrays_only, use_test_mesh
++from levanter.testing.hf_checkpoints import write_llama_checkpoint
+ from levanter.utils.mesh import MeshConfig
+ 
+ 
+@@ -368,23 +369,6 @@ def test_native_train_lm_validates_and_resumes_identical_checkpoint_state(tmp_pa
+         np.testing.assert_array_equal(actual_leaf, expected_leaf)
+ 
+ 
+-@dataclasses.dataclass(frozen=True)
+-class LocalLlamaCheckpoint:
+-    path: Path
+-    config: train_lm.LlamaConfig
+-    weights: dict[str, np.ndarray]
+-
+-
+-def _write_llama_checkpoint(source, config, hf_config):
+-    source.mkdir()
+-    with use_test_mesh():
+-        model = LlamaLMHeadModel.init(Axis("vocab", 32), config, key=jrandom.PRNGKey(13))
+-        weights = to_torch_compatible_state_dict(model)
+-    hf_config.save_pretrained(source)
+-    safetensors.numpy.save_file(weights, source / "model.safetensors", metadata={"format": "pt"})
+-    return LocalLlamaCheckpoint(source, config, weights)
+-
+-
+ @pytest.fixture(params=[False, True], ids=["untied", "tied"])
+ def native_hf_source(tmp_path, request):
+     config = train_lm.LlamaConfig(
+@@ -396,7 +380,7 @@ def native_hf_source(tmp_path, request):
+         max_seq_len=16,
+         tie_word_embeddings=request.param,
+     )
+-    return _write_llama_checkpoint(tmp_path / "hf-source", config, config.to_hf_config(32))
++    return write_llama_checkpoint(tmp_path / "hf-source", config, config.to_hf_config(32), key=jrandom.PRNGKey(13))
+ 
+ 
+ @pytest.mark.tpu
+@@ -943,7 +927,9 @@ def test_native_train_lm_exports_portable_local_weights(
+     named_config = train_lm.LlamaConfig(
+         **{field.name: getattr(model_config, field.name) for field in dataclasses.fields(train_lm.LlamaConfig)}
+     )
+-    source = _write_llama_checkpoint(tmp_path / "source", named_config, model_config.to_hf_config(32))
++    source = write_llama_checkpoint(
++        tmp_path / "source", named_config, model_config.to_hf_config(32), key=jrandom.PRNGKey(13)
++    )
+     examples = ListAsyncDataset([GrugLmExample.causal((jnp.arange(8) + i) % 31) for i in range(16)])
+     model_size = 2 if len(jax.devices()) >= 4 else 1
+     data_size = len(jax.devices()) // model_size
