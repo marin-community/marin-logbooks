@@ -1,0 +1,83 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Execute the frozen tiny gate and keep bounded Iris outputs; no recovery."""
+
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path.cwd()
+CONFIG = ROOT / "research/oproj/callback_compatibility_config.json"
+CONFIG_SHA256 = "41f46f1e133c0ff9cf9c9b6ae8cd5b6fd7a20d399c8ca2a457b45bffdea1a8f0"
+
+
+def main():
+    if hashlib.sha256(CONFIG.read_bytes()).hexdigest() != CONFIG_SHA256:
+        raise ValueError("Frozen callback configuration changed")
+    config = json.loads(CONFIG.read_text())
+    for name, expected in config["source_sha256"].items():
+        if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != expected:
+            raise ValueError(f"Frozen source changed: {name}")
+    if any(os.environ.get(k) != v for k, v in config["target_environment"].items()):
+        raise ValueError("Exact scientific environment required")
+    output = Path(os.environ["IRIS_OUTPUT_DIR"])
+    output.mkdir(parents=True, exist_ok=True)
+    if any(output.iterdir()):
+        raise FileExistsError("Use a fresh empty Iris output directory")
+    argv = [
+        sys.executable,
+        "research/oproj/callback_compatibility_supervisor.py",
+        "--timeout",
+        "300",
+        "--receipt",
+        str(output / "supervisor.json"),
+        "--",
+        sys.executable,
+        "research/oproj/callback_compatibility.py",
+        "--mode",
+        "target",
+        "--config",
+        str(CONFIG),
+        "--output",
+        str(output / "gate"),
+    ]
+    (output / "worker-provenance.json").write_text(
+        json.dumps(
+            {
+                "config_sha256": CONFIG_SHA256,
+                "source_sha256": config["source_sha256"],
+                "argv": argv,
+                "parent_jax_imported": "jax" in sys.modules,
+                "source_commit_declared": "ed17de3657fc779e5ed01df4348f7a60fcd813ef",
+                "source_commit_not_checked_in_worker": True,
+                "retention": "Iris attempt output archive only; no direct backup or raw arrays",
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    result = subprocess.run(argv, check=False)
+    files = list(output.rglob("*"))
+    if any(p.is_symlink() for p in files):
+        raise ValueError("Symlink in outputs")
+    files = [p for p in files if p.is_file()]
+    if len(files) > 32 or any(p.stat().st_size > 2 * 1024**2 for p in files):
+        raise ValueError("Output count or per-file bound exceeded")
+    if sum(p.stat().st_size for p in files) > 17 * 1024**2:
+        raise ValueError("Total output bound exceeded")
+    if any(p.suffix != ".json" and not p.name.endswith("hlo.txt") for p in files):
+        raise ValueError("Unexpected output type")
+    if result.returncode == 0:
+        report = json.loads((output / "gate/report.json").read_text())
+        supervisor = json.loads((output / "supervisor.json").read_text())
+        if not report["completed"] or not supervisor["completed"] or supervisor["timed_out"]:
+            raise ValueError("Successful worker requires complete gate and supervisor reports")
+    raise SystemExit(result.returncode)
+
+
+if __name__ == "__main__":
+    main()

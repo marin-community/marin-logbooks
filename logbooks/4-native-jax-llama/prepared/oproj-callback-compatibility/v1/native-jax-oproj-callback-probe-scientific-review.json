@@ -1,0 +1,102 @@
+{
+  "schema": "native-jax-oproj-callback-probe-scientific-review.v1",
+  "reviewed_utc": "2026-10-24T06:15:54.761348+00:00",
+  "status": "CHANGES_REQUIRED_BEFORE_REPEATED_COMPATIBILITY_AND_HARD_BUDGET_CLAIMS",
+  "review_type": "fresh independent static scientific source/config/launcher/evidence review",
+  "checkout": "/private/tmp/marin-native-jax-oproj-callback-compatibility",
+  "parent_source_a": "32f42f9a3601258123d316cc03c25b05add7a9c2",
+  "scientific_source": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "handoff_sha256": "4316bb9f81b464d5fda48e324f3591c6ba72a0f41d935cff4626367f0a22c3e7",
+  "patch_sha256": "a528a5ed7b627cfe62516dbe6697228882b5b845976b866f84e8adca53f736d3",
+  "config_sha256": "485968779eed59b0916c3933ac951583ca8c32828570839c32eba3d362cb0403",
+  "all_five_frozen_files_match": true,
+  "all_config_scientific_source_hashes_match": true,
+  "collector_ast_unchanged": true,
+  "make_tap_ast_unchanged": true,
+  "only_capture_ast_delta": "inner callback partitioned True to False at line 107",
+  "findings": [
+    {
+      "id": "R1",
+      "priority": "P2",
+      "title": "Check callback completeness separately after each compiled execution",
+      "file": "research/oproj/callback_compatibility.py",
+      "lines": [
+        102,
+        108,
+        128,
+        203,
+        206
+      ],
+      "blocking_for": "claiming complete repeated-execution callback compatibility",
+      "evidence": "execute() runs the same composition executable twice with one Collector; finish() is called only afterward and requires aggregate counts >= 2. Collector.receive accepts identical duplicates. Two copies of a label/identity in execution 0 and zero in execution 1 therefore meet the aggregate gate. Value/gradient parity cannot detect the missing callback because the tap is an identity.",
+      "requested_change": "After each block_until_ready/effects_barrier pair, require every X/G global/ordinal identity to have a positive count delta and validate its bytes/errors for that execution. Retain cross-execution/recomputation byte equality and legitimate duplicate acceptance. Record per-execution counts in complete JSON. No extra compilation/execution is needed.",
+      "observed_failure": false
+    },
+    {
+      "id": "R2",
+      "priority": "P2",
+      "title": "Provide an external hard wall deadline for the direct worker",
+      "file": "research/oproj/callback_compatibility.py",
+      "lines": [
+        16,
+        24,
+        228,
+        230
+      ],
+      "related_file": "research/oproj/callback_compatibility_command.json:43-55",
+      "blocking_for": "asserting an enforced 300-second target-worker wall budget",
+      "evidence": "The target argv directly invokes Python. Its only deadline is a Python SIGALRM handler installed in main after all scientific imports and output-directory creation. This cannot guarantee a 300-second process wall bound across imports or a blocking native lower/compile/device/effects call; the JSON bounds field is descriptive.",
+      "requested_change": "Freeze a worker supervisor or enforce and record a scheduler/process watchdog that starts before Python imports and terminates the worker/process group at the agreed deadline, without automatic retry. Root may satisfy this in its separately reviewed dispatch wrapper; preserve the internal alarm for diagnostics.",
+      "observed_failure": false
+    }
+  ],
+  "positive_checks": [
+    "Actual capture module path and hashes guarded; actual Collector/emit/make_tap used, no host-manufactured local capture records.",
+    "Both Auto/Auto and Explicit/Explicit 2x2 meshes; all axes manual within the unchanged shard_map, singleton sharded ids.",
+    "Six explicit lower/compile operations and eight compiled-handle executions, array and effects barriers on each.",
+    "Transport dynamic scan indices [0,1], index-one payloads differ, duplicate emissions; collector rejects delivered nonzero indices.",
+    "Finite actual BF16 global X [4,4,3,2] and G [4,3,8]; all four local X [2,2,3,2] and G [2,3,8] identities required; independent rectangular host slice hashes checked.",
+    "Real identity custom VJP, reverse-mode value_and_grad for X/W/G, rematerialized two-index scan, both actual/repeated value and all three gradient leaves byte-equal to untapped reference.",
+    "Actual target backend tpu, one process/four local/four global devices, kind TPU v5, pinned runtime/environment/import paths/hashes, Shardy true, explicit default matmul precision.",
+    "Source/prose do not claim CPU or abstract/HLO evidence establishes TPU success, full-model parity, scientific cause, performance, trajectory, or adoption.",
+    "One isolated capture boolean edit plus four research preparation files; original full-model diagnostic gates and production model source unchanged."
+  ],
+  "cpu_evidence": {
+    "independently_executed_by_reviewer": false,
+    "static_report_completed": true,
+    "mode": "cpu",
+    "report_sha256": "ba4b7293a0af5a3b75dda8df6b37db466c8b3285b4e85f524e5520fbb22acc73",
+    "all_13_artifact_hashes_match": true,
+    "artifact_bytes": 387849,
+    "artifact_files": 13,
+    "stablehlo_and_optimized_hlo_files": 12,
+    "observed_cpu_transport_counts_per_identity": 2,
+    "observed_cpu_composition_X_counts_per_identity": 4,
+    "observed_cpu_composition_G_counts_per_identity": 2,
+    "value_plus_gradient_leaves": 4
+  },
+  "nonblocking_boundaries": [
+    "The config is externally frozen by its exact hash; its source_sha256 map cannot authenticate its own configuration/commit. Reported config hash must be compared with the public release by root. No false self-authentication claim was found.",
+    "Resource constraint v5p-8 and dispatch/publication release are external root responsibilities; the command manifest intentionally is not an allocation/submission client or an authorization mechanism.",
+    "File caps are 2 MiB per file and 16 MiB total; CPU artifacts are below 1 MB, but no below-1-MB target artifact guarantee exists. Oversize output fails rather than truncates.",
+    "A future process/native failure may leave partial HLO or no JSON. Such artifacts cannot be marked complete; root must preserve terminal failure evidence separately.",
+    "Identity W and exact tiny inputs isolate transport/composition. They do not validate arbitrary contractions, production model control flow, numerical causality, or the original 255-gradient experiment."
+  ],
+  "actual_tpu_validation": false,
+  "dispatch_authorized": false,
+  "root_release_granted": false,
+  "not_performed": [
+    "JAX/model runtime imports or execution",
+    "tests",
+    "network",
+    "storage/client/job operations",
+    "source edits",
+    "commit",
+    "publication",
+    "subagents"
+  ],
+  "writes": [
+    "/private/tmp/native-jax-oproj-callback-probe-scientific-review.md",
+    "/private/tmp/native-jax-oproj-callback-probe-scientific-review.json"
+  ]
+}

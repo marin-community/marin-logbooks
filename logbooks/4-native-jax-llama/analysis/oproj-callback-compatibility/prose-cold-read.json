@@ -1,0 +1,33 @@
+{
+  "review_type": "contextless finished-prose cold read",
+  "scope": "Only the three requested prose inputs; no source/code review, experiments, network access, or publication.",
+  "inputs": [
+    {
+      "path": "/private/tmp/native-jax-oproj-callback-compatibility-commit-message.txt",
+      "sha256": "6325852802060952473dcfe287583b3e27b9396d0c9dc612027b74d56eefd137",
+      "bytes": 673
+    },
+    {
+      "path": "/private/tmp/marin-native-jax-oproj-callback-compatibility/research/oproj/callback_compatibility.md",
+      "sha256": "3f629e98d658a4a869230ab77f1e8ebbf9d56b6cbdb18489f7dc06a3b4cea8dd",
+      "bytes": 7181
+    },
+    {
+      "path": "/private/tmp/native-jax-oproj-callback-compatibility-preparation-report-v2.md",
+      "sha256": "f0a9fbc91e02c07a1a2bc4be6be8aad559857e281288257aaff851082ec59517",
+      "bytes": 3794
+    }
+  ],
+  "findings": [
+    {
+      "id": "PROSE-1",
+      "severity": "low",
+      "path": "/private/tmp/marin-native-jax-oproj-callback-compatibility/research/oproj/callback_compatibility.md",
+      "line_start": 65,
+      "line_end": 66,
+      "issue": "The all-ten-key requirement says \"in every execution\", but the fixture also counts untapped reference executions, which have no collector. The earlier scope is transport/composition executions.",
+      "replacement": "The probe additionally requires exactly all ten label/identity keys in every transport and composition execution, explicit independently computed rectangular slices, and repeated observations."
+    }
+  ],
+  "assessment": "The CPU-only candidate and absence of TPU/full-model proof are clear and consistent across the three inputs. No other actionable clarity, evidence-boundary, consistency, or ceremony findings."
+}

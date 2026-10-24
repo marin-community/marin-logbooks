@@ -1,0 +1,116 @@
+{
+  "schema": "native-jax-callback-gate-transport-review.v1",
+  "reviewed_utc": "2026-10-24T06:42:48.656332+00:00",
+  "verdict": "CHANGES_REQUESTED",
+  "scope": "Independent read-only static transport/release review of prepared tiny callback gate; no dispatch authorization",
+  "source_commit": "ed17de3657fc779e5ed01df4348f7a60fcd813ef",
+  "reviewed_sha256": {
+    "/private/tmp/native-jax-callback-tpu-bootstrap.py": "dc606072ee7b7686e80c128443c41e851c44f83040506855303d2f21f17004fc",
+    "/private/tmp/submit_native_jax_callback_gate_once.py": "b2d57f791b977b93f4cf53c8fa0ce88e454f2f4b2a745cc9c9882ff0815c9b70",
+    "/private/tmp/validate_native_jax_callback_gate_request.py": "f63ff500a88b6e2c452572aeab537398be0e45550cdd105dcb156c865230b9a2",
+    "/private/tmp/native-jax-callback-gate-preparation/command.json": "5834cf9275f5c3b92d00026710fff230bbb43679035f5b12f846bb90896399f0",
+    "/private/tmp/native-jax-callback-gate-preparation/submit-validation.json": "281d6258634102824a8646bd66bc724ee529734ccdbcbadf466d9419178e2b22",
+    "/private/tmp/native-jax-callback-gate-preparation/request-validation.json": "c25e7a36c7b7062fefd1bb8be8139b210b2b3cb5d5cbd6b0cb47abb9d7e150f1",
+    "/private/tmp/native-jax-callback-gate-preparation/source-bundle.zip": "9576c7cee8b3b871ceac0e3736d5c3fdf10b4ed5068037871a66438ea65a1eb8",
+    "/private/tmp/native-jax-callback-gate-preparation/request.pb": "a09e2b17cfb3388f02640e51efacbe1dbc7c865a5fe196627caa034e84c82ca5"
+  },
+  "observed_at_report_write": {
+    "/private/tmp/native-jax-callback-tpu-bootstrap.py": {
+      "bytes": 3726,
+      "sha256": "e17d2cc39f82dcaa45b853d5fa0356168de7c468eaa8b1a848c9b7533c7ee627"
+    },
+    "/private/tmp/submit_native_jax_callback_gate_once.py": {
+      "bytes": 6240,
+      "sha256": "b2d57f791b977b93f4cf53c8fa0ce88e454f2f4b2a745cc9c9882ff0815c9b70"
+    },
+    "/private/tmp/validate_native_jax_callback_gate_request.py": {
+      "bytes": 3415,
+      "sha256": "f63ff500a88b6e2c452572aeab537398be0e45550cdd105dcb156c865230b9a2"
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/command.json": {
+      "bytes": 6337,
+      "sha256": "5834cf9275f5c3b92d00026710fff230bbb43679035f5b12f846bb90896399f0"
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/submit-validation.json": {
+      "bytes": 1133,
+      "sha256": "281d6258634102824a8646bd66bc724ee529734ccdbcbadf466d9419178e2b22"
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/request-validation.json": {
+      "bytes": 891221,
+      "sha256": "c25e7a36c7b7062fefd1bb8be8139b210b2b3cb5d5cbd6b0cb47abb9d7e150f1"
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/source-bundle.zip": {
+      "bytes": 16656458,
+      "sha256": "9576c7cee8b3b871ceac0e3736d5c3fdf10b4ed5068037871a66438ea65a1eb8"
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/request.pb": {
+      "bytes": 16660003,
+      "sha256": "a09e2b17cfb3388f02640e51efacbe1dbc7c865a5fe196627caa034e84c82ca5"
+    },
+    "/private/tmp/native-jax-oproj-callback-compatibility-root-local-commit-proof.json": {
+      "bytes": 1147,
+      "sha256": "17716b1453527903b0ff1c08e3eb0dbc294c191faaa1a8e35ee6a7b3b8dfd57b"
+    },
+    "/private/tmp/native-jax-oproj-callback-probe-scientific-review-response-v2.json": {
+      "bytes": 6018,
+      "sha256": "ffffc7f12fa26d73e4506a2ab24fd376cce2e7cc479f143e548ef721e161ac1f"
+    }
+  },
+  "changed_since_review": [
+    "/private/tmp/native-jax-callback-tpu-bootstrap.py"
+  ],
+  "findings": [
+    {
+      "id": "T1",
+      "priority": "P2",
+      "title": "Enforce output bounds before files enter Iris capture directory",
+      "path": "/private/tmp/native-jax-callback-tpu-bootstrap.py",
+      "line_start": 63,
+      "line_end": 73,
+      "detail": "The worker writes directly below IRIS_OUTPUT_DIR. After exit, bootstrap checks count/types/bytes and raises on an overrun, but leaves those files present. Iris captures application-error outputs as well. Scientific write() writes each <=2MiB file before checking its16MiB total, then its finally block can write report.json. Thus an overrun can exceed the declared17MiB archive payload despite bootstrap rejecting it.",
+      "requested_change": "Stage gate output outside IRIS_OUTPUT_DIR, validate complete allowed regular files and byte/count bounds, then copy only a valid complete gate into capture directory; retain small failure metadata on invalid output. Repack and refreeze command and recapture SDK request.",
+      "root_response": "Accepted; root plans isolated TemporaryDirectory stage,<=30 scientific files/2MiB each/16MiB total before copy. Targeted response recheck required; fix not yet reviewed."
+    }
+  ],
+  "checks": {
+    "clean_source_head_verified": true,
+    "all23_worktree_and_bundle_source_hashes_match": true,
+    "bundle_inventory_all4716_entries_rehashed": true,
+    "bundle_duplicate_names": 0,
+    "packed_launcher_decodes_to_exact_bootstrap": true,
+    "wire_argv_equals_prepared_argv": true,
+    "wire_resources": "1replica v5p-8/4chips,8CPU,32GiB RAM,16GiB disk",
+    "wire_placement": "required us-central1 and us-central1-a",
+    "wire_timeouts_seconds": {
+      "scheduling": 120,
+      "task": 420,
+      "separate_worker_supervisor": 300
+    },
+    "all_logical_retry_fields_zero": true,
+    "existing_job_policy": "ERROR",
+    "secret_behavior": "ISOLATE",
+    "wire_secret_entries": 0,
+    "source_and_runtime_fail_closed_checks_present": true,
+    "no_model_trainer_or_data_download_in_scientific_command": true,
+    "supervisor_separate_stdlib_parent": true,
+    "supervisor_owns_worker_process_group_and_exits124_on_timeout": true,
+    "bootstrap_propagates_worker_nonzero": true,
+    "exclusive_local_claim_precedes_client_constructor": true,
+    "release_requires_exact_source_command_wrapper_job_and_review_archive_authorization_flags": true,
+    "sdk_may_retry_same_launch_transport_call": true,
+    "ERROR_and_concurrent_insert_fence_prohibit_second_logical_job": true,
+    "exception_state_preserves_ambiguous_submission_without_recovery": true,
+    "output_archive_local_source_policy": "one region-local attempt archive; default7day TTL; capture can fail without altering scientific status",
+    "public_archive_and_release": "not yet created or independently verified; root remains responsible before dispatch",
+    "release_exists_at_check": false,
+    "claim_exists_at_check": false
+  },
+  "limitations": [
+    "No SDK/client constructor or RPC was executed by reviewer.",
+    "Captured request was inspected via validator source, captured JSON and exact request/blob hashes; no dependency/runtime/scientific test execution by reviewer.",
+    "No network, storage access, live deployed-controller verification, publication, submission, cancellation, retry/resubmit, cluster mutation or subagent creation.",
+    "Source/runtime guards fail closed on actual worker mismatch; this review does not establish TPU support or scientific success.",
+    "GCP egress remains root-owned aggregate accounting; scientific worker has no bulk object-storage I/O and output is intended bounded, but current T1 must be fixed before release."
+  ],
+  "dispatch_authorized_by_review": false
+}

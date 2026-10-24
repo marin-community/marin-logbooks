@@ -1,0 +1,162 @@
+{
+  "schema": "native-jax-callback-gate-transport-review-response.v2",
+  "reviewed_utc": "2026-10-24T06:45:45.449360+00:00",
+  "verdict": "NO_REMAINING_FINDINGS_IN_TARGETED_T1_RESPONSE_REVIEW",
+  "scope": "Targeted static response recheck of T1 and preservation of transport/release guards; not repeated full scientific review",
+  "source_commit": "ed17de3657fc779e5ed01df4348f7a60fcd813ef",
+  "findings": [],
+  "exact_reviewed_files": {
+    "/private/tmp/native-jax-callback-tpu-bootstrap.py": {
+      "sha256": "e17d2cc39f82dcaa45b853d5fa0356168de7c468eaa8b1a848c9b7533c7ee627",
+      "bytes": 3726
+    },
+    "/private/tmp/submit_native_jax_callback_gate_once.py": {
+      "sha256": "b2d57f791b977b93f4cf53c8fa0ce88e454f2f4b2a745cc9c9882ff0815c9b70",
+      "bytes": 6240
+    },
+    "/private/tmp/validate_native_jax_callback_bootstrap_io.py": {
+      "sha256": "e01f52ac3dab5c2bdddb95f76c74ce444081bcc236fec6807c6de4188bb2774a",
+      "bytes": 2840
+    },
+    "/private/tmp/validate_native_jax_callback_gate_request.py": {
+      "sha256": "f63ff500a88b6e2c452572aeab537398be0e45550cdd105dcb156c865230b9a2",
+      "bytes": 3415
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/transport-v2-freeze.json": {
+      "sha256": "3b881e477029d4f7d43708ec415a979e1ac46dc129a90647f4ceafe488374d9b",
+      "bytes": 1359
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/command.json": {
+      "sha256": "7f05f5e0d14096c154449de82b71793719688818369a66c43bba4bc3bd2d1a64",
+      "bytes": 6876
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/submit-validation.json": {
+      "sha256": "a90ef87644466435895f206770b8c3f334240646c5b9a093fb12dc500e8020cc",
+      "bytes": 1133
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/request-validation.json": {
+      "sha256": "192ffeea2ec01e9d7f40d1d37a3af00e2c9a1783a1a628d430cb527501a80260",
+      "bytes": 891401
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/bootstrap-io-controls.json": {
+      "sha256": "d21bdb34db214541ad69e9161e42de5754c52c431f788d1eadb5bffb3593350d",
+      "bytes": 1563
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/source-bundle.zip": {
+      "sha256": "9576c7cee8b3b871ceac0e3736d5c3fdf10b4ed5068037871a66438ea65a1eb8",
+      "bytes": 16656458
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/request.pb": {
+      "sha256": "d29f0151ab8d9d12d20284a16fe3f6e94be4f8e33b947672c9d416d055668a9b",
+      "bytes": 16660183
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/bootstrap-retention-fix-precommit.log": {
+      "sha256": "c891b77212f254c34abdfe59f51289f32d890c09ba4b359aee63db4d2a0cf5af",
+      "bytes": 563
+    },
+    "/private/tmp/native-jax-callback-gate-preparation/transport-review.json": {
+      "sha256": "b91176645100e72fccd21652d74c2e0e4704f3467cd7ce667078ccfe091e4a54",
+      "bytes": 7169
+    }
+  },
+  "T1": {
+    "resolved": true,
+    "source": "native-jax-callback-tpu-bootstrap.py:33-80",
+    "stage_outside_IRIS_OUTPUT_DIR": true,
+    "owned_ephemeral_TemporaryDirectory_cleanup": true,
+    "gate_checked_before_copy": true,
+    "allowed_scientific_file_types": [
+      "JSON",
+      "HLO text"
+    ],
+    "symlink_descendants_rejected": true,
+    "gate_max_files": 30,
+    "gate_max_per_file_bytes": 2097152,
+    "gate_max_total_bytes": 16777216,
+    "only_fixed_supervisor_and_provenance_metadata_direct_to_IRIS_OUTPUT_DIR": true,
+    "metadata_budget": "two fixed tiny JSON files, comfortably below1MiB; gate16MiB plus metadata remains below17MiB",
+    "invalid_gate_copy_skipped_without_truncation": true,
+    "valid_failed_worker_diagnostics_retained": true,
+    "retained_root_io_control_evidence": {
+      "status": "LOCAL_TRANSPORT_IO_CONTROLS_PASS_NO_SCIENTIFIC_EXECUTION",
+      "bootstrap_sha256": "e17d2cc39f82dcaa45b853d5fa0356168de7c468eaa8b1a848c9b7533c7ee627",
+      "command_sha256": "7f05f5e0d14096c154449de82b71793719688818369a66c43bba4bc3bd2d1a64",
+      "validator_sha256": "e01f52ac3dab5c2bdddb95f76c74ce444081bcc236fec6807c6de4188bb2774a",
+      "cases": [
+        {
+          "case": "success",
+          "intercepted_worker_status": 0,
+          "bootstrap_status": 0,
+          "error": null,
+          "gate_copied": true,
+          "captured_bytes": 3737,
+          "worker_calls": 1,
+          "parent_jax_imported": false
+        },
+        {
+          "case": "worker_failure",
+          "intercepted_worker_status": 7,
+          "bootstrap_status": 7,
+          "error": null,
+          "gate_copied": true,
+          "captured_bytes": 3739,
+          "worker_calls": 1,
+          "parent_jax_imported": false
+        },
+        {
+          "case": "oversize_file",
+          "intercepted_worker_status": 0,
+          "bootstrap_status": null,
+          "error": "Output count or per-file bound exceeded",
+          "gate_copied": false,
+          "captured_bytes": 3718,
+          "worker_calls": 1,
+          "parent_jax_imported": false
+        },
+        {
+          "case": "oversize_total",
+          "intercepted_worker_status": 0,
+          "bootstrap_status": null,
+          "error": "Total output bound exceeded",
+          "gate_copied": false,
+          "captured_bytes": 3718,
+          "worker_calls": 1,
+          "parent_jax_imported": false
+        }
+      ],
+      "scope": "Actual bootstrap, subprocess I/O intercepted; no JAX/backend/TPU/client/RPC/storage/scientific result",
+      "no_gcp_egress": true
+    },
+    "io_control_validator_source_and_hash_verified": true,
+    "io_controls_executed_by_reviewer": false
+  },
+  "preserved_checks": {
+    "all_freeze_hashes_match": true,
+    "packed_launcher_decodes_to_exact_bootstrap": true,
+    "wire_argv_matches_packed_launcher": true,
+    "source_bundle_all4716_inventory_hashes_verified": true,
+    "all23_worktree_and_bundle_scientific_source_blobs_match": true,
+    "clean_head_verified": true,
+    "bundle_bytes": 16656458,
+    "bundle_sha256": "9576c7cee8b3b871ceac0e3736d5c3fdf10b4ed5068037871a66438ea65a1eb8",
+    "request_bytes": 16660183,
+    "request_sha256": "d29f0151ab8d9d12d20284a16fe3f6e94be4f8e33b947672c9d416d055668a9b",
+    "wrapper_unchanged": true,
+    "scientific_source_unchanged": true,
+    "wire_resources_placement_timeouts_retry_secret_and_ERROR_guards_unchanged": true,
+    "external_supervisor300seconds_and_worker_exit_propagation_preserved": true,
+    "exclusive_claim_and_root_release_flags_unchanged": true,
+    "no_scientific_scope_expansion": true,
+    "normal_precommit_retention_fix_log_pass": true
+  },
+  "limitations": [
+    "Retained I/O controls use intercepted subprocess I/O; they demonstrate actual bootstrap handling, not JAX/TPU scientific execution. Reviewer inspected and hashed retained control evidence without executing it.",
+    "Public exact source/config/command/archive publication and remote verification remain root responsibilities before separate release.",
+    "No client constructor/RPC, network, storage operation, additional experiment/test/dependency execution, submission, cancellation/retry/resubmit, cluster mutation, scientific edit or subagent creation performed by reviewer.",
+    "Default image and actual backend/runtime/deployed capture behavior were not queried live; source/runtime/config guards fail closed and this review does not establish TPU success."
+  ],
+  "public_archive_remote_verified_by_this_review": false,
+  "publication_authorized_by_review": false,
+  "dispatch_authorized_by_review": false,
+  "root_release_granted": false
+}

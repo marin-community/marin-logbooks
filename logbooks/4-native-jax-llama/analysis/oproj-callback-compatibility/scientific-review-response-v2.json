@@ -1,0 +1,118 @@
+{
+  "schema": "native-jax-oproj-callback-probe-scientific-review-response.v2",
+  "reviewed_utc": "2026-10-24T06:29:50.196137+00:00",
+  "verdict": "NO_REMAINING_FINDINGS_IN_TARGETED_R1_R2_RESPONSE_REVIEW",
+  "findings": [],
+  "scope": "Independent static response recheck of prior R1/R2 and preservation of scientific gates; no repeated full catalog review.",
+  "handoff": {
+    "path": "/private/tmp/native-jax-oproj-callback-compatibility-preparation-handoff-v2.json",
+    "sha256": "a8e05cd64f2bf656d88bf95a4e87c478679fa928ce46d738fce03718ec1c6d12"
+  },
+  "snapshot": "/private/tmp/native-jax-oproj-callback-compatibility-freeze-v2-20261024T062509Z",
+  "source_freeze": {
+    "research/oproj/capture.py": "85252b55a75154829131a80aa6eef20a68be9d022f73f5de6c9ba7cf31f4c552",
+    "research/oproj/callback_compatibility.py": "5ee5a1ebcfac8c4d86c9ec01cc452cf4854a87a872a7396c74ec6cfcf057efb2",
+    "research/oproj/callback_compatibility.md": "3f629e98d658a4a869230ab77f1e8ebbf9d56b6cbdb18489f7dc06a3b4cea8dd",
+    "research/oproj/callback_compatibility_config.json": "a0d1292d2590c78159887e393ebde949cbca233ccf503d041176a4d4304b7731",
+    "research/oproj/callback_compatibility_command.json": "2fb171da7980e356b825184d54c3898a571e1131e6316139bfc92b95b98aed57",
+    "research/oproj/callback_compatibility_supervisor.py": "fe13dd071bf9602f278d1ed9677a23d8d3e527954e53f4157bd3d4deb4a4edef",
+    "research/oproj/callback_compatibility_negative.py": "6e27a5e1fa45994143516dd94faaff12a7b682c8dfd05a606dc6804bce02e6f2"
+  },
+  "patch_sha256": "7a7d37a7e6177d431551ed15e2081654bf99b0c4c3cf2b90a4a971a307795ddc",
+  "all_seven_current_and_snapshot_hashes_verified": true,
+  "all_configured_source_hashes_verified": true,
+  "R1": {
+    "resolved": true,
+    "source": "callback_compatibility.py:104-109,112-131,212-231",
+    "fresh_actual_collector_each_execution": true,
+    "barriers_before_each_finish": true,
+    "ten_identities_independently_required_each_execution": true,
+    "explicit_cross_execution_shape_dtype_byte_identity": true,
+    "per_execution_minima": {
+      "transport": {
+        "X": 2,
+        "G": 2
+      },
+      "composition": {
+        "X": 2,
+        "G": 1
+      }
+    },
+    "negative_source": "callback_compatibility_negative.py:19-31,41-62",
+    "negative_receipt_sha256": "f1f1b468c22b6d34af08ad91dc3f40eb2486680b80299ceaa27db3094f868088",
+    "negative_first_execution_G3_count": 2,
+    "negative_second_execution_G3_count": 0,
+    "negative_required_identities": [
+      10,
+      9
+    ],
+    "negative_observed_error": "KeyError(('G', 3))",
+    "negative_expected_failure_verified_from_retained_artifact": true
+  },
+  "R2": {
+    "resolved_for_frozen_prepared_worker_command": true,
+    "source": "callback_compatibility_supervisor.py:24-43",
+    "separate_stdlib_parent": true,
+    "monotonic_clock_before_worker_spawn": true,
+    "worker_new_session_process_group": true,
+    "external_wait_uses_remaining_300_second_budget": true,
+    "timeout_action": "SIGKILL owned worker process group then wait/reap worker; exit124; no recovery",
+    "covers_worker_imports_and_native_compile_execute_barriers": true,
+    "target_command_requires_supervisor": true,
+    "timeout_control": {
+      "sha256": "edb4077dc31da9a8ee412e00b89cae530fe288e24b09bcabad6d09015f1a36fe",
+      "deadline_seconds": 0.25,
+      "timed_out": true,
+      "worker_returncode": -9,
+      "elapsed_seconds": 0.25307820877060294
+    },
+    "root_scheduler_timeout_still_required_by_frozen_manifest": true
+  },
+  "preserved_scientific_gates": {
+    "Collector_ast_equal_source_A": true,
+    "make_tap_ast_equal_source_A": true,
+    "emit_only_one_partitioned_True_to_False_ast_delta": true,
+    "capture_sha256_unchanged_from_v1": true,
+    "scientific_source_hashes_unchanged": true,
+    "runtime_environment_values_unchanged": true,
+    "ID_shard_independent_oracle_dtype_finite_filtering_gates_preserved": true,
+    "value_and_all_three_gradient_leaf_byte_identity_each_composition_execution": true,
+    "six_lower_compile_and_eight_execution_budget_preserved": true,
+    "no_original_full_model_diagnostic_source_changes": true
+  },
+  "retained_evidence": {
+    "positive_cpu_report_sha256": "1cea60190418c15b65c6a52788a849e726d7457394da0138c09a5f4a96e2beec",
+    "all_positive_13_artifact_hashes_verified": true,
+    "positive_total_bytes": 414506,
+    "all_negative_7_artifact_hashes_verified": true,
+    "negative_total_bytes": 168037,
+    "positive_supervisor_receipt_sha256": "7c96c0e4eacd849b2b18e9a0a90fee0a8b073f94d0f2b22911ecfb6e59eab7df",
+    "negative_supervisor_receipt_sha256": "6d41dafd5a994a5c01fc3d419d7b4832ffe52840401b79398adc588377178305",
+    "all_receipt_hashes_verified": true,
+    "all_four_positive_composition_executions_complete": true,
+    "each_composition_X_count_each_identity": 2,
+    "each_composition_G_count_each_identity": 1
+  },
+  "limitations": [
+    "Retained CPU/negative receipts were inspected and hashed; this reviewer did not independently execute them.",
+    "The short watchdog control covers one sleeping worker; it is not an empirical TPU/native hang or nested-descendant teardown test. Source uses killpg on the isolated worker group and waits/reaps the worker.",
+    "Root must still freeze public exact source/config/command, record release, pin v5p-8 resources and reviewed task timeout, and compare runtime report config/source identities against that release.",
+    "No CPU/negative/source result establishes actual TPU support, full-model parity/255-gradient identity, cause, trajectory, performance, physical original buffer layout, or adoption."
+  ],
+  "actual_TPU_validated": false,
+  "publication_authorized_by_review": false,
+  "dispatch_authorized_by_review": false,
+  "root_release_granted": false,
+  "not_performed": [
+    "additional experiments",
+    "JAX/model runtime execution",
+    "tests",
+    "source edits",
+    "network",
+    "storage/client/job operations",
+    "commit",
+    "publication",
+    "delegation"
+  ],
+  "prior_review_preserved": true
+}

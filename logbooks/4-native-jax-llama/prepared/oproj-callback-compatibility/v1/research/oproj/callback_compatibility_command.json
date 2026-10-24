@@ -1,0 +1,62 @@
+{
+  "schema": "native-jax-oproj-callback-compatibility-command.v1",
+  "preparation_only": true,
+  "requires_fresh_scientific_review_and_public_exact_source_before_root_dispatch_decision": true,
+  "root_alone_dispatches": true,
+  "automatic_recovery": false,
+  "target_scheduling_constraint": {
+    "accelerator": "v5p-8",
+    "processes": 1,
+    "devices": 4
+  },
+  "cpu": {
+    "cwd": "/private/tmp/marin-native-jax-oproj-callback-compatibility",
+    "environment": {
+      "JAX_PLATFORMS": "cpu",
+      "JAX_NUM_CPU_DEVICES": "4",
+      "XLA_FLAGS": "--xla_allow_excess_precision=false",
+      "LIBTPU_INIT_ARGS": null,
+      "PYTHONPATH": "/private/tmp/marin-native-jax-oproj-callback-compatibility/lib/levanter/src:/private/tmp/marin-native-jax-oproj-callback-compatibility/lib/haliax/src",
+      "PYTHONPYCACHEPREFIX": "/private/tmp/native-jax-callback-compatibility-pycache"
+    },
+    "argv": [
+      "/private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python",
+      "research/oproj/callback_compatibility.py",
+      "--mode",
+      "cpu",
+      "--config",
+      "research/oproj/callback_compatibility_config.json",
+      "--output",
+      "/private/tmp/native-jax-oproj-callback-compatibility-cpu-final"
+    ]
+  },
+  "target_prepared_not_dispatched": {
+    "cwd": "/app",
+    "environment": {
+      "JAX_PLATFORMS": "tpu",
+      "JAX_NUM_CPU_DEVICES": null,
+      "XLA_FLAGS": "--xla_allow_excess_precision=false",
+      "LIBTPU_INIT_ARGS": " --xla_tpu_use_enhanced_launch_barrier=true",
+      "PYTHONPATH": "/app/lib/levanter/src:/app/lib/haliax/src",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "argv": [
+      "/app/.venv/bin/python",
+      "research/oproj/callback_compatibility.py",
+      "--mode",
+      "target",
+      "--config",
+      "research/oproj/callback_compatibility_config.json",
+      "--output",
+      "/tmp/oproj-callback-compatibility-result"
+    ]
+  },
+  "bounds": {
+    "wall_seconds": 300,
+    "compilations": 6,
+    "compiled_executions": 8,
+    "maximum_file_bytes": 2097152,
+    "maximum_total_bytes": 16777216
+  },
+  "retention": "Complete tiny JSON and StableHLO/optimized HLO only; no arrays/checkpoints/profiles."
+}

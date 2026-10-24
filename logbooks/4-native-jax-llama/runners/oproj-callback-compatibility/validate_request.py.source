@@ -1,0 +1,26 @@
+from pathlib import Path
+import hashlib,importlib.util,io,json,os,sys,zipfile
+from google.protobuf.json_format import MessageToDict
+from iris.client.client import IrisClient
+from iris.cluster.client.remote_client import RemoteClusterClient
+from iris.rpc import controller_pb2
+root=Path('/private/tmp/marin-native-jax-oproj-callback-compatibility');prep=Path('/private/tmp/native-jax-callback-gate-preparation');wrapper=Path('/private/tmp/submit_native_jax_callback_gate_once.py')
+assert Path.cwd()==root
+spec=importlib.util.spec_from_file_location('prepared_callback_submit',wrapper);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+kwargs,validation=module.prepared_request();captures=[]
+class CaptureOnlyLaunch:
+ def launch_job(self,request,*,timeout_ms):
+  captures.append((request,timeout_ms));return controller_pb2.Controller.LaunchJobResponse(job_id=request.name)
+remote=RemoteClusterClient.__new__(RemoteClusterClient);remote._bundle_id=None;remote._workspace=root;remote._extra_bundle_includes=();remote._bundle_exclude=None;remote._bundle_blob=None;remote._timeout_ms=30000;remote._client=CaptureOnlyLaunch()
+job=IrisClient(remote).submit(**kwargs);assert len(captures)==1
+request,timeout_ms=captures[0];assert str(job.job_id)==request.name==validation['job_id'];assert request.max_retries_failure==request.max_retries_preemption==request.max_task_failures==0;assert request.replicas==1;assert request.existing_job_policy==module.job_pb2.EXISTING_JOB_POLICY_ERROR;assert len(request.environment.secrets)==0
+command=json.loads((prep/'command.json').read_text());assert all(request.environment.env_vars[k]==v for k,v in command['environment'].items())
+blob=bytes(request.bundle_blob);assert len(blob)<=25*1024**2
+with zipfile.ZipFile(io.BytesIO(blob)) as archive:
+ names=archive.namelist();assert len(names)==len(set(names));assert not any(n.startswith(('.git/','.venv/','.creds/','.aws/','logbooks/','scratch/')) or '__pycache__' in n for n in names)
+ for name,expected in command['source_sha256'].items():assert hashlib.sha256(archive.read(name)).hexdigest()==expected,name
+ inventory=[{'path':n,'bytes':archive.getinfo(n).file_size,'sha256':hashlib.sha256(archive.read(n)).hexdigest()} for n in names]
+(prep/'source-bundle.zip').write_bytes(blob);serialized=request.SerializeToString(deterministic=True);(prep/'request.pb').write_bytes(serialized)
+wire=controller_pb2.Controller.LaunchJobRequest();wire.CopyFrom(request);wire.ClearField('bundle_blob')
+proof={'status':'ACTUAL_SDK_REQUEST_CAPTURED_NO_CLIENT_CONSTRUCTOR_OR_RPC','source_commit':module.SOURCE,'command_sha256':validation['command_sha256'],'wrapper_sha256':validation['wrapper_sha256'],'actual_submit_and_bundle_builder_executed':True,'launch_stub_calls':1,'all23source_blobs_exact':True,'bundle_bytes':len(blob),'bundle_entries':len(inventory),'bundle_sha256':hashlib.sha256(blob).hexdigest(),'serialized_request_bytes':len(serialized),'serialized_request_sha256':hashlib.sha256(serialized).hexdigest(),'request_without_bundle':MessageToDict(wire,preserving_proto_field_name=True),'bundle_inventory':inventory,'network_or_storage_or_submission':False,'local_bundle_and_proto_not_for_archive':True,'GCP_egress_added':0}
+(prep/'request-validation.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps({k:v for k,v in proof.items() if k not in ('request_without_bundle','bundle_inventory')},indent=2))

@@ -1,0 +1,146 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Validate or submit the prepared tiny callback gate once; no recovery."""
+
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+
+from google.protobuf.json_format import MessageToDict
+from iris.cli.connect import open_iris_client
+from iris.cli.job import build_resources
+from iris.cluster.constraints import region_constraint, zone_constraint
+from iris.cluster.types import Entrypoint, EnvironmentSpec
+from iris.rpc import job_pb2
+from rigging.secrets import SecretBehavior
+from rigging.timing import Duration
+
+ROOT = Path("/private/tmp/marin-native-jax-oproj-callback-compatibility")
+SOURCE = "ed17de3657fc779e5ed01df4348f7a60fcd813ef"
+PREP = Path("/private/tmp/native-jax-callback-gate-preparation")
+COMMAND = PREP / "command.json"
+RELEASE = Path("/private/tmp/native-jax-callback-gate-dispatch-release.json")
+CLAIM = Path("/private/tmp/native-jax-callback-gate-submit-claim.json")
+STATE = Path("/private/tmp/marin-native-jax-callback-gate-monitor.json")
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def prepared_request():
+    command = json.loads(COMMAND.read_text())
+    if Path.cwd().resolve() != ROOT or command["source_commit"] != SOURCE:
+        raise ValueError("Use exact prepared source worktree")
+    if subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() != SOURCE:
+        raise ValueError("Source revision changed")
+    if subprocess.check_output(["git", "status", "--porcelain"], text=True).strip():
+        raise ValueError("Prepared source must be clean")
+    for name, expected in command["source_sha256"].items():
+        if sha(ROOT / name) != expected:
+            raise ValueError(f"Source changed: {name}")
+    if sha(Path(command["bootstrap"])) != command["bootstrap_sha256"]:
+        raise ValueError("Worker bootstrap changed")
+    if hashlib.sha256(command["entrypoint_argv"][-1].encode()).hexdigest() != command["launcher_sha256"]:
+        raise ValueError("Packed launcher changed")
+    resources = build_resources(tpu="v5p-8", gpu=None, cpu=8, memory="32GB", disk="16GB")
+    environment = EnvironmentSpec(
+        env_vars=command["environment"],
+        extras=["tpu"],
+        sync_packages=["marin-levanter"],
+        secrets={},
+        secret_behavior=SecretBehavior.ISOLATE,
+    )
+    kwargs = dict(
+        name="levanter-native-jax-v5p-callback-gate-20261024",
+        user="dlwh",
+        entrypoint=Entrypoint.from_command(*command["entrypoint_argv"]),
+        resources=resources,
+        environment=environment,
+        constraints=[region_constraint(["us-central1"]), zone_constraint("us-central1-a")],
+        replicas=1,
+        scheduling_timeout=Duration.from_seconds(120),
+        timeout=Duration.from_seconds(420),
+        max_retries_failure=0,
+        max_retries_preemption=0,
+        max_task_failures=0,
+        existing_job_policy=job_pb2.EXISTING_JOB_POLICY_ERROR,
+        submit_argv=[sys.executable, str(Path(__file__).resolve()), "--submit"],
+    )
+    validation = {
+        "source_commit": SOURCE,
+        "command_sha256": sha(COMMAND),
+        "wrapper_sha256": sha(Path(__file__)),
+        "job_id": "/dlwh/" + kwargs["name"],
+        "resources": MessageToDict(resources.to_proto()),
+        "environment": command["environment"],
+        "secret_entries": 0,
+        "secret_behavior": "ISOLATE",
+        "existing_job_policy": "ERROR",
+        "scheduling_timeout_seconds": 120,
+        "execution_timeout_seconds": 420,
+        "external_worker_timeout_seconds": 300,
+        "max_retries_failure": 0,
+        "max_retries_preemption": 0,
+        "max_task_failures": 0,
+    }
+    return kwargs, validation
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--validate-only", action="store_true")
+    mode.add_argument("--submit", action="store_true")
+    args = parser.parse_args()
+    kwargs, validation = prepared_request()
+    if args.validate_only:
+        record = validation | {"status": "LOCAL_VALIDATION_ONLY_NO_CLIENT_RPC"}
+        (PREP / "submit-validation.json").write_text(json.dumps(record, indent=2) + "\n")
+        print(json.dumps(record))
+        return
+    release = json.loads(RELEASE.read_text())
+    if any(release[k] != validation[k] for k in ("source_commit", "command_sha256", "wrapper_sha256", "job_id")):
+        raise ValueError("Release differs from exact prepared dispatch")
+    for flag in (
+        "scientific_review_passed",
+        "transport_review_passed",
+        "remote_source_and_archive_verified",
+        "dispatch_authorized",
+    ):
+        if release[flag] is not True:
+            raise ValueError(f"Dispatch release missing {flag}")
+    if len(release["archive_commit"]) != 40 or os.environ.get("IRIS_JOB_ID") or os.environ.get("IRIS_TASK_ID"):
+        raise ValueError("Root workstation dispatch with exact public archive required")
+    state = validation | {
+        "status": "CLAIMED_BEFORE_RPC",
+        "claimed_utc": datetime.now(UTC).isoformat(),
+        "archive_commit": release["archive_commit"],
+        "automatic_recovery_authorized": False,
+    }
+    with CLAIM.open("x") as handle:
+        handle.write(json.dumps(state, indent=2) + "\n")
+    STATE.write_text(json.dumps(state, indent=2) + "\n")
+    try:
+        with open_iris_client(config_file=ROOT / "lib/iris/config/marin.yaml", workspace=ROOT) as client:
+            job = client.submit(**kwargs)
+            actual = str(job.job_id)
+            if actual != state["job_id"]:
+                raise ValueError("Returned identity differs; inspect without recovery")
+    except Exception as error:
+        state.update(status="SUBMISSION_OUTCOME_REQUIRES_INSPECTION", error_type=type(error).__name__)
+        STATE.write_text(json.dumps(state, indent=2) + "\n")
+        raise
+    state.update(status="SUBMITTED", submitted_utc=datetime.now(UTC).isoformat())
+    STATE.write_text(json.dumps(state, indent=2) + "\n")
+    print(json.dumps({"job_id": actual, "submitted_utc": state["submitted_utc"]}), flush=True)
+
+
+if __name__ == "__main__":
+    main()
