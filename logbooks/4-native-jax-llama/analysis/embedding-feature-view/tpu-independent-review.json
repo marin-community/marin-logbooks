@@ -1,0 +1,2910 @@
+{
+  "actual_typed_TPU_dataflow": {
+    "CPU_boundary": "Earlier CPU evidence legalized operations through F32 plus BF16 round-trips. This new proof directly types TPU scatter updates/results/reducer BF16. It does not expose every machine-level accumulator implementation.",
+    "feature_view": {
+      "actual_gradient_root": "tuple.3 operand1 -> convert_element_type.11 -> scatter_custom_fusion",
+      "after_scatter": "Direct FP32 convert at281 feeds returned master gradient; no post-scatter data all-reduce/reduce-scatter/cast-before-sum is on this gradient root.",
+      "cotangent": "Entry param.2 BF16[4,2048,2048] -> copy/reshape[4,2048,2,1024] -> BF16 all-to-all.1 acrossdata -> BF16[16384,1024] updates -> gather matching sorted token order.",
+      "entry": "main.0_spmd",
+      "forward_collectives": "FP32 master converts to BF16 feature shard at231 with no full-feature weight gather. Tokens gather at234; model/vocabulary forward reduction at255 and output BF16 all-to-all at257. These forward collectives are distinct from gradient redistribution at276.",
+      "scatter": "BF16 fullB8/S2048/featureD1024 updates intoBF16[32768,1024]; region_0.0.clone scalar BF16 add reducer.",
+      "scatter_chain": [
+        "entry scatter_custom_fusion calls fused_computation.3",
+        "fused_computation.3 fusion.4 calls fused_computation.4 then fused_computation.2.clone.clone for gathered updates",
+        "fused_computation.3 scatter_custom_fusion.1 calls fused_computation.1.clone scatter.3"
+      ],
+      "tokens": "Entry param.1 int32[4,2048] -> all-gather.1 acrossdata -> fullB8[8,2048]; normalize/subtract vocab offset; tuple index0 -> sort16384 IDs with iota; sort index1 -> matching cotangent gather."
+    },
+    "legacy": "Same fullB8/D1024 BF16 sorted scatter and direct FP32 output; full control computation body repeats the preceding TPU job byte-exact.",
+    "original_native": "Still localB4/fullD2048 BF16[32768,2048] scatter -> BF16 data sum{0,2}/{1,3} -> featureD1024 slice -> FP32, with exact same output failure and computation body as prior TPU job."
+  },
+  "archive": {
+    "all_member_bytes_match_local_results": true,
+    "compressed_bytes": 29119,
+    "download_not_repeated": true,
+    "path": "/private/tmp/native-jax-embedding-feature-view-diagnostics.tar.gz",
+    "raw_bytes": 297853,
+    "safe_regular_flat_members": 10,
+    "sha256": "a71cd631f05b8712cd5a428dcabfa5109b7558fa7ccf2699417307b1c3a437f5"
+  },
+  "blocking_findings": [],
+  "boundary_review": {
+    "FP32_reference_gradient_physical_record_equal": true,
+    "all3forward_master_gradient_output_physical_records_equal_except_axis_mode": true,
+    "all4actual_boundary_checks_passed": true,
+    "all4input_hash_sets_match_single_fixture": true,
+    "all4input_physical_records_equal_except_axis_mode": true,
+    "compared_fields": [
+      "global shape/dtype/spec/mesh/device order",
+      "global shard device/index",
+      "addressable shard shape/dtype/index/replica_id",
+      "memory kind",
+      "global and per-shard local layout including TPU tiling"
+    ],
+    "devices": [
+      {
+        "coordinates": [
+          0,
+          0,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_0(process=0,(0,0,0,0))",
+        "id": 0,
+        "kind": "TPU v5",
+        "platform": "tpu",
+        "process_index": 0
+      },
+      {
+        "coordinates": [
+          1,
+          0,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_1(process=0,(1,0,0,0))",
+        "id": 1,
+        "kind": "TPU v5",
+        "platform": "tpu",
+        "process_index": 0
+      },
+      {
+        "coordinates": [
+          0,
+          1,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_2(process=0,(0,1,0,0))",
+        "id": 2,
+        "kind": "TPU v5",
+        "platform": "tpu",
+        "process_index": 0
+      },
+      {
+        "coordinates": [
+          1,
+          1,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_3(process=0,(1,1,0,0))",
+        "id": 3,
+        "kind": "TPU v5",
+        "platform": "tpu",
+        "process_index": 0
+      }
+    ],
+    "external_contract": {
+      "cotangent_and_forward": "BF16[8,2048,2048] P(data,None,None), local[4,2048,2048], model-replicated",
+      "master": "FP32[65536,2048] P(model,data), local[32768,1024]",
+      "master_gradient": "FP32[65536,2048] P(model,data), local[32768,1024]",
+      "tokens": "int32[8,2048] P(data,None), local[4,2048], model-replicated"
+    },
+    "feature_view_inputs_physical": {
+      "cotangent": {
+        "addressable_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 1,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 1,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          }
+        ],
+        "axis_types": [
+          "Explicit",
+          "Explicit"
+        ],
+        "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+        "devices": [
+          "tpu:0:0",
+          "tpu:0:1",
+          "tpu:0:2",
+          "tpu:0:3"
+        ],
+        "dtype": "bfloat16",
+        "global_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+          }
+        ],
+        "memory_kind": "device",
+        "mesh": {
+          "data": 2,
+          "model": 2
+        },
+        "shape": [
+          8,
+          2048,
+          2048
+        ],
+        "spec": [
+          "data",
+          null,
+          null
+        ]
+      },
+      "master": {
+        "addressable_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          }
+        ],
+        "axis_types": [
+          "Explicit",
+          "Explicit"
+        ],
+        "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+        "devices": [
+          "tpu:0:0",
+          "tpu:0:1",
+          "tpu:0:2",
+          "tpu:0:3"
+        ],
+        "dtype": "float32",
+        "global_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+          }
+        ],
+        "memory_kind": "device",
+        "mesh": {
+          "data": 2,
+          "model": 2
+        },
+        "shape": [
+          65536,
+          2048
+        ],
+        "spec": [
+          "model",
+          "data"
+        ]
+      },
+      "tokens": {
+        "addressable_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "int32",
+            "index": "(slice(0, 4, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              4,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "int32",
+            "index": "(slice(0, 4, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 1,
+            "shape": [
+              4,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "int32",
+            "index": "(slice(4, 8, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              4,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "int32",
+            "index": "(slice(4, 8, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 1,
+            "shape": [
+              4,
+              2048
+            ]
+          }
+        ],
+        "axis_types": [
+          "Explicit",
+          "Explicit"
+        ],
+        "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+        "devices": [
+          "tpu:0:0",
+          "tpu:0:1",
+          "tpu:0:2",
+          "tpu:0:3"
+        ],
+        "dtype": "int32",
+        "global_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 4, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 4, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(4, 8, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(4, 8, None), slice(None, None, None))"
+          }
+        ],
+        "memory_kind": "device",
+        "mesh": {
+          "data": 2,
+          "model": 2
+        },
+        "shape": [
+          8,
+          2048
+        ],
+        "spec": [
+          "data",
+          null
+        ]
+      }
+    },
+    "feature_view_outputs_physical": [
+      {
+        "addressable_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 1,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+            "dtype": "bfloat16",
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+            "memory_kind": "device",
+            "replica_id": 1,
+            "shape": [
+              4,
+              2048,
+              2048
+            ]
+          }
+        ],
+        "axis_types": [
+          "Explicit",
+          "Explicit"
+        ],
+        "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+        "devices": [
+          "tpu:0:0",
+          "tpu:0:1",
+          "tpu:0:2",
+          "tpu:0:3"
+        ],
+        "dtype": "bfloat16",
+        "global_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+          }
+        ],
+        "memory_kind": "device",
+        "mesh": {
+          "data": 2,
+          "model": 2
+        },
+        "shape": [
+          8,
+          2048,
+          2048
+        ],
+        "spec": [
+          "data",
+          null,
+          null
+        ]
+      },
+      {
+        "addressable_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+            "dtype": "float32",
+            "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+            "memory_kind": "device",
+            "replica_id": 0,
+            "shape": [
+              32768,
+              1024
+            ]
+          }
+        ],
+        "axis_types": [
+          "Explicit",
+          "Explicit"
+        ],
+        "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+        "devices": [
+          "tpu:0:0",
+          "tpu:0:1",
+          "tpu:0:2",
+          "tpu:0:3"
+        ],
+        "dtype": "float32",
+        "global_shards": [
+          {
+            "device": {
+              "coordinates": [
+                0,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_0(process=0,(0,0,0,0))",
+              "id": 0,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                0,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_1(process=0,(1,0,0,0))",
+              "id": 1,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                0,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_2(process=0,(0,1,0,0))",
+              "id": 2,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+          },
+          {
+            "device": {
+              "coordinates": [
+                1,
+                1,
+                0
+              ],
+              "core_on_chip": 0,
+              "description": "TPU_3(process=0,(1,1,0,0))",
+              "id": 3,
+              "kind": "TPU v5",
+              "platform": "tpu",
+              "process_index": 0
+            },
+            "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+          }
+        ],
+        "memory_kind": "device",
+        "mesh": {
+          "data": 2,
+          "model": 2
+        },
+        "shape": [
+          65536,
+          2048
+        ],
+        "spec": [
+          "model",
+          "data"
+        ]
+      }
+    ],
+    "fixture_byte_record_exact_prior_job": true,
+    "one_process_four_ordered_same_global_local_v5_devices": true
+  },
+  "cross_job_controls": {
+    "all3original_control_input_hashes_physical_inputs_physical_outputs_output_hashes_equal": true,
+    "all4prior_comparison_records_exact": true,
+    "all_original_fixture_fields_equal": true,
+    "optimized_computation_bodies": {
+      "fp32_scatter": {
+        "byte_identical": true,
+        "current_sha256": "81afaea9fffeb9d18066f505fc230d69fa474d518d52277caf16914c8ed4a808",
+        "prior_sha256": "81afaea9fffeb9d18066f505fc230d69fa474d518d52277caf16914c8ed4a808",
+        "scope": "All optimized computation definitions/entrypoint after source filename/location metadata; source-location header differences remain honestly retained in full-file hashes."
+      },
+      "legacy": {
+        "byte_identical": true,
+        "current_sha256": "324e727222de82e10d0c6ca39b4c3d2c46d0391b840abc12e7ad22e1b8bf92ea",
+        "prior_sha256": "324e727222de82e10d0c6ca39b4c3d2c46d0391b840abc12e7ad22e1b8bf92ea",
+        "scope": "All optimized computation definitions/entrypoint after source filename/location metadata; source-location header differences remain honestly retained in full-file hashes."
+      },
+      "native": {
+        "byte_identical": true,
+        "current_sha256": "b72c36ba9e67e7d59f3a521dd8fdd4bd5520bba4d0e84c9c8229d2ded7e1cebb",
+        "prior_sha256": "b72c36ba9e67e7d59f3a521dd8fdd4bd5520bba4d0e84c9c8229d2ded7e1cebb",
+        "scope": "All optimized computation definitions/entrypoint after source filename/location metadata; source-location header differences remain honestly retained in full-file hashes."
+      }
+    },
+    "original_native_failure_unchanged": {
+      "different_elements": 26892,
+      "elements": 134217728,
+      "max_abs": 0.03125,
+      "relative_l2": 0.000257512987032736
+    },
+    "prior_report": {
+      "path": "/private/tmp/native-jax-embedding-vjp-tpu-results/report.json",
+      "sha256": "86cbbb928185114d900667f6ae97bdc0de0a2b14b45a534b608258fca419448f"
+    },
+    "stableHLO_original_controls_byte_exact": true
+  },
+  "dimensions": {
+    "B": 8,
+    "D": 2048,
+    "S": 2048,
+    "V": 65536
+  },
+  "evidence": {
+    "feature_view": {
+      "display_omits_backend_config_only_full_line_hash_retained": true,
+      "line_numbers": "one-based",
+      "lines": [
+        {
+          "line": 75,
+          "sha256": "4639664e000f70b9f0cd2601b20ac642f29e172199d6ee32ac38a55692750457",
+          "text": "%fused_computation.9 (param_0.35: s32[8,2048], param_1.49: s32[]) -> (s32[1,16,8,128], s32[1,16,8,128]) {"
+        },
+        {
+          "line": 76,
+          "sha256": "65c4b389a0ef861b3c357dc68e8008d7339b572efcccaba8ca0a290bd62fd3ca",
+          "text": "  %param_0.35 = s32[8,2048]{1,0:T(8,128)} parameter(0)"
+        },
+        {
+          "line": 77,
+          "sha256": "d5c2052c24fc0f56b7dc20a2ccda5dbba15293f233dedc63396913024aa3dde9",
+          "text": "  %constant.0.clone.1 = s32[]{:T(128)} constant(0)"
+        },
+        {
+          "line": 78,
+          "sha256": "9336609eaf1973a70c65afb3b48b0891caa1a35730c1cd37a19d862dcc307e42",
+          "text": "  %broadcast.41 = s32[8,2048]{1,0:T(8,128)} broadcast(%constant.0.clone.1), dimensions={}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 79,
+          "sha256": "f7e19075df799b8e59af23c319336c3709fcad778c3fe424a9ecf16ae3e856cd",
+          "text": "  %lt.12 = pred[8,2048]{1,0:T(8,128)(4,1)} compare(%param_0.35, %broadcast.41), direction=LT, metadata={op_name=\"jit(feature_vjp)/jvp()/lt\" stack_frame_id=5}"
+        },
+        {
+          "line": 80,
+          "sha256": "f7847743bbcf3e01f56ec5bc44eb837389b6f8710e9ead0cfd7633289a5d68b2",
+          "text": "  %constant.1.clone.3 = s32[]{:T(128)} constant(65536)"
+        },
+        {
+          "line": 81,
+          "sha256": "0fbf940de4bfba5544059491b3d2993184c4c1d149f2bbb10a79883940efb08e",
+          "text": "  %add.22 = s32[8,2048]{1,0:T(8,128)} broadcast(%constant.1.clone.3), dimensions={}, metadata={op_name=\"jit(feature_vjp)/jvp()/add\" stack_frame_id=5}"
+        },
+        {
+          "line": 82,
+          "sha256": "908147bfe3f7f2073b664ec083fac376e959fa020aff9a0568aab91173c3d3d0",
+          "text": "  %add.19 = s32[8,2048]{1,0:T(8,128)} add(%param_0.35, %add.22), metadata={op_name=\"jit(feature_vjp)/jvp()/add\" stack_frame_id=5}"
+        },
+        {
+          "line": 83,
+          "sha256": "33238ab8dff7572e0f39da20afbcef62fcb32e8774d1774bc6ec8aaf89f16f1c",
+          "text": "  %select_n.9 = s32[8,2048]{1,0:T(8,128)} select(%lt.12, %add.19, %param_0.35), metadata={op_name=\"jit(feature_vjp)/jvp()/select_n\" stack_frame_id=5}"
+        },
+        {
+          "line": 84,
+          "sha256": "8a7fcd275d77959b3072ea10a3323c3fbc47aaf966f7d374c93c5a4b20a393f7",
+          "text": "  %param_1.49 = s32[]{:T(128)} parameter(1)"
+        },
+        {
+          "line": 85,
+          "sha256": "c1a0ec354511f2758b893740e5194ba2c249f5d123347e0c58356107e1d264df",
+          "text": "  %broadcast.35 = s32[8,2048]{1,0:T(8,128)} broadcast(%param_1.49), dimensions={}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 86,
+          "sha256": "9ef9be6399832aa6af5c0e5c17cdc7a72e9e97c82a9f4a641c66529baee627fe",
+          "text": "  %subtract.5 = s32[8,2048]{1,0:T(8,128)} subtract(%select_n.9, %broadcast.35), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 87,
+          "sha256": "6105e2e1e690c2ed1b26839ccaf1330dfb76057e64cf9f84964520ea52534e61",
+          "text": "  %bitcast.16 = s32[1,16,8,128]{3,2,1,0:T(8,128)} bitcast(%subtract.5)"
+        },
+        {
+          "line": 88,
+          "sha256": "aa0d929692856d6d468ae8ae6196013f0a3bab2b17beb1b534ea656a3a82e22e",
+          "text": "  %constant.74.clone.1 = s32[]{:T(128)} constant(65535), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 89,
+          "sha256": "a473c7b1e13db5411d64faa70e52a7de1af60d86b9446fc21a9655704a16a5a2",
+          "text": "  %broadcast.38.clone.1 = s32[8,2048]{1,0:T(8,128)} broadcast(%constant.74.clone.1), dimensions={}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 90,
+          "sha256": "67d35605ee66519365a3b0e1b6606c0c031ef9c97a69bd3e4a4ea016b2b788ad",
+          "text": "  %clamp.6.clone.1 = s32[8,2048]{1,0:T(8,128)} clamp(%broadcast.41, %select_n.9, %broadcast.38.clone.1), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 91,
+          "sha256": "85be2ab449ec07dee1bb253f57207596331c71082d4b12d168150a0158b4d5a4",
+          "text": "  %subtract.4.clone.1 = s32[8,2048]{1,0:T(8,128)} subtract(%clamp.6.clone.1, %broadcast.35), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 92,
+          "sha256": "177026b1f1bd6de895c02e0029ace39afc71697c6a753882119396f755da547d",
+          "text": "  %bitcast.15.clone.1 = s32[1,16,8,128]{3,2,1,0:T(8,128)S(1)} bitcast(%subtract.4.clone.1)"
+        },
+        {
+          "line": 93,
+          "sha256": "4df355e57c228c21523bd20f11604b95873c7ebd09af8d04e13e91ca50ab7891",
+          "text": "  ROOT %tuple.4 = (s32[1,16,8,128]{3,2,1,0:T(8,128)}, s32[1,16,8,128]{3,2,1,0:T(8,128)S(1)}) tuple(%bitcast.16, %bitcast.15.clone.1)"
+        },
+        {
+          "line": 94,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 178,
+          "sha256": "372055bf0ddcc5032ac680e7a1141a84e9899eeacecb4eb9ec0db497b3775cf5",
+          "text": "%fused_computation.2.clone.clone (param_0.8: bf16[16384,1024], param_1.14: s32[16384]) -> bf16[16384,1024] {"
+        },
+        {
+          "line": 179,
+          "sha256": "94b9c864517aea1ce94507c9253da481c1a7d513fac4cd555cd9ec2e2bd30a5a",
+          "text": "  %param_0.8 = bf16[16384,1024]{1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "line": 180,
+          "sha256": "a139a96ff5eaf15e94344fc412f9c25f5b45eac30310fe937af234cfd581d9c4",
+          "text": "  %param_1.14 = s32[16384]{0:T(1024)S(1)} parameter(1)"
+        },
+        {
+          "line": 181,
+          "sha256": "60bd3d55293793a76534e4ad1c3120b5cd847395a6add1bc5cd95cf34cb0c4b0",
+          "text": "  %custom-call.5 = s32[16384]{0:T(1024)} custom-call(%param_1.14), custom_call_target=\"AssumeGatherIndicesInBound\", operand_layout_constraints={s32[16384]{0:T(1024)}}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 182,
+          "sha256": "1fe0f42e629250ea8664907951d859129826767f3ff530703ef3ad42f9118cca",
+          "text": "  %slice.5 = s32[16384]{0:T(1024)} slice(%custom-call.5), slice={[0:16384]}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 183,
+          "sha256": "49d8199fad09714f991b1dcf698956dabad0fc5839dabf1c94e2a45835da2dfd",
+          "text": "  ROOT %gather.8 = bf16[16384,1024]{1,0:T(8,128)(2,1)} gather(%param_0.8, %slice.5), offset_dims={1}, collapsed_slice_dims={0}, start_index_map={0}, index_vector_dim=1, slice_sizes={1,1024}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 184,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 185,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 186,
+          "sha256": "04ce55e28daf698d04702c61a6003b5f5ef634d0c67cde3ed74ff9ebf7419857",
+          "text": "%fused_computation.4 (param_0.9: bf16[16384,1024], param_1.15: s32[16384]) -> bf16[16384,1024] {"
+        },
+        {
+          "line": 187,
+          "sha256": "4e7fdd654a9b74d2a437d5d57d99a6a455e3f3b1f01afe70fb75379e8c41f518",
+          "text": "  %param_0.9 = bf16[16384,1024]{1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "line": 188,
+          "sha256": "552188d138717f845279ac46accd50be759fdac5c5691da1dc212fc85aaf42ee",
+          "text": "  %param_1.15 = s32[16384]{0:T(1024)S(1)} parameter(1)"
+        },
+        {
+          "line": 189,
+          "sha256": "4da65a64563ad3ec0dc1e7b6a47d238bbd628dbfc3a687c320559e83f3916696",
+          "text": "  ROOT %fusion.3 = bf16[16384,1024]{1,0:T(8,128)(2,1)} fusion(%param_0.9, %param_1.15), kind=kCustom, calls=%fused_computation.2.clone.clone, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 190,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 191,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 192,
+          "sha256": "1d6d494de46d8dbda6c740124b191e459a79f06c2fa8d23f616fee6f79960d4b",
+          "text": "%region_0.0.clone (scatter-add.6: bf16[], scatter-add.7: bf16[]) -> bf16[] {"
+        },
+        {
+          "line": 193,
+          "sha256": "cdc8d4bc19eda0484f8f2f0514794774734e1c45c78c44a689b394004edf7a7a",
+          "text": "  %scatter-add.6 = bf16[]{:T(256)} parameter(0), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\"}"
+        },
+        {
+          "line": 194,
+          "sha256": "57a5ea92bda214a8aaafc4933ad80a726e60ecdb08032f15287afd9fd333614f",
+          "text": "  %scatter-add.7 = bf16[]{:T(256)} parameter(1), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\"}"
+        },
+        {
+          "line": 195,
+          "sha256": "74a27c76e9c353c46928218dc38be7c46bfc8f12aaac18161eda25f8a464e3a4",
+          "text": "  ROOT %add.8 = bf16[]{:T(256)} add(%scatter-add.6, %scatter-add.7), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/add\" stack_frame_id=15}"
+        },
+        {
+          "line": 196,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 197,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 198,
+          "sha256": "d53eee4b09bd9eb3e359558ac5651b30c358e641b7f5cd9815e65efc5cae4cea",
+          "text": "%fused_computation.1.clone (param_0.5: bf16[32768,1024], param_1.11: s32[16384], param_2.5: bf16[16384,1024]) -> bf16[32768,1024] {"
+        },
+        {
+          "line": 199,
+          "sha256": "51872061a0be642e80868955f46e594e7f53aad6668afca23ad6ecb360b894ef",
+          "text": "  %param_0.5 = bf16[32768,1024]{1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "line": 200,
+          "sha256": "178b5bc9b12bf3e194aacb6eab808b16bf9e1a675a2da0d87e8c3675b6e29f17",
+          "text": "  %param_1.11 = s32[16384]{0:T(1024)} parameter(1)"
+        },
+        {
+          "line": 201,
+          "sha256": "bd23d9442650b3443ce7685e0167d3f46f5cef6bb66a633c786f72e811061b06",
+          "text": "  %reshape.75 = s32[8,2048]{1,0:T(8,128)} reshape(%param_1.11), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 202,
+          "sha256": "13f737bce611ae77dafea7572bad970d923091306b25c05c8d96e5cb3dec5dda",
+          "text": "  %transpose.14 = s32[8,2048]{1,0:T(8,128)} transpose(%reshape.75), dimensions={0,1}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 203,
+          "sha256": "c284450fa929b2d92305c367786381830cc661e35dbbe27fcaad17513212e3ac",
+          "text": "  %param_2.5 = bf16[16384,1024]{1,0:T(8,128)(2,1)} parameter(2)"
+        },
+        {
+          "line": 204,
+          "sha256": "eb3173fe31e437c9c34ceaab3c1fe317e748cd4f3c0c027490de17b585c26a29",
+          "text": "  %reshape.76 = bf16[8,2048,1024]{2,1,0:T(8,128)(2,1)} reshape(%param_2.5), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=16}"
+        },
+        {
+          "line": 205,
+          "sha256": "374ca9ac3f7e433dd0ce91d8ff9b561df61e5480f9bc467ec2120eea79b2a917",
+          "text": "  %transpose.15 = bf16[8,2048,1024]{2,1,0:T(8,128)(2,1)} transpose(%reshape.76), dimensions={0,1,2}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=16}"
+        },
+        {
+          "line": 206,
+          "sha256": "60af66f789a9443c1db5d5b3cc31eb177c467fe2a4337b2e7db25f2dd03dfd67",
+          "text": "  ROOT %scatter.3 = bf16[32768,1024]{1,0:T(8,128)(2,1)} scatter(%param_0.5, %transpose.14, %transpose.15), update_window_dims={2}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=2, indices_are_sorted=true, to_apply=%region_0.0.clone, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 207,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 208,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 209,
+          "sha256": "2e513b61b067dcd933c746a66e7ea2111e2fd0e0c9237853226150deec8831c9",
+          "text": "%fused_computation.3 (param_0.10: s32[16384], param_1.16: bf16[16384,1024], param_2.8: s32[16384], param_3.1: bf16[]) -> bf16[32768,1024] {"
+        },
+        {
+          "line": 210,
+          "sha256": "68db4fd850107591d3c1da0b24b46f92065e285beb9620b017460d4919764bc0",
+          "text": "  %param_3.1 = bf16[]{:T(256)} parameter(3)"
+        },
+        {
+          "line": 211,
+          "sha256": "b7f16cf7c7dcd9c45d326ca1f7d2ab728e7d06b783f3bc65f5d3119239e899b1",
+          "text": "  %fusion.5 = bf16[32768,1024]{1,0:T(8,128)(2,1)} fusion(%param_3.1), kind=kLoop, calls=%fused_computation.5, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/broadcast_in_dim\" stack_frame_id=5}"
+        },
+        {
+          "line": 212,
+          "sha256": "ff77ddd54acbd7370b4acc807c3e8dd3277e53b661fc8108cd281bf902130b09",
+          "text": "  %param_0.10 = s32[16384]{0:T(1024)} parameter(0)"
+        },
+        {
+          "line": 213,
+          "sha256": "f4daf7a27754ef351b593c9bb79ccc0086d5960579a0aa426784a438ec60c1e3",
+          "text": "  %param_1.16 = bf16[16384,1024]{1,0:T(8,128)(2,1)} parameter(1)"
+        },
+        {
+          "line": 214,
+          "sha256": "70e8ea641cd421699f2c19b118609812518a97828ffef146487b05becda96945",
+          "text": "  %param_2.8 = s32[16384]{0:T(1024)S(1)} parameter(2)"
+        },
+        {
+          "line": 215,
+          "sha256": "668160c524512a1305c17b0511773efc8aca64062b1cb0913b49361e6a38a5ff",
+          "text": "  %fusion.4 = bf16[16384,1024]{1,0:T(8,128)(2,1)} fusion(%param_1.16, %param_2.8), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 216,
+          "sha256": "f3941292e003db1778785e04a66d93478b033b29d163c68dbaebafcaf7529fad",
+          "text": "  ROOT %scatter_custom_fusion.1 = bf16[32768,1024]{1,0:T(8,128)(2,1)} fusion(%fusion.5, %param_0.10, %fusion.4), kind=kCustom, calls=%fused_computation.1.clone, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 219,
+          "sha256": "5deaa45cbdb7c8a98a2986462ecbbfd87ea1ef77b3bdc67d904fdc9c041fe7a9",
+          "text": "ENTRY %main.0_spmd (param: f32[32768,1024], param.1: s32[4,2048], param.2: bf16[4,2048,2048]) -> (bf16[4,2048,2048], f32[32768,1024]) {"
+        },
+        {
+          "line": 220,
+          "sha256": "f46f3c8fe7cdf87af115400379b06007638c1cf1c6204e19bca6f398091b39ea",
+          "text": "  %constant.6 = u32[4]{0:T(128)} constant({0, 1, 0, 1}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 221,
+          "sha256": "071d6e6ddfff033a2faf419690f13d93ce16ce67d3b4da808dc87ebe46dc5f9d",
+          "text": "  %constant.58 = u32[1]{0:T(128)} constant({0}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 222,
+          "sha256": "47c27e86710567736e85d880268abbe674c80388f2bf414073d3ab5369263f53",
+          "text": "  %constant.59 = u32[1]{0:T(128)} constant({1}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 223,
+          "sha256": "4e48a2dabfb4f0de3665e884338963b3d6d463fa87383368b8cbed5539788948",
+          "text": "  %constant.60 = s32[1]{0:T(128)} constant({32768}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 224,
+          "sha256": "43930c8f381786b156c6d2512030a01a45a48ea7219b96ed965fc3e13f568e38",
+          "text": "  %constant.12 = s32[]{:T(128)} constant(32767), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 225,
+          "sha256": "dee0caeffc2ca4344e6b1748e790f96d3f9674fb5864dac1d4f368112e67b62b",
+          "text": "  %constant.16 = bf16[]{:T(256)} constant(0), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 226,
+          "sha256": "b38ee186a363289f3452324de19f06e31b3ad72c63a80e7588fc71f17427bc4a",
+          "text": "  %copy-start.5 = (u32[4]{0:T(128)S(1)}, u32[4]{0:T(128)}, u32[]{:S(2)}) copy-start(%constant.6)"
+        },
+        {
+          "line": 227,
+          "sha256": "fed8e28723ac828bca71fe6646658053b77ee7b42d8c70dc5a9c6f863e92a870",
+          "text": "  %param = f32[32768,1024]{1,0:T(8,128)} parameter(0), sharding={devices=[2,2]<=[2,2]T(1,0)}, metadata={op_name=\"w\"}"
+        },
+        {
+          "line": 228,
+          "sha256": "ee3cb2358f577178fe7fe39b32ce8a03b5ca20b5e1938cd01bc782496c395207",
+          "text": "  %param.1 = s32[4,2048]{1,0:T(4,128)} parameter(1), sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"t\"}"
+        },
+        {
+          "line": 229,
+          "sha256": "4d4a4655cf0e1c31beb5628e1704f165181ce4fb3be9d2557707d5c145092f75",
+          "text": "  %copy-start.4 = (s32[4,2048]{1,0:T(4,128)S(1)}, s32[4,2048]{1,0:T(4,128)}, u32[]{:S(2)}) copy-start(%param.1)"
+        },
+        {
+          "line": 230,
+          "sha256": "fdea59f0cbf0d01fc7871bf724b5e0d931311f8946d6b0d8b8019824c3df20c4",
+          "text": "  %param.2 = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}"
+        },
+        {
+          "line": 231,
+          "sha256": "f2253d9f48e615e464731298b2e65c5d8092635da8639d9d9a7c40ec3caaa563",
+          "text": "  %convert_element_type.3 = bf16[32768,1024]{1,0:T(8,128)(2,1)} convert(%param), metadata={op_name=\"jit(feature_vjp)/jvp()/convert_element_type\" stack_frame_id=20}"
+        },
+        {
+          "line": 232,
+          "sha256": "87dd25fff34bec8cc730bfdfafa04f3bf21dcde39e9fcf725f12bbcf7efe154f",
+          "text": "  %copy-done.4 = s32[4,2048]{1,0:T(4,128)S(1)} copy-done(%copy-start.4)"
+        },
+        {
+          "line": 233,
+          "sha256": "725ed3c493961e528edcad6b9febf1b1ded984284d9761f40ef66d5112ba1b01",
+          "text": "  %bitcast.24 = s32[1,4,2048]{2,1,0:T(4,128)S(1)} bitcast(%copy-done.4)"
+        },
+        {
+          "line": 234,
+          "sha256": "3d26ec1ffcc4302ceca14100599dbfe4ae3e680d68cb758e0c5e5892f1f889d6",
+          "text": "  %all-gather.1 = s32[2,4,2048]{2,1,0:T(4,128)} all-gather(%bitcast.24), channel_id=1, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"t\"}"
+        },
+        {
+          "line": 235,
+          "sha256": "199ef5f63f54fa52a1ca1538e6bb86f0eefefe5f542bdceb1daeb68e0823a745",
+          "text": "  %reshape.74 = s32[8,2048]{1,0:T(8,128)} reshape(%all-gather.1)"
+        },
+        {
+          "line": 236,
+          "sha256": "76ee4388a7f536f46aec0d0e337c0e962e2cb86e19c713aa4feace0cdf7d437e",
+          "text": "  %partition-id = u32[]{:T(128)S(6)} partition-id()"
+        },
+        {
+          "line": 237,
+          "sha256": "1ca03054d432cc197fe8dbad1bfacd96feb6f00e585219252c5ec74eb5002aa8",
+          "text": "  %copy-done.5 = u32[4]{0:T(128)S(1)} copy-done(%copy-start.5)"
+        },
+        {
+          "line": 238,
+          "sha256": "b130c11ff3fb89c658b18a1701b70f057b22151231d44646273e93ca20a195ba",
+          "text": "  %dynamic-slice = u32[1]{0:T(128)} dynamic-slice(%copy-done.5, %partition-id), dynamic_slice_sizes={1}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 239,
+          "sha256": "3cd50e01756759b120c08dba94ddb2b6744167d908014993a777eae65dc46051",
+          "text": "  %clamp.3 = u32[1]{0:T(128)S(6)} clamp(%constant.58, %dynamic-slice, %constant.59), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 240,
+          "sha256": "0b0da099a4b4346b86ad0bbb66dbccadfe2966f5005929b3705b8eec989b6698",
+          "text": "  %convert.1 = s32[1]{0:T(128)S(6)} convert(%clamp.3), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 241,
+          "sha256": "3f41e01a50c0854da757b3c210cddd20115edd1c1cbc59937759b6f0ac2e2b1f",
+          "text": "  %multiply.6 = s32[1]{0:T(128)} multiply(%convert.1, %constant.60), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 242,
+          "sha256": "8ced5903eef22f8619d3dda84f0bd1445092f1bf6d7f88068f8298305bf5d9a0",
+          "text": "  %bitcast.1 = s32[]{:T(128)} bitcast(%multiply.6), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 243,
+          "sha256": "cbd872a11079df3ad635713a37e18be636243f955a0cb587035e7ac1537c5e43",
+          "text": "  %subtract_bitcast_fusion.1 = (s32[1,16,8,128]{3,2,1,0:T(8,128)}, s32[1,16,8,128]{3,2,1,0:T(8,128)S(1)}) fusion(%reshape.74, %bitcast.1), kind=kLoop, calls=%fused_computation.9"
+        },
+        {
+          "line": 255,
+          "sha256": "fbdd7058f3cfc6916f3f7b02c29865b53528d3690291c2d4cb3f7c06c0854273",
+          "text": "  %all-reduce = bf16[8,2048,1024]{2,1,0:T(8,128)(2,1)} all-reduce(%broadcast_select_fusion), channel_id=6, replica_groups=[2,2]<=[4], use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=5}"
+        },
+        {
+          "line": 256,
+          "sha256": "41f4ed6b12f416c7f6e3a11d19e7a941925ac7cac1f9d41738b6feabcd6bc5be",
+          "text": "  %bitcast.18 = bf16[2,4,2048,1024]{3,2,1,0:T(8,128)(2,1)} bitcast(%all-reduce)"
+        },
+        {
+          "line": 257,
+          "sha256": "5629474d8bf2f264c8197847efd03953f1c6e7f0675dc3150dac03dc22bbce04",
+          "text": "  %all-to-all = bf16[2,4,2048,1024]{3,2,1,0:T(8,128)(2,1)} all-to-all(%bitcast.18), channel_id=7, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_0'}, dimensions={0}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/jvp()/reshard\" stack_frame_id=16}"
+        },
+        {
+          "line": 258,
+          "sha256": "29ede520361a08dab82b8de0fafdce7a61b4a7508c3d22cd630f1c364e26793f",
+          "text": "  %copy.4 = bf16[2,4,2048,1024]{2,3,0,1:T(8,128)(2,1)} copy(%all-to-all), frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/jvp()/reshard\" stack_frame_id=16}"
+        },
+        {
+          "line": 259,
+          "sha256": "639d04f704f938b6424ea4ed0192233354dd0c65ea85da534bddf2fbbf181163",
+          "text": "  %get-tuple-element.4 = s32[1,16,8,128]{3,2,1,0:T(8,128)} get-tuple-element(%subtract_bitcast_fusion.1), index=0"
+        },
+        {
+          "line": 260,
+          "sha256": "873e7a35e5fce451ff5f9573be3fb1a39d692946b7ba1d6c1c63a7e9365e09f5",
+          "text": "  %copy-start.2 = (s32[1,16,8,128]{3,2,1,0:T(8,128)S(1)}, s32[1,16,8,128]{3,2,1,0:T(8,128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.4)"
+        },
+        {
+          "line": 261,
+          "sha256": "dd1fd6a9517dc275226582100020cbf373f162cd872673a1d1f6054b13798841",
+          "text": "  %copy-start = (bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)S(1)}, bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)}, u32[]{:S(2)}) copy-start(%param.2)"
+        },
+        {
+          "line": 262,
+          "sha256": "8d77f1c225e891b890bd83323eb1c03578544a3b769d4a74fa2ff3044341dbf5",
+          "text": "  %bitcast.19 = bf16[4,2048,2048]{1,2,0:T(8,128)(2,1)} bitcast(%copy.4)"
+        },
+        {
+          "line": 263,
+          "sha256": "7f653fbdb734846e77d7ea980f75db887abf5c149bc8cc50f744dc43c216329e",
+          "text": "  %copy.7 = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)} copy(%bitcast.19)"
+        },
+        {
+          "line": 264,
+          "sha256": "b3c6a20134ba379b6022e00f886317da95cd8127b8c94e820fc6577d9ad66459",
+          "text": "  %copy-done.2 = s32[1,16,8,128]{3,2,1,0:T(8,128)S(1)} copy-done(%copy-start.2)"
+        },
+        {
+          "line": 265,
+          "sha256": "7ebc05ecdc04cd8b356098f0fb62925d3061bc92193addbff487c851c6bd3ee6",
+          "text": "  %copy.9 = s32[1,16,8,128]{3,1,2,0:T(8,128)} copy(%copy-done.2)"
+        },
+        {
+          "line": 266,
+          "sha256": "df1e90ba96d155e466e298834a00b4f17eb695bafd8689ea0e4d03374ce1f405",
+          "text": "  %iota.1 = s32[16384]{0:T(1024)} iota(), iota_dimension=0, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 267,
+          "sha256": "f65f06fee055b73b87fdb4c510d4981f27f60bc75537cd7eddad98c9c1726483",
+          "text": "  %bitcast.22 = s32[16384]{0:T(1024)} bitcast(%copy.9)"
+        },
+        {
+          "line": 268,
+          "sha256": "29171bbbbfdd814e5872ef7b99767f37881400c085264a4f6cffe22294cf9661",
+          "text": "  %sort = (s32[16384]{0:T(1024)}, s32[16384]{0:T(1024)}) sort(%bitcast.22, %iota.1), dimensions={0}, to_apply=%compare, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 269,
+          "sha256": "3798621cb9b16e080101e30b54ee7e3a88973619a831a9d4a2fffdb25840ab12",
+          "text": "  %get-tuple-element.2 = s32[16384]{0:T(1024)} get-tuple-element(%sort), index=0, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 270,
+          "sha256": "eeb2a3188591c20fe48e232616020068c55161a9d7d6e9a1bad61643689b425e",
+          "text": "  %copy-done = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)S(1)} copy-done(%copy-start)"
+        },
+        {
+          "line": 271,
+          "sha256": "3ec019f9127ba2081298511a99c947d9aa2a77c1f15262df05175f106432c67a",
+          "text": "  %copy.5 = bf16[4,2048,2048]{1,2,0:T(8,128)(2,1)} copy(%copy-done), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}"
+        },
+        {
+          "line": 272,
+          "sha256": "b6f24e75052f55d74951ba9ab61853f5750a484dd60e08a208f460bf0b988fcb",
+          "text": "  %bitcast.20 = bf16[4,2048,2,1024]{1,3,2,0:T(8,128)(2,1)} bitcast(%copy.5)"
+        },
+        {
+          "line": 273,
+          "sha256": "7d0e827c0fc171379884c595c7d517c85a56dfffb840b1d399061fa10326287e",
+          "text": "  %copy.6 = bf16[4,2048,2,1024]{3,1,0,2:T(8,128)(2,1)} copy(%bitcast.20), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=16}"
+        },
+        {
+          "line": 274,
+          "sha256": "4ac98888f92e9ca6b8e66d6eba56a5545165a80f91cb6ad46f13095b7308e8f1",
+          "text": "  %get-tuple-element.3 = s32[16384]{0:T(1024)} get-tuple-element(%sort), index=1, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 275,
+          "sha256": "342e1c08753a17576e30dfa85283ffa3882f63ac06081396003eb9bda9d8abe0",
+          "text": "  %copy-start.3 = (s32[16384]{0:T(1024)S(1)}, s32[16384]{0:T(1024)}, u32[]{:S(2)}) copy-start(%get-tuple-element.3)"
+        },
+        {
+          "line": 276,
+          "sha256": "b74bc4a44b9aa47bf0d0caec96599c67b97465a9e4b9a0cd521212105bc9f82b",
+          "text": "  %all-to-all.1 = bf16[4,2048,2,1024]{3,1,0,2:T(8,128)(2,1)} all-to-all(%copy.6), channel_id=8, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_0'}, dimensions={2}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=16}"
+        },
+        {
+          "line": 277,
+          "sha256": "6f5582be644fb1511c4b9fb6a9c04c371d6a80a4cbf6e7006e56d250ed5972da",
+          "text": "  %copy-done.3 = s32[16384]{0:T(1024)S(1)} copy-done(%copy-start.3)"
+        },
+        {
+          "line": 278,
+          "sha256": "22faacf586a937ed445b160199255b5e289c1a46fce1f43e45d2cfecdfbf7a64",
+          "text": "  %broadcast_clamp_fusion = s32[16384]{0:T(1024)S(1)} fusion(%copy-done.3), kind=kLoop, calls=%fused_computation.11, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 279,
+          "sha256": "8d24a4f232b6ff957f774026bc1e08c18a670bf7e89de28b9370b2932529f545",
+          "text": "  %bitcast.21 = bf16[16384,1024]{1,0:T(8,128)(2,1)} bitcast(%all-to-all.1)"
+        },
+        {
+          "line": 280,
+          "sha256": "25bb4aa0c84676fa97b61d4912ae06ba7d12f34e1803047fda3d2f3ca8219d48",
+          "text": "  %scatter_custom_fusion = bf16[32768,1024]{1,0:T(8,128)(2,1)} fusion(%get-tuple-element.2, %bitcast.21, %broadcast_clamp_fusion, %constant.16), kind=kCustom, calls=%fused_computation.3, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=5}"
+        },
+        {
+          "line": 281,
+          "sha256": "3c6761f60e5bd3f816911f1578be05dbe2b29b083d5d125b38b88c29aeffe75d",
+          "text": "  %convert_element_type.11 = f32[32768,1024]{1,0:T(8,128)} convert(%scatter_custom_fusion), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=20}"
+        },
+        {
+          "line": 282,
+          "sha256": "ab44156d98208d82109a2c248ba95062a5bd8178eb9e061d9d531aad9e179274",
+          "text": "  ROOT %tuple.3 = (bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)}, f32[32768,1024]{1,0:T(8,128)}) tuple(%copy.7, %convert_element_type.11)"
+        }
+      ],
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/feature_view.optimized_hlo.txt",
+      "sha256": "b5dba7a58f94242b2d307dba9cdfff362686e95fdd11589be66a68268022919b"
+    },
+    "legacy_control": {
+      "display_omits_backend_config_only_full_line_hash_retained": true,
+      "line_numbers": "one-based",
+      "lines": [
+        {
+          "line": 195,
+          "sha256": "1d6d494de46d8dbda6c740124b191e459a79f06c2fa8d23f616fee6f79960d4b",
+          "text": "%region_0.0.clone (scatter-add.6: bf16[], scatter-add.7: bf16[]) -> bf16[] {"
+        },
+        {
+          "line": 196,
+          "sha256": "89a77cdef0ee1f682a349ad31934ae2697241c19ecd1a0f12458a3bfd9cecf8c",
+          "text": "  %scatter-add.6 = bf16[]{:T(256)} parameter(0), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\"}"
+        },
+        {
+          "line": 197,
+          "sha256": "eef7c3d36a1c342219b85a7523743b1fc155f73d44d225a7ced3072b8664f202",
+          "text": "  %scatter-add.7 = bf16[]{:T(256)} parameter(1), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\"}"
+        },
+        {
+          "line": 198,
+          "sha256": "4b7e760474757990c11dea093a64175dc5bf137728f1cb6609f6a8389fd01df3",
+          "text": "  ROOT %add.8 = bf16[]{:T(256)} add(%scatter-add.6, %scatter-add.7), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/add\" stack_frame_id=22}"
+        },
+        {
+          "line": 199,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 200,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 201,
+          "sha256": "d53eee4b09bd9eb3e359558ac5651b30c358e641b7f5cd9815e65efc5cae4cea",
+          "text": "%fused_computation.1.clone (param_0.5: bf16[32768,1024], param_1.11: s32[16384], param_2.5: bf16[16384,1024]) -> bf16[32768,1024] {"
+        },
+        {
+          "line": 202,
+          "sha256": "51872061a0be642e80868955f46e594e7f53aad6668afca23ad6ecb360b894ef",
+          "text": "  %param_0.5 = bf16[32768,1024]{1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "line": 203,
+          "sha256": "178b5bc9b12bf3e194aacb6eab808b16bf9e1a675a2da0d87e8c3675b6e29f17",
+          "text": "  %param_1.11 = s32[16384]{0:T(1024)} parameter(1)"
+        },
+        {
+          "line": 204,
+          "sha256": "32289dab93df9b923aa3fbf96fdf0c8b350d13cad53c0caeebc98809f3574966",
+          "text": "  %reshape.58 = s32[8,2048]{1,0:T(8,128)} reshape(%param_1.11), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 205,
+          "sha256": "9afa18aebddb14b4c6249cbc53dc724bc3c3172565c0eff0f0c7509ffe396d3c",
+          "text": "  %transpose.14 = s32[8,2048]{1,0:T(8,128)} transpose(%reshape.58), dimensions={0,1}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 206,
+          "sha256": "c284450fa929b2d92305c367786381830cc661e35dbbe27fcaad17513212e3ac",
+          "text": "  %param_2.5 = bf16[16384,1024]{1,0:T(8,128)(2,1)} parameter(2)"
+        },
+        {
+          "line": 207,
+          "sha256": "8470ec0c1cf22df70bd01f54268432c2720b0cdb71a06f772c98073fb49df6d2",
+          "text": "  %reshape.59 = bf16[8,2048,1024]{2,1,0:T(8,128)(2,1)} reshape(%param_2.5), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 208,
+          "sha256": "f17c310304f01ca30809c50a690b03c5c34671a79956cc56a73ec028f14e44d4",
+          "text": "  %transpose.15 = bf16[8,2048,1024]{2,1,0:T(8,128)(2,1)} transpose(%reshape.59), dimensions={0,1,2}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 209,
+          "sha256": "b7b6528a2eb8b324ee3b24ee1922d00c5344a3ab4813c3d8ee6b3fc7c31c4f6b",
+          "text": "  ROOT %scatter.3 = bf16[32768,1024]{1,0:T(8,128)(2,1)} scatter(%param_0.5, %transpose.14, %transpose.15), update_window_dims={2}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=2, indices_are_sorted=true, to_apply=%region_0.0.clone, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 210,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 211,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 212,
+          "sha256": "2e513b61b067dcd933c746a66e7ea2111e2fd0e0c9237853226150deec8831c9",
+          "text": "%fused_computation.3 (param_0.10: s32[16384], param_1.16: bf16[16384,1024], param_2.8: s32[16384], param_3.1: bf16[]) -> bf16[32768,1024] {"
+        },
+        {
+          "line": 213,
+          "sha256": "68db4fd850107591d3c1da0b24b46f92065e285beb9620b017460d4919764bc0",
+          "text": "  %param_3.1 = bf16[]{:T(256)} parameter(3)"
+        },
+        {
+          "line": 214,
+          "sha256": "e2c3d643b4432ef5638cdcbe5a4831e1d7cddfb9d3eaf087d7a31a75726636b5",
+          "text": "  %fusion.5 = bf16[32768,1024]{1,0:T(8,128)(2,1)} fusion(%param_3.1), kind=kLoop, calls=%fused_computation.5, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/broadcast_in_dim\" stack_frame_id=12}"
+        },
+        {
+          "line": 215,
+          "sha256": "ff77ddd54acbd7370b4acc807c3e8dd3277e53b661fc8108cd281bf902130b09",
+          "text": "  %param_0.10 = s32[16384]{0:T(1024)} parameter(0)"
+        },
+        {
+          "line": 216,
+          "sha256": "f4daf7a27754ef351b593c9bb79ccc0086d5960579a0aa426784a438ec60c1e3",
+          "text": "  %param_1.16 = bf16[16384,1024]{1,0:T(8,128)(2,1)} parameter(1)"
+        },
+        {
+          "line": 217,
+          "sha256": "70e8ea641cd421699f2c19b118609812518a97828ffef146487b05becda96945",
+          "text": "  %param_2.8 = s32[16384]{0:T(1024)S(1)} parameter(2)"
+        },
+        {
+          "line": 218,
+          "sha256": "0a38820e52a54abdcbf3a989d18c13bd4825bbaee2c87ba07f4e16081b287c30",
+          "text": "  %fusion.4 = bf16[16384,1024]{1,0:T(8,128)(2,1)} fusion(%param_1.16, %param_2.8), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 219,
+          "sha256": "3781ca1aeb6f838316e5c00443131bccfcc16516a57d9a9a1f6ccec80152602d",
+          "text": "  ROOT %scatter_custom_fusion.1 = bf16[32768,1024]{1,0:T(8,128)(2,1)} fusion(%fusion.5, %param_0.10, %fusion.4), kind=kCustom, calls=%fused_computation.1.clone, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 272,
+          "sha256": "eeb2a3188591c20fe48e232616020068c55161a9d7d6e9a1bad61643689b425e",
+          "text": "  %copy-done = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)S(1)} copy-done(%copy-start)"
+        },
+        {
+          "line": 273,
+          "sha256": "2c9c3e5b78341d806e60cf7e9b6196cc82ccf04cf56e78afc7751a59bbabb8ba",
+          "text": "  %copy.7 = bf16[4,2048,2048]{1,2,0:T(8,128)(2,1)} copy(%copy-done), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}"
+        },
+        {
+          "line": 274,
+          "sha256": "58fbd4e6de059fe83d421e1d11f43bc0e40f8fbd90a484e1ef6d9fa31f4bab09",
+          "text": "  %bitcast.23 = bf16[4,2048,2,1024]{1,3,2,0:T(8,128)(2,1)} bitcast(%copy.7)"
+        },
+        {
+          "line": 275,
+          "sha256": "7c4bb94fe90b26d9ce70cdeaa56ab0afd6bdd917e4c43b85e1aa57bc2701d00c",
+          "text": "  %copy.8 = bf16[4,2048,2,1024]{3,1,0,2:T(8,128)(2,1)} copy(%bitcast.23), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 276,
+          "sha256": "36f40fa3a42f979e4e28095de3526e313c31d7827f1d1df08c28a9ee73fdb00b",
+          "text": "  %get-tuple-element.3 = s32[16384]{0:T(1024)} get-tuple-element(%sort), index=1, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 277,
+          "sha256": "342e1c08753a17576e30dfa85283ffa3882f63ac06081396003eb9bda9d8abe0",
+          "text": "  %copy-start.3 = (s32[16384]{0:T(1024)S(1)}, s32[16384]{0:T(1024)}, u32[]{:S(2)}) copy-start(%get-tuple-element.3)"
+        },
+        {
+          "line": 278,
+          "sha256": "33742043ff202bfb0482755dac90d73e3e223ad2e18d48dedcbab3715140549f",
+          "text": "  %all-to-all.1 = bf16[4,2048,2,1024]{3,1,0,2:T(8,128)(2,1)} all-to-all(%copy.8), channel_id=31, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_0'}, dimensions={2}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 279,
+          "sha256": "6f5582be644fb1511c4b9fb6a9c04c371d6a80a4cbf6e7006e56d250ed5972da",
+          "text": "  %copy-done.3 = s32[16384]{0:T(1024)S(1)} copy-done(%copy-start.3)"
+        },
+        {
+          "line": 280,
+          "sha256": "a5af85270cff171f4d8c49e62e0367ca995218e4df68d188f86e99213ac3b739",
+          "text": "  %broadcast_clamp_fusion = s32[16384]{0:T(1024)S(1)} fusion(%copy-done.3), kind=kLoop, calls=%fused_computation.12, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 281,
+          "sha256": "5f5c0fab8c7fb236db108f8eb7ff23fb7547d29d0a81119e9a94ed00a51d73b2",
+          "text": "  %get-tuple-element.2 = s32[16384]{0:T(1024)} get-tuple-element(%sort), index=0, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 282,
+          "sha256": "f96d9b310c9df48a5d7c9c569a39967b3540a12b47919dbb4e13e7cfcbf17c84",
+          "text": "  %bitcast.24 = bf16[16384,1024]{1,0:T(8,128)(2,1)} bitcast(%all-to-all.1)"
+        },
+        {
+          "line": 283,
+          "sha256": "a91e066a33dd1516c5873d1338d5f9b7a6dee8d0a157d90727eb6e2ea041084b",
+          "text": "  %scatter_custom_fusion = bf16[32768,1024]{1,0:T(8,128)(2,1)} fusion(%get-tuple-element.2, %bitcast.24, %broadcast_clamp_fusion, %constant.16), kind=kCustom, calls=%fused_computation.3, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 284,
+          "sha256": "4a91b18a47db3dc19745816699f6605f76828c9d0e82c94812bb5b037762a4c2",
+          "text": "  %convert_element_type.6 = f32[32768,1024]{1,0:T(8,128)} convert(%scatter_custom_fusion), metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=26}"
+        },
+        {
+          "line": 285,
+          "sha256": "d3802cbbcbe49816660a82c1d3b33f2c2fe40ccc07675aff74adafb44c0bdc7b",
+          "text": "  ROOT %tuple.3 = (bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)}, f32[32768,1024]{1,0:T(8,128)}) tuple(%copy.9, %convert_element_type.6)"
+        }
+      ],
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/legacy.optimized_hlo.txt",
+      "sha256": "975fdb7f4dd4e76f6c0ba5efc58dd4668579b11ad92e618287a3f5dd150bcf50"
+    },
+    "native_control": {
+      "display_omits_backend_config_only_full_line_hash_retained": true,
+      "line_numbers": "one-based",
+      "lines": [
+        {
+          "line": 190,
+          "sha256": "1d6d494de46d8dbda6c740124b191e459a79f06c2fa8d23f616fee6f79960d4b",
+          "text": "%region_0.0.clone (scatter-add.6: bf16[], scatter-add.7: bf16[]) -> bf16[] {"
+        },
+        {
+          "line": 191,
+          "sha256": "20976d3a85011ab90678613f3031141051145826e2c4d315f02d5b006f747009",
+          "text": "  %scatter-add.7 = bf16[]{:T(256)} parameter(1), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\"}"
+        },
+        {
+          "line": 192,
+          "sha256": "8e149c13f9061e39ed843925f25c4c0ff67efe6c733d950f10554eb3dadebaa8",
+          "text": "  %scatter-add.6 = bf16[]{:T(256)} parameter(0), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\"}"
+        },
+        {
+          "line": 193,
+          "sha256": "68caaf89a7228784823c7d71591bae494e6a9350bbba4599348d1fc8f0deaa0c",
+          "text": "  ROOT %add.8 = bf16[]{:T(256)} add(%scatter-add.6, %scatter-add.7), metadata={op_name=\"jit(vjp)/transpose(jvp())/add\" stack_frame_id=16}"
+        },
+        {
+          "line": 194,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 195,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 196,
+          "sha256": "0b378c56f46956b969084ce7a7ced4087adaaeb8d55434e9ce8017d858c49035",
+          "text": "%fused_computation.1.clone (param_0.5: bf16[32768,2048], param_1.11: s32[8192], param_2.5: bf16[8192,2048]) -> bf16[32768,2048] {"
+        },
+        {
+          "line": 197,
+          "sha256": "97d181591d8e46473a462bccc62ef074dc718414772cdfa9134046c62d8fa4ca",
+          "text": "  %param_0.5 = bf16[32768,2048]{1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "line": 198,
+          "sha256": "0e2aa6e90a01e9bd05fe65f674eacfaa02ed2369199e1cd7c68b3898292a37ef",
+          "text": "  %param_1.11 = s32[8192]{0:T(1024)} parameter(1)"
+        },
+        {
+          "line": 199,
+          "sha256": "c4a07d14252ea603a2f37542b383536394052b237fbced1bc08d348e54c51a84",
+          "text": "  %reshape.64 = s32[4,2048]{1,0:T(4,128)} reshape(%param_1.11), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 200,
+          "sha256": "16694635d98018384c9df8cf98edb070caa057e151b8ab5c38b6962eca2a945c",
+          "text": "  %transpose.15 = s32[4,2048]{1,0:T(4,128)} transpose(%reshape.64), dimensions={0,1}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 201,
+          "sha256": "ba13b32612b96f6024a56a1fe9e92714798cc79da24b76d1949c2a822df0193c",
+          "text": "  %param_2.5 = bf16[8192,2048]{1,0:T(8,128)(2,1)} parameter(2)"
+        },
+        {
+          "line": 202,
+          "sha256": "8422921f3f266aede3f1868c34fd3aea766b3b5974a5293b2e9d8b69be4df284",
+          "text": "  %reshape.65 = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)} reshape(%param_2.5), metadata={op_name=\"c\"}"
+        },
+        {
+          "line": 203,
+          "sha256": "47f9550a5e220dc3ca1c8f783f7d94b3cc6fef2ae868617c7857062655f5a416",
+          "text": "  %transpose.16 = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)} transpose(%reshape.65), dimensions={0,1,2}, metadata={op_name=\"c\"}"
+        },
+        {
+          "line": 204,
+          "sha256": "444b104ba07f76e3058f8e84df4d78676867fb815dcead2d8c468878c24962a6",
+          "text": "  ROOT %scatter.3 = bf16[32768,2048]{1,0:T(8,128)(2,1)} scatter(%param_0.5, %transpose.15, %transpose.16), update_window_dims={2}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=2, indices_are_sorted=true, to_apply=%region_0.0.clone, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 205,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 206,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 207,
+          "sha256": "96f28898c67589fe7556e83061de392ea598a9c99b0939ce78f5fda0ff07178d",
+          "text": "%fused_computation.3 (param_0.7: s32[8192], param_1.15: bf16[], param_2.8: bf16[8192,2048], param_3: s32[8192]) -> bf16[32768,2048] {"
+        },
+        {
+          "line": 208,
+          "sha256": "9a60f78ba325e21ff80575fb9b43024807495e6effa9b9cc9b05b6501ca6f5de",
+          "text": "  %param_1.15 = bf16[]{:T(256)} parameter(1)"
+        },
+        {
+          "line": 209,
+          "sha256": "71ce7883c4b31b559bd69e98ab31ca8ea57ae3ca769cc88ba5ba44a1b4f5bd7b",
+          "text": "  %fusion.3 = bf16[32768,2048]{1,0:T(8,128)(2,1)} fusion(%param_1.15), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 210,
+          "sha256": "5a491651967c889501234b5fdeec03cb3552e7c36e80be45a62bbac9767e42fd",
+          "text": "  %param_0.7 = s32[8192]{0:T(1024)} parameter(0)"
+        },
+        {
+          "line": 211,
+          "sha256": "1963ae7b1271f186bf181d53d1c96f82de1b1ad5dff16094426e455fda295017",
+          "text": "  %param_2.8 = bf16[8192,2048]{1,0:T(8,128)(2,1)S(1)} parameter(2)"
+        },
+        {
+          "line": 212,
+          "sha256": "f723f2948054ad97b567b1f170d1af953e12535d72f7557ee6a37639ede39512",
+          "text": "  %param_3 = s32[8192]{0:T(1024)} parameter(3)"
+        },
+        {
+          "line": 213,
+          "sha256": "26e55638fa7e3f2f7f1109fece20cf4a3bd15c2f4e4fe156ee7fb6ebc31da001",
+          "text": "  %fusion.6 = bf16[8192,2048]{1,0:T(8,128)(2,1)} fusion(%param_2.8, %param_3), kind=kLoop, calls=%fused_computation.5, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 214,
+          "sha256": "686d0761e105623050f24e535b71e0def7480f55ea2665f5738ff7f3ca082d92",
+          "text": "  ROOT %scatter_custom_fusion.1 = bf16[32768,2048]{1,0:T(8,128)(2,1)} fusion(%fusion.3, %param_0.7, %fusion.6), kind=kCustom, calls=%fused_computation.1.clone, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 215,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 216,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 217,
+          "sha256": "6de1c958314352f400476cdd959f2a5a9a756ea6d2dc83dfb177de3bdbd67bd0",
+          "text": "%region_0.0.clone.1.clone (scatter-add.10: bf16[], scatter-add.11: bf16[]) -> bf16[] {"
+        },
+        {
+          "line": 218,
+          "sha256": "b57163ffc0ac1a1038d2e87b11c6259f4d9c9d09fe60e9f1aa02ad373a87ee9d",
+          "text": "  %scatter-add.11 = bf16[]{:T(256)} parameter(1), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\"}"
+        },
+        {
+          "line": 219,
+          "sha256": "6d2ecc0d1881f035e556d3ae37156cb6b044763ed93eb266d65ddc89dc3d7ef2",
+          "text": "  %scatter-add.10 = bf16[]{:T(256)} parameter(0), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\"}"
+        },
+        {
+          "line": 220,
+          "sha256": "e0b4bdeb5b3dbb95d9a0a38f4e9747aedd04fc7ff992a64631ab0ee16725ebe8",
+          "text": "  ROOT %add.10 = bf16[]{:T(256)} add(%scatter-add.10, %scatter-add.11), metadata={op_name=\"jit(vjp)/transpose(jvp())/add\" stack_frame_id=16}"
+        },
+        {
+          "line": 221,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 222,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "text": ""
+        },
+        {
+          "line": 223,
+          "sha256": "1414d3ee21bb5ab9ae11e0a80f1f84569ee2948b9d2b094e001595289a43dfdf",
+          "text": "%all-reduce-scatter (input: bf16[32768,2048]) -> bf16[32768,1024] {"
+        },
+        {
+          "line": 224,
+          "sha256": "301088c782d79519bc1017c38b0882bbbc3f165353fab1d01bd6319e2f235181",
+          "text": "  %input = bf16[32768,2048]{1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "line": 225,
+          "sha256": "9169407539b383f059c8dbe696ce19ac54ef9987aad13e847c451c173f971537",
+          "text": "  %all-reduce.2 = bf16[32768,2048]{1,0:T(8,128)(2,1)} all-reduce(%input), channel_id=11, replica_groups={{0,2},{1,3}}, use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}"
+        },
+        {
+          "line": 226,
+          "sha256": "0cc153dab5d3477bf9629310338d1df524d512754b9538acecc9d5489e102120",
+          "text": "  %constant.45 = u32[] constant(0)"
+        },
+        {
+          "line": 227,
+          "sha256": "25e8288debf5c5741607bdf7deace4a7c1227a2569f97fe372ea72c94ddc050a",
+          "text": "  %constant.shard_id_table = u32[4]{0:T(128)} constant({0, 0, 1, 1})"
+        },
+        {
+          "line": 228,
+          "sha256": "64fd7bc94c19cfa2f2adf5da31c75c0682c04d9f40b8f8d46cc6c2cb71a7fd94",
+          "text": "  %partition-id.1 = u32[] partition-id()"
+        },
+        {
+          "line": 229,
+          "sha256": "f47fec00df4b4332f1433c68139eb5bf281a649666576029ca82adb38a96aae6",
+          "text": "  %dynamic-slice.20 = u32[1]{0:T(128)} dynamic-slice(%constant.shard_id_table, %partition-id.1), dynamic_slice_sizes={1}"
+        },
+        {
+          "line": 230,
+          "sha256": "9ef920b72f73acdc6814857ba5f222e0bb38c6f2ccb068ab830737aa5b13cd28",
+          "text": "  %bitcast.4 = u32[]{:T(128)} bitcast(%dynamic-slice.20)"
+        },
+        {
+          "line": 231,
+          "sha256": "6c796268d826271921d8bbeb36bdcea25f175ccb5ad872e1656d6f7301cd0e87",
+          "text": "  %constant.46 = u32[] constant(1024)"
+        },
+        {
+          "line": 232,
+          "sha256": "f4d625a208baeb06b3319b233603673c8694d4b56db6d28fe83f65bbd3634085",
+          "text": "  %multiply = u32[]{:T(128)} multiply(%bitcast.4, %constant.46)"
+        },
+        {
+          "line": 233,
+          "sha256": "dae37d2b108c9161227e54d3a282876c453672ac45aa7493b072611daa935697",
+          "text": "  ROOT %dynamic-slice.21 = bf16[32768,1024]{1,0:T(8,128)(2,1)} dynamic-slice(%all-reduce.2, %constant.45, %multiply), dynamic_slice_sizes={32768,1024}"
+        },
+        {
+          "line": 234,
+          "sha256": "d10b36aa74a59bcf4a88185837f658afaf3646eff2bb16c3928d0e9335e945d2",
+          "text": "}"
+        },
+        {
+          "line": 236,
+          "sha256": "5deaa45cbdb7c8a98a2986462ecbbfd87ea1ef77b3bdc67d904fdc9c041fe7a9",
+          "text": "ENTRY %main.0_spmd (param: f32[32768,1024], param.1: s32[4,2048], param.2: bf16[4,2048,2048]) -> (bf16[4,2048,2048], f32[32768,1024]) {"
+        },
+        {
+          "line": 237,
+          "sha256": "fdea59f0cbf0d01fc7871bf724b5e0d931311f8946d6b0d8b8019824c3df20c4",
+          "text": "  %param.2 = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}"
+        },
+        {
+          "line": 238,
+          "sha256": "8f1cd486d9a4a16f05babe1b11b089b1d93df0691088586bd4bdddc535673d96",
+          "text": "  %copy-start = (bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)S(1)}, bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)}, u32[]{:S(2)}) copy-start(%param.2), cross_program_prefetch_index=0"
+        },
+        {
+          "line": 239,
+          "sha256": "f6bcf601b40893724be00b962f01c2f169bbcc80260a9d2b1e54e52dd5077ab2",
+          "text": "  %constant.11 = s32[4]{0:T(128)} constant({0, 32768, 0, 32768}), metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=6}"
+        },
+        {
+          "line": 240,
+          "sha256": "e2a06a39f3b9f3174fc4b5fd9ff06e679767e035e36488e87a4c85d39ebea275",
+          "text": "  %constant.13 = s32[]{:T(128)} constant(32767), metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=6}"
+        },
+        {
+          "line": 241,
+          "sha256": "d7fb89abf54d1feca50e697767006f3c13445c086723ce0c2fe1be2a0adaf784",
+          "text": "  %constant.19 = bf16[]{:T(256)} constant(0), metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=6}"
+        },
+        {
+          "line": 242,
+          "sha256": "ee3cb2358f577178fe7fe39b32ce8a03b5ca20b5e1938cd01bc782496c395207",
+          "text": "  %param.1 = s32[4,2048]{1,0:T(4,128)} parameter(1), sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"t\"}"
+        },
+        {
+          "line": 243,
+          "sha256": "fed8e28723ac828bca71fe6646658053b77ee7b42d8c70dc5a9c6f863e92a870",
+          "text": "  %param = f32[32768,1024]{1,0:T(8,128)} parameter(0), sharding={devices=[2,2]<=[2,2]T(1,0)}, metadata={op_name=\"w\"}"
+        },
+        {
+          "line": 273,
+          "sha256": "e6c73fe20f1945370d72af6490d431b839bb785bde6b4c66f620dbc33a35e97f",
+          "text": "  %bitcast.11 = bf16[8192,2048]{1,0:T(8,128)(2,1)S(1)} bitcast(%copy-done)"
+        },
+        {
+          "line": 274,
+          "sha256": "0ff9263184046ce389f98bd983b5ad4a2f09e1f389bb965cb29b42ac1476954e",
+          "text": "  %scatter_custom_fusion = bf16[32768,2048]{1,0:T(8,128)(2,1)} fusion(%get-tuple-element, %constant.19, %bitcast.11, %broadcast_clamp_fusion), kind=kCustom, calls=%fused_computation.3, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 275,
+          "sha256": "d3b498279da674e8e99e4bfa0451f27fcb87db16951e5f42938eac5d53515861",
+          "text": "  %fusion.1 = bf16[32768,1024]{1,0:T(8,128)(2,1)} fusion(%scatter_custom_fusion), kind=kCustom, calls=%all-reduce-scatter, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 276,
+          "sha256": "5502801db3ca7c3b2a4853ac9c72024e9ccdb844b4fefbde91136e087baa79b8",
+          "text": "  %convert_element_type.11 = f32[32768,1024]{1,0:T(8,128)} convert(%fusion.1), metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=20}"
+        },
+        {
+          "line": 277,
+          "sha256": "66715a69897b5bae4727e848667ccb797249e8e41e1575130c6cb4a27845e4be",
+          "text": "  ROOT %tuple.2 = (bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)}, f32[32768,1024]{1,0:T(8,128)}) tuple(%all-reduce, %convert_element_type.11)"
+        }
+      ],
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/native.optimized_hlo.txt",
+      "sha256": "94b34909697429f138f82a0be3f4ba612179470de926a5d95acbf32c60a9af36"
+    }
+  },
+  "evidence_boundaries": [
+    "One fixed synthetic unit-RMS BF16 cotangent and deterministic synthetic master weights; not original full-model incoming cotangent or parameters.",
+    "Source lookup-only scope excludes input embedding normalization, matching original architecture false. No full native activations invocation or public native embed method is invented.",
+    "Original normal full-Trainer no-hook HLO and hook-enabled gradient comparison remain different executables; isolated result does not prove the cause of the original full-model mismatch.",
+    "The new primary pair passes; the original native comparison still fails. Full Trainer, production adoption and performance remain unaccepted.",
+    "Raw arrays, checkpoints, profiles and kernel timing are intentionally absent; runtime array assertions and comparison arithmetic were not independently rerun.",
+    "No hardware/JAX execution, network/storage query/download, source/PR/job/storage mutation or publication occurred. Only local stdlib inspection/hash/dataflow review and these new review files."
+  ],
+  "files": {
+    "feature_view.optimized_hlo.txt": {
+      "bytes": 41748,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/feature_view.optimized_hlo.txt",
+      "sha256": "b5dba7a58f94242b2d307dba9cdfff362686e95fdd11589be66a68268022919b"
+    },
+    "feature_view.stablehlo.txt": {
+      "bytes": 3461,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/feature_view.stablehlo.txt",
+      "sha256": "95aca13065c75563798ebf4c4490e35ef9b43e1820a67dcd2282fb13ef667203"
+    },
+    "fp32_scatter.optimized_hlo.txt": {
+      "bytes": 14114,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/fp32_scatter.optimized_hlo.txt",
+      "sha256": "629d057f419a34614546ecbe102c68a1d563c5e11f1bc36cb4d42139b5f893d3"
+    },
+    "fp32_scatter.stablehlo.txt": {
+      "bytes": 2561,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/fp32_scatter.stablehlo.txt",
+      "sha256": "bc4bf4d4aa63a34ebd8584f22398938c2331c5192890edf4756c0a2206931fcb"
+    },
+    "legacy.optimized_hlo.txt": {
+      "bytes": 46217,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/legacy.optimized_hlo.txt",
+      "sha256": "975fdb7f4dd4e76f6c0ba5efc58dd4668579b11ad92e618287a3f5dd150bcf50"
+    },
+    "legacy.stablehlo.txt": {
+      "bytes": 3093,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/legacy.stablehlo.txt",
+      "sha256": "d6921ab0e48c2d1917e03f1203ae3c72619bc31b51267006ed6bfa7c1b6cedca"
+    },
+    "native.optimized_hlo.txt": {
+      "bytes": 36802,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/native.optimized_hlo.txt",
+      "sha256": "94b34909697429f138f82a0be3f4ba612179470de926a5d95acbf32c60a9af36"
+    },
+    "native.stablehlo.txt": {
+      "bytes": 3261,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/native.stablehlo.txt",
+      "sha256": "503afca333e51dd11414abf9b9e3d87c1b86fcdb1d0c978cab1d854fe513e818"
+    },
+    "report.json": {
+      "bytes": 145180,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/report.json",
+      "sha256": "344aa7f4ea8e755c63283f45dab30b9a637ec2ef80d9837c7758a77052a16f7a"
+    },
+    "wrapper-outcomes.json": {
+      "bytes": 1416,
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/wrapper-outcomes.json",
+      "sha256": "c1bdcc7f6de36eee0bbf293b43a1b1c740a5b3b6a6fedbef55d7ea99d0f1cc3e"
+    }
+  },
+  "fixture": {
+    "benchmark_batch_sha256": "d65acfa301bad7db399ff9df86cbbc150c649317dd357b3a26c53c9eaea9caa4",
+    "bf16_rms": 0.9999986256813564,
+    "cotangent_kind": "Single frozen synthetic unit-RMS fixture, not captured full-model cotangent",
+    "cotangent_seed": 20261023,
+    "cotangent_sha256": "1b96c1651a0e69deedca890c4c504e36ceae26e23dc85e5473e5fd0874f9c402",
+    "master_sha256": "875f398b09716aa6b176c42312bd6180a73059163c090f08f7bca0f9745f0090",
+    "pre_quantization_rms": 0.9999999447617529,
+    "token_sha256": "b5c2a311538c4df9fc90881fc098356324212264fd2eea244f69c100da819472",
+    "weights_kind": "Deterministic synthetic FP32 weights, not full-model parameters"
+  },
+  "frozen_provenance": {
+    "all10scientific_import_hashes_and_app_paths_match": true,
+    "all14frozen_payload_hashes_sizes_verified": true,
+    "all8stable_and_optimized_HLO_hashes_sizes_match_report": true,
+    "config_sha256": "fc522040884dd3ed2ea9d7c5ee1827b481fe9ce5841a411bd1226ae8a9845554",
+    "exact_inherited_v2_bytes_and_all_inherited_config_fields_unchanged": true,
+    "feature_view_AST_recomputed_from_frozen_runner_matches": true,
+    "feature_view_AST_statement_guard": {
+      "ast_sha256": "d5c200055ddd82053e49b5efc88ce1482e1eeba66b9ff760eeb2af3c1d04fee2",
+      "statement_count": 5
+    },
+    "final_freeze_sha256": "427b251727ec9668511d28a0722179c57f255d59a7164f5b3b1bbc4b126f5b89",
+    "import_proof": {
+      "bench_llama_native": {
+        "path": "/app/lib/levanter/scripts/bench/bench_llama_native.py",
+        "sha256": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77"
+      },
+      "haliax.axis": {
+        "path": "/app/lib/haliax/src/haliax/axis.py",
+        "sha256": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830"
+      },
+      "haliax.core": {
+        "path": "/app/lib/haliax/src/haliax/core.py",
+        "sha256": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540"
+      },
+      "haliax.jax_utils": {
+        "path": "/app/lib/haliax/src/haliax/jax_utils.py",
+        "sha256": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d"
+      },
+      "haliax.nn.embedding": {
+        "path": "/app/lib/haliax/src/haliax/nn/embedding.py",
+        "sha256": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8"
+      },
+      "haliax.nn.mup": {
+        "path": "/app/lib/haliax/src/haliax/nn/mup.py",
+        "sha256": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144"
+      },
+      "haliax.partitioning": {
+        "path": "/app/lib/haliax/src/haliax/partitioning.py",
+        "sha256": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08"
+      },
+      "levanter.models.llama": {
+        "path": "/app/lib/levanter/src/levanter/models/llama.py",
+        "sha256": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f"
+      },
+      "levanter.models.llama_native": {
+        "path": "/app/lib/levanter/src/levanter/models/llama_native.py",
+        "sha256": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984"
+      },
+      "levanter.trainer": {
+        "path": "/app/lib/levanter/src/levanter/trainer.py",
+        "sha256": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+      }
+    },
+    "inherited_config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+    "inherited_helper_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+    "libtpu_init_args": " --xla_tpu_use_enhanced_launch_barrier=true",
+    "manifest_sha256": "4e49f903a3fccd8275e677f535dc27c259ea9a35017df7187c5c058fd61f176b",
+    "python": "3.12.15",
+    "runner_sha256": "b912e0ba24c1c994dd5410e254452eeb92237225ece0b32fd6601046b7dd8183",
+    "runtime_git_boundary": "Runtime .git absent is honestly false/null. Runtime evidence is explicit declared pin plus exact scientific source/import hashes. Root owns clean source and archive chronology evidence.",
+    "runtime_pins_flags_match_config": true,
+    "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+    "source_guard": {
+      "legacy_embed": {
+        "ast_sha256": "b7ad5c5d486db5126a66a28b1630461c7a8acb578cdcde91b208765e19b310a8",
+        "statement_count": 3
+      },
+      "native_activations": {
+        "ast_sha256": "4fb95befb804cfca40063261892b2330d7a595388e427623f40dff5daef0e9f1",
+        "statement_count": 12
+      },
+      "native_fragment": {
+        "assignment_count": 3,
+        "ast_sha256": "d0f487382beba426daad76068e8dc47b4c43f6fccfad55b9d555814d81f40f4b",
+        "claim": "Exact three source assignments plus return; no full activations, no native public embed method",
+        "source_lines": [
+          [
+            381,
+            381
+          ],
+          [
+            386,
+            386
+          ],
+          [
+            387,
+            387
+          ]
+        ]
+      },
+      "source_identity": {
+        "claim": "Exact scientific source/import bytes verified; declared pin is not runtime Git proof when metadata is absent",
+        "declared_source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+        "file_hashes_verified": true,
+        "git_metadata_available": false,
+        "runtime_git_commit": null
+      }
+    },
+    "source_sha256_matches_manifest": true,
+    "versions": {
+      "equinox": "0.13.2",
+      "jax": "0.11.1",
+      "jaxlib": "0.11.1",
+      "jmp": "0.0.4",
+      "numpy": "2.3.5",
+      "optax": "0.2.6"
+    },
+    "xla_flags": "--xla_allow_excess_precision=false"
+  },
+  "job": {
+    "attempt": "b1e8c4cfe1fe39bf",
+    "identity": "/dlwh/levanter-native-jax-v5p-embedding-view-8aa-20261024",
+    "lifecycle_archive_order_not_requeried_by_reviewer": true,
+    "report_numerical_exit_code": 0,
+    "root_authoritative_terminal_state": "SUCCEEDED",
+    "root_reported_archive_before_submit_and389remote_records_verified": true,
+    "root_reported_elapsed_seconds": 68.22,
+    "root_reported_failures": 0,
+    "root_reported_preemptions": 0,
+    "root_reported_preparation_archive_commit": "789ee47054855979fa9db6bd3139a518e4f30f92",
+    "root_reported_submission": "2026-10-24T02:49:58.553376Z",
+    "wrapper_compute_returncode": 0
+  },
+  "numerical_result": {
+    "FP32_reference": "Feature view inherits exactly legacy deviation from FP32 diagnostic: max0.03515625/L20.0008710461755118038. This is exact legacy matching, not exact-real-arithmetic improvement or an oracle result.",
+    "acceptance": {
+      "atol": 1e-05,
+      "feature_view_matches_legacy": true,
+      "full_trainer_accepted": false,
+      "isolated_bf16_vjp_allclose": true,
+      "primary_pair": "legacy_vs_feature_view",
+      "rtol": 0.0001,
+      "speed_ratio": null
+    },
+    "all4variants_passed_fatal_nonfinite_guard_before_recorded_comparisons": true,
+    "basis": "Frozen runner171 invokes exact inherited v2 require_finite_outputs before every stored result; all4 actual records and9 completed finite comparisons exist, without numerical_failure/verification_failure.",
+    "comparison_valid": true,
+    "comparisons": {
+      "feature_view_vs_fp32_scatter_diagnostic": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 1942393,
+        "elements": 134217728,
+        "first_mismatches": [
+          {
+            "index": [
+              79,
+              0
+            ],
+            "left": 1.15625,
+            "right": 1.156982421875
+          },
+          {
+            "index": [
+              79,
+              3
+            ],
+            "left": -0.76171875,
+            "right": -0.7626953125
+          },
+          {
+            "index": [
+              79,
+              5
+            ],
+            "left": -0.9453125,
+            "right": -0.9461669921875
+          },
+          {
+            "index": [
+              79,
+              6
+            ],
+            "left": 1.140625,
+            "right": 1.1402206420898438
+          },
+          {
+            "index": [
+              79,
+              7
+            ],
+            "left": 1.078125,
+            "right": 1.08203125
+          },
+          {
+            "index": [
+              79,
+              8
+            ],
+            "left": -1.546875,
+            "right": -1.54296875
+          },
+          {
+            "index": [
+              79,
+              13
+            ],
+            "left": -0.8203125,
+            "right": -0.8212890625
+          },
+          {
+            "index": [
+              79,
+              14
+            ],
+            "left": 0.86328125,
+            "right": 0.86279296875
+          }
+        ],
+        "max_abs": 0.03515625,
+        "mean_abs": 4.086088783350483e-05,
+        "mismatch_count": 1938941,
+        "relative_l2": 0.0008710461755118038,
+        "rtol": 0.0001,
+        "worst_index": [
+          47658,
+          1495
+        ]
+      },
+      "forward_legacy_vs_feature_view": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 33554432,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0,
+          0
+        ]
+      },
+      "forward_legacy_vs_native": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 33554432,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0,
+          0
+        ]
+      },
+      "forward_native_vs_feature_view": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 33554432,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0,
+          0
+        ]
+      },
+      "legacy_vs_fp32_scatter_diagnostic": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 1942393,
+        "elements": 134217728,
+        "first_mismatches": [
+          {
+            "index": [
+              79,
+              0
+            ],
+            "left": 1.15625,
+            "right": 1.156982421875
+          },
+          {
+            "index": [
+              79,
+              3
+            ],
+            "left": -0.76171875,
+            "right": -0.7626953125
+          },
+          {
+            "index": [
+              79,
+              5
+            ],
+            "left": -0.9453125,
+            "right": -0.9461669921875
+          },
+          {
+            "index": [
+              79,
+              6
+            ],
+            "left": 1.140625,
+            "right": 1.1402206420898438
+          },
+          {
+            "index": [
+              79,
+              7
+            ],
+            "left": 1.078125,
+            "right": 1.08203125
+          },
+          {
+            "index": [
+              79,
+              8
+            ],
+            "left": -1.546875,
+            "right": -1.54296875
+          },
+          {
+            "index": [
+              79,
+              13
+            ],
+            "left": -0.8203125,
+            "right": -0.8212890625
+          },
+          {
+            "index": [
+              79,
+              14
+            ],
+            "left": 0.86328125,
+            "right": 0.86279296875
+          }
+        ],
+        "max_abs": 0.03515625,
+        "mean_abs": 4.086088783350483e-05,
+        "mismatch_count": 1938941,
+        "relative_l2": 0.0008710461755118038,
+        "rtol": 0.0001,
+        "worst_index": [
+          47658,
+          1495
+        ]
+      },
+      "native_vs_fp32_scatter_diagnostic": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 1942260,
+        "elements": 134217728,
+        "first_mismatches": [
+          {
+            "index": [
+              79,
+              0
+            ],
+            "left": 1.15625,
+            "right": 1.156982421875
+          },
+          {
+            "index": [
+              79,
+              3
+            ],
+            "left": -0.76171875,
+            "right": -0.7626953125
+          },
+          {
+            "index": [
+              79,
+              5
+            ],
+            "left": -0.9453125,
+            "right": -0.9461669921875
+          },
+          {
+            "index": [
+              79,
+              6
+            ],
+            "left": 1.140625,
+            "right": 1.1402206420898438
+          },
+          {
+            "index": [
+              79,
+              7
+            ],
+            "left": 1.078125,
+            "right": 1.08203125
+          },
+          {
+            "index": [
+              79,
+              8
+            ],
+            "left": -1.546875,
+            "right": -1.54296875
+          },
+          {
+            "index": [
+              79,
+              13
+            ],
+            "left": -0.8203125,
+            "right": -0.8212890625
+          },
+          {
+            "index": [
+              79,
+              14
+            ],
+            "left": 0.86328125,
+            "right": 0.86279296875
+          }
+        ],
+        "max_abs": 0.03125,
+        "mean_abs": 4.085219167149212e-05,
+        "mismatch_count": 1938808,
+        "relative_l2": 0.0008707994283271719,
+        "rtol": 0.0001,
+        "worst_index": [
+          1129,
+          1634
+        ]
+      },
+      "vjp_legacy_vs_feature_view": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 134217728,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0
+        ]
+      },
+      "vjp_legacy_vs_native": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 26892,
+        "elements": 134217728,
+        "first_mismatches": [
+          {
+            "index": [
+              582,
+              1
+            ],
+            "left": 0.828125,
+            "right": 0.82421875
+          },
+          {
+            "index": [
+              582,
+              6
+            ],
+            "left": -0.271484375,
+            "right": -0.2734375
+          },
+          {
+            "index": [
+              582,
+              11
+            ],
+            "left": 1.015625,
+            "right": 1.0234375
+          },
+          {
+            "index": [
+              582,
+              13
+            ],
+            "left": -0.609375,
+            "right": -0.60546875
+          },
+          {
+            "index": [
+              582,
+              14
+            ],
+            "left": 1.03125,
+            "right": 1.0234375
+          },
+          {
+            "index": [
+              582,
+              15
+            ],
+            "left": 1.2421875,
+            "right": 1.234375
+          },
+          {
+            "index": [
+              582,
+              22
+            ],
+            "left": -0.9140625,
+            "right": -0.91015625
+          },
+          {
+            "index": [
+              582,
+              23
+            ],
+            "left": 0.0234375,
+            "right": 0.02734375
+          }
+        ],
+        "max_abs": 0.03125,
+        "mean_abs": 1.4240179098123917e-06,
+        "mismatch_count": 26892,
+        "relative_l2": 0.000257512987032736,
+        "rtol": 0.0001,
+        "worst_index": [
+          582,
+          85
+        ]
+      },
+      "vjp_native_vs_feature_view": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 26892,
+        "elements": 134217728,
+        "first_mismatches": [
+          {
+            "index": [
+              582,
+              1
+            ],
+            "left": 0.82421875,
+            "right": 0.828125
+          },
+          {
+            "index": [
+              582,
+              6
+            ],
+            "left": -0.2734375,
+            "right": -0.271484375
+          },
+          {
+            "index": [
+              582,
+              11
+            ],
+            "left": 1.0234375,
+            "right": 1.015625
+          },
+          {
+            "index": [
+              582,
+              13
+            ],
+            "left": -0.60546875,
+            "right": -0.609375
+          },
+          {
+            "index": [
+              582,
+              14
+            ],
+            "left": 1.0234375,
+            "right": 1.03125
+          },
+          {
+            "index": [
+              582,
+              15
+            ],
+            "left": 1.234375,
+            "right": 1.2421875
+          },
+          {
+            "index": [
+              582,
+              22
+            ],
+            "left": -0.91015625,
+            "right": -0.9140625
+          },
+          {
+            "index": [
+              582,
+              23
+            ],
+            "left": 0.02734375,
+            "right": 0.0234375
+          }
+        ],
+        "max_abs": 0.03125,
+        "mean_abs": 1.4240179098123917e-06,
+        "mismatch_count": 26892,
+        "relative_l2": 0.00025751300764404155,
+        "rtol": 0.0001,
+        "worst_index": [
+          582,
+          85
+        ]
+      }
+    },
+    "feature_forward_and_master_gradient_output_hashes": [
+      "bbd826b3350d220e8123cd8ac6d6a901a896fd4c252e618f2c5bcf603cac5b0b",
+      "9457030706c0aba80d55f167ac8736e40ecc4a38ab5d06c627726ce9bb266b4e"
+    ],
+    "feature_hash_exact_legacy": true,
+    "legacy_forward_and_master_gradient_output_hashes": [
+      "bbd826b3350d220e8123cd8ac6d6a901a896fd4c252e618f2c5bcf603cac5b0b",
+      "9457030706c0aba80d55f167ac8736e40ecc4a38ab5d06c627726ce9bb266b4e"
+    ],
+    "numerical_exit_code": 0,
+    "original_legacy_native_comparison_valid": false,
+    "raw_arrays_absent": "Runtime input/output hashes and metrics cannot be independently recomputed offline; retained frozen code/manifest/report and complete actual HLO provide auditable evidence.",
+    "success_scope": "Only primary legacy_vs_feature_view pair. Original native failure remains false, full_trainer_accepted=false, speed_ratio=null."
+  },
+  "schema": "native-jax-embedding-feature-view-tpu-independent-review.v1",
+  "source_change_recommendation": {
+    "derive": [
+      "Use existing model_axis and fsdp_axis/column_storage for feature-sharded embedding compute weights; preserve actual FP32->BF16 cast before the view.",
+      "Replicate tokens only across any FSDP axis currently included in batch_axes; retain other independent batch axes. With no FSDP axis this naturally retains the original batch partition.",
+      "Derive the lookup intermediate layout from retained batch axes plus feature partition fsdp_axis, then reshard to the existing residual layout.",
+      "Preserve the current external storage/tokens/output physical contract; avoid hardcoded data/model names,2x2 device assumptions,new config switches, custom VJP, or changed accumulation dtype."
+    ],
+    "generalize_from_existing_sharding_fields": true,
+    "implementation_adoption_or_run_performed_by_reviewer": false,
+    "justified_as_narrow_next_source_proposal": true,
+    "performance_boundary": "Earlier logical payload estimates predict a different forward tradeoff, and this actual HLO shows the expected collectives. No measured traffic, latency or throughput is retained. Whole-job54.97s versus68.22s includes different variant count/compilation and must never become a speed comparison.",
+    "reason": "The isolated controlled view change gives exact legacy matching and predicted typed gradient routing while all original controls and physical boundaries repeat. This is sufficient evidence to propose the native embedding compute-view change for further validation.",
+    "validation_needed": [
+      "Renamed axes, FSDP absent/present, model axis absent/present, and batch axes overlapping FSDP versus independent additional data axes.",
+      "FP32 and BF16 ordinary forward/loss/all-gradient comparisons on matched weights, plus named/generation boundary behavior where the helper is reused.",
+      "Independently inspect actual gradients/HLO where layouts materially differ; do not assume all meshes reproduce the one2x2 lowering.",
+      "Full-Trainer numerical gates remain independently required before canonical adoption; original incoming cotangents and hook diagnostic HLO remain absent."
+    ]
+  },
+  "status": "VALID_ISOLATED_TPU_FEATURE_VIEW_PASS_WITH_TYPED_DATAFLOW_MATCH",
+  "verdict": "On the single frozen synthetic common-cotangent fixture, the ordinary-JAX feature compute-view intervention eliminates the isolated legacy/native discrepancy and produces legacy-hash-exact forward and FP32 master gradients. Actual typed TPU gradient dataflow realizes the predicted full-batch/feature-shard BF16 scatter with direct FP32 conversion. The unmodified native control still fails identically. This supports the isolated compute-view/grouping mechanism; it does not accept the full Trainer, prove its original failure cause, or establish performance."
+}
