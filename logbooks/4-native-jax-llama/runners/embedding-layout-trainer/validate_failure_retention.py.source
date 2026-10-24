@@ -1,0 +1,55 @@
+"""Mechanical controller exceptions/caps only; no model or upload execution."""
+import copy,hashlib,importlib.util,json,os,subprocess,sys,tarfile
+from pathlib import Path
+HERE=Path(__file__).parent;root=HERE/'failure-mechanics';root.mkdir(exist_ok=False)
+runner=HERE/'host_runner.py';job=json.loads((HERE/'job-config.json').read_text());os.environ.update(job['scientific_environment'])
+spec=importlib.util.spec_from_file_location('controller_failure_mechanics',runner);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+original_run=module.subprocess.run;original_guard=module.source_guard;records=[]
+for label in ['spawn_error','malformed_report','post_output_source_guard','spawn_and_backup_exception']:
+ output=root/label;uploads=[];calls={'guard':0}
+ def guard(config):
+  calls['guard']+=1
+  if label=='post_output_source_guard' and calls['guard']==2:raise ValueError('Injected post-output source guard failure')
+  return original_guard(config)
+ def run(argv,**kwargs):
+  if argv[1:3]==['-m','rigging.fsutil.cli']:
+   assert argv[3:5]==['cp','-n'];archive=Path(argv[5]);uploads.append(str(archive))
+   with tarfile.open(archive) as tar:
+    members=tar.getmembers();assert any(m.name=='controller-failure.json' for m in members)
+    assert all(m.isfile() and tar.extractfile(m).read()==(output/m.name).read_bytes() for m in members)
+   if label=='spawn_and_backup_exception':raise OSError('Injected backup spawn failure')
+   return subprocess.CompletedProcess(argv,0)
+  if 'capture_output' in kwargs:
+   return subprocess.CompletedProcess(argv,0,stdout=json.dumps({'backend':'tpu','process_count':1,'global_device_count':4,'local_device_count':4,'devices':[{'kind':'TPU v5'}]*4}),stderr='')
+  case=argv[argv.index('--compute-dtype')+1];folder=output/case;folder.mkdir()
+  (folder/'native.optimized_hlo.txt').write_text('HloModule mechanical_partial\n')
+  if label in ['spawn_error','spawn_and_backup_exception']:raise OSError('Injected benchmark spawn failure')
+  (folder/'compare.json').write_text('{malformed report mechanical fixture')
+  return subprocess.CompletedProcess(argv,1)
+ module.source_guard=guard;module.subprocess.run=run;os.environ['IRIS_OUTPUT_DIR']=str(output);sys.argv=[str(runner),json.dumps(job,separators=(',',':'))]
+ expected=ValueError if label=='post_output_source_guard' else json.JSONDecodeError if label=='malformed_report' else OSError
+ try:module.main();raise AssertionError('Failure was swallowed')
+ except expected as error:
+  assert len(uploads)==1
+  receipt=json.loads((output/'controller-failure.json').read_text());assert receipt['comparison_valid'] is False and receipt['partial_report']
+  assert receipt['controller_failure']['exception_type']==type(error).__name__
+  if label=='spawn_and_backup_exception':assert 'Diagnostic backup also failed: OSError' in error.__notes__
+  records.append({'case':label,'original_exception_propagated':type(error).__name__,'backup_attempts_intercepted':len(uploads),'bounded_archive_contains_exact_partial_outputs':True,'invalid_failure_receipt':True,'original_exception_note':getattr(error,'__notes__',[])})
+module.source_guard=original_guard;module.subprocess.run=original_run
+# Retention against complete saved large JSON/HLO only, no new measurements.
+fixture=root/'saved_large_retention';fixture.mkdir();old=Path('/private/tmp/native-jax-query-scale-15b-trainer-v2-results')
+for path in old.rglob('*'):
+ if path.is_file() and (path.suffix=='.json' or path.name.endswith('hlo.txt')):
+  target=fixture/path.relative_to(old);target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(path.read_bytes())
+archive=root/'saved-large.tar.gz';summary=module.archive_diagnostics(fixture,archive,job['archive_limits'])
+with tarfile.open(archive) as tar:
+ members=tar.getmembers();assert len(members)==16 and sum(m.name.endswith('hlo.txt') for m in members)==8
+ assert all(tar.extractfile(m).read()==(fixture/m.name).read_bytes() for m in members)
+# Exercise real archive guards with small mechanical limits, not huge allocations.
+caps=[]
+for label,limits,name,data in [('raw',{'files':128,'per_file_bytes':1024,'uncompressed_bytes':7,'compressed_bytes':4096},'part.hlo.txt',b'12345678'),('gzip',{'files':128,'per_file_bytes':1024,'uncompressed_bytes':4096,'compressed_bytes':1},'part.hlo.txt',b'HloModule fixture\n'),('unexpected',job['archive_limits'],'weights.npy',b'not-an-array'),('count',{'files':0,'per_file_bytes':1024,'uncompressed_bytes':4096,'compressed_bytes':4096},'part.hlo.txt',b'HloModule fixture\n')]:
+ folder=root/('cap-'+label);folder.mkdir();(folder/name).write_bytes(data)
+ try:module.archive_diagnostics(folder,root/('cap-'+label+'.tar.gz'),limits);raise AssertionError('Guard did not reject')
+ except ValueError as error:assert (folder/name).read_bytes()==data;caps.append({'case':label,'reject':str(error),'output_unchanged':True,'no_upload':True})
+proof={'source_pin':job['source_commit'],'runner_sha256':hashlib.sha256(runner.read_bytes()).hexdigest(),'scope':'Injected stdlib subprocess/report/source-guard failures and archive limits only. No benchmark/model/upload execution; no claim of hard-termination/SIGKILL capture.','exception_cases':records,'caps':caps,'saved_large_JSON_HLO_archive':summary,'complete_saved_members_exact':True,'no_network_client_or_hardware':True}
+(HERE/'failure-retention-proof.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps({'cases':records,'caps':caps,'archive_raw':summary['uncompressed_bytes']}))

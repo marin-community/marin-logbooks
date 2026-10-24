@@ -1,0 +1,58 @@
+"""Exercise only exact-once script --validate-only, denying dispatch APIs."""
+import ast
+import hashlib
+import json
+from pathlib import Path
+import runpy
+import sys
+import traceback
+
+script = Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final/submit_once.template.py')
+markers = [Path('/private/tmp/' + name) for name in [
+    'native-jax-embed-layout-trainer-dispatch-release.json',
+    'native-jax-embed-layout-trainer-submit-claim.json',
+    'marin-native-jax-embed-layout-trainer-monitor.json']]
+assert not any(path.exists() for path in markers)
+calls = []
+network = []
+blocked_import_local_bind_probes = []
+def audit(event, arguments):
+    if event == 'socket.bind':
+        blocked_import_local_bind_probes.append({'event':event,'stack':[{'file':v.filename,'line':v.lineno,'function':v.name} for v in traceback.extract_stack(limit=3)]})
+        raise RuntimeError('Local import capability bind blocked by offline proof')
+    if event in {'socket.connect', 'socket.connect_ex', 'socket.getaddrinfo', 'socket.gethostbyname', 'socket.gethostbyaddr'}:
+        network.append(event)
+        raise RuntimeError('Network forbidden in validation')
+def profile(frame, event, argument):
+    if event != 'call':
+        return
+    module = frame.f_globals.get('__name__', '')
+    name = frame.f_code.co_name
+    if (module.startswith('iris') and name in {'open_iris_client', 'submit', 'submit_job', 'launch_job'}) or (module.startswith('rigging.secrets') and name in {'get_secret', 'require_secret', 'forwarded_secrets', 'resolve_secrets'}):
+        calls.append(module + '.' + name)
+        raise RuntimeError('Client/credential dispatch forbidden')
+sys.addaudithook(audit)
+sys.setprofile(profile)
+sys.argv = [str(script), '--validate-only']
+try:
+    runpy.run_path(str(script), run_name='__main__')
+finally:
+    sys.setprofile(None)
+Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final/once-observed-calls.json').write_text(json.dumps({'calls':calls,'network':network}))
+assert not calls and not network
+assert not any(path.exists() for path in markers)
+text = script.read_text()
+# Static branch-order proof only; --submit is never exercised.
+assert text.index('if args.validate_only:') < text.index('release = json.loads(RELEASE.read_text())') < text.index("with CLAIM.open('x')") < text.index('with open_iris_client(') < text.index('client.submit(')
+assert 'existing_job_policy=job_pb2.EXISTING_JOB_POLICY_ERROR' in text
+assert 'automatic_recovery_authorized' in text
+ast.parse(text)
+record = json.loads(Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final/submit-validation.json').read_text())
+proof = {'scope': 'Actual --validate-only branch plus static submit-branch order; no submit-branch execution',
+    'submit_script_sha256': hashlib.sha256(script.read_bytes()).hexdigest(),
+    'validation_record': record, 'network_events': network, 'client_credential_RPC_calls': calls,
+    'blocked_urllib3_import_IPv6_local_bind_probes': blocked_import_local_bind_probes, 'release_claim_state_absent_before_and_after': True, 'submission_not_exercised': True,
+    'static_order': ['validate_only_return', 'exact_review_archive_release', 'exclusive_claim', 'public_open_client', 'public_submit'],
+    'existing_policy_ERROR': True, 'ambiguous_dispatch_claim_retained_no_recovery': True}
+Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final/once-proof.json').write_text(json.dumps(proof, indent=2) + '\n')
+print(json.dumps(proof, sort_keys=True))

@@ -1,0 +1,29 @@
+"""Replay retained tiny reports to exercise controller exit/backup paths only."""
+import hashlib,importlib.util,json,os,subprocess,sys,tarfile
+from pathlib import Path
+HERE=Path(__file__).parent;root=HERE/'exit-mechanics';root.mkdir(exist_ok=False);runner=HERE/'host_runner.py';job=json.loads((HERE/'cpu-config.json').read_text())
+spec=importlib.util.spec_from_file_location('controller_exit_mechanics',runner);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);original_run=module.subprocess.run
+records=[]
+for label in ['child_exit1','backup_return37','backup_timeout']:
+ output=root/label;uploads=[];cases=[];os.environ.update(job['scientific_environment'],IRIS_OUTPUT_DIR=str(output))
+ def run(argv,**kwargs):
+  if argv[1:3]==['-m','rigging.fsutil.cli']:
+   uploads.append(argv[:]);assert argv[3:5]==['cp','-n'] and kwargs['timeout']==90
+   with tarfile.open(argv[5]) as tar:assert all(m.isfile() and tar.extractfile(m).read()==(output/m.name).read_bytes() for m in tar.getmembers())
+   if label=='backup_timeout':raise subprocess.TimeoutExpired(argv,90)
+   return subprocess.CompletedProcess(argv,37 if label=='backup_return37' else 0)
+  if kwargs.get('capture_output'):
+   return subprocess.CompletedProcess(argv,0,stdout=(HERE/'cpu-results/device-probe.json').read_text(),stderr='')
+  case=argv[argv.index('--compute-dtype')+1];cases.append(case);folder=output/case;folder.mkdir()
+  for source in (HERE/'cpu-results'/case).iterdir():(folder/source.name).write_bytes(source.read_bytes())
+  return subprocess.CompletedProcess(argv,1 if label=='child_exit1' and case=='float32' else 0)
+ module.subprocess.run=run;sys.argv=[str(runner),json.dumps(job,separators=(',',':'))]
+ try:module.main();raise AssertionError('Expected fatal exit')
+ except SystemExit as error:assert error.code==1 and label!='backup_timeout';outcome='exit1'
+ except subprocess.TimeoutExpired:assert label=='backup_timeout';outcome='TimeoutExpired propagated'
+ assert cases==['float32','bfloat16'] and len(uploads)==1
+ assert all(g['passed'] for g in json.loads((output/'matched-guards.json').read_text()).values())
+ records.append({'case':label,'result':outcome,'both_case_reports_retained':True,'matching_guards_pass':True,'backup_attempts_intercepted':1,'archive_members_byte_exact':True})
+module.subprocess.run=original_run
+proof={'runner_sha256':hashlib.sha256(runner.read_bytes()).hexdigest(),'scope':'Mechanical subprocess exit replay using retained actual tiny CPU reports. No model/benchmark/upload execution here; injected child exit1 is not a new scientific numerical failure.','cases':records,'no_network_client_or_hardware':True}
+(HERE/'exit-path-proof.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof))

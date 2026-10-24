@@ -1,0 +1,142 @@
+{
+  "source_pin": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "runner_sha256": "1839b3cc65314661503f689280960d29024ed1e2c0a607769ec3bb3f040f7c66",
+  "scope": "Injected stdlib subprocess/report/source-guard failures and archive limits only. No benchmark/model/upload execution; no claim of hard-termination/SIGKILL capture.",
+  "exception_cases": [
+    {
+      "case": "spawn_error",
+      "original_exception_propagated": "OSError",
+      "backup_attempts_intercepted": 1,
+      "bounded_archive_contains_exact_partial_outputs": true,
+      "invalid_failure_receipt": true,
+      "original_exception_note": []
+    },
+    {
+      "case": "malformed_report",
+      "original_exception_propagated": "JSONDecodeError",
+      "backup_attempts_intercepted": 1,
+      "bounded_archive_contains_exact_partial_outputs": true,
+      "invalid_failure_receipt": true,
+      "original_exception_note": []
+    },
+    {
+      "case": "post_output_source_guard",
+      "original_exception_propagated": "ValueError",
+      "backup_attempts_intercepted": 1,
+      "bounded_archive_contains_exact_partial_outputs": true,
+      "invalid_failure_receipt": true,
+      "original_exception_note": []
+    },
+    {
+      "case": "spawn_and_backup_exception",
+      "original_exception_propagated": "OSError",
+      "backup_attempts_intercepted": 1,
+      "bounded_archive_contains_exact_partial_outputs": true,
+      "invalid_failure_receipt": true,
+      "original_exception_note": [
+        "Diagnostic backup also failed: OSError"
+      ]
+    }
+  ],
+  "caps": [
+    {
+      "case": "raw",
+      "reject": "Diagnostic archive exceeds hard count/raw cap; not truncated",
+      "output_unchanged": true,
+      "no_upload": true
+    },
+    {
+      "case": "gzip",
+      "reject": "Compressed diagnostic cap exceeded",
+      "output_unchanged": true,
+      "no_upload": true
+    },
+    {
+      "case": "unexpected",
+      "reject": "Unexpected diagnostic output: weights.npy",
+      "output_unchanged": true,
+      "no_upload": true
+    },
+    {
+      "case": "count",
+      "reject": "Diagnostic archive exceeds hard count/raw cap; not truncated",
+      "output_unchanged": true,
+      "no_upload": true
+    }
+  ],
+  "saved_large_JSON_HLO_archive": {
+    "compressed_bytes": 770219,
+    "uncompressed_bytes": 11839105,
+    "entries": 16,
+    "sha256": "485cf088f3b0d24687b0b1fd5f89c31f0dd3f0ae9e4a7a21a6ff0f5d9a328198",
+    "skipped_perfetto": [],
+    "files": [
+      {
+        "path": "bfloat16/compare.json",
+        "bytes": 3311134
+      },
+      {
+        "path": "bfloat16/legacy.optimized_hlo.txt",
+        "bytes": 1079101
+      },
+      {
+        "path": "bfloat16/legacy.stablehlo.txt",
+        "bytes": 240140
+      },
+      {
+        "path": "bfloat16/native.optimized_hlo.txt",
+        "bytes": 1031828
+      },
+      {
+        "path": "bfloat16/native.stablehlo.txt",
+        "bytes": 369858
+      },
+      {
+        "path": "bfloat16/runtime-imports.json",
+        "bytes": 2140
+      },
+      {
+        "path": "case-outcomes.json",
+        "bytes": 290
+      },
+      {
+        "path": "device-probe.json",
+        "bytes": 631
+      },
+      {
+        "path": "float32/compare.json",
+        "bytes": 3386214
+      },
+      {
+        "path": "float32/legacy.optimized_hlo.txt",
+        "bytes": 933287
+      },
+      {
+        "path": "float32/legacy.stablehlo.txt",
+        "bytes": 234481
+      },
+      {
+        "path": "float32/native.optimized_hlo.txt",
+        "bytes": 881727
+      },
+      {
+        "path": "float32/native.stablehlo.txt",
+        "bytes": 358542
+      },
+      {
+        "path": "float32/runtime-imports.json",
+        "bytes": 2139
+      },
+      {
+        "path": "matched-guards.json",
+        "bytes": 2018
+      },
+      {
+        "path": "submission-provenance.json",
+        "bytes": 5575
+      }
+    ]
+  },
+  "complete_saved_members_exact": true,
+  "no_network_client_or_hardware": true
+}

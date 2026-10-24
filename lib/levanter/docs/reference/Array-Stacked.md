@@ -196,6 +196,9 @@ Here `P` denotes `jax.sharding.PartitionSpec`, and projection weights use
 `P("model", None)`: forward gathers the FSDP input dimension while keeping
 output channels partitioned across `model`. Row projections use
 `P("data", "model")` in storage and `P(None, "model")` for computation.
+Embedding lookup retains its stored FSDP feature partition. It replicates token
+indices only across the FSDP axis shared with the batch, then restores the
+residual batch placement; other batch axes stay partitioned during lookup.
 Residual activations partition the batch across `data`; attention heads, MLP
 intermediates and output vocabulary partition across `model`. The layer axis
 is replicated. Initialization and forward calls require a `jax.set_mesh`

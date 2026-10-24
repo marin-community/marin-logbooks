@@ -1,0 +1,34 @@
+"""Full-shape constructor and forward/AD tracing only; no huge arrays/lowering."""
+import dataclasses,hashlib,json,sys
+from pathlib import Path
+import equinox as eqx
+import haliax as hax
+import jax,jax.numpy as jnp,jmp,numpy as np
+from jax.sharding import Mesh,AxisType,NamedSharding,PartitionSpec as P
+HERE=Path(__file__).parent
+job=json.loads((HERE/'job-config.json').read_text());root=Path.cwd()
+assert all(hashlib.sha256((root/p).read_bytes()).hexdigest()==digest for p,digest in job['source_file_sha256'].items())
+sys.path.insert(0,str(root/'lib/levanter/scripts/bench'))
+import bench_llama_native as bench
+from levanter.models.llama_native import NativeLlamaModel,NativeLlamaSharding
+records={}
+for case in job['cases']:
+ expected=dict(job['expected_benchmark_config'],compute_dtype=case['name'],profile_steps=case['profile_steps'])
+ config=bench.BenchmarkConfig(**{**expected,'attention_backend':bench.AttentionBackend(expected['attention_backend'])})
+ native=bench._native_config(config);named=bench._legacy_config(config)
+ assert native.attention_implementation=='tpu_splash' and named.attn_backend==bench.AttentionBackend.SPLASH
+ mesh=Mesh(np.asarray(jax.devices()).reshape(2,2),('data','model'),axis_types=(AxisType.Explicit,)*2)
+ with jax.set_mesh(mesh),jax.default_matmul_precision(case['matmul_precision']):
+  model=eqx.filter_eval_shape(NativeLlamaModel.init,native,key=jax.random.PRNGKey(config.seed),sharding=NativeLlamaSharding(('data',),'data','model'))
+  leaves=[x for x in jax.tree.leaves(model) if isinstance(x,jax.ShapeDtypeStruct)]
+  count=sum(int(np.prod(x.shape)) for x in leaves);assert count==1531037696 and {str(x.dtype) for x in leaves}=={'float32'}
+  tokens=jax.ShapeDtypeStruct((8,2048),jnp.int32,sharding=NamedSharding(mesh,P('data',None)))
+  policy=jmp.Policy(param_dtype=jnp.float32,compute_dtype=jnp.dtype(case['name']),output_dtype=jnp.float32)
+  activations=eqx.filter_eval_shape(lambda m,t:policy.cast_to_compute(m).activations(t),model,tokens)
+  assert activations.shape==(8,2048,2048)
+  # A scalar cotangent defines the reverse-shape route without materializing activations.
+  loss,grads=eqx.filter_eval_shape(eqx.filter_value_and_grad(lambda m,t:jnp.sum(policy.cast_to_compute(m).activations(t).astype(jnp.float32))),model,tokens)
+  assert loss.shape==() and sum(int(np.prod(x.shape)) for x in jax.tree.leaves(grads) if isinstance(x,jax.ShapeDtypeStruct))==count
+  records[case['name']]={'exact_config':dataclasses.asdict(config),'parameter_count':count,'parameter_dtype':'float32','head_dim':native.actual_head_dim,'native_backend':native.attention_implementation,'named_backend':named.attn_backend.value,'profile_steps':config.profile_steps,'activation_shape':list(activations.shape),'activation_dtype':str(activations.dtype),'activation_sharding':str(activations.sharding),'reverse_parameter_shape_count':count,'reverse_scalar_dtype':str(loss.dtype),'no_large_arrays':True,'no_lower_compile_execute':True,'reverse_scope':'Native full activations scalar-sum cotangent shape route, not Trainer loss/Adam numerical evidence.'}
+record={'source_pin':job['source_commit'],'source_file_sha256':job['source_file_sha256'],'runner_sha256':job['runner_sha256'],'cases':records,'CPU_devices':len(jax.devices()),'scope':'Both full-size actual native constructor/config/backend selectors and activations/reverse abstract tracing only. Named selector checked, not full named Trainer execution. No huge arrays, Splash lowering, compilation, execution, initial hash, physical TPU or numerical/performance claim.'}
+(HERE/'abstract-proof.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps({k:{'count':v['parameter_count'],'activation_shape':v['activation_shape']} for k,v in records.items()}))

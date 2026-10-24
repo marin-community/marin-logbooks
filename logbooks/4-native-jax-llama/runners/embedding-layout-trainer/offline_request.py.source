@@ -1,0 +1,106 @@
+"""Offline protobuf construction only; no client, RPC or submission path exists."""
+import argparse
+import hashlib
+import io
+import json
+from pathlib import Path
+import subprocess
+import zipfile
+
+from google.protobuf.json_format import MessageToDict
+from rigging.secrets import SecretBehavior
+from rigging.timing import Duration
+
+from iris.cli.job import build_resources
+from iris.cluster.client.bundle import create_workspace_zip
+from iris.cluster.constraints import region_constraint, zone_constraint
+from iris.cluster.runtime.entrypoint import build_runtime_entrypoint
+from iris.cluster.runtime.env import with_slice_topology_env
+from iris.cluster.types import Entrypoint, EnvironmentSpec, JobName
+from iris.rpc import controller_pb2, job_pb2
+from iris.time_proto import duration_to_proto
+
+COMMAND = Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final/command.json')
+COMMAND_SHA256 = '652afb50c77f293e268d82e3a3af596075b69a6cf377270a29fdd0209ff81a6c'
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--validate-only', action='store_true', required=True)
+    parser.parse_args()
+    raw = COMMAND.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != COMMAND_SHA256:
+        raise ValueError('Frozen command bytes differ')
+    command = json.loads(raw)
+    root = Path(command['working_directory'])
+    if Path.cwd().resolve() != root.resolve():
+        raise ValueError('Validate from the pinned scientific source worktree')
+    if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip() != command['source_pin']:
+        raise ValueError('Wrong clean source revision')
+    if subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, text=True).strip():
+        raise ValueError('Scientific source worktree must be clean')
+    if hashlib.sha256(Path(command['runner']).read_bytes()).hexdigest() != command['runner_sha256']:
+        raise ValueError('Frozen runner bytes differ')
+    if hashlib.sha256(Path(command['job_config_file']).read_bytes()).hexdigest() != command['job_config_sha256']:
+        raise ValueError('Frozen configuration differs')
+    if hashlib.sha256(command['entrypoint_argv'][-1].encode()).hexdigest() != command['compressed_launcher_sha256']:
+        raise ValueError('Packed launcher bytes differ')
+    source_hashes = command['source_file_sha256']
+    for name, digest in source_hashes.items():
+        if hashlib.sha256((root / name).read_bytes()).hexdigest() != digest:
+            raise ValueError('Scientific source bytes differ')
+    resources = build_resources(tpu='v5p-8', gpu=None, cpu=32, memory='256GB', disk='64GB').to_proto()
+    config = json.loads(Path(command['job_config_file']).read_text())
+    expected_environment = {'JAX_PLATFORMS': 'tpu', 'XLA_FLAGS': '--xla_allow_excess_precision=false', 'LIBTPU_INIT_ARGS': ' --xla_tpu_use_enhanced_launch_barrier=true'}
+    if config['scientific_environment'] != expected_environment or command['scientific_environment'] != expected_environment:
+        raise ValueError('Command/configuration differ from exact inherited scientific environment')
+    if config['source_commit'] != command['source_pin'] or config['source_file_sha256'] != command['source_file_sha256'] or config['runner_sha256'] != command['runner_sha256'] or config['native_activations_ast_sha256'] != command['native_activations_ast_sha256']:
+        raise ValueError('Command/configuration source/runner/AST equivalence failed')
+    scientific_environment = expected_environment
+    environment_spec = EnvironmentSpec(extras=['tpu'], sync_packages=['marin-levanter'],
+        env_vars=scientific_environment, secrets={}, secret_behavior=SecretBehavior.ISOLATE)
+    environment = with_slice_topology_env(environment_spec.to_proto(), resources, 1)
+    if environment.secrets:
+        raise ValueError('Offline request must contain no secrets')
+    entrypoint = Entrypoint.from_command(*command['entrypoint_argv'])
+    bundle = create_workspace_zip(root, max_size_bytes=32 * 1024 * 1024)
+    with zipfile.ZipFile(io.BytesIO(bundle)) as archive:
+        names = archive.namelist()
+        if any('.git' in Path(name).parts for name in names):
+            raise ValueError('Runtime source bundle must exclude Git metadata')
+        for name, digest in source_hashes.items():
+            if hashlib.sha256(archive.read(name)).hexdigest() != digest:
+                raise ValueError('Bundled scientific source bytes differ')
+    request = controller_pb2.Controller.LaunchJobRequest(
+        name=JobName.root('dlwh', command['job_name']).to_wire(),
+        entrypoint=build_runtime_entrypoint(entrypoint, environment), resources=resources,
+        environment=environment, bundle_blob=bundle,
+        constraints=[region_constraint(['us-central1']).to_proto(), zone_constraint('us-central1-a').to_proto()],
+        replicas=1, max_retries_failure=0, max_retries_preemption=0, max_task_failures=0,
+        existing_job_policy=job_pb2.EXISTING_JOB_POLICY_ERROR,
+        submit_argv=[str(Path(__file__).resolve()), '--validate-only'])
+    request.scheduling_timeout.CopyFrom(duration_to_proto(Duration.from_seconds(120)))
+    request.timeout.CopyFrom(duration_to_proto(Duration.from_seconds(1800)))
+    binary = request.SerializeToString(deterministic=True)
+    Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final/offline-request.pb').write_bytes(binary)
+    display = controller_pb2.Controller.LaunchJobRequest()
+    display.CopyFrom(request)
+    display.ClearField('bundle_blob')
+    record = {'status': 'OFFLINE_PROTOBUF_BUILT_NO_CLIENT_NO_CREDENTIAL_LOOKUP_NO_RPC_NO_SUBMISSION',
+        'request_without_bundle': MessageToDict(display, preserving_proto_field_name=True),
+        'local_source_bundle': {'bytes': len(bundle), 'sha256': hashlib.sha256(bundle).hexdigest(),
+            'files': len(names), 'git_metadata_excluded': True, 'all_13_scientific_import_source_hashes_exact': True},
+        'request_binary_sha256': hashlib.sha256(binary).hexdigest(), 'request_binary_bytes': len(binary),
+        'command_sha256': COMMAND_SHA256, 'source_pin': command['source_pin'],
+        'secret_behavior': environment_spec.secret_behavior.value, 'secret_entries': len(environment.secrets),
+        'scientific_environment': scientific_environment,
+        'scheduling_timeout_seconds': 120, 'execution_timeout_seconds': 1800,
+        'max_retries_failure': 0, 'max_retries_preemption': 0, 'max_task_failures': 0,
+        'existing_job_policy': 'EXISTING_JOB_POLICY_ERROR',
+        'no_submission_path': True, 'uniqueness_or_capacity_not_queried': True}
+    Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final/offline-request.json').write_text(json.dumps(record, indent=2) + '\n')
+    print(json.dumps({k: v for k, v in record.items() if k not in ['request_without_bundle']}, sort_keys=True))
+
+
+if __name__ == '__main__':
+    main()

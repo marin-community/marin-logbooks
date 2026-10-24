@@ -1,0 +1,25 @@
+"""Inspect the actual offline serialized request; no imports of Iris or JAX."""
+import ast,hashlib,json
+from pathlib import Path
+HERE=Path(__file__).parent;command=json.loads((HERE/'command.json').read_text());config=json.loads((HERE/'job-config.json').read_text());record=json.loads((HERE/'offline-request.json').read_text());r=record['request_without_bundle']
+expected={'JAX_PLATFORMS':'tpu','XLA_FLAGS':'--xla_allow_excess_precision=false','LIBTPU_INIT_ARGS':' --xla_tpu_use_enhanced_launch_barrier=true'}
+assert command['scientific_environment']==config['scientific_environment']==expected
+assert {key:r['environment']['env_vars'][key] for key in expected}==expected
+assert r['resources']=={'cpu_millicores':32000,'memory_bytes':str(256*1024**3),'device':{'tpu':{'variant':'v5p-8','count':4}},'disk_bytes':str(64*1024**3)}
+assert r['scheduling_timeout']['milliseconds']=='120000' and r['timeout']['milliseconds']=='1800000'
+assert r['max_retries_failure']==r['max_retries_preemption']==r['max_task_failures']==0
+assert r['existing_job_policy']=='EXISTING_JOB_POLICY_ERROR' and record['secret_entries']==0 and record['secret_behavior']=='isolate'
+assert r['name']=='/dlwh/'+command['job_name'] and r['replicas']==1
+assert {(v['key'],v['value']['string_value'],v['mode']) for v in r['constraints']}=={('region','us-central1','CONSTRAINT_MODE_REQUIRED'),('zone','us-central1-a','CONSTRAINT_MODE_REQUIRED')}
+argv=r['entrypoint']['run_command']['argv'];assert argv==command['entrypoint_argv'];env=r['environment']['env_vars'];env_bytes=sum(len((k+'='+v).encode())+1 for k,v in env.items());job_env='IRIS_JOB_ENV='+json.dumps(env)
+bootstrap=ast.literal_eval(next(n.value for n in ast.parse((HERE/'host_runner.py').read_text()).body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='BENCHMARK_CHILD_BOOTSTRAP' for t in n.targets)))
+children={}
+for case in config['cases']:
+ proof={'worktree':'/app','source_commit':config['source_commit'],'source_file_sha256':config['source_file_sha256'],'native_activations_ast_sha256':config['native_activations_ast_sha256'],'record_path':'/output/'+case['name']+'/runtime-imports.json'}
+ child=['/app/.venv/bin/python','-c',bootstrap,json.dumps(proof,separators=(',',':')),'lib/levanter/scripts/bench/bench_llama_native.py','--mode','compare','--attention-backend',config['attention_backend'],*config['common_args'],'--compute-dtype',case['name'],'--profile-steps','0','--source-commit',config['source_commit'],'--source-tree-state','clean','--source-bundle-marker',config['job_name'],'--dump-hlo']
+ size=sum(len(s.encode())+1 for s in child);assert size+env_bytes+len(job_env.encode())+1+16*1024<96*1024
+ children[case['name']]={'argv_bytes':size,'largest_argument_bytes_including_NUL':max(len(s.encode())+1 for s in child),'known_request_env_plus_IRIS_JOB_ENV_plus_16KiB_reserve_total':size+env_bytes+len(job_env.encode())+1+16*1024}
+outer=sum(len(s.encode())+1 for s in argv);assert outer+env_bytes+16*1024<96*1024 and max(len(s.encode())+1 for s in argv)<96*1024
+for name in ['native-jax-embed-layout-trainer-submit-claim.json','native-jax-embed-layout-trainer-dispatch-release.json','marin-native-jax-embed-layout-trainer-monitor.json']:assert not (Path('/private/tmp')/name).exists()
+result={'source_pin':config['source_commit'],'runner_sha256':config['runner_sha256'],'command_sha256':hashlib.sha256((HERE/'command.json').read_bytes()).hexdigest(),'scope':'Actual offline request env/resource/timeout/retry serialization and static full child argv sizes. Unknown task-injected environment is rechecked at runtime with16KiB reserve; this is not the final worker environment.','outer_argv_bytes':outer,'largest_outer_argument_including_NUL':max(len(s.encode())+1 for s in argv),'request_env_bytes':env_bytes,'IRIS_JOB_ENV_Docker_argument_bytes_including_NUL':len(job_env.encode())+1,'MARIN_PROVENANCE_bytes':len(env['MARIN_PROVENANCE'].encode()),'full_child_shapes':children,'all_resources_timeouts_retries_region_secrets_ERROR_verified':True,'known_bounds_pass':True,'runtime_guard_bytes':96*1024,'runtime_reserve_bytes':16*1024,'release_claim_state_absent':True,'no_client_RPC_network_hardware':True}
+(HERE/'env-envelope-proof.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))

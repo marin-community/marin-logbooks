@@ -1,0 +1,174 @@
+{
+  "schema": "native-jax-embedding-layout-maintained-review.v1",
+  "status": "APPROVE_NARROW_MAINTAINED_EXTRACTION_NO_BLOCKING_FINDINGS",
+  "reviewed_at_utc": "2026-10-24T03:20:47.685266+00:00",
+  "repository": "/private/tmp/marin-native-jax-embedding-layout-candidate",
+  "branch": "codex/native-jax-embedding-layout",
+  "base_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "base_tree": "377290878a7cc38961b81b1879d062745e181972",
+  "freeze": {
+    "manifest": "/private/tmp/native-jax-embedding-layout-candidate-evidence/manifest.json",
+    "manifest_sha256": "c9483befdf48e229f5a7392bb1c36dc8cb36b0dfacf4ab0e5edad0f886c5d709",
+    "artifact_count": 32,
+    "all_artifact_hashes_and_sizes_verified": true,
+    "full_index_binary_patch_sha256": "42834db979ef5dfb68c785f1b34dfcb658d8b86b6f2d4288bd0a170964967b3b",
+    "current_diff_equals_frozen_patch": true,
+    "initial_default_binary_diff_sha256": "57e4291294c0b97b0ccf4115f8b6bfe9aa6f65a58b4261c69e5cac566b38a2ae",
+    "initial_default_diff_unchanged": true,
+    "hash_difference_reason": "Frozen patch uses --full-index; initial snapshot used ordinary git diff --binary. Same diff content and source bytes; no intervening edits."
+  },
+  "changed_sources": [
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native.py",
+      "base_sha256": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+      "candidate_sha256": "1bf3fe8d2c4b0173a5437950c463823078683b795eee67fc8cc0bf0939b4212f",
+      "bytes": 22278
+    },
+    {
+      "path": "lib/levanter/tests/test_llama_native.py",
+      "base_sha256": "71e3fea9d1d459c277bbb0f4200f239e96e9ee2e5b19eaa1d8c4505de4350bb9",
+      "candidate_sha256": "9ff84c581d595adb033068a129e8508fb67f0426fba41d8ad1b961492ab2e1e0",
+      "bytes": 13846
+    },
+    {
+      "path": "lib/levanter/docs/reference/Array-Stacked.md",
+      "base_sha256": "439670aee94598aea8faa9fb93b802bccd44e3282db8da8cabb2bf8ee3902da8",
+      "candidate_sha256": "cf2e6d87ade31cbb5da7bd946499328d0d346780981a59723d4b202d70526379",
+      "bytes": 9570
+    }
+  ],
+  "policies_read": [
+    "/Users/dlwh/.codex/worktrees/73be/marin/AGENTS.md",
+    "/Users/dlwh/.codex/worktrees/73be/marin/TESTING.md",
+    "/Users/dlwh/.codex/worktrees/73be/marin/lib/levanter/AGENTS.md",
+    "/Users/dlwh/.codex/worktrees/73be/marin/lib/levanter/docs/design/jit-safety.md",
+    "/private/tmp/marin-research-engineering-9467/docs/dev-guide/research-engineering.md"
+  ],
+  "scope": "Fresh independent pre-contribution-commit review of only the three uncommitted files; public base only; no canonical replacement/adoption decision.",
+  "blocking_findings": [],
+  "findings": [],
+  "maintain_or_drop": [
+    {
+      "piece": "NativeLlamaModel.activations configured embedding layout",
+      "decision": "maintain",
+      "reason": "Reusable forward/VJP placement: storage view retains fsdp_axis on features, only overlapping batch/FSDP indices replicate, independent batch axes survive, and existing residual placement is restored. No fixed mesh names, fixture constants, new switches, dtype changes or custom VJP."
+    },
+    {
+      "piece": "NativeLlamaSharding docstring projection qualifier",
+      "decision": "maintain",
+      "reason": "Corrects the general storage/compute description now that embedding compute retains the FSDP feature partition."
+    },
+    {
+      "piece": "Array-Stacked reference paragraph",
+      "decision": "maintain",
+      "reason": "Documents maintained embedding placement behavior next to the existing native layout contract; no historical numerical or performance claim."
+    },
+    {
+      "piece": "Seven generalized explicit-mesh layout parameters and device selection",
+      "decision": "maintain",
+      "reason": "Exercises no-FSDP, no-TP, renamed axes, shared batch/FSDP, independent batch/FSDP, and multiple batch axes using valid device-count-dependent shapes. These are supported configuration behaviors, not past-trial fixtures."
+    },
+    {
+      "piece": "NamedSharding import and explicit token/weight placement",
+      "decision": "maintain",
+      "reason": "Inputs have declared public physical layouts, exercising real device transfers and collectives; no internal helper mocks."
+    },
+    {
+      "piece": "Matched-state import equality and embedding storage assertion",
+      "decision": "maintain",
+      "reason": "Checks checkpoint transfer and the exposed parameter physical contract before numerical comparison, rather than merely asserting supplied configuration fields."
+    },
+    {
+      "piece": "Existing forward/loss/all-gradient and parameter-gradient placement assertions retained under expanded matrix",
+      "decision": "maintain",
+      "reason": "Checks externally observable values and AD sharding with existing 1e-5 tolerances; no relaxed thresholds or replacement oracle."
+    },
+    {
+      "piece": "Historical synthetic cotangent controls, exploratory scripts, TPU HLO/results and author validation evidence",
+      "decision": "keep research-only; absent from contribution diff",
+      "reason": "Useful evidence and reproduction history, but not maintained model behavior or a reusable public testing fixture. Do not promote these artifacts solely because they produced the selected result."
+    }
+  ],
+  "correctness_review": {
+    "no_fsdp": "fsdp_axis=None leaves batch_axes intact, column_storage equals old column_compute, and requested lookup/residual placements coincide.",
+    "no_tp": "model_axis=None leaves vocabulary replicated; a configured FSDP feature partition and retained independent batch partition are legal.",
+    "shared_batch_fsdp": "Only fsdp_axis is removed from lookup batch placement, avoiding duplicate use of the same mesh axis in lookup batch/features. Final reshard restores the original batch placement.",
+    "independent_fsdp_and_batch": "Non-overlapping batch axes are preserved. Lookup output carries both retained batch and feature partitions; final reshard gathers feature placement to existing residual layout.",
+    "multiple_batch_axes": "Filtering removes only the one configured overlapping FSDP axis and preserves order and all independent axes.",
+    "forward_vjp": "Uses ordinary differentiable reshard/gather operations; no manual backward or accumulation-dtype substitution. Retained CPU tests check all model gradients and equality of parameter/gradient shardings. Actual TPU scatter order for this extracted candidate has not been independently measured.",
+    "unchanged_semantics": "Complete source diff and method AST comparison show activations is the only changed method. Initialization, state keys/load/export, external mixed-precision casts, optional embedding normalization, attention/masks/position IDs, rotary/query scaling, final norm, loss and optimizer paths are untouched.",
+    "jit": "Embedding axis tuple is computed solely from static NativeLlamaSharding config. No array-dependent Python control flow, dynamic shape or device/backend query is introduced."
+  },
+  "test_review": {
+    "reference_independence": "Expanded matrix compares the same native class with distinct no-FSDP/no-TP parameter placement against the selected sharded layout. This is a useful independent placement reference, not an independent model implementation. Existing named-model FP32/BF16 logits/loss/all-gradient parity provides the separate implementation anchor.",
+    "meaningful_behavior": "Public full-model outputs, loss, every gradient leaf, checkpoint values and physical parameter/gradient/logit placement are checked. The expanded matrix also passes before the source edit; it verifies preservation/generalization, not the specific historical BF16 discrepancy.",
+    "tolerances": "Existing 1e-5 atol/rtol retained; no numerical threshold or seed weakening.",
+    "nonblocking_gaps": [
+      "Expanded multi-device layout matrix uses FP32, so it does not directly catch BF16 scatter accumulation/grouping divergence. Existing single-device named BF16 coverage cannot establish that multi-device property.",
+      "No extracted-candidate TPU all-gradient, 255-gradient acceptance, trajectory or full-Trainer gate has run in this review. These are future campaign/adoption evidence, not prerequisites to maintaining the narrow ordinary-JAX placement source change.",
+      "CPU explicit sharding validates legal forward/AD placement and numerics but does not establish TPU lowering, communication volume, memory, latency or throughput.",
+      "The TP-only case retains a size-one data mesh axis because of an existing loss fallback; renamed-axis cases with explicit batch sharding cover general embedding names. This is not evidence that the unrelated implicit loss fallback accepts an arbitrary axis-free mesh."
+    ]
+  },
+  "validation_evidence": {
+    "basis": "Independently verified all 32 frozen artifacts by SHA256 and byte size, parsed JUnit counts and read actual per-file required-entrypoint logs; no broad-suite rerun or new TPU execution performed by reviewer.",
+    "candidate_cpu4": {
+      "tests": 38,
+      "passed": 36,
+      "skipped": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    "candidate_cpu8": {
+      "tests": 7,
+      "passed": 7,
+      "skipped": 0,
+      "failures": 0,
+      "errors": 0
+    },
+    "original_baseline": {
+      "tests": 32,
+      "passed": 32,
+      "failures": 0,
+      "errors": 0
+    },
+    "generalized_baseline": "Six final cases passed in corrected 7-case baseline (one TP-only setup failure); separately corrected final TP-only case passed. Do not describe this as a single all-seven-green baseline invocation.",
+    "required_lint": "Actual infra/pre-commit.py per-file check logs are all OK; source Pyrefly check OK. Failed setup/multifile sandbox attempts are preserved and distinct from successful final checks.",
+    "affected_runner": "Dry-run selection only; author ran selected native tests plus native benchmark/explicit-trainer tests manually with root markers and pinned existing environment. This is not evidence of executing the workspace installer."
+  },
+  "scientific_evidence_boundary": {
+    "isolated_report": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-results/report.json",
+      "sha256": "344aa7f4ea8e755c63283f45dab30b9a637ec2ef80d9837c7758a77052a16f7a"
+    },
+    "isolated_independent_review": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-tpu-independent-review.json",
+      "sha256": "a0289817dc3d13e1673299c10ab827981bd8ee8ec5635496c3d1246bb46405e0"
+    },
+    "positive_result": "At public base 8aa8674d10894728ed0b455ae14e14f46457cf9f, a single synthetic fixed common-cotangent TPU fixture produced legacy-exact feature-view forward and FP32 master gradients; old native control retained 26892 mismatches. Independent review found actual typed TPU grouping matched the isolated mechanism.",
+    "interpretation": "Supports this narrow layout hypothesis, not the original full-model failure cause or extracted-candidate full-Trainer acceptance. Synthetic inputs are not captured full-model weights/cotangents. Feature view is not more exact than legacy against the FP32 diagnostic.",
+    "full_trainer_accepted": false,
+    "canonical_adoption_approved": false,
+    "all_255_gradient_gate_passed": false,
+    "trajectory_gate_passed": false,
+    "speed_ratio": null,
+    "performance_claim": null
+  },
+  "state_discrepancies": [
+    "No source/root-state discrepancy found. Initial and frozen diff SHA values differ only by full-index formatting; source/test/doc bytes and actual diff content are unchanged.",
+    "Retained generalized-baseline failures are setup history, not final candidate failures or evidence of all-seven passing in one baseline invocation."
+  ],
+  "reviewer_actions": {
+    "source_mutations": false,
+    "commit": false,
+    "push": false,
+    "network": false,
+    "pr": false,
+    "tpu": false,
+    "catalog": false,
+    "private_source_inspection": false,
+    "new_test_run": false,
+    "local_evidence_and_review_artifacts_only": true
+  },
+  "assessment": "The three-file extraction contains maintained code, useful general layout tests and current documentation only. No blocking defect found; eligible for the narrow contribution commit. Keep research artifacts outside Marin contribution, preserve failed full-Trainer/adoption status, and validate hardware/campaign gates separately before canonical replacement."
+}

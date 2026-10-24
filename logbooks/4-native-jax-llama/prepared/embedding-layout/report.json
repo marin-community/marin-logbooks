@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "status": "local_candidate_frozen_for_independent_maintained_review",
+  "repository": "/private/tmp/marin-native-jax-embedding-layout-candidate",
+  "branch": "codex/native-jax-embedding-layout",
+  "base_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "base_tree": "377290878a7cc38961b81b1879d062745e181972",
+  "git_status": "M lib/levanter/docs/reference/Array-Stacked.md\n M lib/levanter/src/levanter/models/llama_native.py\n M lib/levanter/tests/test_llama_native.py",
+  "patch_sha256": "42834db979ef5dfb68c785f1b34dfcb658d8b86b6f2d4288bd0a170964967b3b",
+  "changed_sources": [
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native.py",
+      "base_sha256": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+      "candidate_sha256": "1bf3fe8d2c4b0173a5437950c463823078683b795eee67fc8cc0bf0939b4212f",
+      "bytes": 22278
+    },
+    {
+      "path": "lib/levanter/tests/test_llama_native.py",
+      "base_sha256": "71e3fea9d1d459c277bbb0f4200f239e96e9ee2e5b19eaa1d8c4505de4350bb9",
+      "candidate_sha256": "9ff84c581d595adb033068a129e8508fb67f0426fba41d8ad1b961492ab2e1e0",
+      "bytes": 13846
+    },
+    {
+      "path": "lib/levanter/docs/reference/Array-Stacked.md",
+      "base_sha256": "439670aee94598aea8faa9fb93b802bccd44e3282db8da8cabb2bf8ee3902da8",
+      "candidate_sha256": "cf2e6d87ade31cbb5da7bd946499328d0d346780981a59723d4b202d70526379",
+      "bytes": 9570
+    }
+  ],
+  "runtime": {
+    "python": "3.12.11 (main, Aug 18 2025, 19:02:39) [Clang 20.1.4 ]",
+    "executable": "/private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "equinox": "0.13.2",
+    "haliax_source": "/private/tmp/marin-native-jax-embedding-layout-candidate/lib/haliax/src/haliax/__init__.py",
+    "model_source": "/private/tmp/marin-native-jax-embedding-layout-candidate/lib/levanter/src/levanter/models/llama_native.py",
+    "backend": "cpu",
+    "device_count": 8,
+    "devices": [
+      "cpu:0",
+      "cpu:1",
+      "cpu:2",
+      "cpu:3",
+      "cpu:4",
+      "cpu:5",
+      "cpu:6",
+      "cpu:7"
+    ]
+  },
+  "commands": {
+    "candidate_cpu4": "JAX_PLATFORMS=cpu JAX_NUM_CPU_DEVICES=4 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/private/tmp/marin-native-jax-embedding-layout-candidate/lib/levanter/src:/private/tmp/marin-native-jax-embedding-layout-candidate/lib/haliax/src UV_CACHE_DIR=/private/tmp/marin-native-jax-uv-cache HF_HUB_OFFLINE=1 WANDB_MODE=disabled uv run --offline --no-project --python /private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python -m pytest -c pyproject.toml -n 0 lib/levanter/tests/test_llama_native.py lib/levanter/tests/test_llama_native_benchmark.py lib/levanter/tests/test_explicit_trainer.py --junitxml=/private/tmp/native-jax-embedding-layout-candidate-cpu4.xml > /private/tmp/native-jax-embedding-layout-candidate-cpu4.log 2>&1",
+    "candidate_cpu8": "JAX_PLATFORMS=cpu JAX_NUM_CPU_DEVICES=8 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/private/tmp/marin-native-jax-embedding-layout-candidate/lib/levanter/src:/private/tmp/marin-native-jax-embedding-layout-candidate/lib/haliax/src UV_CACHE_DIR=/private/tmp/marin-native-jax-uv-cache HF_HUB_OFFLINE=1 WANDB_MODE=disabled uv run --offline --no-project --python /private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python -m pytest -c pyproject.toml -n 0 lib/levanter/tests/test_llama_native.py::test_native_llama_explicit_fsdp_tensor_parallel_forward_and_gradient_layout --junitxml=/private/tmp/native-jax-embedding-layout-candidate-cpu8.xml > /private/tmp/native-jax-embedding-layout-candidate-cpu8.log 2>&1",
+    "required_precommit_per_file": [
+      "UV_OFFLINE=1 UV_TOOL_DIR=/private/tmp/native-jax-embedding-layout-tools UV_CACHE_DIR=/private/tmp/marin-native-jax-uv-cache BLACK_NUM_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 uv run --offline --no-project -- /private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python infra/pre-commit.py --files lib/levanter/src/levanter/models/llama_native.py",
+      "UV_OFFLINE=1 UV_TOOL_DIR=/private/tmp/native-jax-embedding-layout-tools UV_CACHE_DIR=/private/tmp/marin-native-jax-uv-cache BLACK_NUM_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 uv run --offline --no-project -- /private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python infra/pre-commit.py --files lib/levanter/tests/test_llama_native.py",
+      "UV_OFFLINE=1 UV_TOOL_DIR=/private/tmp/native-jax-embedding-layout-tools UV_CACHE_DIR=/private/tmp/marin-native-jax-uv-cache BLACK_NUM_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 uv run --offline --no-project -- /private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python infra/pre-commit.py --files lib/levanter/docs/reference/Array-Stacked.md"
+    ],
+    "affected_selector": "UV_OFFLINE=1 UV_CACHE_DIR=/private/tmp/marin-native-jax-uv-cache PYTHONDONTWRITEBYTECODE=1 uv run --offline --no-project -- /private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python infra/ci/run_tests.py --base-ref 8aa8674d10894728ed0b455ae14e14f46457cf9f --dry-run",
+    "diff_check": "git diff --check"
+  },
+  "final_outcomes": {
+    "candidate_cpu4": {
+      "exit_code": 0,
+      "passed": 36,
+      "skipped": 2,
+      "seconds": 61.66
+    },
+    "candidate_cpu8": {
+      "exit_code": 0,
+      "passed": 7,
+      "seconds": 38.63
+    },
+    "required_precommit": {
+      "per_file_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "source_pyrefly": "passed",
+      "black": "passed_single_file_actual_entrypoint"
+    },
+    "diff_check_exit_code": 0
+  },
+  "baseline": {
+    "original_existing_scope": {
+      "passed": 32,
+      "junit": "validation/native-jax-embedding-layout-baseline.xml",
+      "note": "Before source or maintained test edits; nearest Levanter pytest config; no retained initial stdout file."
+    },
+    "generalized_final_cases_before_source_edit": "Six passed with explicit reference batch sharding; final TP-only size-one-data-axis case separately passed. See corrected and tp-only baseline logs/XML.",
+    "retained_setup_failures": "Earlier generalized baseline variants failed at existing cross entropy fallback axis=data when explicit mesh lacked data; corrected reference sharding and TP-only size-one data mesh before source edit. No numerical threshold or seed change."
+  },
+  "scope": {
+    "production_change": "Embedding lookup placement only; weight retains column_storage; remove only overlapping fsdp_axis from lookup batch axes; output features use fsdp_axis; restore existing residual placement. Existing cast, optional normalization, attention, state keys, configs and optimizer untouched.",
+    "test_coverage": "Public full model logits/loss/all gradients/import exactness and concrete parameter/gradient/logit layouts across seven generalized layouts. Existing named FP32/BF16 parity, native benchmark, explicit trainer tests retained. Generalized layouts use existing FP32 thresholds 1e-5; existing BF16 case unchanged.",
+    "physical_cpu_evidence": "CPU explicit-sharding semantics only; no TPU scatter/order/kernel or timing claim.",
+    "forward_payload_tradeoff": "Avoids gathering embedding BF16 feature shards for lookup; token indices replicate over overlapping FSDP and lookup hidden features redistribute to residual batch placement. Other batch axes remain sharded; latency and memory benefit unmeasured.",
+    "no_adoption_claim": true,
+    "no_full_trainer_run": true,
+    "no_hardware_network_commit_push_pr": true,
+    "affected_runner": "Only dry-run selected affected native test; selected suite was actually run manually with root default markers and extra benchmark/trainer coverage in the pinned existing environment. Workspace installer was not executed."
+  },
+  "environment_notes": [
+    "The existing environment was used read-only, with fresh-clone PYTHONPATH verified in runtime.json. Temporary ignored .venv symlink used for configured Pyrefly discovery was removed after checks.",
+    "Required infra/pre-commit.py was executed through the existing interpreter to avoid unavailable offline inline-dependency metadata. Multi-file Black sandbox socket failures retained; same required entrypoint run separately per file passed all hooks.",
+    "Clone uses a local shared object alternate; public base commit and complete candidate patch/source bytes are retained independently. No private generation source copied."
+  ],
+  "validation_artifacts": [
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-affected-dry-run.log",
+      "retained": "validation/native-jax-embedding-layout-affected-dry-run.log",
+      "bytes": 587,
+      "sha256": "14c9428cd0a67a58372267502a0acc82bb49e6b587978621ccce9eec407588c5"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-candidate-cpu4.log",
+      "retained": "validation/native-jax-embedding-layout-candidate-cpu4.log",
+      "bytes": 1072,
+      "sha256": "82d3f4370b6951b84432367bde85923d1c2be5f5ea0dbfbcb206e5f14b52dfad"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-candidate-cpu8.log",
+      "retained": "validation/native-jax-embedding-layout-candidate-cpu8.log",
+      "bytes": 911,
+      "sha256": "022aa3557740db3f008deab49291073e2ee7372e18e6aa5011f22f0ed237fe75"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-generalized-baseline-7cases.log",
+      "retained": "validation/native-jax-embedding-layout-generalized-baseline-7cases.log",
+      "bytes": 39636,
+      "sha256": "816f0513683308503e7d8d0a1baf0a7f826c52b8c3760f225ae8b871931577bc"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-generalized-baseline-corrected.log",
+      "retained": "validation/native-jax-embedding-layout-generalized-baseline-corrected.log",
+      "bytes": 8415,
+      "sha256": "259ce302215ff94c80c7fc0475698f07d0f2a898768a39ae0579a8af8f2ec467"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-generalized-baseline.log",
+      "retained": "validation/native-jax-embedding-layout-generalized-baseline.log",
+      "bytes": 2886,
+      "sha256": "52cf3ca1eaf9bc376c3918b669d3cd885f60b24f64c901f650fe209515eae728"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-direct-env.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-direct-env.log",
+      "bytes": 1219,
+      "sha256": "aa1f9560f592814108e7b2ce3c98e263ba6fefee8c12dfbfc1ba6b506ac3b4d7"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-existing-env.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-existing-env.log",
+      "bytes": 341,
+      "sha256": "83611eb28c36e2b2bccbba58d973fa7d16aaf0b36a21cbb989bc2f75eb175245"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-file1-check.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-file1-check.log",
+      "bytes": 557,
+      "sha256": "ee091dac6e4ec256ed5790e1f3bb25f92b18898d84ed85718d5f1d33a5190011"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-file1-fix.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-file1-fix.log",
+      "bytes": 557,
+      "sha256": "ee091dac6e4ec256ed5790e1f3bb25f92b18898d84ed85718d5f1d33a5190011"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-file2-check.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-file2-check.log",
+      "bytes": 511,
+      "sha256": "fb2ba3dc2c65a6e9df7a5a8443679cdc305f989b364e7a9d10187292b6f66774"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-file2-fix.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-file2-fix.log",
+      "bytes": 511,
+      "sha256": "fb2ba3dc2c65a6e9df7a5a8443679cdc305f989b364e7a9d10187292b6f66774"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-file3-check.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-file3-check.log",
+      "bytes": 355,
+      "sha256": "76444d4998eefcbbdcd58a54103616a4aab7441506309f01113f92a4cef6ffce"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-file3-fix.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-file3-fix.log",
+      "bytes": 355,
+      "sha256": "76444d4998eefcbbdcd58a54103616a4aab7441506309f01113f92a4cef6ffce"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-fix.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-fix.log",
+      "bytes": 341,
+      "sha256": "83611eb28c36e2b2bccbba58d973fa7d16aaf0b36a21cbb989bc2f75eb175245"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-local-tools.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-local-tools.log",
+      "bytes": 2220,
+      "sha256": "fc0d7a12312fc692630ac77798cdf1c78229e0ddb44485bb65b62012d9f50fac"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-precommit-serial-fix.log",
+      "retained": "validation/native-jax-embedding-layout-precommit-serial-fix.log",
+      "bytes": 2220,
+      "sha256": "fc0d7a12312fc692630ac77798cdf1c78229e0ddb44485bb65b62012d9f50fac"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-tp-only-baseline.log",
+      "retained": "validation/native-jax-embedding-layout-tp-only-baseline.log",
+      "bytes": 2333,
+      "sha256": "85d8659750d2bf65edc99b0d18ce82aae7839e73337e1dedc9f572136e85598d"
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-baseline.xml",
+      "retained": "validation/native-jax-embedding-layout-baseline.xml",
+      "bytes": 5696,
+      "sha256": "a73d3006e6fcfd457c3073d1e170ffbe5bb218f969a2597032b51dfb64f91716",
+      "junit_totals": {
+        "tests": 32,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-candidate-cpu4.xml",
+      "retained": "validation/native-jax-embedding-layout-candidate-cpu4.xml",
+      "bytes": 7740,
+      "sha256": "d934234fc970eff9d24d03b0178f8964673d0218f0a2d4956cbc85791a314e7c",
+      "junit_totals": {
+        "tests": 38,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      }
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-candidate-cpu8.xml",
+      "retained": "validation/native-jax-embedding-layout-candidate-cpu8.xml",
+      "bytes": 1526,
+      "sha256": "c766bd1c300d4e5259be89e24d66cd3d3472d7556875e15d5dacb5e5f4284f32",
+      "junit_totals": {
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-generalized-baseline-7cases.xml",
+      "retained": "validation/native-jax-embedding-layout-generalized-baseline-7cases.xml",
+      "bytes": 38482,
+      "sha256": "208382ffa55ca9959cd016c70e743e011d729224a87b67d238bd9f00e5841054",
+      "junit_totals": {
+        "tests": 7,
+        "failures": 6,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-generalized-baseline-corrected.xml",
+      "retained": "validation/native-jax-embedding-layout-generalized-baseline-corrected.xml",
+      "bytes": 7474,
+      "sha256": "308440c9ec60f51426043ed1f62ae904f13aff008a25931095215b887c98b9f9",
+      "junit_totals": {
+        "tests": 7,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-generalized-baseline.xml",
+      "retained": "validation/native-jax-embedding-layout-generalized-baseline.xml",
+      "bytes": 397,
+      "sha256": "9d177c1f8e3ec7911bc0d7e9e3a3458e2a55856d24eab4ad34cbffc01e417ffe",
+      "junit_totals": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-tp-only-baseline.xml",
+      "retained": "validation/native-jax-embedding-layout-tp-only-baseline.xml",
+      "bytes": 432,
+      "sha256": "d4fbf208f45586da49ed856877462a0567b28d6e7c5d44e5560c472b98d21199",
+      "junit_totals": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-layout-runtime.json",
+      "retained": "validation/native-jax-embedding-layout-runtime.json",
+      "bytes": 627,
+      "sha256": "dccc975244d74462a3089fec8649b585c9880d89300cb0d25d1c0cbeefbb8232"
+    }
+  ]
+}

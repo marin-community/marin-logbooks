@@ -1,0 +1,155 @@
+{
+  "schema": "native-jax-embed-layout-full-trainer-final-preparation.v1",
+  "status": "LOCAL_VALIDATION_COMPLETE_PENDING_FRESH_INDEPENDENT_SCIENTIFIC_TRANSPORT_REVIEW_AND_ARCHIVE",
+  "source_commit": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "source_parent": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "source_clean_verified": true,
+  "source_file_sha256": {
+    "lib/haliax/src/haliax/__init__.py": "a89410a0f7fa02cb9fde14db439378c8b708dacfbb2ea945af35997800001245",
+    "lib/haliax/src/haliax/_src/state_dict.py": "d9c98a71b758303b86f6984222221b75946d91f112d685ef30c860d96e9d4669",
+    "lib/haliax/src/haliax/nn/linear.py": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+    "lib/haliax/src/haliax/nn/normalization.py": "3b75cb9dce8a8aae9bd74f91d361cc23c008f73dd61fa862b5f0b5bebddb3518",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/__init__.py": "d90269d64894f147dbd458e7e6a64a08ba419ced508c7b09cc50151c2f1a4487",
+    "lib/levanter/src/levanter/grug/attention/_core.py": "e9bb1639396b5060fc6f0ebc013a3b89daf42485c88ea546b346198e9226c3d9",
+    "lib/levanter/src/levanter/kernels/pallas/splash_attention.py": "34258a9a0fc9bc83b32dcb08e64ff81440a163d5a35b447ccd1b0a351c898d78",
+    "lib/levanter/src/levanter/layers/attention.py": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+    "lib/levanter/src/levanter/layers/linear.py": "d351bc82e111d7643d9b31cf3797ba927b100fa1cca5bcc368ab917e526d8b80",
+    "lib/levanter/src/levanter/layers/rms_norm.py": "bcf81000cb940f68235ce185e4210412d4d60e0f27384c95edc2c8c5f18af4f0",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "1bf3fe8d2c4b0173a5437950c463823078683b795eee67fc8cc0bf0939b4212f"
+  },
+  "native_activations_ast_sha256": "f57d5563a147ec18210af205d34095e62b8c53efbd0edc8188784c318195f47f",
+  "maintained_source_review_sha256": "b95d119e070e7d2c559a29e2de2559838f43d26d5a8550649ad61dd1a8fa6a7d",
+  "runner_sha256": "1839b3cc65314661503f689280960d29024ed1e2c0a607769ec3bb3f040f7c66",
+  "config_sha256": "943a6d4d10dca6bf8ef7942da36a26915142f48998a5846974f0740d554acb3d",
+  "command_sha256": "652afb50c77f293e268d82e3a3af596075b69a6cf377270a29fdd0209ff81a6c",
+  "launcher_sha256": "a5da42e0a465f87614eddceccdbb7654b077d380948a21001bcf0f2c76f41d62",
+  "once_template_sha256": "3202817e2da3796b4134c9d260f4bade50fad3d6a4e70e5338f65e0fec65eb13",
+  "scientific_workload_unchanged": true,
+  "scientific_argv_and_expected_benchmark_config_exact_prior_v2": true,
+  "profile_collection_delta": "BF16 profile_steps2 to0 after timed measurement; FP32 stays0;5warmup/20timed/optimizer/gates unchanged.",
+  "criteria": {
+    "atol": 1e-05,
+    "rtol": 0.0001,
+    "FP32": "Every update/parameter tensor L2<=0.005;20-loss vector L2<=0.001;loss/gradient/Adam original elementwise checks.",
+    "BF16": "All original elementwise checks; no relaxed thresholds."
+  },
+  "validation": {
+    "fullshape_abstract": "Both dtype actual native constructor/activations/reverse tracing pass for1,531,037,696 master parameters with activation[8,2048,2048], correct Splash/native and named selectors. No huge arrays, lowering, compilation or Splash execution. Scalar-sum activation cotangent reverse-shape proof is not Trainer loss/Adam execution.",
+    "real_tiny_CPU_controller": "Both real CPU4 Trainer children completed and passed matching/runtime guards.13 on-disk scientific source hashes plus5 actual module paths/file hashes, native AST and original query barrier verified in same child before runpy benchmark. Distinct fresh pycache and no bytecode writes.",
+    "tiny_limit": "V64/D16/MLP32/L1/H4/KV2/B4/S8;1warmup/1measured;vanilla;CPU Python3.12.11; no historical large hash gate. Its raw CPU timings/ratios are incidental unchanged benchmark outputs, not large-model/TPU performance evidence.",
+    "ordinary_exception_retention": [
+      "benchmark spawn OSError",
+      "malformed report JSONDecodeError",
+      "post-output source guard ValueError",
+      "simultaneous spawn+backup OSError retains original exception with note"
+    ],
+    "exit_paths": [
+      "Injected child exit1 retained after both case reports; host exits1",
+      "Backup nonzero37 remains fatal",
+      "Backup90s TimeoutExpired remains fatal"
+    ],
+    "mechanical_limit": "Exception/exit/retention tests explicitly replay/inject controller mechanics outside scientific fixture; actual model and backup upload are not mocked as scientific evidence. No hard-termination/SIGKILL capture guarantee.",
+    "archive_retention": "Complete saved prior large JSON/HLO subset16 files/11,839,105 raw bytes, including8 complete HLOs, retained byte-exact. Real tiny CPU archive16 files/3,341,333 raw bytes also byte-exact, upload intercepted locally.",
+    "caps": "128 files/32MiB per file/128MiB raw/16MiB gzip; unexpected files/raw/count/gzip cap rejection preserves original bytes with no upload. No truncation or arrays/profiles/checkpoints.",
+    "offline_request": "Actual local source zip and protobuf serialization completed under guards forbidding network/client/credentials/RPC; all13 bundled source hashes exact; Git metadata excluded. No bundle/protobuf binary belongs in research Git archive.",
+    "serialized_fields": "One v5p8/four chips,32CPU/256GiB/64GiB,required us-central1-a;120s scheduling/1800s execution, all3 retry allowances0, empty ISOLATE, existing ERROR verified.",
+    "once_script": "Actual --validate-only branch exercised with client/RPC/network forbidden; no release/claim/state. Static order requires exact review/archive release, exclusive claim, then client+submit; ambiguous outcome retains claim with no automatic recovery.",
+    "envelope": {
+      "source_pin": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+      "runner_sha256": "1839b3cc65314661503f689280960d29024ed1e2c0a607769ec3bb3f040f7c66",
+      "command_sha256": "652afb50c77f293e268d82e3a3af596075b69a6cf377270a29fdd0209ff81a6c",
+      "scope": "Actual offline request env/resource/timeout/retry serialization and static full child argv sizes. Unknown task-injected environment is rechecked at runtime with16KiB reserve; this is not the final worker environment.",
+      "outer_argv_bytes": 12599,
+      "largest_outer_argument_including_NUL": 12589,
+      "request_env_bytes": 566,
+      "IRIS_JOB_ENV_Docker_argument_bytes_including_NUL": 648,
+      "MARIN_PROVENANCE_bytes": 363,
+      "full_child_shapes": {
+        "float32": {
+          "argv_bytes": 5974,
+          "largest_argument_bytes_including_NUL": 3485,
+          "known_request_env_plus_IRIS_JOB_ENV_plus_16KiB_reserve_total": 23572
+        },
+        "bfloat16": {
+          "argv_bytes": 5976,
+          "largest_argument_bytes_including_NUL": 3485,
+          "known_request_env_plus_IRIS_JOB_ENV_plus_16KiB_reserve_total": 23574
+        }
+      },
+      "all_resources_timeouts_retries_region_secrets_ERROR_verified": true,
+      "known_bounds_pass": true,
+      "runtime_guard_bytes": 98304,
+      "runtime_reserve_bytes": 16384,
+      "release_claim_state_absent": true,
+      "no_client_RPC_network_hardware": true
+    }
+  },
+  "runtime_identity": "Remote clean/pin is explicitly declared, guarded by13 on-disk source hashes and5 actual imported module file/path hashes; local source HEAD+clean and bundled source bytes separately verified. Final task-injected environment is unknown offline and checked by actual child with16KiB reserve under96KiB.",
+  "full_trainer_accepted": false,
+  "all_255_gradients_accepted": false,
+  "trajectory_accepted": false,
+  "speed_ratio": null,
+  "hardware_submitted": false,
+  "dispatch_authorized": false,
+  "new_client_RPC_network": false,
+  "old_jobs_queried_resumed_or_retried": false,
+  "archive_publication_commit_push": false,
+  "remaining_gates": [
+    "Fresh independent scientific and transport review of this exact freeze",
+    "Root durable archive of source/config/checks/reviews/launcher and exact remote verification",
+    "Root separate dispatch release and fresh uniqueness checks for only the newly named job/prefix",
+    "Root one exact-once submission and existing heartbeat babysitting"
+  ],
+  "proposed_job": "/dlwh/levanter-native-jax-v5p-15b-embed-layout-20261024",
+  "regional_no_clobber_backup": "gs://marin-us-central1/tmp/ttl=7d/native-jax/embed-layout-15b-20261024/diagnostics.tar.gz",
+  "evidence": {
+    "abstract-proof.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/abstract-proof.json",
+      "sha256": "873793ab0ca4d638f807953f5391c1af707ffa523621d459eb039712368eeb79",
+      "bytes": 5313
+    },
+    "cpu-proof.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/cpu-proof.json",
+      "sha256": "662601c0f8f6df5fbf2145fde62d3d3e66034d33f692c58d5b91eafa6cb97bd6",
+      "bytes": 8573
+    },
+    "failure-retention-proof.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/failure-retention-proof.json",
+      "sha256": "b394851f3e72441100956756c4ec86a3fda88f37b3e22de3d25c0f51d9c54ead",
+      "bytes": 3919
+    },
+    "exit-path-proof.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/exit-path-proof.json",
+      "sha256": "3e6508d237c326d63c947357f895fb9175ecc9d44ef2254a8bd15665501f7a26",
+      "bytes": 1047
+    },
+    "env-envelope-proof.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/env-envelope-proof.json",
+      "sha256": "db3dc72dc9daeb7d16bdaf0289a86d979d91661bb5a5c52f8989e563d00b7ef7",
+      "bytes": 1300
+    },
+    "offline-verification.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/offline-verification.json",
+      "sha256": "e65462d09a3f28d5ab18576e3138167d036f07d13a141d13dc700274205f32f4",
+      "bytes": 1598
+    },
+    "offline-request.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/offline-request.json",
+      "sha256": "c5349ae0df2e80b86d7f6639b72e4cc3cf170be71b253cf5d5fa359482f859c4",
+      "bytes": 16942
+    },
+    "once-proof.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/once-proof.json",
+      "sha256": "6cd691523e7f12d8479cd5f5d3c9209403ae45d80d66e92f513767f44e3160df",
+      "bytes": 2406
+    },
+    "submit-validation.json": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-preparation/final/submit-validation.json",
+      "sha256": "a23d25c6b76e5fbc9c9f371670225d7d02f0d8e785d4f893f5370c5ef975eac2",
+      "bytes": 1022
+    }
+  },
+  "scope_clarification": "Final scope13 on-disk scientific hashes/5 actual imported module path+file hashes. Superseded extra-import preparation attempt preserved locally and excluded from final scientific evidence/archive selection."
+}

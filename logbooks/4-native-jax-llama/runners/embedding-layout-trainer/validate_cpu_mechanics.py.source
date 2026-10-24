@@ -1,0 +1,40 @@
+"""Execute real tiny CPU Trainer children; intercept only regional backup."""
+import copy,hashlib,importlib.util,json,os,subprocess,sys,tarfile
+from pathlib import Path
+HERE=Path(__file__).parent
+runner=HERE/'host_runner.py';job=json.loads((HERE/'job-config.json').read_text());small=copy.deepcopy(job)
+small['expected_benchmark_config'].update(vocab_size=64,hidden_dim=16,intermediate_dim=32,num_layers=1,num_heads=4,num_kv_heads=2,batch_size=4,seq_len=8,warmup_steps=1,measured_steps=1,attention_backend='vanilla')
+small.update(expected_backend='cpu',attention_backend='vanilla',historical_hash_guards_applicable=False,parameter_count=4400,expected_parameter_sha256=None,expected_batch_sha256=None)
+small['scientific_environment']['JAX_PLATFORMS']='cpu';small['expected_runtime']['python']='3.12.11';small['common_args']=[]
+for key,value in small['expected_benchmark_config'].items():
+ if key=='attention_backend':continue
+ small['common_args'] += ['--'+('' if value else 'no-')+key.replace('_','-')] if isinstance(value,bool) else ['--'+key.replace('_','-'),str(value)]
+(HERE/'cpu-config.json').write_text(json.dumps(small,indent=2)+'\n')
+output=HERE/'cpu-results';assert not output.exists();os.environ.update(small['scientific_environment'],IRIS_OUTPUT_DIR=str(output),JAX_NUM_CPU_DEVICES='4',PYTHONDONTWRITEBYTECODE='1',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
+spec=importlib.util.spec_from_file_location('full_trainer_cpu_controller',runner);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+original_run=subprocess.run;backup_records=[]
+def run(argv,**kwargs):
+ if argv[1:3]==['-m','rigging.fsutil.cli']:
+  assert argv[3:5]==['cp','-n'] and argv[-1]==job['backup_uri'] and kwargs['timeout']==90
+  archive=Path(argv[5]);assert archive.stat().st_size<=job['archive_limits']['compressed_bytes']
+  with tarfile.open(archive) as tar:
+   members=tar.getmembers();assert all(m.isfile() and '..' not in Path(m.name).parts and not Path(m.name).is_absolute() for m in members)
+   assert all(tar.extractfile(m).read()==(output/m.name).read_bytes() for m in members)
+  local=HERE/'cpu-backup.tar.gz';local.write_bytes(archive.read_bytes());backup_records.append({'archive_sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),'files':len(members),'raw_bytes':sum(m.size for m in members),'compressed_bytes':archive.stat().st_size,'all_members_byte_exact':True,'fsutil_upload_intercepted_not_executed':True})
+  return subprocess.CompletedProcess(argv,0)
+ assert argv[:2]==[sys.executable,'-c'];return original_run(argv,**kwargs)
+module.subprocess.run=run;sys.argv=[str(runner),json.dumps(small,separators=(',',':'))]
+try:module.main()
+except SystemExit as result:code=result.code
+finally:module.subprocess.run=original_run
+assert len(backup_records)==1
+guards=json.loads((output/'matched-guards.json').read_text());outcomes=json.loads((output/'case-outcomes.json').read_text());assert all(g['passed'] for g in guards.values())
+imports={name:json.loads((output/name/'runtime-imports.json').read_text()) for name in ['float32','bfloat16']}
+for record in imports.values():
+ assert record['actual_source_file_sha256']==job['source_file_sha256'] and len(record['actual_source_file_sha256'])==13
+ assert record['imported_module_hashes_verified'] and len(record['imported_module_sha256'])==5
+ assert record['native_activations_ast_sha256']==job['native_activations_ast_sha256']
+ assert record['dont_write_bytecode'] and record['actual_function_contains_barrier']
+assert imports['float32']['pycache_prefix']!=imports['bfloat16']['pycache_prefix']
+record={'source_pin':job['source_commit'],'runner_sha256':hashlib.sha256(runner.read_bytes()).hexdigest(),'config_sha256':hashlib.sha256((HERE/'job-config.json').read_bytes()).hexdigest(),'process_exit_code':code,'both_real_CPU_Trainer_children_completed':True,'all_matching_runtime_guards_pass':True,'all13_source_hashes_and5_actual_imports_verified':True,'imports':imports,'outcomes':outcomes,'backup':backup_records[0],'fixture_differences':'Tiny prior CPU fixture V64/D16/MLP32/L1/H4/KV2/B4/S8;1warmup/1measured;vanilla attention; CPU Python3.12.11; no historical large hashes; profile0 both. No full-Trainer/Splash/TPU numerical acceptance claim. Regional fsutil backup alone intercepted locally.','no_network_client_hardware':True}
+(HERE/'cpu-proof.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps({'cpu_exit':code,'guards':True,'backup':backup_records[0]}))
