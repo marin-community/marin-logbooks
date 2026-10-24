@@ -1,0 +1,30 @@
+{
+  "source": "3434463dd95629fec9c5813ec687cc55d20adc58",
+  "changed_only": [
+    "lib/levanter/tests/test_dpo.py"
+  ],
+  "test_sha256": "db27b8f92193b06af9df1fb069e2897b9300ba8a405f3afdcec06b73d73eca45",
+  "same_test_bytes_as_composition": true,
+  "command": [
+    "uv",
+    "run",
+    "--package",
+    "marin-levanter",
+    "--group",
+    "test",
+    "pytest",
+    "-c",
+    "pyproject.toml",
+    "-n0",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+    "--junitxml=evidence/native-dpo-dropout/final-uncomposed-control.json"
+  ],
+  "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+  "outcome": "expected failure",
+  "test_classname": "lib.levanter.tests.test_dpo",
+  "test_name": "test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+  "seconds": "2.622",
+  "failure_message": "ValueError: Array-native LoRA requires dropout=0; native projections do not receive RNG keys\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.",
+  "interpretation": "Detects absence of dropout topic at actual main initialization; not composed-candidate numerical failure.",
+  "_archive_note": "Historical phase/source/status retained. Embedded hashes identify original inputs, not sanitized copies; output hashes/lengths and transformations are in manifest. No numerical execution during archiving. Parent-relative patches and reviewer full-index hashes may represent identical source with distinct header bytes."
+}

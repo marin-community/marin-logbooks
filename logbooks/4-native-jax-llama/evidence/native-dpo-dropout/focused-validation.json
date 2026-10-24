@@ -1,0 +1,1553 @@
+{
+  "utc": "2026-10-24T23:30:43.850810+00:00",
+  "status": "frozen author qualification complete; root independent review/CPU8/catalog/commit/publication tracked separately",
+  "first_parent": "ccfc1b8ff34cb63f018fb943e75c9f18b94250fc",
+  "second_parent": "3434463dd95629fec9c5813ec687cc55d20adc58",
+  "merge_tree": "be984e4a6765408b42befe337e3fae8c51b8a106",
+  "focused_qualification": [
+    {
+      "cpu": 1,
+      "counts": {
+        "passed": 38,
+        "failed": 0,
+        "error": 0,
+        "skipped": 0
+      },
+      "commands_receipt": {
+        "path": "native-jax-dpo-dropout-final-cpu1-commands.json",
+        "sha256": "003ab792822fd6f257886f8d4271c6e093ea3da337241f215b551fff7054e5be"
+      },
+      "runs": [
+        {
+          "label": "dpo-explicit",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+            "-k",
+            "explicit",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+          "start_utc": "2026-10-24T23:12:34.996958+00:00",
+          "elapsed_seconds": 97.434924209,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu1-dpo-explicit.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu1-dpo-explicit.log",
+            "sha256": "ec02f6989af09918a14aaf17381175ff5368397469a67d62aa533a2593473858"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "677d92fe542a0b47edf3c4630536d9e7078c66238c8b14b5cc282063d9c53587"
+          }
+        },
+        {
+          "label": "dpo-inferred_string",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+            "-k",
+            "inferred_string",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+          "start_utc": "2026-10-24T23:14:12.433208+00:00",
+          "elapsed_seconds": 122.33440029200001,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu1-dpo-inferred_string.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu1-dpo-inferred_string.log",
+            "sha256": "e16dca87cc92899d0664e1c4546f82d3228c8f7fb2ea0fde4a4a619bb31a3350"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "2099f11a42971767a3761d703bd4ea971848b9688b27b00b5c52b5fe3b79b3bd"
+          }
+        },
+        {
+          "label": "dpo-inferred_bool",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+            "-k",
+            "inferred_bool",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+          "start_utc": "2026-10-24T23:16:14.768506+00:00",
+          "elapsed_seconds": 147.116693833,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu1-dpo-inferred_bool.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu1-dpo-inferred_bool.log",
+            "sha256": "d02f6d963dd65d74d726c297060a457d1e2bf958e32b3834c9b8c2a0f591fdf3"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "87f66f4c35c9438b41b91a01103e32b8cfd18f162d12263e68910af926c2c3f3"
+          }
+        },
+        {
+          "label": "lm-explicit",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+            "-k",
+            "explicit",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+          "start_utc": "2026-10-24T23:18:41.886438+00:00",
+          "elapsed_seconds": 74.89877179199999,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu1-lm-explicit.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu1-lm-explicit.log",
+            "sha256": "2b1814e0361405474d64ba4ebef35ecaa0a93e2bf6d5f9aba1beec78ba284a0d"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "848b526f5b8be7895885e32f5e3ffbecb055d4d1ca447c339f702fe5367f6f9f"
+          }
+        },
+        {
+          "label": "lm-inferred_string",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+            "-k",
+            "inferred_string",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+          "start_utc": "2026-10-24T23:19:56.786137+00:00",
+          "elapsed_seconds": 102.27019320900001,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu1-lm-inferred_string.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu1-lm-inferred_string.log",
+            "sha256": "59eb28369a5ac3e0c49dd7f8656349654f782cd07c39532e0370256d818ec8c4"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "0559995d445eefc13d439b76bdec0222efaa1b8c1168aeacce10ece49653d221"
+          }
+        },
+        {
+          "label": "lm-inferred_bool",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+            "-k",
+            "inferred_bool",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+          "start_utc": "2026-10-24T23:21:39.057352+00:00",
+          "elapsed_seconds": 103.116326458,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu1-lm-inferred_bool.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu1-lm-inferred_bool.log",
+            "sha256": "b820bdbe2ac1fee5c5a1f97dcf195ee3ad85cc522b6f202018283a60063b90f9"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "de34d7358c148a759361a02642e0c66d10bbaff71463d03f91dcb61e84ee3b77"
+          }
+        },
+        {
+          "label": "oracles",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements",
+            "lib/levanter/tests/test_lora.py::test_array_lora_multilayer_canonical_export_and_base_view",
+            "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits",
+            "lib/levanter/tests/test_lora.py::test_native_lora_dropout_paged_prefill_continuation_matches_named",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=1",
+          "start_utc": "2026-10-24T23:23:22.174867+00:00",
+          "elapsed_seconds": 85.99262566599998,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu1-oracles.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu1-oracles.log",
+            "sha256": "b9800010623d1e5b92bab5b5615c28eb540e033794535b175964593f90a2b060"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "6cc756e20c6d72c53392b8b57816384505d22ffec653d69d8154971fe884e051"
+          }
+        }
+      ],
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.0]",
+          "seconds": 19.692,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "seconds": 26.366,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base-0.0]",
+          "seconds": 12.117,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base-0.25]",
+          "seconds": 26.293,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate-0.0]",
+          "seconds": 24.277,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate-0.25]",
+          "seconds": 33.98,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base-0.0]",
+          "seconds": 14.82,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base-0.25]",
+          "seconds": 37.698,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-separate-0.0]",
+          "seconds": 26.78,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-separate-0.25]",
+          "seconds": 41.457,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-adapter_base-0.0]",
+          "seconds": 14.861,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-adapter_base-0.25]",
+          "seconds": 51.076,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-explicit-0.0]",
+          "seconds": 21.096,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-explicit-0.25]",
+          "seconds": 18.447,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-explicit-0.0]",
+          "seconds": 8.476,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-explicit-0.25]",
+          "seconds": 13.014,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_string-0.0]",
+          "seconds": 32.623,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_string-0.25]",
+          "seconds": 29.711,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_string-0.0]",
+          "seconds": 10.658,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_string-0.25]",
+          "seconds": 15.115,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool-0.0]",
+          "seconds": 32.054,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool-0.25]",
+          "seconds": 29.844,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_bool-0.0]",
+          "seconds": 10.96,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_bool-0.25]",
+          "seconds": 16.383,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-column]",
+          "seconds": 1.548,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-row]",
+          "seconds": 0.552,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-column]",
+          "seconds": 0.132,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-row]",
+          "seconds": 0.128,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-column]",
+          "seconds": 0.036,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-row]",
+          "seconds": 0.02,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_multilayer_canonical_export_and_base_view",
+          "seconds": 7.016,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+          "seconds": 14.327,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-2]",
+          "seconds": 17.886,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-1]",
+          "seconds": 5.498,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-2]",
+          "seconds": 5.638,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-1]",
+          "seconds": 5.985,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-2]",
+          "seconds": 5.158,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_paged_prefill_continuation_matches_named",
+          "seconds": 7.591,
+          "outcome": "passed"
+        }
+      ],
+      "source_hashes_equal_frozen_candidate": true
+    },
+    {
+      "cpu": 4,
+      "counts": {
+        "passed": 38,
+        "failed": 0,
+        "error": 0,
+        "skipped": 0
+      },
+      "commands_receipt": {
+        "path": "native-jax-dpo-dropout-final-cpu4-commands.json",
+        "sha256": "d980dde12149adf79a0a5a2c1afe367a1a0a47c0500a6d8d44940adaa5edf275"
+      },
+      "runs": [
+        {
+          "label": "dpo-explicit",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+            "-k",
+            "explicit",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+          "start_utc": "2026-10-24T23:12:36.033313+00:00",
+          "elapsed_seconds": 132.29069475,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu4-dpo-explicit.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu4-dpo-explicit.log",
+            "sha256": "72924674f9f45c616c06364b0cae3590f15f5f936f6d1721d5cba22035cc47f1"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "351493cafc74ca06d2b3bab1951520cff2e1783826f670eb95baef8cd0c5ac85"
+          }
+        },
+        {
+          "label": "dpo-inferred_string",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+            "-k",
+            "inferred_string",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+          "start_utc": "2026-10-24T23:14:48.325340+00:00",
+          "elapsed_seconds": 159.494459125,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu4-dpo-inferred_string.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu4-dpo-inferred_string.log",
+            "sha256": "a6b1e69c39badd2acea89bf9430b47acd95ded8e3cbac550f268ab21671683f4"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "b92041671bb58297262b0e7f5900a12530415ba08262e386e3cfe82e41533e06"
+          }
+        },
+        {
+          "label": "dpo-inferred_bool",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+            "-k",
+            "inferred_bool",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+          "start_utc": "2026-10-24T23:17:27.821063+00:00",
+          "elapsed_seconds": 208.415315917,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu4-dpo-inferred_bool.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu4-dpo-inferred_bool.log",
+            "sha256": "d13a5c8a9a7f65710281d7320ce41fb565a78d62a9ce89983fae902be11ee4d8"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "8312ee932dacd90de3c61add8ad2e0d7034ca5f385e994ba3d58932e3b6a0c1d"
+          }
+        },
+        {
+          "label": "lm-explicit",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+            "-k",
+            "explicit",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+          "start_utc": "2026-10-24T23:20:56.237776+00:00",
+          "elapsed_seconds": 112.08817950000002,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu4-lm-explicit.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu4-lm-explicit.log",
+            "sha256": "4edc9e060c6e93fb1b60b6b36a7de12e789d27cbb9bf498e4816c11c02726cf6"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "1b7bd7fecc40b17ed97b14b7e04c0cc74701f2cc48fbc69480a5cc3bd8088cf3"
+          }
+        },
+        {
+          "label": "lm-inferred_string",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+            "-k",
+            "inferred_string",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+          "start_utc": "2026-10-24T23:22:48.327249+00:00",
+          "elapsed_seconds": 144.835949292,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu4-lm-inferred_string.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu4-lm-inferred_string.log",
+            "sha256": "cdda21be0d8a56d9b4dcfe4a9d9aabd615de024d2a4f2a095c1b1643c744e16d"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "87e14ab4f4d9626fe93995a3ff118c86f9c76702bb82803ba0ac688f3e18c5b6"
+          }
+        },
+        {
+          "label": "lm-inferred_bool",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+            "-k",
+            "inferred_bool",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+          "start_utc": "2026-10-24T23:25:13.164521+00:00",
+          "elapsed_seconds": 139.77716516700002,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu4-lm-inferred_bool.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu4-lm-inferred_bool.log",
+            "sha256": "855e9be70d63b524f7ce341953608ef7d3786dd660248b8d538499f91bdbe53c"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "b9f7a2ece7a5d22a88be9ec5e8f9de4a8b0361dadf6492095a7318d84f86a875"
+          }
+        },
+        {
+          "label": "oracles",
+          "command": [
+            "uv",
+            "run",
+            "--package",
+            "marin-levanter",
+            "--group",
+            "test",
+            "pytest",
+            "-c",
+            "pyproject.toml",
+            "-n0",
+            "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements",
+            "lib/levanter/tests/test_lora.py::test_array_lora_multilayer_canonical_export_and_base_view",
+            "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits",
+            "lib/levanter/tests/test_lora.py::test_native_lora_dropout_paged_prefill_continuation_matches_named",
+            "--junitxml=evidence/native-dpo-dropout/focused-validation.json"
+          ],
+          "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+          "start_utc": "2026-10-24T23:27:32.943229+00:00",
+          "elapsed_seconds": 117.09487012500006,
+          "exit_code": 0,
+          "log": "native-jax-dpo-dropout-final-cpu4-oracles.log",
+          "xml": "evidence/native-dpo-dropout/focused-validation.json",
+          "log_artifact": {
+            "path": "native-jax-dpo-dropout-final-cpu4-oracles.log",
+            "sha256": "57b06c1b798a85293dabbc63cf6873db594ca8357b1e8efaa5045d2d16ffc007"
+          },
+          "xml_artifact": {
+            "path": "evidence/native-dpo-dropout/focused-validation.json",
+            "sha256": "d9baee805022cee2707b3db1163653b01d9dc8a98870089a824e23c4a078aa05"
+          }
+        }
+      ],
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.0]",
+          "seconds": 25.969,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "seconds": 40.326,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base-0.0]",
+          "seconds": 15.882,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base-0.25]",
+          "seconds": 39.153,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate-0.0]",
+          "seconds": 32.62,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate-0.25]",
+          "seconds": 48.761,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base-0.0]",
+          "seconds": 17.509,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base-0.25]",
+          "seconds": 49.964,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-separate-0.0]",
+          "seconds": 45.876,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-separate-0.25]",
+          "seconds": 62.693,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-adapter_base-0.0]",
+          "seconds": 24.458,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-adapter_base-0.25]",
+          "seconds": 62.143,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-explicit-0.0]",
+          "seconds": 26.631,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-explicit-0.25]",
+          "seconds": 31.281,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-explicit-0.0]",
+          "seconds": 13.666,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-explicit-0.25]",
+          "seconds": 25.662,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_string-0.0]",
+          "seconds": 38.845,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_string-0.25]",
+          "seconds": 47.119,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_string-0.0]",
+          "seconds": 16.873,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_string-0.25]",
+          "seconds": 27.225,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool-0.0]",
+          "seconds": 37.77,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool-0.25]",
+          "seconds": 41.492,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_bool-0.0]",
+          "seconds": 13.829,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_bool-0.25]",
+          "seconds": 34.795,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-column]",
+          "seconds": 1.634,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-row]",
+          "seconds": 0.65,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-column]",
+          "seconds": 0.146,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-row]",
+          "seconds": 0.179,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-column]",
+          "seconds": 0.048,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-row]",
+          "seconds": 0.056,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_array_lora_multilayer_canonical_export_and_base_view",
+          "seconds": 10.827,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+          "seconds": 22.946,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-2]",
+          "seconds": 16.708,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-1]",
+          "seconds": 7.172,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-2]",
+          "seconds": 17.4,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-1]",
+          "seconds": 11.617,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-2]",
+          "seconds": 6.294,
+          "outcome": "passed"
+        },
+        {
+          "nodeid": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_paged_prefill_continuation_matches_named",
+          "seconds": 8.63,
+          "outcome": "passed"
+        }
+      ],
+      "source_hashes_equal_frozen_candidate": true
+    }
+  ],
+  "total_expected_passes": 76,
+  "all_expected_passed": true,
+  "normal_checks": {
+    "command": "./infra/pre-commit.py $(git diff --name-only 1186ba4117d098af11d392441335ed0f720abcd0)",
+    "file_count": 18,
+    "ordinary_hooks_passed": 10,
+    "log": "evidence/native-dpo-dropout/normal-checks.txt",
+    "sha256": "191f3759aa45feb6b652a49282d2abef269b7ee969f8b5e1c57cea600adee00e"
+  },
+  "limits": [
+    "No additional production changes beyond normal composition of published ccfc dropout and343 HF/DPO topics",
+    "Only small FP32 single-host CPU slices; no accelerator/performance/memory/multi-host/scientific-convergence claims",
+    "Exact same-source, same-topology resume tested; no old-version checkpoint compatibility or cross-topology RNG equivalence claim",
+    "PR21 zero-dropout evidence and b7 probes remain historical",
+    "No new tensor registry, stack, trainer, writer or compatibility wrapper",
+    "Raw native model/linear/dropout modules remain free of Haliax imports",
+    "No commit/push/retarget/new PR/catalog/affected suite/CI query/accelerator/automation/archive action performed by author task",
+    "Root must obtain independent maintained review before commit and owns CPU8/catalog/affected/publication",
+    "Frozen candidate source must not change while parallel independent review/tests run; changes require new revision and affected result invalidation"
+  ],
+  "software_and_execution": {
+    "python": "3.12.11",
+    "uv": "0.13.5",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "equinox": "0.13.2",
+    "numpy": "2.3.5",
+    "pytest": "9.0.3",
+    "platform": "CPU only",
+    "root_default_marker_expression": "not slow and not integration and not data_integration and not cluster and not requires_cluster and not docker and not manual",
+    "root_default_marker_expression_preserved": true,
+    "network_offline": true
+  },
+  "root_independent_author_XML_qualification": {
+    "source": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+    "tree": "be984e4a6765408b42befe337e3fae8c51b8a106",
+    "all18actual_committed_source_blobs_match": true,
+    "author_handoff_sha256": "43e682a815d9d386de2e0cbe4158d6f9f3a318548f6c24ecb5014f92649ddf1d",
+    "independently_read_complete_XML": true,
+    "topologies": [
+      {
+        "cpu": 1,
+        "passed": 38,
+        "failed": 0,
+        "skipped": 0,
+        "exact_nodeid_set": true,
+        "runs": [
+          {
+            "label": "dpo-explicit",
+            "cases": 4,
+            "xml_sha256": "677d92fe542a0b47edf3c4630536d9e7078c66238c8b14b5cc282063d9c53587",
+            "elapsed": 97.434924209
+          },
+          {
+            "label": "dpo-inferred_string",
+            "cases": 4,
+            "xml_sha256": "2099f11a42971767a3761d703bd4ea971848b9688b27b00b5c52b5fe3b79b3bd",
+            "elapsed": 122.33440029200001
+          },
+          {
+            "label": "dpo-inferred_bool",
+            "cases": 4,
+            "xml_sha256": "87f66f4c35c9438b41b91a01103e32b8cfd18f162d12263e68910af926c2c3f3",
+            "elapsed": 147.116693833
+          },
+          {
+            "label": "lm-explicit",
+            "cases": 4,
+            "xml_sha256": "848b526f5b8be7895885e32f5e3ffbecb055d4d1ca447c339f702fe5367f6f9f",
+            "elapsed": 74.89877179199999
+          },
+          {
+            "label": "lm-inferred_string",
+            "cases": 4,
+            "xml_sha256": "0559995d445eefc13d439b76bdec0222efaa1b8c1168aeacce10ece49653d221",
+            "elapsed": 102.27019320900001
+          },
+          {
+            "label": "lm-inferred_bool",
+            "cases": 4,
+            "xml_sha256": "de34d7358c148a759361a02642e0c66d10bbaff71463d03f91dcb61e84ee3b77",
+            "elapsed": 103.116326458
+          },
+          {
+            "label": "oracles",
+            "cases": 14,
+            "xml_sha256": "6cc756e20c6d72c53392b8b57816384505d22ffec653d69d8154971fe884e051",
+            "elapsed": 85.99262566599998
+          }
+        ]
+      },
+      {
+        "cpu": 4,
+        "passed": 38,
+        "failed": 0,
+        "skipped": 0,
+        "exact_nodeid_set": true,
+        "runs": [
+          {
+            "label": "dpo-explicit",
+            "cases": 4,
+            "xml_sha256": "351493cafc74ca06d2b3bab1951520cff2e1783826f670eb95baef8cd0c5ac85",
+            "elapsed": 132.29069475
+          },
+          {
+            "label": "dpo-inferred_string",
+            "cases": 4,
+            "xml_sha256": "b92041671bb58297262b0e7f5900a12530415ba08262e386e3cfe82e41533e06",
+            "elapsed": 159.494459125
+          },
+          {
+            "label": "dpo-inferred_bool",
+            "cases": 4,
+            "xml_sha256": "8312ee932dacd90de3c61add8ad2e0d7034ca5f385e994ba3d58932e3b6a0c1d",
+            "elapsed": 208.415315917
+          },
+          {
+            "label": "lm-explicit",
+            "cases": 4,
+            "xml_sha256": "1b7bd7fecc40b17ed97b14b7e04c0cc74701f2cc48fbc69480a5cc3bd8088cf3",
+            "elapsed": 112.08817950000002
+          },
+          {
+            "label": "lm-inferred_string",
+            "cases": 4,
+            "xml_sha256": "87e14ab4f4d9626fe93995a3ff118c86f9c76702bb82803ba0ac688f3e18c5b6",
+            "elapsed": 144.835949292
+          },
+          {
+            "label": "lm-inferred_bool",
+            "cases": 4,
+            "xml_sha256": "b9f7a2ece7a5d22a88be9ec5e8f9de4a8b0361dadf6492095a7318d84f86a875",
+            "elapsed": 139.77716516700002
+          },
+          {
+            "label": "oracles",
+            "cases": 14,
+            "xml_sha256": "d9baee805022cee2707b3db1163653b01d9dc8a98870089a824e23c4a078aa05",
+            "elapsed": 117.09487012500006
+          }
+        ]
+      }
+    ],
+    "topology_environment_supplement_pending": false,
+    "topology_supplement": "native-jax-dpo-dropout-final-topology-proof.json",
+    "CPU1_CPU4": "configured1/4; fresh same-launcher probes measure actual1/4; original exited pytest processes did not record counts or override absence"
+  },
+  "root_actual_CPU8": {
+    "utc": "2026-10-24T23:15:05.123898+00:00",
+    "source_tree": "be984e4a6765408b42befe337e3fae8c51b8a106",
+    "source_hashes": {
+      "lib/levanter/docs/Getting-Started-Training.md": "0f0c0ffed7277042ad634449313491cb07d198b446642eba88ca42b3b0c352fe",
+      "lib/levanter/docs/Training-On-Your-Data.md": "f3133e0faeb4a0490809960597c6218a4b3c07ff98a80235645575d91d5d0ce1",
+      "lib/levanter/docs/guides/DPO-Training.md": "c13636e7065fa128c334135335878423967c2ddc3e0e2bdcc3a774c7dc2b80ee",
+      "lib/levanter/src/levanter/adaptor/__init__.py": "fb84be5d9282cc821187db0a64a431ba700c81f7e66a64ecc3c71196bdfed7d8",
+      "lib/levanter/src/levanter/adaptor/lora.py": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+      "lib/levanter/src/levanter/layers/dropout.py": "cc93060547cf2613d9952d6452067d1573a58f8413221b5bde5f8e248af16501",
+      "lib/levanter/src/levanter/layers/linear.py": "23543feeec6d88b508261f834e2d8a891d3191ac65c2e6e15fb8619e38871807",
+      "lib/levanter/src/levanter/main/model_init.py": "dd4807c087ef436edd75aa5cd9f2e85633a12c2dd547e9f2d5d8dfad3af7a2e1",
+      "lib/levanter/src/levanter/main/train_dpo.py": "7fa6afabb9afcca7c1a80618f4ed1392c8373c753a1c2ad5136674bb96548be7",
+      "lib/levanter/src/levanter/main/train_lm.py": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+      "lib/levanter/src/levanter/models/llama.py": "c15376e4264992cb8e8f39dbc0b205aafee473e16d5ee3e8bc6dbafa74d73f8d",
+      "lib/levanter/src/levanter/models/llama_native.py": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+      "lib/levanter/src/levanter/models/llama_native_lm.py": "a74d6f270204ad83d80f0d6183f31d5dd39ddd357b77d9b056fd99c1f0cb8881",
+      "lib/levanter/src/levanter/testing/hf_checkpoints.py": "334f784e5d17bf44b28cd69e75569c63e46b2a1cf274c85ba9d527a24e4a7cc9",
+      "lib/levanter/src/levanter/trainer.py": "ba7ef0eef3fc5e172ba79948fa975f6bb3313e0b3fd277e2f7ac6914c30689ac",
+      "lib/levanter/tests/test_dpo.py": "db27b8f92193b06af9df1fb069e2897b9300ba8a405f3afdcec06b73d73eca45",
+      "lib/levanter/tests/test_lora.py": "ebeb0c9e6c43cad058e9ad32fa71c77bf6df2bbc1283f2151efc4787fd57595c",
+      "lib/levanter/tests/test_train_lm.py": "4be7b457464df890ea55b941217abcb93aeb9ff80b81238b3b79eb3dcad713e1"
+    },
+    "actual_devices_asserted_each_process": 8,
+    "default_markers_retained": true,
+    "runs": [
+      {
+        "label": "dpo-explicit",
+        "command": [
+          "python",
+          "-c",
+          "import jax,pytest,sys; assert len(jax.devices())==8; sys.exit(pytest.main(sys.argv[1:]))",
+          "-c",
+          "pyproject.toml",
+          "-n0",
+          "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+          "-k",
+          "explicit",
+          "-q",
+          "--junitxml=evidence/native-dpo-dropout/cpu8-dpo-explicit.xml"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 157.73313354188576,
+        "xml": "evidence/native-dpo-dropout/cpu8-dpo-explicit.xml",
+        "log": "native-jax-dpo-dropout-root-cpu8-dpo-explicit.log",
+        "xml_sha256": "0abf7daa7e9f0ba06e67b37ed05cf0cef54a162c1878f6e460e166b9b726e4c2",
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "label": "dpo-inferred_string",
+        "command": [
+          "python",
+          "-c",
+          "import jax,pytest,sys; assert len(jax.devices())==8; sys.exit(pytest.main(sys.argv[1:]))",
+          "-c",
+          "pyproject.toml",
+          "-n0",
+          "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+          "-k",
+          "inferred_string",
+          "-q",
+          "--junitxml=evidence/native-dpo-dropout/cpu8-dpo-inferred_string.xml"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 219.51087208278477,
+        "xml": "evidence/native-dpo-dropout/cpu8-dpo-inferred_string.xml",
+        "log": "native-jax-dpo-dropout-root-cpu8-dpo-inferred_string.log",
+        "xml_sha256": "94f951cd6aa915543a63bc1382d4d35424f61b7f7c88badd5583afb096b7a606",
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "label": "dpo-inferred_bool",
+        "command": [
+          "python",
+          "-c",
+          "import jax,pytest,sys; assert len(jax.devices())==8; sys.exit(pytest.main(sys.argv[1:]))",
+          "-c",
+          "pyproject.toml",
+          "-n0",
+          "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+          "-k",
+          "inferred_bool",
+          "-q",
+          "--junitxml=evidence/native-dpo-dropout/cpu8-dpo-inferred_bool.xml"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 229.06250762473792,
+        "xml": "evidence/native-dpo-dropout/cpu8-dpo-inferred_bool.xml",
+        "log": "native-jax-dpo-dropout-root-cpu8-dpo-inferred_bool.log",
+        "xml_sha256": "6cfdd0ac7c6f2de270db7483f3037116b46683e677a66077101c688556cbbdf8",
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "label": "lm-explicit",
+        "command": [
+          "python",
+          "-c",
+          "import jax,pytest,sys; assert len(jax.devices())==8; sys.exit(pytest.main(sys.argv[1:]))",
+          "-c",
+          "pyproject.toml",
+          "-n0",
+          "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+          "-k",
+          "explicit",
+          "-q",
+          "--junitxml=evidence/native-dpo-dropout/cpu8-lm-explicit.xml"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 111.48307079123333,
+        "xml": "evidence/native-dpo-dropout/cpu8-lm-explicit.xml",
+        "log": "native-jax-dpo-dropout-root-cpu8-lm-explicit.log",
+        "xml_sha256": "b69ba495935da878d3260c2a85c846873e1cf60ffe826f04da09028d78ecf476",
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "label": "lm-inferred_string",
+        "command": [
+          "python",
+          "-c",
+          "import jax,pytest,sys; assert len(jax.devices())==8; sys.exit(pytest.main(sys.argv[1:]))",
+          "-c",
+          "pyproject.toml",
+          "-n0",
+          "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+          "-k",
+          "inferred_string",
+          "-q",
+          "--junitxml=evidence/native-dpo-dropout/cpu8-lm-inferred_string.xml"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 148.7570387502201,
+        "xml": "evidence/native-dpo-dropout/cpu8-lm-inferred_string.xml",
+        "log": "native-jax-dpo-dropout-root-cpu8-lm-inferred_string.log",
+        "xml_sha256": "b4d0ee047cc2e3f13ee4598c473f722d782134edab5c535d718cdc7945ffdf28",
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "label": "lm-inferred_bool",
+        "command": [
+          "python",
+          "-c",
+          "import jax,pytest,sys; assert len(jax.devices())==8; sys.exit(pytest.main(sys.argv[1:]))",
+          "-c",
+          "pyproject.toml",
+          "-n0",
+          "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+          "-k",
+          "inferred_bool",
+          "-q",
+          "--junitxml=evidence/native-dpo-dropout/cpu8-lm-inferred_bool.xml"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 157.22101104212925,
+        "xml": "evidence/native-dpo-dropout/cpu8-lm-inferred_bool.xml",
+        "log": "native-jax-dpo-dropout-root-cpu8-lm-inferred_bool.log",
+        "xml_sha256": "1f6c275e3d47adb50932e6c7fe3f9c2e096d0e9e5537fc9ac0feff8d8eb75987",
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "label": "oracles",
+        "command": [
+          "python",
+          "-c",
+          "import jax,pytest,sys; assert len(jax.devices())==8; sys.exit(pytest.main(sys.argv[1:]))",
+          "-c",
+          "pyproject.toml",
+          "-n0",
+          "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements",
+          "lib/levanter/tests/test_lora.py::test_array_lora_multilayer_canonical_export_and_base_view",
+          "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits",
+          "lib/levanter/tests/test_lora.py::test_native_lora_dropout_paged_prefill_continuation_matches_named",
+          "-q",
+          "--junitxml=evidence/native-dpo-dropout/cpu8-oracles.xml"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 84.13427849998698,
+        "xml": "evidence/native-dpo-dropout/cpu8-oracles.xml",
+        "log": "native-jax-dpo-dropout-root-cpu8-oracles.log",
+        "xml_sha256": "565e4ab3f24e08d1c6026d6a147e644881e77997e26be7cdab3002369c6edba8",
+        "cases": 14,
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "source_unchanged": true,
+    "counts": {
+      "cases": 38,
+      "passed": 38,
+      "failed": 0,
+      "skipped": 0
+    },
+    "status": "PASS"
+  },
+  "CPU1_CPU4_topology_supplement": {
+    "utc": "2026-10-24T23:32:47.662711+00:00",
+    "status": "fresh exact-launcher probes; original per-process override absence was not recorded",
+    "current_parent_environment": {
+      "JAX_NUM_CPU_DEVICES_present": false,
+      "JAX_NUM_CPU_DEVICES": null,
+      "JAX_PLATFORMS": "cpu",
+      "XLA_FLAGS_before_driver": null
+    },
+    "probes": [
+      {
+        "requested": 1,
+        "command": [
+          "uv",
+          "run",
+          "--package",
+          "marin-levanter",
+          "--group",
+          "test",
+          "python",
+          "-c",
+          "import json,os,jax,sys\nprint(json.dumps({\"jax_num_cpu_devices_present\":\"JAX_NUM_CPU_DEVICES\" in os.environ,\"jax_num_cpu_devices\":os.environ.get(\"JAX_NUM_CPU_DEVICES\"),\"xla_flags\":os.environ.get(\"XLA_FLAGS\"),\"jax_platforms\":os.environ.get(\"JAX_PLATFORMS\"),\"device_count\":jax.device_count(),\"local_device_count\":jax.local_device_count(),\"devices\":[{\"id\":d.id,\"platform\":d.platform,\"device_kind\":d.device_kind,\"process_index\":d.process_index} for d in jax.devices()],\"python\":sys.executable,\"jax_version\":jax.__version__}))\n"
+        ],
+        "parent_override_present": false,
+        "subprocess_env_override_present": false,
+        "measurements": {
+          "jax_num_cpu_devices_present": false,
+          "jax_num_cpu_devices": null,
+          "xla_flags": "--xla_force_host_platform_device_count=1",
+          "jax_platforms": "cpu",
+          "device_count": 1,
+          "local_device_count": 1,
+          "devices": [
+            {
+              "id": 0,
+              "platform": "cpu",
+              "device_kind": "cpu",
+              "process_index": 0
+            }
+          ],
+          "python": "python",
+          "jax_version": "0.11.1"
+        },
+        "stderr": "",
+        "matches_requested": true
+      },
+      {
+        "requested": 4,
+        "command": [
+          "uv",
+          "run",
+          "--package",
+          "marin-levanter",
+          "--group",
+          "test",
+          "python",
+          "-c",
+          "import json,os,jax,sys\nprint(json.dumps({\"jax_num_cpu_devices_present\":\"JAX_NUM_CPU_DEVICES\" in os.environ,\"jax_num_cpu_devices\":os.environ.get(\"JAX_NUM_CPU_DEVICES\"),\"xla_flags\":os.environ.get(\"XLA_FLAGS\"),\"jax_platforms\":os.environ.get(\"JAX_PLATFORMS\"),\"device_count\":jax.device_count(),\"local_device_count\":jax.local_device_count(),\"devices\":[{\"id\":d.id,\"platform\":d.platform,\"device_kind\":d.device_kind,\"process_index\":d.process_index} for d in jax.devices()],\"python\":sys.executable,\"jax_version\":jax.__version__}))\n"
+        ],
+        "parent_override_present": false,
+        "subprocess_env_override_present": false,
+        "measurements": {
+          "jax_num_cpu_devices_present": false,
+          "jax_num_cpu_devices": null,
+          "xla_flags": "--xla_force_host_platform_device_count=4",
+          "jax_platforms": "cpu",
+          "device_count": 4,
+          "local_device_count": 4,
+          "devices": [
+            {
+              "id": 0,
+              "platform": "cpu",
+              "device_kind": "cpu",
+              "process_index": 0
+            },
+            {
+              "id": 1,
+              "platform": "cpu",
+              "device_kind": "cpu",
+              "process_index": 0
+            },
+            {
+              "id": 2,
+              "platform": "cpu",
+              "device_kind": "cpu",
+              "process_index": 0
+            },
+            {
+              "id": 3,
+              "platform": "cpu",
+              "device_kind": "cpu",
+              "process_index": 0
+            }
+          ],
+          "python": "python",
+          "jax_version": "0.11.1"
+        },
+        "stderr": "",
+        "matches_requested": true
+      }
+    ],
+    "all_fresh_counts_match": true,
+    "all_current_override_absent": true,
+    "original_launches": [
+      {
+        "cpu_label": 1,
+        "commands_receipt": {
+          "path": "native-jax-dpo-dropout-final-cpu1-commands.json",
+          "sha256": "003ab792822fd6f257886f8d4271c6e093ea3da337241f215b551fff7054e5be"
+        },
+        "all_flags_match_requested": true,
+        "original_environment_override_absence_recorded": false,
+        "original_actual_device_count_recorded": false,
+        "source_hashes_recorded": true
+      },
+      {
+        "cpu_label": 4,
+        "commands_receipt": {
+          "path": "native-jax-dpo-dropout-final-cpu4-commands.json",
+          "sha256": "d980dde12149adf79a0a5a2c1afe367a1a0a47c0500a6d8d44940adaa5edf275"
+        },
+        "all_flags_match_requested": true,
+        "original_environment_override_absence_recorded": false,
+        "original_actual_device_count_recorded": false,
+        "source_hashes_recorded": true
+      }
+    ],
+    "frozen_inputs": {
+      "environment_script": {
+        "path": "native-lora-dropout-env.sh",
+        "sha256": "435e065799fcd871bfc4877c9f8e2fe3b5180a18b1b1ee4deff82b1fe6219490"
+      },
+      "original_driver": {
+        "path": "native-jax-dpo-dropout-final-validate.py",
+        "sha256": "29ba872cecc8103bc6322c9503db51832933efe7e7c11cba78ce7cdd75aa5fe1"
+      },
+      "handoff": {
+        "path": "evidence/native-dpo-dropout/focused-validation.json",
+        "sha256": "43e682a815d9d386de2e0cbe4158d6f9f3a318548f6c24ecb5014f92649ddf1d"
+      }
+    },
+    "original_launch_commands": [
+      "source native-lora-dropout-env.sh; python3 native-jax-dpo-dropout-final-validate.py --cpu 1",
+      "source native-lora-dropout-env.sh; python3 native-jax-dpo-dropout-final-validate.py --cpu 4"
+    ],
+    "evidence_limits": [
+      "Original launches inherited os.environ and replaced only XLA_FLAGS; neither frozen launch script sets JAX_NUM_CPU_DEVICES",
+      "No task action changed JAX_NUM_CPU_DEVICES, and it is absent in both fresh parent/subprocess environments now",
+      "No contemporaneous per-original-launch snapshot or exact-count assertion exists; original absence cannot be independently proven retrospectively from these receipts",
+      "Original tests derive mesh geometry from actual jax.devices()/device_count; they do not assert exact1/4 and could pass another supported count",
+      "Fresh measured1/4 counts support the intended unchanged launcher configuration, but do not themselves measure exited original processes",
+      "No original results are relabeled; no source/handoff hashes changed; no passing tests rerun"
+    ]
+  },
+  "archive_static_complete_XML_inspection": [
+    {
+      "phase": "author-configuredCPU1",
+      "label": "dpo-explicit",
+      "bytes": 932,
+      "sha256": "677d92fe542a0b47edf3c4630536d9e7078c66238c8b14b5cc282063d9c53587",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU1",
+      "label": "dpo-inferred_string",
+      "bytes": 961,
+      "sha256": "2099f11a42971767a3761d703bd4ea971848b9688b27b00b5c52b5fe3b79b3bd",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU1",
+      "label": "dpo-inferred_bool",
+      "bytes": 953,
+      "sha256": "87f66f4c35c9438b41b91a01103e32b8cfd18f162d12263e68910af926c2c3f3",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU1",
+      "label": "lm-explicit",
+      "bytes": 891,
+      "sha256": "848b526f5b8be7895885e32f5e3ffbecb055d4d1ca447c339f702fe5367f6f9f",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU1",
+      "label": "lm-inferred_string",
+      "bytes": 920,
+      "sha256": "0559995d445eefc13d439b76bdec0222efaa1b8c1168aeacce10ece49653d221",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU1",
+      "label": "lm-inferred_bool",
+      "bytes": 912,
+      "sha256": "de34d7358c148a759361a02642e0c66d10bbaff71463d03f91dcb61e84ee3b77",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU1",
+      "label": "oracles",
+      "bytes": 2358,
+      "sha256": "6cc756e20c6d72c53392b8b57816384505d22ffec653d69d8154971fe884e051",
+      "cases": 14
+    },
+    {
+      "phase": "author-configuredCPU4",
+      "label": "dpo-explicit",
+      "bytes": 933,
+      "sha256": "351493cafc74ca06d2b3bab1951520cff2e1783826f670eb95baef8cd0c5ac85",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU4",
+      "label": "dpo-inferred_string",
+      "bytes": 961,
+      "sha256": "b92041671bb58297262b0e7f5900a12530415ba08262e386e3cfe82e41533e06",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU4",
+      "label": "dpo-inferred_bool",
+      "bytes": 953,
+      "sha256": "8312ee932dacd90de3c61add8ad2e0d7034ca5f385e994ba3d58932e3b6a0c1d",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU4",
+      "label": "lm-explicit",
+      "bytes": 893,
+      "sha256": "1b7bd7fecc40b17ed97b14b7e04c0cc74701f2cc48fbc69480a5cc3bd8088cf3",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU4",
+      "label": "lm-inferred_string",
+      "bytes": 921,
+      "sha256": "87e14ab4f4d9626fe93995a3ff118c86f9c76702bb82803ba0ac688f3e18c5b6",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU4",
+      "label": "lm-inferred_bool",
+      "bytes": 913,
+      "sha256": "b9f7a2ece7a5d22a88be9ec5e8f9de4a8b0361dadf6492095a7318d84f86a875",
+      "cases": 4
+    },
+    {
+      "phase": "author-configuredCPU4",
+      "label": "oracles",
+      "bytes": 2362,
+      "sha256": "d9baee805022cee2707b3db1163653b01d9dc8a98870089a824e23c4a078aa05",
+      "cases": 14
+    },
+    {
+      "phase": "root-actualCPU8",
+      "label": "dpo-explicit",
+      "bytes": 933,
+      "sha256": "0abf7daa7e9f0ba06e67b37ed05cf0cef54a162c1878f6e460e166b9b726e4c2",
+      "cases": 4
+    },
+    {
+      "phase": "root-actualCPU8",
+      "label": "dpo-inferred_string",
+      "bytes": 961,
+      "sha256": "94f951cd6aa915543a63bc1382d4d35424f61b7f7c88badd5583afb096b7a606",
+      "cases": 4
+    },
+    {
+      "phase": "root-actualCPU8",
+      "label": "dpo-inferred_bool",
+      "bytes": 953,
+      "sha256": "6cfdd0ac7c6f2de270db7483f3037116b46683e677a66077101c688556cbbdf8",
+      "cases": 4
+    },
+    {
+      "phase": "root-actualCPU8",
+      "label": "lm-explicit",
+      "bytes": 893,
+      "sha256": "b69ba495935da878d3260c2a85c846873e1cf60ffe826f04da09028d78ecf476",
+      "cases": 4
+    },
+    {
+      "phase": "root-actualCPU8",
+      "label": "lm-inferred_string",
+      "bytes": 921,
+      "sha256": "b4d0ee047cc2e3f13ee4598c473f722d782134edab5c535d718cdc7945ffdf28",
+      "cases": 4
+    },
+    {
+      "phase": "root-actualCPU8",
+      "label": "lm-inferred_bool",
+      "bytes": 913,
+      "sha256": "1f6c275e3d47adb50932e6c7fe3f9c2e096d0e9e5537fc9ac0feff8d8eb75987",
+      "cases": 4
+    },
+    {
+      "phase": "root-actualCPU8",
+      "label": "oracles",
+      "bytes": 2358,
+      "sha256": "565e4ab3f24e08d1c6026d6a147e644881e77997e26be7cdab3002369c6edba8",
+      "cases": 14
+    }
+  ],
+  "topology_limit": "Original exited pytest processes were configured1/4; actual device counts and override absence were not recorded then. Fresh same-launcher probes measure1/4 with no override; not retrospective proof. Root8 asserts actual8 before each pytest invocation.",
+  "_archive_note": "Historical phase/source/status retained. Embedded hashes identify original inputs, not sanitized copies; output hashes/lengths and transformations are in manifest. No numerical execution during archiving. Parent-relative patches and reviewer full-index hashes may represent identical source with distinct header bytes."
+}

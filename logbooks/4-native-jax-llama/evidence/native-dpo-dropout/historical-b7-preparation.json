@@ -1,0 +1,192 @@
+{
+  "phase": "PRELIMINARY ONLY: stopped at parent request pending replacement reviewed HF source pin",
+  "dropout_parent": "ccfc1b8ff34cb63f018fb943e75c9f18b94250fc",
+  "HF_parent": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+  "preliminary_patch_identities": {
+    "full.patch": {
+      "path": "native-jax-dpo-dropout-composition-preliminary-full.patch",
+      "sha256": "e6734d8247cf0d4ab9cbd7bc2ac7a5f799122c449e146fa364e5b3077454ad98"
+    },
+    "vs-hf-b7.patch": {
+      "path": "native-jax-dpo-dropout-composition-preliminary-vs-hf-b7.patch",
+      "sha256": "04e64b84c8ecf89f6808909ff0f04772a729a1763de071645f3d6cabf7bc51de"
+    },
+    "index.patch": {
+      "path": "native-jax-dpo-dropout-composition-preliminary-index.patch",
+      "sha256": "91970a908a3ead6b0d7f408d0bb1993a1f43a71fdf2493cd3a53195544cc36fd"
+    },
+    "allhashes": {
+      "path": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "899ffdafb0dcc9da5281c7f738136c54bd11334aabfb45e524ba4cd9bb1582c6"
+    }
+  },
+  "preliminary_source_hashes": {
+    "lib/levanter/docs/Getting-Started-Training.md": "0f0c0ffed7277042ad634449313491cb07d198b446642eba88ca42b3b0c352fe",
+    "lib/levanter/docs/Training-On-Your-Data.md": "f3133e0faeb4a0490809960597c6218a4b3c07ff98a80235645575d91d5d0ce1",
+    "lib/levanter/docs/guides/DPO-Training.md": "c13636e7065fa128c334135335878423967c2ddc3e0e2bdcc3a774c7dc2b80ee",
+    "lib/levanter/src/levanter/adaptor/__init__.py": "fb84be5d9282cc821187db0a64a431ba700c81f7e66a64ecc3c71196bdfed7d8",
+    "lib/levanter/src/levanter/adaptor/lora.py": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+    "lib/levanter/src/levanter/layers/dropout.py": "cc93060547cf2613d9952d6452067d1573a58f8413221b5bde5f8e248af16501",
+    "lib/levanter/src/levanter/layers/linear.py": "23543feeec6d88b508261f834e2d8a891d3191ac65c2e6e15fb8619e38871807",
+    "lib/levanter/src/levanter/main/model_init.py": "3be20aad95d6d82da262a59f44e8ab254c79c0d59c1716371498920e3d49adca",
+    "lib/levanter/src/levanter/main/train_dpo.py": "86acd075a36e73e19f8faa20b01e63ecc3d0c823e73eb51c14013e41b338fd31",
+    "lib/levanter/src/levanter/main/train_lm.py": "c3758774b1fbde07698c6370e1f2b8f51aeb685b325a6b1c3ab9aca07c62147e",
+    "lib/levanter/src/levanter/models/llama.py": "c15376e4264992cb8e8f39dbc0b205aafee473e16d5ee3e8bc6dbafa74d73f8d",
+    "lib/levanter/src/levanter/models/llama_native.py": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+    "lib/levanter/src/levanter/models/llama_native_lm.py": "a74d6f270204ad83d80f0d6183f31d5dd39ddd357b77d9b056fd99c1f0cb8881",
+    "lib/levanter/src/levanter/testing/hf_checkpoints.py": "334f784e5d17bf44b28cd69e75569c63e46b2a1cf274c85ba9d527a24e4a7cc9",
+    "lib/levanter/tests/test_dpo.py": "e1e83ab09ae3b5f066b65778506dd6c7a5c2e40b0190d5eaa9c9476497754d7d",
+    "lib/levanter/tests/test_lora.py": "ebeb0c9e6c43cad058e9ad32fa71c77bf6df2bbc1283f2151efc4787fd57595c",
+    "lib/levanter/tests/test_train_lm.py": "4be7b457464df890ea55b941217abcb93aeb9ff80b81238b3b79eb3dcad713e1"
+  },
+  "integration_changes": [
+    "Resolve Getting-Started cold-reader resume scope together with HF inferred-config resume semantics",
+    "Retain both train_lm dropout0/.25 and HF explicit/string/bool parametrization (12 cases incl tied/untied)",
+    "Extend existing actual-main DPO continuation fixture across dropout0/.25, separate/adapter_base, explicit/string/bool HF (12 cases)",
+    "Compare PEFT tensors at inference-mode export boundary; retain exact ordinary final state and independently loaded partial state checks",
+    "Add trained nonzero-factor independent named DPO loss, chosen/rejected logps, factor-gradient parity and stochastic key sensitivity for both preferences",
+    "Document native canonical DPO training dropout support; final qualification pending authoritative source tests"
+  ],
+  "three_passing_slices_and_original_base_control": [
+    {
+      "name": "cpu1-probe4",
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "47270b25e6c80e868f7038d22d3cd3ce428189cfb614e00e23d27644b31780cf",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "result": "passed",
+          "seconds": 30.004,
+          "failure": null
+        }
+      ]
+    },
+    {
+      "name": "cpu4-probe",
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "2f966cbb1948cc9b591a5e2f10e79649c8c4ab50ad3857c9d96a4219c87143bd",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base-0.25]",
+          "result": "passed",
+          "seconds": 44.78,
+          "failure": null
+        }
+      ]
+    },
+    {
+      "name": "cpu1-inferred-probe",
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "9976403a245ae42b3f0e72ed497d506dcaaaae32d22e58c07209d3e03ff677dc",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base-0.25]",
+          "result": "passed",
+          "seconds": 40.997,
+          "failure": null
+        }
+      ]
+    },
+    {
+      "name": "uncomposed-b7-control",
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "53b0e8ad468c638eb9342d2148e6ceebf8378e0d4304081baa31806eb4794bf6",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "result": "failed",
+          "seconds": 2.236,
+          "failure": "ValueError: Array-native LoRA requires dropout=0; native projections do not receive RNG keys\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these."
+        }
+      ]
+    }
+  ],
+  "preparation_attempts": [
+    {
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "242b60237f7f1d653bf81363ccef1afc7e32ea3e2dedb27e7540a265a3b63ba8",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "seconds": "18.457",
+          "result": "failure",
+          "failure": "AssertionError: assert dict_keys(['b...ra_B.weight']) == dict_keys(['b...ra_B.weight'])\n  \n  Use -v to get more diff"
+        }
+      ]
+    },
+    {
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "665a3e4c9f4efcd44ca470d68ef4339940f74a084bc8f8f85d3ccd48c510a922",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "seconds": "16.593",
+          "result": "failure",
+          "failure": "AssertionError: (set(), {'base_model.model.model.layers.0.mlp.down_proj.dropout.inference', 'base_model.model.model.layers.0.mlp.gate_...yers.0.self_attn.o_proj.dropout.inference', 'base_model.model.model.layers.0.self_attn.q_proj.dropout.inference', ...})\nassert dict_keys(['b...ra_B.weight']) == dict_keys(['b...ra_B.weight'])\n  \n  Use -v to get more diff"
+        }
+      ]
+    },
+    {
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "a514298cabb0ff590e187b70e9bc5e6024bb5a5200ad5e6cb07460e3b4334cc8",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "seconds": "26.854",
+          "result": "failure",
+          "failure": "ValueError: For primitive reshape, context mesh AbstractMesh('data': 1, 'model': 1, axis_types=(Auto, Auto), device_kind=cpu, num_cores=None, platform=cpu) should match the aval mesh AbstractMesh('data': 1, 'replica': 1, 'model': 1, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu) for shape uint32[2]. This error occurs at source:  lib/haliax/src/haliax/jax_utils.py:135:15 (maybe_rng_split)\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these."
+        }
+      ]
+    },
+    {
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "47270b25e6c80e868f7038d22d3cd3ce428189cfb614e00e23d27644b31780cf",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "seconds": "30.004",
+          "result": "pass",
+          "failure": null
+        }
+      ]
+    },
+    {
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "2f966cbb1948cc9b591a5e2f10e79649c8c4ab50ad3857c9d96a4219c87143bd",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base-0.25]",
+          "seconds": "44.780",
+          "result": "pass",
+          "failure": null
+        }
+      ]
+    },
+    {
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "9976403a245ae42b3f0e72ed497d506dcaaaae32d22e58c07209d3e03ff677dc",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base-0.25]",
+          "seconds": "40.997",
+          "result": "pass",
+          "failure": null
+        }
+      ]
+    },
+    {
+      "xml": "evidence/native-dpo-dropout/historical-b7-preparation.json",
+      "sha256": "53b0e8ad468c638eb9342d2148e6ceebf8378e0d4304081baa31806eb4794bf6",
+      "cases": [
+        {
+          "nodeid": "lib/levanter/tests/test_dpo::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate-0.25]",
+          "seconds": "2.236",
+          "result": "failure",
+          "failure": "ValueError: Array-native LoRA requires dropout=0; native projections do not receive RNG keys\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these."
+        }
+      ]
+    }
+  ],
+  "interpretation": "First two test failures compare exported factor keys against a training-mode tree containing dropout inference-state leaves. Third reuses an Explicit-mesh key in named Auto computation. Inference-boundary factor comparison and named-context key reconstruction fix the tests without parent production changes. These b7 results do not establish final343 composition behavior.",
+  "_archive_note": "Historical phase/source/status retained. Embedded hashes identify original inputs, not sanitized copies; output hashes/lengths and transformations are in manifest. No numerical execution during archiving. Parent-relative patches and reviewer full-index hashes may represent identical source with distinct header bytes."
+}

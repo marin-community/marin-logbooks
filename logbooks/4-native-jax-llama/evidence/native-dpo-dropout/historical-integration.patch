@@ -1,0 +1,265 @@
+diff --git a/lib/levanter/docs/Getting-Started-Training.md b/lib/levanter/docs/Getting-Started-Training.md
+index fb79eb8ede..cb59cfff03 100644
+--- a/lib/levanter/docs/Getting-Started-Training.md
++++ b/lib/levanter/docs/Getting-Started-Training.md
+@@ -76,8 +76,8 @@ supported. Training can use `train_seq_len` shorter than `model.max_seq_len`.
+ Reference attention also preserves dense masks, causal offsets and bidirectional
+ windows; Splash rejects those mask forms explicitly.
+ 
+-Resume a native run with the ordinary Trainer checkpoint settings. Native
+-checkpoints include parameters, optimizer state, training step and RNG state.
++Resume a native run with the ordinary Trainer checkpoint settings. Full-parameter native
++checkpoints include model parameters, optimizer state, training step and RNG state.
+ The named Llama and native Llama have different checkpoint trees; loading a named
+ Trainer checkpoint directly into a native run is unsupported.
+ Non-default activations are part of the checkpoint architecture identity and
+@@ -111,14 +111,14 @@ embedding/output rows beyond the tokenizer's length. Those rows are preserved
+ and participate in the output softmax. The source vocabulary must be at least as
+ large as the tokenizer and divisible by the tensor-parallel mesh size; the loader
+ does not resize it. New native Trainer checkpoints record the complete vocabulary
+-and semantic architecture with the checkpoint completion marker. Resume uses the
+-selected checkpoint's metadata and full training state without accessing the
+-original HF directory, even if `initialize_from_hf` still names that directory,
+-when `use_hf_model_config` is false. The opt-in inferred-config mode reads the
+-original HF `config.json` on resume, then validates the checkpoint against that
+-effective architecture. Keep this metadata available and unchanged. LoRA resumes
+-also require the original base weights, as described in
+-[adapter training](Training-On-Your-Data.md#lora-adapters).
++and semantic architecture with the checkpoint completion marker. Full-parameter
++resume uses the selected checkpoint's metadata and saved training state without
++accessing the original HF directory when `use_hf_model_config` is false, even if
++`initialize_from_hf` still names that directory. The opt-in inferred-config mode
++reads the original HF `config.json` on resume, then validates the checkpoint
++against that effective architecture. Keep this metadata available and unchanged.
++LoRA resume also requires the original frozen base weights and unchanged model
++and adapter configuration; see [adapter training](Training-On-Your-Data.md#lora-adapters).
+ The configured tokenizer, training inputs and matching model configuration are
+ still required.
+ The configured attention geometry, normalization and RoPE must match; context
+@@ -152,7 +152,7 @@ contain optimizer or RNG state.
+ Local export requires standard weighted RMSNorm and bias-free projections. Hub
+ upload, remote export destinations and Haliax quantization remain
+ unsupported by this training entrypoint and are rejected before initialization.
+-Zero-dropout LoRA is available through `adapter.type: lora`; see
++LoRA, including adapter dropout, is available through `adapter.type: lora`; see
+ [adapter training](Training-On-Your-Data.md#lora-adapters).
+ Existing `model.type: llama` configurations retain their behavior.
+ 
+diff --git a/lib/levanter/docs/Training-On-Your-Data.md b/lib/levanter/docs/Training-On-Your-Data.md
+index 6bf3d50588..bd68732662 100644
+--- a/lib/levanter/docs/Training-On-Your-Data.md
++++ b/lib/levanter/docs/Training-On-Your-Data.md
+@@ -292,8 +292,9 @@ use_hf_model_config: true
+ ### LoRA adapters
+ 
+ The canonical `train_lm` and `train_dpo` entrypoints accept `adapter.type: lora` with
+-`model.type: llama_native`. Native adapters require `dropout: 0`; projections do
+-not receive the RNG keys needed for adapter dropout. The default targets are the
++`model.type: llama_native`. Native adapters support dropout during training;
++evaluation and generation disable it through inference mode. Active training
++dropout requires an explicit RNG key. The default targets are the
+ seven decoder projections (`q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`,
+ `up_proj`, `down_proj`), excluding the output head. Native output-head adaptation
+ remains unsupported.
+diff --git a/lib/levanter/docs/guides/DPO-Training.md b/lib/levanter/docs/guides/DPO-Training.md
+index 1cf8215495..f72fc0b1a4 100644
+--- a/lib/levanter/docs/guides/DPO-Training.md
++++ b/lib/levanter/docs/guides/DPO-Training.md
+@@ -200,7 +200,7 @@ checkpoint against the inferred architecture. A Boolean `initialize_from_hf: tru
+ uses the original `model.reference_checkpoint`; a string selects that source
+ explicitly. Keep the policy base and separate-reference sources unchanged.
+ 
+-Zero-dropout LoRA uses `adapter.type: lora` with either `reference.type: separate`
++LoRA, including training dropout, uses `adapter.type: lora` with either `reference.type: separate`
+ or `reference.type: adapter_base`. The latter uses the frozen policy base as the
+ reference and requires exactly one zero factor at initialization. Adapter
+ checkpoints omit the frozen base, so resume requires the unchanged base source,
+diff --git a/lib/levanter/tests/test_dpo.py b/lib/levanter/tests/test_dpo.py
+index f1972ea707..ffb1f57a30 100644
+--- a/lib/levanter/tests/test_dpo.py
++++ b/lib/levanter/tests/test_dpo.py
+@@ -1181,6 +1181,7 @@ def dpo_preference_data(tmp_path, tiny_hf_tokenizer_path):
+ 
+ @pytest.mark.tpu
+ @pytest.mark.timeout(180)
++@pytest.mark.parametrize("dropout", [0.0, 0.25])
+ @pytest.mark.parametrize("reference_type", ["separate", "adapter_base"])
+ @pytest.mark.parametrize("hf_config_source", ["explicit", "inferred_string", "inferred_bool"])
+ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+@@ -1191,6 +1192,7 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+     dpo_preference_data,
+     reference_type,
+     hf_config_source,
++    dropout,
+ ):
+     inferred = hf_config_source != "explicit"
+     if inferred:
+@@ -1248,7 +1250,7 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+         config,
+         data=dpo_preference_data,
+         train_seq_len=8,
+-        adapter=LoraAdaptorConfig(r=3, alpha=6, dropout=0),
++        adapter=LoraAdaptorConfig(r=3, alpha=6, dropout=dropout),
+         reference=(
+             SeparateReferenceConfig(model_path=str(dpo_separate_reference_source.path))
+             if reference_type == "separate"
+@@ -1341,7 +1343,7 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+         )
+         _, _, _, adapter_key, _ = _derive_training_keys(config.trainer.seed)
+         initial_factors = lora_state_dict(config.adapter.apply(base, key=adapter_key))
+-        factors = lora_state_dict(policy)
++        factors = lora_state_dict(inference_mode(policy, True))
+         for factor in ("lora_A", "lora_B"):
+             assert any(
+                 not np.array_equal(value, initial_factors[name])
+@@ -1370,8 +1372,88 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+         axes = Axis("batch", 2 * data_size), Axis("position", 4)
+         tokens = hax.named(jnp.arange(8 * data_size).reshape(axes[0].size, axes[1].size) % 31, axes)
+         np.testing.assert_allclose(
+-            policy(tokens, AttentionMask.causal()).array,
++            inference_mode(policy, True)(tokens, AttentionMask.causal()).array,
+             reloaded(tokens, AttentionMask.causal()).array,
+             atol=1e-5,
+             rtol=1e-5,
+         )
++        # Probe the trained, nonzero factors with independent named DPO math.
++        # The canonical loss splits a training key into distinct preference keys.
++        policy = inference_mode(policy, False)
++        reference = inference_mode(reference, True)
++        chosen_key, rejected_key = jrandom.split(jrandom.PRNGKey(31))
++        batch = DpoExample(
++            chosen=hax.vmap(LmExample.causal, axes[0])(tokens),
++            rejected=hax.vmap(LmExample.causal, axes[0])((tokens * 3 + 2) % 31),
++        )
++        actual_loss, actual_grad = eqx.filter_jit(
++            eqx.filter_value_and_grad(
++                lambda model: dpo_loss(
++                    model,
++                    reference,
++                    batch,
++                    beta=config.beta,
++                    key_chosen=chosen_key,
++                    key_rejected=rejected_key,
++                )[0]
++            )
++        )(policy)
++        actual_loss = np.asarray(actual_loss)
++        actual_grad_factors = lora_state_dict(actual_grad)
++        actual_logps = tuple(
++            np.asarray(logp_sum(policy, example, key=key).array)
++            for example, key in ((batch.chosen, chosen_key), (batch.rejected, rejected_key))
++        )
++        if dropout:
++            for example, key in ((batch.chosen, chosen_key), (batch.rejected, rejected_key)):
++                assert not np.allclose(
++                    logp_sum(policy, example, key=key).array,
++                    logp_sum(policy, example, key=jrandom.PRNGKey(32)).array,
++                    atol=1e-5,
++                    rtol=1e-5,
++                )
++        reference_weights = {name: np.asarray(value) for name, value in reference.to_state_dict().items()}
++
++    with use_test_mesh(), hax.axis_mapping({}):
++        chosen_key, rejected_key = jrandom.split(jrandom.PRNGKey(31))
++        named_config = dataclasses.replace(dpo_llama_source.config, attn_backend=AttentionBackend.VANILLA)
++        named_base = named_config.build(Axis("vocab", 32), key=jrandom.PRNGKey(13))
++        named_policy = config.adapter.apply(named_base, key=jrandom.PRNGKey(19))
++        named_policy = from_torch_compatible_state_dict(
++            named_policy,
++            {
++                **{name: jnp.asarray(value) for name, value in dpo_llama_source.weights.items()},
++                **{name.removeprefix("base_model.model."): jnp.asarray(value) for name, value in factors.items()},
++            },
++        )
++        named_reference = from_torch_compatible_state_dict(
++            named_base, {name: jnp.asarray(value) for name, value in reference_weights.items()}
++        )
++        named_tokens = hax.named(jnp.arange(8 * data_size).reshape(axes[0].size, axes[1].size) % 31, axes)
++        named_batch = DpoExample(
++            chosen=hax.vmap(LmExample.causal, axes[0])(named_tokens),
++            rejected=hax.vmap(LmExample.causal, axes[0])((named_tokens * 3 + 2) % 31),
++        )
++        expected_loss, expected_grad = eqx.filter_jit(
++            eqx.filter_value_and_grad(
++                lambda model: dpo_loss(
++                    model,
++                    named_reference,
++                    named_batch,
++                    beta=config.beta,
++                    key_chosen=chosen_key,
++                    key_rejected=rejected_key,
++                )[0]
++            )
++        )(named_policy)
++        np.testing.assert_allclose(actual_loss, expected_loss, atol=1e-5, rtol=1e-4)
++        for (example, key), actual in zip(
++            ((named_batch.chosen, chosen_key), (named_batch.rejected, rejected_key)), actual_logps, strict=True
++        ):
++            np.testing.assert_allclose(actual, logp_sum(named_policy, example, key=key).array, atol=1e-5, rtol=1e-4)
++        expected_grad_factors = lora_state_dict(expected_grad)
++        assert any(np.any(value != 0) for value in expected_grad_factors.values())
++        for name, actual in actual_grad_factors.items():
++            np.testing.assert_allclose(
++                actual, expected_grad_factors[name].reshape(actual.shape), atol=1e-5, rtol=1e-4, err_msg=name
++            )
+diff --git a/lib/levanter/tests/test_train_lm.py b/lib/levanter/tests/test_train_lm.py
+index 2b3a437364..754aefce4e 100644
+--- a/lib/levanter/tests/test_train_lm.py
++++ b/lib/levanter/tests/test_train_lm.py
+@@ -63,6 +63,7 @@ from levanter.trainer_state import TrainerState, trainables_only
+ from levanter.testing.helpers import arrays_only, use_test_mesh
+ from levanter.testing.hf_checkpoints import write_llama_checkpoint
+ from levanter.utils.mesh import MeshConfig
++from levanter.utils.tree_utils import inference_mode
+ 
+ 
+ def _array_leaves(tree):
+@@ -1156,9 +1157,10 @@ def test_train_lm_rejects_weights_only_init_with_trainer_initialize_from():
+ 
+ @pytest.mark.tpu
+ @pytest.mark.timeout(180)
++@pytest.mark.parametrize("dropout", [0.0, 0.25])
+ @pytest.mark.parametrize("hf_config_source", ["explicit", "inferred_string", "inferred_bool"])
+ def test_native_train_lm_lora_hf_update_resume_and_local_exports(
+-    tmp_path, native_hf_source, tiny_hf_tokenizer_path, hf_config_source
++    tmp_path, native_hf_source, tiny_hf_tokenizer_path, hf_config_source, dropout
+ ):
+     source_checkpoint = native_hf_source
+     inferred = hf_config_source != "explicit"
+@@ -1214,7 +1216,7 @@ def test_native_train_lm_lora_hf_update_resume_and_local_exports(
+     model_size = 2 if jax.device_count() >= 4 else 1
+     data_size = jax.device_count() // model_size
+     optimizer = AdamConfig(learning_rate=1e-3, warmup=0, lr_schedule=ConstantLrSchedule(), weight_decay=0.0)
+-    adapter = LoraAdaptorConfig(r=3, alpha=6)
++    adapter = LoraAdaptorConfig(r=3, alpha=6, dropout=dropout, a_init_mode="random")
+ 
+     def configuration(name, steps, resume=False):
+         directory = tmp_path / name
+@@ -1331,8 +1333,11 @@ def test_native_train_lm_lora_hf_update_resume_and_local_exports(
+                 factors = moments.native.layers.stacked.self_attn.q_proj.lora
+                 assert np.any(factors.lora_A.weight != 0)
+                 assert np.any(factors.lora_B.weight != 0)
+-        trained = train_lm._restore_lm_model_from_partial_checkpoint(
+-            full.model, skeleton, adapter.trainable_filter(skeleton)
++        trained = inference_mode(
++            train_lm._restore_lm_model_from_partial_checkpoint(
++                full.model, skeleton, adapter.trainable_filter(skeleton)
++            ),
++            True,
+         )
+         for name, actual in unwrap_lora_modules(trained).to_state_dict().items():
+             np.testing.assert_array_equal(actual, source_checkpoint.weights[name])
+@@ -1340,8 +1345,11 @@ def test_native_train_lm_lora_hf_update_resume_and_local_exports(
+         assert trained.native.layers.stacked.self_attn.q_proj.lora.lora_A.weight.sharding.spec == P(None, None, "data")
+         wrong_base = model_config.build(Axis("vocab", 32), key=jrandom.PRNGKey(999), sharding=sharding)
+         wrong_skeleton = adapter.apply(wrong_base, key=jrandom.PRNGKey(0))
+-        wrong = train_lm._restore_lm_model_from_partial_checkpoint(
+-            full.model, wrong_skeleton, adapter.trainable_filter(wrong_skeleton)
++        wrong = inference_mode(
++            train_lm._restore_lm_model_from_partial_checkpoint(
++                full.model, wrong_skeleton, adapter.trainable_filter(wrong_skeleton)
++            ),
++            True,
+         )
+         tokens = hax.named(
+             jnp.arange(8 * data_size).reshape(2 * data_size, 4) % 31,
