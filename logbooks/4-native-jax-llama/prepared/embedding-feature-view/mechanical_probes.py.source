@@ -1,0 +1,91 @@
+"""Receipt/placement/AST-guard mechanics outside the scientific feature-view fixture."""
+import argparse
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def load_runner(prep):
+    specification = importlib.util.spec_from_file_location('feature_view_runner_probe', prep / 'runner.py')
+    runner = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(runner)
+    return runner
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--case', choices=('nonfinite','wrong-input'))
+    args = parser.parse_args()
+    prep = Path(__file__).resolve().parent
+    source = Path('/private/tmp/native-jax-embedding-vjp-no-git-source')
+    proof_root = Path('/private/tmp/native-jax-embedding-feature-view-mechanical-proofs')
+    if args.case is None:
+        proof_root.mkdir(exist_ok=True)
+        outcomes = {}
+        for case in ('nonfinite','wrong-input'):
+            result = subprocess.run([sys.executable,'-B',str(Path(__file__).resolve()),'--case',case],text=True,capture_output=True,check=False)
+            report = proof_root / case / 'report.json'
+            assert result.returncode == 1 and report.is_file(), (case,result.returncode,result.stderr)
+            receipt = json.loads(report.read_text())
+            assert receipt['comparison_valid'] is False and receipt['numerical_exit_code'] == 1
+            assert receipt['acceptance']['full_trainer_accepted'] is False and receipt['acceptance']['speed_ratio'] is None
+            assert not receipt.get('comparisons')
+            if case == 'nonfinite':
+                failure = receipt['numerical_failure']; counts = failure['outputs'][0]
+                assert failure['partial_report'] and failure['comparisons_completed'] is False
+                assert [counts[k] for k in ('nan_count','positive_inf_count','negative_inf_count','nonfinite_count')] == [1,1,1,3]
+            else:
+                failure = receipt['verification_failure']
+                assert failure['stage'] == 'actual_input_boundary' and failure['details']['tensor'] == 'master'
+                assert 'spec' in failure['details']['mismatch'] and 'global_shards' in failure['details']['mismatch']
+            assert report.stat().st_size <= 256 * 1024 and [p.name for p in report.parent.iterdir()] == ['report.json']
+            outcomes[case] = {'exit_code':result.returncode,'report':str(report),'sha256':sha(report),'bytes':report.stat().st_size,'partial_receipt_before_nonzero':True,'no_successful_comparison_claim':True,'failure':failure}
+        negative = proof_root / 'wrong-ast-prep'; negative.mkdir()
+        manifest = json.loads((prep/'manifest.json').read_text())
+        for name in manifest['preparation_sha256']:
+            shutil.copyfile(prep/name,negative/name)
+        manifest['feature_view_guard']['ast_sha256'] = '0'*64
+        (negative/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+        command = [sys.executable,'-B',str(negative/'runner.py'),'--source-root',str(source),'--declared-source-commit','8aa8674d10894728ed0b455ae14e14f46457cf9f','--config',str(negative/'config.json'),'--manifest',str(negative/'manifest.json'),'--mode','abstract-only','--output-dir',str(proof_root/'wrong-ast-output')]
+        result = subprocess.run(command,text=True,capture_output=True,check=False)
+        assert result.returncode != 0 and 'Feature-view full AST/statement-count differs' in result.stderr
+        assert not (proof_root/'wrong-ast-output').exists()
+        outcomes['wrong-feature-ast'] = {'exit_code':result.returncode,'expected_guard_error':True,'scientific_output_directory_created':False,'stderr':result.stderr[-1000:]}
+        record = {'schema':'embedding-feature-view-mechanical-probes.v1','classification':'Mechanical injected failures only, outside scientific fixture; no fixture/seed search or production mutation','runner_sha256':sha(prep/'runner.py'),'inherited_helper_sha256':sha(prep/'inherited_v2.py'),'config_sha256':sha(prep/'config.json'),'manifest_sha256':sha(prep/'manifest.json'),'outcomes':outcomes,'no_arrays_saved':True}
+        (prep/'mechanical-probe-proof.json').write_text(json.dumps(record,indent=2)+'\n')
+        print(json.dumps({k:{'exit_code':v['exit_code'],'verified':True} for k,v in outcomes.items()}))
+        return
+    import numpy as np  # Optional mechanical-probe runtime only.
+    runner = load_runner(prep); base = runner.inherited(prep)
+    config = json.loads((prep/'config.json').read_text()); manifest = json.loads((prep/'manifest.json').read_text())
+    _, source_proof = base.source_guard(source,config,manifest,prep,config['source_commit'])
+    output = proof_root / args.case; output.mkdir(parents=True); assert not any(output.iterdir())
+    record = {'schema':'embedding-feature-view-mechanical-failure.v1','mode':'mechanical-'+args.case,'source_commit':base.SOURCE,'source_sha256':manifest['source_sha256'],'source_guard':source_proof,'runner_sha256':sha(prep/'runner.py'),'inherited_helper_sha256':sha(prep/'inherited_v2.py'),'config_sha256':sha(prep/'config.json'),'manifest_sha256':sha(prep/'manifest.json'),'fixture':{'classification':'Mechanical failure injection; not scientific cotangent or experiment fixture'},'results':{},'acceptance':{'atol':config['atol'],'rtol':config['rtol'],'feature_view_matches_legacy':False,'full_trainer_accepted':False,'speed_ratio':None}}
+    if args.case == 'nonfinite':
+        record['runtime'] = {'numpy':np.__version__,'jax_imported':'jax' in sys.modules,'no_hardware_or_vjp_execution':True}
+        values = (np.array([[np.nan,np.inf],[-np.inf,1]],dtype=np.float32),)
+        base.require_finite_outputs(output,record,'feature_view','mechanical_nonfinite_receipt_only',values,np,{'mechanical_injection':True,'scientific_fixture_not_executed':True})
+        raise AssertionError('Nonfinite guard did not reject')
+    modules = base.runtime(source,manifest); jax=modules['jax']; jnp=modules['jax.numpy']; P=jax.sharding.PartitionSpec; NS=jax.sharding.NamedSharding
+    assert jax.default_backend() == 'cpu' and len(jax.devices()) == 4
+    mesh=jax.sharding.Mesh(np.asarray(jax.devices()).reshape(2,2),('data','model'),axis_types=(jax.sharding.AxisType.Explicit,jax.sharding.AxisType.Explicit))
+    dims=config['cpu_dimensions']
+    with jax.set_mesh(mesh):
+        values=(jax.device_put(np.zeros((dims['V'],dims['D']),dtype=np.float32),NS(mesh,P(None,None))),jax.device_put(np.zeros((dims['B'],dims['S']),dtype=np.int32),NS(mesh,P('data',None))),jax.device_put(np.ones((dims['B'],dims['S'],dims['D']),dtype=jnp.bfloat16),NS(mesh,P('data',None,None))))
+        physical={name:base.physical(value,modules['bench_llama_native']) for name,value in zip(('master','tokens','cotangent'),values,strict=True)}
+        record['runtime']={'global_devices':[base.device_record(d) for d in jax.devices()],'local_devices':[base.device_record(d) for d in jax.local_devices()],'import_proof':modules['import_proof'],'no_vjp_execution':True}
+        record['mechanical_inputs_physical']=physical
+        runner.verify_boundary(values,physical,dims,mesh,modules,output,record,'feature_view',base)
+    raise AssertionError('Wrong actual input placement was accepted')
+
+
+if __name__ == '__main__':
+    main()

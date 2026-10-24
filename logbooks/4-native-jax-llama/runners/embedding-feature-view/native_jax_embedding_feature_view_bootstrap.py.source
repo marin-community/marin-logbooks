@@ -1,0 +1,93 @@
+"""Run one frozen embedding diagnostic and back up bounded JSON/HLO evidence."""
+import base64
+import gzip
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tarfile
+import tempfile
+import zlib
+
+MAX_RAW_BYTES = 32 * 1024 * 1024
+MAX_COMPRESSED_BYTES = 8 * 1024 * 1024
+MAX_FILES = 16
+
+
+def main():
+    request = json.loads(sys.argv[1])
+    if request['source_pin'] != '8aa8674d10894728ed0b455ae14e14f46457cf9f':
+        raise ValueError('Wrong scientific source pin')
+    if not request['backup_uri'].startswith('gs://marin-us-central1/tmp/ttl=7d/native-jax/embedding-view-8aa-20261024/'):
+        raise ValueError('Backup must remain in the proposed regional diagnostic prefix')
+    output = Path(os.environ['IRIS_OUTPUT_DIR'])
+    output.mkdir(parents=True, exist_ok=True)
+    if any(output.iterdir()):
+        raise FileExistsError('Diagnostic output must be initially empty')
+    payload_bytes = zlib.decompress(base64.b64decode(request['payload_b64']))
+    if hashlib.sha256(payload_bytes).hexdigest() != request['payload_sha256']:
+        raise ValueError('Frozen diagnostic payload differs')
+    payload = json.loads(payload_bytes)
+    if set(payload) != {'runner.py', 'inherited_v2.py', 'inherited-config.json', 'config.json', 'manifest.json', 'design.md'}:
+        raise ValueError('Unexpected scientific payload files')
+    scratch = Path(tempfile.mkdtemp(prefix='native-jax-embedding-feature-view-'))
+    for name, text in payload.items():
+        data = text.encode()
+        if hashlib.sha256(data).hexdigest() != request['payload_files_sha256'][name]:
+            raise ValueError('Frozen diagnostic file bytes differ')
+        (scratch / name).write_bytes(data)
+    root = Path('/app')
+    environment = dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
+        PYTHONPYCACHEPREFIX=str(scratch / 'pycache'),
+        PYTHONPATH=str(root / 'lib/levanter/src') + ':' + str(root / 'lib/haliax/src'))
+    child = [sys.executable, str(scratch / 'runner.py'), '--source-root', str(root),
+        '--config', str(scratch / 'config.json'), '--manifest', str(scratch / 'manifest.json'),
+        '--mode', 'tpu', '--declared-source-commit', request['source_pin'], '--output-dir', str(output)]
+    sizes = {'argv_bytes': sum(len(v.encode()) + 1 for v in child),
+        'environment_bytes': sum(len((k + '=' + v).encode()) + 1 for k, v in environment.items()),
+        'largest_argument_bytes': max(len(v.encode()) + 1 for v in child)}
+    if sizes['argv_bytes'] + sizes['environment_bytes'] + 16 * 1024 >= 96 * 1024:
+        raise ValueError('Compute argv/environment exceeds conservative transport budget')
+    result = subprocess.run(child, cwd=root, env=environment)
+    provenance = {k: v for k, v in request.items() if k != 'payload_b64'}
+    provenance.update(compute_returncode=result.returncode, exec_sizes=sizes,
+        scope='One isolated embedding feature-compute-view control; no full-Trainer acceptance or performance claim')
+    (output / 'wrapper-outcomes.json').write_text(json.dumps(provenance, indent=2) + '\n')
+    paths = sorted(output.rglob('*'))
+    if any(p.is_symlink() for p in paths):
+        raise ValueError('Refuse symbolic links in diagnostic output')
+    files = [p for p in paths if p.is_file()]
+    if len(files) > MAX_FILES or any(p.suffix not in {'.json', '.txt'} for p in files):
+        raise ValueError('Only bounded JSON/HLO text diagnostics may be archived')
+    raw_bytes = sum(p.stat().st_size for p in files)
+    if raw_bytes > MAX_RAW_BYTES:
+        raise ValueError('Diagnostic output exceeds32MiB; retained locally, no backup attempted')
+    archive = output.parent / (output.name + '-diagnostics.tar.gz')
+    with archive.open('wb') as raw:
+        with gzip.GzipFile(fileobj=raw, mode='wb', mtime=0) as compressed:
+            with tarfile.open(fileobj=compressed, mode='w|') as tar:
+                for path in files:
+                    info = tar.gettarinfo(str(path), arcname=str(path.relative_to(output)))
+                    info.mtime = 0
+                    info.uid = info.gid = 0
+                    info.uname = info.gname = ''
+                    with path.open('rb') as data:
+                        tar.addfile(info, data)
+    if archive.stat().st_size > MAX_COMPRESSED_BYTES:
+        raise ValueError('Compressed diagnostics exceed8MiB; retained locally, no backup attempted')
+    summary = {'uri': request['backup_uri'], 'entries': len(files),
+        'uncompressed_bytes': raw_bytes, 'compressed_bytes': archive.stat().st_size,
+        'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(),
+        'compute_returncode': result.returncode}
+    print('EMBEDDING_DIAGNOSTIC_BACKUP ' + json.dumps(summary, sort_keys=True), flush=True)
+    backup = subprocess.run([sys.executable, '-m', 'rigging.fsutil.cli', 'cp', '-n',
+        str(archive), request['backup_uri']], timeout=90)
+    print('EMBEDDING_DIAGNOSTIC_BACKUP_RESULT ' + json.dumps({'returncode': backup.returncode,
+        'uri': request['backup_uri']}, sort_keys=True), flush=True)
+    raise SystemExit(1 if result.returncode or backup.returncode else 0)
+
+
+if __name__ == '__main__':
+    main()

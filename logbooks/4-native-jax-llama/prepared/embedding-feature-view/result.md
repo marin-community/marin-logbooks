@@ -1,0 +1,15 @@
+# Local feature-compute-view result
+
+The one frozen feature-view variant matches legacy byte-for-byte in both forward values and FP32 master gradients on the small four-CPU fixture. Original native still differs at8/2048 gradient coordinates (max0.0078125, relative L20.0005118898582032608). All original controls and common fixture hashes match immutable v2 exactly. This is isolated CPU evidence only; feature-view TPU realization and full-model cause/adoption/performance remain unproved.
+
+The exact runner first performs full V65536/D2048/B8/S2048 abstract tracing without large arrays, lowering, compilation or execution, then executes V64/D32/B4/S8 CPU mechanics. Actual input shape/dtype/spec/device/memory/shard boundaries are validated for all4 variants, original complete physical layouts retained, pairwise placement checked, and common bytes verified after device import. The large abstract record is extracted faithfully in large-abstract-proof.json; Auto-mode physical output inference remains deferred to compiled execution.
+
+CPU actual-entrypoint evidence in cpu-dataflow-evidence.json shows feature_view full-B4/D16 scatter into[32,16] followed directly by FP32 conversion, with no gradient data sum. Token all-gather and cotangent all-to-all precede its scatter. Legacy has this grouping; original native uses B2/D32 partial scatter then data sum/slice. Optimized CPU scatter/reduction operations are F32 legalization with explicit BF16 scalar round-trips, never evidence for typed TPU execution. StableHLO retains BF16 source add and sharding constraints.
+
+The runner imports byte-exact inherited_v2.py and preserves inherited-config.json. New runner/config/manifest hashes identify this separate experiment; its five-statement public reshard/get feature function is guarded by full AST hash/count. Master-to-BF16 policy cast occurs first. No custom VJP, new accumulation dtype, production patch or source mutation occurs. Input embedding normalization remains excluded, matching original disabled configuration.
+
+Mechanical probes are outside the scientific fixture. Injected NaN/+Inf/-Inf and an actually replicated master table each retain bounded invalid partial JSON then exit1. A wrong feature AST hash rejects before scientific output creation. The only scientific fixture/seed/gates are inherited unchanged; no trial/seed search or threshold change occurred. JSON plus8completeHLO files total201877bytes, within unchanged caps.
+
+Forward logical payload estimates per device: avoid64MiB feature-weight all-gather receive; add32KiB token replication receive and16MiB activation reshard receive; the model-axis reduced logical tensor remains32MiB. These are shape-derived payloads, not measured traffic or latency. See forward-payload.json for exact formulas.
+
+No TPU, network, job, archive, publication, commit or push occurred. Primary pair legacy_vs_feature_view passes only this CPU fixture; original legacy/native rejection remains explicit. Full-Trainer acceptance remains false and speed ratio null. Root and a fresh independent reviewer must review and archive before any launch.

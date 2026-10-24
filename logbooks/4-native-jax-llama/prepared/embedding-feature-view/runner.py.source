@@ -1,0 +1,215 @@
+"""One isolated feature-compute-view experiment, reusing exact frozen v2 mechanics."""
+import argparse
+import ast
+import hashlib
+import importlib.metadata
+import importlib.util
+import json
+import os
+from pathlib import Path
+import platform
+import sys
+import tempfile
+
+INHERITED_HELPER_SHA256 = "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e"
+INHERITED_CONFIG_SHA256 = "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634"
+VARIANTS = ("legacy", "native", "feature_view", "fp32_scatter")
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def inherited(prep):
+    path = prep / "inherited_v2.py"
+    if sha(path) != INHERITED_HELPER_SHA256 or sha(prep / "inherited-config.json") != INHERITED_CONFIG_SHA256:
+        raise ValueError("Inherited v2 helper/config bytes differ")
+    specification = importlib.util.spec_from_file_location("frozen_embedding_vjp_v2", path)
+    module = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(module)
+    return module
+
+
+def feature_view_forward(w, t, *, jax, policy, P):
+    weight = policy.cast_to_compute(w)
+    weight = jax.sharding.reshard(weight, P("model", "data"))
+    tokens = jax.sharding.reshard(t, P(None, None))
+    hidden = weight.at[tokens].get(out_sharding=P(None, None, "data"))
+    return jax.sharding.reshard(hidden, P("data", None, None))
+
+
+def functions(dims, modules, fragment, base):
+    result = base.functions(dims, modules, fragment)
+    jax = modules["jax"]; jnp = modules["jax.numpy"]; P = jax.sharding.PartitionSpec
+    policy = modules["jmp"].Policy(param_dtype=jnp.float32, compute_dtype=jnp.bfloat16, output_dtype=jnp.float32)
+    def feature_vjp(w, t, c):
+        value, backward = jax.vjp(lambda weight: feature_view_forward(weight, t, jax=jax, policy=policy, P=P), w)
+        return value, backward(c)[0]
+    result["feature_view"] = feature_vjp
+    return result
+
+
+def reject(output, record, stage, variant, details, base):
+    record["comparison_valid"] = False
+    record["numerical_exit_code"] = 1
+    record["verification_failure"] = {"stage": stage, "variant": variant, "details": details, "partial_report": True, "comparisons_completed": False}
+    base.write_json(output / "report.json", record)
+    raise SystemExit(1)
+
+
+def verify_boundary(values, manifests, dims, mesh, modules, output, record, variant, base):
+    jax = modules["jax"]; jnp = modules["jax.numpy"]; bench = modules["bench_llama_native"]
+    P = jax.sharding.PartitionSpec; NS = jax.sharding.NamedSharding
+    expected = (((dims["V"], dims["D"]), jnp.float32, P("model", "data")), ((dims["B"], dims["S"]), jnp.int32, P("data", None)), ((dims["B"], dims["S"], dims["D"]), jnp.bfloat16, P("data", None, None)))
+    for name, value, (shape, dtype, spec) in zip(("master", "tokens", "cotangent"), values, expected, strict=True):
+        sharding = NS(mesh, spec)
+        actual = manifests[name]
+        expected_indices = [{"device": base.device_record(d), "index": str(index)} for d,index in sharding.devices_indices_map(shape).items()]
+        expected_record = {"shape": list(shape), "dtype": str(jnp.dtype(dtype)), "spec": list(spec), "memory_kind": sharding.memory_kind, "global_shards": expected_indices, "devices": [f"{d.platform}:{d.process_index}:{d.id}" for d in mesh.devices.flat], "mesh": dict(mesh.shape), "axis_types": [kind.name for kind in mesh.axis_types]}
+        mismatch = {key: {"expected": wanted, "actual": actual.get(key)} for key,wanted in expected_record.items() if actual.get(key) != wanted}
+        if mismatch:
+            reject(output, record, "actual_input_boundary", variant, {"tensor": name, "mismatch": mismatch}, base)
+    return True
+
+
+def abstract(dims, modules, fragment, meshes, base):
+    jax = modules["jax"]; jnp = modules["jax.numpy"]; hax = modules["haliax"]; bench = modules["bench_llama_native"]
+    P = jax.sharding.PartitionSpec; NS = jax.sharding.NamedSharding
+    outputs = {}
+    for name,fn in functions(dims,modules,fragment,base).items():
+        mesh = meshes["legacy" if name == "legacy" else "native"]
+        with jax.set_mesh(mesh), hax.axis_mapping(bench._compute_mapping()):
+            inputs = (jax.ShapeDtypeStruct((dims["V"],dims["D"]),jnp.float32,sharding=NS(mesh,P("model","data"))), jax.ShapeDtypeStruct((dims["B"],dims["S"]),jnp.int32,sharding=NS(mesh,P("data",None))), jax.ShapeDtypeStruct((dims["B"],dims["S"],dims["D"]),jnp.bfloat16,sharding=NS(mesh,P("data",None,None))))
+            result = jax.tree.leaves(jax.eval_shape(fn,*inputs))
+            expected = [([dims["V"],dims["D"]],"float32")] if name == "fp32_scatter" else [([dims["B"],dims["S"],dims["D"]],"bfloat16"),([dims["V"],dims["D"]],"float32")]
+            if [(list(x.shape),str(x.dtype)) for x in result] != expected:
+                raise ValueError("Abstract feature-view/control output shape or dtype differs")
+            outputs[name] = [{"shape":list(x.shape),"dtype":str(x.dtype),"sharding":str(x.sharding)} for x in result]
+    return {"dimensions":dims,"outputs":outputs,"no_large_array_allocated":True,"no_large_lower_compile_execute":True,"backend":jax.default_backend(),"limitation":"Abstract tracing only; no large execution, compiler grouping, physical output placement or numerical evidence"}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source-root",type=Path,required=True)
+    parser.add_argument("--declared-source-commit",required=True)
+    parser.add_argument("--config",type=Path,required=True)
+    parser.add_argument("--manifest",type=Path,required=True)
+    parser.add_argument("--mode",choices=("cpu-mechanics","abstract-only","tpu"),required=True)
+    parser.add_argument("--output-dir",type=Path,required=True)
+    args = parser.parse_args(); prep = args.manifest.parent
+    sys.dont_write_bytecode = True
+    sys.pycache_prefix = tempfile.mkdtemp(prefix="native-embedding-feature-view-pycache-")
+    base = inherited(prep)
+    config = json.loads(args.config.read_text()); manifest = json.loads(args.manifest.read_text())
+    prior_config = json.loads((prep / "inherited-config.json").read_text())
+    if any(config[key] != value for key,value in prior_config.items()):
+        raise ValueError("Inherited scientific configuration/fixture/gates/runtime changed")
+    if config["source_commit"] != base.SOURCE or manifest["source_commit"] != base.SOURCE:
+        raise ValueError("Source pin differs")
+    fragment, source_proof = base.source_guard(args.source_root.resolve(),config,manifest,prep,args.declared_source_commit)
+    if sha(args.config) != manifest["preparation_sha256"]["config.json"]:
+        raise ValueError("Supplied config is not the frozen feature-view config")
+    tree = ast.parse(Path(__file__).read_text())
+    definition = next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name == "feature_view_forward")
+    guard = {"ast_sha256":hashlib.sha256(ast.dump(definition,include_attributes=False).encode()).hexdigest(),"statement_count":len(definition.body)}
+    if guard != manifest["feature_view_guard"]:
+        raise ValueError("Feature-view full AST/statement-count differs")
+    modules = base.runtime(args.source_root.resolve(),manifest); jax=modules["jax"]; jnp=modules["jax.numpy"]; np=modules["numpy"]; hax=modules["haliax"]; bench=modules["bench_llama_native"]
+    versions = {name:importlib.metadata.version(name) for name in config["runtime_versions"]}
+    expected_python = config["python_version"] if args.mode == "tpu" else config["cpu_python_version"]
+    if versions != config["runtime_versions"] or platform.python_version() != expected_python:
+        raise ValueError("Inherited runtime versions differ")
+    devices = jax.devices(); local = jax.local_devices()
+    if jax.default_backend() != ("tpu" if args.mode == "tpu" else "cpu") or jax.process_count() != 1 or len(devices) != 4 or len(local) != 4 or devices != local:
+        raise ValueError("Expected one process and four ordered global/local devices")
+    if os.environ.get("XLA_FLAGS") != config["tpu_xla_flags" if args.mode == "tpu" else "cpu_xla_flags"]:
+        raise ValueError("Inherited XLA flags differ")
+    if args.mode == "tpu" and (os.environ.get("LIBTPU_INIT_ARGS","") != config["libtpu_init_args"] or any("v5" not in d.device_kind.lower() or "lite" in d.device_kind.lower() for d in devices)):
+        raise ValueError("Expected original v5p family and exact LIBTPU_INIT_ARGS")
+    jax.config.update("jax_default_matmul_precision","default")
+    Mesh=jax.sharding.Mesh; AxisType=jax.sharding.AxisType; NS=jax.sharding.NamedSharding; P=jax.sharding.PartitionSpec
+    meshes={name:Mesh(np.asarray(devices).reshape(2,2),("data","model"),axis_types=(kind,kind)) for name,kind in (("legacy",AxisType.Auto),("native",AxisType.Explicit))}
+    output=args.output_dir;output.mkdir(parents=True,exist_ok=True)
+    if any(output.iterdir()):
+        raise FileExistsError("Use a fresh empty output directory")
+    record={"schema":"native-jax-embedding-feature-view.v1","source_commit":base.SOURCE,"source_sha256":manifest["source_sha256"],"source_guard":source_proof,"feature_view_guard":guard,"runner_sha256":sha(Path(__file__)),"inherited_helper_sha256":sha(prep/"inherited_v2.py"),"inherited_config_sha256":sha(prep/"inherited-config.json"),"config_sha256":sha(args.config),"manifest_sha256":sha(args.manifest),"mode":args.mode,"import_proof":modules["import_proof"],"dont_write_bytecode":sys.dont_write_bytecode,"fresh_pycache_prefix":sys.pycache_prefix,"versions":versions,"python":platform.python_version(),"xla_flags":os.environ.get("XLA_FLAGS"),"libtpu_init_args":os.environ.get("LIBTPU_INIT_ARGS",""),"global_devices":[base.device_record(d) for d in devices],"local_devices":[base.device_record(d) for d in local],"process_count":jax.process_count(),"large_abstract":abstract(config["main_dimensions"],modules,fragment,meshes,base),"results":{},"acceptance":{"atol":config["atol"],"rtol":config["rtol"],"primary_pair":"legacy_vs_feature_view","feature_view_matches_legacy":False,"full_trainer_accepted":False,"speed_ratio":None},"limits":config["output_limits"],"limitations":config["limitations"],"experiment":config["feature_view_experiment"]}
+    if args.mode=="abstract-only":
+        base.write_json(output/"report.json",record);return
+    dims=config["main_dimensions"] if args.mode=="tpu" else config["cpu_dimensions"]
+    args_host,fixture_record=base.fixture(dims,config,np,jnp,bench)
+    if args.mode=="tpu" and fixture_record["benchmark_batch_sha256"]!=config["original_benchmark_batch_sha256"]:
+        reject(output,record,"original_benchmark_fixture","all",fixture_record,base)
+    record.update(dimensions=dims,fixture=fixture_record)
+    stored={};hlo_bytes=0;physical_inputs={};physical_outputs={};all_functions=functions(dims,modules,fragment,base)
+    for name in VARIANTS:
+        mesh=meshes["legacy" if name=="legacy" else "native"]
+        with jax.set_mesh(mesh),hax.axis_mapping(bench._compute_mapping()):
+            xs=tuple(jax.device_put(x,NS(mesh,p)) for x,p in zip(args_host,(P("model","data"),P("data",None),P("data",None,None)),strict=True))
+            manifests={label:base.physical(x,bench) for label,x in zip(("master","tokens","cotangent"),xs,strict=True)}
+            verify_boundary(xs,manifests,dims,mesh,modules,output,record,name,base)
+            hashes={label:base.array_hash(np.asarray(jax.device_get(x)),np) for label,x in zip(("master","tokens","cotangent"),xs,strict=True)}
+            expected_hashes={"master":fixture_record["master_sha256"],"tokens":fixture_record["token_sha256"],"cotangent":fixture_record["cotangent_sha256"]}
+            if hashes!=expected_hashes or any(not np.array_equal(np.asarray(jax.device_get(x)),original) for x,original in zip(xs,args_host,strict=True)):
+                reject(output,record,"common_operand_bytes",name,{"expected":expected_hashes,"actual":hashes},base)
+            if physical_inputs:
+                for label in manifests:
+                    try:
+                        base.common_physical(physical_inputs["legacy"][label],manifests[label],bench)
+                    except ValueError as error:
+                        reject(output,record,"common_input_placement",name,{"tensor":label,"error":str(error),"actual":manifests[label]},base)
+            physical_inputs[name]=manifests
+            out_shardings=NS(mesh,P("model","data")) if name=="fp32_scatter" else (NS(mesh,P("data",None,None)),NS(mesh,P("model","data")))
+            lowered=jax.jit(all_functions[name],out_shardings=out_shardings).lower(*xs);compiled=lowered.compile();hlo=compiled.as_text()
+            hlo_record={}
+            for suffix,data in (("stablehlo.txt",lowered.as_text().encode()),("optimized_hlo.txt",hlo.encode())):
+                if len(data)>base.HLO_FILE_LIMIT or hlo_bytes+len(data)>base.HLO_TOTAL_LIMIT:
+                    reject(output,record,"complete_hlo_cap",name,{"suffix":suffix,"bytes":len(data),"prior_total":hlo_bytes},base)
+                filename=f"{name}.{suffix}";(output/filename).write_bytes(data);hlo_bytes+=len(data)
+                hlo_record[suffix]={"file":filename,"bytes":len(data),"sha256":hashlib.sha256(data).hexdigest(),"truncated":False}
+            values=compiled(*xs);jax.block_until_ready(values);leaves=(values,) if name=="fp32_scatter" else values
+            host=tuple(np.asarray(jax.device_get(x)) for x in leaves)
+            base.require_finite_outputs(output,record,name,"fp32_reference_output" if name=="fp32_scatter" else "public_embedding_vjp_outputs",host,np,{"input_hashes":hashes,"inputs_physical":manifests})
+            if leaves[-1].dtype!=jnp.float32 or (name!="fp32_scatter" and leaves[0].dtype!=jnp.bfloat16):
+                reject(output,record,"actual_dtype_boundary",name,{"dtypes":[str(x.dtype) for x in leaves]},base)
+            stored[name]=host;physical_outputs[name]=[base.physical(x,bench) for x in leaves]
+            if name in ("native","feature_view"):
+                for index,(a,b) in enumerate(zip(physical_outputs["legacy"],physical_outputs[name],strict=True)):
+                    try:
+                        base.common_physical(a,b,bench)
+                    except ValueError as error:
+                        reject(output,record,"common_output_placement",name,{"output_index":index,"error":str(error),"actual":b},base)
+            record["results"][name]={"input_hashes":hashes,"actual_input_boundary_verified":True,"inputs_physical":manifests,"outputs_physical":physical_outputs[name],"output_hashes":[base.array_hash(x,np) for x in host],"hlo":hlo_record,"scatter_and_collective_lines":[{"line":i,"text":line.split(", backend_config=")[0]} for i,line in enumerate(hlo.splitlines(),1) if base.re_hlo_operation(line)][:48]}
+            del values,leaves,xs,compiled,lowered
+    comparisons={}
+    for left,right in (("legacy","native"),("legacy","feature_view"),("native","feature_view")):
+        comparisons[f"forward_{left}_vs_{right}"]=base.metrics(stored[left][0],stored[right][0],np,config["atol"],config["rtol"])
+        comparisons[f"vjp_{left}_vs_{right}"]=base.metrics(stored[left][-1],stored[right][-1],np,config["atol"],config["rtol"])
+    for name in ("legacy","native","feature_view"):
+        comparisons[f"{name}_vs_fp32_scatter_diagnostic"]=base.metrics(stored[name][-1],stored["fp32_scatter"][-1],np,config["atol"],config["rtol"])
+    record["comparisons"]=comparisons;record["common_operands_identical_global_bytes_and_physical_layout"]=True
+    record["original_legacy_native_comparison_valid"]=bool(comparisons["forward_legacy_vs_native"]["allclose"] and comparisons["vjp_legacy_vs_native"]["allclose"])
+    record["comparison_valid"]=bool(comparisons["forward_legacy_vs_feature_view"]["allclose"] and comparisons["vjp_legacy_vs_feature_view"]["allclose"])
+    record["acceptance"]["feature_view_matches_legacy"]=record["comparison_valid"]
+    record["acceptance"]["isolated_bf16_vjp_allclose"]=comparisons["vjp_legacy_vs_feature_view"]["allclose"]
+    record["numerical_exit_code"]=0 if record["comparison_valid"] else 1
+    if args.mode=="cpu-mechanics":
+        reference=np.zeros((dims["V"],dims["D"]),dtype=np.float32);np.add.at(reference,args_host[1].reshape(-1),args_host[2].astype(np.float32).reshape(-1,dims["D"]))
+        reference_check=base.metrics(stored["fp32_scatter"][-1],reference,np,config["atol"],config["rtol"])
+        present=np.zeros(dims["V"],dtype=np.bool_);present[args_host[1].reshape(-1)]=True
+        support={name:bool(np.array_equal(np.any(stored[name][-1]!=0,axis=1),present)) for name in VARIANTS}
+        forwards=all(value["allclose"] for name,value in comparisons.items() if name.startswith("forward_"))
+        record["cpu_mechanics"]={"fp32_scatter_vs_numpy_diagnostic":reference_check,"nonzero_rows_match_token_support":support,"all_forward_pairs_allclose":forwards,"passed":bool(reference_check["allclose"] and forwards and all(support.values())),"feature_view_vjp_parity_is_observation_not_mechanics_criterion":True}
+    record["grouping_result"]={"status":"requires_actual_entrypoint_static_review","rule":"Confirm feature_view transpose uses full-batch/feature-shard BF16 scatter without post-scatter data sum. If not, report non-reproduction and no production fix.","cpu_legalization_is_not_tpu_evidence":True}
+    base.write_json(output/"report.json",record)
+    files=list(output.iterdir())
+    if len(files)>base.FILE_LIMIT or sum(p.stat().st_size for p in files)>base.OUTPUT_LIMIT or any(p.is_dir() or p.is_symlink() for p in files):
+        raise ValueError("Inherited total output cap or regular-file requirement exceeded; report retained")
+    if args.mode=="cpu-mechanics" and not record["cpu_mechanics"]["passed"]:
+        raise SystemExit(1)
+    print(json.dumps({"mode":args.mode,"feature_view_matches_legacy":record["comparison_valid"],"original_legacy_native_valid":record["original_legacy_native_comparison_valid"],"files":len(files),"bytes":sum(p.stat().st_size for p in files),"full_trainer_accepted":False,"tpu_executed":args.mode=="tpu"}))
+    if args.mode=="tpu" and not record["comparison_valid"]:
+        raise SystemExit(1)
+
+
+if __name__=="__main__":
+    main()

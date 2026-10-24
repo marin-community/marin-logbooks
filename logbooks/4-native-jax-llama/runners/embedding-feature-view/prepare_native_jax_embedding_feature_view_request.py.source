@@ -1,0 +1,86 @@
+"""Build the frozen embedding VJP transport and an offline-only Iris validator."""
+import base64
+import hashlib
+import json
+from pathlib import Path
+import zlib
+
+ROOT = Path('/private/tmp/marin-native-jax-query-scale-rounding')
+PREPARATION = Path('/private/tmp/native-jax-embedding-feature-view-preparation')
+BOOTSTRAP = Path('/private/tmp/native_jax_embedding_feature_view_bootstrap.py')
+PREFIX = Path('/private/tmp/native-jax-embedding-feature-view')
+PIN = '8aa8674d10894728ed0b455ae14e14f46457cf9f'
+EXPECTED = {'runner.py': 'b912e0ba24c1c994dd5410e254452eeb92237225ece0b32fd6601046b7dd8183',
+    'inherited_v2.py': 'fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e',
+    'inherited-config.json': '9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634',
+    'config.json': 'fc522040884dd3ed2ea9d7c5ee1827b481fe9ce5841a411bd1226ae8a9845554',
+    'manifest.json': '4e49f903a3fccd8275e677f535dc27c259ea9a35017df7187c5c058fd61f176b',
+    'design.md': '17c955f0208b983c33bcd2fa5b5f16a08cd16fb9e2cf5764f64cb6476542f0de'}
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def main():
+    freeze = PREPARATION / 'final-freeze.json'
+    if sha(freeze.read_bytes()) != '427b251727ec9668511d28a0722179c57f255d59a7164f5b3b1bbc4b126f5b89':
+        raise ValueError('Frozen scientific preparation manifest changed')
+    payload = {}
+    for name, expected in EXPECTED.items():
+        raw = (PREPARATION / name).read_bytes()
+        if sha(raw) != expected:
+            raise ValueError('Frozen scientific payload changed')
+        payload[name] = raw.decode()
+    raw_payload = json.dumps(payload, sort_keys=True, separators=(',', ':')).encode()
+    bootstrap = BOOTSTRAP.read_bytes()
+    request = {'schema': 'native-jax-embedding-feature-view-wrapper.v1', 'source_pin': PIN,
+        'job_name': 'levanter-native-jax-v5p-embedding-view-8aa-20261024',
+        'backup_uri': 'gs://marin-us-central1/tmp/ttl=7d/native-jax/embedding-view-8aa-20261024/diagnostics.tar.gz',
+        'payload_sha256': sha(raw_payload), 'payload_files_sha256': EXPECTED,
+        'payload_b64': base64.b64encode(zlib.compress(raw_payload, 9)).decode(),
+        'raw_archive_limit_bytes': 32 * 1024 * 1024,
+        'compressed_archive_limit_bytes': 8 * 1024 * 1024,
+        'artifact_policy': 'JSON/HLO only; no arrays, profiles, checkpoints or timing; fail and retain local outputs on excess'}
+    launcher = "import base64,hashlib,json,sys,zlib\n"
+    launcher += 'code=zlib.decompress(base64.b64decode(' + repr(base64.b64encode(zlib.compress(bootstrap, 9)).decode()) + '))\n'
+    launcher += 'assert hashlib.sha256(code).hexdigest()==' + repr(sha(bootstrap)) + '\n'
+    launcher += 'sys.argv=["embedding-feature-view-bootstrap",' + repr(json.dumps(request, separators=(',', ':'))) + ']\n'
+    launcher += 'exec(compile(code,"embedding-feature-view-bootstrap","exec"))\n'
+    config = json.loads(payload['config.json'])
+    command = {'schema': 'native-jax-embedding-feature-view-offline-command.v1',
+        'status': 'OFFLINE_ONLY_NOT_SUBMITTED_TRANSPORT_REVIEW_AND_ARCHIVE_GATES_PENDING',
+        'working_directory': str(ROOT), 'source_pin': PIN, 'job_name': request['job_name'],
+        'backup_uri': request['backup_uri'], 'bootstrap': str(BOOTSTRAP), 'bootstrap_sha256': sha(bootstrap),
+        'payload_files': {name: {'path': str(PREPARATION / name), 'sha256': digest} for name, digest in EXPECTED.items()},
+        'payload_sha256': sha(raw_payload), 'launcher_sha256': sha(launcher.encode()),
+        'entrypoint_argv': ['python', '-c', launcher],
+        'scientific_environment': {'JAX_PLATFORMS': 'tpu', 'XLA_FLAGS': config['tpu_xla_flags'],
+            'LIBTPU_INIT_ARGS': config['libtpu_init_args']},
+        'environment_change_scope': 'Inherited exact frozen flags in EnvSpec; no new VMEM or other knobs',
+        'offline_validation_argv': ['/Users/dlwh/.codex/worktrees/73be/marin/.venv/bin/python',
+            '/private/tmp/native_jax_embedding_feature_view_request.py', '--validate-only'],
+        'source_bundle_policy': 'Default Iris source workspace zip from locally clean exact8aa; no Git metadata in runtime bundle',
+        'resources': {'tpu': 'v5p-8', 'cpu': 16, 'memory': '64GB', 'disk': '16GB', 'replicas': 1,
+            'region': 'us-central1', 'zone': 'us-central1-a', 'scheduling_timeout_seconds': 120,
+            'execution_timeout_seconds': 780, 'max_retries_failure': 0, 'max_retries_preemption': 0, 'max_task_failures': 0},
+        'secrets': 'ISOLATE with explicit empty secret map; no credential lookup',
+        'guarded_runtime_cli': '--source-root /app --config <frozen> --manifest <frozen> --mode tpu --declared-source-commit ' + PIN + ' --output-dir $IRIS_OUTPUT_DIR',
+        'diagnostic_limits': {'raw_bytes': 32 * 1024 * 1024, 'compressed_bytes': 8 * 1024 * 1024,
+            'max_wrapper_files': 16, 'runner_limits': config['output_limits']},
+        'existing_job_policy': 'EXISTING_JOB_POLICY_ERROR',
+        'no_submission_implementation': True, 'no_existence_or_capacity_queries': True}
+    command_path = Path(str(PREFIX) + '-command.json')
+    command_path.write_text(json.dumps(command, indent=2) + '\n')
+    template = Path('/private/tmp/native_jax_embedding_feature_view_request.template.py').read_text()
+    script = template.replace('COMMAND_SHA256_PLACEHOLDER', sha(command_path.read_bytes()))
+    Path('/private/tmp/native_jax_embedding_feature_view_request.py').write_text(script)
+    submit_template = Path('/private/tmp/submit_native_jax_embedding_feature_view_once.template.py').read_text()
+    Path('/private/tmp/submit_native_jax_embedding_feature_view_once.py').write_text(submit_template.replace('COMMAND_SHA256_PLACEHOLDER', sha(command_path.read_bytes())))
+    print(json.dumps({'status': command['status'], 'command_sha256': sha(command_path.read_bytes()),
+        'bootstrap_sha256': sha(bootstrap), 'launcher_bytes': len(launcher.encode()),
+        'offline_validator_sha256': sha(script.encode()), 'runner_sha256': EXPECTED['runner.py']}, sort_keys=True))
+
+
+if __name__ == '__main__':
+    main()

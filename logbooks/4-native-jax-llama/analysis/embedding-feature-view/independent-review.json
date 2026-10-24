@@ -1,0 +1,531 @@
+{
+  "schema": "native-jax-embedding-feature-view-independent-review.v1",
+  "status": "PASS_LOCAL_PREPARATION_NO_BLOCKING_FINDINGS_FOR_SEPARATELY_ARCHIVED_NAMED_TPU_CONTROL",
+  "reviewed_freeze": {
+    "path": "/private/tmp/native-jax-embedding-feature-view-preparation/final-freeze.json",
+    "sha256": "427b251727ec9668511d28a0722179c57f255d59a7164f5b3b1bbc4b126f5b89",
+    "bytes": 3639
+  },
+  "reviewed_manifest": {
+    "path": "/private/tmp/native-jax-embedding-feature-view-preparation/manifest.json",
+    "sha256": "4e49f903a3fccd8275e677f535dc27c259ea9a35017df7187c5c058fd61f176b",
+    "bytes": 3684
+  },
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "scope": "Fresh independent scientific preparation review; no generation review or production adoption. Frozen payloads and previous evidence read-only. One bounded fresh small-CPU rerun in a new reviewer output directory.",
+  "identity": {
+    "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+    "runner": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/runner.py",
+      "sha256": "b912e0ba24c1c994dd5410e254452eeb92237225ece0b32fd6601046b7dd8183",
+      "bytes": 18186
+    },
+    "config": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/config.json",
+      "sha256": "fc522040884dd3ed2ea9d7c5ee1827b481fe9ce5841a411bd1226ae8a9845554",
+      "bytes": 2776
+    },
+    "frozen_payload_count": 14,
+    "all_frozen_payload_hashes_and_sizes_verified": true,
+    "runtime_files": [
+      "runner.py",
+      "inherited_v2.py",
+      "inherited-config.json",
+      "config.json",
+      "manifest.json",
+      "design.md"
+    ],
+    "runtime_file_count": 6,
+    "inherited_runner": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/inherited_v2.py",
+      "sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+      "bytes": 27897
+    },
+    "inherited_config": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/inherited-config.json",
+      "sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+      "bytes": 1746
+    },
+    "inherited_helper_and_config_byte_exact_original_v2": true,
+    "all10_source_import_hashes_verified": true,
+    "runtime_identity": "Declared8aa and exact guarded source/import bytes; no-Git record honestly has git_metadata_available=false/runtime_git_commit=null. Does not claim runtime Git proof. Version/Python/XLA/LIBTPU/device family and process-count guards retained."
+  },
+  "scientific_legitimacy": {
+    "single_new_variant": "feature_view",
+    "ordinary_jax_vjp": true,
+    "feature_guard": {
+      "ast_sha256": "d5c200055ddd82053e49b5efc88ce1482e1eeba66b9ff760eeb2af3c1d04fee2",
+      "statement_count": 5
+    },
+    "cast_order": "Actual jmp FP32-master to BF16-compute cast occurs before explicit compute-view changes. No FP32 scatter/custom VJP inserted in this variant.",
+    "compute_view": "Weight P(model,data), tokens replicated P(None,None), public get out P(None,None,data), output reshard P(data,None,None). FP32 master gradient returns P(model,data).",
+    "unchanged_controls": [
+      "actual guarded legacy LlamaEmbedding.embed with norm=None",
+      "exact original three-statement native source fragment, explicitly not full activations/public native embed method",
+      "original FP32 scatter diagnostic, not acceptance oracle"
+    ],
+    "all_inherited_config_fields_unchanged": true,
+    "config_only_added_keys": [
+      "experiment_schema",
+      "feature_view_experiment"
+    ],
+    "fixture": "Same seed42/token generator44, single cotangent seed20261023 and BF16 unit-RMS quantization; no seed/fixture search observed. Small fixture/master/token/cotangent hashes and original control output hashes/comparison dictionaries exactly match v2. Main token fixture hash fixed to archived baseline; main arrays not executed in this review.",
+    "thresholds": {
+      "atol": 1e-05,
+      "rtol": 0.0001,
+      "unchanged": true
+    },
+    "input_embedding_norm": "Excluded from lookup-only control; independently checked original full-Trainer architecture input_embedding_norm=false.",
+    "primary_pair": "legacy_vs_feature_view is an explicitly new experiment target; original legacy/native rejection remains visible and unchanged, not relabeled as passing."
+  },
+  "physical_boundary": {
+    "input_specs": {
+      "master": [
+        "model",
+        "data"
+      ],
+      "tokens": [
+        "data",
+        null
+      ],
+      "cotangent": [
+        "data",
+        null,
+        null
+      ]
+    },
+    "output_specs": {
+      "bf16_forward": [
+        "data",
+        null,
+        null
+      ],
+      "fp32_master_gradient": [
+        "model",
+        "data"
+      ]
+    },
+    "actual_inputs_validated_before_execution": true,
+    "same_imported_bytes_verified_before_execution": true,
+    "all4_input_and_all_output_actual_records_match_except_uniform_Auto_Explicit_axis_types": true,
+    "checked_fields": [
+      "global shape/dtype/spec",
+      "mesh dimensions",
+      "ordered device identities",
+      "memory kind",
+      "global device/shard-index mapping",
+      "top-level device-local layout",
+      "addressable shard device/index/replica/shape/dtype/memory/local layout"
+    ],
+    "normalization_limit": "Only axis_types differ on this data2/model2 mesh; frozen helper also normalizes size-one mesh axes, but none exist here. Internal feature compute layout intentionally differs; common external boundaries remain identical.",
+    "enforcement": "Preexecution expected physical input boundary, pairwise actual input byte/physical checks, explicit JIT result shardings, dtype checks and complete actual legacy/native/feature output physical comparison. FP32 diagnostic actual output record also independently matches legacy gradient layout."
+  },
+  "cpu_evidence": {
+    "author_report": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/report.json",
+      "sha256": "893dd338f2d9177a5183b877b9d835d42ad1c6840c108a90470f0ff47b01aad4",
+      "bytes": 117083
+    },
+    "fresh_reviewer_report": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-independent-cpu-proof/report.json",
+      "sha256": "236fc4250eb8006048bb1b75f77158860a0e5f5d52d08cc7f7daf5812b8fde07",
+      "bytes": 117083
+    },
+    "fresh_reviewer_command": "PYTHONDONTWRITEBYTECODE=1 JAX_PLATFORMS=cpu XLA_FLAGS=\"--xla_force_host_platform_device_count=4 --xla_allow_excess_precision=false\" primary-read-only-.venv/bin/python -B frozen/runner.py --source-root no-git-source8aa --declared-source-commit8aa --config frozen/config.json --manifest frozen/manifest.json --mode cpu-mechanics --output-dir fresh-independent-cpu-proof",
+    "fresh_process_exit_code": 0,
+    "dimensions": {
+      "B": 4,
+      "D": 32,
+      "S": 8,
+      "V": 64
+    },
+    "fixture_all_output_hashes_and_all_comparisons_exact_author_report": true,
+    "feature_forward_and_fp32_master_gradient_byte_exact_legacy": true,
+    "original_native_vjp": {
+      "allclose": false,
+      "mismatch_count": 8,
+      "different_elements": 8,
+      "max_abs": 0.0078125,
+      "relative_l2": 0.0005118898582032608
+    },
+    "cpu_mechanics_passed": true,
+    "fresh_output_files": 9,
+    "fresh_output_bytes": 201811,
+    "hlo_line_hashes_checked": 247,
+    "static_conclusion": "Actual feature gradient root depends on gathered full-B4 token IDs and cotangent feature redistribution before a32x16 scatter with32 updates of16 features; result converts directly to FP32 storage, without a post-scatter data sum. Legacy has the same grouping. Original native retains16 updates of32 features into32x32 partials, post-scatter data reduction and feature slice.",
+    "dtype_limit": "CPU optimized scatter/add/reduction operations are F32 legalization with explicit BF16 round trips. StableHLO BF16 add/cast/view constraints support source semantics; this is not typed TPU grouping evidence.",
+    "actual_entrypoint_anchors": {
+      "feature_view": {
+        "file": {
+          "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/feature_view.optimized_hlo.txt",
+          "sha256": "3a24a1b26d7db7691e24552bcb0ff440218539b8c0ec407b11aecb6b3180e00f",
+          "bytes": 22634
+        },
+        "evidence": [
+          {
+            "line": 239,
+            "sha256": "8fe3c49a5d8d8b4e478479d987a4761dcad22632e879f99ce5177156eac7c825",
+            "text": "%region_0.0.clone.clone (scatter-add.8: f32[], scatter-add.9: f32[]) -> f32[] {"
+          },
+          {
+            "line": 242,
+            "sha256": "2c4d59e87eaeba72a69e43208dde90826e65c1acd4a7ef6cf351fa6f5b2ab49d",
+            "text": "  %convert.68 = bf16[] convert(%scatter-add.8)"
+          },
+          {
+            "line": 243,
+            "sha256": "f02faec5e3068e5ecbf4eaf557d70bb1915bffd2af70b67aecd2b2eae6439609",
+            "text": "  %convert.69 = bf16[] convert(%scatter-add.9)"
+          },
+          {
+            "line": 246,
+            "sha256": "f98a2ed4a836ea32753ddd515da2954a357464eefbb4c9f5fb956c21f04114e6",
+            "text": "  %add.14 = f32[] add(%convert.64, %convert.65), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/add\" stack_frame_id=22}"
+          },
+          {
+            "line": 247,
+            "sha256": "561690a9be29d8cfb9e73d46d4446a88e9bcfd3cc4653c70613373f05336773e",
+            "text": "  %convert.66 = bf16[] convert(%add.14)"
+          },
+          {
+            "line": 251,
+            "sha256": "ecaba48c4528ba83a2a51109ed23cda77f6599ec0a5af352ac49b415a7240768",
+            "text": "%wrapped_scatter_computation (param_0.47: f32[32,16], param_1.23: s32[32,1], param_2.21: f32[32,1,16]) -> f32[32,16] {"
+          },
+          {
+            "line": 255,
+            "sha256": "c3c044e2ed5ed92461d73cf44cd23bce81c71377109847675b3899ece5883881",
+            "text": "  ROOT %scatter.2 = f32[32,16]{1,0} scatter(%param_0.47, %param_1.23, %param_2.21), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}"
+          },
+          {
+            "line": 258,
+            "sha256": "6f36839c526ff31b29fc70ec69beca9fd58fdfc6f872b9a0f99a09049567b443",
+            "text": "ENTRY %main.0_spmd (param: f32[32,16], param.1: s32[2,8], param.2: bf16[2,8,32]) -> (bf16[2,8,32], f32[32,16]) {"
+          },
+          {
+            "line": 263,
+            "sha256": "8e9ef5690bd58735cc85ad40cd59dd2d5792b010ebdb174f8a6a4f920e63a224",
+            "text": "  %param.2 = bf16[2,8,32]{2,1,0} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}"
+          },
+          {
+            "line": 265,
+            "sha256": "ef6129486c624dacfdeb5fae625d414c6fa0889bdb26f53854a53a900e4c6fe9",
+            "text": "  %all-gather = s32[4,8]{1,0} all-gather(%param.1), channel_id=1, replica_groups=mesh['axis_0'=2,'axis_1'=1,'axis_2'=2] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"t\"}"
+          },
+          {
+            "line": 266,
+            "sha256": "371d61d13c627d96124b4d4b9fcae8698d1a2961d96629e41706985ab22e8f6f",
+            "text": "  %convert_convert_fusion.2 = f32[2,8,1,16]{3,2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.3"
+          },
+          {
+            "line": 267,
+            "sha256": "df790c498c545c2a7427c67a088b6433602f0426e42f2b3896ab2a8c90f48530",
+            "text": "  %convert_convert_fusion.1 = f32[2,8,1,16]{3,2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.2"
+          },
+          {
+            "line": 270,
+            "sha256": "a5c3df25c49d23f80afdd70aa127ca4f9f562b4fe65c60b377e01c15f1e02a85",
+            "text": "  %bitcast_copy_fusion.1 = s32[32,1]{1,0} fusion(%constant.6, %partition-id, %all-gather), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}"
+          },
+          {
+            "line": 271,
+            "sha256": "ec11eb179c3eeb79d6ef08cf34b616bf75df5c2226d7b267b3ecf5e2106eccec",
+            "text": "  %all-to-all.3 = (f32[2,8,1,16]{3,2,1,0}, f32[2,8,1,16]{3,2,1,0}) all-to-all(%convert_convert_fusion.2, %convert_convert_fusion.1), channel_id=8, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=12}"
+          },
+          {
+            "line": 276,
+            "sha256": "6ed1bd7ce2a70afc72b660162c6930c74cbc50dffd390ea22b0cf511ccada14e",
+            "text": "  %bitcast_copy_fusion = f32[32,1,16]{2,1,0} fusion(%get-tuple-element.7, %get-tuple-element.6), kind=kLoop, calls=%fused_computation.1"
+          },
+          {
+            "line": 279,
+            "sha256": "460f67fac418c809853270a3065a5175b4dd3c06959e22b59610911f09f4c311",
+            "text": "  %wrapped_scatter = f32[32,16]{1,0} fusion(%wrapped_broadcast, %bitcast_copy_fusion.1, %bitcast_copy_fusion), kind=kLoop, calls=%wrapped_scatter_computation, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}"
+          },
+          {
+            "line": 281,
+            "sha256": "a5f9b2554082f0e978713e6fb6bd8dd0882851868f8c7ee26afd1acfd388fe5c",
+            "text": "  %convert_convert_fusion = f32[32,16]{1,0} fusion(%wrapped_scatter), kind=kLoop, calls=%fused_computation, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}"
+          },
+          {
+            "line": 285,
+            "sha256": "c44b331ded1bcc46b3b041d9b41cfb009441961d9e3d104acb091dfa8bed5fc2",
+            "text": "  ROOT %tuple.2 = (bf16[2,8,32]{2,1,0}, f32[32,16]{1,0}) tuple(%copy_bitcast_fusion, %convert_convert_fusion)"
+          }
+        ]
+      },
+      "native": {
+        "file": {
+          "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/native.optimized_hlo.txt",
+          "sha256": "e2379b80384aec5243bb501e0b43a45eb46c187c721f92fd85c3e9338e59eeb6",
+          "bytes": 19172
+        },
+        "evidence": [
+          {
+            "line": 218,
+            "sha256": "e4295cdad0d2e91e44d09d610c48a153b430bd1a4805a8f5581caaff8c8a7f23",
+            "text": "%wrapped_scatter_computation (param_0.30: f32[32,32], param_1.15: s32[16,1], param_2.19: f32[16,1,32]) -> f32[32,32] {"
+          },
+          {
+            "line": 222,
+            "sha256": "dd1c67c2a75f879d064855e25dec5284e9ccfaacb8254fcc315408cc4d57b0ae",
+            "text": "  ROOT %scatter.2 = f32[32,32]{1,0} scatter(%param_0.30, %param_1.15, %param_2.19), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}"
+          },
+          {
+            "line": 230,
+            "sha256": "6f36839c526ff31b29fc70ec69beca9fd58fdfc6f872b9a0f99a09049567b443",
+            "text": "ENTRY %main.0_spmd (param: f32[32,16], param.1: s32[2,8], param.2: bf16[2,8,32]) -> (bf16[2,8,32], f32[32,16]) {"
+          },
+          {
+            "line": 235,
+            "sha256": "8e9ef5690bd58735cc85ad40cd59dd2d5792b010ebdb174f8a6a4f920e63a224",
+            "text": "  %param.2 = bf16[2,8,32]{2,1,0} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}"
+          },
+          {
+            "line": 240,
+            "sha256": "25d65cc011e1a5251773de3afffc204ad89fded97abf72fef5ad21d861365be0",
+            "text": "  %bitcast_copy_fusion = f32[16,1,32]{2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.2"
+          },
+          {
+            "line": 245,
+            "sha256": "8f3842bc1f0140f49be2512521e125f4a0ff51734b2e1f740a1b806eb917b4c7",
+            "text": "  %wrapped_scatter = f32[32,32]{1,0} fusion(%bitcast_broadcast_fusion, %bitcast_copy_fusion.1, %bitcast_copy_fusion), kind=kLoop, calls=%wrapped_scatter_computation, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}"
+          },
+          {
+            "line": 247,
+            "sha256": "7899080a1b5be026e174fe507008ed5b145e1e06a5cbdb718fc774c608f16ff6",
+            "text": "  %convert_convert_fusion.1 = f32[32,32]{1,0} fusion(%wrapped_scatter), kind=kLoop, calls=%fused_computation.1"
+          },
+          {
+            "line": 249,
+            "sha256": "8c908c4c1737edbac247c1e86db2c67b145042e410c8169d70ce4d2f71d195be",
+            "text": "  %all-reduce.3 = f32[32,32]{1,0} all-reduce(%convert_convert_fusion.1), channel_id=11, replica_groups=[2,2]<=[2,2]T(1,0), use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone_promoted, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}"
+          },
+          {
+            "line": 250,
+            "sha256": "db2623ec7aa02d692311f2e29f108cc5ccc9a7316880134a29877f252e4c51fa",
+            "text": "  %wrapped_convert.1 = bf16[32,32]{1,0} fusion(%all-reduce.3), kind=kLoop, calls=%wrapped_convert_computation.1, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}"
+          },
+          {
+            "line": 251,
+            "sha256": "b317c875086bfcb2a8aeca66a8d6d7119aa19cecbc1e78457d57cfd63bb13af7",
+            "text": "  %convert_convert_fusion = f32[32,16]{1,0} fusion(%constant.34, %partition-id, %wrapped_convert.1), kind=kLoop, calls=%fused_computation, metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}"
+          },
+          {
+            "line": 252,
+            "sha256": "ce0fc9d6bff0efcaf1cbb6225fb5bc845b855f91c4d6e8a44357d727eea15146",
+            "text": "  ROOT %tuple.2 = (bf16[2,8,32]{2,1,0}, f32[32,16]{1,0}) tuple(%wrapped_convert, %convert_convert_fusion)"
+          }
+        ]
+      },
+      "legacy": {
+        "file": {
+          "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/legacy.optimized_hlo.txt",
+          "sha256": "294f9519bc79cc07128af9ac475972da8edcb5c35e42bb24d99d978c93c74aef",
+          "bytes": 24085
+        },
+        "evidence": [
+          {
+            "line": 249,
+            "sha256": "499d9217d16dd6653add5725709c8062ee034a8711e0b14eb316903adacad094",
+            "text": "  ROOT %scatter.2 = f32[32,16]{1,0} scatter(%param_0.48, %param_1.26, %param_2.22), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}"
+          },
+          {
+            "line": 252,
+            "sha256": "6f36839c526ff31b29fc70ec69beca9fd58fdfc6f872b9a0f99a09049567b443",
+            "text": "ENTRY %main.0_spmd (param: f32[32,16], param.1: s32[2,8], param.2: bf16[2,8,32]) -> (bf16[2,8,32], f32[32,16]) {"
+          },
+          {
+            "line": 257,
+            "sha256": "8e9ef5690bd58735cc85ad40cd59dd2d5792b010ebdb174f8a6a4f920e63a224",
+            "text": "  %param.2 = bf16[2,8,32]{2,1,0} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}"
+          },
+          {
+            "line": 264,
+            "sha256": "71a6240aa26bcde29762cceec18d1c5d8b7a06185147972dde1e8e0c73f1fba3",
+            "text": "  %all-to-all.3 = (f32[2,8,1,16]{3,2,1,0}, f32[2,8,1,16]{3,2,1,0}) all-to-all(%convert_convert_fusion.2, %convert_convert_fusion.1), channel_id=31, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}"
+          },
+          {
+            "line": 265,
+            "sha256": "af11d2b5894c5d0293fe8aea72b5c9d11d5241bbffdb78d621201c3c32a03c17",
+            "text": "  %all-gather = s32[4,8,1]{2,1,0} all-gather(%collective-permute), channel_id=16, replica_groups=[2,2]<=[4], dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/broadcast_in_dim\" stack_frame_id=16}"
+          },
+          {
+            "line": 269,
+            "sha256": "db57022aab8ec3fd1c495dde38d9010f498d1c227b8c6de6fe692c1957798c55",
+            "text": "  %subtract_bitcast_fusion = s32[32,1]{1,0} fusion(%all-gather, %constant.6, %partition-id), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}"
+          },
+          {
+            "line": 270,
+            "sha256": "6ed1bd7ce2a70afc72b660162c6930c74cbc50dffd390ea22b0cf511ccada14e",
+            "text": "  %bitcast_copy_fusion = f32[32,1,16]{2,1,0} fusion(%get-tuple-element.7, %get-tuple-element.6), kind=kLoop, calls=%fused_computation.1"
+          },
+          {
+            "line": 272,
+            "sha256": "a14468a97445d553a0562bbc8e5099f5e205d2a3c733ecb718c5f56a0f9317c7",
+            "text": "  %wrapped_scatter = f32[32,16]{1,0} fusion(%wrapped_broadcast, %subtract_bitcast_fusion, %bitcast_copy_fusion), kind=kLoop, calls=%wrapped_scatter_computation, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}"
+          },
+          {
+            "line": 274,
+            "sha256": "2b4d81deee278ca028d993279fee122bdff6a7ef405db6a720b13fbe5dfbf758",
+            "text": "  %convert_convert_fusion = f32[32,16]{1,0} fusion(%wrapped_scatter), kind=kLoop, calls=%fused_computation, metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}"
+          },
+          {
+            "line": 281,
+            "sha256": "c44b331ded1bcc46b3b041d9b41cfb009441961d9e3d104acb091dfa8bed5fc2",
+            "text": "  ROOT %tuple.2 = (bf16[2,8,32]{2,1,0}, f32[32,16]{1,0}) tuple(%copy_bitcast_fusion, %convert_convert_fusion)"
+          }
+        ]
+      },
+      "stablehlo_feature_view": {
+        "file": {
+          "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/feature_view.stablehlo.txt",
+          "sha256": "685c5304052a18ee1c0f7ea26681fa850803aa7161cc7792c537c88476cf8ee0",
+          "bytes": 3294
+        },
+        "evidence": [
+          {
+            "line": 4,
+            "sha256": "9a358099a8072aee5b15eabf6d0f50d9d5289e91e38d6e42e4efc2b6480f5836",
+            "text": "    %0 = stablehlo.convert %arg0 : (tensor<64x32xf32>) -> tensor<64x32xbf16>"
+          },
+          {
+            "line": 5,
+            "sha256": "7e288e5d9fff03bfc9425c6d980094a108f7331a055dbb1ea10ef4d5bbd1b597",
+            "text": "    %1 = sdy.sharding_constraint %0 <@mesh, [{\"model\"}, {\"data\"}]> : tensor<64x32xbf16>"
+          },
+          {
+            "line": 7,
+            "sha256": "fe143517398f7a7dfa814d01ed6fdec4cc5a653635c4227eadaebf1bb7cfbea4",
+            "text": "    %3 = sdy.sharding_constraint %arg1 <@mesh, [{}, {}]> : tensor<4x8xi32>"
+          },
+          {
+            "line": 17,
+            "sha256": "34a82dc6e4fcd4151dc1f48f91946f8f75b70de58080eb315684cd79ffbb60c4",
+            "text": "    %11 = sdy.sharding_constraint %10 <@mesh, [{}, {}, {\"data\"}]> : tensor<4x8x32xbf16>"
+          },
+          {
+            "line": 18,
+            "sha256": "4df6cbcefb82c949afe02376b38dd717c973b2c4df5b1b9628a83daab37904fd",
+            "text": "    %12 = sdy.sharding_constraint %11 <@mesh, [{\"data\"}, {}, {}]> : tensor<4x8x32xbf16>"
+          },
+          {
+            "line": 19,
+            "sha256": "1e5e88b151007b516e269be7da69779ff7694a31ca57ccb7286b1aef25b26a73",
+            "text": "    %13 = sdy.sharding_constraint %arg2 <@mesh, [{}, {}, {\"data\"}]> : tensor<4x8x32xbf16>"
+          },
+          {
+            "line": 22,
+            "sha256": "c9106b8c42352954d1f257be54873f46f882f06a81316c0c7df6bbcd5bad9a89",
+            "text": "    %15 = \"stablehlo.scatter\"(%14, %9, %13) <{indices_are_sorted = false, scatter_dimension_numbers = #stablehlo.scatter<update_window_dims = [2], inserted_window_dims = [0], scatter_dims_to_operand_dims = [0], index_vector_dim = 2>, unique_indices = false}> ({"
+          },
+          {
+            "line": 24,
+            "sha256": "3795db6719ea55710752a91e77d0f5d3534456fd8122726e6e1b048b14bf211a",
+            "text": "      %20 = stablehlo.add %arg3, %arg4 : tensor<bf16>"
+          }
+        ]
+      }
+    }
+  },
+  "large_abstract_and_proposed_scope": {
+    "dimensions": {
+      "B": 8,
+      "D": 2048,
+      "S": 2048,
+      "V": 65536
+    },
+    "all4_variants_shape_dtype_abstract_outputs_verified": true,
+    "feature_native_forward_spec": [
+      "data",
+      null,
+      null
+    ],
+    "feature_native_gradient_spec": [
+      "model",
+      "data"
+    ],
+    "Auto_physical_output_inference": "Deferred to actual compiled execution; legacy abstract output sharding None is reported honestly.",
+    "no_large_array_lower_compile_execute": true,
+    "proposed_tpu": "Only one separately named main-shape control on one process/four ordered global=local v5p-family devices, data2/model2, exact inherited TPU Python3.12.15/runtime/XLA/LIBTPU flags. No launch in this review.",
+    "future_interpretation_gate": "Retain complete actual TPU HLO; independently trace actual gradient entry root and scatter reducer, cotangent redistribution, scatter update/group shape and presence/absence of post-scatter data sum. Numeric parity alone is not proof of the proposed typed grouping."
+  },
+  "failure_retention_and_caps": {
+    "nonfinite_receipt": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-mechanical-proofs/nonfinite/report.json",
+      "sha256": "c7ba8d12bbe91052bac784b9cb532078092d116fbe5835789fa0c352f54d6122",
+      "bytes": 3910
+    },
+    "wrong_actual_master_placement_receipt": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-mechanical-proofs/wrong-input/report.json",
+      "sha256": "f0708492eacfba1a0f474acd57ea3f96ce143d487f2566e05d425627ad929885",
+      "bytes": 21531
+    },
+    "mechanical_receipts_checked": "Distinct injected mechanics outside scientific fixture. Both preserve comparison_valid=false/numerical_exit_code1, partial/comparisons_completed=false and no comparisons; nonfinite counts1NaN/1+Inf/1-Inf. Actual replicated master is rejected before scientific execution.",
+    "AST_guard_probe": "Wrong saved feature AST hash rejects before scientific output directory creation, not evidence of altered scientific result.",
+    "known_runtime_verification_failures": "Input byte/physical, result dtype/physical and HLO-cap paths retain bounded invalid partial JSON and exit1. Preflight source/runtime/AST rejection fails before scientific output; no generic exception swallowing. Finite target mismatch retains complete outputs/HLO and TPU exits1. CPU mechanical exit is deliberately separate from target parity observation.",
+    "no_completed_true": true,
+    "limits": {
+      "files": 10,
+      "hlo_file_bytes": 2097152,
+      "hlo_total_bytes": 12582912,
+      "json_bytes": 262144,
+      "total_bytes": 13631488,
+      "truncation_allowed": false
+    },
+    "all8_complete_author_HLO_hashes_and_sizes_verified": true,
+    "truncation": false,
+    "files": "Expected8 HLO plus1 JSON, no arrays/checkpoints/profiles/timings."
+  },
+  "forward_payload_estimate_review": {
+    "formulas_recomputed": true,
+    "BF16_two_way_per_device": {
+      "avoided_native_weight_all_gather_receive": 67108864,
+      "added_token_replication_receive": 32768,
+      "added_activation_reshard_receive": 16777216,
+      "unchanged_model_reduction_logical_buffer": 33554432
+    },
+    "limit": "Correct shape-derived two-way logical payload estimates only; actual traffic, scheduling, backward cost and latency unmeasured. No speed ratio inferred."
+  },
+  "evidence_limits": [
+    "No feature-view TPU execution or typed TPU HLO yet. Prior archivedf560 original legacy/native control remains a numerical rejection and typed grouping reproduction, not a feature-view result.",
+    "Single synthetic common cotangent and deterministic synthetic table; unavailable original full-model cotangent/diagnostic HLO preclude attribution to original full-Trainer failure.",
+    "Lookup-only changed compute view is an experiment, not a production patch or adopted native runtime behavior.",
+    "Full-Trainer acceptance=false, speed_ratio=null. CPU exact parity and large abstract tracing do not change these gates.",
+    "Archive exact payload/config/review before any separately authorized named TPU control; this review is not hardware launch authorization."
+  ],
+  "supporting_records": [
+    {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/cpu-dataflow-evidence.json",
+      "sha256": "185a07e7fa2ec48982692d4f322d0dcc08896b62a822bc8b698344bed3d97fae",
+      "bytes": 87413
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/large-abstract-proof.json",
+      "sha256": "e71336701849a73f39f26dc68baeca075c7429825280665bd5b5c4b4d5f35315",
+      "bytes": 2953
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/mechanical-probe-proof.json",
+      "sha256": "eeceee2e86d7770fbdb231306ffd1495dc0373cd318e7372c3883875159cc5db",
+      "bytes": 6024
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/forward-payload.json",
+      "sha256": "0f7f5c2540b76b093728c5cd8d5d9380c35331f8ce5b9f866269a86898643c22",
+      "bytes": 1084
+    },
+    {
+      "path": "/private/tmp/native-jax-embedding-feature-view-preparation/inherited-provenance.json",
+      "sha256": "8571531ae4218ca3074f6defeac99687e62be36de7f2f191578f4bb3ccccb92d",
+      "bytes": 1859
+    }
+  ],
+  "boundaries": {
+    "frozen_inputs_modified": false,
+    "original_v1_v2_or_TPU_evidence_modified": false,
+    "production_or_generation_source_modified": false,
+    "hardware_jobs_network_archive_push_catalog": false
+  }
+}

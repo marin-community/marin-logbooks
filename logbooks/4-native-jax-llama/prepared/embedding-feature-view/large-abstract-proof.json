@@ -1,0 +1,90 @@
+{
+  "schema": "embedding-feature-view-large-abstract-proof.v1",
+  "extracted_from_actual_small_cpu_report": "/private/tmp/native-jax-embedding-feature-view-cpu-results/report.json",
+  "report_sha256": "893dd338f2d9177a5183b877b9d835d42ad1c6840c108a90470f0ff47b01aad4",
+  "runner_sha256": "b912e0ba24c1c994dd5410e254452eeb92237225ece0b32fd6601046b7dd8183",
+  "inherited_helper_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+  "config_sha256": "fc522040884dd3ed2ea9d7c5ee1827b481fe9ce5841a411bd1226ae8a9845554",
+  "large_abstract": {
+    "backend": "cpu",
+    "dimensions": {
+      "B": 8,
+      "D": 2048,
+      "S": 2048,
+      "V": 65536
+    },
+    "limitation": "Abstract tracing only; no large execution, compiler grouping, physical output placement or numerical evidence",
+    "no_large_array_allocated": true,
+    "no_large_lower_compile_execute": true,
+    "outputs": {
+      "feature_view": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('data', None, None))"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('model', 'data'))"
+        }
+      ],
+      "fp32_scatter": [
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('model', 'data'))"
+        }
+      ],
+      "legacy": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "None"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "None"
+        }
+      ],
+      "native": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('data', None, None))"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('model', 'data'))"
+        }
+      ]
+    }
+  },
+  "no_separate_large_execution": true
+}

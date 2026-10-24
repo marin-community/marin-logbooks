@@ -1,0 +1,113 @@
+"""Pure local transport/archive mechanics; never run the scientific diagnostic."""
+import ast
+import base64
+import builtins
+import hashlib
+import importlib.util
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tarfile
+import zlib
+
+root = Path('/private/tmp/native-jax-embedding-feature-view-wrapper-env-centralized-proof')
+root.mkdir(exist_ok=False)
+command = json.loads(Path('/private/tmp/native-jax-embedding-feature-view-command.json').read_text())
+launcher = command['entrypoint_argv'][-1]
+assert hashlib.sha256(launcher.encode()).hexdigest() == command['launcher_sha256']
+called = []
+namespace = {'__name__': 'transport_validation', 'exec': lambda code: called.append(code)}
+old_argv = sys.argv[:]
+try:
+    builtins.exec(compile(launcher, 'frozen-launcher', 'exec'), namespace)
+    assert len(called) == 1
+    assert namespace['code'] == Path(command['bootstrap']).read_bytes()
+    request = json.loads(sys.argv[1])
+finally:
+    sys.argv = old_argv
+payload = json.loads(zlib.decompress(base64.b64decode(request['payload_b64'])))
+for name, record in command['payload_files'].items():
+    assert payload[name].encode() == Path(record['path']).read_bytes()
+assert request['payload_sha256'] == command['payload_sha256']
+spec = importlib.util.spec_from_file_location('embedding_bootstrap', command['bootstrap'])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+original_run = module.subprocess.run
+old_output = os.environ.get('IRIS_OUTPUT_DIR')
+records = []
+for label in ['success', 'real_CPU_fixture', 'numerical_failure', 'backup_failure', 'raw_cap', 'compressed_cap']:
+    output = root / label
+    output.mkdir()
+    uploads = []
+    archives = []
+    expected_return = 2 if label == 'numerical_failure' else 0
+    def simulated_run(argv, **kwargs):
+        if argv[1:3] == ['-m', 'rigging.fsutil.cli']:
+            uploads.append(argv[:])
+            assert argv[3:5] == ['cp', '-n']
+            archive = Path(argv[5])
+            assert archive.stat().st_size <= 8 * 1024 * 1024
+            with tarfile.open(archive) as tar:
+                members = tar.getmembers()
+                assert all(m.isfile() and not m.name.startswith('/') and '..' not in Path(m.name).parts for m in members)
+                for member in members:
+                    assert tar.extractfile(member).read() == (output / member.name).read_bytes()
+                archives.append({'entries': len(members), 'compressed_bytes': archive.stat().st_size,
+                    'archive_members_byte_exact': True})
+            return subprocess.CompletedProcess(argv, 37 if label == 'backup_failure' else 0)
+        assert {key: kwargs['env'][key] for key in command['scientific_environment']} == command['scientific_environment']
+        assert '--mode' in argv and argv[argv.index('--mode') + 1] == 'tpu'
+        assert argv[argv.index('--declared-source-commit') + 1] == command['source_pin']
+        for name, text in payload.items():
+            assert (Path(argv[1]).parent / name).read_bytes() == text.encode()
+        if label == 'real_CPU_fixture':
+            for source in Path('/private/tmp/native-jax-embedding-feature-view-cpu-results').iterdir():
+                assert source.is_file() and source.suffix in {'.json', '.txt'}
+                (output / source.name).write_bytes(source.read_bytes())
+            return subprocess.CompletedProcess(argv, 0)
+        (output / 'control.json').write_text(json.dumps({'mechanical_fixture': True, 'comparison_valid': label != 'numerical_failure'}))
+        hlo = output / 'native.optimized_hlo.txt'
+        if label == 'raw_cap':
+            with hlo.open('wb') as stream:
+                stream.truncate(32 * 1024 * 1024 + 1)
+        elif label == 'compressed_cap':
+            hlo.write_bytes(base64.b64encode(os.urandom(9 * 1024 * 1024)))
+        else:
+            hlo.write_text('HloModule mechanical_fixture\n')
+        return subprocess.CompletedProcess(argv, expected_return)
+    module.subprocess.run = simulated_run
+    os.environ['IRIS_OUTPUT_DIR'] = str(output)
+    os.environ.update(command['scientific_environment'])
+    sys.argv = [command['bootstrap'], json.dumps(request)]
+    try:
+        module.main()
+        raise AssertionError('Expected SystemExit or cap rejection')
+    except SystemExit as exc:
+        assert label in {'success', 'real_CPU_fixture', 'numerical_failure', 'backup_failure'}
+        assert exc.code == (0 if label in {'success', 'real_CPU_fixture'} else 1)
+        assert len(uploads) == 1
+        result = {'mode': label, 'wrapper_exit': exc.code, 'uploads_intercepted_not_executed': len(uploads), 'archive': archives[0]}
+    except ValueError as exc:
+        assert label in {'raw_cap', 'compressed_cap'}
+        assert not uploads
+        assert (output / 'wrapper-outcomes.json').is_file()
+        assert (output / 'native.optimized_hlo.txt').is_file()
+        result = {'mode': label, 'cap_rejected': True, 'exception': str(exc),
+            'uploads_intercepted_not_executed': 0, 'partial_outputs_preserved_locally': True}
+    records.append(result)
+module.subprocess.run = original_run
+sys.argv = old_argv
+if old_output is None:
+    os.environ.pop('IRIS_OUTPUT_DIR', None)
+else:
+    os.environ['IRIS_OUTPUT_DIR'] = old_output
+proof = {'scope': 'Local stdlib/mechanical fixtures only; scientific runner and fsutil/upload never executed',
+    'bootstrap_sha256': command['bootstrap_sha256'], 'launcher_sha256': command['launcher_sha256'],
+    'embedded_bootstrap_exact': True, 'all_six_embedded_scientific_files_exact': True,
+    'compute_has_explicit_declared_source_pin': True, 'exact_frozen_environment_reaches_compute_child': True, 'parent_has_no_JAX_import': 'jax' not in sys.modules,
+    'raw_cap_bytes': 32 * 1024 * 1024, 'compressed_cap_bytes': 8 * 1024 * 1024,
+    'cases': records, 'hardware_executed': False, 'network_or_object_storage_operation': False}
+Path('/private/tmp/native-jax-embedding-feature-view-transport-proof.json').write_text(json.dumps(proof, indent=2) + '\n')
+print(json.dumps(proof, sort_keys=True))

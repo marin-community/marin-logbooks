@@ -1,0 +1,1904 @@
+{
+  "schema": "embedding-feature-view-cpu-dataflow.v1",
+  "scope": "Actual small four-CPU optimized-HLO entrypoint gradient traces and StableHLO dtype/view boundaries; not TPU execution/order or full-model attribution.",
+  "parser_reused": "/private/tmp/audit_native_jax_graph_context_optimized_tail.py",
+  "parser_sha256": "d687a82c6c8b78531b9a76270f66ced9365a12bb2e5dac1f231015d2eb284cec",
+  "records": {
+    "legacy": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/legacy.optimized_hlo.txt",
+      "sha256": "294f9519bc79cc07128af9ac475972da8edcb5c35e42bb24d99d978c93c74aef",
+      "entry": "main.0_spmd",
+      "actual_gradient_root": "%convert_convert_fusion",
+      "gradient_depends_on_master_weight_values": false,
+      "gradient_collectives": {
+        "%collective-permute": {
+          "shape": "s32[2,8,1]",
+          "op": "collective-permute",
+          "args": "%select_bitcast_fusion",
+          "attrs": ", channel_id=11, source_target_pairs={{0,0},{1,2},{2,1},{3,3}}",
+          "line": 263
+        },
+        "%all-to-all.3": {
+          "shape": "(f32[2,8,1,16], f32[2,8,1,16])",
+          "op": "all-to-all",
+          "args": "%convert_convert_fusion.2, %convert_convert_fusion.1",
+          "attrs": ", channel_id=31, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}",
+          "line": 264
+        },
+        "%all-gather": {
+          "shape": "s32[4,8,1]",
+          "op": "all-gather",
+          "args": "%collective-permute",
+          "attrs": ", channel_id=16, replica_groups=[2,2]<=[4], dimensions={0}, use_global_device_ids=true",
+          "line": 265
+        }
+      },
+      "gradient_entry_nodes": {
+        "%partition-id": {
+          "shape": "u32[]",
+          "op": "partition-id",
+          "args": "",
+          "attrs": "",
+          "line": 253
+        },
+        "%param.1": {
+          "shape": "s32[2,8]",
+          "op": "parameter",
+          "args": "1",
+          "attrs": ", sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}",
+          "line": 255
+        },
+        "%constant.6": {
+          "shape": "u32[4]",
+          "op": "constant",
+          "args": "{0, 1, 0, 1}",
+          "attrs": "",
+          "line": 256
+        },
+        "%param.2": {
+          "shape": "bf16[2,8,32]",
+          "op": "parameter",
+          "args": "2",
+          "attrs": ", sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}",
+          "line": 257
+        },
+        "%constant.60": {
+          "shape": "f32[]",
+          "op": "constant",
+          "args": "0",
+          "attrs": "",
+          "line": 258
+        },
+        "%select_bitcast_fusion": {
+          "shape": "s32[2,8,1]",
+          "op": "fusion",
+          "args": "%param.1",
+          "attrs": ", kind=kLoop, calls=%fused_computation.9",
+          "line": 259
+        },
+        "%convert_convert_fusion.2": {
+          "shape": "f32[2,8,1,16]",
+          "op": "fusion",
+          "args": "%param.2",
+          "attrs": ", kind=kLoop, calls=%fused_computation.3",
+          "line": 260
+        },
+        "%convert_convert_fusion.1": {
+          "shape": "f32[2,8,1,16]",
+          "op": "fusion",
+          "args": "%param.2",
+          "attrs": ", kind=kLoop, calls=%fused_computation.2",
+          "line": 261
+        },
+        "%wrapped_broadcast": {
+          "shape": "f32[32,16]",
+          "op": "fusion",
+          "args": "%constant.60",
+          "attrs": ", kind=kLoop, calls=%wrapped_broadcast_computation",
+          "line": 262
+        },
+        "%collective-permute": {
+          "shape": "s32[2,8,1]",
+          "op": "collective-permute",
+          "args": "%select_bitcast_fusion",
+          "attrs": ", channel_id=11, source_target_pairs={{0,0},{1,2},{2,1},{3,3}}",
+          "line": 263
+        },
+        "%all-to-all.3": {
+          "shape": "(f32[2,8,1,16], f32[2,8,1,16])",
+          "op": "all-to-all",
+          "args": "%convert_convert_fusion.2, %convert_convert_fusion.1",
+          "attrs": ", channel_id=31, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}",
+          "line": 264
+        },
+        "%all-gather": {
+          "shape": "s32[4,8,1]",
+          "op": "all-gather",
+          "args": "%collective-permute",
+          "attrs": ", channel_id=16, replica_groups=[2,2]<=[4], dimensions={0}, use_global_device_ids=true",
+          "line": 265
+        },
+        "%get-tuple-element.7": {
+          "shape": "f32[2,8,1,16]",
+          "op": "get-tuple-element",
+          "args": "%all-to-all.3",
+          "attrs": ", index=1",
+          "line": 266
+        },
+        "%get-tuple-element.6": {
+          "shape": "f32[2,8,1,16]",
+          "op": "get-tuple-element",
+          "args": "%all-to-all.3",
+          "attrs": ", index=0",
+          "line": 267
+        },
+        "%subtract_bitcast_fusion": {
+          "shape": "s32[32,1]",
+          "op": "fusion",
+          "args": "%all-gather, %constant.6, %partition-id",
+          "attrs": ", kind=kLoop, calls=%fused_computation.4",
+          "line": 269
+        },
+        "%bitcast_copy_fusion": {
+          "shape": "f32[32,1,16]",
+          "op": "fusion",
+          "args": "%get-tuple-element.7, %get-tuple-element.6",
+          "attrs": ", kind=kLoop, calls=%fused_computation.1",
+          "line": 270
+        },
+        "%wrapped_scatter": {
+          "shape": "f32[32,16]",
+          "op": "fusion",
+          "args": "%wrapped_broadcast, %subtract_bitcast_fusion, %bitcast_copy_fusion",
+          "attrs": ", kind=kLoop, calls=%wrapped_scatter_computation",
+          "line": 272
+        },
+        "%convert_convert_fusion": {
+          "shape": "f32[32,16]",
+          "op": "fusion",
+          "args": "%wrapped_scatter",
+          "attrs": ", kind=kLoop, calls=%fused_computation",
+          "line": 274
+        }
+      },
+      "reachable_fusion_reducers": [
+        "fused_computation",
+        "fused_computation.1",
+        "fused_computation.2",
+        "fused_computation.3",
+        "fused_computation.4",
+        "fused_computation.9",
+        "region_0.0.clone.clone",
+        "wrapped_broadcast_computation",
+        "wrapped_scatter_computation"
+      ],
+      "evidence": [
+        {
+          "line": 81,
+          "text": "  %param_0.1 = f32[32,16]{1,0} parameter(0)",
+          "full_line_sha256": "63fe32e43aa271a8ac6689fcffc2edaef2c86fa2aa15296963a77956d66849b6"
+        },
+        {
+          "line": 82,
+          "text": "  %convert.86 = bf16[32,16]{1,0} convert(%param_0.1)",
+          "full_line_sha256": "9264bd2deb328ccb82e9038e65fd41b57d60fb4a1a5b19a3740d1bc8e576fb27"
+        },
+        {
+          "line": 83,
+          "text": "  ROOT %convert_element_type.7 = f32[32,16]{1,0} convert(%convert.86), metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}",
+          "full_line_sha256": "9d7a41e0f53d52924b496420e914ef045921a43ecd5a230f43a7803e73336fec"
+        },
+        {
+          "line": 87,
+          "text": "  %param_1.4 = f32[2,8,1,16]{3,2,1,0} parameter(1)",
+          "full_line_sha256": "dd45d9aa23d3fcb5d82d89629c130512d60d760df8f1275d246aa0113b1d8c7f"
+        },
+        {
+          "line": 88,
+          "text": "  %convert.92 = bf16[2,8,1,16]{3,2,1,0} convert(%param_1.4)",
+          "full_line_sha256": "d6a6c00241477d06e4fc4ce79ae5b445ec66226ccb0612afa0f1467e3607fc7d"
+        },
+        {
+          "line": 89,
+          "text": "  %convert.91 = f32[2,8,1,16]{3,2,1,0} convert(%convert.92)",
+          "full_line_sha256": "014453f8e276713eb41879cab61bde644b5dfe683a4a3592b78d37cd3dad7794"
+        },
+        {
+          "line": 90,
+          "text": "  %param_0.9 = f32[2,8,1,16]{3,2,1,0} parameter(0)",
+          "full_line_sha256": "a973548fdff1097800d4fd8ed8fa4d1f932335948d466fc73e6d51ab84c272b6"
+        },
+        {
+          "line": 91,
+          "text": "  %convert.90 = bf16[2,8,1,16]{3,2,1,0} convert(%param_0.9)",
+          "full_line_sha256": "7029e834b5d9b7e2457d0d974db5a7d1a0b4daf94e28e06df568354ae0322ba0"
+        },
+        {
+          "line": 92,
+          "text": "  %convert.89 = f32[2,8,1,16]{3,2,1,0} convert(%convert.90)",
+          "full_line_sha256": "71203950c4fac8fd444d853da8589d7b9de8772c1e25c6e73a505c0dad9a1fa9"
+        },
+        {
+          "line": 93,
+          "text": "  %concatenate.2 = f32[2,8,2,16]{3,2,1,0} concatenate(%convert.91, %convert.89), dimensions={2}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "bb6e18e392803053fd949c30d5dbe5f634bf4b4883d3fc4874bc245f3e5d462e"
+        },
+        {
+          "line": 94,
+          "text": "  %convert.88 = bf16[2,8,2,16]{3,2,1,0} convert(%concatenate.2)",
+          "full_line_sha256": "b1b7f5118e62a156784bd71327c6baa742f525a3c8321908dabdab55bef2ddcf"
+        },
+        {
+          "line": 95,
+          "text": "  %convert.87 = f32[2,8,2,16]{3,2,1,0} convert(%convert.88)",
+          "full_line_sha256": "e0273259c5c770caf4bd4f3aa7fc4593ba2f175b071424eb61235e459463214c"
+        },
+        {
+          "line": 96,
+          "text": "  %transpose.11 = f32[2,2,8,16]{3,0,2,1} transpose(%convert.87), dimensions={2,0,1,3}",
+          "full_line_sha256": "8d01ee4692230034e8e92f9750a2a6230a883403923cba356d7c3aa7b44f2425"
+        },
+        {
+          "line": 97,
+          "text": "  %copy.4 = f32[2,2,8,16]{3,2,1,0} copy(%transpose.11)",
+          "full_line_sha256": "c6771323418e61dff76e5fe1f1a1a8829f6fff714489721506256238db2ff94d"
+        },
+        {
+          "line": 98,
+          "text": "  %bitcast.11 = f32[32,1,16]{2,0,1} bitcast(%copy.4)",
+          "full_line_sha256": "e3d8a47fd3cbe6f7283cc2b96d829dd29f8ccf5ff8596661ce50f231320a6e4c"
+        },
+        {
+          "line": 99,
+          "text": "  ROOT %copy.3 = f32[32,1,16]{2,1,0} copy(%bitcast.11)",
+          "full_line_sha256": "beffdf65190d4c0bcc5d4e748db949cf10a9a9740e27528b346ca86064121ed6"
+        },
+        {
+          "line": 103,
+          "text": "  %param_0.14 = bf16[2,8,32]{2,1,0} parameter(0)",
+          "full_line_sha256": "c64aa65ee7bc8b1069fb5d6941017c1e97fed7581a25448dc33f9fafb066b0e7"
+        },
+        {
+          "line": 104,
+          "text": "  %convert.95 = f32[2,8,32]{2,1,0} convert(%param_0.14)",
+          "full_line_sha256": "9bac437dfc95f7a8f299131c606d884ad6aa08e2d70dba5cc27ce261fed69a1f"
+        },
+        {
+          "line": 105,
+          "text": "  %bitcast.12 = f32[2,8,2,16]{3,2,1,0} bitcast(%convert.95)",
+          "full_line_sha256": "ac8b82feab9749b0f3e00a0bb98a9c20fdc5694dc36ce2692f9e87d0420076ca"
+        },
+        {
+          "line": 106,
+          "text": "  %slice.6 = f32[2,8,1,16]{3,2,1,0} slice(%bitcast.12), slice={[0:2], [0:8], [1:2], [0:16]}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "3f51757f508f9a6a19d15f02ce4303af354355f2f196dc90fb5e95e5d36295f6"
+        },
+        {
+          "line": 107,
+          "text": "  %convert.94 = bf16[2,8,1,16]{3,2,1,0} convert(%slice.6)",
+          "full_line_sha256": "1926a415a7df8b82785bbea97c21abc3b6da50a593e47878f9e226543209465a"
+        },
+        {
+          "line": 108,
+          "text": "  ROOT %convert.93 = f32[2,8,1,16]{3,2,1,0} convert(%convert.94)",
+          "full_line_sha256": "6d0d257d23ee3651870e892693c2b16528445ccce6d9b2daf9638898870a4c68"
+        },
+        {
+          "line": 112,
+          "text": "  %param_0.19 = bf16[2,8,32]{2,1,0} parameter(0)",
+          "full_line_sha256": "e590c594fc445516ebf36e85160b98a90a08544a261b0293075d570d420cc37a"
+        },
+        {
+          "line": 113,
+          "text": "  %convert.98 = f32[2,8,32]{2,1,0} convert(%param_0.19)",
+          "full_line_sha256": "eab4eddd729fd8c36529fda9c1fe1d3f868864fe5cc3ad04c15e948054141274"
+        },
+        {
+          "line": 114,
+          "text": "  %bitcast.13 = f32[2,8,2,16]{3,2,1,0} bitcast(%convert.98)",
+          "full_line_sha256": "fe650f66fea373a12fcaf76acdd9f2ee0330ac88c90035c2f198477ff0b6b851"
+        },
+        {
+          "line": 115,
+          "text": "  %slice.7 = f32[2,8,1,16]{3,2,1,0} slice(%bitcast.13), slice={[0:2], [0:8], [0:1], [0:16]}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "339d81e9450822eba801493c5fd73fd9034fc86ce73390918f0066b6da058260"
+        },
+        {
+          "line": 116,
+          "text": "  %convert.97 = bf16[2,8,1,16]{3,2,1,0} convert(%slice.7)",
+          "full_line_sha256": "825fc4c27fcd922359e1f23159c07b696864f4faabc42e0c14ce4bec516a3c07"
+        },
+        {
+          "line": 117,
+          "text": "  ROOT %convert.96 = f32[2,8,1,16]{3,2,1,0} convert(%convert.97)",
+          "full_line_sha256": "2b55197a11820e7682bba31413a63b60db5ab42f3ffb2801c5e146c72b8f9e7f"
+        },
+        {
+          "line": 121,
+          "text": "  %param_0.21 = s32[4,8,1]{2,1,0} parameter(0)",
+          "full_line_sha256": "f95161f6b9c66e23ab9560a989858156c8c8104f214fa73728bbb525adddb906"
+        },
+        {
+          "line": 122,
+          "text": "  %constant.65 = u32[1]{0} constant({0}), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "d724d6906cc643e25f034ce94d64e8b682ae22acfc9e503c4245313ce906a199"
+        },
+        {
+          "line": 123,
+          "text": "  %param_1.11 = u32[4]{0} parameter(1)",
+          "full_line_sha256": "8f1869e42a6528ee6bd16c6a3819c721411e21c5524110b4006d521a70c8d8e3"
+        },
+        {
+          "line": 124,
+          "text": "  %param_2.3 = u32[] parameter(2)",
+          "full_line_sha256": "8df57b89481fe21e059edbd163b348e792988b673031a60165f418d7f7c65ff3"
+        },
+        {
+          "line": 125,
+          "text": "  %dynamic-slice.16 = u32[1]{0} dynamic-slice(%param_1.11, %param_2.3), dynamic_slice_sizes={1}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "afd4793ded75d3b9cfe932e91c32261a8b7fa6e34ee6b66bd25b47e86d10e4d9"
+        },
+        {
+          "line": 126,
+          "text": "  %constant.64 = u32[1]{0} constant({1}), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "2b741779f0fad1e567a84eb79e4ed8e9ebcbcddbe48deaca59abe1e78edae5c1"
+        },
+        {
+          "line": 127,
+          "text": "  %clamp.3 = u32[1]{0} clamp(%constant.65, %dynamic-slice.16, %constant.64), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "ea5d5dd7f68d834a587c29cd810c48da6101b10c1dff4f7ca9adf1fd898ee53c"
+        },
+        {
+          "line": 128,
+          "text": "  %convert.99 = s32[1]{0} convert(%clamp.3), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "a238f91432462ef545cff0e7f8cb6e9702c7b448a10b525de0f34f06a1dea2ea"
+        },
+        {
+          "line": 129,
+          "text": "  %constant.63 = s32[1]{0} constant({32}), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "11e56e077ae65ad81edf7dc050a07f5bed68985d152f7d1ac7c25c5ffd74ebbd"
+        },
+        {
+          "line": 130,
+          "text": "  %multiply.7 = s32[1]{0} multiply(%convert.99, %constant.63), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "fa3007287c00705081fbe02e0c626a9e73959282ad5cac3b85ff7bf670de41c0"
+        },
+        {
+          "line": 131,
+          "text": "  %bitcast.15 = s32[] bitcast(%multiply.7), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "da2ff8301640ec632369aa71a3196c8e934a80aae5139a5cd4a2156e6f6556b9"
+        },
+        {
+          "line": 132,
+          "text": "  %broadcast.20 = s32[4,8,1]{2,1,0} broadcast(%bitcast.15), dimensions={}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "c1c813b256f419ddc4b144a6774c2f310c05d8d0a1c11b4915a7f4e3bff7829c"
+        },
+        {
+          "line": 133,
+          "text": "  %subtract.2 = s32[4,8,1]{2,1,0} subtract(%param_0.21, %broadcast.20), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "f8a92f5dde069b448dd44bedf36207caec7599c859bbd01fb02ad9e666850554"
+        },
+        {
+          "line": 134,
+          "text": "  ROOT %bitcast.14 = s32[32,1]{1,0} bitcast(%subtract.2), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "3ceb274c7fce7cb1e20708271faca2e8720289bfbf98f3ab133a5e9ece80a133"
+        },
+        {
+          "line": 212,
+          "text": "  %param_0.45 = s32[2,8]{1,0} parameter(0)",
+          "full_line_sha256": "7b985591752fb7692bc5fed42685c4dcaa2c6db837896180d951580b43f19dde"
+        },
+        {
+          "line": 213,
+          "text": "  %constant.0.clone.2 = s32[] constant(0)",
+          "full_line_sha256": "3cffc3630a22582741ad3da18af7ffc10765e3dde4d4e67dc0d6e1c0b963bc11"
+        },
+        {
+          "line": 214,
+          "text": "  %lt.7 = s32[2,8]{1,0} broadcast(%constant.0.clone.2), dimensions={}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/lt\" stack_frame_id=16}",
+          "full_line_sha256": "0bce70e7925b027b71bdbc501d1472d2c1adda213c8942a0f264ce87adb808e2"
+        },
+        {
+          "line": 215,
+          "text": "  %lt.6 = pred[2,8]{1,0} compare(%param_0.45, %lt.7), direction=LT, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/lt\" stack_frame_id=16}",
+          "full_line_sha256": "0269c3806898eabb6f834cf8fe10c8ff3ac5cacf5f62371bbd72d0cfac9370db"
+        },
+        {
+          "line": 216,
+          "text": "  %constant.1.clone.1 = s32[] constant(64)",
+          "full_line_sha256": "cd2465255f61308543f98550d3865ac3c38f485e1b3bd92b7552c2f024a8f5f9"
+        },
+        {
+          "line": 217,
+          "text": "  %add.17 = s32[2,8]{1,0} broadcast(%constant.1.clone.1), dimensions={}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/add\" stack_frame_id=16}",
+          "full_line_sha256": "42ba6708153b85a65b66c0e565e2f4a0eb109d3d761c68b0db5c15f41b2e0a16"
+        },
+        {
+          "line": 218,
+          "text": "  %add.16 = s32[2,8]{1,0} add(%param_0.45, %add.17), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/add\" stack_frame_id=16}",
+          "full_line_sha256": "1607487d63a5a12b65b3fb89c6642a102a295f87a007e8b9de51b3e94599ca4c"
+        },
+        {
+          "line": 219,
+          "text": "  %select_n.3 = s32[2,8]{1,0} select(%lt.6, %add.16, %param_0.45), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/select_n\" stack_frame_id=16}",
+          "full_line_sha256": "c669ea6d9d3760f855ab46917122fbbf873334d6f1c88387aec6f70b52649a80"
+        },
+        {
+          "line": 220,
+          "text": "  ROOT %bitcast.23 = s32[2,8,1]{2,1,0} bitcast(%select_n.3), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/select_n\" stack_frame_id=16}",
+          "full_line_sha256": "ffc594ce66419e774f046a04ee83c5f2e93fdded61b7b54279badd9c8fc8866d"
+        },
+        {
+          "line": 229,
+          "text": "  %param_0.47 = f32[] parameter(0)",
+          "full_line_sha256": "b71ff881f269ffa994c05ddf0e814b509d8442f6de808b4f9e0f537d48b47ba0"
+        },
+        {
+          "line": 230,
+          "text": "  ROOT %broadcast.27 = f32[32,16]{1,0} broadcast(%param_0.47), dimensions={}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/broadcast_in_dim\" stack_frame_id=16}",
+          "full_line_sha256": "5f8d1bb1ebe9cba831ff874832633665ae6ade1a8786fad727ae2e799fa534bf"
+        },
+        {
+          "line": 234,
+          "text": "  %scatter-add.8 = f32[] parameter(0), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\"}",
+          "full_line_sha256": "556e6f4d4412afacd74d199c8ee924321e3c8117a0c4a6c4f88afe8e8a27f23b"
+        },
+        {
+          "line": 235,
+          "text": "  %scatter-add.9 = f32[] parameter(1), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\"}",
+          "full_line_sha256": "bb15a921fa2cac2a92aeaec24a1156c92f32e1088a495bd51cd8e3400a5689d5"
+        },
+        {
+          "line": 236,
+          "text": "  %convert.58 = bf16[] convert(%scatter-add.8)",
+          "full_line_sha256": "4881d03f4abeaa1905a52ed50b27d6071c9ae547b0f46649f0480589e3a51e81"
+        },
+        {
+          "line": 237,
+          "text": "  %convert.59 = bf16[] convert(%scatter-add.9)",
+          "full_line_sha256": "1865bf9d6c4363d15ad53ffa3c6be37f8b64c31dd1fb9809725af0e10863261a"
+        },
+        {
+          "line": 238,
+          "text": "  %convert.54 = f32[] convert(%convert.58)",
+          "full_line_sha256": "26a326a71c8c94ec5a0bbb620391df5e0fc410a64b70cd3764812438ad945ecf"
+        },
+        {
+          "line": 239,
+          "text": "  %convert.55 = f32[] convert(%convert.59)",
+          "full_line_sha256": "f7bcd5b3a30b244b8563ac97c723ba30c46130eb022737faab5df2626ef1c47d"
+        },
+        {
+          "line": 240,
+          "text": "  %add.14 = f32[] add(%convert.54, %convert.55), metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/add\" stack_frame_id=26}",
+          "full_line_sha256": "6a517356567ff6b327e61f25bd95548385e7a0b1f2f31ecfae002e1867aaec24"
+        },
+        {
+          "line": 241,
+          "text": "  %convert.56 = bf16[] convert(%add.14)",
+          "full_line_sha256": "7b27002cc893bd52d75cb70d7ee7bb975c59d1c6c71548ea47e661996a8f5abd"
+        },
+        {
+          "line": 242,
+          "text": "  ROOT %convert.57 = f32[] convert(%convert.56)",
+          "full_line_sha256": "3eb220841e3d7a49d8cb385ec2a2627aea9bef4edb2c740640df56e31b3f386a"
+        },
+        {
+          "line": 246,
+          "text": "  %param_0.48 = f32[32,16]{1,0} parameter(0)",
+          "full_line_sha256": "b21831631538ef8c3e7f2e193a208ffda2ef8680160cf7680df6095f19e38b1d"
+        },
+        {
+          "line": 247,
+          "text": "  %param_1.26 = s32[32,1]{1,0} parameter(1)",
+          "full_line_sha256": "4dfc1ab4f96e856587659a7ab3ccc1fd87d0a7772ce97e8ee76d89b7b7598200"
+        },
+        {
+          "line": 248,
+          "text": "  %param_2.22 = f32[32,1,16]{2,1,0} parameter(2)",
+          "full_line_sha256": "f2233b901d579649100b1830ef96bd3583b2c5ab5783bef9b3ce2c505e549e01"
+        },
+        {
+          "line": 249,
+          "text": "  ROOT %scatter.2 = f32[32,16]{1,0} scatter(%param_0.48, %param_1.26, %param_2.22), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "499d9217d16dd6653add5725709c8062ee034a8711e0b14eb316903adacad094"
+        },
+        {
+          "line": 253,
+          "text": "  %partition-id = u32[] partition-id()",
+          "full_line_sha256": "10fc008a9eff92648ddd9cdedd6b55f449ec97a3853a602757428f502a5bba79"
+        },
+        {
+          "line": 255,
+          "text": "  %param.1 = s32[2,8]{1,0} parameter(1), sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"t\"}",
+          "full_line_sha256": "8b292c31fa01f746c4685131cd38ec9662e6f3c07bc12d1e11a41ef90f46105b"
+        },
+        {
+          "line": 256,
+          "text": "  %constant.6 = u32[4]{0} constant({0, 1, 0, 1}), metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}",
+          "full_line_sha256": "d30765ed9aa04a10afde6560867d58a121aa0f32e8b317d8e3fb0b8ccc59af6f"
+        },
+        {
+          "line": 257,
+          "text": "  %param.2 = bf16[2,8,32]{2,1,0} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}",
+          "full_line_sha256": "8e9ef5690bd58735cc85ad40cd59dd2d5792b010ebdb174f8a6a4f920e63a224"
+        },
+        {
+          "line": 258,
+          "text": "  %constant.60 = f32[] constant(0)",
+          "full_line_sha256": "65b3b89a440edde5b71a9c3c4b3ade7988db97251bfe0b84a65769addf1314ad"
+        },
+        {
+          "line": 259,
+          "text": "  %select_bitcast_fusion = s32[2,8,1]{2,1,0} fusion(%param.1), kind=kLoop, calls=%fused_computation.9, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/select_n\" stack_frame_id=16}",
+          "full_line_sha256": "cf9aec367f7b4bbca450bfb5eba9ac0e9efb0b9cd8a4c2f5e2fa986b100ab729"
+        },
+        {
+          "line": 260,
+          "text": "  %convert_convert_fusion.2 = f32[2,8,1,16]{3,2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.3",
+          "full_line_sha256": "371d61d13c627d96124b4d4b9fcae8698d1a2961d96629e41706985ab22e8f6f"
+        },
+        {
+          "line": 261,
+          "text": "  %convert_convert_fusion.1 = f32[2,8,1,16]{3,2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.2",
+          "full_line_sha256": "df790c498c545c2a7427c67a088b6433602f0426e42f2b3896ab2a8c90f48530"
+        },
+        {
+          "line": 262,
+          "text": "  %wrapped_broadcast = f32[32,16]{1,0} fusion(%constant.60), kind=kLoop, calls=%wrapped_broadcast_computation, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/broadcast_in_dim\" stack_frame_id=16}",
+          "full_line_sha256": "b129466168a4ed9a3763ea47006ff1798f571ef5bd1dd85cf70fb234e1466f24"
+        },
+        {
+          "line": 263,
+          "text": "  %collective-permute = s32[2,8,1]{2,1,0} collective-permute(%select_bitcast_fusion), channel_id=11, source_target_pairs={{0,0},{1,2},{2,1},{3,3}}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/broadcast_in_dim\" stack_frame_id=16}",
+          "full_line_sha256": "0377be60d499205a98ce359e5c5a82bb29cb9f51dcee95d15a1539c32040f019"
+        },
+        {
+          "line": 264,
+          "text": "  %all-to-all.3 = (f32[2,8,1,16]{3,2,1,0}, f32[2,8,1,16]{3,2,1,0}) all-to-all(%convert_convert_fusion.2, %convert_convert_fusion.1), channel_id=31, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "71a6240aa26bcde29762cceec18d1c5d8b7a06185147972dde1e8e0c73f1fba3"
+        },
+        {
+          "line": 265,
+          "text": "  %all-gather = s32[4,8,1]{2,1,0} all-gather(%collective-permute), channel_id=16, replica_groups=[2,2]<=[4], dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/broadcast_in_dim\" stack_frame_id=16}",
+          "full_line_sha256": "af11d2b5894c5d0293fe8aea72b5c9d11d5241bbffdb78d621201c3c32a03c17"
+        },
+        {
+          "line": 266,
+          "text": "  %get-tuple-element.7 = f32[2,8,1,16]{3,2,1,0} get-tuple-element(%all-to-all.3), index=1",
+          "full_line_sha256": "f897164f4ae90f3f2508c194403200754946f72f1419e1a8f0592708d9864820"
+        },
+        {
+          "line": 267,
+          "text": "  %get-tuple-element.6 = f32[2,8,1,16]{3,2,1,0} get-tuple-element(%all-to-all.3), index=0",
+          "full_line_sha256": "a8da1e33f5f592b990a11ec9a35511554599972b625d39e645aef08125566dfe"
+        },
+        {
+          "line": 269,
+          "text": "  %subtract_bitcast_fusion = s32[32,1]{1,0} fusion(%all-gather, %constant.6, %partition-id), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "db57022aab8ec3fd1c495dde38d9010f498d1c227b8c6de6fe692c1957798c55"
+        },
+        {
+          "line": 270,
+          "text": "  %bitcast_copy_fusion = f32[32,1,16]{2,1,0} fusion(%get-tuple-element.7, %get-tuple-element.6), kind=kLoop, calls=%fused_computation.1",
+          "full_line_sha256": "6ed1bd7ce2a70afc72b660162c6930c74cbc50dffd390ea22b0cf511ccada14e"
+        },
+        {
+          "line": 272,
+          "text": "  %wrapped_scatter = f32[32,16]{1,0} fusion(%wrapped_broadcast, %subtract_bitcast_fusion, %bitcast_copy_fusion), kind=kLoop, calls=%wrapped_scatter_computation, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}",
+          "full_line_sha256": "a14468a97445d553a0562bbc8e5099f5e205d2a3c733ecb718c5f56a0f9317c7"
+        },
+        {
+          "line": 274,
+          "text": "  %convert_convert_fusion = f32[32,16]{1,0} fusion(%wrapped_scatter), kind=kLoop, calls=%fused_computation, metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}",
+          "full_line_sha256": "2b4d81deee278ca028d993279fee122bdff6a7ef405db6a720b13fbe5dfbf758"
+        }
+      ]
+    },
+    "native": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/native.optimized_hlo.txt",
+      "sha256": "e2379b80384aec5243bb501e0b43a45eb46c187c721f92fd85c3e9338e59eeb6",
+      "entry": "main.0_spmd",
+      "actual_gradient_root": "%convert_convert_fusion",
+      "gradient_depends_on_master_weight_values": false,
+      "gradient_collectives": {
+        "%all-reduce.3": {
+          "shape": "f32[32,32]",
+          "op": "all-reduce",
+          "args": "%convert_convert_fusion.1",
+          "attrs": ", channel_id=11, replica_groups=[2,2]<=[2,2]T(1,0), use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone_promoted",
+          "line": 249
+        }
+      },
+      "gradient_entry_nodes": {
+        "%partition-id": {
+          "shape": "u32[]",
+          "op": "partition-id",
+          "args": "",
+          "attrs": "",
+          "line": 231
+        },
+        "%param.1": {
+          "shape": "s32[2,8]",
+          "op": "parameter",
+          "args": "1",
+          "attrs": ", sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}",
+          "line": 233
+        },
+        "%constant.11": {
+          "shape": "s32[4]",
+          "op": "constant",
+          "args": "{0, 32, 0, 32}",
+          "attrs": "",
+          "line": 234
+        },
+        "%param.2": {
+          "shape": "bf16[2,8,32]",
+          "op": "parameter",
+          "args": "2",
+          "attrs": ", sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}",
+          "line": 235
+        },
+        "%constant.25": {
+          "shape": "u32[4]",
+          "op": "constant",
+          "args": "{0, 0, 1, 1}",
+          "attrs": "",
+          "line": 236
+        },
+        "%constant.34": {
+          "shape": "s32[4]",
+          "op": "constant",
+          "args": "{0, 0, 16, 16}",
+          "attrs": "",
+          "line": 237
+        },
+        "%bitcast_copy_fusion.1": {
+          "shape": "s32[16,1]",
+          "op": "fusion",
+          "args": "%constant.11, %partition-id, %param.1",
+          "attrs": ", kind=kLoop, calls=%fused_computation.3",
+          "line": 239
+        },
+        "%bitcast_copy_fusion": {
+          "shape": "f32[16,1,32]",
+          "op": "fusion",
+          "args": "%param.2",
+          "attrs": ", kind=kLoop, calls=%fused_computation.2",
+          "line": 240
+        },
+        "%select_convert_fusion": {
+          "shape": "bf16[1]",
+          "op": "fusion",
+          "args": "%constant.25, %partition-id",
+          "attrs": ", kind=kLoop, calls=%fused_computation.5",
+          "line": 241
+        },
+        "%bitcast_broadcast_fusion": {
+          "shape": "f32[32,32]",
+          "op": "fusion",
+          "args": "%select_convert_fusion",
+          "attrs": ", kind=kLoop, calls=%fused_computation.4",
+          "line": 243
+        },
+        "%wrapped_scatter": {
+          "shape": "f32[32,32]",
+          "op": "fusion",
+          "args": "%bitcast_broadcast_fusion, %bitcast_copy_fusion.1, %bitcast_copy_fusion",
+          "attrs": ", kind=kLoop, calls=%wrapped_scatter_computation",
+          "line": 245
+        },
+        "%convert_convert_fusion.1": {
+          "shape": "f32[32,32]",
+          "op": "fusion",
+          "args": "%wrapped_scatter",
+          "attrs": ", kind=kLoop, calls=%fused_computation.1",
+          "line": 247
+        },
+        "%all-reduce.3": {
+          "shape": "f32[32,32]",
+          "op": "all-reduce",
+          "args": "%convert_convert_fusion.1",
+          "attrs": ", channel_id=11, replica_groups=[2,2]<=[2,2]T(1,0), use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone_promoted",
+          "line": 249
+        },
+        "%wrapped_convert.1": {
+          "shape": "bf16[32,32]",
+          "op": "fusion",
+          "args": "%all-reduce.3",
+          "attrs": ", kind=kLoop, calls=%wrapped_convert_computation.1",
+          "line": 250
+        },
+        "%convert_convert_fusion": {
+          "shape": "f32[32,16]",
+          "op": "fusion",
+          "args": "%constant.34, %partition-id, %wrapped_convert.1",
+          "attrs": ", kind=kLoop, calls=%fused_computation",
+          "line": 251
+        }
+      },
+      "reachable_fusion_reducers": [
+        "fused_computation",
+        "fused_computation.1",
+        "fused_computation.2",
+        "fused_computation.3",
+        "fused_computation.4",
+        "fused_computation.5",
+        "region_0.0.clone.clone",
+        "wrapped_convert_computation.1",
+        "wrapped_scatter_computation"
+      ],
+      "evidence": [
+        {
+          "line": 90,
+          "text": "  %param_2.4 = bf16[32,32]{1,0} parameter(2)",
+          "full_line_sha256": "24fcb292657dbfdb46405e1d56ea386d883bec3a42ee0f8cdce9c46ce19535a0"
+        },
+        {
+          "line": 91,
+          "text": "  %convert.64 = f32[32,32]{1,0} convert(%param_2.4)",
+          "full_line_sha256": "591834e309c072bfded0a83de04046e1d77518b87afcbcfecdc65322bc379667"
+        },
+        {
+          "line": 92,
+          "text": "  %constant.0.clone.1 = s32[] constant(0)",
+          "full_line_sha256": "481280499e6482a6b81b4e6eee1e55bd2b05279c9811179cb7ca8f35457e943e"
+        },
+        {
+          "line": 93,
+          "text": "  %param_0.4 = s32[4]{0} parameter(0)",
+          "full_line_sha256": "8e86ff04f1117085983000e422635118cad561acc094c3340f3edb472b7ccb2d"
+        },
+        {
+          "line": 94,
+          "text": "  %param_1.2 = u32[] parameter(1)",
+          "full_line_sha256": "9308f6bd28da4d3689f8951ba73b3bc8e2e6659bb7b5dca08d641315d635985b"
+        },
+        {
+          "line": 95,
+          "text": "  %dynamic-slice.21 = s32[1]{0} dynamic-slice(%param_0.4, %param_1.2), dynamic_slice_sizes={1}, metadata={op_name=\"jit(vjp)/transpose(jvp())/reshard\" stack_frame_id=10}",
+          "full_line_sha256": "250ea9439ffff19d11ad3ebfaca688a84dd8253cdda6777b24d2edd8ff6f7a4e"
+        },
+        {
+          "line": 96,
+          "text": "  %bitcast.8 = s32[] bitcast(%dynamic-slice.21), metadata={op_name=\"jit(vjp)/transpose(jvp())/reshard\" stack_frame_id=10}",
+          "full_line_sha256": "ccc9acc3996524cb4a41d0b448d74ba0c0b56e3427566112455cbdb1cb722c8d"
+        },
+        {
+          "line": 97,
+          "text": "  %dynamic-slice.20 = f32[32,16]{1,0} dynamic-slice(%convert.64, %constant.0.clone.1, %bitcast.8), dynamic_slice_sizes={32,16}, metadata={op_name=\"jit(vjp)/transpose(jvp())/reshard\" stack_frame_id=10}",
+          "full_line_sha256": "3b6680b30dbd14cb1342740c082059efab62cfebdd31fbe0e33ee0a7962476bc"
+        },
+        {
+          "line": 98,
+          "text": "  %convert.63 = bf16[32,16]{1,0} convert(%dynamic-slice.20)",
+          "full_line_sha256": "39ad02ddc26f55ab786e2bc35889cf80c5db48fd52c1db1d8c13edc43f5a36bd"
+        },
+        {
+          "line": 99,
+          "text": "  ROOT %convert_element_type.13 = f32[32,16]{1,0} convert(%convert.63), metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}",
+          "full_line_sha256": "40a8e708ec4a388af6751cf8dc4c89fc02f33eb646b2d5587e8b1013fc42b343"
+        },
+        {
+          "line": 103,
+          "text": "  %param_0.6 = f32[32,32]{1,0} parameter(0)",
+          "full_line_sha256": "507db4b79bc35ddec42b6fa5199ddc770e078c69a16f930b8ecd23bdad47f9ce"
+        },
+        {
+          "line": 104,
+          "text": "  %convert.66 = bf16[32,32]{1,0} convert(%param_0.6)",
+          "full_line_sha256": "67604b37d3389d916a39f822ba1c51724acac06f88aea55c646c49edfa9bdf3d"
+        },
+        {
+          "line": 105,
+          "text": "  ROOT %convert.65 = f32[32,32]{1,0} convert(%convert.66)",
+          "full_line_sha256": "407dde403da8e95980c44fc4e467ecf6a127333f417dfe5390fb0c4281ee8c3c"
+        },
+        {
+          "line": 109,
+          "text": "  %param_0.9 = bf16[2,8,32]{2,1,0} parameter(0)",
+          "full_line_sha256": "0553b500974aa4b5cf9a504fb7383a4e7ece104f7361645aeddbfc7caccc266e"
+        },
+        {
+          "line": 110,
+          "text": "  %convert.67 = f32[2,8,32]{2,1,0} convert(%param_0.9)",
+          "full_line_sha256": "f4c982e747fc3c6d506fd638e86b4aba7700ad86250e51ce9a7b55641c3df574"
+        },
+        {
+          "line": 111,
+          "text": "  %bitcast.9 = f32[16,1,32]{2,0,1} bitcast(%convert.67)",
+          "full_line_sha256": "e8832216c9b004eaa4fd79c05c9059a6b97e11d5d6cb1abcc612a305248d59fc"
+        },
+        {
+          "line": 112,
+          "text": "  ROOT %copy.5 = f32[16,1,32]{2,1,0} copy(%bitcast.9)",
+          "full_line_sha256": "33a74b1aa50139113aa4e64cbb889b933ab2f9d81346d4a915e1270f0f63a219"
+        },
+        {
+          "line": 116,
+          "text": "  %param_2.7 = s32[2,8]{1,0} parameter(2)",
+          "full_line_sha256": "9f4538fc2e649db6fd5cd968021676ea531b6662f1c41868b53ab2bef50f5706"
+        },
+        {
+          "line": 117,
+          "text": "  %constant.0.clone.2 = s32[] constant(0)",
+          "full_line_sha256": "3cffc3630a22582741ad3da18af7ffc10765e3dde4d4e67dc0d6e1c0b963bc11"
+        },
+        {
+          "line": 118,
+          "text": "  %broadcast.44 = s32[2,8]{1,0} broadcast(%constant.0.clone.2), dimensions={}, metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=12}",
+          "full_line_sha256": "ef5e010618d2e01bc7bcf09352a30bcfabf0b77638c8ef1d24b88f2bc7a4a78a"
+        },
+        {
+          "line": 119,
+          "text": "  %lt.6 = pred[2,8]{1,0} compare(%param_2.7, %broadcast.44), direction=LT, metadata={op_name=\"jit(vjp)/jvp()/lt\" stack_frame_id=12}",
+          "full_line_sha256": "be40cd6b2d502f2302035e8d622fc5ec7619a1fc462ebd4f32b4461073219ef3"
+        },
+        {
+          "line": 120,
+          "text": "  %constant.1.clone.1 = s32[] constant(64)",
+          "full_line_sha256": "cd2465255f61308543f98550d3865ac3c38f485e1b3bd92b7552c2f024a8f5f9"
+        },
+        {
+          "line": 121,
+          "text": "  %add.20 = s32[2,8]{1,0} broadcast(%constant.1.clone.1), dimensions={}, metadata={op_name=\"jit(vjp)/jvp()/add\" stack_frame_id=12}",
+          "full_line_sha256": "f9859a805b3303e65edc40317dcb15760281410bcfff1a7dd64d04be60694e10"
+        },
+        {
+          "line": 122,
+          "text": "  %add.19 = s32[2,8]{1,0} add(%param_2.7, %add.20), metadata={op_name=\"jit(vjp)/jvp()/add\" stack_frame_id=12}",
+          "full_line_sha256": "dd5215f8ea26f97aaa690ba7a9f16027a94fd5fbf22c22de66515d4634cb343d"
+        },
+        {
+          "line": 123,
+          "text": "  %select_n.3 = s32[2,8]{1,0} select(%lt.6, %add.19, %param_2.7), metadata={op_name=\"jit(vjp)/jvp()/select_n\" stack_frame_id=12}",
+          "full_line_sha256": "d6d973d5b9b7db6e06ebb2f43f7caf102128b79330fb984d1bf073a75f7c2176"
+        },
+        {
+          "line": 124,
+          "text": "  %param_0.13 = s32[4]{0} parameter(0)",
+          "full_line_sha256": "61933e179c6c3005294aef12539c75e0d8aec36fe1d72828857144c4b0138125"
+        },
+        {
+          "line": 125,
+          "text": "  %param_1.7 = u32[] parameter(1)",
+          "full_line_sha256": "5753c4c7975024ebf7ba77131afed9941396f5565ee1a13fa34d2e8bb45ba392"
+        },
+        {
+          "line": 126,
+          "text": "  %dynamic-slice.22 = s32[1]{0} dynamic-slice(%param_0.13, %param_1.7), dynamic_slice_sizes={1}, metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=12}",
+          "full_line_sha256": "116d1fd662f5224c5f0e2891b089110a224169b9d3c4582b017bf8fe97f0104d"
+        },
+        {
+          "line": 127,
+          "text": "  %bitcast.11 = s32[] bitcast(%dynamic-slice.22), metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=12}",
+          "full_line_sha256": "16586429fb8f77f26b16b8a1e54df7eea5fc16abf850a65dfcda92389ebcab89"
+        },
+        {
+          "line": 128,
+          "text": "  %broadcast.43 = s32[2,8]{1,0} broadcast(%bitcast.11), dimensions={}, metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=12}",
+          "full_line_sha256": "010cdf662cbd89c85f3eb06aa966d56a9a1bccee17630d28c60a8a3040f5f772"
+        },
+        {
+          "line": 129,
+          "text": "  %subtract.6 = s32[2,8]{1,0} subtract(%select_n.3, %broadcast.43), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "54ab9a2c3468ade79be67cf787e34aea16f4add3c60ded24958c21377c7d9b1b"
+        },
+        {
+          "line": 130,
+          "text": "  %bitcast.10 = s32[16,1]{0,1} bitcast(%subtract.6), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "7949c5589713897d97fc8b0173c11848f02b0f4b7f7ca367affcdb326cebbfbd"
+        },
+        {
+          "line": 131,
+          "text": "  ROOT %copy.6 = s32[16,1]{1,0} copy(%bitcast.10), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "a37925920731ddbfdd36bdead9e22d2f08aecd234a8044f855f3cfcd96c0700b"
+        },
+        {
+          "line": 135,
+          "text": "  %param_0.16 = bf16[1]{0} parameter(0)",
+          "full_line_sha256": "11a02c94fecc105ce562bd3ff3bc18483eb36b74a4b179b022dc1ace8a10cbad"
+        },
+        {
+          "line": 136,
+          "text": "  %convert.68 = f32[1]{0} convert(%param_0.16)",
+          "full_line_sha256": "1f7f646fe97254a6be7cf070d2f7450a36be292184b77b4a8877af2416324b0b"
+        },
+        {
+          "line": 137,
+          "text": "  %bitcast.12 = f32[] bitcast(%convert.68)",
+          "full_line_sha256": "57d27b52243c4fa40038b67ee9db9a6d8ad03bc2be61069269fb955eeeba6e7f"
+        },
+        {
+          "line": 138,
+          "text": "  ROOT %broadcast.45 = f32[32,32]{1,0} broadcast(%bitcast.12), dimensions={}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "048f4632b62ac679d7bdacc148dab46910855c8b8323dbaaef14370d6266c4a2"
+        },
+        {
+          "line": 142,
+          "text": "  %param_0.20 = u32[4]{0} parameter(0)",
+          "full_line_sha256": "2551039642c31d025eeb25020f17ce2a02cb0695457ff9c62c164ae07174cf51"
+        },
+        {
+          "line": 143,
+          "text": "  %param_1.9 = u32[] parameter(1)",
+          "full_line_sha256": "6473a9ab8dc8c4e19f0e0c453a497114b4c2babefb37a94c947111b7ac2ab915"
+        },
+        {
+          "line": 144,
+          "text": "  %dynamic-slice.23 = u32[1]{0} dynamic-slice(%param_0.20, %param_1.9), dynamic_slice_sizes={1}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "d23a7124f8270ccce87fa60caa243cedcc91562592151594fd9d9bf7c424fd1b"
+        },
+        {
+          "line": 145,
+          "text": "  %convert.70 = pred[1]{0} convert(%dynamic-slice.23), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "c668b0bc8cbb9d4e18d61eb33c505a5e3254cdc67bb38c8cd85ea67cdd7e1281"
+        },
+        {
+          "line": 146,
+          "text": "  %constant.45 = f32[1]{0} constant({0}), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "b10d72cbce2b0ae9778d67b338048ec2ae625c5ed9bf357922a2e9f1dc5c4e38"
+        },
+        {
+          "line": 147,
+          "text": "  %select.4 = f32[1]{0} select(%convert.70, %constant.45, %constant.45), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "0fbed9ec0a3372592e9cfddefa7232692107c3b71376fef01f9efd69b99b2304"
+        },
+        {
+          "line": 148,
+          "text": "  ROOT %convert.69 = bf16[1]{0} convert(%select.4), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "ab533b8e24d44ca02789f107c4c5e58346cdc86742150705f96420803f214af5"
+        },
+        {
+          "line": 207,
+          "text": "  %scatter-add.12 = f32[] parameter(0), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\"}",
+          "full_line_sha256": "c43f6ab16a4f3efb95ebf2851c7628e27d63dfbaaed45d53d7ae06288ff18467"
+        },
+        {
+          "line": 208,
+          "text": "  %scatter-add.13 = f32[] parameter(1), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\"}",
+          "full_line_sha256": "92bdf4dbaee49253256e8613b177989a1faae7265bdbe55da40ccd332b6297c4"
+        },
+        {
+          "line": 209,
+          "text": "  %convert.41 = bf16[] convert(%scatter-add.12)",
+          "full_line_sha256": "d8e2426486744c2b32c64acc60d63c3c105785df13f88ebadf7f005bc79dc7dd"
+        },
+        {
+          "line": 210,
+          "text": "  %convert.42 = bf16[] convert(%scatter-add.13)",
+          "full_line_sha256": "8cd6b4609ee1fdb95d2bb789cf5b796e0bb9297c36bb0b4c66066a13912cc42f"
+        },
+        {
+          "line": 211,
+          "text": "  %convert.37 = f32[] convert(%convert.41)",
+          "full_line_sha256": "1d7c7671ae79c5ca4bd0b0cb1c3afdc030198024497b5b6eade8163ae10263ba"
+        },
+        {
+          "line": 212,
+          "text": "  %convert.38 = f32[] convert(%convert.42)",
+          "full_line_sha256": "a568e52fb54f22c71fc9feb9a9b446512d1fb72bd89877aa1f87dbe03f8b6061"
+        },
+        {
+          "line": 213,
+          "text": "  %add.17 = f32[] add(%convert.37, %convert.38), metadata={op_name=\"jit(vjp)/transpose(jvp())/add\" stack_frame_id=22}",
+          "full_line_sha256": "d9f5b9a898e825d3bbbbe2b62b43817ef6782e3629abcc64e85d704994523619"
+        },
+        {
+          "line": 214,
+          "text": "  %convert.39 = bf16[] convert(%add.17)",
+          "full_line_sha256": "60dbed224baf843e5cf1889528e0e6e3f11ae931b095b1380aab13947e310cd7"
+        },
+        {
+          "line": 215,
+          "text": "  ROOT %convert.40 = f32[] convert(%convert.39)",
+          "full_line_sha256": "0b88d03ffba7457153b4bda774c0f31a371570ee688237d3641e3ed9672f076e"
+        },
+        {
+          "line": 219,
+          "text": "  %param_0.30 = f32[32,32]{1,0} parameter(0)",
+          "full_line_sha256": "92709358200f7b727d72740488d033eed101193d1dc71313708de11d6feebdc6"
+        },
+        {
+          "line": 220,
+          "text": "  %param_1.15 = s32[16,1]{1,0} parameter(1)",
+          "full_line_sha256": "51493f7960faecaacf3779c11daaab402258d2bddb03d2404add5b0d67e27475"
+        },
+        {
+          "line": 221,
+          "text": "  %param_2.19 = f32[16,1,32]{2,1,0} parameter(2)",
+          "full_line_sha256": "2e01051d0d43b7d310c97b27d20969dbd5efc5488264b5f8fe554d3b92a9ec9e"
+        },
+        {
+          "line": 222,
+          "text": "  ROOT %scatter.2 = f32[32,32]{1,0} scatter(%param_0.30, %param_1.15, %param_2.19), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "dd1c67c2a75f879d064855e25dec5284e9ccfaacb8254fcc315408cc4d57b0ae"
+        },
+        {
+          "line": 226,
+          "text": "  %param_0.31 = f32[32,32]{1,0} parameter(0)",
+          "full_line_sha256": "0a166ce87ac884604c43bd3fd3f0b839bd78670491df34b251ff3106a81d99f5"
+        },
+        {
+          "line": 227,
+          "text": "  ROOT %convert.80 = bf16[32,32]{1,0} convert(%param_0.31), frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "6e4672a040484f6c3a4529774d9c5e2441f1c488abe5dc4b4b838a4a3fb9f548"
+        },
+        {
+          "line": 231,
+          "text": "  %partition-id = u32[] partition-id()",
+          "full_line_sha256": "10fc008a9eff92648ddd9cdedd6b55f449ec97a3853a602757428f502a5bba79"
+        },
+        {
+          "line": 233,
+          "text": "  %param.1 = s32[2,8]{1,0} parameter(1), sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"t\"}",
+          "full_line_sha256": "8b292c31fa01f746c4685131cd38ec9662e6f3c07bc12d1e11a41ef90f46105b"
+        },
+        {
+          "line": 234,
+          "text": "  %constant.11 = s32[4]{0} constant({0, 32, 0, 32}), metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=12}",
+          "full_line_sha256": "d8806c95d55ae684a1b840b9b323d2e7b757a5f5bcca1778fabca41ec345d880"
+        },
+        {
+          "line": 235,
+          "text": "  %param.2 = bf16[2,8,32]{2,1,0} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}",
+          "full_line_sha256": "8e9ef5690bd58735cc85ad40cd59dd2d5792b010ebdb174f8a6a4f920e63a224"
+        },
+        {
+          "line": 236,
+          "text": "  %constant.25 = u32[4]{0} constant({0, 0, 1, 1}), metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "3c94a297c37de15148476f61379d46309b2c6dc5b4f598a782721bba0d2a8325"
+        },
+        {
+          "line": 237,
+          "text": "  %constant.34 = s32[4]{0} constant({0, 0, 16, 16}), metadata={op_name=\"jit(vjp)/transpose(jvp())/reshard\" stack_frame_id=10}",
+          "full_line_sha256": "814ec7424a08fe18ef73c6238f921df8568ad19e411e3c918a030df2bd1d0897"
+        },
+        {
+          "line": 239,
+          "text": "  %bitcast_copy_fusion.1 = s32[16,1]{1,0} fusion(%constant.11, %partition-id, %param.1), kind=kLoop, calls=%fused_computation.3, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "193b67a94854cb5e5cfc0f712c0e620dbeedfa5d66d63faae76d970151179fc4"
+        },
+        {
+          "line": 240,
+          "text": "  %bitcast_copy_fusion = f32[16,1,32]{2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.2",
+          "full_line_sha256": "25d65cc011e1a5251773de3afffc204ad89fded97abf72fef5ad21d861365be0"
+        },
+        {
+          "line": 241,
+          "text": "  %select_convert_fusion = bf16[1]{0} fusion(%constant.25, %partition-id), kind=kLoop, calls=%fused_computation.5, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "a1b45df1bc1da2491a27542505fdaf4cf65eb4964ca49b352e0d6480aaac3659"
+        },
+        {
+          "line": 243,
+          "text": "  %bitcast_broadcast_fusion = f32[32,32]{1,0} fusion(%select_convert_fusion), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "ee85fe00042c0f6383b82eaa13af94223cf5bb0d23ba375163eb4f4e457acc57"
+        },
+        {
+          "line": 245,
+          "text": "  %wrapped_scatter = f32[32,32]{1,0} fusion(%bitcast_broadcast_fusion, %bitcast_copy_fusion.1, %bitcast_copy_fusion), kind=kLoop, calls=%wrapped_scatter_computation, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "8f3842bc1f0140f49be2512521e125f4a0ff51734b2e1f740a1b806eb917b4c7"
+        },
+        {
+          "line": 247,
+          "text": "  %convert_convert_fusion.1 = f32[32,32]{1,0} fusion(%wrapped_scatter), kind=kLoop, calls=%fused_computation.1",
+          "full_line_sha256": "7899080a1b5be026e174fe507008ed5b145e1e06a5cbdb718fc774c608f16ff6"
+        },
+        {
+          "line": 249,
+          "text": "  %all-reduce.3 = f32[32,32]{1,0} all-reduce(%convert_convert_fusion.1), channel_id=11, replica_groups=[2,2]<=[2,2]T(1,0), use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone_promoted, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "8c908c4c1737edbac247c1e86db2c67b145042e410c8169d70ce4d2f71d195be"
+        },
+        {
+          "line": 250,
+          "text": "  %wrapped_convert.1 = bf16[32,32]{1,0} fusion(%all-reduce.3), kind=kLoop, calls=%wrapped_convert_computation.1, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}",
+          "full_line_sha256": "db2623ec7aa02d692311f2e29f108cc5ccc9a7316880134a29877f252e4c51fa"
+        },
+        {
+          "line": 251,
+          "text": "  %convert_convert_fusion = f32[32,16]{1,0} fusion(%constant.34, %partition-id, %wrapped_convert.1), kind=kLoop, calls=%fused_computation, metadata={op_name=\"jit(vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}",
+          "full_line_sha256": "b317c875086bfcb2a8aeca66a8d6d7119aa19cecbc1e78457d57cfd63bb13af7"
+        }
+      ]
+    },
+    "feature_view": {
+      "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/feature_view.optimized_hlo.txt",
+      "sha256": "3a24a1b26d7db7691e24552bcb0ff440218539b8c0ec407b11aecb6b3180e00f",
+      "entry": "main.0_spmd",
+      "actual_gradient_root": "%convert_convert_fusion",
+      "gradient_depends_on_master_weight_values": false,
+      "gradient_collectives": {
+        "%all-gather": {
+          "shape": "s32[4,8]",
+          "op": "all-gather",
+          "args": "%param.1",
+          "attrs": ", channel_id=1, replica_groups=mesh['axis_0'=2,'axis_1'=1,'axis_2'=2] {'axis_0'}, dimensions={0}, use_global_device_ids=true",
+          "line": 265
+        },
+        "%all-to-all.3": {
+          "shape": "(f32[2,8,1,16], f32[2,8,1,16])",
+          "op": "all-to-all",
+          "args": "%convert_convert_fusion.2, %convert_convert_fusion.1",
+          "attrs": ", channel_id=8, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}",
+          "line": 271
+        }
+      },
+      "gradient_entry_nodes": {
+        "%partition-id": {
+          "shape": "u32[]",
+          "op": "partition-id",
+          "args": "",
+          "attrs": "",
+          "line": 259
+        },
+        "%param.1": {
+          "shape": "s32[2,8]",
+          "op": "parameter",
+          "args": "1",
+          "attrs": ", sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}",
+          "line": 261
+        },
+        "%constant.6": {
+          "shape": "u32[4]",
+          "op": "constant",
+          "args": "{0, 1, 0, 1}",
+          "attrs": "",
+          "line": 262
+        },
+        "%param.2": {
+          "shape": "bf16[2,8,32]",
+          "op": "parameter",
+          "args": "2",
+          "attrs": ", sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}",
+          "line": 263
+        },
+        "%constant.60": {
+          "shape": "f32[]",
+          "op": "constant",
+          "args": "0",
+          "attrs": "",
+          "line": 264
+        },
+        "%all-gather": {
+          "shape": "s32[4,8]",
+          "op": "all-gather",
+          "args": "%param.1",
+          "attrs": ", channel_id=1, replica_groups=mesh['axis_0'=2,'axis_1'=1,'axis_2'=2] {'axis_0'}, dimensions={0}, use_global_device_ids=true",
+          "line": 265
+        },
+        "%convert_convert_fusion.2": {
+          "shape": "f32[2,8,1,16]",
+          "op": "fusion",
+          "args": "%param.2",
+          "attrs": ", kind=kLoop, calls=%fused_computation.3",
+          "line": 266
+        },
+        "%convert_convert_fusion.1": {
+          "shape": "f32[2,8,1,16]",
+          "op": "fusion",
+          "args": "%param.2",
+          "attrs": ", kind=kLoop, calls=%fused_computation.2",
+          "line": 267
+        },
+        "%wrapped_broadcast": {
+          "shape": "f32[32,16]",
+          "op": "fusion",
+          "args": "%constant.60",
+          "attrs": ", kind=kLoop, calls=%wrapped_broadcast_computation",
+          "line": 268
+        },
+        "%bitcast_copy_fusion.1": {
+          "shape": "s32[32,1]",
+          "op": "fusion",
+          "args": "%constant.6, %partition-id, %all-gather",
+          "attrs": ", kind=kLoop, calls=%fused_computation.4",
+          "line": 270
+        },
+        "%all-to-all.3": {
+          "shape": "(f32[2,8,1,16], f32[2,8,1,16])",
+          "op": "all-to-all",
+          "args": "%convert_convert_fusion.2, %convert_convert_fusion.1",
+          "attrs": ", channel_id=8, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}",
+          "line": 271
+        },
+        "%get-tuple-element.7": {
+          "shape": "f32[2,8,1,16]",
+          "op": "get-tuple-element",
+          "args": "%all-to-all.3",
+          "attrs": ", index=1",
+          "line": 273
+        },
+        "%get-tuple-element.6": {
+          "shape": "f32[2,8,1,16]",
+          "op": "get-tuple-element",
+          "args": "%all-to-all.3",
+          "attrs": ", index=0",
+          "line": 274
+        },
+        "%bitcast_copy_fusion": {
+          "shape": "f32[32,1,16]",
+          "op": "fusion",
+          "args": "%get-tuple-element.7, %get-tuple-element.6",
+          "attrs": ", kind=kLoop, calls=%fused_computation.1",
+          "line": 276
+        },
+        "%wrapped_scatter": {
+          "shape": "f32[32,16]",
+          "op": "fusion",
+          "args": "%wrapped_broadcast, %bitcast_copy_fusion.1, %bitcast_copy_fusion",
+          "attrs": ", kind=kLoop, calls=%wrapped_scatter_computation",
+          "line": 279
+        },
+        "%convert_convert_fusion": {
+          "shape": "f32[32,16]",
+          "op": "fusion",
+          "args": "%wrapped_scatter",
+          "attrs": ", kind=kLoop, calls=%fused_computation",
+          "line": 281
+        }
+      },
+      "reachable_fusion_reducers": [
+        "fused_computation",
+        "fused_computation.1",
+        "fused_computation.2",
+        "fused_computation.3",
+        "fused_computation.4",
+        "region_0.0.clone.clone",
+        "wrapped_broadcast_computation",
+        "wrapped_scatter_computation"
+      ],
+      "evidence": [
+        {
+          "line": 86,
+          "text": "  %param_0.1 = f32[32,16]{1,0} parameter(0)",
+          "full_line_sha256": "63fe32e43aa271a8ac6689fcffc2edaef2c86fa2aa15296963a77956d66849b6"
+        },
+        {
+          "line": 87,
+          "text": "  %convert.100 = bf16[32,16]{1,0} convert(%param_0.1)",
+          "full_line_sha256": "342a5fc15562f78443a15a188aa96341d375dba8e9cbdc791506c158842fe890"
+        },
+        {
+          "line": 88,
+          "text": "  ROOT %convert_element_type.13 = f32[32,16]{1,0} convert(%convert.100), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}",
+          "full_line_sha256": "86cd2a29e883d057837fb3355f8c39f95eb90b5e97339787f40b65753d1cb755"
+        },
+        {
+          "line": 92,
+          "text": "  %param_1.4 = f32[2,8,1,16]{3,2,1,0} parameter(1)",
+          "full_line_sha256": "dd45d9aa23d3fcb5d82d89629c130512d60d760df8f1275d246aa0113b1d8c7f"
+        },
+        {
+          "line": 93,
+          "text": "  %convert.106 = bf16[2,8,1,16]{3,2,1,0} convert(%param_1.4)",
+          "full_line_sha256": "3c768ddd88d23c548e9c6ce7751edf88edd1fa7d1285ecdf186e2524437857a5"
+        },
+        {
+          "line": 94,
+          "text": "  %convert.105 = f32[2,8,1,16]{3,2,1,0} convert(%convert.106)",
+          "full_line_sha256": "d357186123db684cca7c7a8fad17f4962365085bfc2b079044125b23928bf82f"
+        },
+        {
+          "line": 95,
+          "text": "  %param_0.9 = f32[2,8,1,16]{3,2,1,0} parameter(0)",
+          "full_line_sha256": "a973548fdff1097800d4fd8ed8fa4d1f932335948d466fc73e6d51ab84c272b6"
+        },
+        {
+          "line": 96,
+          "text": "  %convert.104 = bf16[2,8,1,16]{3,2,1,0} convert(%param_0.9)",
+          "full_line_sha256": "f1402dda90426f551c5ce1000448d43e3784c631c4ad62b8245e819916157003"
+        },
+        {
+          "line": 97,
+          "text": "  %convert.103 = f32[2,8,1,16]{3,2,1,0} convert(%convert.104)",
+          "full_line_sha256": "5528b614e6af77ab27a0eb4c486bb41074fc2ec208918b2b5974dee267e3b979"
+        },
+        {
+          "line": 98,
+          "text": "  %concatenate.2 = f32[2,8,2,16]{3,2,1,0} concatenate(%convert.105, %convert.103), dimensions={2}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=12}",
+          "full_line_sha256": "590fdf776c7e523ff9b08653f32a5beaf2e1b925fcedbbdc68d3e1c1f916b8de"
+        },
+        {
+          "line": 99,
+          "text": "  %convert.102 = bf16[2,8,2,16]{3,2,1,0} convert(%concatenate.2)",
+          "full_line_sha256": "d404627e718bc1324afa53bc231d0f72994e98203fa7d2b01ac31f3e2952042b"
+        },
+        {
+          "line": 100,
+          "text": "  %convert.101 = f32[2,8,2,16]{3,2,1,0} convert(%convert.102)",
+          "full_line_sha256": "54c088510446e278a41a36159f3179620fd4ef9cbc68193639186416001aef4c"
+        },
+        {
+          "line": 101,
+          "text": "  %transpose.11 = f32[2,2,8,16]{3,0,2,1} transpose(%convert.101), dimensions={2,0,1,3}",
+          "full_line_sha256": "552a945c8d4c8aa6d1b56f6e83fa437baea80be6378575a0c1065484cbf2d49f"
+        },
+        {
+          "line": 102,
+          "text": "  %copy.6 = f32[2,2,8,16]{3,2,1,0} copy(%transpose.11)",
+          "full_line_sha256": "0fc437e95eda86fe4b03da6b4c4460c61fd88a88c91af7d5f3cf2d2523fc754b"
+        },
+        {
+          "line": 103,
+          "text": "  %bitcast.9 = f32[32,1,16]{2,0,1} bitcast(%copy.6)",
+          "full_line_sha256": "bf757850904e878409872bc229cc25ad8ff0a9c8eb1bfdb8265285c3979a8bea"
+        },
+        {
+          "line": 104,
+          "text": "  ROOT %copy.5 = f32[32,1,16]{2,1,0} copy(%bitcast.9)",
+          "full_line_sha256": "7a04128df797aae24c61eda2375e8a42ca7533b529444984c930f9e0b3174711"
+        },
+        {
+          "line": 108,
+          "text": "  %param_0.14 = bf16[2,8,32]{2,1,0} parameter(0)",
+          "full_line_sha256": "c64aa65ee7bc8b1069fb5d6941017c1e97fed7581a25448dc33f9fafb066b0e7"
+        },
+        {
+          "line": 109,
+          "text": "  %convert.109 = f32[2,8,32]{2,1,0} convert(%param_0.14)",
+          "full_line_sha256": "2b58e547005a0455a7971f99ca45a6508e3f0d222d6f8b939e6983de321be04e"
+        },
+        {
+          "line": 110,
+          "text": "  %bitcast.10 = f32[2,8,2,16]{3,2,1,0} bitcast(%convert.109)",
+          "full_line_sha256": "8fe0ff6ec54d08041ad033bf00bb1b2162f8095077773e4fd96d471f84f74f09"
+        },
+        {
+          "line": 111,
+          "text": "  %slice.6 = f32[2,8,1,16]{3,2,1,0} slice(%bitcast.10), slice={[0:2], [0:8], [1:2], [0:16]}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=12}",
+          "full_line_sha256": "8d31ee586050fe931ce03eae891e4f18c24101fee03faf38287870a55e4e8b2d"
+        },
+        {
+          "line": 112,
+          "text": "  %convert.108 = bf16[2,8,1,16]{3,2,1,0} convert(%slice.6)",
+          "full_line_sha256": "297a90ae31c636450cb0f5a9236357956def6cb8b9c614cad3a6e9d3523f9cc8"
+        },
+        {
+          "line": 113,
+          "text": "  ROOT %convert.107 = f32[2,8,1,16]{3,2,1,0} convert(%convert.108)",
+          "full_line_sha256": "15c3c067dbfbdfb0975b619f3a97483fbd4dd8ca8b21dae3239d6705d3fe6886"
+        },
+        {
+          "line": 117,
+          "text": "  %param_0.19 = bf16[2,8,32]{2,1,0} parameter(0)",
+          "full_line_sha256": "e590c594fc445516ebf36e85160b98a90a08544a261b0293075d570d420cc37a"
+        },
+        {
+          "line": 118,
+          "text": "  %convert.112 = f32[2,8,32]{2,1,0} convert(%param_0.19)",
+          "full_line_sha256": "32502a4bd88f0d480c5a786c506defa65671f92ad35e6b480edb1549a885f791"
+        },
+        {
+          "line": 119,
+          "text": "  %bitcast.11 = f32[2,8,2,16]{3,2,1,0} bitcast(%convert.112)",
+          "full_line_sha256": "b719d20439b76dab28e98e099423b353fc42c749cb1e2576de04acfdc88abbc6"
+        },
+        {
+          "line": 120,
+          "text": "  %slice.7 = f32[2,8,1,16]{3,2,1,0} slice(%bitcast.11), slice={[0:2], [0:8], [0:1], [0:16]}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=12}",
+          "full_line_sha256": "801375600569794e6e182372a8c19f8b15a6637e3ce906e82c78f66988b3a181"
+        },
+        {
+          "line": 121,
+          "text": "  %convert.111 = bf16[2,8,1,16]{3,2,1,0} convert(%slice.7)",
+          "full_line_sha256": "e1be0c1a96746a0e68c8ce01f67b78edcac1b4c7294a2512f05fa61616553869"
+        },
+        {
+          "line": 122,
+          "text": "  ROOT %convert.110 = f32[2,8,1,16]{3,2,1,0} convert(%convert.111)",
+          "full_line_sha256": "ccade1a7f6578901f0cda420dec2d02c7053967a0f691ba2590b644029a9715b"
+        },
+        {
+          "line": 126,
+          "text": "  %param_2.5 = s32[4,8]{1,0} parameter(2)",
+          "full_line_sha256": "03317a07d613c82530b8020d520ce07648cdda18c24199224f1060528fe95433"
+        },
+        {
+          "line": 127,
+          "text": "  %constant.0.clone.1 = s32[] constant(0)",
+          "full_line_sha256": "481280499e6482a6b81b4e6eee1e55bd2b05279c9811179cb7ca8f35457e943e"
+        },
+        {
+          "line": 128,
+          "text": "  %broadcast.33 = s32[4,8]{1,0} broadcast(%constant.0.clone.1), dimensions={}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "ca42edcf6c9c8cd681031cb0d2385419692e39064a63062be1bf82a39a2c3f89"
+        },
+        {
+          "line": 129,
+          "text": "  %lt.6 = pred[4,8]{1,0} compare(%param_2.5, %broadcast.33), direction=LT, metadata={op_name=\"jit(feature_vjp)/jvp()/lt\" stack_frame_id=11}",
+          "full_line_sha256": "758900bcd61eabbd1ca9f806cc3a304c6aaaae486bb1eb0a309ed319073dd95a"
+        },
+        {
+          "line": 130,
+          "text": "  %constant.1.clone.1 = s32[] constant(64)",
+          "full_line_sha256": "cd2465255f61308543f98550d3865ac3c38f485e1b3bd92b7552c2f024a8f5f9"
+        },
+        {
+          "line": 131,
+          "text": "  %add.16 = s32[4,8]{1,0} broadcast(%constant.1.clone.1), dimensions={}, metadata={op_name=\"jit(feature_vjp)/jvp()/add\" stack_frame_id=11}",
+          "full_line_sha256": "b468577216e744266eba57241e54c31518b9b6cb219cee684b503c79c89455a1"
+        },
+        {
+          "line": 132,
+          "text": "  %add.15 = s32[4,8]{1,0} add(%param_2.5, %add.16), metadata={op_name=\"jit(feature_vjp)/jvp()/add\" stack_frame_id=11}",
+          "full_line_sha256": "148e8695917f04024dd02163512f81699c2914617aae488f774579ebb0221245"
+        },
+        {
+          "line": 133,
+          "text": "  %select_n.3 = s32[4,8]{1,0} select(%lt.6, %add.15, %param_2.5), metadata={op_name=\"jit(feature_vjp)/jvp()/select_n\" stack_frame_id=11}",
+          "full_line_sha256": "c59fcbbcd674d560a04906625b0b1c74eedaf98472c5f56acb87b979e9083e3e"
+        },
+        {
+          "line": 134,
+          "text": "  %constant.65 = u32[1]{0} constant({0}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "d22951e5714124da9de6bdcb167afff1d1c414dd084feee6b8cdfb2306e40411"
+        },
+        {
+          "line": 135,
+          "text": "  %param_0.23 = u32[4]{0} parameter(0)",
+          "full_line_sha256": "9b8cd3db8b1917f08d8c6293ce68781dcb05e47ecb4bec0ec53addf988ff4cc5"
+        },
+        {
+          "line": 136,
+          "text": "  %param_1.12 = u32[] parameter(1)",
+          "full_line_sha256": "759335daac5be099c6a082ae1d1a8e09fe86fe51c582c2029a5abfe4b8c45c13"
+        },
+        {
+          "line": 137,
+          "text": "  %dynamic-slice.16 = u32[1]{0} dynamic-slice(%param_0.23, %param_1.12), dynamic_slice_sizes={1}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "fc1ecc0594bb47fbe4bb0f3c9e57ec398c1d28ee655a0735cc0bbe0ad2515492"
+        },
+        {
+          "line": 138,
+          "text": "  %constant.64 = u32[1]{0} constant({1}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "f733b18421910297b98795cb27b39e4b524edb19e2faf5bcf80c32bcb2ec2453"
+        },
+        {
+          "line": 139,
+          "text": "  %clamp.4 = u32[1]{0} clamp(%constant.65, %dynamic-slice.16, %constant.64), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "5fd6045e5969f2e1382ff6aa47bb70b42054b419c3af587fefa38341b3727694"
+        },
+        {
+          "line": 140,
+          "text": "  %convert.113 = s32[1]{0} convert(%clamp.4), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "ac3bbee7f54280ed09873a3fcba1a7a1ced4899332d5c157c79b5ffce854835d"
+        },
+        {
+          "line": 141,
+          "text": "  %constant.63 = s32[1]{0} constant({32}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "b741e8219035b19c9b5dc64cd8ea8ed13d756042d10bb8b28848870f20bbcb0c"
+        },
+        {
+          "line": 142,
+          "text": "  %multiply.7 = s32[1]{0} multiply(%convert.113, %constant.63), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "64f6150d669fdeccddeab2708ea9ea1939dcd5a84dac02580500bfdca764258c"
+        },
+        {
+          "line": 143,
+          "text": "  %bitcast.13 = s32[] bitcast(%multiply.7), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "4c53a970715275fb7fc4ad7f2b84c58bc4de386ba523b78c036fd03501273a43"
+        },
+        {
+          "line": 144,
+          "text": "  %broadcast.32 = s32[4,8]{1,0} broadcast(%bitcast.13), dimensions={}, metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "179cd1af2e275051691d49b55890c168a5fccc4987bd5f5a7e49e759a169afeb"
+        },
+        {
+          "line": 145,
+          "text": "  %subtract.4 = s32[4,8]{1,0} subtract(%select_n.3, %broadcast.32), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}",
+          "full_line_sha256": "f1c6c0dc491903f7932d0d1e5780724e4058c42b7018ef76c94d1b69a9f1caee"
+        },
+        {
+          "line": 146,
+          "text": "  %bitcast.12 = s32[32,1]{0,1} bitcast(%subtract.4), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}",
+          "full_line_sha256": "c27c617d2b61a2ba0be5519ba126b8e54f6d5bd64b6b20f0cd6a068862aa6f7f"
+        },
+        {
+          "line": 147,
+          "text": "  ROOT %copy.7 = s32[32,1]{1,0} copy(%bitcast.12), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}",
+          "full_line_sha256": "0015d079ea5e50d6820d176d76207b1153ba33a620591dbbf8fdf6a06ad1f857"
+        },
+        {
+          "line": 235,
+          "text": "  %param_0.46 = f32[] parameter(0)",
+          "full_line_sha256": "575ffd8792dfed9995213dfcccb2e1f46c955c69e35f22161cba02c4d0a5133c"
+        },
+        {
+          "line": 236,
+          "text": "  ROOT %broadcast.40 = f32[32,16]{1,0} broadcast(%param_0.46), dimensions={}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/broadcast_in_dim\" stack_frame_id=11}",
+          "full_line_sha256": "1e716b7ba9618bdf729f6715b36c51a5953b08fdb95ff2e9df6735bb84a1d310"
+        },
+        {
+          "line": 240,
+          "text": "  %scatter-add.8 = f32[] parameter(0), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\"}",
+          "full_line_sha256": "ea22bb2794b0124f92ec0b44e768d60636654884f7f7758b764a70fd43604e52"
+        },
+        {
+          "line": 241,
+          "text": "  %scatter-add.9 = f32[] parameter(1), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\"}",
+          "full_line_sha256": "755ebb958298aee7dd2ae796d9d2d48a51bc34f729657ab73d1ab97017b69c25"
+        },
+        {
+          "line": 242,
+          "text": "  %convert.68 = bf16[] convert(%scatter-add.8)",
+          "full_line_sha256": "2c4d59e87eaeba72a69e43208dde90826e65c1acd4a7ef6cf351fa6f5b2ab49d"
+        },
+        {
+          "line": 243,
+          "text": "  %convert.69 = bf16[] convert(%scatter-add.9)",
+          "full_line_sha256": "f02faec5e3068e5ecbf4eaf557d70bb1915bffd2af70b67aecd2b2eae6439609"
+        },
+        {
+          "line": 244,
+          "text": "  %convert.64 = f32[] convert(%convert.68)",
+          "full_line_sha256": "e8d6f3059019b25cd172fc4398df8166fb737ee7155e2167717a6d064e7794cb"
+        },
+        {
+          "line": 245,
+          "text": "  %convert.65 = f32[] convert(%convert.69)",
+          "full_line_sha256": "68b9d52a4af291ff32b4de2d7200e455b28fe957fa4d4babdbc7c151f91e9124"
+        },
+        {
+          "line": 246,
+          "text": "  %add.14 = f32[] add(%convert.64, %convert.65), metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/add\" stack_frame_id=22}",
+          "full_line_sha256": "f98a2ed4a836ea32753ddd515da2954a357464eefbb4c9f5fb956c21f04114e6"
+        },
+        {
+          "line": 247,
+          "text": "  %convert.66 = bf16[] convert(%add.14)",
+          "full_line_sha256": "561690a9be29d8cfb9e73d46d4446a88e9bcfd3cc4653c70613373f05336773e"
+        },
+        {
+          "line": 248,
+          "text": "  ROOT %convert.67 = f32[] convert(%convert.66)",
+          "full_line_sha256": "f135aed79be2b593b1152b4d8545dcb0971049ac3970e484cb8267c9ec486ca2"
+        },
+        {
+          "line": 252,
+          "text": "  %param_0.47 = f32[32,16]{1,0} parameter(0)",
+          "full_line_sha256": "cc3dbc813d4351e901eec0191efd78560e803e8f992d77095d04018ba702b22f"
+        },
+        {
+          "line": 253,
+          "text": "  %param_1.23 = s32[32,1]{1,0} parameter(1)",
+          "full_line_sha256": "8c02175a354477e704637c6b7b189e8e9fa7803cf477d3883023e89ff3c7c9ff"
+        },
+        {
+          "line": 254,
+          "text": "  %param_2.21 = f32[32,1,16]{2,1,0} parameter(2)",
+          "full_line_sha256": "d566fa469e8676ff531d5c4aeab286ebbecd851edfad5dc50418e56996d69e3b"
+        },
+        {
+          "line": 255,
+          "text": "  ROOT %scatter.2 = f32[32,16]{1,0} scatter(%param_0.47, %param_1.23, %param_2.21), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}",
+          "full_line_sha256": "c3c044e2ed5ed92461d73cf44cd23bce81c71377109847675b3899ece5883881"
+        },
+        {
+          "line": 259,
+          "text": "  %partition-id = u32[] partition-id()",
+          "full_line_sha256": "10fc008a9eff92648ddd9cdedd6b55f449ec97a3853a602757428f502a5bba79"
+        },
+        {
+          "line": 261,
+          "text": "  %param.1 = s32[2,8]{1,0} parameter(1), sharding={devices=[2,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"t\"}",
+          "full_line_sha256": "8b292c31fa01f746c4685131cd38ec9662e6f3c07bc12d1e11a41ef90f46105b"
+        },
+        {
+          "line": 262,
+          "text": "  %constant.6 = u32[4]{0} constant({0, 1, 0, 1}), metadata={op_name=\"jit(feature_vjp)/jvp()/gather\" stack_frame_id=11}",
+          "full_line_sha256": "6c694820f9b7a5f7a6640cd04410289730903af8e83ca7a3f71a4ae0ae28851d"
+        },
+        {
+          "line": 263,
+          "text": "  %param.2 = bf16[2,8,32]{2,1,0} parameter(2), sharding={devices=[2,1,1,2]<=[4] last_tile_dim_replicate}, metadata={op_name=\"c\"}",
+          "full_line_sha256": "8e9ef5690bd58735cc85ad40cd59dd2d5792b010ebdb174f8a6a4f920e63a224"
+        },
+        {
+          "line": 264,
+          "text": "  %constant.60 = f32[] constant(0)",
+          "full_line_sha256": "65b3b89a440edde5b71a9c3c4b3ade7988db97251bfe0b84a65769addf1314ad"
+        },
+        {
+          "line": 265,
+          "text": "  %all-gather = s32[4,8]{1,0} all-gather(%param.1), channel_id=1, replica_groups=mesh['axis_0'=2,'axis_1'=1,'axis_2'=2] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"t\"}",
+          "full_line_sha256": "ef6129486c624dacfdeb5fae625d414c6fa0889bdb26f53854a53a900e4c6fe9"
+        },
+        {
+          "line": 266,
+          "text": "  %convert_convert_fusion.2 = f32[2,8,1,16]{3,2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.3",
+          "full_line_sha256": "371d61d13c627d96124b4d4b9fcae8698d1a2961d96629e41706985ab22e8f6f"
+        },
+        {
+          "line": 267,
+          "text": "  %convert_convert_fusion.1 = f32[2,8,1,16]{3,2,1,0} fusion(%param.2), kind=kLoop, calls=%fused_computation.2",
+          "full_line_sha256": "df790c498c545c2a7427c67a088b6433602f0426e42f2b3896ab2a8c90f48530"
+        },
+        {
+          "line": 268,
+          "text": "  %wrapped_broadcast = f32[32,16]{1,0} fusion(%constant.60), kind=kLoop, calls=%wrapped_broadcast_computation, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/broadcast_in_dim\" stack_frame_id=11}",
+          "full_line_sha256": "a719d6c4ce8ce4a210673b75d74005823e22829413b7bded423f881770a3a899"
+        },
+        {
+          "line": 270,
+          "text": "  %bitcast_copy_fusion.1 = s32[32,1]{1,0} fusion(%constant.6, %partition-id, %all-gather), kind=kLoop, calls=%fused_computation.4, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}",
+          "full_line_sha256": "a5c3df25c49d23f80afdd70aa127ca4f9f562b4fe65c60b377e01c15f1e02a85"
+        },
+        {
+          "line": 271,
+          "text": "  %all-to-all.3 = (f32[2,8,1,16]{3,2,1,0}, f32[2,8,1,16]{3,2,1,0}) all-to-all(%convert_convert_fusion.2, %convert_convert_fusion.1), channel_id=8, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/reshard\" stack_frame_id=12}",
+          "full_line_sha256": "ec11eb179c3eeb79d6ef08cf34b616bf75df5c2226d7b267b3ecf5e2106eccec"
+        },
+        {
+          "line": 273,
+          "text": "  %get-tuple-element.7 = f32[2,8,1,16]{3,2,1,0} get-tuple-element(%all-to-all.3), index=1",
+          "full_line_sha256": "f897164f4ae90f3f2508c194403200754946f72f1419e1a8f0592708d9864820"
+        },
+        {
+          "line": 274,
+          "text": "  %get-tuple-element.6 = f32[2,8,1,16]{3,2,1,0} get-tuple-element(%all-to-all.3), index=0",
+          "full_line_sha256": "a8da1e33f5f592b990a11ec9a35511554599972b625d39e645aef08125566dfe"
+        },
+        {
+          "line": 276,
+          "text": "  %bitcast_copy_fusion = f32[32,1,16]{2,1,0} fusion(%get-tuple-element.7, %get-tuple-element.6), kind=kLoop, calls=%fused_computation.1",
+          "full_line_sha256": "6ed1bd7ce2a70afc72b660162c6930c74cbc50dffd390ea22b0cf511ccada14e"
+        },
+        {
+          "line": 279,
+          "text": "  %wrapped_scatter = f32[32,16]{1,0} fusion(%wrapped_broadcast, %bitcast_copy_fusion.1, %bitcast_copy_fusion), kind=kLoop, calls=%wrapped_scatter_computation, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/scatter-add\" stack_frame_id=11}",
+          "full_line_sha256": "460f67fac418c809853270a3065a5175b4dd3c06959e22b59610911f09f4c311"
+        },
+        {
+          "line": 281,
+          "text": "  %convert_convert_fusion = f32[32,16]{1,0} fusion(%wrapped_scatter), kind=kLoop, calls=%fused_computation, metadata={op_name=\"jit(feature_vjp)/transpose(jvp())/convert_element_type\" stack_frame_id=8}",
+          "full_line_sha256": "a5f9b2554082f0e978713e6fb6bd8dd0882851868f8c7ee26afd1acfd388fe5c"
+        }
+      ]
+    }
+  },
+  "feature_stablehlo": {
+    "path": "/private/tmp/native-jax-embedding-feature-view-cpu-results/feature_view.stablehlo.txt",
+    "sha256": "685c5304052a18ee1c0f7ea26681fa850803aa7161cc7792c537c88476cf8ee0",
+    "evidence": [
+      {
+        "line": 4,
+        "text": "    %0 = stablehlo.convert %arg0 : (tensor<64x32xf32>) -> tensor<64x32xbf16>",
+        "full_line_sha256": "9a358099a8072aee5b15eabf6d0f50d9d5289e91e38d6e42e4efc2b6480f5836"
+      },
+      {
+        "line": 5,
+        "text": "    %1 = sdy.sharding_constraint %0 <@mesh, [{\"model\"}, {\"data\"}]> : tensor<64x32xbf16>",
+        "full_line_sha256": "7e288e5d9fff03bfc9425c6d980094a108f7331a055dbb1ea10ef4d5bbd1b597"
+      },
+      {
+        "line": 7,
+        "text": "    %3 = sdy.sharding_constraint %arg1 <@mesh, [{}, {}]> : tensor<4x8xi32>",
+        "full_line_sha256": "fe143517398f7a7dfa814d01ed6fdec4cc5a653635c4227eadaebf1bb7cfbea4"
+      },
+      {
+        "line": 17,
+        "text": "    %11 = sdy.sharding_constraint %10 <@mesh, [{}, {}, {\"data\"}]> : tensor<4x8x32xbf16>",
+        "full_line_sha256": "34a82dc6e4fcd4151dc1f48f91946f8f75b70de58080eb315684cd79ffbb60c4"
+      },
+      {
+        "line": 18,
+        "text": "    %12 = sdy.sharding_constraint %11 <@mesh, [{\"data\"}, {}, {}]> : tensor<4x8x32xbf16>",
+        "full_line_sha256": "4df6cbcefb82c949afe02376b38dd717c973b2c4df5b1b9628a83daab37904fd"
+      },
+      {
+        "line": 19,
+        "text": "    %13 = sdy.sharding_constraint %arg2 <@mesh, [{}, {}, {\"data\"}]> : tensor<4x8x32xbf16>",
+        "full_line_sha256": "1e5e88b151007b516e269be7da69779ff7694a31ca57ccb7286b1aef25b26a73"
+      },
+      {
+        "line": 22,
+        "text": "    %15 = \"stablehlo.scatter\"(%14, %9, %13) <{indices_are_sorted = false, scatter_dimension_numbers = #stablehlo.scatter<update_window_dims = [2], inserted_window_dims = [0], scatter_dims_to_operand_dims = [0], index_vector_dim = 2>, unique_indices = false}> ({",
+        "full_line_sha256": "c9106b8c42352954d1f257be54873f46f882f06a81316c0c7df6bbcd5bad9a89"
+      },
+      {
+        "line": 24,
+        "text": "      %20 = stablehlo.add %arg3, %arg4 : tensor<bf16>",
+        "full_line_sha256": "3795db6719ea55710752a91e77d0f5d3534456fd8122726e6e1b048b14bf211a"
+      }
+    ]
+  },
+  "conclusion": "Feature-view CPU gradient redistributes cotangent feature chunks before full-B4/D16 scatter into[32,16] and converts the result directly to FP32 storage, with no post-scatter data sum. Legacy has the same full-batch/feature-shard grouping. Original native scatters B2/D32 partials then reduces data and slices features. CPU optimized operations use F32 legalization and explicit BF16 round-trips in scalar scatter reducers; only StableHLO expresses the BF16 add directly. Typed TPU realization remains untested.",
+  "finite_small_numerical_observation": {
+    "forward_legacy_vs_feature_view": {
+      "allclose": true,
+      "atol": 1e-05,
+      "different_elements": 0,
+      "elements": 1024,
+      "first_mismatches": [],
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "relative_l2": 0.0,
+      "rtol": 0.0001,
+      "worst_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    "vjp_legacy_vs_feature_view": {
+      "allclose": true,
+      "atol": 1e-05,
+      "different_elements": 0,
+      "elements": 2048,
+      "first_mismatches": [],
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "relative_l2": 0.0,
+      "rtol": 0.0001,
+      "worst_index": [
+        0,
+        0
+      ]
+    },
+    "vjp_legacy_vs_native": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 8,
+      "elements": 2048,
+      "first_mismatches": [
+        {
+          "index": [
+            25,
+            0
+          ],
+          "left": 0.796875,
+          "right": 0.79296875
+        },
+        {
+          "index": [
+            25,
+            2
+          ],
+          "left": 1.5078125,
+          "right": 1.515625
+        },
+        {
+          "index": [
+            25,
+            13
+          ],
+          "left": -0.2099609375,
+          "right": -0.208984375
+        },
+        {
+          "index": [
+            25,
+            15
+          ],
+          "left": 1.5625,
+          "right": 1.5703125
+        },
+        {
+          "index": [
+            25,
+            18
+          ],
+          "left": 1.2578125,
+          "right": 1.25
+        },
+        {
+          "index": [
+            25,
+            26
+          ],
+          "left": 1.09375,
+          "right": 1.0859375
+        },
+        {
+          "index": [
+            25,
+            29
+          ],
+          "left": 0.51953125,
+          "right": 0.5234375
+        },
+        {
+          "index": [
+            25,
+            30
+          ],
+          "left": -0.0859375,
+          "right": -0.0849609375
+        }
+      ],
+      "max_abs": 0.0078125,
+      "mean_abs": 2.002716064453125e-05,
+      "mismatch_count": 8,
+      "relative_l2": 0.0005118898582032608,
+      "rtol": 0.0001,
+      "worst_index": [
+        25,
+        2
+      ]
+    },
+    "vjp_native_vs_feature_view": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 8,
+      "elements": 2048,
+      "first_mismatches": [
+        {
+          "index": [
+            25,
+            0
+          ],
+          "left": 0.79296875,
+          "right": 0.796875
+        },
+        {
+          "index": [
+            25,
+            2
+          ],
+          "left": 1.515625,
+          "right": 1.5078125
+        },
+        {
+          "index": [
+            25,
+            13
+          ],
+          "left": -0.208984375,
+          "right": -0.2099609375
+        },
+        {
+          "index": [
+            25,
+            15
+          ],
+          "left": 1.5703125,
+          "right": 1.5625
+        },
+        {
+          "index": [
+            25,
+            18
+          ],
+          "left": 1.25,
+          "right": 1.2578125
+        },
+        {
+          "index": [
+            25,
+            26
+          ],
+          "left": 1.0859375,
+          "right": 1.09375
+        },
+        {
+          "index": [
+            25,
+            29
+          ],
+          "left": 0.5234375,
+          "right": 0.51953125
+        },
+        {
+          "index": [
+            25,
+            30
+          ],
+          "left": -0.0849609375,
+          "right": -0.0859375
+        }
+      ],
+      "max_abs": 0.0078125,
+      "mean_abs": 2.002716064453125e-05,
+      "mismatch_count": 8,
+      "relative_l2": 0.0005118877333944211,
+      "rtol": 0.0001,
+      "worst_index": [
+        25,
+        2
+      ]
+    }
+  },
+  "no_extra_scientific_execution": true
+}

@@ -1,0 +1,70 @@
+{
+  "scope": "Local stdlib/mechanical fixtures only; scientific runner and fsutil/upload never executed",
+  "bootstrap_sha256": "a0c2f32a09cd817cd54efacf94d8f068a5d57226c3d4701488c6d9d1a67bae36",
+  "launcher_sha256": "634647e5d386870116a5688a3cbbd7a2de2d290d2e1019d235eea2159b4d21f5",
+  "embedded_bootstrap_exact": true,
+  "all_six_embedded_scientific_files_exact": true,
+  "compute_has_explicit_declared_source_pin": true,
+  "exact_frozen_environment_reaches_compute_child": true,
+  "parent_has_no_JAX_import": true,
+  "raw_cap_bytes": 33554432,
+  "compressed_cap_bytes": 8388608,
+  "cases": [
+    {
+      "mode": "success",
+      "wrapper_exit": 0,
+      "uploads_intercepted_not_executed": 1,
+      "archive": {
+        "entries": 3,
+        "compressed_bytes": 1075,
+        "archive_members_byte_exact": true
+      }
+    },
+    {
+      "mode": "real_CPU_fixture",
+      "wrapper_exit": 0,
+      "uploads_intercepted_not_executed": 1,
+      "archive": {
+        "entries": 10,
+        "compressed_bytes": 20596,
+        "archive_members_byte_exact": true
+      }
+    },
+    {
+      "mode": "numerical_failure",
+      "wrapper_exit": 1,
+      "uploads_intercepted_not_executed": 1,
+      "archive": {
+        "entries": 3,
+        "compressed_bytes": 1088,
+        "archive_members_byte_exact": true
+      }
+    },
+    {
+      "mode": "backup_failure",
+      "wrapper_exit": 1,
+      "uploads_intercepted_not_executed": 1,
+      "archive": {
+        "entries": 3,
+        "compressed_bytes": 1082,
+        "archive_members_byte_exact": true
+      }
+    },
+    {
+      "mode": "raw_cap",
+      "cap_rejected": true,
+      "exception": "Diagnostic output exceeds32MiB; retained locally, no backup attempted",
+      "uploads_intercepted_not_executed": 0,
+      "partial_outputs_preserved_locally": true
+    },
+    {
+      "mode": "compressed_cap",
+      "cap_rejected": true,
+      "exception": "Compressed diagnostics exceed8MiB; retained locally, no backup attempted",
+      "uploads_intercepted_not_executed": 0,
+      "partial_outputs_preserved_locally": true
+    }
+  ],
+  "hardware_executed": false,
+  "network_or_object_storage_operation": false
+}

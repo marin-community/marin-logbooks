@@ -1,0 +1,166 @@
+{
+  "schema": "embedding-feature-view-mechanical-probes.v1",
+  "classification": "Mechanical injected failures only, outside scientific fixture; no fixture/seed search or production mutation",
+  "runner_sha256": "b912e0ba24c1c994dd5410e254452eeb92237225ece0b32fd6601046b7dd8183",
+  "inherited_helper_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+  "config_sha256": "fc522040884dd3ed2ea9d7c5ee1827b481fe9ce5841a411bd1226ae8a9845554",
+  "manifest_sha256": "4e49f903a3fccd8275e677f535dc27c259ea9a35017df7187c5c058fd61f176b",
+  "outcomes": {
+    "nonfinite": {
+      "exit_code": 1,
+      "report": "/private/tmp/native-jax-embedding-feature-view-mechanical-proofs/nonfinite/report.json",
+      "sha256": "c7ba8d12bbe91052bac784b9cb532078092d116fbe5835789fa0c352f54d6122",
+      "bytes": 3910,
+      "partial_receipt_before_nonzero": true,
+      "no_successful_comparison_claim": true,
+      "failure": {
+        "comparisons_completed": false,
+        "kind": "nonfinite_outputs",
+        "outputs": [
+          {
+            "dtype": "float32",
+            "elements": 4,
+            "nan_count": 1,
+            "negative_inf_count": 1,
+            "nonfinite_count": 3,
+            "output_index": 0,
+            "positive_inf_count": 1,
+            "shape": [
+              2,
+              2
+            ]
+          }
+        ],
+        "partial_report": true,
+        "stage": "mechanical_nonfinite_receipt_only",
+        "variant": "feature_view",
+        "verified_common_inputs": {
+          "mechanical_injection": true,
+          "scientific_fixture_not_executed": true
+        }
+      }
+    },
+    "wrong-input": {
+      "exit_code": 1,
+      "report": "/private/tmp/native-jax-embedding-feature-view-mechanical-proofs/wrong-input/report.json",
+      "sha256": "f0708492eacfba1a0f474acd57ea3f96ce143d487f2566e05d425627ad929885",
+      "bytes": 21531,
+      "partial_receipt_before_nonzero": true,
+      "no_successful_comparison_claim": true,
+      "failure": {
+        "comparisons_completed": false,
+        "details": {
+          "mismatch": {
+            "global_shards": {
+              "actual": [
+                {
+                  "device": {
+                    "description": "cpu:0",
+                    "id": 0,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(None, None, None), slice(None, None, None))"
+                },
+                {
+                  "device": {
+                    "description": "cpu:1",
+                    "id": 1,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(None, None, None), slice(None, None, None))"
+                },
+                {
+                  "device": {
+                    "description": "cpu:2",
+                    "id": 2,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(None, None, None), slice(None, None, None))"
+                },
+                {
+                  "device": {
+                    "description": "cpu:3",
+                    "id": 3,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(None, None, None), slice(None, None, None))"
+                }
+              ],
+              "expected": [
+                {
+                  "device": {
+                    "description": "cpu:0",
+                    "id": 0,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(0, 32, None), slice(0, 16, None))"
+                },
+                {
+                  "device": {
+                    "description": "cpu:1",
+                    "id": 1,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(32, 64, None), slice(0, 16, None))"
+                },
+                {
+                  "device": {
+                    "description": "cpu:2",
+                    "id": 2,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(0, 32, None), slice(16, 32, None))"
+                },
+                {
+                  "device": {
+                    "description": "cpu:3",
+                    "id": 3,
+                    "kind": "cpu",
+                    "platform": "cpu",
+                    "process_index": 0
+                  },
+                  "index": "(slice(32, 64, None), slice(16, 32, None))"
+                }
+              ]
+            },
+            "spec": {
+              "actual": [
+                null,
+                null
+              ],
+              "expected": [
+                "model",
+                "data"
+              ]
+            }
+          },
+          "tensor": "master"
+        },
+        "partial_report": true,
+        "stage": "actual_input_boundary",
+        "variant": "feature_view"
+      }
+    },
+    "wrong-feature-ast": {
+      "exit_code": 1,
+      "expected_guard_error": true,
+      "scientific_output_directory_created": false,
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/native-jax-embedding-feature-view-mechanical-proofs/wrong-ast-prep/runner.py\", line 215, in <module>\n    main()\n  File \"/private/tmp/native-jax-embedding-feature-view-mechanical-proofs/wrong-ast-prep/runner.py\", line 116, in main\n    raise ValueError(\"Feature-view full AST/statement-count differs\")\nValueError: Feature-view full AST/statement-count differs\n"
+    }
+  },
+  "no_arrays_saved": true
+}
