@@ -34,7 +34,7 @@ class NativeLlamaSharding:
     """Concrete Llama layouts for batch, FSDP storage and tensor parallelism.
 
     FSDP shards the input dimension of column projections and the output
-    dimension of row projections in storage. Forward computation gathers only
+    dimension of row projections in storage. Projection computation gathers only
     that FSDP placement; tensor-parallel heads/MLP channels remain partitioned.
     Layer dimensions are replicated.
     """
@@ -383,8 +383,11 @@ class NativeLlamaModel(eqx.Module):
             pos_ids = jnp.broadcast_to(jnp.arange(tokens.shape[1]), tokens.shape)
         pos_ids = reshard(pos_ids, self.sharding.tokens)
         mask = AttentionMask.causal() if mask is None else mask
-        weight = reshard(self.token_embeddings, self.sharding.column_compute)
-        hidden = weight.at[tokens].get(out_sharding=self.sharding.residual)
+        embedding_batch = tuple(axis for axis in self.sharding.batch_axes if axis != self.sharding.fsdp_axis) or None
+        weight = reshard(self.token_embeddings, self.sharding.column_storage)
+        embedding_tokens = reshard(tokens, P(embedding_batch, None))
+        hidden = weight.at[embedding_tokens].get(out_sharding=P(embedding_batch, None, self.sharding.fsdp_axis))
+        hidden = reshard(hidden, self.sharding.residual)
         if self.embedding_norm is not None:
             hidden = self.embedding_norm(hidden)
         hidden = self.layers.fold(hidden, mask, pos_ids)

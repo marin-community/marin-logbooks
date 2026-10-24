@@ -9,7 +9,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import pytest
-from jax.sharding import AxisType, Mesh, PartitionSpec as P
+from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P
 
 from levanter.grug.attention import AttentionMask
 from levanter.grug.loss import fused_linear_softmax_cross_entropy_loss
@@ -136,11 +136,46 @@ def test_native_llama_matches_named_logits_loss_and_gradients(options, compute_d
 
 
 @pytest.mark.tpu
-def test_native_llama_explicit_fsdp_tensor_parallel_forward_and_gradient_layout():
-    device_count = len(jax.devices())
-    if device_count < 4:
-        pytest.skip("Requires at least four CPU devices; run with JAX_NUM_CPU_DEVICES=4")
-    mesh = Mesh(np.asarray(jax.devices()[:4]).reshape(2, 2), ("data", "model"), axis_types=(AxisType.Explicit,) * 2)
+@pytest.mark.parametrize(
+    "mesh_shape,mesh_axes,layout",
+    [
+        pytest.param((1,), ("data",), NativeLlamaSharding(), id="single-replicated"),
+        pytest.param((1, 2), ("data", "tensor"), NativeLlamaSharding(model_axis="tensor"), id="tensor-parallel-only"),
+        pytest.param(
+            (2, 2), ("replica", "tensor"), NativeLlamaSharding(("replica",), None, "tensor"), id="batch-tensor-no-fsdp"
+        ),
+        pytest.param(
+            (2, 2), ("data", "model"), NativeLlamaSharding(("data",), "data", "model"), id="shared-batch-fsdp-tensor"
+        ),
+        pytest.param(
+            (2, 2),
+            ("replica", "shard"),
+            NativeLlamaSharding(("replica", "shard"), "shard"),
+            id="multi-batch-fsdp-no-tensor",
+        ),
+        pytest.param(
+            (2, 2, 2),
+            ("replica", "shard", "tensor"),
+            NativeLlamaSharding(("replica",), "shard", "tensor"),
+            id="independent-batch-fsdp-tensor",
+        ),
+        pytest.param(
+            (2, 2, 2),
+            ("replica", "shard", "tensor"),
+            NativeLlamaSharding(("replica", "shard"), "shard", "tensor"),
+            id="multi-batch-fsdp-tensor",
+        ),
+    ],
+)
+def test_native_llama_explicit_fsdp_tensor_parallel_forward_and_gradient_layout(mesh_shape, mesh_axes, layout):
+    device_count = int(np.prod(mesh_shape))
+    if len(jax.devices()) < device_count:
+        pytest.skip(f"Requires {device_count} devices; run with JAX_NUM_CPU_DEVICES={device_count}")
+    mesh = Mesh(
+        np.asarray(jax.devices()[:device_count]).reshape(mesh_shape),
+        mesh_axes,
+        axis_types=(AxisType.Explicit,) * len(mesh_axes),
+    )
     config = NativeLlamaConfig(
         vocab_size=32,
         hidden_dim=16,
@@ -151,15 +186,18 @@ def test_native_llama_explicit_fsdp_tensor_parallel_forward_and_gradient_layout(
         max_seq_len=8,
     )
     with jax.set_mesh(mesh):
-        reference = config.build(key=jax.random.key(0))
-        layout = NativeLlamaSharding(batch_axes=("data",), fsdp_axis="data", model_axis="model")
-        model = config.build(key=jax.random.key(1), sharding=layout).from_state_dict(reference.to_state_dict())
-        tokens = jnp.arange(32).reshape(4, 8) % config.vocab_size
-        weights = jnp.ones_like(tokens, dtype=jnp.float32)
+        reference = config.build(key=jax.random.key(0), sharding=NativeLlamaSharding(batch_axes=(mesh_axes[0],)))
+        state = reference.to_state_dict()
+        model = config.build(key=jax.random.key(1), sharding=layout).from_state_dict(state)
+        for name, value in model.to_state_dict().items():
+            np.testing.assert_array_equal(value, state[name])
+        tokens = jax.device_put(jnp.arange(64).reshape(8, 8) % config.vocab_size, NamedSharding(mesh, layout.tokens))
+        weights = jax.device_put(jnp.ones_like(tokens, dtype=jnp.float32), NamedSharding(mesh, layout.tokens))
         reference_logits = eqx.filter_jit(lambda m: m(tokens))(reference)
         sharded_logits = eqx.filter_jit(lambda m: m(tokens))(model)
         np.testing.assert_allclose(sharded_logits, reference_logits, atol=1e-5, rtol=1e-5)
         assert sharded_logits.sharding.spec == layout.logits
+        assert model.token_embeddings.sharding.spec == layout.column_storage
         assert model.layers.stacked.self_attn.q_proj.weight.sharding.spec == P(None, *layout.column_storage)
         loss, grads = eqx.filter_jit(
             eqx.filter_value_and_grad(lambda m: m.next_token_loss(tokens, weights, loss_implementation="xla"))
