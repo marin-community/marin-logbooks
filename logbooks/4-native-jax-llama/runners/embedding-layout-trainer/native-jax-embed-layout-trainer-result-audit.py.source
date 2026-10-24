@@ -1,0 +1,388 @@
+"""Read-only retained-result audit; NumPy arithmetic is limited to 20-loss vectors.
+
+No JAX/model imports, workload execution, client, remote query or download.
+Writes only the requested independent audit JSON and Markdown next to this file.
+"""
+
+from copy import deepcopy
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
+from pathlib import Path, PurePosixPath
+import tarfile
+
+import numpy as np
+
+ROOT = Path('/private/tmp/native-jax-embed-layout-trainer-results')
+PRIOR = Path('/private/tmp/native-jax-query-scale-15b-trainer-v2-results')
+PREP = Path('/private/tmp/native-jax-embed-layout-trainer-preparation/final')
+SOURCE = Path('/private/tmp/marin-native-jax-embedding-layout-candidate')
+ARCHIVE = Path('/private/tmp/native-jax-embed-layout-trainer-diagnostics.tar.gz')
+OUTPUT = Path('/private/tmp/native-jax-embed-layout-trainer-result-audit')
+GROUPS = [
+    'parameters', 'gradients', 'updates', 'parameters_after_one_step',
+    'adam_mu', 'adam_nu', 'adam_count', 'execution_parameters_after_one_step',
+    'execution_adam_mu', 'execution_adam_nu', 'execution_adam_count', 'activations',
+]
+RAW_GROUPS = [
+    'parameters_raw', 'gradients_raw', 'updates_raw',
+    'optimizer_state_initial', 'optimizer_state_after_one_step',
+]
+MODULES = {
+    'native': 'lib/levanter/src/levanter/models/llama_native.py',
+    'core': 'lib/levanter/src/levanter/grug/attention/_core.py',
+    'levanter': 'lib/levanter/src/levanter/__init__.py',
+    'haliax': 'lib/haliax/src/haliax/__init__.py',
+    'benchmark': 'lib/levanter/scripts/bench/bench_llama_native.py',
+}
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def load(path):
+    return json.loads(path.read_text())
+
+
+def physical(value):
+    result = {key: deepcopy(item) for key, item in value.items() if key != 'axis_types'}
+    if 'spec' in result:
+        result['spec'] = [
+            normalized_axis(entry, result['mesh']) for entry in result['spec']
+        ]
+    return result
+
+
+def normalized_axis(entry, mesh):
+    axes = entry if isinstance(entry, list) else [entry]
+    nontrivial = [axis for axis in axes if axis is not None and mesh[axis] > 1]
+    return nontrivial[0] if len(nontrivial) == 1 else nontrivial or None
+
+
+def raw_canonical(manifest):
+    """Rename model tree fields and flatten contiguous attention output axes.
+
+    The legacy Q output is [KV heads, query groups, head dim], K/V output is
+    [KV heads, head dim], and O input is [query heads, head dim]. Model sharding
+    is on the outer head dimension; all other merged dimensions are replicated.
+    The resulting flattened contiguous partitions equal native projection axes.
+    """
+    result = {}
+    for name, original in manifest.items():
+        key = name.replace('[<flat index 0>]', '').replace('.transformer.', '.')
+        key = key.replace('.embeddings.token_embeddings.weight', '.token_embeddings')
+        item = physical(original)
+        shape, spec = item['shape'], item.get('spec')
+        if '.self_attn.' in key and spec is not None:
+            if any(f'.{projection}_proj.' in key for projection in ['q', 'k', 'v']) and len(shape) > 3:
+                merged = spec[1:-1]
+                assert all(entry is None for entry in merged[1:]), (key, spec)
+                item['shape'] = [shape[0], math.prod(shape[1:-1]), shape[-1]]
+                item['spec'] = [spec[0], merged[0], spec[-1]]
+            elif '.o_proj.' in key and len(shape) > 3:
+                assert all(entry is None for entry in spec[3:]), (key, spec)
+                item['shape'] = [shape[0], shape[1], math.prod(shape[2:])]
+                item['spec'] = [spec[0], spec[1], spec[2]]
+        assert key not in result
+        result[key] = item
+    return result
+
+
+def vector_metrics(left, right, config):
+    # Exact original benchmark semantics: float32 arrays and norms, denominator
+    # converted to Python float, then NumPy weak-scalar division under NumPy2.3.5.
+    left, right = np.asarray(left, dtype=np.float32), np.asarray(right, dtype=np.float32)
+    difference = np.abs(left - right)
+    return {
+        'max_abs': float(difference.max(initial=0)),
+        'mean_abs': float(difference.mean()),
+        'relative_l2': float(np.linalg.norm(left - right) / max(float(np.linalg.norm(left)), 1e-30)),
+        'allclose': bool(np.allclose(left, right, atol=config['parity_atol'], rtol=config['parity_rtol'])),
+    }
+
+
+def summarized(parity):
+    result = {}
+    for label, value in parity.items():
+        tensors = value['tensors']
+        assert value['allclose'] == all(item['allclose'] for item in tensors.values())
+        assert value['max_abs'] == max((item['max_abs'] for item in tensors.values()), default=0)
+        result[label] = {
+            'tensors': len(tensors), 'elementwise_pass': value['allclose'],
+            'elementwise_failed_tensor_count': sum(not item['allclose'] for item in tensors.values()),
+            'max_abs': value['max_abs'],
+            'max_tensor_relative_l2': max(item['relative_l2'] for item in tensors.values()),
+            'failed_tensors': {name: item for name, item in tensors.items() if not item['allclose']},
+        }
+    return result
+
+
+def acceptance_from_metrics(parity, dtype, config):
+    result = {}
+    for label, value in parity.items():
+        limit = None
+        if dtype == 'float32':
+            if label in ['updates', 'parameters_after_one_step', 'execution_parameters_after_one_step']:
+                limit = config['update_parameter_relative_l2']
+            elif label == 'measured_step_losses':
+                limit = config['loss_trajectory_relative_l2']
+        result[label] = {
+            'metric': 'elementwise' if limit is None else 'relative_l2',
+            'relative_l2_limit': limit,
+            'accepted': value['allclose'] if limit is None else all(
+                tensor['relative_l2'] <= limit for tensor in value['tensors'].values()
+            ),
+        }
+    return result
+
+
+def main():
+    assert np.__version__ == '2.3.5'
+    job, freeze = load(PREP / 'job-config.json'), load(PREP / 'final-freeze.json')
+    assert sha((PREP / 'final-freeze.json').read_bytes()) == '81cabe594fc7ca913a67da20d773a6bf0cd3641fe756690fdcbcc6e694b1eb46'
+    for name, item in freeze['files'].items():
+        data = (PREP / name).read_bytes()
+        assert len(data) == item['bytes'] and sha(data) == item['sha256'], name
+    source_hashes = {name: sha((SOURCE / name).read_bytes()) for name in job['source_file_sha256']}
+    assert source_hashes == job['source_file_sha256']
+    assert ARCHIVE.stat().st_size == 769921
+    assert sha(ARCHIVE.read_bytes()) == '76658efb0defdea28da25cb31901f427b1728cd814fef38dadff1437a1a8776d'
+    members = {}
+    with tarfile.open(ARCHIVE) as tar:
+        for member in tar.getmembers():
+            path = PurePosixPath(member.name)
+            assert member.isfile() and not path.is_absolute() and '..' not in path.parts
+            assert member.name not in members
+            assert path.suffix == '.json' or path.name.endswith('hlo.txt')
+            assert member.size <= job['archive_limits']['per_file_bytes']
+            data = tar.extractfile(member).read()
+            assert data == (ROOT / member.name).read_bytes()
+            members[member.name] = {'bytes': len(data), 'sha256': sha(data)}
+    assert len(members) == 16
+    assert set(members) == {str(path.relative_to(ROOT)) for path in ROOT.rglob('*') if path.is_file()}
+    assert sum(item['bytes'] for item in members.values()) == 11848613
+    assert not any(path.is_symlink() for path in ROOT.rglob('*'))
+    submission = load(ROOT / 'submission-provenance.json')
+    assert submission == job | {'actual_source_file_sha256': source_hashes, 'parent_jax_imported': False}
+    probe = load(ROOT / 'device-probe.json')
+    assert probe['backend'] == 'tpu' and probe['process_count'] == 1
+    assert probe['global_device_count'] == probe['local_device_count'] == 4
+    assert all(device['kind'] == 'TPU v5' and device['process_index'] == 0 for device in probe['devices'])
+    guards, outcomes = load(ROOT / 'matched-guards.json'), load(ROOT / 'case-outcomes.json')
+    assert len(outcomes) == 2 and all(item['returncode'] == 1 and item['matched_guards_passed'] for item in outcomes)
+    imports, cases = {}, {}
+    for case in job['cases']:
+        dtype = case['name']
+        report, previous = load(ROOT / dtype / 'compare.json'), load(PRIOR / dtype / 'compare.json')
+        provenance = report['provenance']
+        assert provenance['config'] == job['expected_benchmark_config'] | {'compute_dtype': dtype, 'profile_steps': 0}
+        assert all(provenance[key] == value for key, value in job['expected_runtime'].items())
+        assert provenance['xla_flags'] == job['scientific_environment']['XLA_FLAGS']
+        assert provenance['libtpu_init_args'] == job['scientific_environment']['LIBTPU_INIT_ARGS']
+        assert provenance['jax_default_matmul_precision'] == case['matmul_precision']
+        assert provenance['git_commit'] == job['source_commit'] == '2b17db78aedc0a603664238fbfa0bc0c68542d2b'
+        assert provenance['source_tree_state'] == 'clean'
+        assert provenance['parameter_count'] == 1531037696
+        assert provenance['parameter_sha256'] == provenance['native_parameter_sha256'] == job['expected_parameter_sha256']
+        assert provenance['batch_sha256'] == job['expected_batch_sha256']
+        assert provenance['parameter_dtype'] == provenance['optimizer_moment_dtype'] == 'float32'
+        assert provenance['source_bundle_marker'] == job['job_name']
+        assert report['initial_parameter_parity']['allclose'] and report['initial_parameter_parity']['max_abs'] == 0
+        imp = load(ROOT / dtype / 'runtime-imports.json')
+        assert imp['actual_source_file_sha256'] == source_hashes
+        assert imp['imported_module_sha256'] == {name: source_hashes[path] for name, path in MODULES.items()}
+        assert imp['modules'] == {name: '/app/' + path for name, path in MODULES.items()}
+        assert imp['verified'] and imp['imported_module_hashes_verified'] and imp['dont_write_bytecode']
+        assert imp['native_activations_ast_sha256'] == job['native_activations_ast_sha256']
+        assert imp['source_pin_declared'] == job['source_commit'] and imp['actual_function_contains_barrier']
+        imports[dtype] = imp
+        assert guards[dtype]['passed'] and all(guards[dtype]['checks'].values())
+        assert guards[dtype]['runtime_child_imports_verified'] and not guards[dtype]['numerical_comparison_valid']
+        layouts = {variant: report['variants'][variant]['layouts'] for variant in ['legacy', 'native']}
+        canonical = {}
+        raw = {}
+        for group in GROUPS:
+            left = {key: physical(value) for key, value in layouts['legacy'][group].items()}
+            right = {key: physical(value) for key, value in layouts['native'][group].items()}
+            assert left == right, (dtype, group)
+            for variant in ['legacy', 'native']:
+                assert layouts[variant][group] == previous['variants'][variant]['layouts'][group]
+            canonical[group] = {'tensors': len(left), 'physical_equal': True, 'unchanged_vs8aa_each_variant': True}
+        for group in RAW_GROUPS:
+            left, right = raw_canonical(layouts['legacy'][group]), raw_canonical(layouts['native'][group])
+            assert left == right, (dtype, group, left.keys() ^ right.keys())
+            for variant in ['legacy', 'native']:
+                assert layouts[variant][group] == previous['variants'][variant]['layouts'][group]
+            raw[group] = {'entries': len(left), 'canonicalized_physical_equal': True, 'unchanged_vs8aa_each_variant': True}
+        normal_diagnostic = {}
+        for normal, diagnostic in [('execution_parameters_after_one_step', 'parameters_after_one_step'),
+                                   ('execution_adam_mu', 'adam_mu'), ('execution_adam_nu', 'adam_nu'),
+                                   ('execution_adam_count', 'adam_count')]:
+            assert all(layouts[v][normal] == layouts[v][diagnostic] for v in ['legacy', 'native'])
+            normal_diagnostic[normal] = {'physical_layout_exact_diagnostic': True,
+                'cross_variant_error_summary_exact_diagnostic': report['parity'][normal] == report['parity'][diagnostic]}
+        summaries = summarized(report['parity'])
+        assert summaries['gradients']['tensors'] == 255
+        accepted = acceptance_from_metrics(report['parity'], dtype, provenance['config'])
+        assert accepted == report['acceptance']
+        assert report['comparison_valid'] == all(item['accepted'] for item in accepted.values()) == False
+        assert report['native_speedup'] is report['native_median_speedup'] is None
+        trajectories = {v: report['variants'][v]['measured_step_losses'] for v in ['legacy', 'native']}
+        assert all(len(values) == 20 for values in trajectories.values())
+        assert all(report['variants'][v]['final_step'] == 26 and report['variants'][v]['profile'] is None for v in trajectories)
+        metrics = vector_metrics(trajectories['legacy'], trajectories['native'], provenance['config'])
+        assert metrics == report['parity']['measured_step_losses']['tensors']['losses'], (dtype, metrics)
+        oldmetrics = vector_metrics(previous['variants']['legacy']['measured_step_losses'], previous['variants']['native']['measured_step_losses'], previous['provenance']['config'])
+        assert oldmetrics == previous['parity']['measured_step_losses']['tensors']['losses']
+        assert acceptance_from_metrics(previous['parity'], dtype, previous['provenance']['config']) == previous['acceptance']
+        mismatch = [index + 1 for index, (left, right) in enumerate(zip(trajectories['legacy'], trajectories['native'])) if left != right]
+        failed_loss_indices = [index + 1 for index, (left, right) in enumerate(zip(trajectories['legacy'], trajectories['native'])) if not np.isclose(np.float32(left), np.float32(right), atol=1e-5, rtol=1e-4)]
+        historical = {}
+        for variant in ['legacy', 'native']:
+            old_losses = previous['variants'][variant]['measured_step_losses']
+            old_hlo = (PRIOR / dtype / f'{variant}.optimized_hlo.txt').read_text().splitlines()
+            new_hlo = (ROOT / dtype / f'{variant}.optimized_hlo.txt').read_text().splitlines()
+            differing_lines = [
+                {'line': index + 1, 'old': left, 'new': right}
+                for index, (left, right) in enumerate(zip(old_hlo, new_hlo)) if left != right
+            ]
+            if variant == 'legacy':
+                assert len(old_hlo) == len(new_hlo) and len(differing_lines) == 1
+                difference = differing_lines[0]
+                assert difference['old'] == '11 {file_name_id=8 function_name_id=10 line=24 end_line=24 column=0 end_column=0}'
+                assert difference['new'] == '11 {file_name_id=8 function_name_id=10 line=35 end_line=35 column=0 end_column=0}'
+            historical[variant] = {
+                'loss_vector_bitwise_equal': np.array_equal(np.asarray(trajectories[variant], np.float32), np.asarray(old_losses, np.float32)),
+                'loss_vector_difference': vector_metrics(old_losses, trajectories[variant], provenance['config']),
+                'HLO_files': {kind: {
+                    'old_sha256': sha((PRIOR / dtype / f'{variant}.{kind}_hlo.txt').read_bytes()),
+                    'new_sha256': sha((ROOT / dtype / f'{variant}.{kind}_hlo.txt').read_bytes()),
+                    'byte_exact': (PRIOR / dtype / f'{variant}.{kind}_hlo.txt').read_bytes() == (ROOT / dtype / f'{variant}.{kind}_hlo.txt').read_bytes(),
+                } for kind in ['optimized']},
+                'stablehlo_byte_exact': (PRIOR / dtype / f'{variant}.stablehlo.txt').read_bytes() == (ROOT / dtype / f'{variant}.stablehlo.txt').read_bytes(),
+                'legacy_optimized_only_difference_is_source_location_metadata': variant == 'legacy',
+                'legacy_optimized_metadata_difference': differing_lines if variant == 'legacy' else None,
+            }
+        excluded = ['git_commit', 'source_bundle_marker', 'config']
+        assert all(value == previous['provenance'][key] for key, value in provenance.items() if key not in excluded)
+        old_config = deepcopy(previous['provenance']['config']);old_config['profile_steps'] = 0
+        assert old_config == provenance['config']
+        old_summaries = summarized(previous['parity'])
+        current_gradients, old_gradients = report['parity']['gradients']['tensors'], previous['parity']['gradients']['tensors']
+        selected_names = ['model.embed_tokens.weight', 'model.layers.0.self_attn.o_proj.weight']
+        cases[dtype] = {
+            'report_sha256': members[f'{dtype}/compare.json']['sha256'],
+            'provenance_and_imports_verified': True, 'config': provenance['config'],
+            'canonical_manifests': canonical, 'canonical_tensor_checks': sum(item['tensors'] for item in canonical.values()),
+            'raw_manifests': raw, 'normal_vs_diagnostic': normal_diagnostic,
+            'acceptance_recomputed_from_all_retained_tensor_metrics': accepted,
+            'all_comparison_summaries': summaries,
+            'failed_gate_names': [name for name, value in accepted.items() if not value['accepted']],
+            'old_failed_gate_names': [name for name, value in previous['acceptance'].items() if not value['accepted']],
+            'gradient_tensors_passing': 255 - summaries['gradients']['elementwise_failed_tensor_count'],
+            'old_gradient_tensors_passing': 255 - old_summaries['gradients']['elementwise_failed_tensor_count'],
+            'old_comparison_summary_counts': {name: {key: value for key, value in metrics.items() if key != 'failed_tensors'} for name, metrics in old_summaries.items()},
+            'first_gradient_selected': {name: {'old': old_gradients[name], 'new': current_gradients[name]} for name in selected_names},
+            'gradient_metric_entries_changed_vs8aa': [name for name in current_gradients if current_gradients[name] != old_gradients[name]],
+            'trajectory': {'retained_losses': trajectories, 'recomputed_float32_norm_metrics': metrics,
+                'old_recomputed_float32_norm_metrics': oldmetrics, 'first_nonidentical_measured_loss_index': mismatch[0] if mismatch else None,
+                'elementwise_failed_measured_loss_indices': failed_loss_indices},
+            'historical_controls': historical,
+            'raw_timings_unaccepted': {v: report['variants'][v]['timing'] for v in trajectories},
+            'comparison_valid': False, 'speed_ratio': None,
+        }
+    assert imports['float32']['pycache_prefix'] != imports['bfloat16']['pycache_prefix']
+    receipt_files = [
+        Path('/private/tmp/native-jax-embed-layout-trainer-0412-parent.txt'),
+        Path('/private/tmp/native-jax-embed-layout-trainer-terminal-attempt.txt'),
+        Path('/private/tmp/native-jax-embed-layout-trainer-terminal-logs.txt'),
+        Path('/private/tmp/native-jax-embed-layout-trainer-download-proof.json'),
+    ]
+    parent, attempt, logs = (path.read_text() for path in receipt_files[:3])
+    assert 'State: failed' in parent and 'failures=1  preemptions=0' in parent
+    assert 'State: failed  exit=1' in attempt and '742883b56b34db6a' in attempt
+    assert logs.count('Numerical parity failed; no speed ratio is valid') == 2
+    backup_line = next(line for line in logs.splitlines() if '| DIAGNOSTIC_BACKUP ' in line)
+    backup = json.loads(backup_line.split('| DIAGNOSTIC_BACKUP ', 1)[1])
+    assert backup['sha256'] == sha(ARCHIVE.read_bytes()) and backup['uncompressed_bytes'] == 11848613
+    assert backup['compressed_bytes'] == 769921 and backup['entries'] == len(members)
+    assert {item['path']: item['bytes'] for item in backup['files']} == {name: item['bytes'] for name, item in members.items()}
+    result_line = next(line for line in logs.splitlines() if '| DIAGNOSTIC_BACKUP_RESULT ' in line)
+    assert json.loads(result_line.split('| DIAGNOSTIC_BACKUP_RESULT ', 1)[1])['returncode'] == 0
+    download = load(receipt_files[3]);assert download['ledger_total_after'] == 1079221971
+    report = {
+        'schema': 'native-jax-embed-layout-trainer-result-independent-audit.v1',
+        'status': 'PASS_RESULT_INTEGRITY_AUDIT_BOTH_FULL_TRAINER_COMPARISONS_REJECTED',
+        'reviewed_at_utc': datetime.now(timezone.utc).isoformat(),
+        'audit_script_sha256': sha(Path(__file__).read_bytes()),
+        'scope': 'Retained local archive/results and captured terminal receipts only; no current live query, download, model/runtime/JAX execution, new hardware, client/RPC/network or source changes. NumPy2.3.5 recomputes only20-value loss vectors.',
+        'source_commit': job['source_commit'], 'source_parent': '8aa8674d10894728ed0b455ae14e14f46457cf9f',
+        'frozen_preparation_sha256': sha((PREP / 'final-freeze.json').read_bytes()),
+        'frozen_preparation_artifacts_verified': len(freeze['files']),
+        'terminal_observation': {'job_id': '/dlwh/' + job['job_name'], 'task_attempt': '0:0',
+            'attempt_uid': '742883b56b34db6a', 'recorded_state': 'FAILED', 'task_exit': 1,
+            'recorded_failures': 1, 'recorded_preemptions': 0,
+            'note': 'Parent summary prints exit=0 but its error and actual task attempt both record exit1. This is a parent-summary field, not evidence of successful compute.'},
+        'archive': {'path': str(ARCHIVE), 'sha256': sha(ARCHIVE.read_bytes()), 'bytes': ARCHIVE.stat().st_size,
+            'raw_bytes': sum(item['bytes'] for item in members.values()), 'members': members,
+            'all_members_regular_safe_unique_and_local_byte_exact': True, 'backup_success_in_terminal_log': True,
+            'download_ledger_bytes_from_retained_receipt': download['ledger_total_after']},
+        'source13_and_import5': {'all_scientific_hashes_exact': True, 'actual_source_file_sha256': source_hashes,
+            'actual_critical_module_paths_and_hashes_exact': True, 'both_native_AST_guards_exact': True,
+            'distinct_fresh_pycache_and_disabled_bytecode': True,
+            'remote_Git_clean_and_pin_are_declared_not_independently_git_checked': True},
+        'prepared_historical_flags': {'ready': job['ready'], 'dispatch_authorized': job['dispatch_authorized'],
+            'note': 'Copied preparation flags describe pre-dispatch preparation; retained unchanged and not mistaken for the observed terminal state.'},
+        'cases': cases,
+        'evidence_limits': [
+            'Raw gradient/update/parameter/Adam arrays were not retained. Audit recomputes gate selection over every retained per-tensor metric and validates consistency, but cannot independently recalculate their elementwise allclose, coordinate mismatch counts, signs or tensor norms.',
+            'The20 measured losses are retained, so their float32 original-semantics norm/max/mean/allclose were independently recomputed exactly.',
+            'Identical normal/diagnostic cross-variant error summaries and layouts do not prove each variant diagnostic and normal raw state is identical; those raw cross-executable arrays are absent.',
+            'Recorded first-gradient results are diagnostic executable evidence; independent normal first-state parameter/Adam and full no-hook trajectory checks remain separately rejected/accepted as listed.',
+            'Canonical/raw manifest comparison proves recorded external physical placement equality after explicit attention-axis canonicalization, not every internal compiled intermediate placement.',
+            'Cross-job old/new timings use different workers and are descriptive only. Both new comparisons reject, so no speed ratio is valid.',
+        ],
+        'next_localization': [
+            'Existing local HLO can compare unchanged legacy versus changed native embedding and remaining layer0 o_proj backward reductions. New full-Trainer BF16 embedding metric is exactly zero while the old o_proj failure remains; this narrows the first-gradient residual without proving its cause.',
+            'Both native trajectories still diverge; FP32 first-state gates pass yet20-step trajectory fails. A future separately authorized capture could locate the earliest normal-step gradient/update divergence on identical evolving states, and inspect near-zero gradients under Adam epsilon1e-8. Current summary-only artifacts cannot identify offending coordinates or establish this mechanism.',
+        ],
+        'result_archival_review_passed': True, 'blocking_artifact_findings': [],
+        'full_trainer_accepted': False, 'canonical_adoption_approved': False,
+        'speed_ratio': None, 'rerun_or_recovery_authorized_by_audit': False,
+        'receipt_sha256': {str(path): sha(path.read_bytes()) for path in receipt_files},
+    }
+    OUTPUT.with_suffix('.json').write_text(json.dumps(report, indent=2) + '\n')
+    fp32, bf16 = cases['float32'], cases['bfloat16']
+    md = f'''# Independent full-Trainer embedding-layout result audit
+
+Both full-Trainer comparisons remain rejected. Integrity review passes for archival; canonical adoption is unapproved and all speed ratios remain null.
+
+The retained terminal receipts record task attempt0:0 failed with exit1, one failure and zero preemptions. Both dtype children completed the comparisons, failed numerical acceptance and successfully backed up diagnostics. The parent summary's exit0 field is contradicted by its explicit task error and actual attempt exit1; it is not success evidence. This audit observes retained receipts, without a new live query.
+
+Archive SHA256 `{sha(ARCHIVE.read_bytes())}`, 769,921 compressed bytes, 11,848,613 raw bytes: all16 safe regular members match extracted local bytes. The49 frozen preparation artifacts,13 scientific source hashes,5 actual imported module paths/hashes, native AST, exact flags/runtime, initial parameters/batch and all12 canonical external physical groups verify. All5 raw placement groups agree after explicit contiguous attention-dimension canonicalization; old/new recorded external placements are unchanged.
+
+| Gate | FP32 | BF16 |
+|---|---:|---:|
+| First diagnostic gradients |255/255 pass|254/255 pass|
+| Diagnostic and normal Adam moments/count |pass|pass|
+| First diagnostic updates/parameters and normal parameters |pass by original per-tensor L2 gates|reject original elementwise gates|
+|20-loss trajectory |L2={fp32['trajectory']['recomputed_float32_norm_metrics']['relative_l2']:.12g}, reject >.001|max abs={bf16['trajectory']['recomputed_float32_norm_metrics']['max_abs']:.12g}, reject elementwise|
+
+BF16 embedding-gradient error becomes exactly zero; old layer0 o_proj remains the sole gradient failure (max1.52587890625e-5). Other254 first-gradient metric entries are exactly unchanged. This improves first-state metrics but does not fix the independent trajectory or parameter/update gates. BF16 trajectory max error worsens from.722797393799 to1.20410490036. FP32 trajectory L2 decreases from.003661956871 to.002327910392, but still rejects. FP32 embedding-gradient summary also changes slightly, so this is not evidence that its native path is unchanged.
+
+Both legacy20-loss vectors reproduce the old controls exactly. Legacy StableHLO is byte-identical; each optimized legacy HLO differs only in one source-location metadata record (line24 to35). Both native vectors and HLO files change. These controls strengthen attribution to the bounded candidate experiment without establishing the cause of the remaining errors. Exact old/new vectors and all failed tensor summaries are in the JSON.
+
+Loss-vector metrics were independently recomputed with NumPy2.3.5 and the original float32 norm semantics. Raw gradient/update/parameter/Adam arrays were not retained, so their per-tensor metrics and elementwise checks cannot be recomputed from coordinates; gate logic and every retained metric were checked. Matching normal/diagnostic error summaries do not establish raw cross-executable state identity. Prepared dispatch_authorized=false is historical copied configuration and remains unchanged.
+
+Existing HLO can narrow the remaining BF16 o_proj backward path. A future separately authorized diagnostic could find the earliest normal-step divergence on matched evolving states and inspect near-zero gradients under Adam epsilon1e-8. Current retained summaries do not prove that causal mechanism. No model/JAX/runtime execution, new TPU, client/RPC/network, download, remote query or source change was performed.
+'''
+    OUTPUT.with_suffix('.md').write_text(md)
+    print(json.dumps({'status': report['status'], 'float32_loss_L2': fp32['trajectory']['recomputed_float32_norm_metrics']['relative_l2'],
+        'bfloat16_gradient_pass': bf16['gradient_tensors_passing'], 'bfloat16_loss_max_abs': bf16['trajectory']['recomputed_float32_norm_metrics']['max_abs'],
+        'JSON_sha256': sha(OUTPUT.with_suffix('.json').read_bytes()), 'MD_sha256': sha(OUTPUT.with_suffix('.md').read_bytes())}))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,54 @@
+from pathlib import Path
+import hashlib,json,subprocess
+import numpy as np
+root=Path('/private/tmp/native-jax-embed-layout-trainer-results')
+source=Path('/private/tmp/marin-native-jax-embedding-layout-candidate')
+pin='2b17db78aedc0a603664238fbfa0bc0c68542d2b'
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()==pin
+assert not subprocess.check_output(['git','status','--porcelain'],cwd=source,text=True).strip()
+provenance=json.loads((root/'submission-provenance.json').read_text())
+for rel,h in provenance['source_file_sha256'].items():
+ assert hashlib.sha256((source/rel).read_bytes()).hexdigest()==h
+ assert hashlib.sha256(subprocess.check_output(['git','show',pin+':'+rel],cwd=source)).hexdigest()==h
+assert provenance['actual_source_file_sha256']==provenance['source_file_sha256']
+labels=['parameters','gradients','updates','parameters_after_one_step','adam_mu','adam_nu','adam_count','execution_parameters_after_one_step','execution_adam_mu','execution_adam_nu','execution_adam_count','activations']
+def physical(v):
+ d={k:x for k,x in v.items() if k!='axis_types'}
+ if 'spec' in d:
+  def clean(e):
+   axes=e if isinstance(e,list) else [e];axes=[a for a in axes if a is not None and d['mesh'][a]>1]
+   return axes[0] if len(axes)==1 else axes or None
+  d['spec']=[clean(e) for e in d['spec']]
+ return d
+out={'source':pin,'clean_local_pin_verified':True,'all13_actual_disk_and_git_blob_hashes_exact':True,'cases':{}}
+for case in ['float32','bfloat16']:
+ report=json.loads((root/case/'compare.json').read_text()); imports=json.loads((root/case/'runtime-imports.json').read_text());p=report['provenance'];cfg=p['config']
+ assert imports['verified'] and imports['imported_module_hashes_verified']
+ assert imports['actual_source_file_sha256']==provenance['source_file_sha256']
+ for module,rel in zip(['benchmark','core','haliax','levanter','native'],['lib/levanter/scripts/bench/bench_llama_native.py','lib/levanter/src/levanter/grug/attention/_core.py','lib/haliax/src/haliax/__init__.py','lib/levanter/src/levanter/__init__.py','lib/levanter/src/levanter/models/llama_native.py']):
+  assert imports['modules'][module]=='/app/'+rel and imports['imported_module_sha256'][module]==provenance['source_file_sha256'][rel]
+ assert p['git_commit']==pin and p['source_tree_state']=='clean'
+ assert p['parameter_sha256']==p['native_parameter_sha256']==provenance['expected_parameter_sha256']
+ assert p['batch_sha256']==provenance['expected_batch_sha256']
+ assert cfg['parity_atol']==1e-5 and cfg['parity_rtol']==1e-4 and cfg['update_parameter_relative_l2']==.005 and cfg['loss_trajectory_relative_l2']==.001
+ for k,v in provenance['expected_benchmark_config'].items(): assert cfg[k]==v
+ assert cfg['compute_dtype']==case and cfg['profile_steps']==0
+ v=report['variants'];layouts=0
+ for label in labels:
+  left,right=v['legacy']['layouts'][label],v['native']['layouts'][label];assert left.keys()==right.keys()
+  for key in left: assert physical(left[key])==physical(right[key]),(case,label,key)
+  layouts+=len(left)
+ accepted={}
+ for k,comparison in report['parity'].items():
+  metric='elementwise';limit=None;ok=comparison['allclose']
+  if case=='float32' and k in ['updates','parameters_after_one_step','execution_parameters_after_one_step','measured_step_losses']:
+   metric='relative_l2';limit=.001 if k=='measured_step_losses' else .005;ok=all(t['relative_l2']<=limit for t in comparison['tensors'].values())
+  accepted[k]={'accepted':ok,'metric':metric,'relative_l2_limit':limit}
+ assert accepted==report['acceptance'];assert report['comparison_valid']==all(x['accepted'] for x in accepted.values())==False
+ assert report['native_speedup'] is report['native_median_speedup'] is None
+ left=np.asarray(v['legacy']['measured_step_losses'],dtype=np.float32);right=np.asarray(v['native']['measured_step_losses'],dtype=np.float32);assert left.shape==right.shape==(20,)
+ l2=float(np.linalg.norm(left-right)/max(float(np.linalg.norm(left)),1e-30));maximum=float(np.abs(left-right).max())
+ assert l2==report['parity']['measured_step_losses']['tensors']['losses']['relative_l2'];assert maximum==report['parity']['measured_step_losses']['max_abs']
+ for variant in v.values(): assert variant['final_step']==26 and len(variant['timing']['step_seconds'])==20
+ out['cases'][case]={'canonical_groups':len(labels),'canonical_tensor_placements_checked':layouts,'five_actual_imports_and13_disk_hashes_exact':True,'acceptance_logic_exact':True,'failed_gates':[k for k,x in accepted.items() if not x['accepted']],'loss_vector_relative_l2_recomputed_float32':l2,'loss_vector_max_abs_recomputed':maximum,'accepted_ratios_null':True,'raw_layout_scope':'Fresh separate scientific reviewer checks raw tree mapping; this root proof checks all12 canonical groups.'}
+Path('/private/tmp/native-jax-embed-layout-trainer-root-result-proof.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(out,indent=2))
