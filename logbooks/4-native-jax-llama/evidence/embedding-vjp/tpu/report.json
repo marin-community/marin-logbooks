@@ -1,0 +1,3389 @@
+{
+  "acceptance": {
+    "atol": 1e-05,
+    "full_trainer_accepted": false,
+    "isolated_bf16_vjp_allclose": false,
+    "rtol": 0.0001,
+    "speed_ratio": null
+  },
+  "common_operands_identical_global_bytes_and_physical_layout": true,
+  "comparison_valid": false,
+  "comparisons": {
+    "forward_legacy_vs_native": {
+      "allclose": true,
+      "atol": 1e-05,
+      "different_elements": 0,
+      "elements": 33554432,
+      "first_mismatches": [],
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "relative_l2": 0.0,
+      "rtol": 0.0001,
+      "worst_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    "legacy_vs_fp32_scatter_diagnostic": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 1942393,
+      "elements": 134217728,
+      "first_mismatches": [
+        {
+          "index": [
+            79,
+            0
+          ],
+          "left": 1.15625,
+          "right": 1.156982421875
+        },
+        {
+          "index": [
+            79,
+            3
+          ],
+          "left": -0.76171875,
+          "right": -0.7626953125
+        },
+        {
+          "index": [
+            79,
+            5
+          ],
+          "left": -0.9453125,
+          "right": -0.9461669921875
+        },
+        {
+          "index": [
+            79,
+            6
+          ],
+          "left": 1.140625,
+          "right": 1.1402206420898438
+        },
+        {
+          "index": [
+            79,
+            7
+          ],
+          "left": 1.078125,
+          "right": 1.08203125
+        },
+        {
+          "index": [
+            79,
+            8
+          ],
+          "left": -1.546875,
+          "right": -1.54296875
+        },
+        {
+          "index": [
+            79,
+            13
+          ],
+          "left": -0.8203125,
+          "right": -0.8212890625
+        },
+        {
+          "index": [
+            79,
+            14
+          ],
+          "left": 0.86328125,
+          "right": 0.86279296875
+        }
+      ],
+      "max_abs": 0.03515625,
+      "mean_abs": 4.086088783350483e-05,
+      "mismatch_count": 1938941,
+      "relative_l2": 0.0008710461755118038,
+      "rtol": 0.0001,
+      "worst_index": [
+        47658,
+        1495
+      ]
+    },
+    "native_vs_fp32_scatter_diagnostic": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 1942260,
+      "elements": 134217728,
+      "first_mismatches": [
+        {
+          "index": [
+            79,
+            0
+          ],
+          "left": 1.15625,
+          "right": 1.156982421875
+        },
+        {
+          "index": [
+            79,
+            3
+          ],
+          "left": -0.76171875,
+          "right": -0.7626953125
+        },
+        {
+          "index": [
+            79,
+            5
+          ],
+          "left": -0.9453125,
+          "right": -0.9461669921875
+        },
+        {
+          "index": [
+            79,
+            6
+          ],
+          "left": 1.140625,
+          "right": 1.1402206420898438
+        },
+        {
+          "index": [
+            79,
+            7
+          ],
+          "left": 1.078125,
+          "right": 1.08203125
+        },
+        {
+          "index": [
+            79,
+            8
+          ],
+          "left": -1.546875,
+          "right": -1.54296875
+        },
+        {
+          "index": [
+            79,
+            13
+          ],
+          "left": -0.8203125,
+          "right": -0.8212890625
+        },
+        {
+          "index": [
+            79,
+            14
+          ],
+          "left": 0.86328125,
+          "right": 0.86279296875
+        }
+      ],
+      "max_abs": 0.03125,
+      "mean_abs": 4.085219167149212e-05,
+      "mismatch_count": 1938808,
+      "relative_l2": 0.0008707994283271719,
+      "rtol": 0.0001,
+      "worst_index": [
+        1129,
+        1634
+      ]
+    },
+    "vjp_legacy_vs_native": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 26892,
+      "elements": 134217728,
+      "first_mismatches": [
+        {
+          "index": [
+            582,
+            1
+          ],
+          "left": 0.828125,
+          "right": 0.82421875
+        },
+        {
+          "index": [
+            582,
+            6
+          ],
+          "left": -0.271484375,
+          "right": -0.2734375
+        },
+        {
+          "index": [
+            582,
+            11
+          ],
+          "left": 1.015625,
+          "right": 1.0234375
+        },
+        {
+          "index": [
+            582,
+            13
+          ],
+          "left": -0.609375,
+          "right": -0.60546875
+        },
+        {
+          "index": [
+            582,
+            14
+          ],
+          "left": 1.03125,
+          "right": 1.0234375
+        },
+        {
+          "index": [
+            582,
+            15
+          ],
+          "left": 1.2421875,
+          "right": 1.234375
+        },
+        {
+          "index": [
+            582,
+            22
+          ],
+          "left": -0.9140625,
+          "right": -0.91015625
+        },
+        {
+          "index": [
+            582,
+            23
+          ],
+          "left": 0.0234375,
+          "right": 0.02734375
+        }
+      ],
+      "max_abs": 0.03125,
+      "mean_abs": 1.4240179098123917e-06,
+      "mismatch_count": 26892,
+      "relative_l2": 0.000257512987032736,
+      "rtol": 0.0001,
+      "worst_index": [
+        582,
+        85
+      ]
+    }
+  },
+  "config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+  "dimensions": {
+    "B": 8,
+    "D": 2048,
+    "S": 2048,
+    "V": 65536
+  },
+  "dont_write_bytecode": true,
+  "fixture": {
+    "benchmark_batch_sha256": "d65acfa301bad7db399ff9df86cbbc150c649317dd357b3a26c53c9eaea9caa4",
+    "bf16_rms": 0.9999986256813564,
+    "cotangent_kind": "Single frozen synthetic unit-RMS fixture, not captured full-model cotangent",
+    "cotangent_seed": 20261023,
+    "cotangent_sha256": "1b96c1651a0e69deedca890c4c504e36ceae26e23dc85e5473e5fd0874f9c402",
+    "master_sha256": "875f398b09716aa6b176c42312bd6180a73059163c090f08f7bca0f9745f0090",
+    "pre_quantization_rms": 0.9999999447617529,
+    "token_sha256": "b5c2a311538c4df9fc90881fc098356324212264fd2eea244f69c100da819472",
+    "weights_kind": "Deterministic synthetic FP32 weights, not full-model parameters"
+  },
+  "fresh_pycache_prefix": "/tmp/native-embedding-vjp-pycache-rp7v57nx",
+  "global_devices": [
+    {
+      "coordinates": [
+        0,
+        0,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_0(process=0,(0,0,0,0))",
+      "id": 0,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    },
+    {
+      "coordinates": [
+        1,
+        0,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_1(process=0,(1,0,0,0))",
+      "id": 1,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    },
+    {
+      "coordinates": [
+        0,
+        1,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_2(process=0,(0,1,0,0))",
+      "id": 2,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    },
+    {
+      "coordinates": [
+        1,
+        1,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_3(process=0,(1,1,0,0))",
+      "id": 3,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    }
+  ],
+  "grouping_result": {
+    "cpu_is_tpu_grouping_evidence": false,
+    "rule": "If retained minimal HLO does not reproduce the original batch-scatter/reduction versus feature-redistribution grouping, report non-reproduction. Do not infer original numerical cause or modify production.",
+    "status": "requires_independent_static_dataflow_review"
+  },
+  "import_proof": {
+    "bench_llama_native": {
+      "path": "/app/lib/levanter/scripts/bench/bench_llama_native.py",
+      "sha256": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77"
+    },
+    "haliax.axis": {
+      "path": "/app/lib/haliax/src/haliax/axis.py",
+      "sha256": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830"
+    },
+    "haliax.core": {
+      "path": "/app/lib/haliax/src/haliax/core.py",
+      "sha256": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540"
+    },
+    "haliax.jax_utils": {
+      "path": "/app/lib/haliax/src/haliax/jax_utils.py",
+      "sha256": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d"
+    },
+    "haliax.nn.embedding": {
+      "path": "/app/lib/haliax/src/haliax/nn/embedding.py",
+      "sha256": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8"
+    },
+    "haliax.nn.mup": {
+      "path": "/app/lib/haliax/src/haliax/nn/mup.py",
+      "sha256": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144"
+    },
+    "haliax.partitioning": {
+      "path": "/app/lib/haliax/src/haliax/partitioning.py",
+      "sha256": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08"
+    },
+    "levanter.models.llama": {
+      "path": "/app/lib/levanter/src/levanter/models/llama.py",
+      "sha256": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f"
+    },
+    "levanter.models.llama_native": {
+      "path": "/app/lib/levanter/src/levanter/models/llama_native.py",
+      "sha256": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984"
+    },
+    "levanter.trainer": {
+      "path": "/app/lib/levanter/src/levanter/trainer.py",
+      "sha256": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+    }
+  },
+  "large_abstract": {
+    "dimensions": {
+      "B": 8,
+      "D": 2048,
+      "S": 2048,
+      "V": 65536
+    },
+    "limitation": "CPU abstract tracing only; no TPU/compiler grouping or runtime parity evidence",
+    "no_large_array_allocated": true,
+    "no_large_lower_compile_execute": true,
+    "outputs": {
+      "fp32_scatter": [
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=TPU v5, num_cores=2, platform=tpu), spec=P('model', 'data'))"
+        }
+      ],
+      "legacy": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "None"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "None"
+        }
+      ],
+      "native": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=TPU v5, num_cores=2, platform=tpu), spec=P('data', None, None))"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=TPU v5, num_cores=2, platform=tpu), spec=P('model', 'data'))"
+        }
+      ]
+    }
+  },
+  "libtpu_init_args": " --xla_tpu_use_enhanced_launch_barrier=true",
+  "limitations": [
+    "A synthetic common cotangent, not unavailable full-model cotangent.",
+    "Native is guarded production source fragment, not an absent public native embed method or full activations.",
+    "Full Trainer remains numerically rejected regardless of isolated result.",
+    "CPU mechanics and abstract proof do not validate TPU numerical behavior or compiler grouping.",
+    "FP32 accumulation is a diagnostic higher-precision reference, not an exact oracle.",
+    "No automatic full-HLO grouping proof; independent actual-entrypoint static review required."
+  ],
+  "limits": {
+    "files": 10,
+    "hlo_file_bytes": 2097152,
+    "hlo_total_bytes": 12582912,
+    "json_bytes": 262144,
+    "total_bytes": 13631488,
+    "truncation_allowed": false
+  },
+  "local_devices": [
+    {
+      "coordinates": [
+        0,
+        0,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_0(process=0,(0,0,0,0))",
+      "id": 0,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    },
+    {
+      "coordinates": [
+        1,
+        0,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_1(process=0,(1,0,0,0))",
+      "id": 1,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    },
+    {
+      "coordinates": [
+        0,
+        1,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_2(process=0,(0,1,0,0))",
+      "id": 2,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    },
+    {
+      "coordinates": [
+        1,
+        1,
+        0
+      ],
+      "core_on_chip": 0,
+      "description": "TPU_3(process=0,(1,1,0,0))",
+      "id": 3,
+      "kind": "TPU v5",
+      "platform": "tpu",
+      "process_index": 0
+    }
+  ],
+  "manifest_sha256": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+  "mode": "tpu",
+  "numerical_exit_code": 1,
+  "process_count": 1,
+  "python": "3.12.15",
+  "results": {
+    "fp32_scatter": {
+      "hlo_bytes": 14037,
+      "hlo_sha256": "06bffdeb94c2047679af57cf9a98269c4bf5e197f742f5e71bc14ea30a249093",
+      "input_hashes": {
+        "cotangent": "1b96c1651a0e69deedca890c4c504e36ceae26e23dc85e5473e5fd0874f9c402",
+        "master": "875f398b09716aa6b176c42312bd6180a73059163c090f08f7bca0f9745f0090",
+        "tokens": "b5c2a311538c4df9fc90881fc098356324212264fd2eea244f69c100da819472"
+      },
+      "inputs_physical": {
+        "cotangent": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        "master": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            65536,
+            2048
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        },
+        "tokens": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(4, 8, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(4, 8, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "int32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048
+          ],
+          "spec": [
+            "data",
+            null
+          ]
+        }
+      },
+      "output_hashes": [
+        "fe6783cd0d80124b763b6df4bcc3d69557329bee79bb3f363fe1de9131dbd921"
+      ],
+      "outputs_physical": [
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            65536,
+            2048
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        }
+      ],
+      "scatter_and_collective_lines": [
+        {
+          "line": 49,
+          "text": "  ROOT %scatter.2 = f32[65536,2048]{1,0:T(8,128)} scatter(%param_0, %transpose.4, %transpose.5), update_window_dims={1}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone, metadata={op_name=\"jit(fp32_scatter)/scatter-add\" stack_frame_id=3}"
+        },
+        {
+          "line": 76,
+          "text": "  %all-reduce = f32[65536,2048]{1,0:T(8,128)} all-reduce(%scatter_fusion), channel_id=2, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_0'}, use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(fp32_scatter)/scatter-add\" stack_frame_id=3}"
+        }
+      ]
+    },
+    "legacy": {
+      "hlo_bytes": 46140,
+      "hlo_sha256": "63957104e4c89d14604bb67b306f567adcdd79166f2a1a763de7e5ae47a08aff",
+      "input_hashes": {
+        "cotangent": "1b96c1651a0e69deedca890c4c504e36ceae26e23dc85e5473e5fd0874f9c402",
+        "master": "875f398b09716aa6b176c42312bd6180a73059163c090f08f7bca0f9745f0090",
+        "tokens": "b5c2a311538c4df9fc90881fc098356324212264fd2eea244f69c100da819472"
+      },
+      "inputs_physical": {
+        "cotangent": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        "master": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            65536,
+            2048
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        },
+        "tokens": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(4, 8, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(4, 8, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "int32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048
+          ],
+          "spec": [
+            "data",
+            null
+          ]
+        }
+      },
+      "output_hashes": [
+        "bbd826b3350d220e8123cd8ac6d6a901a896fd4c252e618f2c5bcf603cac5b0b",
+        "9457030706c0aba80d55f167ac8736e40ecc4a38ab5d06c627726ce9bb266b4e"
+      ],
+      "outputs_physical": [
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            65536,
+            2048
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        }
+      ],
+      "scatter_and_collective_lines": [
+        {
+          "line": 208,
+          "text": "  ROOT %scatter.3 = bf16[32768,1024]{1,0:T(8,128)(2,1)} scatter(%param_0.5, %transpose.14, %transpose.15), update_window_dims={2}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=2, indices_are_sorted=true, to_apply=%region_0.0.clone, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 258,
+          "text": "  %all-reduce = bf16[2,4,2048,1024]{3,2,1,0:T(8,128)(2,1)} all-reduce(%bitcast.21), channel_id=17, replica_groups=[2,2]<=[4], use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=12}"
+        },
+        {
+          "line": 259,
+          "text": "  %all-to-all = bf16[2,4,2048,1024]{3,2,1,0:T(8,128)(2,1)} all-to-all(%all-reduce), channel_id=18, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_0'}, dimensions={0}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=12}"
+        },
+        {
+          "line": 277,
+          "text": "  %all-to-all.1 = bf16[4,2048,2,1024]{3,1,0,2:T(8,128)(2,1)} all-to-all(%copy.8), channel_id=31, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_0'}, dimensions={2}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=12}"
+        }
+      ]
+    },
+    "native": {
+      "hlo_bytes": 36725,
+      "hlo_sha256": "81c19cc1c588e519e36653871e9a46506fcf0c5f45d340b506fc3eac50f624e3",
+      "input_hashes": {
+        "cotangent": "1b96c1651a0e69deedca890c4c504e36ceae26e23dc85e5473e5fd0874f9c402",
+        "master": "875f398b09716aa6b176c42312bd6180a73059163c090f08f7bca0f9745f0090",
+        "tokens": "b5c2a311538c4df9fc90881fc098356324212264fd2eea244f69c100da819472"
+      },
+      "inputs_physical": {
+        "cotangent": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        "master": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            65536,
+            2048
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        },
+        "tokens": {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(4, 8, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(4, 8, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((4, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "int32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048
+          ],
+          "spec": [
+            "data",
+            null
+          ]
+        }
+      },
+      "output_hashes": [
+        "bbd826b3350d220e8123cd8ac6d6a901a896fd4c252e618f2c5bcf603cac5b0b",
+        "9275018669467c3696dcee320c19702ab718e53c313f7e9d44f257bc1438dbdf"
+      ],
+      "outputs_physical": [
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                4,
+                2048,
+                2048
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32768,
+                1024
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=((8, 128),), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "tpu:0:0",
+            "tpu:0:1",
+            "tpu:0:2",
+            "tpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_0(process=0,(0,0,0,0))",
+                "id": 0,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  0,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_1(process=0,(1,0,0,0))",
+                "id": 1,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(0, 1024, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  0,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_2(process=0,(0,1,0,0))",
+                "id": 2,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32768, None), slice(1024, 2048, None))"
+            },
+            {
+              "device": {
+                "coordinates": [
+                  1,
+                  1,
+                  0
+                ],
+                "core_on_chip": 0,
+                "description": "TPU_3(process=0,(1,1,0,0))",
+                "id": 3,
+                "kind": "TPU v5",
+                "platform": "tpu",
+                "process_index": 0
+              },
+              "index": "(slice(32768, 65536, None), slice(1024, 2048, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            65536,
+            2048
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        }
+      ],
+      "scatter_and_collective_lines": [
+        {
+          "line": 203,
+          "text": "  ROOT %scatter.3 = bf16[32768,2048]{1,0:T(8,128)(2,1)} scatter(%param_0.5, %transpose.15, %transpose.16), update_window_dims={2}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=2, indices_are_sorted=true, to_apply=%region_0.0.clone, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=6}"
+        },
+        {
+          "line": 224,
+          "text": "  %all-reduce.2 = bf16[32768,2048]{1,0:T(8,128)(2,1)} all-reduce(%input), channel_id=11, replica_groups={{0,2},{1,3}}, use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}"
+        },
+        {
+          "line": 271,
+          "text": "  %all-reduce = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)} all-reduce(%broadcast_select_fusion), channel_id=5, replica_groups=mesh['axis_0'=2,'axis_1'=2] {'axis_1'}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=6}"
+        }
+      ]
+    }
+  },
+  "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+  "schema": "native-jax-common-embedding-vjp.v1",
+  "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "source_guard": {
+    "legacy_embed": {
+      "ast_sha256": "b7ad5c5d486db5126a66a28b1630461c7a8acb578cdcde91b208765e19b310a8",
+      "statement_count": 3
+    },
+    "native_activations": {
+      "ast_sha256": "4fb95befb804cfca40063261892b2330d7a595388e427623f40dff5daef0e9f1",
+      "statement_count": 12
+    },
+    "native_fragment": {
+      "assignment_count": 3,
+      "ast_sha256": "d0f487382beba426daad76068e8dc47b4c43f6fccfad55b9d555814d81f40f4b",
+      "claim": "Exact three source assignments plus return; no full activations, no native public embed method",
+      "source_lines": [
+        [
+          381,
+          381
+        ],
+        [
+          386,
+          386
+        ],
+        [
+          387,
+          387
+        ]
+      ]
+    },
+    "source_identity": {
+      "claim": "Exact scientific source/import bytes verified; declared pin is not runtime Git proof when metadata is absent",
+      "declared_source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+      "file_hashes_verified": true,
+      "git_metadata_available": false,
+      "runtime_git_commit": null
+    }
+  },
+  "source_sha256": {
+    "lib/haliax/src/haliax/axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "lib/haliax/src/haliax/core.py": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540",
+    "lib/haliax/src/haliax/jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "lib/haliax/src/haliax/nn/embedding.py": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8",
+    "lib/haliax/src/haliax/nn/mup.py": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144",
+    "lib/haliax/src/haliax/partitioning.py": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+    "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+  },
+  "versions": {
+    "equinox": "0.13.2",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "jmp": "0.0.4",
+    "numpy": "2.3.5",
+    "optax": "0.2.6"
+  },
+  "xla_flags": "--xla_allow_excess_precision=false"
+}

@@ -135,6 +135,12 @@ CPU HLO files are stored in deterministic gzip so original trailing whitespace r
 
 Read the [CPU mismatch report and all six lowered graphs](evidence/embedding-vjp/cpu-v2/) before interpreting mechanics success. The original full-Trainer cotangent is unavailable; the diagnostic uses a frozen synthetic cotangent, and CPU BF16 legalization does not prove TPU accumulation order. The nonfinite-injection receipt is a labeled mechanical fixture. The separate [generation audit](analysis/generation-replacement/audit.md) is an interface plan without implementation or runtime evidence.
 
+## Inspect the actual TPU embedding result
+
+The [actual report and six complete graphs](evidence/embedding-vjp/tpu/) and [independent review](analysis/embedding-vjp/tpu-independent-review.md) supersede the earlier prepared-only state for this one frozen control. Common operands and forward results match, while the BF16 weight VJP fails the original criteria. This isolates a lookup-transpose mismatch with typed TPU grouping; it does not identify the cause of the rejected full-Trainer gradient or authorize source adoption.
+
+The [actual dispatch/terminal receipts](evidence/embedding-vjp/dispatch/) retain the prior source-archive pin and exact-once identity. Claim state is a historical pre-RPC phase; use the saved terminal monitor/parent/attempt for lifecycle. No job requery is needed to read this archive. The original report's stale CPU wording under `large_abstract.limitation` is disclosed in the notebook/review and is not rewritten. Recover `.txt.gz` files by removing only `.gz` and verify original byte lengths/SHA256s from `original_uncompressed` in `manifest.json`. Runtime assertions and per-coordinate metrics remain reports because raw arrays were not retained. The prospective feature compute view remains a separately gated diagnostic, with no unpublished implementation included here.
+
 ## Checkpoint and profile boundaries
 
 The historical native checkpoint runner lives in Git at `lib/levanter/scripts/bench/smoke_llama_native_checkpoint.py`; exact measured snapshots are under `runners/historical/`. Use their original config/runtime requirements from the preserved revisions. The recorded distributed test uses two processes, four local TPU devices per process, and data4/model2. Checkpoint arrays stayed region-local. This archive retains assertions and recovered metadata, not the roughly 55 GB of arrays per run or missing concrete per-rank result JSON.

@@ -1,0 +1,30 @@
+I20261023 19:18:58 8401625472 iris.cluster.config Loading config from lib/iris/config/marin.yaml
+Not all requested scopes were granted by the authorization server, missing scopes email.
+Attempt: /dlwh/levanter-native-jax-v5p-embedding-vjp-8aa-20261024/0:0  (current)
+UID: 3dc902c43b02f1ae
+State: failed  exit=1
+Worker: marin-tpu-v5p-preemptible-8-us-central1-20261023-2232-109ae95e-worker-0
+Error: Exit code: 1. stderr: Copied 1 file(s)
+Output: uploaded 18.78 KiB gs://marin-us-central1/tmp/ttl=7d/iris/task-outputs/dlwh/levanter-native-jax-v5p-embedding-vjp-8aa-20261024/0/3dc902c43b02f1ae/outputs.tar.zst (7-day retention)
+
+Root cause:
+   + wrapt==1.17.3
+   + xxhash==3.6.0
+   + yarl==1.22.0
+   + zipp==3.23.0
+   + zstandard==0.25.0
+  [iris setup] step 2/2
+  installing iris runtime deps
+  Resolved 14 packages in 75ms
+  Installed 5 packages in 4ms
+   + linkify-it-py==2.2.0
+   + mdit-py-plugins==0.6.1
+   + memray==1.20.0
+   + py-spy==0.4.2
+   + textual==8.2.8
+  [transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+  {"mode": "tpu", "isolated_bf16_vjp_allclose": false, "files": 7, "bytes": 210815, "full_trainer_accepted": false, "tpu_executed": true, "comparison_valid": false, "numerical_exit_code": 1}
+  EMBEDDING_DIAGNOSTIC_BACKUP {"archive_sha256": "285b2ff6baa2acf9c7ea69052320feaba5a6141a731699585c33f637aacac127", "compressed_bytes": 21757, "compute_returncode": 1, "entries": 8, "uncompressed_bytes": 212015, "uri": "gs://marin-us-central1/tmp/ttl=7d/native-jax/embedding-vjp-8aa-20261024/diagnostics.tar.gz"}
+  /iris/outputs-diagnostics.tar.gz -> gs://marin-us-central1/tmp/ttl=7d/native-jax/embedding-vjp-8aa-20261024/diagnostics.tar.gz
+  EMBEDDING_DIAGNOSTIC_BACKUP_RESULT {"returncode": 0, "uri": "gs://marin-us-central1/tmp/ttl=7d/native-jax/embedding-vjp-8aa-20261024/diagnostics.tar.gz"}
+  Copied 1 file(s)
