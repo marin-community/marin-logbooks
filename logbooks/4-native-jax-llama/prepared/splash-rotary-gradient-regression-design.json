@@ -1,0 +1,94 @@
+{
+  "status": "Prepared scratch candidate, actual CPU4 abstract import/forward+reverse shape proof passed on both frozen sources. No physical reproduction claim.",
+  "script": "/private/tmp/native_jax_splash_rotary_gradient_regression.py",
+  "script_sha256": "df8adbe36ca75457ba3a845129e4d761f61655c44b07f2340edba9811b249c8b",
+  "script_bytes": 9569,
+  "public_api_composition": {
+    "named": "DefaultRotaryEmbeddingsConfig.build(...)(namedQ/K,runtimepositions) then public dot_product_attention(attn_backend=SPLASH,attention_dtype=BF16). GQA query axes KVHeads\u00d7Groups match existing named source.",
+    "native": "apply_rotary then public grug.attention(...implementation=tpu_splash).",
+    "not_used": "No direct private Splash wrapper, handcoded RoPE/attention reference, customVJP, barrier/HLO assertion, sourcepatch or mock."
+  },
+  "workload": {
+    "batch": 4,
+    "sequence": 512,
+    "query_heads": 16,
+    "kv_heads": 4,
+    "head_dim_primary": 128,
+    "optional_control_head_dim": 64,
+    "mesh": "Actual4devices,2data\u00d72model. NamedAuto/nativeExplicit, samecanonical physical inputs/outputs.",
+    "master_dtype": "float32",
+    "compute_dtype": "bfloat16",
+    "positions": "Runtime B\u00d7S arange0..511",
+    "mask": "Causal",
+    "matmul_precision": "default",
+    "cotangent": "Deterministic fixedseed173 standardnormalF32, normalizedunitRMS; meanCE normalization absent. This is ordinary unit-Jacobian test normalization, not chosen error amplification.",
+    "head128_reason": "Scale1/sqrt128 rounds to non-power-of-twoBF16. Head64 uses exactpower-of-two1/8 and is a useful optional control."
+  },
+  "checks": {
+    "outputs": [
+      "pointwise forward",
+      "query masterVJP",
+      "key masterVJP",
+      "value masterVJP",
+      "scalarobjective"
+    ],
+    "atol": 1e-05,
+    "rtol": 0.0001,
+    "metrics": [
+      "max_abs",
+      "mean_abs",
+      "relativeL2 nameddenominator",
+      "different_elements",
+      "allclose"
+    ],
+    "gradient_cast": "MasterF32 inputs castBF16 inside differentiated objective; resulting inputVJPs areF32.",
+    "physical_boundary": "Both variants use canonical out_shardings for output/gradients. AbstractAuto sharding can displayNone; physical runtime report recordsactualpartitions."
+  },
+  "cpu_proofs": [
+    {
+      "path": "/private/tmp/native-jax-splash-rotary-gradient-abstract-proof-baseline/proof.json",
+      "sha256": "e28b4244d0f60c0ee44e6386566c4b366a04bdd3a172d54d7d09bbe8159ebbae",
+      "source_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "cases_head_dim": [
+        128,
+        64
+      ],
+      "method": "jax.eval_shape of actual publicSplash composed value_and_grad on4actualCPUdevices; noTPU spoof, no kernelcompilation or numerical execution"
+    },
+    {
+      "path": "/private/tmp/native-jax-splash-rotary-gradient-abstract-proof-canonical/proof.json",
+      "sha256": "8052581174814ca29bc5cc46f5b6ca63d5579cc7bec8dbe55a5dcd362d2204f5",
+      "source_pin": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+      "cases_head_dim": [
+        128,
+        64
+      ],
+      "method": "jax.eval_shape of actual publicSplash composed value_and_grad on4actualCPUdevices; noTPU spoof, no kernelcompilation or numerical execution"
+    }
+  ],
+  "cpu_environment": {
+    "JAX_PLATFORMS": "cpu",
+    "JAX_NUM_CPU_DEVICES": "4",
+    "XLA_FLAGS": "--xla_allow_excess_precision=false",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "checked_in_test_design": {
+    "file": "lib/levanter/tests/grug/test_attention.py",
+    "name": "test_tpu_splash_rotary_bfloat16_gradients_match_named",
+    "marker": "Literal @pytest.mark.tpu, runtime skip when backend!=tpu or fewerthan4devices, preserve entire defaultmarker expression. Add timeout/slow only ifmeasuredactualduration justifies.",
+    "scope": "Singlehead128case tostart; optionalhead64control useful ifcheap. ReuseexistingpublicnamedGQA testpattern plus native rotary testpattern, no new fixtureframework.",
+    "evidence_required": [
+      "Large currentA/B must preserve baseline/sourceguards and showcandidate changesexpectedqscale boundary and improves affected gradients.",
+      "This exact compactscript must be run at36e and8aa onactualmatchedTPUdevices;36e mustfail existing1e-5/1e-4 numericalassertions and8aapasswithoutchoosingnewtolerance.",
+      "Checkforward/namedreference stable, dQ parityimproves, dK/dV notregress; existingF32operatorcoverage remains.",
+      "CPUabstractproof establishesonlyimports/shapes/differentiationeligibility; it neverestablishes numericalreproduction."
+    ],
+    "if_not_reproduced": "Do not tighten tolerance/searchseed/assertbarriertext to manufacture regression. Retain observedlargefragment as evidence and report no compact regression yet; broaden shape/context only with evidence-backed separateboundedvalidation."
+  },
+  "policy_sources": [
+    "/Users/dlwh/.codex/worktrees/73be/marin/TESTING.md",
+    "/Users/dlwh/.codex/worktrees/73be/marin/lib/levanter/AGENTS.md",
+    "/Users/dlwh/.codex/worktrees/73be/marin/lib/levanter/docs/design/jit-safety.md"
+  ],
+  "no_hardware_jobs_queries_source_tests_commits": true
+}

@@ -1,0 +1,455 @@
+{
+  "verdict": "Artifact integrity, source/operand boundary controls and standalone full/composed controls independently verified. Diagnostic-only localization; no full-Trainer acceptance.",
+  "scope": "Read-only retained archive/JSON/HLO hash/source audit, no jobs/source edits/downloads/numerical execution.",
+  "source_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "script_sha256": "b1c71ae3e1106202c49123d1ab4795f474f440d9bc4b74ae40a1c91b42cb3bca",
+  "archive": {
+    "path": "/private/tmp/native-jax-bf16-splash-15b-separate-vjp-packed-diagnostics.tar.gz",
+    "bytes": 932364,
+    "sha256": "180831fc4350dd277069a4daf321affc89391a479a62a17cc91882b485192b8e",
+    "entries": 48,
+    "all_archive_members_byte_identical_to_extraction": true,
+    "raw_bytes": 7971646,
+    "script_manifest_entries": 45,
+    "script_files_with_manifest": 46,
+    "wrapper_files": 2
+  },
+  "hlo": {
+    "files": 34,
+    "all_complete_untruncated_hash_verified": true,
+    "bytes": 7685527,
+    "source_capture_bytes": 2384387,
+    "vjp_bytes": 5301140
+  },
+  "source_file_sha_matches_git36e": {
+    "lib/haliax/src/haliax/_src/state_dict.py": true,
+    "lib/haliax/src/haliax/nn/linear.py": true,
+    "lib/haliax/src/haliax/nn/normalization.py": true,
+    "lib/levanter/scripts/bench/bench_llama_native.py": true,
+    "lib/levanter/src/levanter/grug/attention/_core.py": true,
+    "lib/levanter/src/levanter/kernels/pallas/splash_attention.py": true,
+    "lib/levanter/src/levanter/layers/attention.py": true,
+    "lib/levanter/src/levanter/layers/linear.py": true,
+    "lib/levanter/src/levanter/layers/rms_norm.py": true,
+    "lib/levanter/src/levanter/models/llama.py": true,
+    "lib/levanter/src/levanter/models/llama_native.py": true
+  },
+  "parameter_count": 1531037696,
+  "initial_parameter_sha256": "d79fb8c383f9af209fd9e3e32e00798c4aeb460d779a1444d9ea20ba9f453f9a",
+  "batch_sha256": "d65acfa301bad7db399ff9df86cbbc150c649317dd357b3a26c53c9eaea9caa4",
+  "five_operand_hashes_match_original858f": {
+    "last_input": true,
+    "last_output": true,
+    "output_cotangent": true,
+    "post_attention_residual": true,
+    "tail_input_cotangent": true
+  },
+  "all_capture_guards_exact": true,
+  "canonical_named_native_master_import_roundtrips_exact": true,
+  "source_replay_boundaries_exact": true,
+  "all33_full_composed_outputs_exact": true,
+  "all33_full_composed_result_hashes_independently_equal": {
+    "named": true,
+    "native": true,
+    "fp32": true
+  },
+  "all_returned_source_buffers_recorded_read_and_finite": true,
+  "all_recorded_numeric_statistics_finite": true,
+  "topology": {
+    "processes": 1,
+    "global_devices": 4,
+    "local_devices": 4,
+    "devices": [
+      {
+        "coordinates": [
+          0,
+          0,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_0(process=0,(0,0,0,0))",
+        "id": 0,
+        "kind": "TPU v5",
+        "process_index": 0
+      },
+      {
+        "coordinates": [
+          1,
+          0,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_1(process=0,(1,0,0,0))",
+        "id": 1,
+        "kind": "TPU v5",
+        "process_index": 0
+      },
+      {
+        "coordinates": [
+          0,
+          1,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_2(process=0,(0,1,0,0))",
+        "id": 2,
+        "kind": "TPU v5",
+        "process_index": 0
+      },
+      {
+        "coordinates": [
+          1,
+          1,
+          0
+        ],
+        "core_on_chip": 0,
+        "description": "TPU_3(process=0,(1,1,0,0))",
+        "id": 3,
+        "kind": "TPU v5",
+        "process_index": 0
+      }
+    ]
+  },
+  "stages": {
+    "full": {
+      "result_order": [
+        "forward",
+        "input_vjp",
+        "input_layernorm.weight",
+        "mlp.down_proj.weight",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.k_proj.weight",
+        "self_attn.o_proj.weight",
+        "self_attn.q_proj.weight",
+        "self_attn.v_proj.weight"
+      ],
+      "named_native_exact_outputs": [
+        "forward",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.o_proj.weight"
+      ],
+      "named_native_nonexact_outputs": {
+        "input_vjp": {
+          "a_at_worst": 5.252659320831299e-07,
+          "b_at_worst": 5.21540641784668e-07,
+          "different_elements": 1650899,
+          "elements": 33554432,
+          "exact": false,
+          "max_abs": 3.725290298461914e-09,
+          "relative_l2": 0.000588514975446659,
+          "worst_index": [
+            0,
+            5,
+            1858
+          ],
+          "relative_l2_percent": 0.058851497544665905
+        },
+        "input_layernorm.weight": {
+          "a_at_worst": 8.106231689453125e-05,
+          "b_at_worst": 8.20159912109375e-05,
+          "different_elements": 1253,
+          "elements": 2048,
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 0.00536624144092966,
+          "worst_index": [
+            141
+          ],
+          "relative_l2_percent": 0.536624144092966
+        },
+        "mlp.down_proj.weight": {
+          "a_at_worst": -0.00012111663818359375,
+          "b_at_worst": -0.0001220703125,
+          "different_elements": 680,
+          "elements": 11534336,
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.610121651722013e-05,
+          "worst_index": [
+            1072,
+            2379
+          ],
+          "relative_l2_percent": 0.0036101216517220127
+        },
+        "self_attn.k_proj.weight": {
+          "a_at_worst": -7.68899917602539e-06,
+          "b_at_worst": -7.569789886474609e-06,
+          "different_elements": 48,
+          "elements": 1048576,
+          "exact": false,
+          "max_abs": 1.1920928955078125e-07,
+          "relative_l2": 3.625330799016309e-05,
+          "worst_index": [
+            42,
+            60
+          ],
+          "relative_l2_percent": 0.0036253307990163092
+        },
+        "self_attn.q_proj.weight": {
+          "a_at_worst": -4.38690185546875e-05,
+          "b_at_worst": -4.4345855712890625e-05,
+          "different_elements": 2456792,
+          "elements": 4194304,
+          "exact": false,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 0.004576705698861505,
+          "worst_index": [
+            940,
+            170
+          ],
+          "relative_l2_percent": 0.45767056988615046
+        },
+        "self_attn.v_proj.weight": {
+          "a_at_worst": 0.000102996826171875,
+          "b_at_worst": 0.00010204315185546875,
+          "different_elements": 47,
+          "elements": 1048576,
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.428438887379334e-05,
+          "worst_index": [
+            246,
+            1382
+          ],
+          "relative_l2_percent": 0.003428438887379334
+        }
+      },
+      "common_operand_hashes_shapes_dtypes_partitions_exact": true,
+      "result_shapes_dtypes_partitions_exact": true,
+      "nonexact_output_count": 6,
+      "nonexact_master_vjp_count": 5
+    },
+    "prefix": {
+      "result_order": [
+        "forward",
+        "input_vjp",
+        "input_layernorm.weight",
+        "mlp.down_proj.weight",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.k_proj.weight",
+        "self_attn.o_proj.weight",
+        "self_attn.q_proj.weight",
+        "self_attn.v_proj.weight"
+      ],
+      "named_native_exact_outputs": [
+        "forward",
+        "mlp.down_proj.weight",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.k_proj.weight",
+        "self_attn.o_proj.weight",
+        "self_attn.v_proj.weight"
+      ],
+      "named_native_nonexact_outputs": {
+        "input_vjp": {
+          "a_at_worst": 5.252659320831299e-07,
+          "b_at_worst": 5.21540641784668e-07,
+          "different_elements": 1650899,
+          "elements": 33554432,
+          "exact": false,
+          "max_abs": 3.725290298461914e-09,
+          "relative_l2": 0.000588514975446659,
+          "worst_index": [
+            0,
+            5,
+            1858
+          ],
+          "relative_l2_percent": 0.058851497544665905
+        },
+        "input_layernorm.weight": {
+          "a_at_worst": -6.771087646484375e-05,
+          "b_at_worst": -6.866455078125e-05,
+          "different_elements": 1223,
+          "elements": 2048,
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 0.005653451506596711,
+          "worst_index": [
+            101
+          ],
+          "relative_l2_percent": 0.5653451506596711
+        },
+        "self_attn.q_proj.weight": {
+          "a_at_worst": -4.38690185546875e-05,
+          "b_at_worst": -4.4345855712890625e-05,
+          "different_elements": 2456792,
+          "elements": 4194304,
+          "exact": false,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 0.004576705698861505,
+          "worst_index": [
+            940,
+            170
+          ],
+          "relative_l2_percent": 0.45767056988615046
+        }
+      },
+      "common_operand_hashes_shapes_dtypes_partitions_exact": true,
+      "result_shapes_dtypes_partitions_exact": true,
+      "nonexact_output_count": 3,
+      "nonexact_master_vjp_count": 2
+    },
+    "tail": {
+      "result_order": [
+        "forward",
+        "input_vjp",
+        "input_layernorm.weight",
+        "mlp.down_proj.weight",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.k_proj.weight",
+        "self_attn.o_proj.weight",
+        "self_attn.q_proj.weight",
+        "self_attn.v_proj.weight"
+      ],
+      "named_native_exact_outputs": [
+        "forward",
+        "input_vjp",
+        "input_layernorm.weight",
+        "mlp.down_proj.weight",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.k_proj.weight",
+        "self_attn.o_proj.weight",
+        "self_attn.q_proj.weight",
+        "self_attn.v_proj.weight"
+      ],
+      "named_native_nonexact_outputs": {},
+      "common_operand_hashes_shapes_dtypes_partitions_exact": true,
+      "result_shapes_dtypes_partitions_exact": true,
+      "nonexact_output_count": 0,
+      "nonexact_master_vjp_count": 0
+    },
+    "composed": {
+      "result_order": [
+        "forward",
+        "input_vjp",
+        "input_layernorm.weight",
+        "mlp.down_proj.weight",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.k_proj.weight",
+        "self_attn.o_proj.weight",
+        "self_attn.q_proj.weight",
+        "self_attn.v_proj.weight"
+      ],
+      "named_native_exact_outputs": [
+        "forward",
+        "mlp.gate_proj.weight",
+        "mlp.up_proj.weight",
+        "post_attention_layernorm.weight",
+        "self_attn.o_proj.weight"
+      ],
+      "named_native_nonexact_outputs": {
+        "input_vjp": {
+          "a_at_worst": 5.252659320831299e-07,
+          "b_at_worst": 5.21540641784668e-07,
+          "different_elements": 1650899,
+          "elements": 33554432,
+          "exact": false,
+          "max_abs": 3.725290298461914e-09,
+          "relative_l2": 0.000588514975446659,
+          "worst_index": [
+            0,
+            5,
+            1858
+          ],
+          "relative_l2_percent": 0.058851497544665905
+        },
+        "input_layernorm.weight": {
+          "a_at_worst": 8.106231689453125e-05,
+          "b_at_worst": 8.20159912109375e-05,
+          "different_elements": 1253,
+          "elements": 2048,
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 0.00536624144092966,
+          "worst_index": [
+            141
+          ],
+          "relative_l2_percent": 0.536624144092966
+        },
+        "mlp.down_proj.weight": {
+          "a_at_worst": -0.00012111663818359375,
+          "b_at_worst": -0.0001220703125,
+          "different_elements": 680,
+          "elements": 11534336,
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.610121651722013e-05,
+          "worst_index": [
+            1072,
+            2379
+          ],
+          "relative_l2_percent": 0.0036101216517220127
+        },
+        "self_attn.k_proj.weight": {
+          "a_at_worst": -7.68899917602539e-06,
+          "b_at_worst": -7.569789886474609e-06,
+          "different_elements": 48,
+          "elements": 1048576,
+          "exact": false,
+          "max_abs": 1.1920928955078125e-07,
+          "relative_l2": 3.625330799016309e-05,
+          "worst_index": [
+            42,
+            60
+          ],
+          "relative_l2_percent": 0.0036253307990163092
+        },
+        "self_attn.q_proj.weight": {
+          "a_at_worst": -4.38690185546875e-05,
+          "b_at_worst": -4.4345855712890625e-05,
+          "different_elements": 2456792,
+          "elements": 4194304,
+          "exact": false,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 0.004576705698861505,
+          "worst_index": [
+            940,
+            170
+          ],
+          "relative_l2_percent": 0.45767056988615046
+        },
+        "self_attn.v_proj.weight": {
+          "a_at_worst": 0.000102996826171875,
+          "b_at_worst": 0.00010204315185546875,
+          "different_elements": 47,
+          "elements": 1048576,
+          "exact": false,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.428438887379334e-05,
+          "worst_index": [
+            246,
+            1382
+          ],
+          "relative_l2_percent": 0.003428438887379334
+        }
+      },
+      "common_operand_hashes_shapes_dtypes_partitions_exact": true,
+      "result_shapes_dtypes_partitions_exact": true,
+      "nonexact_output_count": 6,
+      "nonexact_master_vjp_count": 5
+    }
+  },
+  "interpretation": [
+    "Same captured legacy last-block x/r/y/ct_y/ct_r as original858f. Removing only duplicate full evaluation permits all strict source capture controls to pass; original combined-graph fault is preserved as a separate observation.",
+    "Named/native prefix forward is exact. Prefix differences are inputVJP relativeL2 0.0588515%, inputnorm masterVJP0.565345%, Q masterVJP0.457671%; other active K/O/V masterVJPs are exact.",
+    "Fixed-boundary tail has exact forward, inputVJP and all4active masterVJPs; remaining5parameterVJPs are unused zeros.",
+    "Full and composed are exactly equal within each variant across11outputs. Named/native full forwards are exact; inputVJP and5masterVJPs differ (inputnorm,down,K,Q,V).",
+    "Full/composed standalone nonexact master locations differ from normal Trainer lastblock gradients (normal up/O differ; standalone down/K/V differ). This is a compiler-context-sensitive fragment diagnostic, not a faithful reproduction of every normal backward tensor.",
+    "Every staged variant uses fixed named r/ct_r. Staged-versus-full differences conflate operand substitution,dtype and fusion; cannot call them pure fusion error. FP32-highest uses same Splash but is not exact arithmetic groundtruth.",
+    "RelativeL2 denominator is the named/left fragment tensor norm; percentages are ratios multiplied by100. No changed tolerances or accepted model-level speed/gradient ratio follows from this diagnostic."
+  ],
+  "limitations": "Source suffix cotangent comes from final norm and shared CE on the named legacy last output; it is not an independently native incoming cotangent or a hook-free full Trainer gradient. Capturing intermediates, canonical import constraints, VJP outputs and standalone execution can change fusion. Exact source capture-versus-normal hidden/loss and replayed-last-block output checks are mandatory before attribution; these do not establish identity of every full Trainer hidden cotangent. Scan capture retains only the last input in carry; it does not unroll28layers or save intermediate tensors. No optimizer, training threshold, model math or source edits; no tensor/weight/checkpoint artifacts."
+}

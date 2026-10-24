@@ -1,0 +1,1049 @@
+{
+  "schema": "native-jax-splash-15b-profile-analysis.v1",
+  "source_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "acceptance": "Both dtype comparisons invalid; accepted speed ratios remain null. Profile and raw timing differences are diagnostic only.",
+  "duration_unit": "ms",
+  "duration_basis": "Exclusive duration on each core main XLA Ops track, clipped to the two train modules; means across 8 TensorCores, never core sums or overlapped track totals.",
+  "analyzer_sha256": "c075493987602081acf7b2aa3f0788d858ac9f248de81d86c41cde254776893a",
+  "workload": {
+    "parameters": 1531037696,
+    "layers": 28,
+    "width": 2048,
+    "mlp": 5632,
+    "q_heads": 16,
+    "kv_heads": 4,
+    "vocab": 65536,
+    "batch": 8,
+    "sequence": 2048,
+    "mesh": "data2/model2",
+    "attention": "matched Splash",
+    "warmups": 5,
+    "unprofiled_measured_steps": 20,
+    "profiled_steps_after_timing": 2
+  },
+  "cases": {
+    "float32": {
+      "legacy": {
+        "summary_file": "/private/tmp/native-jax-splash-15b-float32-legacy-summary.json",
+        "window_file": "/private/tmp/native-jax-splash-15b-float32-legacy-windows.json",
+        "profile_sha256": "e913f070035130f943e27991ddd020db93d4d41bb51d3fff1f9607eaaa51d00d",
+        "trace_quality": {
+          "display_time_unit": "us",
+          "duration_basis": "exclusive_duration_per_track",
+          "num_complete_events": 144567,
+          "num_events_total": 144567,
+          "num_processes": 20,
+          "num_threads": 186,
+          "profile_end_ts": 2284999.678,
+          "profile_start_ts": 104995.544,
+          "quality_warnings": [],
+          "suspected_truncation": false
+        },
+        "profile_mean_train_module_ms": 1016.751808499125,
+        "profile_core_mean_module_range_ms": [
+          1016.705822469,
+          1016.7972225469999
+        ],
+        "uncovered_main_track_ms_per_step": 0.049970327126015034,
+        "mean_core_region_ms_per_step": {
+          "embedding": 2.6791953173748753,
+          "shared CE/output projection": 132.27468561575006,
+          "decoder attention": 330.04966577112884,
+          "optimizer/update": 4.441013935500028,
+          "decoder MLP": 481.39703421012484,
+          "decoder other": 61.25857697724813,
+          "unattributed": 4.601666344872211
+        },
+        "mean_core_semantic_ms_per_step": {
+          "collective": 148.72750008174955,
+          "copy": 7.586145987242219,
+          "attention_splash": 101.629007281998,
+          "fusion": 9.918585014125041,
+          "other": 748.8405998068841
+        },
+        "raw_unprofiled_median_ms": 1032.4778489999744,
+        "compiled_temporary_bytes": 7161964256,
+        "embedding_alltoall_mean_ms_per_core_step": 0.7857315478749716,
+        "embedding_alltoall_details": {
+          "/device:TPU:0": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.39233859400000076,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.39723140599997714,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.391758671999909,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.4006000780002214,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.7909643750000541
+          },
+          "/device:TPU:1": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.392337578000006,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.3972399220000952,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.391758671999909,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.40064875000016764,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.7909924610000889
+          },
+          "/device:TPU:2": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.3918301560000109,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.39248500000010245,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.39210234400001354,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.3921412499998696,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.7842793749999982
+          },
+          "/device:TPU:3": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.3918311720000056,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.3925336720000487,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.3921013279999606,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.39218992199981584,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.7843280469999154
+          },
+          "/device:TPU:4": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.38978257800001304,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.3902175000000279,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.3950811719999183,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.39024374999990685,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.7826624999999331
+          },
+          "/device:TPU:5": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.3897836719999905,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.39023492199997417,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.39508125000004657,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.39029132799990474,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.782695585999958
+          },
+          "/device:TPU:6": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.3911963279999909,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.3919888279999141,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.39623882799991406,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.3904974219999276,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.7849607029998733
+          },
+          "/device:TPU:7": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.3911963279999909,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.3919975000000559,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.396239843999967,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.39050499999988825,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.784969335999951
+          }
+        },
+        "matched_forward_mlp_gate_gemm_plus_multiply": {
+          "mean_ms_per_core_step": 44.53692488274994,
+          "mean_count_per_core_step": 28.0
+        },
+        "main_track_top_ops": {
+          "convolution_multiply_fusion.2": {
+            "mean_ms_per_core_step": 44.53692488274994,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.380": {
+            "mean_ms_per_core_step": 42.077510190250145,
+            "mean_count_per_core_step": 28.0
+          },
+          "convolution_add_fusion.4": {
+            "mean_ms_per_core_step": 38.98362731637497,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.382": {
+            "mean_ms_per_core_step": 38.2326031542502,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.384": {
+            "mean_ms_per_core_step": 38.153032982500044,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.367": {
+            "mean_ms_per_core_step": 37.24334829537491,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.417": {
+            "mean_ms_per_core_step": 36.689668349374976,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.366": {
+            "mean_ms_per_core_step": 36.10456502425006,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.416": {
+            "mean_ms_per_core_step": 36.10112870549999,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.364": {
+            "mean_ms_per_core_step": 35.93468639137488,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.368": {
+            "mean_ms_per_core_step": 35.903757939874964,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_dkv_no_residuals.1": {
+            "mean_ms_per_core_step": 35.76718457475019,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.397": {
+            "mean_ms_per_core_step": 34.14966733399997,
+            "mean_count_per_core_step": 8.0
+          },
+          "convolution_add_fusion.5": {
+            "mean_ms_per_core_step": 32.144137353249924,
+            "mean_count_per_core_step": 8.0
+          },
+          "fusion.389": {
+            "mean_ms_per_core_step": 30.835837158125003,
+            "mean_count_per_core_step": 8.0
+          },
+          "convolution_dynamic-update-slice_fusion.2": {
+            "mean_ms_per_core_step": 29.62240610337502,
+            "mean_count_per_core_step": 8.0
+          }
+        },
+        "matched_forward_mlp_hlo": "%convolution_multiply_fusion.2 = f32[4,2048,2816]{2,1,0:T(8,128)} fusion(%fusion.416, %get-tuple-element.1865, %add_rsqrt_fusion.5, %bitcast.603, %all-gather.106), kind=kOutput, calls=%fused_computation.26.clone.1, metadata={op_name=\"jit(_train_step)/jvp(LlamaTransformer)/scan(layer)/while/body/eval_jaxpr/LlamaDecoderLayer/LlamaMlp/Linear/contract embed -> batch, position, mlp/0 1 2 , 3 2 -> 0 1 3/dot_general\" stack_frame_id=815}",
+        "observed_intermodule_gap_mean_ms": 16.30992923824995,
+        "profile_decoder_combined_ms": 872.7052769585018
+      },
+      "native": {
+        "summary_file": "/private/tmp/native-jax-splash-15b-float32-native-summary.json",
+        "window_file": "/private/tmp/native-jax-splash-15b-float32-native-windows.json",
+        "profile_sha256": "142bb2f021e2581e9815fb2216bf806f80555fb4caae43a8b08618cc28154566",
+        "trace_quality": {
+          "display_time_unit": "us",
+          "duration_basis": "exclusive_duration_per_track",
+          "num_complete_events": 143537,
+          "num_events_total": 143537,
+          "num_processes": 20,
+          "num_threads": 178,
+          "profile_end_ts": 2141196.293,
+          "profile_start_ts": 18468.63,
+          "quality_warnings": [],
+          "suspected_truncation": false
+        },
+        "profile_mean_train_module_ms": 1033.41460870025,
+        "profile_core_mean_module_range_ms": [
+          1033.3737297110001,
+          1033.444504086
+        ],
+        "uncovered_main_track_ms_per_step": 0.03922590375097207,
+        "mean_core_region_ms_per_step": {
+          "optimizer/update": 4.437936845625096,
+          "decoder attention": 107.97916534262433,
+          "decoder other": 782.6321912210608,
+          "unattributed": 4.675471667064681,
+          "embedding": 1.7257023681250239,
+          "shared CE/output projection": 131.92491535199915
+        },
+        "mean_core_semantic_ms_per_step": {
+          "collective": 151.00562853099987,
+          "copy": 10.302976019435476,
+          "attention_splash": 101.6150465443128,
+          "fusion": 5.109287265999998,
+          "other": 765.3424444357508
+        },
+        "raw_unprofiled_median_ms": 1035.3454099999908,
+        "compiled_temporary_bytes": 7035379552,
+        "embedding_alltoall_mean_ms_per_core_step": 0.0,
+        "embedding_alltoall_details": {
+          "/device:TPU:0": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:1": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:2": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:3": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:4": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:5": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:6": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:7": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          }
+        },
+        "matched_forward_mlp_gate_gemm_plus_multiply": {
+          "mean_ms_per_core_step": 44.5448906640001,
+          "mean_count_per_core_step": 28.0
+        },
+        "main_track_top_ops": {
+          "convolution_multiply_fusion.2": {
+            "mean_ms_per_core_step": 44.5448906640001,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.397": {
+            "mean_ms_per_core_step": 41.548096674999925,
+            "mean_count_per_core_step": 28.0
+          },
+          "convolution_add_fusion.8": {
+            "mean_ms_per_core_step": 39.17956151350006,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.400": {
+            "mean_ms_per_core_step": 38.28517687937485,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.403": {
+            "mean_ms_per_core_step": 38.160722248249996,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.381": {
+            "mean_ms_per_core_step": 36.86794037587498,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.428": {
+            "mean_ms_per_core_step": 36.707026513375006,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.382": {
+            "mean_ms_per_core_step": 36.105025117374964,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.427": {
+            "mean_ms_per_core_step": 36.102323090124926,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.380": {
+            "mean_ms_per_core_step": 36.02726464300004,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.379": {
+            "mean_ms_per_core_step": 35.94847612800011,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_dkv_no_residuals.1": {
+            "mean_ms_per_core_step": 35.3573149855,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.438": {
+            "mean_ms_per_core_step": 34.149811235499996,
+            "mean_count_per_core_step": 8.0
+          },
+          "convolution_add_fusion.11": {
+            "mean_ms_per_core_step": 32.13511403800005,
+            "mean_count_per_core_step": 8.0
+          },
+          "fusion.430": {
+            "mean_ms_per_core_step": 30.623066015500008,
+            "mean_count_per_core_step": 8.0
+          },
+          "convolution_dynamic-update-slice_fusion.2": {
+            "mean_ms_per_core_step": 29.623447221624982,
+            "mean_count_per_core_step": 8.0
+          }
+        },
+        "matched_forward_mlp_hlo": "%convolution_multiply_fusion.2 = f32[4,2048,2816]{2,1,0:T(8,128)} fusion(%fusion.427, %get-tuple-element.1835, %add_rsqrt_fusion.5, %bitcast.623, %all-gather.83), kind=kOutput, calls=%fused_computation.7.clone.1, metadata={op_name=\"jit(_train_step)/jvp(activations)/while/body/eval_jaxpr/__call__/__call__/...i,oi->...o/dot_general\" stack_frame_id=363}",
+        "observed_intermodule_gap_mean_ms": 1.7706685644999993,
+        "profile_decoder_combined_ms": 890.6113565636851
+      }
+    },
+    "bfloat16": {
+      "legacy": {
+        "summary_file": "/private/tmp/native-jax-splash-15b-bfloat16-legacy-summary.json",
+        "window_file": "/private/tmp/native-jax-splash-15b-bfloat16-legacy-windows.json",
+        "profile_sha256": "f0bc5d48696f59915ccc19573cc73f41c1c35a2e199b48ff1ffa4d13b07ad284",
+        "trace_quality": {
+          "display_time_unit": "us",
+          "duration_basis": "exclusive_duration_per_track",
+          "num_complete_events": 161785,
+          "num_events_total": 161785,
+          "num_processes": 20,
+          "num_threads": 186,
+          "profile_end_ts": 776004.373,
+          "profile_start_ts": 106208.569,
+          "quality_warnings": [],
+          "suspected_truncation": false
+        },
+        "profile_mean_train_module_ms": 272.074549003875,
+        "profile_core_mean_module_range_ms": [
+          272.028424492,
+          272.12276375
+        ],
+        "uncovered_main_track_ms_per_step": 0.06757404812533786,
+        "mean_core_region_ms_per_step": {
+          "embedding": 1.8318490624999977,
+          "decoder MLP": 106.09787215912483,
+          "decoder attention": 97.6582458076237,
+          "shared CE/output projection": 26.810180004125336,
+          "decoder other": 29.403728811249223,
+          "optimizer/update": 4.133381005874988,
+          "unattributed": 6.071718105251593
+        },
+        "mean_core_semantic_ms_per_step": {
+          "collective": 75.92093508937491,
+          "copy": 5.045465278617481,
+          "convert": 0.7727350586249977,
+          "attention_splash": 28.549914824626384,
+          "fusion": 3.531882392624988,
+          "other": 158.1860423118809
+        },
+        "raw_unprofiled_median_ms": 286.2082294998345,
+        "compiled_temporary_bytes": 4282541344,
+        "embedding_alltoall_mean_ms_per_core_step": 0.39920706049999355,
+        "embedding_alltoall_details": {
+          "/device:TPU:0": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.19810867200000212,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.19757750000001398,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.19810999999998602,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.1979913279999746,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.3958937499999884
+          },
+          "/device:TPU:1": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.1981076560000074,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.19758390600001438,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.19811117200000444,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.1979988280000398,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.395900781000033
+          },
+          "/device:TPU:2": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.19791757799999324,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.1979512499999837,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.1978661720000091,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.19826249999995343,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.39599874999996976
+          },
+          "/device:TPU:3": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.19791875000001163,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.19795867199997882,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.1978663279999746,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.19827000000001863,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.3960068749999919
+          },
+          "/device:TPU:4": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.19814515600001323,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.207023749999993,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.19785882800002583,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.21105374999996274,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.4070407419999974
+          },
+          "/device:TPU:5": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.19814617200000795,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.20703125,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.19785984400002052,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.21110132799996062,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.40706929699999456
+          },
+          "/device:TPU:6": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.19875742199999513,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.20218992199999047,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.1985999999999767,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.19619250000000465,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.3978699219999835
+          },
+          "/device:TPU:7": {
+            "embedding_alltoalls": [
+              {
+                "name": "all-to-all",
+                "ms": 0.19875632799998857,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.2021975000000093,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all",
+                "ms": 0.1985999999999767,
+                "scope": "jit(_train_step)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              },
+              {
+                "name": "all-to-all.1",
+                "ms": 0.19619890600000509,
+                "scope": "jit(_train_step)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add:",
+                "source": "/app/lib/haliax/src/haliax/core.py:961"
+              }
+            ],
+            "alltoall_ms_per_step": 0.39787636699998985
+          }
+        },
+        "matched_forward_mlp_gate_gemm_plus_multiply": {
+          "mean_ms_per_core_step": 6.39382781237496,
+          "mean_count_per_core_step": 28.0
+        },
+        "main_track_top_ops": {
+          "all-reduce.67": {
+            "mean_ms_per_core_step": 11.86648046349992,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.69": {
+            "mean_ms_per_core_step": 11.766664267875035,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.68": {
+            "mean_ms_per_core_step": 11.671149829124971,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.71": {
+            "mean_ms_per_core_step": 11.659472783250036,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.72": {
+            "mean_ms_per_core_step": 11.653764106874972,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_dkv_no_residuals.1": {
+            "mean_ms_per_core_step": 9.042934697874998,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.476": {
+            "mean_ms_per_core_step": 8.716327514500042,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.478": {
+            "mean_ms_per_core_step": 8.176282768250026,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.456": {
+            "mean_ms_per_core_step": 7.1935225441250505,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_dq_no_residuals.1": {
+            "mean_ms_per_core_step": 6.823590205125023,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.461": {
+            "mean_ms_per_core_step": 6.791621982249928,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.474": {
+            "mean_ms_per_core_step": 6.566377553749985,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.517": {
+            "mean_ms_per_core_step": 6.515035297999958,
+            "mean_count_per_core_step": 28.0
+          },
+          "convolution_multiply_fusion.2": {
+            "mean_ms_per_core_step": 6.39382781237496,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.460": {
+            "mean_ms_per_core_step": 6.387905351125033,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_fwd_residuals.14": {
+            "mean_ms_per_core_step": 6.326663711000019,
+            "mean_count_per_core_step": 28.0
+          }
+        },
+        "matched_forward_mlp_hlo": "%convolution_multiply_fusion.2 = bf16[4,2048,2816]{2,1,0:T(8,128)(2,1)} fusion(%fusion.516, %get-tuple-element.1659, %add_rsqrt_fusion.5, %copy-done.110, %all-gather.106), kind=kOutput, calls=%fused_computation.34.clone.1, metadata={op_name=\"jit(_train_step)/jvp(LlamaTransformer)/scan(layer)/while/body/eval_jaxpr/LlamaDecoderLayer/LlamaMlp/Linear/contract embed -> batch, position, mlp/0 1 2 , 3 2 -> 0 1 3/dot_general\" stack_frame_id=843}",
+        "observed_intermodule_gap_mean_ms": 15.33471189449999,
+        "profile_decoder_combined_ms": 233.15984677799776
+      },
+      "native": {
+        "summary_file": "/private/tmp/native-jax-splash-15b-bfloat16-native-summary.json",
+        "window_file": "/private/tmp/native-jax-splash-15b-bfloat16-native-windows.json",
+        "profile_sha256": "4cc9194c260e051ab727b3d9f81db665de58c3c3c2b0d920495dac6fb946689b",
+        "trace_quality": {
+          "display_time_unit": "us",
+          "duration_basis": "exclusive_duration_per_track",
+          "num_complete_events": 161813,
+          "num_events_total": 161813,
+          "num_processes": 20,
+          "num_threads": 178,
+          "profile_end_ts": 628429.623,
+          "profile_start_ts": 18218.04,
+          "quality_warnings": [],
+          "suspected_truncation": false
+        },
+        "profile_mean_train_module_ms": 276.71692909175,
+        "profile_core_mean_module_range_ms": [
+          276.681160547,
+          276.74366062499996
+        ],
+        "uncovered_main_track_ms_per_step": 0.04256927737505248,
+        "mean_core_region_ms_per_step": {
+          "unattributed": 5.6445317627491995,
+          "decoder other": 208.9381984303747,
+          "decoder attention": 31.36268769850157,
+          "shared CE/output projection": 26.6026124256244,
+          "optimizer/update": 4.126329497125078
+        },
+        "mean_core_semantic_ms_per_step": {
+          "collective": 76.37178555012517,
+          "convert": 0.9252536622500184,
+          "copy": 8.011488144001945,
+          "attention_splash": 27.523599905373302,
+          "fusion": 3.056105771499966,
+          "other": 160.78612678112455
+        },
+        "raw_unprofiled_median_ms": 277.6577634997466,
+        "compiled_temporary_bytes": 4333231424,
+        "embedding_alltoall_mean_ms_per_core_step": 0.0,
+        "embedding_alltoall_details": {
+          "/device:TPU:0": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:1": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:2": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:3": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:4": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:5": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:6": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          },
+          "/device:TPU:7": {
+            "embedding_alltoalls": [],
+            "alltoall_ms_per_step": 0.0
+          }
+        },
+        "matched_forward_mlp_gate_gemm_plus_multiply": {
+          "mean_ms_per_core_step": 6.358157538874993,
+          "mean_count_per_core_step": 28.0
+        },
+        "main_track_top_ops": {
+          "all-reduce.60": {
+            "mean_ms_per_core_step": 11.758390839750039,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.62": {
+            "mean_ms_per_core_step": 11.747377812625007,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.64": {
+            "mean_ms_per_core_step": 11.688940537250003,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.61": {
+            "mean_ms_per_core_step": 11.669952905374991,
+            "mean_count_per_core_step": 28.0
+          },
+          "all-reduce.65": {
+            "mean_ms_per_core_step": 11.643237353875005,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_dkv_no_residuals.1": {
+            "mean_ms_per_core_step": 8.520462060624967,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.484": {
+            "mean_ms_per_core_step": 8.137009902124957,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.481": {
+            "mean_ms_per_core_step": 7.507988535125026,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.460": {
+            "mean_ms_per_core_step": 7.1777833399999915,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.465": {
+            "mean_ms_per_core_step": 6.7469804636250235,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.478": {
+            "mean_ms_per_core_step": 6.516242475374983,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.516": {
+            "mean_ms_per_core_step": 6.510478740250011,
+            "mean_count_per_core_step": 28.0
+          },
+          "convolution_multiply_fusion.2": {
+            "mean_ms_per_core_step": 6.358157538874993,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_dq_no_residuals.1": {
+            "mean_ms_per_core_step": 6.344139530749994,
+            "mean_count_per_core_step": 28.0
+          },
+          "fusion.464": {
+            "mean_ms_per_core_step": 6.340797304374945,
+            "mean_count_per_core_step": 28.0
+          },
+          "splash_mha_fwd_residuals.14": {
+            "mean_ms_per_core_step": 6.285524746125026,
+            "mean_count_per_core_step": 28.0
+          }
+        },
+        "matched_forward_mlp_hlo": "%convolution_multiply_fusion.2 = bf16[4,2048,2816]{2,1,0:T(8,128)(2,1)} fusion(%fusion.515, %get-tuple-element.1742, %add_rsqrt_fusion.5, %copy-done.113, %all-gather.83), kind=kOutput, calls=%fused_computation.30.clone.1, metadata={op_name=\"jit(_train_step)/jvp(activations)/while/body/eval_jaxpr/__call__/__call__/...i,oi->...o/dot_general\" stack_frame_id=377}",
+        "observed_intermodule_gap_mean_ms": 1.727989638749996,
+        "profile_decoder_combined_ms": 240.30088612887627
+      }
+    }
+  },
+  "limitations": [
+    "Native Linear and decoder metadata do not uniquely separate attention projections, MLP, and normalization; native decoder-other is not evidence that those operations disappear.",
+    "Main-track collective/copy time can include waits; this is not a network-only or copy-bandwidth measurement. Async copy tracks and SparseCore overlap are not added to wall time.",
+    "The automatic profile_summary step estimate may mix conversion and train modules; only explicit two-train-module windows are used for step attribution.",
+    "Only two post-timing profile steps, with capture overhead; raw 20-step medians remain separate.",
+    "Numerical gates fail; this is neither an accepted speed ratio nor a causal explanation of the numerical drift.",
+    "One inter-module gap is observed per core between the two captured steps. A larger legacy gap is visible, but it includes host dispatch/synchronization and profiler effects; this trace alone does not identify its cause or establish sustained host overhead."
+  ],
+  "summary_commands": [
+    "lib/marin/tools/profile_summary.py summarize --profile-dir /private/tmp/native-jax-splash-15b-profile-results/float32/legacy/profile --warmup-steps 0 --breakdown-mode exclusive_global --output /private/tmp/native-jax-splash-15b-float32-legacy-summary.json",
+    "lib/marin/tools/profile_summary.py summarize --profile-dir /private/tmp/native-jax-splash-15b-profile-results/float32/native/profile --warmup-steps 0 --breakdown-mode exclusive_global --output /private/tmp/native-jax-splash-15b-float32-native-summary.json",
+    "lib/marin/tools/profile_summary.py summarize --profile-dir /private/tmp/native-jax-splash-15b-profile-results/bfloat16/legacy/profile --warmup-steps 0 --breakdown-mode exclusive_global --output /private/tmp/native-jax-splash-15b-bfloat16-legacy-summary.json",
+    "lib/marin/tools/profile_summary.py summarize --profile-dir /private/tmp/native-jax-splash-15b-profile-results/bfloat16/native/profile --warmup-steps 0 --breakdown-mode exclusive_global --output /private/tmp/native-jax-splash-15b-bfloat16-native-summary.json"
+  ],
+  "attribution_commands": [
+    "/private/tmp/analyze_native_jax_profile_train_windows.py --profile-dir /private/tmp/native-jax-splash-15b-profile-results/float32/legacy/profile --output /private/tmp/native-jax-splash-15b-float32-legacy-windows.json",
+    "/private/tmp/analyze_native_jax_profile_train_windows.py --profile-dir /private/tmp/native-jax-splash-15b-profile-results/float32/native/profile --output /private/tmp/native-jax-splash-15b-float32-native-windows.json",
+    "/private/tmp/analyze_native_jax_profile_train_windows.py --profile-dir /private/tmp/native-jax-splash-15b-profile-results/bfloat16/legacy/profile --output /private/tmp/native-jax-splash-15b-bfloat16-legacy-windows.json",
+    "/private/tmp/analyze_native_jax_profile_train_windows.py --profile-dir /private/tmp/native-jax-splash-15b-profile-results/bfloat16/native/profile --output /private/tmp/native-jax-splash-15b-bfloat16-native-windows.json"
+  ],
+  "matched_gemm_notes": "convolution_multiply_fusion.2 has output4x2048x2816 in all4compiledHLOs; named metadata identifies forward MLP projection/gating, native has matching output and operation role.28calls percorestep in all4traces. FP32 up/gate weight-gradient exemplar namedfusion.380/nativefusion.397 also has matching2816x2048output;42.078/41.548ms meanexclusive/corestep. Matching names alone are not used for arbitrary crossvariant ops.",
+  "analysis_generator_sha256": "6c1a72ce85d73b3bc080614c045a5c54c34942b9f5e001947e8ae5b9f30ce30d",
+  "host_analysis_file": "/private/tmp/native-jax-splash-15b-host-analysis.json",
+  "host_observation": "Across two train markers/capture, legacy reaches PjitFunction(_train_step)14.014\u201314.214ms after marker in FP32 and13.377\u201313.596ms in BF16; native0.0035\u20130.0051ms. Legacy has an earlier scalar convert at11.556\u201312.130ms, absent native. First~12ms is uninstrumented Python at tracerlevel0; function-level cause remains unverified."
+}

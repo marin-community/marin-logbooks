@@ -1,0 +1,135 @@
+{
+  "status": "PREPARED_NOT_SUBMITTED_REQUIRES_ROOT_REVIEW",
+  "source_pin": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "working_directory": "/private/tmp/marin-native-jax-query-scale-rounding",
+  "runner": "/private/tmp/native_jax_query_scale_15b_trainer_v2.py",
+  "runner_sha256": "dbcbc79aac5bde4e384521949bfa0b7193f1726d7a85a8a117374d9ee3b69361",
+  "compressed_launcher_sha256": "cd22a3dc0953a731de89a7b2291df3f901cfcdae490d1c8fec349cf86ce4c9f4",
+  "benchmark_sha256": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+  "artifacts": {
+    "job-config": "/private/tmp/native-jax-query-scale-15b-trainer-v2-job-config.json",
+    "command": "/private/tmp/native-jax-query-scale-15b-trainer-v2-command.json",
+    "cpu-proof": "/private/tmp/native-jax-query-scale-15b-trainer-v2-cpu-proof.json",
+    "abstract-proof": "/private/tmp/native-jax-query-scale-15b-trainer-v2-abstract-proof.json",
+    "archive-proof": "/private/tmp/native-jax-query-scale-15b-trainer-v2-archive-proof.json"
+  },
+  "artifact_sha256": {
+    "job-config": "5f8f25cb904e2d736ca980765ca562ecbe4b9c6d83828a4b34c0be6ae70c4ede",
+    "command": "ee8ba7d6328458ba7c335fbeb7d25206bcc16237da7efc95579f4c9262fe5589",
+    "cpu-proof": "cc245dc95101542b5e5240d95847889bf698782e9671dcd4ce4a11d844689c95",
+    "abstract-proof": "f121d58e17a30afb5ddef709a80f546ff2df33badd9bc3cc6c84529ae2cf05eb",
+    "archive-proof": "55aa50f85a1a588d008d760fc27a73f7f9f185e091af67d7c9bf46f08e80e68f"
+  },
+  "prior_frozen_runner_preserved": {
+    "path": "/private/tmp/native_jax_query_scale_15b_trainer.py",
+    "sha256": "85100c92d226292e0a85a0c7647a6f8425d1bc9b47de5c2349b150e2a6a29a33"
+  },
+  "actual_same_child_runtime_provenance": {
+    "modules": [
+      "core",
+      "levanter",
+      "haliax",
+      "benchmark"
+    ],
+    "checks": [
+      "exact paths inside candidate worktree",
+      "all11 actual source file SHA256",
+      "actual _tpu_splash_attention code co_names contains optimization_barrier",
+      "distinct fresh per-case pycache prefix",
+      "dont_write_bytecode"
+    ],
+    "execution": "bootstrap imports these modules and writes per-case runtime-imports.json, then runpy.run_path executes unchanged benchmark in the same process",
+    "source_clean_boundary": "clean is declared to benchmark; the11 scientific source files are byte-verified, not an entire remote Git worktree audit"
+  },
+  "workload": {
+    "attention_backend": "splash",
+    "batch_size": 8,
+    "beta1": 0.9,
+    "beta2": 0.999,
+    "data_size": 2,
+    "epsilon": 1e-08,
+    "gradient_checkpointing": true,
+    "hidden_dim": 2048,
+    "intermediate_dim": 5632,
+    "learning_rate": 0.001,
+    "loss_trajectory_relative_l2": 0.001,
+    "measured_steps": 20,
+    "model_size": 2,
+    "num_heads": 16,
+    "num_kv_heads": 4,
+    "num_layers": 28,
+    "parity_atol": 1e-05,
+    "parity_rtol": 0.0001,
+    "seed": 42,
+    "seq_len": 2048,
+    "update_parameter_relative_l2": 0.005,
+    "vocab_size": 65536,
+    "warmup_steps": 5,
+    "weight_decay": 0.01
+  },
+  "cases": [
+    {
+      "name": "float32",
+      "matmul_precision": "highest",
+      "profile_steps": 0
+    },
+    {
+      "name": "bfloat16",
+      "matmul_precision": "default",
+      "profile_steps": 2
+    }
+  ],
+  "parameter_count": 1531037696,
+  "expected_parameter_sha256": "d79fb8c383f9af209fd9e3e32e00798c4aeb460d779a1444d9ea20ba9f453f9a",
+  "expected_batch_sha256": "d65acfa301bad7db399ff9df86cbbc150c649317dd357b3a26c53c9eaea9caa4",
+  "resources": {
+    "tpu": "v5p-8",
+    "replicas": 1,
+    "expected_global_local_devices": 4,
+    "cpu": 32,
+    "memory": "256GB",
+    "disk": "64GB",
+    "timeout": 1800,
+    "max_retries": 0,
+    "region": "us-central1",
+    "zone": "us-central1-a"
+  },
+  "job_name": "levanter-native-jax-v5p-15b-queryscale-8aa-20261023",
+  "backup_uri": "gs://marin-us-central1/tmp/ttl=7d/native-jax/query-scale-15b-trainer-8aa-20261023/diagnostics.tar.gz",
+  "archive_limits": {
+    "files": 128,
+    "per_file_bytes": 33554432,
+    "uncompressed_bytes": 67108864,
+    "compressed_bytes": 67108864
+  },
+  "exec_sizes_with_local_environment": {
+    "argv_bytes": 10187,
+    "environment_bytes": 2930,
+    "largest_argument_bytes": 9644
+  },
+  "validation": {
+    "actual_cpu4_two_case_hostrunner_complete": true,
+    "cpu_numerical_exit1_preserved": true,
+    "all_runtime_and_non_numerical_guards_pass": true,
+    "local_fsutil_backup_byte_exact": true,
+    "cpu_two_nonempty_bf16_xplanes": true,
+    "large_shape_and_selector_both_cases_pass": true,
+    "saved_large_artifact_raw_bytes_with_two_import_records": 44556282,
+    "retained_whitelist_complete": true
+  },
+  "evidence_limits": [
+    "Prepared only. No RPC, accelerator request, submission or remote fixture upload was made. Root must review the fragment A/B outcome and decide separately whether to submit.",
+    "FP32 is an unchanged-path control: the candidate query-scale barrier is statically inactive for FP32. The existing 1.53B FP32 trajectory failure remains a failure; this is not a new FP32 fix hypothesis or accepted performance claim.",
+    "FP32 profile_steps is 0 instead of the prior 36e value 2. BF16 retains 2 warmed profile steps per implementation. Both full-size cases retain the matched 5 warmups, 20 timed steps, optimizer, LR, weight decay and numerical criteria. Profile capture follows timing.",
+    "The actual four-CPU host-runner proof intentionally preserves a BF16 reference-attention numerical failure and exits 1 after completing and archiving both cases. All non-numerical host/matching guards pass. This validates wrapper behavior, not Splash arithmetic, TPU placement, full-size performance or convergence.",
+    "The tiny CPU fixture uses 1 warmup rather than 0 because the unchanged benchmark requires at least 1. It uses 1 measured step and disables historical large-model hash guards. These fixture differences do not alter the prepared full-size workload.",
+    "The full-size abstract proof verifies actual config construction, named/native backend selection, parameter count and dtypes without allocating full model weights or compiling/executing Splash. Initial hashes and physical TPU placement remain runtime guards.",
+    "Archive retention includes complete JSON, HLO and BF16 XPlane only. Perfetto exports are excluded. Any per-file or aggregate cap excess fails capture rather than truncating diagnostics.",
+    "V2 changes only the host-runner child bootstrap/provenance. Actual CPU children execute the unchanged benchmark via runpy, and production model/math/optimizer/criteria files remain untouched.",
+    "The saved large artifact retention fixture combines original36e JSON/HLO/BF16 XPlanes with actual CPU runtime import records solely to exercise the whitelist/count/size boundary. It is not a new large hardware run or a large hardware import proof.",
+    "The positive8aa last-block fragment A/B removes targeted differences but is not full-Trainer acceptance; the independently matched full test remains to be launched and evaluated by root."
+  ],
+  "independent_fragment_audit": "/private/tmp/native-jax-query-scale-ab-independent-audit.json",
+  "no_active_handles": true,
+  "hardware_submitted": false
+}

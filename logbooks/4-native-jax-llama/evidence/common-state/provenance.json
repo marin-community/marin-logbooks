@@ -1,0 +1,43 @@
+{
+  "source_commit": "ad2bc20438796c63415240ed1979e93d212fc6da",
+  "diagnostic_sha256": "ad2420850d07f77ad43b54b2fe7cb7a7fc3e3a3b826c845466fb9a21337cde0a",
+  "config": {
+    "vocab_size": 65536,
+    "hidden_dim": 2048,
+    "intermediate_dim": 5632,
+    "num_layers": 28,
+    "num_heads": 16,
+    "num_kv_heads": 4,
+    "batch_size": 8,
+    "seq_len": 2048,
+    "data_size": 2,
+    "model_size": 2,
+    "compute_dtype": "float32",
+    "gradient_checkpointing": true,
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "beta1": 0.9,
+    "beta2": 0.999,
+    "epsilon": 1e-08,
+    "seed": 42,
+    "warmup_steps": 5,
+    "measured_steps": 20,
+    "profile_steps": 0,
+    "parity_atol": 1e-05,
+    "parity_rtol": 0.0001,
+    "update_parameter_relative_l2": 0.005,
+    "loss_trajectory_relative_l2": 0.001
+  },
+  "target_step": 25,
+  "initial_parameter_sha256": "d79fb8c383f9af209fd9e3e32e00798c4aeb460d779a1444d9ea20ba9f453f9a",
+  "batch_sha256": "d65acfa301bad7db399ff9df86cbbc150c649317dd357b3a26c53c9eaea9caa4",
+  "devices": [
+    "TPU_0(process=0,(0,0,0,0))",
+    "TPU_1(process=0,(1,0,0,0))",
+    "TPU_2(process=0,(0,1,0,0))",
+    "TPU_3(process=0,(1,1,0,0))"
+  ],
+  "jax": "0.11.1",
+  "xla_flags": "--xla_allow_excess_precision=false",
+  "purpose": "Common-state gradient/update diagnostic; no timing or speed ratio"
+}

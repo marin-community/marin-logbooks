@@ -1,0 +1,98 @@
+{
+  "all_returned_buffers_blocked_read_and_finite": true,
+  "execution_seconds_diagnostic_only": 0.0734954069999958,
+  "hlo": {
+    "hlo": {
+      "file": "normal-hidden.hlo.txt",
+      "full_bytes": 228427,
+      "saved_bytes": 228427,
+      "sha256_full": "2962302bdd408883e13fab0c652bd68e10ad06fb1a9072ade20422765d9077e3",
+      "sha256_saved": "2962302bdd408883e13fab0c652bd68e10ad06fb1a9072ade20422765d9077e3",
+      "truncated": false
+    },
+    "stablehlo": {
+      "file": "normal-hidden.stablehlo.txt",
+      "full_bytes": 189752,
+      "saved_bytes": 189752,
+      "sha256_full": "2c148cf201096e673a3a2ee2aac150ff5fed03b71cbb4b932904c3325ced859f",
+      "sha256_saved": "2c148cf201096e673a3a2ee2aac150ff5fed03b71cbb4b932904c3325ced859f",
+      "truncated": false
+    }
+  },
+  "matmul_precision": "default",
+  "result_order": [
+    "normalized_output"
+  ],
+  "results": {
+    "normalized_output": {
+      "addressable_shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ],
+      "dtype": "bfloat16",
+      "max_abs": 4.90625,
+      "named_axes": [
+        {
+          "name": "batch",
+          "size": 8
+        },
+        {
+          "name": "position",
+          "size": 2048
+        },
+        {
+          "name": "embed",
+          "size": 2048
+        }
+      ],
+      "partition_spec": "P('data',)",
+      "rms": 0.9999974370002747,
+      "sha256": "982388b9f12bf68fb817b0d2a8781b25099e3d57c22ffa7952145291a9096eec",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'model': 2, axis_types=(Auto, Auto)), spec=P('data',), memory_kind=device)"
+    }
+  },
+  "saved_hlo_before_execution_and_checks": true
+}

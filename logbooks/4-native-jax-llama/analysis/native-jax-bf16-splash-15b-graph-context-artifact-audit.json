@@ -1,0 +1,906 @@
+{
+  "schema": "native-jax-graph-context-artifact-audit.v1",
+  "scope": "Independent read-only audit of existing local artifacts; no model compilation/execution, source changes, hardware/job queries or downloads.",
+  "script_sha256": "07d6a5bfd47960ec2cb4c3370439c91087fcd0773e40119af3ad35e11689fdd8",
+  "source_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "source_hashes_verified_against_git": {
+    "lib/haliax/src/haliax/_src/state_dict.py": "d9c98a71b758303b86f6984222221b75946d91f112d685ef30c860d96e9d4669",
+    "lib/haliax/src/haliax/nn/linear.py": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+    "lib/haliax/src/haliax/nn/normalization.py": "3b75cb9dce8a8aae9bd74f91d361cc23c008f73dd61fa862b5f0b5bebddb3518",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/grug/attention/_core.py": "07c8518380ee8a62cec006adf85458979be590630051e7c62dc9f7cb1285c3ec",
+    "lib/levanter/src/levanter/kernels/pallas/splash_attention.py": "34258a9a0fc9bc83b32dcb08e64ff81440a163d5a35b447ccd1b0a351c898d78",
+    "lib/levanter/src/levanter/layers/attention.py": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+    "lib/levanter/src/levanter/layers/linear.py": "d351bc82e111d7643d9b31cf3797ba927b100fa1cca5bcc368ab917e526d8b80",
+    "lib/levanter/src/levanter/layers/rms_norm.py": "bcf81000cb940f68235ce185e4210412d4d60e0f27384c95edc2c8c5f18af4f0",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984"
+  },
+  "frozen_script_and_two_helpers_match_provenance": true,
+  "parameter_count_initial_hash_and_batch_hash_match_measured_case": true,
+  "device_mesh_guard": "One process,4TPUv5chips,Auto data2/model2; all16returnedbuffer placements verified.",
+  "result_layouts": {
+    "source-scan/last_input": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "source-scan/last_output": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "source-scan/normalized_output": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "D-original-capture/composed": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "D-original-capture/full": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "D-original-capture/output_cotangent": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "D-original-capture/residual": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "D-original-capture/suffix_loss": {
+      "dtype": "float32",
+      "shape": [],
+      "partition_spec": "P()",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        }
+      ]
+    },
+    "D-original-capture/tail_input_cotangent": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "normal-hidden/normalized_output": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "normal-loss/loss": {
+      "dtype": "float32",
+      "shape": [],
+      "partition_spec": "P()",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "()",
+          "local_shape": [],
+          "process": 0
+        }
+      ]
+    },
+    "A-forward-combined/composed": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "A-forward-combined/full": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "A-forward-combined/residual": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "B-full-alone/full": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    },
+    "C-composed-alone/composed": {
+      "dtype": "bfloat16",
+      "shape": [
+        8,
+        2048,
+        2048
+      ],
+      "partition_spec": "P('data',)",
+      "shards": [
+        {
+          "device": "TPU_0(process=0,(0,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_1(process=0,(1,0,0,0))",
+          "index": "(slice(0, 4, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_2(process=0,(0,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        },
+        {
+          "device": "TPU_3(process=0,(1,1,0,0))",
+          "index": "(slice(4, 8, None), slice(None, None, None), slice(None, None, None))",
+          "local_shape": [
+            4,
+            2048,
+            2048
+          ],
+          "process": 0
+        }
+      ]
+    }
+  },
+  "hlo_files_verified_untruncated_and_byte_exact": [
+    {
+      "file": "source-scan.hlo.txt",
+      "bytes": 227359,
+      "sha256": "908159b57aa40a98d95feabbe43bbb7148e61d408dab529ace804952ebb49c0b"
+    },
+    {
+      "file": "source-scan.stablehlo.txt",
+      "bytes": 190192,
+      "sha256": "f255e075f09364a062126cdc4a70e23d90ebccf85bd5967003fd4b41f8be0c59"
+    },
+    {
+      "file": "D-original-capture.hlo.txt",
+      "bytes": 374163,
+      "sha256": "445b5dded3e36e561d92b3f1bbd0e5046c6036c76e4a1102ee31fff04f14872a"
+    },
+    {
+      "file": "D-original-capture.stablehlo.txt",
+      "bytes": 512494,
+      "sha256": "e1efdddc4bca42c35c52a69302c1bd9f492fc7dc692726b47117dafbc1299c49"
+    },
+    {
+      "file": "normal-hidden.hlo.txt",
+      "bytes": 228427,
+      "sha256": "2962302bdd408883e13fab0c652bd68e10ad06fb1a9072ade20422765d9077e3"
+    },
+    {
+      "file": "normal-hidden.stablehlo.txt",
+      "bytes": 189752,
+      "sha256": "2c148cf201096e673a3a2ee2aac150ff5fed03b71cbb4b932904c3325ced859f"
+    },
+    {
+      "file": "normal-loss.hlo.txt",
+      "bytes": 289754,
+      "sha256": "e3bc9eba9b6d8c580bafaca5af102f989ffbd0830226559666b9b5c1c2230cb8"
+    },
+    {
+      "file": "normal-loss.stablehlo.txt",
+      "bytes": 73479,
+      "sha256": "da8e2229b3757d253f1d95b980a8e9a44c7f98e192eb6d7e8a9f76bb23c67900"
+    },
+    {
+      "file": "A-forward-combined.hlo.txt",
+      "bytes": 186062,
+      "sha256": "3dbd00f861dee22c320eb3a8a264137a17ffd7e0298bfc957354df908f375ac6"
+    },
+    {
+      "file": "A-forward-combined.stablehlo.txt",
+      "bytes": 208299,
+      "sha256": "83a6e00d5cbaa08373743057856f48ac87f45277a497b8e1688cc5067711598a"
+    },
+    {
+      "file": "B-full-alone.hlo.txt",
+      "bytes": 153863,
+      "sha256": "7bd635c537537ed4f3a0b0f66462d610912a4e7799b43f368c38eb7e116ba3cf"
+    },
+    {
+      "file": "B-full-alone.stablehlo.txt",
+      "bytes": 192700,
+      "sha256": "4cc7e0712cab0d2aecce8189ed0e981fc00614b7e8d928e3d5839560d0cc2089"
+    },
+    {
+      "file": "C-composed-alone.hlo.txt",
+      "bytes": 151861,
+      "sha256": "5e041a7de2a3614a88965b05387487f3d8b79e33ce591ae249ff11f428833333"
+    },
+    {
+      "file": "C-composed-alone.stablehlo.txt",
+      "bytes": 192704,
+      "sha256": "df1c366248b82ca91457df0683386b4317d35ccc58d9c2aabc1200e33d4bddf3"
+    }
+  ],
+  "archive": {
+    "file": "/private/tmp/native-jax-bf16-splash-15b-graph-context-diagnostics.tar.gz",
+    "bytes": 406406,
+    "sha256": "19e7301eb313138326ed5f563969e553ef5edfae38f78a326b2121f7f59b0c05",
+    "entries": 26,
+    "raw_bytes": 3222736,
+    "every_archived_file_matches_extracted_bytes": true
+  },
+  "outcome_manifest_files_verified": 23,
+  "source_ASTs_match_original": {
+    "capture_last": {
+      "ast_sha256": "75d88cce04b891b166b5176994d3326c749a258cdd8d4303d9defa0058664276",
+      "identical_ast_including_decorator_arguments_body_and_returns": true
+    },
+    "scanned_capture": {
+      "ast_sha256": "326c53422901f11a89e90bc32720f081b0555e696236a86fcc0ab56ff98cd959",
+      "identical_ast_including_decorator_arguments_body_and_returns": true
+    }
+  },
+  "all12_reported_comparison_outcomes_confirmed": true,
+  "failing_combined_full_results": {
+    "max_abs": 4.19921875,
+    "relative_l2": 0.16780116533211895,
+    "different_elements": 33193581,
+    "elements": 33554432
+  },
+  "interpretation": "StandaloneB/C both bitexactscan; combinedA/D manual+residual exactscan and eachother, while bothfulloutputs identically reproduce16.7801percent mismatch. Dcotangent branches are unnecessary becauseA lacks them. No native or fullTrainergradient tested.",
+  "B_C_entire_StableHLO_equal_after_module_symbol_rename": true,
+  "B_C_normalized_StableHLO_sha256": "4cb6b57ffe5ee7ffcedb62dbfc26a9aeaf5a0e99d6c58cd8643232e61461972e",
+  "stablehlo_dataflow_audit": "/private/tmp/native-jax-bf16-splash-15b-graph-context-stablehlo-audit.json",
+  "limitations": [
+    "Reported statistics and placement records are verified against frozen capture code and manifests; raw activation tensors were deliberately not persisted, so values cannot be recomputed independently from this archive.",
+    "Identical source/StableHLO dataflow does not itself identify which optimized transformation, customkernel behavior, or runtime effect caused divergence."
+  ]
+}

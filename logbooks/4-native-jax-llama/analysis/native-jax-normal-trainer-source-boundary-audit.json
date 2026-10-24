@@ -1,0 +1,32 @@
+{
+  "source_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "source_hashes": {
+    "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f",
+    "lib/levanter/src/levanter/trainer_state.py": "f97d7d6a24013a345e3a2a0a845514bdd1ebbcff08659af3f36f7db335ed4926",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77"
+  },
+  "audit_scope": "Read-only ordinary Trainer dtype/optimizer/JIT path evidence, no compilation or new hardware run",
+  "findings": [
+    {
+      "file": "lib/levanter/src/levanter/trainer.py",
+      "evidence": "loss wrapper casts compute model under shared compute context for both modes; _train_step computes grads once and take_step before optional hooks",
+      "limitation": "The two compilations can still fuse differently when diagnostic hook outputs extend the result."
+    },
+    {
+      "file": "lib/levanter/src/levanter/trainer.py",
+      "evidence": "_jit_train_step_fn_no_hook sets _no_hooks=True and is the step_fn used for lowering, first ordinary update, warmups, timed steps, and profiled steps",
+      "limitation": "Native uses ordinary jax.jit Explicit mesh; legacy uses named_jit Auto mesh, the intended comparison."
+    },
+    {
+      "file": "lib/levanter/src/levanter/trainer_state.py",
+      "evidence": "Shared cast_params_by_trainability places trainables in policy parameter dtype and nontrainables in compute dtype; benchmark policy has float32 master params and BF16 or FP32 compute",
+      "limitation": "Source logic alone does not prove every compiled intermediate dtype or context is equal."
+    },
+    {
+      "file": "lib/levanter/scripts/bench/bench_llama_native.py",
+      "evidence": "First ordinary no-hook new_state params and Adam mu/nu/count copied independently to host before subsequent state donation. These are compared and physical layouts enforced.",
+      "limitation": "Gradient arrays are captured only from hook executable. Loss group is hook-executable first loss; normal first loss exists as result.loss but is not separately retained in report."
+    }
+  ],
+  "conclusion": "No new Trainer source math/dtype discrepancy identified. Retained normal moment evidence can independently test whether backward divergence persists without hooks; await agent tensor-level audit. Do not claim isolated diagnostic establishes full-Trainer backward identity."
+}

@@ -1,0 +1,438 @@
+{
+  "job_id": "/dlwh/levanter-native-jax-v5p-splash-maskfix-107m-20261023",
+  "parent_state": "SUCCEEDED",
+  "parent_observed_utc": "2026-10-23T21:13:05Z",
+  "task_exit_code": 0,
+  "failures": 0,
+  "preemptions": 0,
+  "cases": {
+    "float32": {
+      "comparison_valid": true,
+      "source_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "source_tree_state": "clean",
+      "initial_hash": "e828bc35ec462b3c312e4a209f4a01ac8884f5fa80239073c5cc07f2b7190ede",
+      "batch_hash": "1f747eb9a2ae81dc02ff1ff9e106fc4f5d8c9274fc37b5baa7227e83b132aa8b",
+      "config": {
+        "attention_backend": "splash",
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "float32",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 1024,
+        "intermediate_dim": 2816,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 8,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 0,
+        "seed": 42,
+        "seq_len": 512,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 8192,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      },
+      "parameter_count": 106972160,
+      "devices": [
+        "TPU_0(process=0,(0,0,0,0))",
+        "TPU_1(process=0,(1,0,0,0))",
+        "TPU_2(process=0,(0,1,0,0))",
+        "TPU_3(process=0,(1,1,0,0))"
+      ],
+      "matmul_precision": "highest",
+      "canonical_physical_layout_categories_checked": {
+        "activations": 3,
+        "adam_count": 1,
+        "adam_mu": 75,
+        "adam_nu": 75,
+        "execution_adam_count": 1,
+        "execution_adam_mu": 75,
+        "execution_adam_nu": 75,
+        "execution_parameters_after_one_step": 75,
+        "gradients": 75,
+        "parameters": 75,
+        "parameters_after_one_step": 75,
+        "updates": 75
+      },
+      "raw_layout_independent_audit": "Passed: raw legacy head dimensions merged, stacked layers expanded, physical shape/spec/dtype/devices/memory independently matched canonical and normal-executable manifests.",
+      "acceptance": {
+        "adam_count": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "adam_mu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "adam_nu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_adam_count": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_adam_mu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_adam_nu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_parameters_after_one_step": {
+          "accepted": true,
+          "metric": "relative_l2",
+          "relative_l2_limit": 0.005
+        },
+        "gradients": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "loss": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "measured_step_losses": {
+          "accepted": true,
+          "metric": "relative_l2",
+          "relative_l2_limit": 0.001
+        },
+        "parameters_after_one_step": {
+          "accepted": true,
+          "metric": "relative_l2",
+          "relative_l2_limit": 0.005
+        },
+        "updates": {
+          "accepted": true,
+          "metric": "relative_l2",
+          "relative_l2_limit": 0.005
+        }
+      },
+      "parity": {
+        "adam_count": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "adam_mu": {
+          "allclose": true,
+          "max_abs": 3.4458935260772705e-08,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 8.362068228962016e-07
+        },
+        "adam_nu": {
+          "allclose": true,
+          "max_abs": 1.8189894035458565e-10,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 9.723501079861308e-07
+        },
+        "execution_adam_count": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "execution_adam_mu": {
+          "allclose": true,
+          "max_abs": 2.9103830456733704e-08,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 8.383292993130453e-07
+        },
+        "execution_adam_nu": {
+          "allclose": true,
+          "max_abs": 1.6007106751203537e-10,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 9.763493835635018e-07
+        },
+        "execution_parameters_after_one_step": {
+          "allclose": false,
+          "max_abs": 0.00020600060815922916,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 6.739150558132678e-05
+        },
+        "gradients": {
+          "allclose": true,
+          "max_abs": 3.4458935260772705e-07,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 8.353410407835327e-07
+        },
+        "loss": {
+          "allclose": true,
+          "max_abs": 9.5367431640625e-07,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 1.0050236909364685e-07
+        },
+        "measured_step_losses": {
+          "allclose": true,
+          "max_abs": 0.00011873245239257812,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 9.949172635970172e-06
+        },
+        "parameters_after_one_step": {
+          "allclose": false,
+          "max_abs": 0.00014391160220839083,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 5.011391840525903e-05
+        },
+        "updates": {
+          "allclose": false,
+          "max_abs": 0.0001439115876564756,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0003640996292233467
+        }
+      },
+      "timing": {
+        "legacy": {
+          "median_ms": 42.107799500001875,
+          "min_ms": 41.94283499998619,
+          "max_ms": 109.30211099991993,
+          "mean_ms": 56.75865124999291,
+          "samples": 20
+        },
+        "native": {
+          "median_ms": 28.687172499985536,
+          "min_ms": 28.64846399995713,
+          "max_ms": 28.759865999973044,
+          "mean_ms": 28.690780299996277,
+          "samples": 20
+        }
+      },
+      "accepted_median_speedup": 1.4678267612474916,
+      "timing_scope": "Trainer full compiled step, including gradients and AdamW; synchronized wall time; no hooks/data/I/O"
+    },
+    "bfloat16": {
+      "comparison_valid": true,
+      "source_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "source_tree_state": "clean",
+      "initial_hash": "e828bc35ec462b3c312e4a209f4a01ac8884f5fa80239073c5cc07f2b7190ede",
+      "batch_hash": "1f747eb9a2ae81dc02ff1ff9e106fc4f5d8c9274fc37b5baa7227e83b132aa8b",
+      "config": {
+        "attention_backend": "splash",
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "bfloat16",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 1024,
+        "intermediate_dim": 2816,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 8,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 0,
+        "seed": 42,
+        "seq_len": 512,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 8192,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      },
+      "parameter_count": 106972160,
+      "devices": [
+        "TPU_0(process=0,(0,0,0,0))",
+        "TPU_1(process=0,(1,0,0,0))",
+        "TPU_2(process=0,(0,1,0,0))",
+        "TPU_3(process=0,(1,1,0,0))"
+      ],
+      "matmul_precision": "default",
+      "canonical_physical_layout_categories_checked": {
+        "activations": 3,
+        "adam_count": 1,
+        "adam_mu": 75,
+        "adam_nu": 75,
+        "execution_adam_count": 1,
+        "execution_adam_mu": 75,
+        "execution_adam_nu": 75,
+        "execution_parameters_after_one_step": 75,
+        "gradients": 75,
+        "parameters": 75,
+        "parameters_after_one_step": 75,
+        "updates": 75
+      },
+      "raw_layout_independent_audit": "Passed: raw legacy head dimensions merged, stacked layers expanded, physical shape/spec/dtype/devices/memory independently matched canonical and normal-executable manifests.",
+      "acceptance": {
+        "adam_count": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "adam_mu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "adam_nu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_adam_count": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_adam_mu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_adam_nu": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "execution_parameters_after_one_step": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "gradients": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "loss": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "measured_step_losses": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "parameters_after_one_step": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        },
+        "updates": {
+          "accepted": true,
+          "metric": "elementwise",
+          "relative_l2_limit": null
+        }
+      },
+      "parity": {
+        "adam_count": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "adam_mu": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "adam_nu": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "execution_adam_count": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "execution_adam_mu": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "execution_adam_nu": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "execution_parameters_after_one_step": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "gradients": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "loss": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "measured_step_losses": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 1,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "parameters_after_one_step": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        },
+        "updates": {
+          "allclose": true,
+          "max_abs": 0.0,
+          "tensor_count": 75,
+          "worst_tensor_relative_l2": 0.0
+        }
+      },
+      "timing": {
+        "legacy": {
+          "median_ms": 25.017442500029574,
+          "min_ms": 24.947852000082094,
+          "max_ms": 25.083104000032108,
+          "mean_ms": 25.011821050009075,
+          "samples": 20
+        },
+        "native": {
+          "median_ms": 11.967873999992662,
+          "min_ms": 11.936747000049763,
+          "max_ms": 12.012472000037633,
+          "mean_ms": 11.972052700014046,
+          "samples": 20
+        }
+      },
+      "accepted_median_speedup": 2.0903831791715817,
+      "timing_scope": "Trainer full compiled step, including gradients and AdamW; synchronized wall time; no hooks/data/I/O"
+    }
+  },
+  "archive_bytes": 596223,
+  "archive_sha256": "8fd11fd1d7117e13a4bf817fed9eb78db7a750adffbe4cfe90b8551c376b7448",
+  "limits": "Single short matched107M synthetic-batch comparison; no1.53B/convergence claim. Saved numerical summaries/layouts audited; original array bytes not downloaded, so numeric summaries/hashes not independently recomputed.",
+  "independent_audit": "/private/tmp/native-jax-splash-maskfix-107m-independent-audit.json"
+}

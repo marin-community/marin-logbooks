@@ -1,0 +1,261 @@
+{
+  "schema": "native_jax_campaign_durable_snapshot.v1",
+  "archive_source_pin": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "baseline_source_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "coordinating_issue": "https://github.com/marin-community/marin-logbooks/issues/4",
+  "archival_status": "local_draft_not_published",
+  "source_tree_policy": "8aa selected source; b8/f659 historical checkpoint commits retained through archive-only ours merges, not integrated into selected tree",
+  "approved_criteria": {
+    "FP32": {
+      "first_loss_gradients_Adam": "elementwise abs(a-b)<=1e-5+1e-4*abs(reference)",
+      "every_update_and_next_parameter_tensor_relative_l2_limit": 0.005,
+      "measured_20_loss_vector_relative_l2_limit": 0.001
+    },
+    "BF16": "all original elementwise checks unchanged",
+    "always": [
+      "exact initial parameter hash within each pair",
+      "same batch within pair",
+      "matching concrete physical placements",
+      "normal no-hook timings distinct from diagnostic/profile captures"
+    ]
+  },
+  "cases": [
+    {
+      "case": "reference107m-v5p-8-fp32",
+      "measurement_pin": "9972d9f369ab4295ead7512d89ece98c9ed02b24",
+      "evaluator_pin": "2a4de13094a488af0b2df9325ef2fc50c2c60469",
+      "comparison_valid": true,
+      "median_ms": {
+        "legacy": 40.56030249921605,
+        "native": 27.02490949741332
+      },
+      "accepted_median_speedup": 1.500848781865422,
+      "normal_executable_first_state_captured": false
+    },
+    {
+      "case": "reference107m-v4-8-fp32",
+      "measurement_pin": "10f09d8ca27e1d454f83de59568d01106ce3bab3",
+      "evaluator_pin": "2a4de13094a488af0b2df9325ef2fc50c2c60469",
+      "comparison_valid": true,
+      "median_ms": {
+        "legacy": 64.7087414999703,
+        "native": 48.31830400001991
+      },
+      "accepted_median_speedup": 1.3392179804147024,
+      "normal_executable_first_state_captured": true
+    },
+    {
+      "case": "reference107m-h100x4-fp32",
+      "measurement_pin": "10f09d8ca27e1d454f83de59568d01106ce3bab3",
+      "evaluator_pin": "2a4de13094a488af0b2df9325ef2fc50c2c60469",
+      "comparison_valid": true,
+      "median_ms": {
+        "legacy": 40.55023845285177,
+        "native": 34.328945679590106
+      },
+      "accepted_median_speedup": 1.1812258620269969,
+      "normal_executable_first_state_captured": true
+    },
+    {
+      "case": "reference1531m-float32",
+      "measurement_pin": "ad2bc20438796c63415240ed1979e93d212fc6da",
+      "comparison_valid": false,
+      "median_ms": {
+        "legacy": 1068.120091499992,
+        "native": 1074.3019159999676
+      },
+      "accepted_median_speedup": null,
+      "parameter_count": 1531037696,
+      "config": {
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "float32",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 2048,
+        "intermediate_dim": 5632,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 28,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 2,
+        "seed": 42,
+        "seq_len": 2048,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 65536,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      }
+    },
+    {
+      "case": "splash107m-float32",
+      "measurement_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "comparison_valid": true,
+      "median_ms": {
+        "legacy": 42.107799500001875,
+        "native": 28.687172499985536
+      },
+      "accepted_median_speedup": 1.4678267612474916,
+      "parameter_count": 106972160,
+      "config": {
+        "attention_backend": "splash",
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "float32",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 1024,
+        "intermediate_dim": 2816,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 8,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 0,
+        "seed": 42,
+        "seq_len": 512,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 8192,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      }
+    },
+    {
+      "case": "splash107m-bfloat16",
+      "measurement_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "comparison_valid": true,
+      "median_ms": {
+        "legacy": 25.017442500029574,
+        "native": 11.967873999992662
+      },
+      "accepted_median_speedup": 2.0903831791715817,
+      "parameter_count": 106972160,
+      "config": {
+        "attention_backend": "splash",
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "bfloat16",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 1024,
+        "intermediate_dim": 2816,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 8,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 0,
+        "seed": 42,
+        "seq_len": 512,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 8192,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      }
+    },
+    {
+      "case": "splash1531m-float32",
+      "measurement_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "comparison_valid": false,
+      "median_ms": {
+        "legacy": 1032.4778489999744,
+        "native": 1035.3454099999908
+      },
+      "accepted_median_speedup": null,
+      "parameter_count": 1531037696,
+      "config": {
+        "attention_backend": "splash",
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "float32",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 2048,
+        "intermediate_dim": 5632,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 28,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 2,
+        "seed": 42,
+        "seq_len": 2048,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 65536,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      }
+    },
+    {
+      "case": "splash1531m-bfloat16",
+      "measurement_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "comparison_valid": false,
+      "median_ms": {
+        "legacy": 286.2082294998345,
+        "native": 277.6577634997466
+      },
+      "accepted_median_speedup": null,
+      "parameter_count": 1531037696,
+      "config": {
+        "attention_backend": "splash",
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "bfloat16",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 2048,
+        "intermediate_dim": 5632,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 28,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 2,
+        "seed": 42,
+        "seq_len": 2048,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 65536,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      }
+    }
+  ],
+  "remaining": [
+    "full1.53B candidate Trainer correctness and performance",
+    "strict BF16 full model parity",
+    "accepted1.53B trajectory/performance",
+    "entry-point replacement and legacy implementation deletion",
+    "broader checkpoint initialization/conversion and convergence evidence as migration gates require"
+  ]
+}

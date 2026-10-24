@@ -1,0 +1,56 @@
+{
+  "job": "/dlwh/levanter-native-jax-v5p-15b-nested-checkpoint-20261023",
+  "measurement_source_commit": "f659101960398fe9ad104e66600c0ccf3a2f34c8",
+  "runner_sha256_verified_from_git_object": "51022009b7147da0b0f2176cd5fb8a1a97b17afb2aad012e20b02311c70988b6",
+  "authoritative_parent_observation_utc": "2026-10-23T20:28:46Z",
+  "parent_state": "SUCCEEDED",
+  "attempt_exit_codes": [
+    0,
+    0
+  ],
+  "failures": 0,
+  "preemptions": 0,
+  "attempt_uids": [
+    "5bf4da47085d47b9",
+    "6d02365d321a4404"
+  ],
+  "structured_rematerialization_config": {
+    "nested": 2,
+    "save_carries": false,
+    "save_inputs": true
+  },
+  "topology_asserted_by_successful_runner": {
+    "process_count": 2,
+    "global_device_count": 8,
+    "local_device_count": 4,
+    "backend": "tpu"
+  },
+  "independently_recovered_metadata": {
+    "checkpoint_count": 3,
+    "checkpoint_paths": [
+      "full/step-1",
+      "resumed/step-0",
+      "resumed/step-1"
+    ],
+    "identical_array_manifests": true,
+    "matching_native_model_semantics": true,
+    "array_count": 42,
+    "model_array_count": 12,
+    "parameter_count": 1531037696,
+    "array_bytes_per_checkpoint": 18372452380,
+    "array_bytes_three_checkpoints": 55117357140,
+    "metadata_manifest_download_bytes": 29772,
+    "manifest_semantic_sha256": "b47b982c8803ea873d0a6e8e60de86a631df799f94a6328058e875ff691a4828"
+  },
+  "runner_success_guarantees": [
+    "both final loaded state steps equal2",
+    "all integer Adam/schedule counters equal2",
+    "all floating state chunks finite",
+    "complete local leaf paths,dtypes,global shapes,placements,indices,local shapes,byte SHA256 equal",
+    "all ranks agree exact_state_match",
+    "three completed checkpoints",
+    "global completion barrier"
+  ],
+  "artifact_gap": "No output archive field in either terminal attempt response; both exact standard regional archive keys returned FileNotFoundError. Concrete per-rank shard digests and physical device-kind mapping unavailable. Exactness is supported by verified source assertions and both exit0 outcomes; manifests establish structure/semantics only. OCDBT object metadata is not a logical tensor checksum.",
+  "scope": "Native ordinary Trainer nested-rematerialization and distributed short-run checkpoint resume only; no legacy parity, throughput, long convergence or migration-complete claim."
+}

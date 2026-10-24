@@ -1,0 +1,793 @@
+{
+  "schema": "native_jax_fp32_qscale_static_independent_review.v1",
+  "scope": "Read-only static inspection of existing normal timed FP32 Trainer optimized HLO; no hardware run, source edit, acceptance change, or PR mutation.",
+  "source_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "report": {
+    "path": "/private/tmp/native-jax-splash-15b-profile-results/float32/compare.json",
+    "sha256": "e79e0f758b734dd6f47cdcabbc6547acb46e3d933528f617647944d1afca8b97",
+    "provenance": {
+      "architecture": {
+        "attention_implementation": "tpu_splash",
+        "gradient_checkpointing": true,
+        "head_dim": null,
+        "hidden_dim": 2048,
+        "hybrid_norm": false,
+        "input_embedding_norm": false,
+        "intermediate_dim": 5632,
+        "layer_norm_epsilon": 1e-05,
+        "max_seq_len": 2048,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 28,
+        "rope_factor": 1.0,
+        "rope_theta": 10000.0,
+        "tie_word_embeddings": false,
+        "upcast_attn": false,
+        "use_bias": false,
+        "use_layer_norm_weight": true,
+        "use_qk_norm": false,
+        "vocab_size": 65536
+      },
+      "attention_backend": "splash",
+      "attention_entrypoints": {
+        "legacy": "AttentionBackend.SPLASH",
+        "native": "attention(implementation=tpu_splash)"
+      },
+      "attention_splash_max_block_size": 512,
+      "backend": "tpu",
+      "batch_sha256": "d65acfa301bad7db399ff9df86cbbc150c649317dd357b3a26c53c9eaea9caa4",
+      "config": {
+        "attention_backend": "splash",
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "float32",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 2048,
+        "intermediate_dim": 5632,
+        "learning_rate": 0.001,
+        "loss_trajectory_relative_l2": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 28,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "profile_steps": 2,
+        "seed": 42,
+        "seq_len": 2048,
+        "update_parameter_relative_l2": 0.005,
+        "vocab_size": 65536,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      },
+      "device_kinds": [
+        "TPU v5",
+        "TPU v5",
+        "TPU v5",
+        "TPU v5"
+      ],
+      "devices": [
+        "TPU_0(process=0,(0,0,0,0))",
+        "TPU_1(process=0,(1,0,0,0))",
+        "TPU_2(process=0,(0,1,0,0))",
+        "TPU_3(process=0,(1,1,0,0))"
+      ],
+      "donation": "Trainer production step: state donated, batch retained",
+      "equinox": "0.13.2",
+      "git_commit": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+      "jax": "0.11.1",
+      "jax_default_matmul_precision": "highest",
+      "jaxlib": "0.11.1",
+      "layout_comparison": "Identical physical partitions and devices; Auto -> Explicit is the intended control-mode difference",
+      "libtpu_init_args": " --xla_tpu_use_enhanced_launch_barrier=true",
+      "loss_backend": "shared_raw_fused_cross_entropy_loss_and_logsumexp_penalty:xla",
+      "loss_head_placement": "replicated in common loss adapter before the raw CE kernel",
+      "mesh": {
+        "data": 2,
+        "model": 2
+      },
+      "mesh_axis_types": {
+        "legacy": [
+          "Auto",
+          "Auto"
+        ],
+        "native": [
+          "Explicit",
+          "Explicit"
+        ]
+      },
+      "native_parameter_sha256": "d79fb8c383f9af209fd9e3e32e00798c4aeb460d779a1444d9ea20ba9f453f9a",
+      "numpy": "2.3.5",
+      "optax": "0.2.6",
+      "optimizer": "optax.adamw",
+      "optimizer_moment_dtype": "float32",
+      "parameter_count": 1531037696,
+      "parameter_dtype": "float32",
+      "parameter_sha256": "d79fb8c383f9af209fd9e3e32e00798c4aeb460d779a1444d9ea20ba9f453f9a",
+      "process_count": 1,
+      "python": "3.12.15",
+      "scan_layers": true,
+      "source_bundle_marker": "levanter-native-jax-v5p-splash-15b-profile-20261023",
+      "source_tree_state": "clean",
+      "timed_scope": "Trainer full compiled step, including gradients and AdamW; synchronized wall time; no hooks/data/I/O",
+      "xla_flags": "--xla_allow_excess_precision=false"
+    }
+  },
+  "hlo_files": {
+    "legacy": {
+      "path": "/private/tmp/native-jax-splash-15b-profile-results/float32/legacy.optimized_hlo.txt",
+      "sha256": "2f12208e13ad91c01edf2e946c508e005cf9a9f8409a83ad3e6ff1ede98bf5f4",
+      "size_bytes": 932584,
+      "line_count": 5425
+    },
+    "native": {
+      "path": "/private/tmp/native-jax-splash-15b-profile-results/float32/native.optimized_hlo.txt",
+      "sha256": "6cc62c66ed7b47308b69ebb78b905911ed565062a76698d42e17b41edda926fc",
+      "size_bytes": 881043,
+      "line_count": 5000
+    }
+  },
+  "source_scale": {
+    "path": "/private/tmp/marin-native-jax-splash-mask-sharding/lib/levanter/src/levanter/grug/attention/_core.py",
+    "sha256": "07c8518380ee8a62cec006adf85458979be590630051e7c62dc9f7cb1285c3ec",
+    "matches_pinned_git_source_bytes": true,
+    "line": 320,
+    "text": "    q_ = q_ * (1.0 / math.sqrt(D))"
+  },
+  "conclusions": {
+    "native_folds_scale_into_rope_coefficients_before_multiplying_raw_dq": true,
+    "legacy_materializes_dq_times_scale_before_both_rope_branches": true,
+    "same_scale_literal": "f32(0.0883883461), nearest FP32 representation of 1/sqrt(128)",
+    "native_pseudocode": "sc = f32(cos(theta)*scale); ss = f32(sin(theta)*scale); qbar = raw_dq*sc + rotate_transpose(raw_dq*ss), with FP32 operation results and backend fusion details as shown in HLO",
+    "legacy_pseudocode": "scaled_dq = materialize_f32(raw_dq*scale); qbar = scaled_dq*cos(theta) + rotate_transpose(scaled_dq*sin(theta)), with FP32 operation results and backend fusion details as shown in HLO",
+    "new_experiment_hypothesis": "A forward optimization barrier immediately before query scaling, also enabled for FP32, may preserve the reverse scaled-dQ boundary and align native FP32 lowering with legacy. Validate candidate optimized HLO and actual frozen-value/VJP outputs before any full Trainer gate/performance claim."
+  },
+  "native_operand_chain": [
+    {
+      "stage": "trig_and_scaled_trig_materialization",
+      "lines": [
+        {
+          "line": 2170,
+          "text": "%fused_computation.170.clone.1 (param_0.1213: f32[4,2048,64]) -> (f32[4,2048,128], f32[4,2048,128], f32[4,2048,128], f32[4,2048,128]) {"
+        },
+        {
+          "line": 2171,
+          "text": "  %param_0.1213 = f32[4,2048,64]{2,1,0:T(8,128)S(1)} parameter(0)"
+        },
+        {
+          "line": 2172,
+          "text": "  %constant.1376 = f32[]{:T(128)} constant(-inf)"
+        },
+        {
+          "line": 2173,
+          "text": "  %pad.99 = f32[4,2048,128]{2,1,0:T(8,128)} pad(%param_0.1213, %constant.1376), padding=0_0x0_0x0_64, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/rematted_computation/__call__/__call__/concatenate\" stack_frame_id=250}"
+        },
+        {
+          "line": 2174,
+          "text": "  %pad.98 = f32[4,2048,128]{2,1,0:T(8,128)} pad(%param_0.1213, %constant.1376), padding=0_0x0_0x64_0, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/rematted_computation/__call__/__call__/concatenate\" stack_frame_id=250}"
+        },
+        {
+          "line": 2175,
+          "text": "  %maximum.55 = f32[4,2048,128]{2,1,0:T(8,128)} maximum(%pad.99, %pad.98), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/rematted_computation/__call__/__call__/concatenate\" stack_frame_id=250}"
+        },
+        {
+          "line": 2176,
+          "text": "  %cos.37 = f32[4,2048,128]{2,1,0:T(8,128)S(1)} cosine(%maximum.55), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/rematted_computation/__call__/__call__/cos\" stack_frame_id=251}"
+        },
+        {
+          "line": 2177,
+          "text": "  %constant.484.clone.6 = f32[]{:T(128)} constant(0.0883883461)"
+        },
+        {
+          "line": 2178,
+          "text": "  %broadcast.750 = f32[4,2048,128]{2,1,0:T(8,128)} broadcast(%constant.484.clone.6), dimensions={}, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        },
+        {
+          "line": 2179,
+          "text": "  %multiply.162 = f32[4,2048,128]{2,1,0:T(8,128)} multiply(%cos.37, %broadcast.750), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        },
+        {
+          "line": 2180,
+          "text": "  %sin.34.clone.3 = f32[4,2048,128]{2,1,0:T(8,128)S(1)} sine(%maximum.55), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/rematted_computation/__call__/__call__/sin\" stack_frame_id=253}"
+        },
+        {
+          "line": 2181,
+          "text": "  %multiply.108.clone.3 = f32[4,2048,128]{2,1,0:T(8,128)} multiply(%sin.34.clone.3, %broadcast.750), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=254}"
+        },
+        {
+          "line": 2182,
+          "text": "  ROOT %tuple.225 = (f32[4,2048,128]{2,1,0:T(8,128)}, f32[4,2048,128]{2,1,0:T(8,128)}, f32[4,2048,128]{2,1,0:T(8,128)S(1)}, f32[4,2048,128]{2,1,0:T(8,128)S(1)}) tuple(%multiply.162, %multiply.108.clone.3, %cos.37, %sin.34.clone.3)"
+        },
+        {
+          "line": 2183,
+          "text": "}"
+        }
+      ]
+    },
+    {
+      "stage": "while_call",
+      "lines": [
+        {
+          "line": 3364,
+          "text": "  %broadcast_multiply_fusion.9 = (f32[4,2048,128]{2,1,0:T(8,128)}, f32[4,2048,128]{2,1,0:T(8,128)}, f32[4,2048,128]{2,1,0:T(8,128)S(1)}, f32[4,2048,128]{2,1,0:T(8,128)S(1)}) fusion(%broadcast_multiply_fusion.8), kind=kLoop, calls=%fused_computation.170.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        }
+      ]
+    },
+    {
+      "stage": "sin_coefficient",
+      "lines": [
+        {
+          "line": 3542,
+          "text": "  %get-tuple-element.1796 = f32[4,2048,128]{2,1,0:T(8,128)} get-tuple-element(%broadcast_multiply_fusion.9), index=1, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        },
+        {
+          "line": 3543,
+          "text": "  %copy-start.18 = (f32[4,2048,128]{2,1,0:T(8,128)S(1)}, f32[4,2048,128]{2,1,0:T(8,128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.1796)"
+        }
+      ]
+    },
+    {
+      "stage": "raw_dq_producer",
+      "lines": [
+        {
+          "line": 3553,
+          "text": "  %splash_mha_dq_no_residuals.1 = (f32[4,512,128]{2,1,0:T(8,128)}, f32[4,8,2048,128]{3,2,1,0:T(8,128)}) custom-call(%copy-done.108, %copy-done.106, %fusion.373.q_ref, %fusion.375.k_ref, %bitcast.595, /*index=5*/%get-tuple-element.1790.logsumexp_ref, %bitcast.570, %broadcast_in_dim.689.di_ref, %copy-done.32), custom_call_target=\"tpu_custom_call\", operand_layout_constraints={s8[1,4,4]{2,1,0}, s8[1,4,4]{2,1,0}, f32[4,8,2048,128]{3,2,1,0}, f32[4,2,2048,128]{3,2,1,0}, f32[4,2,2048,128]{3,2,1,0}, f32[4,8,1,2048]{3,2,1,0}, f32[4,8,2048,128]{3,2,1,0}, f32[4,8,1,2048]{3,2,1,0}, s32[2048,128]{1,0}}, frontend_attributes={kernel_metadata={"
+        },
+        {
+          "line": 3554,
+          "text": "\"xprof_metadata\":\"{\\\"block_q_dq\\\": 512, \\\"block_kv_dq\\\": 512, \\\"q_layout\\\": 1, \\\"k_layout\\\": 1, \\\"v_layout\\\": 1}\""
+        },
+        {
+          "line": 3555,
+          "text": "}}, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/shard_map/vmap(static_sparsity_splash)/jit(_splash_attention)/splash_mha_dq_no_residuals/splash_mha_dq_no_residuals/pallas_call\" stack_frame_id=299}"
+        },
+        {
+          "line": 3556,
+          "text": "  %get-tuple-element.1795 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} get-tuple-element(%splash_mha_dq_no_residuals.1), index=1, frontend_attributes={kernel_metadata={"
+        },
+        {
+          "line": 3557,
+          "text": "\"xprof_metadata\":\"{\\\"block_q_dq\\\": 512, \\\"block_kv_dq\\\": 512, \\\"q_layout\\\": 1, \\\"k_layout\\\": 1, \\\"v_layout\\\": 1}\""
+        },
+        {
+          "line": 3558,
+          "text": "}}, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/shard_map/vmap(static_sparsity_splash)/jit(_splash_attention)/splash_mha_dq_no_residuals/splash_mha_dq_no_residuals/pallas_call\" stack_frame_id=299}"
+        },
+        {
+          "line": 3559,
+          "text": "  %copy-done.18 = f32[4,2048,128]{2,1,0:T(8,128)S(1)} copy-done(%copy-start.18)"
+        }
+      ]
+    },
+    {
+      "stage": "sin_branch_and_cos_branch",
+      "lines": [
+        {
+          "line": 3560,
+          "text": "  %multiply_bitcast_fusion.10 = f32[4,2048,8,128]{3,1,2,0:T(8,128)S(1)} fusion(%get-tuple-element.1795, %copy-done.18), kind=kLoop, calls=%fused_computation.110.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=254}"
+        },
+        {
+          "line": 3561,
+          "text": "  %get-tuple-element.1799 = f32[4,2048,128]{2,1,0:T(8,128)} get-tuple-element(%broadcast_multiply_fusion.9), index=0, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        },
+        {
+          "line": 3562,
+          "text": "  %copy-start.19 = (f32[4,2048,128]{2,1,0:T(8,128)S(1)}, f32[4,2048,128]{2,1,0:T(8,128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.1799)"
+        },
+        {
+          "line": 3563,
+          "text": "  %fusion.384 = (f32[4,2048,8,64]{3,1,2,0:T(8,128)}, f32[4,2048,8,64]{3,1,2,0:T(8,128)}) fusion(%multiply_bitcast_fusion.10), kind=kLoop, calls=%fused_computation.374.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/split\" stack_frame_id=273}"
+        },
+        {
+          "line": 3564,
+          "text": "  %get-tuple-element.1797 = f32[4,2048,8,64]{3,1,2,0:T(8,128)} get-tuple-element(%fusion.384), index=1, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/split\" stack_frame_id=273}"
+        },
+        {
+          "line": 3565,
+          "text": "  %get-tuple-element.1798 = f32[4,2048,8,64]{3,1,2,0:T(8,128)} get-tuple-element(%fusion.384), index=0, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/split\" stack_frame_id=273}"
+        },
+        {
+          "line": 3566,
+          "text": "  %copy-done.19 = f32[4,2048,128]{2,1,0:T(8,128)S(1)} copy-done(%copy-start.19)"
+        },
+        {
+          "line": 3567,
+          "text": "  %maximum_add_fusion.4 = f32[4,2048,8,128]{3,1,2,0:T(8,128)S(1)} fusion(%get-tuple-element.1797, %get-tuple-element.1798, %get-tuple-element.1795, %copy-done.19), kind=kLoop, calls=%fused_computation.109.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/add_any\" stack_frame_id=271}"
+        }
+      ]
+    },
+    {
+      "stage": "sin_multiply",
+      "lines": [
+        {
+          "line": 2644,
+          "text": "%fused_computation.110.clone.1 (param_0.1261: f32[4,8,2048,128], param_1.1532: f32[4,2048,128]) -> f32[4,2048,8,128] {"
+        },
+        {
+          "line": 2645,
+          "text": "  %param_0.1261 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} parameter(0)"
+        },
+        {
+          "line": 2646,
+          "text": "  %param_1.1532 = f32[4,2048,128]{2,1,0:T(8,128)S(1)} parameter(1)"
+        },
+        {
+          "line": 2647,
+          "text": "  %broadcast.758 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} broadcast(%param_1.1532), dimensions={0,2,3}, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=254}"
+        },
+        {
+          "line": 2648,
+          "text": "  %mul.2822 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} multiply(%param_0.1261, %broadcast.758), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=254}"
+        },
+        {
+          "line": 2649,
+          "text": "  ROOT %bitcast.468 = f32[4,2048,8,128]{3,1,2,0:T(8,128)S(1)} bitcast(%mul.2822), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=254}"
+        },
+        {
+          "line": 2650,
+          "text": "}"
+        }
+      ]
+    },
+    {
+      "stage": "sin_rotate_transpose",
+      "lines": [
+        {
+          "line": 2652,
+          "text": "%fused_computation.374.clone.1 (param_0.1262: f32[4,2048,8,128]) -> (f32[4,2048,8,64], f32[4,2048,8,64]) {"
+        },
+        {
+          "line": 2653,
+          "text": "  %param_0.1262 = f32[4,2048,8,128]{3,1,2,0:T(8,128)S(1)} parameter(0)"
+        },
+        {
+          "line": 2654,
+          "text": "  %slice.85 = f32[4,2048,8,64]{3,1,2,0:T(8,128)} slice(%param_0.1262), slice={[0:4], [0:2048], [0:8], [64:128]}, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/split\" stack_frame_id=273}"
+        },
+        {
+          "line": 2655,
+          "text": "  %slice.54.clone.3 = f32[4,2048,8,64]{3,1,2,0:T(8,128)} slice(%param_0.1262), slice={[0:4], [0:2048], [0:8], [0:64]}, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/split\" stack_frame_id=273}"
+        },
+        {
+          "line": 2656,
+          "text": "  %neg.154.clone.3 = f32[4,2048,8,64]{3,1,2,0:T(8,128)} negate(%slice.54.clone.3), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/neg\" stack_frame_id=272}"
+        },
+        {
+          "line": 2657,
+          "text": "  ROOT %tuple.231 = (f32[4,2048,8,64]{3,1,2,0:T(8,128)}, f32[4,2048,8,64]{3,1,2,0:T(8,128)}) tuple(%slice.85, %neg.154.clone.3)"
+        },
+        {
+          "line": 2658,
+          "text": "}"
+        }
+      ]
+    },
+    {
+      "stage": "cos_multiply_and_branch_add",
+      "lines": [
+        {
+          "line": 2660,
+          "text": "%fused_computation.109.clone.1 (param_0.1263: f32[4,2048,8,64], param_1.1533: f32[4,2048,8,64], param_2.1383: f32[4,8,2048,128], param_3.1194: f32[4,2048,128]) -> f32[4,2048,8,128] {"
+        },
+        {
+          "line": 2661,
+          "text": "  %param_2.1383 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} parameter(2)"
+        },
+        {
+          "line": 2662,
+          "text": "  %param_3.1194 = f32[4,2048,128]{2,1,0:T(8,128)S(1)} parameter(3)"
+        },
+        {
+          "line": 2663,
+          "text": "  %broadcast.759 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} broadcast(%param_3.1194), dimensions={0,2,3}, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        },
+        {
+          "line": 2664,
+          "text": "  %mul.2823 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} multiply(%param_2.1383, %broadcast.759), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        },
+        {
+          "line": 2665,
+          "text": "  %bitcast.469 = f32[4,2048,8,128]{3,1,2,0:T(8,128)} bitcast(%mul.2823), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/mul\" stack_frame_id=252}"
+        },
+        {
+          "line": 2666,
+          "text": "  %param_1.1533 = f32[4,2048,8,64]{3,1,2,0:T(8,128)} parameter(1)"
+        },
+        {
+          "line": 2667,
+          "text": "  %constant.1382 = f32[]{:T(128)} constant(-inf)"
+        },
+        {
+          "line": 2668,
+          "text": "  %pad.105 = f32[4,2048,8,128]{3,1,2,0:T(8,128)} pad(%param_1.1533, %constant.1382), padding=0_0x0_0x0_0x0_64, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/concatenate\" stack_frame_id=271}"
+        },
+        {
+          "line": 2669,
+          "text": "  %param_0.1263 = f32[4,2048,8,64]{3,1,2,0:T(8,128)} parameter(0)"
+        },
+        {
+          "line": 2670,
+          "text": "  %pad.104 = f32[4,2048,8,128]{3,1,2,0:T(8,128)} pad(%param_0.1263, %constant.1382), padding=0_0x0_0x0_0x64_0, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/concatenate\" stack_frame_id=271}"
+        },
+        {
+          "line": 2671,
+          "text": "  %maximum.58 = f32[4,2048,8,128]{3,1,2,0:T(8,128)} maximum(%pad.105, %pad.104), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/concatenate\" stack_frame_id=271}"
+        },
+        {
+          "line": 2672,
+          "text": "  ROOT %add_any.376 = f32[4,2048,8,128]{3,1,2,0:T(8,128)S(1)} add(%bitcast.469, %maximum.58), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/add_any\" stack_frame_id=271}"
+        },
+        {
+          "line": 2673,
+          "text": "}"
+        }
+      ]
+    }
+  ],
+  "legacy_operand_chain": [
+    {
+      "stage": "unscaled_trig_materialization",
+      "lines": [
+        {
+          "line": 2654,
+          "text": "%fused_computation.212.clone.1 (param_0.1150: f32[2048,64]) -> (f32[2048,128], f32[2048,128]) {"
+        },
+        {
+          "line": 2655,
+          "text": "  %param_0.1150 = f32[2048,64]{1,0:T(8,128)S(1)} parameter(0)"
+        },
+        {
+          "line": 2656,
+          "text": "  %constant.1459 = f32[]{:T(128)} constant(-inf)"
+        },
+        {
+          "line": 2657,
+          "text": "  %pad.137 = f32[2048,128]{1,0:T(8,128)} pad(%param_0.1150, %constant.1459), padding=0_0x0_64, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/concatenate\" stack_frame_id=403}"
+        },
+        {
+          "line": 2658,
+          "text": "  %pad.136 = f32[2048,128]{1,0:T(8,128)} pad(%param_0.1150, %constant.1459), padding=0_0x64_0, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/concatenate\" stack_frame_id=403}"
+        },
+        {
+          "line": 2659,
+          "text": "  %maximum.45 = f32[2048,128]{1,0:T(8,128)} maximum(%pad.137, %pad.136), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/concatenate\" stack_frame_id=403}"
+        },
+        {
+          "line": 2660,
+          "text": "  %cos.18 = f32[2048,128]{1,0:T(8,128)S(1)} cosine(%maximum.45), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/cos\" stack_frame_id=406}"
+        },
+        {
+          "line": 2661,
+          "text": "  %sin.15.clone.3 = f32[2048,128]{1,0:T(8,128)S(1)} sine(%maximum.45), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/sin\" stack_frame_id=409}"
+        },
+        {
+          "line": 2662,
+          "text": "  ROOT %tuple.234 = (f32[2048,128]{1,0:T(8,128)S(1)}, f32[2048,128]{1,0:T(8,128)S(1)}) tuple(%cos.18, %sin.15.clone.3)"
+        },
+        {
+          "line": 2663,
+          "text": "}"
+        }
+      ]
+    },
+    {
+      "stage": "trig_tuple_indices",
+      "lines": [
+        {
+          "line": 3808,
+          "text": "  %fusion.359 = (f32[2048,128]{1,0:T(8,128)S(1)}, f32[2048,128]{1,0:T(8,128)S(1)}) fusion(%multiply_bitcast_fusion.7), kind=kLoop, calls=%fused_computation.212.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/cos\" stack_frame_id=406}"
+        },
+        {
+          "line": 3809,
+          "text": "  %get-tuple-element.1799 = f32[2048,128]{1,0:T(8,128)S(1)} get-tuple-element(%fusion.359), index=1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/cos\" stack_frame_id=406}"
+        },
+        {
+          "line": 3810,
+          "text": "  %copy-start.15 = (f32[2048,128]{1,0:T(8,128)}, f32[2048,128]{1,0:T(8,128)S(1)}, u32[]{:S(2)}) copy-start(%get-tuple-element.1799)"
+        },
+        {
+          "line": 3811,
+          "text": "  %get-tuple-element.1800 = f32[2048,128]{1,0:T(8,128)S(1)} get-tuple-element(%fusion.359), index=0, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/cos\" stack_frame_id=406}"
+        },
+        {
+          "line": 3812,
+          "text": "  %copy-start.17 = (f32[2048,128]{1,0:T(8,128)}, f32[2048,128]{1,0:T(8,128)S(1)}, u32[]{:S(2)}) copy-start(%get-tuple-element.1800)"
+        },
+        {
+          "line": 3813,
+          "text": "  %copy.265 = f32[2048,128]{0,1:T(8,128)} copy(%get-tuple-element.1800), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/cos\" stack_frame_id=406}"
+        },
+        {
+          "line": 3814,
+          "text": "  %copy.264 = f32[2048,128]{0,1:T(8,128)} copy(%get-tuple-element.1799), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/sin\" stack_frame_id=409}"
+        }
+      ]
+    },
+    {
+      "stage": "isolated_scale_computation",
+      "lines": [
+        {
+          "line": 3220,
+          "text": "%fused_computation.176.clone.1 (param_0.1193: f32[4,8,2048,128]) -> f32[4,8,2048,128] {"
+        },
+        {
+          "line": 3221,
+          "text": "  %param_0.1193 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} parameter(0)"
+        },
+        {
+          "line": 3222,
+          "text": "  %constant.451.clone.6 = f32[]{:T(128)} constant(0.0883883461)"
+        },
+        {
+          "line": 3223,
+          "text": "  %eval_jaxpr.119 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} broadcast(%constant.451.clone.6), dimensions={}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr\" stack_frame_id=199}"
+        },
+        {
+          "line": 3224,
+          "text": "  ROOT %mul.1421 = f32[4,8,2048,128]{3,2,1,0:T(8,128)S(1)} multiply(%param_0.1193, %eval_jaxpr.119), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/dot_product_attention/mul\" stack_frame_id=494}"
+        },
+        {
+          "line": 3225,
+          "text": "}"
+        }
+      ]
+    },
+    {
+      "stage": "raw_dq_and_scale_call_and_materialization",
+      "lines": [
+        {
+          "line": 3956,
+          "text": "  %splash_mha_dq_no_residuals.1 = (f32[4,512,128]{2,1,0:T(8,128)}, f32[4,8,2048,128]{3,2,1,0:T(8,128)}) custom-call(%copy-done.114, %copy-done.112, %bitcast.574, %copy-done.23, %copy-done.22, /*index=5*/%get-tuple-element.1815.logsumexp_ref, %get-tuple-element.1809.do_ref, %copy-done.51, %copy-done.34), custom_call_target=\"tpu_custom_call\", operand_layout_constraints={s8[1,4,4]{2,1,0}, s8[1,4,4]{2,1,0}, f32[4,8,2048,128]{3,2,1,0}, f32[4,2,2048,128]{3,2,1,0}, f32[4,2,2048,128]{3,2,1,0}, f32[4,8,1,2048]{3,2,1,0}, f32[4,8,2048,128]{3,2,1,0}, f32[4,8,1,2048]{3,2,1,0}, s32[2048,128]{1,0}}, frontend_attributes={kernel_metadata={"
+        },
+        {
+          "line": 3957,
+          "text": "\"xprof_metadata\":\"{\\\"block_q_dq\\\": 512, \\\"block_kv_dq\\\": 512, \\\"q_layout\\\": 1, \\\"k_layout\\\": 1, \\\"v_layout\\\": 1}\""
+        },
+        {
+          "line": 3958,
+          "text": "}}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/dot_product_attention/shard_map/vmap(static_sparsity_splash)/jit(_splash_attention)/splash_mha_dq_no_residuals/splash_mha_dq_no_residuals/pallas_call\" stack_frame_id=577}"
+        },
+        {
+          "line": 3959,
+          "text": "  %get-tuple-element.1816 = f32[4,8,2048,128]{3,2,1,0:T(8,128)} get-tuple-element(%splash_mha_dq_no_residuals.1), index=1, frontend_attributes={kernel_metadata={"
+        },
+        {
+          "line": 3960,
+          "text": "\"xprof_metadata\":\"{\\\"block_q_dq\\\": 512, \\\"block_kv_dq\\\": 512, \\\"q_layout\\\": 1, \\\"k_layout\\\": 1, \\\"v_layout\\\": 1}\""
+        },
+        {
+          "line": 3961,
+          "text": "}}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/dot_product_attention/shard_map/vmap(static_sparsity_splash)/jit(_splash_attention)/splash_mha_dq_no_residuals/splash_mha_dq_no_residuals/pallas_call\" stack_frame_id=577}"
+        },
+        {
+          "line": 3962,
+          "text": "  %copy-start.19 = (f32[2048,128]{0,1:T(8,128)S(1)}, f32[2048,128]{0,1:T(8,128)}, u32[]{:S(2)}) copy-start(%copy.264)"
+        },
+        {
+          "line": 3963,
+          "text": "  %broadcast_multiply_fusion.4 = f32[4,8,2048,128]{3,2,1,0:T(8,128)S(1)} fusion(%get-tuple-element.1816), kind=kLoop, calls=%fused_computation.176.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/dot_product_attention/mul\" stack_frame_id=494}"
+        },
+        {
+          "line": 3964,
+          "text": "  %bitcast.571 = f32[4,2,4,2048,128]{4,3,2,1,0:T(8,128)S(1)} bitcast(%broadcast_multiply_fusion.4)"
+        },
+        {
+          "line": 3965,
+          "text": "  %copy.269 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)} copy(%bitcast.571), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/dot_product_attention/mul\" stack_frame_id=494}"
+        },
+        {
+          "line": 3966,
+          "text": "  %copy-done.19 = f32[2048,128]{0,1:T(8,128)S(1)} copy-done(%copy-start.19)"
+        }
+      ]
+    },
+    {
+      "stage": "sin_branch",
+      "lines": [
+        {
+          "line": 3971,
+          "text": "  %multiply_bitcast_fusion.9 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)S(1)} fusion(%copy.269, %copy-done.19), kind=kLoop, calls=%fused_computation.147.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/mul\" stack_frame_id=484}"
+        },
+        {
+          "line": 3227,
+          "text": "%fused_computation.147.clone.1 (param_0.1194: f32[4,2,4,2048,128], param_1.1415: f32[2048,128]) -> f32[4,2048,2,4,128] {"
+        },
+        {
+          "line": 3228,
+          "text": "  %param_0.1194 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)} parameter(0)"
+        },
+        {
+          "line": 3229,
+          "text": "  %param_1.1415 = f32[2048,128]{0,1:T(8,128)S(1)} parameter(1)"
+        },
+        {
+          "line": 3230,
+          "text": "  %transpose.414 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)} broadcast(%param_1.1415), dimensions={3,4}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/transpose\" stack_frame_id=482}"
+        },
+        {
+          "line": 3231,
+          "text": "  %mul.1422 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)} multiply(%param_0.1194, %transpose.414), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/mul\" stack_frame_id=484}"
+        },
+        {
+          "line": 3232,
+          "text": "  ROOT %bitcast.482 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)S(1)} bitcast(%mul.1422), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/mul\" stack_frame_id=484}"
+        },
+        {
+          "line": 3233,
+          "text": "}"
+        },
+        {
+          "line": 3234,
+          "text": ""
+        },
+        {
+          "line": 3235,
+          "text": "%fused_computation.174.clone.1 (param_0.1195: f32[4,2048,2,4,128]) -> (f32[4,2048,2,4,64], f32[4,2048,2,4,64]) {"
+        },
+        {
+          "line": 3236,
+          "text": "  %param_0.1195 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)S(1)} parameter(0)"
+        },
+        {
+          "line": 3237,
+          "text": "  %slice.129 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} slice(%param_0.1195), slice={[0:4], [0:2048], [0:2], [0:4], [0:64]}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/split\" stack_frame_id=476}"
+        },
+        {
+          "line": 3238,
+          "text": "  %neg.129 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} negate(%slice.129), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/neg\" stack_frame_id=462}"
+        },
+        {
+          "line": 3239,
+          "text": "  %slice.130 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} slice(%param_0.1195), slice={[0:4], [0:2048], [0:2], [0:4], [64:128]}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/split\" stack_frame_id=476}"
+        },
+        {
+          "line": 3240,
+          "text": "  ROOT %tuple.241 = (f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)}, f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)}) tuple(%neg.129, %slice.130)"
+        },
+        {
+          "line": 3974,
+          "text": "  %slice_negate_fusion.15 = (f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)}, f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)}) fusion(%multiply_bitcast_fusion.9), kind=kLoop, calls=%fused_computation.174.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/neg\" stack_frame_id=462}"
+        }
+      ]
+    },
+    {
+      "stage": "cos_branch_and_projection_call",
+      "lines": [
+        {
+          "line": 4001,
+          "text": "  %copy-start = (f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)S(1)}, f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)}, u32[]{:S(2)}) copy-start(%copy.269)"
+        },
+        {
+          "line": 4002,
+          "text": "  %copy-start.20 = (f32[2048,128]{0,1:T(8,128)S(1)}, f32[2048,128]{0,1:T(8,128)}, u32[]{:S(2)}) copy-start(%copy.265)"
+        },
+        {
+          "line": 4010,
+          "text": "  %get-tuple-element.1817 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} get-tuple-element(%slice_negate_fusion.15), index=1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/neg\" stack_frame_id=462}"
+        },
+        {
+          "line": 4011,
+          "text": "  %get-tuple-element.1818 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} get-tuple-element(%slice_negate_fusion.15), index=0, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/neg\" stack_frame_id=462}"
+        },
+        {
+          "line": 4012,
+          "text": "  %copy-done = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)S(1)} copy-done(%copy-start)"
+        },
+        {
+          "line": 4013,
+          "text": "  %copy-done.20 = f32[2048,128]{0,1:T(8,128)S(1)} copy-done(%copy-start.20)"
+        },
+        {
+          "line": 4014,
+          "text": "  %bitcast_add_fusion.17 = f32[4,2048,2048]{2,1,0:T(8,128)} fusion(%fusion.369, %fusion.370, %copy-done, %get-tuple-element.1817, %get-tuple-element.1818, /*index=5*/%copy-done.20, %all-gather.91), kind=kOutput, calls=%fused_computation.90.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/Linear/contract embed -> batch, position, kv_head, q_heads_per_group, head_size/0 1 2 , 3 4 5 2 -> 0 1 3 4 5/dot_general\" stack_frame_id=325}"
+        },
+        {
+          "line": 3269,
+          "text": "  %param_2.1275 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)S(1)} parameter(2)"
+        },
+        {
+          "line": 3270,
+          "text": "  %param_3.1001 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} parameter(3)"
+        },
+        {
+          "line": 3271,
+          "text": "  %param_4.725 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} parameter(4)"
+        },
+        {
+          "line": 3272,
+          "text": "  %param_5.621 = f32[2048,128]{0,1:T(8,128)S(1)} parameter(5)"
+        },
+        {
+          "line": 3273,
+          "text": "  %bitcast_add_fusion.14 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)} fusion(%param_2.1275, %param_3.1001, %param_4.725, %param_5.621), kind=kLoop, calls=%fused_computation.142.clone.1.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/add_any\" stack_frame_id=474}"
+        },
+        {
+          "line": 3274,
+          "text": "  %param_6.535 = f32[1,2,4,128,2048]{4,3,2,1,0:T(8,128)} parameter(6)"
+        },
+        {
+          "line": 3275,
+          "text": "  %fusion.344 = f32[2,4,128,2048,1]{3,2,4,1,0:T(8,128)} fusion(%param_6.535), kind=kLoop, calls=%fused_computation.188.clone.1, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/jit(dynamic_index_in_dim)/squeeze\" stack_frame_id=335}"
+        },
+        {
+          "line": 3276,
+          "text": "  %convolution.131 = f32[4,2048,2048,1,1]{2,1,0,4,3:T(8,128)} convolution(%bitcast_add_fusion.14, %fusion.344), window={size=2x4x1}, dim_labels=2b01f_01io2->2bf01, operand_precision={highest,highest}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/Linear/contract embed -> batch, position, kv_head, q_heads_per_group, head_size/0 1 2 , 3 4 5 2 -> 0 1 3 4 5/dot_general\" stack_frame_id=325}"
+        },
+        {
+          "line": 3277,
+          "text": "  %bitcast.491 = f32[4,2048,2048]{2,1,0:T(8,128)} bitcast(%convolution.131), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/Linear/contract embed -> batch, position, kv_head, q_heads_per_group, head_size/0 1 2 , 3 4 5 2 -> 0 1 3 4 5/dot_general\" stack_frame_id=325}"
+        },
+        {
+          "line": 3243,
+          "text": "%fused_computation.142.clone.1.clone.1 (param_0.1206: f32[4,2,4,2048,128], param_1.1421: f32[4,2048,2,4,64], param_2.1274: f32[4,2048,2,4,64], param_3.1000: f32[2048,128]) -> f32[4,2048,2,4,128] {"
+        },
+        {
+          "line": 3244,
+          "text": "  %param_2.1274 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} parameter(2)"
+        },
+        {
+          "line": 3245,
+          "text": "  %constant.447.clone.30 = f32[]{:T(128)} constant(0)"
+        },
+        {
+          "line": 3246,
+          "text": "  %pad.145 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)} pad(%param_2.1274, %constant.447.clone.30), padding=0_0x0_0x0_0x0_0x64_0, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/pad\" stack_frame_id=458}"
+        },
+        {
+          "line": 3247,
+          "text": "  %param_1.1421 = f32[4,2048,2,4,64]{1,4,0,3,2:T(8,128)} parameter(1)"
+        },
+        {
+          "line": 3248,
+          "text": "  %pad.144 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)} pad(%param_1.1421, %constant.447.clone.30), padding=0_0x0_0x0_0x0_0x0_64, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/pad\" stack_frame_id=465}"
+        },
+        {
+          "line": 3249,
+          "text": "  %add_any.170 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)} add(%pad.145, %pad.144), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/add_any\" stack_frame_id=465}"
+        },
+        {
+          "line": 3250,
+          "text": "  %param_0.1206 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)S(1)} parameter(0)"
+        },
+        {
+          "line": 3251,
+          "text": "  %param_3.1000 = f32[2048,128]{0,1:T(8,128)S(1)} parameter(3)"
+        },
+        {
+          "line": 3252,
+          "text": "  %transpose.417 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)} broadcast(%param_3.1000), dimensions={3,4}, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/rematted_computation/LlamaDecoderLayer/Attention/Attention._compute_qkv/transpose\" stack_frame_id=472}"
+        },
+        {
+          "line": 3253,
+          "text": "  %mul.1425 = f32[4,2,4,2048,128]{3,4,0,2,1:T(8,128)} multiply(%param_0.1206, %transpose.417), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/mul\" stack_frame_id=474}"
+        },
+        {
+          "line": 3254,
+          "text": "  %bitcast.490 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)} bitcast(%mul.1425), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/mul\" stack_frame_id=474}"
+        },
+        {
+          "line": 3255,
+          "text": "  ROOT %add_any.169 = f32[4,2048,2,4,128]{1,4,0,3,2:T(8,128)} add(%add_any.170, %bitcast.490), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Attention._compute_qkv/add_any\" stack_frame_id=474}"
+        },
+        {
+          "line": 3256,
+          "text": "}"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "This proves an optimized-HLO operand association difference in the actual normal FP32 Trainer, not merely an op-name coincidence. It does not identify the first differing runtime intermediate.",
+    "No common runtime raw Splash dQ/cos/sin arrays were captured for a controlled two-order replay in this static task, so it does not quantify the numerical effect or show that all native/legacy operands match before this point.",
+    "The artifact has separate materialized fusion outputs around the relevant multiplications; final backend code and further fusion/rounding details are not independently disassembled here.",
+    "FP32 first-step gradient and Adam gates passed in the report, whereas the loss trajectory failed; observed reassociation is a concrete hypothesis, not causal proof of the 20-step loss drift or near-zero-coordinate Adam amplification.",
+    "The currently pinned 8aa8674d candidate enables a barrier only for BF16 and therefore cannot test this FP32 hypothesis.",
+    "An FP32 barrier experiment must be separate and pinned, retain unchanged approved criteria/model/LR/weights/physical placements, and check full Trainer numerics and timings before adoption.",
+    "The fixed FP32 fragment control is corroborating context only; this review establishes the normal Trainer chain directly and does not infer normal behavior from fragment naming."
+  ],
+  "assertions_passed": true
+}
