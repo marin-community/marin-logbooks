@@ -72,6 +72,16 @@ Frozen CPU validation passed 83 focused SkyRL cases and 131 focused Harbor cases
 
 The Snowball task-curation producer has passed the native S3 authentication failure described in [Marin #10629](https://github.com/marin-community/marin/pull/10629) and is processing its 13 source graphs. It must still produce the versioned selection of 100000 training, 100 screening and 910 full-validation tasks in the regional artifact store. Bounded readback will check admission provenance, counts and schema, and hash the actual 100-task screening cohort. Whole-training-set guarantees rely on the maintained producer. No experimental GPU run has launched; this data gate still blocks all six planned qualification/screening submissions.
 
+### 2026-10-24 03:30 UTC - Cover shared credentials in legacy task consumers
+
+Review of [Marin #10633](https://github.com/marin-community/marin/pull/10633) found that Harbor task factories and Nemotron judge adapters still read configured credential names only from environment variables. Removing shared names from ordinary task environment settings exposed these missed readers. The correction also covers both Verifyit checker subprocesses, whose serialized judge configuration bypasses the parent judge resolver.
+
+Harbor now resolves explicit train and eval credential names through the existing named-secret mechanism. When both names are nonempty, the launcher skips its otherwise unused canonical environment/Secret Manager lookup. Partial and default configurations retain that fallback. Checkpoint export and inactive task paths retain their existing behavior. The redundant launcher file-state matrix remains removed because Rigging already tests those rules.
+
+All 104 focused frozen CPU cases pass, including actual launch-request construction, synthetic child-file delivery and both bounded Verifyit wrappers using a loopback HTTP endpoint. A fresh advisory review reported no findings. The tests use synthetic credentials; no experimental GPU run, grading service or sandbox was started. The initial credential-path checks missed these active legacy consumers, so the earlier local validation did not establish coverage of the full launch path.
+
+The research branch preserves the [selected source correction](https://github.com/marin-community/marin-logbooks/commit/5c0fb4d0829f41be6ea5995f1bf2aa53f4081872) and test cleanup from the maintained contribution branch. Model, tokenizer, data recipe, treatment parameters and geometry are unchanged. Materialization and bounded cohort readback remain pending. Rebind the launch request to the published corrected source before any qualification submission.
+
 ## Final decision
 
 Pending materialization, reviewed executable configurations, qualification and measurements. No approach is selected for promotion yet. Publish exact source/configuration before executing each experiment, then append results and commit-pinned evidence. Preserve rejected alternatives and meaningful failed attempts. Extract only maintainable selected changes into ordinary Marin PRs.
