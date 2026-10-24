@@ -1,5 +1,5 @@
 {
-  "schema": "native-jax-oproj-callback-compatibility.v2",
+  "schema": "native-jax-callback-cpu-backend.v1",
   "source_a": "32f42f9a3601258123d316cc03c25b05add7a9c2",
   "scientific_base": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
   "cpu_runtime": {
@@ -24,7 +24,7 @@
     "LIBTPU_INIT_ARGS": null
   },
   "target_environment": {
-    "JAX_PLATFORMS": "tpu",
+    "JAX_PLATFORMS": "tpu,cpu",
     "XLA_FLAGS": "--xla_allow_excess_precision=false",
     "LIBTPU_INIT_ARGS": " --xla_tpu_use_enhanced_launch_barrier=true"
   },
@@ -46,9 +46,9 @@
     "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f",
     "lib/levanter/src/levanter/trainer_state.py": "f97d7d6a24013a345e3a2a0a845514bdd1ebbcff08659af3f36f7db335ed4926",
     "research/oproj/capture.py": "85252b55a75154829131a80aa6eef20a68be9d022f73f5de6c9ba7cf31f4c552",
-    "research/oproj/callback_compatibility.py": "5ee5a1ebcfac8c4d86c9ec01cc452cf4854a87a872a7396c74ec6cfcf057efb2",
-    "research/oproj/callback_compatibility.md": "b2a3cfec8d62dc1e4fb0897c8ce7803d01c49ed0436b99dbd4a920587a630c86",
-    "research/oproj/callback_compatibility_command.json": "2fb171da7980e356b825184d54c3898a571e1131e6316139bfc92b95b98aed57",
+    "research/oproj/callback_compatibility.py": "a46b4f2fae202290daf8fa23571da43c6c2d3c540e97a33bc2d3bcc161a9792f",
+    "research/oproj/callback_compatibility.md": "31be553fdcab834ec8bbe0336736a9e7e540582d5a8ca76eec25ff177820a5f2",
+    "research/oproj/callback_compatibility_command.json": "7754879eac7e2bb90ba0192a1854d374be99c99e525c4eb6949e72ef43219b52",
     "research/oproj/callback_compatibility_supervisor.py": "fe13dd071bf9602f278d1ed9677a23d8d3e527954e53f4157bd3d4deb4a4edef",
     "research/oproj/callback_compatibility_negative.py": "6e27a5e1fa45994143516dd94faaff12a7b682c8dfd05a606dc6804bce02e6f2"
   },
@@ -71,5 +71,21 @@
       "G": 1
     }
   },
-  "external_wall_deadline_required": true
+  "external_wall_deadline_required": true,
+  "parent_research_source": "ed17de3657fc779e5ed01df4348f7a60fcd813ef",
+  "ambient_backend_control": {
+    "prior_target_JAX_PLATFORMS": "tpu",
+    "proposed_target_JAX_PLATFORMS": "tpu,cpu",
+    "only_scientific_environment_change": true,
+    "requires_actual_local_cpu_backend": true,
+    "default_backend_must_remain": "tpu",
+    "default_device_kind": "TPU v5",
+    "default_local_devices": 4,
+    "default_global_devices": 4,
+    "processes": 1,
+    "preserves_prior_environment_fidelity": false,
+    "full_model_before_instrumentation_requires_new_untouched_controls": "Untouched legacy/native under this environment must reproduce complete historical255gradient/loss metrics and layout control. Not authorized by this preparation.",
+    "default_device_and_deprecated_platform_overrides_forbidden": true,
+    "default_and_explicit_TPU_device_lists_must_match": true
+  }
 }

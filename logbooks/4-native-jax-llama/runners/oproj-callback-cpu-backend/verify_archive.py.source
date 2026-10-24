@@ -1,0 +1,229 @@
+"""Verify selected archive bytes from the Git index or an exact locally available commit.
+
+This performs local Git reads only. To verify a future published archive, root
+must first perform its separately authorized explicit fetch, then pass that
+exact commit as --tree. This script never queries a remote or creates a client.
+"""
+import argparse
+import gzip
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+BASE = 'a3207f7e85e9d6bee68746eb36c2381100e7756a'
+CANDIDATE = 'ed17de3657fc779e5ed01df4348f7a60fcd813ef'
+BASE_MANIFEST_SHA = '956201564c7e0162394e38a20bcabb97df69c121bb37b14eb47dbf7dfb58b51f'
+A = '32f42f9a3601258123d316cc03c25b05add7a9c2'
+SCIENCE = '2b17db78aedc0a603664238fbfa0bc0c68542d2b'
+DIRECTORY = 'logbooks/4-native-jax-llama/'
+TERMINAL = DIRECTORY + 'analysis/oproj-stage-a/result/manifest.json'
+SUPPLEMENT = DIRECTORY + 'prepared/oproj-callback-compatibility/manifest.json'
+FREEZE_SHA = '611ed16f9cd5cc56fdd8fd7791b4f4b4a63e65a869b404fcbace3da0cb674706'
+sha = lambda value: hashlib.sha256(value).hexdigest()
+
+
+def git(root, *args):
+    return subprocess.check_output(['git', *args], cwd=root)
+
+
+def blob(root, tree, name):
+    return git(root, 'show', (':' if tree == 'INDEX' else tree + ':') + name)
+
+
+def all_blobs(root, tree, names):
+    prefix = ':' if tree == 'INDEX' else tree + ':'
+    commands = ''.join(prefix + name + '\n' for name in names).encode()
+    raw = subprocess.run(['git', 'cat-file', '--batch'], cwd=root, input=commands, stdout=subprocess.PIPE, check=True).stdout
+    result = {}
+    offset = 0
+    for name in names:
+        end = raw.index(b'\n', offset)
+        header = raw[offset:end].decode().split()
+        assert len(header) == 3 and header[1] == 'blob', (name, header)
+        length = int(header[2])
+        start = end + 1
+        result[name] = (header[0], raw[start:start + length])
+        offset = start + length + 1
+        assert raw[offset - 1:offset] == b'\n'
+    assert offset == len(raw)
+    return result
+
+
+def verify(root, tree):
+    inventory = json.loads(blob(root, tree, DIRECTORY + 'manifest.json'))
+    prior = json.loads(blob(root, BASE, DIRECTORY + 'manifest.json'))
+    rows = inventory['selected_files']
+    assert rows == prior['selected_files'] and len(rows) == 582
+    assert blob(root, tree, DIRECTORY + 'manifest.json') == blob(root, BASE, DIRECTORY + 'manifest.json')
+    assert sha(blob(root, tree, DIRECTORY + 'manifest.json')) == BASE_MANIFEST_SHA
+    names = [DIRECTORY + row['archive_relative'] for row in rows]
+    assert len(names) == len(set(names)) == inventory['file_count']
+    objects = all_blobs(root, tree, names)
+    restored = {}
+    for row in rows:
+        name = DIRECTORY + row['archive_relative']
+        object_id, data = objects[name]
+        assert len(data) == row['bytes'] and sha(data) == row['sha256'], name
+        if 'original_uncompressed' in row:
+            original = row['original_uncompressed']
+            data = gzip.decompress(data)
+            assert len(data) == original['bytes'] and sha(data) == original['sha256'], name
+        restored[row['archive_relative']] = data
+    assert inventory['selected_files_canonical_json_sha256'] == sha(json.dumps(rows, sort_keys=True, separators=(',', ':')).encode())
+    assert inventory['total_uncompressed_bytes'] == sum(r['bytes'] for r in rows)
+    for name in ('notebook.md', 'README.md'):
+        before = blob(root, BASE, DIRECTORY + name)
+        after = blob(root, tree, DIRECTORY + name)
+        assert after.startswith(before), name
+    frozen = restored['prepared/oproj-stage-a/final-freeze.json']
+    assert sha(frozen) == FREEZE_SHA
+    freeze = json.loads(frozen)
+    assert len(freeze['files']) == 56 and sum(f['bytes'] for f in freeze['files']) == 10349002
+    by_frozen_name = {r['frozen_selection_name']: r for r in rows if 'frozen_selection_name' in r}
+    assert set(by_frozen_name) == {f['name'] for f in freeze['files']}
+    for entry in freeze['files']:
+        row = by_frozen_name[entry['name']]
+        data = restored[row['archive_relative']]
+        assert len(data) == entry['bytes'] and sha(data) == entry['sha256']
+        if entry['name'].startswith('run-source/'):
+            source_name = entry['name'].removeprefix('run-source/')
+            assert blob(root, A, source_name) == data
+    if tree == 'INDEX':
+        paths = git(root, 'ls-files', '-z').split(b'\0')
+        assert git(root, 'rev-parse', 'HEAD').decode().strip() == '7bbcb50f8651d853bf85df10b4ba81552fd769ee'
+        tree_id = git(root, 'write-tree').decode().strip()
+    else:
+        paths = git(root, 'ls-tree', '-r', '--name-only', '-z', tree).split(b'\0')
+        tree_id = git(root, 'rev-parse', tree + '^{tree}').decode().strip()
+        subprocess.run(['git', 'merge-base', '--is-ancestor', CANDIDATE, tree], cwd=root, check=True)
+        subprocess.run(['git', 'merge-base', '--is-ancestor', BASE, tree], cwd=root, check=True)
+    assert not any(p.startswith(b'.github/workflows/') for p in paths)
+    differences = git(root, 'diff', '--name-only', SCIENCE, tree_id).decode().splitlines()
+    assert all(p.startswith((DIRECTORY, 'research/oproj/', '.github/workflows/')) for p in differences), differences
+    assert blob(root, tree, TERMINAL) == blob(root, BASE, TERMINAL)
+    terminal = json.loads(blob(root, tree, TERMINAL))
+    terminal_rows = terminal['selected_files']
+    assert len(terminal_rows) == 17
+    terminal_names = [DIRECTORY + row['archive_relative'] for row in terminal_rows]
+    terminal_blobs = all_blobs(root, tree, terminal_names)
+    prior_terminal_blobs = all_blobs(root, BASE, terminal_names)
+    for row, name in zip(terminal_rows, terminal_names):
+        data = terminal_blobs[name][1]
+        assert data == prior_terminal_blobs[name][1]
+        assert len(data) == row['bytes'] and sha(data) == row['sha256']
+        if 'original_uncompressed' in row:
+            data = gzip.decompress(data)
+            original = row['original_uncompressed']
+            assert len(data) == original['bytes'] and sha(data) == original['sha256']
+    supplemental = json.loads(blob(root, tree, SUPPLEMENT))
+    assert supplemental['base_archive'] == BASE
+    assert supplemental['source_commit'] == CANDIDATE
+    assert set(supplemental['required_prior_inventories']) == {'manifest.json', 'analysis/oproj-stage-a/result/manifest.json'}
+    for name, expected in supplemental['required_prior_inventories'].items():
+        data = blob(root, tree, DIRECTORY + name)
+        assert sha(data) == expected['sha256'] and len(data) == expected['bytes']
+    assert len(supplemental['actual_source_git_blobs_sha256']) == 7
+    for name, expected in supplemental['actual_source_git_blobs_sha256'].items():
+        actual = blob(root, '7bbcb50f8651d853bf85df10b4ba81552fd769ee', name)
+        assert actual == blob(root, CANDIDATE, name) and sha(actual) == expected
+        copy = DIRECTORY + 'prepared/oproj-callback-compatibility/committed-source/' + name + ('.source' if name.endswith('.py') else '')
+        assert blob(root, tree, copy) == actual
+    changed_source = git(root, 'diff', '--name-only', BASE, tree_id).decode().splitlines()
+    changed_source = [p for p in changed_source if not p.startswith(DIRECTORY)]
+    assert set(changed_source) == set(supplemental['actual_source_git_blobs_sha256'])
+    additional = supplemental['selected_files']
+    assert len(additional) == supplemental['file_count']
+    extra_names = [DIRECTORY + row['archive_relative'] for row in additional]
+    assert len(extra_names) == len(set(extra_names)) and not set(extra_names).intersection(names + terminal_names)
+    extras = all_blobs(root, tree, extra_names)
+    for row, name in zip(additional, extra_names):
+        data = extras[name][1]
+        assert len(data) == row['bytes'] and sha(data) == row['sha256'], name
+        if 'original_uncompressed' in row:
+            data = gzip.decompress(data)
+            original = row['original_uncompressed']
+            assert len(data) == original['bytes'] and sha(data) == original['sha256'], name
+    assert supplemental['selected_files_canonical_json_sha256'] == sha(json.dumps(additional, sort_keys=True, separators=(',', ':')).encode())
+    assert supplemental['total_stored_bytes'] == sum(r['bytes'] for r in additional)
+    assert supplemental['total_original_bytes'] == sum(r.get('original_uncompressed', r)['bytes'] for r in additional)
+    prelaunch = '2bc6598183242ebf5ff38adb381e8ef90ee62cd7'
+    original = json.loads(blob(root, prelaunch, SUPPLEMENT))['selected_files']
+    assert len(original) == 111 and additional[:111] == original
+    old_names = [DIRECTORY + row['archive_relative'] for row in original]
+    old_blobs = all_blobs(root, prelaunch, old_names)
+    for name in old_names:
+        assert extras[name][1] == old_blobs[name][1], name
+    for name in ('notebook.md', 'README.md'):
+        assert blob(root, tree, DIRECTORY + name).startswith(blob(root, prelaunch, DIRECTORY + name))
+    changed = git(root, 'diff', '--name-only', prelaunch, tree_id).decode().splitlines()
+    expected_delta = set(git(root, 'diff', '--name-only', CANDIDATE, '0be2ab8574125f932b18ab8ec5d04a564b432be5').decode().splitlines())
+    assert len(expected_delta) == 4
+    assert {p for p in changed if not p.startswith(DIRECTORY)} == expected_delta, changed
+    prior_result = '7bbcb50f8651d853bf85df10b4ba81552fd769ee'
+    new_source = '0be2ab8574125f932b18ab8ec5d04a564b432be5'
+    prior_rows = json.loads(blob(root, prior_result, SUPPLEMENT))['selected_files']
+    assert len(prior_rows) == 131 and additional == prior_rows
+    for name in extra_names:
+        assert extras[name][1] == blob(root, prior_result, name)
+    new_path = DIRECTORY + 'prepared/oproj-callback-cpu-backend/manifest.json'
+    new_inventory = json.loads(blob(root, tree, new_path))
+    assert new_inventory['base_archive'] == prior_result and new_inventory['source_commit'] == new_source
+    assert set(new_inventory['required_prior_inventories']) == {'manifest.json', 'analysis/oproj-stage-a/result/manifest.json', 'prepared/oproj-callback-compatibility/manifest.json'}
+    for name, expected in new_inventory['required_prior_inventories'].items():
+        data = blob(root, tree, DIRECTORY + name)
+        assert data == blob(root, prior_result, DIRECTORY + name)
+        assert len(data) == expected['bytes'] and sha(data) == expected['sha256']
+    new_rows = new_inventory['selected_files']
+    new_names = [DIRECTORY + row['archive_relative'] for row in new_rows]
+    assert len(new_rows) == len(set(new_names)) == new_inventory['file_count']
+    assert not set(new_names).intersection(names + terminal_names + extra_names)
+    new_objects = all_blobs(root, tree, new_names)
+    for row, name in zip(new_rows, new_names):
+        data = new_objects[name][1]
+        assert len(data) == row['bytes'] and sha(data) == row['sha256'], name
+        if 'original_uncompressed' in row:
+            data = gzip.decompress(data)
+            expected = row['original_uncompressed']
+            assert len(data) == expected['bytes'] and sha(data) == expected['sha256'], name
+    assert sha(json.dumps(new_rows, sort_keys=True, separators=(',', ':')).encode()) == new_inventory['selected_files_canonical_json_sha256']
+    assert sum(row['bytes'] for row in new_rows) == new_inventory['total_stored_bytes']
+    assert sum(row.get('original_uncompressed', row)['bytes'] for row in new_rows) == new_inventory['total_original_bytes']
+    assert len(new_inventory['actual_source_git_blobs_sha256']) == 7
+    for name, expected in new_inventory['actual_source_git_blobs_sha256'].items():
+        data = blob(root, tree, name)
+        assert data == blob(root, new_source, name) and sha(data) == expected
+        copy = DIRECTORY + 'prepared/oproj-callback-cpu-backend/committed-source/' + name + ('.source' if name.endswith('.py') else '')
+        assert data == blob(root, tree, copy)
+    for name in ('notebook.md', 'README.md'):
+        assert blob(root, tree, DIRECTORY + name).startswith(blob(root, prior_result, DIRECTORY + name))
+    assert {p for p in git(root, 'diff', '--name-only', prior_result, tree_id).decode().splitlines() if not p.startswith(DIRECTORY)} == expected_delta
+    return {'status': 'PASS_ACTUAL_GIT_BLOBS_LOCAL_ONLY', 'tree_requested': tree, 'tree_oid': tree_id,
+            'prior_archive': BASE, 'source_A': A, 'candidate_source': CANDIDATE, 'scientific_source': SCIENCE,
+            'all_selected_git_blobs_verified': len(rows), 'prior_582_rows_and_blob_bytes_exact': True,
+            'base_manifest_bytes_exact': True, 'prelaunch_E_original111_rows_and_blobs_exact': True,
+            'prelaunch_E_prose_prefixes_preserved': True, 'only_exact_four_S2_research_source_deltas': True, 'prior_terminal_17_manifest_and_blobs_exact': True,
+            'historical_ed17_seven_source_blobs_exact_at_F': True, 'current_S2_seven_actual_source_blobs_exact': True,
+            'all_prior730_actual_blobs_and_inventories_exact': True, 'new_selected_git_blobs_verified': len(new_rows),
+            'new_inventory_sha256': sha(blob(root, tree, new_path)), 'supplemental_git_blobs_verified': len(additional),
+            'supplemental_manifest_sha256': sha(blob(root, tree, SUPPLEMENT)),
+            'frozen56_original_bytes_recovered_exact': True, 'historical_source_A_six_blobs_exact': True,
+            'notebook_and_readme_prior_bytes_prefix_exact': True, 'automatic_workflows_absent': True,
+            'production_source_unchanged_from_scientific2b17': True,
+            'inventory_sha256': sha(blob(root, tree, DIRECTORY+'manifest.json')),
+            'selected_stored_bytes': sum(r['bytes'] for r in rows),
+            'restored_original_bytes': sum(len(restored[r['archive_relative']]) for r in rows),
+            'no_remote_query_client_source_bundle_storage_or_TPU': True}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root', type=Path, required=True)
+    parser.add_argument('--tree', required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    args.output.write_text(json.dumps(verify(args.root.resolve(), args.tree), indent=2)+'\n')
+
+
+if __name__ == '__main__':
+    main()

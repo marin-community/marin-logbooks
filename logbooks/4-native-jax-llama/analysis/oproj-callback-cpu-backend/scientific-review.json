@@ -1,0 +1,147 @@
+{
+  "schema": "native-jax-callback-cpu-backend-scientific-review.v1",
+  "reviewed_utc": "2026-10-24T07:08:05.541210+00:00",
+  "verdict": "NO_SCIENTIFIC_SOURCE_FINDINGS_FOR_FROZEN_PROSPECTIVE_BACKEND_LIST_CONTROL",
+  "findings": [],
+  "review_scope": "Fresh independent static review of new target backend-list delta and actual provenance guards, unchanged scientific gate, saved CPU/negative controls and old TPU failure evidence; before commit/publication.",
+  "handoff": {
+    "path": "/private/tmp/native-jax-callback-cpu-backend-preparation-handoff.json",
+    "sha256": "ec8f3a01da55ef3d8e9e37488af64a80be1931c3713dc48228560a115b72545e"
+  },
+  "checkout": "/private/tmp/marin-native-jax-callback-cpu-backend",
+  "parent_source": "ed17de3657fc779e5ed01df4348f7a60fcd813ef",
+  "snapshot": "/private/tmp/native-jax-callback-cpu-backend-freeze-20261024T070350Z",
+  "source_freeze": {
+    "research/oproj/capture.py": "85252b55a75154829131a80aa6eef20a68be9d022f73f5de6c9ba7cf31f4c552",
+    "research/oproj/callback_compatibility.py": "a46b4f2fae202290daf8fa23571da43c6c2d3c540e97a33bc2d3bcc161a9792f",
+    "research/oproj/callback_compatibility_config.json": "8837e33f448c80ff626357ea09b2a37229a336e647c271a3ed8e656eca6a1fba",
+    "research/oproj/callback_compatibility_command.json": "7754879eac7e2bb90ba0192a1854d374be99c99e525c4eb6949e72ef43219b52",
+    "research/oproj/callback_compatibility.md": "e19c3012f41a32bec4b76d0970053edb68188a0dfc81e9b8901ba7b367e1a530",
+    "research/oproj/callback_compatibility_supervisor.py": "fe13dd071bf9602f278d1ed9677a23d8d3e527954e53f4157bd3d4deb4a4edef",
+    "research/oproj/callback_compatibility_negative.py": "6e27a5e1fa45994143516dd94faaff12a7b682c8dfd05a606dc6804bce02e6f2"
+  },
+  "patch_sha256": "e588f494bb025cd3f3888c75c63a9f41ba0bea6bbc4bd2fcfd33afe0cf11b63a",
+  "all_seven_current_and_snapshot_source_hashes_match": true,
+  "configured_source_hashes_match": true,
+  "changed_repository_files_exactly": [
+    "research/oproj/callback_compatibility.py",
+    "research/oproj/callback_compatibility_config.json",
+    "research/oproj/callback_compatibility_command.json",
+    "research/oproj/callback_compatibility.md"
+  ],
+  "only_scientific_environment_delta": {
+    "name": "target JAX_PLATFORMS",
+    "old": "tpu",
+    "proposed": "tpu,cpu"
+  },
+  "new_guard_checks": {
+    "actual_effective_jax_platforms_equals_exact_frozen_environment": true,
+    "actual_nonempty_local_cpu_devices_with_cpu_platform": true,
+    "jax_default_device_must_be_None": true,
+    "deprecated_jax_platform_name_and_jax_xla_backend_must_be_empty": true,
+    "after_cpu_initialization_default_backend_must_be_tpu_in_target_mode": true,
+    "default_local_and_global_count_four_process_one_index_zero": true,
+    "explicit_tpu_local_and_global_count_four_process_one_index_zero": true,
+    "default_and_explicit_tpu_global_local_device_lists_equal_in_identity_and_order": true,
+    "explicit_tpu_kind_TPU_v5": true,
+    "mesh_and_inputs_constructed_from_guarded_default_tpu_devices": true,
+    "actual_target_guards_executed_by_reviewer_or_CPU_preflight": false
+  },
+  "unchanged_gate_proofs": {
+    "worker_AST_outside_provenance_equal_parent": true,
+    "capture_supervisor_negative_byte_equal_parent": true,
+    "runtime_pins_and_CPU_environment_unchanged": true,
+    "other_target_environment_fields_unchanged": true,
+    "scientific_file_hashes_unchanged": true,
+    "actual_Collector_emit_make_tap_and_full_manual_map_preserved": true,
+    "Auto_Explicit_mesh_scan_remat_dynamic_index_zero_BF16_oracles_and_ids_preserved": true,
+    "fresh_per_execution_complete_global_fourlocal_XG_and_cross_execution_bytes_preserved": true,
+    "value_and_all_three_gradient_leaves_exact_each_execution_preserved": true,
+    "six_explicit_compile_eight_execution_300_second_external_supervisor_caps_preserved": true
+  },
+  "installed_source_support": {
+    "debug_callback_impl_requires_explicit_local_cpu_backend": true,
+    "explicit_platform_list_initializes_both_and_fails_loudly": true,
+    "first_listed_tpu_has_default_priority": true,
+    "backend_overrides_independent_of_list_order_are_guarded": true,
+    "fresh_process_before_JAX_initialization_required": true,
+    "reviewed_as_text_without_JAX_import": true,
+    "source_hashes": {
+      "_src/debugging.py": "d0ec04657431827fc26e374414d8aadb98df41d912febeec8b78cf39badee51d",
+      "_src/xla_bridge.py": "6c8305cbe2f78dafa947bd953c31af23cea399e07dd9d1bbd6a55d418935abde",
+      "_src/config.py": "e9274cb50c62ec6063834fb94ebdaa976841474153db7127a31abf7133b73fbf"
+    }
+  },
+  "old_TPU_attempt_evidence": {
+    "source": "ed17de3657fc779e5ed01df4348f7a60fcd813ef",
+    "report_completed": false,
+    "completed_execution_count": 0,
+    "retained_first_Auto_transport_StableHLO_and_optimizedHLO_hashes_verified": true,
+    "compiled_handle_execution_failed_before_ready_barrier_completion": true,
+    "error": "jax.debug.callback failed to find a local CPU device to place the inputs on",
+    "supervisor_timed_out": false,
+    "worker_exit": 1,
+    "complete_XG_Explicit_composition_fullmodel_result_established": false,
+    "live_state_or_remote_retrieval_independently_verified_by_reviewer": false
+  },
+  "saved_CPU_evidence": {
+    "positive_report_sha256": "06a2cd512d35ee7bfe103f43e85bcb86871d6889469de3a6f69bbadd32c4744e",
+    "all_13_positive_artifacts_hashes_match": true,
+    "positive_artifact_bytes": 414953,
+    "CPU_mode_actual_platforms": "cpu",
+    "default_backend": "cpu",
+    "local_global_device_counts": 4,
+    "process_count": 1,
+    "process_index": 0,
+    "backend_overrides_empty": true,
+    "six_compilations_eight_execution_report_entries": true,
+    "both_mesh_modes_every_capture_complete": true,
+    "every_composition_value_plus_three_gradient_leaves": 4,
+    "negative_report_sha256": "d9b587d5afe68e3be2cca6112d46506e665f02cc7e0dbab2bf65d0da25e76d53",
+    "all_7_negative_artifact_hashes_match": true,
+    "negative_artifact_bytes": 168486,
+    "negative_first_G3_duplicate_count": 2,
+    "negative_second_G3_missing": true,
+    "negative_rejected_KeyError_G3": true,
+    "positive_negative_supervisor_and_short_timeout_receipt_hashes_match": true,
+    "timeout_seconds": 0.25,
+    "timeout_worker_returncode": -9,
+    "timeout_elapsed_seconds": 0.25320512522011995,
+    "precommit_saved_log_hash_matches": true,
+    "reviewer_reexecuted_any_control": false
+  },
+  "prose_correction": {
+    "preserved_preparation_snapshot_draft_matches_handoff": true,
+    "preserved_draft_sha256": "fec3a6970117765af7c924ee3fe1a62bfdf554d6c683833d09b207b23025089d",
+    "current_root_corrected_commit_message_sha256": "734d4703d6e6aabc57fa5b75c73fbc3baebae5f762c8de685d30c505e68203e8",
+    "current_root_corrected_message_bytes": 898,
+    "root_explicitly_identified_intentional_subject_and_referent_correction": true,
+    "changes_frozen_source_or_scientific_environment": false,
+    "root_must_record_separate_actual_message_proof_and_prose_reader_verdict_before_commit": true
+  },
+  "limitations_and_requirements": [
+    "This is source-supported prospective tpu,cpu preparation, not TPU compatibility or fidelity to the prior tpu-only environment. CPU-mode receipts do not execute the target-only TPU guards or simulate the dual-backend runtime.",
+    "Root must set tpu,cpu before importing JAX in a fresh worker, pin exact public source/config/command and resource v5p-8, retain external 300-second supervisor and reviewed task timeout, record release and one dispatch identity, and independently compare actual runtime/report hashes with the release.",
+    "No new explicit per-array or compiled-executable backend assertion was added. TPU placement is established by construction from verified TPU default devices and explicit NamedSharding inputs with overrides forbidden; actual future TPU execution/HLO evidence is still required.",
+    "No backend reset, fallback, retry, resubmit, full-model escalation or threshold change is authorized by this review.",
+    "Before any future instrumentation under tpu,cpu, separately authorized untouched legacy/native controls in that same new environment must reproduce the complete historical 255-gradient/loss comparison, exact parameter/batch/fixture/source/runtime checks, and cross-branch layout controls. Instrumentation must then independently satisfy untouched/instrumented value/all-gradient identity and full XG per-shard completeness.",
+    "Old partitioned-lowering and missing-CPU-runtime failures remain negative evidence; no original gradient-discrepancy causality, performance, trajectory, original physical buffer layout or adoption conclusion follows."
+  ],
+  "scientific_review_grants_commit_publication_or_dispatch_authority": false,
+  "actual_TPU_success_validated": false,
+  "not_performed": [
+    "runtime imports or execution",
+    "tests",
+    "source edits",
+    "network",
+    "job/client/storage operations",
+    "additional experiments",
+    "commit",
+    "publication",
+    "subagents"
+  ],
+  "writes": [
+    "/private/tmp/native-jax-callback-cpu-backend-scientific-review.md",
+    "/private/tmp/native-jax-callback-cpu-backend-scientific-review.json"
+  ]
+}

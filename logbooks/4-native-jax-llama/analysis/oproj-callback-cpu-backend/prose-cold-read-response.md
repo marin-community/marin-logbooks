@@ -1,0 +1,19 @@
+# Targeted prose response
+
+Zero remaining wording findings.
+
+Targeted contextless prose reread of the current commit message, compatibility document, and preparation report only; no factual source audit, runtime inspection, network access, input edits, or publication.
+
+- W1: resolved. The document explicitly dates fixture development before ed17, identifies the earlier pre-ed17 preparation, and says ed17 added the completeness/deadline corrections retained unchanged in this tpu,cpu preparation. The chronology now separates inherited controls from the current environment delta.
+- W2: resolved. The report now names the provenance and backend-validation function, provenance, and separately states that fixture execution logic is unchanged from ed17. The worker-delta descriptions are consistent as prose.
+
+- The commit message is unchanged from the first prose read and retains an imperative title.
+- The current prose keeps CPU execution and installed-source reasoning distinct from TPU success, original-environment fidelity, and full-model acceptance.
+- Device-list identity/order equality describes default versus explicitly requested TPU lists within the target environment; it does not claim the same physical chips across different runs.
+- No additional wording findings or unnecessary process requirements identified.
+
+## Current input SHA-256
+
+- `/private/tmp/native-jax-callback-cpu-backend-commit-message.txt`: `734d4703d6e6aabc57fa5b75c73fbc3baebae5f762c8de685d30c505e68203e8`
+- `/private/tmp/marin-native-jax-callback-cpu-backend/research/oproj/callback_compatibility.md`: `31be553fdcab834ec8bbe0336736a9e7e540582d5a8ca76eec25ff177820a5f2`
+- `/private/tmp/native-jax-callback-cpu-backend-preparation-report.md`: `884c195510b491373cb8142ba61e72db69c5bbda654665a767da622c3a674810`

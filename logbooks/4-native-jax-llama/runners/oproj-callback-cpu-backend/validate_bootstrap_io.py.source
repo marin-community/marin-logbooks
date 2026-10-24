@@ -1,0 +1,27 @@
+import hashlib,json,os,runpy,subprocess,sys,tempfile
+from pathlib import Path
+r=Path('/private/tmp/marin-native-jax-callback-cpu-backend');prep=Path('/private/tmp/native-jax-callback-cpu-backend-job-preparation');b=Path('/private/tmp/native-jax-callback-cpu-backend-tpu-bootstrap.py');c=json.loads((prep/'command.json').read_text());original=dict(os.environ);run=subprocess.run;records=[]
+os.chdir(r);os.environ.update(c['environment'])
+for case in ('success','worker_failure','oversize_file','oversize_total'):
+ status=7 if case=='worker_failure' else 0
+ with tempfile.TemporaryDirectory(prefix='native-jax-callback-bootstrap-io-') as d:
+  out=Path(d)/'outputs';os.environ['IRIS_OUTPUT_DIR']=str(out);calls=[]
+  def fake(argv,check):
+   assert check is False and argv[1]=='research/oproj/callback_compatibility_supervisor.py' and argv[2:4]==['--timeout','300'] and argv[7]==sys.executable
+   receipt=Path(argv[5]);gate=Path(argv[-1]);assert receipt==out/'supervisor.json' and not gate.is_relative_to(out);gate.mkdir();receipt.write_text(json.dumps({'completed':status==0,'timed_out':False,'worker_returncode':status}));(gate/'report.json').write_text(json.dumps({'completed':status==0}))
+   if case=='oversize_file':(gate/'oversize.hlo.txt').write_bytes(b'0'*(2*1024**2+1))
+   if case=='oversize_total':
+    for n in range(9):(gate/(str(n)+'.hlo.txt')).write_bytes(b'0'*(2*1024**2))
+   calls.append(argv);return subprocess.CompletedProcess(argv,status)
+  subprocess.run=fake;error=None;code=None
+  try:runpy.run_path(str(b),run_name='__main__')
+  except SystemExit as e:code=e.code
+  except ValueError as e:error=str(e)
+  finally:subprocess.run=run
+  assert len(calls)==1 and json.loads((out/'worker-provenance.json').read_text())['parent_jax_imported'] is False
+  if case.startswith('oversize'):assert error is not None and not (out/'gate').exists() and sum(p.stat().st_size for p in out.rglob('*') if p.is_file())<65536
+  else:assert code==status and (out/'gate/report.json').exists()
+  records.append({'case':case,'intercepted_worker_status':status,'bootstrap_status':code,'error':error,'gate_copied':(out/'gate').exists(),'captured_bytes':sum(p.stat().st_size for p in out.rglob('*') if p.is_file()),'worker_calls':1,'parent_jax_imported':False})
+os.environ.clear();os.environ.update(original)
+proof={'status':'LOCAL_TRANSPORT_IO_CONTROLS_PASS_NO_SCIENTIFIC_EXECUTION','bootstrap_sha256':hashlib.sha256(b.read_bytes()).hexdigest(),'command_sha256':hashlib.sha256((prep/'command.json').read_bytes()).hexdigest(),'validator_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'cases':records,'scope':'Actual bootstrap, subprocess I/O intercepted; no JAX/backend/TPU/client/RPC/storage/scientific result','no_gcp_egress':True}
+(prep/'bootstrap-io-controls.json').write_text(json.dumps(proof,indent=2)+'\n');print(json.dumps(proof,indent=2))

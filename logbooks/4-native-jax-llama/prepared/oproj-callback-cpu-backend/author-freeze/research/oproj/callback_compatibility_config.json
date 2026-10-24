@@ -1,0 +1,91 @@
+{
+  "schema": "native-jax-callback-cpu-backend.v1",
+  "source_a": "32f42f9a3601258123d316cc03c25b05add7a9c2",
+  "scientific_base": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "cpu_runtime": {
+    "python": "3.12.11",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "numpy": "2.3.5",
+    "equinox": "0.13.2",
+    "optax": "0.2.6"
+  },
+  "target_runtime": {
+    "python": "3.12.15",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "numpy": "2.3.5",
+    "equinox": "0.13.2",
+    "optax": "0.2.6"
+  },
+  "cpu_environment": {
+    "JAX_PLATFORMS": "cpu",
+    "XLA_FLAGS": "--xla_allow_excess_precision=false",
+    "LIBTPU_INIT_ARGS": null
+  },
+  "target_environment": {
+    "JAX_PLATFORMS": "tpu,cpu",
+    "XLA_FLAGS": "--xla_allow_excess_precision=false",
+    "LIBTPU_INIT_ARGS": " --xla_tpu_use_enhanced_launch_barrier=true"
+  },
+  "source_sha256": {
+    "lib/haliax/src/haliax/__init__.py": "a89410a0f7fa02cb9fde14db439378c8b708dacfbb2ea945af35997800001245",
+    "lib/haliax/src/haliax/_src/state_dict.py": "d9c98a71b758303b86f6984222221b75946d91f112d685ef30c860d96e9d4669",
+    "lib/haliax/src/haliax/nn/linear.py": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+    "lib/haliax/src/haliax/nn/normalization.py": "3b75cb9dce8a8aae9bd74f91d361cc23c008f73dd61fa862b5f0b5bebddb3518",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/__init__.py": "d90269d64894f147dbd458e7e6a64a08ba419ced508c7b09cc50151c2f1a4487",
+    "lib/levanter/src/levanter/grug/attention/_core.py": "e9bb1639396b5060fc6f0ebc013a3b89daf42485c88ea546b346198e9226c3d9",
+    "lib/levanter/src/levanter/kernels/pallas/splash_attention.py": "34258a9a0fc9bc83b32dcb08e64ff81440a163d5a35b447ccd1b0a351c898d78",
+    "lib/levanter/src/levanter/layers/attention.py": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+    "lib/levanter/src/levanter/layers/linear.py": "d351bc82e111d7643d9b31cf3797ba927b100fa1cca5bcc368ab917e526d8b80",
+    "lib/levanter/src/levanter/layers/rms_norm.py": "bcf81000cb940f68235ce185e4210412d4d60e0f27384c95edc2c8c5f18af4f0",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "1bf3fe8d2c4b0173a5437950c463823078683b795eee67fc8cc0bf0939b4212f",
+    "lib/levanter/src/levanter/layers/stacked.py": "a612f6c111a61592223a5b5330be492c6dcf5af5bc213fd9c72dc8ea1f50636b",
+    "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f",
+    "lib/levanter/src/levanter/trainer_state.py": "f97d7d6a24013a345e3a2a0a845514bdd1ebbcff08659af3f36f7db335ed4926",
+    "research/oproj/capture.py": "85252b55a75154829131a80aa6eef20a68be9d022f73f5de6c9ba7cf31f4c552",
+    "research/oproj/callback_compatibility.py": "a46b4f2fae202290daf8fa23571da43c6c2d3c540e97a33bc2d3bcc161a9792f",
+    "research/oproj/callback_compatibility.md": "e19c3012f41a32bec4b76d0970053edb68188a0dfc81e9b8901ba7b367e1a530",
+    "research/oproj/callback_compatibility_command.json": "7754879eac7e2bb90ba0192a1854d374be99c99e525c4eb6949e72ef43219b52",
+    "research/oproj/callback_compatibility_supervisor.py": "fe13dd071bf9602f278d1ed9677a23d8d3e527954e53f4157bd3d4deb4a4edef",
+    "research/oproj/callback_compatibility_negative.py": "6e27a5e1fa45994143516dd94faaff12a7b682c8dfd05a606dc6804bce02e6f2"
+  },
+  "dispatch_authorized": false,
+  "maximum_wall_seconds": 300,
+  "compiled_executions": 8,
+  "artifact_limits": {
+    "per_file_bytes": 2097152,
+    "total_bytes": 16777216
+  },
+  "scope": "Tiny callback transport and custom-VJP/remat/scan compatibility only; no full-model diagnostic.",
+  "compilations": 6,
+  "per_execution_minimum_counts": {
+    "transport": {
+      "X": 2,
+      "G": 2
+    },
+    "composition": {
+      "X": 2,
+      "G": 1
+    }
+  },
+  "external_wall_deadline_required": true,
+  "parent_research_source": "ed17de3657fc779e5ed01df4348f7a60fcd813ef",
+  "ambient_backend_control": {
+    "prior_target_JAX_PLATFORMS": "tpu",
+    "proposed_target_JAX_PLATFORMS": "tpu,cpu",
+    "only_scientific_environment_change": true,
+    "requires_actual_local_cpu_backend": true,
+    "default_backend_must_remain": "tpu",
+    "default_device_kind": "TPU v5",
+    "default_local_devices": 4,
+    "default_global_devices": 4,
+    "processes": 1,
+    "preserves_prior_environment_fidelity": false,
+    "full_model_before_instrumentation_requires_new_untouched_controls": "Untouched legacy/native under this environment must reproduce complete historical255gradient/loss metrics and layout control. Not authorized by this preparation.",
+    "default_device_and_deprecated_platform_overrides_forbidden": true,
+    "default_and_explicit_TPU_device_lists_must_match": true
+  }
+}

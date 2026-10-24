@@ -1,0 +1,15 @@
+research: prepare TPU callback host CPU backend control
+
+The tiny TPU transport compiled but its host callback could not find a local
+CPU backend with JAX_PLATFORMS=tpu. Prepare a separately identified tpu,cpu
+control while retaining the same tiny capture fixture and TPU runtime pins.
+
+Require a real host CPU backend, the same four default and explicit TPU
+devices, and no default-device or deprecated backend override. Preserve the
+per-execution capture checks, custom VJP, rematerialized scan, exact value and
+gradient comparisons, external deadline, and negative controls.
+
+CPU validation checks the existing control; it does not establish TPU support
+or fidelity to the old environment. Any full-model instrumentation under the
+new environment requires a separately authorized untouched legacy/native
+replay of all historical gradient/loss metrics and layout controls first.

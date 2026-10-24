@@ -1,0 +1,323 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Tiny actual-capture backend gate; no model, Trainer, storage, or submission."""
+
+import argparse
+import hashlib
+import json
+import os
+import platform
+import signal
+import sys
+import traceback
+from pathlib import Path
+
+import capture
+import equinox
+import haliax
+import jax
+import jax.numpy as jnp
+import jaxlib
+import levanter
+import numpy as np
+import optax
+from jax.sharding import AxisType, Mesh, NamedSharding
+from jax.sharding import PartitionSpec as P
+
+ROOT = Path(__file__).resolve().parents[2]
+MAX_FILE_BYTES = 2 * 1024 * 1024
+MAX_TOTAL_BYTES = 16 * 1024 * 1024
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def write(path, text):
+    data = text.encode()
+    if len(data) > MAX_FILE_BYTES:
+        raise ValueError(f"Artifact exceeds hard cap: {path.name}")
+    path.write_bytes(data)
+    if sum(p.stat().st_size for p in path.parent.iterdir()) > MAX_TOTAL_BYTES:
+        raise ValueError("Total artifact hard cap exceeded")
+
+
+def timeout(_signum, _frame):
+    raise TimeoutError("Diagnostic in-process alarm fired; external supervisor enforces wall deadline")
+
+
+def provenance(config, mode):
+    runtime = {
+        "python": platform.python_version(),
+        "jax": jax.__version__,
+        "jaxlib": jaxlib.__version__,
+        "numpy": np.__version__,
+        "equinox": equinox.__version__,
+        "optax": optax.__version__,
+    }
+    environment = {k: os.environ.get(k) for k in ("JAX_PLATFORMS", "XLA_FLAGS", "LIBTPU_INIT_ARGS")}
+    if runtime != config[mode + "_runtime"] or environment != config[mode + "_environment"]:
+        raise ValueError(f"Pinned runtime/environment mismatch: {runtime}, {environment}")
+    backend_overrides = {
+        "jax_default_device": jax.config.jax_default_device,
+        "jax_platform_name": jax.config.read("jax_platform_name"),
+        "jax_xla_backend": jax.config.read("jax_xla_backend"),
+    }
+    if backend_overrides != {"jax_default_device": None, "jax_platform_name": "", "jax_xla_backend": ""}:
+        raise ValueError(f"Device/platform overrides are forbidden: {backend_overrides}")
+    if jax.config.jax_platforms != config[mode + "_environment"]["JAX_PLATFORMS"]:
+        raise ValueError("Actual JAX backend configuration differs from the frozen ambient backend list")
+    host_cpu_devices = jax.local_devices(backend="cpu")
+    if not host_cpu_devices or any(device.platform != "cpu" for device in host_cpu_devices):
+        raise ValueError("An actual local CPU backend is required for host callbacks")
+    # Check the default device set after CPU backend initialization as well.
+    if jax.default_backend() != ("tpu" if mode == "target" else "cpu"):
+        raise ValueError("Wrong actual backend")
+    if jax.process_count() != 1 or jax.process_index() != 0 or jax.device_count() != 4 or jax.local_device_count() != 4:
+        raise ValueError("Exactly one process and four local/global devices required")
+    explicit_tpu_devices = []
+    if mode == "target":
+        explicit_tpu_devices = jax.devices(backend="tpu")
+        if jax.devices() != explicit_tpu_devices or jax.local_devices() != jax.local_devices(backend="tpu"):
+            raise ValueError("Default global/local devices must equal the explicit TPU device lists")
+        if (
+            jax.device_count(backend="tpu") != 4
+            or jax.local_device_count(backend="tpu") != 4
+            or jax.process_count(backend="tpu") != 1
+            or jax.process_index(backend="tpu") != 0
+        ):
+            raise ValueError("Explicit TPU backend requires one process at index zero and four devices")
+        if any(d.device_kind != "TPU v5" for d in explicit_tpu_devices):
+            raise ValueError("Exactly four actual TPU v5p devices required")
+    if not jax.config.jax_use_shardy_partitioner:
+        raise ValueError("Pinned default Shardy partitioner required")
+    imports = {}
+    for name, module, relative in (
+        ("capture", capture, "research/oproj/capture.py"),
+        ("haliax", haliax, "lib/haliax/src/haliax/__init__.py"),
+        ("levanter", levanter, "lib/levanter/src/levanter/__init__.py"),
+    ):
+        path = Path(module.__file__).resolve()
+        if path != ROOT / relative:
+            raise ValueError(f"Import outside own source tree: {name}: {path}")
+        imports[name] = {"path": str(path), "sha256": sha(path)}
+    for relative, expected in config["source_sha256"].items():
+        if sha(ROOT / relative) != expected:
+            raise ValueError(f"Frozen source differs: {relative}")
+    return {
+        "runtime": runtime,
+        "environment": environment,
+        "imports": imports,
+        "source_sha256": config["source_sha256"],
+        "default_backend": jax.default_backend(),
+        "device_count": jax.device_count(),
+        "local_device_count": jax.local_device_count(),
+        "process_count": jax.process_count(),
+        "process_index": jax.process_index(),
+        "host_callback_cpu_devices": [str(d) for d in host_cpu_devices],
+        "host_callback_cpu_device_kinds": [d.device_kind for d in host_cpu_devices],
+        "actual_jax_platforms": jax.config.jax_platforms,
+        "backend_overrides": backend_overrides,
+        "explicit_tpu_devices": [str(d) for d in explicit_tpu_devices],
+        "devices": [str(d) for d in jax.devices()],
+        "device_kinds": [d.device_kind for d in jax.devices()],
+        "executable": sys.executable,
+        "jax_use_shardy_partitioner": jax.config.jax_use_shardy_partitioner,
+        "jax_default_matmul_precision": str(jax.config.jax_default_matmul_precision),
+    }
+
+
+def compile_callable(name, function, arguments, output):
+    lowered = jax.jit(function).lower(*arguments)
+    write(output / (name + ".stablehlo.txt"), str(lowered.compiler_ir(dialect="stablehlo")))
+    compiled = lowered.compile()
+    write(output / (name + ".optimized-hlo.txt"), compiled.as_text())
+    return compiled
+
+
+def execute(name, compiled, arguments, executions):
+    result = compiled(*arguments)
+    jax.block_until_ready(result)
+    jax.effects_barrier()
+    executions.append(name)
+    return result
+
+
+def finish(kind, expected_x, expected_g, minimum_counts):
+    collector = capture.COLLECTORS[kind]
+    result = collector.finish()
+    expected_keys = {(label, identity) for label in ("X", "G") for identity in ("global", 0, 1, 2, 3)}
+    if set(collector.values) != expected_keys or set(collector.counts) != expected_keys:
+        raise ValueError("Unexpected/missing callback identities")
+    for label, expected in (("X", expected_x), ("G", expected_g)):
+        if capture.typed(collector.values[(label, "global")]) != capture.typed(expected):
+            raise ValueError(f"Independent global {label} fixture oracle differs")
+        # Independent rectangular slices, including both G model replicas.
+        for ordinal in range(4):
+            data, model = divmod(ordinal, 2)
+            local = expected[data * 2 : (data + 1) * 2]
+            if label == "X":
+                local = local[:, model * 2 : (model + 1) * 2]
+            if capture.typed(collector.values[(label, ordinal)]) != capture.typed(local):
+                raise ValueError(f"Independent canonical {label} shard oracle differs: {ordinal}")
+        if any(collector.counts[(label, identity)] < minimum_counts[label] for identity in ("global", 0, 1, 2, 3)):
+            raise ValueError("Repeated actual callback fixture was not observed")
+    return result
+
+
+def parity(actual, reference):
+    actual_leaves, actual_tree = jax.tree.flatten(actual)
+    reference_leaves, reference_tree = jax.tree.flatten(reference)
+    if actual_tree != reference_tree:
+        raise ValueError("Value/gradient structures differ")
+    records = []
+    for a, b in zip(actual_leaves, reference_leaves, strict=True):
+        aa, bb = np.asarray(a), np.asarray(b)
+        if capture.typed(aa) != capture.typed(bb) or not np.isfinite(aa.astype(np.float32)).all():
+            raise ValueError("Custom VJP changed value or a gradient")
+        records.append(capture.typed(aa))
+    return records
+
+
+def run_mode(axis_type, output, executions):
+    mesh = Mesh(np.array(jax.devices()).reshape(2, 2), ("data", "model"), axis_types=(axis_type, axis_type))
+    mode = axis_type.name.lower()
+    x_host = np.asarray(np.arange(96, dtype=np.float32).reshape(4, 4, 3, 2) / 64, dtype=jnp.bfloat16)
+    g_host = np.asarray(np.arange(96, dtype=np.float32).reshape(4, 3, 8) / 128, dtype=jnp.bfloat16)
+    with jax.set_mesh(mesh):
+        x = jax.device_put(x_host, NamedSharding(mesh, P("data", "model", None, None)))
+        g = jax.device_put(g_host, NamedSharding(mesh, P("data", None, None)))
+        ids = jax.device_put(np.arange(4, dtype=np.int32), NamedSharding(mesh, P(("data", "model"))))
+        indices = jax.device_put(np.array([0, 1], dtype=np.int32), NamedSharding(mesh, P()))
+        transport_kind = mode + "_transport"
+
+        def transport(xx, gg, layer_indices):
+            def body(carry, index):
+                # Different nonzero-index payloads make accidental capture fail the oracle.
+                for _ in range(2):
+                    capture.emit(transport_kind, "X", xx + index.astype(xx.dtype), index, ids, mesh)
+                    capture.emit(transport_kind, "G", gg + index.astype(gg.dtype), index, ids, mesh)
+                return carry, None
+
+            jax.lax.scan(body, (), layer_indices)
+            return jnp.asarray(0, dtype=jnp.int32)
+
+        transport_compiled = compile_callable(mode + "_transport", transport, (x, g, indices), output)
+        capture.COLLECTORS[transport_kind] = capture.Collector(mesh)
+        execute(mode + "_transport:0", transport_compiled, (x, g, indices), executions)
+        transport_result = {
+            "execution": mode + "_transport:0",
+            "capture": finish(transport_kind, x_host, g_host, {"X": 2, "G": 2}),
+        }
+        del capture.COLLECTORS[transport_kind]
+        kind = mode + "_composition"
+        tap = capture.make_tap(kind, mesh)
+        w = jax.device_put(np.eye(8, dtype=np.float32).astype(jnp.bfloat16), NamedSharding(mesh, P()))
+
+        def loss(xx, ww, gg, layer_indices, apply_tap):
+            def layer(_carry, index):
+                local_x = xx + index.astype(xx.dtype)
+                residual = local_x.transpose(0, 2, 1, 3).reshape(4, 3, 8)
+                projected = jnp.einsum(
+                    "bte,ef->btf",
+                    residual,
+                    ww,
+                    out_sharding=NamedSharding(mesh, P("data", None, None)) if axis_type == AxisType.Explicit else None,
+                )
+                if apply_tap:
+                    projected = tap(projected, local_x, index)
+                return (), projected
+
+            _, projected = jax.lax.scan(equinox.filter_checkpoint(layer, prevent_cse=False), (), layer_indices)
+            return jnp.sum(projected.astype(jnp.float32) * gg.astype(jnp.float32))
+
+        def instrumented(xx, ww, gg, layer_indices):
+            return jax.value_and_grad(lambda a, b, c: loss(a, b, c, layer_indices, True), argnums=(0, 1, 2))(xx, ww, gg)
+
+        def untapped(xx, ww, gg, layer_indices):
+            return jax.value_and_grad(lambda a, b, c: loss(a, b, c, layer_indices, False), argnums=(0, 1, 2))(xx, ww, gg)
+
+        args = (x, w, g, indices)
+        reference_compiled = compile_callable(mode + "_untapped", untapped, args, output)
+        reference = execute(mode + "_untapped:0", reference_compiled, args, executions)
+        instrumented_compiled = compile_callable(mode + "_composition", instrumented, args, output)
+        composition = []
+        first_collector = None
+        for iteration in range(2):
+            collector = capture.Collector(mesh)
+            capture.COLLECTORS[kind] = collector
+            execution = f"{mode}_composition:{iteration}"
+            actual = execute(execution, instrumented_compiled, args, executions)
+            observation = finish(kind, x_host, g_host, {"X": 2, "G": 1})
+            identity = parity(actual, reference)
+            if first_collector is None:
+                first_collector = collector
+            else:
+                for key in collector.values:
+                    if capture.typed(collector.values[key]) != capture.typed(first_collector.values[key]):
+                        raise ValueError(f"Cross-execution capture bytes differ: {key}")
+            composition.append(
+                {
+                    "execution": execution,
+                    "capture": observation,
+                    "value_and_all_three_gradient_leaves_exact": identity,
+                }
+            )
+        del capture.COLLECTORS[kind]
+
+    return {
+        "axis_types": [axis_type.name, axis_type.name],
+        "mesh": {"data": 2, "model": 2},
+        "fixture": {"X": capture.typed(x_host), "G": capture.typed(g_host)},
+        "transport": transport_result,
+        "composition": composition,
+        "cross_execution_capture_bytes_exact": True,
+        "dynamic_scan_indices": [0, 1],
+        "remat": {"enabled": True, "wrapper": "equinox.filter_checkpoint", "prevent_cse": False},
+        "unexpected_identities": [],
+        "callback_errors": [],
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mode", choices=("cpu", "target"), required=True)
+    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    args.output.mkdir(parents=True, exist_ok=False)
+    signal.signal(signal.SIGALRM, timeout)
+    signal.alarm(300)
+    report = {
+        "completed": False,
+        "mode": args.mode,
+        "executions": [],
+        "no_full_model_or_trainer": True,
+        "wall_deadline_authority": "Required external callback_compatibility_supervisor.py",
+    }
+    try:
+        config = json.loads(args.config.read_text())
+        report["config_sha256"] = sha(args.config)
+        with jax.default_matmul_precision("default"):
+            report["provenance"] = provenance(config, args.mode)
+            report["modes"] = [
+                run_mode(axis, args.output, report["executions"]) for axis in (AxisType.Auto, AxisType.Explicit)
+            ]
+        if len(report["executions"]) != 8:
+            raise ValueError("Wrong bounded execution count")
+        report["completed"] = True
+        report["scope"] = "Compatibility of tiny capture composition only; no full-model numerical or causal evidence."
+    except BaseException:
+        report["traceback"] = traceback.format_exc()
+        raise
+    finally:
+        report["hlo_artifacts"] = [
+            {"name": p.name, "bytes": p.stat().st_size, "sha256": sha(p)} for p in sorted(args.output.glob("*.txt"))
+        ]
+        write(args.output / "report.json", json.dumps(report, indent=2) + "\n")
+        signal.alarm(0)
+
+
+if __name__ == "__main__":
+    main()
