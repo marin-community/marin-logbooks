@@ -1,0 +1,303 @@
+diff --git a/lib/levanter/src/levanter/main/model_init.py b/lib/levanter/src/levanter/main/model_init.py
+index 300e20e9fd..a1262e9a3f 100644
+--- a/lib/levanter/src/levanter/main/model_init.py
++++ b/lib/levanter/src/levanter/main/model_init.py
+@@ -5,13 +5,15 @@ from dataclasses import dataclass
+ from typing import cast
+ 
+ import equinox as eqx
+-from haliax.partitioning import named_jit
++from haliax import Axis
++from haliax.partitioning import ResourceMapping, named_jit
++from jaxtyping import PRNGKeyArray
+ 
+ import haliax as hax
+ from levanter.checkpoint import latest_checkpoint_path, load_checkpoint
+ from levanter.compat.hf_checkpoints import HFCheckpointConverter, HFCompatConfig
+ from levanter.model_loading import load_hf_checkpoint, load_levanter_checkpoint
+-from levanter.models.llama_native_lm import NativeLlamaLmConfig
++from levanter.models.llama_native_lm import NativeLlamaLmConfig, native_llama_sharding
+ from levanter.models.lm_model import LmConfig, LmHeadModel
+ from levanter.utils.jax_utils import use_cpu_device
+ 
+@@ -23,6 +25,22 @@ class ModelInitContext:
+     use_hf_model_config: bool
+ 
+ 
++def build_model(
++    model_config: LmConfig,
++    Vocab: Axis,
++    *,
++    key: PRNGKeyArray,
++    parameter_axis_mapping: ResourceMapping,
++    compute_axis_mapping: ResourceMapping,
++    batch_axis_name: str,
++) -> LmHeadModel:
++    """Build a model with explicit native placement or its named-model constructor."""
++    if isinstance(model_config, NativeLlamaLmConfig):
++        sharding = native_llama_sharding(parameter_axis_mapping, compute_axis_mapping, batch_axis_name)
++        return model_config.build(Vocab, key=key, sharding=sharding)
++    return model_config.build(Vocab, key=key)
++
++
+ def prepare_model_init_context(
+     model: LmConfig,
+     *,
+diff --git a/lib/levanter/src/levanter/main/train_dpo.py b/lib/levanter/src/levanter/main/train_dpo.py
+index a92896a30d..28c8346a92 100644
+--- a/lib/levanter/src/levanter/main/train_dpo.py
++++ b/lib/levanter/src/levanter/main/train_dpo.py
+@@ -51,7 +51,7 @@ from levanter.dpo import (
+     reference_eval_cache_metadata,
+     reference_eval_cache_path,
+ )
+-from levanter.main.model_init import ModelInitContext, load_model_from_source, prepare_model_init_context
++from levanter.main.model_init import ModelInitContext, build_model, load_model_from_source, prepare_model_init_context
+ from levanter.models.llama import LlamaConfig
+ from levanter.models.llama_native_lm import NativeLlamaLmConfig, NativeLlamaLmHeadModel, native_llama_sharding
+ from levanter.models.lm_model import LmConfig, LmExample, LmHeadModel
+@@ -78,15 +78,6 @@ def _restore_policy_model_from_partial_checkpoint(
+     return eqx.combine(checkpointed_trainables, source_policy_model)
+ 
+ 
+-def _build_model(model_config: LmConfig, Vocab: Axis, key, trainer: Trainer) -> LmHeadModel:
+-    if isinstance(model_config, NativeLlamaLmConfig):
+-        sharding = native_llama_sharding(
+-            trainer.parameter_axis_mapping, trainer.compute_axis_mapping, trainer.config.batch_axis_name
+-        )
+-        return model_config.build(Vocab, key=key, sharding=sharding)
+-    return model_config.build(Vocab, key=key)
+-
+-
+ def _initialize_policy_model_from_source(
+     *,
+     config: "TrainDpoConfig",
+@@ -122,7 +113,14 @@ def _initialize_policy_model_from_source(
+             checkpoint_path=config.initialize_from_checkpoint_path,
+         )
+     else:
+-        policy_model = _build_model(config.model, Vocab, policy_key, trainer)
++        policy_model = build_model(
++            config.model,
++            Vocab,
++            key=policy_key,
++            parameter_axis_mapping=trainer.parameter_axis_mapping,
++            compute_axis_mapping=trainer.compute_axis_mapping,
++            batch_axis_name=trainer.config.batch_axis_name,
++        )
+ 
+     return config.adapter.apply(
+         policy_model,
+@@ -746,12 +744,26 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+             initial_policy_model = initial_policy_source
+         else:
+             initial_policy_model = config.adapter.apply(
+-                _build_model(config.model, Vocab, policy_key, trainer),
++                build_model(
++                    config.model,
++                    Vocab,
++                    key=policy_key,
++                    parameter_axis_mapping=trainer.parameter_axis_mapping,
++                    compute_axis_mapping=trainer.compute_axis_mapping,
++                    batch_axis_name=trainer.config.batch_axis_name,
++                ),
+                 key=adapter_key,
+                 axis_mapping=parameter_axis_mapping,
+             )
+         if isinstance(config.reference, SeparateReferenceConfig):
+-            initial_reference_model = _build_model(config.model, Vocab, model_key, trainer)
++            initial_reference_model = build_model(
++                config.model,
++                Vocab,
++                key=model_key,
++                parameter_axis_mapping=trainer.parameter_axis_mapping,
++                compute_axis_mapping=trainer.compute_axis_mapping,
++                batch_axis_name=trainer.config.batch_axis_name,
++            )
+             initial_model = DpoModel(policy=initial_policy_model, reference=initial_reference_model)
+             trainable_filter = DpoModel(policy=config.adapter.trainable_filter(initial_policy_model), reference=False)
+         else:
+diff --git a/lib/levanter/src/levanter/main/train_lm.py b/lib/levanter/src/levanter/main/train_lm.py
+index 793e5b9476..f9f698c88e 100644
+--- a/lib/levanter/src/levanter/main/train_lm.py
++++ b/lib/levanter/src/levanter/main/train_lm.py
+@@ -35,7 +35,7 @@ from levanter.data.text.datasets import LmDataConfig
+ from levanter.data.text.examples import GrugLmExample, named_lm_example_from_grug
+ from levanter.eval_harness import LmEvalHarnessConfig
+ from levanter.model_loading import native_evaluation_axis_mapping
+-from levanter.main.model_init import ModelInitContext, prepare_model_init_context
++from levanter.main.model_init import ModelInitContext, build_model, prepare_model_init_context
+ from levanter.models.llama import LlamaConfig
+ from levanter.models.llama_native import NativeLlamaSharding
+ from levanter.models.llama_native_lm import NativeLlamaLmConfig, NativeLlamaLmHeadModel, native_llama_sharding
+@@ -118,12 +118,6 @@ def _native_llama_sharding(config: TrainerConfig) -> NativeLlamaSharding:
+     return native_llama_sharding(config.parameter_axis_mapping, config.compute_axis_mapping, config.batch_axis_name)
+ 
+ 
+-def _build_lm_model(config: TrainLmConfig, Vocab: Axis, key, trainer: Trainer) -> LmHeadModel:
+-    if isinstance(config.model, NativeLlamaLmConfig):
+-        return config.model.build(Vocab, key=key, sharding=_native_llama_sharding(trainer.config))
+-    return config.model.build(Vocab, key=key)
+-
+-
+ def _load_lm_model_from_configured_source(
+     *,
+     config: TrainLmConfig,
+@@ -142,7 +136,17 @@ def _load_lm_model_from_configured_source(
+         if isinstance(config.model, NativeLlamaLmConfig):
+ 
+             def initialize_native_model(vocab: Axis) -> ModelWithHfSerializationMixin:
+-                return cast(ModelWithHfSerializationMixin, _build_lm_model(config, vocab, model_key, trainer))
++                return cast(
++                    ModelWithHfSerializationMixin,
++                    build_model(
++                        config.model,
++                        vocab,
++                        key=model_key,
++                        parameter_axis_mapping=trainer.parameter_axis_mapping,
++                        compute_axis_mapping=trainer.compute_axis_mapping,
++                        batch_axis_name=trainer.config.batch_axis_name,
++                    ),
++                )
+ 
+             model_init = initialize_native_model
+             # Compute precision must not round pretrained master weights before initialization.
+@@ -166,14 +170,29 @@ def _load_lm_model_from_configured_source(
+         # only in how main() uses the loaded weights.
+         source = config.initialize_from_checkpoint_path or config.initialize_model_from_checkpoint_path
+         checkpoint_path = source_checkpoint_path or latest_checkpoint_path(source)
+-        model = eqx.filter_eval_shape(_build_lm_model, config, Vocab, model_key, trainer)
++        model = eqx.filter_eval_shape(
++            build_model,
++            config.model,
++            Vocab,
++            key=model_key,
++            parameter_axis_mapping=trainer.parameter_axis_mapping,
++            compute_axis_mapping=trainer.compute_axis_mapping,
++            batch_axis_name=trainer.config.batch_axis_name,
++        )
+         model = load_checkpoint(
+             model, checkpoint_path, subpath="model", axis_mapping=parameter_axis_mapping, mesh=trainer.device_mesh
+         )
+         model = hax.shard(model, parameter_axis_mapping)
+         model = named_jit(trainer.mp.cast_to_param, parameter_axis_mapping)(model)
+     else:
+-        model = _build_lm_model(config, Vocab, model_key, trainer)
++        model = build_model(
++            config.model,
++            Vocab,
++            key=model_key,
++            parameter_axis_mapping=trainer.parameter_axis_mapping,
++            compute_axis_mapping=trainer.compute_axis_mapping,
++            batch_axis_name=trainer.config.batch_axis_name,
++        )
+ 
+     if not isinstance(config.adapter, NoAdaptorConfig):
+         model = config.adapter.apply(model, key=adapter_key, axis_mapping=parameter_axis_mapping)
+@@ -420,11 +439,27 @@ def main(config: TrainLmConfig) -> callbacks.StepInfo:
+             )
+         elif isinstance(config.adapter, NoAdaptorConfig):
+             state = trainer.initial_state(
+-                training_key, model_init=lambda: _build_lm_model(config, Vocab, model_key, trainer)
++                training_key,
++                model_init=functools.partial(
++                    build_model,
++                    config.model,
++                    Vocab,
++                    key=model_key,
++                    parameter_axis_mapping=trainer.parameter_axis_mapping,
++                    compute_axis_mapping=trainer.compute_axis_mapping,
++                    batch_axis_name=trainer.config.batch_axis_name,
++                ),
+             )
+         else:
+             initial_model = config.adapter.apply(
+-                _build_lm_model(config, Vocab, model_key, trainer),
++                build_model(
++                    config.model,
++                    Vocab,
++                    key=model_key,
++                    parameter_axis_mapping=trainer.parameter_axis_mapping,
++                    compute_axis_mapping=trainer.compute_axis_mapping,
++                    batch_axis_name=trainer.config.batch_axis_name,
++                ),
+                 key=adapter_key,
+                 axis_mapping=parameter_axis_mapping,
+             )
+diff --git a/lib/levanter/src/levanter/trainer.py b/lib/levanter/src/levanter/trainer.py
+index 4f82097ac6..fc26f829d7 100644
+--- a/lib/levanter/src/levanter/trainer.py
++++ b/lib/levanter/src/levanter/trainer.py
+@@ -355,9 +355,10 @@ class Trainer:
+ 
+     @cached_property
+     def loss_fn(self) -> WrappedLossFunction:
+-        """
+-        Wrapped loss function that always returns (loss, metrics_dict).
+-        Casts the model to compute precision and sets the context axis mapping to compute.
++        """Wrap the loss to return (loss, metrics_dict), casting the model to compute precision.
++
++        Set the compute axis mapping unless an explicit training layout is active.
++        Explicit layouts preserve the caller's current axis-mapping context.
+         """
+         return WrappedLossFunction(
+             self._raw_loss_function,
+diff --git a/lib/levanter/tests/test_dpo.py b/lib/levanter/tests/test_dpo.py
+index f1972ea707..cae97571b8 100644
+--- a/lib/levanter/tests/test_dpo.py
++++ b/lib/levanter/tests/test_dpo.py
+@@ -56,7 +56,7 @@ from levanter.dpo import (
+ )
+ from levanter.checkpoint import CheckpointerConfig, latest_checkpoint_path, load_checkpoint, save_checkpoint
+ from levanter.distributed import DistributedConfig
+-from levanter.main.model_init import prepare_model_init_context
++from levanter.main.model_init import build_model, prepare_model_init_context
+ from levanter.model_loading import load_hf_checkpoint
+ from levanter.layers.attention import AttentionBackend, AttentionMask
+ from levanter.layers.rotary import DefaultRotaryEmbeddingsConfig
+@@ -66,7 +66,6 @@ from levanter.main.train_dpo import (
+     SeparateReferenceConfig,
+     TrainDpoConfig,
+     _build_dpo_dataset,
+-    _build_model,
+     _initialize_policy_model_from_source,
+     _load_separate_reference_model,
+     main as train_dpo_main,
+@@ -1068,7 +1067,14 @@ def test_native_dpo_policy_updates_frozen_reference_and_checkpoint_next_step(
+         ) as resumed,
+     ):
+         # Reconstruct the omitted frozen reference from its configured source.
+-        policy = _build_model(config.model, Vocab, jrandom.PRNGKey(7), resumed)
++        policy = build_model(
++            config.model,
++            Vocab,
++            key=jrandom.PRNGKey(7),
++            parameter_axis_mapping=resumed.parameter_axis_mapping,
++            compute_axis_mapping=resumed.compute_axis_mapping,
++            batch_axis_name=resumed.config.batch_axis_name,
++        )
+         reference = _load_separate_reference_model(
+             config,
+             reference_model_key=jrandom.PRNGKey(8),
+@@ -1109,16 +1115,13 @@ def test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint(
+     )
+     train_dpo_main(continued)
+     with dataclasses.replace(config.trainer, use_explicit_mesh_axes=True).use_device_mesh():
+-        source_model = _build_model(
++        source_model = build_model(
+             config.model,
+             Axis("vocab", 32),
+-            jrandom.PRNGKey(0),
+-            Trainer(
+-                dataclasses.replace(config.trainer, use_explicit_mesh_axes=True),
+-                config.optimizer.build(2),
+-                _separate_dpo_loss,
+-                add_default_hooks=False,
+-            ),
++            key=jrandom.PRNGKey(0),
++            parameter_axis_mapping=config.trainer.parameter_axis_mapping,
++            compute_axis_mapping=config.trainer.compute_axis_mapping,
++            batch_axis_name=config.trainer.batch_axis_name,
+         )
+         template = TrainerState.init(
+             config.optimizer.build(2),

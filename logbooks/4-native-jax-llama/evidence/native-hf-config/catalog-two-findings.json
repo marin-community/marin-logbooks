@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-24T22:54:24.479089+00:00",
+  "status": "ALL_SIX_AND_COMPOSER_COMPLETE_TWO_FINDINGS_RESPONSE_ACTIVE",
+  "source": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+  "directory": "<local-catalog-output>",
+  "summary": "# Marin lint review \u2014 20261024T224847-qxenrsqo\n\n- log dir: `<local-catalog-output>`\n- branch: `codex/native-jax-hf-config-support`\n- merge base: `86fc7b67c921ad4ac124835ca7379b04ffa1be25`\n- diff: 75 files, +7691 -549\n- merge mode: compose\n- composer exit: 0\n- timed out: false\n- total elapsed: 158.35s\n- findings: 2 (see `combined.md`)\n\n## Arms\n\n| arm | status | elapsed | stdout lines |\n| --- | --- | --- | --- |\n| complexity | exit 0 | 78.48s | 0 |\n| interfaces | exit 0 | 133.36s | 0 |\n| robustness | exit 0 | 124.44s | 0 |\n| cruft | exit 0 | 125.49s | 1 |\n| prose | exit 0 | 144.08s | 1 |\n| meta | exit 0 | 152.03s | 0 |\n| composer | exit 0 | 6.31s | 2 |\n",
+  "arms": {
+    "complexity": {
+      "status": "exit0",
+      "stdout": "",
+      "stderr_inspected_terminal_tokens": true,
+      "startup_system_skills_warning": false,
+      "output_sha256": "f08b0843f0dd7bdd602811edd3cdd90b5c5f0e8483fef70f0d5b483d09132693"
+    },
+    "interfaces": {
+      "status": "exit0",
+      "stdout": "",
+      "stderr_inspected_terminal_tokens": true,
+      "startup_system_skills_warning": true,
+      "output_sha256": "789357dcf40d13bf36b52649790eb6b3e909301d08434463fabad08e5ee9fcd2"
+    },
+    "robustness": {
+      "status": "exit0",
+      "stdout": "",
+      "stderr_inspected_terminal_tokens": true,
+      "startup_system_skills_warning": false,
+      "output_sha256": "c4dfa3c00923ff0e9f185630c241ebe98348b90bd6f6ac61e400c8af8bfdc07d"
+    },
+    "cruft": {
+      "status": "exit0",
+      "stdout": "lib/levanter/src/levanter/main/train_dpo.py:81: ml-parallel-source-impl (0.86) _build_model duplicates train_lm._build_lm_model's native/named dispatch and sharding resolution, leaving two production implementations of the same construction logic.",
+      "stderr_inspected_terminal_tokens": true,
+      "startup_system_skills_warning": false,
+      "output_sha256": "600c69de8fb901699ad39a10ba08a25c8d285cb73187b229301f55fe4d9d0f17"
+    },
+    "prose": {
+      "status": "exit0",
+      "stdout": "lib/levanter/src/levanter/trainer.py:365: ml-stale-docstring (0.92) loss_fn still promises to set the compute axis mapping, but explicit-layout training now passes None and leaves the caller's mapping unchanged.",
+      "stderr_inspected_terminal_tokens": true,
+      "startup_system_skills_warning": false,
+      "output_sha256": "1437a31425c9ec8525a23c828b8357569fe044c984784413befdb85c03af82f5"
+    },
+    "meta": {
+      "status": "exit0",
+      "stdout": "",
+      "stderr_inspected_terminal_tokens": true,
+      "startup_system_skills_warning": false,
+      "output_sha256": "1aed5b429665e828da3241c935a003ff32be9dd7a0d65b15c7eda38d5b4840a0"
+    },
+    "composer": {
+      "status": "exit0",
+      "stdout": "lib/levanter/src/levanter/main/train_dpo.py:81: ml-parallel-source-impl (0.86) _build_model duplicates train_lm._build_lm_model's native/named dispatch and sharding resolution, leaving two production implementations of the same construction logic.\nlib/levanter/src/levanter/trainer.py:365: ml-stale-docstring (0.92) loss_fn still promises to set the compute axis mapping, but explicit-layout training now passes None and leaves the caller's mapping unchanged.",
+      "stderr_inspected_terminal_tokens": true,
+      "startup_system_skills_warning": false,
+      "output_sha256": "be3baa21b217401a89f005b786a54fe22448ac49fef7d8dd4f1158669cb217c6"
+    }
+  },
+  "findings": 2,
+  "response_owner": "native_dpo_lora_author",
+  "raw_stderr_not_for_publication": true,
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

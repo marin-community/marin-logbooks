@@ -1,0 +1,79 @@
+{
+  "original": {
+    "schema_version": 1,
+    "repository": "<local-checkout>",
+    "base": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "head": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "branch": "codex/native-jax-hf-config-support",
+    "git_no_replace_objects": true,
+    "source_frozen": true,
+    "patch": {
+      "path": "evidence/native-hf-config/corrected-source.patch",
+      "sha256": "ac6ca1008ab7549ea86e222ef78dc66356cd2cef92c0227cf7abd0cc466bb1af",
+      "bytes": 31468
+    },
+    "files": {
+      "lib/levanter/docs/Getting-Started-Training.md": "b550bda99517f9ab470c0990be43b9d9cf655135e0650a32f1348bbf28b2c537",
+      "lib/levanter/docs/guides/DPO-Training.md": "4b57832a989936e10de314996544b331cde3948829b0679299c2ae4fa86675de",
+      "lib/levanter/src/levanter/main/model_init.py": "3be20aad95d6d82da262a59f44e8ab254c79c0d59c1716371498920e3d49adca",
+      "lib/levanter/src/levanter/main/train_dpo.py": "86acd075a36e73e19f8faa20b01e63ecc3d0c823e73eb51c14013e41b338fd31",
+      "lib/levanter/src/levanter/main/train_lm.py": "c3758774b1fbde07698c6370e1f2b8f51aeb685b325a6b1c3ab9aca07c62147e",
+      "lib/levanter/tests/test_dpo.py": "e5f6043d4f11d32af553c92269d0611249777c4fe6bc87d466b77a745fac9872",
+      "lib/levanter/tests/test_train_lm.py": "06d7d5a76d52454c96a8ff752f3212603318e0228334dcb03f891472fd1d22d7"
+    },
+    "focused_nodeids": [
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+      "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+      "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+      "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+      "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+      "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction"
+    ],
+    "inherited_dpo_handoff": "native-jax-dpo-lora-handoff.json",
+    "source_bool_semantics": "Original model.reference_checkpoint is resolved through its native converter before hydration; hydrated reference_checkpoint is pinned to that converter reference.",
+    "source_string_semantics": "initialize_from_hf string overrides placeholder/default reference_checkpoint; hydrated model and reused converter retain that resolved source.",
+    "source_identity_limits": "Adapter base-source content identity and alpha/target validation remain unchanged; inferred resume requires original unchanged HF metadata."
+  },
+  "corrected": {
+    "schema_version": 1,
+    "repository": "<local-checkout>",
+    "base": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "head": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "branch": "codex/native-jax-hf-config-support",
+    "git_no_replace_objects": true,
+    "source_frozen": true,
+    "patch": {
+      "path": "evidence/native-hf-config/corrected-source.patch",
+      "sha256": "a2cef41addccb3dbad7af7a2e4da540671c770d55a846fedacc3e67b57b2d5ce",
+      "bytes": 31467
+    },
+    "files": {
+      "lib/levanter/docs/Getting-Started-Training.md": "b550bda99517f9ab470c0990be43b9d9cf655135e0650a32f1348bbf28b2c537",
+      "lib/levanter/docs/guides/DPO-Training.md": "4b57832a989936e10de314996544b331cde3948829b0679299c2ae4fa86675de",
+      "lib/levanter/src/levanter/main/model_init.py": "3be20aad95d6d82da262a59f44e8ab254c79c0d59c1716371498920e3d49adca",
+      "lib/levanter/src/levanter/main/train_dpo.py": "86acd075a36e73e19f8faa20b01e63ecc3d0c823e73eb51c14013e41b338fd31",
+      "lib/levanter/src/levanter/main/train_lm.py": "c3758774b1fbde07698c6370e1f2b8f51aeb685b325a6b1c3ab9aca07c62147e",
+      "lib/levanter/tests/test_dpo.py": "e5f6043d4f11d32af553c92269d0611249777c4fe6bc87d466b77a745fac9872",
+      "lib/levanter/tests/test_train_lm.py": "6bd9eca069a0e1c032b1fea1e61e8c1f6d3462ca4c8309defefd4e272bffd388"
+    },
+    "focused_nodeids": [
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+      "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+      "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+      "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+      "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+      "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction"
+    ],
+    "inherited_dpo_handoff": "native-jax-dpo-lora-handoff.json",
+    "source_bool_semantics": "Original model.reference_checkpoint is resolved through its native converter before hydration; hydrated reference_checkpoint is pinned to that converter reference.",
+    "source_string_semantics": "initialize_from_hf string overrides placeholder/default reference_checkpoint; hydrated model and reused converter retain that resolved source.",
+    "source_identity_limits": "Adapter base-source content identity and alpha/target validation remain unchanged; inferred resume requires original unchanged HF metadata.",
+    "freeze_revision": 2,
+    "prior_freeze": "evidence/native-hf-config/initial-and-corrected-freezes.json",
+    "prior_patch": "evidence/native-hf-config/initial-source.patch",
+    "test_response": "Changed negative HF metadata to num_attention_heads8, num_key_value_heads4, head_dim4. q/o32 and k/v16 shapes remain identical to heads4/kv2/head_dim8 while all KV heads divide model2. Production and other file bytes unchanged."
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

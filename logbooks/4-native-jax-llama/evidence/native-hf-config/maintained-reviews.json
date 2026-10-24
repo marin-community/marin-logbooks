@@ -1,0 +1,258 @@
+{
+  "maintained-review": {
+    "schema_version": 1,
+    "review_type": "independent_precommit_maintained_contribution",
+    "repository": "<local-checkout>",
+    "branch": "codex/native-jax-hf-config-support",
+    "base": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "head": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "patch": {
+      "path": "evidence/native-hf-config/corrected-source.patch",
+      "sha256": "ac6ca1008ab7549ea86e222ef78dc66356cd2cef92c0227cf7abd0cc466bb1af",
+      "bytes": 31468
+    },
+    "files": {
+      "lib/levanter/docs/Getting-Started-Training.md": "b550bda99517f9ab470c0990be43b9d9cf655135e0650a32f1348bbf28b2c537",
+      "lib/levanter/docs/guides/DPO-Training.md": "4b57832a989936e10de314996544b331cde3948829b0679299c2ae4fa86675de",
+      "lib/levanter/src/levanter/main/model_init.py": "3be20aad95d6d82da262a59f44e8ab254c79c0d59c1716371498920e3d49adca",
+      "lib/levanter/src/levanter/main/train_dpo.py": "86acd075a36e73e19f8faa20b01e63ecc3d0c823e73eb51c14013e41b338fd31",
+      "lib/levanter/src/levanter/main/train_lm.py": "c3758774b1fbde07698c6370e1f2b8f51aeb685b325a6b1c3ab9aca07c62147e",
+      "lib/levanter/tests/test_dpo.py": "e5f6043d4f11d32af553c92269d0611249777c4fe6bc87d466b77a745fac9872",
+      "lib/levanter/tests/test_train_lm.py": "06d7d5a76d52454c96a8ff752f3212603318e0228334dcb03f891472fd1d22d7"
+    },
+    "freeze_verified_before_and_after_review": true,
+    "verdict": "no_actionable_findings",
+    "findings": [],
+    "pieces": [
+      {
+        "file": "lib/levanter/src/levanter/main/model_init.py",
+        "lines": "33-50",
+        "disposition": "keep",
+        "reason": "Shared native HF architecture hydration resolves the original Boolean/string source first, reconstructs the native class, and restores execution policy plus tokenizer and resolved source. The flag-false path keeps its prior converter and explicit config behavior."
+      },
+      {
+        "file": "lib/levanter/src/levanter/main/train_lm.py",
+        "lines": "149-159,184-214,260-263,313-324,570-577",
+        "disposition": "keep",
+        "reason": "Hydrates before native export, explicit-layout and Trainer initialization; reuses the resolved converter and passes the effective native config to pretrained loading. Existing source vocabulary, checkpoint semantic validation, frozen-base reconstruction and RNG paths remain in force. Returning Trainer StepInfo after context and tracker cleanup supports maintained callers and state assertions."
+      },
+      {
+        "file": "lib/levanter/src/levanter/main/train_dpo.py",
+        "lines": "590-639",
+        "disposition": "keep",
+        "reason": "Hydrates policy config before native export and layout validation and reuses its original source context. Separate-reference loading still receives its own explicit source; adapter-base and checkpoint restoration retain the ordinary DPO state paths."
+      },
+      {
+        "file": "lib/levanter/tests/test_train_lm.py",
+        "lines": "746-775,849-852,1157-1395",
+        "disposition": "keep",
+        "reason": "Extends real local HF/Trainer coverage: inferred full-state restore without HF weights; explicit and inferred Boolean/string LoRA runs; literal HF head-dimension/RoPE/context metadata; native physical weight geometry, padded vocabulary, exact frozen tensors, exact loss/state resume, adapter exports and merged weight/logit reloads. The same-shaped heads mutation is a consequential semantic-restore negative control, with a successful resume after restoring metadata."
+      },
+      {
+        "file": "lib/levanter/tests/test_dpo.py",
+        "lines": "940-943,1182-1389",
+        "disposition": "keep",
+        "reason": "Exercises the maintained DPO entrypoint for explicit/inferred Boolean/string policy sources and both reference types. Named-model-generated source tensors and independently seeded reference tensors check frozen contents; full and split/resumed states, saved partial checkpoints, learned factors, PEFT metadata and merged reloads check observable behavior. Reading raw stored HF metadata avoids reconstructing the expected config solely through a native export round trip."
+      },
+      {
+        "file": "lib/levanter/docs/Getting-Started-Training.md",
+        "lines": "86-125",
+        "disposition": "keep",
+        "reason": "Documents the supported opt-in behavior, preserved execution/tokenizer choices, source selection, maximum context and the new metadata dependency on inferred-config resume. Keeps explicit-config offline resume and LoRA base-weight limitations distinct."
+      },
+      {
+        "file": "lib/levanter/docs/guides/DPO-Training.md",
+        "lines": "191-204",
+        "disposition": "keep",
+        "reason": "Documents the same opt-in native policy behavior and DPO-specific unchanged policy/reference source requirements in the existing user guide."
+      }
+    ],
+    "historical_artifacts_to_remove": [],
+    "checks": [
+      "Exact HEAD and owned branch verified",
+      "All seven file SHA-256 values match freeze",
+      "Working git diff --binary equals complete frozen patch byte for byte",
+      "git diff --check passed",
+      "All five changed Python files parse with ast.parse"
+    ],
+    "reviewed_context": [
+      "Root AGENTS.md and TESTING.md",
+      "lib/levanter/AGENTS.md and docs/design/jit-safety.md",
+      "review-pr SKILL.md and correctness reference",
+      "Explicit #9467 research-engineering promotion guide",
+      "Native config translation/validation/checkpoint identity",
+      "HF converter load_pretrained and config override behavior",
+      "Shared native HF loader, adaptor export checks, LM and DPO source/resume/reference initialization",
+      "Trainer train return and context cleanup",
+      "Named Llama fixture writer and surrounding source/export/resume assertions"
+    ],
+    "limitations": [
+      "Read-only source review plus lightweight static checks; no runtime tests executed by this reviewer. Root owns validation.",
+      "No CI, remote PR, accelerator, throughput, multi-host or convergence claim.",
+      "No contribution PR was identified; no external review comment or telemetry publication was made.",
+      "Base-source content identity and adapter alpha/target identity remain existing documented limitations, not new guarantees."
+    ]
+  },
+  "test-response-maintained-review": {
+    "schema_version": 1,
+    "review_type": "fresh_targeted_test_response_maintained_review",
+    "repository": "<local-checkout>",
+    "base": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "branch": "codex/native-jax-hf-config-support",
+    "freeze_revision": 2,
+    "full_patch": {
+      "path": "evidence/native-hf-config/corrected-source.patch",
+      "sha256": "a2cef41addccb3dbad7af7a2e4da540671c770d55a846fedacc3e67b57b2d5ce",
+      "bytes": 31467
+    },
+    "response_patch": {
+      "path": "evidence/native-hf-config/geometry-test-response.patch",
+      "sha256": "1c9c5837ff23468df1d0761f630821476ec4fbba171e0fd481255718914ccb9e"
+    },
+    "files": {
+      "lib/levanter/docs/Getting-Started-Training.md": "b550bda99517f9ab470c0990be43b9d9cf655135e0650a32f1348bbf28b2c537",
+      "lib/levanter/docs/guides/DPO-Training.md": "4b57832a989936e10de314996544b331cde3948829b0679299c2ae4fa86675de",
+      "lib/levanter/src/levanter/main/model_init.py": "3be20aad95d6d82da262a59f44e8ab254c79c0d59c1716371498920e3d49adca",
+      "lib/levanter/src/levanter/main/train_dpo.py": "86acd075a36e73e19f8faa20b01e63ecc3d0c823e73eb51c14013e41b338fd31",
+      "lib/levanter/src/levanter/main/train_lm.py": "c3758774b1fbde07698c6370e1f2b8f51aeb685b325a6b1c3ab9aca07c62147e",
+      "lib/levanter/tests/test_dpo.py": "e5f6043d4f11d32af553c92269d0611249777c4fe6bc87d466b77a745fac9872",
+      "lib/levanter/tests/test_train_lm.py": "6bd9eca069a0e1c032b1fea1e61e8c1f6d3462ca4c8309defefd4e272bffd388"
+    },
+    "changed_file": "lib/levanter/tests/test_train_lm.py",
+    "changed_line": 1259,
+    "disposition": "keep",
+    "verdict": "no_actionable_findings_in_response",
+    "findings": [],
+    "assessment": [
+      "Exactly one test line differs from the original reviewed patch; the six other file hashes are unchanged.",
+      "Original source geometry is query_heads=4, kv_heads=2, head_dim=8. The response uses 8,4,4, preserving Q/O width 32 and K/V width 16 with hidden width 16.",
+      "The response preserves integer GQA grouping (8/4=2), even RoPE dimension 4, and TP2 KV divisibility (4%2=0); hidden, intermediate and vocabulary dimensions remain unchanged and divisible.",
+      "Checkpoint architecture explicitly records num_heads, num_kv_heads and head_dim, so the revised metadata still changes semantic identity despite equal projection tensor shapes.",
+      "The exact ValueError/checkpoint architecture expectation, finally restoration, successful resume, and exact resumed loss/state comparisons remain unchanged; no assertion, exception match or tolerance was weakened.",
+      "This is a maintained regression control for inferred native checkpoint semantics, not an archival trial artifact; no production-source response is inferred or needed from this test-only delta."
+    ],
+    "correction_to_prior_review": "The first source review missed that the original heads=2,kv=1,head_dim=16 mutation is invalid under TP2. This response fixes the test control so topology validation no longer preempts the intended checkpoint semantic check.",
+    "verification": [
+      "All seven final file hashes match freeze revision 2",
+      "Working full diff equals frozen full patch byte for byte",
+      "One-line response patch bytes and SHA-256 independently verified",
+      "Reconstructing the previous test file by reversing the single changed line recovers its prior SHA-256",
+      "Other six file hashes independently compared with prior freeze"
+    ],
+    "limitations": [
+      "No tests, source imports, network calls, source edits, commits or external publication performed in this targeted assessment.",
+      "CPU1/4 rerun and CPU8 suite outcomes are not asserted; root owns live validation."
+    ]
+  },
+  "catalog-response-maintained-review": {
+    "schema_version": 1,
+    "review_type": "fresh_targeted_catalog_response_maintained_review",
+    "repository": "<local-checkout>",
+    "base": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+    "head": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+    "patch": {
+      "path": "evidence/native-hf-config/catalog-response.patch",
+      "sha256": "d5d85b16566f2eccc730aaa3f365470bac2a48bc53cb445daf383471b1bd139f",
+      "bytes": 14341
+    },
+    "files": {
+      "lib/levanter/src/levanter/main/model_init.py": "dd4807c087ef436edd75aa5cd9f2e85633a12c2dd547e9f2d5d8dfad3af7a2e1",
+      "lib/levanter/src/levanter/main/train_dpo.py": "7fa6afabb9afcca7c1a80618f4ed1392c8373c753a1c2ad5136674bb96548be7",
+      "lib/levanter/src/levanter/main/train_lm.py": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+      "lib/levanter/src/levanter/trainer.py": "62b637bcec318b2bf0c2d06f6169f4986bcdbd8a8a3f084d572abb260899538f",
+      "lib/levanter/tests/test_dpo.py": "986577546c6667c8f5651dc21a4a7ab93a161ee854c68a3d6078bdfde9fe9700"
+    },
+    "freeze_verified": true,
+    "verdict": "no_actionable_findings",
+    "findings": [],
+    "pieces": [
+      {
+        "file": "lib/levanter/src/levanter/main/model_init.py",
+        "lines": "5-18,28-42",
+        "disposition": "keep",
+        "assessment": "One concrete shared builder replaces the identical LM/DPO native-versus-named construction operation in the existing initialization module. Explicit mappings and batch axis avoid a dependency on Trainer. The native branch alone derives native sharding; named models call their existing constructor without native validation. No new import edge back to either main or Trainer is introduced, and there is no plugin registry, compatibility branch or generalized dispatch framework."
+      },
+      {
+        "file": "lib/levanter/src/levanter/main/train_lm.py",
+        "lines": "38,118-200,440-465",
+        "disposition": "keep",
+        "assessment": "All former _build_lm_model uses are migrated: HF model_init callback, abstract checkpoint template, source-free construction, lazy Trainer model_init, and adapter construction. The same model_key, Vocab, parameter/compute maps and batch name reach construction. Trainer map properties delegate directly to trainer.config, preserving the former LM native helper inputs. filter_eval_shape still builds an abstract template; HF callbacks still accept the source vocabulary; adapter keys and state training keys are unchanged. The deferred partial remains a zero-argument constructor."
+      },
+      {
+        "file": "lib/levanter/src/levanter/main/train_dpo.py",
+        "lines": "54,78-129,742-766",
+        "disposition": "keep",
+        "assessment": "All former _build_model uses move to the shared builder with the same policy_key/model_key, vocabulary, trainer maps and batch name. Policy adapter application and separate-reference wrapper/filter remain in place. HF and checkpoint source loading, frozen reconstruction, and explicit training layout are untouched. Deleted helper has no remaining references in Levanter."
+      },
+      {
+        "file": "lib/levanter/src/levanter/trainer.py",
+        "lines": "356-367",
+        "disposition": "keep",
+        "assessment": "Docstring correction matches WrappedLossFunction: explicit layout supplies mapping=None and __call__ uses nullcontext, preserving caller context. Named layout supplies compute mapping. Independently compared executable AST against the exact base after stripping docstrings: identical."
+      },
+      {
+        "file": "lib/levanter/tests/test_dpo.py",
+        "lines": "59-71,1070-1078,1118-1126",
+        "disposition": "keep",
+        "assessment": "Imports and the two former private-helper calls migrate to the shared builder with unchanged keys and mappings. The second call removes a redundant temporary Trainer; the prior explicit config changed mesh axis types, not either mapping, and the surrounding explicit device-mesh context remains. Full saved-state, exact next-step resume and frozen-reference assertions stay unchanged; no weakened tolerance, mocks or helper-dispatch assertions were added."
+      }
+    ],
+    "historical_artifacts_to_remove": [],
+    "addressed_catalog_findings": [
+      "ml-parallel-source-impl",
+      "ml-stale-docstring"
+    ],
+    "checks": [
+      "Exact base/head and changed five-file set verified",
+      "All five SHA-256 values match frozen manifest",
+      "Working diff matches complete frozen patch byte for byte",
+      "Python AST parse of all five files",
+      "git diff --check",
+      "Trainer executable AST unchanged after docstring removal",
+      "Deleted helper references searched across repository/Levanter"
+    ],
+    "limitations": [
+      "Targeted read-only source assessment; no tests, source imports, services, network, catalog rerun, source edits, commits, publication or archive operations.",
+      "Author/root validation results and active CPU1/4/8 test outcomes are not assumed; root owns runtime validation.",
+      "Review covers the five-file catalog response, not a new recursive catalog pass or unrelated work."
+    ]
+  },
+  "catalog-doc-response-review": {
+    "schema_version": 1,
+    "review_type": "targeted_doc_response",
+    "repository": "<local-checkout>",
+    "base": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+    "freeze_revision": 2,
+    "patch": {
+      "path": "evidence/native-hf-config/catalog-response.patch",
+      "sha256": "eadd9170ec562e740ebfb99af5336664d34ac294244a464828c9a2fa0a3c612f",
+      "bytes": 14360
+    },
+    "files": {
+      "lib/levanter/src/levanter/main/model_init.py": "dd4807c087ef436edd75aa5cd9f2e85633a12c2dd547e9f2d5d8dfad3af7a2e1",
+      "lib/levanter/src/levanter/main/train_dpo.py": "7fa6afabb9afcca7c1a80618f4ed1392c8373c753a1c2ad5136674bb96548be7",
+      "lib/levanter/src/levanter/main/train_lm.py": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+      "lib/levanter/src/levanter/trainer.py": "ba7ef0eef3fc5e172ba79948fa975f6bb3313e0b3fd277e2f7ac6914c30689ac",
+      "lib/levanter/tests/test_dpo.py": "986577546c6667c8f5651dc21a4a7ab93a161ee854c68a3d6078bdfde9fe9700"
+    },
+    "verdict": "no_actionable_findings",
+    "findings": [],
+    "disposition": "keep",
+    "changed_file": "lib/levanter/src/levanter/trainer.py",
+    "changed_line": 358,
+    "assessment": "The refined first line accurately promises model casting, not loss-result dtype. WrappedLossFunction.__call__ calls self._mp.cast_to_compute(model) before the raw loss; output normalization does not impose the same dtype promise. Existing explicit-layout wording still matches mapping=None and nullcontext.",
+    "verification": [
+      "All five final SHA-256 values match revised freeze",
+      "Other four files exactly match prior reviewed hashes",
+      "Reversing only the refined first docstring line recovers prior Trainer SHA-256",
+      "Complete working diff matches frozen patch SHA eadd9170ec562e740ebfb99af5336664d34ac294244a464828c9a2fa0a3c612f byte for byte",
+      "Trainer executable AST independently verified identical to base b7dce6e639a83cf1981a062841e34f85d0616fb8 after stripping docstrings"
+    ],
+    "prior_review_applies_to_other_four_exact_files": true,
+    "limitations": [
+      "No tests, full catalog, services, source imports, source edits or external publication performed.",
+      "No runtime validation outcome assumed."
+    ]
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

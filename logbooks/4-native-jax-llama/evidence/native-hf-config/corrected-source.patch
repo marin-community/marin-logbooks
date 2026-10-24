@@ -1,0 +1,587 @@
+diff --git a/lib/levanter/docs/Getting-Started-Training.md b/lib/levanter/docs/Getting-Started-Training.md
+index 4561633f2b..fb79eb8ede 100644
+--- a/lib/levanter/docs/Getting-Started-Training.md
++++ b/lib/levanter/docs/Getting-Started-Training.md
+@@ -86,7 +86,7 @@ must match on restore. Existing SiLU checkpoint metadata remains unchanged.
+ To initialize from a local Hugging Face Llama checkpoint, set
+ `initialize_from_hf: /path/to/llama-checkpoint`. The directory must contain its
+ `config.json` and safetensors weights (a single file or a sharded index). Configure
+-the matching native architecture explicitly. Layer count, hidden/MLP sizes,
++the matching native architecture explicitly by default. Layer count, hidden/MLP sizes,
+ query/KV heads, head dimension, tied embeddings, activation, RMSNorm epsilon and
+ RoPE type, base/theta, frequency scaling and attention scaling must match; the maximum context
+ length may differ. This path supports standard weighted RMSNorm, bias-free
+@@ -94,7 +94,17 @@ projections and no attention
+ dropout. YaRN initialization requires the integer correction ramp and the same
+ effective attention multiplier as the configured model; HF metadata whose
+ implicit scaling changes that multiplier is rejected. Automatic HF model-config
+-replacement and tokenizer padding remain unsupported.
++replacement is available with `use_hf_model_config: true`; tokenizer padding
++remains unsupported.
++
++With `use_hf_model_config: true`, native `train_lm` and `train_dpo` derive the
++architecture, head dimension, RoPE and maximum context length from the resolved
++HF source before validating the model and mesh. The model remains native and
++retains the configured attention backend, attention upcasting and
++rematerialization policy. Top-level `train_seq_len` selects the training length
++independently and must not exceed the source maximum. A string
++`initialize_from_hf` selects that source; `initialize_from_hf: true` uses the
++original `model.reference_checkpoint`. Both retain the configured tokenizer.
+ 
+ The checkpoint determines the complete model vocabulary, including any padded
+ embedding/output rows beyond the tokenizer's length. Those rows are preserved
+@@ -103,7 +113,12 @@ large as the tokenizer and divisible by the tensor-parallel mesh size; the loade
+ does not resize it. New native Trainer checkpoints record the complete vocabulary
+ and semantic architecture with the checkpoint completion marker. Resume uses the
+ selected checkpoint's metadata and full training state without accessing the
+-original HF directory, even if `initialize_from_hf` still names that directory.
++original HF directory, even if `initialize_from_hf` still names that directory,
++when `use_hf_model_config` is false. The opt-in inferred-config mode reads the
++original HF `config.json` on resume, then validates the checkpoint against that
++effective architecture. Keep this metadata available and unchanged. LoRA resumes
++also require the original base weights, as described in
++[adapter training](Training-On-Your-Data.md#lora-adapters).
+ The configured tokenizer, training inputs and matching model configuration are
+ still required.
+ The configured attention geometry, normalization and RoPE must match; context
+diff --git a/lib/levanter/docs/guides/DPO-Training.md b/lib/levanter/docs/guides/DPO-Training.md
+index 4d4ac2a23b..1cf8215495 100644
+--- a/lib/levanter/docs/guides/DPO-Training.md
++++ b/lib/levanter/docs/guides/DPO-Training.md
+@@ -188,9 +188,17 @@ parameter cast; native checkpoint metadata validates the architecture and source
+ original model configuration and separate-reference source when resuming a DPO
+ checkpoint; the frozen reference is reconstructed from that source.
+ 
+-Set `use_hf_model_config: false` and configure `hidden_dim`, `intermediate_dim`,
++With `use_hf_model_config: false`, configure `hidden_dim`, `intermediate_dim`,
+ `num_layers`, `num_heads`, `num_kv_heads`, `activation_function`, `rope`, and other
+ architecture settings to match the source checkpoint's `config.json`.
++Alternatively, set `use_hf_model_config: true` to derive that architecture,
++including head dimension, RoPE and maximum context, from the policy's HF source.
++The native model class, configured attention backend and rematerialization policy
++are retained. Use top-level `train_seq_len` for a shorter training length. This
++mode requires the original HF metadata on resume and validates the restored
++checkpoint against the inferred architecture. A Boolean `initialize_from_hf: true`
++uses the original `model.reference_checkpoint`; a string selects that source
++explicitly. Keep the policy base and separate-reference sources unchanged.
+ 
+ Zero-dropout LoRA uses `adapter.type: lora` with either `reference.type: separate`
+ or `reference.type: adapter_base`. The latter uses the frozen policy base as the
+diff --git a/lib/levanter/src/levanter/main/model_init.py b/lib/levanter/src/levanter/main/model_init.py
+index 061a278428..300e20e9fd 100644
+--- a/lib/levanter/src/levanter/main/model_init.py
++++ b/lib/levanter/src/levanter/main/model_init.py
+@@ -31,12 +31,23 @@ def prepare_model_init_context(
+     use_hf_model_config: bool,
+ ) -> ModelInitContext:
+     if isinstance(model, NativeLlamaLmConfig):
+-        if use_hf_model_config:
+-            raise ValueError("llama_native initialization requires an explicit model configuration")
+         converter = model.hf_checkpoint_converter(
+             initialize_from_hf if isinstance(initialize_from_hf, str) else None, tokenizer=tokenizer
+         )
+-        return ModelInitContext(model=model, converter=converter, use_hf_model_config=False)
++        if initialize_from_hf and use_hf_model_config:
++            model = converter.config_from_hf_config(
++                converter.default_hf_config,
++                overrides={
++                    "attn_backend": model.attn_backend,
++                    "gradient_checkpointing": model.gradient_checkpointing,
++                    "scan_layers": model.scan_layers,
++                    "flash_attention_block_size": model.flash_attention_block_size,
++                    "upcast_attn": model.upcast_attn,
++                    "reference_checkpoint": str(converter.reference_checkpoint),
++                    "tokenizer": model.tokenizer,
++                },
++            )
++        return ModelInitContext(model=model, converter=converter, use_hf_model_config=use_hf_model_config)
+ 
+     if initialize_from_hf:
+         if not isinstance(model, HFCompatConfig):
+diff --git a/lib/levanter/src/levanter/main/train_dpo.py b/lib/levanter/src/levanter/main/train_dpo.py
+index 4f6ea062ad..a92896a30d 100644
+--- a/lib/levanter/src/levanter/main/train_dpo.py
++++ b/lib/levanter/src/levanter/main/train_dpo.py
+@@ -51,7 +51,7 @@ from levanter.dpo import (
+     reference_eval_cache_metadata,
+     reference_eval_cache_path,
+ )
+-from levanter.main.model_init import load_model_from_source, prepare_model_init_context
++from levanter.main.model_init import ModelInitContext, load_model_from_source, prepare_model_init_context
+ from levanter.models.llama import LlamaConfig
+ from levanter.models.llama_native_lm import NativeLlamaLmConfig, NativeLlamaLmHeadModel, native_llama_sharding
+ from levanter.models.lm_model import LmConfig, LmExample, LmHeadModel
+@@ -590,6 +590,7 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+     """Train a DPO policy and return its final ordinary Trainer step."""
+     _validate_dpo_config(config)
+     native = isinstance(config.model, NativeLlamaLmConfig)
++    model_context: ModelInitContext | None = None
+     explicit_layout = None
+     export_config = AdaptorExportConfig(
+         hf_save_path=config.hf_save_path,
+@@ -606,6 +607,14 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+             raise ValueError("llama_native DPO supports only full-parameter training and LoRA adapters")
+         if config.trainer.quantization is not None:
+             raise ValueError("llama_native DPO does not support Haliax quantization")
++        if config.initialize_from_hf and config.use_hf_model_config:
++            model_context = prepare_model_init_context(
++                config.model,
++                tokenizer=config.data.the_tokenizer,
++                initialize_from_hf=config.initialize_from_hf,
++                use_hf_model_config=True,
++            )
++            config = dataclasses.replace(config, model=model_context.model)
+         export_config.validate_native(config.model)
+         config = dataclasses.replace(config, trainer=dataclasses.replace(config.trainer, use_explicit_mesh_axes=True))
+         sharding = native_llama_sharding(
+@@ -614,12 +623,13 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+ 
+     tokenizer = config.data.the_tokenizer
+     generation_config = build_generation_config(tokenizer, config.hf_generation_eos_token_ids)
+-    model_context = prepare_model_init_context(
+-        config.model,
+-        tokenizer=tokenizer,
+-        initialize_from_hf=config.initialize_from_hf,
+-        use_hf_model_config=config.use_hf_model_config,
+-    )
++    if model_context is None:
++        model_context = prepare_model_init_context(
++            config.model,
++            tokenizer=tokenizer,
++            initialize_from_hf=config.initialize_from_hf,
++            use_hf_model_config=config.use_hf_model_config,
++        )
+     if model_context.model is not config.model:
+         config = dataclasses.replace(config, model=model_context.model)
+ 
+diff --git a/lib/levanter/src/levanter/main/train_lm.py b/lib/levanter/src/levanter/main/train_lm.py
+index 2c01d631b3..793e5b9476 100644
+--- a/lib/levanter/src/levanter/main/train_lm.py
++++ b/lib/levanter/src/levanter/main/train_lm.py
+@@ -35,6 +35,7 @@ from levanter.data.text.datasets import LmDataConfig
+ from levanter.data.text.examples import GrugLmExample, named_lm_example_from_grug
+ from levanter.eval_harness import LmEvalHarnessConfig
+ from levanter.model_loading import native_evaluation_axis_mapping
++from levanter.main.model_init import ModelInitContext, prepare_model_init_context
+ from levanter.models.llama import LlamaConfig
+ from levanter.models.llama_native import NativeLlamaSharding
+ from levanter.models.llama_native_lm import NativeLlamaLmConfig, NativeLlamaLmHeadModel, native_llama_sharding
+@@ -148,7 +149,11 @@ def _load_lm_model_from_configured_source(
+             load_dtype = trainer.mp.param_dtype
+         model = converter.load_pretrained(
+             config.model.model_type,
+-            config=config.model if not config.use_hf_model_config else None,
++            config=(
++                config.model
++                if isinstance(config.model, NativeLlamaLmConfig) or not config.use_hf_model_config
++                else None
++            ),
+             axis_mapping=parameter_axis_mapping,
+             dtype=load_dtype,
+             model_init=model_init,
+@@ -176,8 +181,10 @@ def _load_lm_model_from_configured_source(
+     return model
+ 
+ 
+-def main(config: TrainLmConfig):
++def main(config: TrainLmConfig) -> callbacks.StepInfo:
++    """Train a language model and return its final ordinary Trainer step."""
+     native = isinstance(config.model, NativeLlamaLmConfig)
++    native_model_context: ModelInitContext | None = None
+     explicit_layout = None
+     export_config = AdaptorExportConfig(
+         hf_save_path=config.hf_save_path,
+@@ -190,10 +197,16 @@ def main(config: TrainLmConfig):
+         merged_hf_upload=config.merged_hf_upload,
+     )
+     if native:
+-        if config.use_hf_model_config or config.pad_tokenizer_to_match_model:
+-            raise ValueError(
+-                "llama_native HF initialization requires an explicit model config and unchanged tokenizer"
++        if config.pad_tokenizer_to_match_model:
++            raise ValueError("llama_native HF initialization requires an unchanged tokenizer")
++        if config.initialize_from_hf and config.use_hf_model_config:
++            native_model_context = prepare_model_init_context(
++                config.model,
++                tokenizer=config.data.the_tokenizer,
++                initialize_from_hf=config.initialize_from_hf,
++                use_hf_model_config=True,
+             )
++            config = dataclasses.replace(config, model=native_model_context.model)
+         export_config.validate_native(config.model)
+         if config.trainer.quantization is not None:
+             raise ValueError("llama_native training does not support Haliax quantization")
+@@ -247,7 +260,7 @@ def main(config: TrainLmConfig):
+         if config.pad_tokenizer_to_match_model:
+             converter = converter.with_tokenizer_padded_to_match_model()
+     else:
+-        converter = None
++        converter = native_model_context.converter if native_model_context is not None else None
+ 
+     levanter.trainer.initialize(config)
+     if native:
+@@ -300,10 +313,11 @@ def main(config: TrainLmConfig):
+             ):
+                 if config.trainer.initialize_from is not None:
+                     raise ValueError("Cannot specify both initialize_from_hf and initialize_from")
+-                converter = config.model.hf_checkpoint_converter(
+-                    config.initialize_from_hf if isinstance(config.initialize_from_hf, str) else None,
+-                    tokenizer=tokenizer,
+-                )
++                if converter is None:
++                    converter = config.model.hf_checkpoint_converter(
++                        config.initialize_from_hf if isinstance(config.initialize_from_hf, str) else None,
++                        tokenizer=tokenizer,
++                    )
+                 hf_config = converter.default_hf_config
+                 config.model.validate_hf_config(hf_config)
+                 if source_vocab_size is not None and source_vocab_size != hf_config.vocab_size:
+@@ -556,10 +570,11 @@ def main(config: TrainLmConfig):
+             train_loader = train_loader.iter_from_step(0)
+ 
+         ## OK, actually run training!
+-        trainer.train(state, train_loader)
++        final_info = trainer.train(state, train_loader)
+ 
+     # This isn't necessary except when Levanter is run in a subprocess (as happens under Iris/Fray)
+     trainer.tracker.finish()
++    return final_info
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/lib/levanter/tests/test_dpo.py b/lib/levanter/tests/test_dpo.py
+index 752e3879a0..f1972ea707 100644
+--- a/lib/levanter/tests/test_dpo.py
++++ b/lib/levanter/tests/test_dpo.py
+@@ -16,6 +16,7 @@ import jmp
+ import numpy as np
+ import pytest
+ import safetensors.numpy
++from transformers import LlamaConfig as HfLlamaConfig
+ import haliax as hax
+ from haliax import Axis
+ from haliax.partitioning import ResourceAxis, set_mesh
+@@ -57,7 +58,8 @@ from levanter.checkpoint import CheckpointerConfig, latest_checkpoint_path, load
+ from levanter.distributed import DistributedConfig
+ from levanter.main.model_init import prepare_model_init_context
+ from levanter.model_loading import load_hf_checkpoint
+-from levanter.layers.attention import AttentionMask
++from levanter.layers.attention import AttentionBackend, AttentionMask
++from levanter.layers.rotary import DefaultRotaryEmbeddingsConfig
+ from levanter.main.lora_dpo import LoraDpoConfig, _translate_legacy_lora_dpo_config
+ from levanter.main.train_dpo import (
+     AdapterBaseReferenceConfig,
+@@ -935,7 +937,7 @@ def _dpo_trainer_config(tmp_path, *, explicit=False, steps=2):
+ 
+ def _native_dpo_configuration(tmp_path, source, tokenizer_path):
+     model = dataclasses.replace(
+-        NativeLlamaLmConfig.from_hf_config(source.config.to_hf_config(32)),
++        NativeLlamaLmConfig.from_hf_config(HfLlamaConfig.from_pretrained(source.path)),
+         reference_checkpoint=str(source.path),
+         tokenizer=tokenizer_path,
+     )
+@@ -1180,6 +1182,7 @@ def dpo_preference_data(tmp_path, tiny_hf_tokenizer_path):
+ @pytest.mark.tpu
+ @pytest.mark.timeout(180)
+ @pytest.mark.parametrize("reference_type", ["separate", "adapter_base"])
++@pytest.mark.parametrize("hf_config_source", ["explicit", "inferred_string", "inferred_bool"])
+ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+     tmp_path,
+     dpo_llama_source,
+@@ -1187,11 +1190,64 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+     tiny_hf_tokenizer_path,
+     dpo_preference_data,
+     reference_type,
++    hf_config_source,
+ ):
++    inferred = hf_config_source != "explicit"
++    if inferred:
++        source_config = dataclasses.replace(
++            dpo_llama_source.config,
++            head_dim=8,
++            max_seq_len=16,
++            rope=DefaultRotaryEmbeddingsConfig(theta=50000, factor=4),
++        )
++        source_hf_config = HfLlamaConfig(
++            **{
++                **dpo_llama_source.config.to_hf_config(32).to_dict(),
++                "head_dim": 8,
++                "max_position_embeddings": 16,
++                "rope_theta": 50000,
++                "rope_scaling": {"rope_type": "linear", "factor": 4},
++                "rope_parameters": {"rope_type": "linear", "rope_theta": 50000, "factor": 4},
++            }
++        )
++        dpo_llama_source = write_llama_checkpoint(
++            tmp_path / "hf-inferred-source", source_config, source_hf_config, key=jrandom.PRNGKey(13)
++        )
++        dpo_separate_reference_source = write_llama_checkpoint(
++            tmp_path / "hf-inferred-reference", source_config, source_hf_config, key=jrandom.PRNGKey(97)
++        )
+     config = _native_dpo_configuration(tmp_path / "full", dpo_llama_source, tiny_hf_tokenizer_path)
++    effective_model = config.model
++    if inferred:
++        effective_model = dataclasses.replace(
++            effective_model, attn_backend=AttentionBackend.VANILLA, gradient_checkpointing="save_all"
++        )
++        placeholder = NativeLlamaLmConfig(
++            hidden_dim=8,
++            intermediate_dim=8,
++            num_layers=1,
++            num_heads=2,
++            num_kv_heads=1,
++            max_seq_len=4,
++            attn_backend=effective_model.attn_backend,
++            gradient_checkpointing=effective_model.gradient_checkpointing,
++            reference_checkpoint=(
++                str(dpo_llama_source.path)
++                if hf_config_source == "inferred_bool"
++                else str(tmp_path / "unused-default-reference")
++            ),
++            tokenizer=tiny_hf_tokenizer_path,
++        )
++        config = dataclasses.replace(
++            config,
++            model=placeholder,
++            initialize_from_hf=True if hf_config_source == "inferred_bool" else str(dpo_llama_source.path),
++            use_hf_model_config=True,
++        )
+     config = dataclasses.replace(
+         config,
+         data=dpo_preference_data,
++        train_seq_len=8,
+         adapter=LoraAdaptorConfig(r=3, alpha=6, dropout=0),
+         reference=(
+             SeparateReferenceConfig(model_path=str(dpo_separate_reference_source.path))
+@@ -1251,6 +1307,18 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+         assert policy.Vocab.size == 32 > len(dpo_preference_data.the_tokenizer)
+         for info in (full, resumed):
+             actual_policy = info.state.model.policy if isinstance(info.state.model, DpoModel) else info.state.model
++            assert isinstance(actual_policy.config, NativeLlamaLmConfig)
++            assert actual_policy.config.head_dim == effective_model.head_dim
++            assert actual_policy.config.max_seq_len == dpo_llama_source.config.max_seq_len
++            assert actual_policy.config.rope == dpo_llama_source.config.rope
++            if inferred:
++                assert actual_policy.native.config.head_dim == 8
++                assert actual_policy.native.layers.stacked.self_attn.q_proj.wrapped.weight.shape == (1, 32, 16)
++                assert actual_policy.config.max_seq_len == 16
++                assert actual_policy.config.attn_backend == AttentionBackend.VANILLA
++                assert actual_policy.config.gradient_checkpointing == "save_all"
++                assert actual_policy.config.reference_checkpoint == str(dpo_llama_source.path)
++                assert actual_policy.config.tokenizer == tiny_hf_tokenizer_path
+             for name, value in unwrap_lora_modules(actual_policy).to_state_dict().items():
+                 np.testing.assert_array_equal(value, dpo_llama_source.weights[name])
+             reference = (
+@@ -1264,7 +1332,7 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+                 np.testing.assert_array_equal(value, expected_reference.weights[name])
+ 
+         base = load_hf_checkpoint(
+-            config.model,
++            effective_model,
+             str(dpo_llama_source.path),
+             tokenizer=dpo_preference_data.the_tokenizer,
+             axis_mapping=config.trainer.parameter_axis_mapping,
+@@ -1288,7 +1356,7 @@ def test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state(
+         assert peft_config["base_model_name_or_path"] == str(dpo_llama_source.path)
+         merged = merge_lora_modules(policy)
+         reloaded = load_hf_checkpoint(
+-            config.model,
++            effective_model,
+             str(tmp_path / "full/merged/dpo/step-2"),
+             tokenizer=dpo_preference_data.the_tokenizer,
+             axis_mapping=config.trainer.parameter_axis_mapping,
+diff --git a/lib/levanter/tests/test_train_lm.py b/lib/levanter/tests/test_train_lm.py
+index 961987aa4a..2b3a437364 100644
+--- a/lib/levanter/tests/test_train_lm.py
++++ b/lib/levanter/tests/test_train_lm.py
+@@ -22,6 +22,7 @@ import numpy as np
+ import optax
+ import pytest
+ import safetensors.numpy
++from transformers import LlamaConfig as HfLlamaConfig
+ from chex import assert_trees_all_close
+ 
+ from haliax import Axis
+@@ -48,7 +49,7 @@ from levanter.data.text.examples import GrugLmExample
+ from levanter.compat.hf_checkpoints import RepoRef
+ from levanter.distributed import DistributedConfig
+ from levanter.models.llama_native import NativeLlamaSharding
+-from levanter.layers.attention import AttentionMask
++from levanter.layers.attention import AttentionBackend, AttentionMask
+ from levanter.layers.rotary import DefaultRotaryEmbeddingsConfig
+ from levanter.tokenizers import load_tokenizer
+ from levanter.models.llama import LlamaLMHeadModel
+@@ -742,6 +743,35 @@ def test_native_train_lm_hf_preserves_source_vocab_weights_and_resume(tmp_path,
+     metadata_file.write_text(json.dumps(old_metadata))
+     train_lm.main(configuration("resumed", 2, resume=True))
+ 
++    # Inferred full-state resumes need HF metadata, but not its pretrained weights.
++    inferred_model = NativeLlamaLmConfig(
++        hidden_dim=8,
++        intermediate_dim=8,
++        num_layers=1,
++        num_heads=2,
++        num_kv_heads=1,
++        max_seq_len=4,
++        reference_checkpoint=str(source),
++    )
++
++    def inferred_configuration(name, steps, *, resume=False):
++        return dataclasses.replace(
++            configuration(name, steps, resume=resume),
++            model=inferred_model,
++            initialize_from_hf=True,
++            use_hf_model_config=True,
++        )
++
++    inferred_full = train_lm.main(inferred_configuration("inferred-full", 3))
++    train_lm.main(inferred_configuration("inferred-resumed", 2))
++    (source / "model.safetensors").unlink()
++    inferred_resumed = train_lm.main(inferred_configuration("inferred-resumed", 3, resume=True))
++    np.testing.assert_array_equal(inferred_full.loss, inferred_resumed.loss)
++    for actual, expected in zip(
++        _array_leaves(inferred_resumed.state), _array_leaves(inferred_full.state), strict=True
++    ):
++        np.testing.assert_array_equal(actual, expected)
++
+     # New metadata permits a full restore after the original pretrained source is removed.
+     shutil.rmtree(source)
+     resume = dataclasses.replace(
+@@ -816,6 +846,10 @@ def test_native_train_lm_hf_preserves_source_vocab_weights_and_resume(tmp_path,
+         initialized, full, resumed, weights_initialized, state_initialized = (
+             restored(name) for name in ("frozen", "full", "resumed", "weights-init", "state-init")
+         )
++        for name in ("inferred-full", "inferred-resumed"):
++            saved = restored(name)
++            for actual, expected in zip(_array_leaves(saved), _array_leaves(inferred_full.state), strict=True):
++                np.testing.assert_array_equal(actual, expected)
+ 
+     # HF contains weights only: a new Trainer starts at zero, takes one step,
+     # and preserves every source row when its learning rate is zero.
+@@ -1122,12 +1156,55 @@ def test_train_lm_rejects_weights_only_init_with_trainer_initialize_from():
+ 
+ @pytest.mark.tpu
+ @pytest.mark.timeout(180)
+-def test_native_train_lm_lora_hf_update_resume_and_local_exports(tmp_path, native_hf_source, tiny_hf_tokenizer_path):
+-    source = native_hf_source.path
++@pytest.mark.parametrize("hf_config_source", ["explicit", "inferred_string", "inferred_bool"])
++def test_native_train_lm_lora_hf_update_resume_and_local_exports(
++    tmp_path, native_hf_source, tiny_hf_tokenizer_path, hf_config_source
++):
++    source_checkpoint = native_hf_source
++    inferred = hf_config_source != "explicit"
++    if inferred:
++        source_config = dataclasses.replace(
++            native_hf_source.config,
++            head_dim=8,
++            rope=DefaultRotaryEmbeddingsConfig(theta=50000, factor=4),
++        )
++        source_hf_config = HfLlamaConfig(
++            **{
++                **native_hf_source.config.to_hf_config(32).to_dict(),
++                "head_dim": 8,
++                "max_position_embeddings": 16,
++                "rope_theta": 50000,
++                "rope_scaling": {"rope_type": "linear", "factor": 4},
++                "rope_parameters": {"rope_type": "linear", "rope_theta": 50000, "factor": 4},
++            }
++        )
++        source_checkpoint = write_llama_checkpoint(
++            tmp_path / "hf-inferred-source", source_config, source_hf_config, key=jrandom.PRNGKey(13)
++        )
++    source = source_checkpoint.path
+     model_config = dataclasses.replace(
+-        NativeLlamaLmConfig.from_hf_config(native_hf_source.config.to_hf_config(32)),
++        NativeLlamaLmConfig.from_hf_config(HfLlamaConfig.from_pretrained(source)),
+         reference_checkpoint=str(tmp_path / "unused-default-reference"),
+     )
++    initial_model_config = model_config
++    if inferred:
++        model_config = dataclasses.replace(
++            model_config, attn_backend=AttentionBackend.VANILLA, gradient_checkpointing="save_all"
++        )
++        initial_model_config = NativeLlamaLmConfig(
++            hidden_dim=8,
++            intermediate_dim=8,
++            num_layers=1,
++            num_heads=2,
++            num_kv_heads=1,
++            max_seq_len=4,
++            attn_backend=model_config.attn_backend,
++            gradient_checkpointing=model_config.gradient_checkpointing,
++            reference_checkpoint=(
++                str(source) if hf_config_source == "inferred_bool" else model_config.reference_checkpoint
++            ),
++            tokenizer=tiny_hf_tokenizer_path,
++        )
+     examples = ListAsyncDataset([GrugLmExample.causal((jnp.arange(8) + i) % 31) for i in range(16)])
+     data = LmDataConfig(
+         tokenizer=tiny_hf_tokenizer_path,
+@@ -1142,11 +1219,12 @@ def test_native_train_lm_lora_hf_update_resume_and_local_exports(tmp_path, nativ
+     def configuration(name, steps, resume=False):
+         directory = tmp_path / name
+         return train_lm.TrainLmConfig(
+-            model=model_config,
++            model=initial_model_config,
+             data=data,
+             data_seed=7,
+             train_seq_len=8,
+-            initialize_from_hf=str(source),
++            initialize_from_hf=True if hf_config_source == "inferred_bool" else str(source),
++            use_hf_model_config=inferred,
+             adapter=adapter,
+             optimizer=optimizer,
+             peft_save_path=str(directory / "peft"),
+@@ -1171,9 +1249,41 @@ def test_native_train_lm_lora_hf_update_resume_and_local_exports(tmp_path, nativ
+             ),
+         )
+ 
+-    train_lm.main(configuration("full", 3))
++    full_info = train_lm.main(configuration("full", 3))
+     train_lm.main(configuration("resumed", 2))
+-    train_lm.main(configuration("resumed", 3, resume=True))
++    if inferred:
++        # Same-shaped weights must not be reinterpreted through changed HF metadata on resume.
++        metadata_path = source / "config.json"
++        original_metadata = metadata_path.read_text()
++        incompatible = json.loads(original_metadata)
++        incompatible.update(num_attention_heads=8, num_key_value_heads=4, head_dim=4)
++        metadata_path.write_text(json.dumps(incompatible))
++        try:
++            with pytest.raises(ValueError, match="checkpoint architecture"):
++                train_lm.main(configuration("resumed", 3, resume=True))
++        finally:
++            metadata_path.write_text(original_metadata)
++    resumed_info = train_lm.main(configuration("resumed", 3, resume=True))
++    np.testing.assert_array_equal(full_info.loss, resumed_info.loss)
++    for actual, expected in zip(_array_leaves(resumed_info.state), _array_leaves(full_info.state), strict=True):
++        np.testing.assert_array_equal(actual, expected)
++    for info in (full_info, resumed_info):
++        actual_model = info.state.model
++        assert isinstance(actual_model.config, NativeLlamaLmConfig)
++        assert actual_model.Vocab.size == 32 > len(data.the_tokenizer)
++        assert actual_model.config.head_dim == model_config.head_dim
++        assert actual_model.config.max_seq_len == source_checkpoint.config.max_seq_len
++        assert actual_model.config.rope == source_checkpoint.config.rope
++        if inferred:
++            assert actual_model.native.config.head_dim == 8
++            assert actual_model.native.layers.stacked.self_attn.q_proj.wrapped.weight.shape == (2, 32, 16)
++            assert actual_model.config.max_seq_len == 16
++            assert actual_model.config.attn_backend == AttentionBackend.VANILLA
++            assert actual_model.config.gradient_checkpointing == "save_all"
++            assert actual_model.config.reference_checkpoint == str(source)
++            assert actual_model.config.tokenizer == tiny_hf_tokenizer_path
++        for name, value in unwrap_lora_modules(actual_model).to_state_dict().items():
++            np.testing.assert_array_equal(value, source_checkpoint.weights[name])
+     mesh = dataclasses.replace(configuration("full", 3).trainer, use_explicit_mesh_axes=True).device_mesh
+     sharding = native_llama_sharding(
+         configuration("full", 3).trainer.parameter_axis_mapping,
+@@ -1225,7 +1335,7 @@ def test_native_train_lm_lora_hf_update_resume_and_local_exports(tmp_path, nativ
+             full.model, skeleton, adapter.trainable_filter(skeleton)
+         )
+         for name, actual in unwrap_lora_modules(trained).to_state_dict().items():
+-            np.testing.assert_array_equal(actual, native_hf_source.weights[name])
++            np.testing.assert_array_equal(actual, source_checkpoint.weights[name])
+         assert any(np.any(value != 0) for key, value in lora_state_dict(trained).items() if ".lora_A." in key)
+         assert trained.native.layers.stacked.self_attn.q_proj.lora.lora_A.weight.sharding.spec == P(None, None, "data")
+         wrong_base = model_config.build(Axis("vocab", 32), key=jrandom.PRNGKey(999), sharding=sharding)

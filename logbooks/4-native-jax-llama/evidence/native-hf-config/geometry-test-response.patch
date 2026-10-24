@@ -1,0 +1,11 @@
+--- a/lib/levanter/tests/test_train_lm.py
++++ b/lib/levanter/tests/test_train_lm.py
+@@ -1256,7 +1256,7 @@
+         metadata_path = source / "config.json"
+         original_metadata = metadata_path.read_text()
+         incompatible = json.loads(original_metadata)
+-        incompatible.update(num_attention_heads=2, num_key_value_heads=1, head_dim=16)
++        incompatible.update(num_attention_heads=8, num_key_value_heads=4, head_dim=4)
+         metadata_path.write_text(json.dumps(incompatible))
+         try:
+             with pytest.raises(ValueError, match="checkpoint architecture"):

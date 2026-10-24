@@ -1,0 +1,60 @@
+{
+  "named": {
+    "models": [
+      {
+        "model": "Gpt2Config",
+        "weight_arrays": 16,
+        "exact_weight_and_logit_parity": true,
+        "logit_shape": [
+          4,
+          32
+        ]
+      },
+      {
+        "model": "LlamaConfig",
+        "weight_arrays": 12,
+        "exact_weight_and_logit_parity": true,
+        "logit_shape": [
+          4,
+          32
+        ]
+      }
+    ],
+    "parameter_axis_mapping": {
+      "embed": [
+        "data",
+        "model"
+      ]
+    },
+    "compute_axis_mapping": {
+      "position": "data",
+      "embed": "data",
+      "mlp": [
+        "model",
+        "data"
+      ]
+    },
+    "mapping_is_invalid_for_native_models": true,
+    "named_models_ignore_native_only_mapping_validation": true
+  },
+  "native": {
+    "cpu_devices": 4,
+    "mesh": {
+      "data": 2,
+      "model": 2
+    },
+    "parameter_arrays": 12,
+    "exact_values_and_sharding_match_original_direct_constructor": true,
+    "token_embeddings_spec": [
+      "model",
+      "data"
+    ],
+    "down_proj_spec": [
+      null,
+      "data",
+      "model"
+    ],
+    "key_seed": 17
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

@@ -1,0 +1,101 @@
+{
+  "original_response": {
+    "schema_version": 1,
+    "repository": "<local-checkout>",
+    "base": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+    "head": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+    "source_frozen": true,
+    "git_no_replace_objects": true,
+    "patch": {
+      "path": "evidence/native-hf-config/catalog-response.patch",
+      "sha256": "d5d85b16566f2eccc730aaa3f365470bac2a48bc53cb445daf383471b1bd139f",
+      "bytes": 14341
+    },
+    "files": {
+      "lib/levanter/src/levanter/main/model_init.py": "dd4807c087ef436edd75aa5cd9f2e85633a12c2dd547e9f2d5d8dfad3af7a2e1",
+      "lib/levanter/src/levanter/main/train_dpo.py": "7fa6afabb9afcca7c1a80618f4ed1392c8373c753a1c2ad5136674bb96548be7",
+      "lib/levanter/src/levanter/main/train_lm.py": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+      "lib/levanter/src/levanter/trainer.py": "62b637bcec318b2bf0c2d06f6169f4986bcdbd8a8a3f084d572abb260899538f",
+      "lib/levanter/tests/test_dpo.py": "986577546c6667c8f5651dc21a4a7ab93a161ee854c68a3d6078bdfde9fe9700"
+    },
+    "contribution_check_files": [
+      "lib/levanter/src/levanter/main/model_init.py",
+      "lib/levanter/src/levanter/main/train_lm.py",
+      "lib/levanter/src/levanter/main/train_dpo.py",
+      "lib/levanter/src/levanter/trainer.py",
+      "lib/levanter/tests/test_train_lm.py",
+      "lib/levanter/tests/test_dpo.py",
+      "lib/levanter/docs/Getting-Started-Training.md",
+      "lib/levanter/docs/guides/DPO-Training.md"
+    ],
+    "focused_nodeids": [
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+      "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+      "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+      "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+      "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+      "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction",
+      "lib/levanter/tests/test_train_lm.py::test_train_lm_initialize_model_from_checkpoint",
+      "lib/levanter/tests/test_dpo.py::test_native_dpo_policy_updates_frozen_reference_and_checkpoint_next_step"
+    ],
+    "findings": [
+      "ml-parallel-source-impl build wrappers in train_lm/train_dpo",
+      "ml-stale-docstring Trainer.loss_fn axis mapping promise"
+    ],
+    "original_hf_handoff": "evidence/native-hf-config/caller-controls-and-validation.json",
+    "integration_pin_status": "Patch candidate only; no commit/publication or dropout composition pin assigned by author."
+  },
+  "final_response": {
+    "schema_version": 1,
+    "repository": "<local-checkout>",
+    "base": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+    "head": "b7dce6e639a83cf1981a062841e34f85d0616fb8",
+    "source_frozen": true,
+    "git_no_replace_objects": true,
+    "patch": {
+      "path": "evidence/native-hf-config/catalog-response.patch",
+      "sha256": "eadd9170ec562e740ebfb99af5336664d34ac294244a464828c9a2fa0a3c612f",
+      "bytes": 14360
+    },
+    "files": {
+      "lib/levanter/src/levanter/main/model_init.py": "dd4807c087ef436edd75aa5cd9f2e85633a12c2dd547e9f2d5d8dfad3af7a2e1",
+      "lib/levanter/src/levanter/main/train_dpo.py": "7fa6afabb9afcca7c1a80618f4ed1392c8373c753a1c2ad5136674bb96548be7",
+      "lib/levanter/src/levanter/main/train_lm.py": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+      "lib/levanter/src/levanter/trainer.py": "ba7ef0eef3fc5e172ba79948fa975f6bb3313e0b3fd277e2f7ac6914c30689ac",
+      "lib/levanter/tests/test_dpo.py": "986577546c6667c8f5651dc21a4a7ab93a161ee854c68a3d6078bdfde9fe9700"
+    },
+    "contribution_check_files": [
+      "lib/levanter/src/levanter/main/model_init.py",
+      "lib/levanter/src/levanter/main/train_lm.py",
+      "lib/levanter/src/levanter/main/train_dpo.py",
+      "lib/levanter/src/levanter/trainer.py",
+      "lib/levanter/tests/test_train_lm.py",
+      "lib/levanter/tests/test_dpo.py",
+      "lib/levanter/docs/Getting-Started-Training.md",
+      "lib/levanter/docs/guides/DPO-Training.md"
+    ],
+    "focused_nodeids": [
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+      "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+      "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+      "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+      "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+      "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction",
+      "lib/levanter/tests/test_train_lm.py::test_train_lm_initialize_model_from_checkpoint",
+      "lib/levanter/tests/test_dpo.py::test_native_dpo_policy_updates_frozen_reference_and_checkpoint_next_step"
+    ],
+    "findings": [
+      "ml-parallel-source-impl build wrappers in train_lm/train_dpo",
+      "ml-stale-docstring Trainer.loss_fn axis mapping promise"
+    ],
+    "original_hf_handoff": "evidence/native-hf-config/caller-controls-and-validation.json",
+    "integration_pin_status": "Patch candidate only; no commit/publication or dropout composition pin assigned by author.",
+    "freeze_revision": 2,
+    "original_freeze": "evidence/native-hf-config/catalog-response-freezes.json",
+    "original_patch": "native-jax-hf-config-catalog-response-original.patch",
+    "doc_response": "Clarify that model parameters are cast to compute precision; no promise about the returned loss dtype."
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

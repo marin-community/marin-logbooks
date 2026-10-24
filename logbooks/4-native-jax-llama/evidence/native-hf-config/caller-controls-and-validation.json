@@ -1,0 +1,550 @@
+{
+  "plan": [
+    "Resolve native HF architecture through existing native converter/from_hf_config in ModelInitContext.",
+    "Retain explicit execution/source identity override fieldset; do not copy placeholder architecture over the HF source.",
+    "Hydrate effective config before native export/model/mesh/Trainer validation in LM and DPO; reuse the original converter and resolved reference.",
+    "Keep explicitfalse config paths, loader/Trainer stack, LoRA keys/factor settings/reference reconstruction and native kernels unchanged.",
+    "Return existing final LM Trainer StepInfo after cleanup for actual ordinary-state evidence, matching DPO.",
+    "Extend real local-HF main tests with explicit/string/bool modes, raw nondefault HF metadata plus independent named weights, persisted restore, and unmodified-base negatives.",
+    "Freeze patch for root fresh maintained review; no commit/push/PR/catalog/archive/hardware actions."
+  ],
+  "implementation": [
+    {
+      "file": "lib/levanter/src/levanter/main/model_init.py",
+      "behavior": "For native initialize_from_hf+use_hf_model_config, hydrate with native converter.config_from_hf_config. Preserve only attn_backend, gradient_checkpointing, scan_layers, flash_attention_block_size, upcast_attn, resolved reference_checkpoint and original tokenizer. Source-derived architecture, head_dim, max context and RoPE remain authoritative."
+    },
+    {
+      "file": "lib/levanter/src/levanter/main/train_lm.py",
+      "behavior": "Opt-in context hydration precedes native validation and layout. Reuse the converter/default metadata; always pass effective native config during pretrained loading. The original bool source cannot redirect to a hydrated class default. Return existing ordinary final StepInfo after original context/tracker cleanup."
+    },
+    {
+      "file": "lib/levanter/src/levanter/main/train_dpo.py",
+      "behavior": "Opt-in hydration precedes native export/mesh/Trainer validation; share the context for existing policy/separate-reference source loaders and frozen-adapter reconstruction."
+    }
+  ],
+  "source_selection_semantics": {
+    "boolean_true": "Resolve the original model.reference_checkpoint before hydration, pin that exact converter reference into the hydrated model, and reuse its converter. Actual main tests cover source selection, final model identity and PEFT base source on uninterrupted and resumed runs.",
+    "string": "The explicit initialization string overrides an intentionally missing placeholder reference_checkpoint. Actual main tests retain that selected source and tokenizer.",
+    "flag_false": "No hydration; current explicit config/early guard path remains. Existing source-free full-state restore, explicit HF initialization, shared-loader and named-model regressions remain tested.",
+    "inferred_resume": "Read original HF metadata before validating the checkpoint effective architecture. Full-parameter resume can omit HF weights once a complete checkpoint exists; LoRA resume still needs its unchanged base weights."
+  },
+  "evidence": [
+    "Raw HF source metadata explicitly declares head_dim8, max_position_embeddings16 and linear RoPE(theta50000,factor4); placeholder hidden8/head4/max4 does not match. Independent named Llama construction supplies real weights. Actual native q projection shape is (layers,32,16).",
+    "Real LM LoRA main paths cover tied/untied output heads and explicit/string/bool initialization; real DPO main paths cover separate and adapter-base references across all three modes.",
+    "Actual uninterrupted3-step and checkpoint2-plus-resumed-next-step ordinary states match exactly, including final loss, frozen base/reference, policy factors, optimizer, RNG and step. Independent persisted partial-state readers and factor/merged-HF readers remain in those cases.",
+    "Full-parameter inferred Boolean initialization/resume is exercised with pretrained weight files removed but config.json retained, followed by exact actual-state and independent persisted-state comparison. Existing explicitfalse source-free restore still passes after complete source removal.",
+    "Source output vocabulary32 remains larger than tokenizer31; HF head dimension, source context/RoPE, configured attention backend/remat and original tokenizer/source identity are checked on actual trained models.",
+    "Changed same-shaped but mesh-valid HF metadata (heads8/kv4/head4 versus original heads4/kv2/head8) is rejected against checkpoint architecture before continuation; restoring the original metadata permits exact continuation.",
+    "Separate DPO reference remains a distinct independently initialized local HF source; policy base and reference values match their own sources exactly.",
+    "No projection, attention kernel, factor initialization, adapter scale/target, dropout, numerical tolerance or threshold code changed."
+  ],
+  "exact_expanded_nodeids": [
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-explicit]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_string]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-explicit]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_string]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_bool]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-separate]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-adapter_base]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume[untied]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume[tied]",
+    "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-silu]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-gelu_new]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-silu]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-gelu_new]",
+    "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+    "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction[untied]",
+    "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction[tied]"
+  ],
+  "negative_unmodified_public_base": {
+    "base": "4abeefa7089cee4df1161b8a5852a62c76a11552",
+    "repository": "<local-checkout>",
+    "production_exact_base": true,
+    "production_sha256": {
+      "lib/levanter/src/levanter/main/model_init.py": "14c8c3c37d47fa7dccaad3a8180c08049f049d431ec991e2ffead47513fb592c",
+      "lib/levanter/src/levanter/main/train_lm.py": "c4cb333c6c9c0ccfde562cef7ad364b59ccd494c34efa74edab89ef895d7eb60",
+      "lib/levanter/src/levanter/main/train_dpo.py": "5355007360a3860f7d57a7517694ddec5585976363ca8eb9fe2e336fd120900a"
+    },
+    "changed_only_tests": [
+      "lib/levanter/tests/test_dpo.py",
+      "lib/levanter/tests/test_train_lm.py"
+    ],
+    "nodeids": [
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool]",
+      "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate]"
+    ],
+    "pytest_exit_code": 1,
+    "failed": 2,
+    "pytest_seconds": 19.38,
+    "failure_classification": "Actual main routes reached original native explicit-config rejection; fixture construction succeeded.",
+    "log": "native-jax-hf-config-baseline-negative.log",
+    "env": {
+      "GIT_NO_REPLACE_OBJECTS": "1",
+      "JAX_PLATFORMS": "cpu",
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "WANDB_MODE": "disabled",
+      "PYTHONPATH": "lib/levanter/src:lib/haliax/src:lib/iris/src:lib/marin/src:lib/zephyr/src:lib/fray/src:lib/rigging/src:lib/finestore/src",
+      "UV_CACHE_DIR": "<local-checkout>",
+      "XLA_FLAGS": "--xla_force_host_platform_device_count=1"
+    },
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "python",
+      "-m",
+      "pytest",
+      "-c",
+      "pyproject.toml",
+      "-n0",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool]",
+      "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate]",
+      "-q",
+      "--basetemp=native-jax-hf-config-baseline-negative"
+    ],
+    "log_artifact": {
+      "path": "native-jax-hf-config-baseline-negative.log",
+      "sha256": "50ae72c7f4fe97bde76f06423cb9e7aa0ab533f1ab28d94d9e07d6a41845c3ad",
+      "bytes": 13146
+    },
+    "proof_artifact": {
+      "path": "evidence/native-hf-config/unchanged-base-negative.json",
+      "sha256": "9bf7c1e088821dcd747607d2430c43b9ef18c30efef9a838462c22935b4e0b2b",
+      "bytes": 1205
+    },
+    "input_freeze_revision": 1,
+    "test_only_revision2_change_unreachable_before_original_guard": true
+  },
+  "preserved_controls": [
+    {
+      "artifact": {
+        "path": "native-jax-hf-config-bool-probe.log",
+        "sha256": "a505c6023c721ed92b66250d4a1009e579d36f6b64d7a1928fd7225b29cb0558",
+        "bytes": 26051
+      },
+      "exit_code": 1,
+      "failed": 4,
+      "classification": "Initial fixture preparation failed before entering the new main routes because legacy named HF export omitted explicit head_dim and emitted scaled default RoPE. Routine fixture repair; no main-route verdict or production change."
+    },
+    {
+      "artifact": {
+        "path": "native-jax-hf-config-bool-probe-fixed.log",
+        "sha256": "38c3d1f2e9c118f86e8eb70a87589f1b41923b9c091088540aa6a3cceadcd8c6",
+        "bytes": 1309
+      },
+      "exit_code": 0,
+      "passed": 4,
+      "deselected": 8,
+      "pytest_seconds": 49.55,
+      "classification": "Intermediate corrected Boolean route probe passed before replacing native-produced fixture metadata with independent explicit raw HF metadata for final evidence."
+    },
+    {
+      "artifact": {
+        "path": "native-jax-hf-config-lint-initial.log",
+        "sha256": "21030f255a4c5e8619cbf99a4ab8835552ec3743470a7db21a73259bdda8548a",
+        "bytes": 2825
+      },
+      "exit_code": 1,
+      "classification": "Black formatter-only line wraps were fixed. Ruff/Pyrefly passed; later all7-file checks passed."
+    },
+    {
+      "artifact": {
+        "path": "native-jax-hf-config-lint-final.log",
+        "sha256": "e44691fcdbda0c310b81cb90bd3b02f67e314a6022cc12b1660d139e9b484598",
+        "bytes": 603
+      },
+      "exit_code": 0,
+      "classification": "Original candidate required checks clean before the one-line negative-fixture correction."
+    },
+    {
+      "artifact": {
+        "path": "native-jax-hf-config-cpu4-probe.log",
+        "sha256": "8d292b047d6d4ff537280ed826d5ff2caf7aeb1b175928efdc46bf054409e4c7",
+        "bytes": 54025
+      },
+      "exit_code": 1,
+      "classification": "Bounded one-case diagnosis confirmed negative fixture kv1 rejected at model2 mesh validation before checkpoint validation. No production change was made."
+    }
+  ],
+  "limits": [
+    "Author checks are CPU1/CPU4 only. Root owns CPU8/fresh maintained review/catalog/publication and any final broad suite.",
+    "Final-source evidence is the original22 CPU1 passes plus18 unchanged CPU4 passes and4 corrected-case reruns on CPU1/CPU4; no claim of a newly rerun whole22 final-source suite.",
+    "Opt-in inferred config requires original unchanged HF metadata on resume. Full-parameter explicitfalse resume remains source-free with checkpoint metadata; adapters still reconstruct unchanged frozen source weights.",
+    "Checkpoint source-content identity and LoRA alpha/target validation limits remain unchanged; same-shaped changed base weights are not newly identity-validated.",
+    "No output-head adaptation, tokenizer padding, new backend, broader context-extension policy, kernel/science/threshold change, or dropout-branch integration.",
+    "No hardware job, egress, commit, push, PR edit, archive, catalog rerun, branch reset or primary/other author clone edit performed.",
+    "Returning existing LM StepInfo is an additive programmatic boundary; CLI training behavior and cleanup are unchanged."
+  ],
+  "author_checks": [
+    {
+      "name": "cpu1-final",
+      "freeze_revision": 1,
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+        "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+        "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction",
+        "-q",
+        "--basetemp=native-jax-hf-config-cpu1-final"
+      ],
+      "exit_code": 0,
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": 18,
+      "pytest_seconds": 178.76,
+      "log": {
+        "path": "native-jax-hf-config-cpu1-final.log",
+        "sha256": "d11165018cb957bdfd3d4b5d7837496506fabfca05d715456a226618f5ab6c79",
+        "bytes": 1050
+      },
+      "root_safety_markers_unmodified": true,
+      "classification": "All22 selected cases passed.",
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": "--xla_force_host_platform_device_count=1"
+      }
+    },
+    {
+      "name": "cpu4-final",
+      "freeze_revision": 1,
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+        "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+        "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction",
+        "-q",
+        "--basetemp=native-jax-hf-config-cpu4-final"
+      ],
+      "exit_code": 1,
+      "passed": 18,
+      "failed": 4,
+      "skipped": 0,
+      "warnings": 18,
+      "pytest_seconds": 193.04,
+      "log": {
+        "path": "native-jax-hf-config-cpu4-final.log",
+        "sha256": "3b4e8e5355c6f0f25dcfd1a58b14f8b624e4779075748229e1c36b8a6df87972",
+        "bytes": 350638
+      },
+      "root_safety_markers_unmodified": true,
+      "classification": "18 cases passed. Four inferred LM cases failed only because negative metadata kv1 was invalid on model2, producing a valid earlier mesh error instead of the expected checkpoint error. This is a test-fixture error, not a production hydration or training regression.",
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": "--xla_force_host_platform_device_count=4"
+      }
+    },
+    {
+      "name": "cpu1-revision2",
+      "freeze_revision": 2,
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "-k",
+        "not explicit",
+        "-q",
+        "--basetemp=native-jax-hf-config-cpu1-revision2"
+      ],
+      "exit_code": 0,
+      "passed": 4,
+      "deselected": 2,
+      "skipped": 0,
+      "warnings": 4,
+      "pytest_seconds": 52.25,
+      "log": {
+        "path": "native-jax-hf-config-cpu1-revision2.log",
+        "sha256": "1b486841bed44dabf12f1102756df5df228213971c1b48aea232b34c1b6e0ea0",
+        "bytes": 1113
+      },
+      "root_safety_markers_unmodified": true,
+      "scope": "Targeted rerun of the4 changed inferred LM cases, not a new whole22-case final-source run.",
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": "--xla_force_host_platform_device_count=1"
+      }
+    },
+    {
+      "name": "cpu4-revision2",
+      "freeze_revision": 2,
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "-k",
+        "not explicit",
+        "-q",
+        "--basetemp=native-jax-hf-config-cpu4-revision2"
+      ],
+      "exit_code": 0,
+      "passed": 4,
+      "deselected": 2,
+      "skipped": 0,
+      "warnings": 4,
+      "pytest_seconds": 61.82,
+      "log": {
+        "path": "native-jax-hf-config-cpu4-revision2.log",
+        "sha256": "6aa5faa64dc1760d4b139afe3a9d8a15988c23d7f5b2b24850b65f1db04bdcdc",
+        "bytes": 1123
+      },
+      "root_safety_markers_unmodified": true,
+      "scope": "Targeted rerun of the4 changed inferred LM cases, not a new whole22-case final-source run.",
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": "--xla_force_host_platform_device_count=4"
+      }
+    },
+    {
+      "name": "required7-file-normal-checks-revision2",
+      "freeze_revision": 2,
+      "argv": [
+        "python",
+        "infra/pre-commit.py",
+        "--files",
+        "lib/levanter/src/levanter/main/model_init.py",
+        "--files",
+        "lib/levanter/src/levanter/main/train_lm.py",
+        "--files",
+        "lib/levanter/src/levanter/main/train_dpo.py",
+        "--files",
+        "lib/levanter/tests/test_train_lm.py",
+        "--files",
+        "lib/levanter/tests/test_dpo.py",
+        "--files",
+        "lib/levanter/docs/Getting-Started-Training.md",
+        "--files",
+        "lib/levanter/docs/guides/DPO-Training.md"
+      ],
+      "exit_code": 0,
+      "black_local_ipc_escalation": true,
+      "includes_pyrefly": true,
+      "log": {
+        "path": "native-jax-hf-config-lint-revision2.log",
+        "sha256": "e44691fcdbda0c310b81cb90bd3b02f67e314a6022cc12b1660d139e9b484598",
+        "bytes": 603
+      },
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": null
+      }
+    }
+  ],
+  "response_checks": [
+    {
+      "name": "cpu1",
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+        "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+        "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_initialize_model_from_checkpoint",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_policy_updates_frozen_reference_and_checkpoint_next_step",
+        "-q",
+        "--basetemp=native-jax-hf-config-response-cpu1"
+      ],
+      "exit_code": 0,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": 19,
+      "pytest_seconds": 188.64,
+      "log": {
+        "path": "evidence/native-hf-config/response-cpu1.txt",
+        "sha256": "ffb85d7c725bfa0c0c1b6f48ae9df74ec797910c1c93ad1975d9d92489ed2320",
+        "bytes": 1069
+      },
+      "root_safety_markers_unmodified": true,
+      "source_scope": "Tests started on revision1; revision2 changes only Trainer docstring wording. All executable code and test bytes are unchanged between revisions; Trainer executable AST equals base.",
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": "--xla_force_host_platform_device_count=1"
+      }
+    },
+    {
+      "name": "cpu4",
+      "argv": [
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+        "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+        "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction",
+        "lib/levanter/tests/test_train_lm.py::test_train_lm_initialize_model_from_checkpoint",
+        "lib/levanter/tests/test_dpo.py::test_native_dpo_policy_updates_frozen_reference_and_checkpoint_next_step",
+        "-q",
+        "--basetemp=native-jax-hf-config-response-cpu4"
+      ],
+      "exit_code": 0,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "warnings": 19,
+      "pytest_seconds": 224.82,
+      "log": {
+        "path": "evidence/native-hf-config/response-cpu4.txt",
+        "sha256": "2330128f9a7fee68b106a0e34b6514a33c02a8d2f74b3793cd5b7dbd8da7cdd9",
+        "bytes": 1069
+      },
+      "root_safety_markers_unmodified": true,
+      "source_scope": "Tests started on revision1; revision2 changes only Trainer docstring wording. All executable code and test bytes are unchanged between revisions; Trainer executable AST equals base.",
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": "--xla_force_host_platform_device_count=4"
+      }
+    },
+    {
+      "name": "required8-file-normal-checks-final",
+      "argv": [
+        "python",
+        "infra/pre-commit.py",
+        "--files",
+        "lib/levanter/src/levanter/main/model_init.py",
+        "--files",
+        "lib/levanter/src/levanter/main/train_lm.py",
+        "--files",
+        "lib/levanter/src/levanter/main/train_dpo.py",
+        "--files",
+        "lib/levanter/src/levanter/trainer.py",
+        "--files",
+        "lib/levanter/tests/test_train_lm.py",
+        "--files",
+        "lib/levanter/tests/test_dpo.py",
+        "--files",
+        "lib/levanter/docs/Getting-Started-Training.md",
+        "--files",
+        "lib/levanter/docs/guides/DPO-Training.md"
+      ],
+      "exit_code": 0,
+      "black_local_ipc_escalation": true,
+      "includes_pyrefly": true,
+      "log": {
+        "path": "native-jax-hf-config-catalog-response-lint-final.log",
+        "sha256": "e44691fcdbda0c310b81cb90bd3b02f67e314a6022cc12b1660d139e9b484598",
+        "bytes": 603
+      },
+      "environment": {
+        "platform": "cpu",
+        "offline": true,
+        "root_pytest_config": "pyproject.toml",
+        "default_safety_markers_unmodified": true,
+        "device_count_flag": null
+      }
+    }
+  ],
+  "response_nodeids": [
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-explicit]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_string]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-inferred_bool]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-explicit]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_string]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[tied-inferred_bool]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-separate]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[explicit-adapter_base]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-separate]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_string-adapter_base]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-separate]",
+    "lib/levanter/tests/test_dpo.py::test_native_lora_dpo_main_updates_only_factors_and_resumes_exact_state[inferred_bool-adapter_base]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume[untied]",
+    "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume[tied]",
+    "lib/levanter/tests/test_dpo.py::test_native_dpo_main_preserves_source_vocab_and_resumes_same_checkpoint",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-silu]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-gelu_new]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-silu]",
+    "lib/levanter/tests/test_train_lm.py::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-gelu_new]",
+    "lib/levanter/tests/test_train_lm.py::test_train_lm_with_lora_adapter",
+    "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction[untied]",
+    "lib/levanter/tests/test_train_lm.py::test_named_shared_hf_loader_retains_source_config_reconstruction[tied]",
+    "lib/levanter/tests/test_train_lm.py::test_train_lm_initialize_model_from_checkpoint",
+    "lib/levanter/tests/test_dpo.py::test_native_dpo_policy_updates_frozen_reference_and_checkpoint_next_step"
+  ],
+  "reproduction": "Use a disposable checkout of the actual source pin, existing CPU dependencies, uv run --no-sync python -m pytest -c pyproject.toml -n0 and the selected nodeids. Root marker defaults must remain intact; set JAX_PLATFORMS=cpu, offline HF flags, WANDB_MODE=disabled and XLA_FLAGS host device count1/4/8. Replace basetemp with a fresh local directory. Historical absolute runtime paths are normalized, not required reproduction inputs.",
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}
