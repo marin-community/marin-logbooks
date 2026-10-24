@@ -1,0 +1,60 @@
+{
+  "status": "COMPLETE_NO_ACTIONABLE_SOURCE_FINDINGS",
+  "review_kind": "fresh independent maintained extraction review before commit",
+  "base": "3a303cf163a3c8fa1fdfdd501a95e093566d1966",
+  "checkout": "<local-checkout>",
+  "patch": "evidence/native-lm-lora/original-freeze.patch",
+  "patch_sha256": "37a0973240ac1c74070350db65577f9dfd584e90e8b5ec199a4b44624c98b96f",
+  "patch_bytes": 41963,
+  "exact_worktree_diff": true,
+  "files": {
+    "lib/levanter/docs/Getting-Started-Training.md": "98736296689f54c3b5d90e7b0d8a9183882f7b5f4e96edb53629e2d11886045a",
+    "lib/levanter/docs/Training-On-Your-Data.md": "30a0f3f78f21646102c449235000d02a862d0d8604d38d1f0c6af1435d4798b6",
+    "lib/levanter/src/levanter/adaptor/__init__.py": "22960f4f5ba6cdc58eb9b516e0ae7389cc634d6e42d021bc16ec6841a88b0bf5",
+    "lib/levanter/src/levanter/adaptor/lora.py": "3e6d6f7c6c86241d5c37fb16ac6c7306fddd8f13e2ac64a53512675625ccc260",
+    "lib/levanter/src/levanter/layers/linear.py": "fcf56c96d2bd4f6c265c8ae44a839298c7d4ae9ff2d704e1cd8a9a9ce1512590",
+    "lib/levanter/src/levanter/layers/stacked.py": "070d2c3891b5ed075f339efd30d3d230cab17efadf5c42f87749fb9779a3bb4b",
+    "lib/levanter/src/levanter/main/train_lm.py": "87139eb6365339cf35aed4959123e0de7f85ffe054e4cf4c7a21451e9e02dfbc",
+    "lib/levanter/src/levanter/models/llama_native.py": "566a8d2b86f3169858f55924094020ce26aabb1b2a971f2ccba94ab8eabdf88c",
+    "lib/levanter/tests/test_lora.py": "c789b436eabdf4a4f7acd79700b466fe1e0f6eb1df68f3a1ac132a9263482f61",
+    "lib/levanter/tests/test_train_lm.py": "c5c075ca195eb36565e7a4397e5df41c005c96f815c92cebe01c9756f80c25dd"
+  },
+  "findings": [],
+  "maintained_pieces": {
+    "adaptor/lora.py": "Raw projection factors, native stacked traversal, existing trainable filtering/base view/merge and Explicit factor export are reusable adapter functionality, not research-only artifacts.",
+    "adaptor/__init__.py": "Native adapter apply preserves raw Explicit layouts instead of applying named wrapper sharding; existing named branch preserved.",
+    "layers/linear.py": "Narrow callable projection protocol accommodates base and adapter projections without importing adapter or Haliax into raw model.",
+    "layers/stacked.py": "Existing structural StateDictWriter protocol is reused publicly; serialization behavior otherwise unchanged.",
+    "models/llama_native.py": "Projection protocol and serializer delegation preserve raw-model dependency direction; base source loading must precede adapter insertion.",
+    "main/train_lm.py": "Canonical native adapter lifecycle uses original source before adaptation, restores adapter trainables, and preserves actual HF source in local export metadata.",
+    "tests": "Independent NumPy value/input/base/factor gradient oracles and requested layouts; actual local Torch factor-overlay/merged readers; real tied/untied canonical LM update and continued state/export behavior.",
+    "docs": "Existing native and training guides document default initialization, unsupported dropout/head adaptation, source/config resume responsibility, local export modes and evidence limits."
+  },
+  "correctness_checks": [
+    "Column and row factor storage/compute dimensions follow base roles and leave rank replicated; intermediate rank placement excludes output model axis before final factor.",
+    "Default A-zero/B-random, alternate random-A/zero-B, layer-specific keys and alpha/r scale are respected; dropout and matching head adaptation fail explicitly.",
+    "Stacked factors use per-layer filter_vmap while static compute specs and original ArrayStacked scan configuration remain shared.",
+    "Merge computes one scaled B@A delta and returns original base Linear type/bias with storage placement restored.",
+    "Raw NativeLlama module adds no Haliax import; projection protocol and existing raw StateDictWriter avoid reverse adapter dependencies.",
+    "Trainable filters include raw low-rank factors and exclude base; persisted state remains existing factors/optimizer/RNG/step schema, not new identity schema.",
+    "HF converter stays bound to actual original initialization source during adapter resume, even with source vocabulary in checkpoint metadata; mismatched source vocabulary is rejected.",
+    "Native export paths and upload options are validated before initialization; NoAdaptor and Lora hooks retain their distinct hf_save_path versus peft/merged contracts.",
+    "Existing named adapter branches and source caller behavior remain intact; no changes to train_dpo/model_init in this extraction.",
+    "Tests use source fixture key13, trainer seed42 and independent wrong-base999 control, avoiding same-template checkpoint identity pitfall.",
+    "Actual continuation test compares all saved array leaves plus Adam counts/moments and frozen base; supplied reconstruction-disabled negative control fails at final state comparison.",
+    "Independent local Torch test reads actual PEFT factor files and applies scaled B@A on original local HF base, then also reads merged HF weights; no actual PeftModel availability is implied.",
+    "Literal TPU markers/default test safety policy and numerical tolerances retained; no new live-cluster or storage operations introduced."
+  ],
+  "scope_correction": {
+    "native_dpo": "Outside this contribution. Base3a303 does not contain sibling PR21 native DPO work; train_dpo/model_init source is unchanged here. Do not claim a literal native DPO guard was retained.",
+    "root_acknowledgement": "Parent confirmed finished commit/PR prose will describe native DPO as outside current contribution rather than continue-rejecting a nonexistent guard."
+  },
+  "evidence_boundaries": [
+    "Reviewer performed source reads, exact patch/hash verification and git diff --check only; no project imports, tests, jobs, network, source edits, commit or publication.",
+    "Author supplied focused CPU1/4 each17pass2existingPEFT-package skips. Root owns CPU8 and broad affected checks; their completion is not established here.",
+    "Supplied reconstruction negative-control proof was inspected, not independently executed; one real untied CPU case fails exact state continuation when ordinary base reconstruction is disabled.",
+    "FP32 continuation covers unchanged original source and explicit model/adapter configuration only; alpha/targets/base identity mismatch rejection is not implemented or promised.",
+    "No PeftModel package integration, BF16 LoRA trajectory acceptance, multiple physical hosts, accelerator performance, memory saving or full canonical replacement is established."
+  ],
+  "_archive_note": "Local paths normalized as enumerated in manifest. Embedded source/artifact hashes retain original unsanitized input identity; archive copy hashes/lengths are in manifest. Historical status fields are not rewritten as later outcomes."
+}

@@ -1,0 +1,45 @@
+import json,os
+from pathlib import Path
+import jax
+import jax.numpy as jnp
+import numpy as np
+from jax.sharding import Mesh,NamedSharding,PartitionSpec as P,AxisType
+
+rng=np.random.default_rng(920)
+X=rng.normal(size=(4,2,8)).astype('float32')
+W=rng.normal(size=(12,8)).astype('float32')
+A=rng.normal(size=(3,8)).astype('float32')
+B=rng.normal(size=(12,3)).astype('float32')
+C=rng.normal(size=(4,2,12)).astype('float32')
+scale=np.float32(0.25)
+reference=X@W.T+scale*((X@A.T)@B.T)
+xf=X.reshape(-1,8);cf=C.reshape(-1,12)
+grads_ref=(C@W+scale*((C@B)@A), cf.T@xf, scale*(cf@B).T@xf, scale*cf.T@(xf@A.T))
+mesh=Mesh(np.array(jax.devices()).reshape(-1,2),('data','model'),axis_types=(AxisType.Explicit,AxisType.Explicit))
+rows=[]
+with jax.set_mesh(mesh):
+ for role in ('column','row'):
+  ws=P('model','data') if role=='column' else P('data','model')
+  wc=P('model',None) if role=='column' else P(None,'model')
+  ast=P(None,ws[1]);bst=P(ws[0],None)
+  ac=P(None,wc[1]);bc=P(wc[0],None)
+  xs=P('data',None,None) if role=='column' else P('data',None,'model')
+  ys=P('data',None,'model') if role=='column' else P('data',None,None)
+  def place(x,s):return jax.device_put(x,NamedSharding(mesh,s))
+  x,w,a,b,c=[place(v,s) for v,s in zip((X,W,A,B,C),(xs,ws,ast,bst,ys))]
+  def forward(x,w,a,b):
+   base=jnp.einsum('bsi,oi->bso',x,jax.sharding.reshard(w,wc),out_sharding=ys)
+   mid=jnp.einsum('bsi,ri->bsr',x,jax.sharding.reshard(a,ac),out_sharding=P('data',None,None))
+   delta=jnp.einsum('bsr,or->bso',mid,jax.sharding.reshard(b,bc),out_sharding=ys)
+   return base+scale*delta
+  def loss(x,w,a,b,c):return jnp.sum(forward(x,w,a,b)*c)
+  y=jax.jit(forward)(x,w,a,b)
+  grads=jax.jit(jax.grad(loss,argnums=(0,1,2,3)))(x,w,a,b,c)
+  for actual,expected in zip((y,*grads),(reference,*grads_ref)):
+   np.testing.assert_allclose(np.asarray(actual),expected,rtol=1e-5,atol=1e-5)
+  assert y.sharding.spec==ys
+  for grad,spec in zip(grads,(xs,ws,ast,bst)):assert grad.sharding.spec==spec,(role,grad.sharding,spec)
+  rows.append({'role':role,'forward_max_abs':float(np.max(np.abs(np.asarray(y)-reference))),'gradient_max_abs':[float(np.max(np.abs(np.asarray(g)-r))) for g,r in zip(grads,grads_ref)],'rank':3,'output_spec':str(ys),'gradient_specs':[str(g.sharding.spec) for g in grads],'matches_analytic_numpy':True})
+result={'devices':jax.device_count(),'mesh_shape':dict(mesh.shape),'rows':rows,'scope':'independent candidate factor layout math only; no maintained native adapter execution'}
+Path(f'output/candidate-factor-oracle-cpu{jax.device_count()}.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps(result))

@@ -1,0 +1,152 @@
+{
+  "status": "FROZEN_UNCOMMITTED_PENDING_INDEPENDENT_REVIEW",
+  "base": "3a303cf163a3c8fa1fdfdd501a95e093566d1966",
+  "head": "3a303cf163a3c8fa1fdfdd501a95e093566d1966",
+  "files": {
+    "lib/levanter/docs/Getting-Started-Training.md": {
+      "sha256": "98736296689f54c3b5d90e7b0d8a9183882f7b5f4e96edb53629e2d11886045a",
+      "bytes": 16373,
+      "base_blob": "0b2bdd5eacd952c5c29d3aee32bfefcb3b5699a1"
+    },
+    "lib/levanter/docs/Training-On-Your-Data.md": {
+      "sha256": "30a0f3f78f21646102c449235000d02a862d0d8604d38d1f0c6af1435d4798b6",
+      "bytes": 22765,
+      "base_blob": "ee5536f3d0d0a87d255bf70d47de3aa9ffccbbf1"
+    },
+    "lib/levanter/src/levanter/adaptor/__init__.py": {
+      "sha256": "22960f4f5ba6cdc58eb9b516e0ae7389cc634d6e42d021bc16ec6841a88b0bf5",
+      "bytes": 7733,
+      "base_blob": "ee2fa78c78a1fd48458f8b39a4fde29c082c4ffd"
+    },
+    "lib/levanter/src/levanter/adaptor/lora.py": {
+      "sha256": "3e6d6f7c6c86241d5c37fb16ac6c7306fddd8f13e2ac64a53512675625ccc260",
+      "bytes": 33043,
+      "base_blob": "22c4c6722082fa68aed5d453799122d837733c6f"
+    },
+    "lib/levanter/src/levanter/layers/linear.py": {
+      "sha256": "fcf56c96d2bd4f6c265c8ae44a839298c7d4ae9ff2d704e1cd8a9a9ce1512590",
+      "bytes": 1836,
+      "base_blob": "e1898f729dd139010fd4224beb3f020d35456999"
+    },
+    "lib/levanter/src/levanter/layers/stacked.py": {
+      "sha256": "070d2c3891b5ed075f339efd30d3d230cab17efadf5c42f87749fb9779a3bb4b",
+      "bytes": 18699,
+      "base_blob": "ff2a388777b47b50653a159d66cc9ed405b49fa3"
+    },
+    "lib/levanter/src/levanter/main/train_lm.py": {
+      "sha256": "87139eb6365339cf35aed4959123e0de7f85ffe054e4cf4c7a21451e9e02dfbc",
+      "bytes": 26882,
+      "base_blob": "f5501add9f81235d901f81a1f4e16c115e411ce1"
+    },
+    "lib/levanter/src/levanter/models/llama_native.py": {
+      "sha256": "566a8d2b86f3169858f55924094020ce26aabb1b2a971f2ccba94ab8eabdf88c",
+      "bytes": 24081,
+      "base_blob": "8e7434d5a23da32c2872c8983643a716eeec46ea"
+    },
+    "lib/levanter/tests/test_lora.py": {
+      "sha256": "c789b436eabdf4a4f7acd79700b466fe1e0f6eb1df68f3a1ac132a9263482f61",
+      "bytes": 24519,
+      "base_blob": "1588b73ffc56b9805569bd27ad6997b5cdef8e98"
+    },
+    "lib/levanter/tests/test_train_lm.py": {
+      "sha256": "c5c075ca195eb36565e7a4397e5df41c005c96f815c92cebe01c9756f80c25dd",
+      "bytes": 59277,
+      "base_blob": "d12273264cf5b2d667c9b2a1fb5ab5f88edf6662"
+    }
+  },
+  "validation": {
+    "cpu1": {
+      "terminal_exit": 0,
+      "tests": 19,
+      "passed": 17,
+      "skipped": 2,
+      "failed": 0,
+      "errors": 0,
+      "xml": {
+        "path": "evidence/native-lm-lora/initial-cpu1.xml",
+        "sha256": "20dc7538c73b7d644843eb7a619005082fbba43b7e2acde2360427b314231cb8",
+        "bytes": 2964
+      },
+      "log": {
+        "path": "native-jax-lora-focused-cpu1.log",
+        "sha256": "f0d6fd1df7211e98d399c9cc760995e9904e53840d4dbeb50f164b707d4ae855",
+        "bytes": 2265
+      },
+      "devices": 1,
+      "config": "root pyproject.toml; default complete safety markers; -n 0; no -m override",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n",
+        "0",
+        "lib/levanter/tests/test_lora.py",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_validates_and_resumes_identical_checkpoint_state",
+        "-q",
+        "--tb=short",
+        "--junitxml=evidence/native-lm-lora/initial-cpu1.xml"
+      ],
+      "xla_flags": "--xla_force_host_platform_device_count=1 --xla_allow_excess_precision=false",
+      "composition": "9 prior test_lora cases pass and 2 prior PEFT-package cases skip; 4 new raw/native adapter cases pass; 2 new tied/untied real LM cases pass; 2 preexisting native full-finetune activation/checkpoint cases pass. 17 total passes, not 17 new cases."
+    },
+    "cpu4": {
+      "terminal_exit": 0,
+      "tests": 19,
+      "passed": 17,
+      "skipped": 2,
+      "failed": 0,
+      "errors": 0,
+      "xml": {
+        "path": "evidence/native-lm-lora/initial-cpu4.xml",
+        "sha256": "92f110cf4308095e8d8baa13782aaa00c787593d30f4014c6c8e485539f121a3",
+        "bytes": 2965
+      },
+      "log": {
+        "path": "native-jax-lora-focused-cpu4.log",
+        "sha256": "b0861870384c389c73591f158cbd9d9905acfddc46275496b90aa7657d5a902f",
+        "bytes": 2266
+      },
+      "devices": 4,
+      "config": "root pyproject.toml; default complete safety markers; -n 0; no -m override",
+      "argv": [
+        "python",
+        "-m",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n",
+        "0",
+        "lib/levanter/tests/test_lora.py",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_validates_and_resumes_identical_checkpoint_state",
+        "-q",
+        "--tb=short",
+        "--junitxml=evidence/native-lm-lora/initial-cpu4.xml"
+      ],
+      "xla_flags": "--xla_force_host_platform_device_count=4 --xla_allow_excess_precision=false",
+      "composition": "9 prior test_lora cases pass and 2 prior PEFT-package cases skip; 4 new raw/native adapter cases pass; 2 new tied/untied real LM cases pass; 2 preexisting native full-finetune activation/checkpoint cases pass. 17 total passes, not 17 new cases."
+    }
+  },
+  "precommit": {
+    "exit": 0,
+    "log": {
+      "path": "native-jax-lora-final-precommit.log",
+      "sha256": "6143d8a5fcc5d76899e29bda424ef2ab0802d5bc72bc98e1fa46906d787af50a",
+      "bytes": 820
+    },
+    "entrypoint": "./infra/pre-commit.py --fix --files <exact ten files>",
+    "environment": "existing Python3.12 runtime, pinned UV tools/cache, offline; local-socket escalation needed by Black SyncManager; no dependencies installed"
+  },
+  "continuation_boundaries": [
+    "Strict here means all persisted factor/Adam/RNG/step leaves and next normal update exact under unchanged explicit config and original source",
+    "Adapter checkpoint identity schema is unchanged; alpha/target/base-source mismatch rejection is not promised",
+    "FP32 compute/master exercised in real LoRA continuation; no BF16 LoRA trajectory acceptance claim",
+    "No PeftModel package available; actual Torch/Transformers local base+factor overlay and merged HF reader passed instead",
+    "No adapter memory or accelerator performance claim; full Trainer may form base gradients before filtering",
+    "No broad affected run by author"
+  ],
+  "_archive_note": "Local paths normalized as enumerated in manifest. Embedded source/artifact hashes retain original unsanitized input identity; archive copy hashes/lengths are in manifest. Historical status fields are not rewritten as later outcomes."
+}

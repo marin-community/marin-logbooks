@@ -1,0 +1,49 @@
+{
+  "status": "COMPLETE_SHAPE_RESPONSE_NO_ACTIONABLE_FINDINGS",
+  "review_kind": "independent targeted maintained response review",
+  "base": "3a303cf163a3c8fa1fdfdd501a95e093566d1966",
+  "checkout": "<local-checkout>",
+  "patch": "evidence/native-lm-lora/final-freeze.patch",
+  "patch_sha256": "fa5c84ade3346dcbf2518be54d9ba5b1f28d332aca337b68c35d2827c48632ac",
+  "patch_bytes": 41521,
+  "exact_worktree_diff": true,
+  "files": {
+    "lib/levanter/docs/Getting-Started-Training.md": "98736296689f54c3b5d90e7b0d8a9183882f7b5f4e96edb53629e2d11886045a",
+    "lib/levanter/docs/Training-On-Your-Data.md": "30a0f3f78f21646102c449235000d02a862d0d8604d38d1f0c6af1435d4798b6",
+    "lib/levanter/src/levanter/adaptor/__init__.py": "22960f4f5ba6cdc58eb9b516e0ae7389cc634d6e42d021bc16ec6841a88b0bf5",
+    "lib/levanter/src/levanter/adaptor/lora.py": "3e6d6f7c6c86241d5c37fb16ac6c7306fddd8f13e2ac64a53512675625ccc260",
+    "lib/levanter/src/levanter/layers/linear.py": "fcf56c96d2bd4f6c265c8ae44a839298c7d4ae9ff2d704e1cd8a9a9ce1512590",
+    "lib/levanter/src/levanter/layers/stacked.py": "070d2c3891b5ed075f339efd30d3d230cab17efadf5c42f87749fb9779a3bb4b",
+    "lib/levanter/src/levanter/main/train_lm.py": "87139eb6365339cf35aed4959123e0de7f85ffe054e4cf4c7a21451e9e02dfbc",
+    "lib/levanter/src/levanter/models/llama_native.py": "566a8d2b86f3169858f55924094020ce26aabb1b2a971f2ccba94ab8eabdf88c",
+    "lib/levanter/tests/test_lora.py": "c789b436eabdf4a4f7acd79700b466fe1e0f6eb1df68f3a1ac132a9263482f61",
+    "lib/levanter/tests/test_train_lm.py": "8d765a872a52d1902f372ff8ce1f72fc1e27fa8eabb518f023d97672e744da98"
+  },
+  "findings": [],
+  "prior_review": "evidence/native-lm-lora/initial-maintained-review.json",
+  "response_issue": {
+    "origin": "root CPU8 observation after initial independent source review",
+    "prior_failure": "Two new tied/untied LM tests completed training/resume/state checks, then post-training batch2 probe could not be sharded over data4. This is a test portability defect, not a numerical training failure.",
+    "status": "source correction reviewed; runtime validation root-owned",
+    "correction": "Both probe token arrays now have batch2*data_size with unchanged sequence length4 and token IDs modulo31."
+  },
+  "verification": {
+    "only_test_train_lm_changed": true,
+    "all_production_and_docs_unchanged": true,
+    "reverse_exact_two_probe_edits_reproduces_original_test_hash": true,
+    "valid_token_range_preserved": true,
+    "correct_divisibility_for_cpu1_4_8_meshes": true,
+    "training_resume_state_oracles_unchanged": true,
+    "wrong_base_and_export_oracles_unchanged": true,
+    "numerical_tolerances_unchanged": true,
+    "git_diff_check": "passed"
+  },
+  "assessment": "Uses the already-derived actual data mesh size, keeping batch a low multiple of device count for the tested model2 meshes. Modulo31 prevents expanded probes from exceeding tokenizer/model vocabulary. No special-case CPU8 branch, mock, skip or new infrastructure. Both maintained post-training behavior checks remain meaningful.",
+  "limits": [
+    "No tests, project imports, source edits, network, jobs, commits or publication performed.",
+    "Root owns final CPU1/4/8 focused runs and broad affected results; no passing result inferred from this source review.",
+    "Initial37freeze review retained as historical snapshot; this report explicitly records subsequently discovered portability defect and its response.",
+    "No accelerator/performance/physical-multihost/actual PeftModel integration claim."
+  ],
+  "_archive_note": "Local paths normalized as enumerated in manifest. Embedded source/artifact hashes retain original unsanitized input identity; archive copy hashes/lengths are in manifest. Historical status fields are not rewritten as later outcomes."
+}

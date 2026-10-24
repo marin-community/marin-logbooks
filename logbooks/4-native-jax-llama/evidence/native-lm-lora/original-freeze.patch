@@ -1,0 +1,844 @@
+diff --git a/lib/levanter/docs/Getting-Started-Training.md b/lib/levanter/docs/Getting-Started-Training.md
+index 0b2bdd5eacd952c5c29d3aee32bfefcb3b5699a1..4561633f2b0145f3e207b5454e4c48418140c109 100644
+--- a/lib/levanter/docs/Getting-Started-Training.md
++++ b/lib/levanter/docs/Getting-Started-Training.md
+@@ -135,8 +135,10 @@ can initialize a new native run or a standard HF Llama consumer; they do not
+ contain optimizer or RNG state.
+ 
+ Local export requires standard weighted RMSNorm and bias-free projections. Hub
+-upload, remote export destinations, LoRA and Haliax quantization remain
++upload, remote export destinations and Haliax quantization remain
+ unsupported by this training entrypoint and are rejected before initialization.
++Zero-dropout LoRA is available through `adapter.type: lora`; see
++[adapter training](Training-On-Your-Data.md#lora-adapters).
+ Existing `model.type: llama` configurations retain their behavior.
+ 
+ ## Set Custom Training Configuration
+diff --git a/lib/levanter/docs/Training-On-Your-Data.md b/lib/levanter/docs/Training-On-Your-Data.md
+index ee5536f3d0d0a87d255bf70d47de3aa9ffccbbf1..961dfbf73d3c3bc2d8fcbef92fe67c8805ea7c35 100644
+--- a/lib/levanter/docs/Training-On-Your-Data.md
++++ b/lib/levanter/docs/Training-On-Your-Data.md
+@@ -289,6 +289,49 @@ initialize_from_hf: "NousResearch/Llama-2-7b-hf"
+ use_hf_model_config: true
+ ```
+ 
++### LoRA adapters
++
++The canonical `train_lm` entrypoint accepts `adapter.type: lora` with
++`model.type: llama_native`. Native adapters require `dropout: 0`; projections do
++not receive the RNG keys needed for adapter dropout. The default targets are the
++seven decoder projections (`q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`,
++`up_proj`, `down_proj`), excluding the output head. Native output-head adaptation
++and native LoRA-DPO remain unsupported.
++
++```yaml
++initialize_from_hf: ./base-weights
++adapter:
++  type: lora
++  r: 8
++  alpha: 8
++  dropout: 0
++peft_save_path: ./adapter-exports
++merged_hf_save_path: ./merged-exports
++hf_save_steps: 1000
++```
++
++The existing initialization convention is A zero and B random; set
++`a_init_mode: random` and `zero_init_b: true` for the alternative zero-delta
++initialization. Rank stays replicated while input/output factor dimensions follow
++the base projection's FSDP and tensor-parallel layouts.
++
++Adapter checkpoints store trainable factors and optimizer/RNG/step state. Resume
++with the original base source, model and adapter configuration: frozen base
++weights are reconstructed before restoring the adapter. These checkpoints do not
++validate adapter alpha, target selection or base-source identity. A different base
++or adapter configuration can change the resumed model despite compatible shapes.
++
++Use `peft_save_path` for canonical PEFT factor files, and
++`merged_hf_save_path` for ordinary HF Llama weights with the delta merged once.
++Both paths must be local for native training; Hub uploads remain unsupported.
++`hf_save_path` is for full-parameter training. PEFT exports initialized from HF
++record the actual initialization source. For portable PEFT factors, initialize
++from a local HF base as above and retain that original directory. For randomly
++initialized or native-only bases, use the merged export for standalone HF weights;
++factors alone cannot reconstruct their unmerged base. CPU tests cover training,
++continuation and local exports;
++this does not establish accelerator performance or adapter memory savings.
++
+ ### Checkpointing
+ 
+ See also the [Checkpointing section of the Configuration Guide](./reference/Configuration.md#checkpointing-and-initialization).
+diff --git a/lib/levanter/src/levanter/adaptor/__init__.py b/lib/levanter/src/levanter/adaptor/__init__.py
+index ee2fa78c78a1fd48458f8b39a4fde29c082c4ffd..67a63cca522dbdcd32d17dea49a0c09168053104 100644
+--- a/lib/levanter/src/levanter/adaptor/__init__.py
++++ b/lib/levanter/src/levanter/adaptor/__init__.py
+@@ -43,6 +43,7 @@ from levanter.adaptor.lora import (
+ )
+ from levanter.models.lm_model import LmHeadModel
+ from levanter.utils.types import FilterTree
++from levanter.models.llama_native_lm import NativeLlamaLmHeadModel
+ 
+ 
+ logger = logging.getLogger(__name__)
+@@ -160,7 +161,7 @@ class NoAdaptorConfig(AdaptorConfig):
+ @dataclass(frozen=True)
+ class LoraAdaptorConfig(LoraConfig, AdaptorConfig):
+     def apply(self, model, *, key, axis_mapping=None):
+-        if axis_mapping is None:
++        if axis_mapping is None or isinstance(model, NativeLlamaLmHeadModel):
+             return loraize(model, self, key=key)
+ 
+         @named_jit(axis_resources=axis_mapping, donate_args=(True,))
+diff --git a/lib/levanter/src/levanter/adaptor/lora.py b/lib/levanter/src/levanter/adaptor/lora.py
+index 22c4c6722082fa68aed5d453799122d837733c6f..fbbf95ee31979e195ea8c6652c0cde6fc7f9aea1 100644
+--- a/lib/levanter/src/levanter/adaptor/lora.py
++++ b/lib/levanter/src/levanter/adaptor/lora.py
+@@ -53,6 +53,7 @@ from typing import Callable, Dict, List, Literal, Optional, Tuple, TypeVar, Unio
+ 
+ import equinox as eqx
+ import jax
++import jax.numpy as jnp
+ import numpy as np
+ from jaxtyping import PRNGKeyArray, PyTree
+ 
+@@ -68,8 +69,10 @@ from haliax.state_dict import (
+     save_state_dict,
+     to_state_dict,
+ )
+-from jax.sharding import PartitionSpec
++from jax.sharding import PartitionSpec, reshard
+ 
++from levanter.layers.linear import Linear as ArrayLinear
++from levanter.layers.stacked import ArrayStacked
+ from levanter.callbacks import StepInfo
+ from levanter.compat.hf_checkpoints import (
+     GenerationConfigDict,
+@@ -79,7 +82,7 @@ from levanter.compat.hf_checkpoints import (
+     upload_to_hub,
+ )
+ from levanter.utils.cloud_utils import temp_dir_before_upload
+-from levanter.utils.jax_utils import join_key, key_iterator, leaf_key_paths
++from levanter.utils.jax_utils import axis_resource_is_explicit, join_key, key_iterator, leaf_key_paths
+ from levanter.utils.logging import silence_transformer_nag
+ 
+ 
+@@ -159,7 +162,14 @@ def loraize(model: M, config: LoraConfig, key: PRNGKeyArray) -> M:
+     """
+     Applies LoRA transform to the given model by replacing Linear layers that match the given pattern with LoraLinear layers.
+     """
+-    return _loraize(model, config, key, "", batch_dims=())
++    adapted = _loraize(model, config, key, "", batch_dims=())
++    raw = jax.tree.leaves(model, is_leaf=lambda x: isinstance(x, ArrayLinear))
++    if any(isinstance(x, ArrayLinear) for x in raw) and not any(
++        isinstance(x, ArrayLoraLinear)
++        for x in jax.tree.leaves(adapted, is_leaf=lambda x: isinstance(x, ArrayLoraLinear))
++    ):
++        raise ValueError("LoRA target_modules did not select any array-native decoder projections")
++    return adapted
+ 
+ 
+ class LowRankLinear(eqx.Module):
+@@ -285,9 +295,90 @@ class LoraLinear(ModuleWithStateDictSerialization):
+         return {"wrapped": None, "lora": None}
+ 
+ 
++class ArrayLowRankLinear(ModuleWithStateDictSerialization):
++    """Output-first array factors; rank stays replicated in storage and compute."""
++
++    lora_A: ArrayLinear
++    lora_B: ArrayLinear
++    scale: float = eqx.field(static=True)
++
++    def __call__(self, x, *, out_sharding):
++        # A's output rank is replicated; only the original leading input layout remains.
++        intermediate_spec = PartitionSpec(*out_sharding[:-1], None)
++        return self.lora_B(self.lora_A(x, out_sharding=intermediate_spec), out_sharding=out_sharding) * self.scale
++
++    def merge(self):
++        a = reshard(
++            self.lora_A.weight, PartitionSpec(*([None] * (self.lora_A.weight.ndim - 2)), *self.lora_A.compute_spec)
++        )
++        b = reshard(
++            self.lora_B.weight, PartitionSpec(*([None] * (self.lora_B.weight.ndim - 2)), *self.lora_B.compute_spec)
++        )
++        return (
++            jnp.einsum(
++                "...or,...ri->...oi",
++                b,
++                a,
++                out_sharding=PartitionSpec(
++                    *([None] * (a.ndim - 2)), self.lora_B.compute_spec[0], self.lora_A.compute_spec[1]
++                ),
++            )
++            * self.scale
++        )
++
++
++class ArrayLoraLinear(ModuleWithStateDictSerialization):
++    """Zero-dropout LoRA for an array-native projection."""
++
++    wrapped: ArrayLinear
++    lora: ArrayLowRankLinear
++
++    def __call__(self, x, *, out_sharding):
++        return self.wrapped(x, out_sharding=out_sharding) + self.lora(x, out_sharding=out_sharding)
++
++    @staticmethod
++    def init(wrapped: ArrayLinear, config: LoraConfig, *, key):
++        if config.dropout != 0:
++            raise ValueError("Array-native LoRA requires dropout=0; native projections do not receive RNG keys")
++        storage = jax.typeof(wrapped.weight).sharding.spec
++        compute = wrapped.compute_spec
++        out_features, in_features = wrapped.weight.shape
++        key_a, key_b = jax.random.split(key)
++        a = ArrayLinear.init(
++            in_features,
++            config.r,
++            key=key_a,
++            use_bias=False,
++            initializer_std=in_features**-0.5,
++            storage_spec=PartitionSpec(None, storage[-1]),
++            compute_spec=PartitionSpec(None, compute[-1]),
++        )
++        b = ArrayLinear.init(
++            config.r,
++            out_features,
++            key=key_b,
++            use_bias=False,
++            initializer_std=config.r**-0.5,
++            storage_spec=PartitionSpec(storage[-2], None),
++            compute_spec=PartitionSpec(compute[-2], None),
++        )
++        if config.a_init_mode == "zero":
++            a = dataclasses.replace(a, weight=jnp.zeros_like(a.weight))
++        if config.zero_init_b:
++            b = dataclasses.replace(b, weight=jnp.zeros_like(b.weight))
++        return ArrayLoraLinear(wrapped, ArrayLowRankLinear(a, b, config.alpha / config.r))
++
++    def merge(self):
++        delta = reshard(self.lora.merge(), jax.typeof(self.wrapped.weight).sharding.spec)
++        return dataclasses.replace(self.wrapped, weight=self.wrapped.weight + delta)
++
++    def _state_dict_key_map(self) -> Dict[str, Optional[str]]:
++        return {"wrapped": None, "lora": None}
++
++
+ def _is_lora_compatible_module(module):
+     # TODO: more modules
+-    return isinstance(module, hnn.Linear)
++    return isinstance(module, (hnn.Linear, ArrayLinear))
+ 
+ 
+ def filter_lora_params(params: M) -> M:
+@@ -317,7 +408,7 @@ def combine_lora_params(params: M, lora_params: M) -> M:
+ 
+ 
+ def is_lora_param(node):
+-    return isinstance(node, LowRankLinear)
++    return isinstance(node, (LowRankLinear, ArrayLowRankLinear))
+ 
+ 
+ def lora_trainable_params_filter(model: M) -> M:
+@@ -358,7 +449,7 @@ def _loraize(model: M, config: LoraConfig, key: PRNGKeyArray, prefix: str, batch
+     key_iter = key_iterator(key)
+ 
+     def _is_special_module(module):
+-        return _is_lora_compatible_module(module) or isinstance(module, hnn.Stacked)
++        return _is_lora_compatible_module(module) or isinstance(module, (hnn.Stacked, ArrayStacked))
+ 
+     def _batchify_ctor(ctor):
+         # this is gross but it basically just vmaps the ctor over each batch dimension
+@@ -366,7 +457,13 @@ def _loraize(model: M, config: LoraConfig, key: PRNGKeyArray, prefix: str, batch
+ 
+     def _loraize_module(module, key_path):
+         # TODO: turn into a registry
+-        if isinstance(module, hnn.Stacked):
++        if isinstance(module, ArrayStacked):
++            keys = jax.random.split(next(key_iter), module.num_layers)
++            stacked = eqx.filter_vmap(
++                lambda layer, layer_key: _loraize(layer, config, layer_key, join_key(key_path, "stacked"), ())
++            )(module.stacked, keys)
++            return dataclasses.replace(module, stacked=stacked)
++        elif isinstance(module, hnn.Stacked):
+             new_inner = _loraize(
+                 module.stacked,
+                 config,
+@@ -376,6 +473,10 @@ def _loraize(model: M, config: LoraConfig, key: PRNGKeyArray, prefix: str, batch
+             )
+             return dataclasses.replace(module, stacked=new_inner)
+         elif config.matches_target(key_path) and _is_lora_compatible_module(module):
++            if isinstance(module, ArrayLinear):
++                if key_path.endswith("lm_head"):
++                    raise ValueError("Array-native LoRA does not support lm_head adaptation")
++                return ArrayLoraLinear.init(module, config, key=next(key_iter))
+             my_key = next(key_iter)
+             batched_key = shaped_rng_split(my_key, [axis.size for axis in batch_dims])
+             return _batchify_ctor(LoraLinear.init)(
+@@ -408,11 +509,13 @@ def unwrap_lora_modules(module: M) -> M:
+     """
+ 
+     def _unwrap(node):
+-        if isinstance(node, LoraLinear):
++        if isinstance(node, (LoraLinear, ArrayLoraLinear)):
+             return node.wrapped
+         return node
+ 
+-    return jax.tree_util.tree_map(_unwrap, module, is_leaf=lambda node: isinstance(node, LoraLinear))
++    return jax.tree_util.tree_map(
++        _unwrap, module, is_leaf=lambda node: isinstance(node, (LoraLinear, ArrayLoraLinear))
++    )
+ 
+ 
+ @hax.named_jit  # needs to be inside (named) jit s.t. it works with sharded parameters
+@@ -423,12 +526,14 @@ def merge_lora_modules(module: M) -> M:
+     """
+ 
+     def _merge_lora_modules(module):
+-        if isinstance(module, LoraLinear):
++        if isinstance(module, (LoraLinear, ArrayLoraLinear)):
+             return module.merge()
+         else:
+             return module
+ 
+-    return jax.tree_util.tree_map(_merge_lora_modules, module, is_leaf=lambda node: isinstance(node, LoraLinear))
++    return jax.tree_util.tree_map(
++        _merge_lora_modules, module, is_leaf=lambda node: isinstance(node, (LoraLinear, ArrayLoraLinear))
++    )
+ 
+ 
+ SAFETENSORS_WEIGHTS_NAME = "adapter_model.safetensors"
+@@ -713,7 +818,10 @@ def _lora_state_dict_jax(model: M, prefix: str) -> StateDict:
+     state_dict = to_state_dict(lora_params, prefix=prefix)
+     mesh = jax.sharding.get_abstract_mesh()
+     if mesh is not None and not mesh.empty:
+-        state_dict = jax.lax.with_sharding_constraint(state_dict, PartitionSpec())
++        if axis_resource_is_explicit(mesh, mesh.axis_names):
++            state_dict = jax.tree.map(lambda value: reshard(value, PartitionSpec()), state_dict)
++        else:
++            state_dict = jax.lax.with_sharding_constraint(state_dict, PartitionSpec())
+     return state_dict
+ 
+ 
+diff --git a/lib/levanter/src/levanter/layers/linear.py b/lib/levanter/src/levanter/layers/linear.py
+index e1898f729dd139010fd4224beb3f020d35456999..4457761223c155a279057aad3fa02510174ac861 100644
+--- a/lib/levanter/src/levanter/layers/linear.py
++++ b/lib/levanter/src/levanter/layers/linear.py
+@@ -3,6 +3,8 @@
+ 
+ """Array-native linear projections with separate storage and compute layouts."""
+ 
++from typing import Protocol
++
+ import equinox as eqx
+ import jax
+ import jax.numpy as jnp
+@@ -12,6 +14,10 @@ from jaxtyping import Array, Float, PRNGKeyArray
+ INITIALIZER_TRUNCATION_BOUND = 3.0
+ 
+ 
++class LinearProjection(Protocol):
++    def __call__(self, x: Float[Array, "... In"], *, out_sharding: PartitionSpec) -> Float[Array, "... Out"]: ...
++
++
+ class Linear(eqx.Module):
+     """Output-first weights, optionally gathered from an FSDP storage layout."""
+ 
+diff --git a/lib/levanter/src/levanter/layers/stacked.py b/lib/levanter/src/levanter/layers/stacked.py
+index ff2a388777b47b50653a159d66cc9ed405b49fa3..8def3c333d29b58eb2fcf83c7b32bbb4d32240b2 100644
+--- a/lib/levanter/src/levanter/layers/stacked.py
++++ b/lib/levanter/src/levanter/layers/stacked.py
+@@ -26,7 +26,7 @@ class ModuleInit(Protocol[M]):
+ 
+ 
+ @runtime_checkable
+-class _StateDictWriter(Protocol):
++class StateDictWriter(Protocol):
+     def to_state_dict(self, prefix: str | None = None) -> StateDict: ...
+ 
+ 
+@@ -426,7 +426,7 @@ def _with_prefix(prefix: str | None, key: str | None) -> str | None:
+ def _to_state_dict(tree: Any, prefix: str | None) -> StateDict:
+     if tree is None:
+         return {}
+-    if isinstance(tree, _StateDictWriter):
++    if isinstance(tree, StateDictWriter):
+         return tree.to_state_dict(prefix)
+     if isinstance(tree, eqx.Module):
+         key_map = tree._state_dict_key_map() if isinstance(tree, _StateDictKeyMap) else {}
+diff --git a/lib/levanter/src/levanter/main/train_lm.py b/lib/levanter/src/levanter/main/train_lm.py
+index f5501add9f81235d901f81a1f4e16c115e411ce1..0397207f70f1593d1c480ab5e58deccb427a979e 100644
+--- a/lib/levanter/src/levanter/main/train_lm.py
++++ b/lib/levanter/src/levanter/main/train_lm.py
+@@ -27,7 +27,7 @@ import levanter.eval_harness
+ from levanter import callbacks
+ from levanter.callbacks._iris_status import iris_status_reporter
+ from levanter.callbacks.labeled_eval import LabeledLmEvalConfig, add_labeled_lm_eval_callbacks
+-from levanter.adaptor import AdaptorConfig, AdaptorExportConfig, NoAdaptorConfig
++from levanter.adaptor import AdaptorConfig, AdaptorExportConfig, LoraAdaptorConfig, NoAdaptorConfig
+ from levanter.callbacks.tensorstore_callbacks import install_tensorstore_metrics_hook_if_enabled
+ from levanter.checkpoint import discover_checkpoint_candidates, latest_checkpoint_path, load_checkpoint
+ from levanter.compat.hf_checkpoints import HFCompatConfig, ModelWithHfSerializationMixin, build_generation_config
+@@ -185,14 +185,13 @@ def main(config: TrainLmConfig):
+             raise ValueError(
+                 "llama_native HF initialization requires an explicit model config and unchanged tokenizer"
+             )
+-        if not isinstance(config.adapter, NoAdaptorConfig):
+-            raise ValueError("llama_native training does not support adapters yet")
+-        if config.hf_upload:
++        if config.hf_upload or config.peft_hf_upload or config.merged_hf_upload:
+             raise ValueError("llama_native training supports local HF export only; Hub upload is unsupported")
+-        if config.hf_save_path is not None:
+-            if StoragePath(config.hf_save_path).is_remote:
+-                raise ValueError("llama_native hf_save_path must be a local directory")
+-            config.model.validate_hf_export()
++        for export_path in (config.hf_save_path, config.peft_save_path, config.merged_hf_save_path):
++            if export_path is not None:
++                if StoragePath(export_path).is_remote:
++                    raise ValueError("llama_native export paths must be local directories")
++                config.model.validate_hf_export()
+         if config.trainer.quantization is not None:
+             raise ValueError("llama_native training does not support Haliax quantization")
+         config = dataclasses.replace(config, trainer=dataclasses.replace(config.trainer, use_explicit_mesh_axes=True))
+@@ -293,7 +292,9 @@ def main(config: TrainLmConfig):
+                     source_checkpoint = candidates[-1]
+                     source_checkpoint_path = source_checkpoint.path
+                     source_vocab_size = config.model.checkpoint_vocab_size(source_checkpoint.metadata)
+-            if source_vocab_size is None and config.initialize_from_hf:
++            if config.initialize_from_hf and (
++                source_vocab_size is None or isinstance(config.adapter, LoraAdaptorConfig)
++            ):
+                 if config.trainer.initialize_from is not None:
+                     raise ValueError("Cannot specify both initialize_from_hf and initialize_from")
+                 converter = config.model.hf_checkpoint_converter(
+@@ -302,6 +303,8 @@ def main(config: TrainLmConfig):
+                 )
+                 hf_config = converter.default_hf_config
+                 config.model.validate_hf_config(hf_config)
++                if source_vocab_size is not None and source_vocab_size != hf_config.vocab_size:
++                    raise ValueError("llama_native adapter source vocabulary does not match the checkpoint")
+                 source_vocab_size = hf_config.vocab_size
+             if source_vocab_size is not None:
+                 if len(tokenizer) > source_vocab_size:
+@@ -493,8 +496,12 @@ def main(config: TrainLmConfig):
+             )
+ 
+         export_converter = converter
+-        if isinstance(config.model, NativeLlamaLmConfig) and config.hf_save_path is not None:
++        if native and any(
++            path is not None for path in (config.hf_save_path, config.peft_save_path, config.merged_hf_save_path)
++        ):
+             export_converter = config.model.hf_export_converter(tokenizer)
++            if converter is not None:
++                export_converter = export_converter.replaced(reference_checkpoint=converter.reference_checkpoint)
+         config.adapter.install_export_hooks(
+             trainer=trainer,
+             converter=export_converter,
+diff --git a/lib/levanter/src/levanter/models/llama_native.py b/lib/levanter/src/levanter/models/llama_native.py
+index 8e7434d5a23da32c2872c8983643a716eeec46ea..28bfa5e5ee77e0840909923fa37671d376f3ff02 100644
+--- a/lib/levanter/src/levanter/models/llama_native.py
++++ b/lib/levanter/src/levanter/models/llama_native.py
+@@ -22,11 +22,11 @@ from jaxtyping import Array, Float, Int, PRNGKeyArray
+ 
+ from levanter.grug.attention import AttentionMask, GrugAttentionImplementation, attention, reference_attention
+ from levanter.grug.loss import fused_linear_softmax_cross_entropy_loss
+-from levanter.layers.linear import INITIALIZER_TRUNCATION_BOUND, Linear
++from levanter.layers.linear import INITIALIZER_TRUNCATION_BOUND, Linear, LinearProjection
+ from levanter.layers.rms_norm import RmsNorm
+ from levanter.layers.rotary_native import NativeRotaryConfig, RotaryConfig, apply_rotary
+ from levanter.layers.scan_checkpoint import ScanCheckpointSpec
+-from levanter.layers.stacked import ArrayStacked
++from levanter.layers.stacked import ArrayStacked, StateDictWriter
+ from levanter.utils.activation import ActivationFunctionEnum, JaxActivationFunction
+ 
+ 
+@@ -156,10 +156,10 @@ def _norm(config: NativeLlamaConfig, dim: int, storage_spec: P) -> RmsNorm:
+ class NativeLlamaAttention(eqx.Module):
+     """Grouped-query attention with explicitly placed head and residual arrays."""
+ 
+-    q_proj: Linear
+-    k_proj: Linear
+-    v_proj: Linear
+-    o_proj: Linear
++    q_proj: LinearProjection
++    k_proj: LinearProjection
++    v_proj: LinearProjection
++    o_proj: LinearProjection
+     q_norm: RmsNorm | None
+     k_norm: RmsNorm | None
+     config: NativeLlamaConfig = eqx.field(static=True)
+@@ -247,9 +247,9 @@ class NativeLlamaAttention(eqx.Module):
+ class NativeLlamaMlp(eqx.Module):
+     """Gated MLP with column-parallel inputs and a row-parallel output."""
+ 
+-    gate_proj: Linear
+-    up_proj: Linear
+-    down_proj: Linear
++    gate_proj: LinearProjection
++    up_proj: LinearProjection
++    down_proj: LinearProjection
+     act: JaxActivationFunction = eqx.field(static=True)
+     sharding: NativeLlamaSharding = eqx.field(static=True)
+ 
+@@ -555,7 +555,11 @@ def _put(state: dict[str, jax.Array], key: str, value: jax.Array | None) -> None
+         state[key] = value
+ 
+ 
+-def _put_module(state: dict[str, jax.Array], prefix: str, module: Linear | RmsNorm) -> None:
++def _put_module(state: dict[str, jax.Array], prefix: str, module: LinearProjection | RmsNorm) -> None:
++    if isinstance(module, StateDictWriter):
++        state.update(module.to_state_dict(prefix))
++        return
++    assert isinstance(module, (Linear, RmsNorm))
+     _put(state, f"{prefix}.weight", module.weight)
+     _put(state, f"{prefix}.bias", module.bias)
+ 
+@@ -564,7 +568,9 @@ def _load(value: jax.Array, template: jax.Array, spec: P) -> jax.Array:
+     return reshard(jnp.asarray(value, dtype=template.dtype).reshape(template.shape), spec)
+ 
+ 
+-def _load_module(module: Linear | RmsNorm, state: Mapping[str, jax.Array], prefix: str, spec: P):
++def _load_module(module: LinearProjection | RmsNorm, state: Mapping[str, jax.Array], prefix: str, spec: P):
++    if not isinstance(module, (Linear, RmsNorm)):
++        raise ValueError("Load native base weights before applying adapters")
+     weight = None if module.weight is None else _load(state[f"{prefix}.weight"], module.weight, spec)
+     bias = None if module.bias is None else _load(state[f"{prefix}.bias"], module.bias, P(spec[0]))
+     return dataclasses.replace(module, weight=weight, bias=bias)
+diff --git a/lib/levanter/tests/test_lora.py b/lib/levanter/tests/test_lora.py
+index 1588b73ffc56b9805569bd27ad6997b5cdef8e98..1467030910e640adfca5ec80e948ab478ca4fbf2 100644
+--- a/lib/levanter/tests/test_lora.py
++++ b/lib/levanter/tests/test_lora.py
+@@ -8,8 +8,12 @@ import equinox as eqx
+ import haliax as hax
+ import haliax.nn as hnn
+ import jax
++import jax.numpy as jnp
++import pytest
++from jax.sharding import AxisType, Mesh, PartitionSpec as P, reshard
+ import numpy as np
+ import optax
++from safetensors.numpy import load_file
+ from chex import assert_trees_all_close
+ from haliax.quantization import DefaultDotGeneralOp, DotGeneralOp
+ from safetensors import safe_open
+@@ -23,6 +27,8 @@ from transformers import AutoModelForCausalLM
+ 
+ from levanter.adaptor.lora import (
+     LoraConfig,
++    lora_state_dict,
++    unwrap_lora_modules,
+     LoraLinear,
+     lora_trainable_params_filter,
+     loraize,
+@@ -34,6 +40,10 @@ from levanter.callbacks import StepInfo
+ from levanter.checkpoint import Checkpointer
+ from levanter.compat.hf_checkpoints import HFCheckpointConverter
+ from levanter.layers.attention import AttentionMask
++from levanter.layers.linear import Linear as ArrayLinear
++from levanter.models.llama_native import NativeLlamaConfig
++from levanter.models.llama_native_lm import NativeLlamaLmConfig
++from levanter.tokenizers import load_tokenizer
+ from levanter.models.gpt2 import Gpt2Config, Gpt2LMHeadModel
+ from levanter.models.llama import LlamaConfig, LlamaLMHeadModel
+ from levanter.trainer_state import TrainerState
+@@ -453,3 +463,123 @@ def test_loraize_a_zero_and_b_zero_degenerate():
+     )
+     assert hax.all(loraized.first.lora.lora_A.weight == 0.0)
+     assert hax.all(loraized.first.lora.lora_B.weight == 0.0)
++
++
++@pytest.mark.tpu
++@pytest.mark.parametrize("row", [False, True], ids=["column", "row"])
++def test_array_lora_matches_independent_values_gradients_and_placements(row):
++    model_size = 2 if jax.device_count() >= 4 else 1
++    mesh = Mesh(
++        np.array(jax.devices()).reshape(-1, model_size), ("data", "model"), axis_types=(AxisType.Explicit,) * 2
++    )
++    storage, compute = (P("data", "model"), P(None, "model")) if row else (P("model", "data"), P("model", None))
++    x_host = np.arange(32, dtype=np.float32).reshape(4, 8) / 32
++    g_host = np.arange(32, dtype=np.float32).reshape(4, 8) / 32
++    with jax.set_mesh(mesh):
++        base = ArrayLinear.init(
++            8,
++            8,
++            key=jax.random.PRNGKey(1),
++            use_bias=True,
++            initializer_std=0.2,
++            storage_spec=storage,
++            compute_spec=compute,
++        )
++        config = LoraConfig(r=3, alpha=2, a_init_mode="random")
++        module = loraize(base, config, key=jax.random.PRNGKey(2))
++        x = reshard(jnp.array(x_host), P("data", "model" if row else None))
++        output_spec = P("data", None if row else "model")
++        cotangent = reshard(jnp.array(g_host), output_spec)
++        value, (gradient, dx) = eqx.filter_value_and_grad(
++            lambda args: jnp.sum(args[0](args[1], out_sharding=output_spec) * cotangent)
++        )((module, x))
++        w, a, b = (np.asarray(v) for v in (base.weight, module.lora.lora_A.weight, module.lora.lora_B.weight))
++        scale = config.alpha / config.r
++        expected = x_host @ (w + scale * b @ a).T + np.asarray(base.bias)
++        np.testing.assert_allclose(module(x, out_sharding=output_spec), expected, atol=1e-5, rtol=1e-5)
++        assert module(x, out_sharding=output_spec).sharding.spec == output_spec
++        np.testing.assert_allclose(value, (expected * g_host).sum(), atol=1e-5, rtol=1e-5)
++        np.testing.assert_allclose(dx, g_host @ (w + scale * b @ a), atol=1e-5, rtol=1e-5)
++        np.testing.assert_allclose(gradient.wrapped.weight, g_host.T @ x_host, atol=1e-5, rtol=1e-5)
++        np.testing.assert_allclose(gradient.lora.lora_A.weight, scale * b.T @ g_host.T @ x_host, atol=1e-5, rtol=1e-5)
++        np.testing.assert_allclose(gradient.lora.lora_B.weight, scale * g_host.T @ x_host @ a.T, atol=1e-5, rtol=1e-5)
++        assert module.lora.lora_A.weight.sharding.spec == P(None, storage[1])
++        assert module.lora.lora_B.weight.sharding.spec == P(storage[0], None)
++        assert gradient.lora.lora_A.weight.sharding == module.lora.lora_A.weight.sharding
++        assert gradient.lora.lora_B.weight.sharding == module.lora.lora_B.weight.sharding
++        np.testing.assert_allclose(module.merge()(x, out_sharding=output_spec), expected, atol=1e-5, rtol=1e-5)
++
++
++def test_array_lora_multilayer_canonical_export_and_base_view():
++    mesh = Mesh(np.array(jax.devices()), ("data",), axis_types=(AxisType.Explicit,))
++    config = NativeLlamaConfig(
++        vocab_size=32, hidden_dim=16, intermediate_dim=24, num_layers=2, num_heads=4, num_kv_heads=2, max_seq_len=8
++    )
++    with jax.set_mesh(mesh):
++        base = config.build(key=jax.random.PRNGKey(1))
++        adapted = loraize(base, LoraConfig(r=3), key=jax.random.PRNGKey(2))
++        tokens = jnp.arange(8, dtype=jnp.int32).reshape(2, 4)
++        np.testing.assert_array_equal(base(tokens), adapted(tokens))
++        for actual, expected in zip(jax.tree.leaves(unwrap_lora_modules(adapted)), jax.tree.leaves(base), strict=True):
++            np.testing.assert_array_equal(actual, expected)
++        factors = adapted.layers.stacked.self_attn.q_proj.lora
++        assert not np.array_equal(factors.lora_B.weight[0], factors.lora_B.weight[1])
++        adapted = loraize(base, LoraConfig(r=3, a_init_mode="random"), key=jax.random.PRNGKey(2))
++        merged = merge_lora_modules(adapted)
++        np.testing.assert_allclose(adapted(tokens), merged(tokens), atol=1e-5, rtol=1e-5)
++        exported = lora_state_dict(adapted)
++        assert len(exported) == 2 * 7 * 2
++        for index, layer in enumerate(adapted.layers.unstacked()):
++            for category, names in (
++                ("self_attn", ("q_proj", "k_proj", "v_proj", "o_proj")),
++                ("mlp", ("gate_proj", "up_proj", "down_proj")),
++            ):
++                for name in names:
++                    projection = getattr(getattr(layer, category), name)
++                    for factor in ("lora_A", "lora_B"):
++                        np.testing.assert_array_equal(
++                            exported[f"base_model.model.model.layers.{index}.{category}.{name}.{factor}.weight"],
++                            getattr(projection.lora, factor).weight,
++                        )
++        with pytest.raises(ValueError, match="dropout=0"):
++            loraize(base, LoraConfig(dropout=0.1), key=jax.random.PRNGKey(2))
++        with pytest.raises(ValueError, match="did not select"):
++            loraize(base, LoraConfig(target_modules=["missing"]), key=jax.random.PRNGKey(2))
++
++
++@skip_if_no_torch
++def test_array_lora_local_peft_and_merged_exports_match_independent_torch(tmp_path, tiny_hf_tokenizer_path):
++    import torch  # noqa: PLC0415  # optional dependency
++
++    mesh = Mesh(np.array(jax.devices()), ("data",), axis_types=(AxisType.Explicit,))
++    config = NativeLlamaLmConfig(
++        hidden_dim=16, intermediate_dim=24, num_layers=2, num_heads=4, num_kv_heads=2, max_seq_len=8
++    )
++    adapter = LoraConfig(r=3, alpha=6, a_init_mode="random", target_modules=["q_proj"])
++    converter = config.hf_export_converter(load_tokenizer(tiny_hf_tokenizer_path))
++    with jax.set_mesh(mesh):
++        base = config.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(1))
++        adapted = loraize(base, adapter, key=jax.random.PRNGKey(2))
++        converter.save_pretrained(base, str(tmp_path / "base"))
++        save_peft_pretrained(adapted, adapter, str(tmp_path / "base"), str(tmp_path / "adapter"))
++        save_merged_hf_model(adapted, converter, str(tmp_path / "merged"))
++        tokens = hax.named(jnp.arange(8).reshape(2, 4), (hax.Axis("batch", 2), hax.Axis("position", 4)))
++        expected = np.array(adapted(tokens, AttentionMask.causal()).array)
++        assert not np.array_equal(expected, base(tokens, AttentionMask.causal()).array)
++    fields = json.loads((tmp_path / "adapter/adapter_config.json").read_text())
++    factors = load_file(tmp_path / "adapter/adapter_model.safetensors")
++    assert len(factors) == 4
++    independent = AutoModelForCausalLM.from_pretrained(tmp_path / "base", local_files_only=True).eval()
++    state = independent.state_dict()
++    for key, a in factors.items():
++        if ".lora_A." not in key:
++            continue
++        b = factors[key.replace("lora_A", "lora_B")]
++        weight_key = key.removeprefix("base_model.model.").replace(".lora_A.weight", ".weight")
++        state[weight_key] += torch.from_numpy(b @ a) * (fields["lora_alpha"] / fields["r"])
++    independent.load_state_dict(state, strict=True)
++    merged = AutoModelForCausalLM.from_pretrained(tmp_path / "merged", local_files_only=True).eval()
++    with torch.no_grad():
++        torch_tokens = torch.arange(8).reshape(2, 4)
++        for model in (independent, merged):
++            np.testing.assert_allclose(model(torch_tokens).logits.numpy(), expected, atol=1e-4, rtol=1e-4)
+diff --git a/lib/levanter/tests/test_train_lm.py b/lib/levanter/tests/test_train_lm.py
+index d12273264cf5b2d667c9b2a1fb5ab5f88edf6662..a23e9cfd2c20cbbf31c7d74673f75154a2388b7e 100644
+--- a/lib/levanter/tests/test_train_lm.py
++++ b/lib/levanter/tests/test_train_lm.py
+@@ -19,6 +19,7 @@ import jax.numpy as jnp
+ import jax.random as jrandom
+ import jmp
+ import numpy as np
++import optax
+ import pytest
+ import safetensors.numpy
+ from chex import assert_trees_all_close
+@@ -33,6 +34,7 @@ import levanter.main.eval_lm as eval_lm
+ import levanter.main.viz_logprobs as viz_logprobs
+ from levanter.testing import tiny_corpus
+ from levanter.adaptor import LoraAdaptorConfig
++from levanter.adaptor.lora import lora_state_dict, merge_lora_modules, unwrap_lora_modules
+ from levanter.checkpoint import (
+     CheckpointerConfig,
+     discover_checkpoint_candidates,
+@@ -1130,3 +1132,157 @@ def test_train_lm_rejects_weights_only_init_with_trainer_initialize_from():
+         )
+         with pytest.raises(ValueError, match="trainer.initialize_from"):
+             train_lm.main(config)
++
++
++@pytest.mark.tpu
++@pytest.mark.timeout(180)
++def test_native_train_lm_lora_hf_update_resume_and_local_exports(tmp_path, native_hf_source, tiny_hf_tokenizer_path):
++    source = native_hf_source.path
++    model_config = dataclasses.replace(
++        NativeLlamaLmConfig.from_hf_config(native_hf_source.config.to_hf_config(32)),
++        reference_checkpoint=str(tmp_path / "unused-default-reference"),
++    )
++    examples = ListAsyncDataset([GrugLmExample.causal((jnp.arange(8) + i) % 31) for i in range(16)])
++    data = LmDataConfig(
++        tokenizer=tiny_hf_tokenizer_path,
++        shuffle=False,
++        components={"direct": DirectDatasetComponent(datasets={"train": examples})},
++    )
++    model_size = 2 if jax.device_count() >= 4 else 1
++    data_size = jax.device_count() // model_size
++    optimizer = AdamConfig(learning_rate=1e-3, warmup=0, lr_schedule=ConstantLrSchedule(), weight_decay=0.0)
++    adapter = LoraAdaptorConfig(r=3, alpha=6)
++
++    def configuration(name, steps, resume=False):
++        directory = tmp_path / name
++        return train_lm.TrainLmConfig(
++            model=model_config,
++            data=data,
++            data_seed=7,
++            train_seq_len=8,
++            initialize_from_hf=str(source),
++            adapter=adapter,
++            optimizer=optimizer,
++            peft_save_path=str(directory / "peft"),
++            merged_hf_save_path=str(directory / "merged"),
++            hf_save_steps=1,
++            trainer=train_lm.TrainerConfig(
++                id="native-lora",
++                seed=42,
++                num_train_steps=steps,
++                train_batch_size=2 * data_size,
++                per_device_parallelism=1,
++                mp=jmp.get_policy("f32"),
++                max_eval_batches=0,
++                mesh=MeshConfig(axes={"data": data_size, "model": model_size}),
++                tracker=JsonFileTrackerConfig(output_path=str(directory / "tracker")),
++                checkpointer=CheckpointerConfig(base_path=str(directory / "checkpoints"), keep=[{"every": 1}]),
++                load_checkpoint=resume,
++                require_accelerator=False,
++                distributed=DistributedConfig(initialize_jax_distributed=False),
++                log_xla_hlo=False,
++                log_jaxprs=False,
++            ),
++        )
++
++    train_lm.main(configuration("full", 3))
++    train_lm.main(configuration("resumed", 2))
++    train_lm.main(configuration("resumed", 3, resume=True))
++    mesh = dataclasses.replace(configuration("full", 3).trainer, use_explicit_mesh_axes=True).device_mesh
++    sharding = native_llama_sharding(
++        configuration("full", 3).trainer.parameter_axis_mapping,
++        configuration("full", 3).trainer.compute_axis_mapping,
++        "batch",
++    )
++    tokenizer = data.the_tokenizer
++    with jax.set_mesh(mesh):
++        base = load_hf_checkpoint(
++            model_config,
++            str(source),
++            tokenizer=tokenizer,
++            compute_dtype=jnp.float32,
++            axis_mapping=configuration("full", 3).trainer.parameter_axis_mapping,
++            compute_axis_mapping=configuration("full", 3).trainer.compute_axis_mapping,
++            batch_axis_name="batch",
++        )
++        skeleton = adapter.apply(base, key=jrandom.PRNGKey(0))
++        template = TrainerState.init(
++            optimizer.build(3),
++            skeleton,
++            key=jrandom.PRNGKey(0),
++            mp=jmp.get_policy("f32"),
++            is_trainable=adapter.trainable_filter(skeleton),
++        )
++
++        def restored(name):
++            return load_checkpoint(
++                template.saveable_state, latest_checkpoint_path(tmp_path / name / "checkpoints/native-lora"), mesh=mesh
++            )
++
++        full, resumed = restored("full"), restored("resumed")
++        assert int(full.step) == int(resumed.step) == 3
++        for actual, expected in zip(_array_leaves(full), _array_leaves(resumed), strict=True):
++            np.testing.assert_array_equal(actual, expected)
++        counts = [v for v in _array_leaves(full.opt_state) if jnp.issubdtype(v.dtype, jnp.integer)]
++        assert counts
++        for count in counts:
++            np.testing.assert_array_equal(count, 3)
++        adam_states = jax.tree.leaves(full.opt_state, is_leaf=lambda node: isinstance(node, optax.ScaleByAdamState))
++        adam_states = [node for node in adam_states if isinstance(node, optax.ScaleByAdamState)]
++        assert adam_states
++        for adam in adam_states:
++            for moments in (adam.mu, adam.nu):
++                factors = moments.native.layers.stacked.self_attn.q_proj.lora
++                assert np.any(factors.lora_A.weight != 0)
++                assert np.any(factors.lora_B.weight != 0)
++        trained = train_lm._restore_lm_model_from_partial_checkpoint(
++            full.model, skeleton, adapter.trainable_filter(skeleton)
++        )
++        for name, actual in unwrap_lora_modules(trained).to_state_dict().items():
++            np.testing.assert_array_equal(actual, native_hf_source.weights[name])
++        assert any(np.any(value != 0) for key, value in lora_state_dict(trained).items() if ".lora_A." in key)
++        assert trained.native.layers.stacked.self_attn.q_proj.lora.lora_A.weight.sharding.spec == P(None, None, "data")
++        wrong_base = model_config.build(Axis("vocab", 32), key=jrandom.PRNGKey(999), sharding=sharding)
++        wrong_skeleton = adapter.apply(wrong_base, key=jrandom.PRNGKey(0))
++        wrong = train_lm._restore_lm_model_from_partial_checkpoint(
++            full.model, wrong_skeleton, adapter.trainable_filter(wrong_skeleton)
++        )
++        tokens = hax.named(jnp.arange(8).reshape(2, 4), (Axis("batch", 2), Axis("position", 4)))
++        assert not np.allclose(
++            trained(tokens, AttentionMask.causal()).array, wrong(tokens, AttentionMask.causal()).array
++        )
++        merged = merge_lora_modules(trained)
++        peft_path = tmp_path / "full/peft/native-lora/step-2"
++        peft_config = json.loads((peft_path / "adapter_config.json").read_text())
++        assert peft_config["base_model_name_or_path"] == str(source)
++        assert peft_config["target_modules"] == [
++            "q_proj",
++            "k_proj",
++            "v_proj",
++            "o_proj",
++            "gate_proj",
++            "up_proj",
++            "down_proj",
++        ]
++        exported = safetensors.numpy.load_file(peft_path / "adapter_model.safetensors")
++        for key, value in lora_state_dict(trained).items():
++            np.testing.assert_array_equal(exported[key], value)
++        converter = model_config.hf_checkpoint_converter(
++            str(tmp_path / "full/merged/native-lora/step-2"), tokenizer=tokenizer
++        )
++        reloaded = converter.load_pretrained(
++            model_config.model_type,
++            config=model_config,
++            model_init=lambda vocab: model_config.build(vocab, key=jrandom.PRNGKey(1), sharding=sharding),
++        )
++        for name, value in reloaded.to_state_dict().items():
++            np.testing.assert_array_equal(value, merged.to_state_dict()[name])
++        tokens = hax.named(jnp.arange(8).reshape(2, 4), (Axis("batch", 2), Axis("position", 4)))
++        np.testing.assert_allclose(
++            trained(tokens, AttentionMask.causal()).array,
++            reloaded(tokens, AttentionMask.causal()).array,
++            atol=1e-5,
++            rtol=1e-5,
++        )
++    for name in ("full", "resumed"):
++        _assert_training_recorded(str(tmp_path / name / "tracker"))

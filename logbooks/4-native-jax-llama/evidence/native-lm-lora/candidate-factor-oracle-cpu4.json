@@ -1,0 +1,48 @@
+{
+  "devices": 4,
+  "mesh_shape": {
+    "data": 2,
+    "model": 2
+  },
+  "rows": [
+    {
+      "role": "column",
+      "forward_max_abs": 9.5367431640625e-07,
+      "gradient_max_abs": [
+        9.5367431640625e-07,
+        9.5367431640625e-07,
+        2.980232238769531e-07,
+        4.76837158203125e-07
+      ],
+      "rank": 3,
+      "output_spec": "P('data', None, 'model')",
+      "gradient_specs": [
+        "P('data', None, None)",
+        "P('model', 'data')",
+        "P(None, 'data')",
+        "P('model', None)"
+      ],
+      "matches_analytic_numpy": true
+    },
+    {
+      "role": "row",
+      "forward_max_abs": 9.5367431640625e-07,
+      "gradient_max_abs": [
+        9.5367431640625e-07,
+        9.5367431640625e-07,
+        2.384185791015625e-07,
+        9.5367431640625e-07
+      ],
+      "rank": 3,
+      "output_spec": "P('data', None, None)",
+      "gradient_specs": [
+        "P('data', None, 'model')",
+        "P('data', 'model')",
+        "P(None, 'model')",
+        "P('data', None)"
+      ],
+      "matches_analytic_numpy": true
+    }
+  ],
+  "scope": "independent candidate factor layout math only; no maintained native adapter execution"
+}
