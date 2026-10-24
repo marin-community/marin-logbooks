@@ -7,22 +7,19 @@ import ast
 import hashlib
 import importlib.util
 import json
-import os
-import platform
 import sys
 import traceback
 from pathlib import Path
 
+import callback_compatibility
 import capture
 import equinox as eqx
 import haliax
 import jax
-import jaxlib
 import levanter
 import levanter.grug.attention._core as core
 import levanter.models.llama_native as native
 import numpy as np
-import optax
 from diagnostic import ROOT, SOURCE, retention, sha, write_json
 from jax.sharding import AxisType, Mesh
 
@@ -68,29 +65,19 @@ def run(args):
             if actual_path != (ROOT / relative).resolve() or sha(actual_path) != disk[relative]:
                 raise ValueError(f"Actual imported module identity failed: {name}")
             imports[name] = {"path": str(actual_path), "sha256": sha(actual_path)}
-        runtime = {
-            "python": platform.python_version(),
-            "jax": jax.__version__,
-            "jaxlib": jaxlib.__version__,
-            "numpy": np.__version__,
-            "equinox": eqx.__version__,
-            "optax": optax.__version__,
+        guard_path = Path(callback_compatibility.__file__).resolve()
+        if guard_path != ROOT / "research/oproj/callback_compatibility.py":
+            raise ValueError("Validated callback backend guard imported from another tree")
+        guard_config = {
+            "cpu_runtime": config_json["cpu_expected_runtime"],
+            "target_runtime": config_json["expected_runtime"],
+            "cpu_environment": config_json["cpu_environment"],
+            "target_environment": config_json["scientific_environment"],
+            "source_sha256": {**config_json["source_file_sha256"], **config_json["research_source_sha256"]},
         }
-        environment = {k: os.environ.get(k) for k in ("JAX_PLATFORMS", "XLA_FLAGS", "LIBTPU_INIT_ARGS")}
-        expected_env = config_json["scientific_environment"] if args.mode == "target" else config_json["cpu_environment"]
-        if (
-            environment != expected_env
-            or runtime != config_json["expected_runtime" if args.mode == "target" else "cpu_expected_runtime"]
-        ):
-            raise ValueError(f"Runtime/environment mismatch: {runtime}, {environment}")
-        if jax.default_backend() != ("tpu" if args.mode == "target" else "cpu") or jax.local_device_count() != 4:
-            raise ValueError("Requires exactly four local devices on the requested backend")
-        if jax.process_count() != 1 or jax.device_count() != 4:
-            raise ValueError("Expected one host/process and four global devices")
-        if args.mode == "target" and not all(
-            "v5" in d.device_kind.lower() and "lite" not in d.device_kind.lower() for d in jax.local_devices()
-        ):
-            raise ValueError("Expected actual v5p devices")
+        with jax.default_matmul_precision("default"):
+            backend_provenance = callback_compatibility.provenance(guard_config, args.mode)
+        imports["validated_backend_guard"] = {"path": str(guard_path), "sha256": sha(guard_path)}
         report["hlo_scope"] = (
             "Explicit lower().compile() on the real diagnostic wrapper and same input shapes; "
             "ordinary _jit_train_step_fn wrapper invoked separately. Equivalent lowering/cache path, "
@@ -100,8 +87,9 @@ def run(args):
         report["provenance"] = {
             "disk_source_sha256": disk,
             "actual_imports": imports,
-            "runtime": runtime,
-            "environment": environment,
+            "runtime": backend_provenance["runtime"],
+            "environment": backend_provenance["environment"],
+            "validated_backend_guard": backend_provenance,
             "jax_default_matmul_precision": "default",
             "research_files": {p.name: sha(p) for p in Path(__file__).parent.glob("*.py")},
         }
@@ -235,8 +223,11 @@ def run(args):
                     or report["loss_parity"] != historical["loss_parity"]
                 ):
                     raise ValueError("Untouched historical gradient/loss summary no longer reproduced")
-                if len(variants["legacy"]["gradients"]) != 255:
-                    raise ValueError("Target must retain all 255 gradient tensors")
+                for kind in ("legacy", "native"):
+                    if len(variants[kind]["gradients"]) != 255:
+                        raise ValueError(f"Target must retain all 255 canonical gradient tensors: {kind}")
+                    if len(variants[kind]["raw_gradient_leaves"]) != 12:
+                        raise ValueError(f"Target must retain all 12 raw gradient leaves: {kind}")
             if args.phase == "instrumented":
                 report["operands"] = {k: capture.COLLECTORS[k].finish() for k in ("legacy", "native")}
                 report["patches"] = capture.PATCHES
