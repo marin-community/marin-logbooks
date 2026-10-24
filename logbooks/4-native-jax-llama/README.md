@@ -111,6 +111,12 @@ The CPU mechanics summary is retained as deterministic gzip to satisfy the repos
 
 The [CPU mechanics summary](analysis/fp32-common-dq/cpu-controller-summary.json.gz) and [large abstract summary](analysis/fp32-common-dq/abstract-controller-summary.json) preserve validation limits. Passing cross-child mechanics do not override the failed exact forward-identity guards; scientific attribution remains false. This is prepared-only research material requiring independent review before hardware, with no submission recipe or launch authority added here. Local full HLO diagnostics were deliberately omitted; generating them again requires the explicitly scoped local reproduction.
 
+## Inspect the rejected full-Trainer candidate
+
+The [independent audit](analysis/query-scale-15b-trainer/result-audit.md) and [terminal record](evidence/query-scale-15b-trainer/terminal-record.json) supersede earlier pending snapshots. Both precision reports reject the candidate; partial BF16 gradient improvement is not full-model acceptance. Their complete [JSON reports and runtime records](evidence/query-scale-15b-trainer/) preserve the original gates and null speed ratios. The exact source/runner/configuration were archived before execution.
+
+Files suffixed `.gz` use deterministic gzip. Decompress each to its original basename (remove only `.gz`), then verify the original byte length and SHA256 recorded as `original_uncompressed` in `manifest.json`. This restores both >3 MB comparison JSONs and all eight optimized-HLO/StableHLO files byte-exact. The manifest's selected-file sizes/hashes describe the stored gzip bytes; its original metadata describes recovered bytes. Two BF16 XPlanes remain local/regional, not in this Git archive; the regional backup identity and TTL are retained in the audit. Raw gradient/optimizer/parameter arrays were not captured. Reading this evidence does not authorize another launch or adoption of the candidate.
+
 ## Checkpoint and profile boundaries
 
 The historical native checkpoint runner lives in Git at `lib/levanter/scripts/bench/smoke_llama_native_checkpoint.py`; exact measured snapshots are under `runners/historical/`. Use their original config/runtime requirements from the preserved revisions. The recorded distributed test uses two processes, four local TPU devices per process, and data4/model2. Checkpoint arrays stayed region-local. This archive retains assertions and recovered metadata, not the roughly 55 GB of arrays per run or missing concrete per-rank result JSON.
