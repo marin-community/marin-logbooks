@@ -58,6 +58,10 @@ For local plan review, the shared command is `uv run python -m experiments.post_
 
 The scoring/generation configuration can be fingerprinted, but that descriptor does not establish an immutable served judge revision. The configured judge is a model alias; its served revision remains unknown unless independently established. Actual selection content, task grader bytes and environment/image identities must come from the materialization gate. Leave these evidence limits explicit instead of treating a configured fingerprint as complete runtime equivalence.
 
+### 2026-10-24 - Include the maintained native reader prerequisite
+
+The research source includes the mounted-credential Parquet reader correction from [Marin #10629](https://github.com/marin-community/marin/pull/10629), source `480fa5bd650dce1394d6c2892d9576e20213786f`. Its native-read regression and 59 affected tests passed with the frozen Polars 1.42.1 dependency. The merge preserves the reviewed four-arm launcher, test and configuration bytes and keeps inherited archive CI removed. The correction is a shared prerequisite, with no treatment-specific data or scoring change. Live materialization and GPU qualification remain separate gates.
+
 ## Final decision
 
 Pending materialization, reviewed executable configurations, qualification and measurements. No approach is selected for promotion yet. Publish exact source/configuration before executing each experiment, then append results and commit-pinned evidence. Preserve rejected alternatives and meaningful failed attempts. Extract only maintainable selected changes into ordinary Marin PRs.
