@@ -1,0 +1,51 @@
+{
+  "atol": 1e-05,
+  "cotangent_rms_quantization_tolerance": 0.005,
+  "cotangent_seed": 20261023,
+  "cpu_dimensions": {
+    "B": 4,
+    "D": 32,
+    "S": 8,
+    "V": 64
+  },
+  "cpu_python_version": "3.12.11",
+  "cpu_xla_flags": "--xla_force_host_platform_device_count=4 --xla_allow_excess_precision=false",
+  "libtpu_init_args": " --xla_tpu_use_enhanced_launch_barrier=true",
+  "limitations": [
+    "A synthetic common cotangent, not unavailable full-model cotangent.",
+    "Native is guarded production source fragment, not an absent public native embed method or full activations.",
+    "Full Trainer remains numerically rejected regardless of isolated result.",
+    "CPU mechanics and abstract proof do not validate TPU numerical behavior or compiler grouping.",
+    "FP32 accumulation is a diagnostic higher-precision reference, not an exact oracle.",
+    "No automatic full-HLO grouping proof; independent actual-entrypoint static review required."
+  ],
+  "main_dimensions": {
+    "B": 8,
+    "D": 2048,
+    "S": 2048,
+    "V": 65536
+  },
+  "original_benchmark_batch_sha256": "d65acfa301bad7db399ff9df86cbbc150c649317dd357b3a26c53c9eaea9caa4",
+  "output_limits": {
+    "files": 10,
+    "hlo_file_bytes": 2097152,
+    "hlo_total_bytes": 12582912,
+    "json_bytes": 262144,
+    "total_bytes": 13631488,
+    "truncation_allowed": false
+  },
+  "python_version": "3.12.15",
+  "rtol": 0.0001,
+  "runtime_versions": {
+    "equinox": "0.13.2",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "jmp": "0.0.4",
+    "numpy": "2.3.5",
+    "optax": "0.2.6"
+  },
+  "schema": "native-jax-common-embedding-vjp-config.v1",
+  "seed": 42,
+  "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "tpu_xla_flags": "--xla_allow_excess_precision=false"
+}

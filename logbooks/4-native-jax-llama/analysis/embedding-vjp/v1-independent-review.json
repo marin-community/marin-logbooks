@@ -1,0 +1,204 @@
+{
+  "actual_evidence": {
+    "hlo": "Original audit source/HLO/compare file hashes and every CPU signature evidence line hash match. Independently traced actual CPU entry gradient output: native local batch scatter then cross-data sum and feature slice; legacy cotangent feature all-to-all plus full-batch token gather then feature-shard scatter. CPU legalizes these operations as F32 with explicit BF16 round-trips, so typed TPU grouping remains untested.",
+    "large_abstract": "Final runner no-Git proof traces main V65536/D2048/B8/S2048 forward/VJP shapes and dtypes without large array allocation, lower, compile or execute. Legacy Auto eval_shape sharding is None; runtime physical placement remains a gate.",
+    "small_cpu": {
+      "cpu_mechanics": {
+        "bf16_vjp_parity_is_result_not_mechanics_criterion": true,
+        "forward_legacy_native_allclose": true,
+        "fp32_reference_matches_numpy_diagnostic": true,
+        "nonzero_rows_match_token_support": {
+          "fp32_scatter": true,
+          "legacy": true,
+          "native": true
+        },
+        "passed": true
+      },
+      "dimensions": {
+        "B": 4,
+        "D": 32,
+        "S": 8,
+        "V": 64
+      },
+      "final_runner_numerics_not_rerun": true,
+      "forward": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 1024,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0,
+          0
+        ]
+      },
+      "fp32_matches_numpy_exact_for_this_fixture": true,
+      "report_runner_sha256": "4bd38dab0d6ab066d696f0a518af345854fbc0f535f8dc32f671dba41f0eb838",
+      "vjp": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 8,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              25,
+              0
+            ],
+            "left": 0.796875,
+            "right": 0.79296875
+          },
+          {
+            "index": [
+              25,
+              2
+            ],
+            "left": 1.5078125,
+            "right": 1.515625
+          },
+          {
+            "index": [
+              25,
+              13
+            ],
+            "left": -0.2099609375,
+            "right": -0.208984375
+          },
+          {
+            "index": [
+              25,
+              15
+            ],
+            "left": 1.5625,
+            "right": 1.5703125
+          },
+          {
+            "index": [
+              25,
+              18
+            ],
+            "left": 1.2578125,
+            "right": 1.25
+          },
+          {
+            "index": [
+              25,
+              26
+            ],
+            "left": 1.09375,
+            "right": 1.0859375
+          },
+          {
+            "index": [
+              25,
+              29
+            ],
+            "left": 0.51953125,
+            "right": 0.5234375
+          },
+          {
+            "index": [
+              25,
+              30
+            ],
+            "left": -0.0859375,
+            "right": -0.0849609375
+          }
+        ],
+        "max_abs": 0.0078125,
+        "mean_abs": 2.002716064453125e-05,
+        "mismatch_count": 8,
+        "relative_l2": 0.0005118898582032608,
+        "rtol": 0.0001,
+        "worst_index": [
+          25,
+          2
+        ]
+      }
+    }
+  },
+  "blocking_findings": [
+    {
+      "consequence": "An unexpected numerical outcome can terminate the only frozen TPU fixture without its required structured evidence, although finite lookup inputs make arithmetic overflow implausible.",
+      "finding": "The observed finite parity failure reaches report.json and TPU exit1. A nonfinite compiled output raises ValueError at311-312 before the variant result record at315 and report write at337; metrics() can also raise at159-160 before the report. Thus the design promise that all numerical failures retain bounded artifacts is not met for unexpected NaN/Inf outcomes. Existing HLO files and logs do not preserve the structured source/config/input/device/partial-result record.",
+      "id": "R1",
+      "lines": [
+        159,
+        160,
+        311,
+        312,
+        337
+      ],
+      "path": "/private/tmp/native-jax-embedding-vjp-preparation/runner.py",
+      "priority": "P2",
+      "requested_resolution": "Create a separately versioned harness-only correction that saves bounded, JSON-finite partial provenance/results and a structured nonfinite status before nonzero exit. Preserve source/config/fixture/scientific function ASTs and thresholds; do not add seeds or a generic import/lowering exception framework. Re-freeze and independently review the delta; keep current frozen files untouched.",
+      "title": "Preserve a bounded report for nonfinite numerical outcomes"
+    }
+  ],
+  "checks": {
+    "ast_guards": "Legacy embed AST/count3; full native activations AST/count12; token/weight/hidden counts1/1/2 and selected assignment ASTs match. Four benchmark helper ASTs and token-generation assignment AST match independently; whole benchmark source hash enforces these runtime bytes.",
+    "entrypoints": "Legacy calls production LlamaEmbedding.embed using standard Haliax Embedding and norm=None. Native compiles the exact tokens/weight/hidden assignments plus return; omitted position/mask/normalization/layers are correctly excluded. No public native embed method or full activations execution is claimed.",
+    "first_failure": "Preserved first runner/config and six HLO files hash-match self-review inventory. Config and functions/fixture/metrics/abstract_proof/physical/common_physical ASTs are unchanged. First runner rejected CPU BF16 mismatch before JSON; exact initial numerical metrics are absent and not invented. Later reporting/mechanics classification preserves BF16 rejection.",
+    "freeze": "All10 final-freeze file hashes/sizes match; supplied final-freeze hash matches.",
+    "metrics": "Unchanged atol1e-5/rtol1e-4, host FP64 chunked max/mean/L2, coordinate count,8 samples, finite-output checks. Finite forward/VJP mismatch records comparison_valid=false, numerical_exit_code1; TPU exits1 after report, CPU mechanics acceptance is separate.",
+    "norm_scope": "Original compare.json hash verified and provenance.architecture.input_embedding_norm is false.",
+    "operands": "One fixed synthetic cotangent seed20261023 globally RMS-normalized before BF16 quantization. Benchmark seed42 means token-generator seed44. Original V65536/D2048/B8/S2048 retained batch digest matches fixture proof. No absent full-model cotangent is reconstructed.",
+    "outputs": "Only six complete HLOs and one JSON expected; caps2MiB/HLO,12MiB HLO total,256KiB JSON,13MiB total,10 regular files, no truncation. CPU artifact directory is142986 bytes. No raw tensors/checkpoints/profiles/timing/remote transfer logic in runner.",
+    "physical": "Shared host fixture reused; each variant checks device-readback hashes and values. Auto/Explicit physical input and output comparisons retain complete global/local device/shard/memory/layout records; only intended axis mode differs. Independently compared retained CPU input records and found exact equality after removing axis_types.",
+    "precision": "Both public VJPs differentiate FP32 master weights through jmp.Policy.cast_to_compute to BF16. Common incoming cotangent is exactly BF16; returned canonical master gradient is required FP32. FP32 scatter is separate diagnostic only.",
+    "provenance": "Before JAX import, declared pin and preparation/scientific source hashes are verified. Runtime checks exact import paths/bytes for10 declared scientific modules, fresh pycache prefix and disabled bytecode writes; available Git must be clean exact source. Final no-Git abstract report truthfully records false/null Git metadata/commit. Wrong-pin/hash negatives are retained proof claims, corroborated by guard ordering; not rerun.",
+    "source": "All10 manifest scientific source files hash-match the named local source tree; no Git command or fresh clean-HEAD claim was made.",
+    "versions_flags": "Exact configured Python/runtime package versions and XLA flags are checked. TPU mode requires one process, exactly4 global/local devices, v5p family, original LIBTPU_INIT_ARGS. Python CPU3.12.11 versus TPU3.12.15 difference is explicit."
+  },
+  "decision": {
+    "adoption_authorized": false,
+    "full_trainer_accepted": false,
+    "numerical_pass": false,
+    "pending": [
+      "R1 bounded numerical failure report retention",
+      "Root verification of clean exact submission source",
+      "Root durable source/config/preparation archive and remaining launch gates"
+    ],
+    "ready_for_tpu_launch_as_frozen": false,
+    "scientific_design_runnable_as_bounded_hypothesis_test": true,
+    "speed_ratio_accepted": false
+  },
+  "evidence_boundaries": [
+    "No hardware/JAX execution, network/remote query, git/archive/catalog action, or production/frozen-file edit occurred in this review. Only stdlib local reads, hashes/AST inspection and these review-file writes occurred.",
+    "Reviewed retained CPU numerical proof uses runner4bd38d; science/config/fixture ASTs match final b62bfe. Final runner itself has retained no-Git abstract proof only.",
+    "FP32 scatter/NumPy exact agreement is local diagnostic evidence, not an exact mathematical oracle.",
+    "Actual TPU minimal optimized HLO must be independently traced after execution; grouping non-reproduction must be recorded without production changes.",
+    "Original normal no-hook HLO and hook-enabled numerical comparison are different executables; original incoming cotangents and diagnostic optimized HLO were not retained. Isolated result cannot establish full-model cause.",
+    "No numerical pass, adoption, full-model localization, speed ratio, or permission to launch is inferred."
+  ],
+  "reviewed_hashes": {
+    "config.json": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+    "design.md": "7a469fb6eaf0fcae8716feb5f7209ac9172a1e0333a865fe75f8e46d240a0003",
+    "final-freeze.json": "6c4316efa090c133cf05c1070ac357be8823c18b866e8ed9925aceb540ac8f26",
+    "final_no_git_abstract_report.json": "eefff61a6799f4453c3e665343dcf17b7b94489c0c11898e055f6b4a011fa435",
+    "manifest.json": "de8ef8ab780672fd1916b08e165153eadb240f56e33bbfc682dc1cc880d22083",
+    "runner.py": "b62bfe4d2b2508f6c5f742ffd3aa4766f3a8ff82f8e4a6d4c3095948a3ae0110",
+    "small_cpu_report.json": "f3d8aa7cee6f9b7d8dc51ce0d18c574b1d3a9f44ae33124e3cdc73157f6e2b56"
+  },
+  "schema": "native-jax-embedding-vjp-independent-review.v1",
+  "source_commit_declared": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "source_sha256_verified": {
+    "lib/haliax/src/haliax/axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "lib/haliax/src/haliax/core.py": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540",
+    "lib/haliax/src/haliax/jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "lib/haliax/src/haliax/nn/embedding.py": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8",
+    "lib/haliax/src/haliax/nn/mup.py": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144",
+    "lib/haliax/src/haliax/partitioning.py": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+    "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+  },
+  "status": "BLOCKED_ON_NONFINITE_NUMERICAL_REPORT_RETENTION"
+}

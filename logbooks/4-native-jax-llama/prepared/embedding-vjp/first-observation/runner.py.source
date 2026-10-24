@@ -1,0 +1,321 @@
+"""Frozen standalone embedding VJP control; no submission or production edits."""
+import argparse
+import ast
+import hashlib
+import importlib
+import importlib.metadata
+import importlib.util
+import json
+import os
+from pathlib import Path
+import platform
+import subprocess
+import sys
+import types
+
+SOURCE = "8aa8674d10894728ed0b455ae14e14f46457cf9f"
+HLO_FILE_LIMIT = 2 * 1024 * 1024
+HLO_TOTAL_LIMIT = 12 * 1024 * 1024
+JSON_LIMIT = 256 * 1024
+OUTPUT_LIMIT = 13 * 1024 * 1024
+FILE_LIMIT = 10
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def write_json(path, value):
+    data = (json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n").encode()
+    if len(data) > JSON_LIMIT:
+        raise ValueError("JSON output cap exceeded")
+    path.write_bytes(data)
+
+
+def definition(tree, class_name, method_name):
+    classes = [node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == class_name]
+    if len(classes) != 1:
+        raise ValueError("Ambiguous source class")
+    methods = [node for node in classes[0].body if isinstance(node, ast.FunctionDef) and node.name == method_name]
+    if len(methods) != 1:
+        raise ValueError("Ambiguous source method")
+    return methods[0]
+
+
+def source_guard(root, config, manifest, manifest_dir):
+    for name, expected in manifest["preparation_sha256"].items():
+        if digest((manifest_dir / name).read_bytes()) != expected:
+            raise ValueError(f"Preparation bytes differ: {name}")
+    commit = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
+    dirty = subprocess.check_output(["git", "-C", str(root), "status", "--porcelain", "--untracked-files=no"], text=True)
+    if commit != SOURCE or dirty:
+        raise ValueError("Requires a clean tracked source8aa checkout")
+    for name, expected in manifest["source_sha256"].items():
+        if digest((root / name).read_bytes()) != expected:
+            raise ValueError(f"Source bytes differ: {name}")
+    proofs = {}
+    native_path = root / "lib/levanter/src/levanter/models/llama_native.py"
+    tree = ast.parse(native_path.read_text())
+    method = definition(tree, "NativeLlamaModel", "activations")
+    current = {"ast_sha256": digest(ast.dump(method, include_attributes=False).encode()), "statement_count": len(method.body)}
+    if current != manifest["native_activations_guard"]:
+        raise ValueError("Native full method AST/statement-count guard failed")
+    statements = []
+    for target in ("tokens", "weight", "hidden"):
+        matches = [node for node in method.body if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == target for t in node.targets)]
+        if len(matches) != manifest["native_assignment_counts"][target]:
+            raise ValueError(f"Native source assignment-count guard failed: {target}")
+        node = matches[0]
+        if digest(ast.dump(node, include_attributes=False).encode()) != manifest["native_assignment_ast_sha256"][target]:
+            raise ValueError(f"Native assignment AST changed: {target}")
+        statements.append(node)
+    if len(statements) != 3:
+        raise ValueError("Native prefix must have exactly three production assignments")
+    # This is an extracted expression fragment, not NativeLlamaModel.activations or an absent embed method.
+    fn = ast.FunctionDef(name="native_embedding_source_fragment", args=ast.arguments(posonlyargs=[], args=[ast.arg(arg="self"), ast.arg(arg="tokens")], kwonlyargs=[], kw_defaults=[], defaults=[]), body=statements + [ast.Return(value=ast.Name(id="hidden", ctx=ast.Load()))], decorator_list=[])
+    fragment = ast.fix_missing_locations(ast.Module(body=[fn], type_ignores=[]))
+    proofs["native_activations"] = current
+    proofs["native_fragment"] = {"assignment_count": 3, "ast_sha256": digest(ast.dump(fragment, include_attributes=False).encode()), "source_lines": [[n.lineno,n.end_lineno] for n in statements], "claim": "Exact three source assignments plus return; no full activations, no native public embed method"}
+    legacy_tree = ast.parse((root / "lib/levanter/src/levanter/models/llama.py").read_text())
+    legacy = definition(legacy_tree, "LlamaEmbedding", "embed")
+    proof = {"ast_sha256": digest(ast.dump(legacy, include_attributes=False).encode()), "statement_count": len(legacy.body)}
+    if proof != manifest["legacy_embed_guard"]:
+        raise ValueError("Legacy production method AST/statement-count guard failed")
+    proofs["legacy_embed"] = proof
+    return fragment, proofs
+
+
+def runtime(root):
+    # Resolve optional project runtime only after byte guards and explicit source-root selection.
+    for part in ("lib/levanter/src", "lib/haliax/src", "lib/levanter/scripts/bench"):
+        sys.path.insert(0, str(root / part))
+    modules = {name: importlib.import_module(name) for name in ("jax", "jax.numpy", "jaxlib", "numpy", "jmp", "equinox", "optax", "haliax", "bench_llama_native", "levanter.models.llama", "levanter.models.llama_native")}
+    for name, relative in {"haliax":"lib/haliax/src/haliax/__init__.py", "levanter.models.llama":"lib/levanter/src/levanter/models/llama.py", "levanter.models.llama_native":"lib/levanter/src/levanter/models/llama_native.py", "bench_llama_native":"lib/levanter/scripts/bench/bench_llama_native.py"}.items():
+        if Path(modules[name].__file__).resolve() != (root / relative).resolve():
+            raise ValueError(f"Imported from another source tree: {name}")
+    return modules
+
+
+def device_record(device):
+    record = {"id": device.id, "process_index": device.process_index, "platform": device.platform, "kind": device.device_kind, "description": str(device)}
+    if device.platform == "tpu":
+        record.update(coordinates=list(device.coords), core_on_chip=device.core_on_chip)
+    return record
+
+
+def physical(array, bench):
+    record = bench._array_manifest({"value":array})["value"]
+    record["device_local_layout"] = str(array.format.layout)
+    record["global_shards"] = [{"device":device_record(d), "index":str(index)} for d,index in array.sharding.devices_indices_map(array.shape).items()]
+    record["addressable_shards"] = [{"device":device_record(s.device), "index":str(s.index), "replica_id":s.replica_id, "shape":list(s.data.shape), "dtype":str(s.data.dtype), "memory_kind":s.data.sharding.memory_kind, "device_local_layout":str(s.data.format.layout)} for s in array.addressable_shards]
+    return record
+
+
+def common_physical(a, b, bench):
+    # Reuse the frozen benchmark normalization, retaining original complete records separately.
+    x, y = dict(a), dict(b)
+    for record in (x,y):
+        record.pop("axis_types")
+    if bench._physical_layout(x) != bench._physical_layout(y):
+        raise ValueError("Auto/Explicit changed physical placement beyond axis mode")
+
+
+def array_hash(array, np):
+    array = np.asarray(array)
+    h = hashlib.sha256(json.dumps([list(array.shape),str(array.dtype)]).encode())
+    view = array.view(np.uint8).reshape(-1)
+    for start in range(0,view.size,1024*1024):
+        h.update(view[start:start+1024*1024])
+    return h.hexdigest()
+
+
+def metrics(left, right, np, atol, rtol):
+    if left.shape != right.shape or left.dtype != right.dtype:
+        raise ValueError("Compared tensor shape/dtype differ")
+    total = int(left.size); max_abs = 0.; sum_abs = 0.; sum_square = 0.; left_square = 0.; mismatches = 0; different = 0; selected = []; worst = None
+    # Chunk host metrics; never materialize a model-sized FP64 duplicate.
+    for start in range(0,left.shape[0],256):
+        a = np.asarray(left[start:start+256],dtype=np.float64)
+        b = np.asarray(right[start:start+256],dtype=np.float64)
+        if not np.isfinite(a).all() or not np.isfinite(b).all():
+            raise ValueError("Nonfinite comparison")
+        delta = np.abs(a-b); local_max = float(delta.max(initial=0))
+        if worst is None or local_max > max_abs:
+            index = np.unravel_index(int(np.argmax(delta)),delta.shape)
+            worst = [start+int(index[0]),*[int(v) for v in index[1:]]]
+        max_abs = max(max_abs,local_max); sum_abs += float(delta.sum()); sum_square += float(np.square(delta).sum()); left_square += float(np.square(a).sum())
+        failed = delta > atol + rtol * np.abs(b)
+        mismatches += int(failed.sum()); different += int(np.count_nonzero(delta))
+        for index in np.argwhere(failed)[:max(0,8-len(selected))]:
+            ix = tuple(int(v) for v in index)
+            selected.append({"index":[start+ix[0],*ix[1:]],"left":float(a[ix]),"right":float(b[ix])})
+    return {"allclose":mismatches==0,"max_abs":max_abs,"mean_abs":sum_abs/total,"relative_l2":(sum_square/max(left_square,1e-60))**.5,"mismatch_count":mismatches,"different_elements":different,"elements":total,"worst_index":worst,"first_mismatches":selected,"atol":atol,"rtol":rtol}
+
+
+def functions(dims, modules, fragment):
+    jax=modules["jax"]; jnp=modules["jax.numpy"]; hax=modules["haliax"]; jmp=modules["jmp"]; native=modules["levanter.models.llama_native"]; legacy=modules["levanter.models.llama"]
+    sharding = native.NativeLlamaSharding(("data",),"data","model")
+    policy = jmp.Policy(param_dtype=jnp.float32,compute_dtype=jnp.bfloat16,output_dtype=jnp.float32)
+    scope = {"reshard":native.reshard}
+    exec(compile(fragment,"<guarded-source8aa-native-embedding-fragment>","exec"),scope)
+    prefix = scope["native_embedding_source_fragment"]
+    V=hax.Axis("vocab",dims["V"]); D=hax.Axis("embed",dims["D"]); B=hax.Axis("batch",dims["B"]); S=hax.Axis("position",dims["S"])
+    def legacy_forward(w,t):
+        model = legacy.LlamaEmbedding(hax.nn.Embedding(hax.named(w,(V,D)),V,D),None)
+        model = policy.cast_to_compute(model)
+        return model.embed(hax.named(t,(B,S))).array
+    def native_forward(w,t):
+        context = types.SimpleNamespace(token_embeddings=policy.cast_to_compute(w),sharding=sharding)
+        return prefix(context,t)
+    def execute(forward):
+        def vjp(w,t,c):
+            value, pullback = jax.vjp(lambda weight:forward(weight,t),w)
+            return value,pullback(c)[0]
+        return vjp
+    def fp32_scatter(w,t,c):
+        # A diagnostic accumulation control, not a BF16 acceptance criterion or a VJP replacement.
+        del w
+        return jnp.zeros((dims["V"],dims["D"]),dtype=jnp.float32).at[t.reshape(-1)].add(c.astype(jnp.float32).reshape(-1,dims["D"]),out_sharding=jax.sharding.PartitionSpec("model","data"))
+    return {"legacy":execute(legacy_forward),"native":execute(native_forward),"fp32_scatter":fp32_scatter}
+
+
+def fixture(dims, config, np, jnp, bench):
+    # Exact benchmark token generation statement, guarded against source AST drift in the manifest.
+    tokens = np.random.default_rng(config["seed"] + 2).integers(0,dims["V"],(dims["B"],dims["S"]),dtype=np.int32)
+    loss_weight = np.ones_like(tokens,dtype=np.float32); loss_weight[:,-1] = 0
+    # Values are independent of the absent full-model state; content cannot affect embedding's weight VJP.
+    weights = np.arange(dims["V"]*dims["D"],dtype=np.int32).reshape(dims["V"],dims["D"])
+    weights = ((weights % 257)-128).astype(np.float32) / np.float32(64)
+    cotangent = np.random.default_rng(config["cotangent_seed"]).standard_normal((dims["B"],dims["S"],dims["D"]),dtype=np.float32)
+    rms = float(np.sqrt(np.mean(np.square(cotangent,dtype=np.float64))))
+    cotangent /= np.float32(rms)
+    normalized_rms = float(np.sqrt(np.mean(np.square(cotangent,dtype=np.float64))))
+    cotangent = cotangent.astype(jnp.bfloat16)
+    bf16_rms = float(np.sqrt(np.mean(np.square(cotangent.astype(np.float32),dtype=np.float64))))
+    if abs(bf16_rms-1)>0.005:
+        raise ValueError("Fixed BF16 cotangent unit-RMS fixture quantization bound failed")
+    return (weights,tokens,cotangent),{"token_sha256":array_hash(tokens,np),"benchmark_batch_sha256":bench._tensor_digest({"tokens":tokens,"loss_weight":loss_weight}),"master_sha256":array_hash(weights,np),"cotangent_sha256":array_hash(cotangent,np),"pre_quantization_rms":normalized_rms,"bf16_rms":bf16_rms,"cotangent_kind":"Single frozen synthetic unit-RMS fixture, not captured full-model cotangent","cotangent_seed":config["cotangent_seed"],"weights_kind":"Deterministic synthetic FP32 weights, not full-model parameters"}
+
+
+def abstract_proof(dims, modules, fragment, meshes):
+    jax=modules["jax"]; jnp=modules["jax.numpy"]; hax=modules["haliax"]; bench=modules["bench_llama_native"]
+    P=jax.sharding.PartitionSpec; NS=jax.sharding.NamedSharding
+    result={}
+    for name,fn in functions(dims,modules,fragment).items():
+        mesh=meshes["legacy" if name=="legacy" else "native"]
+        with jax.set_mesh(mesh),hax.axis_mapping(bench._compute_mapping()):
+            args=(jax.ShapeDtypeStruct((dims["V"],dims["D"]),jnp.float32,sharding=NS(mesh,P("model","data"))),jax.ShapeDtypeStruct((dims["B"],dims["S"]),jnp.int32,sharding=NS(mesh,P("data",None))),jax.ShapeDtypeStruct((dims["B"],dims["S"],dims["D"]),jnp.bfloat16,sharding=NS(mesh,P("data",None,None))))
+            output=jax.eval_shape(fn,*args)
+            leaves=jax.tree.leaves(output)
+            if name=="fp32_scatter":
+                expected=[([dims["V"],dims["D"]],"float32")]
+            else:
+                expected=[([dims["B"],dims["S"],dims["D"]],"bfloat16"),([dims["V"],dims["D"]],"float32")]
+            actual=[(list(x.shape),str(x.dtype)) for x in leaves]
+            if actual!=expected:
+                raise ValueError("Abstract VJP output shape/dtype mismatch")
+            result[name]=[{"shape":list(x.shape),"dtype":str(x.dtype),"sharding":str(x.sharding)} for x in leaves]
+    return {"dimensions":dims,"outputs":result,"no_large_array_allocated":True,"no_large_lower_compile_execute":True,"limitation":"CPU abstract tracing only; no TPU/compiler grouping or runtime parity evidence"}
+
+
+def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--source-root",type=Path,required=True)
+    parser.add_argument("--config",type=Path,required=True)
+    parser.add_argument("--manifest",type=Path,required=True)
+    parser.add_argument("--mode",choices=("cpu-mechanics","abstract-only","tpu"),required=True)
+    parser.add_argument("--output-dir",type=Path,required=True)
+    args=parser.parse_args()
+    config=json.loads(args.config.read_text());manifest=json.loads(args.manifest.read_text())
+    fragment,source_proof=source_guard(args.source_root.resolve(),config,manifest,args.manifest.parent)
+    if digest(args.config.read_bytes())!=manifest["preparation_sha256"]["config.json"]:
+        raise ValueError("Supplied config is not frozen")
+    m=runtime(args.source_root.resolve());jax=m["jax"];jnp=m["jax.numpy"];np=m["numpy"];hax=m["haliax"];bench=m["bench_llama_native"]
+    versions={name:importlib.metadata.version(name) for name in config["runtime_versions"]}
+    expected_python=config["python_version"] if args.mode=="tpu" else config["cpu_python_version"]
+    if versions!=config["runtime_versions"] or platform.python_version()!=expected_python:
+        raise ValueError("Frozen runtime versions differ")
+    devices=jax.devices();local=jax.local_devices()
+    expected_backend="tpu" if args.mode=="tpu" else "cpu"
+    if jax.default_backend()!=expected_backend or jax.process_count()!=1 or len(devices)!=4 or len(local)!=4 or devices!=local:
+        raise ValueError("Expected one process and exactly four ordered global/local devices")
+    flag_key="tpu_xla_flags" if args.mode=="tpu" else "cpu_xla_flags"
+    if os.environ.get("XLA_FLAGS")!=config[flag_key]:
+        raise ValueError("Frozen XLA flags differ")
+    if args.mode=="tpu" and (os.environ.get("LIBTPU_INIT_ARGS","")!=config["libtpu_init_args"] or any("v5" not in d.device_kind.lower() or "lite" in d.device_kind.lower() for d in devices)):
+        raise ValueError("Expected original v5p device family and exact LIBTPU_INIT_ARGS")
+    jax.config.update("jax_default_matmul_precision","default")
+    Mesh=jax.sharding.Mesh;AxisType=jax.sharding.AxisType;NS=jax.sharding.NamedSharding;P=jax.sharding.PartitionSpec
+    meshes={name:Mesh(np.asarray(devices).reshape(2,2),("data","model"),axis_types=(kind,kind)) for name,kind in (("legacy",AxisType.Auto),("native",AxisType.Explicit))}
+    output=args.output_dir;output.mkdir(parents=True,exist_ok=True)
+    if any(output.iterdir()):
+        raise FileExistsError("Use a fresh empty output directory")
+    record={"schema":"native-jax-common-embedding-vjp.v1","source_commit":SOURCE,"source_sha256":manifest["source_sha256"],"source_guard":source_proof,"runner_sha256":digest(Path(__file__).read_bytes()),"config_sha256":digest(args.config.read_bytes()),"manifest_sha256":digest(args.manifest.read_bytes()),"mode":args.mode,"versions":versions,"python":platform.python_version(),"xla_flags":os.environ.get("XLA_FLAGS"),"libtpu_init_args":os.environ.get("LIBTPU_INIT_ARGS",""),"global_devices":[device_record(d) for d in devices],"local_devices":[device_record(d) for d in local],"process_count":jax.process_count(),"large_abstract":abstract_proof(config["main_dimensions"],m,fragment,meshes),"results":{},"acceptance":{"atol":config["atol"],"rtol":config["rtol"],"full_trainer_accepted":False,"speed_ratio":None},"limits":config["output_limits"],"limitations":config["limitations"]}
+    if args.mode=="abstract-only":
+        write_json(output/"report.json",record);return
+    dims=config["main_dimensions"] if args.mode=="tpu" else config["cpu_dimensions"]
+    args_host,fixture_record=fixture(dims,config,np,jnp,bench)
+    if args.mode=="tpu" and fixture_record["benchmark_batch_sha256"]!=config["original_benchmark_batch_sha256"]:
+        raise ValueError("Original seed42 benchmark token/batch fixture differs")
+    record.update(dimensions=dims,fixture=fixture_record)
+    stored={};hlo_bytes=0;physical_inputs={};results_physical={};functions_by_variant=functions(dims,m,fragment)
+    for name in ("legacy","native","fp32_scatter"):
+        mesh=meshes["legacy" if name=="legacy" else "native"]
+        with jax.set_mesh(mesh),hax.axis_mapping(bench._compute_mapping()):
+            xs=tuple(jax.device_put(x,NS(mesh,p)) for x,p in zip(args_host,(P("model","data"),P("data",None),P("data",None,None)),strict=True))
+            manifests={label:physical(x,bench) for label,x in zip(("master","tokens","cotangent"),xs,strict=True)}
+            hashes={label:array_hash(np.asarray(jax.device_get(x)),np) for label,x in zip(("master","tokens","cotangent"),xs,strict=True)}
+            expected_hashes={label:fixture_record[label+"_sha256"] for label in ("master","cotangent")}|{"tokens":fixture_record["token_sha256"]}
+            if hashes!=expected_hashes:
+                raise ValueError("Device import changed common operand bytes")
+            for label,x in zip(("master","tokens","cotangent"),xs,strict=True):
+                if not np.array_equal(np.asarray(jax.device_get(x)),args_host[("master","tokens","cotangent").index(label)]):
+                    raise ValueError("Common operand equality failed")
+            physical_inputs[name]=manifests
+            out_shardings=NS(mesh,P("model","data")) if name=="fp32_scatter" else (NS(mesh,P("data",None,None)),NS(mesh,P("model","data")))
+            fn=jax.jit(functions_by_variant[name],out_shardings=out_shardings)
+            lowered=fn.lower(*xs);compiled=lowered.compile();hlo=compiled.as_text()
+            for suffix,data in (("stablehlo.txt",lowered.as_text().encode()),("optimized_hlo.txt",hlo.encode())):
+                if len(data)>HLO_FILE_LIMIT or hlo_bytes+len(data)>HLO_TOTAL_LIMIT:
+                    raise ValueError("HLO cap exceeded; never truncate evidence")
+                (output/f"{name}.{suffix}").write_bytes(data);hlo_bytes+=len(data)
+            values=compiled(*xs);jax.block_until_ready(values)
+            leaves=(values,) if name=="fp32_scatter" else values
+            if leaves[-1].dtype!=jnp.float32 or (name!="fp32_scatter" and leaves[0].dtype!=jnp.bfloat16):
+                raise ValueError("Actual compute/master VJP dtype boundary differs")
+            host=tuple(np.asarray(jax.device_get(x)) for x in leaves)
+            if any(not np.isfinite(x).all() for x in host):
+                raise ValueError("Nonfinite VJP output")
+            stored[name]=host
+            results_physical[name]=[physical(x,bench) for x in leaves]
+            record["results"][name]={"input_hashes":hashes,"inputs_physical":manifests,"outputs_physical":results_physical[name],"output_hashes":[array_hash(x,np) for x in host],"hlo_sha256":digest(hlo.encode()),"hlo_bytes":len(hlo.encode()),"scatter_and_collective_lines":[{"line":i,"text":line.split(", backend_config=")[0]} for i,line in enumerate(hlo.splitlines(),1) if re_hlo_operation(line)][:48]}
+            del values,leaves,xs,compiled,lowered
+    for label in physical_inputs["legacy"]:
+        common_physical(physical_inputs["legacy"][label],physical_inputs["native"][label],bench)
+    for a,b in zip(results_physical["legacy"],results_physical["native"],strict=True):
+        common_physical(a,b,bench)
+    record["common_operands_identical_global_bytes_and_physical_layout"]=True
+    record["comparisons"]={"forward_legacy_vs_native":metrics(stored["legacy"][0],stored["native"][0],np,config["atol"],config["rtol"]),"vjp_legacy_vs_native":metrics(stored["legacy"][-1],stored["native"][-1],np,config["atol"],config["rtol"]),"legacy_vs_fp32_scatter_diagnostic":metrics(stored["legacy"][-1],stored["fp32_scatter"][-1],np,config["atol"],config["rtol"]),"native_vs_fp32_scatter_diagnostic":metrics(stored["native"][-1],stored["fp32_scatter"][-1],np,config["atol"],config["rtol"])}
+    record["acceptance"]["isolated_bf16_vjp_allclose"]=record["comparisons"]["vjp_legacy_vs_native"]["allclose"]
+    if args.mode=="cpu-mechanics":
+        oracle=np.zeros((dims["V"],dims["D"]),dtype=np.float32)
+        np.add.at(oracle,args_host[1].reshape(-1),args_host[2].astype(np.float32).reshape(-1,dims["D"]))
+        oracle_comparisons={name:metrics(stored[name][-1],oracle,np,config["atol"],config["rtol"]) for name in stored}
+        record["cpu_numpy_add_at_diagnostic"]=oracle_comparisons
+        if not oracle_comparisons["fp32_scatter"]["allclose"] or not record["comparisons"]["vjp_legacy_vs_native"]["allclose"]:
+            raise ValueError("Small CPU reference scatter mechanics or legacy/native VJP parity failed")
+    record["grouping_result"]={"status":"requires_independent_static_dataflow_review","rule":"If retained minimal HLO does not reproduce the original batch-scatter/reduction versus feature-redistribution grouping, report non-reproduction. Do not infer original numerical cause or modify production.","cpu_is_tpu_grouping_evidence":False}
+    write_json(output/"report.json",record)
+    files=list(output.iterdir())
+    if len(files)>FILE_LIMIT or sum(p.stat().st_size for p in files)>OUTPUT_LIMIT or any(p.is_dir() or p.is_symlink() for p in files):
+        raise ValueError("Total output cap or regular-file restriction exceeded")
+    print(json.dumps({"mode":args.mode,"isolated_bf16_vjp_allclose":record["acceptance"]["isolated_bf16_vjp_allclose"],"files":len(files),"bytes":sum(p.stat().st_size for p in files),"full_trainer_accepted":False,"tpu_executed":args.mode=="tpu"}))
+
+
+def re_hlo_operation(line):
+    # A bounded discovery index only; independent audit must follow actual entrypoint calls.
+    return any(op in line for op in (" scatter("," all-reduce("," all-to-all("," reduce-scatter("))
+
+
+if __name__ == "__main__":
+    main()

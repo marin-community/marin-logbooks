@@ -1,0 +1,129 @@
+{
+  "blocking_findings": [],
+  "decision": {
+    "adoption_or_speed_ratio_accepted": false,
+    "full_trainer_accepted": false,
+    "independent_retention_blocker_resolved": true,
+    "numerical_pass": false,
+    "ready_for_root_archive_and_launch_gates": true,
+    "root_still_owns": [
+      "exact clean submission-source verification",
+      "durable source/config/preparation/review archive",
+      "bounded authorized TPU dispatch and heartbeat monitoring",
+      "independent actual minimal TPU HLO dataflow review"
+    ],
+    "runnable_as_bounded_hypothesis_test": true
+  },
+  "delta_verification": {
+    "all_existing_functions_except_main_metrics_ast_identical": true,
+    "all_v2_freeze_files_hash_and_size_verified": true,
+    "bounded_failure_receipt": "At most3 output records plus existing provenance and current input manifests; JSON cap remains enforced by unchanged write_json. Already bounded HLO total12MiB plus JSON256KiB stays below13MiB, with at most7 files and no arrays.",
+    "config_bytes_identical_v1": true,
+    "finite_metrics_precondition": "All stored actual BF16/FP32 outputs pass the explicit guard before metrics. Finite BF16/FP32 values and frozen sizes cannot overflow FP64 difference/squared-sum metric arithmetic. CPU NumPy diagnostic is finite for the fixed small fixture.",
+    "main_ast_identical_after_only_removing_old_nonfinite_if_and_new_guard_call": true,
+    "metrics_ast_identical_after_only_removing_old_nonfinite_if": true,
+    "only_new_function": "require_finite_outputs",
+    "scientific_manifest_identical_after_excluding_preparation_hashes_and_retention_revision": true,
+    "unchanged": [
+      "production/scientific source hashes",
+      "source/import/AST/statement guards",
+      "functions/fixture/abstract/physical computation",
+      "seeds and single common cotangent",
+      "dimensions and BF16/FP32 cast boundaries",
+      "metric arithmetic and acceptance thresholds",
+      "device/version/XLA flags and exit gates",
+      "output file/size/no-array policy"
+    ]
+  },
+  "evidence_boundaries": [
+    "No hardware/JAX/scientific execution, network/remote query, Git/archive/catalog action, or source/frozen/proof edit occurred in this delta review. Only stdlib local reads/hash/AST comparisons and new review-file writes.",
+    "Retained exact-v2 CPU numerical results remain rejected and unchanged from v1.",
+    "Large abstract evidence remains CPU tracing only; no TPU lower/compile/execute or physical-runtime placement proof.",
+    "Mechanical injection is not a second scientific fixture and does not test embedding numerics.",
+    "Original no-hook HLO and hook-enabled full-model comparison remain different executables. Synthetic common-cotangent isolation cannot establish original full-model cause.",
+    "Hypothesis-test readiness does not mean numerical acceptance or adoption."
+  ],
+  "preservation": {
+    "original_review_and_freezes_proofs_not_edited": true,
+    "v1_freeze_hash_reverified": true,
+    "v1_freeze_sha256": "6c4316efa090c133cf05c1070ac357be8823c18b866e8ed9925aceb540ac8f26"
+  },
+  "resolved_finding": {
+    "id": "R1",
+    "reason": "Explicit require_finite_outputs runs on each real variant output before storage/comparison. Nonfinite outputs produce bounded per-output NaN/+Inf/-Inf counts, partial source/config/runtime/fixture/current-input provenance and JSON-safe invalidity fields, write report.json, then SystemExit(1). Prior successful-comparison sentinel is removed; no completed pair/physical comparison is claimed. Prior HLO files remain intact.",
+    "result": "Resolved",
+    "runner_lines": [
+      152,
+      175,
+      335
+    ]
+  },
+  "retained_proofs": {
+    "exact_v2_no_git_abstract": {
+      "all10_scientific_import_hashes_match": true,
+      "exact_v2_runner_and_manifest": true,
+      "full_dimensions": {
+        "B": 8,
+        "D": 2048,
+        "S": 2048,
+        "V": 65536
+      },
+      "git_metadata_available": false,
+      "no_large_alloc_lower_compile_execute": true,
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-abstract-proof-v2/report.json",
+      "runtime_git_commit": null,
+      "sha256": "ebcb7500fa9b0484483d2b731a79dcc179c3b58647ddfb9e58bb9683a7322eef"
+    },
+    "exact_v2_small_cpu": {
+      "comparison_valid": false,
+      "fixture_metrics_output_hashes_exactly_match_v1": true,
+      "mechanics_passed": true,
+      "path": "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-v2/report.json",
+      "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+      "sha256": "50bcd430e9d4233401789b186cf5bad03afbe1ad82e6c39f7003bbb8d0a99a4c",
+      "vjp_max_abs": 0.0078125,
+      "vjp_mismatch_count": 8,
+      "vjp_relative_l2": 0.0005118898582032608
+    },
+    "mechanical_injected_receipt": {
+      "bytes": 4791,
+      "child_exit_code_retained_in_probe_proof": 1,
+      "comparison_valid": false,
+      "comparisons_absent": true,
+      "comparisons_completed": false,
+      "counts": [
+        {
+          "dtype": "float32",
+          "elements": 6,
+          "nan_count": 1,
+          "negative_inf_count": 1,
+          "nonfinite_count": 3,
+          "output_index": 0,
+          "positive_inf_count": 1,
+          "shape": [
+            2,
+            3
+          ]
+        }
+      ],
+      "exact_v2_runner_manifest_config_hashes_match": true,
+      "interpretation": "Separate mechanical NaN/+Inf/-Inf injection validates receipt behavior only. No scientific fixture/cotangent or JAX execution in that probe. Retained proof/source/receipt inspected; not reexecuted in this delta review.",
+      "numerical_exit_code": 1,
+      "partial_report": true,
+      "path": "/private/tmp/native-jax-embedding-vjp-mechanical-nonfinite-v2/report.json",
+      "probe_source_checks_report_exists_after_child_exit1": true,
+      "sha256": "a61f77873b64241d78a1012c3f92ea150dd66124c9cb93d84e4721b984d25388"
+    }
+  },
+  "reviewed_hashes": {
+    "config.json": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+    "delta-self-review.json": "a92bfc64fd27192cb45047e6b1cf41455bc041a579932546c7574ea6f52dd5cc",
+    "final-freeze.json": "edf71f12cdcb5f3305c3bd23647c3a89e8ec04f60b16c2e0905bca01d2a0aae4",
+    "manifest.json": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+    "mechanical_nonfinite_receipt_probe.py": "b93443e7f812e156fd3a6e1af13235bd4b5d06c4cac6c717cca820abae00cd6e",
+    "runner.py": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e"
+  },
+  "schema": "native-jax-embedding-vjp-v2-independent-delta-review.v1",
+  "scope": "Retention-only delta to previously reviewed v1; no broader source/catalog review repeated.",
+  "status": "PASS_R1_RESOLVED_READY_FOR_ROOT_ARCHIVE_AND_LAUNCH_GATES"
+}

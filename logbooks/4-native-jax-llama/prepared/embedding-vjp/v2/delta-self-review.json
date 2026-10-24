@@ -1,0 +1,364 @@
+{
+  "schema": "embedding-vjp-v2-delta-review.v1",
+  "scope": "Retention-only delta from immutable v1; no production source or scientific fixture change.",
+  "v1_final_freeze_sha256": "6c4316efa090c133cf05c1070ac357be8823c18b866e8ed9925aceb540ac8f26",
+  "v1_freeze_and_earlier_proofs_unchanged": true,
+  "v2_runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+  "v2_config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+  "v2_manifest_sha256": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+  "functions_ast_identical": {
+    "functions": true,
+    "fixture": true,
+    "abstract_proof": true,
+    "physical": true,
+    "common_physical": true,
+    "source_guard": true,
+    "runtime": true,
+    "write_json": true
+  },
+  "metrics_arithmetic_ast_identical_after_only_removing_redundant_nonfinite_raise": true,
+  "main_ast_identical_after_only_replacing_nonfinite_raise_with_receipt_guard": true,
+  "config_fixture_seed_tolerances_unchanged": true,
+  "small_cpu": {
+    "report": "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-v2/report.json",
+    "sha256": "50bcd430e9d4233401789b186cf5bad03afbe1ad82e6c39f7003bbb8d0a99a4c",
+    "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+    "process_exit_code": 0,
+    "mechanics_passed": true,
+    "comparison_valid": false,
+    "numerical_exit_code": 1,
+    "comparisons_exactly_equal_v1": true,
+    "output_hashes_exactly_equal_v1": true,
+    "fixture_exactly_equal_v1": true,
+    "comparisons": {
+      "forward_legacy_vs_native": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 1024,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0,
+          0
+        ]
+      },
+      "legacy_vs_fp32_scatter_diagnostic": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 116,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              1,
+              0
+            ],
+            "left": 0.87890625,
+            "right": 0.879150390625
+          },
+          {
+            "index": [
+              1,
+              2
+            ],
+            "left": -1.7265625,
+            "right": -1.728515625
+          },
+          {
+            "index": [
+              1,
+              5
+            ],
+            "left": 3.03125,
+            "right": 3.0234375
+          },
+          {
+            "index": [
+              1,
+              6
+            ],
+            "left": -1.8125,
+            "right": -1.80859375
+          },
+          {
+            "index": [
+              1,
+              8
+            ],
+            "left": -1.0625,
+            "right": -1.06640625
+          },
+          {
+            "index": [
+              1,
+              9
+            ],
+            "left": 1.328125,
+            "right": 1.330078125
+          },
+          {
+            "index": [
+              1,
+              10
+            ],
+            "left": 2.1875,
+            "right": 2.1953125
+          },
+          {
+            "index": [
+              1,
+              11
+            ],
+            "left": 2.015625,
+            "right": 2.009765625
+          }
+        ],
+        "max_abs": 0.015625,
+        "mean_abs": 0.000171734020113945,
+        "mismatch_count": 116,
+        "relative_l2": 0.0013108695253896607,
+        "rtol": 0.0001,
+        "worst_index": [
+          10,
+          9
+        ]
+      },
+      "native_vs_fp32_scatter_diagnostic": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 116,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              1,
+              0
+            ],
+            "left": 0.87890625,
+            "right": 0.879150390625
+          },
+          {
+            "index": [
+              1,
+              2
+            ],
+            "left": -1.7265625,
+            "right": -1.728515625
+          },
+          {
+            "index": [
+              1,
+              5
+            ],
+            "left": 3.03125,
+            "right": 3.0234375
+          },
+          {
+            "index": [
+              1,
+              6
+            ],
+            "left": -1.8125,
+            "right": -1.80859375
+          },
+          {
+            "index": [
+              1,
+              8
+            ],
+            "left": -1.0625,
+            "right": -1.06640625
+          },
+          {
+            "index": [
+              1,
+              9
+            ],
+            "left": 1.328125,
+            "right": 1.330078125
+          },
+          {
+            "index": [
+              1,
+              10
+            ],
+            "left": 2.1875,
+            "right": 2.1953125
+          },
+          {
+            "index": [
+              1,
+              11
+            ],
+            "left": 2.015625,
+            "right": 2.009765625
+          }
+        ],
+        "max_abs": 0.015625,
+        "mean_abs": 0.0001736413687467575,
+        "mismatch_count": 116,
+        "relative_l2": 0.0013218465105575283,
+        "rtol": 0.0001,
+        "worst_index": [
+          10,
+          9
+        ]
+      },
+      "vjp_legacy_vs_native": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 8,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              25,
+              0
+            ],
+            "left": 0.796875,
+            "right": 0.79296875
+          },
+          {
+            "index": [
+              25,
+              2
+            ],
+            "left": 1.5078125,
+            "right": 1.515625
+          },
+          {
+            "index": [
+              25,
+              13
+            ],
+            "left": -0.2099609375,
+            "right": -0.208984375
+          },
+          {
+            "index": [
+              25,
+              15
+            ],
+            "left": 1.5625,
+            "right": 1.5703125
+          },
+          {
+            "index": [
+              25,
+              18
+            ],
+            "left": 1.2578125,
+            "right": 1.25
+          },
+          {
+            "index": [
+              25,
+              26
+            ],
+            "left": 1.09375,
+            "right": 1.0859375
+          },
+          {
+            "index": [
+              25,
+              29
+            ],
+            "left": 0.51953125,
+            "right": 0.5234375
+          },
+          {
+            "index": [
+              25,
+              30
+            ],
+            "left": -0.0859375,
+            "right": -0.0849609375
+          }
+        ],
+        "max_abs": 0.0078125,
+        "mean_abs": 2.002716064453125e-05,
+        "mismatch_count": 8,
+        "relative_l2": 0.0005118898582032608,
+        "rtol": 0.0001,
+        "worst_index": [
+          25,
+          2
+        ]
+      }
+    }
+  },
+  "mechanical_nonfinite_probe": {
+    "schema": "embedding-vjp-mechanical-nonfinite-receipt-proof.v1",
+    "classification": "Injected output values only; no scientific VJP/fixture/cotangent execution",
+    "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+    "config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+    "manifest_sha256": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+    "receipt_path": "/private/tmp/native-jax-embedding-vjp-mechanical-nonfinite-v2/report.json",
+    "receipt_sha256": "a61f77873b64241d78a1012c3f92ea150dd66124c9cb93d84e4721b984d25388",
+    "receipt_bytes": 4791,
+    "exit_code": 1,
+    "report_retained_before_nonzero_exit": true,
+    "no_successful_comparison_claim": true,
+    "nonfinite_counts": {
+      "dtype": "float32",
+      "elements": 6,
+      "nan_count": 1,
+      "negative_inf_count": 1,
+      "nonfinite_count": 3,
+      "output_index": 0,
+      "positive_inf_count": 1,
+      "shape": [
+        2,
+        3
+      ]
+    },
+    "command": [
+      "/private/tmp/marin-native-jax-query-scale-rounding/.venv/bin/python",
+      "-B",
+      "/private/tmp/native-jax-embedding-vjp-preparation-v2/mechanical_nonfinite_receipt_probe.py",
+      "--child",
+      "--output-dir",
+      "/private/tmp/native-jax-embedding-vjp-mechanical-nonfinite-v2"
+    ],
+    "stdout": "",
+    "stderr": "",
+    "no_arrays_saved": true
+  },
+  "metric_finiteness_precondition": "Every stored BF16/FP32 result is checked by the explicit variant-output guard before metrics. Finite BF16/FP32 values converted to FP64 and summed over the frozen sizes cannot overflow these metrics. This removes an unreachable unreceipted branch without changing metric arithmetic.",
+  "limits": {
+    "files": 10,
+    "hlo_file_bytes": 2097152,
+    "hlo_total_bytes": 12582912,
+    "json_bytes": 262144,
+    "total_bytes": 13631488,
+    "truncation_allowed": false
+  },
+  "remaining_boundaries": [
+    "No TPU execution, network, job, archive or PR.",
+    "Partial nonfinite report is a numerical-failure receipt; it does not claim completed pair comparison or physical matching across unexecuted variants.",
+    "Mechanical injection is outside the scientific fixture and does not test model numerics.",
+    "Fresh independent v2 delta review is required before root archives or launches."
+  ],
+  "exact_v2_no_git_abstract": {
+    "path": "/private/tmp/native-jax-embedding-vjp-no-git-abstract-proof-v2/report.json",
+    "sha256": "ebcb7500fa9b0484483d2b731a79dcc179c3b58647ddfb9e58bb9683a7322eef",
+    "process_exit_code": 0,
+    "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+    "manifest_sha256": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+    "git_metadata_available": false,
+    "runtime_git_commit": null,
+    "dimensions": {
+      "B": 8,
+      "D": 2048,
+      "S": 2048,
+      "V": 65536
+    },
+    "no_large_alloc_lower_compile_execute": true
+  }
+}

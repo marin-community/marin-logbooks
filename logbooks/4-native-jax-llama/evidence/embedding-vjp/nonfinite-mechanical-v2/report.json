@@ -1,0 +1,114 @@
+{
+  "acceptance": {
+    "atol": 1e-05,
+    "full_trainer_accepted": false,
+    "isolated_bf16_vjp_allclose": false,
+    "rtol": 0.0001,
+    "speed_ratio": null
+  },
+  "comparison_valid": false,
+  "config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+  "fixture": {
+    "classification": "Mechanical output injection, not a scientific fixture or full-model cotangent",
+    "scientific_common_fixture_template": {
+      "benchmark_batch_sha256": "b2ae9e3e2d9151ced843012c775a2b46e21bb40d7ca3448bccc66453097081e8",
+      "bf16_rms": 1.0000570876866222,
+      "cotangent_kind": "Single frozen synthetic unit-RMS fixture, not captured full-model cotangent",
+      "cotangent_seed": 20261023,
+      "cotangent_sha256": "73b49a37ef877c58ce49280056b84abba22d2382e5ccb72a3df6614b6a8d85f8",
+      "master_sha256": "1e9258e143e8821bbd241f5c3db25f730a92c64833323a3aab14aa28fca21c95",
+      "pre_quantization_rms": 1.0000000513236762,
+      "token_sha256": "525151b43b271ee8ee1c42a1c2cdc4ef7c168a4ae33b2d675d474eb322f07861",
+      "weights_kind": "Deterministic synthetic FP32 weights, not full-model parameters"
+    },
+    "template_executed_by_this_probe": false
+  },
+  "manifest_sha256": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+  "mechanical_initial_success_sentinels_are_not_scientific_results": true,
+  "mode": "mechanical-receipt-probe-only",
+  "numerical_exit_code": 1,
+  "numerical_failure": {
+    "comparisons_completed": false,
+    "kind": "nonfinite_outputs",
+    "outputs": [
+      {
+        "dtype": "float32",
+        "elements": 6,
+        "nan_count": 1,
+        "negative_inf_count": 1,
+        "nonfinite_count": 3,
+        "output_index": 0,
+        "positive_inf_count": 1,
+        "shape": [
+          2,
+          3
+        ]
+      }
+    ],
+    "partial_report": true,
+    "stage": "mechanical_nonfinite_receipt_only",
+    "variant": "mechanical-output",
+    "verified_common_inputs": {
+      "mechanical_injection": true,
+      "scientific_common_fixture_template_sha256": "73b49a37ef877c58ce49280056b84abba22d2382e5ccb72a3df6614b6a8d85f8",
+      "scientific_fixture_template_not_executed": true
+    }
+  },
+  "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+  "runtime": {
+    "jax_imported": false,
+    "no_hardware_or_scientific_execution": true,
+    "numpy": "2.3.5",
+    "python": "3.12.11"
+  },
+  "schema": "embedding-vjp-mechanical-injected-nonfinite.v1",
+  "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "source_guard": {
+    "legacy_embed": {
+      "ast_sha256": "b7ad5c5d486db5126a66a28b1630461c7a8acb578cdcde91b208765e19b310a8",
+      "statement_count": 3
+    },
+    "native_activations": {
+      "ast_sha256": "4fb95befb804cfca40063261892b2330d7a595388e427623f40dff5daef0e9f1",
+      "statement_count": 12
+    },
+    "native_fragment": {
+      "assignment_count": 3,
+      "ast_sha256": "d0f487382beba426daad76068e8dc47b4c43f6fccfad55b9d555814d81f40f4b",
+      "claim": "Exact three source assignments plus return; no full activations, no native public embed method",
+      "source_lines": [
+        [
+          381,
+          381
+        ],
+        [
+          386,
+          386
+        ],
+        [
+          387,
+          387
+        ]
+      ]
+    },
+    "source_identity": {
+      "claim": "Exact scientific source/import bytes verified; declared pin is not runtime Git proof when metadata is absent",
+      "declared_source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+      "file_hashes_verified": true,
+      "git_metadata_available": false,
+      "runtime_git_commit": null
+    }
+  },
+  "source_sha256": {
+    "lib/haliax/src/haliax/axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "lib/haliax/src/haliax/core.py": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540",
+    "lib/haliax/src/haliax/jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "lib/haliax/src/haliax/nn/embedding.py": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8",
+    "lib/haliax/src/haliax/nn/mup.py": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144",
+    "lib/haliax/src/haliax/partitioning.py": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+    "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+  }
+}

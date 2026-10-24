@@ -1,0 +1,650 @@
+{
+  "schema": "embedding-vjp-preparation-self-review.v1",
+  "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "runner_sha256": "b62bfe4d2b2508f6c5f742ffd3aa4766f3a8ff82f8e4a6d4c3095948a3ae0110",
+  "config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+  "manifest_sha256": "de8ef8ab780672fd1916b08e165153eadb240f56e33bbfc682dc1cc880d22083",
+  "first_observation": {
+    "preparation_snapshot": "/private/tmp/native-jax-embedding-vjp-preparation-first-observation",
+    "runner_sha256": "c6585aa0b4f2cce7e5b4b98c2f75651065764b38f4f24e1df094456a86e26fd3",
+    "config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+    "output_directory": "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-1",
+    "exit_code": 1,
+    "outcome": "An overstrict CPU mechanics check demanded BF16 VJP parity and raised after writing six HLOs, before writing JSON. Initial numerical metrics were not persisted; do not claim their exact values. Subsequent runs retain all metrics for unchanged source/config/fixture.",
+    "preserved_without_modification": true
+  },
+  "pre_observation_scientific_code_unchanged": {
+    "functions": {
+      "identical_ast": true,
+      "ast_sha256": "4b5717e9bdd5cb0f15d5c9645976c53ed3113ddffa5d63d71ae4a3007fd2d2e0"
+    },
+    "fixture": {
+      "identical_ast": true,
+      "ast_sha256": "69ad4b0efc53bba3119e5ee2a5291f76f1b2b5340fd87281b7f989d6f1c00f16"
+    },
+    "metrics": {
+      "identical_ast": true,
+      "ast_sha256": "c74767cdc3a9beaea3a07e1fa52d5c802157b9f6e5cc3f0dd2b18171182b7abd"
+    },
+    "abstract_proof": {
+      "identical_ast": true,
+      "ast_sha256": "3063cc421757cb97550f7f0b398d16a22300965969027e6ad4b9437e8f60203c"
+    },
+    "physical": {
+      "identical_ast": true,
+      "ast_sha256": "ad7ddaddc369f175487a48df65da26805a5615a737efa657b8d8b9d6c8b6b78f"
+    },
+    "common_physical": {
+      "identical_ast": true,
+      "ast_sha256": "e10b024c5ed88621a3020a0d8e68a440508eba50400239c2d9df50e945b2c464"
+    }
+  },
+  "corrections_after_first_observation": [
+    "CPU mechanics now checks common bytes/placement, shape/dtype, forward parity, token row support, and FP32 scatter vs NumPy; BF16 legacy/native VJP mismatch is observation, not harness failure.",
+    "Retain JSON report before numerical failure; TPU numerical rejection exits1 with comparison_valid=false; CPU mechanics can exit0 separately.",
+    "Root-authorized no-.git runtime provenance: declared pin plus exact scientific source/import hashes and actual paths, honest absent-Git record, fresh pycache prefix; available Git remains checked."
+  ],
+  "small_cpu": {
+    "dimensions": {
+      "B": 4,
+      "D": 32,
+      "S": 8,
+      "V": 64
+    },
+    "hardware": "four forced CPU devices, Python3.12.11; no TPU",
+    "mechanics_passed": true,
+    "comparison_valid": false,
+    "numerical_exit_code": 1,
+    "process_exit_code": 0,
+    "fixture": {
+      "benchmark_batch_sha256": "b2ae9e3e2d9151ced843012c775a2b46e21bb40d7ca3448bccc66453097081e8",
+      "bf16_rms": 1.0000570876866222,
+      "cotangent_kind": "Single frozen synthetic unit-RMS fixture, not captured full-model cotangent",
+      "cotangent_seed": 20261023,
+      "cotangent_sha256": "73b49a37ef877c58ce49280056b84abba22d2382e5ccb72a3df6614b6a8d85f8",
+      "master_sha256": "1e9258e143e8821bbd241f5c3db25f730a92c64833323a3aab14aa28fca21c95",
+      "pre_quantization_rms": 1.0000000513236762,
+      "token_sha256": "525151b43b271ee8ee1c42a1c2cdc4ef7c168a4ae33b2d675d474eb322f07861",
+      "weights_kind": "Deterministic synthetic FP32 weights, not full-model parameters"
+    },
+    "comparisons": {
+      "forward_legacy_vs_native": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 1024,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0,
+          0
+        ]
+      },
+      "legacy_vs_fp32_scatter_diagnostic": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 116,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              1,
+              0
+            ],
+            "left": 0.87890625,
+            "right": 0.879150390625
+          },
+          {
+            "index": [
+              1,
+              2
+            ],
+            "left": -1.7265625,
+            "right": -1.728515625
+          },
+          {
+            "index": [
+              1,
+              5
+            ],
+            "left": 3.03125,
+            "right": 3.0234375
+          },
+          {
+            "index": [
+              1,
+              6
+            ],
+            "left": -1.8125,
+            "right": -1.80859375
+          },
+          {
+            "index": [
+              1,
+              8
+            ],
+            "left": -1.0625,
+            "right": -1.06640625
+          },
+          {
+            "index": [
+              1,
+              9
+            ],
+            "left": 1.328125,
+            "right": 1.330078125
+          },
+          {
+            "index": [
+              1,
+              10
+            ],
+            "left": 2.1875,
+            "right": 2.1953125
+          },
+          {
+            "index": [
+              1,
+              11
+            ],
+            "left": 2.015625,
+            "right": 2.009765625
+          }
+        ],
+        "max_abs": 0.015625,
+        "mean_abs": 0.000171734020113945,
+        "mismatch_count": 116,
+        "relative_l2": 0.0013108695253896607,
+        "rtol": 0.0001,
+        "worst_index": [
+          10,
+          9
+        ]
+      },
+      "native_vs_fp32_scatter_diagnostic": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 116,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              1,
+              0
+            ],
+            "left": 0.87890625,
+            "right": 0.879150390625
+          },
+          {
+            "index": [
+              1,
+              2
+            ],
+            "left": -1.7265625,
+            "right": -1.728515625
+          },
+          {
+            "index": [
+              1,
+              5
+            ],
+            "left": 3.03125,
+            "right": 3.0234375
+          },
+          {
+            "index": [
+              1,
+              6
+            ],
+            "left": -1.8125,
+            "right": -1.80859375
+          },
+          {
+            "index": [
+              1,
+              8
+            ],
+            "left": -1.0625,
+            "right": -1.06640625
+          },
+          {
+            "index": [
+              1,
+              9
+            ],
+            "left": 1.328125,
+            "right": 1.330078125
+          },
+          {
+            "index": [
+              1,
+              10
+            ],
+            "left": 2.1875,
+            "right": 2.1953125
+          },
+          {
+            "index": [
+              1,
+              11
+            ],
+            "left": 2.015625,
+            "right": 2.009765625
+          }
+        ],
+        "max_abs": 0.015625,
+        "mean_abs": 0.0001736413687467575,
+        "mismatch_count": 116,
+        "relative_l2": 0.0013218465105575283,
+        "rtol": 0.0001,
+        "worst_index": [
+          10,
+          9
+        ]
+      },
+      "vjp_legacy_vs_native": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 8,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              25,
+              0
+            ],
+            "left": 0.796875,
+            "right": 0.79296875
+          },
+          {
+            "index": [
+              25,
+              2
+            ],
+            "left": 1.5078125,
+            "right": 1.515625
+          },
+          {
+            "index": [
+              25,
+              13
+            ],
+            "left": -0.2099609375,
+            "right": -0.208984375
+          },
+          {
+            "index": [
+              25,
+              15
+            ],
+            "left": 1.5625,
+            "right": 1.5703125
+          },
+          {
+            "index": [
+              25,
+              18
+            ],
+            "left": 1.2578125,
+            "right": 1.25
+          },
+          {
+            "index": [
+              25,
+              26
+            ],
+            "left": 1.09375,
+            "right": 1.0859375
+          },
+          {
+            "index": [
+              25,
+              29
+            ],
+            "left": 0.51953125,
+            "right": 0.5234375
+          },
+          {
+            "index": [
+              25,
+              30
+            ],
+            "left": -0.0859375,
+            "right": -0.0849609375
+          }
+        ],
+        "max_abs": 0.0078125,
+        "mean_abs": 2.002716064453125e-05,
+        "mismatch_count": 8,
+        "relative_l2": 0.0005118898582032608,
+        "rtol": 0.0001,
+        "worst_index": [
+          25,
+          2
+        ]
+      }
+    },
+    "cpu_numpy_add_at_diagnostic": {
+      "fp32_scatter": {
+        "allclose": true,
+        "atol": 1e-05,
+        "different_elements": 0,
+        "elements": 2048,
+        "first_mismatches": [],
+        "max_abs": 0.0,
+        "mean_abs": 0.0,
+        "mismatch_count": 0,
+        "relative_l2": 0.0,
+        "rtol": 0.0001,
+        "worst_index": [
+          0,
+          0
+        ]
+      },
+      "legacy": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 116,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              1,
+              0
+            ],
+            "left": 0.87890625,
+            "right": 0.879150390625
+          },
+          {
+            "index": [
+              1,
+              2
+            ],
+            "left": -1.7265625,
+            "right": -1.728515625
+          },
+          {
+            "index": [
+              1,
+              5
+            ],
+            "left": 3.03125,
+            "right": 3.0234375
+          },
+          {
+            "index": [
+              1,
+              6
+            ],
+            "left": -1.8125,
+            "right": -1.80859375
+          },
+          {
+            "index": [
+              1,
+              8
+            ],
+            "left": -1.0625,
+            "right": -1.06640625
+          },
+          {
+            "index": [
+              1,
+              9
+            ],
+            "left": 1.328125,
+            "right": 1.330078125
+          },
+          {
+            "index": [
+              1,
+              10
+            ],
+            "left": 2.1875,
+            "right": 2.1953125
+          },
+          {
+            "index": [
+              1,
+              11
+            ],
+            "left": 2.015625,
+            "right": 2.009765625
+          }
+        ],
+        "max_abs": 0.015625,
+        "mean_abs": 0.000171734020113945,
+        "mismatch_count": 116,
+        "relative_l2": 0.0013108695253896607,
+        "rtol": 0.0001,
+        "worst_index": [
+          10,
+          9
+        ]
+      },
+      "native": {
+        "allclose": false,
+        "atol": 1e-05,
+        "different_elements": 116,
+        "elements": 2048,
+        "first_mismatches": [
+          {
+            "index": [
+              1,
+              0
+            ],
+            "left": 0.87890625,
+            "right": 0.879150390625
+          },
+          {
+            "index": [
+              1,
+              2
+            ],
+            "left": -1.7265625,
+            "right": -1.728515625
+          },
+          {
+            "index": [
+              1,
+              5
+            ],
+            "left": 3.03125,
+            "right": 3.0234375
+          },
+          {
+            "index": [
+              1,
+              6
+            ],
+            "left": -1.8125,
+            "right": -1.80859375
+          },
+          {
+            "index": [
+              1,
+              8
+            ],
+            "left": -1.0625,
+            "right": -1.06640625
+          },
+          {
+            "index": [
+              1,
+              9
+            ],
+            "left": 1.328125,
+            "right": 1.330078125
+          },
+          {
+            "index": [
+              1,
+              10
+            ],
+            "left": 2.1875,
+            "right": 2.1953125
+          },
+          {
+            "index": [
+              1,
+              11
+            ],
+            "left": 2.015625,
+            "right": 2.009765625
+          }
+        ],
+        "max_abs": 0.015625,
+        "mean_abs": 0.0001736413687467575,
+        "mismatch_count": 116,
+        "relative_l2": 0.0013218465105575283,
+        "rtol": 0.0001,
+        "worst_index": [
+          10,
+          9
+        ]
+      }
+    },
+    "common_operands_identical_global_bytes_and_physical_layout": true,
+    "report_path": "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/report.json",
+    "report_sha256": "f3d8aa7cee6f9b7d8dc51ce0d18c574b1d3a9f44ae33124e3cdc73157f6e2b56"
+  },
+  "large_abstract": {
+    "path": "/private/tmp/native-jax-embedding-vjp-no-git-abstract-proof/report.json",
+    "sha256": "eefff61a6799f4453c3e665343dcf17b7b94489c0c11898e055f6b4a011fa435",
+    "dimensions": {
+      "V": 65536,
+      "D": 2048,
+      "B": 8,
+      "S": 2048
+    },
+    "no_large_alloc_lower_compile_execute": true,
+    "auto_abstract_sharding_not_inferred": "Legacy eval_shape outputs sharding=None; final storage/restored placement is a compiled-runtime check, demonstrated only at small CPU dimensions so far."
+  },
+  "runtime_provenance_regression": "provenance-regression.json",
+  "token_fixture_proof": "original-token-proof.json",
+  "independent_review_status": "Root/fresh reviewer pending; this is author self-review only.",
+  "tpu_launch_status": "Not launched, no network/job/archive/PR/push.",
+  "control_classifications": {
+    "legacy": "Production LlamaEmbedding.embed through actual jmp FP32-master to BF16-compute cast.",
+    "native": "Exactly three guarded production embedding-prefix assignments; neither absent public embed nor full activations.",
+    "cotangent": "One fixed nontrivial synthetic unit-RMS fixture, not actual full-model cotangent.",
+    "fp32_scatter": "Higher-precision diagnostic accumulation, not exact mathematical oracle or acceptance override.",
+    "small_cpu_result": "Isolated public lookup VJP numerical mismatch on CPU only. Does not establish TPU or full-model cause.",
+    "full_trainer": "Remains rejected; no speed ratio."
+  },
+  "proof_files": {
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-1/native.stablehlo.txt": {
+      "bytes": 3104,
+      "sha256": "43ac1f018b520fe70c8619e3118754afab6cb599b4178b4f0115da1a454e0910"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-1/fp32_scatter.stablehlo.txt": {
+      "bytes": 2438,
+      "sha256": "6b35e482a4343911080f7b58fdaf173a1e34093d8129e040c0b99aee448e45d8"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-1/native.optimized_hlo.txt": {
+      "bytes": 19081,
+      "sha256": "65d90883e57bff5ef812f5a98d52b29ef4e8df6f150fd2f1b7b04d800c229251"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-1/fp32_scatter.optimized_hlo.txt": {
+      "bytes": 7030,
+      "sha256": "1ede8a2e312e15fe3abdeec2e0b86debdb8e1cd572db4b50b2ecc20144627a85"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-1/legacy.stablehlo.txt": {
+      "bytes": 2949,
+      "sha256": "beeb8a3b1e9cf2b9b9572ac6c010cd0cc4455195e537c5da7be107a1900dc64c"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-1/legacy.optimized_hlo.txt": {
+      "bytes": 23994,
+      "sha256": "f75aa62ae47cba398751fb10e136ff96a81ab65183bbe4f3a0dfe1a0966a55d7"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-2/native.stablehlo.txt": {
+      "bytes": 3104,
+      "sha256": "43ac1f018b520fe70c8619e3118754afab6cb599b4178b4f0115da1a454e0910"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-2/report.json": {
+      "bytes": 84333,
+      "sha256": "e06974a8ad0edc372e78bce4b3c954e2585480856cf459e23188726b9c40c5a7"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-2/fp32_scatter.stablehlo.txt": {
+      "bytes": 2438,
+      "sha256": "6b35e482a4343911080f7b58fdaf173a1e34093d8129e040c0b99aee448e45d8"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-2/native.optimized_hlo.txt": {
+      "bytes": 19081,
+      "sha256": "76034c23f3cebcd6935736c3183352f251f05680f6a8172af52516f1b9c47fdc"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-2/fp32_scatter.optimized_hlo.txt": {
+      "bytes": 7030,
+      "sha256": "9a5518ec5b1327543511724a66df88daa0cb5b6af6dbada7b9cf022104bbccc5"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-2/legacy.stablehlo.txt": {
+      "bytes": 2949,
+      "sha256": "beeb8a3b1e9cf2b9b9572ac6c010cd0cc4455195e537c5da7be107a1900dc64c"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-2/legacy.optimized_hlo.txt": {
+      "bytes": 23994,
+      "sha256": "f1caa60d8381879892f1f2e6d85c8cd41dadaa9cdb86bd56118c3f0df1ee1008"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/native.stablehlo.txt": {
+      "bytes": 3104,
+      "sha256": "43ac1f018b520fe70c8619e3118754afab6cb599b4178b4f0115da1a454e0910"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/report.json": {
+      "bytes": 84390,
+      "sha256": "f3d8aa7cee6f9b7d8dc51ce0d18c574b1d3a9f44ae33124e3cdc73157f6e2b56"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/fp32_scatter.stablehlo.txt": {
+      "bytes": 2438,
+      "sha256": "6b35e482a4343911080f7b58fdaf173a1e34093d8129e040c0b99aee448e45d8"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/native.optimized_hlo.txt": {
+      "bytes": 19081,
+      "sha256": "f95ec7c8010d5b971bb50591adfaab6172c267ecb1ce4f5b63fb1cacd295b6f8"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/fp32_scatter.optimized_hlo.txt": {
+      "bytes": 7030,
+      "sha256": "5966bbe22d5ddd955098ba51b74e07c8f76dd572edc896c059605c8ad233daa2"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/legacy.stablehlo.txt": {
+      "bytes": 2949,
+      "sha256": "beeb8a3b1e9cf2b9b9572ac6c010cd0cc4455195e537c5da7be107a1900dc64c"
+    },
+    "/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/legacy.optimized_hlo.txt": {
+      "bytes": 23994,
+      "sha256": "83c8a1fab24255f411aa979052e632523c63ff6ab366a02a077cbe3875651006"
+    },
+    "/private/tmp/native-jax-embedding-vjp-no-git-abstract-proof/report.json": {
+      "bytes": 9048,
+      "sha256": "eefff61a6799f4453c3e665343dcf17b7b94489c0c11898e055f6b4a011fa435"
+    }
+  },
+  "output_limits": {
+    "files": 10,
+    "hlo_file_bytes": 2097152,
+    "hlo_total_bytes": 12582912,
+    "json_bytes": 262144,
+    "total_bytes": 13631488,
+    "truncation_allowed": false
+  },
+  "cpu_order_signature": {
+    "path": "cpu-order-signature.json",
+    "sha256": "6f564747fc4fac3a27c561ccf2475a9791ec6d1b484b956919bbda7aec98f139",
+    "cpu_legalization_caveat": "F32 wrappers and explicit BF16 round-trips differ from typed original TPU HLO; no TPU-order claim."
+  },
+  "input_norm_scope_proof": {
+    "schema": "embedding-vjp-input-norm-scope-proof.v1",
+    "original_full_trainer_report": "/private/tmp/native-jax-query-scale-15b-trainer-v2-results/bfloat16/compare.json",
+    "original_full_trainer_report_sha256": "46e076e2e6780c85caa78f11f430701dd7172f2d6961c295911747be3903e403",
+    "json_path": "provenance.architecture.input_embedding_norm",
+    "value": false,
+    "control": "Lookup transpose only, excludes optional input-embedding normalization. Legacy production LlamaEmbedding is constructed with norm=None in frozen functions AST; native source fragment stops before the optional embedding_norm branch.",
+    "source_config": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+    "runner_sha256": "b62bfe4d2b2508f6c5f742ffd3aa4766f3a8ff82f8e4a6d4c3095948a3ae0110"
+  },
+  "documentation_only_final_manifest_update": "Root-requested explicit input_embedding_norm=false evidence was added to design after no-Git abstract proof. Runtime/scientific runner bytes unchanged; config remains pre-observation exact."
+}

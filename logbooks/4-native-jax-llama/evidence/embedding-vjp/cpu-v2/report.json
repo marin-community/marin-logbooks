@@ -1,0 +1,2860 @@
+{
+  "acceptance": {
+    "atol": 1e-05,
+    "full_trainer_accepted": false,
+    "isolated_bf16_vjp_allclose": false,
+    "rtol": 0.0001,
+    "speed_ratio": null
+  },
+  "common_operands_identical_global_bytes_and_physical_layout": true,
+  "comparison_valid": false,
+  "comparisons": {
+    "forward_legacy_vs_native": {
+      "allclose": true,
+      "atol": 1e-05,
+      "different_elements": 0,
+      "elements": 1024,
+      "first_mismatches": [],
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "relative_l2": 0.0,
+      "rtol": 0.0001,
+      "worst_index": [
+        0,
+        0,
+        0
+      ]
+    },
+    "legacy_vs_fp32_scatter_diagnostic": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 116,
+      "elements": 2048,
+      "first_mismatches": [
+        {
+          "index": [
+            1,
+            0
+          ],
+          "left": 0.87890625,
+          "right": 0.879150390625
+        },
+        {
+          "index": [
+            1,
+            2
+          ],
+          "left": -1.7265625,
+          "right": -1.728515625
+        },
+        {
+          "index": [
+            1,
+            5
+          ],
+          "left": 3.03125,
+          "right": 3.0234375
+        },
+        {
+          "index": [
+            1,
+            6
+          ],
+          "left": -1.8125,
+          "right": -1.80859375
+        },
+        {
+          "index": [
+            1,
+            8
+          ],
+          "left": -1.0625,
+          "right": -1.06640625
+        },
+        {
+          "index": [
+            1,
+            9
+          ],
+          "left": 1.328125,
+          "right": 1.330078125
+        },
+        {
+          "index": [
+            1,
+            10
+          ],
+          "left": 2.1875,
+          "right": 2.1953125
+        },
+        {
+          "index": [
+            1,
+            11
+          ],
+          "left": 2.015625,
+          "right": 2.009765625
+        }
+      ],
+      "max_abs": 0.015625,
+      "mean_abs": 0.000171734020113945,
+      "mismatch_count": 116,
+      "relative_l2": 0.0013108695253896607,
+      "rtol": 0.0001,
+      "worst_index": [
+        10,
+        9
+      ]
+    },
+    "native_vs_fp32_scatter_diagnostic": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 116,
+      "elements": 2048,
+      "first_mismatches": [
+        {
+          "index": [
+            1,
+            0
+          ],
+          "left": 0.87890625,
+          "right": 0.879150390625
+        },
+        {
+          "index": [
+            1,
+            2
+          ],
+          "left": -1.7265625,
+          "right": -1.728515625
+        },
+        {
+          "index": [
+            1,
+            5
+          ],
+          "left": 3.03125,
+          "right": 3.0234375
+        },
+        {
+          "index": [
+            1,
+            6
+          ],
+          "left": -1.8125,
+          "right": -1.80859375
+        },
+        {
+          "index": [
+            1,
+            8
+          ],
+          "left": -1.0625,
+          "right": -1.06640625
+        },
+        {
+          "index": [
+            1,
+            9
+          ],
+          "left": 1.328125,
+          "right": 1.330078125
+        },
+        {
+          "index": [
+            1,
+            10
+          ],
+          "left": 2.1875,
+          "right": 2.1953125
+        },
+        {
+          "index": [
+            1,
+            11
+          ],
+          "left": 2.015625,
+          "right": 2.009765625
+        }
+      ],
+      "max_abs": 0.015625,
+      "mean_abs": 0.0001736413687467575,
+      "mismatch_count": 116,
+      "relative_l2": 0.0013218465105575283,
+      "rtol": 0.0001,
+      "worst_index": [
+        10,
+        9
+      ]
+    },
+    "vjp_legacy_vs_native": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 8,
+      "elements": 2048,
+      "first_mismatches": [
+        {
+          "index": [
+            25,
+            0
+          ],
+          "left": 0.796875,
+          "right": 0.79296875
+        },
+        {
+          "index": [
+            25,
+            2
+          ],
+          "left": 1.5078125,
+          "right": 1.515625
+        },
+        {
+          "index": [
+            25,
+            13
+          ],
+          "left": -0.2099609375,
+          "right": -0.208984375
+        },
+        {
+          "index": [
+            25,
+            15
+          ],
+          "left": 1.5625,
+          "right": 1.5703125
+        },
+        {
+          "index": [
+            25,
+            18
+          ],
+          "left": 1.2578125,
+          "right": 1.25
+        },
+        {
+          "index": [
+            25,
+            26
+          ],
+          "left": 1.09375,
+          "right": 1.0859375
+        },
+        {
+          "index": [
+            25,
+            29
+          ],
+          "left": 0.51953125,
+          "right": 0.5234375
+        },
+        {
+          "index": [
+            25,
+            30
+          ],
+          "left": -0.0859375,
+          "right": -0.0849609375
+        }
+      ],
+      "max_abs": 0.0078125,
+      "mean_abs": 2.002716064453125e-05,
+      "mismatch_count": 8,
+      "relative_l2": 0.0005118898582032608,
+      "rtol": 0.0001,
+      "worst_index": [
+        25,
+        2
+      ]
+    }
+  },
+  "config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+  "cpu_mechanics": {
+    "bf16_vjp_parity_is_result_not_mechanics_criterion": true,
+    "forward_legacy_native_allclose": true,
+    "fp32_reference_matches_numpy_diagnostic": true,
+    "nonzero_rows_match_token_support": {
+      "fp32_scatter": true,
+      "legacy": true,
+      "native": true
+    },
+    "passed": true
+  },
+  "cpu_numpy_add_at_diagnostic": {
+    "fp32_scatter": {
+      "allclose": true,
+      "atol": 1e-05,
+      "different_elements": 0,
+      "elements": 2048,
+      "first_mismatches": [],
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "mismatch_count": 0,
+      "relative_l2": 0.0,
+      "rtol": 0.0001,
+      "worst_index": [
+        0,
+        0
+      ]
+    },
+    "legacy": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 116,
+      "elements": 2048,
+      "first_mismatches": [
+        {
+          "index": [
+            1,
+            0
+          ],
+          "left": 0.87890625,
+          "right": 0.879150390625
+        },
+        {
+          "index": [
+            1,
+            2
+          ],
+          "left": -1.7265625,
+          "right": -1.728515625
+        },
+        {
+          "index": [
+            1,
+            5
+          ],
+          "left": 3.03125,
+          "right": 3.0234375
+        },
+        {
+          "index": [
+            1,
+            6
+          ],
+          "left": -1.8125,
+          "right": -1.80859375
+        },
+        {
+          "index": [
+            1,
+            8
+          ],
+          "left": -1.0625,
+          "right": -1.06640625
+        },
+        {
+          "index": [
+            1,
+            9
+          ],
+          "left": 1.328125,
+          "right": 1.330078125
+        },
+        {
+          "index": [
+            1,
+            10
+          ],
+          "left": 2.1875,
+          "right": 2.1953125
+        },
+        {
+          "index": [
+            1,
+            11
+          ],
+          "left": 2.015625,
+          "right": 2.009765625
+        }
+      ],
+      "max_abs": 0.015625,
+      "mean_abs": 0.000171734020113945,
+      "mismatch_count": 116,
+      "relative_l2": 0.0013108695253896607,
+      "rtol": 0.0001,
+      "worst_index": [
+        10,
+        9
+      ]
+    },
+    "native": {
+      "allclose": false,
+      "atol": 1e-05,
+      "different_elements": 116,
+      "elements": 2048,
+      "first_mismatches": [
+        {
+          "index": [
+            1,
+            0
+          ],
+          "left": 0.87890625,
+          "right": 0.879150390625
+        },
+        {
+          "index": [
+            1,
+            2
+          ],
+          "left": -1.7265625,
+          "right": -1.728515625
+        },
+        {
+          "index": [
+            1,
+            5
+          ],
+          "left": 3.03125,
+          "right": 3.0234375
+        },
+        {
+          "index": [
+            1,
+            6
+          ],
+          "left": -1.8125,
+          "right": -1.80859375
+        },
+        {
+          "index": [
+            1,
+            8
+          ],
+          "left": -1.0625,
+          "right": -1.06640625
+        },
+        {
+          "index": [
+            1,
+            9
+          ],
+          "left": 1.328125,
+          "right": 1.330078125
+        },
+        {
+          "index": [
+            1,
+            10
+          ],
+          "left": 2.1875,
+          "right": 2.1953125
+        },
+        {
+          "index": [
+            1,
+            11
+          ],
+          "left": 2.015625,
+          "right": 2.009765625
+        }
+      ],
+      "max_abs": 0.015625,
+      "mean_abs": 0.0001736413687467575,
+      "mismatch_count": 116,
+      "relative_l2": 0.0013218465105575283,
+      "rtol": 0.0001,
+      "worst_index": [
+        10,
+        9
+      ]
+    }
+  },
+  "dimensions": {
+    "B": 4,
+    "D": 32,
+    "S": 8,
+    "V": 64
+  },
+  "dont_write_bytecode": true,
+  "fixture": {
+    "benchmark_batch_sha256": "b2ae9e3e2d9151ced843012c775a2b46e21bb40d7ca3448bccc66453097081e8",
+    "bf16_rms": 1.0000570876866222,
+    "cotangent_kind": "Single frozen synthetic unit-RMS fixture, not captured full-model cotangent",
+    "cotangent_seed": 20261023,
+    "cotangent_sha256": "73b49a37ef877c58ce49280056b84abba22d2382e5ccb72a3df6614b6a8d85f8",
+    "master_sha256": "1e9258e143e8821bbd241f5c3db25f730a92c64833323a3aab14aa28fca21c95",
+    "pre_quantization_rms": 1.0000000513236762,
+    "token_sha256": "525151b43b271ee8ee1c42a1c2cdc4ef7c168a4ae33b2d675d474eb322f07861",
+    "weights_kind": "Deterministic synthetic FP32 weights, not full-model parameters"
+  },
+  "fresh_pycache_prefix": "/var/folders/9h/dpqcjkwn5lx0sp3162765y780000gn/T/native-embedding-vjp-pycache-kukq3y8j",
+  "global_devices": [
+    {
+      "description": "cpu:0",
+      "id": 0,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:1",
+      "id": 1,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:2",
+      "id": 2,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:3",
+      "id": 3,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    }
+  ],
+  "grouping_result": {
+    "cpu_is_tpu_grouping_evidence": false,
+    "rule": "If retained minimal HLO does not reproduce the original batch-scatter/reduction versus feature-redistribution grouping, report non-reproduction. Do not infer original numerical cause or modify production.",
+    "status": "requires_independent_static_dataflow_review"
+  },
+  "import_proof": {
+    "bench_llama_native": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/scripts/bench/bench_llama_native.py",
+      "sha256": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77"
+    },
+    "haliax.axis": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/axis.py",
+      "sha256": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830"
+    },
+    "haliax.core": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/core.py",
+      "sha256": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540"
+    },
+    "haliax.jax_utils": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/jax_utils.py",
+      "sha256": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d"
+    },
+    "haliax.nn.embedding": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/nn/embedding.py",
+      "sha256": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8"
+    },
+    "haliax.nn.mup": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/nn/mup.py",
+      "sha256": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144"
+    },
+    "haliax.partitioning": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/partitioning.py",
+      "sha256": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08"
+    },
+    "levanter.models.llama": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/src/levanter/models/llama.py",
+      "sha256": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f"
+    },
+    "levanter.models.llama_native": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/src/levanter/models/llama_native.py",
+      "sha256": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984"
+    },
+    "levanter.trainer": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/src/levanter/trainer.py",
+      "sha256": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+    }
+  },
+  "large_abstract": {
+    "dimensions": {
+      "B": 8,
+      "D": 2048,
+      "S": 2048,
+      "V": 65536
+    },
+    "limitation": "CPU abstract tracing only; no TPU/compiler grouping or runtime parity evidence",
+    "no_large_array_allocated": true,
+    "no_large_lower_compile_execute": true,
+    "outputs": {
+      "fp32_scatter": [
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('model', 'data'))"
+        }
+      ],
+      "legacy": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "None"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "None"
+        }
+      ],
+      "native": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('data', None, None))"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('model', 'data'))"
+        }
+      ]
+    }
+  },
+  "libtpu_init_args": "",
+  "limitations": [
+    "A synthetic common cotangent, not unavailable full-model cotangent.",
+    "Native is guarded production source fragment, not an absent public native embed method or full activations.",
+    "Full Trainer remains numerically rejected regardless of isolated result.",
+    "CPU mechanics and abstract proof do not validate TPU numerical behavior or compiler grouping.",
+    "FP32 accumulation is a diagnostic higher-precision reference, not an exact oracle.",
+    "No automatic full-HLO grouping proof; independent actual-entrypoint static review required."
+  ],
+  "limits": {
+    "files": 10,
+    "hlo_file_bytes": 2097152,
+    "hlo_total_bytes": 12582912,
+    "json_bytes": 262144,
+    "total_bytes": 13631488,
+    "truncation_allowed": false
+  },
+  "local_devices": [
+    {
+      "description": "cpu:0",
+      "id": 0,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:1",
+      "id": 1,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:2",
+      "id": 2,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:3",
+      "id": 3,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    }
+  ],
+  "manifest_sha256": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+  "mode": "cpu-mechanics",
+  "numerical_exit_code": 1,
+  "process_count": 1,
+  "python": "3.12.11",
+  "results": {
+    "fp32_scatter": {
+      "hlo_bytes": 7033,
+      "hlo_sha256": "6ec68181cedfb59362ba0db6bee8e498609aaac7f71ee1f3fe7491d6c20f4399",
+      "input_hashes": {
+        "cotangent": "73b49a37ef877c58ce49280056b84abba22d2382e5ccb72a3df6614b6a8d85f8",
+        "master": "1e9258e143e8821bbd241f5c3db25f730a92c64833323a3aab14aa28fca21c95",
+        "tokens": "525151b43b271ee8ee1c42a1c2cdc4ef7c168a4ae33b2d675d474eb322f07861"
+      },
+      "inputs_physical": {
+        "cotangent": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8,
+            32
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        "master": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(16, 32, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(16, 32, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            64,
+            32
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        },
+        "tokens": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 2, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 2, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(2, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(2, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "int32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8
+          ],
+          "spec": [
+            "data",
+            null
+          ]
+        }
+      },
+      "output_hashes": [
+        "920dcaa051852df3fc261c1d29074503f47d2e2fd830c108417c4df23e84eb94"
+      ],
+      "outputs_physical": [
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(16, 32, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(16, 32, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            64,
+            32
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        }
+      ],
+      "scatter_and_collective_lines": [
+        {
+          "line": 79,
+          "text": "  ROOT %scatter.2 = f32[64,32]{1,0} scatter(%param_0.9, %param_1.6, %param_2.7), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone, metadata={op_name=\"jit(fp32_scatter)/scatter-add\" stack_frame_id=3}"
+        },
+        {
+          "line": 93,
+          "text": "  %all-reduce = f32[64,32]{1,0} all-reduce(%wrapped_scatter), channel_id=2, replica_groups=mesh['axis_0'=2,'axis_1'=1,'axis_2'=2] {'axis_0'}, use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(fp32_scatter)/scatter-add\" stack_frame_id=3}"
+        }
+      ]
+    },
+    "legacy": {
+      "hlo_bytes": 24000,
+      "hlo_sha256": "c9cfc1ed626aae76d0a08350c7bad30332d1f285dc1235475e8cc6ee1dcfec91",
+      "input_hashes": {
+        "cotangent": "73b49a37ef877c58ce49280056b84abba22d2382e5ccb72a3df6614b6a8d85f8",
+        "master": "1e9258e143e8821bbd241f5c3db25f730a92c64833323a3aab14aa28fca21c95",
+        "tokens": "525151b43b271ee8ee1c42a1c2cdc4ef7c168a4ae33b2d675d474eb322f07861"
+      },
+      "inputs_physical": {
+        "cotangent": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8,
+            32
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        "master": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(16, 32, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(16, 32, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            64,
+            32
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        },
+        "tokens": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 2, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 2, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(2, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(2, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "int32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8
+          ],
+          "spec": [
+            "data",
+            null
+          ]
+        }
+      },
+      "output_hashes": [
+        "54c2bc3db3f1cd5023b3ecc905d1aeb1daaf4464401d8bf5ba7005c05502ba1c",
+        "25570058b0df3cc7a93ab12af249bd5cd7bca10373c600c7e6db9fc4a96dc16b"
+      ],
+      "outputs_physical": [
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8,
+            32
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            }
+          ],
+          "axis_types": [
+            "Auto",
+            "Auto"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(16, 32, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(16, 32, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            64,
+            32
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        }
+      ],
+      "scatter_and_collective_lines": [
+        {
+          "line": 248,
+          "text": "  ROOT %scatter.2 = f32[32,16]{1,0} scatter(%param_0.48, %param_1.26, %param_2.22), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}"
+        },
+        {
+          "line": 263,
+          "text": "  %all-to-all.3 = (f32[2,8,1,16]{3,2,1,0}, f32[2,8,1,16]{3,2,1,0}) all-to-all(%convert_convert_fusion.2, %convert_convert_fusion.1), channel_id=31, replica_groups=mesh['axis_0'=1,'axis_1'=1,'axis_2'=2,'axis_3'=2] {'axis_2'}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp(LlamaEmbedding.embed))/Embedding.embed/scatter-add\" stack_frame_id=16}"
+        },
+        {
+          "line": 270,
+          "text": "  %all-reduce.1 = f32[4,8,16]{2,1,0} all-reduce(%convert_convert_fusion.3), channel_id=17, replica_groups=[2,2]<=[4], use_global_device_ids=true, to_apply=%add.1.clone_promoted, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}"
+        },
+        {
+          "line": 276,
+          "text": "  %all-to-all.2 = (f32[1,2,8,16]{3,2,1,0}, f32[1,2,8,16]{3,2,1,0}) all-to-all(%convert_bitcast_fusion.1, %convert_bitcast_fusion), channel_id=18, replica_groups=mesh['axis_0'=2,'axis_1'=1,'axis_2'=1,'axis_3'=2] {'axis_0'}, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp(LlamaEmbedding.embed)/Embedding.embed/gather\" stack_frame_id=16}"
+        }
+      ]
+    },
+    "native": {
+      "hlo_bytes": 19087,
+      "hlo_sha256": "961aab85dbbc004fdc56255bfbdad3677c41fbc0709cb640e915ee4fc84e392e",
+      "input_hashes": {
+        "cotangent": "73b49a37ef877c58ce49280056b84abba22d2382e5ccb72a3df6614b6a8d85f8",
+        "master": "1e9258e143e8821bbd241f5c3db25f730a92c64833323a3aab14aa28fca21c95",
+        "tokens": "525151b43b271ee8ee1c42a1c2cdc4ef7c168a4ae33b2d675d474eb322f07861"
+      },
+      "inputs_physical": {
+        "cotangent": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8,
+            32
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        "master": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(16, 32, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(16, 32, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            64,
+            32
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        },
+        "tokens": {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 2, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(0, 2, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(2, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "int32",
+              "index": "(slice(2, 4, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "int32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8
+          ],
+          "spec": [
+            "data",
+            null
+          ]
+        }
+      },
+      "output_hashes": [
+        "54c2bc3db3f1cd5023b3ecc905d1aeb1daaf4464401d8bf5ba7005c05502ba1c",
+        "eed7740b177f39f95c5d1bbde3d5bc588bbf2a7b8d934be45a2d8409ff8e07fa"
+      ],
+      "outputs_physical": [
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "bfloat16",
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))",
+              "memory_kind": "device",
+              "replica_id": 1,
+              "shape": [
+                2,
+                8,
+                32
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1, 2), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "bfloat16",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 2, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(2, 4, None), slice(None, None, None), slice(None, None, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            4,
+            8,
+            32
+          ],
+          "spec": [
+            "data",
+            null,
+            null
+          ]
+        },
+        {
+          "addressable_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(0, 16, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(0, 32, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+              "dtype": "float32",
+              "index": "(slice(32, 64, None), slice(16, 32, None))",
+              "memory_kind": "device",
+              "replica_id": 0,
+              "shape": [
+                32,
+                16
+              ]
+            }
+          ],
+          "axis_types": [
+            "Explicit",
+            "Explicit"
+          ],
+          "device_local_layout": "Layout(major_to_minor=(0, 1), tiling=(), sub_byte_element_size_in_bits=0)",
+          "devices": [
+            "cpu:0:0",
+            "cpu:0:1",
+            "cpu:0:2",
+            "cpu:0:3"
+          ],
+          "dtype": "float32",
+          "global_shards": [
+            {
+              "device": {
+                "description": "cpu:0",
+                "id": 0,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:1",
+                "id": 1,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(0, 16, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:2",
+                "id": 2,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(0, 32, None), slice(16, 32, None))"
+            },
+            {
+              "device": {
+                "description": "cpu:3",
+                "id": 3,
+                "kind": "cpu",
+                "platform": "cpu",
+                "process_index": 0
+              },
+              "index": "(slice(32, 64, None), slice(16, 32, None))"
+            }
+          ],
+          "memory_kind": "device",
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "shape": [
+            64,
+            32
+          ],
+          "spec": [
+            "model",
+            "data"
+          ]
+        }
+      ],
+      "scatter_and_collective_lines": [
+        {
+          "line": 221,
+          "text": "  ROOT %scatter.2 = f32[32,32]{1,0} scatter(%param_0.30, %param_1.15, %param_2.19), update_window_dims={1,2}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=%region_0.0.clone.clone, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}"
+        },
+        {
+          "line": 245,
+          "text": "  %all-reduce.2 = f32[2,8,32]{2,1,0} all-reduce(%convert_convert_fusion.2), channel_id=5, replica_groups=mesh['axis_0'=2,'axis_1'=1,'axis_2'=2], device_ids=([2,2]T(1,0)) {'axis_0'}, use_global_device_ids=true, to_apply=%add.1.clone_promoted, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/jvp()/gather\" stack_frame_id=12}"
+        },
+        {
+          "line": 248,
+          "text": "  %all-reduce.3 = f32[32,32]{1,0} all-reduce(%convert_convert_fusion.1), channel_id=11, replica_groups=[2,2]<=[2,2]T(1,0), use_global_device_ids=true, to_apply=%region_0.0.clone.1.clone_promoted, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(vjp)/transpose(jvp())/scatter-add\" stack_frame_id=12}"
+        }
+      ]
+    }
+  },
+  "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+  "schema": "native-jax-common-embedding-vjp.v1",
+  "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "source_guard": {
+    "legacy_embed": {
+      "ast_sha256": "b7ad5c5d486db5126a66a28b1630461c7a8acb578cdcde91b208765e19b310a8",
+      "statement_count": 3
+    },
+    "native_activations": {
+      "ast_sha256": "4fb95befb804cfca40063261892b2330d7a595388e427623f40dff5daef0e9f1",
+      "statement_count": 12
+    },
+    "native_fragment": {
+      "assignment_count": 3,
+      "ast_sha256": "d0f487382beba426daad76068e8dc47b4c43f6fccfad55b9d555814d81f40f4b",
+      "claim": "Exact three source assignments plus return; no full activations, no native public embed method",
+      "source_lines": [
+        [
+          381,
+          381
+        ],
+        [
+          386,
+          386
+        ],
+        [
+          387,
+          387
+        ]
+      ]
+    },
+    "source_identity": {
+      "claim": "Exact scientific source/import bytes verified; declared pin is not runtime Git proof when metadata is absent",
+      "declared_source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+      "file_hashes_verified": true,
+      "git_metadata_available": false,
+      "runtime_git_commit": null
+    }
+  },
+  "source_sha256": {
+    "lib/haliax/src/haliax/axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "lib/haliax/src/haliax/core.py": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540",
+    "lib/haliax/src/haliax/jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "lib/haliax/src/haliax/nn/embedding.py": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8",
+    "lib/haliax/src/haliax/nn/mup.py": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144",
+    "lib/haliax/src/haliax/partitioning.py": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+    "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+  },
+  "versions": {
+    "equinox": "0.13.2",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "jmp": "0.0.4",
+    "numpy": "2.3.5",
+    "optax": "0.2.6"
+  },
+  "xla_flags": "--xla_force_host_platform_device_count=4 --xla_allow_excess_precision=false"
+}

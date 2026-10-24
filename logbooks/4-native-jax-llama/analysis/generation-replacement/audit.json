@@ -1,0 +1,176 @@
+{
+  "schema": "native-jax-generation-replacement-audit.v1",
+  "source_pin": "216279e6d8ea9a1c71242509b6b07e946c30d249",
+  "source_worktree": "/private/tmp/marin-native-jax-replacement-integration",
+  "pin_evidence": "Parent-supplied frozen integration pin; overlapping current file bytes verified against preceding audit identities. No git command or remote verification.",
+  "scope": "Read-only audit plus two requested local report artifacts. No implementation,numerical tests,compilation,network,git,archive,job or private bde54 diff access.",
+  "decision": "Implement the existing paged initial_cache/decode contract on NativeLlamaLmHeadModel; reuse the current engine and caches. There is no separate model.prefill contract.",
+  "exact_interface": [
+    {
+      "signature": "initial_cache(self, spec: PageTableSpec, *, dtype) -> ListCache[KvPageCache]",
+      "contract": "One cache per decoder layer,shape [num_pages,page_size,2*num_kv_heads,head_dim],axes page/slot/kv_head/head_size; K/V interleaved (k0,v0,k1,v1,...). Pure allocation compatible with filter_eval_shape and hax.named_jit. Preserve explicit dtype and complete physical layout."
+    },
+    {
+      "signature": "decode(self, input_ids: NamedArray[position], kv_cache: ListCache[KvPageCache], batch_info: PageBatchInfo, pos_ids: NamedArray[position], *, key=None) -> tuple[NamedArray[position,Vocab], ListCache[KvPageCache]]",
+      "contract": "Handles packed multi-sequence prefill,chunked continuation and autoregressive decode in the same method. Absolute per-sequence positions arrive from scheduler; they are not flat token offsets. Static token buffer includes invalid tail padding; only num_new_tokens prefix may update cache. Return logits for same packed capacity; valid positions are selected by engine."
+    }
+  ],
+  "caller_contracts": [
+    {
+      "source": "inference/engine.py:177-184,852-884",
+      "fact": "HBM sizing calls filter_eval_shape(model.initial_cache); construction calls hax.named_jit(initial_cache,axis_resources). Named cache sizing uses logical mapping rather than solely existing array sharding (utils/jax_utils.py:545-599); cache head mapping must agree with actual explicit placement."
+    },
+    {
+      "source": "inference/engine.py:390-440,651-710",
+      "fact": "Both prefill and generation invoke model.decode; engine allocates pages before call,selects final prompt/query logits and samples. No second generation/scheduler loop is needed."
+    },
+    {
+      "source": "inference/page_table.py:18-22,78-115; inference/jit_scheduler.py:201-258,352-389,1057-1066",
+      "fact": "PageTableSpec contains num_pages/page_size only. PageBatchInfo carries page_indices,total seq_lens,cu_q_lens,num_seqs,destinations. Tokens for each sequence must be contiguous,sequence slot order need not be sorted; batch_info row index is not global sequence slot ID. Scheduler packs valid prefix and preserves token/position/slot alignment."
+    },
+    {
+      "source": "models/llama.py:351-383,417-467,612-668",
+      "fact": "Old standard-Llama contract normalizes/project/RoPE,updates cache before attention,then residual+MLP/final norm and tied/untied head. Layer/cache lists are explicitly iterated because the old scanned cache path did not alias reliably."
+    },
+    {
+      "source": "layers/kv_cache.py:56-143,154-184; inference/engine.py:305,338-355,651,889-895,1079-1099",
+      "fact": "ListCache.copy_page/reset and KvPageCache.copy_page support clone/reset. KV update donates pages; generation loop donates gen_state. New cache must replace old; no stale donated references or persistent concatenated dense cache."
+    },
+    {
+      "source": "main/sample_lm.py:73-106,108-135; eval_harness.py:786-805,876-880; inference/openai.py:208-219,309-320,832-838",
+      "fact": "sample_lm duplicates old loader and asserts old head class. lm-eval generate_until already needs same paged methods and is single-host only. Server uses same engine and re-enters mesh/axis mapping on its worker/reload threads; native explicit layout selection must reach those real callsites before claiming server support."
+    }
+  ],
+  "bounded_interface_plan": [
+    "Keep raw native core Haliax-free. Add the two public methods at the existing native LM named boundary. Use existing KvPageCache/ListCache and PageBatchInfo unchanged; no new cache class or standalone native engine. Never convert native parameters into LlamaLMHeadModel or call old Llama attention/decoder math; only existing model-independent cache/ragged infrastructure is reused.",
+    "First implement/prove a named cache+ragged bridge under the native Explicit mesh. The shared reference attention already uses auto_axes with pinned output sharding (grug/attention/_core.py:288-300); use that established pattern for the small raw-array wrapper around existing cache update/ragged attention where Auto math is required,restoring explicit query/cache layouts at its outputs. Do not change all mesh axes to Auto or use a host conversion. Verify this bridge before undertaking model-wide wiring.",
+    "Use an explicit decode layout derived from existing NativeLlamaSharding: batch_axes=(),same fsdp_axis/model_axis. View packed tokens as [1,T],positions [1,T],hidden [1,T,D],so existing B/S math remains reusable and packed T is never reinterpreted as independent causal sequences. All sequence separation comes from PageBatchInfo at ragged attention. Keep packed tokens,positions,seq/page metadata replicated; head/channel dimensions remain TP-sharded. This first slice is one single-host scheduler stream,replicated over data axes,not distributed data-parallel serving.",
+    "Factor actual native QKV projection/head norm/RoPE and post-attention residual+MLP computation into small raw helpers shared by ordinary forward and decode,accepting the concrete layout. Reuse native embedding/final norm/tied-or-untied head rather than instantiating the old model. Preserve optional bias,norm and scaled-RoPE semantics through those helpers; leave training layout and forward math unchanged. Native __call__ currently binds train sharding; merely adding a B=1 dimension does not override it.",
+    "Per layer use ArrayStacked.get_layer and matching ListCache entry. From raw Q [1,T,Hq,D],reshape to named [T,Hkv,Hq/Hkv,D]; K/V to [T,Hkv,D]. Update existing cache,call existing ragged_paged_attention with sm_scale=1/sqrt(head_dim),then flatten query heads,cast attention output back to residual compute dtype and use actual native o_proj. Apply shared block residual/MLP math,then final norm/head. Return named [position,Vocab] logits and updated ListCache. Do not substitute ordinary dense attention over the packed token buffer.",
+    "Use P(None,None,model,None) cache layout [page,slot,interleaved_head,dim],replicated data/FSDP; query grouped heads use P(None,model,None,None),tokens P(None),logits P(None,model). Require native KV head count divisible by TP size so model shards contain complete K/V pairs; no splitting interleaved pairs and no silent head replication fallback. Existing FSDP storage remains; compute projections gather its dimension as native Linear already does.",
+    "Wire sample_lm through the reviewed shared loader boundary only after that contribution is available; set existing requires_explicit_mesh_axes capability before initialization,resolve inference mapping once,and replace its old-only assertion with explicit supported standard-Llama types during transition. Do not inspect or duplicate unpublished shared-loader code. Keep existing engine,sampler,request/stop/clone logic. Extend the already-existing generate_until callsite via same contract; no parallel generation API."
+  ],
+  "behavior_boundaries": [
+    "Paged decode is causal only. PageBatchInfo encodes cached prefix plus current contiguous positions; arbitrary dense,bidirectional,sliding-window/segment-mask generation is not implemented by existing ragged API. Never silently reinterpret these model-family semantics.",
+    "Engine compute_dtype allocates cache only; it does not cast model weights. Loader inference compute dtype and cache dtype must be deliberately consistent; cache update currently casts K/V to page dtype. Test BF16 behavior directly and pin treatment of native upcast_attn; if mixed-Q/K/cache dtype cannot be preserved,explicitly reject that option until supported.",
+    "Do not call existing unbatched activations as a decode implementation: llama_native_lm.py:398-411 broadcasts a whole sequence across training data batch partitions,returns one replica,and has no cache. It cannot express the scheduler packed-sequence attention contract.",
+    "Initial cache mapping and runtime named ragged mapping must agree with physical native specs. Engine axis_resources is used for cache sizing/allocation but is not saved as execution context; the model boundary must make its concrete head mapping available at trace time,including sample/eval/server worker contexts.",
+    "ragged_paged_attention catches TPU kernel errors and falls back to testing reference. A result from the dispatcher does not prove TPU fast path ran. Keep CPU reference correctness and separately observed actual TPU kernel execution as distinct claims.",
+    "Sampler samples all model.Vocab rows and has no tokenizer-domain mask (layers/sampler.py:28-79; engine.py:879-881). Source/padded Vocab may exceed tokenizer length. Preserve full model rows; before declaring end-to-end sampling support,define eligible-token policy from explicit tokenizer/padding metadata or restrict unsupported mismatched-vocabulary sampling. Do not silently truncate head weights or assume every source-only row is padding.",
+    "Existing old engine likewise uses one packed token queue/PageTable; under inference mappings with position/seq/page unmapped,its logical packed stream/cache are replicated across those mesh axes. The proposed native boundary makes that restriction explicit rather than inventing independent data-axis schedulers. Actual old/new physical placement,extra gathers and replication bytes have not been measured; compare them before any efficiency claim. Data/FSDP sharding of stored weights is separate from replicated packed-stream computation.",
+    "LevanterHarnessLM.generate_until currently hardcodes BF16 cache dtype (eval_harness.py:867-880). Exercise it with a deliberately compatible BF16 native compute model; do not assume caller FP32 compute changes this existing cache setting. A wider dtype-policy change is a separate explicit decision."
+  ],
+  "verification_gates": [
+    {
+      "gate": "Bridge/layout before full model work",
+      "evidence": "On1CPU and4CPU explicit data2/model2,real tiny KvPageCache update+ragged calls verify complete shape/dtype/spec/device/memory/global-local-shard mapping,interleaved K/V values,unchanged padding slots,and round-trip output layout. Exercise existing engine shape sizing and actual allocation with same mapping. No mock or attribute-exists test."
+    },
+    {
+      "gate": "Native model causal logits/cache",
+      "evidence": "Real identical native parameters compare packed prefill and successive decode logits against independent full causal native forward over each sequence. Reuse test_paged_attention.py:268-514 SequenceTable/PageTable fixtures: unequal lengths,reordered/non-dense slots,nonempty prefixes,chunk sizes crossing pages,one sequence with0new tokens and invalid tail padding. Compare valid logits and actual cache K/V; no cross-sequence leakage."
+    },
+    {
+      "gate": "Relevant standard-Llama options",
+      "evidence": "Small orthogonal cases for MHA/GQA,tied/untied head,FP32/BF16,page dtype and long absolute positions/default+scaled RoPE; preserve existing bias/norm flags through reused helpers. Reuse test_llama_native.py parameter imports and scaled-RoPE references. Report max/mean error and unchanged established tolerances; existing RPA tests permit CPU1e-4/TPU2e-2,which is only a paged-kernel test tolerance and does not relax campaign Trainer acceptance."
+    },
+    {
+      "gate": "Real engine vertical slice",
+      "evidence": "Offline tiny model+tokenizer through shared load boundary,InferenceEngine.generate and sample entrypoint: deterministic greedy sequence agrees with full causal reference,unequal prompts/chunked prefill,stop handling,multiple generations sharing a partial page,subsequent reset/reuse. Extend existing inference tests; current test_engine DummyModel tests do not establish native correctness. Assert copied partial-page writes do not alter parent and donated state is consumed once."
+    },
+    {
+      "gate": "Smallest actual lm-eval integration",
+      "evidence": "One offline tiny BF16 native model with real local tokenizer and existing _LmEvalHarnessWorker/LevanterHarnessLM,call generate_until on two unequal prompts requesting multiple new tokens plus a stop string. This invokes actual engine prefill and subsequent same.decode/cache state; compare greedy generated IDs/text against independent per-sequence causal reference and assert stop/context behavior. Do not mock engine/model decode or replace generate_until. Keep optional lm_eval dependency handling at established boundary. Pair with the direct engine test configured max_prefill_size small enough that prompt crosses a chunk/page and max_new_tokens>=2; this specifically prevents a prefill-only pass."
+    },
+    {
+      "gate": "Backend/layout evidence",
+      "evidence": "TPU-mark only actual accelerator/collective cases per TESTING.md. Separately authorized TPU test must demonstrate intended ragged kernel invocation,cache layout,numerical comparison and donated/alias behavior; fallback-only pass is reference evidence. No launch is authorized by this audit. CPU correctness does not establish throughput."
+    },
+    {
+      "gate": "Contribution/adoption",
+      "evidence": "After focused behavioral tests,required infra/pre-commit.py,affected safe tests,pyrefly,and manage-pr review/publication workflow. Confirm ordinary forward/loss/gradient,H F import/export and checkpoint source identities unchanged by shared helper extraction. No new HBM/performance claim without matched measurement."
+    }
+  ],
+  "adoption_and_deletion": [
+    "This slice closes standard-Llama paged generation only after tested shared loading and real sampling/eval callers work. Keep canonical llama registry/defaults unchanged during implementation; NativeLlama is transitional,not a permanent second standard-Llama runtime.",
+    "Once all canonical replacement gates pass,switch canonical Llama factories/defaults and migrate selected callers together. Remove old standard-Llama decode/cache traversal and old-only sampling assumptions rather than preserving two permanent loops. Engine,PageTable,SequenceTable,KvPageCache,ListCache and ragged kernel remain shared maintained infrastructure.",
+    "Do not alias Mistral,Qwen,Qwen3MoE,Apertus,Gemma,Mixtral,OLMo or OLMo3 to native dense Llama. Their existing old-Llama/config/MLP/embedding dependencies require explicit extraction/migration before old module deletion; family math and cache/mask semantics remain owned by those families.",
+    "Current failed large-model numerical acceptance,legacy full-state conversion and remaining migration coverage are independent gates. Generation support,even if passing,does not accept the rejected query-scale candidate,authorize Trainer/source adoption,or prove convergence/performance."
+  ],
+  "source_file_identities": {
+    "lib/levanter/src/levanter/models/llama_native.py": {
+      "bytes": 21994,
+      "sha256": "026f9e1719fc349cde82c80c26aa016a655319a7c649a94ce4ffad346425cd14"
+    },
+    "lib/levanter/src/levanter/models/llama_native_lm.py": {
+      "bytes": 23263,
+      "sha256": "8d8b0854c19f693a1fda7b9cfeaf29d3ede4511314b32062fc1752e0c153a5d0"
+    },
+    "lib/levanter/src/levanter/models/llama.py": {
+      "bytes": 26160,
+      "sha256": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f"
+    },
+    "lib/levanter/src/levanter/models/lm_model.py": {
+      "bytes": 12370,
+      "sha256": "1a8f7917f7c10b200afd772bf9638581091bc4757afb4a608cf602ba3a2264be"
+    },
+    "lib/levanter/src/levanter/layers/attention.py": {
+      "bytes": 79956,
+      "sha256": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec"
+    },
+    "lib/levanter/src/levanter/layers/kv_cache.py": {
+      "bytes": 5615,
+      "sha256": "f6d88d2fa79519d3c53909039a7bb6a261cb7df308f31d95e8e7125a64c8b13a"
+    },
+    "lib/levanter/src/levanter/layers/rotary_native.py": {
+      "bytes": 3592,
+      "sha256": "3ace0031e023369f10c090320c0d36c19dab3805d1aa5d76aae538a726f032a8"
+    },
+    "lib/levanter/src/levanter/layers/linear.py": {
+      "bytes": 1657,
+      "sha256": "d351bc82e111d7643d9b31cf3797ba927b100fa1cca5bcc368ab917e526d8b80"
+    },
+    "lib/levanter/src/levanter/layers/stacked.py": {
+      "bytes": 18701,
+      "sha256": "a612f6c111a61592223a5b5330be492c6dcf5af5bc213fd9c72dc8ea1f50636b"
+    },
+    "lib/levanter/src/levanter/layers/sampler.py": {
+      "bytes": 5788,
+      "sha256": "adebfc2955f6f187535f95403f672ea46b4ce34798fb17efc73f3bb1352db60a"
+    },
+    "lib/levanter/src/levanter/inference/engine.py": {
+      "bytes": 56914,
+      "sha256": "8892fcfc5864630d18ef827c89d90fa4c3a310aab129f650d74e6fb0d8282a17"
+    },
+    "lib/levanter/src/levanter/inference/page_table.py": {
+      "bytes": 3217,
+      "sha256": "04f68529d5d6483b16b921fc18caa6950f55dbc81b2769d057614fbb97ddaecb"
+    },
+    "lib/levanter/src/levanter/inference/jit_scheduler.py": {
+      "bytes": 51732,
+      "sha256": "555d58b64cb82002b2d0d69b5e02955dc2d7e0abfc4edb2576c0ea46416f03b9"
+    },
+    "lib/levanter/src/levanter/inference/openai.py": {
+      "bytes": 37060,
+      "sha256": "7169e5330437e3d2bb746fc467cd92fcb36a0bfdcc42607e63519878ca8643e4"
+    },
+    "lib/levanter/src/levanter/main/sample_lm.py": {
+      "bytes": 9055,
+      "sha256": "d86ba2d6d72dae178c6b26054d9e53ed93652887ab07b501477d888cc979a829"
+    },
+    "lib/levanter/src/levanter/eval_harness.py": {
+      "bytes": 66882,
+      "sha256": "4a775becfea1cd88815e4978823f6b8262cab8bac4982993ab18093c8b42d62f"
+    },
+    "lib/levanter/src/levanter/utils/jax_utils.py": {
+      "bytes": 22904,
+      "sha256": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1"
+    }
+  },
+  "runtime_or_hardware_claims": false,
+  "unknowns_before_implementation_claim": [
+    "Explicit named cache/ragged auto_axes bridge and retained donation/alias have not been implemented or compiled.",
+    "Actual old/native inference physical mappings,extra data-axis replication/gathers,TPU backend selection and performance remain unmeasured.",
+    "Mixed upcast/model/cache dtype policy and eligible-token handling for source Vocab exceeding tokenizer domain require explicit bounded decisions.",
+    "Shared-loader unpublished implementation remains uninspected; sampling wiring depends on a separately reviewed available loader boundary."
+  ]
+}

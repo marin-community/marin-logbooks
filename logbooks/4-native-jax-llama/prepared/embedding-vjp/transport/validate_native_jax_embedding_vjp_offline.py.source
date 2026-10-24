@@ -1,0 +1,67 @@
+"""Exercise only protobuf construction, forbidding network and credential APIs."""
+import ast
+import hashlib
+import json
+from pathlib import Path
+import runpy
+import sys
+
+forbidden_calls = []
+network_events = []
+
+
+def audit(event, arguments):
+    if event in {'socket.connect', 'socket.connect_ex', 'socket.getaddrinfo', 'socket.gethostbyname', 'socket.gethostbyaddr'}:
+        network_events.append(event)
+        raise RuntimeError('Network use forbidden in offline request proof')
+
+
+def profile(frame, event, argument):
+    if event != 'call':
+        return
+    module = frame.f_globals.get('__name__', '')
+    name = frame.f_code.co_name
+    if (module.startswith('iris') and name in {'open_iris_client', 'submit', 'submit_job', 'launch_job'}) or (
+        module.startswith('rigging.secrets') and name in {'get_secret', 'require_secret', 'forwarded_secrets', 'resolve_secrets'}):
+        forbidden_calls.append(module + '.' + name)
+        raise RuntimeError('Client/credential/RPC use forbidden in offline proof')
+
+
+script = Path('/private/tmp/native_jax_embedding_vjp_request.py')
+tree = ast.parse(script.read_text())
+assert not any(isinstance(node, ast.Name) and node.id == 'open_iris_client' for node in ast.walk(tree))
+sys.addaudithook(audit)
+sys.setprofile(profile)
+sys.argv = [str(script), '--validate-only']
+try:
+    runpy.run_path(str(script), run_name='__main__')
+finally:
+    sys.setprofile(None)
+assert not forbidden_calls and not network_events
+record = json.loads(Path('/private/tmp/native-jax-embedding-vjp-api-request.json').read_text())
+assert record['secret_entries'] == 0
+assert record['request_without_bundle']['existing_job_policy'] == 'EXISTING_JOB_POLICY_ERROR'
+command = json.loads(Path('/private/tmp/native-jax-embedding-vjp-command.json').read_text())
+config = json.loads(Path(command['payload_files']['config.json']['path']).read_text())
+expected = {'JAX_PLATFORMS': 'tpu', 'XLA_FLAGS': config['tpu_xla_flags'], 'LIBTPU_INIT_ARGS': config['libtpu_init_args']}
+prior = json.loads(Path('/private/tmp/native-jax-embedding-vjp-environment-cleanup-baseline.json').read_text())
+assert expected == prior['effective_scientific_environment'] == record['scientific_environment']
+assert {key: record['request_without_bundle']['environment']['env_vars'][key] for key in expected} == expected
+assert command['entrypoint_argv'][:2] == ['python', '-c']
+proof = {'offline_validator_sha256': hashlib.sha256(script.read_bytes()).hexdigest(),
+    'validator_has_no_open_client_reference': True, 'network_events': network_events,
+    'client_credential_RPC_submission_calls': forbidden_calls,
+    'actual_protobuf_constructed_and_serialized': True, 'local_source_bundle_constructed': True,
+    'all_10_bundled_scientific_source_hashes_verified': True,
+    'source_pin': record['source_pin'], 'request_binary_sha256': record['request_binary_sha256'],
+    'request_binary_bytes': record['request_binary_bytes'], 'secret_entries': 0, 'existing_job_policy': 'EXISTING_JOB_POLICY_ERROR',
+    'source_bundle': record['local_source_bundle'], 'scientific_runner_executed': False,
+    'resource_or_uniqueness_queries': False, 'hardware_submitted': False,
+    'exact_frozen_scientific_environment': expected,
+    'scientific_environment_serialized_before_runtime_Python_JAX': True,
+    'effective_environment_equals_prior_env_argv_prefix': True,
+    'change_classification': 'Configuration/provenance cleanup only; prior outer env prefix already delivered exact flags',
+    'limits': {'scheduling_seconds': 120, 'execution_seconds': 780,
+        'failure_retries': 0, 'preemption_retries': 0, 'task_failure_allowance': 0}}
+Path('/private/tmp/native-jax-embedding-vjp-offline-verification.json').write_text(json.dumps(proof, indent=2) + '\n')
+print(json.dumps(proof, sort_keys=True))

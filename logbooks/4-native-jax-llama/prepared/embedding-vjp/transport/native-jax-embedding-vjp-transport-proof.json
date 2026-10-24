@@ -1,0 +1,60 @@
+{
+  "scope": "Local stdlib/mechanical fixtures only; scientific runner and fsutil/upload never executed",
+  "bootstrap_sha256": "37aa28d86596c4c9c8925c01b3da6e372ac2c699569c015b368b2d44d51ddabf",
+  "launcher_sha256": "05934b45bcc85cbf0834512314d05f1346fd25623b8568ecbc3dd7747aa901dd",
+  "embedded_bootstrap_exact": true,
+  "all_four_embedded_scientific_files_exact": true,
+  "compute_has_explicit_declared_source_pin": true,
+  "exact_frozen_environment_reaches_compute_child": true,
+  "parent_has_no_JAX_import": true,
+  "raw_cap_bytes": 33554432,
+  "compressed_cap_bytes": 8388608,
+  "cases": [
+    {
+      "mode": "success",
+      "wrapper_exit": 0,
+      "uploads_intercepted_not_executed": 1,
+      "archive": {
+        "entries": 3,
+        "compressed_bytes": 965,
+        "archive_members_byte_exact": true
+      }
+    },
+    {
+      "mode": "numerical_failure",
+      "wrapper_exit": 1,
+      "uploads_intercepted_not_executed": 1,
+      "archive": {
+        "entries": 3,
+        "compressed_bytes": 978,
+        "archive_members_byte_exact": true
+      }
+    },
+    {
+      "mode": "backup_failure",
+      "wrapper_exit": 1,
+      "uploads_intercepted_not_executed": 1,
+      "archive": {
+        "entries": 3,
+        "compressed_bytes": 972,
+        "archive_members_byte_exact": true
+      }
+    },
+    {
+      "mode": "raw_cap",
+      "cap_rejected": true,
+      "exception": "Diagnostic output exceeds32MiB; retained locally, no backup attempted",
+      "uploads_intercepted_not_executed": 0,
+      "partial_outputs_preserved_locally": true
+    },
+    {
+      "mode": "compressed_cap",
+      "cap_rejected": true,
+      "exception": "Compressed diagnostics exceed8MiB; retained locally, no backup attempted",
+      "uploads_intercepted_not_executed": 0,
+      "partial_outputs_preserved_locally": true
+    }
+  ],
+  "hardware_executed": false,
+  "network_or_object_storage_operation": false
+}

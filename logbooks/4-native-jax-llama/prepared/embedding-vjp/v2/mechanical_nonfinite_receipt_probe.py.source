@@ -1,0 +1,62 @@
+"""Mechanical receipt injection; never a scientific embedding/cotangent fixture."""
+import argparse
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import platform
+import subprocess
+import sys
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--child', action='store_true')
+    parser.add_argument('--output-dir', type=Path, required=True)
+    args = parser.parse_args()
+    prep = Path(__file__).resolve().parent
+    if not args.child:
+        command = [sys.executable, '-B', str(Path(__file__).resolve()), '--child', '--output-dir', str(args.output_dir)]
+        result = subprocess.run(command, text=True, capture_output=True, check=False)
+        report = args.output_dir / 'report.json'
+        assert result.returncode == 1 and report.is_file(), (result.returncode, result.stderr)
+        receipt = json.loads(report.read_text())
+        failure = receipt['numerical_failure']
+        assert receipt['comparison_valid'] is False
+        assert receipt['numerical_exit_code'] == 1
+        assert receipt['acceptance']['isolated_bf16_vjp_allclose'] is False
+        assert receipt['acceptance']['full_trainer_accepted'] is False
+        assert receipt['acceptance']['speed_ratio'] is None
+        assert 'comparisons' not in receipt
+        assert failure['partial_report'] is True and failure['comparisons_completed'] is False
+        counts = failure['outputs'][0]
+        assert {key: counts[key] for key in ('nan_count', 'positive_inf_count', 'negative_inf_count', 'nonfinite_count')} == {'nan_count': 1, 'positive_inf_count': 1, 'negative_inf_count': 1, 'nonfinite_count': 3}
+        assert report.stat().st_size <= 256 * 1024
+        assert [p.name for p in args.output_dir.iterdir()] == ['report.json']
+        proof = {'schema': 'embedding-vjp-mechanical-nonfinite-receipt-proof.v1', 'classification': 'Injected output values only; no scientific VJP/fixture/cotangent execution', 'runner_sha256': sha(prep / 'runner.py'), 'config_sha256': sha(prep / 'config.json'), 'manifest_sha256': sha(prep / 'manifest.json'), 'receipt_path': str(report), 'receipt_sha256': sha(report), 'receipt_bytes': report.stat().st_size, 'exit_code': result.returncode, 'report_retained_before_nonzero_exit': True, 'no_successful_comparison_claim': True, 'nonfinite_counts': counts, 'command': command, 'stdout': result.stdout[:2000], 'stderr': result.stderr[:2000], 'no_arrays_saved': True}
+        (prep / 'mechanical-nonfinite-receipt-proof.json').write_text(json.dumps(proof, indent=2) + '\n')
+        print(json.dumps(proof, indent=2))
+        return
+    import numpy as np  # Optional mechanical-probe dependency, absent from production control logic.
+    specification = importlib.util.spec_from_file_location('frozen_embedding_vjp_runner', prep / 'runner.py')
+    runner = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(runner)
+    config = json.loads((prep / 'config.json').read_text())
+    manifest = json.loads((prep / 'manifest.json').read_text())
+    _, source_proof = runner.source_guard(Path('/private/tmp/native-jax-embedding-vjp-no-git-source'), config, manifest, prep, runner.SOURCE)
+    scientific_template = json.loads(Path('/private/tmp/native-jax-embedding-vjp-cpu-mechanics-final/report.json').read_text())
+    output = args.output_dir
+    output.mkdir(parents=True, exist_ok=True)
+    assert not any(output.iterdir())
+    record = {'schema': 'embedding-vjp-mechanical-injected-nonfinite.v1', 'mode': 'mechanical-receipt-probe-only', 'source_commit': runner.SOURCE, 'source_sha256': manifest['source_sha256'], 'source_guard': source_proof, 'runner_sha256': sha(prep / 'runner.py'), 'config_sha256': sha(prep / 'config.json'), 'manifest_sha256': sha(prep / 'manifest.json'), 'runtime': {'python': platform.python_version(), 'numpy': np.__version__, 'jax_imported': 'jax' in sys.modules, 'no_hardware_or_scientific_execution': True}, 'fixture': {'classification': 'Mechanical output injection, not a scientific fixture or full-model cotangent', 'scientific_common_fixture_template': scientific_template['fixture'], 'template_executed_by_this_probe': False}, 'acceptance': {'atol': config['atol'], 'rtol': config['rtol'], 'isolated_bf16_vjp_allclose': True, 'full_trainer_accepted': False, 'speed_ratio': None}, 'comparisons': {'mechanical_sentinel_to_remove': {'allclose': True}}, 'mechanical_initial_success_sentinels_are_not_scientific_results': True}
+    values = (np.array([[np.nan, 1, np.inf], [-np.inf, 2, 3]], dtype=np.float32),)
+    runner.require_finite_outputs(output, record, 'mechanical-output', 'mechanical_nonfinite_receipt_only', values, np, {'mechanical_injection': True, 'scientific_common_fixture_template_sha256': scientific_template['fixture']['cotangent_sha256'], 'scientific_fixture_template_not_executed': True})
+    raise AssertionError('Nonfinite receipt guard returned without rejecting injected output')
+
+
+if __name__ == '__main__':
+    main()

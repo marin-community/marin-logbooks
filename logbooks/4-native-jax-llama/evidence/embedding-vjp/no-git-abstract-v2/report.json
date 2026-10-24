@@ -1,0 +1,256 @@
+{
+  "acceptance": {
+    "atol": 1e-05,
+    "full_trainer_accepted": false,
+    "rtol": 0.0001,
+    "speed_ratio": null
+  },
+  "config_sha256": "9aa91221a40cda48a7154632f47908556de446c524a464a73ab208aa54508634",
+  "dont_write_bytecode": true,
+  "fresh_pycache_prefix": "/var/folders/9h/dpqcjkwn5lx0sp3162765y780000gn/T/native-embedding-vjp-pycache-hocbsqbw",
+  "global_devices": [
+    {
+      "description": "cpu:0",
+      "id": 0,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:1",
+      "id": 1,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:2",
+      "id": 2,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:3",
+      "id": 3,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    }
+  ],
+  "import_proof": {
+    "bench_llama_native": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/scripts/bench/bench_llama_native.py",
+      "sha256": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77"
+    },
+    "haliax.axis": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/axis.py",
+      "sha256": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830"
+    },
+    "haliax.core": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/core.py",
+      "sha256": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540"
+    },
+    "haliax.jax_utils": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/jax_utils.py",
+      "sha256": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d"
+    },
+    "haliax.nn.embedding": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/nn/embedding.py",
+      "sha256": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8"
+    },
+    "haliax.nn.mup": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/nn/mup.py",
+      "sha256": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144"
+    },
+    "haliax.partitioning": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/haliax/src/haliax/partitioning.py",
+      "sha256": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08"
+    },
+    "levanter.models.llama": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/src/levanter/models/llama.py",
+      "sha256": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f"
+    },
+    "levanter.models.llama_native": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/src/levanter/models/llama_native.py",
+      "sha256": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984"
+    },
+    "levanter.trainer": {
+      "path": "/private/tmp/native-jax-embedding-vjp-no-git-source/lib/levanter/src/levanter/trainer.py",
+      "sha256": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+    }
+  },
+  "large_abstract": {
+    "dimensions": {
+      "B": 8,
+      "D": 2048,
+      "S": 2048,
+      "V": 65536
+    },
+    "limitation": "CPU abstract tracing only; no TPU/compiler grouping or runtime parity evidence",
+    "no_large_array_allocated": true,
+    "no_large_lower_compile_execute": true,
+    "outputs": {
+      "fp32_scatter": [
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('model', 'data'))"
+        }
+      ],
+      "legacy": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "None"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "None"
+        }
+      ],
+      "native": [
+        {
+          "dtype": "bfloat16",
+          "shape": [
+            8,
+            2048,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('data', None, None))"
+        },
+        {
+          "dtype": "float32",
+          "shape": [
+            65536,
+            2048
+          ],
+          "sharding": "NamedSharding(mesh=AbstractMesh('data': 2, 'model': 2, axis_types=(Explicit, Explicit), device_kind=cpu, num_cores=None, platform=cpu), spec=P('model', 'data'))"
+        }
+      ]
+    }
+  },
+  "libtpu_init_args": "",
+  "limitations": [
+    "A synthetic common cotangent, not unavailable full-model cotangent.",
+    "Native is guarded production source fragment, not an absent public native embed method or full activations.",
+    "Full Trainer remains numerically rejected regardless of isolated result.",
+    "CPU mechanics and abstract proof do not validate TPU numerical behavior or compiler grouping.",
+    "FP32 accumulation is a diagnostic higher-precision reference, not an exact oracle.",
+    "No automatic full-HLO grouping proof; independent actual-entrypoint static review required."
+  ],
+  "limits": {
+    "files": 10,
+    "hlo_file_bytes": 2097152,
+    "hlo_total_bytes": 12582912,
+    "json_bytes": 262144,
+    "total_bytes": 13631488,
+    "truncation_allowed": false
+  },
+  "local_devices": [
+    {
+      "description": "cpu:0",
+      "id": 0,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:1",
+      "id": 1,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:2",
+      "id": 2,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    },
+    {
+      "description": "cpu:3",
+      "id": 3,
+      "kind": "cpu",
+      "platform": "cpu",
+      "process_index": 0
+    }
+  ],
+  "manifest_sha256": "7bc79fed28674398b8bdbf9a1738433cf23892a5a57ab6f159c4762abda3265f",
+  "mode": "abstract-only",
+  "process_count": 1,
+  "python": "3.12.11",
+  "results": {},
+  "runner_sha256": "fe7c320e0eb8c583dbce573eb4691cf402a4060e39ecb0eda8854701490cd51e",
+  "schema": "native-jax-common-embedding-vjp.v1",
+  "source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "source_guard": {
+    "legacy_embed": {
+      "ast_sha256": "b7ad5c5d486db5126a66a28b1630461c7a8acb578cdcde91b208765e19b310a8",
+      "statement_count": 3
+    },
+    "native_activations": {
+      "ast_sha256": "4fb95befb804cfca40063261892b2330d7a595388e427623f40dff5daef0e9f1",
+      "statement_count": 12
+    },
+    "native_fragment": {
+      "assignment_count": 3,
+      "ast_sha256": "d0f487382beba426daad76068e8dc47b4c43f6fccfad55b9d555814d81f40f4b",
+      "claim": "Exact three source assignments plus return; no full activations, no native public embed method",
+      "source_lines": [
+        [
+          381,
+          381
+        ],
+        [
+          386,
+          386
+        ],
+        [
+          387,
+          387
+        ]
+      ]
+    },
+    "source_identity": {
+      "claim": "Exact scientific source/import bytes verified; declared pin is not runtime Git proof when metadata is absent",
+      "declared_source_commit": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+      "file_hashes_verified": true,
+      "git_metadata_available": false,
+      "runtime_git_commit": null
+    }
+  },
+  "source_sha256": {
+    "lib/haliax/src/haliax/axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "lib/haliax/src/haliax/core.py": "529342b119bbfd27c2f5c42f843fd470de58c01103637815fa1c418de8821540",
+    "lib/haliax/src/haliax/jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "lib/haliax/src/haliax/nn/embedding.py": "d929ac66c4590c43afc7aa8b2b1f398aac0586662029b557587e8ecc3c916dd8",
+    "lib/haliax/src/haliax/nn/mup.py": "d5c5bab9d6053702866b2be0799d82640c1e3332d3f85e9a44eb0e4a3c3a8144",
+    "lib/haliax/src/haliax/partitioning.py": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+    "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+    "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+    "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+    "lib/levanter/src/levanter/trainer.py": "3c1de370346c28b641efb8979bdf856ad2d323632ab0db7511921d2a549df47f"
+  },
+  "versions": {
+    "equinox": "0.13.2",
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1",
+    "jmp": "0.0.4",
+    "numpy": "2.3.5",
+    "optax": "0.2.6"
+  },
+  "xla_flags": "--xla_force_host_platform_device_count=4 --xla_allow_excess_precision=false"
+}
