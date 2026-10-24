@@ -104,6 +104,14 @@ The outer `uv run iris` command resolved dependencies after the clean-source che
 
 At the latest bounded observation, the coordinator and all five GPU replicas remained running on attempt zero with no controller failures. Runtime logs reported initial evaluation on 100 attempted and 100 scored tasks, mean reward 0.2201 and a 0.41 length-stop fraction, followed by PPO training dispatch. These are runtime counters; complete task-level verdict review, optimizer-update completion and terminal checkpoint/export checks remain pending. The attempt is not eligible for a trusted comparison or dashboard result. No retry or restart was performed.
 
+### 2026-10-24 06:50 UTC - Finish the synchronous attempt; retain the qualification hold
+
+The training coordinator, five training replicas and four checkpoint-export replicas all reached terminal success on attempt zero with no controller failures. Logs reported training progress of three out of three steps and published the final HF policy, configuration and tokenizer. The artifact step also reported success. Acknowledgement-to-controller-terminal time was 61.23 minutes, including export; this remains qualification cost.
+
+Runtime evaluation counters reported 100 attempted and 100 scored tasks before and after training, with mean reward moving from 0.2201 to 0.16. The reported length-stop fraction increased from 0.41 to 0.46. These provisional counters do not establish complete task membership, per-task verdicts, checkpoint resumability or a matched comparison. No improvement claim or dashboard ranking follows.
+
+Launch-lock provenance remains unresolved. The coordinator's retained provenance explicitly marks its source as dirty. The original source and changed root lock are preserved; the exact submitted bundle and installed GPU environment have not been independently attested. All jobs are terminal and will not be probed again. Narrow durable result, checkpoint and provenance metadata checks remain pending. The async qualification and all four measured screens stay on hold; no retry, restart or new experiment has been submitted.
+
 ## Final decision
 
 The selection and reviewed executable configurations are complete. Qualification acceptance is held for launch-lock provenance; measurements remain pending. No approach is selected for promotion yet. Publish exact source/configuration before executing each experiment, then append results and commit-pinned evidence. Preserve rejected alternatives and meaningful failed attempts. Extract only maintainable selected changes into ordinary Marin PRs.
