@@ -60,7 +60,7 @@ The scoring/generation configuration can be fingerprinted, but that descriptor d
 
 ### 2026-10-24 - Include the maintained native reader prerequisite
 
-The research source includes the mounted-credential Parquet reader correction from [Marin #10629](https://github.com/marin-community/marin/pull/10629), source `480fa5bd650dce1394d6c2892d9576e20213786f`. Its native-read regression and 59 affected tests passed with the frozen Polars 1.42.1 dependency. The merge preserves the reviewed four-arm launcher, test and configuration bytes and keeps inherited archive CI removed. The correction is a shared prerequisite, with no treatment-specific data or scoring change. Live materialization and GPU qualification remain separate gates.
+The research source includes the mounted-credential Parquet reader correction from [Marin #10629](https://github.com/marin-community/marin/pull/10629), source `480fa5bd650dce1394d6c2892d9576e20213786f`. All 59 affected tests, including the native-read regression, passed with the frozen Polars 1.42.1 dependency. The merge preserves the launcher and test from [the reviewed research configuration](https://github.com/marin-community/marin-logbooks/tree/bb2026330214b6d0d8863fef5f8e87a1083bdbf2/experiments/post_training/inventory) and keeps inherited archive CI removed. The correction is a shared prerequisite, with no treatment-specific data or scoring change. Live materialization and GPU qualification remain separate gates.
 
 ## Final decision
 
