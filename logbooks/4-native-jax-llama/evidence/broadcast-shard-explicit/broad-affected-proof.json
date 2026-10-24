@@ -1,0 +1,91 @@
+{
+  "status": "BROAD_PRODUCTION_RUN_COMPLETE_NEW_AUTO_TEST_FIX_PENDING",
+  "source_patch_sha256": "54d3d98118aa698ca14a0fe19940497461d75324849d6d9bfe70385860c54fe0",
+  "production_file_sha256": "fdf9ff859f16efe536a983c80005b20556090813f3ba1c680602ef623e289fdb",
+  "counts": {
+    "passed": 2068,
+    "skipped": 37,
+    "failed": 14
+  },
+  "seconds": 543.06,
+  "xml": "native-jax-broadcast-bit-preserving-root-affected.xml",
+  "xml_sha256": "b3a501c9564ce0a29e9198af279ad6e03718b521ec48b6767ee95788464c1ea7",
+  "baseline_pin": "2b65a9e3dbbe6dc28d3093cf2c59052922ca2b2d",
+  "baseline_proof": "native-jax-trainer-restore-reuse-initial-affected-baseline-proof.json",
+  "baseline_xml": "native-jax-trainer-restore-reuse-initial-baseline.xml",
+  "known_baseline_failures": [
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[qwen-smoke]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[qwen-full]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[snowball-snowball-smoke]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[snowball-snowball-full]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[snowball-snowball-smoke-r4]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[snowball-snowball-full-r4]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[snowball-snowball-smoke-r5]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.curriculum_rl.test_launch",
+      "name": "test_curriculum_arms_compose_in_nested_runtime[snowball-snowball-full-r5]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.test_async_rl",
+      "name": "test_launcher_composes_pinned_rollout_buffer_config[default]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.test_async_rl",
+      "name": "test_launcher_composes_pinned_rollout_buffer_config[smoke]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.test_async_rl",
+      "name": "test_launcher_composes_pinned_rollout_buffer_config[on-policy]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.test_async_rl",
+      "name": "test_launcher_composes_pinned_rollout_buffer_config[off-boundary-terminal]",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    },
+    {
+      "class": "experiments.post_training.test_async_rl",
+      "name": "test_snowball_curriculum_smoke_composes_separate_reference_allocation",
+      "actual_baseline_missing_cloud_and_assertion_callsite_match": true
+    }
+  ],
+  "new_test_failure": [
+    {
+      "class": "lib.levanter.tests.test_jax_utils",
+      "name": "test_broadcast_shard_selects_source_process_and_preserves_layout[AxisType.Auto]",
+      "status": "superseded_new_Auto_bit_oracle_timeout_under_correction"
+    }
+  ],
+  "whole_suite_green": false
+}

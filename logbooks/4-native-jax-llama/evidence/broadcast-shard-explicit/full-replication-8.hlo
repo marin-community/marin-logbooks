@@ -1,0 +1,46 @@
+HloModule jit_fn, is_scheduled=true, entry_computation_layout={(f32[1,512,512]{2,1,0})->f32[256,128]{1,0}}, num_partitions=8
+
+FileNames
+1 "scaling-probe.py"
+
+FunctionNames
+1 "<module>"
+2 "fn"
+
+FileLocations
+1 {file_name_id=1 function_name_id=1 line=32 end_line=32 column=13 end_column=13}
+2 {file_name_id=1 function_name_id=2 line=23 end_line=23 column=6 end_column=6}
+3 {file_name_id=1 function_name_id=2 line=24 end_line=24 column=17 end_column=17}
+4 {file_name_id=1 function_name_id=2 line=24 end_line=24 column=11 end_column=11}
+
+StackFrames
+1 {file_location_id=1 parent_frame_id=1}
+2 {file_location_id=2 parent_frame_id=2}
+3 {file_location_id=3 parent_frame_id=2}
+4 {file_location_id=4 parent_frame_id=2}
+
+
+%fused_computation (param_0.2: s32[8], param_1.2: u32[], param_2.3: s32[8], param_3.5: f32[8,512,512]) -> f32[256,128] {
+  %param_3.5 = f32[8,512,512]{2,1,0} parameter(3)
+  %slice.6 = f32[1,512,512]{2,1,0} slice(%param_3.5), slice={[1:2], [0:512], [0:512]}, metadata={op_name="jit(fn)/slice" stack_frame_id=3}
+  %constant.3 = s32[] constant(0), metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  %param_2.3 = s32[8]{0} parameter(2)
+  %param_1.2 = u32[] parameter(1)
+  %dynamic-slice.6 = s32[1]{0} dynamic-slice(%param_2.3, %param_1.2), dynamic_slice_sizes={1}, metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  %bitcast.5 = s32[] bitcast(%dynamic-slice.6), metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  %param_0.2 = s32[8]{0} parameter(0)
+  %dynamic-slice.5 = s32[1]{0} dynamic-slice(%param_0.2, %param_1.2), dynamic_slice_sizes={1}, metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  %bitcast.4 = s32[] bitcast(%dynamic-slice.5), metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  %dynamic-slice.4 = f32[1,256,128]{2,1,0} dynamic-slice(%slice.6, %constant.3, %bitcast.5, %bitcast.4), dynamic_slice_sizes={1,256,128}, metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  ROOT %bitcast.3 = f32[256,128]{1,0} bitcast(%dynamic-slice.4), metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+}
+
+ENTRY %main.0_spmd (param: f32[1,512,512]) -> f32[256,128] {
+  %partition-id = u32[] partition-id()
+  %param = f32[1,512,512]{2,1,0} parameter(0), sharding={devices=[8,1,1]<=[8]}, metadata={op_name="x"}
+  %constant = s32[8]{0} constant({0, 0, 0, 0, 256, 256, 256, 256}), metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  %constant.1 = s32[8]{0} constant({0, 128, 256, 384, 0, 128, 256, 384}), metadata={op_name="jit(fn)/reshard" stack_frame_id=4}
+  %all-gather = f32[8,512,512]{2,1,0} all-gather(%param), channel_id=1, replica_groups=mesh['axis_0'=8,'axis_1'=1,'axis_2'=1] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated="true"}, metadata={op_name="x"}
+  ROOT %dynamic-slice_bitcast_fusion = f32[256,128]{1,0} fusion(%constant.1, %partition-id, %constant, %all-gather), kind=kLoop, calls=%fused_computation, metadata={op_name="jit(fn)/reshard" stack_frame_id=4}, backend_config={"outer_dimension_partitions":["4"]}
+}
+

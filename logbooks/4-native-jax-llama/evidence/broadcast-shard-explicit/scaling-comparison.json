@@ -1,0 +1,112 @@
+{
+  "jax": "0.11.1",
+  "payload": "512x512 FP32, 1,048,576 bytes",
+  "output_layout": "P('data','model') on data2/model(N/2)",
+  "measurements": [
+    {
+      "devices": 4,
+      "axis_type": "Auto",
+      "variant": "old",
+      "payload_bytes": 1048576,
+      "global_staging_bytes": 4194304,
+      "ok": true,
+      "memory": {
+        "argument_size_in_bytes": 1048576,
+        "output_size_in_bytes": 262144,
+        "temp_size_in_bytes": 4194308,
+        "alias_size_in_bytes": 0
+      },
+      "collectives": [
+        "%all-gather = f32[4,512,512]{2,1,0} all-gather(%param), channel_id=1, replica_groups=mesh['axis_0'=4,'axis_1'=1,'axis_2'=1] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"x\"}"
+      ]
+    },
+    {
+      "devices": 4,
+      "axis_type": "Explicit",
+      "variant": "full",
+      "payload_bytes": 1048576,
+      "global_staging_bytes": 4194304,
+      "ok": true,
+      "memory": {
+        "argument_size_in_bytes": 1048576,
+        "output_size_in_bytes": 262144,
+        "temp_size_in_bytes": 4194308,
+        "alias_size_in_bytes": 0
+      },
+      "collectives": [
+        "%all-gather = f32[4,512,512]{2,1,0} all-gather(%param), channel_id=1, replica_groups=mesh['axis_0'=4,'axis_1'=1,'axis_2'=1] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"x\"}"
+      ],
+      "archived_hlo": "full-replication-4.hlo"
+    },
+    {
+      "devices": 4,
+      "axis_type": "Explicit",
+      "variant": "direct_vector",
+      "payload_bytes": 1048576,
+      "global_staging_bytes": 4194304,
+      "ok": true,
+      "memory": {
+        "argument_size_in_bytes": 1048576,
+        "output_size_in_bytes": 262144,
+        "temp_size_in_bytes": 2097156,
+        "alias_size_in_bytes": 0
+      },
+      "collectives": [
+        "%all-reduce = f32[1,512,512]{2,1,0} all-reduce(%broadcast_select_fusion), channel_id=2, replica_groups=mesh['axis_0'=4,'axis_1'=1,'axis_2'=1] {'axis_0'}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(fn)/gather\" stack_frame_id=2}"
+      ]
+    },
+    {
+      "devices": 8,
+      "axis_type": "Auto",
+      "variant": "old",
+      "payload_bytes": 1048576,
+      "global_staging_bytes": 8388608,
+      "ok": true,
+      "memory": {
+        "argument_size_in_bytes": 1048576,
+        "output_size_in_bytes": 131072,
+        "temp_size_in_bytes": 8388612,
+        "alias_size_in_bytes": 0
+      },
+      "collectives": [
+        "%all-gather = f32[8,512,512]{2,1,0} all-gather(%param), channel_id=1, replica_groups=mesh['axis_0'=8,'axis_1'=1,'axis_2'=1] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"x\"}"
+      ]
+    },
+    {
+      "devices": 8,
+      "axis_type": "Explicit",
+      "variant": "full",
+      "payload_bytes": 1048576,
+      "global_staging_bytes": 8388608,
+      "ok": true,
+      "memory": {
+        "argument_size_in_bytes": 1048576,
+        "output_size_in_bytes": 131072,
+        "temp_size_in_bytes": 8388612,
+        "alias_size_in_bytes": 0
+      },
+      "collectives": [
+        "%all-gather = f32[8,512,512]{2,1,0} all-gather(%param), channel_id=1, replica_groups=mesh['axis_0'=8,'axis_1'=1,'axis_2'=1] {'axis_0'}, dimensions={0}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"x\"}"
+      ],
+      "archived_hlo": "full-replication-8.hlo"
+    },
+    {
+      "devices": 8,
+      "axis_type": "Explicit",
+      "variant": "direct_vector",
+      "payload_bytes": 1048576,
+      "global_staging_bytes": 8388608,
+      "ok": true,
+      "memory": {
+        "argument_size_in_bytes": 1048576,
+        "output_size_in_bytes": 131072,
+        "temp_size_in_bytes": 2097156,
+        "alias_size_in_bytes": 0
+      },
+      "collectives": [
+        "%all-reduce = f32[1,512,512]{2,1,0} all-reduce(%broadcast_select_fusion), channel_id=2, replica_groups=mesh['axis_0'=8,'axis_1'=1,'axis_2'=1] {'axis_0'}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(fn)/gather\" stack_frame_id=2}"
+      ]
+    }
+  ],
+  "scope": "CPU compiled estimates, not runtime peak memory or accelerator throughput. Old Auto is retained unchanged. Selected floating transport has the separate signed-zero failure."
+}

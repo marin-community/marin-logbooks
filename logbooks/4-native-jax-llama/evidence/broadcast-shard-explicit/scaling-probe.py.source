@@ -1,0 +1,42 @@
+import json
+import re
+from pathlib import Path
+import jax
+import numpy as np
+from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P
+
+n=len(jax.devices())
+shape=(512,512)
+rows=(np.arange(np.prod(shape),dtype=np.float32).reshape(shape)/np.prod(shape)).astype(np.float32)
+results=[]
+for kind in [AxisType.Auto,AxisType.Explicit]:
+ mesh=Mesh(np.asarray(jax.devices()).reshape(2,n//2),('data','model'),axis_types=(kind,)*2)
+ staging=NamedSharding(mesh,P(('data','model'),None,None))
+ output=NamedSharding(mesh,P('data','model'))
+ a=jax.make_array_from_callback((n,*shape),staging,lambda idx:np.broadcast_to(rows+idx[0].start*10,(1,*shape)))
+ for variant in ['old','full','direct_dynamic','direct_vector']:
+  if variant=='old':
+   def fn(x):return jax.lax.with_sharding_constraint(x[1],output)
+  elif variant=='full':
+   def fn(x):
+    place=jax.sharding.reshard if kind==AxisType.Explicit else jax.lax.with_sharding_constraint
+    x=place(x,NamedSharding(mesh,P()))
+    return place(x[1],output)
+  elif variant=='direct_dynamic':
+   def fn(x):return x.at[jax.numpy.asarray(1)].get(out_sharding=output)
+  else:
+   def fn(x):return x.at[jax.numpy.asarray([1])].get(out_sharding=NamedSharding(mesh,P(None,'data','model')))[0]
+  result={'devices':n,'axis_type':kind.name,'variant':variant,'payload_bytes':rows.nbytes,'global_staging_bytes':n*rows.nbytes}
+  try:
+   with jax.set_mesh(mesh):
+    compiled=jax.jit(fn).lower(a).compile()
+    actual=compiled(a)
+   np.testing.assert_array_equal(actual,rows+10)
+   assert actual.sharding.is_equivalent_to(output,2)
+   for shard in actual.addressable_shards:np.testing.assert_array_equal(shard.data,(rows+10)[shard.index])
+   memory=compiled.memory_analysis();hlo=compiled.as_text()
+   dest=Path(f'output/native-jax-broadcast-scaling-v2-{n}-{kind.name}-{variant}.hlo');dest.write_text(hlo)
+   result.update(ok=True,memory={name:getattr(memory,name) for name in ['argument_size_in_bytes','output_size_in_bytes','temp_size_in_bytes','alias_size_in_bytes']},collectives=[line.strip() for line in hlo.splitlines() if re.search(r'\b(all-gather|all-reduce|collective-permute|reduce-scatter|all-to-all)\(',line)],hlo_path=str(dest))
+  except Exception as exc:result.update(ok=False,exception=type(exc).__name__,message=str(exc))
+  results.append(result)
+p=Path(f'output/native-jax-broadcast-scaling-v2-{n}.json');p.write_text(json.dumps(results,indent=2)+'\n');print(p.read_text())

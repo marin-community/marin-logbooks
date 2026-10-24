@@ -1,0 +1,163 @@
+HloModule jit_fn, is_scheduled=true, entry_computation_layout={(c64[1,512,512]{2,1,0})->c64[256,256]{1,0}}, num_partitions=4
+
+FileNames
+1 "bit-preserving-probe.py"
+
+FunctionNames
+1 "<module>"
+2 "fn"
+3 "fn.<locals>.select_source"
+
+FileLocations
+1 {file_name_id=1 function_name_id=1 line=34 end_line=34 column=12 end_column=12}
+2 {file_name_id=1 function_name_id=2 line=30 end_line=30 column=36 end_column=36}
+3 {file_name_id=1 function_name_id=2 line=30 end_line=30 column=22 end_column=22}
+4 {file_name_id=1 function_name_id=3 line=26 end_line=26 column=9 end_column=9}
+5 {file_name_id=1 function_name_id=3 line=27 end_line=27 column=9 end_column=9}
+6 {file_name_id=1 function_name_id=3 line=28 end_line=28 column=11 end_column=11}
+7 {file_name_id=1 function_name_id=2 line=30 end_line=30 column=67 end_column=67}
+8 {file_name_id=1 function_name_id=2 line=30 end_line=30 column=53 end_column=53}
+9 {file_name_id=1 function_name_id=2 line=30 end_line=30 column=6 end_column=6}
+10 {file_name_id=1 function_name_id=2 line=32 end_line=32 column=10 end_column=10}
+
+StackFrames
+1 {file_location_id=1 parent_frame_id=1}
+2 {file_location_id=2 parent_frame_id=2}
+3 {file_location_id=3 parent_frame_id=2}
+4 {file_location_id=4 parent_frame_id=4}
+5 {file_location_id=5 parent_frame_id=4}
+6 {file_location_id=6 parent_frame_id=4}
+7 {file_location_id=7 parent_frame_id=2}
+8 {file_location_id=8 parent_frame_id=2}
+9 {file_location_id=4 parent_frame_id=9}
+10 {file_location_id=5 parent_frame_id=9}
+11 {file_location_id=6 parent_frame_id=9}
+12 {file_location_id=9 parent_frame_id=2}
+13 {file_location_id=10 parent_frame_id=2}
+
+
+%fused_computation (param_0.1: s32[4], param_1.2: u32[], param_2.4: s32[4], param_3.7: u8[1,512,512,4], param_4.9: u8[1,512,512,4]) -> c64[256,256] {
+  %param_4.9 = u8[1,512,512,4]{3,2,1,0} parameter(4)
+  %bitcast.11 = u8[512,512,4]{2,1,0} bitcast(%param_4.9), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %bitcast.10 = u8[512,2048]{1,0} bitcast(%bitcast.11), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %slice.15 = u8[512,512]{1,0} slice(%bitcast.10), slice={[0:512:1], [0:2045:4]}
+  %convert.18 = u32[512,512]{1,0} convert(%slice.15)
+  %slice.14 = u8[512,512]{1,0} slice(%bitcast.10), slice={[0:512:1], [1:2046:4]}
+  %convert.17 = u32[512,512]{1,0} convert(%slice.14)
+  %constant.45 = u32[] constant(8)
+  %broadcast.30 = u32[512,512]{1,0} broadcast(%constant.45), dimensions={}
+  %shift-left.11 = u32[512,512]{1,0} shift-left(%convert.17, %broadcast.30)
+  %or.16 = u32[512,512]{1,0} or(%convert.18, %shift-left.11)
+  %slice.13 = u8[512,512]{1,0} slice(%bitcast.10), slice={[0:512:1], [2:2047:4]}
+  %convert.16 = u32[512,512]{1,0} convert(%slice.13)
+  %constant.44 = u32[] constant(16)
+  %broadcast.29 = u32[512,512]{1,0} broadcast(%constant.44), dimensions={}
+  %shift-left.10 = u32[512,512]{1,0} shift-left(%convert.16, %broadcast.29)
+  %or.15 = u32[512,512]{1,0} or(%or.16, %shift-left.10)
+  %slice.12 = u8[512,512]{1,0} slice(%bitcast.10), slice={[0:512:1], [3:2048:4]}
+  %convert.15 = u32[512,512]{1,0} convert(%slice.12)
+  %constant.43 = u32[] constant(24)
+  %broadcast.28 = u32[512,512]{1,0} broadcast(%constant.43), dimensions={}
+  %shift-left.9 = u32[512,512]{1,0} shift-left(%convert.15, %broadcast.28)
+  %or.14 = u32[512,512]{1,0} or(%or.15, %shift-left.9)
+  %bitcast_convert_type.25 = f32[512,512]{1,0} bitcast-convert(%or.14), metadata={op_name="jit(fn)/bitcast_convert_type" stack_frame_id=6}
+  %param_3.7 = u8[1,512,512,4]{3,2,1,0} parameter(3)
+  %bitcast.9 = u8[512,512,4]{2,1,0} bitcast(%param_3.7), metadata={op_name="jit(fn)/gather" stack_frame_id=10}
+  %bitcast.8 = u8[512,2048]{1,0} bitcast(%bitcast.9), metadata={op_name="jit(fn)/gather" stack_frame_id=10}
+  %slice.11 = u8[512,512]{1,0} slice(%bitcast.8), slice={[0:512:1], [0:2045:4]}
+  %convert.14 = u32[512,512]{1,0} convert(%slice.11)
+  %slice.10 = u8[512,512]{1,0} slice(%bitcast.8), slice={[0:512:1], [1:2046:4]}
+  %convert.13 = u32[512,512]{1,0} convert(%slice.10)
+  %shift-left.8 = u32[512,512]{1,0} shift-left(%convert.13, %broadcast.30)
+  %or.13 = u32[512,512]{1,0} or(%convert.14, %shift-left.8)
+  %slice.9 = u8[512,512]{1,0} slice(%bitcast.8), slice={[0:512:1], [2:2047:4]}
+  %convert.12 = u32[512,512]{1,0} convert(%slice.9)
+  %shift-left.7 = u32[512,512]{1,0} shift-left(%convert.12, %broadcast.29)
+  %or.12 = u32[512,512]{1,0} or(%or.13, %shift-left.7)
+  %slice.8 = u8[512,512]{1,0} slice(%bitcast.8), slice={[0:512:1], [3:2048:4]}
+  %convert.11 = u32[512,512]{1,0} convert(%slice.8)
+  %shift-left.6 = u32[512,512]{1,0} shift-left(%convert.11, %broadcast.28)
+  %or.11 = u32[512,512]{1,0} or(%or.12, %shift-left.6)
+  %bitcast_convert_type.24 = f32[512,512]{1,0} bitcast-convert(%or.11), metadata={op_name="jit(fn)/bitcast_convert_type" stack_frame_id=11}
+  %complex.6 = c64[512,512]{1,0} complex(%bitcast_convert_type.25, %bitcast_convert_type.24), metadata={op_name="jit(fn)/complex" stack_frame_id=12}
+  %param_2.4 = s32[4]{0} parameter(2)
+  %param_1.2 = u32[] parameter(1)
+  %dynamic-slice.11 = s32[1]{0} dynamic-slice(%param_2.4, %param_1.2), dynamic_slice_sizes={1}, metadata={op_name="jit(fn)/reshard" stack_frame_id=13}
+  %bitcast.7 = s32[] bitcast(%dynamic-slice.11), metadata={op_name="jit(fn)/reshard" stack_frame_id=13}
+  %param_0.1 = s32[4]{0} parameter(0)
+  %dynamic-slice.10 = s32[1]{0} dynamic-slice(%param_0.1, %param_1.2), dynamic_slice_sizes={1}, metadata={op_name="jit(fn)/reshard" stack_frame_id=13}
+  %bitcast.6 = s32[] bitcast(%dynamic-slice.10), metadata={op_name="jit(fn)/reshard" stack_frame_id=13}
+  ROOT %dynamic-slice.9 = c64[256,256]{1,0} dynamic-slice(%complex.6, %bitcast.7, %bitcast.6), dynamic_slice_sizes={256,256}, metadata={op_name="jit(fn)/reshard" stack_frame_id=13}
+}
+
+%fused_computation.1 (param_0.3: c64[1,512,512], param_1.8: u32[]) -> u8[1,512,512,4] {
+  %constant.49 = s32[] constant(1), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %param_1.8 = u32[] parameter(1)
+  %convert.20 = s32[] convert(%param_1.8), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %compare.7 = pred[] compare(%constant.49, %convert.20), direction=LT, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %compare.6 = pred[] compare(%constant.49, %convert.20), direction=GT, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %or.17 = pred[] or(%compare.7, %compare.6), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %broadcast.35 = pred[1,512,512,4]{3,2,1,0} broadcast(%or.17), dimensions={}, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %constant.48 = u8[] constant(0), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %broadcast.34 = u8[1,512,512,4]{3,2,1,0} broadcast(%constant.48), dimensions={}, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %param_0.3 = c64[1,512,512]{2,1,0} parameter(0)
+  %imag.6 = f32[1,512,512]{2,1,0} imag(%param_0.3), metadata={op_name="jit(fn)/imag" stack_frame_id=7}
+  %broadcast.31 = f32[1,512,512,4]{3,2,1,0} broadcast(%imag.6), dimensions={0,1,2}
+  %bitcast-convert.4 = u32[1,512,512,4]{3,2,1,0} bitcast-convert(%broadcast.31)
+  %constant.47 = u32[] constant(8)
+  %broadcast.33 = u32[1,512,512,4]{3,2,1,0} broadcast(%constant.47), dimensions={}
+  %iota.3 = u32[1,512,512,4]{3,2,1,0} iota(), iota_dimension=3
+  %multiply.2 = u32[1,512,512,4]{3,2,1,0} multiply(%broadcast.33, %iota.3)
+  %shift-right-logical.2 = u32[1,512,512,4]{3,2,1,0} shift-right-logical(%bitcast-convert.4, %multiply.2)
+  %constant.46 = u32[] constant(255)
+  %broadcast.32 = u32[1,512,512,4]{3,2,1,0} broadcast(%constant.46), dimensions={}
+  %and.2 = u32[1,512,512,4]{3,2,1,0} and(%shift-right-logical.2, %broadcast.32)
+  %convert.19 = u8[1,512,512,4]{3,2,1,0} convert(%and.2), metadata={op_name="jit(fn)/bitcast_convert_type" stack_frame_id=9}
+  ROOT %select.2 = u8[1,512,512,4]{3,2,1,0} select(%broadcast.35, %broadcast.34, %convert.19), metadata={op_name="jit(fn)/gather" stack_frame_id=10}
+}
+
+%fused_computation.2 (param_0.5: c64[1,512,512], param_1.14: u32[]) -> u8[1,512,512,4] {
+  %constant.53 = s32[] constant(1), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %param_1.14 = u32[] parameter(1)
+  %convert.22 = s32[] convert(%param_1.14), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %compare.9 = pred[] compare(%constant.53, %convert.22), direction=LT, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %compare.8 = pred[] compare(%constant.53, %convert.22), direction=GT, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %or.18 = pred[] or(%compare.9, %compare.8), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %broadcast.40 = pred[1,512,512,4]{3,2,1,0} broadcast(%or.18), dimensions={}, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %constant.52 = u8[] constant(0), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %broadcast.39 = u8[1,512,512,4]{3,2,1,0} broadcast(%constant.52), dimensions={}, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %param_0.5 = c64[1,512,512]{2,1,0} parameter(0)
+  %real.6 = f32[1,512,512]{2,1,0} real(%param_0.5), metadata={op_name="jit(fn)/real" stack_frame_id=2}
+  %broadcast.38 = f32[1,512,512,4]{3,2,1,0} broadcast(%real.6), dimensions={0,1,2}
+  %bitcast-convert.5 = u32[1,512,512,4]{3,2,1,0} bitcast-convert(%broadcast.38)
+  %constant.51 = u32[] constant(8)
+  %broadcast.37 = u32[1,512,512,4]{3,2,1,0} broadcast(%constant.51), dimensions={}
+  %iota.4 = u32[1,512,512,4]{3,2,1,0} iota(), iota_dimension=3
+  %multiply.3 = u32[1,512,512,4]{3,2,1,0} multiply(%broadcast.37, %iota.4)
+  %shift-right-logical.3 = u32[1,512,512,4]{3,2,1,0} shift-right-logical(%bitcast-convert.5, %multiply.3)
+  %constant.50 = u32[] constant(255)
+  %broadcast.36 = u32[1,512,512,4]{3,2,1,0} broadcast(%constant.50), dimensions={}
+  %and.3 = u32[1,512,512,4]{3,2,1,0} and(%shift-right-logical.3, %broadcast.36)
+  %convert.21 = u8[1,512,512,4]{3,2,1,0} convert(%and.3), metadata={op_name="jit(fn)/bitcast_convert_type" stack_frame_id=4}
+  ROOT %select.3 = u8[1,512,512,4]{3,2,1,0} select(%broadcast.40, %broadcast.39, %convert.21), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+}
+
+%add.3.clone (x.7: u8[], y.5: u8[]) -> u8[] {
+  %x.7 = u8[] parameter(0)
+  %y.5 = u8[] parameter(1)
+  ROOT %add.3 = u8[] add(%x.7, %y.5)
+}
+
+ENTRY %main.0_spmd (param: c64[1,512,512]) -> c64[256,256] {
+  %partition-id = u32[] partition-id(), metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  %param = c64[1,512,512]{2,1,0} parameter(0), sharding={devices=[4,1,1]<=[4]}, metadata={op_name="x"}
+  %constant.24 = s32[4]{0} constant({0, 0, 256, 256}), metadata={op_name="jit(fn)/reshard" stack_frame_id=13}
+  %constant.25 = s32[4]{0} constant({0, 256, 0, 256}), metadata={op_name="jit(fn)/reshard" stack_frame_id=13}
+  %convert_select_fusion.1 = u8[1,512,512,4]{3,2,1,0} fusion(%param, %partition-id), kind=kLoop, calls=%fused_computation.2, metadata={op_name="jit(fn)/gather" stack_frame_id=5}, backend_config={"outer_dimension_partitions":["1","18"]}
+  %convert_select_fusion = u8[1,512,512,4]{3,2,1,0} fusion(%param, %partition-id), kind=kLoop, calls=%fused_computation.1, metadata={op_name="jit(fn)/gather" stack_frame_id=10}, backend_config={"outer_dimension_partitions":["1","18"]}
+  %all-reduce.2 = (u8[1,512,512,4]{3,2,1,0}, u8[1,512,512,4]{3,2,1,0}) all-reduce(%convert_select_fusion, %convert_select_fusion.1), channel_id=4, replica_groups=mesh['axis_0'=4,'axis_1'=1,'axis_2'=1,'axis_3'=1] {'axis_0'}, use_global_device_ids=true, to_apply=%add.3.clone, frontend_attributes={is_spmd_generated="true"}, metadata={op_name="jit(fn)/gather" stack_frame_id=10}
+  %get-tuple-element.2 = u8[1,512,512,4]{3,2,1,0} get-tuple-element(%all-reduce.2), index=0, frontend_attributes={is_spmd_generated="true"}, metadata={op_name="jit(fn)/gather" stack_frame_id=10}
+  %get-tuple-element.3 = u8[1,512,512,4]{3,2,1,0} get-tuple-element(%all-reduce.2), index=1, frontend_attributes={is_spmd_generated="true"}, metadata={op_name="jit(fn)/gather" stack_frame_id=5}
+  ROOT %bitcast_dynamic-slice_fusion = c64[256,256]{1,0} fusion(%constant.25, %partition-id, %constant.24, %get-tuple-element.2, %get-tuple-element.3), kind=kLoop, calls=%fused_computation, metadata={op_name="jit(fn)/reshard" stack_frame_id=13}, backend_config={"outer_dimension_partitions":["18"]}
+}
+

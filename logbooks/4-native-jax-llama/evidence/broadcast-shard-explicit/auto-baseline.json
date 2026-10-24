@@ -1,0 +1,49 @@
+{
+  "production_pin": "919c1cc2fa0b512a1d7e2e4065d2dcda8f5e7bb3",
+  "production_file_sha256": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1",
+  "production_file_exact_base": true,
+  "bitwise_failure": {
+    "dtype": "bfloat16",
+    "source_process": 0,
+    "local_rank": 1,
+    "expected_nan_payload_hex": "7fc5",
+    "observed_nan_payload_hex": "7fc0",
+    "expected_local_bytes_hex": "81bfc57f",
+    "observed_local_bytes_hex": "81bfc07f",
+    "interpretation": "Existing Auto canonicalizes this NaN payload while retaining its numerical NaN value. No Auto signed-zero change is asserted.",
+    "receipt_inputs": [
+      {
+        "artifact_basename": "native-jax-broadcast-shard-explicit-auto-bits-baseline.xml",
+        "bytes": 4106,
+        "sha256": "f37ee7a0cda619208b2743f821646cab04359eea642e74b09613378e97032402"
+      },
+      {
+        "artifact_basename": "native-jax-broadcast-shard-explicit-auto-bits-baseline.log",
+        "bytes": 7249,
+        "sha256": "c337183687883531d7394dd7270466d9e7d462549c56061e991491bf80039d81"
+      }
+    ]
+  },
+  "exact_numerical_and_layout_baseline": {
+    "original": {
+      "artifact_basename": "native-jax-broadcast-shard-explicit-auto-values-baseline-nan-equal.xml",
+      "bytes": 398,
+      "sha256": "b12e246e503bf087eb93824628dc9eb64479a729f608395eddd8fcc45747911f"
+    },
+    "counts": {
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "seconds": 4.207,
+    "cases": [
+      {
+        "name": "test_broadcast_shard_selects_source_process_and_preserves_layout[AxisType.Auto]",
+        "class": "tests.test_jax_utils",
+        "outcome": "passed"
+      }
+    ]
+  },
+  "oracle": "Exact host real/imaginary component equality OR both components NaN; shapes/dtypes/static metadata/requested local layouts; both source processes0/1. No cast or tolerance."
+}

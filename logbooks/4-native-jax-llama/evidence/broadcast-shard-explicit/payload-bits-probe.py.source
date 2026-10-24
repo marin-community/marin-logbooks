@@ -1,0 +1,15 @@
+import json
+from pathlib import Path
+import jax
+import numpy as np
+from jax.sharding import AxisType,Mesh,PartitionSpec as P
+from levanter.utils.jax_utils import broadcast_shard
+
+results=[]
+a=np.asarray([0x80000000,0x3f800001,0xbf800001,0x7fc01234],dtype=np.uint32).view(np.float32)
+for kind in [AxisType.Auto,AxisType.Explicit]:
+ mesh=Mesh(np.asarray(jax.devices()),('data',),axis_types=(kind,))
+ with jax.set_mesh(mesh):out=broadcast_shard(a,P('data'))
+ bits=np.asarray(out).view(np.uint32)
+ results.append({'mode':kind.name,'expected_bits':a.view(np.uint32).tolist(),'actual_bits':bits.tolist(),'all_bits_equal':bool(np.array_equal(bits,a.view(np.uint32))),'layout':str(out.sharding.spec)})
+p=Path('output/native-jax-broadcast-shard-explicit-payload-bits.json');p.write_text(json.dumps(results,indent=2)+'\n');print(p.read_text())
