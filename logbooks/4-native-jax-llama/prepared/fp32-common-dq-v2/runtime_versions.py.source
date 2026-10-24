@@ -1,0 +1,90 @@
+"""Exact interpreter/package/build fingerprints without importing JAX in the parent."""
+
+import hashlib
+import importlib
+import importlib.metadata
+import os
+from pathlib import Path
+import platform
+import sys
+import sysconfig
+
+PACKAGES = [
+    "jax",
+    "jaxlib",
+    "libtpu",
+    "equinox",
+    "haliax",
+    "marin-levanter",
+    "numpy",
+    "scipy",
+    "ml_dtypes",
+    "optax",
+    "chex",
+    "jaxtyping",
+    "draccus",
+    "opt_einsum",
+]
+
+
+def runtime_snapshot(jax_module=None):
+    distributions = {}
+    for name in PACKAGES:
+        try:
+            distribution = importlib.metadata.distribution(name)
+        except importlib.metadata.PackageNotFoundError:
+            distributions[name] = {"installed_distribution": False}
+            continue
+        documents = {}
+        for document in ["WHEEL", "RECORD", "METADATA"]:
+            text = distribution.read_text(document)
+            documents[document] = (
+                None
+                if text is None
+                else {"bytes": len(text.encode()), "sha256": hashlib.sha256(text.encode()).hexdigest()}
+            )
+        distributions[name] = {
+            "installed_distribution": True,
+            "version": distribution.version,
+            "build_fingerprints": documents,
+        }
+    result = {
+        "python": {
+            "version": sys.version,
+            "version_info": list(sys.version_info),
+            "implementation": sys.implementation.name,
+            "cache_tag": sys.implementation.cache_tag,
+            "build": list(platform.python_build()),
+            "compiler": platform.python_compiler(),
+            "soabi": sysconfig.get_config_var("SOABI"),
+            "executable_sha256": hashlib.sha256(Path(sys.executable).read_bytes()).hexdigest(),
+        },
+        "platform": {"system": platform.system(), "release": platform.release(), "machine": platform.machine()},
+        "packages": distributions,
+        "math_environment": {
+            name: os.environ.get(name)
+            for name in ["XLA_FLAGS", "LIBTPU_INIT_ARGS", "JAX_PLATFORMS", "JAX_NUM_CPU_DEVICES"]
+        },
+    }
+    if jax_module is not None:
+        devices = jax_module.devices()
+        client = devices[0].client
+        jax_version_module = importlib.import_module("jax.version")
+        jaxlib_version_module = importlib.import_module("jaxlib.version")
+        result["source_build_ids"] = {
+            label: {
+                name: vars(module).get(name)
+                for name in ["__version__", "_git_hash", "_release_version", "_minimum_jaxlib_version"]
+            }
+            for label, module in [("jax", jax_version_module), ("jaxlib", jaxlib_version_module)]
+        }
+        result["loaded_jax_runtime"] = {
+            "jax_version": jax_module.__version__,
+            "backend": jax_module.default_backend(),
+            "client_platform": client.platform,
+            "client_platform_version": client.platform_version,
+            "process_count": jax_module.process_count(),
+            "global_device_count": jax_module.device_count(),
+            "local_device_count": jax_module.local_device_count(),
+        }
+    return result

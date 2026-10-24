@@ -1,0 +1,301 @@
+"""Fresh, sequential, source-pinned scientific children; no hardware submission."""
+
+import argparse
+import hashlib
+import io
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tarfile
+from physical_guards import physical_tree_signature
+from runtime_versions import runtime_snapshot
+
+MAX_BYTES = 64 * 1024 * 1024
+MAX_FILES = 128
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+
+def inspect_child(output, small, abstract):
+    if abstract:
+        return {
+            "abstract": json.loads((output / "abstract-shapes.json").read_text()),
+            "raw_large_abstract": json.loads((output / "raw-large-abstract.json").read_text()),
+            "passed": True,
+            "numerical_execution": False,
+            "runtime_versions": json.loads((output / "raw-large-abstract.json").read_text())["runtime_versions"],
+        }
+    outcome = json.loads((output / "case-outcomes.json").read_text())
+    provenance = json.loads((output / "provenance.json").read_text())
+    controls = json.loads((output / "controls.json").read_text())
+    raw = json.loads((output / "common-raw-dq.json").read_text())
+    stages = {s: json.loads((output / f"last-{s}.json").read_text()) for s in ["full", "prefix", "tail", "composed"]}
+    return {
+        "passed": outcome["completed"]
+        and (
+            outcome["attribution_valid"] and raw["guards_pass"]
+            if not small
+            else provenance["capture_controls_exact"]
+            and all(controls["single_jit_full_vs_composed_exact"].values())
+            and all(
+                raw["guards"][key]["exact"]
+                for key in ["runtime_trig_public_forward_exact", "manual_inverse_public_vjp_exact"]
+            )
+        ),
+        "scientific_raw_kernel_identity_passed": raw["guards_pass"],
+        "new_actual_fp32_source_capture": provenance["new_actual_fp32_source_capture"],
+        "runtime_versions": provenance["runtime_versions"],
+        "source_operand_physical": {k:v["physical"] for k,v in provenance["source_operands"].items()},
+        "source_input_physical": provenance["source_input_physical"],
+        "source_master_physical": provenance["source_master_physical"],
+        "source_capture_physical": {name: {
+            "arguments": json.loads((output/(name+".json")).read_text())["source_argument_physical"],
+            "results": {k:v["physical"] for k,v in json.loads((output/(name+".json")).read_text())["results"].items()}
+        } for name in ["source-scan","capture-without-duplicate-full","source-full-separate","normal-hidden","normal-loss"]},
+        "stage_physical": {stage:{variant:{
+            "arguments":[r["physical"] for r in data[variant]["arguments"]],
+            "cotangent":data[variant]["cotangent"]["physical"],
+            "results":[r["physical"] for r in data[variant]["results"]]
+        } for variant in ["named","native"]} for stage,data in stages.items()},
+        "parameter_sha256": provenance["parameter_sha256"],
+        "batch_sha256": provenance["batch_sha256"],
+        "source_operand_hashes": {k: v["sha256"] for k, v in provenance["source_operands"].items()},
+        "stage_result_hashes": {
+            s: {v: [r["sha256"] for r in d[v]["results"]] for v in ["named", "native"]} for s, d in stages.items()
+        },
+        "raw_operand_result_hashes": {
+            k: {
+                field: [{"sha256": r["sha256"], "physical": r["physical"]} for r in v[field]]
+                for field in ["arguments", "results"]
+            }
+            for k, v in raw["records"].items()
+        },
+        "source_replay_attribution_valid": outcome["attribution_valid"],
+        "source_controls_exact": provenance["capture_controls_exact"],
+        "full_composed_controls": controls["single_jit_full_vs_composed_exact"],
+        "raw_dq_guards": raw["guards"],
+        "raw_dq_comparison": raw["post_rope_dq"],
+        "downstream_order": raw["downstream_result_order"],
+        "downstream_comparisons": raw["downstream_comparisons"],
+        "stages": stages,
+        "cpu_reference_mechanics_only": small,
+    }
+
+
+def comparison_guards(children, abstract=False):
+    guards = {}
+    changes = {}
+    if not abstract:
+        a, b = children["baseline"], children["candidate"]
+        for field in ["parameter_sha256", "batch_sha256", "source_operand_hashes", "raw_operand_result_hashes",
+                      "source_operand_physical", "source_input_physical", "source_master_physical",
+                      "source_capture_physical", "stage_physical", "runtime_versions"]:
+            try:
+                guards[field + "_unchanged"] = physical_tree_signature(a[field]) == physical_tree_signature(b[field])
+            except ValueError as error:
+                guards[field + "_unchanged"] = False
+                changes.setdefault("metadata_errors", {})[field] = str(error)
+        for stage in ["full", "prefix", "tail", "composed"]:
+            before = a["stages"][stage]["comparisons"]["named_vs_native"]
+            after = b["stages"][stage]["comparisons"]["named_vs_native"]
+            order = a["stages"][stage]["named"]["result_order"]
+            changes[stage] = {
+                name: {
+                    "before": left,
+                    "after": right,
+                    "mismatch_removed": not left["exact"] and right["exact"],
+                    "mismatch_introduced": left["exact"] and not right["exact"],
+                }
+                for name, left, right in zip(order, before, after, strict=True)
+            }
+            guards[stage + "_no_new_numerical_mismatches"] = not any(
+                row["mismatch_introduced"] for row in changes[stage].values()
+            )
+            guards[stage + "_all_named_results_unchanged"] = (
+                a["stage_result_hashes"][stage]["named"] == b["stage_result_hashes"][stage]["named"]
+            )
+            guards[stage + "_native_forward_unchanged"] = (
+                a["stage_result_hashes"][stage]["native"][0] == b["stage_result_hashes"][stage]["native"][0]
+            )
+    else:
+        guards["runtime_versions_unchanged"]=children["baseline"]["runtime_versions"]==children["candidate"]["runtime_versions"]
+    return guards, changes
+
+
+def enforce_controller_result(output, summary, small, abstract):
+    write(output / "controller-summary.json", summary)
+    if not summary["passed"] and not small and not abstract:
+        failure={"schema":"native-jax-fp32-common-dq-controller-failure.v2", "completed":False, "passed":False,
+                 "scientific_attribution_valid":False,
+                 "failed_cross_child_guards":[key for key,value in summary["cross_child_guards"].items() if not value],
+                 "failed_children":[key for key,value in summary["children"].items() if not value["passed"]],
+                 "failure_summary_preserved":"controller-summary.json", "retry_submitted":False}
+        write(output / "controller-failure.json",failure)
+        raise RuntimeError("Required non-small child/cross-child guards failed; preserved failure summary")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repository", type=Path, required=True)
+    parser.add_argument("--fixture-root", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--expected-backend", choices=["cpu", "tpu"], required=True)
+    parser.add_argument("--small", action="store_true")
+    parser.add_argument("--abstract-only", action="store_true")
+    args = parser.parse_args()
+    if args.small and args.abstract_only:
+        raise ValueError("Choose CPU mechanics or actual-large abstract proof")
+    if "jax" in sys.modules:
+        raise ValueError("Controller must not initialize JAX")
+    if os.environ.get("XLA_FLAGS") != "--xla_allow_excess_precision=false":
+        raise ValueError("Exact flags required")
+    bundle = Path(__file__).parent.resolve()
+    manifest = json.loads((bundle / "manifest.json").read_text())
+    for name, record in manifest["files"].items():
+        if sha((bundle / name).read_bytes()) != record["sha256"]:
+            raise ValueError("Frozen artifact changed: " + name)
+    pins = json.loads((bundle / "source-pins.json").read_text())
+    output = args.output_dir.resolve()
+    fixtures = args.fixture_root.resolve()
+    for directory in [output, fixtures]:
+        directory.mkdir(parents=True, exist_ok=False)
+    children = {}
+    for label, record in pins.items():
+        target = fixtures / label
+        target.mkdir()
+        archive = subprocess.run(
+            [
+                "git",
+                "archive",
+                record["pin"],
+                "lib/levanter/src",
+                "lib/haliax/src",
+                "lib/levanter/scripts/bench/bench_llama_native.py",
+            ],
+            cwd=args.repository,
+            check=True,
+            capture_output=True,
+        ).stdout
+        if len(archive) > 64 * 1024 * 1024:
+            raise ValueError("Unexpected source fixture size")
+        with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
+            tar.extractall(target, filter="data")
+        for name, expected in record["source_sha256"].items():
+            if sha((target / name).read_bytes()) != expected:
+                raise ValueError("Source pin mismatch")
+        child_output = output / label
+        env = dict(os.environ)
+        env.update(
+            PYTHONPATH=os.pathsep.join([str(target / "lib/levanter/src"), str(target / "lib/haliax/src"), str(bundle)]),
+            PYTHONDONTWRITEBYTECODE="1",
+            PYTHONPYCACHEPREFIX=str(fixtures / (label + "-fresh-bytecode")),
+            SOURCE_COMMIT=record["pin"],
+            FP32_EXPECTED_ROOT=str(target),
+            FP32_EXPECTED_LABEL=label,
+        )
+        code = """import hashlib,importlib,json,os,pathlib,sys
+root=pathlib.Path(os.environ['FP32_EXPECTED_ROOT'])
+driver=importlib.import_module('native_jax_fp32_common_capture')
+core=importlib.import_module('levanter.grug.attention._core')
+pins=json.loads((pathlib.Path(driver.__file__).parent/'source-pins.json').read_text())[os.environ['FP32_EXPECTED_LABEL']]
+for path,expected in pins['source_sha256'].items():
+ if hashlib.sha256((root/path).read_bytes()).hexdigest()!=expected:raise ValueError('Child source hash mismatch')
+if pathlib.Path(core.__file__).resolve()!=root/'lib/levanter/src/levanter/grug/attention/_core.py':raise ValueError('Wrong loaded core')
+if pathlib.Path(driver.prior.bench.__file__).resolve()!=root/'lib/levanter/scripts/bench/bench_llama_native.py':raise ValueError('Wrong benchmark')
+for path in pins['source_sha256']:
+ if '/src/' in path:
+  module=importlib.import_module(path.split('/src/',1)[1][:-3].replace('/','.'))
+  if pathlib.Path(module.__file__).resolve()!=root/path:raise ValueError('Wrong loaded source module: '+path)
+if ('optimization_barrier' in core._tpu_splash_attention.__code__.co_names)!=(os.environ['FP32_EXPECTED_LABEL']=='candidate'):raise ValueError('Wrong loaded static FP32 candidate')
+driver.SOURCE=pins['pin']
+driver.CAPTURE_HLO_TOTAL_LIMIT=12*1024*1024
+driver.prior.HLO_FILE_LIMIT=8*1024*1024
+driver.prior.HLO_TOTAL_LIMIT=16*1024*1024
+sys.argv=[driver.__file__,*sys.argv[1:]]
+driver.main()
+if '--abstract-only' in sys.argv:
+ output=pathlib.Path(sys.argv[sys.argv.index('--output-dir')+1])
+ abstract=importlib.import_module('fp32_common_dq_large_abstract')
+ sys.argv=[abstract.__file__,'--output',str(output/'raw-large-abstract.json')]
+ abstract.main()
+"""
+        cmd = [
+            sys.executable,
+            "-c",
+            code,
+            "--expected-backend",
+            args.expected_backend,
+            "--output-dir",
+            str(child_output),
+        ]
+        if args.small:
+            cmd += ["--small"]
+        if args.abstract_only:
+            cmd += ["--abstract-only"]
+        # No credentials are required or added. Existing environment is not persisted.
+        with (fixtures / (label + ".log")).open("wb") as log:
+            completed = subprocess.run(
+                cmd, cwd=target, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=1200, check=False
+            )
+        if completed.returncode != 0:
+            write(
+                output / "controller-failure.json",
+                {
+                    "variant": label,
+                    "exit_code": completed.returncode,
+                    "diagnostic_log": str(fixtures / (label + ".log")),
+                    "retry_submitted": False,
+                },
+            )
+            raise RuntimeError(f"{label} scientific child failed; preserve output and log without recovery")
+        children[label] = inspect_child(child_output, args.small, args.abstract_only)
+    guards, changes = comparison_guards(children, args.abstract_only)
+    files = [p for p in output.rglob("*") if p.is_file()]
+    if len(files) + 1 > MAX_FILES or sum(p.stat().st_size for p in files) > MAX_BYTES:
+        raise ValueError("Combined artifact bound exceeded")
+    enforce_controller_result(
+        output,
+        {
+            "schema": "native-jax-fp32-common-dq-ab.v2",
+            "controller_runtime_versions": runtime_snapshot(),
+            "passed": all(c["passed"] for c in children.values()) and all(guards.values()),
+            "candidate_comparison_changes": changes,
+            "full_trainer_recommendation": "No automatic recommendation. Independent reviewer must establish targeted improvement, no new mismatches, materialized HLO boundary and valid common-source/runtime controls; null benefit is a valid falsifying outcome.",
+            "sources": pins,
+            "frozen_manifest_sha256": sha((bundle / "manifest.json").read_bytes()),
+            "sequential_fresh_source_fixtures": True,
+            "production_source_mutation": False,
+            "cross_child_guards": guards,
+            "children": children,
+            "small_cpu_mechanics_only": args.small,
+            "abstract_only": args.abstract_only,
+            "scientific_attribution_valid": not args.small
+            and not args.abstract_only
+            and all(c["passed"] for c in children.values())
+            and all(guards.values()),
+            "next_gate": "Independent source/HLO/operand review and durable archive before any hardware. No full Trainer or trajectory conclusion from standalone derivatives.",
+            "output_files_before_manifest": len(files),
+            "output_bytes_before_manifest": sum(p.stat().st_size for p in files),
+            "artifact_files": {
+                str(p.relative_to(output)): {"bytes": p.stat().st_size, "sha256": sha(p.read_bytes())} for p in files
+            },
+        },
+        args.small,
+        args.abstract_only,
+    )
+    final_files = [p for p in output.rglob("*") if p.is_file()]
+    if len(final_files) > MAX_FILES or sum(p.stat().st_size for p in final_files) > MAX_BYTES:
+        raise ValueError("Final artifact including summary exceeds bound")
+    print(json.dumps({"output": str(output), "guards": guards, "completed": True}))
+
+
+if __name__ == "__main__":
+    main()

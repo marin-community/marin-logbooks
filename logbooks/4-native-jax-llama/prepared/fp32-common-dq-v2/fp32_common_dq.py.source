@@ -1,0 +1,389 @@
+"""Source-derived same-raw-Splash-dQ rounding diagnostic; no production patches."""
+
+import ast
+import copy
+import hashlib
+import inspect
+import json
+import math
+import textwrap
+
+import equinox as eqx
+import haliax as hax
+from haliax.state_dict import from_torch_compatible_state_dict
+import jax
+import jax.numpy as jnp
+from jax.sharding import NamedSharding, PartitionSpec as P, auto_axes
+import numpy as np
+
+from levanter.grug.attention import AttentionMask, attention, reference_attention
+from levanter.grug.attention import _core
+from levanter.layers import rotary_native
+from levanter.models import llama_native
+from physical_guards import physical, assert_physical_equal
+
+MAX_BYTES = 64 * 1024 * 1024
+MAX_FILES = 128
+
+
+def ast_sha(node):
+    return hashlib.sha256(ast.dump(node, include_attributes=False).encode()).hexdigest()
+
+
+def source_function(text, name):
+    nodes = [n for n in ast.walk(ast.parse(textwrap.dedent(text))) if isinstance(n, ast.FunctionDef) and n.name == name]
+    if len(nodes) != 1:
+        raise ValueError(f"Expected one exact source function: {name}")
+    return nodes[0]
+
+
+def compile_function(node, namespace):
+    node = copy.deepcopy(node)
+    node.decorator_list = []
+    code = compile(
+        ast.fix_missing_locations(ast.Module(body=[node], type_ignores=[])), "<frozen-source-extraction>", "exec"
+    )
+    scope = dict(namespace)
+    exec(code, scope)
+    return scope[node.name]
+
+
+def extractions(baseline_core):
+    original = source_function(baseline_core, "_tpu_splash_attention")
+    expected = ast.parse("q_ = q_ * (1.0 / math.sqrt(D))").body[0]
+    matches = [
+        i
+        for i, n in enumerate(original.body)
+        if ast.dump(n, include_attributes=False) == ast.dump(expected, include_attributes=False)
+    ]
+    if len(matches) != 1 or any(
+        isinstance(n, ast.Attribute) and n.attr == "optimization_barrier" for n in ast.walk(original)
+    ):
+        raise ValueError("Raw dQ extraction requires exactly one scale assignment from barrier-free baseline")
+    raw = copy.deepcopy(original)
+    del raw.body[matches[0]]
+    reconstructed = copy.deepcopy(raw)
+    reconstructed.body.insert(matches[0], expected)
+    if ast_sha(reconstructed) != ast_sha(original):
+        raise ValueError("Raw dQ AST differs beyond the single removed scale assignment")
+    raw_fn = compile_function(raw, vars(_core))
+
+    rope_original = source_function(inspect.getsource(rotary_native), "apply_rotary")
+    if (
+        not isinstance(rope_original.body[-1], ast.Return)
+        or ast.unparse(rope_original.body[-1].value) != "x * cos + rotated * sin"
+    ):
+        raise ValueError("Unexpected public rotary return expression")
+    trig = copy.deepcopy(rope_original)
+    trig.body[-1] = ast.parse("return cos, sin").body[0]
+    trig_fn = compile_function(trig, vars(rotary_native))
+
+    project_original = source_function(inspect.getsource(llama_native.NativeLlamaAttention.__call__), "__call__")
+    matches = [
+        i
+        for i, n in enumerate(project_original.body)
+        if isinstance(n, ast.Assign) and ast.unparse(n) == "q = apply_rotary(q, pos_ids, rope)"
+    ]
+    if len(matches) != 1:
+        raise ValueError("Expected exact Q rotary boundary in actual NativeLlamaAttention")
+    project = copy.deepcopy(project_original)
+    project.body = project.body[: matches[0]] + [ast.parse("return q, k, v").body[0]]
+    project_fn = compile_function(project, vars(llama_native))
+    proof = {
+        "raw_splash": {
+            "original_ast_sha256": ast_sha(original),
+            "transformed_ast_sha256": ast_sha(raw),
+            "removed_exact_one_scale_assignment": True,
+            "reinserted_ast_exact": True,
+        },
+        "trig": {
+            "original_ast_sha256": ast_sha(rope_original),
+            "transformed_ast_sha256": ast_sha(trig),
+            "only_final_return_replaced": True,
+        },
+        "projection": {
+            "original_ast_sha256": ast_sha(project_original),
+            "transformed_ast_sha256": ast_sha(project),
+            "retained_exact_source_prefix_statements": matches[0],
+            "return_boundary": "Unrotated source q/k/v immediately before public apply_rotary",
+        },
+    }
+    return raw_fn, trig_fn, project_fn, proof
+
+
+def rotate_transpose(x):
+    first, second = jnp.split(x, 2, axis=-1)
+    return jnp.concatenate((second, -first), axis=-1)
+
+
+def inverse_rotary(g, cos, sin):
+    return g * cos + rotate_transpose(g * sin)
+
+
+
+
+def run_control(replay, x, weights, ct_r, native_template, small, baseline_core, helpers, weight_spec):
+    output = replay.output
+    raw_fn, trig_fn, project_fn, proof = extractions(baseline_core)
+    mesh = replay.meshes["native"]
+    keys = replay.keys
+    qspec, rspec, pspec = P("data", None, "model", None), P("data", None, None), P("data", None)
+    specs = (rspec, *(weight_spec(k) for k in keys))
+    raw = (helpers.host(x), *(helpers.host(weights[k]) for k in keys))
+    raw_ct = helpers.host(ct_r)
+    if any(v.dtype != np.float32 for v in (*raw, raw_ct)):
+        raise ValueError("Actual FP32 source operands/masters required; BF16 casts are prohibited")
+    counter = 0
+    records = {}
+
+    def statistics(value):
+        if value.ndim:
+            return helpers.statistics(value)
+        a = helpers.host(value)
+        if not np.isfinite(a).all():
+            raise ValueError("Nonfinite scalar")
+        digest = hashlib.sha256(json.dumps([list(a.shape), str(a.dtype)]).encode())
+        digest.update(a.tobytes())
+        return {
+            "shape": list(a.shape),
+            "dtype": str(a.dtype),
+            "sha256": digest.hexdigest(),
+            "max_abs": float(abs(a)),
+            "rms": float(abs(a)),
+        }
+
+    def execute(label, fn, args, out_specs):
+        nonlocal counter
+        with (
+            jax.set_mesh(mesh),
+            hax.axis_mapping(helpers.bench._compute_mapping()),
+            jax.default_matmul_precision("highest"),
+        ):
+            lowered = jax.jit(fn, out_shardings=tuple(NamedSharding(mesh, s) for s in out_specs)).lower(*args)
+            compiled = lowered.compile()
+            values = compiled(*args)
+            jax.block_until_ready(values)
+        saved = {}
+        retain = label in {
+            "project",
+            "runtime-trig",
+            "one-raw-kernel-vjp",
+            "materialize-scaled-dq",
+            "materialize-scaled-trig",
+            "scale-first",
+            "coefficient-first",
+            "downstream-scale-first",
+            "downstream-coefficient-first",
+        }
+        for suffix, data in [("stablehlo", lowered.as_text().encode()), ("hlo", compiled.as_text().encode())]:
+            if not retain:
+                saved[suffix] = {
+                    "bytes": len(data),
+                    "sha256": hashlib.sha256(data).hexdigest(),
+                    "retained": False,
+                    "reason": "Supporting public-API mechanics control; selected scientific graph files are retained complete",
+                }
+                continue
+            if (
+                len(data) > 8 * 1024 * 1024
+                or sum(p.stat().st_size for p in output.iterdir() if p.is_file()) + len(data) > MAX_BYTES
+                or len(list(output.iterdir())) >= MAX_FILES
+            ):
+                raise ValueError("Diagnostic artifacts exceed cap; reject instead of truncating")
+            name = f"raw-{label}.{suffix}.txt"
+            (output / name).write_bytes(data)
+            saved[suffix] = {
+                "file": name,
+                "bytes": len(data),
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "truncated": False,
+            }
+        records[label] = {
+            "arguments": [statistics(a) | {"physical": physical(a)} for a in args],
+            "results": [statistics(a) | {"physical": physical(a)} for a in values],
+            "hlo": saved,
+        }
+        counter += 1
+        return values
+
+    with jax.set_mesh(mesh):
+        args = tuple(jax.device_put(v, NamedSharding(mesh, s)) for v, s in zip(raw, specs, strict=True))
+        ct = jax.device_put(raw_ct, NamedSharding(mesh, rspec))
+        for index, (before, after) in enumerate(zip((x, *(weights[k] for k in keys), ct_r), (*args, ct), strict=True)):
+            assert_physical_equal(physical(before), physical(after), f'raw common import {index}')
+        if not all(np.array_equal(a, helpers.host(b)) for a, b in zip((*raw, raw_ct), (*args, ct), strict=True)):
+            raise ValueError("Common FP32 source operand import changed values")
+        positions = jax.device_put(replay.positions_host, NamedSharding(mesh, pspec))
+        block = eqx.filter_jit(lambda state: from_torch_compatible_state_dict(native_template, state))(
+            dict(zip(keys, args[1:], strict=True))
+        )
+    if block.self_attn.q_norm is not None or block.self_attn.k_norm is not None or block.self_attn.config.upcast_attn:
+        raise ValueError("Pinned source workload must retain no QK norm and no attention upcast")
+
+    def projection(*packed):
+        b = from_torch_compatible_state_dict(native_template, dict(zip(keys, packed[1:], strict=True)))
+        return project_fn(b.self_attn, b.input_layernorm(packed[0]), AttentionMask.causal(), positions)
+
+    q, k, v = execute("project", projection, args, (qspec, qspec, qspec))
+    rope = rotary_native.RotaryConfig(block.self_attn.config.rope_theta, block.self_attn.config.rope_factor)
+    qr, kr = execute(
+        "public-rope",
+        lambda a, b, p: (rotary_native.apply_rotary(a, p, rope), rotary_native.apply_rotary(b, p, rope)),
+        (q, k, positions),
+        (qspec, qspec),
+    )
+    cos, sin = execute(
+        "runtime-trig",
+        lambda a, p: trig_fn(a, p, rope),
+        (q, positions),
+        (P("data", None, None, None), P("data", None, None, None)),
+    )
+    (manual_q,) = execute(
+        "manual-rope",
+        lambda a, c, s: (
+            a * c + jnp.concatenate((-a[..., a.shape[-1] // 2 :], a[..., : a.shape[-1] // 2]), axis=-1) * s,
+        ),
+        (q, cos, sin),
+        (qspec,),
+    )
+    shape = q.shape
+
+    def output_projection(context):
+        return block.self_attn.o_proj(context.reshape(shape[0], shape[1], -1), out_sharding=rspec)
+
+    backend = "reference" if small else "tpu_splash"
+
+    def public_kernel(a, b, c):
+        if small:
+            return reference_attention(a, b, c, AttentionMask.causal(), logits_dtype=None)
+        return attention(a, b, c, AttentionMask.causal(), implementation=backend)
+
+    (context,) = execute("public-kernel", lambda a, b, c: (public_kernel(a, b, c),), (qr, kr, v), (qspec,))
+    (context_ct,) = execute(
+        "context-cotangent", lambda a, c: (jax.vjp(output_projection, a)[1](c)[0],), (context, ct), (qspec,)
+    )
+    alpha = jax.device_put(np.asarray(1 / math.sqrt(q.shape[-1]), np.float32), NamedSharding(mesh, P()))
+    (scaled_q,) = execute("scale-query", lambda a, s: (a * s,), (qr, alpha), (qspec,))
+
+    def unscaled_kernel(a, b, c):
+        if small:
+            # CPU mechanics only: source reference uses this exact q scale before einsum.
+            return auto_axes(_cpu_raw_reference, out_sharding=NamedSharding(mesh, qspec))(a, b, c)
+        return raw_fn(a, b, c, AttentionMask.causal())
+
+    def raw_vjp(a, b, c, ct):
+        y, pb = jax.vjp(unscaled_kernel, a, b, c)
+        return y, *pb(ct)
+
+    raw_context, raw_dq, raw_dk, raw_dv = execute(
+        "one-raw-kernel-vjp", raw_vjp, (scaled_q, kr, v, context_ct), (qspec, qspec, qspec, qspec)
+    )
+    (unscaled_adjoint,) = execute(
+        "public-rope-vjp",
+        lambda a, p, g: (jax.vjp(lambda z: rotary_native.apply_rotary(z, p, rope), a)[1](g)[0],),
+        (q, positions, raw_dq),
+        (qspec,),
+    )
+    (inverse,) = execute("manual-inverse", lambda g, c, s: (inverse_rotary(g, c, s),), (raw_dq, cos, sin), (qspec,))
+    (scaled_dq,) = execute("materialize-scaled-dq", lambda g, a: (g * a,), (raw_dq, alpha), (qspec,))
+    scaled_cos, scaled_sin = execute(
+        "materialize-scaled-trig",
+        lambda c, s, a: (c * a, s * a),
+        (cos, sin, alpha),
+        (P("data", None, None, None), P("data", None, None, None)),
+    )
+    (scale_first,) = execute("scale-first", lambda g, c, s: (inverse_rotary(g, c, s),), (scaled_dq, cos, sin), (qspec,))
+    (coefficient_first,) = execute(
+        "coefficient-first", lambda g, c, s: (inverse_rotary(g, c, s),), (raw_dq, scaled_cos, scaled_sin), (qspec,)
+    )
+    # Hold both other kernel branches fixed while changing only the Q adjoint order.
+    (dk,) = execute(
+        "common-k-rope-vjp",
+        lambda a, p, g: (jax.vjp(lambda z: rotary_native.apply_rotary(z, p, rope), a)[1](g)[0],),
+        (k, positions, raw_dk),
+        (qspec,),
+    )
+
+    def downstream(gq, gk, gv, *packed):
+        _, pb = jax.vjp(projection, *packed)
+        return pb((gq, gk, gv))
+
+    downstream_values = {
+        label: execute("downstream-" + label, downstream, (gq, dk, raw_dv, *args), specs)
+        for label, gq in [("scale-first", scale_first), ("coefficient-first", coefficient_first)]
+    }
+    for label, left, right in [('shared-trig-public-forward', qr, manual_q), ('shared-trig-public-vjp', unscaled_adjoint, inverse), ('source-raw-kernel-forward', context, raw_context), ('two-dq-orders', scale_first, coefficient_first)]:
+        assert_physical_equal(physical(left), physical(right), label)
+    for index, (left, right) in enumerate(zip(*downstream_values.values(), strict=True)):
+        assert_physical_equal(physical(left), physical(right), f'downstream order result {index}')
+    guards = {
+        "runtime_trig_public_forward_exact": helpers.difference(qr, manual_q),
+        "manual_inverse_public_vjp_exact": helpers.difference(unscaled_adjoint, inverse),
+        "source_removed_scale_kernel_forward_exact": helpers.difference(context, raw_context),
+    }
+    product_hlo_guards = {}
+    for label in ["materialize-scaled-dq", "materialize-scaled-trig"]:
+        text = (output / records[label]["hlo"]["hlo"]["file"]).read_text()
+        product_hlo_guards[label] = {
+            "has_runtime_parameters": "parameter(" in text,
+            "has_multiply": "multiply(" in text,
+            "has_no_trig_recomputation": "cosine(" not in text and "sine(" not in text,
+            "has_no_dot": "dot(" not in text,
+        }
+    if not all(all(row.values()) for row in product_hlo_guards.values()):
+        raise ValueError("Optimized products do not preserve runtime-only materialized multiplication graphs")
+    guards_pass = all(r["exact"] for r in guards.values())
+    a, b = downstream_values.values()
+    result = {
+        "schema": "native-jax-fp32-common-raw-dq.v1",
+        "actual_fp32_source": True,
+        "source_extractions": proof,
+        "kernel": backend,
+        "cpu_mechanics_only": small,
+        "guards": guards,
+        "guards_pass": guards_pass,
+        "post_rope_dq": helpers.difference(scale_first, coefficient_first)
+        | {
+            "mean_abs": float(
+                np.mean(
+                    np.abs(
+                        helpers.host(scale_first).astype(np.float64) - helpers.host(coefficient_first).astype(np.float64)
+                    )
+                )
+            )
+        },
+        "downstream_result_order": ["qkv_inputnorm_input_vjp", *keys],
+        "downstream_scope": "Actual joint Q/K/V projection plus inputnorm VJP, holding K and V cotangents fixed. Residual, output-projection-weight and MLP contributions are not included in these result arrays; their common contributions cannot explain an order differential.",
+        "downstream_comparisons": [helpers.difference(left, right) for left, right in zip(a, b, strict=True)],
+        "records": records,
+        "materialized_product_hlo_guards": product_hlo_guards,
+        "final_fusion_limit": "Optimized HLO is retained for both inverse calculations. It does not disassemble every eventual device floating-point instruction.",
+        "all_other_cotangent_contributions_fixed": True,
+        "raw_kernel_vjp_evaluations": 1,
+        "scope": "One materialized standalone raw kernel derivative on actual FP32 source-derived operands; not proof of hook-free full Trainer hidden cotangents, trajectory, performance, or sufficient cause.",
+        "artifact_policy": "Only bounded aggregate JSON and complete HLO/StableHLO; no arrays/weights/checkpoints/profiles.",
+    }
+    helpers.write_json(output / "common-raw-dq.json", result)
+    if not guards_pass and not small:
+        raise ValueError("Raw-dQ extraction/public rotary controls differ; preserve failure, stop attribution")
+    return result
+
+
+def _cpu_raw_reference(q, k, v):
+    original = source_function(inspect.getsource(_core._reference_attention_math), "_reference_attention_math")
+
+    class RemoveScale(ast.NodeTransformer):
+        count = 0
+
+        def visit_BinOp(self, node):
+            if ast.unparse(node) == "q * scale":
+                self.count += 1
+                return ast.copy_location(ast.Name(id="q", ctx=ast.Load()), node)
+            return self.generic_visit(node)
+
+    transform = RemoveScale()
+    altered = transform.visit(copy.deepcopy(original))
+    if transform.count != 1:
+        raise ValueError("Expected one source reference q scale")
+    fn = compile_function(altered, vars(_core))
+    return fn(q, k, v, AttentionMask.causal(), logits_dtype=None)

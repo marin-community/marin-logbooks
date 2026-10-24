@@ -1,0 +1,167 @@
+"""Changed-saved-metadata probes; no scientific execution, hardware or JAX import."""
+
+import argparse
+import copy
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import sys
+
+from fp32_common_dq_controller import comparison_guards, enforce_controller_result
+from physical_guards import assert_physical_equal, assert_common_records_equal
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+
+def tampered_children(original, case):
+    result = copy.deepcopy(original)
+    candidate = result["candidate"]
+    signature = candidate["source_operand_physical"]["last_input"]
+    if case == "memory_kind":
+        signature["memory_kind"] = "synthetic-wrong-memory"
+    elif case == "device_set":
+        signature["device_set"][0]["id"] += 1000
+    elif case == "global_shard_index":
+        signature["global_shards"][0]["index"][0]["slice"][0] += 1
+    elif case == "local_shard_shape":
+        signature["addressable_shards"][0]["shape"][0] += 1
+    elif case == "global_shape":
+        signature["global_shape"][0] += 1
+    elif case == "dtype":
+        signature["dtype"] = "bfloat16"
+    elif case == "partition_spec":
+        signature["partition_spec"][0] = "model"
+    elif case == "missing_signature_field":
+        del signature["memory_kind"]
+    elif case == "unexpected_axis_type":
+        signature["axis_types"] = ["Manual", "Manual"]
+    elif case == "stage_cotangent_device":
+        candidate["stage_physical"]["prefix"]["native"]["cotangent"]["device_set"][0]["id"] += 1000
+    elif case == "source_capture_index":
+        candidate["source_capture_physical"]["source-scan"]["arguments"][0]["physical"]["global_shards"][0]["index"][0][
+            "slice"
+        ][0] += 1
+    elif case == "native_forward_hash":
+        candidate["stage_result_hashes"]["prefix"]["native"][0] = "synthetic-wrong-forward-hash"
+    else:
+        raise ValueError(case)
+    return result
+
+
+CASES = [
+    "memory_kind",
+    "device_set",
+    "global_shard_index",
+    "local_shard_shape",
+    "global_shape",
+    "dtype",
+    "partition_spec",
+    "missing_signature_field",
+    "unexpected_axis_type",
+    "stage_cotangent_device",
+    "source_capture_index",
+    "native_forward_hash",
+]
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--saved-proof", type=Path, required=True)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--fatal-fixture", choices=CASES)
+    args = parser.parse_args()
+    if "jax" in sys.modules:
+        raise ValueError("Mechanical guard test must not import JAX")
+    saved = json.loads(args.saved_proof.read_text())
+    if args.fatal_fixture:
+        changed = tampered_children(saved["children"], args.fatal_fixture)
+        guards, changes = comparison_guards(changed)
+        if all(guards.values()):
+            raise AssertionError("Changed metadata failed to trip a guard")
+        args.output_dir.mkdir()
+        summary = {
+            "schema": "mechanical-changed-saved-metadata-fixture.v2",
+            "mechanical_only": True,
+            "passed": all(guards.values()),
+            "completed": False,
+            "scientific_attribution_valid": False,
+            "cross_child_guards": guards,
+            "children": {name: {"passed": True} for name in changed},
+            "fixture": args.fatal_fixture,
+            "metadata_errors": changes.get("metadata_errors", {}),
+        }
+        enforce_controller_result(args.output_dir, summary, small=False, abstract=False)
+        raise AssertionError("Non-small failure unexpectedly returned normally")
+    args.output_dir.mkdir()
+    baseline = saved["children"]["baseline"]["source_operand_physical"]["last_input"]
+    allowed = copy.deepcopy(baseline)
+    allowed["axis_types"] = ["Explicit"] * len(allowed["axis_types"])
+    assert_physical_equal(baseline, allowed, "intended Auto/Explicit metadata only")
+    common = {
+        "sha256": "unchanged-byte-hash",
+        "shape": baseline["global_shape"],
+        "dtype": baseline["dtype"],
+        "physical": baseline,
+    }
+    rejected = {}
+    for case in CASES:
+        if case in ["stage_cotangent_device", "source_capture_index", "native_forward_hash"]:
+            continue
+        changed = tampered_children(saved["children"], case)["candidate"]["source_operand_physical"]["last_input"]
+        try:
+            assert_common_records_equal(common, common | {"physical": changed}, "mechanical " + case)
+        except ValueError:
+            rejected[case] = True
+        else:
+            raise AssertionError("Physical guard accepted tampered " + case)
+    outcomes = {}
+    for case in CASES:
+        directory = args.output_dir / case
+        command = [
+            sys.executable,
+            str(Path(__file__).resolve()),
+            "--saved-proof",
+            str(args.saved_proof.resolve()),
+            "--output-dir",
+            str(directory.resolve()),
+            "--fatal-fixture",
+            case,
+        ]
+        completed = subprocess.run(command, capture_output=True, text=True, check=False, timeout=30)
+        summary = json.loads((directory / "controller-summary.json").read_text())
+        failure = json.loads((directory / "controller-failure.json").read_text())
+        if (
+            completed.returncode == 0
+            or summary["passed"]
+            or failure["completed"]
+            or failure["scientific_attribution_valid"]
+        ):
+            raise AssertionError("Fatal-controller rejection contract failed: " + case)
+        outcomes[case] = {
+            "exit_code": completed.returncode,
+            "failed_guards": failure["failed_cross_child_guards"],
+            "summary_sha256": hashlib.sha256((directory / "controller-summary.json").read_bytes()).hexdigest(),
+            "failure_sha256": hashlib.sha256((directory / "controller-failure.json").read_bytes()).hexdigest(),
+            "failure_summary_preserved": True,
+            "completed": failure["completed"],
+        }
+    result = {
+        "schema": "native-jax-fp32-common-dq-mechanical-guard-proof.v2",
+        "passed": True,
+        "mechanical_only": True,
+        "actual_saved_metadata_input_sha256": hashlib.sha256(args.saved_proof.read_bytes()).hexdigest(),
+        "intended_auto_explicit_only_metadata_accepted": True,
+        "common_physical_rejections": rejected,
+        "fatal_controller_changed_saved_metadata_probes": outcomes,
+        "jax_imported": "jax" in sys.modules,
+        "scientific_or_hardware_execution": False,
+    }
+    write(args.output_dir / "mechanical-proof.json", result)
+    print(json.dumps({"passed": True, "physical_rejections": len(rejected), "fatal_exit_probes": len(outcomes)}))
+
+
+if __name__ == "__main__":
+    main()

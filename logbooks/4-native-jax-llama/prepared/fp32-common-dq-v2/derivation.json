@@ -1,0 +1,148 @@
+{
+  "origin": "/private/tmp/native-jax-fp32-common-dq-preparation/native_jax_bf16_splash_15b_separate_capture.py",
+  "origin_sha256": "b1c71ae3e1106202c49123d1ab4795f474f440d9bc4b74ae40a1c91b42cb3bca",
+  "generated_sha256": "b47639c306a09fdf2971e62f629cabc41199feb4ebdef6a0e0b08a5ee582ba00",
+  "exact_guarded_text_edits": [
+    {
+      "old": "\"\"\"Last-block VJPs with actual-full source replay in a separate JIT graph.\"\"\"",
+      "new": "\"\"\"Actual FP32 source-prefix A/B and common-raw-Splash-dQ rounding controls.\"\"\"",
+      "count": 1
+    },
+    {
+      "old": "jnp.bfloat16",
+      "new": "jnp.float32",
+      "count": 4
+    },
+    {
+      "old": "'bfloat16'",
+      "new": "'float32'",
+      "count": 3
+    },
+    {
+      "old": "'highest' if variant == 'fp32' else 'default'",
+      "new": "'highest'",
+      "count": 1
+    },
+    {
+      "old": "jax.config.update('jax_default_matmul_precision', 'default')",
+      "new": "jax.config.update('jax_default_matmul_precision', 'highest')",
+      "count": 1
+    },
+    {
+      "old": "{'named': 'default', 'native': 'default', 'fp32': 'highest'}",
+      "new": "{'named': 'highest', 'native': 'highest', 'fp32': 'highest'}",
+      "count": 1
+    },
+    {
+      "old": "Captured block input/cotangent must be BF16",
+      "new": "Captured actual FP32 source input/cotangent required",
+      "count": 1
+    },
+    {
+      "old": "common_bf16_operands_fp32_masters_and_physical_specs_exact",
+      "new": "common_actual_fp32_operands_masters_and_physical_specs_exact",
+      "count": 1
+    },
+    {
+      "old": "native-bf16-common-splash-15b-last-block-separate-capture.v1",
+      "new": "native-fp32-common-splash-15b-last-block-separate-capture.v1",
+      "count": 1
+    },
+    {
+      "old": "FP32 highest native modules with the same selected attention backend and captured BF16 operands/cotangents cast to FP32. Large named/native/FP32 all use Splash; CPU-small all use vanilla/reference. Dtype, matmul precision and Auto/Explicit fusion contexts still differ. The independent tail uses BF16 source r, so staged/full equivalence is not a reference assumption",
+      "new": "All variants use actual FP32 source values, FP32 masters and highest precision; no BF16 operand/cotangent cast. Large variants all use Splash; CPU-small uses vanilla/reference. Auto/Explicit fusion contexts still differ. Independent tail uses fixed named source r; staged/full equivalence is not assumed",
+      "count": 1
+    },
+    {
+      "old": "definition_proof = frozen_definition_proof()",
+      "new": "definition_proof = {'frozen_origin': str(FROZEN_BLOCK_PATH), 'deliberate_fp32_derivation': 'See derivation.json: explicit dtype/precision changes; no BF16 operand hash identity claim'}",
+      "count": 1
+    },
+    {
+      "old": "    provenance['source_operand_hashes_vs_original'] = {name: {'expected': digest, 'actual': provenance['source_operands'][name]['sha256'], 'exact': provenance['source_operands'][name]['sha256'] == digest} for name, digest in ORIGINAL_OPERAND_HASHES.items()}\n    provenance['source_operand_hashes_exact'] = args.small or all(record['exact'] for record in provenance['source_operand_hashes_vs_original'].values())\n",
+      "new": "    provenance['source_operand_hashes_vs_original'] = None\n    provenance['source_operand_hashes_exact'] = True\n    provenance['new_actual_fp32_source_capture'] = True\n    provenance['historical_bf16_operand_hashes_reused'] = False\n",
+      "count": 1
+    },
+    {
+      "old": "            keep = min(len(data), CAPTURE_HLO_FILE_LIMIT, CAPTURE_HLO_TOTAL_LIMIT - self.hlo_bytes)",
+      "new": "            if len(data) > CAPTURE_HLO_FILE_LIMIT or self.hlo_bytes + len(data) > CAPTURE_HLO_TOTAL_LIMIT:\n                raise ValueError('Complete source HLO exceeds cap; no truncation permitted')\n            keep = len(data)",
+      "count": 1
+    },
+    {
+      "old": "                keep = min(len(data), prior.HLO_FILE_LIMIT, prior.HLO_TOTAL_LIMIT - self.hlo_bytes)",
+      "new": "                if len(data) > prior.HLO_FILE_LIMIT or self.hlo_bytes + len(data) > prior.HLO_TOTAL_LIMIT:\n                    raise ValueError('Complete VJP HLO exceeds cap; no truncation permitted')\n                keep = len(data)",
+      "count": 1
+    },
+    {
+      "old": "for variant in ('named', 'native', 'fp32'):",
+      "new": "for variant in ('named', 'native'):",
+      "count": 2
+    },
+    {
+      "old": "for name, left, right in [('named_vs_native', 'named', 'native'), ('named_vs_fp32', 'named', 'fp32'), ('native_vs_fp32', 'native', 'fp32')]",
+      "new": "for name, left, right in [('named_vs_native', 'named', 'native')]",
+      "count": 1
+    },
+    {
+      "old": "    values = {stage: replay.compare",
+      "new": "    common_dq = run_control(replay, x, weights, ct_r, native_template, args.small, Path(__file__).with_name('baseline_core.py.source').read_text(), prior, weight_spec)\n    values = {stage: replay.compare",
+      "count": 1
+    },
+    {
+      "old": "'all_values_finite': True, 'hlo_bytes': replay.hlo_bytes",
+      "new": "'all_values_finite': True, 'raw_dq_guards_pass': common_dq['guards_pass'], 'hlo_bytes': replay.hlo_bytes",
+      "count": 1
+    },
+    {
+      "old": "from levanter.models.lm_model import LmExample",
+      "new": "from levanter.models.lm_model import LmExample\nfrom fp32_common_dq import run_control",
+      "count": 1
+    },
+    {
+      "old": "'lib/haliax/src/haliax/_src/state_dict.py']",
+      "new": "'lib/haliax/src/haliax/_src/state_dict.py',\n    'lib/levanter/src/levanter/layers/rotary_native.py',\n    'lib/levanter/src/levanter/layers/rotary.py']",
+      "count": 1
+    },
+    {
+      "old": "def frozen_definition_proof():\n    original = ast.parse(FROZEN_BLOCK_PATH.read_text())\n    current = ast.parse(Path(__file__).read_text())\n    result = {}\n    for name in ('configuration', 'abstract_shapes', 'canonical', 'weight_spec', 'scanned_capture', 'BlockReplay'):\n        left = [n for n in ast.walk(original) if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name == name]\n        right = [n for n in ast.walk(current) if isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name == name]\n        if len(left) != 1 or len(right) != 1:\n            raise ValueError(f'Ambiguous frozen definition {name}')\n        a, b = ast.dump(left[0], include_attributes=False), ast.dump(right[0], include_attributes=False)\n        result[name] = {'identical_ast': a == b, 'ast_sha256': hashlib.sha256(a.encode()).hexdigest()}\n        if a != b:\n            raise ValueError(f'Frozen canonical/VJP boundary changed: {name}')\n    old_capture = [n for n in ast.walk(original) if isinstance(n, ast.FunctionDef) and n.name == 'capture_last'][0]\n    new_capture = [n for n in ast.walk(current) if isinstance(n, ast.FunctionDef) and n.name == 'capture_last'][0]\n    old_capture.body = [n for n in old_capture.body if not (isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'replayed_y' for t in n.targets))]\n    old_return = old_capture.body[-1]\n    old_return.value.elts = [item for item in old_return.value.elts if not (isinstance(item, ast.Name) and item.id == 'replayed_y')]\n    a, b = ast.dump(old_capture, include_attributes=False), ast.dump(new_capture, include_attributes=False)\n    result['capture_last'] = {'only_removed_duplicate_full_assignment_and_return': a == b, 'ast_sha256': hashlib.sha256(b.encode()).hexdigest()}\n    if a != b:\n        raise ValueError('Capture changed beyond removal of duplicate actual-full evaluation')\n    return result\n\n\n",
+      "new": "",
+      "count": 1
+    },
+    {
+      "old": "ORIGINAL_OPERAND_HASHES = {\n    'last_input': '610eaa4d595f6f112f77a507acf91b208930927bbe9c6d00582736d3ef5937ad',\n    'last_output': 'ea3379fa53134daa136c29f4f3b7987a710a1e97a7e081da65a194c195e3fc9b',\n    'post_attention_residual': '7dcfac5eb01887e14a42b8f885f65b07e7871e46755928003e65441b95b58b8b',\n    'output_cotangent': '7596421ca57f20aadccca3d741aa70d076fc7657f2b029ca1dfa6e379a62059c',\n    'tail_input_cotangent': '79d5859e723b097d4daa9173b932326a6dd0ff5466f3e47d1843cb88eedba793',\n}\n",
+      "new": "",
+      "count": 1
+    },
+    {
+      "old": "provenance['source_operand_hashes_exact'] = True",
+      "new": "provenance['source_operand_dtypes_fp32'] = all(r['dtype'] == 'float32' for r in provenance['source_operands'].values())",
+      "count": 1
+    },
+    {
+      "old": "not provenance['source_operand_hashes_exact']",
+      "new": "not provenance['source_operand_dtypes_fp32']",
+      "count": 1
+    },
+    {
+      "old": "from fp32_common_dq import run_control",
+      "new": "from fp32_common_dq import run_control, physical",
+      "count": 1
+    },
+    {
+      "old": "prior.statistics(a) | {'partition_spec': str(a.sharding.spec), 'sharding': str(a.sharding)}",
+      "new": "prior.statistics(a) | {'partition_spec': str(a.sharding.spec), 'sharding': str(a.sharding), 'physical': physical(a)}",
+      "count": 2
+    },
+    {
+      "old": "prior.statistics(cotangent) | {'partition_spec': str(cotangent.sharding.spec), 'sharding': str(cotangent.sharding)}",
+      "new": "prior.statistics(cotangent) | {'partition_spec': str(cotangent.sharding.spec), 'sharding': str(cotangent.sharding), 'physical': physical(cotangent)}",
+      "count": 1
+    },
+    {
+      "old": "    if not controls['attribution_valid']:",
+      "new": "    if not controls['attribution_valid'] and not args.small:",
+      "count": 1
+    }
+  ],
+  "review_note": "No BF16 source operand hashes reused. Newly captured all-FP32/highest values and cotangents guarded against normal source scan/hidden/loss. Scientific transforms occur in separate scratch namespaces, never production monkeypatches."
+}

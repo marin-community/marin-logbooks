@@ -1,0 +1,124 @@
+"""Complete physical signatures and fatal metadata comparisons; no numerical math."""
+
+import copy
+import json
+
+
+def device_signature(device):
+    return {
+        "id": int(device.id),
+        "process_index": int(device.process_index),
+        "platform": device.platform,
+        "kind": device.device_kind,
+        "coordinates": list(device.coords) if device.platform == "tpu" else None,
+        "core_on_chip": int(device.core_on_chip) if device.platform == "tpu" else None,
+    }
+
+
+def normalized_index(index, shape):
+    if len(index) != len(shape):
+        raise ValueError("Shard index rank differs from global shape")
+    return [
+        ({"slice": list(item.indices(dim))} if isinstance(item, slice) else {"index": int(item)})
+        for item, dim in zip(index, shape, strict=True)
+    ]
+
+
+def normalized_spec(spec, rank):
+    if len(spec) > rank:
+        raise ValueError("Partition spec has more dimensions than array")
+    entries = list(spec) + [None] * (rank - len(spec))
+    return [
+        entry[0] if isinstance(entry, tuple) and len(entry) == 1 else list(entry) if isinstance(entry, tuple) else entry
+        for entry in entries
+    ]
+
+
+def physical(value):
+    sharding = value.sharding
+    shape = tuple(value.shape)
+    order = lambda row: json.dumps(row["device"], sort_keys=True)
+    global_shards = [
+        {"device": device_signature(device), "index": normalized_index(index, shape)}
+        for device, index in sharding.devices_indices_map(shape).items()
+    ]
+    local_shards = [
+        {
+            "device": device_signature(shard.device),
+            "index": normalized_index(shard.index, shape),
+            "shape": list(shard.data.shape),
+            "dtype": str(shard.data.dtype),
+        }
+        for shard in value.addressable_shards
+    ]
+    mesh = sharding.mesh
+    return {
+        "schema": "native-jax-physical-signature.v2",
+        "global_shape": list(shape),
+        "dtype": str(value.dtype),
+        "partition_spec": normalized_spec(sharding.spec, len(shape)),
+        "memory_kind": sharding.memory_kind,
+        "device_set": sorted(
+            [device_signature(d) for d in sharding.device_set], key=lambda row: json.dumps(row, sort_keys=True)
+        ),
+        "global_shards": sorted(global_shards, key=order),
+        "addressable_shards": sorted(local_shards, key=order),
+        "mesh_axis_names": list(mesh.axis_names),
+        "mesh_shape": [int(mesh.shape[name]) for name in mesh.axis_names],
+        # This is the sole intentionally ignored metadata field in equality.
+        "axis_types": [kind.name for kind in mesh.axis_types],
+    }
+
+
+SIGNATURE_FIELDS = {
+    "schema",
+    "global_shape",
+    "dtype",
+    "partition_spec",
+    "memory_kind",
+    "device_set",
+    "global_shards",
+    "addressable_shards",
+    "mesh_axis_names",
+    "mesh_shape",
+    "axis_types",
+}
+
+
+def comparison_signature(signature):
+    if set(signature) != SIGNATURE_FIELDS or signature["schema"] != "native-jax-physical-signature.v2":
+        raise ValueError("Missing or unexpected physical signature fields")
+    if len(signature["axis_types"]) != len(signature["mesh_axis_names"]) or set(signature["axis_types"]) not in (
+        {"Auto"},
+        {"Explicit"},
+    ):
+        raise ValueError("Only intended uniform Auto/Explicit axis metadata is allowed")
+    result = copy.deepcopy(signature)
+    del result["axis_types"]
+    return result
+
+
+def signatures_equal(left, right):
+    return comparison_signature(left) == comparison_signature(right)
+
+
+def assert_physical_equal(left, right, label):
+    if not signatures_equal(left, right):
+        raise ValueError("Physical placement mismatch: " + label)
+
+
+def assert_common_records_equal(left, right, label):
+    for field in ["sha256", "shape", "dtype"]:
+        if left[field] != right[field]:
+            raise ValueError("Common operand mismatch (" + field + "): " + label)
+    assert_physical_equal(left["physical"], right["physical"], label)
+
+
+def physical_tree_signature(value):
+    if isinstance(value, dict):
+        if value.get("schema") == "native-jax-physical-signature.v2":
+            return comparison_signature(value)
+        return {key: physical_tree_signature(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [physical_tree_signature(item) for item in value]
+    return value

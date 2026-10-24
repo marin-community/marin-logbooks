@@ -1,0 +1,107 @@
+{
+  "schema": "native-jax-fp32-common-dq-independent-review.v2",
+  "verdict": "NO_BLOCKING_FINDINGS_IN_V2_REPAIR_SCOPE_READY_FOR_DURABLE_ARCHIVAL",
+  "review_scope": "Fresh independent local read-only code, derivation and saved-evidence review. No JAX import/numerical run, hardware, network, git, source/archive edit; only these two review artifacts written.",
+  "reviewed_manifest_sha256": "2f91c521b719d855acee45272489578d3ee48de574a34c94f398468cb3d495d3",
+  "reviewed_bundle": "/private/tmp/native-jax-fp32-common-dq-preparation-v2",
+  "hardware_launch_authorized": false,
+  "scientific_hypothesis_validated": false,
+  "tpu_improvement_established": false,
+  "findings": [],
+  "resolved_v1_findings": {
+    "R1": {
+      "resolved": true,
+      "evidence": [
+        "physical_guards.py:7-114 records/compares global shape,dtype,normalized spec,memory kind,concrete device identities,global device/index mapping,addressable device/index/shape/dtype,mesh names/shape. Global indices and global shape determine non-addressable shard extents.",
+        "Only validated uniform Auto/Explicit axis metadata is removed from equality; missing fields,Manual or mixed axis metadata fail.",
+        "native_jax_fp32_common_capture.py:218-227,263-275 enforces source-to-stage arguments/cotangent and named/native arguments,cotangent,results; source capture arguments and results,source input/master/common operands and raw-stage metadata participate in cross-child comparisons.",
+        "fp32_common_dq.py enforces source-to-raw imports,public/manual/kernel/order result placements; all raw arguments/results carry complete signatures.",
+        "Controller cross-child physical/source/stage/runtime guards at fp32_common_dq_controller.py:93-130; 1130 saved complete signature instances validated."
+      ]
+    },
+    "R2": {
+      "resolved": true,
+      "evidence": [
+        "fp32_common_dq_controller.py:133-142 writes full controller-summary.json first,then completed:false/passed:false/scientific_attribution_valid:false failure receipt and raises for failed non-small numerical guards.",
+        "main calls this enforcement before its completed:true print; a required cross-child failure cannot reach that print.",
+        "Saved mechanical proof contains nine direct rejection cases and twelve subprocess exit1 cases with intact summary/failure hashes. Independently repeated all twelve comparison_guards rejection checks in memory without importing JAX."
+      ]
+    },
+    "runtime_identity": {
+      "resolved_for_local_proofs": true,
+      "evidence": "Python3.12.11 executable hash,Python build/ABI,package versions and WHEEL/RECORD/METADATA hashes,JAX/jaxlib0.11.1 source build IDs,CPU client/platform/device/process counts,and relevant math environment are recorded. A/B runtime records match and are cross-child guarded. TPU/libtpu build remains unvalidated."
+    }
+  },
+  "integrity_and_scope": {
+    "v1_manifest_sha256": "6b98d8ed07bee5695025594f35352be5c1656ed7af351d1ab1c32752dba73c16",
+    "v1_all_payload_hashes_unchanged": true,
+    "v2_all_19_payload_sizes_and_hashes_verified": true,
+    "v2_payload_bytes": 365595,
+    "all_four_modified_runtime_files_exactly_reconstructed_from_guarded_v1_derivation": true,
+    "all_13_runtime_assets_match_v2_validation_input": true,
+    "validation_input_sha256": "1424680d2b139dc254ce425b73f4f6cff85f8a7bbe445da8217f650db575ec5c",
+    "source_pins_math_data_config_precision_tolerances_unchanged": true,
+    "details": "Source diffs retain the raw Splash/trig extraction,VJP/calculation,seed/config/data,and exact comparisons. Both CPU children have byte-identical v1/v2 parameter/batch/source operand/stage result hashes,raw guards/order differential,downstream comparisons,config,precision,source hashes and source losses. Source pins and seven inherited payloads are byte-identical.",
+    "all_three_original_exact_numerical_control_failure_records_unchanged_in_both_children": true
+  },
+  "proofs": {
+    "CPU4_mechanics": {
+      "summary_sha256": "d057d9277ad84ce91e2606c7a3233b01d13707f07f357e733f8bfcdcb9e8082a",
+      "artifact_hashes_verified": 114,
+      "files_including_summary": 115,
+      "bytes_including_summary": 22117867,
+      "cross_child_guards": 22,
+      "all_cross_child_guards_pass": true,
+      "mechanics_passed": true,
+      "scientific_attribution_valid": false
+    },
+    "actual_large_CPU_abstract": {
+      "summary_sha256": "e1928705503fcf241251932ee568f86e1295dc761154e5b0e185b4c68f886c06",
+      "artifact_hashes_verified": 4,
+      "files_including_summary": 5,
+      "bytes_including_summary": 108965,
+      "passed": true,
+      "scientific_attribution_valid": false,
+      "tpu_compilation_or_execution": false
+    },
+    "changed_saved_metadata_mechanical": {
+      "proof_sha256": "5c3f76359b560e80980d59bb0e9c5207269dc9287cca9c0d31ab342b5e8d5cb5",
+      "all_24_summary_and_failure_receipt_hashes_verified": true,
+      "direct_rejections": 9,
+      "subprocess_exit1_cases": 12,
+      "scientific_or_hardware_execution": false
+    }
+  },
+  "preserved_failures": {
+    "source_removed_scale_kernel_forward": {
+      "max_abs": 2.384185791015625e-07,
+      "different_elements": 190,
+      "elements": 1024
+    },
+    "source_output_vs_named_full": {
+      "max_abs": 7.152557373046875e-07,
+      "different_elements": 460,
+      "elements": 1024
+    },
+    "source_residual_vs_named_prefix": {
+      "max_abs": 2.384185791015625e-07,
+      "different_elements": 214,
+      "elements": 1024
+    }
+  },
+  "evidence_limits": [
+    "The twelve subprocess cases invoke the real comparison/enforcement functions through mechanical_guard_probes.py with changed saved CPU metadata. They do not run the complete controller main/fresh source children or induce actual runtime placement corruption; integration is source-reviewed.",
+    "CPU-small completed:true denotes mechanics bookkeeping. The three failed exact numerical controls remain visible; scientific_attribution_valid is false. CPU reference execution does not enter candidate TPU code.",
+    "Large abstract tracing establishes actual-size graph construction only; no TPU compile,numerical result,device instruction,causal attribution,improvement,trajectory,convergence or performance conclusion.",
+    "Package metadata/source build identities are useful provenance,not a complete binary integrity audit. Haliax comes from pinned source fixtures; TPU/libtpu runtime identity and actual TPU artifact size remain to be recorded on a separately authorized run.",
+    "The existing early subprocess-crash path preserves child partial output/log and an exit receipt; the full aggregate summary/failure contract reviewed here applies after both children are inspected and cross-child guards are evaluated.",
+    "All original scientific limits remain: changed materialization context,source-suffix cotangent rather than full native Trainer cotangent,partial QKV/inputnorm contributions,unknown actual TPU lowering,and no direct attribution of baseline/candidate compiled rounding order.",
+    "No-new-mismatch guards detect exact-to-inexact transitions; they do not establish targeted error reduction or exclude worsening of existing inexact errors."
+  ],
+  "remaining_gates": [
+    "Durably archive this exact v2 source/design/proof manifest and fresh independent review before any hardware. This report grants no launch permission.",
+    "Any separately authorized non-small diagnostic must retain exact source/raw/RoPE/full/composed/source-replay controls,complete placement and runtime identity guards,unchanged seeds/data/config/precision,and bounded complete selected HLO. Any failed required guard stops attribution and preserves evidence.",
+    "Actual optimized TPU HLO/materialized scaled-dQ boundary and targeted actual prefix/inputnorm/Q error improvement must be independently assessed. Null benefit falsifies the sufficient-cause proposal; validity=true alone is not improvement.",
+    "Full Trainer/approved loss-vector comparison requires separate gates and authorization; no BF16 integration,performance,replacement/deletion,trajectory or convergence claim follows."
+  ]
+}

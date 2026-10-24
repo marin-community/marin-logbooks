@@ -1,0 +1,474 @@
+{
+  "schema": "native-jax-fp32-common-dq-self-review.v2",
+  "status": "LOCAL_REPAIR_PREPARED_FOR_FRESH_INDEPENDENT_REVIEW_AND_DURABLE_ARCHIVE",
+  "v1_original_bundle_and_payloads_unchanged": true,
+  "proofs": {
+    "CPU4_mechanics": {
+      "path": "/private/tmp/fp32-common-dq-v2-final-cpu-proof/controller-summary.json",
+      "sha256": "d057d9277ad84ce91e2606c7a3233b01d13707f07f357e733f8bfcdcb9e8082a",
+      "passed": true,
+      "scientific_attribution_valid": false,
+      "files": 115,
+      "bytes": 22117867,
+      "input_manifest_sha256": "1424680d2b139dc254ce425b73f4f6cff85f8a7bbe445da8217f650db575ec5c"
+    },
+    "actual_large_CPU_abstract": {
+      "path": "/private/tmp/fp32-common-dq-v2-final-abstract-proof/controller-summary.json",
+      "sha256": "e1928705503fcf241251932ee568f86e1295dc761154e5b0e185b4c68f886c06",
+      "passed": true,
+      "scientific_attribution_valid": false,
+      "files": 5,
+      "bytes": 108965,
+      "input_manifest_sha256": "1424680d2b139dc254ce425b73f4f6cff85f8a7bbe445da8217f650db575ec5c"
+    },
+    "changed_saved_metadata_mechanical": {
+      "path": "/private/tmp/fp32-common-dq-v2-mechanical-guard-proof/mechanical-proof.json",
+      "sha256": "5c3f76359b560e80980d59bb0e9c5207269dc9287cca9c0d31ab342b5e8d5cb5",
+      "passed": true,
+      "scientific_attribution_valid": false,
+      "files": 25,
+      "bytes": 25879,
+      "input_manifest_sha256": null
+    }
+  },
+  "all_three_observed_failures_preserved": {
+    "baseline": {
+      "source_output_vs_named_full": {
+        "unchanged": true,
+        "still_fails": true,
+        "record": {
+          "a_at_worst": -2.3125529289245605,
+          "b_at_worst": -2.3125522136688232,
+          "different_elements": 460,
+          "elements": 1024,
+          "exact": false,
+          "max_abs": 7.152557373046875e-07,
+          "relative_l2": 7.539494840157132e-08,
+          "worst_index": [
+            3,
+            2,
+            22
+          ]
+        }
+      },
+      "source_residual_vs_named_prefix": {
+        "unchanged": true,
+        "still_fails": true,
+        "record": {
+          "a_at_worst": 2.0446367263793945,
+          "b_at_worst": 2.0446364879608154,
+          "different_elements": 214,
+          "elements": 1024,
+          "exact": false,
+          "max_abs": 2.384185791015625e-07,
+          "relative_l2": 3.8125120197281005e-08,
+          "worst_index": [
+            0,
+            2,
+            12
+          ]
+        }
+      },
+      "source_removed_scale_kernel_forward_exact": {
+        "unchanged": true,
+        "still_fails": true,
+        "record": {
+          "a_at_worst": 1.425795078277588,
+          "b_at_worst": 1.425795316696167,
+          "different_elements": 190,
+          "elements": 1024,
+          "exact": false,
+          "max_abs": 2.384185791015625e-07,
+          "relative_l2": 3.044029006130773e-08,
+          "worst_index": [
+            1,
+            7,
+            2,
+            7
+          ]
+        }
+      }
+    },
+    "candidate": {
+      "source_output_vs_named_full": {
+        "unchanged": true,
+        "still_fails": true,
+        "record": {
+          "a_at_worst": -2.3125529289245605,
+          "b_at_worst": -2.3125522136688232,
+          "different_elements": 460,
+          "elements": 1024,
+          "exact": false,
+          "max_abs": 7.152557373046875e-07,
+          "relative_l2": 7.539494840157132e-08,
+          "worst_index": [
+            3,
+            2,
+            22
+          ]
+        }
+      },
+      "source_residual_vs_named_prefix": {
+        "unchanged": true,
+        "still_fails": true,
+        "record": {
+          "a_at_worst": 2.0446367263793945,
+          "b_at_worst": 2.0446364879608154,
+          "different_elements": 214,
+          "elements": 1024,
+          "exact": false,
+          "max_abs": 2.384185791015625e-07,
+          "relative_l2": 3.8125120197281005e-08,
+          "worst_index": [
+            0,
+            2,
+            12
+          ]
+        }
+      },
+      "source_removed_scale_kernel_forward_exact": {
+        "unchanged": true,
+        "still_fails": true,
+        "record": {
+          "a_at_worst": 1.425795078277588,
+          "b_at_worst": 1.425795316696167,
+          "different_elements": 190,
+          "elements": 1024,
+          "exact": false,
+          "max_abs": 2.384185791015625e-07,
+          "relative_l2": 3.044029006130773e-08,
+          "worst_index": [
+            1,
+            7,
+            2,
+            7
+          ]
+        }
+      }
+    }
+  },
+  "R1": {
+    "fixed": true,
+    "complete_signature_fields": [
+      "global_shape",
+      "dtype",
+      "partition_spec",
+      "memory_kind",
+      "device_set",
+      "global_shards",
+      "addressable_shards",
+      "mesh_axis_names",
+      "mesh_shape",
+      "axis_types"
+    ],
+    "enforcement": "Fatal source/common/stage arguments, cotangents, results, control pairs and cross-child signatures; sole ignored metadata is intended uniform Auto/Explicit axis types",
+    "negative_proof": "Nine direct rejection fixtures plus corresponding fatal cross-child cases"
+  },
+  "R2": {
+    "fixed": true,
+    "enforcement": "Failed non-small numerical child/cross-child summary is persisted then failure receipt completed:false is written and RuntimeError raises",
+    "negative_proof": "Twelve changed-saved-metadata/controller subprocess cases all exit1 and preserve false receipts"
+  },
+  "exact_runtime": {
+    "loaded_jax_runtime": {
+      "backend": "cpu",
+      "client_platform": "cpu",
+      "client_platform_version": "cpu",
+      "global_device_count": 4,
+      "jax_version": "0.11.1",
+      "local_device_count": 4,
+      "process_count": 1
+    },
+    "math_environment": {
+      "JAX_NUM_CPU_DEVICES": "4",
+      "JAX_PLATFORMS": "cpu",
+      "LIBTPU_INIT_ARGS": null,
+      "XLA_FLAGS": "--xla_allow_excess_precision=false"
+    },
+    "packages": {
+      "chex": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 18513,
+            "sha256": "e0cc8ff784ae62a2a18d0876bb0c3d1bdc21bb0726e001de644942f69b2eaabe"
+          },
+          "RECORD": {
+            "bytes": 2367,
+            "sha256": "8ee5431d9797fcbe79832d809fc83f1fd61cc75ea1f867a474679aed670cda0e"
+          },
+          "WHEEL": {
+            "bytes": 82,
+            "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.1.91"
+      },
+      "draccus": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 22676,
+            "sha256": "2fa703f578bb661445134ad4bf5bb1ccd12c5a1852dd727937527684a75f96c8"
+          },
+          "RECORD": {
+            "bytes": 5312,
+            "sha256": "600c3f143b86f3631311f4072061de5c00ec470cc366384ae10ff14d5376fba7"
+          },
+          "WHEEL": {
+            "bytes": 91,
+            "sha256": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.11.6"
+      },
+      "equinox": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 19124,
+            "sha256": "66340d7df80761d4e3d87dd595eb3e997ab2e36ab9de8a4a1042f85ba8a0f519"
+          },
+          "RECORD": {
+            "bytes": 6433,
+            "sha256": "806fe8ad9d6a63200df52c6d1eebda075985dcf665b71be59c879ab147856dd4"
+          },
+          "WHEEL": {
+            "bytes": 87,
+            "sha256": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.13.2"
+      },
+      "haliax": {
+        "installed_distribution": false
+      },
+      "jax": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 13344,
+            "sha256": "3b37ca4250239fb4ec6e35bda52b0a8399fa6fe03821aab93df27acbf9709460"
+          },
+          "RECORD": {
+            "bytes": 58510,
+            "sha256": "3faad290be6a62499d64fa2cf9db8db34adb90c8d4325806d5b24c34ab07f43e"
+          },
+          "WHEEL": {
+            "bytes": 91,
+            "sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.11.1"
+      },
+      "jaxlib": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 1340,
+            "sha256": "d39e9d074ea7532d0ba65dd3761059425311e62a734bad1ab3a79f2155cd818d"
+          },
+          "RECORD": {
+            "bytes": 11961,
+            "sha256": "a147e4167250b6f272de66c27596e4eef110613176db6d6aaaa43eeea06cb1ec"
+          },
+          "WHEEL": {
+            "bytes": 109,
+            "sha256": "0fd4d7120fd09c4c32a84b930256e321515115a540e403e0d1402ba5fc7d257b"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.11.1"
+      },
+      "jaxtyping": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 7348,
+            "sha256": "adc67a8b3421e26f01a8132ee27b0e3d53d37497312740da14151c2595772197"
+          },
+          "RECORD": {
+            "bytes": 1812,
+            "sha256": "b78fb5037c5afc7d8b68af173b5fc571f462a9a071e856429722bb4693e17fe2"
+          },
+          "WHEEL": {
+            "bytes": 87,
+            "sha256": "58b82a17209f9bf2804afe161f2632d0fde933f9bb2792fd936b2474a2e2ac2f"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.3.5"
+      },
+      "libtpu": {
+        "installed_distribution": false
+      },
+      "marin-levanter": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 13884,
+            "sha256": "b3cb16a0808f5d78d7dd2b7063551c1321fd7adf1e9f1c37522dc8c3003da713"
+          },
+          "RECORD": {
+            "bytes": 788,
+            "sha256": "5d4522be21cc85093fa9d0234b88c57b331357e6ec6f52791a5aa0659a2729d8"
+          },
+          "WHEEL": {
+            "bytes": 79,
+            "sha256": "e27dbbcdad5e1243a703b74d8cde82e7e3b6ad48b0ea26a9b339b5e148fe4269"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.2.0"
+      },
+      "ml_dtypes": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 8908,
+            "sha256": "51b5729b48ce71736748bbf43d4f355485f42b44977d6016717bbd6b11b7dfc0"
+          },
+          "RECORD": {
+            "bytes": 1100,
+            "sha256": "7932c2ab98915b611dde687dcdfcc21f4ff026c83731129279fcd8b4a6b7c96d"
+          },
+          "WHEEL": {
+            "bytes": 142,
+            "sha256": "dc3cd984afab348924108a69077a9bbbab324f891ac9e5791e4bac9d622a3088"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.5.4"
+      },
+      "numpy": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 62149,
+            "sha256": "9a8af38022f35d13e9b56b1e16122cf0a65b67333c25d08e0551bf9b8fca7587"
+          },
+          "RECORD": {
+            "bytes": 82689,
+            "sha256": "7f6665ac7a9fad5329acd16e42ace42ce923607c7354a7369f39b10e800312dc"
+          },
+          "WHEEL": {
+            "bytes": 122,
+            "sha256": "26726246f91715a154e07973ca8a82029674ee3cba86914a77f2e47c1a566739"
+          }
+        },
+        "installed_distribution": true,
+        "version": "2.3.5"
+      },
+      "opt_einsum": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 6345,
+            "sha256": "9f6791140c5e1be4f1b189365e6312d711a1eaaeb399b5dd6741f7a4bd99d03b"
+          },
+          "RECORD": {
+            "bytes": 2843,
+            "sha256": "c431fe9ffaab9d65aa05b655877de9c19bb485e1f02b0a1950c6626fd2523ac0"
+          },
+          "WHEEL": {
+            "bytes": 87,
+            "sha256": "d7215d7625cc9af60aed0613aad44db57eba589d0ccfc3d8122114a0e514c516"
+          }
+        },
+        "installed_distribution": true,
+        "version": "3.4.0"
+      },
+      "optax": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 7563,
+            "sha256": "8c6cbfd1a7b7fa83a3c65ecce1394b2775076b40c7f95c6be587b78925bda834"
+          },
+          "RECORD": {
+            "bytes": 11341,
+            "sha256": "09c618543f5879748535c5cf270dc5a72f5be0a9db99a3e3a1f9402310871068"
+          },
+          "WHEEL": {
+            "bytes": 82,
+            "sha256": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+          }
+        },
+        "installed_distribution": true,
+        "version": "0.2.6"
+      },
+      "scipy": {
+        "build_fingerprints": {
+          "METADATA": {
+            "bytes": 62145,
+            "sha256": "61d2715100413b0959352e1c638ebc3e54d96dd6ae0858026cf5f5e5dc8eb41e"
+          },
+          "RECORD": {
+            "bytes": 134746,
+            "sha256": "ea8114fb5d62d2cc246722a1c49c9a310103977f3c81c6ec0a30c212716cfa8f"
+          },
+          "WHEEL": {
+            "bytes": 122,
+            "sha256": "26726246f91715a154e07973ca8a82029674ee3cba86914a77f2e47c1a566739"
+          }
+        },
+        "installed_distribution": true,
+        "version": "1.17.0"
+      }
+    },
+    "platform": {
+      "machine": "arm64",
+      "release": "25.6.0",
+      "system": "Darwin"
+    },
+    "python": {
+      "build": [
+        "main",
+        "Aug 18 2025 19:02:39"
+      ],
+      "cache_tag": "cpython-312",
+      "compiler": "Clang 20.1.4 ",
+      "executable_sha256": "1699bf8aa705a8bb71613bef5cdd7d7c8c9d9a188a841f41679aa9b5830b8f60",
+      "implementation": "cpython",
+      "soabi": "cpython-312-darwin",
+      "version": "3.12.11 (main, Aug 18 2025, 19:02:39) [Clang 20.1.4 ]",
+      "version_info": [
+        3,
+        12,
+        11,
+        "final",
+        0
+      ]
+    },
+    "source_build_ids": {
+      "jax": {
+        "__version__": "0.11.1",
+        "_git_hash": "2d66622450e2c8633cda2307688ef7aa294bd6eb",
+        "_minimum_jaxlib_version": "0.11.1",
+        "_release_version": "0.11.1"
+      },
+      "jaxlib": {
+        "__version__": "0.11.1",
+        "_git_hash": "2d66622450e2c8633cda2307688ef7aa294bd6eb",
+        "_minimum_jaxlib_version": "0.11.1",
+        "_release_version": "0.11.1"
+      }
+    }
+  },
+  "source_candidate_head": "f1e991207ceda752957938b1cfe8893027d3fed8",
+  "source_candidate_clean": true,
+  "unchanged_science": [
+    "Same pinned baseline/candidate production source",
+    "Same scientific raw Splash and trig AST extractions",
+    "Same data/seed/model/highest precision/exact XLA flags",
+    "Same materialized two-order calculation and actual joint projection/inputnorm VJP",
+    "Same numerical thresholds and three failed identity controls"
+  ],
+  "limits": [
+    "No TPU compilation, numerical execution, hardware query or submission",
+    "Mechanics/abstract pass is not science/causal/trajectory/performance/convergence pass",
+    "Actual TPU artifact size/build not yet verified",
+    "Exact package metadata/build IDs are not a whole-environment binary integrity audit",
+    "Fresh independent review and durable archive required before any hardware"
+  ],
+  "actions": {
+    "accelerator_queries_or_launches": 0,
+    "remote_writes_or_pushes": 0,
+    "production_or_canonical_worktree_edits": 0,
+    "secrets_read": 0,
+    "headless_catalog_or_external_egress": 0
+  }
+}
