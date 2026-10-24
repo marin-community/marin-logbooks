@@ -1,0 +1,86 @@
+{
+  "schema": "native-jax-oproj-stage-a-independent-scientific-review.v1",
+  "reviewed_utc": "2026-10-24T05:17:18.147268+00:00",
+  "verdict": "PASS_BOUNDED_STAGE_A_PREPARATION",
+  "independent_scientific_review_passed": true,
+  "dispatch_authorized_by_this_review": false,
+  "actionable_findings": [],
+  "scientific_source_commit": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "freeze_sha256": "611ed16f9cd5cc56fdd8fd7791b4f4b4a63e65a869b404fcbace3da0cb674706",
+  "frozen_files_verified": 56,
+  "frozen_bytes_verified": 10349002,
+  "all_frozen_file_hashes_sizes_unique_paths_and_readonly_modes_verified": true,
+  "six_research_source_sha256": {
+    "abstract.py": "89edf4865985534378889b3e984660d61dd33f51626ba3f2871db394bbc8d4f5",
+    "capture.py": "19c8e7761f06bfa5176f4b2c2a039f36f27e82604063f45f5bc063e2df00512f",
+    "child.py": "1421bd4fbb8096625c4895452cf877b1ca3afca51375d2b431896627a977260d",
+    "diagnostic.py": "be8c16d96682e508dc78d200c1015b7b245299e90b0b1eccbda2ddc18ce34a73",
+    "host_runner.py": "1b6e5f9f26706375993444c7b95114cc33aa204f271d22e0abbe6419adc81b77",
+    "probes.py": "bc916e7d74c1f3e7aca01a6f640941cc40b36fcfbac0f80ce42260e0aa5ee881"
+  },
+  "runtime_guarded_research_files": [
+    "capture.py",
+    "child.py",
+    "diagnostic.py",
+    "host_runner.py"
+  ],
+  "preflight_only_research_files": [
+    "abstract.py",
+    "probes.py"
+  ],
+  "scientific_source_files_checked_against_actual_2b17_git_blobs": 16,
+  "critical_actual_import_identity_guards_reviewed": 5,
+  "material_pins": {
+    "config.json": "73fa6221d8917cf52cd89ae3e11c199589ef0e129edd3ac7d032f708f99df260",
+    "transport.json": "464fb9b3cb6d645b072b89b1ea1f380667b6b53547682c68d139502766ee8839",
+    "command.json": "bed52b30e63d690477e8ea8c2e4d8eeea707c45d52e3f66c881e2ab38ff86aa0",
+    "submit_once.template.py": "e43ae76655d63f7fc382c57663d9b8c821e3951ef2808c979f9a19976dc753e6",
+    "abstract-final.json": "62ca68625762c608a5e81dd945134705ad079a70521888e12242774bd4f8fa62",
+    "cpu-final/report.json": "85640889f4c7683fe2e75832f9f134ed231adafd8ba8d59eea4f0155dec2df76",
+    "host-failure-proof.json": "83e1ce2903d5caa2cd8b8bb77e84a328f6e8297c9037ef09f81a5ca732425093",
+    "packed-bootstrap-smoke.json": "db5461ca034ef332ec84ea5e002f168cc2e34c16ca5dbe60106218f543d9ba3c",
+    "design.md": "d164c51205d0820a42e1aa22c9b491fbaaf4249b8e7f4a642aa82debb2eee5d5",
+    "report.json": "6ab57497a24dbc059a1955075293e09a25ccb34d7773c4291da441fa563aa2e1"
+  },
+  "independent_static_checks": [
+    "Read all six research sources and complete config/transport/submit structure; decoded packed launcher with stdlib and confirmed exact worker/transport bytes.",
+    "Verified sixteen actual scientific checkout files and baseline git blobs match frozen expected hashes.",
+    "Verified all fifty-six final manifest entries and aggregate count/bytes; all are read-only and names/paths are unique.",
+    "Compared CPU anchor/instrumented loss, every canonical gradient, twelve raw gradient leaves, and all layouts directly; both branches match.",
+    "Read full-target abstract report: all four cases have255 canonical tensors,12 raw leaves and1,531,037,696 gradient elements.",
+    "Read the three negative receipts and specific failure reports/logs; gradient perturbation, nonfinite gradients and disagreeing repeated callbacks fail at their intended guards.",
+    "Read host failure/bootstrap proof implementations and reports; independently compared six produced mock archives with all corresponding retained output bytes.",
+    "Confirmed frozen historical anchor object exactly equals config historical_anchor; raw historical tensor identity is explicitly unavailable.",
+    "Reviewed original benchmark, Trainer hook/step, attention projection sites and stacked fold/rematerialization context."
+  ],
+  "scientific_controls": {
+    "actual_existing_trainer_capture_step_and_optimizer_preserved": true,
+    "truncated_before_nohook_timing_and_warmups": true,
+    "dynamic_layer_zero_through_scan_remat_no_unrolling": true,
+    "identity_custom_vjp_original_projection_ordinary_ad": true,
+    "capture_canonicalization_reshape_transpose_only": true,
+    "fatal_anchor_instrumented_loss_canonical_and_raw_gradient_identity_both_branches": true,
+    "finite_bf16_duplicate_consistency_and_per_device_global_slice_checks": true,
+    "historical_summary_and_fixture_identity_required_on_tpu": true,
+    "callback_shards_explicitly_limited_to_capture_views": true,
+    "separate_lower_compile_hlo_handle_limit_disclosed": true,
+    "classification_keeps_local_vjp_reduction_unresolved": true,
+    "no_stage_b_normal_path_trajectory_performance_or_adoption_claim": true
+  },
+  "evidence_boundaries": [
+    "This was a read-only source/report/byte review using stdlib inspection; no model/JAX/test or target execution was rerun.",
+    "CPU numerical success establishes tiny BF16 reference scan/remat mechanics only; full-target eval_shape establishes shape/type path only.",
+    "The actual target must reproduce the historical complete255-tensor gradient/loss summary and fixture hashes, then preserve each branch loss,255 canonical gradients,12 raw stacked leaves and layouts byte-exactly before attribution.",
+    "Captured X/G are operands of the instrumented diagnostic after its strict preservation gate; original tiled buffers and normal executable causality are not established.",
+    "Historical raw gradient bytes were not retained; the new untouched anchor is the raw-byte comparison baseline.",
+    "Host ordinary Python failure retention is supported within caps; hard termination and artifacts exceeding complete-retention caps have no successful backup guarantee.",
+    "No source bundle, Iris client/request/RPC, storage or TPU operation was executed by this reviewer."
+  ],
+  "remaining_owner_gates": [
+    "Root must commit exactly six frozen research files as clean run-source A atop2b17 and merge/publish the archive B while preserving research history.",
+    "Root must verify actual remote A/B source and preparation/config/launcher blobs against this frozen payload; this review is not remote verification.",
+    "Independent transport review and exact new serialized request/source-bundle validation, including the32MiB source cap, remain required.",
+    "Explicit release must pin scientific2b17, actual clean published run-source A, archive B and exact launcher/command hashes before the exclusive claim and single dispatch.",
+    "Actual TPU identity/retention gates remain unexecuted; either operand outcome remains diagnostic only, without causal/fix/adoption approval."
+  ]
+}

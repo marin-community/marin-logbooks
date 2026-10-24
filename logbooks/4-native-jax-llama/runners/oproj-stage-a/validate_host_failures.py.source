@@ -1,0 +1,88 @@
+"""Mechanical worker-I/O exception and bounded retention checks; no JAX/client/storage."""
+import ast
+import hashlib
+import json
+import os
+from pathlib import Path
+import runpy
+import subprocess
+import sys
+import tarfile
+import types
+
+PREP = Path(__file__).resolve().parent
+ROOT = Path('/private/tmp/marin-native-jax-oproj-diagnostic')
+HOST = ROOT / 'research/oproj/host_runner.py'
+transport = json.loads((PREP / 'transport.json').read_text())
+namespace = runpy.run_path(str(HOST), run_name='mechanical_worker_module')
+original_run = subprocess.run
+records = []
+os.chdir(ROOT)
+os.environ.update(json.loads((PREP / 'config.json').read_text())['scientific_environment'])
+source_hlo = PREP / 'cpu-proof-frozen-bytes/anchor/legacy.stablehlo.txt'
+for case in ('malformed-report', 'spawn-error', 'source-guard', 'numeric-failure', 'backup-nonzero', 'original-plus-backup-error'):
+    output = PREP / 'host-failures' / case
+    output.mkdir(parents=True, exist_ok=False)
+    config = json.loads(json.dumps(transport))
+    if case == 'source-guard':
+        first = next(iter(config['research_source_sha256']))
+        config['research_source_sha256'][first] = '0' * 64
+    calls = []
+    def fake_run(command, **kwargs):
+        calls.append(command)
+        if '-m' in command and 'rigging.fsutil.cli' in command:
+            if case == 'original-plus-backup-error':
+                raise OSError('deliberate intercepted backup exception')
+            return types.SimpleNamespace(returncode=1 if case == 'backup-nonzero' else 0)
+        child = output / 'stage-a'
+        child.mkdir()
+        (child / 'legacy.stablehlo.txt').write_bytes(source_hlo.read_bytes())
+        if case == 'spawn-error':
+            raise OSError('deliberate intercepted child spawn exception after retained HLO')
+        if case in ('malformed-report', 'original-plus-backup-error'):
+            (child / 'report.json').write_text('{deliberately malformed report')
+        else:
+            (child / 'report.json').write_text(json.dumps({'completed': case != 'numeric-failure', 'identity': {'instrumentation_loss_all_raw_gradients_exact': True}}))
+        return types.SimpleNamespace(returncode=1 if case == 'numeric-failure' else 0)
+    subprocess.run = fake_run
+    os.environ['IRIS_OUTPUT_DIR'] = str(output)
+    sys.argv = [str(HOST), json.dumps(config)]
+    try:
+        namespace['main']()
+        raise AssertionError('Bad worker path unexpectedly succeeded')
+    except (Exception, SystemExit) as error:
+        actual = type(error).__name__
+        expected = {'malformed-report': 'JSONDecodeError', 'spawn-error': 'OSError', 'source-guard': 'ValueError', 'numeric-failure': 'SystemExit', 'backup-nonzero': 'SystemExit', 'original-plus-backup-error': 'JSONDecodeError'}[case]
+        assert actual == expected, (case, actual, expected)
+        if isinstance(error, SystemExit):
+            assert error.code == 1
+        archive = output.parent / (output.name + '-diagnostics.tar.gz')
+        assert archive.is_file()
+        with tarfile.open(archive) as tar:
+            members = {m.name: tar.extractfile(m).read() for m in tar.getmembers()}
+        assert members == {str(p.relative_to(output)): p.read_bytes() for p in output.rglob('*') if p.is_file()}
+        assert calls[-1][1:5] == ['-m', 'rigging.fsutil.cli', 'cp', '-n']
+        records.append({'case': case, 'expected_error': expected, 'observed_error': actual, 'all_partial_output_bytes_retained': True, 'intercepted_backup_only_no_storage': True, 'archive_bytes': archive.stat().st_size, 'members': sorted(members), 'exception_notes': getattr(error, '__notes__', [])})
+    finally:
+        subprocess.run = original_run
+limits = transport['archive_limits']
+archive_fn = namespace['archive_diagnostics']
+cap_cases = []
+for case in ('per-file', 'raw', 'count', 'gzip', 'symlink', 'array'):
+    directory = PREP / 'host-failures' / ('cap-' + case)
+    directory.mkdir()
+    (directory / 'receipt.json').write_text('0123456789')
+    bounded = dict(limits)
+    if case == 'per-file': bounded['per_file_bytes'] = 9
+    if case == 'raw': bounded['uncompressed_bytes'] = 9
+    if case == 'count': bounded['files'] = 0
+    if case == 'gzip': bounded['compressed_bytes'] = 1
+    if case == 'symlink': (directory / 'link.json').symlink_to(directory / 'receipt.json')
+    if case == 'array': (directory / 'operand.npy').write_bytes(b'not exported data')
+    try:
+        archive_fn(directory, directory.parent / (directory.name + '.tar.gz'), bounded)
+        raise AssertionError('Unbounded or disallowed artifact accepted')
+    except ValueError as error:
+        cap_cases.append({'case': case, 'rejected': True, 'error': str(error), 'scaled_small_caps_for_mechanics': case in ('per-file','raw','count','gzip')})
+record = {'scope': 'Only stdlib worker supervisor loaded. Process/storage calls intercepted; no real target run, source bundle, client, RPC, storage operation or JAX import.', 'host_sha256': hashlib.sha256(HOST.read_bytes()).hexdigest(), 'cases': records, 'cap_cases': cap_cases, 'actual_caps': limits, 'all_passed': True}
+(PREP / 'host-failure-proof.json').write_text(json.dumps(record, indent=2) + '\n')

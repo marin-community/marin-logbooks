@@ -1,0 +1,146 @@
+{
+  "schema": "native-jax-oproj-stage-a-preparation.v1",
+  "status": "LOCAL_CPU_MECHANICS_AND_FULL_TARGET_ABSTRACT_PASS_AWAITING_FRESH_REVIEW_PUBLICATION_RELEASE",
+  "scientific_source_commit": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "published_run_source_commit": null,
+  "archive_commit_for_this_preparation": null,
+  "dispatch_authorized": false,
+  "source_unmodified": true,
+  "candidate_clean_unchanged": true,
+  "research_source_files": 6,
+  "scientific_disk_guards": 16,
+  "actual_critical_imports": 5,
+  "expected_runtime_source_guards": 4,
+  "config_sha256": "73fa6221d8917cf52cd89ae3e11c199589ef0e129edd3ac7d032f708f99df260",
+  "command_sha256": "bed52b30e63d690477e8ea8c2e4d8eeea707c45d52e3f66c881e2ab38ff86aa0",
+  "worker_runner_sha256": "1b6e5f9f26706375993444c7b95114cc33aa204f271d22e0abbe6419adc81b77",
+  "submit_template_sha256": "e43ae76655d63f7fc382c57663d9b8c821e3951ef2808c979f9a19976dc753e6",
+  "cpu_positive": {
+    "report_sha256": "85640889f4c7683fe2e75832f9f134ed231adafd8ba8d59eea4f0155dec2df76",
+    "exit_code": 0,
+    "identity": {
+      "branch": "operands_identical_local_vjp_or_reduction_unresolved",
+      "canonical_operands_exact": {
+        "G": true,
+        "X": true
+      },
+      "instrumentation_loss_all_raw_gradients_exact": true,
+      "local_contraction_cause_established": false,
+      "model_adoption": false,
+      "normal_executable_or_trajectory_conclusion": false,
+      "stage_b_implemented": false
+    },
+    "scope": "Real fixed tiny BF16 CPU4 multilayer scan/remat Trainer mechanics only"
+  },
+  "full_target_abstract": {
+    "report_sha256": "62ca68625762c608a5e81dd945134705ad079a70521888e12242774bd4f8fa62",
+    "cases": {
+      "anchor/legacy": {
+        "parameter_count": 1531037696,
+        "canonical_gradient_tensors": 255,
+        "gradient_leaves": 12,
+        "loss_shape": [],
+        "loss_dtype": "float32",
+        "new_state_step_shape": [],
+        "gradient_dtypes": [
+          "float32"
+        ],
+        "optimizer_update_leaves": 12
+      },
+      "anchor/native": {
+        "parameter_count": 1531037696,
+        "canonical_gradient_tensors": 255,
+        "gradient_leaves": 12,
+        "loss_shape": [],
+        "loss_dtype": "float32",
+        "new_state_step_shape": [],
+        "gradient_dtypes": [
+          "float32"
+        ],
+        "optimizer_update_leaves": 12
+      },
+      "instrumented/legacy": {
+        "parameter_count": 1531037696,
+        "canonical_gradient_tensors": 255,
+        "gradient_leaves": 12,
+        "loss_shape": [],
+        "loss_dtype": "float32",
+        "new_state_step_shape": [],
+        "gradient_dtypes": [
+          "float32"
+        ],
+        "optimizer_update_leaves": 12
+      },
+      "instrumented/native": {
+        "parameter_count": 1531037696,
+        "canonical_gradient_tensors": 255,
+        "gradient_leaves": 12,
+        "loss_shape": [],
+        "loss_dtype": "float32",
+        "new_state_step_shape": [],
+        "gradient_dtypes": [
+          "float32"
+        ],
+        "optimizer_update_leaves": 12
+      }
+    },
+    "large_arrays_lowering_compile_execution": false
+  },
+  "negative_probes": [
+    {
+      "case": "gradient-perturbation",
+      "specific_guard_rejected": true,
+      "observed_exit_code": 1,
+      "receipt_sha256": "3c15ed585bbd360836b337ea33b5e5e7539d81c422db0530226623d158e7a90c",
+      "evidence_limit": "CPU deliberate fault; no scientific numerical attribution"
+    },
+    {
+      "case": "nonfinite",
+      "specific_guard_rejected": true,
+      "observed_exit_code": 1,
+      "receipt_sha256": "dfee2e0fac39fb2b3a60249f8a684a5991e38ad11b00fe56cbed1137333b2967",
+      "evidence_limit": "CPU deliberate fault; no scientific numerical attribution"
+    },
+    {
+      "case": "duplicate-disagreement",
+      "specific_guard_rejected": true,
+      "observed_exit_code": 1,
+      "receipt_sha256": "bf16587167c1e53fcdccfce03f76ca2a95962c32375b4577f65df438893d73a1",
+      "evidence_limit": "CPU deliberate fault; no scientific numerical attribution"
+    }
+  ],
+  "worker_retention_mechanics": {
+    "report_sha256": "83e1ce2903d5caa2cd8b8bb77e84a328f6e8297c9037ef09f81a5ca732425093",
+    "exception_cases": 6,
+    "cap_cases": 6,
+    "process_and_storage_calls_intercepted": true
+  },
+  "bootstrap_smoke": {
+    "report_sha256": "db5461ca034ef332ec84ea5e002f168cc2e34c16ca5dbe60106218f543d9ba3c",
+    "worker_imported_stdlib_only": true,
+    "actual_worker_main_run": false
+  },
+  "required_normal_precommit": "PASS six research sources and same-byte submit template",
+  "launcher_scope": "Template and exact compressed worker payload only. No new Iris request/API/client/source bundle construction executed. Root must validate exact final request/source bundle before dispatch.",
+  "historical_anchor_report_sha256": "52c49f772d7508c4fa7a055b65c4ca39be40656cdbe3c3fd84972c946da197d4",
+  "historical_raw_gradient_hashes_available": false,
+  "stage_b_implemented": false,
+  "actual_TPU_control_executed": false,
+  "model_adopted": false,
+  "normal_path_or_trajectory_or_performance_claim": false,
+  "GCP_egress_bytes_added": 0,
+  "existing_campaign_GCP_egress_bytes": 1079221971,
+  "job_id": "/dlwh/levanter-native-jax-v5p-15b-oproj-stage-a-20261024",
+  "limits": {
+    "files": 128,
+    "per_file_bytes": 33554432,
+    "raw_bytes": 134217728,
+    "gzip_bytes": 16777216
+  },
+  "remaining_gates": [
+    "Fresh independent scientific and transport review",
+    "Root publication of clean six-file run source A and records/archive B with actual remote blob verification",
+    "Root exact new request/source bundle validation and explicit dispatch release",
+    "Actual TPU untouched historical-summary reproduction and all255 raw-gradient/loss preservation before Stage-A attribution"
+  ]
+}

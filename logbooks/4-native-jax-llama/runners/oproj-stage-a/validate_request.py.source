@@ -1,0 +1,105 @@
+from pathlib import Path
+import ast
+import hashlib
+import importlib.util
+import io
+import json
+import os
+import subprocess
+import sys
+import zipfile
+
+from google.protobuf.json_format import MessageToDict
+from iris.client.client import IrisClient
+from iris.cluster.client.remote_client import RemoteClusterClient
+from iris.rpc import controller_pb2
+
+root = Path('/private/tmp/marin-native-jax-oproj-diagnostic')
+prep = Path('/private/tmp/native-jax-oproj-diagnostic-preparation')
+wrapper = Path('/private/tmp/submit_native_jax_oproj_stage_a_once.py')
+assert Path.cwd() == root
+assert hashlib.sha256(wrapper.read_bytes()).hexdigest() == 'e43ae76655d63f7fc382c57663d9b8c821e3951ef2808c979f9a19976dc753e6'
+assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == '32f42f9a3601258123d316cc03c25b05add7a9c2'
+assert not subprocess.check_output(['git', 'status', '--porcelain'], text=True).strip()
+assert not os.environ.get('IRIS_JOB_ID') and not os.environ.get('IRIS_TASK_ID')
+for name in ['native-jax-oproj-stage-a-submit-claim.json', 'native-jax-oproj-stage-a-dispatch-release.json', 'marin-native-jax-oproj-stage-a-monitor.json']:
+    assert not (Path('/private/tmp') / name).exists()
+spec = importlib.util.spec_from_file_location('frozen_oproj_submit', wrapper)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+tree = ast.parse(wrapper.read_text())
+main = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'main')
+end = next(i for i, n in enumerate(main.body) if isinstance(n, ast.If) and ast.unparse(n.test) == 'args.validate_only')
+main.body = main.body[:end] + ast.parse('return kwargs, validation').body
+main.name = 'capture_exact_kwargs_before_any_release_claim_or_client'
+extraction = ast.Module(body=[main], type_ignores=[])
+ast.fix_missing_locations(extraction)
+exec(compile(extraction, str(wrapper), 'exec'), module.__dict__)
+sys.argv = [str(wrapper), '--validate-only']
+kwargs, validation = module.capture_exact_kwargs_before_any_release_claim_or_client()
+captures = []
+
+class CaptureOnlyLaunch:
+    def launch_job(self, request, *, timeout_ms):
+        captures.append((request, timeout_ms))
+        return controller_pb2.Controller.LaunchJobResponse(job_id=request.name)
+
+remote = RemoteClusterClient.__new__(RemoteClusterClient)
+remote._bundle_id = None
+remote._workspace = root
+remote._extra_bundle_includes = ()
+remote._bundle_exclude = None
+remote._bundle_blob = None
+remote._timeout_ms = 30000
+remote._client = CaptureOnlyLaunch()
+client = IrisClient(remote)
+job = client.submit(**kwargs)
+assert len(captures) == 1
+request, timeout_ms = captures[0]
+assert str(job.job_id) == request.name == '/dlwh/levanter-native-jax-v5p-15b-oproj-stage-a-20261024'
+assert request.max_retries_failure == request.max_retries_preemption == request.max_task_failures == 0
+assert request.replicas == 1
+assert request.existing_job_policy == module.job_pb2.EXISTING_JOB_POLICY_ERROR
+assert len(request.environment.secrets) == 0
+expected_env = json.loads((prep / 'config.json').read_text())['scientific_environment']
+assert all(request.environment.env_vars[k] == v for k, v in expected_env.items())
+blob = bytes(request.bundle_blob)
+assert len(blob) <= 32 * 1024**2
+with zipfile.ZipFile(io.BytesIO(blob)) as archive:
+    names = archive.namelist()
+    assert len(names) == len(set(names))
+    assert not any(n.startswith(('.git/', '.venv/', '.creds/', '.aws/', 'logbooks/')) or '__pycache__' in n for n in names)
+    config = json.loads((prep / 'config.json').read_text())
+    for name, expected in {**config['source_file_sha256'], **config['research_source_sha256']}.items():
+        assert hashlib.sha256(archive.read(name)).hexdigest() == expected
+    freeze = json.loads((prep / 'final-freeze.json').read_text())
+    for entry in freeze['files']:
+        if entry['name'].startswith('run-source/'):
+            assert hashlib.sha256(archive.read(entry['name'][11:])).hexdigest() == entry['sha256']
+    inventory = [{'path': n, 'bytes': archive.getinfo(n).file_size, 'sha256': hashlib.sha256(archive.read(n)).hexdigest()} for n in names]
+Path('/private/tmp/native-jax-oproj-stage-a-source-bundle.zip').write_bytes(blob)
+serialized = request.SerializeToString(deterministic=True)
+Path('/private/tmp/native-jax-oproj-stage-a-request.pb').write_bytes(serialized)
+request_without_blob = controller_pb2.Controller.LaunchJobRequest()
+request_without_blob.CopyFrom(request)
+request_without_blob.ClearField('bundle_blob')
+wire = MessageToDict(request_without_blob, preserving_proto_field_name=True)
+proof = {
+    'status': 'ACTUAL_SDK_REQUEST_AND_SOURCE_BUNDLE_VALIDATED_WITH_LAUNCH_STUB_NO_CLIENT_CONSTRUCTOR_RPC',
+    'scientific_source_commit': '2b17db78aedc0a603664238fbfa0bc0c68542d2b',
+    'published_run_source_commit': '32f42f9a3601258123d316cc03c25b05add7a9c2',
+    'command_sha256': hashlib.sha256((prep / 'command.json').read_bytes()).hexdigest(),
+    'wrapper_sha256': hashlib.sha256(wrapper.read_bytes()).hexdigest(),
+    'actual_IrisClient_submit_and_RemoteClusterClient_submit_job_executed': True,
+    'RemoteClusterClient_constructor_skipped_and_launch_stub_calls': len(captures),
+    'actual_network_client_RPC_auth_storage_submission_claim_or_release': False,
+    'bundle_bytes': len(blob), 'bundle_sha256': hashlib.sha256(blob).hexdigest(),
+    'bundle_entries': len(inventory), 'bundle_inventory': inventory,
+    'all16_scientific_and6_research_actual_bundle_bytes_verified': True,
+    'serialized_request_bytes': len(serialized), 'serialized_request_sha256': hashlib.sha256(serialized).hexdigest(),
+    'request_without_bundle': wire, 'launch_timeout_ms': timeout_ms,
+    'source_bundle_and_proto_local_only_do_not_archive': True,
+    'GCP_egress_bytes_added': 0,
+}
+Path('/private/tmp/native-jax-oproj-stage-a-request-validation.json').write_text(json.dumps(proof, indent=2) + '\n')
+print(json.dumps({k: v for k, v in proof.items() if k not in ('bundle_inventory', 'request_without_bundle')}, indent=2))

@@ -1,0 +1,5 @@
+[research] Probe layer-zero attention output-projection operands
+
+Capture the input and reverse-mode cotangent of layer-zero attention's o_proj in legacy and native Llama Trainer diagnostics. Within each implementation, require the instrumented loss and every gradient byte to equal its untouched execution before comparing operands across implementations. If operands match, contraction and reduction remain unresolved explanations for different weight gradients.
+
+Keep model and optimizer math unchanged. Bound retained JSON and complete HLO by file count and byte size in the same GCP region. A tiny four-device CPU control passes instrumentation-identity checks. Abstract tracing covers the constructor, Trainer forward/reverse pass, Adam update and capture hook for the 1.531B-parameter target. TPU operand attribution has not run.

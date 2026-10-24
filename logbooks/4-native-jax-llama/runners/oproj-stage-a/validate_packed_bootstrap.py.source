@@ -1,0 +1,36 @@
+"""Execute only stdlib packing bootstrap with its worker dispatch intercepted."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import runpy
+import subprocess
+import sys
+
+PREP = Path(__file__).resolve().parent
+command = json.loads((PREP / 'command.json').read_text())
+config = json.loads((PREP / 'config.json').read_text())
+os.environ.update(config['scientific_environment'])
+calls = []
+def intercepted(argv, env):
+    assert len(argv) == 3
+    worker = Path(argv[1])
+    assert hashlib.sha256(worker.read_bytes()).hexdigest() == command['runner_sha256']
+    payload = json.loads(argv[2])
+    assert payload == json.loads((PREP / 'transport.json').read_text())
+    assert {k: env[k] for k in config['scientific_environment']} == config['scientific_environment']
+    loaded = runpy.run_path(str(worker), run_name='worker_bootstrap_smoke_only')
+    assert callable(loaded['main']) and loaded['sha256'](worker) == command['runner_sha256']
+    assert 'jax' not in sys.modules
+    calls.append({'worker_sha256': command['runner_sha256'], 'worker_argv_bytes': sum(len(v.encode())+1 for v in argv), 'environment_bytes': sum(len((k+'='+v).encode())+1 for k,v in env.items()), 'worker_import_stdlib_only': True, 'worker_main_executed': False})
+    return 0
+subprocess.call = intercepted
+assert hashlib.sha256(command['entrypoint_argv'][-1].encode()).hexdigest() == command['compressed_launcher_sha256']
+try:
+    exec(compile(command['entrypoint_argv'][-1], '<frozen-oproj-bootstrap>', 'exec'), {})
+except SystemExit as error:
+    assert error.code == 0
+assert len(calls) == 1
+assert calls[0]['worker_argv_bytes'] + calls[0]['environment_bytes'] + 16384 < 98304
+record = {'completed': True, 'scope': 'Actual frozen stdlib compressed bootstrap executed; worker subprocess call intercepted and recovered worker imported without main. No JAX/client/RPC/storage/source bundle.', 'command_sha256': hashlib.sha256((PREP/'command.json').read_bytes()).hexdigest(), 'launcher_sha256': command['compressed_launcher_sha256'], 'observed': calls, 'no_claim_release_or_state_created': True}
+(PREP/'packed-bootstrap-smoke.json').write_text(json.dumps(record,indent=2)+'\n')

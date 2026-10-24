@@ -1,0 +1,120 @@
+"""Verify selected archive bytes from the Git index or an exact locally available commit.
+
+This performs local Git reads only. To verify a future published archive, root
+must first perform its separately authorized explicit fetch, then pass that
+exact commit as --tree. This script never queries a remote or creates a client.
+"""
+import argparse
+import gzip
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+BASE = '1ca0e6a99a5e12d2a92abd21baaa164a2b2ffbd0'
+A = '32f42f9a3601258123d316cc03c25b05add7a9c2'
+SCIENCE = '2b17db78aedc0a603664238fbfa0bc0c68542d2b'
+DIRECTORY = 'logbooks/4-native-jax-llama/'
+FREEZE_SHA = '611ed16f9cd5cc56fdd8fd7791b4f4b4a63e65a869b404fcbace3da0cb674706'
+sha = lambda value: hashlib.sha256(value).hexdigest()
+
+
+def git(root, *args):
+    return subprocess.check_output(['git', *args], cwd=root)
+
+
+def blob(root, tree, name):
+    return git(root, 'show', (':' if tree == 'INDEX' else tree + ':') + name)
+
+
+def all_blobs(root, tree, names):
+    prefix = ':' if tree == 'INDEX' else tree + ':'
+    commands = ''.join(prefix + name + '\n' for name in names).encode()
+    raw = subprocess.run(['git', 'cat-file', '--batch'], cwd=root, input=commands, stdout=subprocess.PIPE, check=True).stdout
+    result = {}
+    offset = 0
+    for name in names:
+        end = raw.index(b'\n', offset)
+        header = raw[offset:end].decode().split()
+        assert len(header) == 3 and header[1] == 'blob', (name, header)
+        length = int(header[2])
+        start = end + 1
+        result[name] = (header[0], raw[start:start + length])
+        offset = start + length + 1
+        assert raw[offset - 1:offset] == b'\n'
+    assert offset == len(raw)
+    return result
+
+
+def verify(root, tree):
+    inventory = json.loads(blob(root, tree, DIRECTORY + 'manifest.json'))
+    prior = json.loads(blob(root, BASE, DIRECTORY + 'manifest.json'))
+    rows = inventory['selected_files']
+    assert rows[:504] == prior['selected_files'] and len(prior['selected_files']) == 504
+    names = [DIRECTORY + row['archive_relative'] for row in rows]
+    assert len(names) == len(set(names)) == inventory['file_count']
+    objects = all_blobs(root, tree, names)
+    restored = {}
+    for row in rows:
+        name = DIRECTORY + row['archive_relative']
+        object_id, data = objects[name]
+        assert len(data) == row['bytes'] and sha(data) == row['sha256'], name
+        if 'original_uncompressed' in row:
+            original = row['original_uncompressed']
+            data = gzip.decompress(data)
+            assert len(data) == original['bytes'] and sha(data) == original['sha256'], name
+        restored[row['archive_relative']] = data
+    assert inventory['selected_files_canonical_json_sha256'] == sha(json.dumps(rows, sort_keys=True, separators=(',', ':')).encode())
+    assert inventory['total_uncompressed_bytes'] == sum(r['bytes'] for r in rows)
+    for name in ('notebook.md', 'README.md'):
+        before = blob(root, BASE, DIRECTORY + name)
+        after = blob(root, tree, DIRECTORY + name)
+        assert after.startswith(before), name
+    frozen = restored['prepared/oproj-stage-a/final-freeze.json']
+    assert sha(frozen) == FREEZE_SHA
+    freeze = json.loads(frozen)
+    assert len(freeze['files']) == 56 and sum(f['bytes'] for f in freeze['files']) == 10349002
+    by_frozen_name = {r['frozen_selection_name']: r for r in rows if 'frozen_selection_name' in r}
+    assert set(by_frozen_name) == {f['name'] for f in freeze['files']}
+    for entry in freeze['files']:
+        row = by_frozen_name[entry['name']]
+        data = restored[row['archive_relative']]
+        assert len(data) == entry['bytes'] and sha(data) == entry['sha256']
+        if entry['name'].startswith('run-source/'):
+            source_name = entry['name'].removeprefix('run-source/')
+            assert blob(root, tree, source_name) == blob(root, A, source_name) == data
+    if tree == 'INDEX':
+        paths = git(root, 'ls-files', '-z').split(b'\0')
+        assert git(root, 'rev-parse', 'MERGE_HEAD').decode().strip() == A
+        tree_id = git(root, 'write-tree').decode().strip()
+    else:
+        paths = git(root, 'ls-tree', '-r', '--name-only', '-z', tree).split(b'\0')
+        tree_id = git(root, 'rev-parse', tree + '^{tree}').decode().strip()
+        subprocess.run(['git', 'merge-base', '--is-ancestor', A, tree], cwd=root, check=True)
+        subprocess.run(['git', 'merge-base', '--is-ancestor', BASE, tree], cwd=root, check=True)
+    assert not any(p.startswith(b'.github/workflows/') for p in paths)
+    differences = git(root, 'diff', '--name-only', SCIENCE, tree_id).decode().splitlines()
+    assert all(p.startswith((DIRECTORY, 'research/oproj/', '.github/workflows/')) for p in differences), differences
+    return {'status': 'PASS_ACTUAL_GIT_BLOBS_LOCAL_ONLY', 'tree_requested': tree, 'tree_oid': tree_id,
+            'prior_archive': BASE, 'source_A': A, 'scientific_source': SCIENCE,
+            'all_selected_git_blobs_verified': len(rows), 'prior_504_rows_and_blob_bytes_exact': True,
+            'frozen56_original_bytes_recovered_exact': True, 'source_A_six_actual_blobs_exact': True,
+            'notebook_and_readme_prior_bytes_prefix_exact': True, 'automatic_workflows_absent': True,
+            'production_source_unchanged_from_scientific2b17': True,
+            'inventory_sha256': sha(blob(root, tree, DIRECTORY+'manifest.json')),
+            'selected_stored_bytes': sum(r['bytes'] for r in rows),
+            'restored_original_bytes': sum(len(restored[r['archive_relative']]) for r in rows),
+            'no_remote_query_client_source_bundle_storage_or_TPU': True}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--root', type=Path, required=True)
+    parser.add_argument('--tree', required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    args.output.write_text(json.dumps(verify(args.root.resolve(), args.tree), indent=2)+'\n')
+
+
+if __name__ == '__main__':
+    main()

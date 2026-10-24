@@ -1,0 +1,162 @@
+{
+  "schema": "native-jax-oproj-stage-a-independent-transport-review.v1",
+  "reviewed_utc": "2026-10-24T05:28:06.090275+00:00",
+  "verdict": "PASS_LOCAL_TRANSPORT_PREPARATION_WITH_SDK_TRANSPORT_RETRY_BOUNDARY",
+  "root_transport_review_passed": true,
+  "dispatch_authorized_by_this_review": false,
+  "actionable_blockers": [],
+  "scientific_source_commit": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "locally_verified_run_source_A": "32f42f9a3601258123d316cc03c25b05add7a9c2",
+  "source_A_parent_is_scientific_baseline_and_changes_exactly_six_frozen_additions": true,
+  "local_source_A_clean_when_reviewed": true,
+  "remote_source_A_or_archive_B_verified_by_this_review": false,
+  "frozen_preparation_sha256": "611ed16f9cd5cc56fdd8fd7791b4f4b4a63e65a869b404fcbace3da0cb674706",
+  "artifact_sha256": {
+    "/private/tmp/submit_native_jax_oproj_stage_a_once.py": "e43ae76655d63f7fc382c57663d9b8c821e3951ef2808c979f9a19976dc753e6",
+    "/private/tmp/validate_native_jax_oproj_stage_a_request.py": "d7ad815de1781b84a39dae6afbd7ea33f57c285a958cb5148de0135d35c5f9c7",
+    "/private/tmp/native-jax-oproj-stage-a-request-validation.json": "02a77d7ce954b2238a84fb9deea5ea8994fd2803890ea01ea14588c8b1f116ad",
+    "/private/tmp/native-jax-oproj-stage-a-source-A-proof.json": "cca308e5aa3a69a540e3738c753b6595bef400ea73654660bd156f83563bffe3",
+    "/private/tmp/native-jax-oproj-diagnostic-preparation/submit-validation.json": "435e90aa28ed6e08cb03921bc8f69982d3267e17fb7b1ae701cb6f413c98a110",
+    "/private/tmp/native-jax-oproj-diagnostic-preparation/config.json": "73fa6221d8917cf52cd89ae3e11c199589ef0e129edd3ac7d032f708f99df260",
+    "/private/tmp/native-jax-oproj-diagnostic-preparation/transport.json": "464fb9b3cb6d645b072b89b1ea1f380667b6b53547682c68d139502766ee8839",
+    "/private/tmp/native-jax-oproj-diagnostic-preparation/command.json": "bed52b30e63d690477e8ea8c2e4d8eeea707c45d52e3f66c881e2ab38ff86aa0"
+  },
+  "measured_local_bundle": {
+    "bytes": 16643230,
+    "sha256": "c7ed8607821ec68d0a8a93f292ce863d994f130928bc766c279a9c099a16c115",
+    "entries": 4710,
+    "uncompressed_bytes": 57784590,
+    "all_entry_hashes_and_sizes_match_actual_zip": true,
+    "all_16_scientific_and_6_research_actual_zip_bytes_match_frozen_sources": true,
+    "path_traversal_duplicates_or_symlinks": false,
+    "git_venv_credentials_agent_logbooks_or_pycache_metadata_entries": false,
+    "sdk_default_hard_cap_bytes": 26214400,
+    "campaign_preflight_cap_bytes": 33554432,
+    "passes_both_caps": true,
+    "32MiB_is_measured_preflight_not_literal_wrapper_hard_limit": true,
+    "local_zip_and_protobuf_must_not_be_archived_or_uploaded_by_review": true
+  },
+  "measured_local_request": {
+    "bytes": 16657807,
+    "sha256": "b78188cb89afa36b45ccaa32c7c3707147078277c2f36ffe79758b5ddaecc3d7",
+    "independently_parsed_generated_schema_only": true,
+    "wire_without_bundle_exactly_matches_capture_report": true,
+    "embedded_bundle_exact_local_zip": true,
+    "job_id": "/dlwh/levanter-native-jax-v5p-15b-oproj-stage-a-20261024",
+    "resources": {
+      "cpu_millicores": 32000,
+      "memory_bytes": "274877906944",
+      "device": {
+        "tpu": {
+          "variant": "v5p-8",
+          "count": 4
+        }
+      },
+      "disk_bytes": "68719476736"
+    },
+    "constraints": [
+      {
+        "key": "region",
+        "op": "CONSTRAINT_OP_EQ",
+        "value": {
+          "string_value": "us-central1"
+        },
+        "mode": "CONSTRAINT_MODE_REQUIRED"
+      },
+      {
+        "key": "zone",
+        "op": "CONSTRAINT_OP_EQ",
+        "value": {
+          "string_value": "us-central1-a"
+        },
+        "mode": "CONSTRAINT_MODE_REQUIRED"
+      }
+    ],
+    "replicas": 1,
+    "scheduling_timeout_seconds": 120,
+    "task_timeout_seconds": 1800,
+    "max_task_failures": 0,
+    "max_retries_failure": 0,
+    "max_retries_preemption": 0,
+    "existing_job_policy": "ERROR",
+    "secret_map_entries": 0,
+    "environment_inheritance_control": "EnvironmentSpec SecretBehavior.ISOLATE reviewed; no secrets on actual wire",
+    "exact_scientific_environment": {
+      "JAX_PLATFORMS": "tpu",
+      "XLA_FLAGS": "--xla_allow_excess_precision=false",
+      "LIBTPU_INIT_ARGS": " --xla_tpu_use_enhanced_launch_barrier=true"
+    },
+    "additional_standard_sdk_environment_keys": [
+      "HF_DATASETS_TRUST_REMOTE_CODE",
+      "MARIN_PROVENANCE",
+      "TOKENIZERS_PARALLELISM"
+    ],
+    "actual_run_argv_matches_exact_frozen_command": true,
+    "packed_bootstrap_worker_and_transport_decoded_and_byte_verified": true,
+    "launch_rpc_timeout_floor_milliseconds": 180000,
+    "future_submit_request_provenance_timestamp_and_argv_can_differ_from_validate_only_capture": true
+  },
+  "validator_assessment": {
+    "read_only_review_did_not_rerun_validator": true,
+    "actual_wrapper_exact_frozen_template": true,
+    "AST_prefix_extraction_stops_before_release_claim_or_client_branch": true,
+    "reviewed_actual_SDK_submit_and_request_assembly_implementation": true,
+    "provided_validator_calls_actual_IrisClient_submit_with_RemoteClusterClient_constructor_skipped": true,
+    "provided_validator_capture_launch_stub_calls": 1,
+    "provided_validator_performs_real_local_workspace_zip_and_protobuf_serialization": true,
+    "provided_validator_has_no_actual_network_auth_storage_or_submission_call": true
+  },
+  "one_logical_job_boundary": {
+    "root_explicitly_accepted_boundary": true,
+    "script_submit_invocations": 1,
+    "exclusive_claim_open_x_before_any_actual_client_or_RPC": true,
+    "claim_kept_on_ambiguous_or_failed_submit": true,
+    "all_three_source_pins_recorded_by_future_claim": "scientific2b17, published run-source A, archive B",
+    "no_script_reexecution_cancel_job_retry_resubmit_or_cluster_recovery_authorized": true,
+    "underlying_SDK_launch_transport_may_retry": true,
+    "SDK_default_max_attempts": 240,
+    "SDK_default_max_elapsed_seconds": 1800,
+    "SDK_retryable_errors": [
+      "UNAVAILABLE",
+      "INTERNAL",
+      "DEADLINE_EXCEEDED",
+      "RESOURCE_EXHAUSTED"
+    ],
+    "SDK_AL_ALREADY_EXISTS_is_not_retried": true,
+    "controller_ERROR_rejects_same_job_in_any_existing_state": true,
+    "controller_concurrent_insert_fence_rejects_duplicate": true,
+    "duplicate_logical_job_prevention_assumes_existing_identity_not_externally_deleted": true,
+    "lost_success_response_or_ALREADY_EXISTS_requires_inspection_of_same_job_never_wrapper_rerun": true,
+    "exactly_one_RPC_claim": false
+  },
+  "worker_boundary": {
+    "bootstrap_and_supervisor_standard_library_only": true,
+    "four_executed_research_modules_and_sixteen_scientific_files_guarded": true,
+    "all_six_research_sources_archived_and_provenance_recorded": true,
+    "exact_runtime_environment_fixture_and_child_import_identity_gates_preserved": true,
+    "bounded_complete_JSON_HLO_backup_same_region_prefix": "gs://marin-us-central1/tmp/ttl=7d/native-jax/oproj-stage-a-15b-20261024/diagnostics.tar.gz",
+    "retention_caps": {
+      "files": 128,
+      "per_file_bytes": 33554432,
+      "uncompressed_bytes": 134217728,
+      "compressed_bytes": 16777216
+    },
+    "hard_termination_retention_guarantee": false,
+    "scientific_attribution_still_requires_actual_TPU_historical_and_exact_instrumentation_identity": true
+  },
+  "reviewer_actions": [
+    "Read wrapper, root validator, source proof, validation reports and relevant Iris SDK/controller/bundle/types/constraints/error code.",
+    "Used stdlib hashes, git reads and ZIP inspection to verify local A and every existing ZIP entry; created no bundle.",
+    "Parsed existing protobuf with generated schemas under a separate dummy package; imported no actual Iris SDK or JAX.",
+    "Decoded existing packed bootstrap with stdlib and compared exact worker/transport/config bytes.",
+    "Wrote only these transport review artifacts; no runtime/probe/test/client/RPC/auth/storage/publication/launch."
+  ],
+  "remaining_root_gates": [
+    "Publish/archive B and root verify actual remote A/B refs plus source/config/transport/command/wrapper blobs; local proof is not publication proof.",
+    "Keep run-source A clean, exact HEAD, exact six source bytes and relevant generated bundle files unchanged through final dispatch; recheck measured bundle/source conditions if anything changes.",
+    "Bind explicit dispatch release to actual remotely verified A, archive B, scientific2b17, exact wrapper and command, independent scientific/transport reports and authorization. Boolean flags alone are not evidence.",
+    "Preserve exclusive claim, launch one logical job once, and retain any ambiguous response for same-job inspection without wrapper reexecution or recovery.",
+    "After dispatch root must verify first parent/task liveness and actual running execution, then use the existing heartbeat for babysitting.",
+    "Actual target runtime/TPU identity and complete bounded output/backup remain unverified until the execution reports are inspected."
+  ]
+}

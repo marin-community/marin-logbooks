@@ -1,0 +1,179 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Validate locally or submit the archived o_proj Stage-A control once, without recovery."""
+
+import argparse
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+
+from google.protobuf.json_format import MessageToDict
+from iris.cli.connect import open_iris_client
+from iris.cli.job import build_resources
+from iris.cluster.constraints import region_constraint, zone_constraint
+from iris.cluster.types import Entrypoint, EnvironmentSpec
+from iris.rpc import job_pb2
+from rigging.secrets import SecretBehavior
+from rigging.timing import Duration
+
+COMMAND = Path("/private/tmp/native-jax-oproj-diagnostic-preparation/command.json")
+COMMAND_SHA256 = "bed52b30e63d690477e8ea8c2e4d8eeea707c45d52e3f66c881e2ab38ff86aa0"
+SOURCE = "2b17db78aedc0a603664238fbfa0bc0c68542d2b"
+RELEASE = Path("/private/tmp/native-jax-oproj-stage-a-dispatch-release.json")
+CLAIM = Path("/private/tmp/native-jax-oproj-stage-a-submit-claim.json")
+STATE = Path("/private/tmp/marin-native-jax-oproj-stage-a-monitor.json")
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--validate-only", action="store_true")
+    mode.add_argument("--submit", action="store_true")
+    args = parser.parse_args()
+    if sha(COMMAND) != COMMAND_SHA256:
+        raise ValueError("Frozen command changed")
+    command = json.loads(COMMAND.read_text())
+    root = Path(command["working_directory"])
+    if Path.cwd().resolve() != root.resolve() or command["scientific_source_commit"] != SOURCE:
+        raise ValueError("Use the pinned scientific source worktree")
+    if (
+        sha(Path(command["runner"])) != command["runner_sha256"]
+        or sha(Path(command["job_config_file"])) != command["job_config_sha256"]
+    ):
+        raise ValueError("Frozen runner/configuration changed")
+    if hashlib.sha256(command["entrypoint_argv"][-1].encode()).hexdigest() != command["compressed_launcher_sha256"]:
+        raise ValueError("Packed launcher changed")
+    for name, expected in {**command["source_file_sha256"], **command["research_source_sha256"]}.items():
+        if sha(root / name) != expected:
+            raise ValueError("Scientific source file changed")
+    config = json.loads(Path(command["job_config_file"]).read_text())
+    if sha(Path(command["transport_file"])) != command["transport_sha256"]:
+        raise ValueError("Frozen transport changed")
+    transport = json.loads(Path(command["transport_file"]).read_text())
+    expected_environment = {
+        "JAX_PLATFORMS": "tpu",
+        "XLA_FLAGS": "--xla_allow_excess_precision=false",
+        "LIBTPU_INIT_ARGS": " --xla_tpu_use_enhanced_launch_barrier=true",
+    }
+    if (
+        config["scientific_environment"] != expected_environment
+        or command["scientific_environment"] != expected_environment
+    ):
+        raise ValueError("Command/configuration differ from exact inherited scientific environment")
+    if (
+        config["source_commit"] != command["scientific_source_commit"]
+        or config["source_file_sha256"] != command["source_file_sha256"]
+        or transport["runner_sha256"] != command["runner_sha256"]
+        or config["research_source_sha256"] != command["research_source_sha256"]
+    ):
+        raise ValueError("Command/configuration source/runner/AST equivalence failed")
+    env = expected_environment
+    if command["existing_job_policy"] != "EXISTING_JOB_POLICY_ERROR":
+        raise ValueError("Frozen existing-job policy differs")
+    resources = build_resources(tpu="v5p-8", gpu=None, cpu=32, memory="256GB", disk="64GB")
+    environment = EnvironmentSpec(
+        env_vars=env,
+        extras=["tpu"],
+        sync_packages=["marin-levanter"],
+        secrets={},
+        secret_behavior=SecretBehavior.ISOLATE,
+    )
+    kwargs = dict(
+        name=command["job_name"],
+        user="dlwh",
+        entrypoint=Entrypoint.from_command(*command["entrypoint_argv"]),
+        resources=resources,
+        environment=environment,
+        constraints=[region_constraint(["us-central1"]), zone_constraint("us-central1-a")],
+        replicas=1,
+        scheduling_timeout=Duration.from_seconds(120),
+        timeout=Duration.from_seconds(1800),
+        max_retries_failure=0,
+        max_retries_preemption=0,
+        max_task_failures=0,
+        existing_job_policy=job_pb2.EXISTING_JOB_POLICY_ERROR,
+        submit_argv=[sys.executable, str(Path(__file__).resolve()), "--submit"],
+    )
+    validation = {
+        "source_pin": SOURCE,
+        "command_sha256": COMMAND_SHA256,
+        "submit_wrapper_sha256": sha(Path(__file__)),
+        "job_id": "/dlwh/" + command["job_name"],
+        "environment_flags": env,
+        "resources": MessageToDict(resources.to_proto()),
+        "scheduling_timeout_seconds": 120,
+        "execution_timeout_seconds": 1800,
+        "max_retries_failure": 0,
+        "max_retries_preemption": 0,
+        "max_task_failures": 0,
+        "secret_behavior": "isolate",
+        "secret_entries": 0,
+        "existing_job_policy": "ERROR",
+    }
+    if args.validate_only:
+        validation["status"] = "LOCAL_VALIDATION_ONLY_NO_CLIENT_RPC_OR_SUBMISSION"
+        Path("/private/tmp/native-jax-oproj-diagnostic-preparation/submit-validation.json").write_text(
+            json.dumps(validation, indent=2) + "\n"
+        )
+        print(json.dumps(validation, sort_keys=True))
+        return
+    release = json.loads(RELEASE.read_text())
+    if (
+        release["command_sha256"] != COMMAND_SHA256
+        or release["submit_wrapper_sha256"] != sha(Path(__file__))
+        or not release["independent_scientific_review_passed"]
+        or not release["root_remote_archive_verified"]
+        or not release["root_transport_review_passed"]
+        or not release["explicit_dispatch_authorized"]
+        or len(release["published_run_source_commit"]) != 40
+        or release["source_commit"] != SOURCE
+        or len(release["archive_commit"]) != 40
+    ):
+        raise ValueError("Archive/review release does not match this exact dispatch")
+    if (
+        subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+        != release["published_run_source_commit"]
+    ):
+        raise ValueError("Use exact remotely verified published run-source revision")
+    if subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True).strip():
+        raise ValueError("Published run-source worktree must be clean")
+    if os.environ.get("IRIS_TASK_ID") or os.environ.get("IRIS_JOB_ID"):
+        raise ValueError("Submit this root job from the workstation")
+    state = validation | {
+        "status": "CLAIMED_BEFORE_RPC",
+        "archive_commit": release["archive_commit"],
+        "published_run_source_commit": release["published_run_source_commit"],
+        "scientific_source_commit": SOURCE,
+        "claimed_utc": datetime.now(UTC).isoformat(),
+        "automatic_recovery_authorized": False,
+    }
+    # An ambiguous submission keeps the claim. Inspect this same job; never rerun it.
+    with CLAIM.open("x") as handle:
+        handle.write(json.dumps(state, indent=2) + "\n")
+    STATE.write_text(json.dumps(state, indent=2) + "\n")
+    try:
+        with open_iris_client(config_file=root / "lib/iris/config/marin.yaml", workspace=root) as client:
+            job = client.submit(**kwargs)
+            actual = str(job.job_id)
+            if actual != state["job_id"]:
+                raise ValueError("Returned job identity differs; inspect without recovery")
+    except Exception as error:
+        state.update(status="SUBMISSION_OUTCOME_REQUIRES_INSPECTION", error_type=type(error).__name__)
+        STATE.write_text(json.dumps(state, indent=2) + "\n")
+        raise
+    state.update(status="SUBMITTED", submitted_utc=datetime.now(UTC).isoformat())
+    STATE.write_text(json.dumps(state, indent=2) + "\n")
+    print(json.dumps({"job_id": actual, "submitted_utc": state["submitted_utc"]}), flush=True)
+
+
+if __name__ == "__main__":
+    main()

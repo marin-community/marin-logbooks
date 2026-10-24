@@ -1,0 +1,137 @@
+{
+  "scope": "Only stdlib worker supervisor loaded. Process/storage calls intercepted; no real target run, source bundle, client, RPC, storage operation or JAX import.",
+  "host_sha256": "1b6e5f9f26706375993444c7b95114cc33aa204f271d22e0abbe6419adc81b77",
+  "cases": [
+    {
+      "case": "malformed-report",
+      "expected_error": "JSONDecodeError",
+      "observed_error": "JSONDecodeError",
+      "all_partial_output_bytes_retained": true,
+      "intercepted_backup_only_no_storage": true,
+      "archive_bytes": 25922,
+      "members": [
+        "stage-a/legacy.stablehlo.txt",
+        "stage-a/report.json",
+        "worker-failure.json",
+        "worker-provenance.json"
+      ],
+      "exception_notes": []
+    },
+    {
+      "case": "spawn-error",
+      "expected_error": "OSError",
+      "observed_error": "OSError",
+      "all_partial_output_bytes_retained": true,
+      "intercepted_backup_only_no_storage": true,
+      "archive_bytes": 25796,
+      "members": [
+        "stage-a/legacy.stablehlo.txt",
+        "worker-failure.json",
+        "worker-provenance.json"
+      ],
+      "exception_notes": []
+    },
+    {
+      "case": "source-guard",
+      "expected_error": "ValueError",
+      "observed_error": "ValueError",
+      "all_partial_output_bytes_retained": true,
+      "intercepted_backup_only_no_storage": true,
+      "archive_bytes": 373,
+      "members": [
+        "worker-failure.json"
+      ],
+      "exception_notes": []
+    },
+    {
+      "case": "numeric-failure",
+      "expected_error": "SystemExit",
+      "observed_error": "SystemExit",
+      "all_partial_output_bytes_retained": true,
+      "intercepted_backup_only_no_storage": true,
+      "archive_bytes": 25741,
+      "members": [
+        "stage-a/legacy.stablehlo.txt",
+        "stage-a/report.json",
+        "worker-provenance.json"
+      ],
+      "exception_notes": []
+    },
+    {
+      "case": "backup-nonzero",
+      "expected_error": "SystemExit",
+      "observed_error": "SystemExit",
+      "all_partial_output_bytes_retained": true,
+      "intercepted_backup_only_no_storage": true,
+      "archive_bytes": 25733,
+      "members": [
+        "stage-a/legacy.stablehlo.txt",
+        "stage-a/report.json",
+        "worker-provenance.json"
+      ],
+      "exception_notes": []
+    },
+    {
+      "case": "original-plus-backup-error",
+      "expected_error": "JSONDecodeError",
+      "observed_error": "JSONDecodeError",
+      "all_partial_output_bytes_retained": true,
+      "intercepted_backup_only_no_storage": true,
+      "archive_bytes": 25936,
+      "members": [
+        "stage-a/legacy.stablehlo.txt",
+        "stage-a/report.json",
+        "worker-failure.json",
+        "worker-provenance.json"
+      ],
+      "exception_notes": [
+        "Diagnostic backup also failed: OSError"
+      ]
+    }
+  ],
+  "cap_cases": [
+    {
+      "case": "per-file",
+      "rejected": true,
+      "error": "Diagnostic file exceeds hard cap; not truncated: receipt.json (10)",
+      "scaled_small_caps_for_mechanics": true
+    },
+    {
+      "case": "raw",
+      "rejected": true,
+      "error": "Diagnostic archive exceeds hard count/raw cap; not truncated",
+      "scaled_small_caps_for_mechanics": true
+    },
+    {
+      "case": "count",
+      "rejected": true,
+      "error": "Diagnostic archive exceeds hard count/raw cap; not truncated",
+      "scaled_small_caps_for_mechanics": true
+    },
+    {
+      "case": "gzip",
+      "rejected": true,
+      "error": "Compressed diagnostic cap exceeded",
+      "scaled_small_caps_for_mechanics": true
+    },
+    {
+      "case": "symlink",
+      "rejected": true,
+      "error": "Symlink in diagnostic output: /private/tmp/native-jax-oproj-diagnostic-preparation/host-failures/cap-symlink/link.json",
+      "scaled_small_caps_for_mechanics": false
+    },
+    {
+      "case": "array",
+      "rejected": true,
+      "error": "Unexpected diagnostic output: operand.npy",
+      "scaled_small_caps_for_mechanics": false
+    }
+  ],
+  "actual_caps": {
+    "files": 128,
+    "per_file_bytes": 33554432,
+    "uncompressed_bytes": 134217728,
+    "compressed_bytes": 16777216
+  },
+  "all_passed": true
+}
