@@ -1,0 +1,211 @@
+{
+  "schema": "native-jax-fp32-common-dq-independent-review.v1",
+  "review_scope": "Independent local read-only scientific/code audit; no source edits, runtime experiment, TPU compilation/execution, remote query, job, storage, or secret operation. Only these requested review artifacts written.",
+  "verdict": "CHANGES_REQUIRED_BEFORE_HARDWARE",
+  "hardware_launch_authorized": false,
+  "scientific_hypothesis_validated": false,
+  "full_trainer_or_convergence_claim_supported": false,
+  "frozen_bundle": {
+    "path": "/private/tmp/native-jax-fp32-common-dq-preparation",
+    "manifest_sha256": "6b98d8ed07bee5695025594f35352be5c1656ed7af351d1ab1c32752dba73c16",
+    "manifest_file_count": 13,
+    "manifest_payload_bytes": 201019,
+    "all_file_sizes_and_hashes_verified": true,
+    "derivation_json_exactly_reconstructs_generated_capture_bytes": true,
+    "source_pins_verified_against_local_git_objects": true,
+    "baseline_core_bytes_verified_against_baseline_git_object": true,
+    "candidate_clean_verified": true,
+    "durable_remote_archive": "Parent reports marin-community/marin-logbooks@944004a3b5157ff618012a682953f3a7a3016400; not independently queried under read-only local scope"
+  },
+  "source_pins": {
+    "baseline": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+    "candidate": "f1e991207ceda752957938b1cfe8893027d3fed8"
+  },
+  "independently_verified_invariants": [
+    {
+      "name": "actual_fp32_source",
+      "result": true,
+      "evidence": "capture lines309-365: pinned benchmark master initialization, FP32 source model, scanned last input/output, ordinary hidden/loss controls, FP32 suffix ct_y and source tail ct_r; lines388-405 reject wrong dtype/zero cotangents/control failures. No retained BF16 operands relabeled as FP32."
+    },
+    {
+      "name": "exact_one_node_raw_splash_derivation",
+      "result": true,
+      "evidence": "fp32_common_dq.py lines50-68 removes exactly the baseline q_ scale assignment, reconstructs original AST, rejects baseline barriers. Independent stdlib AST hashes match every CPU/abstract proof extraction."
+    },
+    {
+      "name": "one_raw_kernel_vjp_without_gradient_division",
+      "result": true,
+      "evidence": "lines274-289 separately materialize scaled Q and run one VJP with respect to that scaled input; returned raw_dq feeds both orders. No divide-gradient reconstruction."
+    },
+    {
+      "name": "common_runtime_trig_and_correct_split_half_adjoint",
+      "result": true,
+      "evidence": "lines70-78 preserve apply_rotary except final return; one materialized cos/sin pair; inverse is g*cos+R_transpose(g*sin), with R_transpose([a,b])=[b,-a]. Public forward/VJP controls exact in CPU proof."
+    },
+    {
+      "name": "materialized_runtime_rounding_orders",
+      "result": true,
+      "evidence": "lines297-306 use separate compiled blocked product outputs for FP32 g*alpha and cos/sin*alpha, one common inverse expression; CPU complete optimized product HLO guards pass. Eventual TPU instruction sequence remains untested."
+    },
+    {
+      "name": "actual_qkv_projection_inputnorm_vjp",
+      "result": true,
+      "evidence": "lines80-90 retain actual native attention prefix before Q RoPE; lines232-236 include actual inputnorm and canonical masters; lines308-323 hold K/V cotangents fixed while replacing only Q adjoint. Residual/o_proj-weight/MLP contributions excluded and disclosed."
+    },
+    {
+      "name": "fp32_only_candidate",
+      "result": true,
+      "evidence": "Local Git diff is only dtype == jnp.float32 guarded optimization_barrier immediately before q scale; BF16 branch source behavior unchanged. No hardware benefit implied."
+    },
+    {
+      "name": "fatal_non_small_child_identity_guards",
+      "result": true,
+      "evidence": "capture lines403-405 source controls fatal; raw helper lines372-373 kernel/RoPE controls fatal; capture lines422-423 source/replay and full/composed controls fatal. CPU-small exceptions explicitly report scientific_attribution_valid false."
+    },
+    {
+      "name": "complete_bounded_selected_hlo_and_artifact_integrity",
+      "result": true,
+      "evidence": "All proof artifact sizes/hashes verified; selected HLO saved complete and rejected on cap overflow; final CPU 115 files/7507872 bytes, abstract 5 files/42724 bytes. TPU actual size unknown."
+    }
+  ],
+  "must_fix_before_hardware": [
+    {
+      "id": "R1",
+      "priority": "P1",
+      "title": "Make physical-placement controls complete and fatal",
+      "file": "/private/tmp/native-jax-fp32-common-dq-preparation/native_jax_fp32_common_capture.py",
+      "lines": [
+        250,
+        268
+      ],
+      "related": [
+        "/private/tmp/native-jax-fp32-common-dq-preparation/fp32_common_dq_controller.py:196-219",
+        "/private/tmp/native-jax-fp32-common-dq-preparation/native_jax_fp32_common_capture.py:84-97"
+      ],
+      "finding": "BlockReplay.compare asserts only sha256, shape, dtype and partition_spec, then sets common_actual_fp32_operands_masters_and_physical_specs_exact true. It does not compare recorded memory_kind, concrete device_set, or local shard indices/shapes. Controller omits stage physical metadata and source physical metadata from its cross-child invariants; provenance source_operands omits complete physical signatures. PartitionSpec alone cannot prove the same physical mapping. Raw helper cross-child records do compare physical metadata, but this does not cover the full source/stage boundary path.",
+      "observed_failure": false,
+      "current_evidence": "CPU named/native argument/cotangent physical signatures were independently inspected and agree for all four stages; no current placement drift demonstrated.",
+      "required_change": "In a new revision, record and assert complete shape/dtype/spec/memory/device/shard signatures for source/common/stage arguments and cotangents, and their A/B invariants. Permit only the explicitly intended Auto versus Explicit axis-type difference. Fail before attribution on any unexpected mapping. Do not mutate the frozen bundle."
+    },
+    {
+      "id": "R2",
+      "priority": "P1",
+      "title": "Make cross-child invariant failure fatal to the controller",
+      "file": "/private/tmp/native-jax-fp32-common-dq-preparation/fp32_common_dq_controller.py",
+      "lines": [
+        220,
+        253
+      ],
+      "finding": "A failed cross_child_guards invariant only sets summary passed/scientific_attribution_valid false. After writing the summary the controller returns success and prints completed:true. This misses the requested fatal non-small A/B identity contract even though the JSON does not falsely claim attribution. For example a candidate native forward drift can leave each child internally valid yet only fail the cross-child native_forward_unchanged guard.",
+      "observed_failure": false,
+      "current_evidence": "All sixteen existing CPU cross-child guards pass, so this path was not exercised by the proof.",
+      "required_change": "Preserve the full failure summary, then raise/exit nonzero when any required cross-child invariant fails in non-small numerical mode. Keep mechanics/abstract mode labels explicit. Locally verify rejection with synthetic changed guard/placement metadata, then freeze a new manifest and archive the delta."
+    }
+  ],
+  "preserved_numerical_failures": {
+    "cpu_scientific_attribution_valid": false,
+    "source_removed_scale_kernel_forward": {
+      "a_at_worst": 1.425795078277588,
+      "b_at_worst": 1.425795316696167,
+      "different_elements": 190,
+      "elements": 1024,
+      "exact": false,
+      "max_abs": 2.384185791015625e-07,
+      "relative_l2": 3.044029006130773e-08,
+      "worst_index": [
+        1,
+        7,
+        2,
+        7
+      ]
+    },
+    "source_output_vs_named_full": {
+      "a_at_worst": -2.3125529289245605,
+      "b_at_worst": -2.3125522136688232,
+      "different_elements": 460,
+      "elements": 1024,
+      "exact": false,
+      "max_abs": 7.152557373046875e-07,
+      "relative_l2": 7.539494840157132e-08,
+      "worst_index": [
+        3,
+        2,
+        22
+      ]
+    },
+    "source_residual_vs_named_prefix": {
+      "a_at_worst": 2.0446367263793945,
+      "b_at_worst": 2.0446364879608154,
+      "different_elements": 214,
+      "elements": 1024,
+      "exact": false,
+      "max_abs": 2.384185791015625e-07,
+      "relative_l2": 3.8125120197281005e-08,
+      "worst_index": [
+        0,
+        2,
+        12
+      ]
+    },
+    "note": "Both children contain the same failures. The residual-versus-prefix exact failure is an additional preserved CPU source/replay failure. Do not alter data, seeds, precision or tolerances to hide these results."
+  },
+  "proofs": {
+    "cpu": {
+      "summary_sha256": "da084a0c3caa1132e577812ce62ddaae2a4a5507d17e546a6508f1960161deb6",
+      "all_artifact_hashes_verified": true,
+      "mechanics_passed": true,
+      "cross_child_guard_count": 16,
+      "all_cross_child_guards_true": true,
+      "scientific_attribution_valid": false,
+      "post_rope_dq": {
+        "a_at_worst": 0.0173195768147707,
+        "b_at_worst": 0.01731957495212555,
+        "different_elements": 299,
+        "elements": 1024,
+        "exact": false,
+        "max_abs": 1.862645149230957e-09,
+        "mean_abs": 2.7373769917460322e-11,
+        "relative_l2": 6.02942464373926e-08,
+        "worst_index": [
+          1,
+          3,
+          0,
+          1
+        ]
+      }
+    },
+    "abstract": {
+      "summary_sha256": "a5c84b9e05d600488f9b7ae369e572f7a61e693a51d14e1904f74746d2beb68a",
+      "all_artifact_hashes_verified": true,
+      "parameter_count": 1531037696,
+      "public_rotary_splash_graph_barriers": {
+        "baseline": 0,
+        "candidate": 2
+      },
+      "common_raw_graph_barriers": {
+        "baseline": 0,
+        "candidate": 0
+      },
+      "numerical_execution": false,
+      "tpu_compilation": false,
+      "scientific_attribution_valid": false
+    }
+  },
+  "causal_limits": [
+    "The standalone raw kernel is source-derived and uses actual FP32 source-derived operands, but materializing Q, context, trig and cotangents changes compilation context. Exact standalone kernel forward equality is mandatory; it is not established on CPU and unknown on TPU.",
+    "The shared incoming cotangent comes from the named source suffix/tail at the fixed source boundary. It is not an independently native or uninstrumented full Trainer hidden cotangent.",
+    "Downstream arrays are QKV projection plus inputnorm contributions, not whole-prefix/full-model gradients. Holding omitted contributions common isolates an order differential but does not reconstruct every absolute gradient.",
+    "A nonzero order difference proves sensitivity to these rounding orders on this materialized buffer. It does not prove baseline native equals coefficient-first or candidate equals scale-first inside the actual compiled block, nor sufficient cause of a loss trajectory.",
+    "Candidate barrier counts in abstract JAX graphs are construction evidence. Candidate actual optimized TPU HLO and the scaled-dQ boundary still require inspection; HLO alone does not establish every device floating-point instruction.",
+    "Controller scientific_attribution_valid is a validity flag, not a numerical-improvement decision. No_new_numerical_mismatches only detects exact-to-inexact transitions; existing inexact results can worsen. Review all errors and targeted Q/input/inputnorm improvement explicitly.",
+    "The CPU reference path never executes the candidate TPU branch. Its unchanged A/B gradients and trajectories cannot validate or falsify candidate TPU improvement.",
+    "The earlier BF16 full-Trainer evidence is parent-provided context, not re-audited here, and provides no validation of this separate FP32 hypothesis."
+  ],
+  "root_gates": [
+    "Before any hardware: resolve R1/R2 in a new immutable preparation revision, keep old failure evidence, verify changed guards locally, freeze hashes and preserve the new source/design/review in the durable archive. This review grants no launch authorization.",
+    "Before any hardware: pin and record the exact Python/JAX/jaxlib/runtime dependency environment alongside source pins; existing proofs record JAX but the bundle does not independently establish complete package/build identity. Confirm correct non-small numerical invocation, single process/four v5p devices, highest precision and exact XLA flags; no inherited data/seed/config change.",
+    "For a separately authorized bounded hardware diagnostic: retain every exact source/normal-hidden/loss/scan/full/composed/source-replay/raw-kernel/public-RoPE control, complete physical placement checks, unchanged parameter/batch/common raw/source operands, unchanged named results/native forward hashes, and complete bounded HLO. Any failure is preserved negative evidence and stops attribution without tolerance changes.",
+    "Before any full Trainer comparison: independently inspect actual optimized candidate TPU HLO for the scaled-dQ boundary, quantify the common-raw differential, establish targeted actual prefix/inputnorm/Q error reduction and absence of new or worsened unacceptable results. A null benefit stops the sufficient-cause claim. Never infer improvement from validity=true alone.",
+    "Only after those separate gates and authorization may a separately pinned full Trainer comparison test the unchanged approved loss-vector criteria. No performance, BF16 integration, replacement/deletion, trajectory or convergence conclusion follows from this review."
+  ]
+}

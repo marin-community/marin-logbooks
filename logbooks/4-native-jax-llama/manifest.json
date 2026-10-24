@@ -3600,10 +3600,42 @@
         "nonpublic_http_hosts": [],
         "absolute_local_paths_retained_as_historical_provenance": true
       }
+    },
+    {
+      "source_local": "/private/tmp/native-jax-fp32-common-dq-independent-review.json",
+      "archive_relative": "analysis/fp32-common-dq/independent-review.json",
+      "bytes": 13549,
+      "sha256": "48255aeed0b2aba891e259f122e2f3b377f709653ddc03ef90f9102cdc1f7848",
+      "role": "Independent frozen FP32 preparation review; two pre-hardware guard-enforcement blockers",
+      "measurement_or_source_pin": "f1e991207ceda752957938b1cfe8893027d3fed8",
+      "status": "reviewed_changes_required_before_hardware",
+      "note": "Exact independent report. Frozen v1 bundle and failed source controls remain unchanged; mathematical extraction sound only within standalone scope. No launch or adoption authorized.",
+      "public_screen": {
+        "text_utf8": true,
+        "credential_assignment_or_private_key_pattern": false,
+        "nonpublic_http_hosts": [],
+        "absolute_local_paths_retained_as_historical_provenance": true
+      }
+    },
+    {
+      "source_local": "/private/tmp/native-jax-fp32-common-dq-independent-review.md",
+      "archive_relative": "analysis/fp32-common-dq/independent-review.md",
+      "bytes": 10081,
+      "sha256": "c464a6f07629b94f9f4d65f00f14ed9f3ca3fec92c37652b84f7ee11c1654ec9",
+      "role": "Independent frozen FP32 preparation review; two pre-hardware guard-enforcement blockers",
+      "measurement_or_source_pin": "f1e991207ceda752957938b1cfe8893027d3fed8",
+      "status": "reviewed_changes_required_before_hardware",
+      "note": "Exact independent report. Frozen v1 bundle and failed source controls remain unchanged; mathematical extraction sound only within standalone scope. No launch or adoption authorized.",
+      "public_screen": {
+        "text_utf8": true,
+        "credential_assignment_or_private_key_pattern": false,
+        "nonpublic_http_hosts": [],
+        "absolute_local_paths_retained_as_historical_provenance": true
+      }
     }
   ],
-  "file_count": 219,
-  "total_uncompressed_bytes": 31601189,
+  "file_count": 221,
+  "total_uncompressed_bytes": 31624819,
   "source_history": {
     "retained_historical_nonancestors": [
       {
@@ -3828,7 +3860,7 @@
       "live_runtime_or_remote_claims": false
     }
   },
-  "selected_files_canonical_json_sha256": "a1bb35ffdd09206569c850e5c3efdc8691956e9d05144bf08eb98678634cee0d",
+  "selected_files_canonical_json_sha256": "1f1ec28266a7699a4cabda9c621d3ee34428bdb4ee6117e9a85cf4aaa26611e9",
   "scaled_rotary_checkpoint": {
     "prepared_utc": "2026-10-24T00:55:00.271755+00:00",
     "previous_archive_commit": "8dbe5ce2b0527989a3c4c91abe94a3b2cf5be28d",
@@ -3905,6 +3937,20 @@
       "encoding": "gzip",
       "gzip_mtime": 0,
       "restored_name": "cpu-controller-summary.json"
+    },
+    "independent_review": {
+      "verdict": "CHANGES_REQUIRED_BEFORE_HARDWARE",
+      "reports": [
+        "analysis/fp32-common-dq/independent-review.json",
+        "analysis/fp32-common-dq/independent-review.md"
+      ],
+      "must_fix": [
+        "Complete fatal source/common/stage physical-placement signatures and cross-child invariants",
+        "Preserve failure summary and exit nonzero on failed non-small cross-child guards"
+      ],
+      "frozen_v1_unchanged": true,
+      "scientific_attribution_valid": false,
+      "hardware_authorized": false
     }
   },
   "query_scale_full_trainer_result": {
