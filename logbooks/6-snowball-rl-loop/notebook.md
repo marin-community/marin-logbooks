@@ -92,6 +92,12 @@ Validation initially stopped because its checker expected resolved dependency pa
 
 No experimental GPU run has launched. Next bind the recorded cohort and resolved generation/scoring protocol to the pinned runnable source, check fresh run/checkpoint identities, then qualify the synchronous control for three updates before the matched async qualification.
 
+### 2026-10-24 05:55 UTC - Start the synchronous qualification
+
+The completed selection and recorded 100-task screening cohort are bound to the [frozen executable source](https://github.com/marin-community/marin-logbooks/tree/fb4d5d7ee8ea6314a379d35d148767b1046e852a/experiments/post_training/inventory). The resolved generation and scoring configuration is retained with the launch record. A separate comparison descriptor removes only the run-specific trajectory destination, run identifier and declared synchronous/asynchronous mode; it retains sampling, evaluation, harness, retention policy and budgets, and includes physical allocation and parallelism. Future runs still require their own configuration and cohort comparison. Configured equality does not establish the immutable served judge revision, external asset bytes or actual scoring coverage.
+
+The synchronous A qualification was submitted once for three updates. At the first startup check, the coordinator and five eight-H100 replicas were running on attempt zero with no controller failures. The coordinator reused the completed selection, and the SkyRL entrypoint and experiment logger initialized. Worker bundle identity, loaded model identity, learner/inference readiness, optimizer updates, evaluation coverage and checkpoint/export completion remain unverified. This attempt is qualification cost; no measured-arm reward or improvement result is available yet.
+
 ## Final decision
 
-Pending materialization, reviewed executable configurations, qualification and measurements. No approach is selected for promotion yet. Publish exact source/configuration before executing each experiment, then append results and commit-pinned evidence. Preserve rejected alternatives and meaningful failed attempts. Extract only maintainable selected changes into ordinary Marin PRs.
+The selection and reviewed executable configurations are complete. Qualification and measurements remain pending. No approach is selected for promotion yet. Publish exact source/configuration before executing each experiment, then append results and commit-pinned evidence. Preserve rejected alternatives and meaningful failed attempts. Extract only maintainable selected changes into ordinary Marin PRs.
