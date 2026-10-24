@@ -120,6 +120,27 @@ The research branch includes the [selected source change](https://github.com/mar
 
 The completed A3 attempt used export-on and retains its original outcome and 61.23-minute qualification cost. Future D3 and all four measured screens will use export-off with the same submission-to-terminal timing definition. Each future request and resolved protocol must bind the updated source and retention behavior before launch. A3 result and provenance review remain pending; no new experiment has launched.
 
+### 2026-10-24 10:19 UTC - Review retained synchronous qualification results
+
+Retained-result readback confirms the same 100 screening tasks before and after the three-step synchronous qualification, with 20 tasks per family. Each phase has 100 usable numeric verifier scores marked `verified`, including zero and partial credit, and no serialized exception or server-error rows. The mean normalized verifier score fell from 0.2201 to 0.16, a change of −0.0601. This is a descriptive observation on this cohort; it establishes neither improved quality nor a trusted cross-arm ranking.
+
+| Family | Initial mean normalized verifier score | Final mean |
+| --- | ---: | ---: |
+| Calendar | 0.20 | 0.05 |
+| Competitive coding | 0.00 | 0.00 |
+| Reasoning gym | 0.4505 | 0.35 |
+| STEM | 0.10 | 0.05 |
+| Structural | 0.35 | 0.35 |
+| All 100 | 0.2201 | 0.16 |
+
+All 100 `passed` fields in each phase are null. A usable numeric score does not establish boolean success, so no pass rate is validated. Aggregate pass-like metrics can fall back to positive reward when no boolean pass verdict is recorded; they are not independent pass verdicts. The cohort linkage uses the sole validation input and source-defined row order, rather than a separate TaskSpec signature recorded with each verdict.
+
+Checkpoint and export publication metadata are consistent: the latest completion marker identifies step 3, the export request and successful export child agree, and the HF manifest lists 45 files with 39 weight shards referenced by the index. Recorded sizes and three fetched small metadata-file hashes agree with the manifest. Weight bodies, the full tokenizer and checkpoint tensor bodies were not read. These checks establish publication and metadata consistency, not full weight integrity, initializer/export architecture parity or optimizer resume.
+
+The reported dirty tracked source variant differs locally from the frozen executable source only in `uv.lock`. The exact submitted bundle, installed GPU environment and loaded modules and weights remain unattested. Retained coordinator and post-staging configurations match the reviewed transformations at their pre-validator writing phases; they do not attest the later active GPU validator state. Immutable served judge revision and external asset bytes also remain unknown.
+
+Saved metrics show applied-update markers at steps 2 and 3. The step-1 marker was not recovered; logged three-out-of-three progress and the step-3 checkpoint do not independently establish all three applied optimizer updates. The retained evidence is accepted with these limits, while scientific qualification remains unaccepted. All A3 jobs and retained readers are terminal. The original export-on attempt retains its 61.23-minute qualification cost; no new experiment has launched. Future D3 and the four 25-update screens remain planned with export off, and all launches stay on hold. No dashboard result is appended.
+
 ## Final decision
 
-The selection and reviewed executable configurations are complete. Qualification acceptance is held for launch-lock provenance; measurements remain pending. No approach is selected for promotion yet. Publish exact source/configuration before executing each experiment, then append results and commit-pinned evidence. Preserve rejected alternatives and meaningful failed attempts. Extract only maintainable selected changes into ordinary Marin PRs.
+A3 now has retained same-cohort score and publication evidence at a qualification cost of 61.23 minutes, including export. Its mean normalized verifier score declined by 0.0601; no pass rate, improved quality or trusted arm ranking is established. Qualification remains unaccepted because runtime/source attestation, all-step applied-update evidence and optimizer resume remain incomplete. Future D3 and all four 25-update export-off screens are planned but have not launched; the launch hold remains in force. No approach is selected for promotion or dashboard ranking. Preserve the original A3 outcome and publish exact source/configuration before any later authorized execution.
