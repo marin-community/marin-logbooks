@@ -1,0 +1,31 @@
+warning: `--no-sync` has no effect when used alongside `--no-project`
+I20261023 23:55:45 8401625472 iris.cluster.config Loading config from lib/iris/config/marin.yaml
+Not all requested scopes were granted by the authorization server, missing scopes email.
+Attempt: /dlwh/levanter-native-jax-v5p-callback-gate-20261024/0:0  (current)
+UID: 75052aa5687f614e
+State: failed  exit=1
+Worker: marin-tpu-v5p-preemptible-8-us-central1-20261024-0513-c3c7335f-worker-0
+Error: Exit code: 1. stderr: RuntimeError: jax.debug.callback failed to find a local CPU device to place the inputs on. Make sure "cpu" is listed in --jax_platforms or the JAX_PLATFORMS environment variable.
+Output: uploaded 10.64 KiB gs://marin-us-central1/tmp/ttl=7d/iris/task-outputs/dlwh/levanter-native-jax-v5p-callback-gate-20261024/0/75052aa5687f614e/outputs.tar.zst (7-day retention)
+
+Root cause:
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2781, in block_until_ready
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2764, in try_to_block
+  jax.errors.JaxRuntimeError: INTERNAL: Execute event error: CpuCallback error: Traceback (most recent call last):
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/callback.py", line 740, in _wrapped_callback
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/callback.py", line 816, in _wrapped_callback
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/debugging.py", line 200, in _callback
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/debugging.py", line 91, in debug_callback_impl
+  RuntimeError: jax.debug.callback failed to find a local CPU device to place the inputs on. Make sure "cpu" is listed in --jax_platforms or the JAX_PLATFORMS environment variable.
+  Exception ignored in atexit callback: <function clean_up at 0x7fa4e4d3eb60>
+  Traceback (most recent call last):
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2850, in clean_up
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2826, in clear_backends
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/api.py", line 2749, in effects_barrier
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/dispatch.py", line 171, in block_until_ready
+  jax.errors.JaxRuntimeError: INTERNAL: Execute event error: CpuCallback error: Traceback (most recent call last):
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/callback.py", line 740, in _wrapped_callback
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/callback.py", line 816, in _wrapped_callback
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/debugging.py", line 200, in _callback
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/debugging.py", line 91, in debug_callback_impl
+  RuntimeError: jax.debug.callback failed to find a local CPU device to place the inputs on. Make sure "cpu" is listed in --jax_platforms or the JAX_PLATFORMS environment variable.

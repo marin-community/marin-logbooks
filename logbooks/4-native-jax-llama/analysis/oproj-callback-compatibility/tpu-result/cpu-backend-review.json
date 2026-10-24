@@ -1,0 +1,91 @@
+{
+  "review_kind": "read_only_installed_jax_cpu_callback_backend_diagnosis",
+  "jax_version": "0.11.1",
+  "installed_source_root": "/private/tmp/marin-native-jax-query-scale-rounding/.venv/lib/python3.12/site-packages/jax",
+  "job_identity_parent_supplied": "/dlwh/levanter-native-jax-v5p-callback-gate-20261024",
+  "source_identifier_parent_supplied_not_independently_resolved": "ed17",
+  "current_environment_parent_supplied": {"JAX_PLATFORMS": "tpu", "matmul_precision": "default", "Shardy": true},
+  "observed_local_evidence": {
+    "task_exit": 1,
+    "task_duration_seconds": 32.59,
+    "preemptions": 0,
+    "tasks_completed": 0,
+    "failure_phase": "First compiled transport execution, at block_until_ready, inside host callback implementation",
+    "exception": "jax.debug.callback failed to find a local CPU device to place the inputs on. Make sure cpu is listed in JAX_PLATFORMS.",
+    "callback_collection_success_demonstrated": false,
+    "explicit_mesh_mode_success_demonstrated": false,
+    "composed_transform_success_demonstrated": false
+  },
+  "verdict": {
+    "candidate_environment": {"JAX_PLATFORMS": "tpu,cpu"},
+    "source_support": "Explicitly initialize both backends; require both initialization successes; first-listed TPU wins default priority; callback can explicitly select local CPU without adding CPU to default TPU device enumeration.",
+    "default_devices_are_union_of_backends": false,
+    "cpu_host_device_is_required_by_callback_impl": true,
+    "source_guarantees_actual_tpu_runtime_success": false,
+    "source_guarantees_scientific_numerical_identity": false,
+    "fresh_process_before_import_and_backend_initialization_required": true,
+    "implicit_fallback_acceptable": false,
+    "prior_partitioned_transport_negative_remains_retained": true,
+    "new_missing_cpu_runtime_negative_remains_retained": true,
+    "candidate_applied_or_executed_by_reviewer": false
+  },
+  "source_references": [
+    {"path": "_src/debugging.py", "lines": [85,105], "finding": "Callback implementation explicitly selects local CPU device, places callback arguments there, and uses temporary CPU/empty-mesh context."},
+    {"path": "_src/debugging.py", "lines": [199,206], "finding": "TPU host callback closure invokes debug_callback implementation."},
+    {"path": "_src/xla_bridge.py", "lines": [803,842], "finding": "Explicit backend list controls initialization, descending priority, and fail-loud behavior for every listed backend."},
+    {"path": "_src/config.py", "lines": [1156,1170], "finding": "Documented explicit-list semantics: first platform default, all listed initialization required."},
+    {"path": "_src/xla_bridge.py", "lines": [927,951], "finding": "Backend lookup uses explicit or deprecated override platform; missing CPU in initialized map raises; absent override selects default backend."},
+    {"path": "_src/xla_bridge.py", "lines": [970,1029], "finding": "Default device enumeration and counts delegate to a single selected backend, not a union."},
+    {"path": "_src/xla_bridge.py", "lines": [1068,1131], "finding": "Local devices and process count use the requested/default backend."},
+    {"path": "_src/config.py", "lines": [289,320], "finding": "Default-device context uses thread-local state and restores previous state on exit."},
+    {"path": "_src/config.py", "lines": [1800,1811], "finding": "Default-device configuration independently affects ordinary JAX placement."},
+    {"path": "_src/interpreters/pxla.py", "lines": [543,547], "finding": "Ordinary default device may be overridden independently of selected default backend."},
+    {"path": "_src/config.py", "lines": [905,906], "finding": "Environment used to initialize configuration state."},
+    {"path": "_src/xla_bridge.py", "lines": [794,796], "finding": "Initialized backend state is reused; editing environment later is not a valid backend recovery."},
+    {"path": "_src/callback.py", "lines": [797,809], "finding": "True multi-platform lowering is separate and unsupported; partitioned transport remains unsupported on TPU."},
+    {"path": "_src/callback.py", "lines": [846,861], "finding": "Compiled TPU platform uses ordinary TPU send/receive transport independently of host CPU backend availability."}
+  ],
+  "future_gate_requirements_not_executed": {
+    "separate_authorization_required": true,
+    "environment_policy": "New exact named environment tpu,cpu; unchanged other scientific fields; require effective config and environment equality rather than broadening old guard to accept both.",
+    "required_guards": [
+      "Nonempty explicit CPU local devices, all actually CPU; record count and identity",
+      "default_backend equals tpu",
+      "Default and explicit-TPU global/local device lists equal in identity and order",
+      "All selected model devices are actual target-class TPU v5p",
+      "Default and explicit-TPU global/local counts equal four",
+      "Default and explicit-TPU process_count equals one and process index zero",
+      "Same 2x2 data/model TPU-only mesh and device order; preserve each Auto/Explicit mesh mode",
+      "Model/input/output shardings and compiled executable platform/device assignment remain TPU",
+      "Outside callback, preserve prior default-device policy and prohibit CPU default-device override",
+      "Record backend override settings, exact source/import/runtime identities, default matmul precision, Shardy, XLA_FLAGS, LIBTPU_INIT_ARGS",
+      "Preserve fixture, contraction, BF16, scan/remat, ids/specs, all per-device completeness and scientific criteria"
+    ],
+    "tiny_gate": "Fresh process, bounded actual TPU lower/compile/execute of both transport and composed scan/customVJP/remat under Auto and Explicit; global plus all per-device X/G, exact independent bytes/shapes/dtypes/ids/index0, identical duplicates, numerical identity, synchronization and HLO/error retention.",
+    "no_automatic_retry_or_escalation": true,
+    "full_model_untouched_replay_required_under_new_environment": true,
+    "replay_requirements": [
+      "Exact historical parameter/batch hashes and parameter count",
+      "All 255 target gradient tensors and existing retained identities/comparison metrics",
+      "Historical gradient/loss summaries and all existing target checks",
+      "No historical-anchor rewrite, tolerance change, or criterion weakening if replay differs"
+    ],
+    "instrumented_result_requirements_after_untouched_replay": "Same controlled new environment; all-gradient/loss untouched-versus-instrumented identity; exact patch/source/import provenance; real dynamic layer-zero X/G; independent observations from all four TPU devices including replicated G; repeated-value consistency; original scientific criteria.",
+    "compatibility_gate_pass_scope": "Only small callback composition compatibility; no causal explanation of original gradient discrepancy."
+  },
+  "sha256": {
+    "_src/debugging.py": "d0ec04657431827fc26e374414d8aadb98df41d912febeec8b78cf39badee51d",
+    "_src/xla_bridge.py": "6c8305cbe2f78dafa947bd953c31af23cea399e07dd9d1bbd6a55d418935abde",
+    "_src/config.py": "e9274cb50c62ec6063834fb94ebdaa976841474153db7127a31abf7133b73fbf",
+    "_src/callback.py": "cf0745af763b40b1e633650ffca8835df7f6eb7bcf33a7134eedbb8f189db3d2",
+    "_src/interpreters/pxla.py": "f7440fac9aaa0455ad00f9db933031fa000e87cae150a23077f39d8dd7593985",
+    "version.py": "134347713a82193cf9803bfe3118a05b9a46407418bbe92a0b94092c65119743",
+    "/private/tmp/native-jax-callback-gate-initial-progress.log": "808fadf7d118c8c28384485782771a909381cf4f32ddbb7726b4c1e4beb95bf0",
+    "/private/tmp/native-jax-callback-gate-parent-running.txt": "fc5eba6211a24284eebcd3720e393bc3f70f4455b8f5c3eb6f3932691a050d9d",
+    "/private/tmp/native-jax-callback-cpu-backend-review.md": "211150ae84e5bd7d23266d566fede12fd1b29995268b73265d06977c7b4fac70"
+  },
+  "hash_scope": "Direct hashes of local installed source and supplied local evidence; not independently verified remote artifact equality.",
+  "actions_performed": ["Read installed JAX source", "Read supplied local evidence logs", "Hash local reviewed source/evidence", "Write requested Markdown and JSON reports"],
+  "actions_not_performed": ["Runtime/JAX execution or import", "Tests", "Dependency operations", "Network", "Secrets", "Source edits", "Job queries", "Submissions", "Recovery", "Subagents"],
+  "markdown_report": "/private/tmp/native-jax-callback-cpu-backend-review.md"
+}
