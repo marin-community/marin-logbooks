@@ -21,7 +21,7 @@ Time each measured run from submission through terminal artifact success, includ
 
 ## Baseline and planned treatments
 
-Source inspection uses Marin `6d7f94f852e7244dc42c4760b08ab4f66fd2de7a`. The shared binding is `experiments/post_training/inventory/train_quick_loop.py`; the four-arm selector is not implemented yet.
+Source inspection uses Marin `6d7f94f852e7244dc42c4760b08ab4f66fd2de7a`. The shared binding is `experiments/post_training/inventory/train_quick_loop.py`; its research-only `--arm` selector keeps one artifact entry point for all four treatments.
 
 Once materialization passes, hold fixed the Snowball 100k selection, SFT model and matching tokenizer (`open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.09.21`, revision `fe666478454e79fe6027a0bab0388d9abd68f51a`), seed 20261020, 128 prompt groups/update, four answers/group, 24576-token request window and 8192-token response limit. Use 32 learner and 8 inference H100 GPUs. Run one experiment at a time. The screening panel has 100 fixed tasks drawn from the preserved 910-task validation population; both are excluded from training. The remaining 810 tasks are not evaluated or used to select an arm in this screen. Any later confirmation on the full 910 needs a separate design.
 
@@ -32,7 +32,7 @@ Once materialization passes, hold fixed the Snowball 100k selection, SFT model a
 | C | Only sequence-mean loss, weighting generated sequences equally instead of tokens | Test an objective with different length weighting; its gradient scale also changes. |
 | D | Rollout age cap 2 and concurrency 192, retaining full-batch cohorts | Test overlapping generation and updates while bounding policy age. |
 
-Concurrency counts simultaneous rollout requests. Rollout age is the learner update number minus the generation-policy update number. D is a scheduling package; it does not isolate the causal effect of age alone. Require observed nonzero consumed ages and overlap, age compliance, and accounting for stale discarded/regenerated work.
+Concurrency counts in-flight prompt groups, with four sampled answers per group. Rollout age is the learner update number minus the generation-policy update number. D is a scheduling package; it does not isolate the causal effect of age alone. Require observed nonzero consumed ages and overlap, age compliance, and accounting for stale discarded/regenerated work.
 
 Freeze actual task-content and canonical generation/scoring protocol hashes before launch. Preserve complete initial/final task outputs, coverage, family-level reward and response-cap completion. The 20-task-per-family screen gives noisy family estimates. Prior frozen-data training runs are not a control for this new selection.
 
@@ -47,6 +47,16 @@ Prior async work in [Marin #8955](https://github.com/marin-community/marin/issue
 No experimental GPU run has launched. First require the exact selection's 100000/100/910 rows, manifest provenance, quotas and heldout/dedup exclusions. Its CPU materialization encountered a native Parquet-reader credential handoff failure; a focused maintained fix is being validated separately. This operational prerequisite is not a training result. Private execution receipts remain on the authorized task surface.
 
 Before the four measured screens, qualify A and D for three updates at the actual geometry and full token budgets. Validate B/C's complete rendered configuration against A, allowing only declared treatment and run-identity differences. Require finite metrics, exact update counts, completed checkpoint/export and terminal success. A failed qualification ends that attempt for diagnosis; no blind retries or larger automatic confirmation program.
+
+### 2026-10-24 - Implement and validate the four recipe choices locally
+
+The selector changes only the declared recipe fields: B doubles the learning rate, C uses sequence-mean loss, and D permits age two with 192 in-flight groups. D retains full-batch cohorts. The model, tokenizer, selection, seed, task-session backends, evaluation, context budgets and physical geometry remain shared. A retains the existing artifact name; B/C/D receive distinct names to prevent collisions. Each launch still requires a verified fresh immutable version, and automatic retries remain disabled.
+
+Complete rendered-recipe comparisons pass for all four arms at both three and 25 updates. All eight source plans also compose through the production frozen SkyRL CPU bootstrap: the resolved entrypoint is TaskCompendium, A/B/C select synchronous execution, D selects asynchronous execution, and every arm retains full-batch cohorts and initial/final evaluation. This is local configuration validation, not GPU qualification, measured training or a materialized-data audit. Neither the source nor dependency lock was repinned.
+
+For local plan review, the shared command is `uv run python -m experiments.post_training.inventory.train_quick_loop --arm <a|b|c|d> --steps <3|25> --selection-uri <verified-selection-root> --version <fresh-calendar-version> --max-concurrent 1`, without `--run`. Concrete commands and rendered plans are retained on the task's authorized artifact surface. They use proposed plan versions; no remote freshness claim follows. Publish the reviewed source/configuration and record its exact commit before execution. No experimental run was submitted during this work.
+
+The scoring/generation configuration can be fingerprinted, but that descriptor does not establish an immutable served judge revision. The configured judge is a model alias; its served revision remains unknown unless independently established. Actual selection content, task grader bytes and environment/image identities must come from the materialization gate. Leave these evidence limits explicit instead of treating a configured fingerprint as complete runtime equivalence.
 
 ## Final decision
 

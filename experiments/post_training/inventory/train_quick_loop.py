@@ -4,6 +4,7 @@
 """Train Datakit SFT on the Snowball 100k selection and evaluate before and after RL."""
 
 from dataclasses import replace
+from enum import StrEnum
 
 import click
 import yaml
@@ -43,18 +44,32 @@ REQUEST_WINDOW_TOKENS = 24_576
 MAX_NEW_TOKENS = 8_192
 EVALUATION_API_KEY_ENV = "DAYTONA_EVAL_API_KEY"
 JUDGE_API_KEY_ENV = "TOGETHER_API_KEY"
+LARGER_LEARNING_RATE = 2e-6
+ASYNC_STALENESS_STEPS = 2
+ASYNC_GENERATION_WORKERS = 192
 
 
-def training_recipe(steps: int) -> dict:
-    """Use the maintained Snowball geometry with synchronous RLOO-N updates."""
+class Arm(StrEnum):
+    CONTROL = "a"
+    LEARNING_RATE = "b"
+    SEQUENCE_MEAN = "c"
+    ASYNC = "d"
+
+
+def artifact_name(arm: Arm) -> str:
+    return user_owned_name(ARTIFACT_NAME if arm == Arm.CONTROL else f"{ARTIFACT_NAME}-{arm.value}")
+
+
+def training_recipe(steps: int, *, arm: Arm = Arm.CONTROL) -> dict:
+    """Render one treatment on the fixed Snowball training recipe."""
     plan = SNOWBALL_RECIPE.role_plan
     preset = replace(
         DEFAULT,
         label="snowball-100k",
         max_steps=steps,
         eval_interval=steps,
-        max_staleness_steps=0,
-        generation_workers=plan.train_batch_size,
+        max_staleness_steps=ASYNC_STALENESS_STEPS if arm == Arm.ASYNC else 0,
+        generation_workers=ASYNC_GENERATION_WORKERS if arm == Arm.ASYNC else plan.train_batch_size,
         request_window_tokens=REQUEST_WINDOW_TOKENS,
         max_new_tokens=MAX_NEW_TOKENS,
         batch_policy="full_batch",
@@ -97,6 +112,10 @@ def training_recipe(steps: int) -> dict:
         scheduler="constant_with_warmup",
         num_warmup_steps=0,
     )
+    if arm == Arm.LEARNING_RATE:
+        trainer["policy"]["optimizer_config"]["lr"] = LARGER_LEARNING_RATE
+    if arm == Arm.SEQUENCE_MEAN:
+        trainer["algorithm"]["loss_reduction"] = "sequence_mean"
     return config
 
 
@@ -105,6 +124,7 @@ def build_run(
     *,
     selection: ArtifactStep[Artifact],
     steps: int = DEFAULT_STEPS,
+    arm: Arm = Arm.CONTROL,
 ) -> ArtifactStep[SkyRLRun]:
     """Bind selected canonical tasks, pinned SFT weights and terminal outputs."""
     model = ArtifactStep.adopt(
@@ -116,9 +136,9 @@ def build_run(
     plan = SNOWBALL_RECIPE.role_plan
     return skyrl_step(
         SkyRLSpec(
-            name=user_owned_name(ARTIFACT_NAME),
+            name=artifact_name(arm),
             version=version,
-            config_yaml=yaml.safe_dump(training_recipe(steps), sort_keys=False),
+            config_yaml=yaml.safe_dump(training_recipe(steps, arm=arm), sort_keys=False),
             model=ArtifactHfModel(
                 step=model,
                 tokenizer_uri=MODEL_ID,
@@ -161,9 +181,17 @@ def build_run(
     "--selection-uri", default=DEFAULT_SELECTION_URI, show_default=True, help="Published task-selection artifact root."
 )
 @click.option("--steps", type=click.IntRange(min=1), default=DEFAULT_STEPS, show_default=True)
+@click.option(
+    "--arm",
+    type=click.Choice([arm.value for arm in Arm]),
+    default=Arm.CONTROL.value,
+    show_default=True,
+    help="A: control; B: larger learning rate; C: sequence-mean loss; D: bounded async.",
+)
 @rl_build_options
-def main(selection_uri: str, steps: int) -> ArtifactStep[SkyRLRun]:
-    name = user_owned_name(ARTIFACT_NAME)
+def main(selection_uri: str, steps: int, arm: str) -> ArtifactStep[SkyRLRun]:
+    selected_arm = Arm(arm)
+    name = artifact_name(selected_arm)
     selection_uri = selection_uri.rstrip("/")
     _, marker, identity = selection_uri.rpartition(f"/{SELECTION_PREFIX}/")
     parts = identity.split("/")
@@ -178,6 +206,7 @@ def main(selection_uri: str, steps: int) -> ArtifactStep[SkyRLRun]:
         resolve_version(name, None),
         selection=selection,
         steps=steps,
+        arm=selected_arm,
     )
 
 
