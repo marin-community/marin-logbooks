@@ -3,6 +3,7 @@
 
 import dataclasses
 
+import draccus
 import equinox as eqx
 import haliax as hax
 import jax
@@ -18,6 +19,190 @@ from levanter.layers.rotary import DefaultRotaryEmbeddingsConfig
 from levanter.layers.rotary_native import RotaryConfig, apply_rotary
 from levanter.models.llama import LlamaConfig, LlamaLMHeadModel
 from levanter.models.llama_native import NativeLlamaConfig, NativeLlamaModel, NativeLlamaSharding
+from levanter.models.llama_native_lm import NativeLlamaLmConfig
+from levanter.models.lm_model import LmExample
+from levanter.testing.helpers import skip_if_no_torch
+from levanter.tokenizers import load_tokenizer
+
+
+@pytest.mark.tpu
+@pytest.mark.parametrize("save_dtype", [None, jnp.bfloat16], ids=["master", "bf16"])
+def test_native_hf_export_sharded_dtype_and_layout_roundtrip(tmp_path, tiny_hf_tokenizer_path, save_dtype):
+    config = NativeLlamaLmConfig(
+        hidden_dim=16, intermediate_dim=24, num_layers=1, num_heads=4, num_kv_heads=2, head_dim=8, max_seq_len=8
+    )
+    model_size = 2 if len(jax.devices()) >= 4 else 1
+    mesh = Mesh(
+        np.asarray(jax.devices()).reshape(-1, model_size),
+        ("data", "model"),
+        axis_types=(AxisType.Explicit,) * 2,
+    )
+    sharding = NativeLlamaSharding(batch_axes=("data",), fsdp_axis="data", model_axis="model")
+    converter = config.hf_export_converter(load_tokenizer(tiny_hf_tokenizer_path))
+    output = tmp_path / "export"
+    with jax.set_mesh(mesh):
+        model = config.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(0), sharding=sharding)
+        converter.save_pretrained(model, str(output), max_shard_size=512, dtype=save_dtype)
+        assert len(list(output.glob("*.safetensors"))) > 1
+        assert (output / "model.safetensors.index.json").exists()
+        converter = converter.replaced(reference_checkpoint=str(output))
+        restored_config = NativeLlamaLmConfig.from_hf_config(converter.default_hf_config)
+        restored = converter.load_pretrained(
+            restored_config.model_type,
+            config=restored_config,
+            model_init=lambda vocab: restored_config.build(vocab, key=jax.random.PRNGKey(1), sharding=sharding),
+        )
+        for name, value in model.to_state_dict().items():
+            expected = value if save_dtype is None else value.astype(save_dtype).astype(value.dtype)
+            np.testing.assert_array_equal(restored.to_state_dict()[name], expected)
+        assert restored.Vocab.size == 32
+        assert restored.config.actual_head_size == 8
+        assert restored.native.token_embeddings.sharding.spec == sharding.column_storage
+        assert restored.native.layers.stacked.mlp.down_proj.weight.sharding.spec == P(None, "data", "model")
+
+
+@skip_if_no_torch
+@pytest.mark.parametrize("factor", [1.0, 8.0], ids=["default", "linear"])
+@pytest.mark.parametrize("tied", [False, True], ids=["untied", "tied"])
+def test_native_hf_export_transformers_local_logits(tmp_path, tiny_hf_tokenizer_path, factor, tied):
+    import torch  # noqa: PLC0415  # optional dependency
+    from transformers import AutoModelForCausalLM  # noqa: PLC0415  # optional Torch model
+
+    config = NativeLlamaLmConfig(
+        hidden_dim=16,
+        intermediate_dim=24,
+        num_layers=1,
+        num_heads=4,
+        num_kv_heads=2,
+        head_dim=8,
+        max_seq_len=8,
+        tie_word_embeddings=tied,
+        rope=DefaultRotaryEmbeddingsConfig(factor=factor),
+    )
+    mesh = Mesh(np.asarray(jax.devices()[:1]), ("data",), axis_types=(AxisType.Explicit,))
+    ids = np.arange(16, dtype=np.int32).reshape(2, 8)
+    converter = config.hf_export_converter(load_tokenizer(tiny_hf_tokenizer_path))
+    output = tmp_path / "export"
+    with jax.set_mesh(mesh):
+        model = config.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(3))
+        converter.save_pretrained(model, str(output))
+        tokens = hax.named(jnp.asarray(ids), (hax.Axis("batch", 2), hax.Axis("position", 8)))
+        expected = np.asarray(
+            model(tokens, NamedAttentionMask.causal()).rearrange(("batch", "position", "vocab")).array
+        )
+    reference = AutoModelForCausalLM.from_pretrained(
+        output, local_files_only=True, dtype=torch.float32, attn_implementation="eager"
+    ).eval()
+    with torch.no_grad():
+        actual = reference(input_ids=torch.from_numpy(ids).long()).logits.numpy()
+    np.testing.assert_allclose(actual, expected, atol=1e-5, rtol=1e-5)
+
+
+@pytest.mark.parametrize("mask_kind", ["causal", "dense", "bidirectional", "offset", "none"])
+@pytest.mark.parametrize("unbatched", [False, True])
+def test_native_lm_boundary_preserves_short_positions_masks_loss_and_gradients(mask_kind, unbatched):
+    config = draccus.decode(
+        NativeLlamaLmConfig,
+        {
+            "hidden_dim": 16,
+            "intermediate_dim": 24,
+            "num_layers": 4,
+            "num_heads": 4,
+            "num_kv_heads": 2,
+            "max_seq_len": 16,
+            "attn_backend": "vanilla",
+            "gradient_checkpointing": {"save_carries": False, "save_inputs": True, "nested": 2},
+        },
+    )
+    mesh = Mesh(np.asarray(jax.devices()[:1]), ("data",), axis_types=(AxisType.Explicit,))
+    Batch, Pos, Vocab = hax.Axis("batch", 2), hax.Axis("position", 8), hax.Axis("vocab", 32)
+    tokens = hax.named((jnp.arange(16).reshape(2, 8) * 3) % Vocab.size, (Batch, Pos))
+    positions = hax.named(jnp.array([[0, 1, 2, 3, 0, 1, 2, 3], [0, 1, 0, 1, 2, 0, 1, 2]]), (Batch, Pos))
+    segments = hax.named(jnp.array([[0, 0, 0, 0, 1, 1, 1, 1], [0, 0, 1, 1, 1, 2, 2, 2]]), (Batch, Pos))
+    weights = hax.named(jnp.ones((2, 8)).at[0, 2].set(0.5).at[:, -1].set(0), (Batch, Pos))
+    if unbatched:
+        tokens, positions, segments, weights = (value[Batch, 0] for value in (tokens, positions, segments, weights))
+    else:
+        positions = positions.rearrange((Pos, Batch))
+        segments = segments.rearrange((Pos, Batch))
+    mask = NamedAttentionMask.causal().with_segment_ids(segments).with_sliding_window(3)
+    if mask_kind == "dense":
+        mask = mask.materialize(Pos, Pos.alias("key_position"))
+    elif mask_kind == "bidirectional":
+        mask = NamedAttentionMask.bidirectional_sliding_window(2).with_segment_ids(segments)
+    elif mask_kind == "offset":
+        mask = NamedAttentionMask.causal(offset=hax.named(jnp.array(1), ())).with_segment_ids(segments)
+    elif mask_kind == "none":
+        mask = None
+    output_axes = (Pos, Vocab) if unbatched else (Batch, Pos, Vocab)
+    with jax.set_mesh(mesh):
+        model = config.build(Vocab, key=jax.random.key(0))
+        named_config = dataclasses.replace(
+            LlamaConfig(), **{field.name: getattr(config, field.name) for field in dataclasses.fields(LlamaConfig)}
+        )
+        expected = LlamaLMHeadModel.init(Vocab, named_config, key=jax.random.key(1))
+        shapes = expected.to_state_dict()
+        expected = expected.from_state_dict(
+            {name: value.reshape(shapes[name].shape) for name, value in model.to_state_dict().items()}
+        )
+        actual_logits = eqx.filter_jit(
+            lambda m, attention_mask: m(tokens, attention_mask, pos_ids=positions).rearrange(output_axes).array
+        )(model, mask)
+        expected_logits = eqx.filter_jit(
+            lambda m, attention_mask: m(tokens, attention_mask, pos_ids=positions).rearrange(output_axes).array
+        )(expected, mask)
+        np.testing.assert_allclose(actual_logits, expected_logits, atol=1e-5, rtol=1e-5)
+
+        example = LmExample(tokens, weights, NamedAttentionMask() if mask is None else mask)
+        with hax.axis_mapping({}):
+            expected_loss, expected_grads = eqx.filter_value_and_grad(
+                lambda m: m.compute_next_token_loss(example, logsumexp_weight=0.01).scalar()
+            )(expected)
+        actual_loss, actual_grads = eqx.filter_value_and_grad(
+            lambda m: m.compute_next_token_loss(example, logsumexp_weight=0.01).scalar()
+        )(model)
+        np.testing.assert_allclose(actual_loss, expected_loss, atol=1e-5, rtol=1e-5)
+        for name, actual in actual_grads.to_state_dict().items():
+            expected_array = expected_grads.to_state_dict()[name]
+            np.testing.assert_allclose(
+                actual, expected_array.reshape(actual.shape), atol=1e-5, rtol=1e-5, err_msg=name
+            )
+
+
+@pytest.mark.tpu
+@pytest.mark.parametrize("tied", [False, True])
+def test_native_lm_hf_config_and_vocab_resize_preserve_model_values_and_placement(tied):
+    config = NativeLlamaLmConfig(
+        hidden_dim=16,
+        intermediate_dim=24,
+        num_layers=1,
+        num_heads=4,
+        num_kv_heads=2,
+        max_seq_len=8,
+        tie_word_embeddings=tied,
+    )
+    recovered = NativeLlamaLmConfig.from_hf_config(config.to_hf_config(vocab_size=32))
+    if len(jax.devices()) >= 4:
+        mesh = Mesh(
+            np.asarray(jax.devices()[:4]).reshape(2, 2), ("data", "model"), axis_types=(AxisType.Explicit,) * 2
+        )
+        sharding = NativeLlamaSharding(batch_axes=("data",), fsdp_axis="data", model_axis="model")
+    else:
+        mesh = Mesh(np.asarray(jax.devices()[:1]), ("data",), axis_types=(AxisType.Explicit,))
+        sharding = NativeLlamaSharding()
+    with jax.set_mesh(mesh):
+        model = recovered.build(hax.Axis("vocab", 32), key=jax.random.key(0), sharding=sharding)
+        original = model.to_state_dict()
+        grown = model.resize_vocab(40, key=jax.random.key(1))
+        np.testing.assert_array_equal(np.asarray(grown.native.token_embeddings)[:32], model.native.token_embeddings)
+        np.testing.assert_array_equal(np.asarray(grown.native.get_lm_head())[:32], model.native.get_lm_head())
+        assert grown.native.token_embeddings.sharding == model.native.token_embeddings.sharding
+        assert grown.native.get_lm_head().sharding == model.native.get_lm_head().sharding
+        shrunk = grown.resize_vocab(32)
+        for name, value in shrunk.to_state_dict().items():
+            np.testing.assert_array_equal(value, original[name])
+        tokens = hax.named(jnp.arange(8), hax.Axis("position", 8))
+        np.testing.assert_allclose(shrunk(tokens).array, model(tokens).array, atol=1e-5, rtol=1e-5)
 
 
 @pytest.mark.parametrize(

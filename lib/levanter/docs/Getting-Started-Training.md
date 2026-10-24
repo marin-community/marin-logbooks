@@ -30,6 +30,108 @@ Configuration files are processed using [Draccus](https://github.com/dlwh/draccu
 It should mostly work like you would expect. Arguments may be passed in via the command line using arg-parse style
 flags like `--trainer.num_train_steps`, and will override the values in the config file.
 
+### Native JAX Llama
+
+Select `model.type: llama_native` to train the array-native Llama through the same
+`levanter.main.train_lm` entrypoint, dataset pipeline, validation callbacks and
+checkpoint hooks:
+
+```yaml
+model:
+  type: llama_native
+  hidden_dim: 2048
+  intermediate_dim: 5632
+  num_layers: 28
+  num_heads: 16
+  num_kv_heads: 4
+  max_seq_len: 2048
+  attn_backend: vanilla
+trainer:
+  mesh:
+    axes: {data: 2, model: 2}
+```
+
+For random initialization, the tokenizer determines vocabulary size, rounded to
+the tensor-parallel mesh size. Native training enables explicit mesh axes
+automatically. The existing batch mapping places examples; `mesh.param_mapping.embed` selects the FSDP axis
+and `mesh.compute_mapping.mlp` selects the tensor-parallel axis. The native model
+uses that same tensor-parallel axis for query/KV heads, MLP channels and vocabulary
+rows, and gathers the FSDP dimension for computation. KV heads and MLP channels
+must divide evenly across the tensor-parallel mesh. Compound FSDP/tensor-parallel
+mappings and sequence parallelism are unsupported.
+
+The shared LM loss gathers the full output head on each participant before the
+cross-entropy kernel; parameter and optimizer storage retain their native
+partitions. This entrypoint has offline CPU training, validation and resume
+coverage. Accelerator throughput and long-run convergence remain unvalidated for
+this entrypoint.
+
+The default native attention implementation is the portable reference kernel;
+`attn_backend: splash` selects native TPU Splash attention. SwiGLU, scanned layers,
+default/linear RoPE, causal masks, document segments and sliding windows are
+supported. Training can use `train_seq_len` shorter than `model.max_seq_len`.
+Reference attention also preserves dense masks, causal offsets and bidirectional
+windows; Splash rejects those mask forms explicitly.
+
+Resume a native run with the ordinary Trainer checkpoint settings. Native
+checkpoints include parameters, optimizer state, training step and RNG state.
+The named Llama and native Llama have different checkpoint trees; loading a named
+Trainer checkpoint directly into a native run is unsupported.
+
+To initialize from a local Hugging Face Llama checkpoint, set
+`initialize_from_hf: /path/to/llama-checkpoint`. The directory must contain its
+`config.json` and safetensors weights (a single file or a sharded index). Configure
+the matching native architecture explicitly. Layer count, hidden/MLP sizes,
+query/KV heads, head dimension, tied embeddings, activation, RMSNorm epsilon and
+RoPE type, base/theta and linear scaling factor must match; the maximum context
+length may differ. This path supports standard weighted RMSNorm, bias-free
+projections and no attention
+dropout. Automatic HF model-config replacement and tokenizer padding remain
+unsupported.
+
+The checkpoint determines the complete model vocabulary, including any padded
+embedding/output rows beyond the tokenizer's length. Those rows are preserved
+and participate in the output softmax. The source vocabulary must be at least as
+large as the tokenizer and divisible by the tensor-parallel mesh size; the loader
+does not resize it. New native Trainer checkpoints record the complete vocabulary
+and semantic architecture with the checkpoint completion marker. Resume uses the
+selected checkpoint's metadata and full training state without accessing the
+original HF directory, even if `initialize_from_hf` still names that directory.
+The configured tokenizer, training inputs and matching model configuration are
+still required.
+The configured attention geometry, normalization and RoPE must match; context
+length, attention backend and rematerialization policy may change. Older
+checkpoints without this metadata still require the original explicit config and
+HF `config.json` when the source supplied padded vocabulary. Checkpoint selection
+is pinned before model construction so a newer save cannot change the restore
+mid-startup. This resume path has single-host CPU coverage; multi-host startup
+selection has not been validated. An HF initialization creates fresh optimizer,
+step and RNG state; ordinary Trainer resume restores those states from its
+checkpoint instead.
+
+Native checkpoint initialization uses the same vocabulary and semantic metadata.
+`initialize_model_from_checkpoint_path` copies only trained model weights and
+starts fresh optimizer, step and RNG state. `initialize_from_checkpoint_path`
+loads full training state, then resets the step and data position while retaining
+optimizer and RNG state. Resuming this run from its checkpoints takes precedence
+over these initialization sources. Combining weights-only initialization with
+`trainer.initialize_from` remains invalid. Older sources without model metadata
+require an explicit matching model configuration and vocabulary.
+
+Set `hf_save_path` to a local directory and `hf_save_steps` to export updated
+weights through the existing training hooks. Exports contain canonical
+safetensors, the actual model vocabulary, explicit head dimension, default/linear
+RoPE metadata, and the tokenizer. Both tied and untied output heads are supported.
+The default export preserves parameter precision; `hf_save_dtype: bfloat16`
+explicitly rounds floating-point weights for the saved artifact. Exported weights
+can initialize a new native run or a standard HF Llama consumer; they do not
+contain optimizer or RNG state.
+
+Local export requires standard weighted RMSNorm and bias-free projections. Hub
+upload, remote export destinations, LoRA and Haliax quantization remain
+unsupported by this training entrypoint and are rejected before initialization.
+Existing `model.type: llama` configurations retain their behavior.
+
 ## Set Custom Training Configuration
 In machine learning experiments, it is common to adjust model hyperparameters. In this section, we will provide examples of different use cases
 and explain the corresponding parameters that you can change.
