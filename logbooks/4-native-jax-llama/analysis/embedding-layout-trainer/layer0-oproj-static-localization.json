@@ -1,0 +1,396 @@
+{
+  "schema": "native-jax-layer0-oproj-static-localization.v1",
+  "status": "BOUNDED_STATIC_HYPOTHESIS_ONLY_NO_MECHANISM_OR_ADOPTION_PROOF",
+  "created_at_utc": "2026-10-24T04:26:04.547616+00:00",
+  "scope": "Only retained BF16 normal no-hook HLO, exact projection source, existing reports, and narrowly selected archived rejected patches. Static stdlib text/hash/JSON operations only. No model/JAX imports, lowering, compilation, workload/tests/jobs/client/network/download, source changes or runner creation.",
+  "source_commit": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "prior_full_source": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "reported_observation": {
+    "tensor": "model.layers.0.self_attn.o_proj.weight",
+    "new_and_old_diagnostic_error_metrics_identical": true,
+    "metrics": {
+      "allclose": false,
+      "max_abs": 1.52587890625e-05,
+      "mean_abs": 6.926814677399307e-11,
+      "relative_l2": 3.578135510906577e-05
+    },
+    "new_BF16_embedding_gradient_exact_zero": true,
+    "both_full_results_rejected": true
+  },
+  "critical_evidence_boundary": "The numerical failing gradient is from the diagnostic hook executable. Retained HLO is the independent normal no-hook executable. These corresponding normal VJP operations identify a candidate difference, but do not prove the diagnostic executable has the same local lowering/rounding or that either incoming operand is identical.",
+  "projection_source": [
+    {
+      "path": "/private/tmp/marin-native-jax-embedding-layout-candidate/lib/levanter/src/levanter/models/llama_native.py",
+      "sha256": "1bf3fe8d2c4b0173a5437950c463823078683b795eee67fc8cc0bf0939b4212f",
+      "lines": [
+        230,
+        231
+      ],
+      "behavior": "Native casts attention result to input dtype, reshapes B,S,H,d to B,S,H*d, then o_proj."
+    },
+    {
+      "path": "/private/tmp/marin-native-jax-embedding-layout-candidate/lib/levanter/src/levanter/layers/linear.py",
+      "sha256": "d351bc82e111d7643d9b31cf3797ba927b100fa1cca5bcc368ab917e526d8b80",
+      "lines": [
+        44,
+        45,
+        46
+      ],
+      "behavior": "Linear gathers compute weight and uses ...i,oi->...o with explicit output sharding."
+    },
+    {
+      "path": "/private/tmp/marin-native-jax-embedding-layout-candidate/lib/levanter/src/levanter/layers/attention.py",
+      "sha256": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+      "lines": [
+        1367,
+        1368,
+        1369
+      ],
+      "behavior": "Legacy flattens KV/group into named heads only, casts dtype, calls named o_proj; head_size remains a separate named contracted dimension."
+    },
+    {
+      "path": "/private/tmp/marin-native-jax-embedding-layout-candidate/lib/haliax/src/haliax/nn/linear.py",
+      "sha256": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+      "lines": [
+        90,
+        91,
+        92,
+        93,
+        94,
+        95
+      ],
+      "behavior": "Named Linear contracts input axes with scaled weight through NamedArray.dot; result auto-sharded."
+    }
+  ],
+  "equation": "dW[o,h*d+k] = sum_b,sum_s G[b,s,o]*X[b,h,s,k]. Native transposes/reshapes X to[b,s,h*d+k]; legacy retains h,k as output axes. Both are mathematically the same contraction over B,S, with DEFAULT precision and BF16 output.",
+  "static_differences": [
+    "Legacy StableHLO VJP contracts BF16 G[8,2048,2048] with X[8,16,2048,128] over[0,1]x[0,2], yielding BF16[2048,16,128]. Native contracts BF16 G[8,2048,2048] with Xflat[8,2048,2048] over[0,1]x[0,1], yielding BF16[2048,2048].",
+    "Native X view is explicitly transpose[0,2,1,3] then flatten heads/head128, with P(data,None,model); G is P(data,None,None). Native VJP result is first P(None,model), then P(data,model). Legacy named path retains separate H,d dimensions and equivalent external sharding.",
+    "Optimized local legacy weight-gradient kernel takes G[4,2048,2048] and X[4,8,2048,128], emits BF16[2048,8,128], and uses convolution window size8x4,pad7_7x0_0,rhs_reversal1x0,dim_labels1fb0_10io->b0f1. Native takes G[4,2048,2048] and Xflat[4,2048,1024], emits BF16[2048,1024], and uses window size4,dim_labels0fb_0io->bf0. Both represent one model-sharded1024-wide input and local B4*S2048 contraction, but their optimized forms/physical layouts differ.",
+    "Both local outputs are BF16, then BF16 add all-reduce over identical data replica groups{{0,2},{1,3}}, then select1024 output rows to restore FSDP storage. Legacy local output layout{2,0,1} flattens to a different physical arrangement than native{1,0}; same external partitions do not imply same internal tiling.",
+    "Old8aa has the same selected native/legacy convolution shapes/window/dimension signatures; new native operation and stack IDs shift with embedding/source changes. Current first o_proj gradient metrics are exactly old; the retained static lowering difference predates the embedding patch."
+  ],
+  "hypotheses": [
+    {
+      "rank": 1,
+      "confidence": "Concrete compiler-path difference; causal confidence low-to-moderate until exact-operand identity and diagnostic executable are checked.",
+      "hypothesis": "On identical incoming BF16 X and G, retaining H,d axes versus flattening H*d selects different local contraction tiling/grouping and BF16 rounding, producing the residual o_proj difference before or through the subsequent BF16 collective.",
+      "support": "Different typed/optimized local contraction forms; identical data-group reduction dtype/topology; persistent tiny first-gradient failure.",
+      "not_proven": "HLO BF16 result does not specify every internal accumulator or emitted microkernel reduction order. No common X/G raw bytes or local pre-collective gradients exist in retained artifacts."
+    },
+    {
+      "rank": 2,
+      "confidence": "Equally unresolved input-identity alternative.",
+      "hypothesis": "X or G already differs upstream; the o_proj gradient discrepancy reflects operands rather than local contraction arithmetic.",
+      "support": "No retained actual full-graph operand hashes/arrays. Passing other gradient/loss summary gates does not imply exact X/G equality.",
+      "not_proven": "Cannot distinguish attention-output differences from reverse cotangent differences or local rounding using summary-only reports."
+    }
+  ],
+  "HLO_evidence": {
+    "legacy_forward_and_VJP": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-results/bfloat16/legacy.stablehlo.txt",
+      "sha256": "fd1637e734044942fcbb7f19461fe2812a61b65a7cf0e1709a9d9d8f994ccc2b",
+      "operations": [
+        {
+          "line": 1698,
+          "text": "    %90 = stablehlo.dot_general %87, %89, contracting_dims = [1, 3] x [1, 2], precision = [DEFAULT, DEFAULT] : (tensor<8x16x2048x128xbf16>, tensor<2048x16x128xbf16>) -> tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 1781,
+          "text": "    %159 = sdy.sharding_constraint %158 <@mesh, [{\"data\"}, {}, {}]> : tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 1782,
+          "text": "    %160 = stablehlo.dot_general %159, %87, contracting_dims = [0, 1] x [0, 2], precision = [DEFAULT, DEFAULT] : (tensor<8x2048x2048xbf16>, tensor<8x16x2048x128xbf16>) -> tensor<2048x16x128xbf16>"
+        },
+        {
+          "line": 1786,
+          "text": "    %163 = stablehlo.broadcast_in_dim %cst_24, dims = [] : (tensor<bf16>) -> tensor<2048x16x128xbf16>"
+        },
+        {
+          "line": 1787,
+          "text": "    %164 = stablehlo.multiply %160, %163 : tensor<2048x16x128xbf16>"
+        }
+      ]
+    },
+    "native_forward_views_and_VJP": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-results/bfloat16/native.stablehlo.txt",
+      "sha256": "8dd4fa5bba683f6757cd551790c5fad1c4f885984ad5e1c69a953a3221d36697",
+      "operations": [
+        {
+          "line": 677,
+          "text": "    %410 = sdy.sharding_constraint %409 <@mesh, [{}, {\"data\"}, {\"model\"}]> : tensor<28x2048x5632xf32>"
+        },
+        {
+          "line": 679,
+          "text": "    %412 = sdy.sharding_constraint %411 <@mesh, [{}, {\"model\"}, {\"data\"}]> : tensor<28x5632x2048xf32>"
+        },
+        {
+          "line": 3092,
+          "text": "    %409 = stablehlo.transpose %407, dims = [0, 2, 1, 3] : (tensor<8x16x2048x128xbf16>) -> tensor<8x2048x16x128xbf16>"
+        },
+        {
+          "line": 3093,
+          "text": "    %410 = sdy.sharding_constraint %409 <@mesh, [{\"data\"}, {}, {\"model\"}, {}]> : tensor<8x2048x16x128xbf16>"
+        },
+        {
+          "line": 3094,
+          "text": "    %411 = stablehlo.reshape %410 : (tensor<8x2048x16x128xbf16>) -> tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 3095,
+          "text": "    %412 = sdy.sharding_constraint %411 <@mesh, [{\"data\"}, {}, {\"model\"}]> : tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 3096,
+          "text": "    %413 = sdy.sharding_constraint %115 <@mesh, [{}, {\"model\"}]> : tensor<2048x2048xbf16>"
+        },
+        {
+          "line": 3097,
+          "text": "    %414 = stablehlo.dot_general %412, %413, contracting_dims = [2] x [1], precision = [DEFAULT, DEFAULT] : (tensor<8x2048x2048xbf16>, tensor<2048x2048xbf16>) -> tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 3226,
+          "text": "    %533 = stablehlo.convert %532 : (tensor<8x2048x2048xf32>) -> tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 3228,
+          "text": "    %535 = stablehlo.add %arg26, %534 : tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 3229,
+          "text": "    %536 = sdy.sharding_constraint %535 <@mesh, [{\"data\"}, {}, {}]> : tensor<8x2048x2048xbf16>"
+        },
+        {
+          "line": 3230,
+          "text": "    %537 = stablehlo.dot_general %536, %412, contracting_dims = [0, 1] x [0, 1], precision = [DEFAULT, DEFAULT] : (tensor<8x2048x2048xbf16>, tensor<8x2048x2048xbf16>) -> tensor<2048x2048xbf16>"
+        },
+        {
+          "line": 3231,
+          "text": "    %538 = sdy.sharding_constraint %537 <@mesh, [{}, {\"model\"}]> : tensor<2048x2048xbf16>"
+        },
+        {
+          "line": 3234,
+          "text": "    %541 = sdy.sharding_constraint %538 <@mesh, [{\"data\"}, {\"model\"}]> : tensor<2048x2048xbf16>"
+        }
+      ]
+    },
+    "legacy_optimized_local_contraction": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-results/bfloat16/legacy.optimized_hlo.txt",
+      "sha256": "bf6c20b063d92e581fc76a68a2dcc3d55f130232bc62fcba5b55ec774f451357",
+      "operations": [
+        {
+          "line": 3920,
+          "text": "%fused_computation.185.clone.1 (param_0.1456: bf16[4,8,2048,128], param_1.1656: bf16[4,2048,2048]) -> bf16[2048,8,128] {"
+        },
+        {
+          "line": 3922,
+          "text": "  %fusion.442 = bf16[4,2048,2048,1]{2,1,3,0:T(8,128)(2,1)} fusion(%param_1.1656), kind=kLoop, calls=%fused_computation.117.clone.clone.clone.1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/add_any\" stack_frame_id=521}"
+        },
+        {
+          "line": 3924,
+          "text": "  %fusion.443 = bf16[4,8,2048,128]{3,2,1,0:T(8,128)(2,1)} fusion(%param_0.1456), kind=kLoop, calls=%bitcast_fusion.13.clone.1"
+        },
+        {
+          "line": 3925,
+          "text": "  %convolution.137 = bf16[2048,8,128,1]{2,0,1,3:T(8,128)(2,1)} convolution(%fusion.442, %fusion.443), window={size=8x4 pad=7_7x0_0 rhs_reversal=1x0}, dim_labels=1fb0_10io->b0f1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Linear/contract heads, head_size -> batch, position, embed/0 1 2 3 , 4 1 3 -> 0 2 4/dot_general\" stack_frame_id=514}"
+        },
+        {
+          "line": 3926,
+          "text": "  ROOT %bitcast.496 = bf16[2048,8,128]{2,0,1:T(8,128)(2,1)} bitcast(%convolution.137), metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Linear/contract heads, head_size -> batch, position, embed/0 1 2 3 , 4 1 3 -> 0 2 4/dot_general\" stack_frame_id=514}"
+        }
+      ]
+    },
+    "native_optimized_local_contraction": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-results/bfloat16/native.optimized_hlo.txt",
+      "sha256": "40bd606d61e401670b97cde4f7a74d05ac581d891383c44f38de34013374b1e1",
+      "operations": [
+        {
+          "line": 3232,
+          "text": "%fused_computation.160.clone.1 (param_0.1470: bf16[4,2048,2048], param_1.1698: bf16[4,2048,1024]) -> bf16[2048,1024] {"
+        },
+        {
+          "line": 3234,
+          "text": "  %fusion.442 = bf16[4,2048,2048]{2,1,0:T(8,128)(2,1)} fusion(%param_0.1470), kind=kLoop, calls=%bitcast_fusion.8.clone.1"
+        },
+        {
+          "line": 3236,
+          "text": "  %fusion.443 = bf16[4,2048,1024]{1,2,0:T(8,128)(2,1)} fusion(%param_1.1698), kind=kLoop, calls=%bitcast_fusion.19.clone.1"
+        },
+        {
+          "line": 3237,
+          "text": "  %convolution.124 = bf16[2048,1024,1]{1,0,2:T(8,128)(2,1)} convolution(%fusion.442, %fusion.443), window={size=4}, dim_labels=0fb_0io->bf0, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/...i,oi->...o/dot_general\" stack_frame_id=285}"
+        },
+        {
+          "line": 3238,
+          "text": "  ROOT %bitcast.486 = bf16[2048,1024]{1,0:T(8,128)(2,1)} bitcast(%convolution.124), metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/...i,oi->...o/dot_general\" stack_frame_id=285}"
+        }
+      ]
+    },
+    "legacy_BF16_data_collective": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-results/bfloat16/legacy.optimized_hlo.txt",
+      "sha256": "bf6c20b063d92e581fc76a68a2dcc3d55f130232bc62fcba5b55ec774f451357",
+      "operations": [
+        {
+          "line": 3932,
+          "text": "  ROOT %add.657 = bf16[]{:T(256)} add(%x.31, %y.31), backend_config={\"aliasing_operands\":{\"lists\":[]},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        },
+        {
+          "line": 3935,
+          "text": "%all-reduce-scatter.3.clone.1 (input.17: bf16[2048,8,128]) -> bf16[1024,8,128] {"
+        },
+        {
+          "line": 3937,
+          "text": "  %all-reduce.63 = bf16[2048,8,128]{2,0,1:T(8,128)(2,1)} all-reduce(%input.17), channel_id=48, replica_groups={{0,2},{1,3}}, use_global_device_ids=true, to_apply=%add.15.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"2\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        },
+        {
+          "line": 3945,
+          "text": "  ROOT %dynamic-slice.378 = bf16[1024,8,128]{2,0,1:T(8,128)(2,1)} dynamic-slice(%all-reduce.63, %multiply.186, %constant.1551, %constant.1551), dynamic_slice_sizes={1024,8,128}, backend_config={\"flag_configs\":[],\"indices_config\":{\"index_known_bits\":[{\"bitwidth\":\"32\",\"ones\":\"0\",\"zeroes\":\"4294966271\"},{\"bitwidth\":\"32\",\"ones\":\"0\",\"zeroes\":\"4294967295\"},{\"bitwidth\":\"32\",\"ones\":\"0\",\"zeroes\":\"4294967295\"}],\"is_index_aligned\":[]},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ]
+    },
+    "native_BF16_data_collective": {
+      "path": "/private/tmp/native-jax-embed-layout-trainer-results/bfloat16/native.optimized_hlo.txt",
+      "sha256": "40bd606d61e401670b97cde4f7a74d05ac581d891383c44f38de34013374b1e1",
+      "operations": [
+        {
+          "line": 3244,
+          "text": "  ROOT %add.1290 = bf16[]{:T(256)} add(%x.17, %y.17), backend_config={\"aliasing_operands\":{\"lists\":[]},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        },
+        {
+          "line": 3247,
+          "text": "%all-reduce-scatter.3.clone.1 (input.17: bf16[2048,1024]) -> bf16[1024,1024] {"
+        },
+        {
+          "line": 3249,
+          "text": "  %all-reduce.54 = bf16[2048,1024]{1,0:T(8,128)(2,1)} all-reduce(%input.17), channel_id=28, replica_groups={{0,2},{1,3}}, use_global_device_ids=true, to_apply=%add.8.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"2\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        },
+        {
+          "line": 3257,
+          "text": "  ROOT %dynamic-slice.403 = bf16[1024,1024]{1,0:T(8,128)(2,1)} dynamic-slice(%all-reduce.54, %multiply.169, %constant.1474), dynamic_slice_sizes={1024,1024}, backend_config={\"flag_configs\":[],\"indices_config\":{\"index_known_bits\":[{\"bitwidth\":\"32\",\"ones\":\"0\",\"zeroes\":\"4294966271\"},{\"bitwidth\":\"32\",\"ones\":\"0\",\"zeroes\":\"4294967295\"}],\"is_index_aligned\":[]},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ]
+    }
+  },
+  "prior_selected_HLO": {
+    "legacy": {
+      "path": "/private/tmp/native-jax-query-scale-15b-trainer-v2-results/bfloat16/legacy.optimized_hlo.txt",
+      "sha256": "423b5aa424139f9c3010cc1058e6e38853f744ea07809d06b20f98c68ecec9cb",
+      "operations": [
+        {
+          "line": 3925,
+          "text": "  %convolution.137 = bf16[2048,8,128,1]{2,0,1,3:T(8,128)(2,1)} convolution(%fusion.442, %fusion.443), window={size=8x4 pad=7_7x0_0 rhs_reversal=1x0}, dim_labels=1fb0_10io->b0f1, metadata={op_name=\"jit(_train_step)/transpose(jvp(LlamaTransformer))/scan(layer)/while/body/eval_jaxpr/checkpoint/LlamaDecoderLayer/Attention/Linear/contract heads, head_size -> batch, position, embed/0 1 2 3 , 4 1 3 -> 0 2 4/dot_general\" stack_frame_id=514}"
+        }
+      ]
+    },
+    "native": {
+      "path": "/private/tmp/native-jax-query-scale-15b-trainer-v2-results/bfloat16/native.optimized_hlo.txt",
+      "sha256": "c397cd0f3362628a21044a49271e62a3c560da5108c8355c8ffebb52ba54f243",
+      "operations": [
+        {
+          "line": 3235,
+          "text": "  %convolution.124 = bf16[2048,1024,1]{1,0,2:T(8,128)(2,1)} convolution(%fusion.443, %fusion.444), window={size=4}, dim_labels=0fb_0io->bf0, metadata={op_name=\"jit(_train_step)/transpose(jvp(activations))/while/body/eval_jaxpr/checkpoint/__call__/__call__/...i,oi->...o/dot_general\" stack_frame_id=284}"
+        }
+      ]
+    }
+  },
+  "historical_rejected_controls": [
+    {
+      "title": "attention-order",
+      "patch_path": "/private/tmp/native-jax-research-archive/logbooks/4-native-jax-llama/runners/rejected/native_attention_layout_patch.py",
+      "patch_sha256": "805b6689bb7e5734ab4246d243b477f58875d1a73224aeb951b5e60aaa96f649",
+      "source_pin": "55ce80535f5bcdd21797a9cfc2dcc025beb357dc",
+      "scope": "Replaces reference attention Q/K/V head ordering and score/context dot_general; does not test this Splash o_proj weight-VJP on captured common X/G.",
+      "retained_FP32_config": {
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "float32",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 1024,
+        "intermediate_dim": 2816,
+        "learning_rate": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 8,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "seed": 42,
+        "seq_len": 512,
+        "vocab_size": 8192,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      },
+      "accepted": false,
+      "adopted": false,
+      "report_path": "/private/tmp/native-jax-research-archive/logbooks/4-native-jax-llama/evidence/rejected/attention-order/compare-float32.json",
+      "report_sha256": "9720e2262bf3302a91f4b05783aa7d0c5536527c0a31a9c9f31f83a7d7ef5645"
+    },
+    {
+      "title": "Q-only compute view",
+      "patch_path": "/private/tmp/native-jax-research-archive/logbooks/4-native-jax-llama/runners/rejected/native_query_compute_view_patch.py",
+      "patch_sha256": "a1a79424c0530e28dc315d743e78377aeeb880669565d2f3444c2cbaf05af868",
+      "source_pin": "a3d7f220c3a6f1fd150b6e53760c615a5dc08b72",
+      "scope": "Reshapes only q_proj compute weight to KV/group/head dimensions before Q forward dot; does not alter o_proj contraction or isolate its weight VJP.",
+      "retained_FP32_config": {
+        "batch_size": 8,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "compute_dtype": "float32",
+        "data_size": 2,
+        "epsilon": 1e-08,
+        "gradient_checkpointing": true,
+        "hidden_dim": 1024,
+        "intermediate_dim": 2816,
+        "learning_rate": 0.001,
+        "measured_steps": 20,
+        "model_size": 2,
+        "num_heads": 16,
+        "num_kv_heads": 4,
+        "num_layers": 8,
+        "parity_atol": 1e-05,
+        "parity_rtol": 0.0001,
+        "seed": 42,
+        "seq_len": 512,
+        "vocab_size": 8192,
+        "warmup_steps": 5,
+        "weight_decay": 0.01
+      },
+      "accepted": false,
+      "adopted": false,
+      "report_path": "/private/tmp/native-jax-research-archive/logbooks/4-native-jax-llama/evidence/rejected/q-compute-view/compare-float32.json",
+      "report_sha256": "46fe6c9bc50b2428356ff9c9262720d500b085d009643f0cf7e721926dadc5a5"
+    }
+  ],
+  "historical_scope_conclusion": "Do not revive old attention-order or Q-only patches. A projection-local common-X/G VJP view diagnostic is distinct from changing Q forward computation or reference-attention score/context dimension order; it remains unexecuted and is not a proposed maintained patch.",
+  "smallest_valid_future_diagnostic": {
+    "authorization": "Design only; no execution authorization inferred.",
+    "fixed_context": "Exactly2b17 full1.531B BF16/default Trainer fixture, original seed42/master weights/batch/data2model2/Adam settings/Splash/remat/query barrier. One initial diagnostic step per implementation suffices; no trajectory or performance campaign is needed for this local question.",
+    "phase1_identity_control": "Retain the actual unmodified diagnostic full-step all255 raw gradients, exact layer0 o_proj gradient coordinates, and its typed/optimized HLO. An instrumented full-graph copy taps actual layer0 projection input X after Splash dtype cast, incoming projection-output cotangent G before weight-VJP contraction, and local gradient before/after data collective. It must reproduce the unmodified diagnostic loss/all255 raw gradient bytes and original failing coordinates; otherwise instrumentation changed the path and localization is invalid.",
+    "operand_identity_gate": "Canonicalize only exact transpose/reshape, never recast or regenerate. Compare global and per-shard byte hashes of BF16 X[8,16,2048,128]\u2194Xflat[8,2048,2048] and G[8,2048,2048], including device/mesh/layout/cast provenance. If either differs, stop local-kernel causal claims and inspect only that immediate producer (Splash output or incoming reverse cotangent).",
+    "phase2_local_counterfactual": "Only if common-operand identity holds, evaluate both o_proj weight-VJP axis views as shadow branches inside the same captured full-graph diagnostic context, feeding precisely one chosen actual X/G pair into both. Retain original projection-gradient branch unchanged. Each shadow branch first must reproduce its corresponding original local/after-collective gradient exactly with same typed reduction/cast order; only then compare legacy-view versus flat-view local outputs before the identical BF16 data collective. Shadow use/extra outputs may perturb compilation, so actual compiled typed/optimized path and raw identity controls are required.",
+    "valid_interpretation": "Different local outputs on exact common operands, with both original-path identity controls satisfied, supports local contraction/view mechanism. Identical local outputs but differing original operands attributes discrepancy upstream. Different post-collective only narrows to collective/layout effects. Failure of identity is an inconclusive diagnostic, not support for the hypothesis.",
+    "explicitly_excluded": "No standalone FP32 contraction, source-prefix synthetic forward pass, selected new seed/cotangent, Q-only patch, altered reference attention, lowered smaller shape, new numerical tolerance or inferred adoption. Earlier prefix/standalone failures of operand identity remain invalid controls.",
+    "normal_path_boundary": "If a claim about normal no-hook behavior is desired, separately preserve/verify the corresponding normal full-step first-state outputs/HLO. Diagnostic gradient localization alone must not be relabeled normal-path proof."
+  },
+  "cannot_infer": [
+    "No mismatch coordinates/count/signs, operand equality, local pre-collective error, diagnostic kernel identity, actual microkernel arithmetic order, or causal explanation of the20-step trajectory can be recovered from the retained scalar tensor summaries.",
+    "Shared reverse scan/while body applies all28layers. The selected o_proj VJP is not an independently unrolled layer0 operation; layer0 is selected by dynamic iteration/index.",
+    "External recorded placement equality and same collective replica groups do not prove identical internal physical layouts or runtime numerical grouping."
+  ],
+  "adoption_or_speed_claim": null,
+  "experiment_or_source_change_authorized": false,
+  "history_notebook": {
+    "path": "/private/tmp/native-jax-research-archive/logbooks/4-native-jax-llama/notebook.md",
+    "sha256": "2b7a30d5cbc148dfba821be7cf07103e96c5f81ca51c5f41788473bd132cdd89",
+    "lines": [
+      52,
+      54,
+      225
+    ]
+  }
+}

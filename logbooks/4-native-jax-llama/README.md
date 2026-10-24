@@ -184,3 +184,7 @@ When raw profiles are available, run `lib/marin/tools/profile_summary.py summari
 ## Publishing another milestone
 
 Append new hypothesis, exact execution/source/config, guards, outcome, interpretation, and next decision to the notebook. Keep failed alternatives. Preserve published Git history and remove inherited automatic workflows on research branches. Archive source/evidence commits first, then post commit-pinned issue milestones. Extract only code and tests that Marin will maintain into contribution PRs; leave this record, discarded patches, reproduction scripts, and archive-only history/workflow changes here.
+
+## Inspect the remaining output-projection hypothesis
+
+The [static localization](analysis/embedding-layout-trainer/layer0-oproj-static-localization.md) and [operation/hash record](analysis/embedding-layout-trainer/layer0-oproj-static-localization.json) compare retained normal no-hook projection-gradient lowering with the separate diagnostic failure. Actual incoming operands remain unknown. This is a future diagnostic design, not a runner, new result or revival of the rejected attention-order/Q-only patches; both full-Trainer comparisons remain rejected.
