@@ -82,6 +82,16 @@ All 104 focused frozen CPU cases pass, including actual launch-request construct
 
 The research branch preserves the [selected source correction](https://github.com/marin-community/marin-logbooks/commit/5c0fb4d0829f41be6ea5995f1bf2aa53f4081872) and test cleanup from the maintained contribution branch. Model, tokenizer, data recipe, treatment parameters and geometry are unchanged. Materialization and bounded cohort readback remain pending. Rebind the launch request to the published corrected source before any qualification submission.
 
+### 2026-10-24 05:10 UTC - Complete the new selection and freeze the screening cohort
+
+The new selection materialized successfully. Bounded readback confirmed 100000 training rows, 100 screening rows and 910 full-validation rows in the canonical TaskSpec Parquet format. All 13 source manifests record completed FULL processing with no unprocessed rows, and their admitted counts reconcile with selection exclusions and the unchanged source and family quotas. Quality remains unreviewed: optional model assessment was disabled. Eleven sources passed their declared sampled controls; two declare no controls.
+
+The complete 100-task screening panel parsed and round-tripped without dropping TaskSpec fields. It contains 20 tasks from each of the five families. Content, membership, grader, environment and private-resource declaration hashes are retained in the private execution record for comparison cohorts. The full training and 910-row bodies were not downloaded. Their deduplication, heldout exclusion and field-preservation guarantees rely on the maintained producer and provenance checks. External asset bytes and immutable served judge revisions remain unattested.
+
+Validation initially stopped because its checker expected resolved dependency paths in an artifact field the writer leaves empty. The reviewed correction checks the 14 portable dependency identities, complete materialized input configuration and retained fingerprint instead. Original evidence was preserved. The successful check used the same bounded metadata/footer/panel scope and cumulative read budget; no data rebuild or policy change was needed.
+
+No experimental GPU run has launched. Next bind the recorded cohort and resolved generation/scoring protocol to the pinned runnable source, check fresh run/checkpoint identities, then qualify the synchronous control for three updates before the matched async qualification.
+
 ## Final decision
 
 Pending materialization, reviewed executable configurations, qualification and measurements. No approach is selected for promotion yet. Publish exact source/configuration before executing each experiment, then append results and commit-pinned evidence. Preserve rejected alternatives and meaningful failed attempts. Extract only maintainable selected changes into ordinary Marin PRs.
