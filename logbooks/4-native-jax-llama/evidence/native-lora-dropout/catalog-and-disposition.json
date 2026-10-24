@@ -1,0 +1,152 @@
+{
+  "catalog_inspection": {
+    "all_six_plus_composer_terminal": true,
+    "timeout": false,
+    "findings": 1,
+    "answered_by": "native-jax-lora-dropout-final-catalog-targeted-review.json",
+    "arms": {
+      "complexity": {
+        "status": "exit0",
+        "stdout": "",
+        "terminal_token_report": true,
+        "stdout_stderr_inspected": true,
+        "output_sha256": "6183225424e08a2614609ae6f515b87bd3f7a695a1582471a6d785f86abbcca5"
+      },
+      "interfaces": {
+        "status": "exit0",
+        "stdout": "",
+        "terminal_token_report": true,
+        "stdout_stderr_inspected": true,
+        "output_sha256": "b849b9cb38d1b97d7142f16dbb91bbc1287fc3a6232d2380b91d635900881541"
+      },
+      "robustness": {
+        "status": "exit0",
+        "stdout": "",
+        "terminal_token_report": true,
+        "stdout_stderr_inspected": true,
+        "output_sha256": "83d1e1d05fa03cf2214c62b8dbdb91ace57549d99e94c793f82312a915cadb26"
+      },
+      "cruft": {
+        "status": "exit0",
+        "stdout": "",
+        "terminal_token_report": true,
+        "stdout_stderr_inspected": true,
+        "output_sha256": "4e060b74df4d67f170299b44745fbe8270d63ccdfa656e29dfd46d191f562246"
+      },
+      "prose": {
+        "status": "exit0",
+        "stdout": "lib/levanter/scripts/bench/bench_llama_native.py:500: ml-misleading-name (0.86) final_step is captured before profiling performs additional optimizer updates, so the reported final step understates the terminal training step when profile_steps is nonzero.",
+        "terminal_token_report": true,
+        "stdout_stderr_inspected": true,
+        "output_sha256": "f394dfe4756e4deaa2b70e18eb0d90645429b379e83581975f5b4a5f68e8c518"
+      },
+      "meta": {
+        "status": "exit0",
+        "stdout": "",
+        "terminal_token_report": true,
+        "stdout_stderr_inspected": true,
+        "output_sha256": "ee332b5ed637161fc8b7ac39514bcdee9603736234b4243bd33659030664c6d2"
+      },
+      "composer": {
+        "status": "exit0",
+        "stdout": "lib/levanter/scripts/bench/bench_llama_native.py:500: ml-misleading-name (0.86) final_step is captured before profiling performs additional optimizer updates, so the reported final step understates the terminal training step when profile_steps is nonzero.",
+        "terminal_token_report": true,
+        "stdout_stderr_inspected": true,
+        "output_sha256": "feef9369efc2b3df59b8be27039d2934b229c16627e0bb805eaf6b0899a0b331"
+      }
+    }
+  },
+  "disposition": {
+    "head": "ccfc1b8ff34cb63f018fb943e75c9f18b94250fc",
+    "catalog_log_dir": "<local-catalog-output>",
+    "six_lanes_completed": true,
+    "composer_completed": true,
+    "timeouts": false,
+    "findings_count": 1,
+    "actionable_findings_count": 0,
+    "response": "The final_step field is the measured-region endpoint, paired with measured final_loss and distinct from separately reported profile.steps; fresh maintained review confirms source establishes this contract.",
+    "maintained_response": {
+      "reviewed_at_utc": "2026-10-24T22:29:45.746243+00:00",
+      "source_root": "<local-checkout>",
+      "head": "ccfc1b8ff34cb63f018fb943e75c9f18b94250fc",
+      "base": "1186ba4117d098af11d392441335ed0f720abcd0",
+      "input_sources": [
+        {
+          "path": "lib/levanter/scripts/bench/bench_llama_native.py",
+          "sha256": "9a2ac2ce0f388cb635160efec0b8c6aaa923c3a5ab00ffe1d14579f739f29dba",
+          "bytes": 34356,
+          "unchanged_from_pr24_base": true
+        },
+        {
+          "path": "lib/levanter/tests/test_llama_native_benchmark.py",
+          "sha256": "f85b90293a2c09fa7319d4d2ea7f50eb23318a67dded4b6c8940b12bb15d05cb",
+          "bytes": 4180,
+          "unchanged_from_pr24_base": true
+        }
+      ],
+      "catalog_item": {
+        "file": "lib/levanter/scripts/bench/bench_llama_native.py",
+        "line": 500,
+        "rule": "ml-misleading-name",
+        "reported_confidence": 0.86
+      },
+      "assessment": "well_defined_measured_endpoint_contract; no actionable source defect",
+      "findings": [],
+      "evidence": [
+        "The first production dispatch advances the state once (lines463-469); diagnostic training uses a separate copied state (421-448). Warmup advances it warmup_steps more (482-485), and measured_steps advances it again (488-495).",
+        "Measured trajectory is materialized and final_step captured together at the end of that measured region (498-500). Optional profile updates follow (502-512), with trace annotation numbers based on the captured measured endpoint.",
+        "The report pairs final_step with final_loss=measured_step_losses[-1], measured timing, and a separate profile.steps field (513-524). Only report and diagnostics are returned (533); no terminal training model/checkpoint is returned under that field.",
+        "The existing regression example has first1+warmup1+measured3=5 and profile2; it requires final_step5 and separately profile.steps2, with measured-only timing and trajectory (test lines20-59). This agrees with the source region boundaries and independently corroborates intended semantics; the conclusion does not rest on test passage.",
+        "Both reviewed files are byte-identical to PR24 base1186 and outside the ten-file dropout contribution. No source evidence promises final_step means post-profile terminal step."
+      ],
+      "smallest_warranted_response": "Record the catalog item as non-actionable with the measured-endpoint definition. Keep source, report schema, benchmark tests, experiment inputs and pinned scientific evidence unchanged. A wording clarification can be considered only if a real consumer requires terminal-step semantics; none was identified in this source audit.",
+      "p1_scope": "No change to full-adapter contract: named/native active p>0 requires a key; inference is keyless, p1 with key drops all adapter input. Standalone Haliax helper ordering is not full named LoRA contract.",
+      "limits": "Read-only source assessment. No services, tests, source edits, scientific reruns or modifications to measurement-source/evaluator pins."
+    },
+    "log_hashes": {
+      "summary.md": "a3cb5545e9d8d26fcb2eb5468c4d59aa178ee567e309b7333949c150fbe34480",
+      "combined.md": "9e6814f721d311ea86219b714fe1a457c66707c13cea74498253361c0c01dec7"
+    },
+    "no_source_schema_test_or_experiment_changes": true,
+    "full_catalog_rerun": false
+  },
+  "targeted_review": {
+    "reviewed_at_utc": "2026-10-24T22:29:45.746243+00:00",
+    "source_root": "<local-checkout>",
+    "head": "ccfc1b8ff34cb63f018fb943e75c9f18b94250fc",
+    "base": "1186ba4117d098af11d392441335ed0f720abcd0",
+    "input_sources": [
+      {
+        "path": "lib/levanter/scripts/bench/bench_llama_native.py",
+        "sha256": "9a2ac2ce0f388cb635160efec0b8c6aaa923c3a5ab00ffe1d14579f739f29dba",
+        "bytes": 34356,
+        "unchanged_from_pr24_base": true
+      },
+      {
+        "path": "lib/levanter/tests/test_llama_native_benchmark.py",
+        "sha256": "f85b90293a2c09fa7319d4d2ea7f50eb23318a67dded4b6c8940b12bb15d05cb",
+        "bytes": 4180,
+        "unchanged_from_pr24_base": true
+      }
+    ],
+    "catalog_item": {
+      "file": "lib/levanter/scripts/bench/bench_llama_native.py",
+      "line": 500,
+      "rule": "ml-misleading-name",
+      "reported_confidence": 0.86
+    },
+    "assessment": "well_defined_measured_endpoint_contract; no actionable source defect",
+    "findings": [],
+    "evidence": [
+      "The first production dispatch advances the state once (lines463-469); diagnostic training uses a separate copied state (421-448). Warmup advances it warmup_steps more (482-485), and measured_steps advances it again (488-495).",
+      "Measured trajectory is materialized and final_step captured together at the end of that measured region (498-500). Optional profile updates follow (502-512), with trace annotation numbers based on the captured measured endpoint.",
+      "The report pairs final_step with final_loss=measured_step_losses[-1], measured timing, and a separate profile.steps field (513-524). Only report and diagnostics are returned (533); no terminal training model/checkpoint is returned under that field.",
+      "The existing regression example has first1+warmup1+measured3=5 and profile2; it requires final_step5 and separately profile.steps2, with measured-only timing and trajectory (test lines20-59). This agrees with the source region boundaries and independently corroborates intended semantics; the conclusion does not rest on test passage.",
+      "Both reviewed files are byte-identical to PR24 base1186 and outside the ten-file dropout contribution. No source evidence promises final_step means post-profile terminal step."
+    ],
+    "smallest_warranted_response": "Record the catalog item as non-actionable with the measured-endpoint definition. Keep source, report schema, benchmark tests, experiment inputs and pinned scientific evidence unchanged. A wording clarification can be considered only if a real consumer requires terminal-step semantics; none was identified in this source audit.",
+    "p1_scope": "No change to full-adapter contract: named/native active p>0 requires a key; inference is keyless, p1 with key drops all adapter input. Standalone Haliax helper ordering is not full named LoRA contract.",
+    "limits": "Read-only source assessment. No services, tests, source edits, scientific reruns or modifications to measurement-source/evaluator pins."
+  },
+  "_archive_note": "Historical status/source/execution identities retained; local paths/hostnames normalized as enumerated in manifest. Embedded artifact hashes identify original inputs, not sanitized copies. Sanitized output hashes/lengths are in manifest. No numerical execution occurred while archiving."
+}

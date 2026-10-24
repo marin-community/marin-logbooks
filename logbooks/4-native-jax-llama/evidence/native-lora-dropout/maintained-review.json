@@ -1,0 +1,94 @@
+{
+  "reviewed_at_utc": "2026-10-24T22:06:45.425786+00:00",
+  "reviewer": "fresh separate maintained-extraction source review",
+  "status": "no_actionable_findings",
+  "source_root": "<local-checkout>",
+  "base_commit": "1186ba4117d098af11d392441335ed0f720abcd0",
+  "head_commit": "1186ba4117d098af11d392441335ed0f720abcd0",
+  "patch_sha256": "fcf75427886956d866e729d5391bbe17c70e2ae0fb05a283b83eefbcae8fa030",
+  "findings": [],
+  "checks": {
+    "all_ten_current_hashes_and_sizes": "verified",
+    "nine_base_hashes": "verified",
+    "patch_hash_and_size": "verified",
+    "reverse_apply_check": "passed",
+    "git_diff_check": "passed",
+    "final_source_hash_recheck": "passed",
+    "raw_native_model_and_new_layers_haliax_imports": "none",
+    "runtime_tests": "not run by this reviewer; parent owns independent runtime verification",
+    "network_models_broad_tests_commits_pushes_pr_comments_source_edits": "none"
+  },
+  "file_dispositions": [
+    {
+      "path": "lib/levanter/docs/Getting-Started-Training.md",
+      "disposition": "maintain",
+      "reason": "Removes the obsolete zero-dropout-only restriction and links the existing adapter guide. This is current entrypoint guidance, with no trial-specific results or default changes."
+    },
+    {
+      "path": "lib/levanter/docs/Training-On-Your-Data.md",
+      "disposition": "maintain",
+      "reason": "Documents training randomness, inference mode, supported decoder targets, and existing output-head/DPO exclusions. The example keeps dropout=0; no scientific or accelerator acceptance claim is added."
+    },
+    {
+      "path": "lib/levanter/src/levanter/adaptor/lora.py",
+      "disposition": "maintain",
+      "reason": "Adds the adapter dropout module at the factor-input boundary and routes the wrapper second subkey, leaving the base input undropped. Existing initialization, factor sharding, trainability, merging, and export mechanisms remain the maintained path."
+    },
+    {
+      "path": "lib/levanter/src/levanter/layers/dropout.py",
+      "disposition": "maintain",
+      "reason": "Small pure-array Equinox dropout and immutable DropoutLayout express logical mask permutation, feature unflattening and replication. The layout is a shape/permutation value at the projection boundary; it contains no model-name registry, Haliax dependency, experiment selection, or historical reproduction machinery."
+    },
+    {
+      "path": "lib/levanter/src/levanter/layers/linear.py",
+      "disposition": "maintain",
+      "reason": "Extends the existing projection protocol and concrete base Linear with optional key/layout keywords. The concrete base intentionally ignores them, permitting uniform projection calls. Existing implementations/call sites are consistent; there is no old/new signature probing or compatibility shim."
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama.py",
+      "disposition": "maintain",
+      "reason": "Uses existing BlockFoldable.get_layer in paged decode. The previous unconditional named slicing indexes shared Python dropout.inference booleans. Stacked.get_layer preserves non-layer leaves, and BlockSeq.get_layer selects its block. This fixes a product decode path independently of native dropout; the named computation and RNG/dropout oracle remain independent."
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native.py",
+      "disposition": "maintain",
+      "reason": "Routes forward keys through existing ArrayStacked.fold with explicit key in_axes, preserving the one-layer unsplit edge and nested block/attention/QKV/MLP/projection splits. Projection-boundary geometry preserves named dense o-projection head-major masks. Direct logits split the root once; activations/next-token loss use their supplied root directly. No new Haliax import, trainer, stack implementation or base attention dropout is introduced."
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "disposition": "maintain",
+      "reason": "Preserves named input axis order and logical mask order at the LM boundary; unbatched replicated examples share one logical mask. The explicit reshard before selecting row zero restores a valid gradient transpose layout. Direct-logit versus loss key schedules and paged layer/projection keys match the existing named API; paged output uses position-major masks. Changes use existing loss/checkpoint/generation infrastructure."
+    },
+    {
+      "path": "lib/levanter/tests/test_lora.py",
+      "disposition": "maintain",
+      "reason": "Keeps independent Bernoulli/NumPy value and input/factor/base-gradient oracles at p=0/0.25/1, with nonzero A/B and row/column placement checks. Adds independent named model loss/factor-gradient/logit comparisons for one/two layers and batch-first/reversed/unbatched axes, changed-key sensitivity, inference and missing-key behavior. Paged prefill and continuation check logits and KV caches against the named implementation. Factor copying transfers serialized values only; named code does not reuse ArrayDropout or DropoutLayout. Existing tolerances are preserved; hardware tests retain literal tpu and bounded timeout markers."
+    },
+    {
+      "path": "lib/levanter/tests/test_train_lm.py",
+      "disposition": "maintain",
+      "reason": "Extends the existing real train_lm local-HF fixture with nonzero dropout and random A/B. Uninterrupted three-step training must equal two-step plus restored third step in all saved arrays, including optimizer/RNG state; frozen-base, Adam moments, adapter/merged exports and reloaded inference remain checked. Inference mode is explicitly set for comparisons to merged weights. Uses existing local source/tokenizer fixtures, literal tpu marker and 180-second timeout; no parallel trainer or historical trial fixture is added."
+    }
+  ],
+  "supported_scope": [
+    "Native LoRA decoder projections q/k/v/o/gate/up/down with explicit training PRNG keys; p=0 bypass, p=1 all-drop with active-mode key requirement, and keyless inference mode.",
+    "Existing raw/native LM forward, canonical activations/loss and direct logits with their respective named root-key schedules; layer and nested projection splitting including the single-layer edge.",
+    "At most one public named batch axis, batch-first or position-first order, and unbatched API calls with replicated logical-example masks; logical o-projection order differs between dense and paged attention.",
+    "Existing paged causal prefill/continuation and inference-mode generation, factor sharding, checkpoint continuation, PEFT export and merged local export within their existing configuration restrictions."
+  ],
+  "unsupported_or_unproven_scope": [
+    "Accelerator correctness, communication cost, throughput, performance or convergence are not established by this source review or the reported CPU results.",
+    "Reported named/native numerical execution covers small float32 dense Llama shapes with vanilla named/reference native attention, one/two layers, and CPU1/4. Other backends and reduced precision nonzero-dropout numerics were not executed in the supplied report.",
+    "The reported real canonical continuation/export execution covers untied HF source with p=0.25 on CPU1/4. The tied source parameter exists in the maintained fixture but is not reported executed for this patch; broader safe-test and CI acceptance are separate.",
+    "Multiple public named batch axes, native output-head adaptation, native LoRA-DPO composition, and base attention/residual dropout are outside this contribution; existing architecture/HF/export restrictions still apply.",
+    "The larger-model numerical acceptance remains failed. This caller/dropout contribution does not accept that scientific candidate, close the broader migration/campaign, alter canonical defaults, or establish publication, merge, deployment or integration state."
+  ],
+  "review_basis": [
+    "Frozen handoff and complete ten-file diff plus relevant callers/oracles",
+    "Root AGENTS.md and TESTING.md; Levanter AGENTS.md and JIT safety guide",
+    "review-pr shared standard; research-engineering guide supplied from PR9467 snapshot and coordinating skill",
+    "Writing style, reference docs and experiment-evidence policy"
+  ],
+  "evidence_boundary": "Author-reported CPU1/4 numerical, continuation and negative-control executions were inspected as claims in the handoff only. No runtime pass is independently claimed here. Frozen source identity was independently verified. No published PR metadata was queried.",
+  "_archive_note": "Historical status/source/execution identities retained; local paths/hostnames normalized as enumerated in manifest. Embedded artifact hashes identify original inputs, not sanitized copies. Sanitized output hashes/lengths are in manifest. No numerical execution occurred while archiving."
+}

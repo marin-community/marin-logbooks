@@ -1,0 +1,210 @@
+{
+  "utc": "2026-10-24T22:40:11.153896+00:00",
+  "status": "LOCAL_RELEASE_PREPARED_NOT_PUBLISHED",
+  "source_root": "<local-checkout>",
+  "branch": "codex/native-jax-lora-dropout",
+  "head": "ccfc1b8ff34cb63f018fb943e75c9f18b94250fc",
+  "tree": "9fcc288bb0deb36e41f179446f3f80771e72e308",
+  "base": "1186ba4117d098af11d392441335ed0f720abcd0",
+  "clean_worktree": true,
+  "files": [
+    {
+      "path": "lib/levanter/docs/Getting-Started-Training.md",
+      "sha256": "821d1137b3020fe432815e4f2d0423b9e41114c901bf360a71f1605742065fa8",
+      "bytes": 16532
+    },
+    {
+      "path": "lib/levanter/docs/Training-On-Your-Data.md",
+      "sha256": "50b39342c35ba0447ed64610e81a4685c61b3a1735065f50d65d12ed1a57668b",
+      "bytes": 22834
+    },
+    {
+      "path": "lib/levanter/src/levanter/adaptor/lora.py",
+      "sha256": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+      "bytes": 33405
+    },
+    {
+      "path": "lib/levanter/src/levanter/layers/dropout.py",
+      "sha256": "cc93060547cf2613d9952d6452067d1573a58f8413221b5bde5f8e248af16501",
+      "bytes": 1648
+    },
+    {
+      "path": "lib/levanter/src/levanter/layers/linear.py",
+      "sha256": "23543feeec6d88b508261f834e2d8a891d3191ac65c2e6e15fb8619e38871807",
+      "bytes": 2185
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama.py",
+      "sha256": "c15376e4264992cb8e8f39dbc0b205aafee473e16d5ee3e8bc6dbafa74d73f8d",
+      "bytes": 26100
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native.py",
+      "sha256": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+      "bytes": 28095
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "sha256": "a74d6f270204ad83d80f0d6183f31d5dd39ddd357b77d9b056fd99c1f0cb8881",
+      "bytes": 33429
+    },
+    {
+      "path": "lib/levanter/tests/test_lora.py",
+      "sha256": "ebeb0c9e6c43cad058e9ad32fa71c77bf6df2bbc1283f2151efc4787fd57595c",
+      "bytes": 33760
+    },
+    {
+      "path": "lib/levanter/tests/test_train_lm.py",
+      "sha256": "384e20f470535f19a19598edd8240d6fe6aecfa1dbbee6483504c11776491fa1",
+      "bytes": 59715
+    }
+  ],
+  "contribution_patch": {
+    "path": "evidence/native-lora-dropout/final-source.patch",
+    "sha256": "761d121210e196479f16e51943366b5fb7edaa7afe19a68fabb01e000da4e2ec",
+    "bytes": 46545,
+    "matches_frozen_index_patch": true
+  },
+  "commit_message": {
+    "path": "native-jax-lora-dropout-root-commit-message.txt",
+    "sha256": "60484259dd06733612606480de3fe62915fdba70756b530dff9e9e86c563c3cf",
+    "exact_inspection": "committed message matches reviewed file; no added attribution or trailers"
+  },
+  "ordinary_required_checks": {
+    "exit_code": 0,
+    "entrypoint": "./infra/pre-commit.py <explicit10files>",
+    "all_hooks_enabled": true,
+    "local_ipc_escalation": true,
+    "check_count": 10,
+    "checks": [
+      "Ruff linter............................. ok",
+      "Black formatter (lib/levanter/pyproject.toml) ok",
+      "License headers (lib/levanter/etc/license_header.txt) ok",
+      "Pyrefly type checker.................... ok",
+      "Large files............................. ok",
+      "Python AST.............................. ok",
+      "Merge conflicts......................... ok",
+      "Trailing whitespace..................... ok",
+      "End-of-file newline..................... ok",
+      "Markdown pre-commit command............. ok"
+    ],
+    "log": "native-jax-lora-dropout-final-required-checks.log"
+  },
+  "catalog": {
+    "runs": 1,
+    "six_lanes_completed": true,
+    "composer_completed": true,
+    "all_exit_codes": 0,
+    "timeouts": false,
+    "advisory_findings": 1,
+    "actionable_findings": 0,
+    "response": "Answered measured-endpoint contract with fresh targeted maintained review; no source/schema/test/experiment changes.",
+    "receipt": "evidence/native-lora-dropout/catalog-and-disposition.json"
+  },
+  "affected_tests": {
+    "proof": "evidence/native-lora-dropout/affected-summary.json",
+    "selected_paths": 69,
+    "selected_cases": 945,
+    "complete_case_coverage": true,
+    "counts": {
+      "passed": 918,
+      "skipped": 14,
+      "failed": 13
+    },
+    "whole_suite_green": false,
+    "known_actual_base_failures": 13,
+    "new_source_failures_identified": false,
+    "initial_timeout_and_ipc_failures_preserved_separately": true,
+    "completion_summary": {
+      "passed": 366,
+      "skipped": 1,
+      "total": 367,
+      "collected": 367
+    }
+  },
+  "root_cpu8_validation": [
+    {
+      "path": "evidence/native-lora-dropout/numerical-cpu8.xml",
+      "sha256": "789f32eb325be4a34876898217fe994a3c9ac65b453ba3fac8aae35930e5af3c",
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "14",
+        "time": "82.580",
+        "timestamp": "2026-10-24T15:05:38.474967-07:00"
+      }
+    },
+    {
+      "path": "evidence/native-lora-dropout/continuation-cpu8.xml",
+      "sha256": "d9c8c683c989709cea1d0c12203872e01ad082138b8e4c88801cd064a951f197",
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "1",
+        "time": "27.865",
+        "timestamp": "2026-10-24T15:07:04.998617-07:00"
+      }
+    }
+  ],
+  "prior_receipts": {
+    "author_handoff": "evidence/native-lora-dropout/author-validation.json",
+    "author_patch_sha256": "fcf75427886956d866e729d5391bbe17c70e2ae0fb05a283b83eefbcae8fa030",
+    "doc_only_response": "evidence/native-lora-dropout/guide-response.json"
+  },
+  "publication_payloads": [
+    {
+      "path": "native-jax-lora-dropout-root-pr-title.txt",
+      "sha256": "12800b5127429715395cfdbf2bdcad18e049e9600ac74086b3eafd9c60cb5af4"
+    },
+    {
+      "path": "native-jax-lora-dropout-root-pr-body.md",
+      "sha256": "cdf71e6cfdd4547e66d9641be0b21ed1c1bba9059feceb37a9ebf032ab6d26d9"
+    }
+  ],
+  "artifact_hashes": {
+    "native-jax-lora-dropout-final-required-checks.log": "05a4b8bf49cb2a930ee025d776b9a043fc93395312d1e44ebe1c35f82c9faf3f",
+    "native-jax-lora-dropout-final-index-freeze.json": "c3531580596359013bd05b926ea442a67a9974b785636c878208f272464fd811",
+    "native-jax-lora-dropout-final-commit.log": "391243f0fdbb7e356a95f7204ab2ca99792ad2d682bc28663072968731705208",
+    "native-jax-lora-dropout-final-catalog.log": "83e7b25afd7ea97f4a31a5d4564f641b31aae71bc3a01fdd46379d6c2586d8eb",
+    "native-jax-lora-dropout-final-catalog-response.json": "82458eb00f3db32b6a3b9d0dd6c99d92821e5afcbda9b48b5b88a2273a5d1be7",
+    "native-jax-lora-dropout-final-catalog-targeted-review.md": "823b4b670291ae132b5008018639414302931aa3bfd86f7aa3ae0d7e13e7d766",
+    "native-jax-lora-dropout-final-catalog-targeted-review.json": "f68cd835d0eba5c7d627a030c783f15f057e67df4ea57f5c0f0c5248b89c9ed2",
+    "native-jax-lora-dropout-final-affected-plan.log": "345050cc7bb8c8712a25d51ed78b661850e3065159a3968beff7031d32ccfd81",
+    "native-jax-lora-dropout-final-affected-selection.json": "8b5db6d38dba4a82188bf2c8c7702a9f8b0b4743461bd130969b2625c65a95ef",
+    "native-jax-lora-dropout-final-affected-selected-nodeids.json": "8abb24892d8c0b9b10fc28b18bf847e4b35f65ad7feb0163538a253f6e3a8715",
+    "native-jax-lora-dropout-final-affected-collection-command.json": "9fff230300e646fd0a4738dfb5fda298388857d5f11eb985181234899f0ccfe1",
+    "native-jax-lora-dropout-final-affected-collected.json": "462df593a9ac9941a1373974c97c6429af330ee28d353453c16b8a43c3b296d4",
+    "native-jax-lora-dropout-final-affected-collected.log": "cff779318e6fb08967cad80dd675db3c386a517a0ca3825e868a2145e7804b40",
+    "native-jax-lora-dropout-final-affected.log": "4176a0c0916a7dfb104cd363d98fffbb7d041681d4ca93ff91a1c8faed1a431f",
+    "native-jax-lora-dropout-final-affected.xml": "95cc59802bad875a453e22d416b9a1615703520d3da190118435328669120841",
+    "native-jax-lora-dropout-final-affected-tests.json": "e107550b1c426c929e01acd3ff6417f25ac3cc09534475f21fa7407bda64fa87",
+    "native-jax-lora-dropout-final-affected-completion-plan.json": "f55a6759dad066d093f0b108bf898b6601ceb56d473420bfd00e28ebb1c6bb36",
+    "native-jax-lora-dropout-final-completion-command.json": "d6492161a354938676db93eba1ed0623cad70ce0eff73703ddda7aa896a949e7",
+    "native-jax-lora-dropout-final-completion.log": "7ae6a2b6b4c445ed20f2c9bbb69f39699545f0a6666eb2c807fc859912fc5d07",
+    "native-jax-lora-dropout-final-completion.xml": "54b9233082566cbadda4164e405e9a5bd640f41fb44218598c4e3d5cb4ef314f",
+    "native-jax-lora-dropout-final-completion-tests.json": "4bb95bf1670abcfc0c544ff5de0d3ed8d43fc904579698652502601e451b97df",
+    "native-jax-lora-root-affected-completion.xml": "73e5655ef1c9d40dc6151a95c585be8943cdcc91006432d7f6bc2f88a7fa42a5",
+    "native-jax-lora-dropout-final-affected-proof.json": "4eac228a849c6e17ab2bcd0f7ecf05da18871e91a4d36911a30ca35ecc0f0e0c"
+  },
+  "boundaries": {
+    "pushed": false,
+    "pr_created": false,
+    "archive_edited": false,
+    "tpu_or_accelerator_used": false,
+    "ci_watch_started": false,
+    "automation_activated": false,
+    "experiment_or_measurement_pin_changed": false,
+    "raw_model_and_native_layers_haliax_imports": false
+  },
+  "limits": [
+    "No accelerator or reduced-precision nonzero-dropout qualification, performance or convergence claim.",
+    "Complete affected-case coverage joins initial and completion evidence; the whole suite retains13 actual-PR24 nested cloud import failures and is not green.",
+    "Scientific larger-model trajectory failure remains separate. Measurement-source ad2bc and accepted evaluator2a4 pins remain unchanged.",
+    "Publication and any PR lifecycle/monitoring remain root-owned."
+  ],
+  "_archive_note": "Historical status/source/execution identities retained; local paths/hostnames normalized as enumerated in manifest. Embedded artifact hashes identify original inputs, not sanitized copies. Sanitized output hashes/lengths are in manifest. No numerical execution occurred while archiving."
+}

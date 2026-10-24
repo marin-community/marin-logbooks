@@ -1,0 +1,164 @@
+{
+  "status": "FOUR_ACTUAL_MUTATIONS_DETECTED_NUMERICAL_FAILURES",
+  "controls": [
+    {
+      "name": "adapter_first_key",
+      "path": "lib/levanter/src/levanter/adaptor/lora.py",
+      "before": "key=adapter_key, dropout_layout=dropout_layout",
+      "after": "key=base_key, dropout_layout=dropout_layout",
+      "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-column]",
+      "command": [
+        "uv",
+        "run",
+        "--package",
+        "marin-levanter",
+        "--group",
+        "test",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-column]",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/mutation-controls.json"
+      ],
+      "exit_code": 1,
+      "elapsed": 17.492859499994665,
+      "original_sha256": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+      "mutation_sha256": "c3aaa98eda85cdd2179ebf07f1c422f5e18f62d66b3c5c0650539ead91b2113b",
+      "summary": {
+        "failed": 1,
+        "total": 1,
+        "collected": 1
+      },
+      "detected": true,
+      "numeric_failure_metrics": [
+        "E           Mismatched elements: 32 / 32 (100%)",
+        "E           Max absolute difference among violations: 0.18680551",
+        "E           Max relative difference among violations: 5.70499958"
+      ],
+      "report_origin_basename": "native-lora-dropout-negative-adapter_first_key.json",
+      "report_original_sha256": "c4fd74ab00e88629a52b6ce228e306784a580ab19dd4b904234da6769e79a933"
+    },
+    {
+      "name": "resplit_one_layer",
+      "path": "lib/levanter/src/levanter/models/llama_native.py",
+      "before": "else key[None] if self.config.num_layers == 1 else jax.random.split(key, self.config.num_layers)",
+      "after": "else jax.random.split(key, self.config.num_layers)",
+      "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+      "command": [
+        "uv",
+        "run",
+        "--package",
+        "marin-levanter",
+        "--group",
+        "test",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/mutation-controls.json"
+      ],
+      "exit_code": 1,
+      "elapsed": 26.42549941735342,
+      "original_sha256": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+      "mutation_sha256": "bea84b7bb71dfe51c47f187ca76695493e48056399926ba39caa937181e133c1",
+      "summary": {
+        "failed": 1,
+        "total": 1,
+        "collected": 1
+      },
+      "detected": true,
+      "numeric_failure_metrics": [
+        "E           Mismatched elements: 1 / 1 (100%)",
+        "E           Max absolute difference among violations: 0.3490932",
+        "E           Max relative difference among violations: 0.11144615"
+      ],
+      "report_origin_basename": "native-lora-dropout-negative-resplit_one_layer.json",
+      "report_original_sha256": "39a3475e53093cd3b6df453e0b4243f11cde9d16e61884b5cd712fcd52acd986"
+    },
+    {
+      "name": "attention_output_position_major",
+      "path": "lib/levanter/src/levanter/models/llama_native.py",
+      "before": "dropout_order: tuple[int, ...] = (0, 2, 1, 3),",
+      "after": "dropout_order: tuple[int, ...] = (0, 1, 2, 3),",
+      "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+      "command": [
+        "uv",
+        "run",
+        "--package",
+        "marin-levanter",
+        "--group",
+        "test",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/mutation-controls.json"
+      ],
+      "exit_code": 1,
+      "elapsed": 27.889503083191812,
+      "original_sha256": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+      "mutation_sha256": "1e8dde3887a43eb10a3afbff79a2566c0abee388517e55457c6873edad6e838a",
+      "summary": {
+        "failed": 1,
+        "total": 1,
+        "collected": 1
+      },
+      "detected": true,
+      "numeric_failure_metrics": [
+        "E           Mismatched elements: 1 / 1 (100%)",
+        "E           Max absolute difference among violations: 0.18636131",
+        "E           Max relative difference among violations: 0.05949486"
+      ],
+      "report_origin_basename": "native-lora-dropout-negative-attention_output_position_major.json",
+      "report_original_sha256": "b9397b373f64e1f9e165a494c7c6f181170583e96ce92fe1e4c6233d4c633dcd"
+    },
+    {
+      "name": "omit_direct_logits_root_split",
+      "path": "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "before": "transformer_key, _ = maybe_rng_split(key, 2)",
+      "after": "transformer_key = key",
+      "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+      "command": [
+        "uv",
+        "run",
+        "--package",
+        "marin-levanter",
+        "--group",
+        "test",
+        "pytest",
+        "-c",
+        "pyproject.toml",
+        "-n0",
+        "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/mutation-controls.json"
+      ],
+      "exit_code": 1,
+      "elapsed": 19.100736083928496,
+      "original_sha256": "a74d6f270204ad83d80f0d6183f31d5dd39ddd357b77d9b056fd99c1f0cb8881",
+      "mutation_sha256": "ef14e6c04238fb3328fd0180d61ba2dea4e001e0314fad34f331e168361b882a",
+      "summary": {
+        "failed": 1,
+        "total": 1,
+        "collected": 1
+      },
+      "detected": true,
+      "numeric_failure_metrics": [
+        "E           Mismatched elements: 64 / 64 (100%)",
+        "E           Max absolute difference among violations: 3.0012255",
+        "E           Max relative difference among violations: 66.15814"
+      ],
+      "report_origin_basename": "native-lora-dropout-negative-omit_direct_logits_root_split.json",
+      "report_original_sha256": "3feee333227a84cb9804ae12e5373224ff71cbc3c3d35f42a81e8a4d053f18ea"
+    }
+  ],
+  "raw_reports_not_copied": "Long tracebacks contain printed arrays; only exact recipes, nodes, source/report hashes, outcomes and numeric failure metrics retained.",
+  "reproduction_scope": "Apply exactly one replacement in a disposable checkout of the matching production/test source, run its named node with original root safe markers and CPU/offline environment, restore original bytes; never mutate maintained source.",
+  "_archive_note": "Historical status/source/execution identities retained; local paths/hostnames normalized as enumerated in manifest. Embedded artifact hashes identify original inputs, not sanitized copies. Sanitized output hashes/lengths are in manifest. No numerical execution occurred while archiving."
+}

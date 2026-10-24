@@ -1,0 +1,344 @@
+{
+  "frozen_at_utc": "2026-10-24T22:03:37.421634+00:00",
+  "status": "implemented_uncommitted_pending_fresh_maintained_extraction_review",
+  "base_commit": "1186ba4117d098af11d392441335ed0f720abcd0",
+  "head_commit": "1186ba4117d098af11d392441335ed0f720abcd0",
+  "patch": {
+    "path": "evidence/native-lora-dropout/original-author.patch",
+    "sha256": "fcf75427886956d866e729d5391bbe17c70e2ae0fb05a283b83eefbcae8fa030",
+    "bytes": 44628,
+    "reverse_apply_check": "passed"
+  },
+  "files": [
+    {
+      "path": "lib/levanter/docs/Getting-Started-Training.md",
+      "sha256": "86844f5b467b64e8d614872d5974d87730f602c78f5c733ca402dc6d09dd24e5",
+      "bytes": 16388,
+      "base_sha256": "98736296689f54c3b5d90e7b0d8a9183882f7b5f4e96edb53629e2d11886045a"
+    },
+    {
+      "path": "lib/levanter/docs/Training-On-Your-Data.md",
+      "sha256": "50b39342c35ba0447ed64610e81a4685c61b3a1735065f50d65d12ed1a57668b",
+      "bytes": 22834,
+      "base_sha256": "30a0f3f78f21646102c449235000d02a862d0d8604d38d1f0c6af1435d4798b6"
+    },
+    {
+      "path": "lib/levanter/src/levanter/adaptor/lora.py",
+      "sha256": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+      "bytes": 33405,
+      "base_sha256": "3e6d6f7c6c86241d5c37fb16ac6c7306fddd8f13e2ac64a53512675625ccc260"
+    },
+    {
+      "path": "lib/levanter/src/levanter/layers/dropout.py",
+      "sha256": "cc93060547cf2613d9952d6452067d1573a58f8413221b5bde5f8e248af16501",
+      "bytes": 1648,
+      "base_sha256": null
+    },
+    {
+      "path": "lib/levanter/src/levanter/layers/linear.py",
+      "sha256": "23543feeec6d88b508261f834e2d8a891d3191ac65c2e6e15fb8619e38871807",
+      "bytes": 2185,
+      "base_sha256": "fcf56c96d2bd4f6c265c8ae44a839298c7d4ae9ff2d704e1cd8a9a9ce1512590"
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama.py",
+      "sha256": "c15376e4264992cb8e8f39dbc0b205aafee473e16d5ee3e8bc6dbafa74d73f8d",
+      "bytes": 26100,
+      "base_sha256": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f"
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native.py",
+      "sha256": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+      "bytes": 28095,
+      "base_sha256": "566a8d2b86f3169858f55924094020ce26aabb1b2a971f2ccba94ab8eabdf88c"
+    },
+    {
+      "path": "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "sha256": "a74d6f270204ad83d80f0d6183f31d5dd39ddd357b77d9b056fd99c1f0cb8881",
+      "bytes": 33429,
+      "base_sha256": "2be8078a9d1dbbc304fa604e15b5da5b8fb9d96f309796a64f07b1928075e906"
+    },
+    {
+      "path": "lib/levanter/tests/test_lora.py",
+      "sha256": "ebeb0c9e6c43cad058e9ad32fa71c77bf6df2bbc1283f2151efc4787fd57595c",
+      "bytes": 33760,
+      "base_sha256": "c789b436eabdf4a4f7acd79700b466fe1e0f6eb1df68f3a1ac132a9263482f61"
+    },
+    {
+      "path": "lib/levanter/tests/test_train_lm.py",
+      "sha256": "384e20f470535f19a19598edd8240d6fe6aecfa1dbbee6483504c11776491fa1",
+      "bytes": 59715,
+      "base_sha256": "8d765a872a52d1902f372ff8ce1f72fc1e27fa8eabb518f023d97672e744da98"
+    }
+  ],
+  "implemented": [
+    "Optional keys through LinearProjection/Linear, raw blocks, QKV/output projections, MLP, existing ArrayStacked.fold key in_axes.",
+    "Named nested key schedule, single-layer unsplit edge, second LoRA subkey, distinct canonical activations/loss versus direct-logit root schedules.",
+    "Nonzero array LoRA dropout, explicit no-key training error, keyless inference, p=1 all-drop behavior, dtype-preserving scaling.",
+    "Logical mask geometry preserves named dense o-projection head-major order and ordinary reversed named input-axis order.",
+    "Unbatched data replication shares original logical example mask; gather precedes removing batch dimension for valid explicit-sharding gradients.",
+    "Paged prefill/continuation routes layer/projection keys and uses named position-major output mask order.",
+    "Named paged decode uses existing layers.get_layer to preserve shared dropout inference state rather than blindly indexing bool leaves.",
+    "Nearest native adapter docs updated and canonical nonzero train_lm checkpoint-continuation fixture retained with nonzero A/B."
+  ],
+  "design_rationale": {
+    "dropout_layout": "One immutable shape/permutation value at the existing projection boundary; no tensor registry or adapter target-name geometry hacks.",
+    "array_dropout": "Existing hnn.Dropout imports Haliax; stock eqx.nn.Dropout cannot express logical mask replication/axis ordering or identical named p=1 behavior. A small pure-JAX Equinox module provides only this required extension.",
+    "scan_and_trainer": "Existing ArrayStacked fold/in_axes, Trainer RNG/microbatching, inference_mode, and checkpoint infrastructure reused; no duplicated stack or trainer.",
+    "separate_dpo_work": "No train_dpo edits. Native output-head adaptation and the separately owned DPO composition remain outside this patch."
+  },
+  "tests": [
+    {
+      "cpu_devices": 1,
+      "kind": "numerical",
+      "command": [
+        "run-native-lora-dropout-tests.sh",
+        "1",
+        "lib/levanter/tests/test_lora.py",
+        "-k",
+        "array_lora_matches_independent_values_gradients_and_placements or native_lora_dropout or array_lora_multilayer_canonical_export_and_base_view",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/author-validation.json"
+      ],
+      "cwd": "<local-checkout>",
+      "report": "evidence/native-lora-dropout/author-validation.json",
+      "report_sha256": "d23b9631c4e1d6596c74c0a4cde79a298ffb6a3384fd9f58bb625bcd8aa354b7",
+      "log": "native-lora-dropout-cpu1-final.log",
+      "log_sha256": "8e53553002f80a1c6555d5edfc712e81bde2f7d961eb6ba9896fac5cd31ea984",
+      "exit_code": 0,
+      "duration": 89.31188583374023,
+      "summary": {
+        "passed": 14,
+        "total": 14,
+        "collected": 26,
+        "deselected": 12
+      },
+      "node_ids": [
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-column]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-row]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-column]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-row]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-column]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-row]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_multilayer_canonical_export_and_base_view",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-2]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-1]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-2]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-1]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-2]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_paged_prefill_continuation_matches_named",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "cpu_devices": 4,
+      "kind": "numerical",
+      "command": [
+        "run-native-lora-dropout-tests.sh",
+        "4",
+        "lib/levanter/tests/test_lora.py",
+        "-k",
+        "array_lora_matches_independent_values_gradients_and_placements or native_lora_dropout or array_lora_multilayer_canonical_export_and_base_view",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/author-validation.json"
+      ],
+      "cwd": "<local-checkout>",
+      "report": "evidence/native-lora-dropout/author-validation.json",
+      "report_sha256": "327c7e17aec6f7a410521a1d9051ce881f390da5cc403370d76fc5cd35125d71",
+      "log": "native-lora-dropout-cpu4-final.log",
+      "log_sha256": "60efad315d375c1bf7c0672799acf16c4869f4694161216995106287f28114eb",
+      "exit_code": 0,
+      "duration": 130.56176900863647,
+      "summary": {
+        "passed": 14,
+        "total": 14,
+        "collected": 26,
+        "deselected": 12
+      },
+      "node_ids": [
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-column]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.0-row]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-column]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[0.25-row]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-column]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_matches_independent_values_gradients_and_placements[1.0-row]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_array_lora_multilayer_canonical_export_and_base_view",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-1]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[batch-first-2]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-1]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[position-first-2]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-1]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_matches_named_loss_gradients_and_logits[unbatched-2]",
+          "outcome": "passed"
+        },
+        {
+          "node_id": "lib/levanter/tests/test_lora.py::test_native_lora_dropout_paged_prefill_continuation_matches_named",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "cpu_devices": 1,
+      "kind": "canonical_checkpoint_continuation",
+      "command": [
+        "run-native-lora-dropout-tests.sh",
+        "1",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-0.25]",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/author-validation.json"
+      ],
+      "cwd": "<local-checkout>",
+      "report": "evidence/native-lora-dropout/author-validation.json",
+      "report_sha256": "27a0da7294f0e3495fae11948764c2b354cfce863b597c00172e083caa9b1a87",
+      "log": "native-lora-dropout-cpu1-continuation-final.log",
+      "log_sha256": "ea66c978aff9a62bd793b0006e259833be12da54cec024661e4fc1ca71650139",
+      "exit_code": 0,
+      "duration": 38.49414896965027,
+      "summary": {
+        "passed": 1,
+        "total": 1,
+        "collected": 1
+      },
+      "node_ids": [
+        {
+          "node_id": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-0.25]",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "cpu_devices": 4,
+      "kind": "canonical_checkpoint_continuation",
+      "command": [
+        "run-native-lora-dropout-tests.sh",
+        "4",
+        "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-0.25]",
+        "--json-report",
+        "--json-report-file=evidence/native-lora-dropout/author-validation.json"
+      ],
+      "cwd": "<local-checkout>",
+      "report": "evidence/native-lora-dropout/author-validation.json",
+      "report_sha256": "853f148c6b6550aa160144191e49accd05a663876d589b2f855598653a49d9d0",
+      "log": "native-lora-dropout-cpu4-continuation.log",
+      "log_sha256": "1ca334e169c3bf2978a4eb0cbc630520beedf9be74f6b2208c458e678c9fe158",
+      "exit_code": 0,
+      "duration": 57.140307903289795,
+      "summary": {
+        "passed": 1,
+        "total": 1,
+        "collected": 1
+      },
+      "node_ids": [
+        {
+          "node_id": "lib/levanter/tests/test_train_lm.py::test_native_train_lm_lora_hf_update_resume_and_local_exports[untied-0.25]",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "CPU numerical and explicit-placement evidence only; no accelerator correctness, communication cost, performance or convergence claim.",
+    "New named/native numerical oracles use float32, vanilla named/reference native attention, small dense Llama shapes, layers 1/2 and head/sequence sizes greater than one. Other native attention backends and reduced-precision nonzero-dropout numerics were not executed.",
+    "The nonzero canonical checkpoint-continuation fixture executed untied HF source on CPU1/4; tied-source variant and broader safe test matrix were not run for this patch.",
+    "Native LM public inputs still support at most one batch axis; existing configuration/architecture/HF restrictions remain.",
+    "Base Llama attention/residual dropout is not introduced; HF nonzero attention_dropout remains rejected.",
+    "LoRA-DPO composition, output-head adaptation, full source acceptance, published state, and integration into another branch are not established.",
+    "Main campaign remains active; the larger-model scientific failure remains separate and unexplained by this change."
+  ],
+  "runtime": {
+    "python": "3.12.11 (main, Aug 18 2025, 19:02:39) [Clang 20.1.4 ]",
+    "jax": "0.11.1",
+    "equinox": "0.13.2",
+    "numpy": "2.3.5",
+    "devices": [
+      "cpu:0"
+    ],
+    "raw_haliax_imports": false
+  },
+  "test_driver_contract": {
+    "root_pytest_config": true,
+    "fresh_process_per_command": true,
+    "xdist": "-n0",
+    "safe_markers": "not slow and not integration and not data_integration and not cluster and not requires_cluster and not docker and not manual"
+  },
+  "_archive_note": "Historical status/source/execution identities retained; local paths/hostnames normalized as enumerated in manifest. Embedded artifact hashes identify original inputs, not sanitized copies. Sanitized output hashes/lengths are in manifest. No numerical execution occurred while archiving."
+}
