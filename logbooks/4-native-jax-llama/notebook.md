@@ -172,6 +172,12 @@ A compact public-API RoPE/Splash gradient regression prototype is also retained.
 
 Evidence: [prepared config/proofs](prepared/), [V2 runner](runners/native_jax_query_scale_15b_trainer_v2.py). The next decision depends on the actual full Trainer result. No accepted 1.53B speed ratio is established here.
 
+## 2026-10-24 00:09 UTC — Full Trainer candidate submitted
+
+The source, exact scientific runner, command/configuration and validation proofs were published at `61403c428985aa1aa63ff35a779eb4d5ac40de4e` before dispatch. After verifying the unique job and regional backup object were absent, the exact-once wrapper submitted `/dlwh/levanter-native-jax-v5p-15b-queryscale-8aa-20261023` at 00:09:51 UTC. Iris returned the matching canonical job ID and submission exited zero. The selected source remains `8aa8674d10894728ed0b455ae14e14f46457cf9f`.
+
+The [launch record](evidence/query-scale-15b-launch.json) and [submission guard](runners/submit_native_jax_query_scale_15b_trainer_v2.py) preserve execution identity. At this entry no allocation, progress, numerical outcome or timing has been observed. Each precision compares native JAX with the Haliax Llama reference. The candidate preserves BF16 query-gradient scaling as a separate rounding boundary before inverse RoPE; its FP32 path is unchanged. Both retain the [prepared workload and acceptance criteria](prepared/query-scale-15b-trainer-v2-job-config.json). Monitoring uses the existing campaign heartbeat; a timeout or queue wait does not authorize a retry or cluster change.
+
 ## Current decision and remaining work
 
 The [replacement gap audit](analysis/native-jax-llama-replacement-gap-audit.md) maps canonical registries, production callers, existing Llama3/Yarn presets, paged decoding, loader boundaries and other model families that import the old Llama classes. Switching the benchmark or a single registry entry is insufficient. The audit distinguishes source already implemented on sibling branches from work still needed, and adds no new numerical or convergence threshold.
