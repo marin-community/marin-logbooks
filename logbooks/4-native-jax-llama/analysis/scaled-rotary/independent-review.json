@@ -1,0 +1,86 @@
+{
+  "schema": "native_jax_scaled_rotary_independent_review.v1",
+  "base": "7b1aab6e2e6837cac10595dd54d1b4d60b7d6361",
+  "worktree": "/private/tmp/marin-native-jax-scaled-rotary",
+  "reviewed_uncommitted_files": {
+    "lib/levanter/docs/Getting-Started-Training.md": {
+      "sha256": "14f0a167e4b0429b42ea64c2faaf659e0925590e265cb8fe61238c9c1b21b108",
+      "bytes": 15738
+    },
+    "lib/levanter/scripts/bench/bench_llama_native.py": {
+      "sha256": "9a2ac2ce0f388cb635160efec0b8c6aaa923c3a5ab00ffe1d14579f739f29dba",
+      "bytes": 34356
+    },
+    "lib/levanter/src/levanter/layers/rotary_native.py": {
+      "sha256": "354129466917a04423bba3c444a685f45a720993c4a86d280710eda6cab6c233",
+      "bytes": 3413
+    },
+    "lib/levanter/src/levanter/models/llama_native.py": {
+      "sha256": "026f9e1719fc349cde82c80c26aa016a655319a7c649a94ce4ffad346425cd14",
+      "bytes": 21994
+    },
+    "lib/levanter/src/levanter/models/llama_native_lm.py": {
+      "sha256": "10a864e87b9733c563bcd21f9618847b2357818438b5c08a85d274dbf79ec429",
+      "bytes": 22417
+    },
+    "lib/levanter/tests/test_llama_native.py": {
+      "sha256": "f457f1d1b276c9ca4f8a1c1466e8b85889bd1b64a05c0cf88cae4e2f2ce7bd7e",
+      "bytes": 25529
+    },
+    "lib/levanter/tests/test_rotary.py": {
+      "sha256": "ea3d762fc3d74278ed2dab2e62b39d6309b63c2d199ff50f232551f1a7f2889f",
+      "bytes": 7306
+    }
+  },
+  "findings": [
+    {
+      "priority": "P2",
+      "category": "bug",
+      "file": "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "line": 219,
+      "title": "Resolve HF YaRN inferred attention scaling before accepting the checkpoint",
+      "effect": "When attention_factor is absent, the validator substitutes the native expected value. HF inference ignores a lone nondefault mscale and uses an mscale/mscale_all_dim ratio when both are present. Thus valid external HF YaRN configs are accepted even though native scales Q/K differently.",
+      "reproduction": "factor8, mscale1.5, no attention_factor: actual Transformers5.12.1 factor1.2079441541679836 vs native1.3119162312519754. With mscale=mscale_all_dim=1, HF1.0 vs native1.2079441541679836.",
+      "suggested_scope": "Compute/check the effective HF attention factor using its inference semantics, or reject unsupported mscale_all_dim and absent attention_factor combinations. Exported own configs explicitly set attention_factor and therefore do not reveal this import failure."
+    },
+    {
+      "priority": "P2",
+      "category": "bug",
+      "file": "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "line": 214,
+      "title": "Reject or implement nontruncated HF YaRN frequency ramps",
+      "effect": "Parsing HF parameters drops truncate:false; equality against the native config then accepts the checkpoint while the new native implementation always floors/ceils the correction range. Model weights retain different RoPE phases after initialization.",
+      "reproduction": "Actual HF helper with theta10000/factor8/beta32,1/original2048/head64/truncatefalse differs from accepted native inverse frequencies in12entries, max0.000530855730175972.",
+      "suggested_scope": "Preserve and implement the semantic option or explicitly reject truncate:false at the HF boundary. Keep a real external-HF parameter regression; own roundtrip fixtures emit the default truncation and miss this."
+    },
+    {
+      "priority": "P2",
+      "category": "bug",
+      "file": "lib/levanter/src/levanter/layers/rotary_native.py",
+      "line": 66,
+      "title": "Preserve the HF YaRN correction-range bound for long original contexts",
+      "effect": "The new native frequency implementation caps high at dim//2-1. HF caps high at dim-1 before constructing a half-dimension ramp, so high may legitimately exceed the ramp length. Newly accepted long-original-context HF YaRN configs produce different frequencies. The existing named reference shares this cap and cannot detect it.",
+      "reproduction": "theta10000/factor8/beta32,1/original131072/head64: native validator accepts the HF config, actual HF helper differs in9entries, max6.729824235662818e-5.",
+      "suggested_scope": "Align the supported frequency semantics with HF, or reject the incompatible correction range for HF initialization/export until supported. Do not silently promote the old named behavior as an independent HF oracle."
+    }
+  ],
+  "evidence": "/private/tmp/native-jax-scaled-rotary-hf-semantics-review.json",
+  "probe_script": "/private/tmp/review_native_scaled_rotary_hf_semantics.py",
+  "reviewed_root_fix": "Export explicitly sets rope_theta=self.rope.theta; not reported again.",
+  "checked_without_finding": [
+    "All current raw NativeLlamaConfig callers in this source tree use the new rope field or its default; no stale rope_theta/rope_factor caller found.",
+    "Default/linear checkpoint architecture wire keeps existing rope_theta and rope_factor keys; scaled variants add semantic mode-specific fields.",
+    "Native operator Llama3 and YaRN equations match the existing named implementation for tested default parameter ranges; default/linear arithmetic remains the same.",
+    "Frozen rotary config dataclasses and dtype/static branches are JIT-safe."
+  ],
+  "validated_limits": [
+    "This review independently exercised actual HF parameter generation on CPU, not full model logits, TPU numerical parity or performance.",
+    "New tests use named operators for BF16 and native-exported HF configs for consumer roundtrips; they do not cover these external-HF option combinations.",
+    "No additional finding is based only on missing test coverage or unvalidated hardware behavior."
+  ],
+  "mutations": {
+    "repository_edits": false,
+    "hardware_or_job_queries": false,
+    "remote_comments_PR_publication": false
+  }
+}

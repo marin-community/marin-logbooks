@@ -1,0 +1,100 @@
+"""Trace actual large public and source-derived Splash VJPs on CPU, without compilation."""
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+import jax
+import jax.numpy as jnp
+from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P
+import numpy as np
+from levanter.grug.attention import AttentionMask
+from levanter.grug.attention import _core
+from levanter.layers.rotary_native import RotaryConfig, apply_rotary
+from fp32_common_dq import extractions
+
+
+def primitives(closed):
+    counts = {}
+    seen = set()
+
+    def visit(x):
+        if id(x) in seen:
+            return
+        seen.add(id(x))
+        if hasattr(x, "eqns"):
+            for eqn in x.eqns:
+                counts[eqn.primitive.name] = counts.get(eqn.primitive.name, 0) + 1
+                for v in eqn.params.values():
+                    visit(v)
+        elif hasattr(x, "jaxpr"):
+            visit(x.jaxpr)
+        elif isinstance(x, (list, tuple, dict)):
+            for v in x.values() if isinstance(x, dict) else x:
+                visit(v)
+
+    visit(closed)
+    return counts
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    if jax.default_backend() != "cpu" or jax.device_count() != 4:
+        raise ValueError("CPU4 abstract proof required")
+    raw, trig, project, proof = extractions(Path(__file__).with_name("baseline_core.py.source").read_text())
+    mesh = Mesh(
+        np.asarray(jax.devices()).reshape(2, 2), ("data", "model"), axis_types=(AxisType.Explicit, AxisType.Explicit)
+    )
+    sh = NamedSharding(mesh, P("data", None, "model", None))
+    p_sh = NamedSharding(mesh, P("data", None))
+    q = jax.ShapeDtypeStruct((8, 2048, 16, 128), jnp.float32, sharding=sh)
+    k = jax.ShapeDtypeStruct((8, 2048, 4, 128), jnp.float32, sharding=sh)
+    p = jax.ShapeDtypeStruct((8, 2048), jnp.int32, sharding=p_sh)
+
+    def objective(q, k, v, ct):
+        y, pb = jax.vjp(lambda a, b, c: raw(a, b, c, AttentionMask.causal()), q, k, v)
+        return y, *pb(ct)
+
+    with jax.set_mesh(mesh), jax.default_matmul_precision("highest"):
+        raw_jaxpr = jax.make_jaxpr(objective)(q, k, k, q)
+        c_shapes = jax.eval_shape(lambda a, b: trig(a, b, RotaryConfig()), q, p)
+
+        def public_attention(a, b, c, p, g):
+            def forward(a, b, c):
+                return _core._tpu_splash_attention(
+                    apply_rotary(a, p, RotaryConfig()), apply_rotary(b, p, RotaryConfig()), c, AttentionMask.causal()
+                )
+
+            y, pb = jax.vjp(forward, a, b, c)
+            return y, *pb(g)
+
+        public_splash = jax.make_jaxpr(public_attention)(q, k, k, p, q)
+        public = jax.make_jaxpr(lambda a, p, g: jax.vjp(lambda z: apply_rotary(z, p, RotaryConfig()), a)[1](g)[0])(
+            q, p, q
+        )
+    result = {
+        "schema": "native-jax-fp32-common-dq-actual-large-abstract.v1",
+        "source_extractions": proof,
+        "raw_vjp_jaxpr_sha256": hashlib.sha256(str(raw_jaxpr).encode()).hexdigest(),
+        "raw_vjp_primitives": primitives(raw_jaxpr),
+        "public_rotary_vjp_primitives": primitives(public),
+        "public_rotary_splash_three_vjp_primitives": primitives(public_splash),
+        "public_rotary_splash_three_vjp_jaxpr_sha256": hashlib.sha256(str(public_splash).encode()).hexdigest(),
+        "trig_shapes": str(c_shapes),
+        "shapes": {"q": str(q), "kv": str(k), "positions": str(p)},
+        "jax": jax.__version__,
+        "scope": "Actual source-derived FP32 B8/S2048/H16/KV4/D128 Splash primal/three-VJP graph and runtime trig abstract tracing only. No TPU compile, array execution, numerical or performance claim.",
+    }
+    args.output.write_text(json.dumps(result, indent=2) + "\n")
+    print(
+        json.dumps(
+            {"output": str(args.output), "raw_barriers": result["raw_vjp_primitives"].get("optimization_barrier", 0)}
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

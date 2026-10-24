@@ -1,0 +1,28 @@
+{
+  "url": "https://github.com/dlwh/marin/pull/16",
+  "title": "Support Llama3 and YaRN rotary embeddings in native Llama",
+  "body": "Allow the array-based NativeLlama path to use the existing Llama3 and YaRN rotary configurations. Apply their frequency scaling and YaRN attention multiplier during training and HF export/reload. Default and linear native checkpoints keep their existing architecture metadata; scaled checkpoints record the additional frequency and attention parameters.\n\nPreserve the configured RoPE base in HF exports and validate source scaling before loading weights. Correct the shared YaRN correction-range cap: with head dimension 64 and an original context of 131,072 tokens, the previous cap changed the interpolated frequencies and produced up to 0.00756 output error against HF. The new reference cases pass without changing tolerances.\n\nCPU checks pass for FP32/BF16 values and input gradients, local Transformers consumers and sharded export/reload. This remains a draft pending accelerator validation; no performance improvement or completed Llama replacement is claimed.\n\nPart of https://github.com/marin-community/marin-logbooks/issues/4.\n",
+  "headRefName": "codex/native-jax-scaled-rotary",
+  "headRefOid": "598e1968819d3a2a85778841e4a3695ab6d89d8b",
+  "baseRefName": "codex/native-jax-native-policy-config",
+  "state": "OPEN",
+  "isDraft": true,
+  "labels": [
+    {
+      "id": "LA_kwDORgUq9c8AAAAC-y-QDQ",
+      "name": "agent-generated",
+      "description": "Created by an agent",
+      "color": "5319E7"
+    },
+    {
+      "id": "LA_kwDORgUq9c8AAAAC-y_LjQ",
+      "name": "agentic-lint",
+      "description": "Reviewed against the agentic lint catalog",
+      "color": "0E8A16"
+    }
+  ],
+  "mergeable": "MERGEABLE",
+  "verified_utc": "2026-10-24T00:49:54.238374+00:00",
+  "source_snapshot_sha256": "7b3e89863a0d14c18268f58bc881dad2a6d26f4a0719604309ff3ec2b030b474",
+  "scope": "Exact selected published title/body/head/base/labels at recorded inspection; volatile CI/comments/reviews intentionally omitted."
+}

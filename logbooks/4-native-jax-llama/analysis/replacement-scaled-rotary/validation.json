@@ -1,0 +1,95 @@
+{
+  "checkout": "/private/tmp/marin-native-jax-replacement-integration",
+  "branch": "codex/native-jax-llama-replacement",
+  "head": "216279e6d8ea9a1c71242509b6b07e946c30d249",
+  "merge_parents": [
+    "be8093b10163be50b8f8e16135ccb4fccdc4efe5",
+    "598e1968819d3a2a85778841e4a3695ab6d89d8b"
+  ],
+  "worktree_clean": true,
+  "conflict_resolution": "One benchmark conflict: remove obsolete rope_theta constructor field, preserve 36e matched Splash/reference backend selection. All other paths automatic.",
+  "source_proof": "/private/tmp/native-jax-replacement-scaled-rotary-source-proof.json",
+  "focused_tests": {
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "--package",
+      "marin-levanter",
+      "python",
+      "-m",
+      "pytest",
+      "-c",
+      "pyproject.toml",
+      "-n",
+      "0",
+      "lib/levanter/tests/test_llama_native.py",
+      "lib/levanter/tests/test_rotary.py",
+      "lib/levanter/tests/test_explicit_trainer.py",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_validates_and_resumes_identical_checkpoint_state",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+      "lib/levanter/tests/test_train_lm.py::test_native_hf_rejects_equal_shape_different_attention_architecture",
+      "lib/levanter/tests/test_train_lm.py::test_native_hf_rejects_default_rope_with_ignored_scaling_factor",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_exports_portable_local_weights",
+      "lib/levanter/tests/test_checkpoint.py::test_async_checkpoint_snapshots_nested_application_metadata",
+      "lib/levanter/tests/test_llama_native_benchmark.py",
+      "-q"
+    ],
+    "environment_script": "/private/tmp/native-jax-replacement-env.sh",
+    "effective_pytest_config": "root pyproject.toml",
+    "marker_expression_overridden": false,
+    "actual_cpu_devices": 4,
+    "passed": 111,
+    "seconds": 160.17,
+    "skipped": 0,
+    "deselected": 0,
+    "exit_code": 0,
+    "log": "/private/tmp/native-jax-replacement-scaled-rotary-focused-cpu4.log",
+    "scope": "Native masks/positions/values/VJPs, old+new rotary values/VJPs, real local HF parsing/export/Transformers consumers, public train/HF/checkpoint/structured-remat/explicit Trainer and benchmark."
+  },
+  "required_checks": {
+    "argv": [
+      "./infra/pre-commit.py",
+      "--changed-files"
+    ],
+    "lint_format_types_pass": true,
+    "log": "/private/tmp/native-jax-replacement-scaled-rotary-precommit.log",
+    "git_diff_check_pass": true
+  },
+  "cross_revision_probe": {
+    "proof": "/private/tmp/native-jax-replacement-scaled-cross-revision-proof.json",
+    "preserved_native_checkpoint_exact": true,
+    "local_shards": 168,
+    "step": 2,
+    "adam_counts": [
+      2,
+      2,
+      2
+    ],
+    "optimizer_rng_state_exact": true,
+    "hidden_logits_bit_exact": true,
+    "default_linear_architecture_wire_exact": true,
+    "actual_factor1_arrays_only_factor8_schema_only": true,
+    "checkpoint_writes": 0,
+    "old_named_Haliax_to_native_conversion": false,
+    "new_training_or_next_update_test_in_this_probe": false
+  },
+  "unchanged": [
+    "kernel source exactly36e",
+    "canonical registry/defaults",
+    "numerical acceptance criteria",
+    "existing checkpoint data and be evidence",
+    "primary/candidate/archive worktrees"
+  ],
+  "not_performed": [
+    "hardware launch/query",
+    "push",
+    "PR",
+    "automation",
+    "canonical cutover",
+    "decode port",
+    "whole2038 affected-case rerun",
+    "new full lint catalog"
+  ],
+  "next_capability": "Paged decode/cache and non-train_lm loader/caller migration remain. No new capability port started."
+}

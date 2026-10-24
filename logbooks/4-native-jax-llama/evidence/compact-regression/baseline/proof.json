@@ -1,0 +1,373 @@
+{
+  "atol": 1e-05,
+  "backend": "tpu",
+  "cases": [
+    {
+      "comparisons": {
+        "forward": {
+          "allclose": true,
+          "different_elements": 0,
+          "elements": 4194304,
+          "exact": true,
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "relative_l2_named_denominator": 0.0
+        },
+        "key_master_vjp": {
+          "allclose": true,
+          "different_elements": 0,
+          "elements": 1048576,
+          "exact": true,
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "relative_l2_named_denominator": 0.0
+        },
+        "loss": {
+          "allclose": true,
+          "different_elements": 1,
+          "elements": 1,
+          "exact": false,
+          "max_abs": 0.000457763671875,
+          "mean_abs": 0.000457763671875,
+          "relative_l2_named_denominator": 9.390800528308318e-07
+        },
+        "query_master_vjp": {
+          "allclose": false,
+          "different_elements": 1251150,
+          "elements": 4194304,
+          "exact": false,
+          "max_abs": 0.03125,
+          "mean_abs": 0.00016030692495405674,
+          "relative_l2_named_denominator": 0.0030482744332402945
+        },
+        "value_master_vjp": {
+          "allclose": true,
+          "different_elements": 0,
+          "elements": 1048576,
+          "exact": true,
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "relative_l2_named_denominator": 0.0
+        }
+      },
+      "compute_dtype": "bfloat16",
+      "cotangent": "Deterministic standard-normal F32 normalized to unit RMS, cast to BF16 by output-cast transpose; no mean-loss normalization or selected amplification.",
+      "head_dim": 128,
+      "mask": "causal",
+      "master_dtype": "float32",
+      "named": {
+        "forward": {
+          "dtype": "bfloat16",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.16350319981575012,
+          "sha256": "5186ac8de1a56211452130aa5247b72cd7cf215b9a9e0a8c5ddd6a1f8bb3bfe6",
+          "shape": [
+            4,
+            512,
+            16,
+            128
+          ]
+        },
+        "key_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.27532315254211426,
+          "sha256": "4282de4b1c67f5a3a4a89b89f5119afc419bb594de786c8bca03e5a8c114e997",
+          "shape": [
+            4,
+            512,
+            4,
+            128
+          ]
+        },
+        "loss": {
+          "dtype": "float32",
+          "partition_spec": "P()",
+          "rms": 487.4596862792969,
+          "sha256": "3c2618d1cd42e1e9d0310cf19dd4915fabc3158dff80b12152ed056dc75be66e",
+          "shape": []
+        },
+        "query_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.1383938193321228,
+          "sha256": "7a9aa817ecb0bf8f36fca3414db0195d24261d8ed29a7dad3caabcddeae50938",
+          "shape": [
+            4,
+            512,
+            16,
+            128
+          ]
+        },
+        "value_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.3259432017803192,
+          "sha256": "e8369787edef1a0746100b93b015be62f133afd9d68cda6a8e9fce06556e4985",
+          "shape": [
+            4,
+            512,
+            4,
+            128
+          ]
+        }
+      },
+      "named_backend": "splash",
+      "native": {
+        "forward": {
+          "dtype": "bfloat16",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.16350319981575012,
+          "sha256": "5186ac8de1a56211452130aa5247b72cd7cf215b9a9e0a8c5ddd6a1f8bb3bfe6",
+          "shape": [
+            4,
+            512,
+            16,
+            128
+          ]
+        },
+        "key_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.27532315254211426,
+          "sha256": "4282de4b1c67f5a3a4a89b89f5119afc419bb594de786c8bca03e5a8c114e997",
+          "shape": [
+            4,
+            512,
+            4,
+            128
+          ]
+        },
+        "loss": {
+          "dtype": "float32",
+          "partition_spec": "P()",
+          "rms": 487.459228515625,
+          "sha256": "979fd09ee6472b2a91a7d73c150fd7bf5f4a0996750e8826562d96203b0f9136",
+          "shape": []
+        },
+        "query_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.1384080946445465,
+          "sha256": "7323f72491ca03027e1fb085a43383c580739e9d5a390e08f781e372ce9b6f36",
+          "shape": [
+            4,
+            512,
+            16,
+            128
+          ]
+        },
+        "value_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.3259432017803192,
+          "sha256": "e8369787edef1a0746100b93b015be62f133afd9d68cda6a8e9fce06556e4985",
+          "shape": [
+            4,
+            512,
+            4,
+            128
+          ]
+        }
+      },
+      "native_backend": "tpu_splash",
+      "passed": false,
+      "shape_q": [
+        4,
+        512,
+        16,
+        128
+      ]
+    },
+    {
+      "comparisons": {
+        "forward": {
+          "allclose": true,
+          "different_elements": 0,
+          "elements": 2097152,
+          "exact": true,
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "relative_l2_named_denominator": 0.0
+        },
+        "key_master_vjp": {
+          "allclose": true,
+          "different_elements": 0,
+          "elements": 524288,
+          "exact": true,
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "relative_l2_named_denominator": 0.0
+        },
+        "loss": {
+          "allclose": true,
+          "different_elements": 1,
+          "elements": 1,
+          "exact": false,
+          "max_abs": 0.0001983642578125,
+          "mean_abs": 0.0001983642578125,
+          "relative_l2_named_denominator": 2.2326903490466066e-06
+        },
+        "query_master_vjp": {
+          "allclose": true,
+          "different_elements": 0,
+          "elements": 2097152,
+          "exact": true,
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "relative_l2_named_denominator": 0.0
+        },
+        "value_master_vjp": {
+          "allclose": true,
+          "different_elements": 0,
+          "elements": 524288,
+          "exact": true,
+          "max_abs": 0.0,
+          "mean_abs": 0.0,
+          "relative_l2_named_denominator": 0.0
+        }
+      },
+      "compute_dtype": "bfloat16",
+      "cotangent": "Deterministic standard-normal F32 normalized to unit RMS, cast to BF16 by output-cast transpose; no mean-loss normalization or selected amplification.",
+      "head_dim": 64,
+      "mask": "causal",
+      "master_dtype": "float32",
+      "named": {
+        "forward": {
+          "dtype": "bfloat16",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.16390328109264374,
+          "sha256": "061611c02ebe9e5c10da515d19b0a32d216d2e768edf220253567b2d816b0312",
+          "shape": [
+            4,
+            512,
+            16,
+            64
+          ]
+        },
+        "key_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.27679818868637085,
+          "sha256": "a5c4596f5a2820dd6da6533b4cb39b63aa4980ddba8f738c9e36935188f85a20",
+          "shape": [
+            4,
+            512,
+            4,
+            64
+          ]
+        },
+        "loss": {
+          "dtype": "float32",
+          "partition_spec": "P()",
+          "rms": 88.84539794921875,
+          "sha256": "71035dbc6c2602c48f210a59e314a5b58e18584db1f82efc0cdcacf2a2a96d4a",
+          "shape": []
+        },
+        "query_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.1379968523979187,
+          "sha256": "beb0206383b7f70ceda9faa50c62ad4d04381054ea5cf937fbb1a146e6865c39",
+          "shape": [
+            4,
+            512,
+            16,
+            64
+          ]
+        },
+        "value_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.3260599672794342,
+          "sha256": "1f2e85a60fd15fd51c098985a69f869022e61e6bfb2217f764f62742008fac95",
+          "shape": [
+            4,
+            512,
+            4,
+            64
+          ]
+        }
+      },
+      "named_backend": "splash",
+      "native": {
+        "forward": {
+          "dtype": "bfloat16",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.16390328109264374,
+          "sha256": "061611c02ebe9e5c10da515d19b0a32d216d2e768edf220253567b2d816b0312",
+          "shape": [
+            4,
+            512,
+            16,
+            64
+          ]
+        },
+        "key_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.27679818868637085,
+          "sha256": "a5c4596f5a2820dd6da6533b4cb39b63aa4980ddba8f738c9e36935188f85a20",
+          "shape": [
+            4,
+            512,
+            4,
+            64
+          ]
+        },
+        "loss": {
+          "dtype": "float32",
+          "partition_spec": "P()",
+          "rms": 88.84519958496094,
+          "sha256": "f9b42bf65f8bfda8f01216fee751424241adbaabe25cc5bd260cdff910b3a9e6",
+          "shape": []
+        },
+        "query_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.1379968523979187,
+          "sha256": "beb0206383b7f70ceda9faa50c62ad4d04381054ea5cf937fbb1a146e6865c39",
+          "shape": [
+            4,
+            512,
+            16,
+            64
+          ]
+        },
+        "value_master_vjp": {
+          "dtype": "float32",
+          "partition_spec": "P('data', None, 'model', None)",
+          "rms": 0.3260599672794342,
+          "sha256": "1f2e85a60fd15fd51c098985a69f869022e61e6bfb2217f764f62742008fac95",
+          "shape": [
+            4,
+            512,
+            4,
+            64
+          ]
+        }
+      },
+      "native_backend": "tpu_splash",
+      "passed": true,
+      "shape_q": [
+        4,
+        512,
+        16,
+        64
+      ]
+    }
+  ],
+  "core_sha256": "07c8518380ee8a62cec006adf85458979be590630051e7c62dc9f7cb1285c3ec",
+  "devices": [
+    "TPU_0(process=0,(0,0,0,0))",
+    "TPU_1(process=0,(1,0,0,0))",
+    "TPU_2(process=0,(0,1,0,0))",
+    "TPU_3(process=0,(1,1,0,0))"
+  ],
+  "full_trainer_identity_tested": false,
+  "rtol": 0.0001,
+  "scope": "Proposed public-API regression only. No claim36e fails/8aa passes until both run on actual TPU. Abstract proof never executesSplash. Unit-RMS cotangent defines a per-unit derivative test; does not change production gate or reproduce mean-CE normalization.",
+  "script_sha256": "df8adbe36ca75457ba3a845129e4d761f61655c44b07f2340edba9811b249c8b",
+  "source_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "status": "executed"
+}

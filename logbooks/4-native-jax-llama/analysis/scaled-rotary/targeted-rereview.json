@@ -1,0 +1,91 @@
+{
+  "transformers": "5.12.1",
+  "files_sha256": {
+    "lib/levanter/src/levanter/models/llama_native_lm.py": "dff97e17bd4f1b6407b052794d17ccd99514910d1c93019d2955ed093af7f2d2",
+    "lib/levanter/src/levanter/layers/rotary_native.py": "3ace0031e023369f10c090320c0d36c19dab3805d1aa5d76aae538a726f032a8",
+    "lib/levanter/src/levanter/layers/rotary.py": "77bdba69889712a54d053d40b52cb1bebb9f2363e930727c33eb242f5fe8af91"
+  },
+  "rows": [
+    {
+      "case": "implicit_default",
+      "validator_accepts": true,
+      "validator_error": null,
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": null,
+      "hf_attention_factor": 1.2079441541679836,
+      "native_attention_factor": 1.2079441541679836,
+      "frequency_max_abs": 9.313225746154785e-10
+    },
+    {
+      "case": "nondefault_mscale_without_attention_factor",
+      "validator_accepts": false,
+      "validator_error": "llama_native HF YaRN attention factor does not match the configured RoPE",
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": "llama_native HF YaRN attention factor does not match the configured RoPE",
+      "hf_attention_factor": 1.2079441541679836,
+      "native_attention_factor": 1.3119162312519754,
+      "frequency_max_abs": 9.313225746154785e-10
+    },
+    {
+      "case": "mscale_ratio_without_attention_factor",
+      "validator_accepts": false,
+      "validator_error": "llama_native HF YaRN attention factor does not match the configured RoPE",
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": "llama_native HF YaRN attention factor does not match the configured RoPE",
+      "hf_attention_factor": 1.0,
+      "native_attention_factor": 1.2079441541679836,
+      "frequency_max_abs": 9.313225746154785e-10
+    },
+    {
+      "case": "nontruncated_frequency_ramp",
+      "validator_accepts": false,
+      "validator_error": "llama_native HF YaRN requires the integer correction ramp",
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": "llama_native HF YaRN requires the integer correction ramp",
+      "hf_attention_factor": 1.2079441541679836,
+      "native_attention_factor": 1.2079441541679836,
+      "frequency_max_abs": 0.000530855730175972
+    },
+    {
+      "case": "none_truncate",
+      "validator_accepts": false,
+      "validator_error": "llama_native HF YaRN requires the integer correction ramp",
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": "llama_native HF YaRN requires the integer correction ramp",
+      "hf_attention_factor": 1.2079441541679836,
+      "native_attention_factor": 1.2079441541679836,
+      "frequency_max_abs": 0.000530855730175972
+    },
+    {
+      "case": "long_original_context_frequency_clamp",
+      "validator_accepts": true,
+      "validator_error": null,
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": null,
+      "hf_attention_factor": 1.2079441541679836,
+      "native_attention_factor": 1.2079441541679836,
+      "frequency_max_abs": 5.820766091346741e-11
+    },
+    {
+      "case": "explicit_nondefault_factor",
+      "validator_accepts": true,
+      "validator_error": null,
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": null,
+      "hf_attention_factor": 1.3119162312519754,
+      "native_attention_factor": 1.3119162312519754,
+      "frequency_max_abs": 9.313225746154785e-10
+    },
+    {
+      "case": "zero_mscale_truthy_rule",
+      "validator_accepts": false,
+      "validator_error": "llama_native HF YaRN attention factor does not match the configured RoPE",
+      "from_hf_config_returns": true,
+      "returned_config_validator_error": "llama_native HF YaRN attention factor does not match the configured RoPE",
+      "hf_attention_factor": 1.2079441541679836,
+      "native_attention_factor": 1.0,
+      "frequency_max_abs": 9.313225746154785e-10
+    }
+  ],
+  "scope": "Actual HF CPU helper/config-only targeted re-review; no weights, hardware, network, source edit or remote mutation"
+}

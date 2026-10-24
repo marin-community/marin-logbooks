@@ -1,0 +1,106 @@
+"""Read a retained native checkpoint through one exact source tree."""
+
+import argparse
+import dataclasses
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import sys
+
+import draccus
+import equinox as eqx
+import haliax as hax
+import jax
+import jax.numpy as jnp
+import numpy as np
+from jax.sharding import PartitionSpec as P
+
+from levanter.checkpoint import discover_checkpoint_candidates, load_checkpoint
+from levanter.layers.attention import AttentionMask
+from levanter.layers.rotary import DefaultRotaryEmbeddingsConfig
+from levanter.main import train_lm
+from levanter.models import llama_native, llama_native_lm
+
+
+def array_record(value):
+    array = np.array(value, copy=True)
+    assert np.isfinite(array).all()
+    digest = hashlib.sha256(json.dumps([list(array.shape), str(array.dtype)]).encode())
+    digest.update(array.tobytes())
+    return {"shape": list(array.shape), "dtype": str(array.dtype), "sha256": digest.hexdigest()}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--worktree", type=Path, required=True)
+    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    root = args.worktree.resolve()
+    assert len(jax.devices()) == 4 and all(d.platform == "cpu" for d in jax.devices())
+    jax.config.update("jax_default_matmul_precision", "highest")
+    modules = {m.__name__: str(Path(m.__file__).resolve()) for m in (hax, train_lm, llama_native, llama_native_lm)}
+    assert all(Path(path).is_relative_to(root) for path in modules.values()), modules
+    runner = root / "lib/levanter/scripts/bench/smoke_llama_native_checkpoint.py"
+    spec = importlib.util.spec_from_file_location("checkpoint_probe_smoke", runner)
+    smoke = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = smoke
+    spec.loader.exec_module(smoke)
+    config = draccus.parse(smoke.NativeCheckpointSmokeConfig, config_path=str(args.config), args=[])
+    full = smoke._train_config(config, smoke._data_config(config), "full", 2)
+    mesh = full.trainer.device_mesh
+    candidates = discover_checkpoint_candidates(str(args.checkpoint))
+    assert len(candidates) == 1 and Path(candidates[0].path) == args.checkpoint
+    candidate = candidates[0]
+    assert config.model.checkpoint_vocab_size(candidate.metadata) == config.vocab_size
+    with jax.set_mesh(mesh):
+        template = smoke._state_template(config, full)
+        state = load_checkpoint(template, candidate.path, mesh=mesh)
+        assert state.model.checkpoint_metadata()["levanter_model"] == candidate.metadata["levanter_model"]
+        counts = [
+            value for value in jax.tree.leaves(eqx.filter(state.opt_state, eqx.is_array))
+            if np.issubdtype(value.dtype, np.integer)
+        ]
+        assert counts and int(state.step) == 2 and all(np.all(np.asarray(c) == 2) for c in counts)
+        records = [dataclasses.asdict(record) for record in smoke._state_digests(state)]
+        tokens = jax.device_put(
+            (np.arange(config.batch_size * config.seq_len, dtype=np.int32).reshape(config.batch_size, config.seq_len) * 3) % config.vocab_size,
+            jax.sharding.NamedSharding(mesh, P("data", None)),
+        )
+        named_tokens = hax.named(tokens, (hax.Axis("batch", config.batch_size), hax.Axis("position", config.seq_len)))
+        hidden = eqx.filter_jit(lambda model: model.activations(named_tokens, AttentionMask.causal()).array)(state.model)
+        logits = eqx.filter_jit(lambda model: model(named_tokens, AttentionMask.causal()).array)(state.model)
+        jax.block_until_ready((hidden, logits))
+        outputs = {"hidden": array_record(hidden), "logits": array_record(logits)}
+    architecture = {}
+    for factor in (1.0, 8.0):
+        variant = dataclasses.replace(config.model, rope=DefaultRotaryEmbeddingsConfig(theta=10000.0, factor=factor))
+        wire = llama_native_lm._checkpoint_architecture(variant.native_config(config.vocab_size))
+        synthetic_metadata = {"levanter_model": {"version": 1, "type": "llama_native", "vocab_size": config.vocab_size, "architecture": wire}}
+        assert variant.checkpoint_vocab_size(synthetic_metadata) == config.vocab_size
+        architecture[str(factor)] = wire
+    metadata = args.checkpoint / "metadata.json"
+    report = {
+        "scope": "Native-to-native cross-revision checkpoint read only; no old named-Haliax conversion, training or new checkpoint writes.",
+        "modules": modules,
+        "checkpoint": str(args.checkpoint),
+        "checkpoint_metadata_sha256": hashlib.sha256(metadata.read_bytes()).hexdigest(),
+        "checkpoint_metadata": candidate.metadata["levanter_model"],
+        "full_state_records": records,
+        "full_state_sha256": hashlib.sha256(json.dumps(records, sort_keys=True).encode()).hexdigest(),
+        "step": int(state.step),
+        "adam_counts": [int(np.asarray(value)) for value in counts],
+        "outputs": outputs,
+        "default_linear_architecture_wire": architecture,
+        "architecture_factor8_scope": "Schema and semantic validation only; retained actual checkpoint uses factor1.",
+        "actual_cpu_device_count": len(jax.devices()),
+    }
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    print(json.dumps({k: report[k] for k in ("full_state_sha256", "step", "adam_counts", "outputs")}))
+
+
+if __name__ == "__main__":
+    main()

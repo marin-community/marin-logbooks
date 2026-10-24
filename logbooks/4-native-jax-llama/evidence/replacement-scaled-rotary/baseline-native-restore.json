@@ -1,0 +1,2087 @@
+{
+  "actual_cpu_device_count": 4,
+  "adam_counts": [
+    2,
+    2,
+    2
+  ],
+  "architecture_factor8_scope": "Schema and semantic validation only; retained actual checkpoint uses factor1.",
+  "checkpoint": "/private/tmp/native-jax-replacement-smoke-995a5a346c68-checkpoints/full/step-1",
+  "checkpoint_metadata": {
+    "architecture": {
+      "head_dim": 4,
+      "hidden_dim": 16,
+      "hybrid_norm": false,
+      "input_embedding_norm": false,
+      "intermediate_dim": 24,
+      "layer_norm_epsilon": 1e-05,
+      "num_heads": 4,
+      "num_kv_heads": 2,
+      "num_layers": 4,
+      "rope_factor": 1.0,
+      "rope_theta": 10000.0,
+      "tie_word_embeddings": false,
+      "upcast_attn": false,
+      "use_bias": false,
+      "use_layer_norm_weight": true,
+      "use_qk_norm": false
+    },
+    "type": "llama_native",
+    "version": 1,
+    "vocab_size": 32
+  },
+  "checkpoint_metadata_sha256": "683029b265c915c13fd47020c9b7d1c1ae7641f18efd1a5f330f1c59aaa88461",
+  "default_linear_architecture_wire": {
+    "1.0": {
+      "head_dim": 4,
+      "hidden_dim": 16,
+      "hybrid_norm": false,
+      "input_embedding_norm": false,
+      "intermediate_dim": 24,
+      "layer_norm_epsilon": 1e-05,
+      "num_heads": 4,
+      "num_kv_heads": 2,
+      "num_layers": 4,
+      "rope_factor": 1.0,
+      "rope_theta": 10000.0,
+      "tie_word_embeddings": false,
+      "upcast_attn": false,
+      "use_bias": false,
+      "use_layer_norm_weight": true,
+      "use_qk_norm": false
+    },
+    "8.0": {
+      "head_dim": 4,
+      "hidden_dim": 16,
+      "hybrid_norm": false,
+      "input_embedding_norm": false,
+      "intermediate_dim": 24,
+      "layer_norm_epsilon": 1e-05,
+      "num_heads": 4,
+      "num_kv_heads": 2,
+      "num_layers": 4,
+      "rope_factor": 8.0,
+      "rope_theta": 10000.0,
+      "tie_word_embeddings": false,
+      "upcast_attn": false,
+      "use_bias": false,
+      "use_layer_norm_weight": true,
+      "use_qk_norm": false
+    }
+  },
+  "full_state_records": [
+    {
+      "dtype": "int32",
+      "path": ".step",
+      "shape": [],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 1,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 2,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 3,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.token_embeddings",
+      "shape": [
+        32,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 16, None), slice(0, 8, None))",
+          "sha256": "22eee70931412e367cbb7f455e0f4f64d130976266b342f68f680daaba12e315",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(16, 32, None), slice(0, 8, None))",
+          "sha256": "c2c00800bd3fa7baef222b9bd506fa8b5ad7e3c17405b5703a4c4fb578995837",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(0, 16, None), slice(8, 16, None))",
+          "sha256": "155283b754cd82399d6d03e24de84bf0c1ad4777a260dbc5629a813a4408f99c",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(16, 32, None), slice(8, 16, None))",
+          "sha256": "f2d71240e802e0c2876a5bca011f78315bd151079474041ac6d93def2c064998",
+          "shape": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.self_attn.q_proj.weight",
+      "shape": [
+        4,
+        16,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 8, None))",
+          "sha256": "99f40b8526745d8313bc25cedf9851114c5d6b36fddd124f6b5eb791359b0322",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 8, None))",
+          "sha256": "78bbcb1e8fdd9daa2e1dbfd1e4afc280b4efec69ea1598fe04a474417e5c942a",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(8, 16, None))",
+          "sha256": "708c714091055ab2c28965cdfe48f0ec0bf6d13800206cf3cf7a65796747e63d",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(8, 16, None))",
+          "sha256": "6e03539c4caf31fc7ee88a4ab6e08854b85e6dd447332a809608f554b22a8895",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.self_attn.k_proj.weight",
+      "shape": [
+        4,
+        8,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(0, 8, None))",
+          "sha256": "9d2c6e56518548b3c9fa1124ae64c1ec76800241e78d71d93586a3037d45ba7c",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(0, 8, None))",
+          "sha256": "8ea00912e0f39d1fee74a27a8c0faf8c5501b86583f490a5abd67378166238b4",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(8, 16, None))",
+          "sha256": "e71ea62c3bd58ae379d1e5f309fbff37495174ab2dba592e0fa0010bf0413d36",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(8, 16, None))",
+          "sha256": "07129406815773205deed26c2fedef798d1f7f50b80ea16afa988253fdb3679f",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.self_attn.v_proj.weight",
+      "shape": [
+        4,
+        8,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(0, 8, None))",
+          "sha256": "7cad66bb458870884b4731ee16f9fdfd084b41bf731f9fe026330f17cad61f5c",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(0, 8, None))",
+          "sha256": "9b54f5a8ffc837783ad509ad276665ec9d47d3b14569346f740b0930acae1714",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(8, 16, None))",
+          "sha256": "b6b54e430d338bd52103b889026380c27f10bedf6c456f58225a43b70f151f3b",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(8, 16, None))",
+          "sha256": "afb9cc430b89fa5a007cdbd2fbcaf8431d34fe89628ae5aff06cef515d6cd511",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.self_attn.o_proj.weight",
+      "shape": [
+        4,
+        16,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data', 'model'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 8, None))",
+          "sha256": "19f13b947fe75eca8c7ef843c6b72ff06a3b3e4d0c107ab81c03200bffa9d379",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(8, 16, None))",
+          "sha256": "261ee174098119ead6c1ea19e9434bda14d2245fae9c65fbb8a429d02cedc82c",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 8, None))",
+          "sha256": "9c325778766e4762fdaa8c0b021e178009e8f5260220f914d36bb7fb9c91b499",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(8, 16, None))",
+          "sha256": "df5b06846f50ec11b5850e57fd7323cb7b89045c0c4f8d6291f765df0e276402",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.mlp.gate_proj.weight",
+      "shape": [
+        4,
+        24,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(0, 8, None))",
+          "sha256": "7eebe4d690e7e41b2561e32844f5cf7f8847b569324bf06ea4aba740b7c1ca6f",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(0, 8, None))",
+          "sha256": "2f866f9fa4864ecb94d488d44902ebe623cf59007746ee322e9410dd58e6f502",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(8, 16, None))",
+          "sha256": "8e81fa8794b75919e3e98c968be67f411230465d73c0fdc92ec75daa8cc7e773",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(8, 16, None))",
+          "sha256": "719cf21a1160c31722c3525875a5e93292b1ccbfa8698f86acbbf5dd33b41f4b",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.mlp.up_proj.weight",
+      "shape": [
+        4,
+        24,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(0, 8, None))",
+          "sha256": "f34230911fbfb7575270f19d175dc95532653d34743b5260732de40513f8a809",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(0, 8, None))",
+          "sha256": "97e713eae9dcc6d882c4986b7c78b6634d500efca6ff1c4416066fd25c40158b",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(8, 16, None))",
+          "sha256": "19dfdece58b5bed1e547ede6849695deb6586eaf3dbebe8cbd6ccf849d9cfcaa",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(8, 16, None))",
+          "sha256": "b5fe0f9fd41e13ff972d527c203344b0c2a315bb1f711e08db23fa7e768878e3",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.mlp.down_proj.weight",
+      "shape": [
+        4,
+        16,
+        24
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data', 'model'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 12, None))",
+          "sha256": "78ec76a57a0b54f45c28e97483859ad90082cae16814e55a0d1b7a74b0c277ca",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(12, 24, None))",
+          "sha256": "cd7eef38c863292b53702e7604867d0a1521ac773cb0d2a57a5081a3178869ce",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 12, None))",
+          "sha256": "ff51360adf4fce100f5eb310c2e32c32950beb93c6450d7d5e0c129075908268",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(12, 24, None))",
+          "sha256": "daf9de6a0a213ba68c003c74c616176203ed167bd2d55f17fc2ae5b68185b910",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.input_layernorm.weight",
+      "shape": [
+        4,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "6505b9302ee2f2c6b0a4280cd9f935b72cdee21aea6f8f305102e31c470c3374",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "6505b9302ee2f2c6b0a4280cd9f935b72cdee21aea6f8f305102e31c470c3374",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "88132dd29f662c81daa8828fab048bdec423536c65b80013f637b43dcd19ec55",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "88132dd29f662c81daa8828fab048bdec423536c65b80013f637b43dcd19ec55",
+          "shape": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.layers.stacked.post_attention_layernorm.weight",
+      "shape": [
+        4,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "f561011b2051b314f7d68bf26f787f19a59e7283ab3580f0c675f8a13f088b76",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "f561011b2051b314f7d68bf26f787f19a59e7283ab3580f0c675f8a13f088b76",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "062a0489f5cf05f56a790bddbe19258a08c493f74281cc8d07ae394b1b62e573",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "062a0489f5cf05f56a790bddbe19258a08c493f74281cc8d07ae394b1b62e573",
+          "shape": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.norm.weight",
+      "shape": [
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('data',), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 8, None),)",
+          "sha256": "605fc14cc96d368a96139061d253b83e33827356d7ea7bfe0c1646c783ea5bd1",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(0, 8, None),)",
+          "sha256": "605fc14cc96d368a96139061d253b83e33827356d7ea7bfe0c1646c783ea5bd1",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(8, 16, None),)",
+          "sha256": "8835b149d49b2993c92669c4810552c5949543e05e26ce73886dc0c5e418f047",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(8, 16, None),)",
+          "sha256": "8835b149d49b2993c92669c4810552c5949543e05e26ce73886dc0c5e418f047",
+          "shape": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".model.native.lm_head.weight",
+      "shape": [
+        32,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 16, None), slice(0, 8, None))",
+          "sha256": "6232b143442c66d33ddfb55e105f25a07589f4eb20674258033c5e827c988eb8",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(16, 32, None), slice(0, 8, None))",
+          "sha256": "c459a285d521b9def076496670103d06b0a69dfe81552087339665f569907d1b",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(0, 16, None), slice(8, 16, None))",
+          "sha256": "c0e577a63768ba6703bacc1c16d60d0502a01203125ea3d5d5351479dc3c963a",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(16, 32, None), slice(8, 16, None))",
+          "sha256": "aed99bef2afa1db0d31700f67c7ecfd796c8d256d4984707cb16032b03d4dd7d",
+          "shape": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "int32",
+      "path": ".opt_state.count",
+      "shape": [],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 1,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 2,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 3,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.hyperparams['learning_rate']",
+      "shape": [],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "()",
+          "sha256": "0835a5c87ba00a93f8d84fb3bdf20866024a13fc710fc1225e3d67073543bba0",
+          "shape": []
+        },
+        {
+          "device_id": 1,
+          "index": "()",
+          "sha256": "0835a5c87ba00a93f8d84fb3bdf20866024a13fc710fc1225e3d67073543bba0",
+          "shape": []
+        },
+        {
+          "device_id": 2,
+          "index": "()",
+          "sha256": "0835a5c87ba00a93f8d84fb3bdf20866024a13fc710fc1225e3d67073543bba0",
+          "shape": []
+        },
+        {
+          "device_id": 3,
+          "index": "()",
+          "sha256": "0835a5c87ba00a93f8d84fb3bdf20866024a13fc710fc1225e3d67073543bba0",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "dtype": "int32",
+      "path": ".opt_state.hyperparams_states['learning_rate'].count",
+      "shape": [],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 1,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 2,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 3,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "dtype": "int32",
+      "path": ".opt_state.inner_state[1].count",
+      "shape": [],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 1,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 2,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        },
+        {
+          "device_id": 3,
+          "index": "()",
+          "sha256": "26b25d457597a7b0463f9620f666dd10aa2c4373a505967c7c8d70922a2d6ece",
+          "shape": []
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.token_embeddings",
+      "shape": [
+        32,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 16, None), slice(0, 8, None))",
+          "sha256": "27112d2ec03946a71759bb9c86535b1a779a72f8dd6d143322c24df3f9fe2e68",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(16, 32, None), slice(0, 8, None))",
+          "sha256": "7246c5b152e9d2c3fe8025ec9823a1b9842e5115c804e85ce5564f4dc098ae86",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(0, 16, None), slice(8, 16, None))",
+          "sha256": "f4c50ba909b91dc8c90c96f588e6ed869d21666bd34fc3cebb2519d5cca19f1e",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(16, 32, None), slice(8, 16, None))",
+          "sha256": "077ece4b19ec14d7fd624693b9ea6dbb4d68f38a41814063e3dbffe0e6a5a2bd",
+          "shape": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.self_attn.q_proj.weight",
+      "shape": [
+        4,
+        16,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 8, None))",
+          "sha256": "647c65dcd11c3f285731b69dcebc70f16c19082f018c88a27c972f5478a96dcb",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 8, None))",
+          "sha256": "c0938239db197a14559b0dc4119079b227972c4425f7612bf5537bc70275a09e",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(8, 16, None))",
+          "sha256": "767b78d2499f3c98fe59364b28203351ec7a13a5e40ecef5ae649af68bf76e2e",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(8, 16, None))",
+          "sha256": "5530bf6cee6b7d2075727270031c5d9ebc8b9d50102a22c1dbcdc3375c8c73ac",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.self_attn.k_proj.weight",
+      "shape": [
+        4,
+        8,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(0, 8, None))",
+          "sha256": "0873a98e4ba13558585e6c874991244c5e62a971dd5d382af6b7564212424aab",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(0, 8, None))",
+          "sha256": "b9622b73e459ad7f41a46fcc3190d8419aded6448851991a653fa8b024893f1d",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(8, 16, None))",
+          "sha256": "d5035068c9534dfea228a39ce433c1111d9fe53cd0bb982cbd9ced4a84827dfd",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(8, 16, None))",
+          "sha256": "909ac9c679cf30e1a7017d65b5840aec8b84a24bec0e8a266d4642ad03066622",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.self_attn.v_proj.weight",
+      "shape": [
+        4,
+        8,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(0, 8, None))",
+          "sha256": "a0682a0f722e7032f6852877a9c23426f025f47d4107d902af656fd0415eaf5f",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(0, 8, None))",
+          "sha256": "fde777ee3b83e58187f2356a45383940315a67a4b7c9a7c96d7380e01c0dc81e",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(8, 16, None))",
+          "sha256": "eb03e5bc8f1f48abfe4d97f648ba71ff45bb0700176857ec7e8309e1a687862e",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(8, 16, None))",
+          "sha256": "940c7636b0cc814aff7347d86b4ca61b6593f47b86c864a4344b3577c766aa3e",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.self_attn.o_proj.weight",
+      "shape": [
+        4,
+        16,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data', 'model'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 8, None))",
+          "sha256": "8d1307e587e4f246cdc354206d204487a1fb7c01eeed3533e6b2acfa04b3460e",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(8, 16, None))",
+          "sha256": "a0580f5fbbe354ca197309f5f68b8e715f2f528f8fca97b230b16fe015623ef5",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 8, None))",
+          "sha256": "07b3a93cb91b0e524195b30825134e4a7f530f90301f73bc8181ddadf47509dc",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(8, 16, None))",
+          "sha256": "d33d0b32eff3718142085a8a9689a9c1e02e8ac24e55c0630b4b066844047f53",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.mlp.gate_proj.weight",
+      "shape": [
+        4,
+        24,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(0, 8, None))",
+          "sha256": "bcebc289e811e249ad9d0037e34a5d19dedfa2726513bf265a22dc2291f9acf5",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(0, 8, None))",
+          "sha256": "39f7c5c91f9b6cf92f6e5201f2adb21f4a48253a0e68a108ae938eb5daed23ce",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(8, 16, None))",
+          "sha256": "3feaf43f976ee4ff7624d0e7ee06ececa7dbda3fcd61a4f9a4798a55bca5e7b1",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(8, 16, None))",
+          "sha256": "29affdfbaf9f4b026929d58d4668767841c8b04f08f2f58629a74f021a066fb8",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.mlp.up_proj.weight",
+      "shape": [
+        4,
+        24,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(0, 8, None))",
+          "sha256": "3348bc3ed8703dc7329a9f2e18b7c6a841c47116da4fea9a8f81ac2fdfbb3afd",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(0, 8, None))",
+          "sha256": "e6c8a6a9c383eabcd7a204ba35790bdf5fa68aa1224189342ba7a9aa886a8c84",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(8, 16, None))",
+          "sha256": "f4f80c440f0ab5a89fab52435b3bcdd389b7ca71cc3644b58e308c77f2587248",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(8, 16, None))",
+          "sha256": "131f74afbe9496cf5c23b2c5b078b4ba4af2e30da7c2c9eff595fd3989db74a9",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.mlp.down_proj.weight",
+      "shape": [
+        4,
+        16,
+        24
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data', 'model'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 12, None))",
+          "sha256": "644f384e3cd472e2911e736b887a1692eab8cdefe6cdc6ad43893b332d0d7879",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(12, 24, None))",
+          "sha256": "ea5a8ab50a476c112dcef69064c1e0ff3a4fba74a8bf2f02559b466f05b7c175",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 12, None))",
+          "sha256": "e9b8c0697c19068fc68c7d018929ca3b8e1ee762321f045f0c12d5ff56b530cf",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(12, 24, None))",
+          "sha256": "298e8d8ff57202bd1954a5e580420bac8a8007c280b4b63e0be131973809df9b",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.input_layernorm.weight",
+      "shape": [
+        4,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "e0e864de4872a6f3a44cbf6c3f86953c4706596bcd10d0329030a39556bf9c49",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "e0e864de4872a6f3a44cbf6c3f86953c4706596bcd10d0329030a39556bf9c49",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "db72b6374f932729267df4648bb403b3d610b46d6e9b08274d8d6935a57415eb",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "db72b6374f932729267df4648bb403b3d610b46d6e9b08274d8d6935a57415eb",
+          "shape": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.layers.stacked.post_attention_layernorm.weight",
+      "shape": [
+        4,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "6eb9e4c0ae88409426d05617aec31434d35b9d53388f3f1b3daaa36672389145",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "6eb9e4c0ae88409426d05617aec31434d35b9d53388f3f1b3daaa36672389145",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "dc5e0553102efa262d1e9fca87c1e52a32882863148ffc466513f2b63499f584",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "dc5e0553102efa262d1e9fca87c1e52a32882863148ffc466513f2b63499f584",
+          "shape": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.norm.weight",
+      "shape": [
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('data',), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 8, None),)",
+          "sha256": "75cbe51688f2634947823c6e6719389ccea8a7d159841ea716959ede0d36ae06",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(0, 8, None),)",
+          "sha256": "75cbe51688f2634947823c6e6719389ccea8a7d159841ea716959ede0d36ae06",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(8, 16, None),)",
+          "sha256": "d7d5d91bb96771031ce5ca9a6b99c66d32e03c4f70d83516f3a769c9f83e3477",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(8, 16, None),)",
+          "sha256": "d7d5d91bb96771031ce5ca9a6b99c66d32e03c4f70d83516f3a769c9f83e3477",
+          "shape": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].mu.native.lm_head.weight",
+      "shape": [
+        32,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 16, None), slice(0, 8, None))",
+          "sha256": "72b533cb6bac83d637ed70bd110d1dc0c4704585be5838b8e831537a98cc189e",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(16, 32, None), slice(0, 8, None))",
+          "sha256": "001987a4ecf71f84d328d916ca1b2f1b38387a9f7bb459d2bf4fd6769c41bc34",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(0, 16, None), slice(8, 16, None))",
+          "sha256": "a753f2445ffe490c7ceaec9ae7fcd5ae36430a0c16dbf51e337e26a4906db309",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(16, 32, None), slice(8, 16, None))",
+          "sha256": "25fc83331827e623d9fbad121bce41c5a7fb0db7b9609a127025ea33a265f7c6",
+          "shape": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.token_embeddings",
+      "shape": [
+        32,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 16, None), slice(0, 8, None))",
+          "sha256": "19301de6451756119b1e33608a9aeb76ac19308642636bd0762c4aba4117e11b",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(16, 32, None), slice(0, 8, None))",
+          "sha256": "a31f6d50f3bdc4e8795e6edb972563faf31e258e84ef996d0fed5d866162d53b",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(0, 16, None), slice(8, 16, None))",
+          "sha256": "e8c987ed3f35bdce6cc159e77474451faaac848d299603cd768263a17f2baa37",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(16, 32, None), slice(8, 16, None))",
+          "sha256": "923b4699d62f6266a2e37b7826713f12c7426f682cd92e6c0e93451f103a77a9",
+          "shape": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.self_attn.q_proj.weight",
+      "shape": [
+        4,
+        16,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 8, None))",
+          "sha256": "823f3e9de6d8f35cbfb3ff5bbb510669e8a3b898e77c11786f83bab0d0f00e03",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 8, None))",
+          "sha256": "2d3500df471322d195e413050564415e909e4d5b0a498439db91c61afb7c04b7",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(8, 16, None))",
+          "sha256": "4adb7e203f5b09d62a5b5db19791aefbf459d9114340be4b696d4cb3eb635c30",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(8, 16, None))",
+          "sha256": "4d8ca1b23b93d4d025aabadd58cc14978f4afeada6df301978b6a64439440653",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.self_attn.k_proj.weight",
+      "shape": [
+        4,
+        8,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(0, 8, None))",
+          "sha256": "861face7b4663db0c66b882cddfb865828776597866f3a2418ea256ef222744a",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(0, 8, None))",
+          "sha256": "af0c5d34583d47bdc42d1afb695fa61a1c589019510f10e403bf61c0c5dfd39b",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(8, 16, None))",
+          "sha256": "4aa8cafab92309d6dd8f8cfeeaa958032b4bfccae6cf7f7cad4ff5867110e7d3",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(8, 16, None))",
+          "sha256": "128197d9ed5f69ea6996033e681eedb0b3451b013a7f2820c4d3dcdbfcbbbcea",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.self_attn.v_proj.weight",
+      "shape": [
+        4,
+        8,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(0, 8, None))",
+          "sha256": "9cf783e5d266c922d1e5897037930c147d6076d55b38b64ae3c770b733a88bc3",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(0, 8, None))",
+          "sha256": "1b054dce65bac8b176d37169b33bad1bd4674e95e8b35c57cb762f7c54bb6d4a",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 4, None), slice(8, 16, None))",
+          "sha256": "96238e782a166ff7d2877d430af075d5e651fd4d496fe733d9a35b574992b725",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(4, 8, None), slice(8, 16, None))",
+          "sha256": "2b2cd75dfbe6b0cc41c80c59f257d8d4e67af6198ff8011b7d23390369f8daa1",
+          "shape": [
+            4,
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.self_attn.o_proj.weight",
+      "shape": [
+        4,
+        16,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data', 'model'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 8, None))",
+          "sha256": "cb536b48f6a3f443691775e902df7a5411de3fa8a9693f33fcc23685b9088d92",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(8, 16, None))",
+          "sha256": "95f4e11672c09d5be3c3add1d707fe2e1a674c3ba6d8f1976c3100a9a5595648",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 8, None))",
+          "sha256": "854e58e4ed77b12a9eb8eb964566dc2368bd87cbf70a86dfbbfc3d0e4f76f4d5",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(8, 16, None))",
+          "sha256": "51fd1cb12defe67fc7fd87d1c786836e34f51188ed0799ea74488e22dab52e13",
+          "shape": [
+            4,
+            8,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.mlp.gate_proj.weight",
+      "shape": [
+        4,
+        24,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(0, 8, None))",
+          "sha256": "cae6a29d4e6e53c8c0d308650dfbcfca5319a358f2740f07ab51df7d75967b69",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(0, 8, None))",
+          "sha256": "2c255488f7cdf88ce5afc70d8c2b129a1a2a9280baff138f150101427e1ca05c",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(8, 16, None))",
+          "sha256": "61fc318369ff9f8b89c5bafd630d2db0aaa58c46de230898dfa8c7c1c06a91c3",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(8, 16, None))",
+          "sha256": "a69de3571514735e49d0527dd63194338238b4781bf517bd87214ad9fe284225",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.mlp.up_proj.weight",
+      "shape": [
+        4,
+        24,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(0, 8, None))",
+          "sha256": "0771bc8b35d1bcd3bc01bcd25fc9e7d08252feea30a5647335a1d16a9e0fdb5c",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(0, 8, None))",
+          "sha256": "51c7e2d92e4849abbda6c9364a0e8020f04dd76eaa80bb0e43c5f61186e71a68",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(0, 12, None), slice(8, 16, None))",
+          "sha256": "01d92e7ec2efadb03c5b9efb2d15dcf72f31f3b0ecd1b38ce37e30791b7adf29",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(12, 24, None), slice(8, 16, None))",
+          "sha256": "87f26618c64c4d741617a8784c959533551adeb63d595053c8bc4d4e2cda9770",
+          "shape": [
+            4,
+            12,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.mlp.down_proj.weight",
+      "shape": [
+        4,
+        16,
+        24
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data', 'model'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(0, 12, None))",
+          "sha256": "20354849753ea05153c3c0a71be5ec0d33d29e3fe30f888bf9cba0407531c15d",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None), slice(12, 24, None))",
+          "sha256": "ffb8ffa6073e591d33d1a4b6b387b3969686a855bab14b06ae0e57781230e09e",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(0, 12, None))",
+          "sha256": "b72e6bf7cc90e733deab4576edbccf294cfa59781b5100e669f0483ff883f839",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None), slice(12, 24, None))",
+          "sha256": "8175a7f284d30f55a8c276b8c5b18aaa96b98436923a156d6e6c1d027a00e361",
+          "shape": [
+            4,
+            8,
+            12
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.input_layernorm.weight",
+      "shape": [
+        4,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "b409cab7db4295850d5e6b86ef8d139eb89f9e9ea38fa38fcc6224af2ecd9037",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "b409cab7db4295850d5e6b86ef8d139eb89f9e9ea38fa38fcc6224af2ecd9037",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "1b14ba4d2cfb93ee03d14e09d30bca0ccc9182480c738e9ecb3578fda650ed34",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "1b14ba4d2cfb93ee03d14e09d30bca0ccc9182480c738e9ecb3578fda650ed34",
+          "shape": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.layers.stacked.post_attention_layernorm.weight",
+      "shape": [
+        4,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(None, 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "ab2b7a5490132ee68fd4bbcd4d8d1cde90d21512030967eddce320f04361f3ce",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None), slice(0, 8, None))",
+          "sha256": "ab2b7a5490132ee68fd4bbcd4d8d1cde90d21512030967eddce320f04361f3ce",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "307ca0d16128cd2c4ef250cfd95fbb1acb6b828493751a37f04c8b4b43803348",
+          "shape": [
+            4,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None), slice(8, 16, None))",
+          "sha256": "307ca0d16128cd2c4ef250cfd95fbb1acb6b828493751a37f04c8b4b43803348",
+          "shape": [
+            4,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.norm.weight",
+      "shape": [
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('data',), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 8, None),)",
+          "sha256": "9669fa152ab2d5e622a9398931e0a8bfdb716fde63d84c3bd445815172c4735e",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(0, 8, None),)",
+          "sha256": "9669fa152ab2d5e622a9398931e0a8bfdb716fde63d84c3bd445815172c4735e",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(8, 16, None),)",
+          "sha256": "5ff1282b89598d7c9bddacd0575c1c9d39f6723938c81d3b5da2ef257f25b79a",
+          "shape": [
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(8, 16, None),)",
+          "sha256": "5ff1282b89598d7c9bddacd0575c1c9d39f6723938c81d3b5da2ef257f25b79a",
+          "shape": [
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "float32",
+      "path": ".opt_state.inner_state[1].nu.native.lm_head.weight",
+      "shape": [
+        32,
+        16
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(0, 16, None), slice(0, 8, None))",
+          "sha256": "e3a7bb57a1339fb8e23d44f0f97d4428ffa7dc696fc35176cb972a1f4530447a",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(16, 32, None), slice(0, 8, None))",
+          "sha256": "36f416b880252d2a1f422e80c54eb2751631bc985c9ba4f8574982c3170c2942",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(0, 16, None), slice(8, 16, None))",
+          "sha256": "c7b749d00265370f5e0591cc363e9efafc981efec604b694a1962745f62d9526",
+          "shape": [
+            16,
+            8
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(16, 32, None), slice(8, 16, None))",
+          "sha256": "355cc5c778cfcf126ed6da2aad053d53d96044fa454d313f4db3b85d63143a79",
+          "shape": [
+            16,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "dtype": "uint32",
+      "path": ".training_key",
+      "shape": [
+        2
+      ],
+      "sharding": "NamedSharding(mesh=Mesh('data': 2, 'replica': 1, 'model': 2, 'replica_dcn': 1, axis_types=(Explicit, Explicit, Explicit, Explicit)), spec=P(), memory_kind=device)",
+      "shards": [
+        {
+          "device_id": 0,
+          "index": "(slice(None, None, None),)",
+          "sha256": "fc8c31f86b2d209926c0753fffe0e00859df3a4b6d5c5791b98ac1032e1995ff",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "device_id": 1,
+          "index": "(slice(None, None, None),)",
+          "sha256": "fc8c31f86b2d209926c0753fffe0e00859df3a4b6d5c5791b98ac1032e1995ff",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "device_id": 2,
+          "index": "(slice(None, None, None),)",
+          "sha256": "fc8c31f86b2d209926c0753fffe0e00859df3a4b6d5c5791b98ac1032e1995ff",
+          "shape": [
+            2
+          ]
+        },
+        {
+          "device_id": 3,
+          "index": "(slice(None, None, None),)",
+          "sha256": "fc8c31f86b2d209926c0753fffe0e00859df3a4b6d5c5791b98ac1032e1995ff",
+          "shape": [
+            2
+          ]
+        }
+      ]
+    }
+  ],
+  "full_state_sha256": "2cae6fbc6dde736b6a30bc477321715d960917970a206448f88fa99f12f5482a",
+  "modules": {
+    "haliax": "/private/tmp/marin-native-jax-replacement-reference-be/lib/haliax/src/haliax/__init__.py",
+    "levanter.main.train_lm": "/private/tmp/marin-native-jax-replacement-reference-be/lib/levanter/src/levanter/main/train_lm.py",
+    "levanter.models.llama_native": "/private/tmp/marin-native-jax-replacement-reference-be/lib/levanter/src/levanter/models/llama_native.py",
+    "levanter.models.llama_native_lm": "/private/tmp/marin-native-jax-replacement-reference-be/lib/levanter/src/levanter/models/llama_native_lm.py"
+  },
+  "outputs": {
+    "hidden": {
+      "dtype": "float32",
+      "sha256": "e9998ca954cd648da0ac7dd927dfc58eb6469cd6176f1adcc46fea34eb5e215f",
+      "shape": [
+        8,
+        4,
+        16
+      ]
+    },
+    "logits": {
+      "dtype": "float32",
+      "sha256": "b33a16b2d7ebca26d46b8237f67ff40ea220829bcf6c78baf18298e853e8a150",
+      "shape": [
+        8,
+        4,
+        32
+      ]
+    }
+  },
+  "scope": "Native-to-native cross-revision checkpoint read only; no old named-Haliax conversion, training or new checkpoint writes.",
+  "step": 2
+}

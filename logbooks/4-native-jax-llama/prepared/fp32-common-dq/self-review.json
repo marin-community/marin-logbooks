@@ -1,0 +1,75 @@
+{
+  "schema": "native-jax-fp32-common-dq-self-review.v1",
+  "status": "prepared_for_independent_review_and_durable_archive_only",
+  "proofs": {
+    "CPU4 mechanics": {
+      "summary_path": "/private/tmp/fp32-common-dq-final-cpu-proof/controller-summary.json",
+      "summary_sha256": "da084a0c3caa1132e577812ce62ddaae2a4a5507d17e546a6508f1960161deb6",
+      "passed_mechanics_or_abstract_controls": true,
+      "scientific_attribution_valid": false,
+      "files": 115,
+      "bytes": 7507872,
+      "frozen_input_manifest_sha256": "ac1adf854079b09ffbce5f19873164d67c9aa1b28fd220d22ca5b754aaa9ab68",
+      "cross_child_guards": {
+        "batch_sha256_unchanged": true,
+        "composed_all_named_results_unchanged": true,
+        "composed_native_forward_unchanged": true,
+        "composed_no_new_numerical_mismatches": true,
+        "full_all_named_results_unchanged": true,
+        "full_native_forward_unchanged": true,
+        "full_no_new_numerical_mismatches": true,
+        "parameter_sha256_unchanged": true,
+        "prefix_all_named_results_unchanged": true,
+        "prefix_native_forward_unchanged": true,
+        "prefix_no_new_numerical_mismatches": true,
+        "raw_operand_result_hashes_unchanged": true,
+        "source_operand_hashes_unchanged": true,
+        "tail_all_named_results_unchanged": true,
+        "tail_native_forward_unchanged": true,
+        "tail_no_new_numerical_mismatches": true
+      }
+    },
+    "actual-large CPU abstract": {
+      "summary_path": "/private/tmp/fp32-common-dq-final-abstract-proof/controller-summary.json",
+      "summary_sha256": "a5c84b9e05d600488f9b7ae369e572f7a61e693a51d14e1904f74746d2beb68a",
+      "passed_mechanics_or_abstract_controls": true,
+      "scientific_attribution_valid": false,
+      "files": 5,
+      "bytes": 42724,
+      "frozen_input_manifest_sha256": "ac1adf854079b09ffbce5f19873164d67c9aa1b28fd220d22ca5b754aaa9ab68",
+      "cross_child_guards": {}
+    }
+  },
+  "source_candidate_head": "f1e991207ceda752957938b1cfe8893027d3fed8",
+  "candidate_clean": true,
+  "reviewed_invariants": [
+    "Baseline raw Splash AST differs by exactly one deleted scale assignment; exact reinsertion guard",
+    "One shared actual FP32 raw kernel VJP; no divide-gradient reconstruction",
+    "One shared source-derived runtime trig pair, public forward/VJP guards",
+    "Standalone runtime products materialized and optimized-HLO checked",
+    "Actual source joint QKV/inputnorm downstream VJP with fixed K/V cotangents",
+    "Fresh source-pinned imports and bytecode for each sequential child; no production monkeypatch",
+    "New actual FP32 source hashes, not historical BF16 operand hashes",
+    "All named results/native forward hashes preserved across CPU mechanics A/B",
+    "CPU scientific identity failures retained and explicitly not accepted; non-small guards remain fatal",
+    "Complete selected HLO plus aggregate/hash/placement records; bounded artifacts/no arrays or secrets"
+  ],
+  "remaining_limits": [
+    "No TPU compilation or numerical execution",
+    "CPU-small source-vs-replay and raw-kernel forward exact identity guards fail; mechanics completion is not scientific attribution",
+    "Actual TPU artifact size not yet measured, reject-on-overflow enforced",
+    "No full Trainer trajectory/performance or sufficient-cause claim",
+    "Independent review and durable archive remain mandatory before hardware"
+  ],
+  "scope_actions": {
+    "hardware_launches": 0,
+    "hardware_or_job_queries": 0,
+    "remote_publications": 0,
+    "production_source_edits": 0,
+    "secrets_read_or_copied": 0
+  },
+  "validation_notes": [
+    "Local scientific-script syntax/undefined-name checks passed with cached Ruff; no repository source edits or precommit requirement claimed",
+    "Earlier CPU preparation failures (scalar statistics and exact compiler-context controls) were retained in scratch; no thresholds changed"
+  ]
+}

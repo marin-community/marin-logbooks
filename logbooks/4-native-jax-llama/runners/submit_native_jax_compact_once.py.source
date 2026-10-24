@@ -1,0 +1,28 @@
+import datetime,hashlib,json,os,subprocess,sys
+from pathlib import Path
+p=Path('/private/tmp')
+root=p/'marin-native-jax-query-scale-rounding'
+cmd=json.loads((p/'native-jax-splash-rotary-regression-ab-command.json').read_text())
+prepared=json.loads((p/'native-jax-splash-rotary-regression-ab-prepared.json').read_text())
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()==cmd['source_pin']
+assert not subprocess.check_output(['git','status','--porcelain'],cwd=root,text=True).strip()
+for name,key in [('native_jax_splash_rotary_regression_ab.py','controller_sha256'),('submit_native_jax_rotary_regression_ab.py','api_submission_script_sha256'),('native_jax_splash_rotary_gradient_regression.py','prototype_sha256')]:
+ assert hashlib.sha256((p/name).read_bytes()).hexdigest()==prepared[key]
+assert hashlib.sha256((p/'native-jax-splash-rotary-regression-ab-command.json').read_bytes()).hexdigest()==prepared['command_file_sha256']
+ledger=json.loads((p/'native-jax-gcp-egress-ledger.json').read_text())
+marker=p/'native-jax-compact-regression-submission-started.json'
+now=datetime.datetime.now(datetime.timezone.utc)
+record={'job_id':'/dlwh/'+cmd['job_name'],'started_utc':now.isoformat(),'source':cmd['source_pin'],'status':'SUBMISSION_STARTED_NO_RETRY','config':'lib/iris/config/marin.yaml','command_file':str(p/'native-jax-splash-rotary-regression-ab-command.json'),'preflight':str(p/'native-jax-compact-dispatch-read-preflight.json'),'archive_precedes_execution':'8dbe5ce2b0527989a3c4c91abe94a3b2cf5be28d','initial_observation_not_before_utc':(now+datetime.timedelta(seconds=120)).isoformat()}
+with marker.open('x') as f:json.dump(record,f,indent=2);f.write('\n')
+state=p/'marin-native-jax-compact-regression-monitor.json'
+state.write_text(json.dumps(record,indent=2)+'\n')
+env=dict(os.environ,UV_CACHE_DIR='/private/tmp/marin-native-jax-uv-cache',UV_PROJECT_ENVIRONMENT='/Users/dlwh/.codex/worktrees/73be/marin/.venv',PYTHONPATH=os.pathsep.join(str(x) for x in sorted(root.glob('lib/*/src'))))
+log=p/'native-jax-compact-regression-submission.log'
+with log.open('w') as out:
+ r=subprocess.run(['/Users/dlwh/.codex/worktrees/73be/marin/.venv/bin/python',str(p/'submit_native_jax_rotary_regression_ab.py'),'--submit'],cwd=root,env=env,stdout=out,stderr=subprocess.STDOUT)
+text=log.read_text();record['submission_returncode']=r.returncode;record['submission_log']=str(log)
+record['canonical_id_printed']=record['job_id'] in text
+record['status']='SUBMITTED' if r.returncode==0 and record['canonical_id_printed'] else 'SUBMISSION_UNCERTAIN_INSPECT_SAME_ID_NEVER_RETRY'
+record['submitted_or_finished_utc']=datetime.datetime.now(datetime.timezone.utc).isoformat()
+state.write_text(json.dumps(record,indent=2)+'\n')
+print(json.dumps(record,indent=2));raise SystemExit(r.returncode)
