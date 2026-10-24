@@ -1,0 +1,204 @@
+"""Finite CPU identity check of the original source-shaped FP32 block graph."""
+
+import argparse
+import ast
+import copy
+import dataclasses
+import hashlib
+import json
+import os
+from pathlib import Path
+import sys
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def write(path, value):
+    path.write_text(json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    config = json.loads(args.config.read_text())
+    output = args.output
+    output.mkdir()
+    report = {"schema": "native-jax-fp32-source-identity.v1", "completed": False,
+              "scientific_attribution_valid": False, "config_sha256": sha(args.config),
+              "script_sha256": sha(Path(__file__)), "controls": {}}
+    try:
+        for key, value in config["environment"].items():
+            if os.environ.get(key) != value:
+                raise ValueError("Unexpected environment: " + key)
+        bundle = Path(config["bundle"])
+        fixture = Path(config["source_fixture"])
+        old_outputs = Path(config["retained_output"])
+        old_files = [p for root in (bundle, old_outputs) for p in root.rglob("*") if p.is_file()]
+        before = {str(p): sha(p) for p in old_files}
+        report["protected_inputs_before"] = before
+        if sha(bundle / "manifest.json") != config["bundle_manifest_sha256"]:
+            raise ValueError("Frozen manifest identity changed")
+        if sha(old_outputs / "provenance.json") != config["retained_provenance_sha256"]:
+            raise ValueError("Retained CPU source provenance changed")
+        manifest = json.loads((bundle / "manifest.json").read_text())
+        for name, row in manifest["files"].items():
+            path = bundle / name
+            if sha(path) != row["sha256"] or path.stat().st_size != row["bytes"]:
+                raise ValueError("Frozen payload changed: " + name)
+        pins = json.loads((bundle / "source-pins.json").read_text())["baseline"]
+        for name, digest in pins["source_sha256"].items():
+            if sha(fixture / name) != digest:
+                raise ValueError("Pinned source changed: " + name)
+        os.chdir(fixture)
+        sys.path[:0] = [str(bundle), *(str(p) for p in (fixture / "lib").glob("*/src"))]
+        # Dependencies are imported only after the immutable source checks above.
+        import equinox as eqx
+        import haliax as hax
+        import jax
+        import jax.numpy as jnp
+        from jax.sharding import NamedSharding, PartitionSpec as P
+        import numpy as np
+        import native_jax_fp32_common_capture as frozen
+        from physical_guards import physical, assert_physical_equal
+        from runtime_versions import runtime_snapshot
+
+        prior = frozen.prior
+        if jax.__version__ != "0.11.1" or jax.default_backend() != "cpu" or jax.device_count() != 4 or jax.process_count() != 1:
+            raise ValueError("Expected pinned CPU runtime with four devices and one process")
+        loaded = Path(prior.bench.__file__).resolve()
+        if loaded != fixture / "lib/levanter/scripts/bench/bench_llama_native.py":
+            raise ValueError("Benchmark import escaped pinned source")
+        modules = {
+            "levanter.grug.attention._core": "lib/levanter/src/levanter/grug/attention/_core.py",
+            "levanter.models.llama": "lib/levanter/src/levanter/models/llama.py",
+            "levanter.models.llama_native": "lib/levanter/src/levanter/models/llama_native.py",
+        }
+        for module, name in modules.items():
+            if Path(sys.modules[module].__file__).resolve() != fixture / name:
+                raise ValueError("Module import escaped pinned source: " + module)
+        workload = frozen.configuration(True)
+        if dataclasses.asdict(workload) != config["workload"]:
+            raise ValueError("Small CPU workload changed")
+        jax.config.update("jax_default_matmul_precision", "highest")
+        base = prior.Replay(workload, output)
+        mesh = base.meshes["named"]
+        positions = None
+        scope = {"hax": hax, "jax": jax, "prior": prior, "base": base, "positions": positions}
+        parsed = ast.parse((bundle / "native_jax_fp32_common_capture.py").read_text())
+        report["source_function_ast"] = {}
+        functions = {}
+        for name in ("scanned_capture", "capture_last", "isolated_full"):
+            nodes = [n for n in ast.walk(parsed) if isinstance(n, ast.FunctionDef) and n.name == name]
+            if len(nodes) != 1:
+                raise ValueError("Ambiguous frozen source function: " + name)
+            node = copy.deepcopy(nodes[0])
+            original = ast.dump(node, include_attributes=False)
+            node.decorator_list = []
+            report["source_function_ast"][name] = {
+                "original_sha256": hashlib.sha256(original.encode()).hexdigest(),
+                "body_sha256": hashlib.sha256(ast.dump(ast.Module(body=node.body, type_ignores=[]), include_attributes=False).encode()).hexdigest(),
+                "only_decorators_removed_for_explicit_compilation": True,
+            }
+            exec(compile(ast.fix_missing_locations(ast.Module(body=[node], type_ignores=[])), "<exact-frozen-source>", "exec"), scope)
+            functions[name] = scope[name]
+        graph_bytes = 0
+
+        def record(value):
+            if isinstance(value, hax.NamedArray):
+                value = value.array
+            return prior.statistics(value) | {"physical": physical(value)}
+
+        def tree_records(value):
+            return [{"tree_path": jax.tree_util.keystr(path), **record(leaf)}
+                    for path, leaf in jax.tree_util.tree_flatten_with_path(value)[0] if eqx.is_array(leaf)]
+
+        def execute(label, function, arguments):
+            nonlocal graph_bytes
+            lowered = eqx.filter_jit(function).lower(*arguments)
+            compiled = lowered.compile()
+            graphs = {}
+            for suffix, data in (("stablehlo", lowered.as_text().encode()), ("hlo", compiled.compiled.as_text().encode())):
+                if len(data) > config["per_graph_byte_limit"] or graph_bytes + len(data) > config["total_graph_byte_limit"]:
+                    raise ValueError("Complete graph exceeds bound; no truncation")
+                path = output / (label + "." + suffix + ".txt")
+                path.write_bytes(data)
+                graph_bytes += len(data)
+                graphs[suffix] = {"file": path.name, "bytes": len(data), "sha256": sha(path), "truncated": False}
+            values = compiled(*arguments)
+            jax.block_until_ready(values)
+            report["controls"][label] = {"arguments": tree_records(arguments), "results": tree_records(values), "graphs": graphs}
+            write(output / "report.json", report)
+            return values
+
+        tokens_host = np.random.default_rng(workload.seed + 2).integers(0, workload.vocab_size, (workload.batch_size, workload.seq_len), dtype=np.int32)
+        loss_weight_host = np.ones_like(tokens_host, dtype=np.float32)
+        loss_weight_host[:, -1] = 0
+        with jax.set_mesh(mesh), hax.axis_mapping(prior.bench._parameter_mapping()), jax.default_matmul_precision("highest"):
+            model = hax.named_jit(prior.bench._legacy_config(workload).build, axis_resources=prior.bench._parameter_mapping())(hax.Axis("vocab", workload.vocab_size), key=jax.random.PRNGKey(workload.seed))
+            model = jax.tree.map(lambda x: x.astype(jnp.float32) if eqx.is_inexact_array(x) else x, model)
+            tokens = jax.device_put(tokens_host, NamedSharding(mesh, P("data", None)))
+            loss_weight = jax.device_put(loss_weight_host, NamedSharding(mesh, P("data", None)))
+            named_tokens = hax.named(tokens, (base.batch, base.pos))
+            positions = hax.named(jax.device_put(base.positions, NamedSharding(mesh, P("data", None))), (base.batch, base.pos))
+            scope.update({"positions": positions, "tokens": tokens, "loss_weight": loss_weight})
+            report["runtime"] = runtime_snapshot(jax)
+            report["source_pin"] = pins["pin"]
+            report["source_hashes"] = pins["source_sha256"]
+            report["model_parameter_sha256"] = prior.bench._tensor_digest(prior.bench._canonical_parameters(model))
+            report["batch_sha256"] = prior.bench._tensor_digest({"tokens": tokens_host, "loss_weight": loss_weight_host})
+            old_prov = json.loads((old_outputs / "provenance.json").read_text())
+            if report["model_parameter_sha256"] != old_prov["parameter_sha256"] or report["batch_sha256"] != old_prov["batch_sha256"]:
+                raise ValueError("Initial source weights/batch differ from retained CPU fixture")
+            with hax.axis_mapping(prior.bench._compute_mapping()):
+                x, y, hidden = execute("source-scan", functions["scanned_capture"], (model, named_tokens))
+                r, staged_y, loss, ct_y, ct_r = execute("source-capture", functions["capture_last"], (model, x, y))
+                source_values = {"last_input": x, "last_output": y, "post_attention_residual": r, "output_cotangent": ct_y, "tail_input_cotangent": ct_r}
+                report["retained_source_operands"] = {name: record(value) for name, value in source_values.items()}
+                for name, row in report["retained_source_operands"].items():
+                    expected = old_prov["source_operands"][name]
+                    if row["sha256"] != expected["sha256"]:
+                        raise ValueError("Source operand changed before S1: " + name)
+                    assert_physical_equal(expected["physical"], row["physical"], name)
+                pristine = execute("source-primal", functions["isolated_full"], (model, x))
+                report["source_scan_vs_primal"] = prior.difference(y, pristine)
+                assert_physical_equal(physical(y), physical(pristine), "source primal")
+                if not report["source_scan_vs_primal"]["exact"]:
+                    raise ValueError("Original source primal differs from source scan")
+
+                def value_and_vjp(m, input_value, cotangent):
+                    value, backward = eqx.filter_vjp(functions["isolated_full"], m, input_value)
+                    model_grad, input_grad = backward(cotangent)
+                    return value, model_grad, input_grad
+
+                vjp_y, model_grad, input_grad = execute("source-value-vjp", value_and_vjp, (model, x, ct_y))
+                report["source_primal_vs_source_value_vjp"] = prior.difference(pristine, vjp_y)
+                assert_physical_equal(physical(pristine), physical(vjp_y), "same-source primal versus VJP primal")
+                report["original_source_stacked_gradient_records"] = tree_records(model_grad)
+                report["original_source_input_gradient"] = record(input_grad)
+                report["s1_exact"] = report["source_primal_vs_source_value_vjp"]["exact"]
+                if not report["s1_exact"]:
+                    raise ValueError("Same original stacked-source primal/value+VJP identity failed; stop before canonical import or raw extraction")
+                # This finite preparation intentionally ends at S1. A passing result
+                # permits a separately reviewed one-change representation control.
+                report["completed"] = True
+                report["next_decision"] = "S1 passes; canonical-import controls require a separate prepared finite control. No raw-dQ or full-Trainer claim."
+        if any(sha(Path(path)) != digest for path, digest in before.items()):
+            raise ValueError("Protected frozen preparation/result changed")
+        report["protected_inputs_unchanged"] = True
+    except Exception as error:
+        report["error_type"] = type(error).__name__
+        report["error"] = str(error)
+        report["completed"] = False
+        if "before" in locals():
+            report["protected_inputs_unchanged"] = all(sha(Path(path)) == digest for path, digest in before.items())
+        write(output / "report.json", report)
+        raise
+    write(output / "report.json", report)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,137 @@
+{
+  "schema": "native-jax-fp32-source-identity-controls-independent-review.v1",
+  "reviewed_utc": "2026-10-24T07:53:29.576822+00:00",
+  "verdict": "ZERO_REVIEW_FINDINGS_BOUNDED_CPU_NEGATIVE_RESULT_SUPPORTED",
+  "findings": [],
+  "scientific_control_outcome": "S1_EXACT_IDENTITY_FAILED_EXIT_1_STOPPED",
+  "scope": "Fresh independent standard-library-only static source and retained evidence review. Distinct from callback/TPU work.",
+  "root": "/private/tmp/native-jax-fp32-source-identity-controls",
+  "identities": {
+    "handoff_sha256": "54623e7c97a02ad3b2891dc0264fa49db78f5d1686efb349c460bfe66f47761d",
+    "manifest_sha256": "ac936f5607989c61a644606a71d21f1e07f7a159867cebac4d18843b2ffc4257",
+    "source_sha256": "3e20ad352d683a0ee9d877afc25e88035ed2c91a0f4cc7188385bc9b16a1831a",
+    "first_attempt_source_sha256": "bcb0f7bede528dcf7df69bc2e61656bb0319030cd6c9e3d106f1020f15b0b524",
+    "config_sha256": "c9cc6810b4b0425dbf6608f0b2c0e70298cd11419634dbf4b90f7f26e149fb57",
+    "final_report_sha256": "3cb61a80c929c6990d6221101f36bf988ab64b4c7b6ecb4bcea37de7f839132d",
+    "final_execution_receipt_sha256": "2cc80da597c55393216c9d8be7f7372f2f3f7b66e0db8a615bc487c628716369",
+    "first_attempt_receipt_sha256": "84a48284a48905fdb6c597b9f888f262828da79a477378d68752eedbbaa4442d"
+  },
+  "freeze_verification": {
+    "all_payload_hashes_and_sizes_match": true,
+    "payload_count": 24,
+    "payload_bytes": 2158477,
+    "protected_old_inputs_count": 79,
+    "all_79_current_hashes_match_recorded_before_hashes": true,
+    "baseline_source_files_verified": 13,
+    "candidate_source_files_verified": 13
+  },
+  "source_and_argument_checks": {
+    "baseline_pin": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+    "candidate_fixture_pin_only_no_new_candidate_execution": "f1e991207ceda752957938b1cfe8893027d3fed8",
+    "scanned_capture_capture_last_isolated_full_AST_body_hashes_verified_against_frozen_bundle": true,
+    "only_decorators_removed_for_explicit_compile": true,
+    "isolated_full_calls_actual_unmodified_last_block_with_original_stacked_model": true,
+    "same_primal_function_used_inside_filter_vjp": true,
+    "same_original_model_and_input_argument_records_equal_full_value_and_physical_metadata": true,
+    "primal_argument_record_count": 13,
+    "vjp_argument_record_count": 14,
+    "extra_vjp_argument_is_retained_source_suffix_cotangent": true,
+    "all_five_source_operand_hash_and_full_physical_metadata_records_equal_prior": true,
+    "model_parameter_and_batch_hashes_equal_prior": true,
+    "runtime_snapshot_exactly_equal_prior": true,
+    "primal_and_vjp_forward_output_physical_records_equal": true,
+    "canonical_parameter_digest_used_for_provenance_only": true,
+    "no_canonical_model_deserialization_or_forced_flat_weight_specs_on_S1_path": true,
+    "same_Auto_data2_model2_mesh_axis_mappings_highest_precision_float32_vanilla_fixture": true
+  },
+  "source_scan_vs_primal": {
+    "a_at_worst": -0.0821482241153717,
+    "b_at_worst": -0.0821482241153717,
+    "different_elements": 0,
+    "elements": 1024,
+    "exact": true,
+    "max_abs": 0.0,
+    "relative_l2": 0.0,
+    "worst_index": [
+      0,
+      0,
+      0
+    ]
+  },
+  "source_primal_vs_value_vjp": {
+    "a_at_worst": -2.3125529289245605,
+    "b_at_worst": -2.3125522136688232,
+    "different_elements": 460,
+    "elements": 1024,
+    "exact": false,
+    "max_abs": 7.152557373046875e-07,
+    "relative_l2": 7.539494840157132e-08,
+    "worst_index": [
+      3,
+      2,
+      22
+    ]
+  },
+  "output_hash_evidence": {
+    "source_scan_and_primal_equal_sha256": "14403290e244cd65c870809c922d4d7156f0bfb407102a9454043cb8f5e01d79",
+    "same_source_value_vjp_forward_sha256": "6ff1b3edfeb1c0cda0a9aa2aa1698b450a19ab613c2f90ecf5f873143d14de6c",
+    "new_vjp_forward_record_hash_equals_prior_canonical_named_full_result_hash": true,
+    "new_comparison_record_equals_prior_audit_source_vs_named_full_comparison_record": true,
+    "new_source_primal_StableHLO_bytes_equal_prior_source_full_separate": true
+  },
+  "failure_and_retention": {
+    "completed": false,
+    "scientific_attribution_valid": false,
+    "s1_exact": false,
+    "final_exit_code": 1,
+    "fatal_exact_check_raises_on_real_nonidentity": true,
+    "no_tolerance_change_or_acceptance_bypass": true,
+    "all_12_original_model_gradient_records_retained": true,
+    "gradient_representation_detail": "Nine original layer-stacked leaves plus original final norm/embedding/lm-head leaves; all FP32. These are records of the VJP result, not a gradient-correctness proof.",
+    "input_gradient_record_retained": true,
+    "final_complete_graph_file_count": 8,
+    "final_graph_bytes": 714170,
+    "all_graph_hash_size_and_not_truncated_fields_verified": true,
+    "recording_bug_first_attempt_preserved_with_partial_graphs_source_report_log_receipt": true,
+    "repair_AST_diff_confined_to_record_function": true,
+    "repair_changes_only_host_statistics_digest_recording_scalar_support": true,
+    "no_canonical_or_raw_followup_control_in_runner_or_retained_final_control_list": true
+  },
+  "supported_claim": "On this finite retained CPU fixture, the same-source primal/value-plus-VJP executable reproduces the prior replay forward mismatch without canonical model reimport or added flattened-parameter constraints; those representation changes are therefore not necessary for this observed CPU discrepancy.",
+  "unsupported_claims": [
+    "Canonical reimport has no additional effect.",
+    "AD alone rather than the joint AD/cotangent-input/output-set/compiled-context change is the isolated cause.",
+    "A particular compiler instruction, fusion or optimization mechanism is established.",
+    "The mathematical model or reconstructed derivative is wrong.",
+    "Original/full-Trainer cotangents, gradients, updated state, raw dQ or trajectory are validated.",
+    "TPU/Splash behavior, performance or adoption is established.",
+    "All possible identity-preserving observation methods must fail."
+  ],
+  "evidence_limits": [
+    "No numerical/JAX execution was performed by this reviewer; counts/comparison metrics are retained execution records, corroborated by source, hashes and prior-result hash agreement. Arrays were not retained for independent recomputation.",
+    "Recorded physical identity describes complete logical sharding/device/placement metadata, not proof of identical internal compiler buffer layouts or allocation choices.",
+    "The source suffix cotangent is a fixed standalone reference, not an observed normal full-Trainer incoming cotangent.",
+    "The execution records demonstrate a failed identity gate and justify stopping this attribution path; they do not validate further canonical or raw controls."
+  ],
+  "next_action": "Preserve the negative result and stop standalone full-graph attribution. Any future normal-graph observation method needs its own exact ordinary loss/gradient/state identity evidence and separate review/authorization.",
+  "authorization": {
+    "new_hardware_authorized": false,
+    "jobs_or_clients_authorized": false,
+    "publication_or_archival_authorized_by_review": false,
+    "root_owns_all_jobs": true
+  },
+  "not_performed": [
+    "numerical/JAX execution",
+    "tests",
+    "network",
+    "job/client/storage operations",
+    "source edits",
+    "threshold changes",
+    "publication",
+    "subagents"
+  ],
+  "writes": [
+    "/private/tmp/native-jax-fp32-source-identity-controls-independent-review.md",
+    "/private/tmp/native-jax-fp32-source-identity-controls-independent-review.json"
+  ]
+}
