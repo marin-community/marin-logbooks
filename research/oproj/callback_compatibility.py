@@ -59,12 +59,37 @@ def provenance(config, mode):
     environment = {k: os.environ.get(k) for k in ("JAX_PLATFORMS", "XLA_FLAGS", "LIBTPU_INIT_ARGS")}
     if runtime != config[mode + "_runtime"] or environment != config[mode + "_environment"]:
         raise ValueError(f"Pinned runtime/environment mismatch: {runtime}, {environment}")
+    backend_overrides = {
+        "jax_default_device": jax.config.jax_default_device,
+        "jax_platform_name": jax.config.read("jax_platform_name"),
+        "jax_xla_backend": jax.config.read("jax_xla_backend"),
+    }
+    if backend_overrides != {"jax_default_device": None, "jax_platform_name": "", "jax_xla_backend": ""}:
+        raise ValueError(f"Device/platform overrides are forbidden: {backend_overrides}")
+    if jax.config.jax_platforms != config[mode + "_environment"]["JAX_PLATFORMS"]:
+        raise ValueError("Actual JAX backend configuration differs from the frozen ambient backend list")
+    host_cpu_devices = jax.local_devices(backend="cpu")
+    if not host_cpu_devices or any(device.platform != "cpu" for device in host_cpu_devices):
+        raise ValueError("An actual local CPU backend is required for host callbacks")
+    # Check the default device set after CPU backend initialization as well.
     if jax.default_backend() != ("tpu" if mode == "target" else "cpu"):
         raise ValueError("Wrong actual backend")
-    if jax.process_count() != 1 or jax.device_count() != 4 or jax.local_device_count() != 4:
+    if jax.process_count() != 1 or jax.process_index() != 0 or jax.device_count() != 4 or jax.local_device_count() != 4:
         raise ValueError("Exactly one process and four local/global devices required")
-    if mode == "target" and any(d.device_kind != "TPU v5" for d in jax.devices()):
-        raise ValueError("Exactly four actual TPU v5p devices required")
+    explicit_tpu_devices = []
+    if mode == "target":
+        explicit_tpu_devices = jax.devices(backend="tpu")
+        if jax.devices() != explicit_tpu_devices or jax.local_devices() != jax.local_devices(backend="tpu"):
+            raise ValueError("Default global/local devices must equal the explicit TPU device lists")
+        if (
+            jax.device_count(backend="tpu") != 4
+            or jax.local_device_count(backend="tpu") != 4
+            or jax.process_count(backend="tpu") != 1
+            or jax.process_index(backend="tpu") != 0
+        ):
+            raise ValueError("Explicit TPU backend requires one process at index zero and four devices")
+        if any(d.device_kind != "TPU v5" for d in explicit_tpu_devices):
+            raise ValueError("Exactly four actual TPU v5p devices required")
     if not jax.config.jax_use_shardy_partitioner:
         raise ValueError("Pinned default Shardy partitioner required")
     imports = {}
@@ -85,6 +110,16 @@ def provenance(config, mode):
         "environment": environment,
         "imports": imports,
         "source_sha256": config["source_sha256"],
+        "default_backend": jax.default_backend(),
+        "device_count": jax.device_count(),
+        "local_device_count": jax.local_device_count(),
+        "process_count": jax.process_count(),
+        "process_index": jax.process_index(),
+        "host_callback_cpu_devices": [str(d) for d in host_cpu_devices],
+        "host_callback_cpu_device_kinds": [d.device_kind for d in host_cpu_devices],
+        "actual_jax_platforms": jax.config.jax_platforms,
+        "backend_overrides": backend_overrides,
+        "explicit_tpu_devices": [str(d) for d in explicit_tpu_devices],
         "devices": [str(d) for d in jax.devices()],
         "device_kinds": [d.device_kind for d in jax.devices()],
         "executable": sys.executable,
