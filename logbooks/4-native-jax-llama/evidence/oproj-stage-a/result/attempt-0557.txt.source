@@ -1,0 +1,28 @@
+Attempt: /dlwh/levanter-native-jax-v5p-15b-oproj-stage-a-20261024/0:0  (current)
+UID: 6f5ae7a8f6b89e97
+State: failed  exit=1
+Worker: marin-tpu-v5p-preemptible-8-us-central1-20261024-0513-c3c7335f-worker-0
+Error: Exit code: 1. stderr: Copied 1 file(s)
+Output: uploaded 275.17 KiB gs://marin-us-central1/tmp/ttl=7d/iris/task-outputs/dlwh/levanter-native-jax-v5p-15b-oproj-stage-a-20261024/0/6f5ae7a8f6b89e97/outputs.tar.zst (7-day retention)
+
+Root cause:
+    File "/app/research/oproj/child.py", line 284, in <module>
+    File "/app/research/oproj/child.py", line 280, in main
+    File "/app/research/oproj/child.py", line 253, in run
+    File "/app/lib/levanter/scripts/bench/bench_llama_native.py", line 672, in run_benchmark
+    File "/app/lib/levanter/scripts/bench/bench_llama_native.py", line 2, in _run_variant
+    File "/app/.venv/lib/python3.12/site-packages/equinox/_module/_prebuilt.py", line 33, in __call__
+    File "/app/lib/haliax/src/haliax/partitioning.py", line 392, in lower
+    File "/app/.venv/lib/python3.12/site-packages/equinox/_module/_prebuilt.py", line 33, in __call__
+    File "/app/lib/haliax/src/haliax/partitioning.py", line 459, in _call
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/debugging.py", line 216, in debug_callback_lowering
+    File "/app/.venv/lib/python3.12/site-packages/jax/_src/callback.py", line 805, in emit_python_callback
+      raise NotImplementedError(
+  NotImplementedError: Partitioned callback not implemented on tpu backend.
+  Traceback (most recent call last):
+    File "/app/research/oproj/diagnostic.py", line 180, in <module>
+    File "/app/research/oproj/diagnostic.py", line 176, in main
+    File "/app/research/oproj/diagnostic.py", line 166, in controller
+    File "/app/research/oproj/diagnostic.py", line 146, in controller
+      raise ValueError(f"{phase} child failed with exit {result.returncode}")
+  ValueError: instrumented child failed with exit 1

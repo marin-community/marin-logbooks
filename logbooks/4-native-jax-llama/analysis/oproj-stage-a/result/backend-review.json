@@ -1,0 +1,79 @@
+{
+  "review_kind": "read_only_installed_source_backend_diagnosis",
+  "research_source_a": "32f42f9a3601258123d316cc03c25b05add7a9c2",
+  "scientific_base_supplied": "2b17db78aedc0a603664238fbfa0bc0c68542d2b",
+  "checkout": "/private/tmp/marin-native-jax-oproj-diagnostic",
+  "checkout_head_verified": true,
+  "checkout_clean_verified": true,
+  "jax_source_root": "/private/tmp/marin-native-jax-query-scale-rounding/.venv/lib/python3.12/site-packages/jax",
+  "jax_version_from_source": "0.11.1",
+  "failure": {
+    "phase": "instrumented legacy lowering",
+    "class": "instrumentation_transport_backend_incompatibility",
+    "exception": "NotImplementedError: Partitioned callback not implemented on tpu backend.",
+    "caller": "jax/_src/debugging.py:216",
+    "rejection": "jax/_src/callback.py:803-806",
+    "attempt_exit_code": 1,
+    "instrumented_numerical_evidence_valid": false,
+    "untouched_anchor_completion_independently_verified_by_this_review": false
+  },
+  "decision": {
+    "minimal_candidate": "Change only the debug.callback partitioned option inside the existing full-manual local_callback shard_map from true to false.",
+    "keep_collector_partitioned_argument_true": true,
+    "keep_global_callback_partitioned_false_outside_shard_map": true,
+    "keep_full_mesh_manual_boundary": true,
+    "another_capture_mechanism_required_by_source_evidence": false,
+    "semantic_assessment": "Source-supported: full-manual SPMDAxisContext selects per-device callbacks on already local avals independent of partitioned flag; False avoids the TPU-incompatible emitter branch without selecting outside bulk/MAXIMAL semantics.",
+    "actual_tpu_success_demonstrated": false,
+    "candidate_applied": false,
+    "full_model_ready": false,
+    "old_source_a_disposition": "Preserve as rejected transport/backend evidence. Do not overwrite or relabel CPU/abstract controls as TPU validation.",
+    "future_source_identity": "Use a separately recorded exact research commit B; preserve all production scientific source, import, runtime, fixture, identity, retention, completeness, and decision guards."
+  },
+  "source_evidence": [
+    {"file": "jax/_src/debugging.py", "lines": [58,75], "finding": "Debug effects are admitted for lowering, control flow, remat, and custom derivatives."},
+    {"file": "jax/_src/debugging.py", "lines": [108,111], "finding": "Abstract evaluation ignores partitioned and therefore misses the TPU lowering restriction."},
+    {"file": "jax/_src/debugging.py", "lines": [145,195], "finding": "Full-manual context uses per-device callback sharding; partial-auto context gathers/conditionally selects; outside ShardingContext uses a full logical MAXIMAL callback."},
+    {"file": "jax/_src/debugging.py", "lines": [208,219], "finding": "Existing unordered callback forwards the selected context sharding plus partitioned flag; adding ordered changes the lowering path and is not part of the candidate."},
+    {"file": "jax/_src/debugging.py", "lines": [231,258], "finding": "Partial evaluation/remat may stage repeated debug observations."},
+    {"file": "jax/_src/debugging.py", "lines": [435,445], "finding": "Debug observations may be dropped, duplicated, or reordered under transformations; runtime completeness remains mandatory."},
+    {"file": "jax/_src/shard_map.py", "lines": [110,154], "finding": "Each function instance receives an argument shard; default empty axis_names means all mesh axes manual."},
+    {"file": "jax/_src/shard_map.py", "lines": [284,303], "finding": "Explicit mesh inputs require matching in_specs and typed shardings."},
+    {"file": "jax/_src/shard_map.py", "lines": [360,395], "finding": "Supplied mesh must match surrounding context and default manual axes cover all available mesh axes."},
+    {"file": "jax/_src/shard_map.py", "lines": [865,879], "finding": "Body abstract dimensions are divided by in_specs mesh sizes."},
+    {"file": "jax/_src/shard_map.py", "lines": [996,1002], "finding": "Shardy lowering installs SPMDAxisContext with manual axes."},
+    {"file": "jax/_src/shard_map.py", "lines": [1102,1116], "finding": "Non-Shardy lowering likewise installs SPMDAxisContext with manual axes."},
+    {"file": "jax/_src/callback.py", "lines": [798,809], "finding": "Ordinary callback transport supports TPU; partitioned transport explicitly excludes TPU."},
+    {"file": "jax/_src/callback.py", "lines": [692,762], "finding": "Ordinary TPU callback emits host sends and receives with selected sharding and callback-completion handshake."},
+    {"file": "jax/_src/callback.py", "lines": [605,670], "finding": "TPU send/receive retains selected callback sharding."},
+    {"file": "research/oproj/capture.py", "lines": [99,135], "finding": "Separate global callback, full-manual local capture map, real dynamic index-zero condition, identity custom VJP forward X/backward G capture."},
+    {"file": "research/oproj/capture.py", "lines": [40,96], "finding": "Collector rejects nonzero index and inconsistent repeated bytes and requires canonical slice equality for every device."}
+  ],
+  "required_gate_not_run": {
+    "requires_separate_execution_authorization": true,
+    "hardware": "One host/process, four actual TPU v5p devices, 2x2 mesh, exact pinned runtime/environment/partitioner matching target.",
+    "transport_fixture": {
+      "mesh_modes": ["Auto/Auto", "Explicit/Explicit"],
+      "dtype": "bfloat16",
+      "global_x_shape_example": [4,4,3,2],
+      "global_g_shape_example": [4,3,8],
+      "local_x_shape_example": [2,2,3,2],
+      "local_g_shape_example": [2,3,8],
+      "local_ids_shape": [1],
+      "method": "Actual candidate emit and collector, actual TPU lower then compile then bounded execution, array synchronization plus effects_barrier.",
+      "assertions": ["Global X/G present", "Every device ordinal has X and G local observations", "Exact independent canonical-slice byte/shape/dtype equality", "Actual finite BF16", "Only dynamic index zero", "Singleton correct device identities", "Identical duplicates", "No unexpected identities or callback errors", "Model-replicated G independently reported by both model devices"]
+    },
+    "composed_transform_fixture": {
+      "mesh_modes": ["Auto/Auto", "Explicit/Explicit"],
+      "components": ["Actual custom-VJP identity", "Tiny ordinary projection", "At least two dynamic scan layer indices", "Actual index-zero lax.cond", "Reverse-mode differentiation", "Remat matching experimental checkpointing mode"],
+      "assertions": ["Instrumented and untapped value/gradient identity on exact-arithmetic fixture", "Independent small X/G oracle", "Complete per-device observations after synchronization", "No observations from nonzero layer index", "Byte-identical repeated/rematerialized observations"],
+      "standalone_transport_success_is_insufficient": true
+    },
+    "retention": ["Source/import/runtime/environment/mesh/fixture identities", "StableHLO", "Optimized HLO", "Collector counts and diagnostics", "Error state"],
+    "boundaries": ["Tiny payload only", "Finite execution count and wall-time set in advance", "Fail closed", "No automatic retry/resubmit/restart", "No full-model escalation on failure", "No source/runtime/fixture/completeness/criterion weakening"],
+    "pass_scope": "Only compatibility of tested callback composition; full-model scientific diagnostic remains separately authorized and must retain all existing target guards and criteria."
+  },
+  "actions_performed": ["Static local file reads", "Read-only git head and cleanliness checks", "Wrote requested Markdown and JSON review reports"],
+  "actions_not_performed": ["JAX import or runtime execution", "Tests", "Network", "Job queries", "Submission", "Retry or resubmission", "Recovery", "Source edits", "Subagents"],
+  "markdown_report": "/private/tmp/native-jax-oproj-tpu-callback-backend-review.md"
+}
