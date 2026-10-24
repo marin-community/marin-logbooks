@@ -125,6 +125,7 @@ def build_run(
     selection: ArtifactStep[Artifact],
     steps: int = DEFAULT_STEPS,
     arm: Arm = Arm.CONTROL,
+    export_hf: bool = False,
 ) -> ArtifactStep[SkyRLRun]:
     """Bind selected canonical tasks, pinned SFT weights and terminal outputs."""
     model = ArtifactStep.adopt(
@@ -172,7 +173,7 @@ def build_run(
             wandb_entity="marin-community",
             required_env_vars=(EVALUATION_API_KEY_ENV, JUDGE_API_KEY_ENV),
         ),
-        export_hf=True,
+        export_hf=export_hf,
     )
 
 
@@ -181,6 +182,7 @@ def build_run(
     "--selection-uri", default=DEFAULT_SELECTION_URI, show_default=True, help="Published task-selection artifact root."
 )
 @click.option("--steps", type=click.IntRange(min=1), default=DEFAULT_STEPS, show_default=True)
+@click.option("--export-hf", is_flag=True, help="Export the final Hugging Face model after training.")
 @click.option(
     "--arm",
     type=click.Choice([arm.value for arm in Arm]),
@@ -189,7 +191,7 @@ def build_run(
     help="A: control; B: larger learning rate; C: sequence-mean loss; D: bounded async.",
 )
 @rl_build_options
-def main(selection_uri: str, steps: int, arm: str) -> ArtifactStep[SkyRLRun]:
+def main(selection_uri: str, steps: int, arm: str, export_hf: bool) -> ArtifactStep[SkyRLRun]:
     selected_arm = Arm(arm)
     name = artifact_name(selected_arm)
     selection_uri = selection_uri.rstrip("/")
@@ -207,6 +209,7 @@ def main(selection_uri: str, steps: int, arm: str) -> ArtifactStep[SkyRLRun]:
         selection=selection,
         steps=steps,
         arm=selected_arm,
+        export_hf=export_hf,
     )
 
 
