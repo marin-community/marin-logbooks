@@ -1,0 +1,114 @@
+{
+  "head": "be8093b10163be50b8f8e16135ccb4fccdc4efe5",
+  "branch": "codex/native-jax-llama-replacement",
+  "checkout": "/private/tmp/marin-native-jax-replacement-integration",
+  "base": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "commits": [
+    "be8093b10163be50b8f8e16135ccb4fccdc4efe5 [levanter] Preserve native LM masks and checkpoint metadata",
+    "f1807c1c42f4b26ed3cfeae93a740170dbabc68d [levanter] Integrate native checkpoint resume validation",
+    "0c4080dcff7b87f0cd83ed8318e78491841f9d9c [levanter] Integrate native Llama training support"
+  ],
+  "clean": true,
+  "environment_script": "/private/tmp/native-jax-replacement-env.sh",
+  "import_proof": "/private/tmp/native-jax-replacement-import-proof.json",
+  "source_integration_proof": "/private/tmp/native-jax-replacement-source-integration-proof.json",
+  "focused_tests": {
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "--package",
+      "marin-levanter",
+      "python",
+      "-m",
+      "pytest",
+      "-n",
+      "0",
+      "lib/levanter/tests/test_llama_native.py",
+      "lib/levanter/tests/test_explicit_trainer.py",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_validates_and_resumes_identical_checkpoint_state",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_hf_preserves_source_vocab_weights_and_resume",
+      "lib/levanter/tests/test_train_lm.py::test_native_hf_rejects_equal_shape_different_attention_architecture",
+      "lib/levanter/tests/test_train_lm.py::test_native_hf_rejects_default_rope_with_ignored_scaling_factor",
+      "lib/levanter/tests/test_train_lm.py::test_native_train_lm_exports_portable_local_weights",
+      "lib/levanter/tests/test_checkpoint.py::test_async_checkpoint_snapshots_nested_application_metadata",
+      "lib/levanter/tests/test_llama_native_benchmark.py",
+      "-q"
+    ],
+    "effective_pytest_config": "lib/levanter/pyproject.toml",
+    "default_marker_expression": "not slow and not torch",
+    "passed": 64,
+    "deselected": 4,
+    "seconds": 143.53,
+    "log": "/private/tmp/native-jax-replacement-focused-cpu4.log",
+    "note": "Local HF-init/source-vocab/resume/export executed; four independent Torch consumer cases were deselected here."
+  },
+  "hf_consumer_tests": {
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "--package",
+      "marin-levanter",
+      "python",
+      "-m",
+      "pytest",
+      "-c",
+      "pyproject.toml",
+      "-n",
+      "0",
+      "lib/levanter/tests/test_llama_native.py::test_native_hf_export_transformers_local_logits",
+      "-q"
+    ],
+    "effective_pytest_config": "pyproject.toml",
+    "marker_expression_overridden": false,
+    "passed": 4,
+    "seconds": 6.05,
+    "log": "/private/tmp/native-jax-replacement-hf-consumer-cpu4.log",
+    "note": "Root safety defaults retained; local Transformers consumer checks both tied/untied and default/linear RoPE."
+  },
+  "checkpoint_cli": {
+    "argv": [
+      "uv",
+      "run",
+      "--no-sync",
+      "--package",
+      "marin-levanter",
+      "python",
+      "lib/levanter/scripts/bench/smoke_llama_native_checkpoint.py",
+      "--config_path",
+      "/private/tmp/native-jax-replacement-smoke.yaml"
+    ],
+    "validation": "/private/tmp/native-jax-replacement-smoke-validation.json",
+    "log": "/private/tmp/native-jax-replacement-smoke-cpu4.log",
+    "four_layers_nested_policy": true,
+    "process_count": 1,
+    "global_cpu_device_count": 4,
+    "exact_state_match": true,
+    "all_processes_match": true,
+    "checkpoint_count": 3,
+    "local_shards_compared": 168
+  },
+  "required_checks": {
+    "entrypoint": "./infra/pre-commit.py --changed-files",
+    "log": "/private/tmp/native-jax-replacement-final-precommit.log",
+    "lint_format_types_pass": true,
+    "git_diff_check_pass": true
+  },
+  "preserved": {
+    "attention_core_tests_benchmark_exact_36e": true,
+    "old_registry_unchanged": true,
+    "uv_lock_unchanged": true,
+    "candidate_8aa_absent": true,
+    "no_numerical_criteria_or_math_change": true,
+    "no_research_archive_or_disposable_harness_added": true
+  },
+  "not_performed": [
+    "push",
+    "PR publication",
+    "accelerator run",
+    "cluster/automation operation",
+    "new full lint catalog"
+  ],
+  "next_capability": "Integrate independently validated Llama3/YaRN rotary support from the separate feature branch; canonical switch/removal remains gated. Paged decode/cache and remaining callers/loaders are subsequent audited gaps."
+}

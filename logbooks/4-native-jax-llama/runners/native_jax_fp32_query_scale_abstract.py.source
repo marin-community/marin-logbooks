@@ -1,0 +1,88 @@
+"""Trace public rotary/Splash value and VJP graphs without executing a TPU kernel."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import numpy as np
+
+import jax
+import jax.numpy as jnp
+from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P
+
+from levanter.grug.attention import AttentionMask, attention
+from levanter.grug.attention import _core
+from levanter.layers.rotary_native import RotaryConfig, apply_rotary
+
+
+def nested_counts(closed):
+    counts = {}
+    seen = set()
+    def visit(value):
+        if id(value) in seen:
+            return
+        seen.add(id(value))
+        if hasattr(value, 'eqns'):
+            for equation in value.eqns:
+                counts[equation.primitive.name] = counts.get(equation.primitive.name, 0) + 1
+                for item in equation.params.values():
+                    visit(item)
+        elif hasattr(value, 'jaxpr'):
+            visit(value.jaxpr)
+        elif isinstance(value, (tuple, list, dict)):
+            for item in (value.values() if isinstance(value, dict) else value):
+                visit(item)
+    visit(closed)
+    return counts
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--source-dir', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    source = args.source_dir.resolve()
+    core = Path(_core.__file__).resolve()
+    if core != source / 'lib/levanter/src/levanter/grug/attention/_core.py':
+        raise ValueError('Wrong imported attention source')
+    if jax.default_backend() != 'cpu' or jax.device_count() != 4:
+        raise ValueError('This proof requires exactly four actual CPU devices')
+    mesh = Mesh(np.asarray(jax.devices()).reshape(2, 2), ('data', 'model'), axis_types=(AxisType.Explicit, AxisType.Explicit))
+    q_spec = NamedSharding(mesh, P('data', None, 'model', None))
+    p_spec = NamedSharding(mesh, P('data', None))
+    q = jax.ShapeDtypeStruct((8, 2048, 16, 128), jnp.float32, sharding=q_spec)
+    kv = jax.ShapeDtypeStruct((8, 2048, 4, 128), jnp.float32, sharding=q_spec)
+    positions = jax.ShapeDtypeStruct((8, 2048), jnp.int32, sharding=p_spec)
+    records = {}
+    for dtype in [jnp.float32, jnp.bfloat16]:
+        ct = jax.ShapeDtypeStruct(q.shape, jnp.float32, sharding=q_spec)
+        def objective(q, k, v, positions, ct):
+            qr = apply_rotary(q.astype(dtype), positions, RotaryConfig())
+            kr = apply_rotary(k.astype(dtype), positions, RotaryConfig())
+            out = attention(qr, kr, v.astype(dtype), AttentionMask.causal(), implementation='tpu_splash')
+            return jnp.sum(out.astype(jnp.float32) * ct)
+        fn = jax.value_and_grad(objective, argnums=(0, 1, 2))
+        with jax.set_mesh(mesh):
+            traced = jax.make_jaxpr(fn)(q, kv, kv, positions, ct)
+            shapes = jax.eval_shape(fn, q, kv, kv, positions, ct)
+        records[str(jnp.dtype(dtype))] = {
+            'jaxpr_sha256': hashlib.sha256(str(traced).encode()).hexdigest(),
+            'primitive_counts': nested_counts(traced),
+            'result_shapes': str(shapes),
+        }
+    result = {
+        'schema': 'native_jax_fp32_query_scale_abstract.v1',
+        'source_head': subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=source, capture_output=True, check=True, text=True).stdout.strip(),
+        'source_diff': subprocess.run(['git', 'diff', '--stat'], cwd=source, capture_output=True, check=True, text=True).stdout.strip(),
+        'imported_core': str(core),
+        'core_sha256': hashlib.sha256(core.read_bytes()).hexdigest(),
+        'script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        'jax': jax.__version__,
+        'records': records,
+        'scope': 'CPU abstract public rotary/Splash forward and three VJP graphs at B8S2048H16KV4D128. No arrays, TPU kernel compile/execution, numerical comparison or performance measurement.',
+    }
+    args.output.write_text(json.dumps(result, indent=2) + '\n')
+    print(json.dumps({'output': str(args.output), 'barrier_counts': {k:v['primitive_counts'].get('optimization_barrier', 0) for k,v in records.items()}}))
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,65 @@
+{
+  "schema": "native_jax_iris_timeout_source_evidence.v1",
+  "source_pin": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+  "method": "Read-only static source inspection; no job, scheduler, network or controller query.",
+  "correction": "The prior full-Trainer --timeout1800 bounds execution after started_at_ms, not queue plus execution. CLI does not set scheduling_timeout. This archival correction neither cancels nor retries the queued job.",
+  "compact_prepared_budget": {
+    "scheduling_seconds": 120,
+    "execution_seconds": 780,
+    "max_retries_failure": 0,
+    "max_retries_preemption": 0,
+    "max_task_failures": 0,
+    "configured_sum_seconds": 900,
+    "excludes": "Controller reconciliation and finalization latency; no exact wall-clock deadline."
+  },
+  "sources": [
+    {
+      "path": "lib/iris/src/iris/cluster/controller/reads.py",
+      "line_start": 1754,
+      "line_end": 1777,
+      "sha256": "5d45d89dd154288afd591bb6332baa01a61eace736f9931a256d854c1dbcf321",
+      "meaning": "Execution timeout query selects attempt started_at_ms, excluding queue time.",
+      "excerpt": "        job_config_table.c.timeout_ms,\n    )\n    .select_from(\n        local_tasks.join(job_config_table, job_config_table.c.job_id == local_tasks.c.job_id).join(\n            task_attempts_table,\n            (task_attempts_table.c.task_id == local_tasks.c.task_id)\n            & (task_attempts_table.c.attempt_id == local_tasks.c.current_attempt_id),\n        )\n    )\n    .where(\n        hint_rare_state(local_tasks.c.state.in_(bindparam(\"executing_states\", expanding=True))),\n        job_config_table.c.timeout_ms.is_not(None),\n        job_config_table.c.timeout_ms > 0,\n        task_attempts_table.c.started_at_ms.is_not(None),\n        local_tasks.c.status_message.is_distinct_from(TASK_OUTPUT_FINALIZING_STATUS),\n    )\n)\n\n\ndef scan_execution_timeout_rows(tx: Tx) -> Sequence[Row]:\n    \"\"\"Return ``(task_id, started_at_ms, timeout_ms)`` for executing tasks that declare a timeout.\n\n    Whether a task has actually exceeded its deadline is left to the caller,\n    which holds the tick clock; this only returns the candidates.\n"
+    },
+    {
+      "path": "lib/iris/src/iris/cluster/controller/controller.py",
+      "line_start": 1440,
+      "line_end": 1453,
+      "sha256": "1ee94fab0963479bf97ce48f3155757c114ac6bcd7ff5c1af901fea7c77defca",
+      "meaning": "Execution timeout decision compares started_at_ms + timeout_ms with now.",
+      "excerpt": "    def _timeout_decisions(self, timeout_rows: Sequence[Row], now_ms: int) -> list[TerminalDecision]:\n        \"\"\"Turn execution-timeout rows from the snapshot into TIMEOUT decisions.\n\n        A row becomes a decision only once its attempt's\n        ``started_at_ms + timeout_ms`` is already in the past.\n        \"\"\"\n        decisions: list[TerminalDecision] = []\n        for row in timeout_rows:\n            if row.started_at_ms.epoch_ms() + int(row.timeout_ms) > now_ms:\n                continue\n            logger.warning(\"Task %s exceeded execution timeout, killing\", row.task_id)\n            decisions.append(\n                TerminalDecision(\n                    kind=TerminalKind.TIMEOUT,\n"
+    },
+    {
+      "path": "lib/iris/src/iris/cli/job.py",
+      "line_start": 768,
+      "line_end": 795,
+      "sha256": "5946288ca4b861a94fecb4e9d35513083010e5fbe4614ad2642a5ca30ccd0a76",
+      "meaning": "CLI submit passes timeout but no scheduling_timeout argument.",
+      "excerpt": "    entrypoint = Entrypoint.from_command(*command)\n\n    job = client.submit(\n        entrypoint=entrypoint,\n        name=job_name,\n        resources=resources,\n        environment=EnvironmentSpec(\n            env_vars=env_vars,\n            secrets=dict(secrets or {}),\n            secret_behavior=secret_behavior,\n            extras=extras or [],\n            setup_scripts=setup_scripts,\n            sync_packages=sync_packages or [],\n        ),\n        constraints=constraints,\n        coscheduling=coscheduling,\n        replicas=replicas,\n        max_retries_failure=max_retries,\n        max_task_failures=max_retries,\n        timeout=Duration.from_seconds(timeout) if timeout else None,\n        user=user,\n        priority_band=priority_band,\n        container_profile=container_profile,\n        egress_policy=egress_policy,\n        submit_argv=submit_argv,\n        task_image=task_image,\n    )\n\n"
+    },
+    {
+      "path": "lib/iris/src/iris/client/client.py",
+      "line_start": 916,
+      "line_end": 950,
+      "sha256": "688e0c9307c09e35d3f63cdd2edb2452ec07548d4424f4e5daea17da73fb5182",
+      "meaning": "API exposes independent scheduling_timeout; None means no scheduling limit.",
+      "excerpt": "    def submit(\n        self,\n        entrypoint: Entrypoint,\n        name: str,\n        resources: ResourceSpec,\n        environment: EnvironmentSpec | None = None,\n        ports: list[str] | None = None,\n        scheduling_timeout: Duration | None = None,\n        constraints: list[Constraint] | None = None,\n        coscheduling: CoschedulingConfig | None = None,\n        replicas: int = 1,\n        max_retries_failure: int = 0,\n        max_retries_preemption: int = 1000,\n        max_task_failures: int = 0,\n        timeout: Duration | None = None,\n        user: str | None = None,\n        preemption_policy: job_pb2.JobPreemptionPolicy = job_pb2.JOB_PREEMPTION_POLICY_UNSPECIFIED,\n        existing_job_policy: job_pb2.ExistingJobPolicy = job_pb2.EXISTING_JOB_POLICY_UNSPECIFIED,\n        task_image: str | None = None,\n        priority_band: job_pb2.PriorityBand = job_pb2.PRIORITY_BAND_INHERIT,\n        container_profile: job_pb2.ContainerProfile = job_pb2.CONTAINER_PROFILE_UNSPECIFIED,\n        egress_policy: job_pb2.EgressPolicy = job_pb2.EGRESS_POLICY_UNSPECIFIED,\n        submit_argv: list[str] | None = None,\n    ) -> Job:\n        \"\"\"Submit a job with automatic job_id hierarchy.\n\n        Args:\n            entrypoint: Job entrypoint (callable + args/kwargs)\n            name: Job name (cannot contain '/')\n            resources: Resource requirements\n            environment: Environment configuration\n            ports: Port names to allocate (e.g., [\"actor\", \"metrics\"])\n            scheduling_timeout: Maximum time to wait for scheduling (None = no timeout)\n            constraints: Constraints for filtering workers by attribute\n            coscheduling: Configuration for atomic multi-task scheduling\n"
+    },
+    {
+      "path": "lib/iris/src/iris/cluster/controller/reads.py",
+      "line_start": 1980,
+      "line_end": 2000,
+      "sha256": "5d45d89dd154288afd591bb6332baa01a61eace736f9931a256d854c1dbcf321",
+      "meaning": "Queued federation checks an explicit absolute scheduling deadline.",
+      "excerpt": "def expired_queued_handoffs(tx: Tx, now_ms: int) -> list[JobName]:\n    \"\"\"Queued federated jobs whose scheduling deadline has passed, to fail this tick.\n\n    A queued handoff owns no task rows, so the task-level scheduling-timeout scan never\n    sees it; without this a job with a ``scheduling_timeout`` would wait in the queue\n    past its deadline. Returns the nonterminal ``QUEUED_HANDOFF`` jobs whose stored\n    ``scheduling_deadline_epoch_ms`` is set and already elapsed; the tick marks them\n    ``UNSCHEDULABLE``.\n    \"\"\"\n    rows = tx.execute(\n        select(federated_jobs_table.c.job_id)\n        .select_from(federated_jobs_table.join(jobs_table, federated_jobs_table.c.job_id == jobs_table.c.job_id))\n        .where(\n            federated_jobs_table.c.direction == int(FederationDirection.SENT),\n            federated_jobs_table.c.handoff_state == int(HandoffState.QUEUED_HANDOFF),\n            jobs_table.c.state.notin_(list(TERMINAL_JOB_STATES)),\n            jobs_table.c.scheduling_deadline_epoch_ms.isnot(None),\n            jobs_table.c.scheduling_deadline_epoch_ms < now_ms,\n        )\n    ).all()\n    return [r.job_id for r in rows]\n"
+    },
+    {
+      "path": "lib/iris/src/iris/cluster/controller/controller.py",
+      "line_start": 1292,
+      "line_end": 1304,
+      "sha256": "1ee94fab0963479bf97ce48f3155757c114ac6bcd7ff5c1af901fea7c77defca",
+      "meaning": "Expired queued handoffs become unschedulable before promotion.",
+      "excerpt": "        with self._db.transaction() as cur:\n            if sched_result is not None:\n                self._commit_schedule_decisions(cur, sched_result, now, backend_pins)\n            # Fail queued handoffs past their scheduling deadline before promoting, so a\n            # just-expired job's promotion CAS (guarded on job-nonterminal) rejects it.\n            for job_id in expired_queued_federation:\n                writes.mark_federated_job_unschedulable(\n                    cur,\n                    job_id,\n                    now_ms=now.epoch_ms(),\n                    error=\"Scheduling timeout exceeded while queued for a federation peer\",\n                )\n            for promotion in federation_promotions:\n"
+    }
+  ]
+}

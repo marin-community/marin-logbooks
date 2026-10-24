@@ -1,0 +1,218 @@
+"""Execute a frozen public RoPE/Splash regression on sequential source variants."""
+import argparse
+import base64
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tarfile
+import tempfile
+import zlib
+
+PAYLOAD_B64 = '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'
+MAX_EXEC_BYTES = 96 * 1024
+MAX_FILES = 24
+MAX_FILE_BYTES = 1024 * 1024
+MAX_BYTES = 16 * 1024 * 1024
+
+CHILD = '''import hashlib,importlib,importlib.util,json,pathlib,sys
+request=json.loads(sys.argv[1])
+root=pathlib.Path(request["worktree"]).resolve()
+asset=pathlib.Path(request["prototype"])
+actual={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in request["source_file_sha256"]}
+if actual!=request["source_file_sha256"]:raise ValueError("Child source byte mismatch")
+if hashlib.sha256(asset.read_bytes()).hexdigest()!=request["prototype_sha256"]:raise ValueError("Prototype byte mismatch")
+spec=importlib.util.spec_from_file_location("frozen_splash_rotary_regression",asset)
+module=importlib.util.module_from_spec(spec)
+sys.modules[spec.name]=module
+spec.loader.exec_module(module)
+core=importlib.import_module("levanter.grug.attention._core")
+levanter=importlib.import_module("levanter")
+haliax=importlib.import_module("haliax")
+rotary=importlib.import_module("levanter.layers.rotary")
+rotary_native=importlib.import_module("levanter.layers.rotary_native")
+modules={name:str(pathlib.Path(m.__file__).resolve()) for name,m in [("core",core),("levanter",levanter),("haliax",haliax),("rotary",rotary),("rotary_native",rotary_native)]}
+expected={"core":root/"lib/levanter/src/levanter/grug/attention/_core.py","levanter":root/"lib/levanter/src/levanter/__init__.py","haliax":root/"lib/haliax/src/haliax/__init__.py","rotary":root/"lib/levanter/src/levanter/layers/rotary.py","rotary_native":root/"lib/levanter/src/levanter/layers/rotary_native.py"}
+if any(pathlib.Path(modules[k])!=expected[k] for k in modules):raise ValueError("Imported wrong source module")
+barrier="optimization_barrier" in core._tpu_splash_attention.__code__.co_names
+if barrier!=request["candidate"]:raise ValueError("Actual imported core code does not match variant")
+if module.jax.default_backend()!=request["backend"] or module.jax.device_count()!=4 or module.jax.local_device_count()!=4 or module.jax.process_count()!=1:raise ValueError("Unexpected process/device topology")
+if request["backend"]=="tpu" and not all("v5" in d.device_kind.lower() and "lite" not in d.device_kind.lower() for d in module.jax.devices()):raise ValueError("Expected TPUv5p")
+if (module.BATCH,module.SEQUENCE,module.QUERY_HEADS,module.KV_HEADS,module.ATOL,module.RTOL)!=(4,512,16,4,1e-5,1e-4):raise ValueError("Immutable prototype configuration differs")
+# Reconstruct the frozen seed173 host generation for provenance only; no runtime interception or altered operands.
+reconstructed={}
+for dim in [128,64]:
+ shapes=[(4,512,16,dim),(4,512,4,dim),(4,512,4,dim),(4,512),(4,512,16,dim)]
+ rng=module.np.random.default_rng(173)
+ arrays=[rng.standard_normal(shape).astype(module.np.float32) for shape in shapes[:3]]
+ arrays.append(module.np.broadcast_to(module.np.arange(512,dtype=module.np.int32),shapes[3]).copy())
+ ct=rng.standard_normal(shapes[4]).astype(module.np.float32)
+ ct/=module.np.sqrt(module.np.mean(ct.astype(module.np.float64)**2))
+ arrays.append(ct)
+ records=[]
+ for name,array in zip(["query_master","key_master","value_master","positions","cotangent"],arrays,strict=True):
+  digest=hashlib.sha256(json.dumps([list(array.shape),str(array.dtype)]).encode())
+  digest.update(array.tobytes())
+  records.append({"name":name,"shape":list(array.shape),"dtype":str(array.dtype),"sha256":digest.hexdigest()})
+ reconstructed[str(dim)]=records
+record={"verified":True,"prototype_sha256":request["prototype_sha256"],"source_pin":request["source_pin"],"source_file_sha256":actual,"modules":modules,"actual_function_contains_barrier":barrier,"dont_write_bytecode":sys.dont_write_bytecode,"pycache_prefix":sys.pycache_prefix,"backend":module.jax.default_backend(),"global_device_count":module.jax.device_count(),"local_device_count":module.jax.local_device_count(),"process_count":module.jax.process_count(),"devices":[{"kind":d.device_kind,"id":d.id,"process_index":d.process_index,"description":str(d)} for d in module.jax.devices()],"host_reconstructed_inputs":reconstructed,"input_hash_scope":"Reconstructed independently from immutable seed173 generation; not observed input/device-boundary hashes. Exact prototype source is executed unchanged, without hooks.","abstract_only":request["abstract_only"],"xla_flags":module.os.environ.get("XLA_FLAGS")}
+pathlib.Path(request["runtime_path"]).write_text(json.dumps(record,indent=2,sort_keys=True)+"\\n")
+sys.argv=[str(asset),"--source-pin",request["source_pin"],"--head64-control","--output-dir",request["output_dir"]]+(["--abstract-only"] if request["abstract_only"] else [])
+module.main()
+'''
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def write_json(path, value):
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
+
+
+def source_guard(worktree, expected):
+    actual = {name: digest((worktree / name).read_bytes()) for name in expected}
+    if actual != expected:
+        raise ValueError('Source bytes differ from the frozen variant')
+    return actual
+
+
+def child_run(label, payload, args):
+    expected = payload[label + '_file_sha256']
+    worktree = args.worktree.resolve()
+    pin = payload['baseline_source' if label == 'baseline' else 'candidate_source']
+    runtime_path = args.output_dir / (label + '-runtime.json')
+    request = {'worktree': str(worktree), 'prototype': payload['prototype_path'], 'prototype_sha256': payload['prototype_sha256'],
+        'source_pin': pin, 'source_file_sha256': expected, 'candidate': label == 'candidate', 'backend': args.expected_backend,
+        'output_dir': str(args.output_dir / label), 'runtime_path': str(runtime_path), 'abstract_only': args.abstract_only}
+    environment = dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
+        PYTHONPYCACHEPREFIX=tempfile.mkdtemp(prefix='native-jax-rotary-ab-' + label + '-'),
+        PYTHONPATH=str(worktree / 'lib/levanter/src') + ':' + str(worktree / 'lib/haliax/src'))
+    command = [sys.executable, '-c', CHILD, json.dumps(request, separators=(',', ':'))]
+    sizes = {'argv_bytes': sum(len(v.encode()) + 1 for v in command),
+        'environment_bytes': sum(len((k + '=' + v).encode()) + 1 for k, v in environment.items()),
+        'largest_argument_bytes': max(len(v.encode()) for v in command)}
+    if sizes['argv_bytes'] + sizes['environment_bytes'] >= MAX_EXEC_BYTES:
+        raise ValueError('Child command/environment exceeds96KiB')
+    before = source_guard(worktree, expected)
+    result = subprocess.run(command, cwd=worktree, env=environment)
+    after = source_guard(worktree, expected)
+    launch = {'source_pin': pin, 'exit_code': result.returncode, 'source_file_sha256_before': before,
+        'source_file_sha256_after': after, 'command': command, 'exec_sizes': sizes,
+        'environment': {k: environment[k] for k in ['PYTHONPATH','PYTHONDONTWRITEBYTECODE','PYTHONPYCACHEPREFIX','XLA_FLAGS','JAX_PLATFORMS']},
+        'parent_imported_jax': 'jax' in sys.modules}
+    write_json(args.output_dir / (label + '-launch.json'), launch)
+    return launch
+
+
+def inspect_results(payload, args, launches):
+    reports = {case: json.loads((args.output_dir / case / 'proof.json').read_text()) for case in ('baseline', 'candidate')}
+    runtime = {case: json.loads((args.output_dir / (case + '-runtime.json')).read_text()) for case in reports}
+    guards = {'same_reconstructed_host_inputs': runtime['baseline']['host_reconstructed_inputs'] == runtime['candidate']['host_reconstructed_inputs'],
+        'distinct_fresh_pycache': runtime['baseline']['pycache_prefix'] != runtime['candidate']['pycache_prefix'],
+        'same_physical_device_records': runtime['baseline']['devices'] == runtime['candidate']['devices'],
+        'same_exact_xla_flags': all(r['xla_flags'] == '--xla_allow_excess_precision=false' for r in runtime.values()),
+        'candidate_core_restored': source_guard(args.worktree, payload['candidate_file_sha256']) == payload['candidate_file_sha256']}
+    for label, report in reports.items():
+        guards[label + '_frozen_prototype'] = report['script_sha256'] == payload['prototype_sha256']
+        guards[label + '_source_pin'] = report['source_pin'] == payload['baseline_source' if label == 'baseline' else 'candidate_source']
+        guards[label + '_runtime_imports'] = runtime[label]['verified']
+        guards[label + '_head128_head64'] = [v['head_dim'] for v in report['cases']] == [128,64]
+        guards[label + '_unchanged_criteria'] = report['atol'] == 1e-5 and report['rtol'] == 1e-4
+        guards[label + '_expected_exit'] = launches[label]['exit_code'] == (0 if args.abstract_only or all(c['passed'] for c in report['cases']) else 1)
+    comparison = None
+    if not args.abstract_only:
+        comparison = {}
+        for left, right in zip(reports['baseline']['cases'], reports['candidate']['cases'], strict=True):
+            dim = str(left['head_dim'])
+            names = ['loss','forward','query_master_vjp','key_master_vjp','value_master_vjp']
+            guards[dim + '_all_named_hashes_unchanged'] = all(left['named'][n]['sha256'] == right['named'][n]['sha256'] for n in names)
+            guards[dim + '_native_forward_unchanged'] = all(left['native'][n]['sha256'] == right['native'][n]['sha256'] for n in ['loss','forward'])
+            guards[dim + '_matching_result_layouts'] = all(left[v][n]['shape'] == right[v][n]['shape'] and left[v][n]['dtype'] == right[v][n]['dtype'] and left[v][n]['partition_spec'] == right[v][n]['partition_spec'] for n in names for v in ['named','native'])
+            guards[dim + '_canonical_named_native_result_layouts'] = all(record['named'][n]['shape'] == record['native'][n]['shape'] and record['named'][n]['dtype'] == record['native'][n]['dtype'] and record['named'][n]['partition_spec'] == record['native'][n]['partition_spec'] for record in [left,right] for n in names)
+            comparison[dim] = {'baseline_passed': left['passed'], 'candidate_passed': right['passed'],
+                'before': left['comparisons'], 'after': right['comparisons'],
+                'new_failed_outputs': [n for n in names if left['comparisons'][n]['allclose'] and not right['comparisons'][n]['allclose']],
+                'removed_failed_outputs': [n for n in names if not left['comparisons'][n]['allclose'] and right['comparisons'][n]['allclose']]}
+    passed = all(guards.values())
+    reproduced = None if args.abstract_only else (not comparison['128']['baseline_passed'] and comparison['128']['candidate_passed'] and comparison['64']['baseline_passed'] and comparison['64']['candidate_passed'])
+    return {'passed_controls': passed, 'guards': guards, 'comparisons': comparison, 'compact_regression_reproduced': reproduced,
+        'numeric_result_policy': 'Record frozen seed/criteria outcomes without tuning or retries. Baseline numerical failure is expected only if observed; no compact regression claim unless head128 baselineFAIL/candidatePASS and head64 bothPASS.',
+        'source_pins': {'baseline': payload['baseline_source'], 'candidate': payload['candidate_source']},
+        'prototype_sha256': payload['prototype_sha256'], 'source_file_sha256': {'baseline':payload['baseline_file_sha256'],'candidate':payload['candidate_file_sha256']},
+        'controller_sha256': digest(Path(__file__).read_bytes()), 'parent_imported_jax': 'jax' in sys.modules,
+        'abstract_only': args.abstract_only, 'full_trainer_identity_tested': False,
+        'limitations': ['No HLO or tensor/weight artifacts. Prior large fragment A/B retains the optimized rounding dataflow evidence.',
+            'Host input hashes are reconstructed from immutable generation, not intercepted/observed device operands.',
+            'Compact unit-RMS cotangent tests per-unit derivatives, not full model mean-CE normalization, training trajectory, performance or convergence.']}
+
+
+def archive_outputs(output):
+    files = sorted(p for p in output.rglob('*') if p.is_file())
+    if any(p.is_symlink() for p in output.rglob('*')):
+        raise ValueError('No output symlinks allowed')
+    if any(p.suffix != '.json' or p.stat().st_size > MAX_FILE_BYTES for p in files):
+        raise ValueError('Unexpected artifact or per-file cap exceeded')
+    total = sum(p.stat().st_size for p in files)
+    if len(files) > MAX_FILES or total > MAX_BYTES:
+        raise ValueError('Output hard cap exceeded; no truncation')
+    archive = output.parent / (output.name + '-diagnostics.tar.gz')
+    with tarfile.open(archive, 'w:gz') as stream:
+        for p in files:
+            stream.add(p, arcname=str(p.relative_to(output)), recursive=False)
+    if archive.stat().st_size > MAX_BYTES:
+        raise ValueError('Compressed output cap exceeded')
+    return archive, {'entries': len(files), 'raw_bytes': total, 'compressed_bytes': archive.stat().st_size,
+        'sha256': digest(archive.read_bytes()), 'files': [{'path':str(p.relative_to(output)),'bytes':p.stat().st_size,'sha256':digest(p.read_bytes())} for p in files]}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--worktree', type=Path, required=True)
+    parser.add_argument('--output-dir', type=Path, required=True)
+    parser.add_argument('--expected-backend', choices=['cpu','tpu'], required=True)
+    parser.add_argument('--abstract-only', action='store_true')
+    parser.add_argument('--backup-uri', required=True)
+    args = parser.parse_args()
+    args.worktree, args.output_dir = args.worktree.resolve(), args.output_dir.resolve()
+    if 'jax' in sys.modules:
+        raise RuntimeError('Controller parent must not import JAX')
+    if os.environ.get('XLA_FLAGS') != '--xla_allow_excess_precision=false':
+        raise ValueError('Exact XLA precision flags required')
+    payload = json.loads(zlib.decompress(base64.b64decode(PAYLOAD_B64)))
+    asset = Path(payload['prototype_path']); data = payload['prototype'].encode()
+    if digest(data) != payload['prototype_sha256']:
+        raise ValueError('Prototype bytes differ')
+    if asset.exists() and asset.read_bytes() != data:
+        raise FileExistsError('Existing prototype differs')
+    if not asset.exists(): asset.write_bytes(data)
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    if any(args.output_dir.iterdir()):
+        raise FileExistsError("Use a fresh empty diagnostic output directory")
+    core = args.worktree / payload['core_path']
+    original = payload['baseline_core'].encode(); candidate = payload['candidate_core'].encode()
+    source_guard(args.worktree, payload['candidate_file_sha256'])
+    launches = {}
+    try:
+        core.write_bytes(original)
+        launches['baseline'] = child_run('baseline',payload,args)
+    finally:
+        core.write_bytes(candidate)
+    launches['candidate'] = child_run('candidate',payload,args)
+    summary = inspect_results(payload,args,launches)
+    summary['launch_exit_codes'] = {k:v['exit_code'] for k,v in launches.items()}
+    write_json(args.output_dir/'ab-summary.json',summary)
+    archive, report = archive_outputs(args.output_dir)
+    print('ROTARY_REGRESSION_BACKUP ' + json.dumps(report | {'archive':str(archive),'uri':args.backup_uri,'passed_controls':summary['passed_controls'],'compact_regression_reproduced':summary['compact_regression_reproduced']},sort_keys=True),flush=True)
+    backup = subprocess.run([sys.executable,'-m','rigging.fsutil.cli','cp','-n',str(archive),args.backup_uri])
+    print('ROTARY_REGRESSION_BACKUP_RESULT ' + json.dumps({'exit_code':backup.returncode,'uri':args.backup_uri}),flush=True)
+    if backup.returncode or not summary['passed_controls']:
+        raise SystemExit(1)
+    if not args.abstract_only and not all(v['candidate_passed'] for v in summary['comparisons'].values()):
+        raise SystemExit(1)
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,9 @@
+{
+  "schema": "frozen_utf8_patch.v1",
+  "original_basename": "native-jax-fp32-query-scale-rounding.patch",
+  "original_bytes": 747,
+  "original_sha256": "25c3f29f9e20780e4f5f3867a2069eb55136aa2b34a096c3ebc386cdb990d779",
+  "encoding": "utf-8",
+  "patch_utf8": "diff --git a/lib/levanter/src/levanter/grug/attention/_core.py b/lib/levanter/src/levanter/grug/attention/_core.py\nindex 0680517f8e..64b628b2c3 100644\n--- a/lib/levanter/src/levanter/grug/attention/_core.py\n+++ b/lib/levanter/src/levanter/grug/attention/_core.py\n@@ -317,6 +317,10 @@ def _tpu_splash_attention(\n     if Sk % 128 != 0:\n         raise NotImplementedError(\"Splash attention requires key/value sequence length to be a multiple of 128.\")\n \n+    if q_.dtype == jnp.float32:\n+        # Preserve query-scale rounding before the RoPE adjoint in backward.\n+        # TPU otherwise folds the scale into the sine/cosine coefficients.\n+        q_ = jax.lax.optimization_barrier(q_)\n     q_ = q_ * (1.0 / math.sqrt(D))\n \n     mesh = _get_mesh()\n",
+  "note": "Lossless container preserves mandatory blank unified-diff context prefixes. Extract patch_utf8 with UTF-8 encoding and verify original_sha256 before use."
+}

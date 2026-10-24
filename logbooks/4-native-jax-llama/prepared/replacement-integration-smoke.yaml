@@ -1,0 +1,23 @@
+checkpoint_root: /private/tmp/native-jax-replacement-smoke-995a5a346c68-checkpoints
+output_dir: /private/tmp/native-jax-replacement-smoke-995a5a346c68-reports
+expected_process_count: 1
+expected_global_device_count: 4
+expected_local_device_count: 4
+expected_backend: cpu
+vocab_size: 32
+batch_size: 8
+seq_len: 4
+mesh:
+  axes: {data: 2, model: 2}
+model:
+  hidden_dim: 16
+  intermediate_dim: 24
+  num_layers: 4
+  num_heads: 4
+  num_kv_heads: 2
+  max_seq_len: 4
+  attn_backend: vanilla
+  gradient_checkpointing:
+    save_carries: false
+    save_inputs: true
+    nested: 2

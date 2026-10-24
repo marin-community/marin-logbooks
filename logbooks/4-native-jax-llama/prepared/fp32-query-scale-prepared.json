@@ -1,0 +1,96 @@
+{
+  "schema": "native_jax_fp32_query_scale_prepared.v1",
+  "status": "local_only_not_published_or_hardware_tested",
+  "worktree": "/private/tmp/marin-native-jax-fp32-query-scale-rounding",
+  "branch": "codex/native-jax-fp32-query-scale-rounding",
+  "base": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+  "candidate": "f1e991207ceda752957938b1cfe8893027d3fed8",
+  "exact_commit_message": "Preserve the FP32 query-scale rounding boundary\n\n\n",
+  "clean": true,
+  "core_sha256": "b08c7fa1733dc4b77583c68d6d19486ff43902b09eb671c839a36cd0f83f901d",
+  "diff": {
+    "files": 1,
+    "insertions": 4,
+    "deletions": 0,
+    "guard": "q_.dtype == jnp.float32",
+    "position": "Immediately before existing forward q scaling; reverse AD places boundary after scaled dQ before inverse RoPE",
+    "BF16": "unchanged baseline; no barrier",
+    "math_optimizer_tolerance_LR": "unchanged"
+  },
+  "validation": {
+    "focused_CPU": {
+      "passed": 43,
+      "skipped": 2,
+      "scope": "Existing attention/model/benchmark tests, four actual CPU devices, default safety markers; real TPU Splash tests skipped"
+    },
+    "required_precommit": "passed lint/format/license/type/AST/largefile/merge/whitespace/end-of-file checks",
+    "normal_commit_hook": "passed",
+    "broad_affected_suite": "not run for this local-only preparation; no broad green claim",
+    "abstract_actual_CPU4": {
+      "scope": "Native public apply_rotary+Splash scalar value/three-VJP graphs at B8S2048H16KV4D128; no TPU compile/execution or numerical proof",
+      "float32_barrier_primitive_count": {
+        "baseline": 0,
+        "candidate": 2
+      },
+      "BF16_jaxpr_text_sha256_equal": true,
+      "BF16_barrier_primitive_counts": 0
+    }
+  },
+  "artifacts": {
+    "native-jax-fp32-query-scale-experiment-design.md": {
+      "path": "/private/tmp/native-jax-fp32-query-scale-experiment-design.md",
+      "bytes": 8032,
+      "sha256": "95c0ccbce6d6e498c1c037ec4f5a14aff6ef1299ad1a0688df85adcd984ad0bf"
+    },
+    "native-jax-fp32-qscale-static-independent-review.json": {
+      "path": "/private/tmp/native-jax-fp32-qscale-static-independent-review.json",
+      "bytes": 45314,
+      "sha256": "6266affa395181c38b9ac043e42a0c32c3d3bf8392c5a7dc258b65b08bd0705e"
+    },
+    "native-jax-fp32-query-scale-rounding-focused-tests.log": {
+      "path": "/private/tmp/native-jax-fp32-query-scale-rounding-focused-tests.log",
+      "bytes": 1489,
+      "sha256": "9eaa22d372d29edfa56524aee198ac805e02c07ba62c5471ab259c5a642a908f"
+    },
+    "native-jax-fp32-query-scale-rounding-precommit-final.log": {
+      "path": "/private/tmp/native-jax-fp32-query-scale-rounding-precommit-final.log",
+      "bytes": 557,
+      "sha256": "ee091dac6e4ec256ed5790e1f3bb25f92b18898d84ed85718d5f1d33a5190011"
+    },
+    "native-jax-fp32-query-scale-rounding-commit.log": {
+      "path": "/private/tmp/native-jax-fp32-query-scale-rounding-commit.log",
+      "bytes": 722,
+      "sha256": "118fbf028c885704909489a1e90c9dd0a63235abf41a25423dfb2d71473be329"
+    },
+    "native_jax_fp32_query_scale_abstract.py": {
+      "path": "/private/tmp/native_jax_fp32_query_scale_abstract.py",
+      "bytes": 4217,
+      "sha256": "30714e9a9da4f4c3edaa8b973727b451c58b9044b4a81f960e3f99ece7a364de"
+    },
+    "native-jax-fp32-query-scale-rounding.patch": {
+      "path": "/private/tmp/native-jax-fp32-query-scale-rounding.patch",
+      "bytes": 747,
+      "sha256": "25c3f29f9e20780e4f5f3867a2069eb55136aa2b34a096c3ebc386cdb990d779"
+    },
+    "native-jax-fp32-query-scale-abstract-baseline.json": {
+      "path": "/private/tmp/native-jax-fp32-query-scale-abstract-baseline.json",
+      "bytes": 4469,
+      "sha256": "14ecadb63f830541a583bf746c49ace46c8642b03f4928897bf8aed747d945c2"
+    },
+    "native-jax-fp32-query-scale-abstract-candidate.json": {
+      "path": "/private/tmp/native-jax-fp32-query-scale-abstract-candidate.json",
+      "bytes": 4509,
+      "sha256": "d45fab78d6c75ecdfa56b4e7e2667fa3593b429236facc1c6fcb5ab41217f274"
+    }
+  },
+  "next_specific_gate": "Independently reviewed actual FP32 common-source prefix A/B plus one common raw-Splash-dQ/trig two-rounding-order diagnostic before any new full Trainer comparison. See experiment design.",
+  "not_done": [
+    "remote publication or PR",
+    "TPU or other hardware launch",
+    "hardware/job/RPC observation",
+    "runtime dQ/trig numerical control",
+    "full Trainer correctness/performance",
+    "full lint catalog review for a future PR"
+  ],
+  "archive_requirement": "Root must preserve exact candidate source/design in the durable research branch before any future hardware run; this local preparation grants no launch authority."
+}

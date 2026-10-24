@@ -1,0 +1,101 @@
+{
+  "verdict": "No must-fix correctness or bounded-request issue found; technically clear for root-owned dispatch after normal root preflights. No submission performed.",
+  "manifest_sha256": "7a06a2d772d2b3d9c740d52c8d09a083f1709e6e2549270c2f6bec0f6c6eb8e4",
+  "controller_sha256": "ec3f2c5a3a98159f1fb4a270d5f3d837e9ac0796876fec10ca374ad3cbdc7be0",
+  "api_submit_sha256": "069cc6210f6ef71d4f7b94ed8bc654d0632adf88c9291056349591bd1615944e",
+  "prototype_sha256": "df8adbe36ca75457ba3a845129e4d761f61655c44b07f2340edba9811b249c8b",
+  "checks": {
+    "controller_hash": true,
+    "prototype_hash": true,
+    "cpu_proof_hash": true,
+    "api_submission_script_hash": true,
+    "api_pure_request_proof_hash": true,
+    "command_file_hash": true,
+    "all26_git_file_hashes_match": true,
+    "embedded_prototype_core_and_hash_maps_exact": true,
+    "embedded_launcher_decompresses_exact_controller": true,
+    "saved_request_matches_frozen_launcher_resources_timeouts_no_secret_values": true,
+    "actual_cpu4_abstract_fresh_import_and_restore_proofs_verified": true,
+    "all7_safe_json_archive_members_and_local_backup_byte_exact": true
+  },
+  "bundle_selection": {
+    "workspace": "/private/tmp/marin-native-jax-query-scale-rounding",
+    "file_count": 4704,
+    "all13_scientific_files_in_actual_bundle_selection": true,
+    "secret_file_or_venv_paths_in_bundle_selection": false,
+    "operation": "collect_workspace_files only; no zip creation, credentials resolution, RPC or upload"
+  },
+  "source_restore_and_import_review": {
+    "baseline": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+    "candidate": "8aa8674d10894728ed0b455ae14e14f46457cf9f",
+    "only_core_differs_between13file_maps": true,
+    "parent_stdlib_no_jax": true,
+    "baseline_core_write_with_candidate_restored_in_finally_before_fresh_candidate_child": true,
+    "actual_child_source13_hash_module_paths_core_bytecode_barrier_presence_checked": true,
+    "fresh_distinct_pycache_and_dontwrite": true,
+    "candidate_source_local_worktree_not_written_by_review": true
+  },
+  "api_review": {
+    "validate_only_branch_builds_no_client_and_returns_before_open_iris_client": true,
+    "source_workspace_forwarded_through_IrisClientRemote_to_create_workspace_zip": true,
+    "saved_environment_keys": [
+      "HF_DATASETS_TRUST_REMOTE_CODE",
+      "TOKENIZERS_PARALLELISM",
+      "MARIN_PROVENANCE"
+    ],
+    "saved_provenance_bytes": 340,
+    "saved_environment_json_map_bytes": 469,
+    "secret_behavior": "SecretBehavior.ISOLATE; client.py:1069 inherited forwarded_secrets branch skipped",
+    "explicit_secrets_or_credential_source": false,
+    "resource": "1 replica v5p-8 (4 chips), CPU16,64GiB memory,16GiB disk, us-central1/us-central1-a",
+    "scheduling_timeout_seconds": 120,
+    "execution_timeout_seconds": 780,
+    "max_retries_failure": 0,
+    "max_retries_preemption": 0,
+    "max_task_failures": 0,
+    "budget_limit": "120+780 bounds configured queue and execution time; excludes reconciliation/finalization, not an exact wall-clock deadline",
+    "launcher_largest_arg_bytes_including_nul": 22587,
+    "per_child_argv_plus_environment_guard_bytes": 98304
+  },
+  "scientific_review": {
+    "public_named_and_raw_native_RoPE_Splash_compositions": true,
+    "F32masters_castBF16_inside_AD": true,
+    "same_B4_S512_H16_KV4_mesh2x2_devices_with_D128_and_D64_control": true,
+    "strict_atol": 1e-05,
+    "strict_rtol": 0.0001,
+    "unit_RMS_ct_changes_derivative_test_scale_not_production_tolerance": true,
+    "finite_values_and_all5_comparisons_recorded": true,
+    "explicit_out_shardings_same_devices_and_result_shape_dtype_spec_guards": true,
+    "reconstructed_host_input_hashes_correctly_labeled_not_observed_device_inputs": true,
+    "CPU_proof_scope": "Actual4CPU abstract forward+reverse staging, source/import/controller/archive mechanics only; no Splash compilation or numerical execution",
+    "compact_claim_requires": "Observed D128 baselineFAIL/candidatePASS AND D64 baselinePASS/candidatePASS. Exit0 alone is insufficient because the controller preserves nonreproducing outcomes. Read compact_regression_reproduced and comparisons.",
+    "full_trainer_identity_tested": false,
+    "no_training_trajectory_or_speed_claim": true
+  },
+  "archive_review": {
+    "JSON_only": true,
+    "files_cap": 24,
+    "per_file_bytes_cap": 1048576,
+    "raw_and_compressed_bytes_cap": 16777216,
+    "safe_relative_regular_members_verified_in_saved_CPU_archive": 7,
+    "saved_CPU_raw_bytes": 54558,
+    "local_backup_byte_exact": true,
+    "numerical_FAIL_outputs_saved_before_exit": true,
+    "scope_limit": "An exception before either proof.json exists is fail-fast; do not assume the summary/archive was produced after infrastructure or compilation failure."
+  },
+  "root_dispatch_gates": [
+    "Root owns authorization, capacity/deadline/egress accounting and one unique job/storage preflight; none checked remotely by this reviewer.",
+    "Submit only frozen prepared hashes from clean candidate8aa worktree; API submit path checks HEAD/clean tree and13 scientific bytes.",
+    "Do not infer compact regression from abstract proof, successful task exit or positive large-fragment evidence; inspect both actual result sets and control predicate.",
+    "No automatic seed/tolerance changes, task retry, recovery or extra run if compact reproduction fails."
+  ],
+  "actions_not_performed": [
+    "job query",
+    "submission",
+    "credential lookup",
+    "remote download/upload",
+    "source edit",
+    "frozen prepared-file edit",
+    "queued Trainer job access"
+  ]
+}

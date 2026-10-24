@@ -1,0 +1,75 @@
+"""Prepared submit only; --validate-only constructs a request without network access."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+from google.protobuf.json_format import MessageToDict
+from rigging.secrets import SecretBehavior
+from rigging.timing import Duration
+
+from iris.cli.connect import open_iris_client
+from iris.cli.job import build_resources
+from iris.cluster.constraints import region_constraint, zone_constraint
+from iris.cluster.types import Entrypoint, EnvironmentSpec
+
+COMMAND = Path("/private/tmp/native-jax-splash-rotary-regression-ab-command.json")
+COMMAND_SHA256 = "4e28e48cee63acfa6e17545f781115d0c6cff9bb446faa0f805b47863e2023a7"
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--validate-only', action='store_true')
+    mode.add_argument('--submit', action='store_true')
+    args = parser.parse_args()
+    if hashlib.sha256(COMMAND.read_bytes()).hexdigest() != COMMAND_SHA256:
+        raise ValueError('Prepared command bytes differ')
+    command = json.loads(COMMAND.read_text())
+    root = Path(command['working_directory'])
+    if Path.cwd() != root:
+        raise ValueError('Run from the pinned candidate worktree')
+    if hashlib.sha256(command['entrypoint_argv'][-1].encode()).hexdigest() != command['launcher_sha256']:
+        raise ValueError('Prepared launcher bytes differ')
+    prepared = json.loads(Path('/private/tmp/native-jax-splash-rotary-regression-ab-prepared.json').read_text())
+    if any(hashlib.sha256((root/name).read_bytes()).hexdigest() != sha for name,sha in prepared['source_file_sha256']['candidate'].items()):
+        raise ValueError('Scientific source file bytes differ')
+    kwargs = dict(
+        name=command['job_name'],
+        entrypoint=Entrypoint.from_command(*command['entrypoint_argv']),
+        resources=build_resources(tpu='v5p-8',gpu=None,cpu=16,memory='64GB',disk='16GB'),
+        environment=EnvironmentSpec(extras=['tpu'],sync_packages=['marin-levanter'],secret_behavior=SecretBehavior.ISOLATE),
+        constraints=[region_constraint(['us-central1']),zone_constraint('us-central1-a')],
+        replicas=1,
+        scheduling_timeout=Duration.from_seconds(120),
+        timeout=Duration.from_seconds(780),
+        max_retries_failure=0,
+        max_retries_preemption=0,
+        max_task_failures=0,
+        submit_argv=command['argv'],
+    )
+    if args.validate_only:
+        record={'status':'pure_build_only_no_client_credentials_rpc_or_submission',
+            'source_pin':command['source_pin'],'command_sha256':COMMAND_SHA256,
+            'entrypoint':MessageToDict(kwargs['entrypoint'].to_proto()),
+            'resources':MessageToDict(kwargs['resources'].to_proto()),
+            'environment':MessageToDict(kwargs['environment'].to_proto()),
+            'constraints':[MessageToDict(c.to_proto()) for c in kwargs['constraints']],
+            'scheduling_timeout_seconds':120,'execution_timeout_seconds':780,
+            'max_retries_failure':0,'max_retries_preemption':0,'max_task_failures':0,
+            'before_finalization_budget_seconds':900}
+        Path('/private/tmp/native-jax-splash-rotary-regression-ab-api-request.json').write_text(json.dumps(record,indent=2)+'\n')
+        print(json.dumps({k:v for k,v in record.items() if k not in ['entrypoint','environment','resources','constraints']},sort_keys=True))
+        return
+    if subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()!=command['source_pin']:
+        raise ValueError('Wrong candidate commit')
+    if subprocess.check_output(['git','status','--porcelain'],cwd=root,text=True).strip():
+        raise ValueError('Candidate source tree must be clean')
+    with open_iris_client(config_file=root/'lib/iris/config/marin.yaml',workspace=root) as client:
+        job=client.submit(**kwargs)
+        print(str(job.job_id),flush=True)
+
+
+if __name__=='__main__':
+    main()

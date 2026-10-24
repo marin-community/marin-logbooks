@@ -1,0 +1,135 @@
+{
+  "status": "PREPARED_ONLY_NOT_SUBMITTED_ROOT_REVIEW_REQUIRED",
+  "controller": "/private/tmp/native_jax_splash_rotary_regression_ab.py",
+  "controller_sha256": "ec3f2c5a3a98159f1fb4a270d5f3d837e9ac0796876fec10ca374ad3cbdc7be0",
+  "prototype": "/private/tmp/native_jax_splash_rotary_gradient_regression.py",
+  "prototype_sha256": "df8adbe36ca75457ba3a845129e4d761f61655c44b07f2340edba9811b249c8b",
+  "source_pins": {
+    "baseline": "36e2a9a97fab22b76dfa5a03964c6600ec5713ac",
+    "candidate": "8aa8674d10894728ed0b455ae14e14f46457cf9f"
+  },
+  "source_file_sha256": {
+    "baseline": {
+      "lib/haliax/src/haliax/_src/state_dict.py": "d9c98a71b758303b86f6984222221b75946d91f112d685ef30c860d96e9d4669",
+      "lib/haliax/src/haliax/nn/linear.py": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+      "lib/haliax/src/haliax/nn/normalization.py": "3b75cb9dce8a8aae9bd74f91d361cc23c008f73dd61fa862b5f0b5bebddb3518",
+      "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+      "lib/levanter/src/levanter/grug/attention/_core.py": "07c8518380ee8a62cec006adf85458979be590630051e7c62dc9f7cb1285c3ec",
+      "lib/levanter/src/levanter/kernels/pallas/splash_attention.py": "34258a9a0fc9bc83b32dcb08e64ff81440a163d5a35b447ccd1b0a351c898d78",
+      "lib/levanter/src/levanter/layers/attention.py": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+      "lib/levanter/src/levanter/layers/linear.py": "d351bc82e111d7643d9b31cf3797ba927b100fa1cca5bcc368ab917e526d8b80",
+      "lib/levanter/src/levanter/layers/rms_norm.py": "bcf81000cb940f68235ce185e4210412d4d60e0f27384c95edc2c8c5f18af4f0",
+      "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+      "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+      "lib/levanter/src/levanter/layers/rotary.py": "afa9816449007a9134287bfe0bdc074de79303ebe9ad7f23bfe824c469eb5f10",
+      "lib/levanter/src/levanter/layers/rotary_native.py": "637b868c6c9d31a8bc6e124810593ffd0e1a9a0866a4dbc8fe52cc6b55f1d5ba"
+    },
+    "candidate": {
+      "lib/haliax/src/haliax/_src/state_dict.py": "d9c98a71b758303b86f6984222221b75946d91f112d685ef30c860d96e9d4669",
+      "lib/haliax/src/haliax/nn/linear.py": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+      "lib/haliax/src/haliax/nn/normalization.py": "3b75cb9dce8a8aae9bd74f91d361cc23c008f73dd61fa862b5f0b5bebddb3518",
+      "lib/levanter/scripts/bench/bench_llama_native.py": "beb87d3c4293c176e24809418e0c2769859daecc57d00ef6ff6efda98beb0a77",
+      "lib/levanter/src/levanter/grug/attention/_core.py": "e9bb1639396b5060fc6f0ebc013a3b89daf42485c88ea546b346198e9226c3d9",
+      "lib/levanter/src/levanter/kernels/pallas/splash_attention.py": "34258a9a0fc9bc83b32dcb08e64ff81440a163d5a35b447ccd1b0a351c898d78",
+      "lib/levanter/src/levanter/layers/attention.py": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+      "lib/levanter/src/levanter/layers/linear.py": "d351bc82e111d7643d9b31cf3797ba927b100fa1cca5bcc368ab917e526d8b80",
+      "lib/levanter/src/levanter/layers/rms_norm.py": "bcf81000cb940f68235ce185e4210412d4d60e0f27384c95edc2c8c5f18af4f0",
+      "lib/levanter/src/levanter/models/llama.py": "3095d586edf05309174b344b22418e9b78180651036f62e89fb7fb473b0aa64f",
+      "lib/levanter/src/levanter/models/llama_native.py": "c3cda8d2072dcc5069cdb7ff81561092ee170847a4e0f1516dfd4fa51542c984",
+      "lib/levanter/src/levanter/layers/rotary.py": "afa9816449007a9134287bfe0bdc074de79303ebe9ad7f23bfe824c469eb5f10",
+      "lib/levanter/src/levanter/layers/rotary_native.py": "637b868c6c9d31a8bc6e124810593ffd0e1a9a0866a4dbc8fe52cc6b55f1d5ba"
+    }
+  },
+  "immutable_prototype_unchanged": true,
+  "workload": {
+    "B": 4,
+    "S": 512,
+    "Hq": 16,
+    "KV": 4,
+    "D": [
+      128,
+      64
+    ],
+    "seed": 173,
+    "master": "float32",
+    "compute": "bfloat16",
+    "matmul": "default",
+    "atol": 1e-05,
+    "rtol": 0.0001,
+    "mesh": "data2/model2",
+    "XLA_FLAGS": "--xla_allow_excess_precision=false"
+  },
+  "json_only_hard_caps": {
+    "files": 24,
+    "per_file_bytes": 1048576,
+    "raw_bytes": 16777216,
+    "compressed_bytes": 16777216
+  },
+  "command_file": "/private/tmp/native-jax-splash-rotary-regression-ab-command.json",
+  "archive_design": "Stdlib parent, sequential fresh children, actual source/module/barrier proofs; restore candidate core in finally. Keep arbitrary measured outcomes; no tolerance/seed search. Baseline numerical exit1 can be expected; candidate failure retained. No reproduction claim from abstracts.",
+  "inputs": "Immutable source/seed execution plus reconstructed host hashes (explicitly not intercepted device inputs). No runtime hooks.",
+  "cpu_proof": "/private/tmp/native-jax-splash-rotary-regression-ab-cpu-proof.json",
+  "hardware_submitted": false,
+  "cpu_proof_sha256": "74825ee43dc100de976fe3ebdd18378f17ee5839788dcfac3981926dcc253eef",
+  "api_submission_script": "/private/tmp/submit_native_jax_rotary_regression_ab.py",
+  "api_submission_script_sha256": "069cc6210f6ef71d4f7b94ed8bc654d0632adf88c9291056349591bd1615944e",
+  "api_pure_request_proof": "/private/tmp/native-jax-splash-rotary-regression-ab-api-request.json",
+  "api_pure_request_proof_sha256": "23f07fd3554918ad47c06cbc13f85bfa3181505de5ad0d3a7511335919de003d",
+  "command_file_sha256": "4e28e48cee63acfa6e17545f781115d0c6cff9bb446faa0f805b47863e2023a7",
+  "resources": {
+    "tpu": "v5p-8",
+    "replicas": 1,
+    "cpu": 16,
+    "memory": "64GB",
+    "disk": "16GB",
+    "timeout_seconds": 780,
+    "max_retries": 0,
+    "region": "us-central1",
+    "zone": "us-central1-a",
+    "scheduling_timeout_seconds": 120,
+    "max_retries_preemption": 0,
+    "maximum_queue_plus_execution_seconds_before_finalization": 900
+  },
+  "timeout_semantics": "API scheduling_timeout120 plus execution timeout780; each is controller-enforced, no deadline cancellation or retry. Bound excludes finalization/reconcile latency.",
+  "exec_sizes_local_environment": {
+    "argv_bytes": 23133,
+    "environment_bytes": 2930,
+    "largest_argument_bytes": 22586
+  },
+  "no_active_handles": true,
+  "timeout_source_evidence": [
+    {
+      "file": "lib/iris/src/iris/client/client.py",
+      "line": 923,
+      "meaning": "submit exposes scheduling_timeout; docs948 maximum scheduling wait"
+    },
+    {
+      "file": "lib/iris/src/iris/cluster/controller/reads.py",
+      "line": 1754,
+      "meaning": "execution timeout rows carry started_at_ms"
+    },
+    {
+      "file": "lib/iris/src/iris/cluster/controller/controller.py",
+      "line": 1440,
+      "meaning": "execution timeout is started_at_ms plus timeout_ms"
+    },
+    {
+      "file": "lib/iris/src/iris/cluster/controller/reads.py",
+      "line": 1980,
+      "meaning": "queued handoff checks absolute scheduling deadline"
+    },
+    {
+      "file": "lib/iris/src/iris/cluster/controller/controller.py",
+      "line": 1292,
+      "meaning": "expired queued handoffs terminalized unschedulable"
+    }
+  ],
+  "limitations": [
+    "No compact numerical regression claim until immutable head128 baseline fails unchanged criteria and candidate passes on physical matchedTPU, while head64 control passes both.",
+    "Do not change tolerances or search seeds if reproduction fails. Keep observed outcomes.",
+    "JSON-only diagnostic is deliberate; optimizedHLO evidence is retained by prior large fragmentA/B.",
+    "All13 scientific source files (original11 plus actual rotary dependencies) match exact frozen Git pins; actual imported core/rotary/Levanter/Haliax paths and function barrier presence are verified.",
+    "Host input hashes are independent reconstruction of immutable seed173 generation, not runtime device interception.",
+    "API budget120queue+780execution excludes controller reconcile/finalization latency; no deadline cancellation or automatic recovery."
+  ]
+}
