@@ -17,7 +17,7 @@ Which small training or scheduling change offers a useful tradeoff between final
 
 Screen four recipes from fresh SFT initialization with one seed and 25 optimizer updates each. A candidate is interesting if it improves the reward/time frontier or signed evaluation reward gain per hour within a matching evaluation cohort. This screen does not establish general improvement or async non-inferiority. Confirmation requires a separate design; it is outside the current finite program.
 
-Time each measured run from submission through terminal artifact success, including scheduling, startup, initial/final evaluation, training, checkpoint and export. Report qualification time and resource cost separately. Incomplete or unknown scoring coverage remains visible and excludes trusted gain ranking.
+Time each measured run from submission through terminal artifact success, including scheduling, startup, initial/final evaluation, training and native checkpointing. HF export is disabled for all four measured screens; explicit export adds a separate job outside this shared protocol. Report qualification time and resource cost separately. Incomplete or unknown scoring coverage remains visible and excludes trusted gain ranking.
 
 ## Baseline and planned treatments
 
@@ -111,6 +111,14 @@ The training coordinator, five training replicas and four checkpoint-export repl
 Runtime evaluation counters reported 100 attempted and 100 scored tasks before and after training, with mean reward moving from 0.2201 to 0.16. The reported length-stop fraction increased from 0.41 to 0.46. These provisional counters do not establish complete task membership, per-task verdicts, checkpoint resumability or a matched comparison. No improvement claim or dashboard ranking follows.
 
 Launch-lock provenance remains unresolved. The coordinator's retained provenance explicitly marks its source as dirty. The original source and changed root lock are preserved; the exact submitted bundle and installed GPU environment have not been independently attested. All jobs are terminal and will not be probed again. Narrow durable result, checkpoint and provenance metadata checks remain pending. The async qualification and all four measured screens stay on hold; no retry, restart or new experiment has been submitted.
+
+### 2026-10-24 08:00 UTC - Make HF export opt-in for future loops
+
+[Marin #10644](https://github.com/marin-community/marin/pull/10644) makes HF export opt-in in the general RL launch configuration and quick-loop CLI. Native recovery checkpoints, in-training evaluation and terminal result records remain enabled. Explicit `--export-hf` retains the separate export job for downstream HF model consumers. The maintained contribution is published and awaiting review; it is not merged.
+
+The research branch includes the [selected source change](https://github.com/marin-community/marin-logbooks/commit/812cd7f4ad0d2aa34f77c22dda65cdc0ab037459), preserving all four arm treatments, artifact names and dependency locks. It also retains the five test deletions requested in review of [Marin #10633](https://github.com/marin-community/marin/pull/10633). The maintained export change passed focused and affected CPU checks. The archive adaptation passed actual CLI and callback-construction checks for default and explicit export, plus lint and independent source review. These checks do not qualify GPU execution.
+
+The completed A3 attempt used export-on and retains its original outcome and 61.23-minute qualification cost. Future D3 and all four measured screens will use export-off with the same submission-to-terminal timing definition. Each future request and resolved protocol must bind the updated source and retention behavior before launch. A3 result and provenance review remain pending; no new experiment has launched.
 
 ## Final decision
 
