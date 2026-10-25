@@ -1,0 +1,299 @@
+{
+  "schema": "native-jax-core-fp8-r3-actual-cpu1-result.v1",
+  "research_prelaunch": "4fc43a3c19c89f7894d415629426fe21f122d220",
+  "execution_source": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+  "execution_source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+  "mode": "raw",
+  "requested_devices": 1,
+  "actual_device_count": 1,
+  "actual_devices": [
+    "cpu:0"
+  ],
+  "device_platforms": [
+    "cpu"
+  ],
+  "same_process_imports_and_execution": "same process",
+  "preflight_complete": true,
+  "source_clean": true,
+  "observed_source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+  "verified_source_files": [
+    "lib/levanter/tests/test_train_lm.py",
+    "lib/haliax/src/haliax/quantization.py",
+    "lib/haliax/src/haliax/_src/fp8.py",
+    "lib/haliax/src/haliax/nn/linear.py",
+    "lib/haliax/tests/test_fp8.py",
+    "lib/levanter/src/levanter/layers/linear.py",
+    "lib/levanter/src/levanter/layers/stacked.py",
+    "lib/levanter/src/levanter/models/llama.py",
+    "lib/levanter/src/levanter/models/llama_native.py",
+    "lib/levanter/src/levanter/models/llama_native_lm.py",
+    "lib/levanter/src/levanter/models/lm_model.py",
+    "lib/levanter/src/levanter/trainer.py",
+    "lib/levanter/src/levanter/trainer_state.py",
+    "lib/levanter/src/levanter/grad_accum.py",
+    "lib/levanter/src/levanter/main/train_lm.py",
+    "lib/levanter/src/levanter/layers/attention.py",
+    "lib/levanter/src/levanter/checkpoint.py",
+    "lib/levanter/src/levanter/adaptor/__init__.py",
+    "lib/levanter/src/levanter/adaptor/lora.py",
+    "lib/levanter/tests/test_grad_accum.py",
+    "lib/levanter/src/levanter/testing/tiny_corpus.py",
+    "lib/levanter/src/levanter/testing/tokenizer.py",
+    "lib/levanter/src/levanter/tracker/json_file.py",
+    "lib/levanter/src/levanter/data/text/datasets.py"
+  ],
+  "source_modules": {
+    "haliax": "$FP8_SOURCE_ROOT/lib/haliax/src/haliax/__init__.py",
+    "levanter": "$FP8_SOURCE_ROOT/lib/levanter/src/levanter/__init__.py",
+    "marin": "$FP8_SOURCE_ROOT/lib/marin/src/marin/__init__.py",
+    "iris": "$FP8_SOURCE_ROOT/lib/iris/src/iris/__init__.py"
+  },
+  "iris_publishing_runtime": false,
+  "runner_filename": "native-jax-core-fp8-preparation-r3-probe.py",
+  "runner_sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+  "worker_filename": "native-jax-core-fp8-preparation-r3-worker.py",
+  "worker_sha256": "66cdea8cf7999743cb58c4e289ec3b4a328bd69dc21e0141e0e430612f3eb967",
+  "config_filename": "native-jax-core-fp8-preparation-r3-config.json",
+  "config_sha256": "3229a576820583677b85228c2cea1a9730f714b44ff3ffef36e5abc5bafba2e4",
+  "actual_command_public_projection": [
+    "uv",
+    "run",
+    "--directory",
+    "$FP8_SOURCE_ROOT",
+    "python",
+    "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-probe.py",
+    "raw",
+    "--source-root",
+    "$FP8_SOURCE_ROOT",
+    "--research-root",
+    "$FP8_RESEARCH_ROOT",
+    "--config",
+    "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-config.json",
+    "--devices",
+    "1",
+    "--output",
+    "$FP8_OUTPUT_ROOT/raw-cpu1-r3"
+  ],
+  "actual_command_canonical_json_sha256": "03319fd6e01043b4306da6bb1417958d991ab624404f05ade14b1936bb1ad640",
+  "runtime_environment_public_projection": {
+    "JAX_PLATFORMS": "cpu",
+    "JAX_NUM_CPU_DEVICES": "1",
+    "XLA_FLAGS": "--xla_allow_excess_precision=false",
+    "UV_PROJECT_ENVIRONMENT": "$FP8_VENV",
+    "UV_NO_SYNC": "1",
+    "UV_OFFLINE": "1",
+    "UV_FROZEN": "1",
+    "PYTHONPATH": "$FP8_SOURCE_ROOT/lib/ducky/src:$FP8_SOURCE_ROOT/lib/dupekit/src:$FP8_SOURCE_ROOT/lib/finelog/src:$FP8_SOURCE_ROOT/lib/finestore/src:$FP8_SOURCE_ROOT/lib/fray/src:$FP8_SOURCE_ROOT/lib/haliax/src:$FP8_SOURCE_ROOT/lib/iris/src:$FP8_SOURCE_ROOT/lib/levanter/src:$FP8_SOURCE_ROOT/lib/marin/src:$FP8_SOURCE_ROOT/lib/rigging/src:$FP8_SOURCE_ROOT/lib/rolloutengine/src:$FP8_SOURCE_ROOT/lib/shellbox/src:$FP8_SOURCE_ROOT/lib/taskcompendium/src:$FP8_SOURCE_ROOT/lib/taskforge/src:$FP8_SOURCE_ROOT/lib/verifyit/src:$FP8_SOURCE_ROOT/lib/zephyr/src",
+    "HF_HUB_OFFLINE": "1",
+    "HF_DATASETS_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "WANDB_MODE": "disabled",
+    "TOKENIZERS_PARALLELISM": "false",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "environment_metadata_reference": "prepared/core-fp8-prelaunch/environment.json",
+  "started_utc": "2026-10-25T02:36:48.686897+00:00",
+  "finished_utc": "2026-10-25T02:36:53.324905+00:00",
+  "exit_code": 1,
+  "terminal_stage": "raw.explicit.gradients",
+  "control_kind": "explicit",
+  "recorded_failure_classification": "diagnostic_control_failure_review_required",
+  "completed_controls": {
+    "auto": {
+      "shape": [
+        1,
+        1
+      ],
+      "axis_type": "AxisType.Auto",
+      "max_absolute_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state_after_overwrite": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          3.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "kernel_amax_history": [
+          3.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "output_grad_amax_history": [
+          2.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "output_sharding": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Auto, Auto)), spec=P(), memory_kind=device)",
+      "weight_gradient_sharding": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Auto, Auto)), spec=P(), memory_kind=device)"
+    }
+  },
+  "auto_error_order": [
+    "forward",
+    "input_gradient",
+    "weight_gradient"
+  ],
+  "auto_assertion_boundary": "Auto completed exact forward/input-gradient/weight-gradient equality and allsixsyntheticstate assertions before being retained in completed_controls. SingleCPU/Auto scope only.",
+  "explicit_forward_boundary": {
+    "call_returned": true,
+    "host_numerical_parity_asserted": false,
+    "gradient_result_available": false,
+    "interpretation": "Forwardcallreturned before gradientstage; failure precedes subsequenthostvalue/stateparityassertions. Do notclaimExplicitforwardparity."
+  },
+  "exception": {
+    "type": "ShardingTypeError",
+    "message": "Contracting dimensions are sharded and it is ambiguous how the output should be sharded. Please specify the output sharding via the `out_sharding` parameter. Got lhs_contracting_spec=('model',) and rhs_contracting_spec=('model',)",
+    "original_traceback_sha256": "600778eb9394de6e68214a7aa33ce0d2f13efe24f178438ec5bf9c116c92c7a4",
+    "projected_source_frames": [
+      {
+        "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-worker.py",
+        "line": 180,
+        "function": "<lambda>"
+      },
+      {
+        "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-worker.py",
+        "line": 172,
+        "function": "forward"
+      },
+      {
+        "path": "$FP8_SOURCE_ROOT/lib/haliax/src/haliax/quantization.py",
+        "line": 245,
+        "function": "__call__"
+      },
+      {
+        "path": "$FP8_SOURCE_ROOT/lib/haliax/src/haliax/_src/fp8.py",
+        "line": 301,
+        "function": "fp8_scaled_dot_general"
+      },
+      {
+        "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-probe.py",
+        "line": 86,
+        "function": "main"
+      },
+      {
+        "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-worker.py",
+        "line": 305,
+        "function": "execute"
+      },
+      {
+        "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-worker.py",
+        "line": 179,
+        "function": "raw_forward_and_state"
+      },
+      {
+        "path": "$FP8_VENV/lib/python3.12/site-packages/equinox/_jit.py",
+        "line": 209,
+        "function": "__call__"
+      },
+      {
+        "path": "$FP8_VENV/lib/python3.12/site-packages/equinox/_jit.py",
+        "line": 263,
+        "function": "_call"
+      },
+      {
+        "path": "$FP8_SOURCE_ROOT/lib/haliax/src/haliax/_src/fp8.py",
+        "line": 246,
+        "function": "quantized_dot_bwd"
+      },
+      {
+        "path": "$FP8_SOURCE_ROOT/lib/haliax/src/haliax/_src/fp8.py",
+        "line": 169,
+        "function": "dot_general_transpose_lhs"
+      }
+    ]
+  },
+  "operator_interpretation": {
+    "observed_failure_site": {
+      "path": "lib/haliax/src/haliax/_src/fp8.py",
+      "line": 169,
+      "function": "dot_general_transpose_lhs",
+      "caller_line": 246,
+      "caller_function": "quantized_dot_bwd"
+    },
+    "diagnosis": "ConcreteexistingFP8Explicit customVJP contracting-model-dimension output-layout gap: dot_general demands out_sharding for lhs/rhs contractingmodel specs. This is distinct from R2Auto placement-harness failure.",
+    "not_established": "Not a verdict that allFP8/Explicit/native math isunsupported; noExplicitgradient/parity/state result ormodelintegration. Separate independentdiagnosis/minimalmaintainedprimitivefix work isnotresultacceptance here."
+  },
+  "stopped_unexecuted": [
+    "microbatchCPU1",
+    "baselineCPU4",
+    "rawCPU4",
+    "microbatchCPU4"
+  ],
+  "original_receipt": {
+    "artifact_relative_to_tmp": "native-jax-core-fp8-r3-results/raw-cpu1-r3/receipt.json",
+    "bytes": 9008,
+    "sha256": "6443eaa66acd48e3df0849d145639d529b48941a010e9f261527d1fa88fc3a9f"
+  },
+  "original_execution_receipt": {
+    "artifact_relative_to_tmp": "native-jax-core-fp8-r3-results/raw-cpu1-r3-execution.json",
+    "bytes": 3014,
+    "sha256": "24551e76656437b647106ae38a9276a277c324f3329ef3971b5ebbd83c8ea86a"
+  },
+  "prelaunch_publication_origin": {
+    "artifact_relative_to_tmp": "native-jax-core-fp8-r3-root-publication-proof.json",
+    "bytes": 1049,
+    "sha256": "bda5fa16514891627cf1343207fb717e099ebf00a76081b2d36600e5bb7ab09d"
+  },
+  "original_log_sha256_only": "00d4e3f3ec56d817d2955c6e12601cf653218b2a8513c6aaf2ec24e8901abd4d",
+  "public_projection_policy": [
+    "Keep originalfailureclassification andcompletedAuto unchanged; operatorinterpretation separate.",
+    "Keep allsixsmallsynthetic scale/historyarrays (three16-element histories), not modelweights/optimizerstate.",
+    "Normalize only privatehostpaths in command/env/sourceframes to FP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV and localuvbinary to uv; originalcommandcanonicalJSONsha/receiptfilehashes retained.",
+    "Omit fullrawtraceback/logs; retain exceptiontype/message/sourceframes andtracebackhash. No negative modelarrays/cache/tokenizer/checkpoint/data directories read.",
+    "Prelaunch4fc43 unexecutedR3 snapshot stayshistorical; actualresult is laterphase. No accelerator/performance/BF16/canonical/scientificacceptance."
+  ]
+}
