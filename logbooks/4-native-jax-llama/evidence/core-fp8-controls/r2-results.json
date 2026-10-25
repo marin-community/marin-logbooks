@@ -1,0 +1,323 @@
+{
+  "schema": "native-jax-core-fp8-r2-actual-cpu-results.v1",
+  "research_prelaunch": "5488bb8d96f74ab35088ec8ed0f1be457405cc85",
+  "execution_source": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+  "execution_source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+  "cases": [
+    {
+      "case": "baseline-cpu1",
+      "mode": "baseline",
+      "requested_devices": 1,
+      "actual_device_count": 1,
+      "actual_devices": [
+        "cpu:0"
+      ],
+      "device_platforms": [
+        "cpu"
+      ],
+      "same_process_imports_and_execution": "same process",
+      "execution_source": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "observed_source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "source_clean": true,
+      "verified_source_files": [
+        "lib/levanter/tests/test_train_lm.py",
+        "lib/haliax/src/haliax/quantization.py",
+        "lib/haliax/src/haliax/_src/fp8.py",
+        "lib/haliax/src/haliax/nn/linear.py",
+        "lib/haliax/tests/test_fp8.py",
+        "lib/levanter/src/levanter/layers/linear.py",
+        "lib/levanter/src/levanter/layers/stacked.py",
+        "lib/levanter/src/levanter/models/llama.py",
+        "lib/levanter/src/levanter/models/llama_native.py",
+        "lib/levanter/src/levanter/models/llama_native_lm.py",
+        "lib/levanter/src/levanter/models/lm_model.py",
+        "lib/levanter/src/levanter/trainer.py",
+        "lib/levanter/src/levanter/trainer_state.py",
+        "lib/levanter/src/levanter/grad_accum.py",
+        "lib/levanter/src/levanter/main/train_lm.py",
+        "lib/levanter/src/levanter/layers/attention.py",
+        "lib/levanter/src/levanter/checkpoint.py",
+        "lib/levanter/src/levanter/adaptor/__init__.py",
+        "lib/levanter/src/levanter/adaptor/lora.py",
+        "lib/levanter/tests/test_grad_accum.py",
+        "lib/levanter/src/levanter/testing/tiny_corpus.py",
+        "lib/levanter/src/levanter/testing/tokenizer.py",
+        "lib/levanter/src/levanter/tracker/json_file.py",
+        "lib/levanter/src/levanter/data/text/datasets.py"
+      ],
+      "source_modules": {
+        "haliax": "$FP8_SOURCE_ROOT/lib/haliax/src/haliax/__init__.py",
+        "levanter": "$FP8_SOURCE_ROOT/lib/levanter/src/levanter/__init__.py",
+        "marin": "$FP8_SOURCE_ROOT/lib/marin/src/marin/__init__.py",
+        "iris": "$FP8_SOURCE_ROOT/lib/iris/src/iris/__init__.py"
+      },
+      "iris_publishing_runtime": false,
+      "research_publication": "5488bb8d96f74ab35088ec8ed0f1be457405cc85",
+      "runner_filename": "native-jax-core-fp8-preparation-r2-probe.py",
+      "runner_sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+      "worker_filename": "native-jax-core-fp8-preparation-r2-worker.py",
+      "worker_sha256": "60ca11729cfec4d278a4437f33a6cf0ccfe656b9d966133d201c92fd1a4367ba",
+      "config_filename": "native-jax-core-fp8-preparation-r2-config.json",
+      "config_sha256": "da7a95ec2144b5caaf63932966b4a876721f2b3525f21c236de249643656d1e5",
+      "actual_command_public_projection": [
+        "uv",
+        "run",
+        "--directory",
+        "$FP8_SOURCE_ROOT",
+        "python",
+        "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py",
+        "baseline",
+        "--source-root",
+        "$FP8_SOURCE_ROOT",
+        "--research-root",
+        "$FP8_RESEARCH_ROOT",
+        "--config",
+        "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json",
+        "--devices",
+        "1",
+        "--output",
+        "$FP8_OUTPUT_ROOT/baseline-cpu1"
+      ],
+      "actual_command_canonical_json_sha256": "c635409211d65d4056d32ec04a26220523dfd34aa8abaea4d81ab538c40268ae",
+      "command_projection_note": "Original fullcommand in executionreceipt identifiedbyhash; replace only hostpaths with FP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV parameters and localuvbinarypath with uv.",
+      "runtime_environment_public_projection": {
+        "JAX_PLATFORMS": "cpu",
+        "JAX_NUM_CPU_DEVICES": "1",
+        "XLA_FLAGS": "--xla_allow_excess_precision=false",
+        "UV_PROJECT_ENVIRONMENT": "$FP8_VENV",
+        "UV_NO_SYNC": "1",
+        "UV_OFFLINE": "1",
+        "UV_FROZEN": "1",
+        "PYTHONPATH": "$FP8_SOURCE_ROOT/lib/ducky/src:$FP8_SOURCE_ROOT/lib/dupekit/src:$FP8_SOURCE_ROOT/lib/finelog/src:$FP8_SOURCE_ROOT/lib/finestore/src:$FP8_SOURCE_ROOT/lib/fray/src:$FP8_SOURCE_ROOT/lib/haliax/src:$FP8_SOURCE_ROOT/lib/iris/src:$FP8_SOURCE_ROOT/lib/levanter/src:$FP8_SOURCE_ROOT/lib/marin/src:$FP8_SOURCE_ROOT/lib/rigging/src:$FP8_SOURCE_ROOT/lib/rolloutengine/src:$FP8_SOURCE_ROOT/lib/shellbox/src:$FP8_SOURCE_ROOT/lib/taskcompendium/src:$FP8_SOURCE_ROOT/lib/taskforge/src:$FP8_SOURCE_ROOT/lib/verifyit/src:$FP8_SOURCE_ROOT/lib/zephyr/src",
+        "HF_HUB_OFFLINE": "1",
+        "HF_DATASETS_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "TOKENIZERS_PARALLELISM": "false",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "installed_environment_reference": "prepared/core-fp8-prelaunch/environment.json",
+      "started_utc": "2026-10-25T02:27:22.153686+00:00",
+      "finished_utc": "2026-10-25T02:27:32.487595+00:00",
+      "exit_code": 0,
+      "terminal_stage": "completed",
+      "preflight_complete": true,
+      "original_receipt": {
+        "artifact_relative_to_tmp": "native-jax-core-fp8-published-results/baseline-cpu1/receipt.json",
+        "bytes": 7228,
+        "sha256": "aba298d01bf61b64d616d40ad92c1819417ea3aa4e7aadcb97c88a2ff8644939"
+      },
+      "original_execution_receipt": {
+        "artifact_relative_to_tmp": "native-jax-core-fp8-published-results/baseline-cpu1-execution.json",
+        "bytes": 3010,
+        "sha256": "35e9463a777936a863dff3e3cd4b6bc3636dbad84947987fb081e6c1f96c951d"
+      },
+      "original_log_sha256_only": "ea5d132ad90028f44967821b3d69cc43b2d335d19d22e2ff5681bca9bc519ccb",
+      "recorded_classification": "completed",
+      "canonical": {
+        "outcome": "finite_loss_smoke",
+        "configured_train_steps": 2,
+        "recorded_metrics": {
+          "train/loss": 8.91707706451416,
+          "eval/loss": 9.032036781311035,
+          "parameter_count": 2489741,
+          "global_step": 1
+        },
+        "global_step_semantics": "zero-indexedglobal_step1 for configuredtwo-step smoke; no checkpointcontinuation claim"
+      },
+      "native": {
+        "outcome": "rejected",
+        "exception": "ValueError",
+        "message": "llama_native training does not support Haliax quantization",
+        "matches_expected_quantization_guard": true
+      },
+      "completed_controls": [
+        "canonical",
+        "native"
+      ],
+      "limit": "TinypublicnamedFP8finite-loss smoke plusactualnativequantizationguard only; no numerical/gradient/resume/attention/hardwareparity."
+    },
+    {
+      "case": "raw-cpu1",
+      "mode": "raw",
+      "requested_devices": 1,
+      "actual_device_count": 1,
+      "actual_devices": [
+        "cpu:0"
+      ],
+      "device_platforms": [
+        "cpu"
+      ],
+      "same_process_imports_and_execution": "same process",
+      "execution_source": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "observed_source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "source_clean": true,
+      "verified_source_files": [
+        "lib/levanter/tests/test_train_lm.py",
+        "lib/haliax/src/haliax/quantization.py",
+        "lib/haliax/src/haliax/_src/fp8.py",
+        "lib/haliax/src/haliax/nn/linear.py",
+        "lib/haliax/tests/test_fp8.py",
+        "lib/levanter/src/levanter/layers/linear.py",
+        "lib/levanter/src/levanter/layers/stacked.py",
+        "lib/levanter/src/levanter/models/llama.py",
+        "lib/levanter/src/levanter/models/llama_native.py",
+        "lib/levanter/src/levanter/models/llama_native_lm.py",
+        "lib/levanter/src/levanter/models/lm_model.py",
+        "lib/levanter/src/levanter/trainer.py",
+        "lib/levanter/src/levanter/trainer_state.py",
+        "lib/levanter/src/levanter/grad_accum.py",
+        "lib/levanter/src/levanter/main/train_lm.py",
+        "lib/levanter/src/levanter/layers/attention.py",
+        "lib/levanter/src/levanter/checkpoint.py",
+        "lib/levanter/src/levanter/adaptor/__init__.py",
+        "lib/levanter/src/levanter/adaptor/lora.py",
+        "lib/levanter/tests/test_grad_accum.py",
+        "lib/levanter/src/levanter/testing/tiny_corpus.py",
+        "lib/levanter/src/levanter/testing/tokenizer.py",
+        "lib/levanter/src/levanter/tracker/json_file.py",
+        "lib/levanter/src/levanter/data/text/datasets.py"
+      ],
+      "source_modules": {
+        "haliax": "$FP8_SOURCE_ROOT/lib/haliax/src/haliax/__init__.py",
+        "levanter": "$FP8_SOURCE_ROOT/lib/levanter/src/levanter/__init__.py",
+        "marin": "$FP8_SOURCE_ROOT/lib/marin/src/marin/__init__.py",
+        "iris": "$FP8_SOURCE_ROOT/lib/iris/src/iris/__init__.py"
+      },
+      "iris_publishing_runtime": false,
+      "research_publication": "5488bb8d96f74ab35088ec8ed0f1be457405cc85",
+      "runner_filename": "native-jax-core-fp8-preparation-r2-probe.py",
+      "runner_sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+      "worker_filename": "native-jax-core-fp8-preparation-r2-worker.py",
+      "worker_sha256": "60ca11729cfec4d278a4437f33a6cf0ccfe656b9d966133d201c92fd1a4367ba",
+      "config_filename": "native-jax-core-fp8-preparation-r2-config.json",
+      "config_sha256": "da7a95ec2144b5caaf63932966b4a876721f2b3525f21c236de249643656d1e5",
+      "actual_command_public_projection": [
+        "uv",
+        "run",
+        "--directory",
+        "$FP8_SOURCE_ROOT",
+        "python",
+        "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py",
+        "raw",
+        "--source-root",
+        "$FP8_SOURCE_ROOT",
+        "--research-root",
+        "$FP8_RESEARCH_ROOT",
+        "--config",
+        "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json",
+        "--devices",
+        "1",
+        "--output",
+        "$FP8_OUTPUT_ROOT/raw-cpu1"
+      ],
+      "actual_command_canonical_json_sha256": "9c339c7c6717f2534af478992bee5122547949a3cfecd040e35fb79cb7951b7a",
+      "command_projection_note": "Original fullcommand in executionreceipt identifiedbyhash; replace only hostpaths with FP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV parameters and localuvbinarypath with uv.",
+      "runtime_environment_public_projection": {
+        "JAX_PLATFORMS": "cpu",
+        "JAX_NUM_CPU_DEVICES": "1",
+        "XLA_FLAGS": "--xla_allow_excess_precision=false",
+        "UV_PROJECT_ENVIRONMENT": "$FP8_VENV",
+        "UV_NO_SYNC": "1",
+        "UV_OFFLINE": "1",
+        "UV_FROZEN": "1",
+        "PYTHONPATH": "$FP8_SOURCE_ROOT/lib/ducky/src:$FP8_SOURCE_ROOT/lib/dupekit/src:$FP8_SOURCE_ROOT/lib/finelog/src:$FP8_SOURCE_ROOT/lib/finestore/src:$FP8_SOURCE_ROOT/lib/fray/src:$FP8_SOURCE_ROOT/lib/haliax/src:$FP8_SOURCE_ROOT/lib/iris/src:$FP8_SOURCE_ROOT/lib/levanter/src:$FP8_SOURCE_ROOT/lib/marin/src:$FP8_SOURCE_ROOT/lib/rigging/src:$FP8_SOURCE_ROOT/lib/rolloutengine/src:$FP8_SOURCE_ROOT/lib/shellbox/src:$FP8_SOURCE_ROOT/lib/taskcompendium/src:$FP8_SOURCE_ROOT/lib/taskforge/src:$FP8_SOURCE_ROOT/lib/verifyit/src:$FP8_SOURCE_ROOT/lib/zephyr/src",
+        "HF_HUB_OFFLINE": "1",
+        "HF_DATASETS_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "TOKENIZERS_PARALLELISM": "false",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "installed_environment_reference": "prepared/core-fp8-prelaunch/environment.json",
+      "started_utc": "2026-10-25T02:27:56.823845+00:00",
+      "finished_utc": "2026-10-25T02:28:01.329263+00:00",
+      "exit_code": 1,
+      "terminal_stage": "raw.auto.forward",
+      "preflight_complete": true,
+      "original_receipt": {
+        "artifact_relative_to_tmp": "native-jax-core-fp8-published-results/raw-cpu1/receipt.json",
+        "bytes": 6262,
+        "sha256": "1e37321748460a7ed6dc538cb75e344377ace78b0dc06b26fcd04f64d25c1fe3"
+      },
+      "original_execution_receipt": {
+        "artifact_relative_to_tmp": "native-jax-core-fp8-published-results/raw-cpu1-execution.json",
+        "bytes": 3000,
+        "sha256": "c81807840c5234730ac378ad4fa57c536bdd3966d83a1b7427d39ca018d531c5"
+      },
+      "original_log_sha256_only": "77fc9adc778dc62ea3657ed9440739cd9d1f2b20f408847c2e0b50408880cb41",
+      "recorded_classification": "diagnostic_control_failure_review_required",
+      "root_interpretation": "invalid Auto placement harness before any FP8 result; preflight succeeded; no unsupported-FP8 inference",
+      "control_kind": "auto",
+      "completed_controls": {},
+      "exception": {
+        "type": "ValueError",
+        "message": "PartitionSpec passed to reshard cannot contain axis names that are of type Auto or Manual. Got PartitionSpec: P('model', None) with axis name: model of type: AxisType.Auto. This error occurs at source:  $FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-worker.py:166:32 (execute.<locals>.raw_forward_and_state.<locals>.forward)",
+        "original_traceback_sha256": "ec5b42dddf51c8ef1e26fba83c6c28f9fb57518637f5cad0c1e5507a838b42ef",
+        "projected_frames": [
+          {
+            "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py",
+            "line": 86,
+            "function": "main"
+          },
+          {
+            "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-worker.py",
+            "line": 300,
+            "function": "execute"
+          },
+          {
+            "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-worker.py",
+            "line": 172,
+            "function": "raw_forward_and_state"
+          },
+          {
+            "path": "$FP8_VENV/lib/python3.12/site-packages/equinox/_jit.py",
+            "line": 209,
+            "function": "__call__"
+          },
+          {
+            "path": "$FP8_VENV/lib/python3.12/site-packages/equinox/_jit.py",
+            "line": 263,
+            "function": "_call"
+          },
+          {
+            "path": "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-worker.py",
+            "line": 166,
+            "function": "forward"
+          },
+          {
+            "path": "$FP8_VENV/lib/python3.12/site-packages/jax/_src/sharding_impls.py",
+            "line": 891,
+            "function": "canonicalize_sharding"
+          }
+        ]
+      },
+      "limit": "Autoreshardlayout API failedbeforeanyFP8result; noAutoresult/Explicitexecution/FP8primitiveverdict/state-reducerfinding."
+    }
+  ],
+  "root_interpretation_origin": {
+    "artifact_relative_to_tmp": "native-jax-core-fp8-r2-root-interpretation.json",
+    "bytes": 872,
+    "sha256": "4a8eb7a03fb4c4ad880f9a9ecdb09aacec94c0c28aff94072e2fd8f396b71430"
+  },
+  "root_stopped_unexecuted": [
+    "microbatchCPU1",
+    "baselineCPU4",
+    "rawCPU4",
+    "microbatchCPU4"
+  ],
+  "additional_unexecuted": "Explicitrawcontrol wasneverentered becauseAuto failedfirst. No R3execution exists.",
+  "projections": [
+    "Retain scalartrain/eval losses,paramcount,zero-indexedstep; omit duplicate metrics, throughput/timing/profiler estimates and hardwaredetail lists.",
+    "Retain originalreceipt failure_classification verbatim; rootinvalidAuto-placement diagnosis is separate, not a rewrite.",
+    "Retain exceptiontype/message andnormalizedsourceframes; omitfullrawtraceback butrecordexacthash.",
+    "No weights/optimizer/checkpoints/cache/tokenizer/logdirectories/rawlogs/privateenvfile orresultarrays.",
+    "Publishedprelaunchunexecuted snapshot isearlierphase, leftunchanged."
+  ]
+}

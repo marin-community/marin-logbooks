@@ -1,0 +1,17 @@
+# R3 raw CPU1 control — publish before execution
+
+Use clean [dlwh/marin source054413ea8563f7216a33ee8dd34fc001c13b37ff](https://github.com/dlwh/marin/tree/054413ea8563f7216a33ee8dd34fc001c13b37ff), tree649b0eb013ee87bab6748cccde8d819f842d0704. This execution checkout is separate from the research files. The [config](native-jax-core-fp8-preparation-r3-config.json) keeps the same24 source pins and names the exact sibling [worker](native-jax-core-fp8-preparation-r3-worker.py); publish it together with the [runner](native-jax-core-fp8-preparation-r3-probe.py). Their hashes are in the [manifest](manifest.json) and [static freeze/review record](prelaunch-source-proof.json).
+
+R2's [actual results](../../evidence/core-fp8-controls/r2-results.json) preserve a successful canonical FP8 smoke/native guard and the failed raw Auto placement call. R3 changes only raw Auto storage/output placement to lax.with_sharding_constraint(value,NamedSharding(mesh,spec)); Explicit keeps reshard(value,spec). The same physical PartitionSpecs, scales/history, operands, exact value/gradient/state assertions and production implementation remain. R3's ordinary hooks passed and fresh preparation review found no issues. No R3 control has run; static API review cannot establish success.
+
+Read the [published5488 environment record](https://github.com/marin-community/marin-logbooks/blob/5488bb8d96f74ab35088ec8ed0f1be457405cc85/logbooks/4-native-jax-llama/prepared/core-fp8-prelaunch/environment.json) and the [full setup/environment exports](https://github.com/marin-community/marin-logbooks/blob/5488bb8d96f74ab35088ec8ed0f1be457405cc85/logbooks/4-native-jax-llama/prepared/core-fp8-prelaunch/recipe.md). Use the environment-export block with the four host paths below. Provision an installed compatible environment from the linked pinned repository installation guide before enabling offline/no-sync; no new setup is claimed here. The selected metadata is not a complete lock-matched environment, and raw FP8 runtime compatibility remains unqualified.
+
+Set FP8_SOURCE_ROOT to the clean054 checkout; FP8_RESEARCH_ROOT to this published prepared/core-fp8-auto-control-r3 directory; FP8_OUTPUT_ROOT to a new local results directory; and FP8_VENV to the installed compatible environment. Retain the prior recipe's own-source PYTHONPATH, CPU/offline/no-sync settings and exact-precision flag. Create the parent output directory before invocation. Each case directory must be fresh; the runner refuses overwrite.
+
+After the operator verifies publication, the only next proposed control is:
+
+```bash
+JAX_NUM_CPU_DEVICES=1 uv run --directory "$FP8_SOURCE_ROOT" python   "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-probe.py" raw   --source-root "$FP8_SOURCE_ROOT"   --research-root "$FP8_RESEARCH_ROOT"   --config "$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-config.json"   --devices 1 --output "$FP8_OUTPUT_ROOT/raw-cpu1-r3"   > "$FP8_OUTPUT_ROOT/raw-cpu1-r3.log" 2>&1
+```
+
+This raw invocation attempts Auto first, then Explicit only if Auto completes. Inspect its actual stage-tagged receipt before any further control. Preserve completed partial controls, exception and provenance if it fails; stop for review without retries, changed placement, precision or comparisons. Do not repeat the R2 baseline. Microbatch and CPU4 are not part of this next invocation. No unsupported-FP8, state-reducer, native integration, accelerator or performance conclusion follows from static preparation.

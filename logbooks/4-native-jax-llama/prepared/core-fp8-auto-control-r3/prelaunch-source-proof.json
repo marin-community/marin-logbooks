@@ -1,0 +1,277 @@
+{
+  "native-jax-core-fp8-preparation-r3-freeze.json": {
+    "utc": "2026-10-25T02:31:04.824830+00:00",
+    "status_at_freeze": "R3_UNEXECUTED_PLACEMENT_HARNESS_RESPONSE",
+    "source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "source_clean": true,
+    "old_freezes_and_published5488_R2_preserved": true,
+    "R2_qualified_baseline_not_repeated": true,
+    "R2_actual_runtime_receipts": {
+      "receipt.json": {
+        "sha256": "1e37321748460a7ed6dc538cb75e344377ace78b0dc06b26fcd04f64d25c1fe3"
+      },
+      "native-jax-core-fp8-r2-root-interpretation.json": {
+        "sha256": "4a8eb7a03fb4c4ad880f9a9ecdb09aacec94c0c28aff94072e2fd8f396b71430"
+      }
+    },
+    "R3_changed_scope": "OnlyAuto rawplacementAPI; Explicitunchanged; samepartition_specs/math/assertions; R2runnerbyteexact",
+    "artifacts": {
+      "prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-probe.py": {
+        "sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+        "bytes": 4646
+      },
+      "prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-worker.py": {
+        "sha256": "66cdea8cf7999743cb58c4e289ec3b4a328bd69dc21e0141e0e430612f3eb967",
+        "bytes": 15295
+      },
+      "prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-config.json": {
+        "sha256": "3229a576820583677b85228c2cea1a9730f714b44ff3ffef36e5abc5bafba2e4",
+        "bytes": 6747
+      },
+      "prepared/core-fp8-auto-control-r3/recipe.md": {
+        "sha256": "f67cce6db068841f1a0e9145afc7a284f913f9724c4b892f990fa30b55ba262e",
+        "bytes": 13711
+      },
+      "prepared/core-fp8-auto-control-r3/prelaunch-source-proof.json": {
+        "sha256": "73416dd862efa0a6929be1518e82fb60fa5690e75434446548425152c9a28ed9",
+        "bytes": 2920
+      },
+      "native-jax-core-fp8-preparation-r3-response.patch": {
+        "sha256": "1199510dab1dcc0915cd07451c465b95d1a0ac5088a0e99779921ad80dfd9dd1",
+        "bytes": 18620
+      }
+    },
+    "ordinary": {
+      "preview": "native-jax-core-fp8-precommit-r3-preview",
+      "command": "./infra/pre-commit.py --fix --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r3-probe.py --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r3-worker.py --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r3-config.json --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r3-plan.md",
+      "log": "prepared/core-fp8-auto-control-r3/prelaunch-source-proof.json",
+      "log_sha256": "2cb21582533cea874df61e8f30e821bcde578e1da01f30298add311aea353f42",
+      "exit_code": 0,
+      "result": "AllapplicablehooksPASS noSKIP/noqa; localformatterIPCescalationauthorized"
+    },
+    "static_API_sources": {
+      "lib/haliax/src/haliax/partitioning.py": {
+        "sha256": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+        "lines": "206-255: namedwrapper leavesrawarraysalone; Explicitreshard/otherconstraint"
+      },
+      "<installed-env>/site-packages/jax/_src/pjit.py": {
+        "sha256": "26a2390f3b3114aa6e5ced435d1653edac1bb0c658693f9fa2b103895e5c2034",
+        "lines": "2002-2013,2033-2085,2259-2280: Auto constraints/reshard signatures"
+      },
+      "<installed-env>/site-packages/jax/_src/sharding_impls.py": {
+        "sha256": "0c5252fb0ef2986065092fbf05bcab21fafdf51ea3f45e21ae34e0db6757dcc4",
+        "lines": "885-899: Auto/Manualreshard rejection"
+      }
+    },
+    "proposed_next_command_ONLY_after_review_publication_rootrelease": "JAX_NUM_CPU_DEVICES=1 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-probe.py\" raw --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r3-config.json\" --devices 1 --output \"$FP8_OUTPUT_ROOT/raw-cpu1-r3\" > \"$FP8_OUTPUT_ROOT/raw-cpu1-r3.log\" 2>&1",
+    "current_execution_authority": "NONE: no moreCPUcasesuntilrootrelease; doNOTrepeatbaseline; no microbatch/CPU4commandreleased",
+    "qualification": "R3 ASTparse/compileunexecuted+ordinaryhooks ONLY. No projectimports/tests/probeexecution/sourceimplementation/network/jobs/commit/publication."
+  },
+  "native-jax-core-fp8-preparation-r3-disposition.json": {
+    "response": "R3 researchharnessonly: Auto rawstorage->compute/outputuse lax.with_sharding_constraint(value,NamedSharding(mesh,spec)); Explicitcontinues exactreshard. No coreFP8/math/model/source implementationchange.",
+    "reason": "ActualpublishedR2rawCPU1 failedbeforeFP8 atAutoreshard; preflighttrue doesnotimplyvaliddiagnosticharness. NoAuto/Explicitcompletedresult; cannotclassifyunsupportedFP8.",
+    "actual_preserved_R2": {
+      "baseline_train_loss": 8.91707706451416,
+      "native": {
+        "outcome": "rejected",
+        "exception": "ValueError",
+        "message": "llama_native training does not support Haliax quantization",
+        "matches_expected_quantization_guard": true
+      },
+      "raw_stage": "raw.auto.forward",
+      "raw_exception_type": "ValueError",
+      "raw_exception_message": "PartitionSpec passed to reshard cannot contain axis names that are of type Auto or Manual. Got PartitionSpec: P('model', None) with axis name: model of type: AxisType.Auto. This error occurs at source:  native-jax-core-fp8-preparation-r2-worker.py:166:32 (execute.<locals>.raw_forward_and_state.<locals>.forward)",
+      "completed_controls": {},
+      "receipts": {
+        "receipt.json": {
+          "sha256": "1e37321748460a7ed6dc538cb75e344377ace78b0dc06b26fcd04f64d25c1fe3"
+        },
+        "native-jax-core-fp8-r2-root-interpretation.json": {
+          "sha256": "4a8eb7a03fb4c4ad880f9a9ecdb09aacec94c0c28aff94072e2fd8f396b71430"
+        }
+      }
+    },
+    "static_API_sources": {
+      "lib/haliax/src/haliax/partitioning.py": {
+        "sha256": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+        "lines": "206-255: namedwrapper leavesrawarraysalone; Explicitreshard/otherconstraint"
+      },
+      "<installed-env>/site-packages/jax/_src/pjit.py": {
+        "sha256": "26a2390f3b3114aa6e5ced435d1653edac1bb0c658693f9fa2b103895e5c2034",
+        "lines": "2002-2013,2033-2085,2259-2280: Auto constraints/reshard signatures"
+      },
+      "<installed-env>/site-packages/jax/_src/sharding_impls.py": {
+        "sha256": "0c5252fb0ef2986065092fbf05bcab21fafdf51ea3f45e21ae34e0db6757dcc4",
+        "lines": "885-899: Auto/Manualreshard rejection"
+      }
+    },
+    "next": "Freshreview+publishR3+rootreleasebeforeproposedrawCPU1. No baselinerepeat; microbatch/CPU4notreleased.",
+    "checks": "AST/compileonly andordinaryhooks; no projectimports/diagnosticexecution/network/hardware/sourceimplementation/commit."
+  },
+  "native-jax-core-fp8-preparation-r3-syntax-validation.json": {
+    "utc": "2026-10-25T02:31:04.823521+00:00",
+    "ASTparse_compile_codeobjectonly": "PASS runnerandworker",
+    "R2_R3_runner_byteexact": true,
+    "R2_R3_execute_ASTequal_after_normalizing_only_newplacementhelper_calls_and_forwardmesh_typebinding": true,
+    "baseline_microbatch_math_scales_dimensions_placementspecs_exactassertions_preserved": true,
+    "alloriginal_R1_R2artifacts_unchanged": true,
+    "source054clean24pins_trace4bytes_unchanged": true,
+    "projectimports_execution_tests": false,
+    "ordinaryall4previewfiles": "PASS"
+  },
+  "native-jax-core-fp8-preparation-r3-review.json": {
+    "review_type": "fresh_targeted_unexecuted_FP8_preparation_R3_API_seam_review",
+    "verdict": "no_findings_for_publication_preparation",
+    "findings": [],
+    "scope": "Research harness Auto-placement response only; no maintained implementation approval or runtime qualification.",
+    "freeze": {
+      "path": "prepared/core-fp8-auto-control-r3/prelaunch-source-proof.json",
+      "sha256": "f2136668230bf4c537d9ef1bb2c98d4cbf49b4d3b87742aac782d275313a91e2"
+    },
+    "reviewed_artifacts": {
+      "prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-probe.py": {
+        "sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+        "bytes": 4646
+      },
+      "prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-worker.py": {
+        "sha256": "66cdea8cf7999743cb58c4e289ec3b4a328bd69dc21e0141e0e430612f3eb967",
+        "bytes": 15295
+      },
+      "prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-config.json": {
+        "sha256": "3229a576820583677b85228c2cea1a9730f714b44ff3ffef36e5abc5bafba2e4",
+        "bytes": 6747
+      },
+      "prepared/core-fp8-auto-control-r3/recipe.md": {
+        "sha256": "f67cce6db068841f1a0e9145afc7a284f913f9724c4b892f990fa30b55ba262e",
+        "bytes": 13711
+      },
+      "prepared/core-fp8-auto-control-r3/prelaunch-source-proof.json": {
+        "sha256": "73416dd862efa0a6929be1518e82fb60fa5690e75434446548425152c9a28ed9",
+        "bytes": 2920
+      },
+      "native-jax-core-fp8-preparation-r3-response.patch": {
+        "sha256": "1199510dab1dcc0915cd07451c465b95d1a0ac5088a0e99779921ad80dfd9dd1",
+        "bytes": 18620
+      }
+    },
+    "source": {
+      "root": "<execution-source-root>",
+      "commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+      "clean_verified": true,
+      "all24_SHA_and_git_blob_pins_verified": true,
+      "all24_exact_054_and_069": true
+    },
+    "dispositions": [
+      {
+        "piece": "runner/bootstrap",
+        "status": "no_finding",
+        "assessment": "Runner byte-exact R2. Required explicit source/research/config/output locations, source clean/hash checks, sibling worker hash and stage-tagged failure envelope remain portable. Config changes only sibling worker filename/hash; these agree with final frozen R3 bytes.",
+        "evidence": "r3-probe.py:16-105 and r3-config.json:132-134"
+      },
+      {
+        "piece": "raw Auto placement seam",
+        "status": "no_finding",
+        "assessment": "Small raw-only helper chooses lax.with_sharding_constraint(value, NamedSharding(mesh,spec)) only for AxisType.Auto; Explicit remains reshard(value,spec). Both weight storage-to-compute and output annotation use the helper with unchanged PartitionSpecs. Haliax shard already selects this API boundary, but leaves raw arrays untouched, so directly calling that wrapper would not apply the constraint. Installed JAX static code independently supports this distinction.",
+        "evidence": "r3-worker.py:140-143,169-174; haliax/partitioning.py:250-255; installed jax/_src/pjit.py:2033-2113,2259-2280; sharding_impls.py:885-899"
+      },
+      {
+        "piece": "closures, controls and oracles",
+        "status": "no_finding",
+        "assessment": "Forward keyword defaults bind the same per-iteration mesh and axis_type used immediately by filter_jit/grad. Independent stdlib AST comparison shows execute identical to R2 after normalizing only this binding and declared helper/call substitutions. Explicit/baseline/microbatch semantics, initial physical specs, scales/history, dimensions, FP8 implementation, NumPy oracles, exact assertions and loss/additive-gradient gate are unchanged. No tolerance or precision workaround."
+      },
+      {
+        "piece": "plan/disposition and history",
+        "status": "no_finding",
+        "assessment": "R2 baseline result and raw Auto harness failure are represented separately and preserved. Plan correctly limits any next proposal to fresh-output rawCPU1 after publication and separate root release. Baseline need not repeat for this raw-only revision; microbatch and CPU4 remain unreleased. No R3 success, FP8 support, parity or performance claim is made."
+      }
+    ],
+    "preserved_R2_runtime_evidence": {
+      "files": {
+        "receipt.json": {
+          "sha256": "1e37321748460a7ed6dc538cb75e344377ace78b0dc06b26fcd04f64d25c1fe3"
+        },
+        "native-jax-core-fp8-r2-root-interpretation.json": {
+          "sha256": "4a8eb7a03fb4c4ad880f9a9ecdb09aacec94c0c28aff94072e2fd8f396b71430"
+        }
+      },
+      "hashes_independently_verified": true,
+      "baseline": {
+        "receipt_stage": "completed",
+        "canonical_train_loss": 8.91707706451416,
+        "expected_native_guard": true,
+        "boundary": "Root-executed completed smoke/guard evidence read from immutable receipt; reviewer did not rerun. Not numerical/model/hardware parity."
+      },
+      "raw": {
+        "receipt_stage": "raw.auto.forward",
+        "preflight_complete": true,
+        "receipt_failure_classification": "diagnostic_control_failure_review_required",
+        "completed_controls": {},
+        "interpretation": "Concrete Auto reshard API misuse before operation call; invalid diagnostic placement harness. Successful provenance preflight did not establish valid diagnostic API use. No unsupported-FP8 inference; no completed Auto/Explicit result."
+      }
+    },
+    "static_API_evidence": {
+      "lib/haliax/src/haliax/partitioning.py": {
+        "sha256": "60d8665415bc4d29b2100b28744a835d6598631fbaf59d7e61aed71f3e3f3b08",
+        "lines": "206-255: namedwrapper leavesrawarraysalone; Explicitreshard/otherconstraint"
+      },
+      "<installed-env>/site-packages/jax/_src/pjit.py": {
+        "sha256": "26a2390f3b3114aa6e5ced435d1653edac1bb0c658693f9fa2b103895e5c2034",
+        "lines": "2002-2013,2033-2085,2259-2280: Auto constraints/reshard signatures"
+      },
+      "<installed-env>/site-packages/jax/_src/sharding_impls.py": {
+        "sha256": "0c5252fb0ef2986065092fbf05bcab21fafdf51ea3f45e21ae34e0db6757dcc4",
+        "lines": "885-899: Auto/Manualreshard rejection"
+      }
+    },
+    "ordinary_evidence": {
+      "log": "prepared/core-fp8-auto-control-r3/prelaunch-source-proof.json",
+      "sha256": "2cb21582533cea874df61e8f30e821bcde578e1da01f30298add311aea353f42",
+      "reviewer_read_and_hash_verified": true,
+      "supplied_result": "All listed applicable hooks report ok; final OK.",
+      "reviewer_reran": false,
+      "boundary": "Static hook evidence only. Log package-install message belongs to author ordinary-hook environment, not reviewer or diagnostic execution."
+    },
+    "historical_reviews_preserved": {
+      "native-jax-core-fp8-preparation-review.md": "d6376b5b6426719d623150485f505f6f7870a26128ee57149f2c3420c08db081",
+      "native-jax-core-fp8-preparation-review.json": "b84e0bf425a685a08358ab410114799ad47c68fcbe4c95ee757f177df3b8400c",
+      "native-jax-core-fp8-preparation-r1-review.md": "3194e166da8f74efc0440c209518cf962bc15443b8e065f4b39dc1fafd54bd75",
+      "native-jax-core-fp8-preparation-r1-review.json": "b87d6260c2bcadede0d6b23f0030dc73de1be964ff2c8f824fe7eaca7e92d31b",
+      "native-jax-core-fp8-preparation-r2-review.md": "8da66157a2643c8c9688da34212b87d72afaca361be5acc9261b82957105c0d1",
+      "native-jax-core-fp8-preparation-r2-review.json": "ea8d2346503d8caf732cda54473a1c2f3bdb9a94f34ec866908480535638686f"
+    },
+    "actions_performed": [
+      "Read frozen R3 payload, plan, disposition and supplied static hook log as text.",
+      "Verified all frozen SHA256 values, predecessor runtime receipt hashes and static API source hashes.",
+      "Parsed R2/R3 source with stdlib ast for structural comparison without importing/executing/compiling code objects.",
+      "Verified clean source commit/tree and all24 SHA256/git-blob pins exact054/069.",
+      "Wrote separate R3 review artifacts."
+    ],
+    "not_performed": [
+      "project imports",
+      "probe/worker/JAX imports",
+      "probe or control execution",
+      "tests",
+      "ordinary hooks rerun",
+      "private environment/secrets reads",
+      "network",
+      "source code edits",
+      "publication/commit/push",
+      "PR/CI/job/automation actions"
+    ],
+    "next_gate": "Exact reviewed R3 runner/worker/config may be considered for publication by root after its record gate. Only then may root separately release rawCPU1 with a fresh output; inspect its actual receipt before any later control. This review does not release execution or establish that the revised API seam succeeds."
+  },
+  "native-jax-core-fp8-preparation-r3-review.md": {
+    "text": "# FP8 research preparation R3 review\n\n**Disposition: no findings for publication preparation.** Targeted static review of the Auto-placement harness response only; no maintained implementation approval or runtime qualification.\n\nFreeze SHA256: `f2136668230bf4c537d9ef1bb2c98d4cbf49b4d3b87742aac782d275313a91e2`. Source stays clean `054413ea8563f7216a33ee8dd34fc001c13b37ff`, tree `649b0eb013ee87bab6748cccde8d819f842d0704`. All 24 SHA256/git-blob pins match pinned054 and public069.\n\n## Piece dispositions\n\n- **runner/bootstrap: no finding.** Runner byte-exact R2. Required explicit source/research/config/output locations, source clean/hash checks, sibling worker hash and stage-tagged failure envelope remain portable. Config changes only sibling worker filename/hash; these agree with final frozen R3 bytes.\n- **raw Auto placement seam: no finding.** Small raw-only helper chooses lax.with_sharding_constraint(value, NamedSharding(mesh,spec)) only for AxisType.Auto; Explicit remains reshard(value,spec). Both weight storage-to-compute and output annotation use the helper with unchanged PartitionSpecs. Haliax shard already selects this API boundary, but leaves raw arrays untouched, so directly calling that wrapper would not apply the constraint. Installed JAX static code independently supports this distinction.\n- **closures, controls and oracles: no finding.** Forward keyword defaults bind the same per-iteration mesh and axis_type used immediately by filter_jit/grad. Independent stdlib AST comparison shows execute identical to R2 after normalizing only this binding and declared helper/call substitutions. Explicit/baseline/microbatch semantics, initial physical specs, scales/history, dimensions, FP8 implementation, NumPy oracles, exact assertions and loss/additive-gradient gate are unchanged. No tolerance or precision workaround.\n- **plan/disposition and history: no finding.** R2 baseline result and raw Auto harness failure are represented separately and preserved. Plan correctly limits any next proposal to fresh-output rawCPU1 after publication and separate root release. Baseline need not repeat for this raw-only revision; microbatch and CPU4 remain unreleased. No R3 success, FP8 support, parity or performance claim is made.\n\n## Preserved runtime boundary\n\nRead and hash-verified the root-executed R2 receipts: CPU1 canonical finite loss `8.91707706451416` and exact expected native guard completed. RawCPU1 passed provenance checks but failed at `raw.auto.forward` on the Auto `reshard` API before the FP8 operation call; `completed_controls` is empty. Its generic original failure classification remains intact. This is an invalid placement harness, not unsupported-FP8 evidence. No Auto/Explicit raw control, microbatch or CPU4 result follows from it.\n\n## Exact frozen artifacts\n\n- `prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-probe.py` \u2014 `2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28` (4646 bytes).\n- `prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-worker.py` \u2014 `66cdea8cf7999743cb58c4e289ec3b4a328bd69dc21e0141e0e430612f3eb967` (15295 bytes).\n- `prepared/core-fp8-auto-control-r3/native-jax-core-fp8-preparation-r3-config.json` \u2014 `3229a576820583677b85228c2cea1a9730f714b44ff3ffef36e5abc5bafba2e4` (6747 bytes).\n- `prepared/core-fp8-auto-control-r3/recipe.md` \u2014 `f67cce6db068841f1a0e9145afc7a284f913f9724c4b892f990fa30b55ba262e` (13711 bytes).\n- `prepared/core-fp8-auto-control-r3/prelaunch-source-proof.json` \u2014 `429e285b8a8e1c09dda0a5cb6c0dbe2fc77f98561077aa0e67430f51e2ea9980` (531 bytes).\n- `prepared/core-fp8-auto-control-r3/prelaunch-source-proof.json` \u2014 `73416dd862efa0a6929be1518e82fb60fa5690e75434446548425152c9a28ed9` (2920 bytes).\n- `native-jax-core-fp8-preparation-r3-response.patch` \u2014 `1199510dab1dcc0915cd07451c465b95d1a0ac5088a0e99779921ad80dfd9dd1` (18620 bytes).\n\nSupplied ordinary log SHA256: `2cb21582533cea874df61e8f30e821bcde578e1da01f30298add311aea353f42`. All listed applicable hooks report `ok` and final `OK`; reviewer did not rerun them. Original/R1/R2 reviews and separate historical failed phases remain preserved.\n\n## Limits and next gate\n\nNo project/JAX/runner/worker imports, diagnostic execution, tests, environment/secrets reads, network, source edits or publication. Stdlib AST parsing compared source structure without executing it or compiling a code object. Root publication and separate release of only rawCPU1 remain the next gates; inspect that actual receipt before any later control.\n"
+  },
+  "ordinary_evidence": {
+    "log_original_hash_bytes": {
+      "artifact_basename": "native-jax-core-fp8-preparation-r3-ordinary.log",
+      "bytes": 784,
+      "sha256": "2cb21582533cea874df61e8f30e821bcde578e1da01f30298add311aea353f42"
+    },
+    "result": "AllfourapplicableordinarychecksPASS perauthorfreeze/freshreview; rawlog notselected."
+  },
+  "chronology": "R2actualtwoCPU1receipts arepreviousruntimephase; R3onlystaticordinary+reviewqualifiedunexecutedprelaunch. Rootpublish exactR3beforeonlynextrawCPU1; nobaseline/microbatch/CPU4repeat."
+}
