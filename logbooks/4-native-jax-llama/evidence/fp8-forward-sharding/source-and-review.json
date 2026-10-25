@@ -1,0 +1,108 @@
+{
+  "schema": "native-jax-fp8-forward-evidence-bundle.v1",
+  "phase_records_are_chronological_not_relabelled": true,
+  "records": {
+    "native-jax-fp8-forward-sharding-source-freeze.json": {
+      "scope": "initial three-file forward output-sharding candidate; no candidate test executed",
+      "root": "local-artifacts/marin-native-jax-fp8-forward-sharding",
+      "branch": "codex/native-jax-fp8-forward-sharding",
+      "base": "70b1453c18e623db3bd6bbba74d515aa93ed5638",
+      "base_tree": "6d1eefc02acbd4e6fab2efc3cef99bb1307985cd",
+      "candidate_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+      "files": {
+        "lib/haliax/src/haliax/_src/fp8.py": {
+          "sha256": "84ae675cf9eef29472ec475164966795621841ff519b333aaab7bf1bb33334f8",
+          "blob": "bd6be72858494f67dd1462292fa777dd50f31109",
+          "snapshot": "local-artifacts/fp8.py"
+        },
+        "lib/haliax/src/haliax/quantization.py": {
+          "sha256": "c11627411bfdf24eddbe433be9ccb08bb3829a5156e6dae668546d043c559d0f",
+          "blob": "7a5bbcbfec26d6a5a16ac2fa99a955759aedcea2",
+          "snapshot": "local-artifacts/quantization.py"
+        },
+        "lib/haliax/tests/test_fp8.py": {
+          "sha256": "26437e51667c491de171afa9c51a319a73a45be68c05fe45e0010e5a54836899",
+          "blob": "1ca3adf72c00416bb146b8dd1ccb9ab29328cc65",
+          "snapshot": "local-artifacts/test_fp8.py"
+        }
+      },
+      "patch": {
+        "path": "local-artifacts/native-jax-fp8-forward-sharding-support.patch",
+        "sha256": "2446934d1690ac9c4544271deb6acbec4adfdb502aac669e24642479614b2447"
+      },
+      "ordinary": {
+        "exit": 0,
+        "path": "local-artifacts/native-jax-fp8-forward-sharding-ordinary.log",
+        "sha256": "a24768f103e8b11c50e1ec90a84c7c0f70b4490ec4dc1aa6b15ea1a5cf1170e0"
+      },
+      "baseline_proof": {
+        "path": "local-artifacts/native-jax-fp8-forward-sharding-baseline-proof.json",
+        "sha256": "ed2f98d6635e2210deff8dba2eeb9a50ef68a4d673345f3bdde95d34cc8c78a0"
+      },
+      "test_runner": {
+        "path": "local-artifacts/native-jax-fp8-forward-sharding-tests.py",
+        "sha256": "bf4bc3fc39d7f5f16130b6a875b785d4bf21d461c13d9dfe6ac4adb32de86a6e"
+      },
+      "env": {
+        "path": "local-artifacts/native-jax-fp8-forward-sharding-env.sh",
+        "sha256": "7ff45799d259f2f8dcf5f5aa0f2c0e7af93ff86024f3f656961871920461d258"
+      },
+      "baseline_function_AST_identical_to_candidate": true,
+      "candidate_tests": "NOT RUN; awaiting root freeze acknowledgement",
+      "exclusions": [
+        "native model integration/guards",
+        "microbatch state reduction",
+        "research-probe reexecution",
+        "accelerators",
+        "publication/commits"
+      ]
+    },
+    "native-jax-fp8-forward-sharding-maintained-review.json": {
+      "review_kind": "independent_fresh_maintained_code_source_only",
+      "verdict": "zero_actionable_findings",
+      "findings": [],
+      "candidate_root": "local-artifacts/marin-native-jax-fp8-forward-sharding",
+      "base": "70b1453c18e623db3bd6bbba74d515aa93ed5638",
+      "base_tree": "6d1eefc02acbd4e6fab2efc3cef99bb1307985cd",
+      "recorded_frozen_candidate_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+      "freeze": {
+        "path": "local-artifacts/native-jax-fp8-forward-sharding-source-freeze.json",
+        "verified_sha256": "9dc4afd8aba8c52c527fb9b14513d6374da7d9f8c283bb4f04b31a301be3f09b"
+      },
+      "patch": {
+        "path": "local-artifacts/native-jax-fp8-forward-sharding-support.patch",
+        "verified_sha256": "2446934d1690ac9c4544271deb6acbec4adfdb502aac669e24642479614b2447"
+      },
+      "files": {
+        "lib/haliax/src/haliax/_src/fp8.py": {
+          "verified_sha256": "84ae675cf9eef29472ec475164966795621841ff519b333aaab7bf1bb33334f8",
+          "frozen_blob": "bd6be72858494f67dd1462292fa777dd50f31109",
+          "promotion": "maintain_all_added_pieces",
+          "reason": "Forward descriptor propagation, static custom-VJP arity, and supported argument documentation are reusable behavior. Backward computation and state remain unchanged."
+        },
+        "lib/haliax/src/haliax/quantization.py": {
+          "verified_sha256": "c11627411bfdf24eddbe433be9ccb08bb3829a5156e6dae668546d043c559d0f",
+          "frozen_blob": "7a5bbcbfec26d6a5a16ac2fa99a955759aedcea2",
+          "promotion": "maintain_all_added_pieces",
+          "reason": "Honors existing caller-supplied output layout through the FP8 replacement interface."
+        },
+        "lib/haliax/tests/test_fp8.py": {
+          "verified_sha256": "26437e51667c491de171afa9c51a319a73a45be68c05fe45e0010e5a54836899",
+          "frozen_blob": "1ca3adf72c00416bb146b8dd1ccb9ab29328cc65",
+          "promotion": "maintain_all_added_pieces",
+          "reason": "Independent NumPy references and observable ordinary/differentiated forward, direct/named routes, operand gradients, placement, and persisted overwrite-state assertions protect the regression."
+        }
+      },
+      "historical_only_pieces": [],
+      "installed_jax_source_declared_version": "0.11.1",
+      "runtime_validation_performed": false,
+      "ongoing_outputs_read": false,
+      "limitations": [
+        "Source review does not establish runtime or accelerator correctness.",
+        "Device layouts with model_size=1 cannot demonstrate physical contracting-shard reduction; any such runtime claim needs a nontrivial model axis.",
+        "No acceptance of native model integration, microbatch-state reduction changes, research probes, publication, or deployment is implied."
+      ],
+      "report": "local-artifacts/native-jax-fp8-forward-sharding-maintained-review.md"
+    }
+  }
+}

@@ -1,0 +1,422 @@
+{
+  "schema": "native-jax-fp8-forward-sharding-archive.v1",
+  "base_archive": "526cde7b223c81238e254e7d46c315e635e7f2c4",
+  "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+  "source_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+  "source_parent": "70b1453c18e623db3bd6bbba74d515aa93ed5638",
+  "source_PR": "https://github.com/dlwh/marin/pull/32",
+  "required_prior_inventories": {
+    "manifest.json": {
+      "bytes": 511345,
+      "sha256": "956201564c7e0162394e38a20bcabb97df69c121bb37b14eb47dbf7dfb58b51f"
+    },
+    "analysis/oproj-stage-a/result/manifest.json": {
+      "bytes": 12634,
+      "sha256": "3c5b3b7cbfb04fafe1c7279b942bbdd3411691af70176104e39ca53eb0290a98"
+    },
+    "prepared/oproj-callback-compatibility/manifest.json": {
+      "bytes": 87716,
+      "sha256": "eff58a3c421226f32292dff64786e95a9ee1f9a7f1c7013ef7a9e982701face5"
+    },
+    "prepared/oproj-callback-cpu-backend/manifest.json": {
+      "bytes": 78500,
+      "sha256": "59cf0529e48676f47c22de5a0f901e193ed7d6a151e89b786b549971c2e43a8c"
+    },
+    "prepared/fp32-source-identity/manifest.json": {
+      "bytes": 29964,
+      "sha256": "0152200ed0f08c5cef9d3618607f7b03f2649407dac912b8072236d961e8821a"
+    },
+    "prepared/oproj-full-cpu-backend/manifest.json": {
+      "bytes": 72657,
+      "sha256": "0db2b87a94bdcaf66b8be992f466aab26c300233aabd66a88371a5ee4e23e29a"
+    },
+    "evidence/broadcast-shard-explicit/manifest.json": {
+      "bytes": 30151,
+      "sha256": "9eaaa19f2861eb31438f7f5ad10911f98f7582e71ab98fac37f358c682a8c378"
+    },
+    "evidence/native-lm-lora/manifest.json": {
+      "bytes": 50151,
+      "sha256": "c0b4965fa642bd3996735904e85dc5446349426b58e6ea59e8ed852589e02ebe"
+    },
+    "evidence/native-dpo-lora/manifest.json": {
+      "bytes": 57704,
+      "sha256": "af785ab26934f09add1495e0b35c64e672ae463598dc11b1034e07f79df92f51"
+    },
+    "evidence/native-lora-dropout/manifest.json": {
+      "bytes": 41653,
+      "sha256": "3a1431965a065933f0cc9c7e0a3bdf634a1f96d4e061c4ec4c17eb4413e56158"
+    },
+    "evidence/native-hf-config/manifest.json": {
+      "bytes": 50754,
+      "sha256": "32eeeb132a4162f35720e7f8c6ee60bc4ea51e5c17d80e21c40281ad6b50d69a"
+    },
+    "evidence/native-dpo-dropout/manifest.json": {
+      "bytes": 74512,
+      "sha256": "a4a04f82161402f5da00dd8907ff5eb9d5fc1e9525d05cd18e7220c91c89ed0b"
+    },
+    "evidence/native-sample-lm/manifest.json": {
+      "bytes": 67117,
+      "sha256": "a7d470288405f81c9897ae513d2704bf98b0a54a7d634929d593a45b7f8c6c87"
+    },
+    "evidence/native-export-lm/manifest.json": {
+      "bytes": 75621,
+      "sha256": "51e782bae175520e5a19f3a097cf92588e4f04017d9d5b151015816afe40380b"
+    },
+    "evidence/native-import-lm-and-perplexity-gap/manifest.json": {
+      "bytes": 110369,
+      "sha256": "b9ee4bb16d1de05c73af3bdc3d62d3342b59f92191bf21ac8f7ea89b6aaf85e4"
+    },
+    "evidence/native-trace-eval/manifest.json": {
+      "bytes": 51255,
+      "sha256": "ce4798477c3a38e46494a0c506a575f58a3c2631c61392b3abb60571007447fd"
+    },
+    "prepared/core-fp8-prelaunch/manifest.json": {
+      "bytes": 34055,
+      "sha256": "010a3147593944987d93db71206d91a2b8832bc10f88031f2df187ac56fc4726"
+    },
+    "prepared/core-fp8-auto-control-r3/manifest.json": {
+      "bytes": 19497,
+      "sha256": "48a5f562c9e31748becd1bf43a1381b499899ed9cb42872dc792fda4cc1ccdd8"
+    },
+    "evidence/core-fp8-controls/r3-result-manifest.json": {
+      "bytes": 6617,
+      "sha256": "d34246ef0aa3589101bd6bef4ffb6be0680e534a909df69048cc02613b6193e0"
+    },
+    "evidence/fp8-explicit-gradients/manifest.json": {
+      "bytes": 21946,
+      "sha256": "61b9fa383db009f19e483012c467b294733cc24fc380181fb043639215c3de78"
+    }
+  },
+  "preserved_prior_selected_count": 1224,
+  "file_count": 12,
+  "total_selected_including_prior": 1236,
+  "total_stored_bytes": 487859,
+  "selected_files_canonical_json_sha256": "b3dc16f547d134ad87506630336ddadbf8536ea431040f9b89f357b1e77abd69",
+  "selected_files": [
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/selected-source.patch",
+      "bytes": 9132,
+      "sha256": "2446934d1690ac9c4544271deb6acbec4adfdb502aac669e24642479614b2447",
+      "role": "Exact public PR32 three-file source patch.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-support.patch",
+          "bytes": 9132,
+          "sha256": "2446934d1690ac9c4544271deb6acbec4adfdb502aac669e24642479614b2447",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-support.patch"
+        }
+      ],
+      "transformation": [
+        "Exact raw source patch or historical control-script bytes; no whitespace/path/EOF transformation."
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/source-and-review.json",
+      "bytes": 5686,
+      "sha256": "e75c5ba7a95fafae50500b5d0c7bc92caa33e182c3d321c9bb4e381034decb96",
+      "role": "Pretest source freeze and independent zero-finding maintained review; historical NOT RUN remains chronological.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-source-freeze.json",
+          "bytes": 2447,
+          "sha256": "9dc4afd8aba8c52c527fb9b14513d6374da7d9f8c283bb4f04b31a301be3f09b",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-source-freeze.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-maintained-review.json",
+          "bytes": 2679,
+          "sha256": "0d2fb1deeeb4b678bea1f44201e28551492f5c784e10325a5771aa9746cbfa59",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-maintained-review.json"
+        }
+      ],
+      "transformation": [
+        "Structured JSON bundle/projection, original artifacts and hashes retained.",
+        "Private path tokens normalized to relative source paths or local-artifacts basenames; .local hosts normalized.",
+        "Historical pending flags remain historical; later final qualification is separately recorded."
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/controls-and-validation.json",
+      "bytes": 20618,
+      "sha256": "281a40526701dfd124fb355fb51ad21dee8731ba6475447f46e3148b280ac77b",
+      "role": "Actual clean70b default controls/FP8 failures, source/import/device provenance, final focused/full-safe positives and ordinary-check hashes; full-safe case list represented by selected complete XML.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-baseline-proof.json",
+          "bytes": 2155,
+          "sha256": "ed2f98d6635e2210deff8dba2eeb9a50ef68a4d673345f3bdde95d34cc8c78a0",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-baseline-proof.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-validation.json",
+          "bytes": 11567,
+          "sha256": "58ae0b35625b666dfff2a734a3575c1ebb98da5e5e17946690c132d8fc9a0ab7",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-validation.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-full-safe-validation.json",
+          "bytes": 76269,
+          "sha256": "c4c9f43956a0fa94a1ca5de067262fe68be99f91a8bea305830547e2efc87098",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-full-safe-validation.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-root-focused-proof.json",
+          "bytes": 1667,
+          "sha256": "c6ff1ed904d61ad8f2412386129979dd09e03de0d31e562924aed04389fbbbe3",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-root-focused-proof.json"
+        }
+      ],
+      "transformation": [
+        "Structured JSON bundle/projection, original artifacts and hashes retained.",
+        "Private path tokens normalized to relative source paths or local-artifacts basenames; .local hosts normalized.",
+        "Historical pending flags remain historical; later final qualification is separately recorded."
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/regression-control.py.txt",
+      "bytes": 4902,
+      "sha256": "e60efb3f15826d50096de4a525314f10203dfa282ffc6a5144e17f743b7086fc",
+      "role": "Exact historical CPU4 failing baseline control source; matching maintained function AST, not a new maintained test helper.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-regression.py",
+          "bytes": 4902,
+          "sha256": "e60efb3f15826d50096de4a525314f10203dfa282ffc6a5144e17f743b7086fc",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-regression.py"
+        }
+      ],
+      "transformation": [
+        "Exact raw source patch or historical control-script bytes; no whitespace/path/EOF transformation."
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/default-control.py.txt",
+      "bytes": 4908,
+      "sha256": "498c226bd97140c40bd51bf79327b437dea86f3726411feeb2a32d604cbde22e",
+      "role": "Exact historical CPU4 default-operation positive control source.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-default-control.py",
+          "bytes": 4908,
+          "sha256": "498c226bd97140c40bd51bf79327b437dea86f3726411feeb2a32d604cbde22e",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-default-control.py"
+        }
+      ],
+      "transformation": [
+        "Exact raw source patch or historical control-script bytes; no whitespace/path/EOF transformation."
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/cpu1-module.xml",
+      "bytes": 2292,
+      "sha256": "66cec61737aa62d3ff08b55532f56f69e68d54158f9dc27d2ddd8bc0cae592be",
+      "role": "Complete positive case XML with literal hostname/privatepath sanitation, final LF and unchanged ordered identities/statuses.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-cpu1.xml",
+          "bytes": 2371,
+          "sha256": "30266bbd98052870eec8baf8f32675a32c118c04ae8e04f4f4ba16387ca0bb4e",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-cpu1.xml"
+        }
+      ],
+      "transformation": [
+        {
+          "literal_hostname_attributes_removed": 1,
+          "private_path_tokens_replaced": 1,
+          "final_LF_appended": true,
+          "same_ordered_case_identities_and_statuses": true,
+          "no_XML_reserialization": true
+        }
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/cpu4-module.xml",
+      "bytes": 2292,
+      "sha256": "57999eaaac2644770b11184ad6e2efa5f3946f4119fe230df6c81728f7dd55f4",
+      "role": "Complete positive case XML with literal hostname/privatepath sanitation, final LF and unchanged ordered identities/statuses.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-cpu4.xml",
+          "bytes": 2371,
+          "sha256": "a94447b028b32cedd766904b3ec0939c7ba1f37d58bceb975974a262cf3feff1",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-cpu4.xml"
+        }
+      ],
+      "transformation": [
+        {
+          "literal_hostname_attributes_removed": 1,
+          "private_path_tokens_replaced": 1,
+          "final_LF_appended": true,
+          "same_ordered_case_identities_and_statuses": true,
+          "no_XML_reserialization": true
+        }
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/cpu8-haliax.xml",
+      "bytes": 59887,
+      "sha256": "11b1045866be284477d2900f0c7c0c4babc6d87881abdf47a255b89c0967c1db",
+      "role": "Complete positive case XML with literal hostname/privatepath sanitation, final LF and unchanged ordered identities/statuses.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-full-safe-cpu8.xml",
+          "bytes": 61802,
+          "sha256": "64c981aa42a783dd1504cb1dc04f8e273c8665584b7607766534c27741a7db73",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-full-safe-cpu8.xml"
+        }
+      ],
+      "transformation": [
+        {
+          "literal_hostname_attributes_removed": 1,
+          "private_path_tokens_replaced": 37,
+          "final_LF_appended": true,
+          "same_ordered_case_identities_and_statuses": true,
+          "no_XML_reserialization": true
+        }
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/default-cpu4.xml",
+      "bytes": 463,
+      "sha256": "3e80bde7692496b0a742710c64af490f52aa4946d9ce2ddeed5cacc18af4d1f2",
+      "role": "Complete positive case XML with literal hostname/privatepath sanitation, final LF and unchanged ordered identities/statuses.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-default-cpu4.xml",
+          "bytes": 491,
+          "sha256": "275ccc487982d2050388312f08fd58682b1ca666c2bfcc40bb013371e6397ddc",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-default-cpu4.xml"
+        }
+      ],
+      "transformation": [
+        {
+          "literal_hostname_attributes_removed": 1,
+          "private_path_tokens_replaced": 0,
+          "final_LF_appended": true,
+          "same_ordered_case_identities_and_statuses": true,
+          "no_XML_reserialization": true
+        }
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/affected-workspace-summary.json",
+      "bytes": 373304,
+      "sha256": "2adf504a8a6551cd51c04aed71ba4b1d65af85814398f73b2e5dcd5d71accc7f",
+      "role": "Compact complete2758 ID/outcome/batch projection, all14 terminal batch metadata, independent3216 aggregate and actualclean70b thirteen-failure baseline proof; no rawnegativeXML.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-archive-workspace-outcomes.json",
+          "bytes": 338804,
+          "sha256": "5059cee64e884f5c41bac5df1f72c10bc5eaa2bbf61e6813327989e7cb495be4",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-archive-workspace-outcomes.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-affected-qualification.json",
+          "bytes": 4199,
+          "sha256": "a756f0f98ec5e5b18710d3245f3429cf7249c453b371f23d3a75ef01e013727b",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-affected-qualification.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-affected-cloud-baseline-70b-proof.json",
+          "bytes": 7695,
+          "sha256": "c45bbcb0b594f8af51445f2d4ed4c1efa1f3f4b73b6cb985bafc18283fb8173f",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-affected-cloud-baseline-70b-proof.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-root-aggregate-proof.json",
+          "bytes": 28162,
+          "sha256": "63392a06b07739e7b9fafba10157bcc9fb3d220bde6d458cb1e0f446a58998da",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-root-aggregate-proof.json"
+        }
+      ],
+      "transformation": [
+        "Structured JSON bundle/projection, original artifacts and hashes retained.",
+        "Private path tokens normalized to relative source paths or local-artifacts basenames; .local hosts normalized.",
+        "Historical pending flags remain historical; later final qualification is separately recorded.",
+        {
+          "compact_JSON_serialization_same_values": true,
+          "before_bytes": 526624,
+          "before_sha256": "5036c1a77ae9a7a9edd7168a7c628be6b250aef72a690029bea19511b7c8759d",
+          "output_bytes": 373304,
+          "output_sha256": "2adf504a8a6551cd51c04aed71ba4b1d65af85814398f73b2e5dcd5d71accc7f",
+          "format": "separators=(',', ':'), ensure_ascii=False, final LF",
+          "all2758_case_IDs_statuses_batches_metadata_preserved": true
+        }
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/catalog-and-release.json",
+      "bytes": 2887,
+      "sha256": "514881dfe4e92546a34138cfb4d004d515db2f52d9a7108a8c2d52d8aae0c62d",
+      "role": "Completed six-lane+composer zero catalog and local source commit receipt, retaining historical not_public flag before later publication.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-root-catalog-proof.json",
+          "bytes": 2343,
+          "sha256": "84fed63bb49e810e1b2bbf42290adbb0d12c8e1511541b107ffc391d87d4e9d4",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-root-catalog-proof.json"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-root-commit-proof.json",
+          "bytes": 615,
+          "sha256": "6f60fb766ffef4b40a40b2556b0ce7f0a659f524398d821a0fce777a3f2247f1",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-root-commit-proof.json"
+        }
+      ],
+      "transformation": [
+        "Structured JSON bundle/projection, original artifacts and hashes retained.",
+        "Private path tokens normalized to relative source paths or local-artifacts basenames; .local hosts normalized.",
+        "Historical pending flags remain historical; later final qualification is separately recorded."
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    },
+    {
+      "archive_relative": "evidence/fp8-forward-sharding/source-publication.json",
+      "bytes": 1488,
+      "sha256": "4373718eb3cac895bd6eae57a5976b9f4b0487e6b0cc4a50a1795e44e0065168",
+      "role": "Verified public PR32 source/base and initial feedback/check snapshot; omit personal service-owner fields/rawbody.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-forward-sharding-root-publication-proof.json",
+          "bytes": 3064,
+          "sha256": "f3f7100e2c904518edd58ec5b4e39999ba0c08f1f96260b867943285a2f97b84",
+          "artifact_relative_to_tmp": "native-jax-fp8-forward-sharding-root-publication-proof.json"
+        }
+      ],
+      "transformation": [
+        "Structured JSON bundle/projection, original artifacts and hashes retained.",
+        "Private path tokens normalized to relative source paths or local-artifacts basenames; .local hosts normalized.",
+        "Historical pending flags remain historical; later final qualification is separately recorded."
+      ],
+      "measurement_or_source_pin": "PR32 sourceba58/tree223c; phase-specific actual CPU/source pins retained in records.",
+      "status": "PUBLIC_SOURCE_CPU_EVIDENCE"
+    }
+  ],
+  "notebook_prior_bytes": 289934,
+  "notebook_prior_sha256": "1e8953ca4f01c743c22c4f0fb96c5b3b811b7e5675b52bc531086c5ae25ca03c",
+  "readme_exact_sha256": "6b3a092eb085ebc80ccceb8d660d852be312a1dcc6bbc0b8574e67597b5337d4",
+  "new_numerical_or_hardware_execution": false,
+  "publication_order": "Public PR32 source, then this evidence archive, then issue summary.",
+  "scope": "FP32 CPU shared forward primitive only; 3216 composite outcomes, not one single green run. No forward/native/microbatch/accelerator/scientific acceptance."
+}
