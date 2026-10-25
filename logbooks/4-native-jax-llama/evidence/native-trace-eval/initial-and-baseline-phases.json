@@ -1,0 +1,78 @@
+{
+  "native-jax-trace-eval-initial-validation.json": {
+    "freeze": "evidence/native-trace-eval/source-phases.json",
+    "patch_sha256": "e0705007384fe27f89f7fe6805717212688c81e7e9a3d40100c69cd79fa24545",
+    "runner": "native-jax-trace-eval-tests.py",
+    "env": "native-jax-trace-eval-support-env.sh",
+    "commands": {
+      "CPU1": "source native-jax-trace-eval-support-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python native-jax-trace-eval-tests.py 1 -c pyproject.toml tests/evals/test_trace_labeled_eval.py -n 2 -q --tb=short --junitxml=evidence/native-trace-eval/initial-and-baseline-phases.json > native-jax-trace-eval-initial-cpu1.log 2>&1",
+      "CPU4": "source native-jax-trace-eval-support-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python native-jax-trace-eval-tests.py 4 -c pyproject.toml tests/evals/test_trace_labeled_eval.py -n 2 -q --tb=short --junitxml=evidence/native-trace-eval/initial-and-baseline-phases.json > native-jax-trace-eval-initial-cpu4.log 2>&1"
+    },
+    "nodeids": [
+      "tests/evals/test_trace_labeled_eval.py::test_first_rows_source_does_not_pull_one_extra_row",
+      "tests/evals/test_trace_labeled_eval.py::test_trace_row_adapter_adds_patch_and_outcome_targets",
+      "tests/evals/test_trace_labeled_eval.py::test_trace_labeled_eval_matches_named_labeled_loss_and_preserves_config[named-hf]",
+      "tests/evals/test_trace_labeled_eval.py::test_trace_labeled_eval_matches_named_labeled_loss_and_preserves_config[native-hf]",
+      "tests/evals/test_trace_labeled_eval.py::test_trace_labeled_eval_matches_named_labeled_loss_and_preserves_config[native-local]"
+    ],
+    "results": {
+      "CPU1": "5passed",
+      "CPU4": "4passed1failed(named-hf lossoracle mismatch)",
+      "ordinary": "all4filespassed native-jax-trace-eval-precommit-final-frozen.log"
+    },
+    "unchanged_baseline": "evidence/native-trace-eval/initial-and-baseline-phases.json",
+    "default_named_control": "evidence/native-trace-eval/initial-and-baseline-phases.json",
+    "tolerance": "rtol=atol=1e-5 unchanged",
+    "current_source_bytes": "initialfreezeunchanged; candidatefailurepreserved; noeditsyet"
+  },
+  "native-jax-trace-eval-named-baseline-cpu4-proof.json": {
+    "baseline_head": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "baseline_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "baseline_status": "",
+    "production_files": {
+      "lib/marin/src/marin/evaluation/model_loading.py": "b733946ad0d9ba0cc29d98218360b0fae442c3b4c94adb38842891b9135b1dba",
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": "4cf7c9927397dac3fc61b166df3956fa6aba76360aa68853dca236fe63e436a8"
+    },
+    "harness": "tests/evals/test_trace_labeled_eval.py",
+    "harness_sha256": "8053d1a1a5b0f57ed05d41ca52f76896542d331ac99d60888b4b20f303d5dd04",
+    "entrypoint": "trace_labeled_eval via initial frozen named-hf test callable; real LocalClient/cache/evaluator",
+    "actual_cpu_devices": 4,
+    "result": "same assertion failure at test line270; actual patch3.950378 vs expected4.539271; rtol=atol=1e-5 unchanged",
+    "persisted_metrics": {
+      "trace_labeled_eval/tiny/outcome/bpb": 0.16257920861244202,
+      "trace_labeled_eval/tiny/outcome/loss": 2.704591751098633,
+      "trace_labeled_eval/tiny/outcome/tokens": 1.0,
+      "trace_labeled_eval/tiny/patch/bpb": 0.561892032623291,
+      "trace_labeled_eval/tiny/patch/loss": 3.950377941131592,
+      "trace_labeled_eval/tiny/patch/tokens": 7.0
+    },
+    "logs": "native-jax-trace-eval-named-baseline-cpu4.log",
+    "reproducer": "evidence/native-trace-eval/control-reproducers.json",
+    "env": "native-jax-trace-eval-named-baseline-cpu4-env.sh"
+  },
+  "native-jax-trace-eval-named-default-cpu4-r1-proof.json": {
+    "production_base": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "production_checkout": "<local-checkout>",
+    "actual_cpu_devices": 4,
+    "change_to_private_harness": "MeshConfig(batch_axis_name=examples) uses default mappings/data4; train_batch_size=4 instead of initialTPfixture2; all other source weights, direct named logits/label oracle, publicentrypoint and1e-5 assertions unchanged",
+    "outcome": "pass",
+    "metrics": {
+      "trace_labeled_eval/tiny/outcome/bpb": 0.31757551431655884,
+      "trace_labeled_eval/tiny/outcome/loss": 5.283038139343262,
+      "trace_labeled_eval/tiny/outcome/tokens": 1.0,
+      "trace_labeled_eval/tiny/patch/bpb": 0.6456546783447266,
+      "trace_labeled_eval/tiny/patch/loss": 4.539270877838135,
+      "trace_labeled_eval/tiny/patch/tokens": 7.0
+    },
+    "harness_sha256": "c1beeec0d31b112ee74cc465fe9330a0bda43381878fe6bf103a2029371b306b",
+    "harness": "evidence/native-trace-eval/control-reproducers.json",
+    "log": "native-jax-trace-eval-named-default-cpu4-r1.log",
+    "preserved_prior_harness_phase": {
+      "script": "native-jax-trace-eval-named-default-cpu4.py",
+      "log": "native-jax-trace-eval-named-default-cpu4.log",
+      "outcome": "Trainer rejects retainedtrain_batch_size2 on defaultdata4 beforeevaluation; testharnessconfigurationonly"
+    }
+  },
+  "qualification_boundary": "Initial -n2 results have launcher-only device assertions. Actual unchanged069 baseline/default controls separately assert4devices. Initial negativeXML is retained by original hash/length only, not copied. The first private batch2/defaultdata4 guard is a harness phase; named custom-layout numerical cause remains unresolved.",
+  "_archive_note": "Historical pending/unpublished and failed phases retain their original meaning; final054/publication is a later phase. CPU/static scope only, no accelerator/performance/scientific acceptance."
+}

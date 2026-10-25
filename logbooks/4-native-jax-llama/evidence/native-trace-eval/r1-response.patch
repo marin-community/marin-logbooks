@@ -1,0 +1,59 @@
+diff --git a/docs/explanations/evaluation.md b/docs/explanations/evaluation.md
+index c99a3976ce..571ec313c7 100644
+--- a/docs/explanations/evaluation.md
++++ b/docs/explanations/evaluation.md
+@@ -33,9 +33,14 @@ The `datasets` mapping holds `TraceLabeledEvalDatasetConfig` values describing c
+ and the `trace_format.loss_tags` to score. A `row_adapter` can append patch text and a CORRECT/INCORRECT outcome token as labeled targets
+ from other row fields. Results aggregate next-token loss and token counts by label within each dataset.
+ 
+-For `NativeLlamaLmConfig`, loading preserves the complete source vocabulary, including rows beyond
+-the tokenizer length. The entrypoint selects explicit mesh axes automatically. Configure placement
+-through `trainer.mesh.param_mapping` and `trainer.mesh.compute_mapping`, or retain their defaults;
++For `NativeLlamaLmConfig`, HF sources and Levanter checkpoints with native metadata preserve the
++complete source vocabulary, including rows beyond the tokenizer length. A metadata-free Levanter
++checkpoint requires the original matching model configuration, and its stored vocabulary size must
++equal the tokenizer vocabulary rounded for the compute mapping. This entrypoint has no independent
++vocabulary override; without metadata, it cannot verify architecture or activation identity.
++
++The entrypoint selects explicit mesh axes automatically for native models. Configure placement through
++`trainer.mesh.param_mapping` and `trainer.mesh.compute_mapping`, or retain their defaults;
+ `trainer.mesh.batch_axis_name` selects the logical batch name.
+ 
+ `output_path/results.json` records dataset metrics; caches are stored under `output_path/cache`.
+diff --git a/tests/evals/test_trace_labeled_eval.py b/tests/evals/test_trace_labeled_eval.py
+index a6668af5df..e4890ec13f 100644
+--- a/tests/evals/test_trace_labeled_eval.py
++++ b/tests/evals/test_trace_labeled_eval.py
+@@ -200,18 +200,23 @@ def test_trace_labeled_eval_matches_named_labeled_loss_and_preserves_config(tmp_
+         expected_losses[label] = float(token_losses[selected].mean())
+     assert expected_counts == {"patch": 7, "outcome": 1}
+ 
+-    model_size = 2 if len(jax.devices()) >= 4 else 1
+-    mesh = MeshConfig(
+-        axes={"data": len(jax.devices()) // model_size, "vocab": model_size},
+-        batch_axis_name="examples",
+-        shared_mapping={"heads": "vocab", "mlp": "vocab"},
+-        compute_mapping={"examples": ("replica_dcn", "replica", "data"), "vocab": "vocab"},
+-        param_mapping={"embed": "data", "vocab": "vocab"},
+-    )
++    if model_source == "named-hf":
++        mesh = MeshConfig(batch_axis_name="examples")
++        data_size = len(jax.devices())
++    else:
++        model_size = 2 if len(jax.devices()) >= 4 else 1
++        data_size = len(jax.devices()) // model_size
++        mesh = MeshConfig(
++            axes={"data": data_size, "vocab": model_size},
++            batch_axis_name="examples",
++            shared_mapping={"heads": "vocab", "mlp": "vocab"},
++            compute_mapping={"examples": ("replica_dcn", "replica", "data"), "vocab": "vocab"},
++            param_mapping={"embed": "data", "vocab": "vocab"},
++        )
+     trainer = TrainerConfig(
+         mesh=mesh,
+         mp=jmp.get_policy("f32"),
+-        train_batch_size=len(jax.devices()) // model_size,
++        train_batch_size=data_size,
+         per_device_parallelism=1,
+         per_device_eval_parallelism=1,
+         tracker=NoopConfig(),

@@ -1,0 +1,234 @@
+{
+  "native-jax-trace-eval-maintained-review.json": {
+    "review_type": "fresh_independent_precommit_trace_eval_maintained_and_correctness_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-trace-eval-support",
+    "freeze_path": "evidence/native-trace-eval/source-phases.json",
+    "base": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "base_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "resulting_tree": "1c19a1bc350453243cefa55362af29ff4653e26f",
+    "patch": "evidence/native-trace-eval/initial-source.patch",
+    "patch_sha256": "e0705007384fe27f89f7fe6805717212688c81e7e9a3d40100c69cd79fa24545",
+    "files": {
+      "docs/explanations/evaluation.md": {
+        "sha256": "eebc79d2fde5bb3d58225b0bff1ef0cdb7cb12debb011db318d6e5940da2a1c1",
+        "git_blob": "c99a3976ced77361f64dcfce1f7d8b062a770604"
+      },
+      "lib/marin/src/marin/evaluation/model_loading.py": {
+        "sha256": "cd6c6904443d72c8c157162632db51cb05f9035dbb600b80ce70cc0512b63992",
+        "git_blob": "03d90f9b1fba339958f91d4473c840da480a482d"
+      },
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": {
+        "sha256": "dc7f152a7ea3421b4915fa1c607047f5750f6f3aabd2586dfbc3a640c5bd5196",
+        "git_blob": "bb1fc00b6d7855e273943e634cafb12696e188c3"
+      },
+      "tests/evals/test_trace_labeled_eval.py": {
+        "sha256": "8053d1a1a5b0f57ed05d41ca52f76896542d331ac99d60888b4b20f303d5dd04",
+        "git_blob": "a6668af5df3551447fccc0530e19ae43b8232d35"
+      }
+    },
+    "pins_verified": true,
+    "verdict": "changes_requested",
+    "findings": [
+      {
+        "id": "T1",
+        "priority": 2,
+        "title": "Qualify full-vocabulary recovery for metadata-free native checkpoints",
+        "path": "docs/explanations/evaluation.md",
+        "start_line": 36,
+        "end_line": 37,
+        "description": "The guide says native loading always preserves the complete source vocabulary, including rows beyond tokenizer length. That guarantee holds for HF sources and metadata-bearing native Levanter checkpoints. For a metadata-free native checkpoint the shared loader keeps the Vocab supplied by this entrypoint, which is derived only from len(tokenizer) and rounded for compute placement. There is no independent source-vocabulary override here. For example, a metadata-free stored48/tokenizer47 source on a one-device mesh cannot recover the stored48 model vocabulary automatically. Qualify the guarantee and state that metadata-free checkpoints require the original native config and a rounded tokenizer vocabulary equal to the full stored vocabulary; semantic identity cannot be verified from same-shaped weights.",
+        "evidence": [
+          "lib/marin/src/marin/evaluation/trace_labeled_eval.py:522-541",
+          "lib/levanter/src/levanter/model_loading.py:97-105",
+          "lib/levanter/src/levanter/models/llama_native_lm.py:332-339"
+        ],
+        "requested_change": "Documentation-only source guarantee/precondition clarification; no new loader API, runtime guard, compatibility framework or test needed."
+      }
+    ],
+    "piece_dispositions": {
+      "lib/marin/src/marin/evaluation/model_loading.py": {
+        "disposition": "keep",
+        "assessment": "Maintained shared eval wrapper now forwards actual native computation/batch roles to the existing source loaders. It keeps storage/compute responsibilities narrow and preserves named loader behavior."
+      },
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": {
+        "disposition": "keep",
+        "assessment": "Small canonical explicit-axis config copy plus existing evaluator mapping reuse enables the actual trace caller without changing its ordinary labeled-data/loss/cache/results lifecycle. Future native trace users need this support; no research artifact or bespoke runtime is introduced."
+      },
+      "tests/evals/test_trace_labeled_eval.py": {
+        "disposition": "keep",
+        "assessment": "Real public three-route loss/count parity against independent named/direct cross-entropy and actual completed resume provide ongoing integration coverage. Shared fixture extraction retains the existing behavior checks."
+      },
+      "docs/explanations/evaluation.md": {
+        "disposition": "keep after T1 clarification",
+        "assessment": "The nearest existing evaluation guide is the right home for entrypoint/source/placement/resume requirements. Qualify metadata-free vocabulary/identity limitations so the guarantee matches shared-loader behavior."
+      }
+    },
+    "contract_checks": [
+      {
+        "contract": "Original storage and compute roles reach both shared loaders",
+        "evidence": [
+          "lib/marin/src/marin/evaluation/model_loading.py:14-52",
+          "lib/marin/src/marin/evaluation/trace_labeled_eval.py:508-541"
+        ],
+        "assessment": "New required compute mapping/batch role arguments are passed by the only repository caller. Parameter storage mapping remains separate. Both HF/native-local branches reuse existing Levanter loaders, vocabulary metadata validation and precision policy; no alternative loader or duplicate implementation is introduced."
+      },
+      {
+        "contract": "Mesh choice and caller configuration",
+        "evidence": [
+          "lib/marin/src/marin/evaluation/trace_labeled_eval.py:499-519",
+          "lib/levanter/src/levanter/main/eval_lm.py:53-56,79-87"
+        ],
+        "assessment": "Native-required explicit mesh is selected by replacing config and trainer before initialization, following the canonical eval_lm pattern. Named configs retain their existing path. The existing native_evaluation_axis_mapping only normalizes evaluator placement; original compute roles are still passed to model loading. User native configuration is not mutated by the explicit-axis selection."
+      },
+      {
+        "contract": "Ordinary labeled evaluator/cache/results/resume behavior",
+        "evidence": [
+          "lib/marin/src/marin/evaluation/trace_labeled_eval.py:543-603",
+          "lib/marin/src/marin/evaluation/trace_labeled_eval.py:326-390",
+          "lib/levanter/src/levanter/eval.py:261-278,673-815"
+        ],
+        "assessment": "Trace preparation, cache building, packing, label specification, mixed precision application, labeled aggregation, retry handling, result writes and completed-dataset skip logic remain unchanged. Resume compatibility checks are narrowly documented, including their omission of model/dataset configuration. No new report/runtime framework is added."
+      },
+      {
+        "contract": "Independent numerical and public resume tests",
+        "evidence": [
+          "tests/evals/test_trace_labeled_eval.py:86-160,163-282"
+        ],
+        "assessment": "The existing real row/tokenizer fixture is shared with the prior adapter test, preserving its assertions. Three public routes use identical real source weights with tokenizer47/source48 and nonstandard physical vocab TP plus examples batch roles. The oracle separately builds named Llama, checks exact initialized source weights, computes direct next-token log-softmax and label-specific reductions, then compares persisted public metrics/counts with 1e-5 tolerances. Config nonmutation and completed native-local resume after cache/raw-row deletion are externally observed. No internal mocks, guard-only tests, weakened tolerances or torch-only native oracle is introduced."
+      },
+      {
+        "contract": "Guide usefulness and evidence scope",
+        "evidence": [
+          "docs/explanations/evaluation.md:21-44"
+        ],
+        "assessment": "Existing evaluation guidance now exposes the trace-labeled entrypoint, matching native model config, source selection, trace format/adapter, placement and result/resume behavior. These are maintained user-facing contracts. T1 must narrow its unconditional full-vocabulary statement. No pending test, BF16-default, accelerator, performance or scientific acceptance claim is made."
+      }
+    ],
+    "instructions_read": [
+      "root TESTING.md",
+      "Marin AGENTS.md",
+      "Levanter AGENTS.md",
+      "Levanter jit-safety.md",
+      "research promotion policy from prior review context"
+    ],
+    "baseline_controls_read": [
+      "native-jax-trace-eval-native-control-report.md",
+      "evidence/native-trace-eval/public-baseline-controls.json"
+    ],
+    "baseline_boundary": "Read supplied unchanged069 controls showing named public completion and valid native asset restoration followed by both public native routes failing missing compute_axis_mapping. Those historical CPU1 controls motivate this caller fix but do not qualify candidate executions.",
+    "actions_performed": [
+      "read-only source/diff/helper/caller/test/doc/instruction/control inspection",
+      "verify four SHA256/git blobs before and after artifact write, base/tree, final tree, patch and response file allowlist",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network",
+      "commit/push",
+      "catalog",
+      "PR/CI/job/automation actions",
+      "active author output polling"
+    ],
+    "validation_boundary": "Static independent source review only. Candidate author CPU1/CPU4 runs and ordinary checks are ongoing/separate and not claimed verified. FP32 tests do not establish default BF16 numerical behavior, accelerator correctness, performance, large-model/scientific or canonical acceptance.",
+    "next_gate": "Address T1 with a frozen documentation-only response and fresh targeted factual review before commit. Parent owns final execution/catalog/publication."
+  },
+  "native-jax-trace-eval-r1-maintained-review.json": {
+    "review_type": "fresh_independent_precommit_trace_eval_R1_response_maintained_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-trace-eval-support",
+    "freeze_path": "evidence/native-trace-eval/source-phases.json",
+    "base": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "base_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "initial_tree": "1c19a1bc350453243cefa55362af29ff4653e26f",
+    "resulting_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "patches": {
+      "evidence/native-trace-eval/final-public-source.patch": "29e53de72bef102da3619b8f390be6a58c1aadd81362889cfcf82a7eeb4b9cbe",
+      "evidence/native-trace-eval/r1-response.patch": "3e0d4ce761b0cd90806d63d799da73da68142bf9a84219d46d5d27fa0ac94d35"
+    },
+    "files": {
+      "docs/explanations/evaluation.md": {
+        "sha256": "4c7ca6f84adb670122692b0fee85cab89476bf1be90a4e3a9214b3e1df97a410",
+        "git_blob": "571ec313c708d64f11d219aef9f0e60de513275a"
+      },
+      "lib/marin/src/marin/evaluation/model_loading.py": {
+        "sha256": "cd6c6904443d72c8c157162632db51cb05f9035dbb600b80ce70cc0512b63992",
+        "git_blob": "03d90f9b1fba339958f91d4473c840da480a482d"
+      },
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": {
+        "sha256": "dc7f152a7ea3421b4915fa1c607047f5750f6f3aabd2586dfbc3a640c5bd5196",
+        "git_blob": "bb1fc00b6d7855e273943e634cafb12696e188c3"
+      },
+      "tests/evals/test_trace_labeled_eval.py": {
+        "sha256": "8b49d51e5448acd767f3d74ee3dc19f600d74fdb479aa4312bcc4261eb130043",
+        "git_blob": "e4890ec13f55873e883791b37fd59ebb4486eab6"
+      }
+    },
+    "pins_before_after_verified": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "resolved_findings": [
+      {
+        "id": "T1",
+        "status": "fixed",
+        "path": "docs/explanations/evaluation.md",
+        "lines": "36-40",
+        "assessment": "The guide now limits complete stored-vocabulary recovery to HF and metadata-bearing native checkpoints. Metadata-free sources explicitly require original matching configuration and rounded tokenizer vocabulary equal to stored size, have no independent vocabulary override, and do not verify architecture/activation identity."
+      }
+    ],
+    "piece_dispositions": {
+      "lib/marin/src/marin/evaluation/model_loading.py": {
+        "disposition": "keep",
+        "assessment": "Maintained shared eval wrapper now forwards actual native computation/batch roles to the existing source loaders. It keeps storage/compute responsibilities narrow and preserves named loader behavior."
+      },
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": {
+        "disposition": "keep",
+        "assessment": "Small canonical explicit-axis config copy plus existing evaluator mapping reuse enables the actual trace caller without changing its ordinary labeled-data/loss/cache/results lifecycle. Future native trace users need this support; no research artifact or bespoke runtime is introduced."
+      },
+      "tests/evals/test_trace_labeled_eval.py": {
+        "disposition": "keep",
+        "assessment": "The named-hf case now uses the existing default MeshConfig placement, retains logical examples batch name, and chooses train_batch_size equal to actual all-device data size. This is a legal batch for per-device parallelism1. Native-hf/native-local retain precisely the original custom physical vocab TP mapping, data-sharded storage and matching data-size batch. Source weights, source48/tokenizer47, direct named logits/label oracle, label counts, actual public routes, 1e-5 loss assertions, config nonmutation and native resume checks are unchanged."
+      },
+      "docs/explanations/evaluation.md": {
+        "disposition": "keep",
+        "assessment": "T1 source-vocabulary and metadata-free configuration/identity boundaries are now accurate in the nearest existing guide; original entrypoint/placement/resume guidance remains useful."
+      }
+    },
+    "named_fixture_response": {
+      "assessment": "The named-hf case now uses the existing default MeshConfig placement, retains logical examples batch name, and chooses train_batch_size equal to actual all-device data size. This is a legal batch for per-device parallelism1. Native-hf/native-local retain precisely the original custom physical vocab TP mapping, data-sharded storage and matching data-size batch. Source weights, source48/tokenizer47, direct named logits/label oracle, label counts, actual public routes, 1e-5 loss assertions, config nonmutation and native resume checks are unchanged.",
+      "mechanical_proof": "Restoring only the prior mesh block and train_batch_size expression reconstructs the exact initial test SHA256. Therefore no source weights/oracle/assertion/tolerance or non-placement test content changed.",
+      "baseline_evidence": [
+        "evidence/native-trace-eval/initial-and-baseline-phases.json",
+        "evidence/native-trace-eval/initial-and-baseline-phases.json"
+      ],
+      "boundary": "Read supplied actual baseline receipts showing initial custom named placement has the same mismatch on unchanged069, while default named placement with matching batch passes the same independent oracle. This establishes a justified fixture response without classifying the broader custom named layout as supported, fixed or qualified. No execution independently rerun."
+    },
+    "production_files_byte_identical_to_initial": true,
+    "prior_nonzero_review": "evidence/native-trace-eval/maintained-reviews-and-docs.json",
+    "history": "Initial e070 review remains changes_requested with P2 T1. Initial candidate/baseline custom named-placement mismatch, default-layout private invalid-batch phase and subsequent matched-batch pass remain separate history. R1 does not repair or qualify the original custom named layout.",
+    "actions_performed": [
+      "read-only docs/test delta, original production source review context and baseline receipt inspection",
+      "verify four hashes/blobs before/after, both patch file hashes, base/final tree, response reverse applicability, production byte identity and exact original-test reconstruction",
+      "write requested R1 review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network",
+      "commit/push",
+      "catalog",
+      "PR/CI/job/automation actions",
+      "active author-output polling"
+    ],
+    "validation_boundary": "Static independent targeted response review only. R1 author CPU1/CPU4 tests are ongoing and no result is claimed verified. Original baseline receipts do not qualify final R1 runs. FP32/direct-loss coverage is distinct from BF16-default, accelerator, performance, scientific or canonical acceptance.",
+    "next_gate": "No review finding remains for exact frozen R1 source. Parent owns final execution/catalog/publication; any further source fix requires fresh targeted review before commit."
+  },
+  "native-jax-trace-eval-guide-cold-read.md": {
+    "text": "Cold read of the excerpt only, as a Marin user unfamiliar with this entrypoint:\n\n- \u201cNamed Llama and `llama_native` configurations\u201d does not identify the actual configuration field, accepted name(s), or how to invoke the module. One minimal command/config example would make the entrypoint usable.\n- \u201cTrace-labeled\u201d and \u201clabeled losses\u201d are undefined: what supplies the labels, what input dataset format is expected, and is each reported loss grouped by label or attached to an individual trace?\n- `checkpoint_is_hf` names a switch but the checkpoint-path and tokenizer/model configuration fields are absent. \u201cMatching model architecture\u201d leaves unclear whether an HF directory supplies architecture metadata or the user must specify it independently.\n- \u201cNative loading\u201d has an unclear boundary: does it mean `llama_native`, a Levanter-format checkpoint, or both? That affects how to interpret the vocabulary-preservation claim.\n- \u201cUses explicit mesh axes with the trainer's parameter storage and computation mappings\u201d does not say whether these settings are inherited automatically or must be supplied by the user. Only the batch-axis field is concrete.\n- \u201cRerunning the same configuration and output skips completed datasets\u201d leaves resume safety unclear: does the evaluator check configuration identity, or must the user ensure that an existing results file belongs to the current configuration? Also unclear whether changing model/tokenizer/dataset settings requires a fresh output path.\n"
+  },
+  "native-jax-trace-eval-guide-r2-cold-read.md": {
+    "text": "All three remaining concrete clarity points are resolved in this wording:\n\n- \u201cHaliax-based `LlamaConfig`\u201d removes the ambiguous \u201cnamed\u201d terminology.\n- The adapter sentence identifies patch text and the CORRECT/INCORRECT outcome token as appended labeled targets derived from row fields.\n- The resume guidance names `max_eval_length` explicitly.\n\nNo remaining issues within the requested recheck scope. Prior notes preserved; no source lookup or draft edits.\n"
+  },
+  "_archive_note": "Historical pending/unpublished and failed phases retain their original meaning; final054/publication is a later phase. CPU/static scope only, no accelerator/performance/scientific acceptance."
+}

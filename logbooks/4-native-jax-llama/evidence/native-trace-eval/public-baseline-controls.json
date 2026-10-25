@@ -1,0 +1,147 @@
+{
+  "native-jax-trace-eval-native-control-report.json": {
+    "source_head": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "source_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "source_root": "<local-checkout>",
+    "device_count": 1,
+    "backend": "cpu",
+    "jax_version": "0.11.1",
+    "modules": {
+      "levanter": "lib/levanter/src/levanter/__init__.py",
+      "haliax": "lib/haliax/src/haliax/__init__.py",
+      "marin": "lib/marin/src/marin/__init__.py",
+      "iris": "lib/iris/src/iris/__init__.py",
+      "fray": "lib/fray/src/fray/__init__.py",
+      "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+    },
+    "precision": "f32 explicitly selected for disposable correctness control; no default modified",
+    "tokenizer_vocab": 47,
+    "source_vocab": 48,
+    "source_config": {
+      "hidden_dim": 16,
+      "intermediate_dim": 24,
+      "num_layers": 1,
+      "num_heads": 2,
+      "num_kv_heads": 2,
+      "max_seq_len": 256,
+      "vocab_size": 48
+    },
+    "asset_root": "native-jax-trace-eval-native-control-assets",
+    "named": {
+      "status": "PASSED",
+      "results_status": "completed",
+      "completed_datasets": 1,
+      "metrics": {
+        "trace_labeled_eval/tiny/outcome/bpb": 0.31757551431655884,
+        "trace_labeled_eval/tiny/outcome/loss": 5.2830376625061035,
+        "trace_labeled_eval/tiny/outcome/tokens": 1.0,
+        "trace_labeled_eval/tiny/patch/bpb": 0.6456546783447266,
+        "trace_labeled_eval/tiny/patch/loss": 4.539270877838135,
+        "trace_labeled_eval/tiny/patch/tokens": 7.0
+      }
+    },
+    "native": [
+      {
+        "route": "native-hf",
+        "already_explicit_trainer": true,
+        "status": "FAILED_AS_EXPECTED",
+        "error": {
+          "type": "ValueError",
+          "message": "Loading llama_native requires compute_axis_mapping"
+        },
+        "results_exists": false
+      },
+      {
+        "route": "native-local",
+        "already_explicit_trainer": true,
+        "status": "FAILED_AS_EXPECTED",
+        "error": {
+          "type": "ValueError",
+          "message": "Loading llama_native requires compute_axis_mapping"
+        },
+        "results_exists": false
+      }
+    ],
+    "local_backend": "real Fray LocalClient / in-process cache workers; no remote job or fake",
+    "asset_validation": "Both native shared loaders restored exact named source weights and complete vocabulary under explicit roles",
+    "source_sha256": {
+      "lib/marin/src/marin/evaluation/model_loading.py": "b733946ad0d9ba0cc29d98218360b0fae442c3b4c94adb38842891b9135b1dba",
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": "4cf7c9927397dac3fc61b166df3956fa6aba76360aa68853dca236fe63e436a8",
+      "lib/levanter/src/levanter/model_loading.py": "85924eeec299699e2a49cf2381af67aec85e4e9347ac6b36bb0aad4e66416180",
+      "lib/levanter/src/levanter/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+      "tests/evals/test_trace_labeled_eval.py": "0ab0c485d2acfc7ccfb428f89c72a8fdbb7f9098f7e3e2896408ebd62d6d74e8",
+      "lib/levanter/src/levanter/testing/hf_checkpoints.py": "334f784e5d17bf44b28cd69e75569c63e46b2a1cf274c85ba9d527a24e4a7cc9"
+    },
+    "asset_sha256": {
+      "tokenizer/tokenizer.json": "1e87940fd0a89ba828873307cc11cd9551021b94d8704fd7de58a15220f16bc6",
+      "tokenizer/tokenizer_config.json": "aa839438c1a308a0e3ae9714a93719c9a7406c12d21912d22720c711d0a519d4",
+      "traces.jsonl": "9fd1e583c3b9dd54a8ab05875141a880d874dbf43e465e7a570f43cdfa99a690",
+      "hf-source/config.json": "c405c7e418f503a99cdcf54a3c334d77751d24818cd83dc5b0c411a0a5cbdeaa",
+      "hf-source/model.safetensors": "0258fdf1443ae6ec96d02e9eb8d56bdf6f7adcdeba0d346d474d53c9e4d89b4e",
+      "native-checkpoint/metadata.json": "7edfd10c98b4d75dbc51c0908ef1b191893e6978a94280411b094758796c148b",
+      "named-public/results.json": "4197e0c7b5a74f7cf36505f9bd68a3aec9c11ce5518447d07afd4638699ac37e"
+    },
+    "source_clean_after": true,
+    "source_blob_ids": {
+      "lib/marin/src/marin/evaluation/model_loading.py": "11433e3c270d466c007004d226a6ab2291fc7b23",
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": "5cd503124a84271c6ab0bd5767fc47470ec3f0de",
+      "lib/levanter/src/levanter/model_loading.py": "bcec8b7ce3c9cc0fda1f6ea5a7833edec1177297",
+      "lib/levanter/src/levanter/eval.py": "7e757db5c208ee8017367406200ceef965a5995a",
+      "tests/evals/test_trace_labeled_eval.py": "c53a278294f8b774c37a97b7283c3b7f5f8852f1",
+      "lib/levanter/src/levanter/testing/hf_checkpoints.py": "e297a67d0cb0e1952fd8b6cb848b911ef36a7aa0"
+    },
+    "probe": {
+      "path": "evidence/native-trace-eval/control-reproducers.json",
+      "sha256": "7cbcbdb14a2179b0a6d6f09c499c49e85f546e4c32cfdbfaeedcdf75f459bf84"
+    },
+    "existing_fixture_tests": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "duration": 3.932,
+      "junit": "native-jax-trace-eval-native-control-fixtures.xml",
+      "root_addopts": "-p marin.pytest_timeout_guard --session-timeout=600 -n auto --dist=worksteal -m 'not slow and not integration and not data_integration and not cluster and not requires_cluster and not docker and not manual' --import-mode=importlib",
+      "marker_override": false,
+      "xdist": "disabled -n 0 only",
+      "warning": "pytest assertion-rewrite warning from pre-imported modules in disposable launcher"
+    },
+    "checkpoint_metadata_scalar_identity": {
+      "version": 1,
+      "type": "llama_native",
+      "vocab_size": 48,
+      "architecture": {
+        "hidden_dim": 16,
+        "intermediate_dim": 24,
+        "num_layers": 1,
+        "num_heads": 2,
+        "num_kv_heads": 2,
+        "head_dim": 8,
+        "layer_norm_epsilon": 1e-05,
+        "tie_word_embeddings": false,
+        "use_bias": false,
+        "use_layer_norm_weight": true,
+        "input_embedding_norm": false,
+        "hybrid_norm": false,
+        "use_qk_norm": false,
+        "upcast_attn": false,
+        "rope_theta": 10000.0,
+        "rope_factor": 1.0
+      }
+    },
+    "interpretation": {
+      "verified": "Real named public trace evaluation completes; valid identical-weight native source routes are blocked at shared wrapper argument propagation before trace cache/loss/report execution. Already Explicit Trainer does not solve the missing roles.",
+      "not_established": "Native labeled evaluation correctness once roles are supplied; further explicit-axis aggregation issues; custom-batch/multi-device behavior; default BF16 math; accelerator or 1.53B scientific acceptance.",
+      "next_minimal_slice": "Root may authorize existing wrapper role parameters plus copied Explicit Trainer and native_evaluation_axis_mapping in trace caller, preserving existing labeled evaluator/cache/report/named behavior. Any failure after loading needs independent diagnosis, not tolerance changes."
+    },
+    "untouched_boundaries": [
+      "No production/test source edits",
+      "No inherited external config mutation; disposable Trainer configs only, native copy via dataclasses.replace",
+      "No fake model/loader/evaluator or mocks",
+      "No network/GCP/downloads/remote jobs/PR/CI/automation/archive actions",
+      "No numerical tolerance change or science/default-cutover claim"
+    ]
+  },
+  "projection": "Scalar source/geometry/hash identities and positive metric/control outcomes; no assets, private environment, raw negative frames or incidental speed metrics.",
+  "_archive_note": "Historical pending/unpublished and failed phases retain their original meaning; final054/publication is a later phase. CPU/static scope only, no accelerator/performance/scientific acceptance."
+}

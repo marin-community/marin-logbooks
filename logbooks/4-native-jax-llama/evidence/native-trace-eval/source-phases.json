@@ -1,0 +1,121 @@
+{
+  "native-jax-trace-eval-source-freeze.json": {
+    "utc": "2026-10-25T01:38:57.964480+00:00",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-trace-eval-support",
+    "base": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "base_status": "Parent supplied verified public PR29 importer source; no remote query by author",
+    "base_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "resulting_tree": "1c19a1bc350453243cefa55362af29ff4653e26f",
+    "patch": "evidence/native-trace-eval/initial-source.patch",
+    "patch_sha256": "e0705007384fe27f89f7fe6805717212688c81e7e9a3d40100c69cd79fa24545",
+    "files": {
+      "docs/explanations/evaluation.md": {
+        "sha256": "eebc79d2fde5bb3d58225b0bff1ef0cdb7cb12debb011db318d6e5940da2a1c1",
+        "git_blob": "c99a3976ced77361f64dcfce1f7d8b062a770604"
+      },
+      "lib/marin/src/marin/evaluation/model_loading.py": {
+        "sha256": "cd6c6904443d72c8c157162632db51cb05f9035dbb600b80ce70cc0512b63992",
+        "git_blob": "03d90f9b1fba339958f91d4473c840da480a482d"
+      },
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": {
+        "sha256": "dc7f152a7ea3421b4915fa1c607047f5750f6f3aabd2586dfbc3a640c5bd5196",
+        "git_blob": "bb1fc00b6d7855e273943e634cafb12696e188c3"
+      },
+      "tests/evals/test_trace_labeled_eval.py": {
+        "sha256": "8053d1a1a5b0f57ed05d41ca52f76896542d331ac99d60888b4b20f303d5dd04",
+        "git_blob": "a6668af5df3551447fccc0530e19ae43b8232d35"
+      }
+    },
+    "source_frozen": true,
+    "frozen_before_any_candidate_tests": true,
+    "committed": false,
+    "published": false,
+    "production_scope": "Existing Marin eval wrapper forwards original compute roles/batch name to both shared loaders; trace copies Trainer to explicit axes only when model requires it and reuses native_evaluation_axis_mapping for named evaluation placement. No new loader/evaluator/runtime/framework or compatibilityshim.",
+    "exact_reuse": [
+      "levanter.model_loading.load_hf_checkpoint",
+      "levanter.model_loading.load_levanter_checkpoint",
+      "levanter.model_loading.native_evaluation_axis_mapping",
+      "canonical eval_lm dataclasses.replace config/Trainer explicit pattern",
+      "existing LabeledEvaluator/eval_labeled_model",
+      "existing trace row/tokenizer fixture, trace preprocessor/cache/packing and actualresults/resume"
+    ],
+    "test_scope": "Existing2adapter/limit cases plus3publicroute parameters: HaliaxHF/nativeHF/nativeLevanter. Real47tokenizer/48source; independentnamed exactsourceweights+logits then direct labeledtoken crossentropy/reduction; customexamplesbatch andphysicaldata/vocabTPmesh; configimmutability; native-local completedresume aftercache+rawinputdeletion. No mocks or tolerancechanges;1e-5exactsame numerical tolerance asexistingnativeoracles.",
+    "layout": "Mesh data=count/TP,vocab=TP, TP2 whenactualCPUcount>=4 else1. mlp/heads/logicalvocab usephysicalvocab; parameterembed usesdata; customexamplesbatch usesDPaxes. Originalstorage/compute mappings reachloaders; evaluationhelperfiltersunitbatchaxes.",
+    "baseline_controls": {
+      "report": "evidence/native-trace-eval/public-baseline-controls.json",
+      "results": "native-jax-trace-eval-native-control-results.json",
+      "probe": "evidence/native-trace-eval/control-reproducers.json",
+      "boundary": "Separate unchanged069 actualCPU1 controls: namedpublicmetrics pass, exact native sourceweights/full48 via sharedloaders, bothnativepublic routes fail missingcompute_axis_mapping evenwithExplicitTrainer. Existing2fixturetests separate; no nativecandidate parity yet. Controlclone/assets unchanged."
+    },
+    "ordinary_at_freeze": "Initialfourfileordinarypass; latestdocs-onlywordclarifications require finalordinaryrepeat, scheduled. No candidate tests executed before this freeze.",
+    "cold_read": "Initial6docclarityfindings andR1remaining3preserved privately; finishedR2excerpt response pending. Any subsequent sourcebytes require reportednewfreeze.",
+    "pending_root_owned": [
+      "fresh independent maintained review beforecommit",
+      "CPU8independentqualification",
+      "broaderaffectedtests",
+      "catalog",
+      "publication/archive"
+    ],
+    "limits": "Author localCPU1/4source qualification only; no claims about BF16default, accelerators/performance, larger-modelscientific/canonicalacceptance. No network/GCP/remotejobs/monitoring/automation/CI/commit/push/PR."
+  },
+  "native-jax-trace-eval-r1-source-freeze.json": {
+    "utc": "2026-10-25T01:43:40.206826+00:00",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-trace-eval-support",
+    "base": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "initial_tree": "1c19a1bc350453243cefa55362af29ff4653e26f",
+    "resulting_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "files": {
+      "docs/explanations/evaluation.md": {
+        "sha256": "4c7ca6f84adb670122692b0fee85cab89476bf1be90a4e3a9214b3e1df97a410",
+        "git_blob": "571ec313c708d64f11d219aef9f0e60de513275a"
+      },
+      "lib/marin/src/marin/evaluation/model_loading.py": {
+        "sha256": "cd6c6904443d72c8c157162632db51cb05f9035dbb600b80ce70cc0512b63992",
+        "git_blob": "03d90f9b1fba339958f91d4473c840da480a482d"
+      },
+      "lib/marin/src/marin/evaluation/trace_labeled_eval.py": {
+        "sha256": "dc7f152a7ea3421b4915fa1c607047f5750f6f3aabd2586dfbc3a640c5bd5196",
+        "git_blob": "bb1fc00b6d7855e273943e634cafb12696e188c3"
+      },
+      "tests/evals/test_trace_labeled_eval.py": {
+        "sha256": "8b49d51e5448acd767f3d74ee3dc19f600d74fdb479aa4312bcc4261eb130043",
+        "git_blob": "e4890ec13f55873e883791b37fd59ebb4486eab6"
+      }
+    },
+    "patches": {
+      "evidence/native-trace-eval/final-public-source.patch": "29e53de72bef102da3619b8f390be6a58c1aadd81362889cfcf82a7eeb4b9cbe",
+      "evidence/native-trace-eval/r1-response.patch": "3e0d4ce761b0cd90806d63d799da73da68142bf9a84219d46d5d27fa0ac94d35"
+    },
+    "frozen_before_r1_tests": true,
+    "source_scope": "Production wrapper/caller exact initialfreeze; only docs vocabulary qualification and named-hf fixture uses default four/all-device data mesh; native fixtures/weights/oracle/1e-5tolerances unchanged",
+    "preserved_history": "evidence/native-trace-eval/initial-and-baseline-phases.json; actualbaseline customlayoutfail/defaultlayoutpass plus invalidprivatebatch harness phase preserved",
+    "pending": "R1CPU1/4all5tests+ordinary4; rootfreshreview/CPU8/broadaffected/catalog/publication; no commit/push"
+  },
+  "native-jax-trace-eval-root-commit-proof.json": {
+    "utc": "2026-10-25T01:49:25.784277+00:00",
+    "head": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "parent": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "clean": true,
+    "exact_reviewed_message": true,
+    "message_file_sha256": "f2c083ff36c6d36e4fda4683664cf38d1b446ae2c10f16ab02d55b24dab1e474",
+    "actual_message_sha256": "7f89f5b919339cd901b65a171793a7247958ff003c874f4f978f85520fe4c583",
+    "full_patch_sha256": "29e53de72bef102da3619b8f390be6a58c1aadd81362889cfcf82a7eeb4b9cbe",
+    "fresh_maintained_R1_zero": true,
+    "finished_prose_R1_zero": true,
+    "actual_inprocess_five_cases_each": [
+      1,
+      4,
+      8
+    ],
+    "safe_selector_same_five_collection_only": true,
+    "required_ordinary_all4_pass": true,
+    "canonical_main": "2cae063c877172844fe6ff90e94354cc08a273fa",
+    "merge_base": "86fc7b67c921ad4ac124835ca7379b04ffa1be25",
+    "published": false,
+    "catalog": "required next"
+  },
+  "_archive_note": "Historical pending/unpublished and failed phases retain their original meaning; final054/publication is a later phase. CPU/static scope only, no accelerator/performance/scientific acceptance."
+}
