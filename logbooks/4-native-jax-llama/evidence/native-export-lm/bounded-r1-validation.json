@@ -1,0 +1,106 @@
+{
+  "native-jax-export-lm-batch-r1-validation.json": {
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-export-lm-support",
+    "base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "freeze": "evidence/native-export-lm/source-phases.json",
+    "source_patch_sha256": "3d0e95067963a81eb7d4ad0fa233fc2bed45b1981b54d0d0f2a06b7207e93cb9",
+    "response_patch_sha256": "30b1b1f477b5e78ae442db498107f5cb9daba7a196ca4267686aa2f1a962257e",
+    "five_source_files_verified": true,
+    "prior_four_files_byte_identical": true,
+    "diff_check": "pass",
+    "change": "Only token expression in mesh-scaled existing converter fixture now wraps IDs by model.Vocab.size; batch=max(2,data), four positions, original assertions and 1e-5 tolerances unchanged.",
+    "results": {
+      "1": {
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "actual_devices": 1,
+        "case_names": [
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-master]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-master]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-master]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-master]"
+        ],
+        "source_modules": {
+          "levanter": "lib/levanter/src/levanter/__init__.py",
+          "haliax": "lib/haliax/src/haliax/__init__.py",
+          "marin": "lib/marin/src/marin/__init__.py",
+          "iris": "lib/iris/src/iris/__init__.py"
+        },
+        "log": "native-jax-export-lm-batch-r1-cpu1.log",
+        "junit_xml": "evidence/native-export-lm/bounded-r1-cpu1.xml",
+        "exit_code": 0,
+        "command": "source native-jax-export-lm-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python native-jax-export-lm-tests.py 1 -c pyproject.toml lib/levanter/tests/test_llama_native.py::test_native_hf_export_sharded_dtype_and_layout_roundtrip -n 2 -q --tb=short --junitxml=evidence/native-export-lm/bounded-r1-cpu1.xml > native-jax-export-lm-batch-r1-cpu1.log 2>&1"
+      },
+      "4": {
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "actual_devices": 4,
+        "case_names": [
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-master]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-master]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-master]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-bf16]",
+          "test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-master]"
+        ],
+        "source_modules": {
+          "levanter": "lib/levanter/src/levanter/__init__.py",
+          "haliax": "lib/haliax/src/haliax/__init__.py",
+          "marin": "lib/marin/src/marin/__init__.py",
+          "iris": "lib/iris/src/iris/__init__.py"
+        },
+        "log": "native-jax-export-lm-batch-r1-cpu4.log",
+        "junit_xml": "evidence/native-export-lm/bounded-r1-cpu4.xml",
+        "exit_code": 0,
+        "command": "source native-jax-export-lm-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python native-jax-export-lm-tests.py 4 -c pyproject.toml lib/levanter/tests/test_llama_native.py::test_native_hf_export_sharded_dtype_and_layout_roundtrip -n 2 -q --tb=short --junitxml=evidence/native-export-lm/bounded-r1-cpu4.xml > native-jax-export-lm-batch-r1-cpu4.log 2>&1"
+      }
+    },
+    "ordinary": {
+      "command": "./infra/pre-commit.py --files lib/levanter/docs/Training-On-Your-Data.md --files lib/levanter/src/levanter/main/export_lm_to_hf.py --files lib/levanter/src/levanter/models/llama_native_lm.py --files lib/levanter/tests/test_export_to_hf.py --files lib/levanter/tests/test_llama_native.py",
+      "log": "evidence/native-export-lm/ordinary-checks.txt",
+      "exit_code": 0,
+      "all_checks": "OK",
+      "sandbox": "require_escalated for authorized local formatter IPC; no SKIP"
+    },
+    "preserved_history": {
+      "original_four_file_qualification": "16 PASS each CPU1/4 at four-file 2abe freeze; historical, not rerun after fixture response",
+      "original_cpu8": "8 public exporter PASS, 8 existing direct-converter FAIL; root baseline proof confirms same eight failures on unchanged a54",
+      "baseline_proof": "evidence/native-export-lm/cpu8-unchanged-base-comparison.json",
+      "first_batch_response": {
+        "response_sha256": "345f323c32c3b6f37f29c70c191095a987ab81dcb9f3ae65a27125effbd24027",
+        "full_patch_sha256": "1e65e3c338bf5155993717d8d030040d4a3d942eb4d174f1617751ae8e39540c",
+        "cpu1": "8 PASS",
+        "cpu4": "8 PASS",
+        "review": "evidence/native-export-lm/maintained-reviews.json",
+        "review_verdict": "changes_requested",
+        "finding": "P2 B1: unbounded token IDs on legal 32-device mesh; fixed in current R1 by modulo vocabulary"
+      },
+      "exporter_harness_phases": "Original validation report preserves head_dim fixture correction, real metadata-free non-OCDBT fixture correction, and CPU4 named-oracle callback failure. None classified as exporter regressions."
+    },
+    "pending_root_owned": [
+      "affected eight direct converter cases on actual CPU8 R1 bytes",
+      "one existing default-master case on actual CPU32 R1 bytes",
+      "final affected selector",
+      "full catalog review",
+      "commit/publication/archive"
+    ],
+    "boundary": "Author local CPU1/4 tests and ordinary checks only. No source commit, network, PR, CI, automation, hardware or storage actions. Prior public eight cases are not rerun because runtime remains identical. CPU8/32 pending qualification remains separate; no BF16 arithmetic, accelerator/performance/scientific/canonical-cutover acceptance.",
+    "fresh_maintained_review": {
+      "path": "evidence/native-export-lm/maintained-reviews.json",
+      "verdict": "no_findings",
+      "findings": 0,
+      "resolved": "P2 B1; earlier nonzero review retained",
+      "boundary": "independent static review, separate from execution"
+    }
+  },
+  "_archive_note": "Original chronological statuses and source pins retained; later public release does not rewrite historical unpublished/pending fields. Manifest records original/output hashes/bytes and explicit transforms. CPU/static evidence only."
+}

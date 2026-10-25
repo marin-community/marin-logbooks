@@ -1,0 +1,289 @@
+{
+  "native-jax-export-lm-root-catalog-proof.json": {
+    "utc": "2026-10-25T00:41:51.290144+00:00",
+    "directory": "<local-catalog-output>",
+    "reviewed_head": "169c22725be2cf520b8e3dce5646c20dd3153a2c",
+    "merge_base": "86fc7b67c921ad4ac124835ca7379b04ffa1be25",
+    "total_elapsed": 179.15,
+    "timed_out": false,
+    "lanes": [
+      {
+        "lane": "complexity",
+        "exit": 0,
+        "elapsed": 92.08,
+        "stdout": "",
+        "terminal_token_report": 175195,
+        "output_sha256": "f4535652d241720745fdfe083a4000611bf0e46a10896e5defa735fdbad051a5",
+        "output_bytes": 736553
+      },
+      {
+        "lane": "composer",
+        "exit": 0,
+        "elapsed": 5.65,
+        "stdout": "lib/levanter/src/levanter/layers/scan_checkpoint.py:58: ml-abbreviated-name (0.88) `_mk` is a cryptic abbreviation that obscures the helper's role in normalizing checkpoint policy specifications.\nlib/levanter/src/levanter/main/export_lm_to_hf.py:80: ml-duplicate-logic-block (0.85) Native checkpoint discovery and metadata fallback duplicate load_levanter_checkpoint in model_loading.py, leaving two copies of the checkpoint-selection policy.",
+        "terminal_token_report": 19414,
+        "output_sha256": "d96a9b3ea274dc962dbb2325f9f1f5aa7f494a400e49667ded46d09191b07e0d",
+        "output_bytes": 32745
+      },
+      {
+        "lane": "cruft",
+        "exit": 0,
+        "elapsed": 136.35,
+        "stdout": "lib/levanter/src/levanter/main/export_lm_to_hf.py:80: ml-duplicate-logic-block (0.85) Native checkpoint discovery and metadata fallback duplicate load_levanter_checkpoint in model_loading.py, leaving two copies of the checkpoint-selection policy.",
+        "terminal_token_report": 188427,
+        "output_sha256": "ab425be11adb9989c3c5aecf8c49db77a3eb3f9652f63ab9be4b5fdf92e22b0e",
+        "output_bytes": 718258
+      },
+      {
+        "lane": "interfaces",
+        "exit": 0,
+        "elapsed": 146.17,
+        "stdout": "",
+        "terminal_token_report": 136319,
+        "output_sha256": "22c0dd67d77d51ff779c0e5520d267279ab280de0cbd6d8db7d60f3fe6ce64a9",
+        "output_bytes": 552610
+      },
+      {
+        "lane": "meta",
+        "exit": 0,
+        "elapsed": 145.51,
+        "stdout": "",
+        "terminal_token_report": 206365,
+        "output_sha256": "141ba199be8f17968d7c6e58b7ec8abbbb670d7d2b7345be2387f0cd32aceb40",
+        "output_bytes": 767801
+      },
+      {
+        "lane": "prose",
+        "exit": 0,
+        "elapsed": 118.57,
+        "stdout": "lib/levanter/src/levanter/layers/scan_checkpoint.py:58: ml-abbreviated-name (0.88) `_mk` is a cryptic abbreviation that obscures the helper's role in normalizing checkpoint policy specifications.",
+        "terminal_token_report": 204638,
+        "output_sha256": "4839f17895eda03057e92db36267d059fe81cc38240250db2e3354b597d242eb",
+        "output_bytes": 798384
+      },
+      {
+        "lane": "robustness",
+        "exit": 0,
+        "elapsed": 173.5,
+        "stdout": "",
+        "terminal_token_report": 211174,
+        "output_sha256": "7a7680b023c85b51c635d30a5614e24b60e90a496622a1015994bbe96c939db9",
+        "output_bytes": 982767
+      }
+    ],
+    "finding_count": 2,
+    "finding_rules": [
+      "ml-abbreviated-name",
+      "ml-duplicate-logic-block"
+    ],
+    "matching_rules_read": true,
+    "disposition": "Both accepted; targeted response in progress, not yet qualified or committed. No recursive full catalog planned.",
+    "raw_stderr_publication": false
+  },
+  "native-jax-export-lm-catalog-disposition.json": {
+    "frozen_response_sha256": "e37cbdbcc2af0dfccfaeff40a9c2acce83b99dba986e254a1070a31e6f7a6e05",
+    "base": "169c22725be2cf520b8e3dce5646c20dd3153a2c",
+    "findings": [
+      {
+        "rule": "infra/lint/rules/prose/ml-abbreviated-name.yaml",
+        "scope": "native levanter.layers.scan_checkpoint.ScanCheckpointPolicy._mk",
+        "status": "addressed",
+        "response": "Rename to from_spec and update its sole actual native caller in layers/stacked.py. No compatibility shim.",
+        "separate_class": "models/olmo3.py imports haliax.nn.scan.ScanCheckpointPolicy (defined haliax/_src/scan.py), so its _mk belongs to an established independent API; unchanged per explicit parent clarification. No inline normalization or Haliax API cleanup."
+      },
+      {
+        "rule": "infra/lint/rules/cruft/ml-duplicate-logic-block.yaml",
+        "scope": "main/export_lm_to_hf native branch and model_loading.load_levanter_checkpoint native branch",
+        "status": "addressed",
+        "response": "Canonical frozen ResolvedCheckpoint(path, metadata) plus resolve_checkpoint in checkpoint.py; both native callers use named fields. Existing candidate/latest ordering and direct metadata fallback copied once, without fake candidate step/timestamp.",
+        "existing_helpers_reused": [
+          "discover_checkpoint_candidates",
+          "StoragePath/prefix_join for metadata presence",
+          "_load_metadata for direct fallback"
+        ],
+        "preserved_contracts": [
+          "readable discovery candidates sorted step/timestamp/path and latest selected",
+          "present direct metadata validated even when missing/invalid step or timestamp",
+          "unreadable direct metadata raises unchanged",
+          "genuinely absent metadata returns empty metadata without eager read",
+          "native checkpoint_vocab_size validates semantics and preserves full stored vocab",
+          "native restore mesh and exporter custom checkpoint_subpath unchanged",
+          "named source-loading/export branches unchanged"
+        ]
+      }
+    ],
+    "source_only": true,
+    "changed_tests": [],
+    "changed_docs": [],
+    "not_performed": [
+      "recursive catalog",
+      "commit",
+      "push",
+      "PR",
+      "CI",
+      "network",
+      "remote jobs",
+      "accelerators",
+      "storage"
+    ]
+  },
+  "native-jax-export-lm-catalog-maintained-review.json": {
+    "review_type": "fresh_independent_precommit_targeted_export_catalog_maintained_and_correctness_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-export-lm-catalog-response",
+    "base": "169c22725be2cf520b8e3dce5646c20dd3153a2c",
+    "base_tree": "4171cf857ddc57d0c3cd2231e3f70ed176226c5d",
+    "campaign_base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "resulting_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "freeze_path": "evidence/native-export-lm/source-phases.json",
+    "response_patch": "evidence/native-export-lm/source-phases.json",
+    "response_patch_sha256": "e37cbdbcc2af0dfccfaeff40a9c2acce83b99dba986e254a1070a31e6f7a6e05",
+    "full_contribution_patch": "evidence/native-export-lm/final-public-source.patch",
+    "full_contribution_patch_sha256": "58d437364e4e6733b3c3ec753b00ed9b1c3eb7581fe3aa296db3ef85d5d89eeb",
+    "files": {
+      "lib/levanter/src/levanter/checkpoint.py": {
+        "sha256": "eb285e1fde895f1f0ce311ab2c745adf6c6399036ee3894dac3eb53aa84008cb",
+        "git_blob": "914418e5262708a9f29f2fa7b9123b47101ce0b4"
+      },
+      "lib/levanter/src/levanter/layers/scan_checkpoint.py": {
+        "sha256": "a9f270e6c61f56bd69d8b4fb10a4e6637266597524140cec1c8df21f1e2058dd",
+        "git_blob": "14c4e22124f04be669aac1d392a0401bd58e6b39"
+      },
+      "lib/levanter/src/levanter/layers/stacked.py": {
+        "sha256": "f6493229b00b1c596fc366591819e986ad195dad356d9bf4ff773cd900aeb7fe",
+        "git_blob": "9cbc0cda60f7d70511c59d660bb6152fcbd3a8b7"
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "sha256": "1dc978997dad6a0803113586d8fb03aa224c7987e9194ea4e38fa6b6332f7aa1",
+        "git_blob": "ec5f757afa527e1f833142809af1c1ac5c34c245"
+      },
+      "lib/levanter/src/levanter/model_loading.py": {
+        "sha256": "85924eeec299699e2a49cf2381af67aec85e4e9347ac6b36bb0aad4e66416180",
+        "git_blob": "bcec8b7ce3c9cc0fda1f6ea5a7833edec1177297"
+      }
+    },
+    "pins_verified": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "piece_dispositions": {
+      "lib/levanter/src/levanter/checkpoint.py": {
+        "disposition": "keep",
+        "assessment": "ResolvedCheckpoint and resolve_checkpoint live in the existing checkpoint ownership layer and have two actual maintained callers. The small frozen record expresses path plus optional stored metadata without fabricated discovery bookkeeping. The helper removes identical resolution logic and preserves failure semantics."
+      },
+      "lib/levanter/src/levanter/layers/scan_checkpoint.py": {
+        "disposition": "keep",
+        "assessment": "The descriptive from_spec name improves the maintained native scan policy API while preserving its full implementation and supported shorthand semantics. This is not a research artifact or an adapter layer."
+      },
+      "lib/levanter/src/levanter/layers/stacked.py": {
+        "disposition": "keep",
+        "assessment": "Updates the real native policy caller consistently with the rename, preserving array stacking, rematerialization, forward and gradient behavior."
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "disposition": "keep",
+        "assessment": "The existing public native exporter now consumes the shared resolved path/metadata pair and retains source semantic validation, full vocabulary, custom subtree and bounded writer policies. No independent export framework is added."
+      },
+      "lib/levanter/src/levanter/model_loading.py": {
+        "disposition": "keep",
+        "assessment": "The shared native model loader uses the same resolver while retaining native-only semantic/placement checks and the named loader branch. This is ongoing loader reuse rather than a one-off historical helper."
+      }
+    },
+    "contract_checks": [
+      {
+        "contract": "Checkpoint discovery/direct metadata equivalence",
+        "evidence": [
+          "checkpoint.py:1156-1169",
+          "checkpoint.py:1123-1153,1227-1276"
+        ],
+        "assessment": "The extracted resolver preserves the two prior algorithms: use the last numerically sorted complete candidate; otherwise read present direct metadata; otherwise retain the original concrete path with empty metadata. Invalid direct timestamp/step does not erase model metadata. Malformed JSON or unreadable direct metadata reaches uncaught _load_metadata after candidate discovery and propagates. Existing candidate ordering and run-directory skip behavior remain unchanged."
+      },
+      {
+        "contract": "Native semantic validation, full vocabulary and placement",
+        "evidence": [
+          "model_loading.py:93-105",
+          "main/export_lm_to_hf.py:71-81,91-99,120-141"
+        ],
+        "assessment": "Both callers feed resolved.metadata to the existing checkpoint_vocab_size validator. The loader retains tokenizer upper-bound checks, recovered source vocabulary and explicit placement validation. The exporter still restores complete metadata vocabulary before resizing. Resolved path selection is the only extracted policy; no source semantics are moved into checkpoint.py."
+      },
+      {
+        "contract": "Custom subtree and named paths",
+        "evidence": [
+          "model_loading.py:105-111",
+          "main/export_lm_to_hf.py:130-161"
+        ],
+        "assessment": "Native load_model retains its model subtree and exporter retains config.checkpoint_subpath. Named loader and exporter discovery, tokenizer, mesh, writer and dtype paths are untouched. No new subpath API or compatibility shim is introduced."
+      },
+      {
+        "contract": "Native checkpoint-policy rename",
+        "evidence": [
+          "layers/scan_checkpoint.py:57-62",
+          "layers/stacked.py:93",
+          "models/olmo3.py:23,306",
+          "lib/haliax/src/haliax/nn/scan.py:187,483"
+        ],
+        "assessment": "from_spec has exactly the prior _mk implementation. Repository search finds the native ArrayStacked caller updated; no native _mk caller remains. OLMo3 imports the distinct Haliax policy, whose established _mk and Haliax callers correctly remain unchanged. There is no numerical, rematerialization, configuration-wire or JIT behavior change."
+      },
+      {
+        "contract": "Tests and maintenance scope",
+        "evidence": [
+          "tests/test_array_stacked.py:228-267",
+          "tests/test_export_to_hf.py:344-440",
+          "tests/test_checkpoint.py:343-410"
+        ],
+        "assessment": "Tests/docs are unchanged in this response. Existing real export/model-load semantic and metadata-free cases and ArrayStacked unrolled value/gradient oracles remain applicable. No guard-only test, internal mock, tolerance weakening or new framework is added. The two-field result record avoids inventing candidate step/timestamp for direct metadata-free restores."
+      }
+    ],
+    "rules_read": [
+      "infra/lint/rules/prose/ml-abbreviated-name.yaml",
+      "infra/lint/rules/meta/ml-echo-across-files.yaml",
+      "infra/lint/rules/cruft/ml-duplicate-logic-block.yaml"
+    ],
+    "instructions_read": [
+      "current root TESTING.md",
+      "current lib/levanter/AGENTS.md",
+      "current lib/levanter/docs/design/jit-safety.md",
+      "root AGENTS.md and research durability promotion policy from preceding review context"
+    ],
+    "scope": "Fresh targeted response review of all five changed source pieces. Full nine-file campaign diff identity is pinned for provenance; this is not a full catalog rerun.",
+    "actions_performed": [
+      "read-only diff/source/helper/caller/rule/test inspection",
+      "verify five SHA256/git blobs, response/full patch SHA256, response file allowlist, base/tree and resulting tree",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "commit",
+      "push",
+      "network",
+      "PR/CI/job/automation actions",
+      "full catalog rerun",
+      "active author output polling"
+    ],
+    "validation_boundary": "Static independent review only. Author running CPU1/CPU4 tests, prior 169 broad-suite/baseline comparisons and ordinary checks are not independently verified here and do not qualify the new helper by themselves. Parent owns final execution, catalog completion, payload and publication gates. Prior B1 changes_requested history and its resolved response remain separate preserved artifacts.",
+    "next_gate": "No review finding remains for this exact frozen five-file response. Any further source fix requires fresh targeted review before commit."
+  },
+  "native-jax-export-lm-root-catalog-commit-proof.json": {
+    "utc": "2026-10-25T00:47:20.965259+00:00",
+    "head": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "parent": "169c22725be2cf520b8e3dce5646c20dd3153a2c",
+    "tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "clean": true,
+    "exact_reviewed_message": true,
+    "message_sha256": "c7f7a16aa4948ef810b8b0d94053027d91402b2c8af478b8d23630e0ec47759d",
+    "response_sha256": "e37cbdbcc2af0dfccfaeff40a9c2acce83b99dba986e254a1070a31e6f7a6e05",
+    "full_contribution_sha256": "58d437364e4e6733b3c3ec753b00ed9b1c3eb7581fe3aa296db3ef85d5d89eeb",
+    "fresh_maintained_review": "evidence/native-export-lm/catalog-and-response.json",
+    "cold_read": "native-jax-export-lm-root-catalog-commit-r1-cold-read.md",
+    "ordinary_all9_exit": 0,
+    "focused31_cpu_counts": [
+      1,
+      4,
+      8
+    ],
+    "required_full_catalog": "completed169sixpluscomposer2findings, both fixed in this child; targeted review no findings; no recursive full catalog",
+    "broad2208": "still running96073, publication pending",
+    "published": false
+  },
+  "interpretation": "Full169 catalog ran once: all six lanes plus composer terminal exit0, two findings. Both addressed by five-source6f9 response with fresh zero maintained review and31cases per actual1/4/8. No recursive zero-finding full catalog claimed.",
+  "_archive_note": "Original chronological statuses and source pins retained; later public release does not rewrite historical unpublished/pending fields. Manifest records original/output hashes/bytes and explicit transforms. CPU/static evidence only."
+}

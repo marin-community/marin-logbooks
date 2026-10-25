@@ -1,0 +1,164 @@
+{
+  "original_validation": {
+    "freeze": {
+      "checkout": "<local-checkout>",
+      "branch": "codex/native-jax-export-lm-support",
+      "base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+      "base_tree": "c0510313087e567287f650d84f4749f39a7f9597",
+      "patch": "evidence/native-export-lm/initial-export-source.patch",
+      "patch_sha256": "2abe50abe6bb064fc2af362cbeb45fa68e0a72e2a6097497959dc88dc2feea57",
+      "files": {
+        "lib/levanter/docs/Training-On-Your-Data.md": {
+          "sha256": "3c805c5159789202c390c631beae26ce7542487f012fcef243477b38606739e8",
+          "git_blob": "1bc4bfeb2017fba304506b00e644487582c600c6"
+        },
+        "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+          "sha256": "45508d54209e91ca05b7c8d2fc99ba8c98d2a43d89c7b52e5aab15a6a2ca6bed",
+          "git_blob": "eb215092876017a18905b9c60567023a05d8b042"
+        },
+        "lib/levanter/src/levanter/models/llama_native_lm.py": {
+          "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+          "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0"
+        },
+        "lib/levanter/tests/test_export_to_hf.py": {
+          "sha256": "389f8ac841a4cb11d2af54e4fba5139d64c8e9f03689ee18552848bed26d615a",
+          "git_blob": "d6f559dcb4d753620ea2893a215f3d25d79e31c3"
+        }
+      },
+      "source_frozen": true,
+      "committed": false,
+      "published": false,
+      "qualification_status_at_freeze": "ordinary all-four-file checks OK; final16 CPU1/4 running; final public caller control running; parent owns review/CPU8/affected/catalog/publication"
+    },
+    "qualification": {
+      "cpu1": {
+        "xml": "evidence/native-export-lm/initial-cpu1.xml",
+        "log": "native-jax-export-lm-final-cpu1.log",
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "case_ids": [
+          "lib.levanter.tests.test_export_to_hf::test_export_dpo_policy_subtree_to_bfloat16[gpt2]",
+          "lib.levanter.tests.test_export_to_hf::test_export_dpo_policy_subtree_to_bfloat16[snowball]",
+          "lib.levanter.tests.test_export_to_hf::test_export_lm_to_hf",
+          "lib.levanter.tests.test_export_to_hf::test_export_lm_to_hf_custom_subpath_without_tokenizer",
+          "lib.levanter.tests.test_export_to_hf::test_export_pinned_tokenizer_revision",
+          "lib.levanter.tests.test_export_to_hf::test_native_cpu_export_policy_preserves_metadata_vocab_semantics_and_dtype",
+          "lib.levanter.tests.test_export_to_hf::test_native_export_rejects_same_shape_semantic_mismatch_before_writing",
+          "lib.levanter.tests.test_export_to_hf::test_native_mesh_export_resizes_after_restore_and_accepts_metadata_free_subtree",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-master]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-master]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-master]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-master]"
+        ]
+      },
+      "cpu4": {
+        "xml": "evidence/native-export-lm/initial-cpu4.xml",
+        "log": "native-jax-export-lm-final-cpu4.log",
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "case_ids": [
+          "lib.levanter.tests.test_export_to_hf::test_export_dpo_policy_subtree_to_bfloat16[gpt2]",
+          "lib.levanter.tests.test_export_to_hf::test_export_dpo_policy_subtree_to_bfloat16[snowball]",
+          "lib.levanter.tests.test_export_to_hf::test_export_lm_to_hf",
+          "lib.levanter.tests.test_export_to_hf::test_export_lm_to_hf_custom_subpath_without_tokenizer",
+          "lib.levanter.tests.test_export_to_hf::test_export_pinned_tokenizer_revision",
+          "lib.levanter.tests.test_export_to_hf::test_native_cpu_export_policy_preserves_metadata_vocab_semantics_and_dtype",
+          "lib.levanter.tests.test_export_to_hf::test_native_export_rejects_same_shape_semantic_mismatch_before_writing",
+          "lib.levanter.tests.test_export_to_hf::test_native_mesh_export_resizes_after_restore_and_accepts_metadata_free_subtree",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[default-master]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[gelu-new-master]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[llama3-master]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-bf16]",
+          "lib.levanter.tests.test_llama_native::test_native_hf_export_sharded_dtype_and_layout_roundtrip[yarn-master]"
+        ]
+      }
+    },
+    "precommit": {
+      "command": "./infra/pre-commit.py --files lib/levanter/src/levanter/main/export_lm_to_hf.py --files lib/levanter/src/levanter/models/llama_native_lm.py --files lib/levanter/tests/test_export_to_hf.py --files lib/levanter/docs/Training-On-Your-Data.md",
+      "log": "evidence/native-export-lm/ordinary-checks.txt",
+      "status": "all ordinary checks OK",
+      "skipped_hooks": false,
+      "local_ipc_permission": "require_escalated for ordinary Black workers"
+    },
+    "environment": "native-jax-export-lm-env.sh",
+    "device_and_source_runner": "native-jax-export-lm-tests.py",
+    "root_config_explicit": true,
+    "marker_override": false,
+    "source_scope": {
+      "production": "Existing standalone exporter native branch; existing hf_export_converter tokenizer annotation now permits None. Named branch and bounded writer options retained. No shared loader or model math changes.",
+      "tests": "Three new integration cases in existing export test file, covering three real roundtrips and same-shaped semantic rejection. Independent named policy initializes both native policy weights and the numerical oracle; reference checkpoint values use a distinct seed.",
+      "docs": "Nearest existing after-training export guidance only.",
+      "helper_reuse": [
+        "discover_checkpoint_candidates and _load_metadata plus StoragePath presence checks, matching existing native source loader resolution behavior",
+        "NativeLlamaLmConfig.checkpoint_vocab_size semantic validation/full stored vocabulary",
+        "NativeLlamaLmConfig.hf_export_converter source-independent HF config export; optional tokenizer accepted by underlying converter",
+        "local_cpu_mesh(Explicit) and canonical NativeLlamaSharding() for replicated CPU export",
+        "native_llama_sharding, validate_sharding, copied explicit TrainerConfig and active target mesh for configured placement",
+        "Existing load_checkpoint with selected arbitrary checkpoint_subpath and native target mesh",
+        "Existing resize_vocab only after full restore; unchanged save_pretrained shard/budget/concurrency/dtype options",
+        "Existing serialization leaf-path helper and JAX checkpoint manager for genuine metadata-free non-OCDBT test assets"
+      ]
+    },
+    "harness_phases": [
+      {
+        "phase": "Initial explicit head dimension fixture",
+        "evidence": "evidence/native-export-lm/initial-validation-and-harness.json",
+        "interpretation": "Named to_hf_config did not carry fixture head_dim8; explicit original named head dimension was supplied to native fixture. No production architecture translator changed."
+      },
+      {
+        "phase": "OCDBT metadata deletion fixture",
+        "evidence": "evidence/native-export-lm/initial-validation-and-harness.json",
+        "interpretation": "Removing OCDBT metadata broke existing generic subtree-root detection. Replaced fabricated fixture with genuine metadata-free legacy TensorStore assets; no generic serializer fix or unsupported OCDBT recovery claim."
+      },
+      {
+        "phase": "CPU4 named oracle callback",
+        "evidence": "evidence/native-export-lm/initial-validation-and-harness.json",
+        "interpretation": "Exporter completed successfully; Haliax callback-based named oracle reconstruction failed on AbstractMesh. Replaced test-only reconstruction with direct FP32->BF16->FP32 casting of independent named model, preserving exact expected tensors and1e-4 logits tolerance."
+      }
+    ],
+    "limits": [
+      "CPU1/4 source/code qualification only; configured-mesh path was exercised on CPU devices, not an accelerator.",
+      "BF16 export tensors checked exactly and reloaded as FP32 masters; named numerical oracle computes with the same BF16-rounded FP32 values. No full BF16 numerical claim.",
+      "Model/policy fixtures contain full parameters; no adapter-only reconstruction or full optimizer migration claim.",
+      "Metadata-free legacy restore trusts original configuration and explicitly complete vocabulary; absent metadata cannot validate semantics.",
+      "No throughput/performance, larger-model scientific acceptance, accelerator qualification, canonical cutover or merge claim.",
+      "Fresh independent maintained review before any commit is owned by root; root also owns CPU8, final affected tests, catalog and publication.",
+      "No commit/push/PR/CI/automation/network/accelerator/storage/secret actions."
+    ]
+  },
+  "failed_harness_reports": [
+    {
+      "artifact_basename": "native-jax-export-lm-validation.md",
+      "bytes": 10405,
+      "sha256": "ed7e665972447a88216735bd94dbe60b97d8f1dbdd026c55b67c90e04ea805b3"
+    },
+    {
+      "artifact_basename": "native-jax-export-lm-first-cpu1.log",
+      "bytes": 6605,
+      "sha256": "d1d7ef36879b9b730af48916183bf5c58176a6d7ba457004e889a0e376da4e11"
+    },
+    {
+      "artifact_basename": "native-jax-export-lm-second-cpu1.log",
+      "bytes": 32611,
+      "sha256": "59e0fc4b91443a7f8c692f2f8e56c3115366f43d44f99e6295c7f97cbd1360f4"
+    },
+    {
+      "artifact_basename": "native-jax-export-lm-cpu4.log",
+      "bytes": 17967,
+      "sha256": "2b3a45a3223574b4b29ee619711df9b2ea5e6e9f063b73f154e8d1f5829ce882"
+    }
+  ],
+  "interpretation": "Three historical fixture/oracle corrections are described in harness_phases. Invalid deleted OCDBT metadata was replaced by genuine metadata-free legacy assets; no recovery claim. Named CPU4 AbstractMesh oracle was replaced by direct dtype casting, not a tolerance change.",
+  "_archive_note": "Original chronological statuses and source pins retained; later public release does not rewrite historical unpublished/pending fields. Manifest records original/output hashes/bytes and explicit transforms. CPU/static evidence only."
+}

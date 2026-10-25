@@ -1,0 +1,410 @@
+diff --git a/lib/levanter/docs/Training-On-Your-Data.md b/lib/levanter/docs/Training-On-Your-Data.md
+index bd68732662..1bc4bfeb20 100644
+--- a/lib/levanter/docs/Training-On-Your-Data.md
++++ b/lib/levanter/docs/Training-On-Your-Data.md
+@@ -568,3 +568,15 @@ checkpoint dtype. Use `checkpoint_subpath: model/policy` to export the policy fr
+ With `use_cpu: true`, the exporter restores the selected subtree on CPU. Host memory must hold the
+ restored weights as well as the export buffers.
+ Pin an explicit tokenizer with `tokenizer: model_name_or_path@revision`.
++
++For `model.type: llama_native`, the exporter validates stored model metadata and restores the complete
++checkpoint vocabulary before applying `override_vocab_size`. The configured architecture must match
++the checkpoint, including activation and RoPE semantics. Full model subtrees such as `model/policy`
++are supported; adapter-only checkpoints require separate reconstruction.
++
++Native CPU export uses a replicated explicit mesh on one local CPU, independently of the trainer's
++placement mappings. Otherwise, export uses the trainer's parameter and computation mappings with
++explicit mesh axes. Native export resolves the explicit `tokenizer` or `model.tokenizer` without
++loading an unrelated HF reference. Set `save_tokenizer: false` to export without a tokenizer.
++Checkpoints lacking native model metadata require the original configuration and complete vocabulary
++from the tokenizer or `override_vocab_size`; their stored semantic identity cannot be verified.
+diff --git a/lib/levanter/src/levanter/main/export_lm_to_hf.py b/lib/levanter/src/levanter/main/export_lm_to_hf.py
+index 88f64b4918..eb21509287 100644
+--- a/lib/levanter/src/levanter/main/export_lm_to_hf.py
++++ b/lib/levanter/src/levanter/main/export_lm_to_hf.py
+@@ -3,7 +3,7 @@
+ 
+ import logging
+ from contextlib import ExitStack
+-from dataclasses import dataclass
++from dataclasses import dataclass, replace
+ from typing import Any, Optional, Protocol, runtime_checkable
+ 
+ import equinox as eqx
+@@ -11,13 +11,14 @@ import haliax
+ import jax
+ import jax.numpy as jnp
+ from jax.sharding import AxisType
++from rigging.filesystem.storage_path import StoragePath, prefix_join
+ 
+ from haliax import Axis
+ 
+ import levanter
+ import levanter.config
+ import levanter.utils.logging as logging_utils
+-from levanter.checkpoint import latest_checkpoint_path, load_checkpoint
++from levanter.checkpoint import _load_metadata, discover_checkpoint_candidates, latest_checkpoint_path, load_checkpoint
+ from levanter.compat.hf_checkpoints import (
+     DEFAULT_EXPORT_HOST_BUDGET_BYTES,
+     DEFAULT_MAX_SHARD_SIZE,
+@@ -26,6 +27,8 @@ from levanter.compat.hf_checkpoints import (
+     load_tokenizer,
+ )
+ from levanter.models.llama import LlamaConfig
++from levanter.models.llama_native import NativeLlamaSharding
++from levanter.models.llama_native_lm import NativeLlamaLmConfig, native_llama_sharding
+ from levanter.models.lm_model import LmConfig, LmHeadModel
+ from levanter.trainer import TrainerConfig
+ from levanter.utils.jax_utils import is_inexact_arrayish, local_cpu_mesh
+@@ -63,15 +66,38 @@ def main(config: ConvertLmConfig):
+     logging_utils.init_logging("logs", "export")
+     if not isinstance(config.model, _HFCheckpointConvertible):
+         raise TypeError("model must provide hf_checkpoint_converter()")
+-    converter = config.model.hf_checkpoint_converter()
+-    tokenizer_spec = config.tokenizer
+-    if tokenizer_spec is None:
+-        tokenizer = converter.tokenizer
++    native_config = config.model if isinstance(config.model, NativeLlamaLmConfig) else None
++    checkpoint_path = config.checkpoint_path
++    source_vocab = None
++    if native_config is not None:
++        tokenizer_spec = config.tokenizer or native_config.tokenizer
++        if tokenizer_spec is None:
++            tokenizer = None
++        else:
++            tokenizer_ref = RepoRef.from_string(tokenizer_spec)
++            tokenizer = load_tokenizer(tokenizer_ref.model_name_or_path, revision=tokenizer_ref.revision)
++        converter = native_config.hf_export_converter(tokenizer)
++        candidates = discover_checkpoint_candidates(checkpoint_path)
++        candidate = candidates[-1] if candidates else None
++        if candidate is not None:
++            checkpoint_path, metadata = candidate.path, candidate.metadata
++        elif StoragePath(prefix_join(checkpoint_path, "metadata.json")).exists():
++            metadata = _load_metadata(checkpoint_path)
++        else:
++            metadata = {}
++        source_vocab = native_config.checkpoint_vocab_size(metadata)
+     else:
+-        tokenizer_ref = RepoRef.from_string(tokenizer_spec)
+-        tokenizer = load_tokenizer(tokenizer_ref.model_name_or_path, revision=tokenizer_ref.revision)
+-
+-    if tokenizer is None:
++        converter = config.model.hf_checkpoint_converter()
++        tokenizer_spec = config.tokenizer
++        if tokenizer_spec is None:
++            tokenizer = converter.tokenizer
++        else:
++            tokenizer_ref = RepoRef.from_string(tokenizer_spec)
++            tokenizer = load_tokenizer(tokenizer_ref.model_name_or_path, revision=tokenizer_ref.revision)
++
++    if source_vocab is not None:
++        vocab_size = source_vocab
++    elif tokenizer is None:
+         vocab_size = config.override_vocab_size or getattr(config.model, "vocab_size", None)
+         if vocab_size is None:
+             raise ValueError("override_vocab_size is required when exporting without a tokenizer")
+@@ -81,22 +107,39 @@ def main(config: ConvertLmConfig):
+ 
+     key = jax.random.PRNGKey(0)
+ 
+-    exit_stack = ExitStack()
+-    if config.use_cpu:
+-        mesh_axis_type = AxisType.Explicit if config.model.requires_explicit_mesh_axes else AxisType.Auto
+-        exit_stack.enter_context(local_cpu_mesh(mesh_axis_type))
+-    else:
+-        # exit_stack.enter_context(Mesh(jax.local_devices(), "dev"))
+-        exit_stack.enter_context(config.trainer.device_mesh)
+-        exit_stack.enter_context(haliax.axis_mapping(config.trainer.parameter_axis_mapping))
+-
+-    with exit_stack:
+-        model: LmHeadModel = eqx.filter_eval_shape(config.model.build, Vocab, key=key)
++    with ExitStack() as exit_stack:
++        sharding = NativeLlamaSharding()
++        if config.use_cpu:
++            mesh_axis_type = AxisType.Explicit if config.model.requires_explicit_mesh_axes else AxisType.Auto
++            exit_stack.enter_context(local_cpu_mesh(mesh_axis_type))
++        elif native_config is not None:
++            trainer = replace(config.trainer, use_explicit_mesh_axes=True)
++            exit_stack.enter_context(trainer.use_device_mesh())
++            sharding = native_llama_sharding(
++                trainer.parameter_axis_mapping, trainer.compute_axis_mapping, trainer.batch_axis_name
++            )
++        else:
++            exit_stack.enter_context(config.trainer.device_mesh)
++            exit_stack.enter_context(haliax.axis_mapping(config.trainer.parameter_axis_mapping))
++
++        mesh = jax.sharding.get_mesh()
++        model: LmHeadModel
++        if native_config is not None:
++            native_config.validate_sharding(sharding, mesh, Vocab.size)
++            model = eqx.filter_eval_shape(native_config.build, Vocab, key=key, sharding=sharding)
++        else:
++            model = eqx.filter_eval_shape(config.model.build, Vocab, key=key)
+         trainable, non_trainable = eqx.partition(model, is_inexact_arrayish)
+         # TODO: don't load the entire checkpoint into CPU memory when we only need our share of the model
+-        checkpoint_path = latest_checkpoint_path(config.checkpoint_path)
++        if native_config is None:
++            checkpoint_path = latest_checkpoint_path(config.checkpoint_path)
+         logger.info(f"Loading checkpoint from {checkpoint_path}...")
+-        trainable = load_checkpoint(trainable, checkpoint_path, subpath=config.checkpoint_subpath)
++        trainable = load_checkpoint(
++            trainable,
++            checkpoint_path,
++            subpath=config.checkpoint_subpath,
++            mesh=mesh if native_config is not None else None,
++        )
+ 
+         assert trainable is not None
+         model = eqx.combine(trainable, non_trainable)
+diff --git a/lib/levanter/src/levanter/models/llama_native_lm.py b/lib/levanter/src/levanter/models/llama_native_lm.py
+index c787ea1d11..c157bb201f 100644
+--- a/lib/levanter/src/levanter/models/llama_native_lm.py
++++ b/lib/levanter/src/levanter/models/llama_native_lm.py
+@@ -237,7 +237,7 @@ class NativeLlamaLmConfig(LlamaConfig):
+         fields.update(config_overrides or {})
+         return HfLlamaConfig.from_dict(fields)
+ 
+-    def hf_export_converter(self, tokenizer: MarinTokenizer) -> HFCheckpointConverter:
++    def hf_export_converter(self, tokenizer: MarinTokenizer | None) -> HFCheckpointConverter:
+         """Build a local-export converter without resolving reference weights or metadata."""
+         return HFCheckpointConverter(type(self), HfConfigClass=HfLlamaConfig, tokenizer=tokenizer)
+ 
+diff --git a/lib/levanter/tests/test_export_to_hf.py b/lib/levanter/tests/test_export_to_hf.py
+index 2f65da3013..d6f559dcb4 100644
+--- a/lib/levanter/tests/test_export_to_hf.py
++++ b/lib/levanter/tests/test_export_to_hf.py
+@@ -2,15 +2,18 @@
+ # SPDX-License-Identifier: Apache-2.0
+ 
+ import contextlib
++import dataclasses
+ import glob
+ import json
+ import os
+ import tempfile
++from pathlib import Path
+ from types import SimpleNamespace
+ 
+ import equinox as eqx
+ import jax
+ import jax.numpy as jnp
++from jax.experimental.array_serialization import serialization as array_serialization
+ import numpy as np
+ import pytest
+ from jax.sharding import AxisType
+@@ -30,6 +33,17 @@ from levanter.models.snowball import SnowballConfig
+ from levanter.utils.jax_utils import is_inexact_arrayish, local_cpu_mesh
+ from levanter.testing.helpers import has_torch
+ from haliax._src.state_dict import flatten_modules_for_export, to_state_dict
++from haliax.state_dict import to_torch_compatible_state_dict
++from levanter.layers.attention import AttentionMask
++from levanter.layers.rotary import Llama3RotaryEmbeddingsConfig
++from levanter.model_loading import load_hf_checkpoint
++from levanter.models.llama import LlamaConfig, LlamaLMHeadModel
++from levanter.models.llama_native_lm import NativeLlamaLmConfig, NativeLlamaLmHeadModel, native_llama_sharding
++from levanter.tensorstore_serialization import _flatten_serializable_leaves
++from levanter.tokenizers import load_tokenizer
++from levanter.trainer import TrainerConfig
++from levanter.utils.activation import ActivationFunctionEnum
++from levanter.utils.mesh import MeshConfig
+ 
+ 
+ class TokenizerlessGpt2Config(Gpt2Config):
+@@ -230,3 +244,197 @@ def test_export_pinned_tokenizer_revision(tmp_path, monkeypatch):
+     assert restored_tokenizer.get_vocab() == pinned_tokenizer.get_vocab()
+     with open(os.path.join(output_dir, "config.json")) as f:
+         assert json.load(f)["vocab_size"] == len(pinned_tokenizer)
++
++
++@dataclasses.dataclass(frozen=True)
++class NativeExportSource:
++    config: NativeLlamaLmConfig
++    named_policy: LlamaLMHeadModel
++    native_policy: NativeLlamaLmHeadModel
++    checkpoint: Path
++    tokenizer_path: str
++    trainer: TrainerConfig
++
++
++@pytest.fixture
++def native_export_source(tmp_path, tiny_hf_tokenizer_path):
++    named_config = LlamaConfig(
++        hidden_dim=16,
++        intermediate_dim=24,
++        num_layers=1,
++        num_heads=4,
++        num_kv_heads=2,
++        head_dim=8,
++        max_seq_len=16,
++        activation_function=ActivationFunctionEnum.gelu_new,
++        rope=Llama3RotaryEmbeddingsConfig(),
++    )
++    with local_cpu_mesh():
++        named_policy = named_config.build(haliax.Axis("vocab", 32), key=jax.random.PRNGKey(13))
++        named_reference = named_config.build(haliax.Axis("vocab", 32), key=jax.random.PRNGKey(37))
++        policy_weights = {
++            name: np.asarray(value) for name, value in to_torch_compatible_state_dict(named_policy).items()
++        }
++        reference_weights = {
++            name: np.asarray(value) for name, value in to_torch_compatible_state_dict(named_reference).items()
++        }
++    model_config = dataclasses.replace(
++        NativeLlamaLmConfig.from_hf_config(named_config.to_hf_config(32)),
++        head_dim=named_config.head_dim,
++        reference_checkpoint=str(tmp_path / "unavailable-reference"),
++    )
++    model_size = 2 if len(jax.devices()) >= 4 else 1
++    trainer = TrainerConfig(
++        mesh=MeshConfig(
++            axes={"export_data": len(jax.devices()) // model_size, "export_model": model_size},
++            shared_mapping={
++                "mlp": "export_model",
++                "heads": "export_model",
++                "kv_head": "export_model",
++                "vocab": "export_model",
++            },
++            param_mapping={"embed": "export_data"},
++            compute_mapping={"batch": "export_data"},
++        )
++    )
++    with dataclasses.replace(trainer, use_explicit_mesh_axes=True).use_device_mesh():
++        sharding = native_llama_sharding(trainer.parameter_axis_mapping, trainer.compute_axis_mapping)
++        template = model_config.build(haliax.Axis("vocab", 32), key=jax.random.PRNGKey(0), sharding=sharding)
++        policy = template.from_state_dict(policy_weights)
++        reference = template.from_state_dict(reference_weights)
++        checkpoint = tmp_path / "checkpoint"
++        save_checkpoint(
++            {"model": {"policy": policy, "reference": reference}},
++            1,
++            str(checkpoint),
++            metadata=policy.checkpoint_metadata(),
++        )
++    return NativeExportSource(model_config, named_policy, policy, checkpoint, tiny_hf_tokenizer_path, trainer)
++
++
++def _assert_native_export_matches_named(source, output, expected_policy, storage_dtype):
++    tokenizer = load_tokenizer(source.tokenizer_path)
++    with local_cpu_mesh():
++        expected = to_torch_compatible_state_dict(expected_policy)
++        exported = source.config.hf_export_converter(tokenizer).load_state_dict(str(output))
++        assert exported.keys() == expected.keys()
++        for name, value in exported.items():
++            assert value.dtype == storage_dtype
++            np.testing.assert_array_equal(value, np.asarray(expected[name]).astype(storage_dtype))
++        tokens = haliax.named(jnp.asarray([3, 4, expected_policy.Vocab.size - 1, 7], dtype=jnp.int32), "position")
++        expected_logits = np.asarray(
++            eqx.filter_jit(lambda model, ids: model(ids, AttentionMask.causal()).array)(expected_policy, tokens)
++        )
++    trainer = dataclasses.replace(source.trainer, use_explicit_mesh_axes=True)
++    with trainer.use_device_mesh():
++        restored = load_hf_checkpoint(
++            source.config,
++            str(output),
++            tokenizer=tokenizer,
++            compute_dtype=jnp.float32,
++            axis_mapping=trainer.parameter_axis_mapping,
++            compute_axis_mapping=trainer.compute_axis_mapping,
++        )
++        tokens = haliax.named(jnp.asarray([3, 4, expected_policy.Vocab.size - 1, 7], dtype=jnp.int32), "position")
++        logits = eqx.filter_jit(lambda model, ids: model(ids, AttentionMask.causal()).array)(restored, tokens)
++        assert restored.Vocab == expected_policy.Vocab
++        np.testing.assert_allclose(logits, expected_logits, atol=1e-4, rtol=1e-4)
++
++
++@pytest.mark.tpu
++def test_native_cpu_export_policy_preserves_metadata_vocab_semantics_and_dtype(native_export_source, tmp_path):
++    source = native_export_source
++    output = tmp_path / "export"
++    export_lm_to_hf.main(
++        export_lm_to_hf.ConvertLmConfig(
++            trainer=source.trainer,
++            checkpoint_path=str(source.checkpoint),
++            checkpoint_subpath="model/policy",
++            output_dir=str(output),
++            model=source.config,
++            tokenizer=source.tokenizer_path,
++            use_cpu=True,
++            export_dtype="bfloat16",
++            max_shard_size=512,
++            export_host_budget_bytes=1024,
++            max_concurrent_shards=1,
++            config_overrides={"pad_token_id": 0},
++        )
++    )
++    with local_cpu_mesh():
++        expected_policy = jax.tree.map(
++            lambda value: value.astype(jnp.bfloat16).astype(jnp.float32) if eqx.is_inexact_array(value) else value,
++            source.named_policy,
++        )
++    _assert_native_export_matches_named(source, output, expected_policy, jnp.bfloat16)
++    hf_config = json.loads((output / "config.json").read_text())
++    assert hf_config["vocab_size"] == 32
++    assert hf_config["pad_token_id"] == 0
++    assert len(AutoTokenizer.from_pretrained(output)) == 31
++    assert (output / SAFE_TENSORS_INDEX_NAME).exists()
++    assert len(list(output.glob("*.safetensors"))) > 1
++
++
++@pytest.mark.tpu
++def test_native_mesh_export_resizes_after_restore_and_accepts_metadata_free_subtree(native_export_source, tmp_path):
++    source = native_export_source
++    output = tmp_path / "resized-export"
++    config = export_lm_to_hf.ConvertLmConfig(
++        trainer=source.trainer,
++        checkpoint_path=str(source.checkpoint),
++        checkpoint_subpath="model/policy",
++        output_dir=str(output),
++        model=source.config,
++        save_tokenizer=False,
++        override_vocab_size=48,
++        max_shard_size=512,
++        export_host_budget_bytes=1024,
++        max_concurrent_shards=1,
++    )
++    export_lm_to_hf.main(config)
++    with local_cpu_mesh():
++        expected_policy = source.named_policy.resize_vocab(48)
++    _assert_native_export_matches_named(source, output, expected_policy, jnp.float32)
++    assert not (output / "tokenizer.json").exists()
++
++    # Write a genuine legacy TensorStore subtree without a metadata marker.
++    # Its original configuration and complete vocabulary are supplied explicitly.
++    legacy_checkpoint = tmp_path / "metadata-free-checkpoint"
++    paths, arrays = _flatten_serializable_leaves({"model": {"policy": source.native_policy}})
++    manager = array_serialization.GlobalAsyncCheckpointManager()
++    manager.serialize_with_paths(arrays, [str(legacy_checkpoint / path) for path in paths])
++    manager.wait_until_finished()
++    legacy_output = tmp_path / "metadata-free-export"
++    export_lm_to_hf.main(
++        dataclasses.replace(
++            config, checkpoint_path=str(legacy_checkpoint), output_dir=str(legacy_output), override_vocab_size=32
++        )
++    )
++    _assert_native_export_matches_named(source, legacy_output, source.named_policy, jnp.float32)
++    assert not (legacy_output / "tokenizer.json").exists()
++
++
++@pytest.mark.tpu
++def test_native_export_rejects_same_shape_semantic_mismatch_before_writing(native_export_source, tmp_path):
++    source = native_export_source
++    output = tmp_path / "wrong-activation"
++    config = export_lm_to_hf.ConvertLmConfig(
++        trainer=source.trainer,
++        checkpoint_path=str(source.checkpoint),
++        checkpoint_subpath="model/policy",
++        output_dir=str(output),
++        model=dataclasses.replace(source.config, activation_function=ActivationFunctionEnum.silu),
++        tokenizer=source.tokenizer_path,
++        override_vocab_size=32,
++        use_cpu=True,
++    )
++    with pytest.raises(ValueError, match="architecture"):
++        export_lm_to_hf.main(config)
++    assert not output.exists()
++    metadata_path = source.checkpoint / "metadata.json"
++    metadata = json.loads(metadata_path.read_text())
++    metadata["timestamp"] = "unusable"
++    metadata_path.write_text(json.dumps(metadata))
++    with pytest.raises(ValueError, match="architecture"):
++        export_lm_to_hf.main(config)
++    assert not output.exists()

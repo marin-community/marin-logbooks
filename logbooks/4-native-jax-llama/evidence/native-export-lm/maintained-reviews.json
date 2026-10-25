@@ -1,0 +1,542 @@
+{
+  "native-jax-export-lm-maintained-review.json": {
+    "review_type": "fresh_independent_precommit_native_export_maintained_and_correctness_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-export-lm-support",
+    "base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "base_tree": "c0510313087e567287f650d84f4749f39a7f9597",
+    "freeze_path": "evidence/native-export-lm/source-phases.json",
+    "patch": "evidence/native-export-lm/initial-export-source.patch",
+    "patch_sha256": "2abe50abe6bb064fc2af362cbeb45fa68e0a72e2a6097497959dc88dc2feea57",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "3c805c5159789202c390c631beae26ce7542487f012fcef243477b38606739e8",
+        "git_blob": "1bc4bfeb2017fba304506b00e644487582c600c6"
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "sha256": "45508d54209e91ca05b7c8d2fc99ba8c98d2a43d89c7b52e5aab15a6a2ca6bed",
+        "git_blob": "eb215092876017a18905b9c60567023a05d8b042"
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0"
+      },
+      "lib/levanter/tests/test_export_to_hf.py": {
+        "sha256": "389f8ac841a4cb11d2af54e4fba5139d64c8e9f03689ee18552848bed26d615a",
+        "git_blob": "d6f559dcb4d753620ea2893a215f3d25d79e31c3"
+      }
+    },
+    "pins_verified": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "maintained_assessment": {
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": "Reusable native support extends the existing public checkpoint-to-HF caller. It reuses native architecture metadata/placement policies, concrete checkpoint restore, and bounded shared HF writer. No research-only runner, archived trial reproduction, or new framework is promoted.",
+      "lib/levanter/src/levanter/models/llama_native_lm.py": "The sole change admits None in hf_export_converter tokenizer annotation, matching its existing local converter behavior and maintained tokenizer-free export use. No numerical or runtime change.",
+      "lib/levanter/tests/test_export_to_hf.py": "Reusable tests exercise the actual public exporter on real local model and checkpoint artifacts, with independent named source outputs and externally observable HF artifacts. The fixture and small assertion helper support ongoing caller regression coverage.",
+      "lib/levanter/docs/Training-On-Your-Data.md": "Nearest existing post-training export instructions now explain native metadata/vocabulary, CPU/configured mesh, tokenizer independence, full policy subtree support, and metadata-free preconditions. These are maintained user contracts, without research performance or accelerator acceptance claims."
+    },
+    "contract_checks": [
+      {
+        "contract": "Native metadata validation and complete source vocabulary precede output resize",
+        "evidence": [
+          "main/export_lm_to_hf.py:80-99,128-148",
+          "models/llama_native_lm.py:332-369,642-665"
+        ],
+        "assessment": "Existing checkpoint_vocab_size validates architecture identity including non-default activation, head dimension and RoPE fields, then supplies the source vocabulary used to build the restore template. override_vocab_size is applied only to the restored model for metadata-bearing sources."
+      },
+      {
+        "contract": "Metadata-free and invalid discovery-marker behavior",
+        "evidence": [
+          "main/export_lm_to_hf.py:80-88,98-106",
+          "checkpoint.py:1200-1255",
+          "models/llama_native_lm.py:332-339"
+        ],
+        "assessment": "Concrete metadata-free native directories use the original configured architecture and caller-supplied complete vocabulary; semantic identity cannot be established and the docs state this precondition. Present metadata is read and validated even when its timestamp/step is unusable for discovery; unreadable or invalid identity is not silently treated as absent on a concrete checkpoint. Run directories retain existing latest complete-candidate discovery semantics."
+      },
+      {
+        "contract": "Custom full model subtrees and policy/reference selection",
+        "evidence": [
+          "main/export_lm_to_hf.py:137-142",
+          "tests/test_export_to_hf.py:273-311,348-369",
+          "main/train_dpo.py:674-676,759-767"
+        ],
+        "assessment": "Configured checkpoint_subpath is forwarded intact. The fixture writes different policy/reference weights and exports model/policy, with exact weights compared against the named policy, so selection errors fail. Standard DPO policy and reference share the configured architecture; root metadata describes that architecture. Adapter-only reconstruction is explicitly excluded in docs."
+      },
+      {
+        "contract": "Tokenizer resolution and revisions are independent of native reference source",
+        "evidence": [
+          "main/export_lm_to_hf.py:72-79,150-155",
+          "models/llama_native_lm.py:240-242",
+          "compat/hf_checkpoints.py:734-747"
+        ],
+        "assessment": "Native export chooses outer tokenizer or model.tokenizer, parses its RepoRef revision, and constructs the existing local-export converter without a reference checkpoint. None is supported for save_tokenizer=False; save_tokenizer=True still requires a tokenizer. Missing unrelated model reference in the fixture is not accessed."
+      },
+      {
+        "contract": "CPU and configured explicit mesh restoration",
+        "evidence": [
+          "main/export_lm_to_hf.py:110-142",
+          "utils/jax_utils.py:54-75",
+          "models/llama_native.py:40-52",
+          "tensorstore_serialization.py:824-852"
+        ],
+        "assessment": "CPU uses an explicit single-local-CPU mesh and default replicated NativeLlamaSharding, independent of trainer axes. Otherwise a replaced TrainerConfig enables explicit mesh and supplies configured parameter/compute/batch roles. The existing checkpoint restore concretizes template shardings against the selected mesh."
+      },
+      {
+        "contract": "Named path and existing writer knobs remain intact",
+        "evidence": [
+          "main/export_lm_to_hf.py:89-106,121-123,130-168"
+        ],
+        "assessment": "Named converter/tokenizer selection, Vocab construction, checkpoint discovery, selected subtree, resize, config overrides, upload target, save_tokenizer flag, shard size, host budget, concurrency and output dtype remain equivalent to the original named path. ExitStack now enters contexts inside its with scope. All export paths still use the existing bounded HF writer; no second export framework is introduced."
+      },
+      {
+        "contract": "Behavior-focused independent tests",
+        "evidence": [
+          "tests/test_export_to_hf.py:249-440"
+        ],
+        "assessment": "Three real native cases cover CPU BF16 bounded/sharded policy export with full source rows, configured mesh resize and genuine legacy metadata-free TensorStore restore, and same-shaped activation mismatch before output including unusable timestamp metadata. Tests assert exact source weights, storage dtype, reload vocabulary, named-model logits parity, config override, tokenizer output and policy selection. No internal mocks, guard-only checks, torch-only native oracle or weakened numerical tolerance is added. Existing named roundtrips/revision tests remain unchanged."
+      }
+    ],
+    "baseline_evidence": {
+      "path": "results.json",
+      "scope": "Read the supplied historical control record: earlier exporter reports HF config vocab31 for stored32/tokenizer31, exports configured silu against gelu_new source, and rejects outer-tokenizer-only with missing model reference. This motivates real regression tests but is not final-branch execution evidence, and those executions were not independently rerun."
+    },
+    "instructions_read": [
+      "root AGENTS.md",
+      "root TESTING.md",
+      "lib/levanter/AGENTS.md",
+      "lib/levanter/docs/design/jit-safety.md",
+      "research-engineering.md"
+    ],
+    "actions_performed": [
+      "read-only source/diff/helper/instruction inspection",
+      "all four SHA256/git blob, base/tree, patch and file allowlist verification",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network access",
+      "PR/CI/job/automation actions",
+      "active author-output polling"
+    ],
+    "validation_boundary": "Static independent review only. Final CPU1/CPU4, parent root CPU8, affected/catalog and public caller control qualification remain separate and are not claimed verified here. Historical controls and fixture-development failures are not production/runtime or final-source acceptance evidence. No accelerator-kernel correctness, performance or larger-model training acceptance is established.",
+    "next_gate": "No review finding remains for this exact four-file frozen export patch. Parent owns final qualification and publication. Any subsequent source fix requires fresh targeted review before commit."
+  },
+  "native-jax-export-lm-batch-maintained-review.json": {
+    "review_type": "fresh_targeted_precommit_export_batch_response_and_five_piece_maintained_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-export-lm-support",
+    "base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "base_tree": "c0510313087e567287f650d84f4749f39a7f9597",
+    "freeze_path": "evidence/native-export-lm/source-phases.json",
+    "response_patch": "evidence/native-export-lm/first-batch-response.patch",
+    "response_patch_sha256": "345f323c32c3b6f37f29c70c191095a987ab81dcb9f3ae65a27125effbd24027",
+    "full_contribution_patch": "native-jax-export-lm-batch-full-contribution.patch",
+    "full_contribution_patch_sha256": "1e65e3c338bf5155993717d8d030040d4a3d942eb4d174f1617751ae8e39540c",
+    "prior_four_file_patch_sha256": "2abe50abe6bb064fc2af362cbeb45fa68e0a72e2a6097497959dc88dc2feea57",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "3c805c5159789202c390c631beae26ce7542487f012fcef243477b38606739e8",
+        "git_blob": "1bc4bfeb2017fba304506b00e644487582c600c6"
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "sha256": "45508d54209e91ca05b7c8d2fc99ba8c98d2a43d89c7b52e5aab15a6a2ca6bed",
+        "git_blob": "eb215092876017a18905b9c60567023a05d8b042"
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0"
+      },
+      "lib/levanter/tests/test_export_to_hf.py": {
+        "sha256": "389f8ac841a4cb11d2af54e4fba5139d64c8e9f03689ee18552848bed26d615a",
+        "git_blob": "d6f559dcb4d753620ea2893a215f3d25d79e31c3"
+      },
+      "lib/levanter/tests/test_llama_native.py": {
+        "sha256": "e0fb8da79eecc75f9dacc9f8a88de6f5c9807707e552f9e86bdb4eb5aedaff2b",
+        "git_blob": "7d0f33935e83fc9f6615b5c20923ccc7adf44b99"
+      }
+    },
+    "pins_verified": true,
+    "prior_four_files_byte_identical": true,
+    "verdict": "changes_requested",
+    "findings": [
+      {
+        "id": "B1",
+        "priority": 2,
+        "title": "Keep mesh-scaled roundtrip token IDs inside the vocabulary",
+        "path": "lib/levanter/tests/test_llama_native.py",
+        "start_line": 90,
+        "end_line": 90,
+        "description": "The mesh-scaled batch makes the fixture legal for CPU8, but scaling arange also scales the token values without bounding them by the fixed 32-row vocabulary. On a legal 32-device mesh the test chooses data=16/model=2 and creates IDs 0..63. The model dimensions remain divisible by this placement (hidden_dim16 over data16, KV heads2 and intermediate_dim24 over model2), so this is not an unsupported configuration. Half the examples then exercise out-of-range embedding indices rather than valid-model roundtrip behavior. Keep batch_size=max(2, data_size), but wrap the generated IDs by model.Vocab.size or tile a valid short token sequence.",
+        "evidence": [
+          "test_llama_native.py:50-71,88-99",
+          "models/llama_native_lm.py:314-330",
+          "models/llama_native.py:523-526"
+        ],
+        "scope": "Fixture-only correction; no runtime or tolerance change requested."
+      }
+    ],
+    "maintained_assessment": {
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": "Reusable native support extends the existing public checkpoint-to-HF caller. It reuses native architecture metadata/placement policies, concrete checkpoint restore, and bounded shared HF writer. No research-only runner, archived trial reproduction, or new framework is promoted.",
+      "lib/levanter/src/levanter/models/llama_native_lm.py": "The sole change admits None in hf_export_converter tokenizer annotation, matching its existing local converter behavior and maintained tokenizer-free export use. No numerical or runtime change.",
+      "lib/levanter/tests/test_export_to_hf.py": "Reusable tests exercise the actual public exporter on real local model and checkpoint artifacts, with independent named source outputs and externally observable HF artifacts. The fixture and small assertion helper support ongoing caller regression coverage.",
+      "lib/levanter/docs/Training-On-Your-Data.md": "Nearest existing post-training export instructions now explain native metadata/vocabulary, CPU/configured mesh, tokenizer independence, full policy subtree support, and metadata-free preconditions. These are maintained user contracts, without research performance or accelerator acceptance claims.",
+      "lib/levanter/tests/test_llama_native.py": "The existing export roundtrip requires a legal batch for its explicit data placement. Replacing the fixed two-example batch with a mesh-aware size is an appropriate maintained correction and preserves all exact weight, logits, vocabulary, head-dimension and sharding assertions plus 1e-5 tolerances. B1 must bound the generated token values on larger legal meshes."
+    },
+    "preserved_assertions": "Exact restored state weights, model output parity with expected dtype conversion, 1e-5 atol/rtol, vocabulary size, head dimension and parameter shardings are all unchanged. No production runtime, exporter, converter, or documentation changes occur in this response.",
+    "baseline_evidence": {
+      "path": "evidence/native-export-lm/cpu8-unchanged-base-comparison.json",
+      "scope": "Read supplied proof reporting identical eight CPU8 baseline/candidate failures and fixed batch2 versus data4 incompatibility. This is provenance for the fixture response, not independently rerun execution evidence."
+    },
+    "actions_performed": [
+      "read-only targeted source/diff/placement inspection",
+      "verify five hashes/blobs, prior four byte identity, response and full contribution patch hashes, base/tree and file allowlist",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network actions",
+      "PR/CI/job/automation actions"
+    ],
+    "validation_boundary": "Static review only. Author CPU1/CPU4 and parent root CPU8 rerun qualification remain separate and are not claimed verified. The prior four-file maintained/correctness assessment remains applicable because those files are byte-identical.",
+    "next_gate": "Address B1 and obtain fresh targeted review of the response before commit. Parent owns final qualification and publication."
+  },
+  "native-jax-export-lm-batch-r1-maintained-review.json": {
+    "review_type": "fresh_targeted_precommit_export_batch_B1_response_and_five_piece_maintained_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-export-lm-support",
+    "base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "base_tree": "c0510313087e567287f650d84f4749f39a7f9597",
+    "freeze_path": "evidence/native-export-lm/source-phases.json",
+    "response_patch": "evidence/native-export-lm/bounded-r1-response.patch",
+    "response_patch_sha256": "30b1b1f477b5e78ae442db498107f5cb9daba7a196ca4267686aa2f1a962257e",
+    "full_contribution_patch": "native-jax-export-lm-batch-r1-full-contribution.patch",
+    "full_contribution_patch_sha256": "3d0e95067963a81eb7d4ad0fa233fc2bed45b1981b54d0d0f2a06b7207e93cb9",
+    "prior_four_file_patch_sha256": "2abe50abe6bb064fc2af362cbeb45fa68e0a72e2a6097497959dc88dc2feea57",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "3c805c5159789202c390c631beae26ce7542487f012fcef243477b38606739e8",
+        "git_blob": "1bc4bfeb2017fba304506b00e644487582c600c6"
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "sha256": "45508d54209e91ca05b7c8d2fc99ba8c98d2a43d89c7b52e5aab15a6a2ca6bed",
+        "git_blob": "eb215092876017a18905b9c60567023a05d8b042"
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0"
+      },
+      "lib/levanter/tests/test_export_to_hf.py": {
+        "sha256": "389f8ac841a4cb11d2af54e4fba5139d64c8e9f03689ee18552848bed26d615a",
+        "git_blob": "d6f559dcb4d753620ea2893a215f3d25d79e31c3"
+      },
+      "lib/levanter/tests/test_llama_native.py": {
+        "sha256": "6dc90015266a4ff804c25cc0f48f4b68b9eb08df04211c924eb60656cb96c57a",
+        "git_blob": "c4c1452f9e74cdcc90a0e27377ef254845bfcd62"
+      }
+    },
+    "pins_verified": true,
+    "prior_four_files_byte_identical": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "resolved_findings": [
+      {
+        "id": "B1",
+        "status": "fixed",
+        "path": "lib/levanter/tests/test_llama_native.py",
+        "start_line": 90,
+        "end_line": 90,
+        "assessment": "Modulo model.Vocab.size bounds every generated token to [0,31]. For the identified legal data16/model2 mesh (32 devices), batch_size16 and sequence length4 now produce two passes over IDs0..31 rather than out-of-range IDs32..63. The mesh-aware batch remains divisible by the data placement. CPU1/CPU4 batches2 retain exact IDs0..7; CPU8 batch4 retains exact IDs0..15. Sequence length4 and all weight, forward, vocabulary, head-size and sharding assertions are unchanged, as are atol=rtol=1e-5.",
+        "delta_proof": "Removing only the modulo and restoring the prior line wrapping reconstructs the first batch response test file SHA256 exactly. The four previously reviewed export files remain byte-identical to the original 2abe50 patch."
+      }
+    ],
+    "maintained_assessment": {
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": "Reusable native support extends the existing public checkpoint-to-HF caller. It reuses native architecture metadata/placement policies, concrete checkpoint restore, and bounded shared HF writer. No research-only runner, archived trial reproduction, or new framework is promoted.",
+      "lib/levanter/src/levanter/models/llama_native_lm.py": "The sole change admits None in hf_export_converter tokenizer annotation, matching its existing local converter behavior and maintained tokenizer-free export use. No numerical or runtime change.",
+      "lib/levanter/tests/test_export_to_hf.py": "Reusable tests exercise the actual public exporter on real local model and checkpoint artifacts, with independent named source outputs and externally observable HF artifacts. The fixture and small assertion helper support ongoing caller regression coverage.",
+      "lib/levanter/docs/Training-On-Your-Data.md": "Nearest existing post-training export instructions now explain native metadata/vocabulary, CPU/configured mesh, tokenizer independence, full policy subtree support, and metadata-free preconditions. These are maintained user contracts, without research performance or accelerator acceptance claims.",
+      "lib/levanter/tests/test_llama_native.py": "The existing roundtrip fixture now uses a data-mesh-divisible batch with valid vocabulary-bounded inputs, preserving exact lower-device inputs and all behavioral assertions/tolerances. This is a maintained correction to legal multi-device regression coverage, with no runtime changes, guard test or new helper/framework."
+    },
+    "historical_review": {
+      "path": "evidence/native-export-lm/maintained-reviews.json",
+      "verdict": "changes_requested",
+      "finding": "P2 B1",
+      "response_sha256": "345f323c32c3b6f37f29c70c191095a987ab81dcb9f3ae65a27125effbd24027",
+      "full_contribution_sha256": "1e65e3c338bf5155993717d8d030040d4a3d942eb4d174f1617751ae8e39540c",
+      "qualification": "Preserved historical review with its finding; it does not qualify this corrected final source."
+    },
+    "actions_performed": [
+      "read-only targeted fixture and placement inspection",
+      "verify five hashes/blobs, prior four byte identity, exact prior-response reconstruction, response/full patch hashes, base/tree and file allowlist",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network actions",
+      "PR/CI/job/automation actions"
+    ],
+    "validation_boundary": "Static independent review only. First-response CPU8 history is not corrected-source execution evidence. Author CPU1/CPU4, parent corrected CPU8 and one CPU32 roundtrip qualification remain separate and are not claimed verified here. Prior four-file maintained/correctness review remains applicable by exact byte identity.",
+    "next_gate": "No review finding remains for the exact corrected frozen patches. Parent owns final qualification and publication. Any subsequent source fix requires fresh targeted review before commit."
+  },
+  "native-jax-export-lm-docs-r1-maintained-review.json": {
+    "review_type": "fresh_targeted_precommit_export_docs_factual_maintained_response",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-export-lm-support",
+    "base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "base_tree": "c0510313087e567287f650d84f4749f39a7f9597",
+    "resulting_tree": "4171cf857ddc57d0c3cd2231e3f70ed176226c5d",
+    "freeze_path": "evidence/native-export-lm/source-phases.json",
+    "response_patch": "evidence/native-export-lm/source-phases.json",
+    "response_patch_sha256": "1d85dad9de49eeb097b73aa3fb7d3c923d836a9b1a7f19099b5cdcb8c0825952",
+    "full_contribution_patch": "native-jax-export-lm-docs-r1-full-contribution.patch",
+    "full_contribution_patch_sha256": "c416ec12d260d650d6d16e4a5dc8d2647cad8e55c406869c017b730a26e71c9b",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "64336e5e6edc6f863bdb8e9aedef57987f67947c0fa38e567f263a735c5a6596",
+        "git_blob": "27dbbce51b0861ca5949f1a8b71923bb3a5d8e7d"
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "sha256": "45508d54209e91ca05b7c8d2fc99ba8c98d2a43d89c7b52e5aab15a6a2ca6bed",
+        "git_blob": "eb215092876017a18905b9c60567023a05d8b042"
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0"
+      },
+      "lib/levanter/tests/test_export_to_hf.py": {
+        "sha256": "389f8ac841a4cb11d2af54e4fba5139d64c8e9f03689ee18552848bed26d615a",
+        "git_blob": "d6f559dcb4d753620ea2893a215f3d25d79e31c3"
+      },
+      "lib/levanter/tests/test_llama_native.py": {
+        "sha256": "6dc90015266a4ff804c25cc0f48f4b68b9eb08df04211c924eb60656cb96c57a",
+        "git_blob": "c4c1452f9e74cdcc90a0e27377ef254845bfcd62"
+      }
+    },
+    "pins_verified": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "contract_checks": [
+      {
+        "claim": "Metadata-free native export requires the original configuration and stored vocabulary size.",
+        "result": "Accurate. checkpoint_vocab_size returns None without levanter_model metadata; the caller constructs the native template from config.model and override_vocab_size or len(tokenizer). No stored activation/RoPE identity is recovered.",
+        "evidence": [
+          "main/export_lm_to_hf.py:80-106,127-145",
+          "models/llama_native_lm.py:332-339"
+        ]
+      },
+      {
+        "claim": "Without native metadata, override_vocab_size must equal the stored vocabulary size; output resizing requires metadata.",
+        "result": "Accurate as a correct-use precondition for this public caller. The same override chooses the metadata-free restore-template vocabulary and is later passed to resize_vocab. It is not an independent destination-size knob in that case. Metadata supplies the independent source size needed to restore the complete model before output resizing. The prose describes the requirement and does not claim that a new guard enforces it.",
+        "evidence": [
+          "main/export_lm_to_hf.py:98-106,127-148",
+          "models/llama_native_lm.py:642-645"
+        ]
+      },
+      {
+        "claim": "Stored semantic identity cannot be verified when metadata is absent.",
+        "result": "Accurate. The wording expressly retains this evidence boundary and does not imply identity recovery from same-shaped parameters.",
+        "evidence": [
+          "models/llama_native_lm.py:332-369",
+          "docs/Training-On-Your-Data.md:581-583"
+        ]
+      }
+    ],
+    "maintained_assessment": {
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": "Reusable native support extends the existing public checkpoint-to-HF caller. It reuses native architecture metadata/placement policies, concrete checkpoint restore, and bounded shared HF writer. No research-only runner, archived trial reproduction, or new framework is promoted.",
+      "lib/levanter/src/levanter/models/llama_native_lm.py": "The sole change admits None in hf_export_converter tokenizer annotation, matching its existing local converter behavior and maintained tokenizer-free export use. No numerical or runtime change.",
+      "lib/levanter/tests/test_export_to_hf.py": "Reusable tests exercise the actual public exporter on real local model and checkpoint artifacts, with independent named source outputs and externally observable HF artifacts. The fixture and small assertion helper support ongoing caller regression coverage.",
+      "lib/levanter/docs/Training-On-Your-Data.md": "The final paragraph removes source-versus-output vocabulary ambiguity for metadata-free native checkpoints. It gives the original configuration/source-size precondition, limits resizing to the metadata-backed path, and retains the unverified-identity boundary. This is maintained operational guidance in the existing export section. All runtime and test pieces remain byte-identical to the reviewed B1-corrected source.",
+      "lib/levanter/tests/test_llama_native.py": "The existing roundtrip fixture now uses a data-mesh-divisible batch with valid vocabulary-bounded inputs, preserving exact lower-device inputs and all behavioral assertions/tolerances. This is a maintained correction to legal multi-device regression coverage, with no runtime changes, guard test or new helper/framework."
+    },
+    "runtime_test_files_byte_identical_to_reviewed_r1": true,
+    "incremental_scope_verified": "Replacing only the revised final paragraph with the prior text reconstructs the prior document SHA256 exactly. Other four source/test files match the prior R1 freeze hashes/blobs.",
+    "historical_review": {
+      "initial_batch_review": "evidence/native-export-lm/maintained-reviews.json",
+      "verdict": "changes_requested",
+      "finding": "P2 B1 retained as nonzero history",
+      "resolved_review": "evidence/native-export-lm/maintained-reviews.json",
+      "resolved_status": "no_findings with B1 fixed",
+      "prior_full_patch_sha256": "3d0e95067963a81eb7d4ad0fa233fc2bed45b1981b54d0d0f2a06b7207e93cb9",
+      "qualification": "Earlier review artifacts and patch identities remain historical; final prose-qualified source is the c416ec full patch."
+    },
+    "cold_read_evidence": {
+      "historical": "evidence/native-export-lm/maintained-reviews.json",
+      "response": "evidence/native-export-lm/maintained-reviews.json",
+      "scope": "Read the supplied cold-reader ambiguity and zero-issue response. Independent factual source assessment is recorded above. Commit message content was not re-reviewed; its frozen SHA256 was verified.",
+      "commit_message_sha256_verified": "b73b9565aa6e18b2b391183fb4d68e8c5f785b7cb9a8f62ecc2baa0dab6b8dfe"
+    },
+    "actions_performed": [
+      "read-only factual paragraph/caller/helper/cold-read inspection",
+      "verify five file hashes/blobs, runtime/test byte identity, prior paragraph reconstruction, incremental and full patch hashes, base/tree and resulting tree",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network actions",
+      "PR/CI/job/automation actions",
+      "full catalog rerun"
+    ],
+    "validation_boundary": "Static targeted documentation review only. Parent-reported corrected CPU1/CPU4/CPU8 plus CPU32 case and running broader suite are separate execution evidence, not independently verified here. No runtime/test change invalidates the identity of earlier R1 qualification. Parent owns terminal suite evidence, catalog, payload and publication gates.",
+    "next_gate": "No review finding remains for the exact final prose-qualified five-file source. Any subsequent source fix requires fresh targeted review before commit."
+  },
+  "native-jax-export-lm-docs-r1-prose-proof.json": {
+    "source_freeze": "evidence/native-export-lm/source-phases.json",
+    "private_only": true,
+    "files": {
+      "native-jax-export-lm-root-commit-message.txt": "b73b9565aa6e18b2b391183fb4d68e8c5f785b7cb9a8f62ecc2baa0dab6b8dfe",
+      "native-jax-export-lm-training-guide-excerpt.md": "0b501ac175ddd919858ebbc25c1d22c9482241e06a2d063330649d61838a151d",
+      "evidence/native-export-lm/maintained-reviews.json": "40d4449d3abb86b128b3c5ff17925a18214572e07568e1a5205b21bfff119e1f"
+    },
+    "commit": "Exact previously cold-read commit bytes retained; no unfinished validation claims.",
+    "guide": "Exact revised source excerpt; original-size/resize ambiguity resolved with zero further cold-read issues.",
+    "historical_proof": "native-jax-export-lm-root-prose-proof.json",
+    "historical_proof_boundary": "Prior3d0 guide excerpt SHA belongs to preclarification stage; superseded for current excerpt only.",
+    "pr_body": "Still a private draft at native-jax-export-lm-root-pr-body.md. Parent will update final execution facts and cold-read publication payload after remaining gates complete.",
+    "publication_actions": "none"
+  },
+  "native-jax-export-lm-commit-guide-cold-read.md": {
+    "report_text": "# Cold-read result\n\nCommit message: no concrete clarity issues found.\n\nFrozen training-guide excerpt: one ambiguity in the final sentence. It says metadata-less checkpoints require the complete vocabulary from the tokenizer or `override_vocab_size`, while the opening says `override_vocab_size` is applied after restoring the complete checkpoint vocabulary. A first-time reader cannot tell whether, without metadata, that setting must equal the original checkpoint vocabulary size or can still request an export resize. Also, a numeric size supplies a vocabulary size, not the vocabulary itself. Clarify the original-size requirement and whether resizing remains supported in this case.\n\nNo source files edited. Review covered only the two requested private payloads.\n"
+  },
+  "native-jax-export-lm-docs-r1-guide-cold-read.md": {
+    "report_text": "# Revised guide cold-read\n\nThe vocabulary-size ambiguity is resolved. The excerpt now explicitly requires `override_vocab_size` to equal the stored vocabulary size when native model metadata is absent, states that resizing requires metadata, and preserves the limitation that stored semantic identity cannot be verified.\n\nNo further concrete clarity issues found in this excerpt. No source edits; the historical finding file was left untouched. The commit message was not revisited.\n"
+  },
+  "native-jax-export-lm-catalog-maintained-review.json": {
+    "review_type": "fresh_independent_precommit_targeted_export_catalog_maintained_and_correctness_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-export-lm-catalog-response",
+    "base": "169c22725be2cf520b8e3dce5646c20dd3153a2c",
+    "base_tree": "4171cf857ddc57d0c3cd2231e3f70ed176226c5d",
+    "campaign_base": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "resulting_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "freeze_path": "evidence/native-export-lm/source-phases.json",
+    "response_patch": "evidence/native-export-lm/source-phases.json",
+    "response_patch_sha256": "e37cbdbcc2af0dfccfaeff40a9c2acce83b99dba986e254a1070a31e6f7a6e05",
+    "full_contribution_patch": "evidence/native-export-lm/final-public-source.patch",
+    "full_contribution_patch_sha256": "58d437364e4e6733b3c3ec753b00ed9b1c3eb7581fe3aa296db3ef85d5d89eeb",
+    "files": {
+      "lib/levanter/src/levanter/checkpoint.py": {
+        "sha256": "eb285e1fde895f1f0ce311ab2c745adf6c6399036ee3894dac3eb53aa84008cb",
+        "git_blob": "914418e5262708a9f29f2fa7b9123b47101ce0b4"
+      },
+      "lib/levanter/src/levanter/layers/scan_checkpoint.py": {
+        "sha256": "a9f270e6c61f56bd69d8b4fb10a4e6637266597524140cec1c8df21f1e2058dd",
+        "git_blob": "14c4e22124f04be669aac1d392a0401bd58e6b39"
+      },
+      "lib/levanter/src/levanter/layers/stacked.py": {
+        "sha256": "f6493229b00b1c596fc366591819e986ad195dad356d9bf4ff773cd900aeb7fe",
+        "git_blob": "9cbc0cda60f7d70511c59d660bb6152fcbd3a8b7"
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "sha256": "1dc978997dad6a0803113586d8fb03aa224c7987e9194ea4e38fa6b6332f7aa1",
+        "git_blob": "ec5f757afa527e1f833142809af1c1ac5c34c245"
+      },
+      "lib/levanter/src/levanter/model_loading.py": {
+        "sha256": "85924eeec299699e2a49cf2381af67aec85e4e9347ac6b36bb0aad4e66416180",
+        "git_blob": "bcec8b7ce3c9cc0fda1f6ea5a7833edec1177297"
+      }
+    },
+    "pins_verified": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "piece_dispositions": {
+      "lib/levanter/src/levanter/checkpoint.py": {
+        "disposition": "keep",
+        "assessment": "ResolvedCheckpoint and resolve_checkpoint live in the existing checkpoint ownership layer and have two actual maintained callers. The small frozen record expresses path plus optional stored metadata without fabricated discovery bookkeeping. The helper removes identical resolution logic and preserves failure semantics."
+      },
+      "lib/levanter/src/levanter/layers/scan_checkpoint.py": {
+        "disposition": "keep",
+        "assessment": "The descriptive from_spec name improves the maintained native scan policy API while preserving its full implementation and supported shorthand semantics. This is not a research artifact or an adapter layer."
+      },
+      "lib/levanter/src/levanter/layers/stacked.py": {
+        "disposition": "keep",
+        "assessment": "Updates the real native policy caller consistently with the rename, preserving array stacking, rematerialization, forward and gradient behavior."
+      },
+      "lib/levanter/src/levanter/main/export_lm_to_hf.py": {
+        "disposition": "keep",
+        "assessment": "The existing public native exporter now consumes the shared resolved path/metadata pair and retains source semantic validation, full vocabulary, custom subtree and bounded writer policies. No independent export framework is added."
+      },
+      "lib/levanter/src/levanter/model_loading.py": {
+        "disposition": "keep",
+        "assessment": "The shared native model loader uses the same resolver while retaining native-only semantic/placement checks and the named loader branch. This is ongoing loader reuse rather than a one-off historical helper."
+      }
+    },
+    "contract_checks": [
+      {
+        "contract": "Checkpoint discovery/direct metadata equivalence",
+        "evidence": [
+          "checkpoint.py:1156-1169",
+          "checkpoint.py:1123-1153,1227-1276"
+        ],
+        "assessment": "The extracted resolver preserves the two prior algorithms: use the last numerically sorted complete candidate; otherwise read present direct metadata; otherwise retain the original concrete path with empty metadata. Invalid direct timestamp/step does not erase model metadata. Malformed JSON or unreadable direct metadata reaches uncaught _load_metadata after candidate discovery and propagates. Existing candidate ordering and run-directory skip behavior remain unchanged."
+      },
+      {
+        "contract": "Native semantic validation, full vocabulary and placement",
+        "evidence": [
+          "model_loading.py:93-105",
+          "main/export_lm_to_hf.py:71-81,91-99,120-141"
+        ],
+        "assessment": "Both callers feed resolved.metadata to the existing checkpoint_vocab_size validator. The loader retains tokenizer upper-bound checks, recovered source vocabulary and explicit placement validation. The exporter still restores complete metadata vocabulary before resizing. Resolved path selection is the only extracted policy; no source semantics are moved into checkpoint.py."
+      },
+      {
+        "contract": "Custom subtree and named paths",
+        "evidence": [
+          "model_loading.py:105-111",
+          "main/export_lm_to_hf.py:130-161"
+        ],
+        "assessment": "Native load_model retains its model subtree and exporter retains config.checkpoint_subpath. Named loader and exporter discovery, tokenizer, mesh, writer and dtype paths are untouched. No new subpath API or compatibility shim is introduced."
+      },
+      {
+        "contract": "Native checkpoint-policy rename",
+        "evidence": [
+          "layers/scan_checkpoint.py:57-62",
+          "layers/stacked.py:93",
+          "models/olmo3.py:23,306",
+          "lib/haliax/src/haliax/nn/scan.py:187,483"
+        ],
+        "assessment": "from_spec has exactly the prior _mk implementation. Repository search finds the native ArrayStacked caller updated; no native _mk caller remains. OLMo3 imports the distinct Haliax policy, whose established _mk and Haliax callers correctly remain unchanged. There is no numerical, rematerialization, configuration-wire or JIT behavior change."
+      },
+      {
+        "contract": "Tests and maintenance scope",
+        "evidence": [
+          "tests/test_array_stacked.py:228-267",
+          "tests/test_export_to_hf.py:344-440",
+          "tests/test_checkpoint.py:343-410"
+        ],
+        "assessment": "Tests/docs are unchanged in this response. Existing real export/model-load semantic and metadata-free cases and ArrayStacked unrolled value/gradient oracles remain applicable. No guard-only test, internal mock, tolerance weakening or new framework is added. The two-field result record avoids inventing candidate step/timestamp for direct metadata-free restores."
+      }
+    ],
+    "rules_read": [
+      "infra/lint/rules/prose/ml-abbreviated-name.yaml",
+      "infra/lint/rules/meta/ml-echo-across-files.yaml",
+      "infra/lint/rules/cruft/ml-duplicate-logic-block.yaml"
+    ],
+    "instructions_read": [
+      "current root TESTING.md",
+      "current lib/levanter/AGENTS.md",
+      "current lib/levanter/docs/design/jit-safety.md",
+      "root AGENTS.md and research durability promotion policy from preceding review context"
+    ],
+    "scope": "Fresh targeted response review of all five changed source pieces. Full nine-file campaign diff identity is pinned for provenance; this is not a full catalog rerun.",
+    "actions_performed": [
+      "read-only diff/source/helper/caller/rule/test inspection",
+      "verify five SHA256/git blobs, response/full patch SHA256, response file allowlist, base/tree and resulting tree",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "commit",
+      "push",
+      "network",
+      "PR/CI/job/automation actions",
+      "full catalog rerun",
+      "active author output polling"
+    ],
+    "validation_boundary": "Static independent review only. Author running CPU1/CPU4 tests, prior 169 broad-suite/baseline comparisons and ordinary checks are not independently verified here and do not qualify the new helper by themselves. Parent owns final execution, catalog completion, payload and publication gates. Prior B1 changes_requested history and its resolved response remain separate preserved artifacts.",
+    "next_gate": "No review finding remains for this exact frozen five-file response. Any further source fix requires fresh targeted review before commit."
+  },
+  "_archive_note": "Original chronological statuses and source pins retained; later public release does not rewrite historical unpublished/pending fields. Manifest records original/output hashes/bytes and explicit transforms. CPU/static evidence only."
+}

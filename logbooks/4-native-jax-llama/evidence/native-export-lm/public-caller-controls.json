@@ -1,0 +1,159 @@
+{
+  "actual_caller_controls": {
+    "base_head": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "base_main_sha256": "78afd1b45307395960569f852395c5c4fc038ebb1679630c483943fa85ed53ed",
+    "baseline": {
+      "source": "lib/levanter/src/levanter/main/export_lm_to_hf.py",
+      "source_architecture": "gelu_new",
+      "stored_vocab_size": 32,
+      "tokenizer_vocab_size": 31,
+      "devices": [
+        "cpu:0"
+      ],
+      "records": [
+        {
+          "case": "full-vocabulary",
+          "status": "exported",
+          "vocab_size": 31,
+          "hidden_act": "gelu_new",
+          "weight_shards": 12
+        },
+        {
+          "case": "wrong-activation",
+          "status": "exported",
+          "vocab_size": 32,
+          "hidden_act": "silu",
+          "weight_shards": 12
+        },
+        {
+          "case": "outer-tokenizer-only",
+          "status": "rejected",
+          "error_type": "OSError",
+          "error": "Repo id must be in the form 'repo_name' or 'namespace/repo_name': 'unavailable-reference'. Use `repo_type` argument if needed.",
+          "output_exists": false
+        }
+      ]
+    },
+    "baseline_results": "results.json",
+    "baseline_payload": "evidence/native-export-lm/public-caller-controls.json",
+    "final": {
+      "source": "lib/levanter/src/levanter/main/export_lm_to_hf.py",
+      "source_sha256": "45508d54209e91ca05b7c8d2fc99ba8c98d2a43d89c7b52e5aab15a6a2ca6bed",
+      "source_architecture": "gelu_new",
+      "stored_vocab_size": 32,
+      "tokenizer_vocab_size": 31,
+      "devices": [
+        "cpu:0"
+      ],
+      "records": [
+        {
+          "case": "full-vocabulary",
+          "status": "exported",
+          "vocab_size": 32,
+          "hidden_act": "gelu_new",
+          "weight_shards": 12
+        },
+        {
+          "case": "wrong-activation",
+          "status": "rejected",
+          "error_type": "ValueError",
+          "error": "Native checkpoint architecture does not match the configured model semantics",
+          "output_exists": false
+        },
+        {
+          "case": "outer-tokenizer-only",
+          "status": "exported",
+          "vocab_size": 32,
+          "hidden_act": "gelu_new",
+          "weight_shards": 12
+        }
+      ]
+    },
+    "final_results": "results.json",
+    "final_payload": "evidence/native-export-lm/public-caller-controls.json",
+    "baseline_probe": "native-jax-export-lm-caller-probe.py",
+    "final_probe": "native-jax-export-lm-final-caller-probe.py"
+  },
+  "baseline_payload_projection": {
+    "full-vocabulary": {
+      "public_architecture_scalars": {
+        "vocab_size": 31,
+        "hidden_act": "gelu_new",
+        "hidden_size": 16,
+        "intermediate_size": 24,
+        "num_hidden_layers": 1,
+        "num_attention_heads": 4,
+        "num_key_value_heads": 2,
+        "head_dim": 4,
+        "max_position_embeddings": 16,
+        "rope_theta": 500000
+      },
+      "tensor_shapes_only": {
+        "lm_head.weight": [
+          32,
+          16
+        ],
+        "model.embed_tokens.weight": [
+          32,
+          16
+        ]
+      }
+    },
+    "wrong-activation": {
+      "public_architecture_scalars": {
+        "vocab_size": 32,
+        "hidden_act": "silu",
+        "hidden_size": 16,
+        "intermediate_size": 24,
+        "num_hidden_layers": 1,
+        "num_attention_heads": 4,
+        "num_key_value_heads": 2,
+        "head_dim": 4,
+        "max_position_embeddings": 16,
+        "rope_theta": 500000
+      },
+      "tensor_shapes_only": {
+        "lm_head.weight": [
+          32,
+          16
+        ],
+        "model.embed_tokens.weight": [
+          32,
+          16
+        ]
+      }
+    }
+  },
+  "candidate_payload_projection": {
+    "full-vocabulary": {
+      "vocab_size": 32,
+      "hidden_act": "gelu_new",
+      "tensor_shapes": {
+        "lm_head.weight": [
+          32,
+          16
+        ],
+        "model.embed_tokens.weight": [
+          32,
+          16
+        ]
+      }
+    },
+    "outer-tokenizer-only": {
+      "vocab_size": 32,
+      "hidden_act": "gelu_new",
+      "tensor_shapes": {
+        "lm_head.weight": [
+          32,
+          16
+        ],
+        "model.embed_tokens.weight": [
+          32,
+          16
+        ]
+      }
+    }
+  },
+  "exclusion": "No tensor values, weights, private runtime/client configuration or raw negative tracebacks.",
+  "_archive_note": "Original chronological statuses and source pins retained; later public release does not rewrite historical unpublished/pending fields. Manifest records original/output hashes/bytes and explicit transforms. CPU/static evidence only."
+}
