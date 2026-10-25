@@ -1,0 +1,223 @@
+--- native-jax-core-fp8-preparation-r3-worker.py	2026-10-24 19:29:44
++++ native-jax-fp8-microbatch-preparation-worker.py	2026-10-24 20:46:18
+@@ -10,10 +10,14 @@
+ 
+ import equinox as eqx
+ import haliax
++import haliax._src.fp8 as fp8_source
++import haliax.quantization as quantization_source
+ import iris
+ import jax
+ import jax.numpy as jnp
+ import levanter
++import levanter.grad_accum as grad_accum_source
++import levanter.pipeline as pipeline_source
+ import marin
+ import numpy as np
+ from haliax.quantization import (
+@@ -226,8 +230,18 @@
+         )
+         microbatch_size = 2 * data_parallel
+         with jax.set_mesh(mesh):
+-            op = operator(mesh, history_length=4, nonunit=False)
+-            weight = placed(np.full((4, 8), 0.125, np.float32), mesh, P("model", "data"))
++            op = operator(mesh, history_length=4, nonunit=True)
++            seed_histories = {
++                "input": np.array([896, 448, 224, 112], np.float32),
++                "kernel": np.array([224, 112, 56, 28], np.float32),
++                "output_grad": np.array([229376, 114688, 57344, 28672], np.float32),
++            }
++            op = dataclasses.replace(
++                op,
++                **{name + "_amax_history": placed(history, mesh, P()) for name, history in seed_histories.items()},
++            )
++            weight_host = np.full((4, 8), 0.125, np.float32)
++            weight = placed(weight_host, mesh, P("model", "data"))
+             params = (op, weight)
+             values = np.concatenate(
+                 [np.full((microbatch_size, 8), 32, np.float32), np.ones((microbatch_size, 8), np.float32)]
+@@ -237,52 +251,153 @@
+             def evaluate(batch):
+                 def loss(parameters):
+                     operation, parameter = parameters
+-                    output = operation(batch, reshard(parameter, P("model", None)), (((1,), (1,)), ((), ())))
+-                    output = reshard(output, P("data", "model"))
++                    output = operation(
++                        batch,
++                        reshard(parameter, P("model", None)),
++                        (((1,), (1,)), ((), ())),
++                        out_sharding=P("data", "model"),
++                    )
+                     return jnp.mean(output**2), {}
+ 
+                 return eqx.filter_value_and_grad(loss, has_aux=True)(params)
+ 
+-            checkpoint("microbatch.explicit.actual_reducer", control_kind="explicit")
+-            (actual_loss, _), actual_gradients = eqx.filter_jit(microbatched_arrays(evaluate, microbatch_size))(inputs)
++            def independent_reference(batch):
++                output = batch @ weight_host.T
++                cotangent = np.float32(2) * output / np.float32(output.size)
++                state = {}
++                for name, maximum, retained_scale in (
++                    ("input", np.max(np.abs(batch)), 2),
++                    ("kernel", np.max(np.abs(weight_host)), 0.5),
++                    ("output_grad", np.max(np.abs(cotangent)), 4),
++                ):
++                    # History maxima are FP8 maxima * retained scales: 448*2, 448*.5, 57344*4.
++                    # Thus the delayed scale remains the nonunit seed for each independent call.
++                    history = np.roll(seed_histories[name], -1)
++                    history[0] = maximum
++                    state[name + "_amax_history"] = history
++                    state[name + "_scale"] = np.array([retained_scale], np.float32)
++                return np.mean(output**2), cotangent.T @ batch, state
++
++            def check_placement(value, spec, label):
++                expected = NamedSharding(mesh, spec)
++                observed = value.sharding
++                receipt.setdefault("placements", {})[label] = {
++                    "observed": str(observed),
++                    "expected": str(expected),
++                    "shape": list(value.shape),
++                    "local_shard_shapes": [list(shard.data.shape) for shard in value.addressable_shards],
++                }
++                assert observed.is_equivalent_to(expected, value.ndim), label
++                assert set(observed.device_set) == set(devices), label
++                assert all(shard.data.shape == expected.shard_shape(value.shape) for shard in value.addressable_shards)
++
++            def check_result(result, reference, label):
++                (loss, _), (operation_gradient, weight_gradient) = result
++                expected_loss, expected_weight_gradient, expected_state = reference
++                checkpoint(f"microbatch.explicit.{label}.ordinary_assertions", control_kind="explicit")
++                np.testing.assert_array_equal(np.asarray(loss), expected_loss)
++                np.testing.assert_array_equal(np.asarray(weight_gradient), expected_weight_gradient)
++                check_placement(loss, P(), label + ".loss")
++                check_placement(weight_gradient, P("model", "data"), label + ".weight_gradient")
++                for name in STATE_FIELDS:
++                    actual = getattr(operation_gradient, name)
++                    check_placement(actual, P(), label + "." + name)
++                    np.testing.assert_array_equal(np.asarray(actual), expected_state[name])
++                receipt["completed_controls"][label] = {
++                    "outcome": "independent_exact_loss_gradient_state_and_placement",
++                    "loss": float(loss),
++                    "state": host_state(operation_gradient),
++                }
++                checkpoint(f"microbatch.explicit.{label}.completed", control_kind="explicit")
++
++            check_placement(inputs, P("data", None), "inputs")
++            check_placement(weight, P("model", "data"), "stored_weight")
++            checkpoint("microbatch.explicit.no_microbatch.direct", control_kind="explicit")
++            full_reference = independent_reference(values)
++            direct_full = eqx.filter_jit(evaluate)(inputs)
++            check_result(direct_full, full_reference, "direct_full")
++            checkpoint("microbatch.explicit.no_microbatch.wrapper", control_kind="explicit")
++            unsplit = eqx.filter_jit(microbatched_arrays(evaluate, values.shape[0]))(inputs)
++            check_result(unsplit, full_reference, "no_microbatch_wrapper")
++
++            per_microbatch = []
++            per_reference = []
++            for index, start in enumerate((0, microbatch_size)):
++                checkpoint(f"microbatch.explicit.independent_call_{index}", control_kind="explicit")
++                batch_host = values[start : start + microbatch_size]
++                batch = placed(batch_host, mesh, P("data", None))
++                result = eqx.filter_jit(evaluate)(batch)
++                reference = independent_reference(batch_host)
++                check_result(result, reference, f"per_microbatch_{index}")
++                per_microbatch.append(result)
++                per_reference.append(reference)
++
++            independent_loss = (per_reference[0][0] + per_reference[1][0]) / np.float32(2)
++            independent_gradient = (per_reference[0][1] + per_reference[1][1]) / np.float32(2)
++            independent_state = {
++                name: (
++                    np.maximum(per_reference[0][2][name], per_reference[1][2][name])
++                    if name.endswith("_amax_history")
++                    else per_reference[1][2][name]
++                )
++                for name in STATE_FIELDS
++            }
+             checkpoint("microbatch.explicit.shared_reference", control_kind="explicit")
+-            per_microbatch = [evaluate(inputs[start : start + microbatch_size]) for start in (0, microbatch_size)]
+             reduced = accumulate_gradients(per_microbatch[0][1], per_microbatch[1][1])
+             overwrites, additive = partition_for_grad_overwrite(reduced)
+-            averaged = jax.tree.map(lambda leaf: leaf / 2, additive)
+-            reference = eqx.combine(overwrites, averaged)
+-            checkpoint("microbatch.explicit.reference_assertion", control_kind="explicit")
+-            np.testing.assert_array_equal(reference[0].input_amax_history, np.array([32, 0, 0, 0], np.float32))
+-            expected_loss = (per_microbatch[0][0][0] + per_microbatch[1][0][0]) / 2
+-            checkpoint("microbatch.explicit.loss_assertion", control_kind="explicit")
+-            np.testing.assert_array_equal(actual_loss, expected_loss)
+-            receipt["completed_controls"]["microbatch_loss"] = {"outcome": "exact_match", "value": float(actual_loss)}
+-            checkpoint("microbatch.explicit.additive_gradient_assertion", control_kind="explicit")
+-            receipt["additive_weight_gradient_max_absolute_difference"] = max_difference(
+-                actual_gradients[1], reference[1]
++            reference_gradients = eqx.combine(overwrites, jax.tree.map(lambda leaf: leaf / 2, additive))
++            reference_loss = (per_microbatch[0][0][0] + per_microbatch[1][0][0]) / 2
++            check_result(
++                ((reference_loss, {}), reference_gradients),
++                (independent_loss, independent_gradient, independent_state),
++                "shared_reducer",
+             )
+-            checkpoint("microbatch.explicit.additive_gradient_assertion", control_kind="explicit")
+-            np.testing.assert_array_equal(np.asarray(actual_gradients[1]), np.asarray(reference[1]))
+-            receipt["completed_controls"]["microbatch_additive_gradient"] = {"outcome": "exact_match"}
+-            checkpoint("microbatch.explicit.state_classification", control_kind="explicit")
++
++            checkpoint("microbatch.explicit.actual_reducer", control_kind="explicit")
++            (actual_loss, _), actual_gradients = eqx.filter_jit(microbatched_arrays(evaluate, microbatch_size))(inputs)
++            checkpoint("microbatch.explicit.actual_ordinary_assertions", control_kind="explicit")
++            np.testing.assert_array_equal(np.asarray(actual_loss), independent_loss)
++            np.testing.assert_array_equal(np.asarray(actual_gradients[1]), independent_gradient)
++            check_placement(actual_loss, P(), "raw.loss")
++            check_placement(actual_gradients[1], P("model", "data"), "raw.weight_gradient")
++            for name in STATE_FIELDS:
++                check_placement(getattr(actual_gradients[0], name), P(), "raw." + name)
+             observed = host_state(actual_gradients[0])
+-            expected = host_state(reference[0])
+-            return {
+-                "outcome": "state_reduction_matches" if observed == expected else "state_reduction_mismatch_observed",
+-                "ordinary_loss_and_additive_gradient_controls": "exact_match",
++            expected = {name: value.tolist() for name, value in independent_state.items()}
++            averaging_prediction = {
++                name: ((per_reference[0][2][name] + per_reference[1][2][name]) / np.float32(2)).tolist()
++                for name in STATE_FIELDS
++            }
++            matches = observed == expected
++            receipt["microbatch_diagnostic"] = {
++                "outcome": "state_reduction_matches" if matches else "state_reduction_mismatch_observed",
++                "ordinary_loss_and_additive_gradient_controls": "independent_exact_match",
+                 "microbatch_size": microbatch_size,
+                 "actual_loss": float(actual_loss),
+                 "actual_state": observed,
+-                "shared_custom_reduction_reference": expected,
+-                "weight_gradient_max_absolute_difference": max_difference(actual_gradients[1], reference[1]),
+-                "boundary": (
+-                    "Mismatch is only observed if this prepared case is later executed successfully; "
+-                    "exceptions remain separate."
+-                ),
++                "independent_max_history_retained_scale_reference": expected,
++                "independent_average_all_leaves_prediction": averaging_prediction,
++                "matches_averaging_prediction": observed == averaging_prediction,
++                "boundary": "Same-recipe per-microbatch state only; no full-batch FP8 trajectory equivalence assumed.",
+             }
++            checkpoint("microbatch.explicit.state_classification", control_kind="explicit")
++            assert matches, "Raw FP8 metadata differs from independent max-history/retained-scale reference"
++            return receipt["microbatch_diagnostic"]
+ 
+     checkpoint("preflight.module_provenance")
+-    modules = {module.__name__: module.__file__ for module in (haliax, levanter, marin, iris)}
++    modules = {
++        module.__name__: module.__file__
++        for module in (
++            haliax,
++            levanter,
++            marin,
++            iris,
++            quantization_source,
++            fp8_source,
++            grad_accum_source,
++            pipeline_source,
++        )
++    }
+     receipt["source_modules"] = modules
+     checkpoint("preflight.module_provenance")
+     assert all(Path(path).resolve().is_relative_to(args.source_root) for path in modules.values()), modules

@@ -1,0 +1,65 @@
+{
+  "review_kind": "fresh independent read-only static prelaunch recipe review",
+  "utc": "2026-10-25T03:57:08.523576+00:00",
+  "finding_count": 0,
+  "findings": [],
+  "outcome": "NO_FINDINGS_EXECUTION_NOT_RELEASED",
+  "freeze_path": "native-jax-fp8-microbatch-preparation-freeze.json",
+  "freeze_sha256": "56034ade2152cb43bbdcb96901046d8a443c4b6c4d635dbc9964eb721801fe7a",
+  "source": {
+    "commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+    "status_short": "",
+    "publication": "LOCAL_ONLY_NOT_VERIFIED_PUBLIC",
+    "required_public_source_pin_before_execution": null,
+    "required_public_research_pin_before_execution": null
+  },
+  "artifact_hashes_verified": {
+    "native-jax-fp8-microbatch-preparation-probe.py": {
+      "sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28"
+    },
+    "native-jax-fp8-microbatch-preparation-worker.py": {
+      "sha256": "bef822486ef522576e1eacb6f08032e135c0df2437415c3b646a72a822f78cb4"
+    },
+    "native-jax-fp8-microbatch-preparation-config.json": {
+      "sha256": "55ec5ecbbb1cbf8f12ff1b4c6c7744be264e5880cd54dd7b6e00317860d411e7"
+    },
+    "native-jax-fp8-microbatch-preparation-plan.md": {
+      "sha256": "dc834391fd23fe563f81a71d299f6aa45b24413d5e28433136b6bd2fe20e5761"
+    },
+    "native-jax-fp8-microbatch-preparation-r3-delta.patch": {
+      "sha256": "476bca8758b9229d1102c33085d3c5555c124cfc10475fea1e1460f41d64b221"
+    }
+  },
+  "source_sha256_and_git_blob_pairs_verified": 25,
+  "source_changed_paths_vs_R3": [
+    "lib/haliax/src/haliax/_src/fp8.py",
+    "lib/haliax/src/haliax/quantization.py",
+    "lib/haliax/tests/test_fp8.py"
+  ],
+  "predecessor_hashes_verified": true,
+  "runner_byte_exact": true,
+  "baseline_and_raw_functions_byte_exact": true,
+  "scope_inspected": [
+    "independent per-microbatch NumPy loss and weight gradient",
+    "six metadata arrays and delayed-scaling fixture",
+    "direct and no-split full-batch controls",
+    "independent per-microbatch prerequisite controls",
+    "shared reducer corroboration versus independent oracle",
+    "raw reducer mismatch receipt and unsuccessful exit",
+    "physical placements/device sets/shard shapes",
+    "source/module provenance",
+    "bounded separate execution and stop gates"
+  ],
+  "nonfinding_limits": [
+    "Identical retained scales intentionally do not distinguish latest-scale selection from arithmetic averaging; history mismatch is distinguishable.",
+    "No project imports, compilation, hooks, tests, control execution, source edits, network, publication, or accelerator operations.",
+    "Public source/research verification, ordinary hooks, network denial, and explicit root release remain required."
+  ],
+  "markdown_sha256": "f6b40d4ccc84b02ae05f2fafec579ab07c65d9922ad84809b2396c52dbc5ce14",
+  "projection_provenance": {
+    "original_basename": "native-jax-fp8-microbatch-preparation-independent-review.json",
+    "original_sha256": "fa1af40b9397c7d3333dd6c50b1187375fbaf8743d8e3bf38dba9576d12124f5",
+    "transformation": "Original reviewed freeze basename/hash retained; archive sanitized projection is initial-preparation-freeze.json and separately inventoried. Local source path removed; artifact keys reduced to original basenames."
+  }
+}
