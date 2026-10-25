@@ -1,0 +1,1379 @@
+{
+  "schema": "native-jax-fp8-microbatch-r2-cpu1-negative-result.v1",
+  "classification": "OBSERVED_RAW_METADATA_AVERAGING_AFTER_ALL_PREREQUISITE_CONTROLS",
+  "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+  "source_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+  "research_prelaunch": "c781016cde01d1647ba9f2704f73cc3ee47aca55",
+  "terminal_stage": "microbatch.explicit.state_classification",
+  "exit_code": 1,
+  "duration_seconds": 5.787120,
+  "duration_qualification": "Elapsed time derived from recorded timestamps; not a performance benchmark.",
+  "actual_device_count": 1,
+  "preflight_complete": true,
+  "source_clean": true,
+  "completed_controls": {
+    "direct_full": {
+      "outcome": "independent_exact_loss_gradient_state_and_placement",
+      "loss": 512.5,
+      "state": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          32.0,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          4.0,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      }
+    },
+    "no_microbatch_wrapper": {
+      "outcome": "independent_exact_loss_gradient_state_and_placement",
+      "loss": 512.5,
+      "state": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          32.0,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          4.0,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      }
+    },
+    "per_microbatch_0": {
+      "outcome": "independent_exact_loss_gradient_state_and_placement",
+      "loss": 1024.0,
+      "state": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          32.0,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          8.0,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      }
+    },
+    "per_microbatch_1": {
+      "outcome": "independent_exact_loss_gradient_state_and_placement",
+      "loss": 1.0,
+      "state": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          1.0,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          0.25,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      }
+    },
+    "shared_reducer": {
+      "outcome": "independent_exact_loss_gradient_state_and_placement",
+      "loss": 512.5,
+      "state": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          32.0,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          8.0,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      }
+    }
+  },
+  "raw_diagnostic": {
+    "outcome": "state_reduction_mismatch_observed",
+    "ordinary_loss_and_additive_gradient_controls": "independent_exact_match",
+    "microbatch_size": 2,
+    "actual_loss": 512.5,
+    "actual_state": {
+      "input_scale": [
+        2.0
+      ],
+      "kernel_scale": [
+        0.5
+      ],
+      "output_grad_scale": [
+        4.0
+      ],
+      "input_amax_history": [
+        16.5,
+        224.0,
+        112.0,
+        896.0
+      ],
+      "kernel_amax_history": [
+        0.125,
+        56.0,
+        28.0,
+        224.0
+      ],
+      "output_grad_amax_history": [
+        4.125,
+        57344.0,
+        28672.0,
+        229376.0
+      ]
+    },
+    "independent_max_history_retained_scale_reference": {
+      "input_scale": [
+        2.0
+      ],
+      "kernel_scale": [
+        0.5
+      ],
+      "output_grad_scale": [
+        4.0
+      ],
+      "input_amax_history": [
+        32.0,
+        224.0,
+        112.0,
+        896.0
+      ],
+      "kernel_amax_history": [
+        0.125,
+        56.0,
+        28.0,
+        224.0
+      ],
+      "output_grad_amax_history": [
+        8.0,
+        57344.0,
+        28672.0,
+        229376.0
+      ]
+    },
+    "independent_average_all_leaves_prediction": {
+      "input_scale": [
+        2.0
+      ],
+      "kernel_scale": [
+        0.5
+      ],
+      "output_grad_scale": [
+        4.0
+      ],
+      "input_amax_history": [
+        16.5,
+        224.0,
+        112.0,
+        896.0
+      ],
+      "kernel_amax_history": [
+        0.125,
+        56.0,
+        28.0,
+        224.0
+      ],
+      "output_grad_amax_history": [
+        4.125,
+        57344.0,
+        28672.0,
+        229376.0
+      ]
+    },
+    "matches_averaging_prediction": true,
+    "boundary": "Same-recipe per-microbatch state only; no full-batch FP8 trajectory equivalence assumed."
+  },
+  "observed_summary": {
+    "raw_accumulation_reached": true,
+    "all_five_independent_control_paths_completed": true,
+    "raw_loss_and_ordinary_weight_gradient_checks_passed": true,
+    "raw_physical_placement_checks_passed": true,
+    "raw_loss": 512.5,
+    "all_six_metadata_arrays_equal_independent_arithmetic_average_prediction": true,
+    "metadata_arrays_differing_from_max_history_reference": [
+      "input_amax_history",
+      "output_grad_amax_history"
+    ],
+    "input_history_first_entry": {
+      "actual": 16.5,
+      "reference": 32
+    },
+    "output_gradient_history_first_entry": {
+      "actual": 4.125,
+      "reference": 8
+    },
+    "other_metadata_entries_match_reference": true,
+    "expected_metadata_assertion_failure": true
+  },
+  "harness_history": {
+    "initial_public_research": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+    "initial_result": "initial-cpu1-partial-result.json",
+    "initial_outcome": "Reference eqx.combine assembly failed before shared-reducer qualification or actual raw accumulation; no averaging result existed then.",
+    "R2_research_change": "Only atomic custom-gradient leaf predicate in shared-reference merge plus top-level class import and matching worker reference; unchanged source, fixture, oracle, reducers and criteria.",
+    "current_outcome": "All five prerequisites including shared reducer completed; real raw accumulation reached metadata classification and matches the independent averaging prediction. This is the first observed reduction mismatch in this sequence."
+  },
+  "origin_artifacts": [
+    {
+      "artifact_basename": "receipt.json",
+      "bytes": 31438,
+      "sha256": "2f86cda34f593f2a4d398e9ceb2318cb6bcd5e2606aa617f4790f333054b77eb",
+      "role": "terminal microbatch-cpu1-r2 receipt"
+    },
+    {
+      "artifact_basename": "execution.json",
+      "bytes": 3526,
+      "sha256": "03013e78ed7b8e62f59d5d60adf013884599995d2eab7d63765bb6b5decd161b"
+    },
+    {
+      "artifact_basename": "microbatch-cpu1-r2.log",
+      "bytes": 1219,
+      "sha256": "66b9922e9680615e95cdbb5687b0c4e1319a17b4821f47e15b09e950ad58ad1e",
+      "content_selected": false
+    }
+  ],
+  "transformation": [
+    "Retain complete receipt including all five controls, all six actual/reference/arithmetic-prediction arrays, placements, module/source provenance, original generic failure label and exception/traceback.",
+    "Retain actual argv/environment/timestamps/exit; normalize only concrete host source/research/output/venv/cache/tool paths to role placeholders. Raw log content omitted; original hashes retained."
+  ],
+  "receipt": {
+    "mode": "microbatch",
+    "source_root": "<execution-source-root>",
+    "research_root": "<research-root>",
+    "config_path": "<research-root>/native-jax-fp8-microbatch-preparation-r2-config.json",
+    "probe_path": "<research-root>/native-jax-fp8-microbatch-preparation-r2-probe.py",
+    "python": "<installed-venv>/bin/python",
+    "requested_devices": 1,
+    "project_imports_and_execution": "same process",
+    "preflight_complete": true,
+    "stage": "microbatch.explicit.state_classification",
+    "completed_controls": {
+      "direct_full": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 512.5,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            32.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            4.0,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      },
+      "no_microbatch_wrapper": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 512.5,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            32.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            4.0,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      },
+      "per_microbatch_0": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 1024.0,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            32.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            8.0,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      },
+      "per_microbatch_1": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 1.0,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            1.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            0.25,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      },
+      "shared_reducer": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 512.5,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            32.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            8.0,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      }
+    },
+    "probe_sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+    "config_sha256": "3c2464a91287767a24317116f43b41516d70b5903e0c3420cecdf4a23d9e1797",
+    "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "observed_source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "source_status": "",
+    "verified_source_files": [
+      "lib/levanter/tests/test_train_lm.py",
+      "lib/haliax/src/haliax/quantization.py",
+      "lib/haliax/src/haliax/_src/fp8.py",
+      "lib/haliax/src/haliax/nn/linear.py",
+      "lib/haliax/tests/test_fp8.py",
+      "lib/levanter/src/levanter/layers/linear.py",
+      "lib/levanter/src/levanter/layers/stacked.py",
+      "lib/levanter/src/levanter/models/llama.py",
+      "lib/levanter/src/levanter/models/llama_native.py",
+      "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "lib/levanter/src/levanter/models/lm_model.py",
+      "lib/levanter/src/levanter/trainer.py",
+      "lib/levanter/src/levanter/trainer_state.py",
+      "lib/levanter/src/levanter/grad_accum.py",
+      "lib/levanter/src/levanter/main/train_lm.py",
+      "lib/levanter/src/levanter/layers/attention.py",
+      "lib/levanter/src/levanter/checkpoint.py",
+      "lib/levanter/src/levanter/adaptor/__init__.py",
+      "lib/levanter/src/levanter/adaptor/lora.py",
+      "lib/levanter/tests/test_grad_accum.py",
+      "lib/levanter/src/levanter/testing/tiny_corpus.py",
+      "lib/levanter/src/levanter/testing/tokenizer.py",
+      "lib/levanter/src/levanter/tracker/json_file.py",
+      "lib/levanter/src/levanter/data/text/datasets.py",
+      "lib/levanter/src/levanter/pipeline.py"
+    ],
+    "current_source_file": "lib/levanter/src/levanter/pipeline.py",
+    "worker_path": "<research-root>/native-jax-fp8-microbatch-preparation-r2-worker.py",
+    "worker_sha256": "90d5c1b4b8e8b03ca5b927d5cf9295a1095b782d07a84485e9d68b8ec0471740",
+    "source_modules": {
+      "haliax": "<execution-source-root>/lib/haliax/src/haliax/__init__.py",
+      "levanter": "<execution-source-root>/lib/levanter/src/levanter/__init__.py",
+      "marin": "<execution-source-root>/lib/marin/src/marin/__init__.py",
+      "iris": "<execution-source-root>/lib/iris/src/iris/__init__.py",
+      "haliax.quantization": "<execution-source-root>/lib/haliax/src/haliax/quantization.py",
+      "haliax._src.fp8": "<execution-source-root>/lib/haliax/src/haliax/_src/fp8.py",
+      "levanter.grad_accum": "<execution-source-root>/lib/levanter/src/levanter/grad_accum.py",
+      "levanter.pipeline": "<execution-source-root>/lib/levanter/src/levanter/pipeline.py"
+    },
+    "actual_device_count": 1,
+    "actual_devices": [
+      "cpu:0"
+    ],
+    "device_platforms": [
+      "cpu"
+    ],
+    "iris_publishing_runtime": false,
+    "control_kind": "explicit",
+    "placements": {
+      "inputs": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('data', None), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('data', None), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "stored_weight": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "direct_full.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "direct_full.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "direct_full.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "direct_full.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "direct_full.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "direct_full.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "direct_full.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "direct_full.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "no_microbatch_wrapper.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_0.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "per_microbatch_0.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "per_microbatch_0.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_0.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_0.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_0.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_0.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_0.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_1.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "per_microbatch_1.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "per_microbatch_1.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_1.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_1.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_1.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_1.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_1.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "shared_reducer.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "shared_reducer.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "shared_reducer.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "shared_reducer.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "shared_reducer.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "shared_reducer.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "shared_reducer.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "shared_reducer.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "raw.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "raw.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "raw.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "raw.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "raw.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "raw.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "raw.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "raw.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      }
+    },
+    "microbatch_diagnostic": {
+      "outcome": "state_reduction_mismatch_observed",
+      "ordinary_loss_and_additive_gradient_controls": "independent_exact_match",
+      "microbatch_size": 2,
+      "actual_loss": 512.5,
+      "actual_state": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          16.5,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          4.125,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      },
+      "independent_max_history_retained_scale_reference": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          32.0,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          8.0,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      },
+      "independent_average_all_leaves_prediction": {
+        "input_scale": [
+          2.0
+        ],
+        "kernel_scale": [
+          0.5
+        ],
+        "output_grad_scale": [
+          4.0
+        ],
+        "input_amax_history": [
+          16.5,
+          224.0,
+          112.0,
+          896.0
+        ],
+        "kernel_amax_history": [
+          0.125,
+          56.0,
+          28.0,
+          224.0
+        ],
+        "output_grad_amax_history": [
+          4.125,
+          57344.0,
+          28672.0,
+          229376.0
+        ]
+      },
+      "matches_averaging_prediction": true,
+      "boundary": "Same-recipe per-microbatch state only; no full-batch FP8 trajectory equivalence assumed."
+    },
+    "failure_classification": "diagnostic_control_failure_review_required",
+    "exception": {
+      "type": "AssertionError",
+      "message": "Raw FP8 metadata differs from independent max-history/retained-scale reference",
+      "traceback": "Traceback (most recent call last):\n  File \"<research-root>/native-jax-fp8-microbatch-preparation-r2-probe.py\", line 86, in main\n    receipt[\"result\"] = worker.execute(args, receipt, checkpoint)\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<research-root>/native-jax-fp8-microbatch-preparation-r2-worker.py\", line 426, in execute\n    return microbatch_state(devices)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<research-root>/native-jax-fp8-microbatch-preparation-r2-worker.py\", line 389, in microbatch_state\n    assert matches, \"Raw FP8 metadata differs from independent max-history/retained-scale reference\"\n           ^^^^^^^\nAssertionError: Raw FP8 metadata differs from independent max-history/retained-scale reference\n"
+    }
+  },
+  "execution": {
+    "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "research_commit": "c781016cde01d1647ba9f2704f73cc3ee47aca55",
+    "release_sha256": "928067d7248a4190f9342aa77a8a54d8567e87131d2db3c83cb91cf29fdcd6b3",
+    "command": [
+      "<wall-timeout-command>",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "180s",
+      "<modern-uv>",
+      "run",
+      "--no-sync",
+      "--offline",
+      "--directory",
+      "<execution-source-root>",
+      "python",
+      "<research-root>/native-jax-fp8-microbatch-preparation-r2-probe.py",
+      "microbatch",
+      "--source-root",
+      "<execution-source-root>",
+      "--research-root",
+      "<research-root>",
+      "--config",
+      "<research-root>/native-jax-fp8-microbatch-preparation-r2-config.json",
+      "--devices",
+      "1",
+      "--output",
+      "<output-root>/microbatch-cpu1-r2"
+    ],
+    "environment": {
+      "JAX_NUM_CPU_DEVICES": "1",
+      "JAX_PLATFORMS": "cpu",
+      "UV_PROJECT_ENVIRONMENT": "<installed-venv>",
+      "UV_NO_SYNC": "1",
+      "UV_OFFLINE": "1",
+      "UV_FROZEN": "1",
+      "UV_CACHE_DIR": "<uv-cache>",
+      "XLA_FLAGS": "--xla_allow_excess_precision=false",
+      "HF_HUB_OFFLINE": "1",
+      "HF_DATASETS_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "WANDB_MODE": "disabled",
+      "TOKENIZERS_PARALLELISM": "false",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "PYTHONPATH": "<execution-source-root>/lib/ducky/src:<execution-source-root>/lib/dupekit/src:<execution-source-root>/lib/finelog/src:<execution-source-root>/lib/finestore/src:<execution-source-root>/lib/fray/src:<execution-source-root>/lib/haliax/src:<execution-source-root>/lib/iris/src:<execution-source-root>/lib/levanter/src:<execution-source-root>/lib/marin/src:<execution-source-root>/lib/rigging/src:<execution-source-root>/lib/rolloutengine/src:<execution-source-root>/lib/shellbox/src:<execution-source-root>/lib/taskcompendium/src:<execution-source-root>/lib/taskforge/src:<execution-source-root>/lib/verifyit/src:<execution-source-root>/lib/zephyr/src"
+    },
+    "execution_boundary": "functions.exec exec_command use_default; session filesystem sandbox and restricted network policy; no require_escalated",
+    "started_utc": "2026-10-25T04:30:22.002724+00:00",
+    "no_automatic_recovery": true,
+    "exit_code": 1,
+    "finished_utc": "2026-10-25T04:30:27.789844+00:00",
+    "log_sha256": "66b9922e9680615e95cdbb5687b0c4e1319a17b4821f47e15b09e950ad58ad1e",
+    "source_clean_after": true
+  },
+  "next_direction": "Separate maintained source/regression work may reuse the existing custom-gradient reducer; planned only, no source fix or candidate result is contained in this archive.",
+  "limits": [
+    "One logical CPU and one exact representable fixture; CPU4 was not released or run.",
+    "Equal retained scales do not qualify varied-scale latest-selection behavior.",
+    "No full-batch/microbatch FP8 trajectory equivalence, native-model quantization, BF16/optimizer/checkpoint, accelerator/performance or canonical acceptance follows."
+  ],
+  "CPU4_released": false,
+  "automatic_retry": false,
+  "source_fix_result": false,
+  "root_verification": {
+    "artifact_basename": "native-jax-fp8-microbatch-contract-r2-cpu1-root-result-proof.json",
+    "original_sha256": "451030c0ae108e40cad751910324df7de1b4b18ea3bbb5442cea7bdbbab4b60c",
+    "record": {
+      "status": "ROOT_VERIFIED_R2_CPU1_REAL_RAW_STATE_AVERAGING_MISMATCH",
+      "utc": "2026-10-25T04:32:30.823204+00:00",
+      "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "research_commit": "c781016cde01d1647ba9f2704f73cc3ee47aca55",
+      "preflight_own25files_modules_noIris_actual1CPU_passed": true,
+      "all4_initial_independent_controls_repassed_exact": true,
+      "shared_reducer_independent_six_state_loss_gradient_placement_passed": true,
+      "actual_raw_reached": true,
+      "actual_raw_ordinary_loss_gradient_exact_and_placements_passed": true,
+      "actual_raw_metadata_equals_independent_arithmetic_average_prediction": true,
+      "difference_fields": [
+        "input_amax_history",
+        "output_grad_amax_history"
+      ],
+      "input_history_first": {
+        "actual": 16.5,
+        "max_reference": 32.0
+      },
+      "output_gradient_history_first": {
+        "actual": 4.125,
+        "max_reference": 8.0
+      },
+      "all_three_scales_and_history_tails_match": true,
+      "no_fullbatch_microbatch_FP8_trajectory_equivalence_claim": true,
+      "CPU4_released": false,
+      "source_clean_after": true,
+      "expected_assertion_exit": 1,
+      "duration_seconds": 5.78712,
+      "next_decision": "Implement and independently qualify the raw wrapper using existing shared custom-state reducer and excluding custom state from averaging; no model/guard changes or new accelerator experiment.",
+      "artifacts": {
+        "receipt.json": {
+          "bytes": 31438,
+          "sha256": "2f86cda34f593f2a4d398e9ceb2318cb6bcd5e2606aa617f4790f333054b77eb"
+        },
+        "execution.json": {
+          "bytes": 3526,
+          "sha256": "03013e78ed7b8e62f59d5d60adf013884599995d2eab7d63765bb6b5decd161b"
+        },
+        "microbatch-cpu1-r2.log": {
+          "bytes": 1219,
+          "sha256": "66b9922e9680615e95cdbb5687b0c4e1319a17b4821f47e15b09e950ad58ad1e"
+        },
+        "native-jax-fp8-microbatch-contract-r2-cpu1-release.json": {
+          "bytes": 1798,
+          "sha256": "928067d7248a4190f9342aa77a8a54d8567e87131d2db3c83cb91cf29fdcd6b3"
+        },
+        "run_native_jax_fp8_microbatch_r2_cpu1_published.py": {
+          "bytes": 4014,
+          "sha256": "4f9bc4d92acdbdf25f01ba1a1c4872df6222c91cd4ff8c1dd94341078eb38af8"
+        }
+      }
+    }
+  }
+}
