@@ -1,0 +1,226 @@
+{
+  "native-jax-core-fp8-preparation-r1-freeze.json": {
+    "utc": "2026-10-25T02:12:14.098755+00:00",
+    "status_at_freeze": "PREPARED_ONLY_UNEXECUTED",
+    "previous_freeze": "prepared/core-fp8-prelaunch/initial-preparation-history.json",
+    "previous_freeze_sha256": "e8c96868b85ec19f923fbaa76667830e7ef3cb0e696a9a32891acf55178480f0",
+    "review": "prepared/core-fp8-prelaunch/preparation-reviews.json",
+    "review_findings": "3P2F1/F2/F3preserved; R1responsependingfreshreview",
+    "source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "preparer_clean_execution_source": "<execution-source-root>",
+    "production_source_vs_research": "Executionroot is host argument; researchprobe/configlocation is separatehostargument. Configproductionpins portableandunchanged.",
+    "source24pins_verified": true,
+    "trace_source_unchanged": true,
+    "original_frozen_artifacts_unchanged": true,
+    "artifacts": {
+      "prepared/core-fp8-prelaunch/r1-probe.py.txt": {
+        "sha256": "1969b5a9c58d8d1d66109a0b2b7f61547f90e915e608d29b311d8ddfe09ec645",
+        "bytes": 18033
+      },
+      "native-jax-core-fp8-preparation-r1-config.json": {
+        "sha256": "6629d18aff49b829d23629ee5015fdd3d27df73b9f4ed724c3cafd0af738758a",
+        "bytes": 6583
+      },
+      "native-jax-core-fp8-preparation-r1-plan.md": {
+        "sha256": "7bcf82a1404e74b5e9c433b636ee0a57ffc06f2c759d8346f0b0d3c30da139fc",
+        "bytes": 10904
+      },
+      "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json": {
+        "sha256": "ee17e5ca93ed01df9540f99071a89d0ec1cb2986855145dc61e41dd4d391ab84",
+        "bytes": 401
+      },
+      "prepared/core-fp8-prelaunch/preparation-reviews.json": {
+        "sha256": "c8405219202ccde8c9825d8cd791165a198f019359931cfa43a838f982cf2227",
+        "bytes": 1357
+      },
+      "native-jax-core-fp8-preparation-r1-response.patch": {
+        "sha256": "a13c66897522a4e3f87ecc39d012427ca1e33a5fd1b024bce765e63bad1200bf",
+        "bytes": 44860
+      }
+    },
+    "commands_in_order_after_required_gate": [
+      {
+        "mode": "baseline",
+        "devices": 1,
+        "command": "JAX_NUM_CPU_DEVICES=1 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-probe.py\" baseline --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-config.json\" --devices 1 --output \"$FP8_OUTPUT_ROOT/baseline-cpu1\" > \"$FP8_OUTPUT_ROOT/baseline-cpu1.log\" 2>&1",
+        "executed": false,
+        "setup": "PortableexplicitFP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV+fullenv inR1plan; noprivateenvrequired"
+      },
+      {
+        "mode": "raw",
+        "devices": 1,
+        "command": "JAX_NUM_CPU_DEVICES=1 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-probe.py\" raw --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-config.json\" --devices 1 --output \"$FP8_OUTPUT_ROOT/raw-cpu1\" > \"$FP8_OUTPUT_ROOT/raw-cpu1.log\" 2>&1",
+        "executed": false,
+        "setup": "PortableexplicitFP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV+fullenv inR1plan; noprivateenvrequired"
+      },
+      {
+        "mode": "microbatch",
+        "devices": 1,
+        "command": "JAX_NUM_CPU_DEVICES=1 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-probe.py\" microbatch --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-config.json\" --devices 1 --output \"$FP8_OUTPUT_ROOT/microbatch-cpu1\" > \"$FP8_OUTPUT_ROOT/microbatch-cpu1.log\" 2>&1",
+        "executed": false,
+        "setup": "PortableexplicitFP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV+fullenv inR1plan; noprivateenvrequired"
+      },
+      {
+        "mode": "baseline",
+        "devices": 4,
+        "command": "JAX_NUM_CPU_DEVICES=4 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-probe.py\" baseline --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-config.json\" --devices 4 --output \"$FP8_OUTPUT_ROOT/baseline-cpu4\" > \"$FP8_OUTPUT_ROOT/baseline-cpu4.log\" 2>&1",
+        "executed": false,
+        "setup": "PortableexplicitFP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV+fullenv inR1plan; noprivateenvrequired"
+      },
+      {
+        "mode": "raw",
+        "devices": 4,
+        "command": "JAX_NUM_CPU_DEVICES=4 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-probe.py\" raw --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-config.json\" --devices 4 --output \"$FP8_OUTPUT_ROOT/raw-cpu4\" > \"$FP8_OUTPUT_ROOT/raw-cpu4.log\" 2>&1",
+        "executed": false,
+        "setup": "PortableexplicitFP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV+fullenv inR1plan; noprivateenvrequired"
+      },
+      {
+        "mode": "microbatch",
+        "devices": 4,
+        "command": "JAX_NUM_CPU_DEVICES=4 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-probe.py\" microbatch --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r1-config.json\" --devices 4 --output \"$FP8_OUTPUT_ROOT/microbatch-cpu4\" > \"$FP8_OUTPUT_ROOT/microbatch-cpu4.log\" 2>&1",
+        "executed": false,
+        "setup": "PortableexplicitFP8_SOURCE_ROOT/RESEARCH_ROOT/OUTPUT_ROOT/VENV+fullenv inR1plan; noprivateenvrequired"
+      }
+    ],
+    "validation": "Stdlib ASTparse andcompile(codeobjectonly); no imports ofprojectmodules/probeexecution/tests/network/jobs/sourceedits",
+    "gate": "Rootfreshreview thenpublicationonexistingresearchbranch BEFOREexperiment; noauthorcommit/push/publication/executionauthorized",
+    "risks": "Canonicalsmoke/nativeguard/rawAuto+Explicit/microbatchstateoutcomes allunobserved; APIandplacement remainruntimeunknowns."
+  },
+  "native-jax-core-fp8-preparation-r1-syntax-validation.json": {
+    "utc": "2026-10-25T02:12:14.097592+00:00",
+    "probe_sha256": "1969b5a9c58d8d1d66109a0b2b7f61547f90e915e608d29b311d8ddfe09ec645",
+    "AST_parse": "passed",
+    "compile_to_unexecuted_code_object": "passed",
+    "project_imports": false,
+    "probe_execution": false,
+    "original_frozen_artifacts_unchanged": true,
+    "source24pins_verified": true,
+    "source_clean": true,
+    "trace4files_unchanged": true
+  },
+  "native-jax-core-fp8-preparation-r2-freeze.json": {
+    "utc": "2026-10-25T02:16:27.539616+00:00",
+    "status_at_freeze": "R2_PREPARED_ONLY_UNEXECUTED",
+    "source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "source_clean": true,
+    "source24pins_and_trace4frozenfiles_unchanged": true,
+    "previous_freezes_immutable": [
+      "prepared/core-fp8-prelaunch/initial-preparation-history.json",
+      "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json"
+    ],
+    "R1_fresh_review_zero_historical": "prepared/core-fp8-prelaunch/preparation-reviews.json",
+    "artifacts": {
+      "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-probe.py": {
+        "sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+        "bytes": 4646
+      },
+      "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-worker.py": {
+        "sha256": "60ca11729cfec4d278a4437f33a6cf0ccfe656b9d966133d201c92fd1a4367ba",
+        "bytes": 14975
+      },
+      "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-config.json": {
+        "sha256": "da7a95ec2144b5caaf63932966b4a876721f2b3525f21c236de249643656d1e5",
+        "bytes": 6747
+      },
+      "prepared/core-fp8-prelaunch/recipe.md": {
+        "sha256": "56645c4ea850a4c4b33370af4f0fc3de7ef7d2eb1fd3e7f3ba6a3ee44340cc85",
+        "bytes": 12918
+      },
+      "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json": {
+        "sha256": "3241f294b90d02e824782a8639f9e82f70fd7dc98d4e7a5cfa5ef73e1ea13c4c",
+        "bytes": 596
+      },
+      "prepared/core-fp8-prelaunch/preparation-reviews.json": {
+        "sha256": "dffa0ee076636ef745578dcf88e5cc2329cf489544c4c0e6e8ccae6de97da86b",
+        "bytes": 1265
+      },
+      "native-jax-core-fp8-preparation-r2-response.patch": {
+        "sha256": "2c242336801a4534588813485f89b0e712da953bff6deb61959e9ff7b42824a8",
+        "bytes": 45312
+      }
+    },
+    "ordinary": {
+      "preview": "native-jax-core-fp8-precommit-r2-preview",
+      "final_log": "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json",
+      "final_log_sha256": "53e31c7fccc3c09c75076ae0a788e99a643e83619e1743c0b37f38733c320834",
+      "exit_code": 0,
+      "result": "AllapplicablehooksPASS; noSKIP/noqa; --fix onisolatedpreviewcopiesonly; finalformattedbytesfrozen",
+      "command": "./infra/pre-commit.py --fix --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-probe.py --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-worker.py --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-config.json --files logbooks/4-native-jax-llama/evidence/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-plan.md",
+      "environment": "modernuvPATH; queryscalevenv; UV_CACHE_DIRprivatecampaigncache; UV_NO_SYNC=1 UV_OFFLINE=1 UV_FROZEN=1 BLACK_NUM_WORKERS=1; authorizedlocalformatterIPC"
+    },
+    "commands_after_gate": [
+      {
+        "mode": "baseline",
+        "devices": 1,
+        "command": "JAX_NUM_CPU_DEVICES=1 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py\" baseline --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json\" --devices 1 --output \"$FP8_OUTPUT_ROOT/baseline-cpu1\" > \"$FP8_OUTPUT_ROOT/baseline-cpu1.log\" 2>&1",
+        "executed": false
+      },
+      {
+        "mode": "raw",
+        "devices": 1,
+        "command": "JAX_NUM_CPU_DEVICES=1 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py\" raw --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json\" --devices 1 --output \"$FP8_OUTPUT_ROOT/raw-cpu1\" > \"$FP8_OUTPUT_ROOT/raw-cpu1.log\" 2>&1",
+        "executed": false
+      },
+      {
+        "mode": "microbatch",
+        "devices": 1,
+        "command": "JAX_NUM_CPU_DEVICES=1 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py\" microbatch --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json\" --devices 1 --output \"$FP8_OUTPUT_ROOT/microbatch-cpu1\" > \"$FP8_OUTPUT_ROOT/microbatch-cpu1.log\" 2>&1",
+        "executed": false
+      },
+      {
+        "mode": "baseline",
+        "devices": 4,
+        "command": "JAX_NUM_CPU_DEVICES=4 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py\" baseline --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json\" --devices 4 --output \"$FP8_OUTPUT_ROOT/baseline-cpu4\" > \"$FP8_OUTPUT_ROOT/baseline-cpu4.log\" 2>&1",
+        "executed": false
+      },
+      {
+        "mode": "raw",
+        "devices": 4,
+        "command": "JAX_NUM_CPU_DEVICES=4 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py\" raw --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json\" --devices 4 --output \"$FP8_OUTPUT_ROOT/raw-cpu4\" > \"$FP8_OUTPUT_ROOT/raw-cpu4.log\" 2>&1",
+        "executed": false
+      },
+      {
+        "mode": "microbatch",
+        "devices": 4,
+        "command": "JAX_NUM_CPU_DEVICES=4 uv run --directory \"$FP8_SOURCE_ROOT\" python \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-probe.py\" microbatch --source-root \"$FP8_SOURCE_ROOT\" --research-root \"$FP8_RESEARCH_ROOT\" --config \"$FP8_RESEARCH_ROOT/native-jax-core-fp8-preparation-r2-config.json\" --devices 4 --output \"$FP8_OUTPUT_ROOT/microbatch-cpu4\" > \"$FP8_OUTPUT_ROOT/microbatch-cpu4.log\" 2>&1",
+        "executed": false
+      }
+    ],
+    "gate": "RootfreshR2review thenpublishrunner+worker+configtogether onexistingresearchbranch BEFOREexecution",
+    "actual_checks": "Ordinarystatichooks +stdlibASTparse/compile(codeobjectonly). No projectmoduleimports/tests/diagnosticexecution/hardware/network/sourceimpl/commit/push/PR.",
+    "runtime_outcomes": "NONE: all3questionsremainunobserved."
+  },
+  "native-jax-core-fp8-preparation-r2-syntax-validation.json": {
+    "utc": "2026-10-25T02:16:27.538456+00:00",
+    "runner_worker_ASTparse_compile_unexecuted": "PASS",
+    "R1_execute_ASTbody_equal_except_import_extraction_and_one_cotangent_default_binding": true,
+    "original_and_R1_allfrozenartifacts_byteexact": true,
+    "source054_clean24pins": true,
+    "trace4files_byteexact": true,
+    "worker_config_hash_matches_finalformatted_worker": true,
+    "preview4files_byteexact_private_artifacts": true,
+    "project_imports": false,
+    "diagnostic_execution": false,
+    "tests": false,
+    "ordinary": "PASSrequiredentrypoint allapplicablehooks finalfrozenpreview4files"
+  },
+  "independent_source_check": {
+    "execution_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "execution_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "source24pins_exact_current054_and069": true,
+    "source_checkout_clean": true,
+    "research_archive_base": "ea8c262cdc858712a1c1d0d523f67a96aaf55645",
+    "archive_inherited_source_not_execution_source": true
+  },
+  "ordinary_log_projection": {
+    "original": {
+      "artifact_basename": "native-jax-core-fp8-preparation-r2-ordinary-frozen.log",
+      "bytes": 756,
+      "sha256": "53e31c7fccc3c09c75076ae0a788e99a643e83619e1743c0b37f38733c320834"
+    },
+    "result": "AllapplicablehooksPASSfourisolatedpreviewcopies perfreeze+freshreview; no rawlog selected; not diagnosticexecution."
+  },
+  "_interpretation": "Unexecuted research preparation. Initial3P2/R1zero/ordinaryPLC0415/formattedR2zero preserved chronologically; no FP8outcome/productacceptance. ExactR2runner+worker+config mustpublish together before firstCPU1baseline. CPUcontrols alreadycampaignauthorized; rootreviews publishedrecipe."
+}

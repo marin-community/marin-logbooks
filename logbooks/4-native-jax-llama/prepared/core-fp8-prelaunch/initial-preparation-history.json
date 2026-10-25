@@ -1,0 +1,89 @@
+{
+  "native-jax-core-fp8-preparation-freeze.json": {
+    "utc": "2026-10-25T02:01:14.492637+00:00",
+    "status": "PREPARED_ONLY_UNEXECUTED",
+    "source_root": "<execution-source-root>",
+    "source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "source_clean": true,
+    "origin_push_disabled": true,
+    "source_comparison": "All20originalauditfiles+4fixturedependencies byteexact069/054; blobs/hashes inconfig",
+    "artifacts": {
+      "prepared/core-fp8-prelaunch/initial-probe.py.txt": {
+        "sha256": "b0215ef7e72e83532a4e1b501e9939fa8042bd0fd4faff553b71fa0c98b75234",
+        "bytes": 12349
+      },
+      "prepared/core-fp8-prelaunch/initial-config-history.json": {
+        "sha256": "b6c603d73d33bd58c1d4bcc0382b0c0171abf8d110349da4402f47cb5f3256d1",
+        "bytes": 6819
+      },
+      "prepared/core-fp8-prelaunch/initial-preparation-history.json": {
+        "sha256": "cf9ce6fd409d7f52a61359b85272fc06ef39769e18d89f39b081c778cd24bc2b",
+        "bytes": 427
+      }
+    },
+    "commands_in_required_sequence": [
+      {
+        "devices": 1,
+        "mode": "baseline",
+        "command": "cd <execution-source-root>; source native-jax-core-fp8-preparation-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python prepared/core-fp8-prelaunch/initial-probe.py.txt baseline --config prepared/core-fp8-prelaunch/initial-config-history.json --devices 1 --output native-jax-core-fp8-diagnostic-baseline-cpu1 > native-jax-core-fp8-diagnostic-baseline-cpu1.log 2>&1",
+        "executed": false
+      },
+      {
+        "devices": 1,
+        "mode": "raw",
+        "command": "cd <execution-source-root>; source native-jax-core-fp8-preparation-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python prepared/core-fp8-prelaunch/initial-probe.py.txt raw --config prepared/core-fp8-prelaunch/initial-config-history.json --devices 1 --output native-jax-core-fp8-diagnostic-raw-cpu1 > native-jax-core-fp8-diagnostic-raw-cpu1.log 2>&1",
+        "executed": false
+      },
+      {
+        "devices": 1,
+        "mode": "microbatch",
+        "command": "cd <execution-source-root>; source native-jax-core-fp8-preparation-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python prepared/core-fp8-prelaunch/initial-probe.py.txt microbatch --config prepared/core-fp8-prelaunch/initial-config-history.json --devices 1 --output native-jax-core-fp8-diagnostic-microbatch-cpu1 > native-jax-core-fp8-diagnostic-microbatch-cpu1.log 2>&1",
+        "executed": false
+      },
+      {
+        "devices": 4,
+        "mode": "baseline",
+        "command": "cd <execution-source-root>; source native-jax-core-fp8-preparation-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python prepared/core-fp8-prelaunch/initial-probe.py.txt baseline --config prepared/core-fp8-prelaunch/initial-config-history.json --devices 4 --output native-jax-core-fp8-diagnostic-baseline-cpu4 > native-jax-core-fp8-diagnostic-baseline-cpu4.log 2>&1",
+        "executed": false
+      },
+      {
+        "devices": 4,
+        "mode": "raw",
+        "command": "cd <execution-source-root>; source native-jax-core-fp8-preparation-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python prepared/core-fp8-prelaunch/initial-probe.py.txt raw --config prepared/core-fp8-prelaunch/initial-config-history.json --devices 4 --output native-jax-core-fp8-diagnostic-raw-cpu4 > native-jax-core-fp8-diagnostic-raw-cpu4.log 2>&1",
+        "executed": false
+      },
+      {
+        "devices": 4,
+        "mode": "microbatch",
+        "command": "cd <execution-source-root>; source native-jax-core-fp8-preparation-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python prepared/core-fp8-prelaunch/initial-probe.py.txt microbatch --config prepared/core-fp8-prelaunch/initial-config-history.json --devices 4 --output native-jax-core-fp8-diagnostic-microbatch-cpu4 > native-jax-core-fp8-diagnostic-microbatch-cpu4.log 2>&1",
+        "executed": false
+      }
+    ],
+    "execution_gate": "Root review and publish exactprobe+config onexistingresearchbranch BEFORE anyexecution; tracearchive gate parentowned.",
+    "actual_checks": "stdlib AST parse+compile(codeobjectonly); no projectimports/tests/probeexecution.",
+    "qualified_trace_clone_source": "unchanged R1freeze; nosourceedits",
+    "unobserved_predictions": [
+      "canonicalfinite-loss-smokesuccess",
+      "nativepublicquantizationguardrejection",
+      "rawmicrobatchstateaveragecorruptionrisk"
+    ],
+    "unknown": "RawExplicitdot/VJP/state placement may fail; must retain actualreceipt before broadening orfixing."
+  },
+  "native-jax-core-fp8-preparation-plan.md": {
+    "text": "# Prepared core FP8 diagnostic \u2014 not executed\n\nThis is preparation only. Root must review and publish the exact probe and config on the existing research branch before an experiment. No execution authority is implied by the commands below. No implementation or maintained helper branch was created.\n\nSource is clean detached public PR30 `054413ea8563f7216a33ee8dd34fc001c13b37ff`, tree `649b0eb013ee87bab6748cccde8d819f842d0704`, in `<execution-source-root>`; origin push is disabled. The config pins 24 source blobs and SHA256 hashes: all original 20 audited files plus tiny-corpus/tokenizer/tracker/data dependencies are byte-exact public069. The qualified trace contribution clone is unchanged.\n\n## Three bounded questions\n\n1. Does the existing canonical public FP8 route complete its two-step finite-loss smoke with a wholly local tokenizer/data source, and does the identical native configuration fail at the actual quantization guard? Expected from source: named smoke succeeds; native rejects at `main/train_lm.py:225-226`, before the later `Trainer` guard at `trainer.py:334-335`. This is a prediction, not a runtime result. The baseline copies the existing `test_train_lm_fp8` recipe: two layers, hidden32, heads/KV2, sequence64, default intermediate/model fields, default F32 policy, two steps, batch=device count, one eval batch, FP8 config/history defaults, local checkpointer and JSON tracker. It reuses `tiny_corpus.construct_small_data_cache` with its original token/data sizes and `stage_gpt2_tokenizer` for checked-in GPT2 files, binding both model tokenizer/reference to that local directory. Data indices remain within the larger local tokenizer vocabulary. No HF model weights/download are required. A guard with a different reason is recorded distinctly. A finite loss is smoke, not FP8/native numerical or checkpoint-continuation parity.\n2. Can the existing raw `Fp8DotGeneralOp` run under an Explicit mesh, preserving values, input/weight gradients, and all six overwritten state arrays? The raw case reuses the exact representable operand/cotangent tables and nonunit scales from `haliax/tests/test_fp8.py:194-230`, with output-first weights matching NativeLinear. It runs the same operation first on a one-device Auto mesh and then on all selected devices in Explicit mode; CPU4 uses data2/model2. Stored weights are `P(model,data)` and gathered to `P(model,None)`, matching the existing native column layout. Inputs/output use data/model roles. Independent NumPy products give exact representable forward/dgrad/wgrad expectations; histories must acquire the actual global operand/cotangent maxima and existing scales remain unchanged with zero historical amax. The existing `apply_updates` overwrite path supplies persisted state. Expected outcome is deliberately unknown: custom VJP/dot sharding may reject before any parity claim. This does not wire NativeLinear or copy a quantizer.\n3. If the raw operation succeeds, does the existing raw microbatch accumulator preserve the shared overwrite reduction? The microbatch case mirrors the unequal-amplitude state test in `test_grad_accum.py:89-129`: two microbatches with input amplitude32 and1, same initial operation/weights for each. It compares actual `microbatched_arrays` with direct per-microbatch gradients combined by existing `accumulate_gradients` and `partition_for_grad_overwrite`, averaging only additive gradients. It records loss, parameter-gradient difference, all six states and a state-match result. Shared-reference input amax is32. Source suggests raw sum/average may instead produce16.5; that is an unobserved risk. Placement/compile exceptions are separate outcomes. No fake state/engine or implementation dispatch assertion is used.\n\n## Execution sequence after the publication gate\n\nUse a fresh output directory for every command; the probe refuses overwrite. Run baselineCPU1, then rawCPU1, then microbatchCPU1. Stop after an unexpected baseline failure or raw-placement error and review its recorded exception before proceeding. If those controls are understood, repeat on CPU4. Do not blindly run a loop after an error. The source-derived microbatch mismatch is a valid diagnostic outcome, not a previously observed failure; the JSON distinguishes it from exceptions. The probe raises exceptions after recording them.\n\nRun from the detached source root. For each selected case replace `MODE` with baseline/raw/microbatch and `COUNT` with1 or4; commands are prepared, not executed:\n\n```bash\ncd <execution-source-root>\nsource native-jax-core-fp8-preparation-env.sh\nexport JAX_NUM_CPU_DEVICES=COUNT\nuv run python prepared/core-fp8-prelaunch/initial-probe.py.txt MODE \\\n  --config prepared/core-fp8-prelaunch/initial-config-history.json \\\n  --devices COUNT \\\n  --output native-jax-core-fp8-diagnostic-MODE-cpuCOUNT \\\n  > native-jax-core-fp8-diagnostic-MODE-cpuCOUNT.log 2>&1\n```\n\nThe manifest supplies six exact non-placeholder commands. Each future process asserts clean exact source commit/content, its own actual CPU count, own-clone source imports and absence of an Iris publishing runtime in the same process that executes the control. The environment uses the already installed frozen/offline/no-sync venv, CPU-only JAX, offline HF, and every own-clone package source. No pytest markers are overridden: this is a standalone disposable diagnostic invoking public training and existing primitives directly, not a pytest selection.\n\n## Unknowns and boundaries\n\n- Auto success cannot establish Explicit correctness; a failing exact-value/state assertion is retained, not relaxed. Syntax validation does not verify project APIs or runtime placement.\n- Raw output `reshard` cannot rescue a dot/VJP that already rejects its Explicit types. The existing FP8 op ignores extra sharding kwargs, so this is an actual feasibility question. Amax global reductions under DP/TP must match the independent full-array reference.\n- Only one operation and two microbatches are in scope. Per-layer stacked histories, remat/nested scan, BF16 computation/state dtypes, optimizer exclusion, real full-checkpoint continuation, LoRA combinations, NativeLinear/converter wiring, and arbitrary QuantizationConfig target selection remain for a later bounded maintained response.\n- Canonical platform attention dispatch remains unchanged: None chooses JAX_FLASH on CPU (GPU NVTE/TPU Splash in source), whereas native None maps to reference and rejects JAX_FLASH/NVTE/blocksize/scanFalse. The native negative control therefore cannot establish attention parity. No settings are silently rewritten to vanilla.\n- CPU float8 values and exact synthetic controls cannot prove accelerator FP8 GEMM use, BF16-default acceptance, model-level parity, speed, larger-model stability or scientific/canonical cutover. No hardware/network/GCP/jobs/CI/automation are part of this preparation.\n\nAST parse and compilation to an unexecuted code object are the only checks performed. No project modules were imported and no assets, trained weights or runtime results exist from this probe. The final freeze pins probe/config/environment/plan bytes and source comparison; earlier feasibility report remains unchanged, including its omission of the earlier public-entrypoint guard, corrected here explicitly.\n"
+  },
+  "native-jax-core-fp8-preparation-syntax-validation.json": {
+    "utc": "2026-10-25T02:01:14.267404+00:00",
+    "probe": "prepared/core-fp8-prelaunch/initial-probe.py.txt",
+    "sha256": "b0215ef7e72e83532a4e1b501e9939fa8042bd0fd4faff553b71fa0c98b75234",
+    "ast_parse": "passed",
+    "compile_to_code_object_only": "passed",
+    "code_object_executed": false,
+    "project_imports": false,
+    "probe_executed": false,
+    "source_files_compared": 24,
+    "original_audit20_exact069_and054": true
+  },
+  "_interpretation": "Unexecuted research preparation. Initial3P2/R1zero/ordinaryPLC0415/formattedR2zero preserved chronologically; no FP8outcome/productacceptance. ExactR2runner+worker+config mustpublish together before firstCPU1baseline. CPUcontrols alreadycampaignauthorized; rootreviews publishedrecipe."
+}

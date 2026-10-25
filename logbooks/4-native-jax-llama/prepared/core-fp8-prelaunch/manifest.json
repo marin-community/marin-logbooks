@@ -1,0 +1,660 @@
+{
+  "schema": "native-jax-core-fp8-prelaunch-archive.v1",
+  "status": "PREPARED_ONLY_UNEXECUTED_STATIC_REVIEW_ZERO",
+  "base_archive": "ea8c262cdc858712a1c1d0d523f67a96aaf55645",
+  "required_prior_inventories": {
+    "manifest.json": {
+      "bytes": 511345,
+      "sha256": "956201564c7e0162394e38a20bcabb97df69c121bb37b14eb47dbf7dfb58b51f"
+    },
+    "analysis/oproj-stage-a/result/manifest.json": {
+      "bytes": 12634,
+      "sha256": "3c5b3b7cbfb04fafe1c7279b942bbdd3411691af70176104e39ca53eb0290a98"
+    },
+    "prepared/oproj-callback-compatibility/manifest.json": {
+      "bytes": 87716,
+      "sha256": "eff58a3c421226f32292dff64786e95a9ee1f9a7f1c7013ef7a9e982701face5"
+    },
+    "prepared/oproj-callback-cpu-backend/manifest.json": {
+      "bytes": 78500,
+      "sha256": "59cf0529e48676f47c22de5a0f901e193ed7d6a151e89b786b549971c2e43a8c"
+    },
+    "prepared/fp32-source-identity/manifest.json": {
+      "bytes": 29964,
+      "sha256": "0152200ed0f08c5cef9d3618607f7b03f2649407dac912b8072236d961e8821a"
+    },
+    "prepared/oproj-full-cpu-backend/manifest.json": {
+      "bytes": 72657,
+      "sha256": "0db2b87a94bdcaf66b8be992f466aab26c300233aabd66a88371a5ee4e23e29a"
+    },
+    "evidence/broadcast-shard-explicit/manifest.json": {
+      "bytes": 30151,
+      "sha256": "9eaaa19f2861eb31438f7f5ad10911f98f7582e71ab98fac37f358c682a8c378"
+    },
+    "evidence/native-lm-lora/manifest.json": {
+      "bytes": 50151,
+      "sha256": "c0b4965fa642bd3996735904e85dc5446349426b58e6ea59e8ed852589e02ebe"
+    },
+    "evidence/native-dpo-lora/manifest.json": {
+      "bytes": 57704,
+      "sha256": "af785ab26934f09add1495e0b35c64e672ae463598dc11b1034e07f79df92f51"
+    },
+    "evidence/native-lora-dropout/manifest.json": {
+      "bytes": 41653,
+      "sha256": "3a1431965a065933f0cc9c7e0a3bdf634a1f96d4e061c4ec4c17eb4413e56158"
+    },
+    "evidence/native-hf-config/manifest.json": {
+      "bytes": 50754,
+      "sha256": "32eeeb132a4162f35720e7f8c6ee60bc4ea51e5c17d80e21c40281ad6b50d69a"
+    },
+    "evidence/native-dpo-dropout/manifest.json": {
+      "bytes": 74512,
+      "sha256": "a4a04f82161402f5da00dd8907ff5eb9d5fc1e9525d05cd18e7220c91c89ed0b"
+    },
+    "evidence/native-sample-lm/manifest.json": {
+      "bytes": 67117,
+      "sha256": "a7d470288405f81c9897ae513d2704bf98b0a54a7d634929d593a45b7f8c6c87"
+    },
+    "evidence/native-export-lm/manifest.json": {
+      "bytes": 75621,
+      "sha256": "51e782bae175520e5a19f3a097cf92588e4f04017d9d5b151015816afe40380b"
+    },
+    "evidence/native-import-lm-and-perplexity-gap/manifest.json": {
+      "bytes": 110369,
+      "sha256": "b9ee4bb16d1de05c73af3bdc3d62d3342b59f92191bf21ac8f7ea89b6aaf85e4"
+    },
+    "evidence/native-trace-eval/manifest.json": {
+      "bytes": 51255,
+      "sha256": "ce4798477c3a38e46494a0c506a575f58a3c2631c61392b3abb60571007447fd"
+    }
+  },
+  "preserved_prior_selected_count": 1194,
+  "execution_source": {
+    "public_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "source_files": {
+      "lib/levanter/tests/test_train_lm.py": {
+        "git_blob": "754aefce4ef9debe2be6aedcbdcf38fd9be8204d",
+        "sha256": "4be7b457464df890ea55b941217abcb93aeb9ff80b81238b3b79eb3dcad713e1",
+        "byte_exact_previous_069": true
+      },
+      "lib/haliax/src/haliax/quantization.py": {
+        "git_blob": "d271fad5b61ed9daebe3c6ce920c5a7ce67246e0",
+        "sha256": "3e00b9ef87f3cc7fe825dc836aded4b59968e4422753f6caa35b7e979cea3336",
+        "byte_exact_previous_069": true
+      },
+      "lib/haliax/src/haliax/_src/fp8.py": {
+        "git_blob": "3bec62614eb57fc710221e282e96fc18467ab910",
+        "sha256": "1204299351e150513d72459e17589f9c64af6c34bad9756024f02089d14964f7",
+        "byte_exact_previous_069": true
+      },
+      "lib/haliax/src/haliax/nn/linear.py": {
+        "git_blob": "9f4523eafef23eb150241892ddb01585d2054adc",
+        "sha256": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+        "byte_exact_previous_069": true
+      },
+      "lib/haliax/tests/test_fp8.py": {
+        "git_blob": "1093c001dfe9638723a29b7071e2140dc1a83d7f",
+        "sha256": "e8eeb8f40b2ee57c4c06a89ca5fdd6340dba65113d1e280ac6ca63b4eb118c22",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/layers/linear.py": {
+        "git_blob": "bacba9a9e42c40f6a7aee8381c958ef490c190d5",
+        "sha256": "23543feeec6d88b508261f834e2d8a891d3191ac65c2e6e15fb8619e38871807",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/layers/stacked.py": {
+        "git_blob": "9cbc0cda60f7d70511c59d660bb6152fcbd3a8b7",
+        "sha256": "f6493229b00b1c596fc366591819e986ad195dad356d9bf4ff773cd900aeb7fe",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/models/llama.py": {
+        "git_blob": "4bea659c122371e5cfe622e16b9a15c85a5a63da",
+        "sha256": "c15376e4264992cb8e8f39dbc0b205aafee473e16d5ee3e8bc6dbafa74d73f8d",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/models/llama_native.py": {
+        "git_blob": "23b4c0978631bdb1aebdba0e6be19bcf72e71b3b",
+        "sha256": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0",
+        "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/models/lm_model.py": {
+        "git_blob": "ab6678252e77a2f81934d88108f2623f097cbe2d",
+        "sha256": "1a8f7917f7c10b200afd772bf9638581091bc4757afb4a608cf602ba3a2264be",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/trainer.py": {
+        "git_blob": "fc26f829d7cb2b68bae7f53d27d56ec59ff2897b",
+        "sha256": "ba7ef0eef3fc5e172ba79948fa975f6bb3313e0b3fd277e2f7ac6914c30689ac",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/trainer_state.py": {
+        "git_blob": "9907f6c2c7e5447eb675b71c28c6ded741b6096a",
+        "sha256": "f97d7d6a24013a345e3a2a0a845514bdd1ebbcff08659af3f36f7db335ed4926",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/grad_accum.py": {
+        "git_blob": "4d8ee5fd2d427a123f4ac13e87dfe8682bab007a",
+        "sha256": "908fe328eee1055a726ef9e4f86955164e52b1a5f606a4bbd19433ac3f5f1fce",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/main/train_lm.py": {
+        "git_blob": "f9f698c88ec19d71024db376050b208991200636",
+        "sha256": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/layers/attention.py": {
+        "git_blob": "c6bf43eb417d9899f99af67ce7e61caef21fa8ba",
+        "sha256": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/checkpoint.py": {
+        "git_blob": "914418e5262708a9f29f2fa7b9123b47101ce0b4",
+        "sha256": "eb285e1fde895f1f0ce311ab2c745adf6c6399036ee3894dac3eb53aa84008cb",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/adaptor/__init__.py": {
+        "git_blob": "a9edae9b2e6e7322f5a817fe1a6725dd63f6f23d",
+        "sha256": "fb84be5d9282cc821187db0a64a431ba700c81f7e66a64ecc3c71196bdfed7d8",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/adaptor/lora.py": {
+        "git_blob": "e480b50b64e080c76ccd1edf8a34b7033b22e17b",
+        "sha256": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/tests/test_grad_accum.py": {
+        "git_blob": "3b745a9c9b21e69ae2f11ca5a1f89ec8c01c5d0d",
+        "sha256": "22da64bf334a76eaa66f9c4b50096f3d85165b26d84d6726093d32be12a4d089",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/testing/tiny_corpus.py": {
+        "git_blob": "c4f48aac226e15e3a0c1e9059bccbfa66d27e742",
+        "sha256": "c5690d9e48e71cf29b4f86b8144dc115836ce74ab4b079a413e918ebb9da9442",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/testing/tokenizer.py": {
+        "git_blob": "d60a9bd887468382997699dbac199c8879d2dd98",
+        "sha256": "84ea2a8ba660091305e16f195e72f404bd8403ccd1aee28d627dca90cd333625",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/tracker/json_file.py": {
+        "git_blob": "aff48917ca7b08b5730dc0d5c98457dcb14aaad3",
+        "sha256": "6e6df6a40f612ca44011f717bff2e792a0bc524a43ca3f73f47255e477fac5ad",
+        "byte_exact_previous_069": true
+      },
+      "lib/levanter/src/levanter/data/text/datasets.py": {
+        "git_blob": "2e5143dde6e9409760ab553deb1acd5d740289e0",
+        "sha256": "5bf02184ce4d1b1054d0ad6623bfff5c8ca8aa222ae31be5f7380343b62565c9",
+        "byte_exact_previous_069": true
+      }
+    },
+    "separate_from_research_checkout": true
+  },
+  "file_count": 11,
+  "total_selected_including_prior": 1205,
+  "total_stored_bytes": 163115,
+  "selected_files_canonical_json_sha256": "66fac5034ce9f93222efb9affa2df61245acf4966e5e164c90a9dea590d87805",
+  "selected_files": [
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/initial-probe.py.txt",
+      "bytes": 12349,
+      "sha256": "b0215ef7e72e83532a4e1b501e9939fa8042bd0fd4faff553b71fa0c98b75234",
+      "role": "Exact original unexecuted/review-rejected probe, not a runnable recommendation.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-probe.py",
+          "bytes": 12349,
+          "sha256": "b0215ef7e72e83532a4e1b501e9939fa8042bd0fd4faff553b71fa0c98b75234",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-probe.py"
+        }
+      ],
+      "transformation": "Byte-exact unexecutedsource/config; historicalinitial/R1 use .py.txt to preservebytes; finalR2filenames match portableconfig/recipe; no rewrite/formatting.",
+      "sanitization_steps": [],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/initial-config-history.json",
+      "bytes": 7622,
+      "sha256": "03ed8f13f9f578f880c9ad1d8e063b7bc59a3a674b3bfe8e2701efe8c6905287",
+      "role": "Original config identity and public source24 pins; preserve historical unexecuted/prepared_only flags.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-config.json",
+          "bytes": 6819,
+          "sha256": "b6c603d73d33bd58c1d4bcc0382b0c0171abf8d110349da4402f47cb5f3256d1",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-config.json"
+        }
+      ],
+      "transformation": "Explicit sanitized projection: remove source_root value, retain removal reason/privatehostpath category, originalhash/bytes, all sourcepins/modes and preparation-only flags. Outputhash/bytes/transforms separately. The projected config is historical, not executable R1. Boundedprojection/indent2JSON; no rawlogs/envfiles/tensors.",
+      "sanitization_steps": [],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/initial-preparation-history.json",
+      "bytes": 12775,
+      "sha256": "71636f1d29d0bf264e3a2a2961062e216b4dbd3dafc0f2f66753654b425d35d1",
+      "role": "Unexecuted phase and initial claimed checks; no experiment result.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-freeze.json",
+          "bytes": 5255,
+          "sha256": "e8c96868b85ec19f923fbaa76667830e7ef3cb0e696a9a32891acf55178480f0",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-freeze.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-plan.md",
+          "bytes": 7377,
+          "sha256": "bbf255fdb463a0c0a7c1e2ef9187c2ab27aa8efaaf082d23d1fea4110a24637c",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-plan.md"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-syntax-validation.json",
+          "bytes": 427,
+          "sha256": "cf9ce6fd409d7f52a61359b85272fc06ef39769e18d89f39b081c778cd24bc2b",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-syntax-validation.json"
+        }
+      ],
+      "transformation": "Project freeze excluding privateenv artifact/content and privatepath commands. Include original plan as sanitized text with old recipe prominently historical/notportable/review-rejected; retain originalhash/bytes. Syntaxvalidation only AST+unexecutedcodeobject, no projectimports/runtime. Boundedprojection/indent2JSON; no rawlogs/envfiles/tensors.",
+      "sanitization_steps": [
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.source_root",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.artifacts",
+          "operation": "omit private environment artifact; never read"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.commands_in_required_sequence[0].command",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.commands_in_required_sequence[1].command",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.commands_in_required_sequence[2].command",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.commands_in_required_sequence[3].command",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.commands_in_required_sequence[4].command",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-freeze.json.commands_in_required_sequence[5].command",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-plan.md.text",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-syntax-validation.json.probe",
+          "operation": "normalize private path token"
+        }
+      ],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/preparation-reviews.json",
+      "bytes": 52233,
+      "sha256": "4798aef3a32293c8f62fb8fe1a88e7a55aa39274cc5c0823d7805bcc2e862bf9",
+      "role": "Initial3P2\u2192R1zero; ordinaryPLC0415\u2192formattedR2freshreviewzero forpublicationpreparation, no runtimeapproval.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-review.md",
+          "bytes": 8202,
+          "sha256": "d6376b5b6426719d623150485f505f6f7870a26128ee57149f2c3420c08db081",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-review.md"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-review.json",
+          "bytes": 16401,
+          "sha256": "b84e0bf425a685a08358ab410114799ad47c68fcbe4c95ee757f177df3b8400c",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-review.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r1-disposition.json",
+          "bytes": 1357,
+          "sha256": "c8405219202ccde8c9825d8cd791165a198f019359931cfa43a838f982cf2227",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r1-disposition.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r1-review.json",
+          "bytes": 13062,
+          "sha256": "b87d6260c2bcadede0d6b23f0030dc73de1be964ff2c8f824fe7eaca7e92d31b",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r1-review.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-disposition.json",
+          "bytes": 1265,
+          "sha256": "dffa0ee076636ef745578dcf88e5cc2329cf489544c4c0e6e8ccae6de97da86b",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-disposition.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-review.json",
+          "bytes": 6350,
+          "sha256": "ea8d2346503d8caf732cda54473a1c2f3bdb9a94f34ec866908480535638686f",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-review.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-review.md",
+          "bytes": 4002,
+          "sha256": "8da66157a2643c8c9688da34212b87d72afaca361be5acc9261b82957105c0d1",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-review.md"
+        }
+      ],
+      "transformation": "Sanitize localpaths in exactfindings; preserve full F1portableCLI/F2partialstage/F3gradient-control rationale and statuses. Add finalauthor/refreeze/review when root supplies terminalbytes; no zero review assumed. Boundedprojection/indent2JSON; no rawlogs/envfiles/tensors.",
+      "sanitization_steps": [
+        {
+          "field": ".native-jax-core-fp8-preparation-review.md.text",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.freeze_path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.source_root",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.findings[0].path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.findings[0].related_paths[0]",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.findings[0].related_paths[1]",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.findings[1].path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.findings[1].related_paths[0]",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-review.json.findings[2].path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r1-review.json.freeze_path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r1-review.json.source_root",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r1-review.json.response_patch.path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r1-review.json.original_review.path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-disposition.json.R1_review",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-disposition.json.ordinary_R1_failure.log",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-review.json.freeze.path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-review.json.source.root",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-review.json.ordinary_hook_evidence.path",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-review.md.text",
+          "operation": "normalize private path token"
+        }
+      ],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/r1-probe.py.txt",
+      "bytes": 18033,
+      "sha256": "1969b5a9c58d8d1d66109a0b2b7f61547f90e915e608d29b311d8ddfe09ec645",
+      "role": "Exact unexecuted R1probe history1969; ordinarychecks foundPLC0415delayedprojectimports, R2beingprepared. No FP8runtime/acceptanceinsight.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r1-probe.py",
+          "bytes": 18033,
+          "sha256": "1969b5a9c58d8d1d66109a0b2b7f61547f90e915e608d29b311d8ddfe09ec645",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r1-probe.py"
+        }
+      ],
+      "transformation": "Byte-exact unexecutedsource/config; historicalinitial/R1 use .py.txt to preservebytes; finalR2filenames match portableconfig/recipe; no rewrite/formatting.",
+      "sanitization_steps": [],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-worker.py",
+      "bytes": 14975,
+      "sha256": "60ca11729cfec4d278a4437f33a6cf0ccfe656b9d966133d201c92fd1a4367ba",
+      "role": "FinalformattedR2topimportworker60ca, exactconfigfilename/hash; pendingfreshreview.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-worker.py",
+          "bytes": 14975,
+          "sha256": "60ca11729cfec4d278a4437f33a6cf0ccfe656b9d966133d201c92fd1a4367ba",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-worker.py"
+        }
+      ],
+      "transformation": "Byte-exact unexecutedsource/config; historicalinitial/R1 use .py.txt to preservebytes; finalR2filenames match portableconfig/recipe; no rewrite/formatting.",
+      "sanitization_steps": [],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-probe.py",
+      "bytes": 4646,
+      "sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+      "role": "FinalformattedR2stdlibrunner2c9e; exact .pybytes/filename; pendingfreshreview.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-probe.py",
+          "bytes": 4646,
+          "sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-probe.py"
+        }
+      ],
+      "transformation": "Byte-exact unexecutedsource/config; historicalinitial/R1 use .py.txt to preservebytes; finalR2filenames match portableconfig/recipe; no rewrite/formatting.",
+      "sanitization_steps": [],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-config.json",
+      "bytes": 6747,
+      "sha256": "da7a95ec2144b5caaf63932966b4a876721f2b3525f21c236de249643656d1e5",
+      "role": "FinalR2portableconfigda7a/24sourcepins/workerfilename+hash, exactbytes; pendingfreshreview.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-config.json",
+          "bytes": 6747,
+          "sha256": "da7a95ec2144b5caaf63932966b4a876721f2b3525f21c236de249643656d1e5",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-config.json"
+        }
+      ],
+      "transformation": "Byte-exact unexecutedsource/config; historicalinitial/R1 use .py.txt to preservebytes; finalR2filenames match portableconfig/recipe; no rewrite/formatting.",
+      "sanitization_steps": [],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/recipe.md",
+      "bytes": 15393,
+      "sha256": "4510cc0c943c672e4f7d48846b76cc01bcb5db9a824971d7ff787701a109d458",
+      "role": "PortableR2publicrecipe fromformattedauthorplan; rootfinishedprosecoldreadpending.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-plan.md",
+          "bytes": 12918,
+          "sha256": "56645c4ea850a4c4b33370af4f0fc3de7ef7d2eb1fd3e7f3ba6a3ee44340cc85",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-plan.md"
+        }
+      ],
+      "transformation": "Normalizeauthorprivatesourcepath; clarify achievedordinary+syntaxstaticchecks and already-authorizedCPUcampaign, omitroutinepre-freezemissingjsonassemblysentence. KeepallactualR2CLI/commands/environment/orderedstops/math intact; exactoriginal/outputhashes/lengths/literaltransforms. R1adds pinnedrepo/base/branch+relativepayload/freeze/sixcommands/environment/setup links; removes unspecifiedtraceclone asnondependency and replaces qualifiedvenv placeholder with installedcompatiblevenv, explicitly FP8runtimeunqualified.",
+      "sanitization_steps": [
+        {
+          "operation": "replace sole author-private source path with <execution-source-root>"
+        },
+        {
+          "operation": "clarify already-authorized CPUcampaign and rootreview/publication gate; no newpermissiongate"
+        },
+        {
+          "operation": "clarify achieved syntax+ordinarystaticchecks; no runtimecheck"
+        },
+        {
+          "operation": "omit routine pre-freeze missing-json assembly sentence; original preserved privately"
+        },
+        {
+          "operation": "R1add pinnedsource/base/branch and relativepayload/freeze/sixcommands/environment/setup links; remove unspecifiedtraceclone/qualifiedvenv dependency; identify FP8runtimeunqualified"
+        }
+      ],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json",
+      "bytes": 15123,
+      "sha256": "6bcd41f4d090e0962060bcb6221a23687fdff11a1231819844adb321dced86dd",
+      "role": "Chronologicalinitial/R1/R2freezes plus actualformattedR2ordinaryPASS receipt; no experiments, finalfreshreviewpending.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r1-freeze.json",
+          "bytes": 6215,
+          "sha256": "1feca9d8c35a0605be328964c0e4ccdb9c85e00ed9152de4c04a80d09bdd1a86",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r1-freeze.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r1-syntax-validation.json",
+          "bytes": 401,
+          "sha256": "ee17e5ca93ed01df9540f99071a89d0ec1cb2986855145dc61e41dd4d391ab84",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r1-syntax-validation.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-freeze.json",
+          "bytes": 6304,
+          "sha256": "4edc3517a0ea3c41a59327c9548555c6da7f6221fde0f3d9544122bbb1e5d19a",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-freeze.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-syntax-validation.json",
+          "bytes": 596,
+          "sha256": "3241f294b90d02e824782a8639f9e82f70fd7dc98d4e7a5cfa5ef73e1ea13c4c",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-syntax-validation.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-preparation-r2-ordinary-frozen.log",
+          "bytes": 756,
+          "sha256": "53e31c7fccc3c09c75076ae0a788e99a643e83619e1743c0b37f38733c320834",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-preparation-r2-ordinary-frozen.log"
+        }
+      ],
+      "transformation": "Bounded append-only chronologicalprojection. Source execution054 stays separate from archive GitHEAD. No result arrays/weights/environmentcontents. Publicationreceipt must identify exactprobe/config Gitblobs before anyexecution; no future results invented. Boundedprojection/indent2JSON; no rawlogs/envfiles/tensors.",
+      "sanitization_steps": [
+        {
+          "field": ".native-jax-core-fp8-preparation-r1-freeze.json.previous_freeze",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r1-freeze.json.review",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r1-freeze.json.preparer_clean_execution_source",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-freeze.json.previous_freezes_immutable[0]",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-freeze.json.previous_freezes_immutable[1]",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-freeze.json.R1_fresh_review_zero_historical",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-freeze.json.ordinary.preview",
+          "operation": "normalize private path token"
+        },
+        {
+          "field": ".native-jax-core-fp8-preparation-r2-freeze.json.ordinary.final_log",
+          "operation": "normalize private path token"
+        }
+      ],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    },
+    {
+      "archive_relative": "prepared/core-fp8-prelaunch/environment.json",
+      "bytes": 3219,
+      "sha256": "4c8457b0a966a55fe6fee4b1e9d03a2eafb96fdd333525d07e97693994f69d75",
+      "role": "Selected installed package metadata/Python3.12.11/macOSarm64/uv0.13.5, source054uv.lock identity and pinned setupreference; reusedCPUtrace env, FP8runtimeUNQUALIFIED.",
+      "measurement_or_source_pin": "UNEXECUTED initial/R1/formattedR2 researchsource; executionpublic054/tree649b0, no numericalresults",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-core-fp8-environment-metadata-private.json",
+          "bytes": 399,
+          "sha256": "d74dfaead904df1e6bdebcffb1751731ce53748b470db309a8c4205b3c33ff0f",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-environment-metadata-private.json"
+        },
+        {
+          "artifact_basename": "native-jax-core-fp8-prelaunch-environment.json",
+          "bytes": 3219,
+          "sha256": "4c8457b0a966a55fe6fee4b1e9d03a2eafb96fdd333525d07e97693994f69d75",
+          "artifact_relative_to_tmp": "native-jax-core-fp8-prelaunch-environment.json"
+        }
+      ],
+      "transformation": "Bounded metadata projection only, no privatepaths/fullenvironment/configs. Originalmetadatahash/bytes and derivedenvironmenthash/bytes. LockSHA/blob separate frominstalledversions; no bootstrap/install executed or completeenv==lock claim.",
+      "sanitization_steps": [
+        {
+          "operation": "project root-selected installed .dist-info metadata plus root stdlib-only Python/platform/uv facts, source054lock/setup Git identities; no setup execution/fullenvironment equality claim"
+        }
+      ],
+      "status": "UNEXECUTED_PRELAUNCH_STATIC_EVIDENCE"
+    }
+  ],
+  "notebook_prior_bytes": 272188,
+  "notebook_prior_sha256": "3d0ba983d2eb75c7053651d120a3c7da2f73e44cb3b043fe5f7adfcbf22acf4c",
+  "readme_exact_sha256": "6b3a092eb085ebc80ccceb8d660d852be312a1dcc6bbc0b8574e67597b5337d4",
+  "new_numerical_or_hardware_execution": false,
+  "runtime_outcomes": "NONE",
+  "environment_record": "prepared/core-fp8-prelaunch/environment.json",
+  "publication_order": "Rootverify/publish exactrunner+worker+config/recipe beforefirstCPU1baseline; actualresultreceipts beforeissueoutcomeclaim.",
+  "archival_transform_policy": "ExactrunnableR2 and historicalinitial/R1source; explicit historicalconfig/sourcepath projections; original/outputhashes/bytes/transforms; no privateenv/configs/weights/arrays/rawlogs."
+}

@@ -1,0 +1,633 @@
+{
+  "native-jax-core-fp8-preparation-review.md": {
+    "text": "# Unexecuted FP8 research preparation review\n\nVerdict: changes requested before publication/execution. The three bounded research questions and existing FP8/oracle reuse are appropriate; three preparation issues remain. This is not a product contribution or execution review.\n\n## Findings\n\n### [P2] F1: Publish a portable source-root/config execution contract\n\nLocation: `prepared/core-fp8-prelaunch/initial-probe.py.txt:215`.\n\nThe CLI has explicit output but no source-root argument. It obtains an author-private absolute /private/tmp source root from config and requires cwd and exact production054 HEAD there. A published research checkout has a different location and HEAD, so these exact probe/config bytes cannot run there without editing the pinned config or relying on the private clone. Add explicit --source-root, keeping execution source separate from published research probe/config location, and document a public recipe using explicit source/research/output paths. Keep immutable production commit/file pins. The private environment script may remain local setup, but cannot be a required published input. Move prepared_only/execution_authorized preparation-status claims to the preserved freeze/history (or label them as historical-at-freeze), rather than contradicting future executed receipts with immutable false runtime status.\n\n### [P2] F2: Retain failed-stage and completed-control evidence\n\nLocation: `prepared/core-fp8-prelaunch/initial-probe.py.txt:127`.\n\nAuto/Explicit controls accumulate local outcomes and return only after both succeed. An Explicit dot/VJP or assertion failure discards the completed Auto result; main records a generic raw-mode exception without the loop kind. The same lines execute for both kinds, so traceback need not identify whether Auto failed or Explicit was unsupported. Include current stage/kind and completed partial controls in each failure receipt; identify source/device/import preflight failures as invalid harness/provenance, not unsupported FP8. Preserve original exception/traceback and stop for review without retrying or changing placement/tolerances.\n\n### [P2] F3: Validate additive gradients before classifying the state reducer\n\nLocation: `prepared/core-fp8-prelaunch/initial-probe.py.txt:200`.\n\nLoss equality is asserted, but weight-gradient equality is only recorded as a max difference. If state matches but the additive gradient is wrong, the result still reports state_reduction_matches without a failed control. For this exactly representable synthetic case, require exact host-array weight-gradient equality or emit a separate failed-gradient-control outcome that prevents the state-reduction-success classification. Keep a state mismatch as a valid diagnostic result only after ordinary loss/gradient controls pass; do not relax tolerances or force the state to pass.\n\n## Design checks\n\n- **Canonical public FP8 finite-loss smoke and native rejection:** The two-step model/trainer recipe matches existing test_train_lm_fp8: two layers, hidden32, heads/KV2, seq64, default platform attention/F32, FP8/history defaults, batch=device count and one eval batch. Local GPT2 staging plus existing tiny corpus avoids model downloads. Persisted finite loss and parameter count are a smoke only. Actual native guard message is recorded with an exact-match flag and unexpected acceptance is distinctly labeled; this establishes no native attention/FP8 parity. Plan guard reference225-226 should be updated to actual230-231 while revising.\n  Evidence: lib/levanter/tests/test_train_lm.py:116-141; lib/levanter/src/levanter/main/train_lm.py:218-233; probe.py:69-112.\n\n- **Raw FP8 values, input/weight gradients and six overwritten states:** Existing Fp8DotGeneralOp/apply_updates and representable table/scales2,0.5,4 are reused. Output-first W gives X@W.T, cot@W and cot.T@X references. CPU1 and data2/model2 geometries divide dimensions; stored P(model,data) gathers to P(model,None). The values after scale divisions and E4M3/E5M2 cotangents remain exactly representable; strict forward/dgrad/wgrad equality is appropriate. Zero historical amax leaves scales unchanged; histories must carry global operand/cotangent maxima. This is a valid Explicit/custom-VJP feasibility question without copied quantizers or NativeLinear wiring.\n  Evidence: lib/haliax/tests/test_fp8.py:194-230; lib/haliax/src/haliax/quantization.py:180-270; lib/haliax/src/haliax/_src/fp8.py:37-67,91-119; probe.py:115-167.\n\n- **Raw microbatch versus overwrite reducer:** Two amplitude32/1 microbatches start from identical params/state. Existing microbatched_arrays is the candidate; actual per-microbatch gradients reduced by existing accumulate_gradients/partition_for_grad_overwrite, averaging only additive gradients, form the reference. Constant weight0.125 and this geometry keep control arithmetic representable. Max input amax32 versus predicted average16.5 is source reasoning, not an observed mismatch. All six states and parameter difference are recorded; F3 is needed to gate interpretation on ordinary gradient correctness.\n  Evidence: lib/levanter/tests/test_grad_accum.py:89-129; lib/levanter/src/levanter/grad_accum.py:29-103; lib/haliax/src/haliax/quantization.py:51-125,262-270; probe.py:170-210.\n\n- **Fray/client requirement for this exact baseline:** No explicit Fray LocalClient requirement is introduced by the shown path. construct_small_data_cache writes completed caches synchronously through SerialCacheWriter and returns DatasetComponent(source=None). LmDataConfig.build_caches takes the source=None direct load_lm_dataset_cache branch; it does not request distributed cache building. Therefore absence of a LocalClient is not an actionable static finding here. If execution instead enters a worker/client path, record it as a new harness/runtime observation rather than assuming this source analysis establishes runtime success.\n  Evidence: lib/levanter/src/levanter/testing/tiny_corpus.py:41-66; lib/levanter/src/levanter/store/cache.py:948-990; lib/levanter/src/levanter/data/text/datasets.py:1210-1221.\n\n- **Provenance, stop conditions and evidence scope:** Future process checks clean exact source, source hashes, CPU device count, four own-root module files and no Iris publishing runtime. Output refuses overwrite and plan orders baseline then raw then microbatch with stops/review on unexpected outcomes. F1/F2 are needed for portable publication and unambiguous failure receipts. Raw placement failures remain unknown, not automatically invalid implementation failures. Per-layer histories, remat, BF16, real checkpoint continuation, converter/native-layer wiring, accelerators/performance/scientific/canonical acceptance are explicitly excluded.\n  Evidence: probe.py:213-246; preparation-plan.md:13-40.\n\n## Exact reviewed pins\n\n- Source commit: `054413ea8563f7216a33ee8dd34fc001c13b37ff`\n- Source tree: `649b0eb013ee87bab6748cccde8d819f842d0704`\n- Freeze: `prepared/core-fp8-prelaunch/initial-preparation-history.json`\n\n- `prepared/core-fp8-prelaunch/initial-probe.py.txt`: SHA256 `b0215ef7e72e83532a4e1b501e9939fa8042bd0fd4faff553b71fa0c98b75234`, 12349 bytes\n- `prepared/core-fp8-prelaunch/initial-config-history.json`: SHA256 `b6c603d73d33bd58c1d4bcc0382b0c0171abf8d110349da4402f47cb5f3256d1`, 6819 bytes\n- `prepared/core-fp8-prelaunch/initial-preparation-history.json`: SHA256 `bbf255fdb463a0c0a7c1e2ef9187c2ab27aa8efaaf082d23d1fea4110a24637c`, 7377 bytes\n\nAll 24 config-listed source files matched their SHA256/blob pins and exact069/054 bytes; source remained clean.\n\nPrivate preparation-env.sh was not read, executed or hashed. Its freeze-listed hash is not independently qualified by this review. No secrets were accessed.\n\nNONE: smoke success, native rejection, raw Auto/Explicit behavior and microbatch mismatch remain unobserved for this probe.\n\nNo project imports, tests, probe execution, private env/secrets access, network, source edits or publication actions occurred.\n\nCorrect/refreeze F1/F2/F3 and obtain targeted review, then root publishes exact portable probe/config on the existing research branch before any execution. Do not silently change precision/attention/placement or tolerances to pass.\n"
+  },
+  "native-jax-core-fp8-preparation-review.json": {
+    "review_type": "independent_unexecuted_research_FP8_preparation_review",
+    "scope": "Research preparation only; not a maintained product contribution or runtime acceptance.",
+    "freeze_path": "prepared/core-fp8-prelaunch/initial-preparation-history.json",
+    "source_root": "<execution-source-root>",
+    "source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "source_clean_verified": true,
+    "reviewed_artifacts": {
+      "prepared/core-fp8-prelaunch/initial-probe.py.txt": {
+        "sha256": "b0215ef7e72e83532a4e1b501e9939fa8042bd0fd4faff553b71fa0c98b75234",
+        "bytes": 12349
+      },
+      "prepared/core-fp8-prelaunch/initial-config-history.json": {
+        "sha256": "b6c603d73d33bd58c1d4bcc0382b0c0171abf8d110349da4402f47cb5f3256d1",
+        "bytes": 6819
+      },
+      "prepared/core-fp8-prelaunch/initial-preparation-history.json": {
+        "sha256": "bbf255fdb463a0c0a7c1e2ef9187c2ab27aa8efaaf082d23d1fea4110a24637c",
+        "bytes": 7377
+      }
+    },
+    "source_files_verified": {
+      "lib/levanter/tests/test_train_lm.py": {
+        "sha256": "4be7b457464df890ea55b941217abcb93aeb9ff80b81238b3b79eb3dcad713e1",
+        "git_blob": "754aefce4ef9debe2be6aedcbdcf38fd9be8204d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/src/haliax/quantization.py": {
+        "sha256": "3e00b9ef87f3cc7fe825dc836aded4b59968e4422753f6caa35b7e979cea3336",
+        "git_blob": "d271fad5b61ed9daebe3c6ce920c5a7ce67246e0",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/src/haliax/_src/fp8.py": {
+        "sha256": "1204299351e150513d72459e17589f9c64af6c34bad9756024f02089d14964f7",
+        "git_blob": "3bec62614eb57fc710221e282e96fc18467ab910",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/src/haliax/nn/linear.py": {
+        "sha256": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+        "git_blob": "9f4523eafef23eb150241892ddb01585d2054adc",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/tests/test_fp8.py": {
+        "sha256": "e8eeb8f40b2ee57c4c06a89ca5fdd6340dba65113d1e280ac6ca63b4eb118c22",
+        "git_blob": "1093c001dfe9638723a29b7071e2140dc1a83d7f",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/layers/linear.py": {
+        "sha256": "23543feeec6d88b508261f834e2d8a891d3191ac65c2e6e15fb8619e38871807",
+        "git_blob": "bacba9a9e42c40f6a7aee8381c958ef490c190d5",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/layers/stacked.py": {
+        "sha256": "f6493229b00b1c596fc366591819e986ad195dad356d9bf4ff773cd900aeb7fe",
+        "git_blob": "9cbc0cda60f7d70511c59d660bb6152fcbd3a8b7",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/llama.py": {
+        "sha256": "c15376e4264992cb8e8f39dbc0b205aafee473e16d5ee3e8bc6dbafa74d73f8d",
+        "git_blob": "4bea659c122371e5cfe622e16b9a15c85a5a63da",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/llama_native.py": {
+        "sha256": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+        "git_blob": "23b4c0978631bdb1aebdba0e6be19bcf72e71b3b",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/lm_model.py": {
+        "sha256": "1a8f7917f7c10b200afd772bf9638581091bc4757afb4a608cf602ba3a2264be",
+        "git_blob": "ab6678252e77a2f81934d88108f2623f097cbe2d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/trainer.py": {
+        "sha256": "ba7ef0eef3fc5e172ba79948fa975f6bb3313e0b3fd277e2f7ac6914c30689ac",
+        "git_blob": "fc26f829d7cb2b68bae7f53d27d56ec59ff2897b",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/trainer_state.py": {
+        "sha256": "f97d7d6a24013a345e3a2a0a845514bdd1ebbcff08659af3f36f7db335ed4926",
+        "git_blob": "9907f6c2c7e5447eb675b71c28c6ded741b6096a",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/grad_accum.py": {
+        "sha256": "908fe328eee1055a726ef9e4f86955164e52b1a5f606a4bbd19433ac3f5f1fce",
+        "git_blob": "4d8ee5fd2d427a123f4ac13e87dfe8682bab007a",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/main/train_lm.py": {
+        "sha256": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+        "git_blob": "f9f698c88ec19d71024db376050b208991200636",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/layers/attention.py": {
+        "sha256": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+        "git_blob": "c6bf43eb417d9899f99af67ce7e61caef21fa8ba",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/checkpoint.py": {
+        "sha256": "eb285e1fde895f1f0ce311ab2c745adf6c6399036ee3894dac3eb53aa84008cb",
+        "git_blob": "914418e5262708a9f29f2fa7b9123b47101ce0b4",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/adaptor/__init__.py": {
+        "sha256": "fb84be5d9282cc821187db0a64a431ba700c81f7e66a64ecc3c71196bdfed7d8",
+        "git_blob": "a9edae9b2e6e7322f5a817fe1a6725dd63f6f23d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/adaptor/lora.py": {
+        "sha256": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+        "git_blob": "e480b50b64e080c76ccd1edf8a34b7033b22e17b",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/tests/test_grad_accum.py": {
+        "sha256": "22da64bf334a76eaa66f9c4b50096f3d85165b26d84d6726093d32be12a4d089",
+        "git_blob": "3b745a9c9b21e69ae2f11ca5a1f89ec8c01c5d0d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/testing/tiny_corpus.py": {
+        "sha256": "c5690d9e48e71cf29b4f86b8144dc115836ce74ab4b079a413e918ebb9da9442",
+        "git_blob": "c4f48aac226e15e3a0c1e9059bccbfa66d27e742",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/testing/tokenizer.py": {
+        "sha256": "84ea2a8ba660091305e16f195e72f404bd8403ccd1aee28d627dca90cd333625",
+        "git_blob": "d60a9bd887468382997699dbac199c8879d2dd98",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/tracker/json_file.py": {
+        "sha256": "6e6df6a40f612ca44011f717bff2e792a0bc524a43ca3f73f47255e477fac5ad",
+        "git_blob": "aff48917ca7b08b5730dc0d5c98457dcb14aaad3",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/data/text/datasets.py": {
+        "sha256": "5bf02184ce4d1b1054d0ad6623bfff5c8ca8aa222ae31be5f7380343b62565c9",
+        "git_blob": "2e5143dde6e9409760ab553deb1acd5d740289e0",
+        "byte_exact_069_and_054": true
+      }
+    },
+    "private_environment_boundary": "Private preparation-env.sh was not read, executed or hashed. Its freeze-listed hash is not independently qualified by this review. No secrets were accessed.",
+    "verdict": "changes_requested_before_publication_and_execution",
+    "findings": [
+      {
+        "id": "F1",
+        "priority": 2,
+        "title": "Publish a portable source-root/config execution contract",
+        "path": "prepared/core-fp8-prelaunch/initial-probe.py.txt",
+        "start_line": 215,
+        "end_line": 224,
+        "related_paths": [
+          "prepared/core-fp8-prelaunch/initial-config-history.json:2",
+          "prepared/core-fp8-prelaunch/initial-preparation-history.json:17-30"
+        ],
+        "description": "The CLI has explicit output but no source-root argument. It obtains an author-private absolute /private/tmp source root from config and requires cwd and exact production054 HEAD there. A published research checkout has a different location and HEAD, so these exact probe/config bytes cannot run there without editing the pinned config or relying on the private clone. Add explicit --source-root, keeping execution source separate from published research probe/config location, and document a public recipe using explicit source/research/output paths. Keep immutable production commit/file pins. The private environment script may remain local setup, but cannot be a required published input. Move prepared_only/execution_authorized preparation-status claims to the preserved freeze/history (or label them as historical-at-freeze), rather than contradicting future executed receipts with immutable false runtime status."
+      },
+      {
+        "id": "F2",
+        "priority": 2,
+        "title": "Retain failed-stage and completed-control evidence",
+        "path": "prepared/core-fp8-prelaunch/initial-probe.py.txt",
+        "start_line": 127,
+        "end_line": 167,
+        "related_paths": [
+          "prepared/core-fp8-prelaunch/initial-probe.py.txt:221-245"
+        ],
+        "description": "Auto/Explicit controls accumulate local outcomes and return only after both succeed. An Explicit dot/VJP or assertion failure discards the completed Auto result; main records a generic raw-mode exception without the loop kind. The same lines execute for both kinds, so traceback need not identify whether Auto failed or Explicit was unsupported. Include current stage/kind and completed partial controls in each failure receipt; identify source/device/import preflight failures as invalid harness/provenance, not unsupported FP8. Preserve original exception/traceback and stop for review without retrying or changing placement/tolerances."
+      },
+      {
+        "id": "F3",
+        "priority": 2,
+        "title": "Validate additive gradients before classifying the state reducer",
+        "path": "prepared/core-fp8-prelaunch/initial-probe.py.txt",
+        "start_line": 200,
+        "end_line": 208,
+        "description": "Loss equality is asserted, but weight-gradient equality is only recorded as a max difference. If state matches but the additive gradient is wrong, the result still reports state_reduction_matches without a failed control. For this exactly representable synthetic case, require exact host-array weight-gradient equality or emit a separate failed-gradient-control outcome that prevents the state-reduction-success classification. Keep a state mismatch as a valid diagnostic result only after ordinary loss/gradient controls pass; do not relax tolerances or force the state to pass."
+      }
+    ],
+    "design_checks": [
+      {
+        "question": "Canonical public FP8 finite-loss smoke and native rejection",
+        "assessment": "The two-step model/trainer recipe matches existing test_train_lm_fp8: two layers, hidden32, heads/KV2, seq64, default platform attention/F32, FP8/history defaults, batch=device count and one eval batch. Local GPT2 staging plus existing tiny corpus avoids model downloads. Persisted finite loss and parameter count are a smoke only. Actual native guard message is recorded with an exact-match flag and unexpected acceptance is distinctly labeled; this establishes no native attention/FP8 parity. Plan guard reference225-226 should be updated to actual230-231 while revising.",
+        "evidence": [
+          "lib/levanter/tests/test_train_lm.py:116-141",
+          "lib/levanter/src/levanter/main/train_lm.py:218-233",
+          "probe.py:69-112"
+        ]
+      },
+      {
+        "question": "Raw FP8 values, input/weight gradients and six overwritten states",
+        "assessment": "Existing Fp8DotGeneralOp/apply_updates and representable table/scales2,0.5,4 are reused. Output-first W gives X@W.T, cot@W and cot.T@X references. CPU1 and data2/model2 geometries divide dimensions; stored P(model,data) gathers to P(model,None). The values after scale divisions and E4M3/E5M2 cotangents remain exactly representable; strict forward/dgrad/wgrad equality is appropriate. Zero historical amax leaves scales unchanged; histories must carry global operand/cotangent maxima. This is a valid Explicit/custom-VJP feasibility question without copied quantizers or NativeLinear wiring.",
+        "evidence": [
+          "lib/haliax/tests/test_fp8.py:194-230",
+          "lib/haliax/src/haliax/quantization.py:180-270",
+          "lib/haliax/src/haliax/_src/fp8.py:37-67,91-119",
+          "probe.py:115-167"
+        ]
+      },
+      {
+        "question": "Raw microbatch versus overwrite reducer",
+        "assessment": "Two amplitude32/1 microbatches start from identical params/state. Existing microbatched_arrays is the candidate; actual per-microbatch gradients reduced by existing accumulate_gradients/partition_for_grad_overwrite, averaging only additive gradients, form the reference. Constant weight0.125 and this geometry keep control arithmetic representable. Max input amax32 versus predicted average16.5 is source reasoning, not an observed mismatch. All six states and parameter difference are recorded; F3 is needed to gate interpretation on ordinary gradient correctness.",
+        "evidence": [
+          "lib/levanter/tests/test_grad_accum.py:89-129",
+          "lib/levanter/src/levanter/grad_accum.py:29-103",
+          "lib/haliax/src/haliax/quantization.py:51-125,262-270",
+          "probe.py:170-210"
+        ]
+      },
+      {
+        "question": "Fray/client requirement for this exact baseline",
+        "assessment": "No explicit Fray LocalClient requirement is introduced by the shown path. construct_small_data_cache writes completed caches synchronously through SerialCacheWriter and returns DatasetComponent(source=None). LmDataConfig.build_caches takes the source=None direct load_lm_dataset_cache branch; it does not request distributed cache building. Therefore absence of a LocalClient is not an actionable static finding here. If execution instead enters a worker/client path, record it as a new harness/runtime observation rather than assuming this source analysis establishes runtime success.",
+        "evidence": [
+          "lib/levanter/src/levanter/testing/tiny_corpus.py:41-66",
+          "lib/levanter/src/levanter/store/cache.py:948-990",
+          "lib/levanter/src/levanter/data/text/datasets.py:1210-1221"
+        ]
+      },
+      {
+        "question": "Provenance, stop conditions and evidence scope",
+        "assessment": "Future process checks clean exact source, source hashes, CPU device count, four own-root module files and no Iris publishing runtime. Output refuses overwrite and plan orders baseline then raw then microbatch with stops/review on unexpected outcomes. F1/F2 are needed for portable publication and unambiguous failure receipts. Raw placement failures remain unknown, not automatically invalid implementation failures. Per-layer histories, remat, BF16, real checkpoint continuation, converter/native-layer wiring, accelerators/performance/scientific/canonical acceptance are explicitly excluded.",
+        "evidence": [
+          "probe.py:213-246",
+          "preparation-plan.md:13-40"
+        ]
+      }
+    ],
+    "dispositions": {
+      "probe": "Keep as bounded research diagnostic after F1/F2/F3; reuse existing math/state/oracles and do not promote it as product code.",
+      "config": "Retain immutable production source identities/question definition; pass host-specific execution source root explicitly, and keep preparation approval/status history separate from future execution receipts.",
+      "plan": "Retain three questions, strict controls, staged stops and limitations. Publish a portable recipe, refresh the stale guard line reference, and retain failures rather than forcing success.",
+      "source_clone": "Verified clean pinned source only; no implementation change authorized or made."
+    },
+    "actions_performed": [
+      "read freeze/plan/probe/config and relevant source/tests as text",
+      "verify reviewed artifact hashes and24 source pins/blob identities plus exact069/054 contents",
+      "write requested review artifacts using stdlib only"
+    ],
+    "not_performed": [
+      "project imports",
+      "tests",
+      "probe execution",
+      "AST/compile execution",
+      "private env/secrets reads",
+      "network",
+      "source edits",
+      "commit/push",
+      "publication",
+      "PR/CI/job/automation actions"
+    ],
+    "execution_status": "NONE: smoke success, native rejection, raw Auto/Explicit behavior and microbatch mismatch remain unobserved for this probe.",
+    "next_gate": "Correct/refreeze F1/F2/F3 and obtain targeted review, then root publishes exact portable probe/config on the existing research branch before any execution. Do not silently change precision/attention/placement or tolerances to pass."
+  },
+  "native-jax-core-fp8-preparation-r1-disposition.json": {
+    "F1": {
+      "response": "Explicit --source-root, --research-root, --config, --output. Research files and production execution source are separate paths; production commit/filepins remain. Config hostpath/statusflag fields removed; preparationstatus is historicalfreezeonly. Portable publicrecipe fullyspellsenv, no privateenv dependency.",
+      "runtime_claim": "none"
+    },
+    "F2": {
+      "response": "Source/provenance/device/import stages are persisted inside the failure envelope; projectimports moved inside recordedbootstrap. Preflightfailures classified invalidharness/provenance. CompletedAuto persists beforeExplicit begins, withkind/stage; canonicalcompleted persists beforenative. Originaltraceback rereaised afterreceipt.",
+      "runtime_claim": "none"
+    },
+    "F3": {
+      "response": "Exact host-array additiveweightgradient equality asserted afterlosscheck and BEFOREstateclassification. Difference retainedbeforeassertion; failedgradient cannot become statematch.",
+      "runtime_claim": "none"
+    },
+    "guard_reference": "Corrected plan publicmain guard230-231; prioraudit unchanged",
+    "original_artifacts": "All5originalfreezeartifactbytes verifiedunchanged; originalreview3P2retained.",
+    "unchanged_contract": "Same3questions, modelrecipe, placement, existingFP8/sharedreducers, exactoracles/tolerances; no sourceimplementation changes."
+  },
+  "native-jax-core-fp8-preparation-r1-review.json": {
+    "review_type": "fresh_targeted_unexecuted_FP8_preparation_R1_review",
+    "scope": "Research preparation only; no product contribution, execution acceptance or authority to execute.",
+    "freeze_path": "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json",
+    "freeze_sha256": "1feca9d8c35a0605be328964c0e4ccdb9c85e00ed9152de4c04a80d09bdd1a86",
+    "source_root": "<execution-source-root>",
+    "source_commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+    "source_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+    "source_clean_verified": true,
+    "reviewed_artifacts": {
+      "prepared/core-fp8-prelaunch/r1-probe.py.txt": {
+        "sha256": "1969b5a9c58d8d1d66109a0b2b7f61547f90e915e608d29b311d8ddfe09ec645",
+        "bytes": 18033
+      },
+      "native-jax-core-fp8-preparation-r1-config.json": {
+        "sha256": "6629d18aff49b829d23629ee5015fdd3d27df73b9f4ed724c3cafd0af738758a",
+        "bytes": 6583
+      },
+      "native-jax-core-fp8-preparation-r1-plan.md": {
+        "sha256": "7bcf82a1404e74b5e9c433b636ee0a57ffc06f2c759d8346f0b0d3c30da139fc",
+        "bytes": 10904
+      },
+      "prepared/core-fp8-prelaunch/preparation-reviews.json": {
+        "sha256": "c8405219202ccde8c9825d8cd791165a198f019359931cfa43a838f982cf2227",
+        "bytes": 1357
+      }
+    },
+    "response_patch": {
+      "path": "native-jax-core-fp8-preparation-r1-response.patch",
+      "sha256": "a13c66897522a4e3f87ecc39d012427ca1e33a5fd1b024bce765e63bad1200bf"
+    },
+    "source_pins_verified": {
+      "lib/levanter/tests/test_train_lm.py": {
+        "sha256": "4be7b457464df890ea55b941217abcb93aeb9ff80b81238b3b79eb3dcad713e1",
+        "git_blob": "754aefce4ef9debe2be6aedcbdcf38fd9be8204d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/src/haliax/quantization.py": {
+        "sha256": "3e00b9ef87f3cc7fe825dc836aded4b59968e4422753f6caa35b7e979cea3336",
+        "git_blob": "d271fad5b61ed9daebe3c6ce920c5a7ce67246e0",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/src/haliax/_src/fp8.py": {
+        "sha256": "1204299351e150513d72459e17589f9c64af6c34bad9756024f02089d14964f7",
+        "git_blob": "3bec62614eb57fc710221e282e96fc18467ab910",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/src/haliax/nn/linear.py": {
+        "sha256": "28c16638e78677306584582b43166adc95418d5a8ea983840e6eddfd2ad05b48",
+        "git_blob": "9f4523eafef23eb150241892ddb01585d2054adc",
+        "byte_exact_069_and_054": true
+      },
+      "lib/haliax/tests/test_fp8.py": {
+        "sha256": "e8eeb8f40b2ee57c4c06a89ca5fdd6340dba65113d1e280ac6ca63b4eb118c22",
+        "git_blob": "1093c001dfe9638723a29b7071e2140dc1a83d7f",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/layers/linear.py": {
+        "sha256": "23543feeec6d88b508261f834e2d8a891d3191ac65c2e6e15fb8619e38871807",
+        "git_blob": "bacba9a9e42c40f6a7aee8381c958ef490c190d5",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/layers/stacked.py": {
+        "sha256": "f6493229b00b1c596fc366591819e986ad195dad356d9bf4ff773cd900aeb7fe",
+        "git_blob": "9cbc0cda60f7d70511c59d660bb6152fcbd3a8b7",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/llama.py": {
+        "sha256": "c15376e4264992cb8e8f39dbc0b205aafee473e16d5ee3e8bc6dbafa74d73f8d",
+        "git_blob": "4bea659c122371e5cfe622e16b9a15c85a5a63da",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/llama_native.py": {
+        "sha256": "1601df875337ee1d412afd0bfa88e2f71974b5d54ba1ec58b1ef76537c62dd32",
+        "git_blob": "23b4c0978631bdb1aebdba0e6be19bcf72e71b3b",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/models/lm_model.py": {
+        "sha256": "1a8f7917f7c10b200afd772bf9638581091bc4757afb4a608cf602ba3a2264be",
+        "git_blob": "ab6678252e77a2f81934d88108f2623f097cbe2d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/trainer.py": {
+        "sha256": "ba7ef0eef3fc5e172ba79948fa975f6bb3313e0b3fd277e2f7ac6914c30689ac",
+        "git_blob": "fc26f829d7cb2b68bae7f53d27d56ec59ff2897b",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/trainer_state.py": {
+        "sha256": "f97d7d6a24013a345e3a2a0a845514bdd1ebbcff08659af3f36f7db335ed4926",
+        "git_blob": "9907f6c2c7e5447eb675b71c28c6ded741b6096a",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/grad_accum.py": {
+        "sha256": "908fe328eee1055a726ef9e4f86955164e52b1a5f606a4bbd19433ac3f5f1fce",
+        "git_blob": "4d8ee5fd2d427a123f4ac13e87dfe8682bab007a",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/main/train_lm.py": {
+        "sha256": "425c416ee05425f3b5286f454d89f6283985564acdc1e0c0b01b2aad3358bc9f",
+        "git_blob": "f9f698c88ec19d71024db376050b208991200636",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/layers/attention.py": {
+        "sha256": "12e3749293d82dc704e02e82d821449779ab22fd26c46b92f6692155c3b318ec",
+        "git_blob": "c6bf43eb417d9899f99af67ce7e61caef21fa8ba",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/checkpoint.py": {
+        "sha256": "eb285e1fde895f1f0ce311ab2c745adf6c6399036ee3894dac3eb53aa84008cb",
+        "git_blob": "914418e5262708a9f29f2fa7b9123b47101ce0b4",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/adaptor/__init__.py": {
+        "sha256": "fb84be5d9282cc821187db0a64a431ba700c81f7e66a64ecc3c71196bdfed7d8",
+        "git_blob": "a9edae9b2e6e7322f5a817fe1a6725dd63f6f23d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/adaptor/lora.py": {
+        "sha256": "9e4f03460360dd6e96ee3a59f85d99e00572fb53da4d8cb2fdad8592f5b19a80",
+        "git_blob": "e480b50b64e080c76ccd1edf8a34b7033b22e17b",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/tests/test_grad_accum.py": {
+        "sha256": "22da64bf334a76eaa66f9c4b50096f3d85165b26d84d6726093d32be12a4d089",
+        "git_blob": "3b745a9c9b21e69ae2f11ca5a1f89ec8c01c5d0d",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/testing/tiny_corpus.py": {
+        "sha256": "c5690d9e48e71cf29b4f86b8144dc115836ce74ab4b079a413e918ebb9da9442",
+        "git_blob": "c4f48aac226e15e3a0c1e9059bccbfa66d27e742",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/testing/tokenizer.py": {
+        "sha256": "84ea2a8ba660091305e16f195e72f404bd8403ccd1aee28d627dca90cd333625",
+        "git_blob": "d60a9bd887468382997699dbac199c8879d2dd98",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/tracker/json_file.py": {
+        "sha256": "6e6df6a40f612ca44011f717bff2e792a0bc524a43ca3f73f47255e477fac5ad",
+        "git_blob": "aff48917ca7b08b5730dc0d5c98457dcb14aaad3",
+        "byte_exact_069_and_054": true
+      },
+      "lib/levanter/src/levanter/data/text/datasets.py": {
+        "sha256": "5bf02184ce4d1b1054d0ad6623bfff5c8ca8aa222ae31be5f7380343b62565c9",
+        "git_blob": "2e5143dde6e9409760ab553deb1acd5d740289e0",
+        "byte_exact_069_and_054": true
+      }
+    },
+    "verdict": "no_findings_for_publication_preparation",
+    "findings": [],
+    "resolved_findings": [
+      {
+        "id": "F1",
+        "status": "resolved",
+        "evidence": [
+          "r1-probe.py:272-311",
+          "r1-config.json",
+          "r1-plan.md:17-59"
+        ],
+        "assessment": "Required --source-root/--research-root/--config/--output separate the clean pinned production source from published research artifacts. Production commit/file pins are unchanged and host-specific source root plus preparation/authorization flags are removed from runtime config. The public plan spells out host-provided source/research/output/venv variables, offline source package paths and a command needing no private environment file. Probe/config SHA256 and actual source location/commit are recorded separately. Research payload location no longer has to share production054 HEAD."
+      },
+      {
+        "id": "F2",
+        "status": "resolved",
+        "evidence": [
+          "r1-probe.py:12-43,103-121,139-186,247-264,285-330"
+        ],
+        "assessment": "Project imports execute inside recorded preflight. Source/config/module/device/publishing-runtime checks retain observations and failures are invalid_harness_or_provenance until preflight completion. Raw stages identify Auto/Explicit and placement/forward/grad/assertions; each completed control is persisted before the next starts. Canonical completion is persisted before native control. Exceptions retain stage, partial controls, original type/message/traceback and re-raise. Parse/output-directory errors remain explicitly documented invocation failures, not FP8 evidence."
+      },
+      {
+        "id": "F3",
+        "status": "resolved",
+        "evidence": [
+          "r1-probe.py:223-243"
+        ],
+        "assessment": "Exact loss and host-array additive-weight-gradient comparisons run before state classification. The gradient difference is persisted before the assertion, so a mismatch cannot yield state_reduction_matches. A state mismatch remains a valid research result only after the ordinary controls pass; all six existing state fields and existing custom reference reduction remain."
+      }
+    ],
+    "design_checks": [
+      {
+        "item": "Numerical/source approach unchanged",
+        "assessment": "Model recipe, F32/default attention, two-step canonical FP8 smoke and native guard comparison remain. Raw operand/cotangent tables, nonunit scales2/0.5/4, histories, CPU1/data2-model2 geometry, output-first stored/gathered weight placement, independent NumPy products and exact assertions are unchanged. Microbatch amplitudes32/1, constant weight0.125, identical initial params/state, existing raw candidate and shared overwrite reducers remain. No quantizer or implementation copied, no source modification or tolerance relaxation."
+      },
+      {
+        "item": "Research/publication and execution scope",
+        "assessment": "The public recipe and payload can remain byte-exact when host source/research/output/venv paths change. The preserved initial freeze keeps preparation-status history; runtime config is now source/question data only. Root publication-before-execution gate remains explicit; no automatic sequence loop or retry is introduced. Public APIs, custom VJP/Explicit placement and actual smoke/guard/state outcomes remain unobserved runtime questions."
+      },
+      {
+        "item": "No new client/framework requirement",
+        "assessment": "The source path still constructs completed tiny caches synchronously through SerialCacheWriter and direct source=None cache loading, so the prior no-LocalClient static assessment remains. Stage recording is a small receipt callback; no fake engine/state, new quantizer or product framework is introduced."
+      }
+    ],
+    "original_review": {
+      "path": "prepared/core-fp8-prelaunch/preparation-reviews.json",
+      "sha256": "b84e0bf425a685a08358ab410114799ad47c68fcbe4c95ee757f177df3b8400c",
+      "status": "changes_requested with three P2 findings F1/F2/F3 retained unchanged",
+      "original_artifacts_verified_unchanged": {
+        "prepared/core-fp8-prelaunch/initial-probe.py.txt": "b0215ef7e72e83532a4e1b501e9939fa8042bd0fd4faff553b71fa0c98b75234",
+        "prepared/core-fp8-prelaunch/initial-config-history.json": "b6c603d73d33bd58c1d4bcc0382b0c0171abf8d110349da4402f47cb5f3256d1",
+        "prepared/core-fp8-prelaunch/initial-preparation-history.json": "bbf255fdb463a0c0a7c1e2ef9187c2ab27aa8efaaf082d23d1fea4110a24637c"
+      },
+      "private_env_boundary": "Original private env/secrets were not read, executed or hashed; author freeze assertion about those bytes is not independently qualified here."
+    },
+    "actions_performed": [
+      "read R1 freeze/disposition/plan/probe/config as text only",
+      "verify exact reviewed hashes, original non-env artifact preservation, unchanged24 source pins/modes and clean source HEAD/tree",
+      "write separate R1 review artifacts"
+    ],
+    "not_performed": [
+      "project imports",
+      "probe import",
+      "tests",
+      "probe execution",
+      "AST/compile execution",
+      "private environment/secrets reads",
+      "source changes",
+      "network",
+      "commit/push",
+      "publication",
+      "PR/CI/job/automation actions"
+    ],
+    "execution_status": "NONE by reviewer. R1 is declared unexecuted by its supplied freeze; no canonical/raw/microbatch result is qualified. Syntax-only preparation is not runtime API validation.",
+    "next_gate": "Root may publish these exact reviewed research probe/config bytes after its record gate, then authorize the first bounded control only. Review the actual stage-tagged receipt before any later case. A harness/API error or genuine unsupported behavior must be recorded and assessed without silently changing numerical policy or forcing pass."
+  },
+  "native-jax-core-fp8-preparation-r2-disposition.json": {
+    "R1_review": "prepared/core-fp8-prelaunch/preparation-reviews.json",
+    "R1_review_status": "ZERO F1-F3 preserved as qualified unexecutedpreparation",
+    "ordinary_R1_failure": {
+      "log": "native-jax-core-fp8-prelaunch-ordinary-initial.log",
+      "finding": "PLC0415localimports; staticpreviewformat/license phases; no researchruntime"
+    },
+    "R2_response": "Stdlib-only runner with top-level importlib.util validates sibling workerfilename/hash, retainsworkerhash inreceipt, writespreflight.project_imports, spec+exec_module insideexistingtry. Workerprojectimports alltop-level; sameexecute/nesteddiagnostics; no mainCLI. Configportablepins unchanged plusworkerfilename/hash. Exactassertions/stages/recipe/mathpreserved byASTcomparison exceptsamevaluecotangentdefaultbinding forB023. NoSKIP/noqa/precisionortolerancechange.",
+    "R2_hook_history": {
+      "first": "...-r2-ordinary-format.log: formattingrequired andsplitmissedjsonimport staticF821; correctedimportonly",
+      "second": "...-r2-ordinary-final.log:PASS3python/configfiles",
+      "final": "...-r2-ordinary-frozen.log:PASSall4runnerworkerconfigplan"
+    },
+    "limits": "No projectimports/tests/diagnosticexecution/sourceimpledits/network/publication. Runtimeandfreshreviewpending."
+  },
+  "native-jax-core-fp8-preparation-r2-review.json": {
+    "review_type": "fresh_targeted_unexecuted_FP8_preparation_R2_review",
+    "verdict": "no_findings_for_publication_preparation",
+    "findings": [],
+    "scope": "Exact formatted research runner/worker/config/plan only. No maintained product approval, runtime qualification or execution authority.",
+    "freeze": {
+      "path": "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json",
+      "sha256": "4edc3517a0ea3c41a59327c9548555c6da7f6221fde0f3d9544122bbb1e5d19a"
+    },
+    "reviewed_artifacts": {
+      "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-probe.py": {
+        "sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+        "bytes": 4646
+      },
+      "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-worker.py": {
+        "sha256": "60ca11729cfec4d278a4437f33a6cf0ccfe656b9d966133d201c92fd1a4367ba",
+        "bytes": 14975
+      },
+      "prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-config.json": {
+        "sha256": "da7a95ec2144b5caaf63932966b4a876721f2b3525f21c236de249643656d1e5",
+        "bytes": 6747
+      },
+      "prepared/core-fp8-prelaunch/recipe.md": {
+        "sha256": "56645c4ea850a4c4b33370af4f0fc3de7ef7d2eb1fd3e7f3ba6a3ee44340cc85",
+        "bytes": 12918
+      },
+      "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json": {
+        "sha256": "3241f294b90d02e824782a8639f9e82f70fd7dc98d4e7a5cfa5ef73e1ea13c4c",
+        "bytes": 596
+      },
+      "prepared/core-fp8-prelaunch/preparation-reviews.json": {
+        "sha256": "dffa0ee076636ef745578dcf88e5cc2329cf489544c4c0e6e8ccae6de97da86b",
+        "bytes": 1265
+      },
+      "native-jax-core-fp8-preparation-r2-response.patch": {
+        "sha256": "2c242336801a4534588813485f89b0e712da953bff6deb61959e9ff7b42824a8",
+        "bytes": 45312
+      }
+    },
+    "source": {
+      "root": "<execution-source-root>",
+      "commit": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+      "clean_verified": true,
+      "source_pins_verified": 24,
+      "all24_exact_054_and_069": true
+    },
+    "dispositions": [
+      {
+        "piece": "stdlib runner",
+        "status": "no_finding",
+        "assessment": "Required source/research/config/output paths remain independent and portable. Fresh output receipt and original source/provenance checks are retained. Sibling worker path and SHA256 are checked and recorded before preflight.project_imports; spec/module/exec_module occur inside the existing exception envelope. Missing or invalid worker/imports preserve invalid_harness_or_provenance receipt and original re-raised exception. Partial canonical/Auto evidence and stage tagging are unchanged.",
+        "evidence": "r2-probe.py:46-101"
+      },
+      {
+        "piece": "top-level-import worker",
+        "status": "no_finding",
+        "assessment": "The execute AST is identical to R1 after removing the relocated imports/preflight.project_imports checkpoint and normalizing the new same-value cotangent lambda default. The lambda is invoked immediately in each loop iteration, preserving that iteration value. Recipes, operand arrays/scales/layouts, independent oracles, all six state fields, exact assertions, ordinary gradient gate, source/device checks and dispatch remain. No quantizer or framework added.",
+        "evidence": "r2-worker.py:8-301"
+      },
+      {
+        "piece": "config",
+        "status": "no_finding",
+        "assessment": "JSON differs from R1 only by worker filename and exact final formatted SHA256. Production commit/tree and all24 source pins are unchanged. No host-specific source root or execution/preparation flags return."
+      },
+      {
+        "piece": "plan",
+        "status": "no_finding",
+        "assessment": "Public recipe now publishes sibling runner/worker/config together. Clean source and research payload locations stay independent. Receipt and static-hook history are explicit; original R1 findings and subsequent ordinary failure remain historical. No control outcome, accelerator qualification, parity or implementation acceptance is asserted."
+      }
+    ],
+    "ordinary_hook_evidence": {
+      "path": "prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json",
+      "sha256": "53e31c7fccc3c09c75076ae0a788e99a643e83619e1743c0b37f38733c320834",
+      "reviewer_read_log": true,
+      "supplied_result": "All listed applicable hooks report ok and final OK on isolated preview copies.",
+      "reviewer_reran_hooks": false,
+      "boundary": "Static hook evidence only; not a diagnostic/project-import execution."
+    },
+    "historical_reviews": {
+      "preserved_files": {
+        "prepared/core-fp8-prelaunch/preparation-reviews.json": "b87d6260c2bcadede0d6b23f0030dc73de1be964ff2c8f824fe7eaca7e92d31b",
+        "native-jax-core-fp8-preparation-r1-review.md": "3194e166da8f74efc0440c209518cf962bc15443b8e065f4b39dc1fafd54bd75"
+      },
+      "initial": "Three P2 F1/F2/F3 findings retained.",
+      "R1": "F1/F2/F3 resolved in prior targeted static review, followed by separate ordinary PLC0415 failure; R1 is not final publication qualification."
+    },
+    "verification": [
+      "Read runner/worker/config/plan/freeze/disposition and supplied frozen ordinary log as text.",
+      "Independently verified all frozen hashes and all24 current source SHA256/git blobs plus clean source HEAD/tree.",
+      "Parsed source with stdlib ast solely for structural comparison; did not import or execute runner/worker or compile code objects.",
+      "Verified config R1-to-R2 adds only worker pin; wrote separate R2 review artifacts."
+    ],
+    "not_performed": [
+      "project imports",
+      "probe or worker imports",
+      "probe/worker execution",
+      "tests",
+      "ordinary hooks rerun",
+      "private environment/secrets reads",
+      "network",
+      "source edits",
+      "commit/push/publication",
+      "PR/CI/job/automation actions"
+    ],
+    "next_gate": "Root may consider publication of these exact research preparation bytes after its record gate, then separately authorize the first bounded control only. This review establishes no runtime outcome and no maintained implementation approval."
+  },
+  "native-jax-core-fp8-preparation-r2-review.md": {
+    "text": "# FP8 research preparation R2 review\n\n**Disposition: no findings for publication preparation.** This is a targeted static review of the exact formatted research payload, not maintained-product approval or runtime qualification.\n\nFreeze SHA256: `4edc3517a0ea3c41a59327c9548555c6da7f6221fde0f3d9544122bbb1e5d19a`.\n\nSource remains clean `054413ea8563f7216a33ee8dd34fc001c13b37ff`, tree `649b0eb013ee87bab6748cccde8d819f842d0704`. All 24 source SHA256/git-blob pins match both pinned054 and public069.\n\n## Piece dispositions\n\n- **stdlib runner: no finding.** Required source/research/config/output paths remain independent and portable. Fresh output receipt and original source/provenance checks are retained. Sibling worker path and SHA256 are checked and recorded before preflight.project_imports; spec/module/exec_module occur inside the existing exception envelope. Missing or invalid worker/imports preserve invalid_harness_or_provenance receipt and original re-raised exception. Partial canonical/Auto evidence and stage tagging are unchanged.\n- **top-level-import worker: no finding.** The execute AST is identical to R1 after removing the relocated imports/preflight.project_imports checkpoint and normalizing the new same-value cotangent lambda default. The lambda is invoked immediately in each loop iteration, preserving that iteration value. Recipes, operand arrays/scales/layouts, independent oracles, all six state fields, exact assertions, ordinary gradient gate, source/device checks and dispatch remain. No quantizer or framework added.\n- **config: no finding.** JSON differs from R1 only by worker filename and exact final formatted SHA256. Production commit/tree and all24 source pins are unchanged. No host-specific source root or execution/preparation flags return.\n- **plan: no finding.** Public recipe now publishes sibling runner/worker/config together. Clean source and research payload locations stay independent. Receipt and static-hook history are explicit; original R1 findings and subsequent ordinary failure remain historical. No control outcome, accelerator qualification, parity or implementation acceptance is asserted.\n\n## Exact frozen artifacts\n\n- `prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-probe.py` \u2014 `2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28` (4646 bytes).\n- `prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-worker.py` \u2014 `60ca11729cfec4d278a4437f33a6cf0ccfe656b9d966133d201c92fd1a4367ba` (14975 bytes).\n- `prepared/core-fp8-prelaunch/native-jax-core-fp8-preparation-r2-config.json` \u2014 `da7a95ec2144b5caaf63932966b4a876721f2b3525f21c236de249643656d1e5` (6747 bytes).\n- `prepared/core-fp8-prelaunch/recipe.md` \u2014 `56645c4ea850a4c4b33370af4f0fc3de7ef7d2eb1fd3e7f3ba6a3ee44340cc85` (12918 bytes).\n- `prepared/core-fp8-prelaunch/prelaunch-freeze-and-source-proof.json` \u2014 `3241f294b90d02e824782a8639f9e82f70fd7dc98d4e7a5cfa5ef73e1ea13c4c` (596 bytes).\n- `prepared/core-fp8-prelaunch/preparation-reviews.json` \u2014 `dffa0ee076636ef745578dcf88e5cc2329cf489544c4c0e6e8ccae6de97da86b` (1265 bytes).\n- `native-jax-core-fp8-preparation-r2-response.patch` \u2014 `2c242336801a4534588813485f89b0e712da953bff6deb61959e9ff7b42824a8` (45312 bytes).\n\nThe supplied frozen ordinary log was read and hash-verified: all listed hooks report `ok` and final `OK`. I did not rerun hooks. The initial three-P2 review and R1 review remain unchanged, including their separate evidence boundaries; the later R1 PLC0415 ordinary failure is preserved in the R2 history.\n\n## Limits and next gate\n\nNo project, runner or worker imports; no probe execution, tests, private environment/secrets reads, network, source edits or publication. Stdlib AST parsing compared structure without importing/executing or compiling a code object. This review does not establish smoke, guard, FP8/Explicit API, gradient, state-reduction, performance or hardware outcomes. Root publication and separate first-control authorization remain the next gates.\n"
+  },
+  "_interpretation": "Unexecuted research preparation. Initial3P2/R1zero/ordinaryPLC0415/formattedR2zero preserved chronologically; no FP8outcome/productacceptance. ExactR2runner+worker+config mustpublish together before firstCPU1baseline. CPUcontrols alreadycampaignauthorized; rootreviews publishedrecipe."
+}
