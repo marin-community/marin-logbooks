@@ -1,0 +1,86 @@
+{
+  "full_catalog": {
+    "source": "bcd24829d99cca992d464a22e12ff51094a41416",
+    "log_directory": "<local-catalog-output>",
+    "summary": "# Marin lint review \u2014 20261024T234332-yz9a0c45\n\n- log dir: `<local-catalog-output>`\n- branch: `codex/native-jax-sample-lm-support`\n- merge base: `86fc7b67c921ad4ac124835ca7379b04ffa1be25`\n- diff: 77 files, +8458 -597\n- merge mode: compose\n- composer exit: 0\n- timed out: false\n- total elapsed: 142.81s\n- findings: 2 (see `combined.md`)\n\n## Arms\n\n| arm | status | elapsed | stdout lines |\n| --- | --- | --- | --- |\n| complexity | exit 0 | 108.44s | 0 |\n| interfaces | exit 0 | 136.91s | 1 |\n| robustness | exit 0 | 112.60s | 1 |\n| cruft | exit 0 | 104.88s | 0 |\n| prose | exit 0 | 119.66s | 0 |\n| meta | exit 0 | 123.01s | 0 |\n| composer | exit 0 | 5.90s | 2 |\n",
+    "status": "COMPLETE_TWO_FINDINGS_RESPONSE_IN_PROGRESS",
+    "findings": [
+      {
+        "code": "ml-magic-constant",
+        "path": "lib/levanter/scripts/bench/bench_llama_native.py",
+        "response": "hoist only matched normepsilon1e-5 sharedconstant, preserve allsettings"
+      },
+      {
+        "code": "ml-tuple-return-shape",
+        "path": "lib/levanter/tests/inference/test_native_generation.py",
+        "response": "typed fixture dataclass withnamedfields"
+      }
+    ],
+    "arms": [
+      {
+        "arm": "complexity",
+        "exit_code": 0,
+        "stdout": "",
+        "terminal_token_report": true,
+        "output_sha256": "af9161cfd2163b086b9e5a0a28959651ea95c4094c18cc0874bf3c6fce526ad2"
+      },
+      {
+        "arm": "cruft",
+        "exit_code": 0,
+        "stdout": "",
+        "terminal_token_report": true,
+        "output_sha256": "d46835eed58a4e06abcad58dc8ba66778fdb7056ca2cf913364687da3771056e"
+      },
+      {
+        "arm": "interfaces",
+        "exit_code": 0,
+        "stdout": "lib/levanter/tests/inference/test_native_generation.py:361: ml-tuple-return-shape (0.92) Fixture returns checkpoint, source kind, and tokenizer path as an unnamed three-field tuple, making callers depend on positional field order.",
+        "terminal_token_report": true,
+        "output_sha256": "d58172e175bb693126fe365a2edb284252b2367ffb7201b72d404a5e905486d0"
+      },
+      {
+        "arm": "meta",
+        "exit_code": 0,
+        "stdout": "",
+        "terminal_token_report": true,
+        "output_sha256": "fa16dbbc2decf2b2a717f00cb75d255329a3a4b8361c917ccc60aba9f841f702"
+      },
+      {
+        "arm": "prose",
+        "exit_code": 0,
+        "stdout": "",
+        "terminal_token_report": true,
+        "output_sha256": "a4ef240b701a702159aa3ad58ddb2327ba3a052b89c26234e6bcdad3f34324ae"
+      },
+      {
+        "arm": "robustness",
+        "exit_code": 0,
+        "stdout": "lib/levanter/scripts/bench/bench_llama_native.py:116: ml-magic-constant (0.90) The matched legacy/native configurations repeat the RMSNorm epsilon literal independently at lines 96 and 116, allowing this shared benchmark setting to drift.",
+        "terminal_token_report": true,
+        "output_sha256": "e43f3b862b46b26c3d3fdc7d35ada72078f41b37efdb97477754d36c7627f3b9"
+      },
+      {
+        "arm": "composer",
+        "exit_code": 0,
+        "stdout": "lib/levanter/scripts/bench/bench_llama_native.py:116: ml-magic-constant (0.90) The matched legacy/native configurations repeat the RMSNorm epsilon literal independently at lines 96 and 116, allowing this shared benchmark setting to drift.\nlib/levanter/tests/inference/test_native_generation.py:361: ml-tuple-return-shape (0.92) Fixture returns checkpoint, source kind, and tokenizer path as an unnamed three-field tuple, making callers depend on positional field order.",
+        "terminal_token_report": true,
+        "output_sha256": "2280684926b0ad0d1115d409df6fd0fe2e6b274012bcc68fcab0519340f5ca47"
+      }
+    ],
+    "all_stdout_and_terminal_stderr_inspected": true,
+    "no_recursive_catalog_planned_for_targeted_response": true
+  },
+  "final_disposition": {
+    "status": "COMPLETE_ALL_TWO_FINDINGS_ADDRESSED",
+    "reviewed_initial_source": "bcd24829d99cca992d464a22e12ff51094a41416",
+    "final_source": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "catalog_receipt": "native-jax-sample-lm-root-catalog-proof.json",
+    "response_receipt": "native-jax-sample-lm-catalog-response-maintained-review.json",
+    "response_patch_sha256": "4eb3c6505a0f1d75f0fe7aca8f3039dffd026174b99f9562dda4c38940956e17",
+    "remaining_findings": [],
+    "recursive_full_catalog": false,
+    "source_runtime_docs_unchanged_from_initial_commit": true,
+    "validation": "root final23focusCPU8+realbenchmarkpass,23CPU1/4pass,requiredall4checks,actualaffected22pass1dependency skip"
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

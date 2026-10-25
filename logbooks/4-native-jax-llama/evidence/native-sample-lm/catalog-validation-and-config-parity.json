@@ -1,0 +1,484 @@
+{
+  "author_validation": {
+    "freeze": {
+      "checkout": "<local-checkout>",
+      "branch": "codex/native-jax-sample-lm-catalog-response",
+      "response_base": "bcd24829d99cca992d464a22e12ff51094a41416",
+      "response_base_tree": "ed3a5f7a8cd19f832da810e24cab162cd3281ad4",
+      "contribution_base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+      "response_patch": "evidence/native-sample-lm/catalog-response.patch",
+      "response_patch_sha256": "4eb3c6505a0f1d75f0fe7aca8f3039dffd026174b99f9562dda4c38940956e17",
+      "full_contribution_patch": "evidence/native-sample-lm/final-source.patch",
+      "full_contribution_patch_sha256": "81ca16a251114b92786978cbe8d6bb23a74ca031b2cfa1b5fc68dfe7acfa9658",
+      "files": {
+        "lib/levanter/src/levanter/main/sample_lm.py": {
+          "sha256": "d0845a2f49bee2f17d2da84087f83483e06fbcae5c0504314042ff7bb9b3fa8c",
+          "git_blob": "d7a007a0ab39380cfd4a4bd4286219bab11a713e",
+          "unchanged_from_bcd": true
+        },
+        "lib/levanter/docs/design/inference.md": {
+          "sha256": "d5d9ff47304982df64b7365670171f6bf6c72aaf315f93b9ae4badd82b078c11",
+          "git_blob": "180d74425547ebe888daa5f76e4941a9433e388d",
+          "unchanged_from_bcd": true
+        },
+        "lib/levanter/tests/inference/test_native_generation.py": {
+          "sha256": "96b88baff46b30b83a87b0d0c618b7aba4cb879f2b68c68a227a35e8cb49192e",
+          "git_blob": "361e83550e08114f8bb82833f16f9dc15bc4003e",
+          "unchanged_from_bcd": false
+        },
+        "lib/levanter/scripts/bench/bench_llama_native.py": {
+          "sha256": "5b950daced8928deb1b5981a08a79157df6d4ff7f970ac43381525d503e986ac",
+          "git_blob": "6894e6bca874c6a9e1831d6930401ecd6f98299e",
+          "unchanged_from_bcd": false
+        }
+      },
+      "source_frozen": true,
+      "committed": false,
+      "published": false,
+      "catalog_findings": "<local-catalog-output>"
+    },
+    "checks": {
+      "sampling_shared_engine_cpu1": {
+        "xml": "evidence/native-sample-lm/catalog-cpu1.xml",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "sampling_shared_engine_cpu4": {
+        "xml": "evidence/native-sample-lm/catalog-cpu4.xml",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "public_benchmark_cpu1": {
+        "xml": "evidence/native-sample-lm/catalog-benchmark-cpu1.xml",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "config_equality": {
+      "before": "evidence/native-sample-lm/catalog-validation-and-config-parity.json",
+      "actual_before_objects": "native-jax-sample-lm-benchmark-before.pkl",
+      "after_final": "evidence/native-sample-lm/catalog-validation-and-config-parity.json",
+      "proof_script": "evidence/native-sample-lm/catalog-validation-and-config-parity.json",
+      "result": "Actual dataclass equality and every individual field equal: 24 legacy and 20 native fields across default, existing CPU test and nondefault architecture BenchmarkConfig inputs. Epsilon remains exactly1e-5."
+    },
+    "precommit": {
+      "log": "native-jax-sample-lm-catalog-precommit-final.log",
+      "status": "all ordinary checks OK",
+      "hook_skips": false,
+      "ipc_permission": "require_escalated for Black worker"
+    },
+    "source_provenance": "evidence/native-sample-lm/catalog-validation-and-config-parity.json",
+    "runtime_docs_preservation": "evidence/native-sample-lm/catalog-validation-and-config-parity.json",
+    "device_assertion_runner": "native-jax-sample-lm-catalog-tests.py",
+    "root_config_explicit": true,
+    "safety_markers": "pytest root pyproject.toml defaults retained without -m override",
+    "historical_catalog": {
+      "directory": "<local-catalog-output>",
+      "findings": [
+        "ml-tuple-return-shape",
+        "ml-magic-constant"
+      ],
+      "rerun": false
+    },
+    "limits": [
+      "Runtime sample_lm and docs unchanged byte-for-byte from bcd24829d99cca992d464a22e12ff51094a41416.",
+      "Only fixture data access and shared benchmark epsilon spelling changed. No tolerances, recipes, JIT or model math changed.",
+      "Existing benchmark public CPU test passed before final blank-line-only formatter correction; final config equivalence proof and all ordinary checks use final bytes.",
+      "CPU reference-only qualification; no new accelerator, larger model science, full BF16 numerical or performance acceptance claim.",
+      "Root owns fresh response review before commit and independent CPU8 qualification. No commit/push/network/PR/CI/automation/accelerator/storage/secret actions."
+    ]
+  },
+  "synthetic_public_benchmark_configs_before": {
+    "script": "lib/levanter/scripts/bench/bench_llama_native.py",
+    "script_sha256": "9a2ac2ce0f388cb635160efec0b8c6aaa923c3a5ab00ffe1d14579f739f29dba",
+    "configs": {
+      "defaults": {
+        "legacy": {
+          "max_seq_len": 32,
+          "hidden_dim": 64,
+          "intermediate_dim": 128,
+          "num_layers": 2,
+          "num_heads": 4,
+          "head_dim": null,
+          "num_kv_heads": 2,
+          "activation_function": "silu",
+          "initializer_range": 0.02,
+          "layer_norm_epsilon": 1e-05,
+          "tie_word_embeddings": false,
+          "hybrid_norm": false,
+          "use_qk_norm": false,
+          "input_embedding_norm": false,
+          "upcast_attn": false,
+          "attn_backend": "vanilla",
+          "flash_attention_block_size": null,
+          "gradient_checkpointing": true,
+          "scan_layers": true,
+          "use_bias": false,
+          "use_layer_norm_weight": true,
+          "rope": {
+            "theta": 10000,
+            "factor": 1.0
+          },
+          "reference_checkpoint": "NousResearch/Llama-2-7b-hf",
+          "tokenizer": null
+        },
+        "native": {
+          "vocab_size": 128,
+          "hidden_dim": 64,
+          "intermediate_dim": 128,
+          "num_layers": 2,
+          "num_heads": 4,
+          "num_kv_heads": 2,
+          "activation_function": "silu",
+          "head_dim": null,
+          "max_seq_len": 32,
+          "layer_norm_epsilon": 1e-05,
+          "tie_word_embeddings": false,
+          "use_bias": false,
+          "use_layer_norm_weight": true,
+          "input_embedding_norm": false,
+          "hybrid_norm": false,
+          "use_qk_norm": false,
+          "upcast_attn": false,
+          "rope": {
+            "theta": 10000.0,
+            "factor": 1.0
+          },
+          "attention_implementation": "reference",
+          "gradient_checkpointing": true
+        }
+      },
+      "existing_cpu_test": {
+        "legacy": {
+          "max_seq_len": 8,
+          "hidden_dim": 16,
+          "intermediate_dim": 24,
+          "num_layers": 1,
+          "num_heads": 4,
+          "head_dim": null,
+          "num_kv_heads": 2,
+          "activation_function": "silu",
+          "initializer_range": 0.02,
+          "layer_norm_epsilon": 1e-05,
+          "tie_word_embeddings": false,
+          "hybrid_norm": false,
+          "use_qk_norm": false,
+          "input_embedding_norm": false,
+          "upcast_attn": false,
+          "attn_backend": "vanilla",
+          "flash_attention_block_size": null,
+          "gradient_checkpointing": true,
+          "scan_layers": true,
+          "use_bias": false,
+          "use_layer_norm_weight": true,
+          "rope": {
+            "theta": 10000,
+            "factor": 1.0
+          },
+          "reference_checkpoint": "NousResearch/Llama-2-7b-hf",
+          "tokenizer": null
+        },
+        "native": {
+          "vocab_size": 32,
+          "hidden_dim": 16,
+          "intermediate_dim": 24,
+          "num_layers": 1,
+          "num_heads": 4,
+          "num_kv_heads": 2,
+          "activation_function": "silu",
+          "head_dim": null,
+          "max_seq_len": 8,
+          "layer_norm_epsilon": 1e-05,
+          "tie_word_embeddings": false,
+          "use_bias": false,
+          "use_layer_norm_weight": true,
+          "input_embedding_norm": false,
+          "hybrid_norm": false,
+          "use_qk_norm": false,
+          "upcast_attn": false,
+          "rope": {
+            "theta": 10000.0,
+            "factor": 1.0
+          },
+          "attention_implementation": "reference",
+          "gradient_checkpointing": true
+        }
+      },
+      "nondefault_architecture": {
+        "legacy": {
+          "max_seq_len": 16,
+          "hidden_dim": 32,
+          "intermediate_dim": 48,
+          "num_layers": 3,
+          "num_heads": 8,
+          "head_dim": null,
+          "num_kv_heads": 4,
+          "activation_function": "silu",
+          "initializer_range": 0.02,
+          "layer_norm_epsilon": 1e-05,
+          "tie_word_embeddings": false,
+          "hybrid_norm": false,
+          "use_qk_norm": false,
+          "input_embedding_norm": false,
+          "upcast_attn": false,
+          "attn_backend": "vanilla",
+          "flash_attention_block_size": null,
+          "gradient_checkpointing": false,
+          "scan_layers": true,
+          "use_bias": false,
+          "use_layer_norm_weight": true,
+          "rope": {
+            "theta": 10000,
+            "factor": 1.0
+          },
+          "reference_checkpoint": "NousResearch/Llama-2-7b-hf",
+          "tokenizer": null
+        },
+        "native": {
+          "vocab_size": 64,
+          "hidden_dim": 32,
+          "intermediate_dim": 48,
+          "num_layers": 3,
+          "num_heads": 8,
+          "num_kv_heads": 4,
+          "activation_function": "silu",
+          "head_dim": null,
+          "max_seq_len": 16,
+          "layer_norm_epsilon": 1e-05,
+          "tie_word_embeddings": false,
+          "use_bias": false,
+          "use_layer_norm_weight": true,
+          "input_embedding_norm": false,
+          "hybrid_norm": false,
+          "use_qk_norm": false,
+          "upcast_attn": false,
+          "rope": {
+            "theta": 10000.0,
+            "factor": 1.0
+          },
+          "attention_implementation": "reference",
+          "gradient_checkpointing": false
+        }
+      }
+    }
+  },
+  "actual_dataclass_and_field_equality_after_final_bytes": {
+    "script": "lib/levanter/scripts/bench/bench_llama_native.py",
+    "script_sha256": "5b950daced8928deb1b5981a08a79157df6d4ff7f970ac43381525d503e986ac",
+    "results": {
+      "defaults": {
+        "legacy": {
+          "all_fields_equal": true,
+          "field_count": 24,
+          "fields": {
+            "max_seq_len": true,
+            "hidden_dim": true,
+            "intermediate_dim": true,
+            "num_layers": true,
+            "num_heads": true,
+            "head_dim": true,
+            "num_kv_heads": true,
+            "activation_function": true,
+            "initializer_range": true,
+            "layer_norm_epsilon": true,
+            "tie_word_embeddings": true,
+            "hybrid_norm": true,
+            "use_qk_norm": true,
+            "input_embedding_norm": true,
+            "upcast_attn": true,
+            "attn_backend": true,
+            "flash_attention_block_size": true,
+            "gradient_checkpointing": true,
+            "scan_layers": true,
+            "use_bias": true,
+            "use_layer_norm_weight": true,
+            "rope": true,
+            "reference_checkpoint": true,
+            "tokenizer": true
+          },
+          "layer_norm_epsilon": 1e-05
+        },
+        "native": {
+          "all_fields_equal": true,
+          "field_count": 20,
+          "fields": {
+            "vocab_size": true,
+            "hidden_dim": true,
+            "intermediate_dim": true,
+            "num_layers": true,
+            "num_heads": true,
+            "num_kv_heads": true,
+            "activation_function": true,
+            "head_dim": true,
+            "max_seq_len": true,
+            "layer_norm_epsilon": true,
+            "tie_word_embeddings": true,
+            "use_bias": true,
+            "use_layer_norm_weight": true,
+            "input_embedding_norm": true,
+            "hybrid_norm": true,
+            "use_qk_norm": true,
+            "upcast_attn": true,
+            "rope": true,
+            "attention_implementation": true,
+            "gradient_checkpointing": true
+          },
+          "layer_norm_epsilon": 1e-05
+        }
+      },
+      "existing_cpu_test": {
+        "legacy": {
+          "all_fields_equal": true,
+          "field_count": 24,
+          "fields": {
+            "max_seq_len": true,
+            "hidden_dim": true,
+            "intermediate_dim": true,
+            "num_layers": true,
+            "num_heads": true,
+            "head_dim": true,
+            "num_kv_heads": true,
+            "activation_function": true,
+            "initializer_range": true,
+            "layer_norm_epsilon": true,
+            "tie_word_embeddings": true,
+            "hybrid_norm": true,
+            "use_qk_norm": true,
+            "input_embedding_norm": true,
+            "upcast_attn": true,
+            "attn_backend": true,
+            "flash_attention_block_size": true,
+            "gradient_checkpointing": true,
+            "scan_layers": true,
+            "use_bias": true,
+            "use_layer_norm_weight": true,
+            "rope": true,
+            "reference_checkpoint": true,
+            "tokenizer": true
+          },
+          "layer_norm_epsilon": 1e-05
+        },
+        "native": {
+          "all_fields_equal": true,
+          "field_count": 20,
+          "fields": {
+            "vocab_size": true,
+            "hidden_dim": true,
+            "intermediate_dim": true,
+            "num_layers": true,
+            "num_heads": true,
+            "num_kv_heads": true,
+            "activation_function": true,
+            "head_dim": true,
+            "max_seq_len": true,
+            "layer_norm_epsilon": true,
+            "tie_word_embeddings": true,
+            "use_bias": true,
+            "use_layer_norm_weight": true,
+            "input_embedding_norm": true,
+            "hybrid_norm": true,
+            "use_qk_norm": true,
+            "upcast_attn": true,
+            "rope": true,
+            "attention_implementation": true,
+            "gradient_checkpointing": true
+          },
+          "layer_norm_epsilon": 1e-05
+        }
+      },
+      "nondefault_architecture": {
+        "legacy": {
+          "all_fields_equal": true,
+          "field_count": 24,
+          "fields": {
+            "max_seq_len": true,
+            "hidden_dim": true,
+            "intermediate_dim": true,
+            "num_layers": true,
+            "num_heads": true,
+            "head_dim": true,
+            "num_kv_heads": true,
+            "activation_function": true,
+            "initializer_range": true,
+            "layer_norm_epsilon": true,
+            "tie_word_embeddings": true,
+            "hybrid_norm": true,
+            "use_qk_norm": true,
+            "input_embedding_norm": true,
+            "upcast_attn": true,
+            "attn_backend": true,
+            "flash_attention_block_size": true,
+            "gradient_checkpointing": true,
+            "scan_layers": true,
+            "use_bias": true,
+            "use_layer_norm_weight": true,
+            "rope": true,
+            "reference_checkpoint": true,
+            "tokenizer": true
+          },
+          "layer_norm_epsilon": 1e-05
+        },
+        "native": {
+          "all_fields_equal": true,
+          "field_count": 20,
+          "fields": {
+            "vocab_size": true,
+            "hidden_dim": true,
+            "intermediate_dim": true,
+            "num_layers": true,
+            "num_heads": true,
+            "num_kv_heads": true,
+            "activation_function": true,
+            "head_dim": true,
+            "max_seq_len": true,
+            "layer_norm_epsilon": true,
+            "tie_word_embeddings": true,
+            "use_bias": true,
+            "use_layer_norm_weight": true,
+            "input_embedding_norm": true,
+            "hybrid_norm": true,
+            "use_qk_norm": true,
+            "upcast_attn": true,
+            "rope": true,
+            "attention_implementation": true,
+            "gradient_checkpointing": true
+          },
+          "layer_norm_epsilon": 1e-05
+        }
+      }
+    }
+  },
+  "reproduction_script_text": "import dataclasses\nimport hashlib\nimport importlib.util\nimport json\nimport pickle\nimport sys\nfrom pathlib import Path\n\nroot = Path.cwd()\nscript = root / 'lib/levanter/scripts/bench/bench_llama_native.py'\nspec = importlib.util.spec_from_file_location('bench_llama_native_config_proof', script)\nmodule = importlib.util.module_from_spec(spec)\nsys.modules[spec.name] = module\nspec.loader.exec_module(module)\ncases = {\n    'defaults': module.BenchmarkConfig(),\n    'existing_cpu_test': module.BenchmarkConfig(vocab_size=32, hidden_dim=16, intermediate_dim=24, num_layers=1, num_heads=4, num_kv_heads=2, batch_size=2, seq_len=8, warmup_steps=1, measured_steps=3, profile_steps=2),\n    'nondefault_architecture': module.BenchmarkConfig(vocab_size=64, hidden_dim=32, intermediate_dim=48, num_layers=3, num_heads=8, num_kv_heads=4, seq_len=16, gradient_checkpointing=False),\n}\nactual = {name: {'legacy': module._legacy_config(config), 'native': module._native_config(config)} for name,config in cases.items()}\noutput = Path(sys.argv[2])\nif sys.argv[1] == 'before':\n    with open(output.with_suffix('.pkl'), 'wb') as f: pickle.dump(actual, f)\n    report = {'script': str(script), 'script_sha256': hashlib.sha256(script.read_bytes()).hexdigest(), 'configs': {name: {variant: dataclasses.asdict(config) for variant,config in configs.items()} for name,configs in actual.items()}}\nelse:\n    with open(sys.argv[3], 'rb') as f: before = pickle.load(f)\n    results = {}\n    for name,configs in actual.items():\n        results[name] = {}\n        for variant,config in configs.items():\n            expected = before[name][variant]\n            assert expected == config, (name,variant)\n            fields = {field.name: getattr(expected,field.name) == getattr(config,field.name) for field in dataclasses.fields(config)}\n            assert all(fields.values()), (name,variant,fields)\n            results[name][variant] = {'all_fields_equal': True, 'field_count': len(fields), 'fields': fields, 'layer_norm_epsilon': config.layer_norm_epsilon}\n    report = {'script': str(script), 'script_sha256': hashlib.sha256(script.read_bytes()).hexdigest(), 'results': results}\noutput.write_text(json.dumps(report,indent=2,default=str)+'\\n')\n",
+  "reproduction_script_exact_sha256": "cf338d04935994e473a34d7b7fd8d8060afb023695f3a0d9795535800f065a07",
+  "reproduction": "Run retained script before mode at bcd, then after mode at a54 using only its own locally generated config pickle. Archive preparation never executes it or deserializes pickle. These synthetic settings are the public benchmark recipe, not private runtime/client configs.",
+  "source_provenance": {
+    "python": "python",
+    "jax_version": "0.11.1",
+    "source_modules": {
+      "levanter": "lib/levanter/src/levanter/__init__.py",
+      "haliax": "lib/haliax/src/haliax/__init__.py",
+      "marin": "lib/marin/src/marin/__init__.py",
+      "iris": "lib/iris/src/iris/__init__.py"
+    },
+    "devices": [
+      "cpu:0"
+    ]
+  },
+  "runtime_docs": {
+    "lib/levanter/src/levanter/main/sample_lm.py": {
+      "unchanged_from_bcd": true,
+      "sha256": "d0845a2f49bee2f17d2da84087f83483e06fbcae5c0504314042ff7bb9b3fa8c"
+    },
+    "lib/levanter/docs/design/inference.md": {
+      "unchanged_from_bcd": true,
+      "sha256": "d5d9ff47304982df64b7365670171f6bf6c72aaf315f93b9ae4badd82b078c11"
+    }
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

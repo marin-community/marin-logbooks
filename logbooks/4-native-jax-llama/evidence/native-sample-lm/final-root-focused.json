@@ -1,0 +1,140 @@
+{
+  "root_final": {
+    "source": {
+      "checkout": "<local-checkout>",
+      "branch": "codex/native-jax-sample-lm-catalog-response",
+      "response_base": "bcd24829d99cca992d464a22e12ff51094a41416",
+      "response_base_tree": "ed3a5f7a8cd19f832da810e24cab162cd3281ad4",
+      "contribution_base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+      "response_patch": "evidence/native-sample-lm/catalog-response.patch",
+      "response_patch_sha256": "4eb3c6505a0f1d75f0fe7aca8f3039dffd026174b99f9562dda4c38940956e17",
+      "full_contribution_patch": "evidence/native-sample-lm/final-source.patch",
+      "full_contribution_patch_sha256": "81ca16a251114b92786978cbe8d6bb23a74ca031b2cfa1b5fc68dfe7acfa9658",
+      "files": {
+        "lib/levanter/src/levanter/main/sample_lm.py": {
+          "sha256": "d0845a2f49bee2f17d2da84087f83483e06fbcae5c0504314042ff7bb9b3fa8c",
+          "git_blob": "d7a007a0ab39380cfd4a4bd4286219bab11a713e",
+          "unchanged_from_bcd": true
+        },
+        "lib/levanter/docs/design/inference.md": {
+          "sha256": "d5d9ff47304982df64b7365670171f6bf6c72aaf315f93b9ae4badd82b078c11",
+          "git_blob": "180d74425547ebe888daa5f76e4941a9433e388d",
+          "unchanged_from_bcd": true
+        },
+        "lib/levanter/tests/inference/test_native_generation.py": {
+          "sha256": "96b88baff46b30b83a87b0d0c618b7aba4cb879f2b68c68a227a35e8cb49192e",
+          "git_blob": "361e83550e08114f8bb82833f16f9dc15bc4003e",
+          "unchanged_from_bcd": false
+        },
+        "lib/levanter/scripts/bench/bench_llama_native.py": {
+          "sha256": "5b950daced8928deb1b5981a08a79157df6d4ff7f970ac43381525d503e986ac",
+          "git_blob": "6894e6bca874c6a9e1831d6930401ecd6f98299e",
+          "unchanged_from_bcd": false
+        }
+      },
+      "source_frozen": true,
+      "committed": false,
+      "published": false,
+      "catalog_findings": "<local-catalog-output>"
+    },
+    "actual_CPU8_asserted": true,
+    "root_config_explicit": true,
+    "default_markers_preserved": true,
+    "results": {
+      "cpu8": {
+        "tests": 23,
+        "passed": 23,
+        "xml": "evidence/native-sample-lm/final-root-cpu8.xml",
+        "sha256": "8a72bdc007f6cdd33c8c3ad400bb0c49f89dad17ea9a5a5f90f7a4aac6619c3d",
+        "nodes": [
+          "lib.levanter.tests.inference.test_native_generation::test_native_engine_prefill_incremental_generation_and_reuse[fp32]",
+          "lib.levanter.tests.inference.test_native_generation::test_native_engine_prefill_incremental_generation_and_reuse[bf16-greedy-only]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[hf-fp32-named]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[hf-fp32-native]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[hf-bf16-named]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[hf-bf16-native]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[levanter-fp32-named]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[levanter-fp32-native]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[levanter-bf16-named]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision[levanter-bf16-native]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_main_checkpoint_generation_matches_independent_named_oracle[hf-named]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_main_checkpoint_generation_matches_independent_named_oracle[hf-native]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_main_checkpoint_generation_matches_independent_named_oracle[levanter-named]",
+          "lib.levanter.tests.inference.test_native_generation::test_sampling_main_checkpoint_generation_matches_independent_named_oracle[levanter-native]",
+          "lib.levanter.tests.test_train_lm::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-silu]",
+          "lib.levanter.tests.test_train_lm::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[untied-gelu_new]",
+          "lib.levanter.tests.test_train_lm::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-silu]",
+          "lib.levanter.tests.test_train_lm::test_native_shared_loaders_preserve_master_weights_vocab_and_semantics[tied-gelu_new]",
+          "lib.levanter.tests.test_train_lm::test_native_shared_checkpoint_validates_identity_without_discovery_bookkeeping[missing-step]",
+          "lib.levanter.tests.test_train_lm::test_native_shared_checkpoint_validates_identity_without_discovery_bookkeeping[invalid-step]",
+          "lib.levanter.tests.test_train_lm::test_native_shared_checkpoint_validates_identity_without_discovery_bookkeeping[invalid-timestamp]",
+          "lib.levanter.tests.test_train_lm::test_named_shared_hf_loader_retains_source_config_reconstruction[untied]",
+          "lib.levanter.tests.test_train_lm::test_named_shared_hf_loader_retains_source_config_reconstruction[tied]"
+        ]
+      },
+      "benchmark": {
+        "tests": 1,
+        "passed": 1,
+        "xml": "evidence/native-sample-lm/final-benchmark-cpu8.xml",
+        "sha256": "211b03b27c56a16f3b80988010754c436e1ac2ed34eafaab384def7ee602ef1f",
+        "nodes": [
+          "lib.levanter.tests.test_llama_native_benchmark::test_matched_training_benchmark_preserves_parameters_updates_and_layouts"
+        ]
+      }
+    },
+    "author_CPU1_exact_cases_match": true,
+    "author_CPU4_exact_cases_match": true
+  },
+  "archive_static_XML_checks": [
+    {
+      "basename": "native-jax-sample-lm-catalog-cpu1.xml",
+      "bytes": 4358,
+      "sha256": "3ec5a0c25b72541cc2f1589dac30169534ae30a6db83afc6415df2406fbdfad3",
+      "passed": 23
+    },
+    {
+      "basename": "native-jax-sample-lm-catalog-cpu4.xml",
+      "bytes": 4359,
+      "sha256": "e56d17f9d432519db141092ce2c1b09aed969eb9e4682bf5b0bf4b292fd6661f",
+      "passed": 23
+    },
+    {
+      "basename": "native-jax-sample-lm-root-catalog-cpu8.xml",
+      "bytes": 4358,
+      "sha256": "8a72bdc007f6cdd33c8c3ad400bb0c49f89dad17ea9a5a5f90f7a4aac6619c3d",
+      "passed": 23
+    },
+    {
+      "basename": "native-jax-sample-lm-root-catalog-benchmark.xml",
+      "bytes": 417,
+      "sha256": "211b03b27c56a16f3b80988010754c436e1ac2ed34eafaab384def7ee602ef1f",
+      "passed": 1
+    },
+    {
+      "basename": "native-jax-sample-lm-r1-cpu1.xml",
+      "bytes": 2405,
+      "sha256": "52f09bd75ec1fa101c76af6ae34d33d9c10067550d49674291863d752cfeca57",
+      "passed": 12
+    },
+    {
+      "basename": "native-jax-sample-lm-r1-shared-engine-cpu1.xml",
+      "bytes": 1909,
+      "sha256": "2585f7ba200c533594696cdfdf20a60aadff18c54b79f86338ea7613f982dd63",
+      "passed": 11
+    },
+    {
+      "basename": "native-jax-sample-lm-r1-cpu4.xml",
+      "bytes": 4059,
+      "sha256": "0ac5cf325dddf090ecba0fb7d57dba5284ef3f6b04e78e85e2e349fcde86e9c0",
+      "passed": 23
+    },
+    {
+      "basename": "native-jax-sample-lm-root-cpu8.xml",
+      "bytes": 4358,
+      "sha256": "1ec52346cac3a722a4052928faaab1ed6f1719fbf8330b5264378f263cb4aa18",
+      "passed": 23
+    }
+  ],
+  "normalization": "Remove only lib.levanter.prefix from classnames; no function/parameter rewrites.",
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

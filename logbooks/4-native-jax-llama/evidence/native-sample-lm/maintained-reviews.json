@@ -1,0 +1,315 @@
+{
+  "maintained-review": {
+    "review_type": "fresh_independent_precommit_maintained_extraction",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-sample-lm-support",
+    "base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+    "base_tree": "be984e4a6765408b42befe337e3fae8c51b8a106",
+    "freeze_path": "evidence/native-sample-lm/source-phases.json",
+    "patch": "evidence/native-sample-lm/initial-source.patch",
+    "patch_sha256": "a0c6a36b3d40e25b109a4aac61f3aaeeb6d2c29eaf8620544f4e2eb3163edf2d",
+    "files": {
+      "lib/levanter/docs/design/inference.md": {
+        "sha256": "45d6fb79f042ed1ff0192048da23f104e555ed8508212872c8f6ca69e673d3d4",
+        "git_blob": "379082b881477b71bcf95e0341b187baf717e8ca"
+      },
+      "lib/levanter/src/levanter/main/sample_lm.py": {
+        "sha256": "220c858ba0de82909d53af65cc790e9cb922448cf17c4632f9aed311aa39014b",
+        "git_blob": "fd2b3154d23b65bc330259177531cb61df3ee45a"
+      },
+      "lib/levanter/tests/inference/test_native_generation.py": {
+        "sha256": "d7ad09a8c86dcc7a847d9a09852bcbf261de23ece797a1aa1d8da361bd286b4b",
+        "git_blob": "b5b024149648ff58191383554d5164c95b8c30fb"
+      }
+    },
+    "pins_verified": true,
+    "verdict": "changes_requested",
+    "findings": [
+      {
+        "id": "R1",
+        "priority": 1,
+        "title": "Preserve local-only named checkpoint loading",
+        "path": "lib/levanter/src/levanter/main/sample_lm.py",
+        "start_line": 75,
+        "end_line": 80,
+        "description": "For a local named Llama checkpoint and a local tokenizer, the new unconditional prepare_model_init_context call enters model_init.py:83-85 and constructs model.hf_checkpoint_converter() before replacing its tokenizer. LlamaConfig.hf_checkpoint_converter() uses the default NousResearch/Llama-2-7b-hf reference when model.tokenizer is unset; HFCheckpointConverter.__init__ eagerly resolves that reference tokenizer through AutoTokenizer.from_pretrained. The former local checkpoint branch constructed only the model template and checkpoint loader, so it worked without that unrelated HF cache or network access. A cold offline environment, or an unavailable reference, now prevents an otherwise entirely local sampling run.",
+        "evidence": [
+          "lib/levanter/src/levanter/main/model_init.py:83-85",
+          "lib/levanter/src/levanter/models/llama.py:87-88,107-114",
+          "lib/levanter/src/levanter/compat/hf_checkpoints.py:575-579,734-747,1476-1490"
+        ],
+        "requested_change": "Create the checkpoint initialization context without resolving an HF converter, or make the shared initialization path bind the already-loaded tokenizer before eager converter construction. Retain shared load_model_from_source loading. Fresh targeted review is required after the fix and before commit."
+      }
+    ],
+    "maintained_assessment": {
+      "lib/levanter/src/levanter/main/sample_lm.py": "Reusable support in the existing canonical sampling caller; no research-only helper or alternate framework. Native opt-in, explicit mesh, shared loaders, computation-precision cast, actual engine, and existing final GenerationResult are appropriate, subject to R1.",
+      "lib/levanter/tests/inference/test_native_generation.py": "Reusable local real-source tests cover named/native HF and model-subtree sources, smaller native tokenizer versus full source vocabulary, source architecture inference, FP32/BF16 loaded parameters, full logits, and real greedy engine token/logprob results against a separately built named oracle. No new internal mocks or guard-only tests. Existing CPU ragged reference dispatcher means CPU success does not establish TPU kernel behavior.",
+      "lib/levanter/docs/design/inference.md": "Maintained entrypoint and precision/vocabulary/checkpoint behavior documentation belongs beside the existing inference boundary docs. Claims are bounded and do not promote trial results, performance evidence, or accelerator acceptance."
+    },
+    "other_contracts": [
+      "Default SampleLmConfig.model remains LlamaConfig; canonical model selection unchanged.",
+      "Native HF source architecture is resolved before shared native HF validation; full HF rows retained.",
+      "Native checkpoint metadata validates architecture and supplies vocabulary; metadata-free fallback trusts original config and tokenizer-derived complete vocabulary.",
+      "Computation dtype casting is supplied through existing shared loader; engine compute_dtype remains separate cache precision.",
+      "Explicit native mesh setting uses dataclass replacement; original user config is not mutated.",
+      "Existing InferenceEngine is used with configured compute_axis_mapping; printed per-round outputs and request construction unchanged.",
+      "Final existing GenerationResult is returned after profiler/mesh scope exits and tracker.finish; zero rounds returns None."
+    ],
+    "actions_performed": [
+      "read-only source/diff/instruction inspection",
+      "SHA256, git blob, base tree and patch pin verification",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network access",
+      "PR/CI actions",
+      "job/automation actions",
+      "author output polling"
+    ],
+    "validation_boundary": "Static independent review only. Parent owns extracted-branch CPU8, lint/catalog/affected checks and publication. This review does not attest runtime validation, accelerator kernels, performance, or broader-model acceptance.",
+    "next_gate": "R1 requires a source fix and fresh targeted review before any commit."
+  },
+  "r1-maintained-review": {
+    "review_type": "targeted_independent_precommit_r1_response_and_final_maintained_extraction",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-sample-lm-support",
+    "base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+    "base_tree": "be984e4a6765408b42befe337e3fae8c51b8a106",
+    "freeze_path": "evidence/native-sample-lm/source-phases.json",
+    "patch": "native-jax-sample-lm-r1-support.patch",
+    "patch_sha256": "1dc171b45f2b08ca0744b3df4c379202b2d599e3bd99ac53954e3a3c7b345a1a",
+    "files": {
+      "lib/levanter/docs/design/inference.md": {
+        "sha256": "a711d71a53627512d3b9bb46b4478155d7b0fd0d44c4fc8d5f65072c22a78f05",
+        "git_blob": "2db86f9d73c2a30c1eb9a5f0fd05a7852482ff42"
+      },
+      "lib/levanter/src/levanter/main/sample_lm.py": {
+        "sha256": "d0845a2f49bee2f17d2da84087f83483e06fbcae5c0504314042ff7bb9b3fa8c",
+        "git_blob": "d7a007a0ab39380cfd4a4bd4286219bab11a713e"
+      },
+      "lib/levanter/tests/inference/test_native_generation.py": {
+        "sha256": "2ca943aca75e504e15e9351140ac6d54db82f4e65288350b84106537694d55e2",
+        "git_blob": "7afa57c77cd65229f876903fa14ec2458d4942d0"
+      }
+    },
+    "pins_verified": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "resolved_findings": [
+      {
+        "id": "R1",
+        "status": "fixed",
+        "source": "sample_lm.py:74-83 prepares the existing HF context only when hf_ref is present; local checkpoint sampling creates the existing ModelInitContext with configured model, converter=None, and use_hf_model_config=False. Both named and native checkpoint branches of load_model_from_source use no converter. Therefore the local path never resolves the model reference tokenizer.",
+        "test": "test_native_generation.py:398-401 sets tokenizer=None and a nonexistent absolute model reference on the named local checkpoint configuration after checkpoint creation. The real load/precision and main generation tests then use the outer local tokenizer and assert full weights/logits or independently computed greedy tokens/logprobs. Reintroducing unconditional context preparation resolves the missing reference and fails, so this exercises R1 through actual behavior without mocking internals or asserting helper dispatch.",
+        "docs": "inference.md:142-143 documents the preserved local-only contract.",
+        "hf_semantics": "The HF branch retains prepare_model_init_context with tokenizer, initialize_from_hf=hf_ref and use_hf_model_config=True; shared named/native source loader arguments and source architecture resolution are unchanged from the first reviewed extraction."
+      }
+    ],
+    "maintained_assessment": {
+      "lib/levanter/src/levanter/main/sample_lm.py": "Reusable support in the existing canonical sampling caller; no research-only helper or alternate framework. Native opt-in, explicit mesh, shared loaders, computation-precision cast, actual engine, and existing final GenerationResult are appropriate, with R1 now fixed.",
+      "lib/levanter/tests/inference/test_native_generation.py": "Reusable local real-source tests cover named/native HF and model-subtree sources, smaller native tokenizer versus full source vocabulary, source architecture inference, FP32/BF16 loaded parameters, full logits, and real greedy engine token/logprob results against a separately built named oracle. No new internal mocks or guard-only tests. Existing CPU ragged reference dispatcher means CPU success does not establish TPU kernel behavior. The missing-reference configuration now protects local-only named checkpoint sampling through the existing real generation and source tests.",
+      "lib/levanter/docs/design/inference.md": "Maintained entrypoint and precision/vocabulary/checkpoint behavior documentation belongs beside the existing inference boundary docs. Claims are bounded and do not promote trial results, performance evidence, or accelerator acceptance."
+    },
+    "other_contracts": [
+      "Default SampleLmConfig.model remains LlamaConfig; canonical model selection unchanged.",
+      "Native HF source architecture is resolved before shared native HF validation; full HF rows retained.",
+      "Native checkpoint metadata validates architecture and supplies vocabulary; metadata-free fallback trusts original config and tokenizer-derived complete vocabulary.",
+      "Computation dtype casting is supplied through existing shared loader; engine compute_dtype remains separate cache precision.",
+      "Explicit native mesh setting uses dataclass replacement; original user config is not mutated.",
+      "Existing InferenceEngine is used with configured compute_axis_mapping; printed per-round outputs and request construction unchanged.",
+      "Final existing GenerationResult is returned after profiler/mesh scope exits and tracker.finish; zero rounds returns None."
+    ],
+    "historical_patch": {
+      "sha256": "a0c6a36b3d40e25b109a4aac61f3aaeeb6d2c29eaf8620544f4e2eb3163edf2d",
+      "qualification": "Historical first-review patch only; it contained R1. It is not the final reviewed source and must not qualify final validation or publication."
+    },
+    "actions_performed": [
+      "read-only final source/diff and shared loader inspection",
+      "SHA256, git blob, base/tree, file allowlist and binary patch verification",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network access",
+      "PR/CI actions",
+      "job/automation actions",
+      "author output polling"
+    ],
+    "validation_boundary": "Static independent review only. Parent-reported CPU1 result was not rerun or independently verified. Parent owns final extracted-source CPU8, lint/catalog/affected checks and publication. This review does not attest runtime results, accelerator kernels, performance, or larger-model training acceptance.",
+    "next_gate": "No review finding remains for this exact frozen source. Required parent validation and publication gates still apply; any further source fix requires fresh targeted review before commit."
+  },
+  "root-docs-response-maintained-review": {
+    "review_type": "fresh_targeted_precommit_docs_response_maintained_review",
+    "checkout": "<local-checkout>",
+    "base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+    "tree": "ed3a5f7a8cd19f832da810e24cab162cd3281ad4",
+    "freeze_path": "evidence/native-sample-lm/source-phases.json",
+    "patch": "evidence/native-sample-lm/docs-qualified-bcd-source.patch",
+    "patch_sha256": "fae8e0e34a9faac82b09bb73b5536ec914be6991288a00d3f3684bde9acf85aa",
+    "files": {
+      "lib/levanter/docs/design/inference.md": {
+        "sha256": "d5d9ff47304982df64b7365670171f6bf6c72aaf315f93b9ae4badd82b078c11",
+        "git_blob": "180d74425547ebe888daa5f76e4941a9433e388d"
+      },
+      "lib/levanter/src/levanter/main/sample_lm.py": {
+        "sha256": "d0845a2f49bee2f17d2da84087f83483e06fbcae5c0504314042ff7bb9b3fa8c",
+        "git_blob": "d7a007a0ab39380cfd4a4bd4286219bab11a713e"
+      },
+      "lib/levanter/tests/inference/test_native_generation.py": {
+        "sha256": "2ca943aca75e504e15e9351140ac6d54db82f4e65288350b84106537694d55e2",
+        "git_blob": "7afa57c77cd65229f876903fa14ec2458d4942d0"
+      }
+    },
+    "pins_verified": true,
+    "runtime_and_tests_unchanged_from_r1_review": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "checks": [
+      {
+        "claim": "Earlier HTTP/streaming design is explicitly historical rather than current capability evidence.",
+        "docs": "lib/levanter/docs/design/inference.md:3-5",
+        "result": "Accurate scope clarification; makes no new current endpoint or runtime claim."
+      },
+      {
+        "claim": "checkpoint_path accepts a run directory or concrete model-subtree checkpoint; top-level tokenizer supplies the tokenizer and original model config remains required.",
+        "docs": "lib/levanter/docs/design/inference.md:143-146",
+        "evidence": [
+          "sample_lm.py:35-41,74-94,103-121",
+          "main/model_init.py:122-131,156-162",
+          "model_loading.py:99-119",
+          "checkpoint.py:938-991,1115-1205"
+        ],
+        "result": "Consistent with source. The native loader discovers candidates or restores a concrete directory and always loads subpath=model; the caller loads the outer tokenizer. R1 remains fixed."
+      },
+      {
+        "claim": "Metadata-free native checkpoint vocabulary comes from tokenizer length rounded for computation mapping, must match stored embedding rows, and has no separate caller override.",
+        "docs": "lib/levanter/docs/design/inference.md:148-152",
+        "evidence": [
+          "sample_lm.py:31-64,119-121",
+          "model_loading.py:112-119"
+        ],
+        "result": "Accurate. Caller supplies only rounded tokenizer Vocab. With no native model metadata, checkpoint_vocab_size returns None and the loader retains the supplied template vocabulary."
+      },
+      {
+        "claim": "HF and metadata-bearing native sources retain stored extra vocabulary rows.",
+        "docs": "lib/levanter/docs/design/inference.md:156-157",
+        "evidence": [
+          "model_loading.py:112-119,169-181",
+          "compat/hf_checkpoints.py:965-1007"
+        ],
+        "result": "Accurately distinguishes source vocabulary recovery from metadata-free caller inference."
+      },
+      {
+        "claim": "R1 source and behavioral regression tests are unchanged.",
+        "evidence": [
+          "lib/levanter/src/levanter/main/sample_lm.py",
+          "lib/levanter/tests/inference/test_native_generation.py"
+        ],
+        "result": "Exact SHA256 and git blob equality with reviewed R1 freeze verified."
+      }
+    ],
+    "maintained_assessment": "The prose clarifies operational entrypoint contracts and evidence limits that future users need. It introduces no research artifacts or new framework. Prior maintained-use and source/test review remains applicable because executable and test content is byte-identical to the reviewed R1 response.",
+    "historical_patches": [
+      "a0c6a36b3d40e25b109a4aac61f3aaeeb6d2c29eaf8620544f4e2eb3163edf2d",
+      "1dc171b45f2b08ca0744b3df4c379202b2d599e3bd99ac53954e3a3c7b345a1a"
+    ],
+    "historical_qualification": "Earlier patch hashes identify historical review stages, not this final prose-qualified source. Final patch is fae8e0e34a9faac82b09bb73b5536ec914be6991288a00d3f3684bde9acf85aa.",
+    "actions_performed": [
+      "read-only factual documentation/source review",
+      "verify final patch, all three file hashes/blobs, base, staged tree and clean index-to-worktree correspondence",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network actions",
+      "PR/CI/job/automation actions"
+    ],
+    "validation_boundary": "Static review only. No tests were needed or run for the prose-only response. Parent owns existing executable validation, final lint/catalog checks and publication; review is not accelerator or runtime acceptance.",
+    "next_gate": "No review finding remains for the exact final tree/patch. Any further source fix requires fresh targeted review before commit."
+  },
+  "catalog-response-maintained-review": {
+    "review_type": "fresh_targeted_precommit_catalog_response_and_four_piece_maintained_review",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-sample-lm-catalog-response",
+    "response_base": "bcd24829d99cca992d464a22e12ff51094a41416",
+    "response_base_tree": "ed3a5f7a8cd19f832da810e24cab162cd3281ad4",
+    "contribution_base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+    "freeze_path": "evidence/native-sample-lm/source-phases.json",
+    "response_patch": "evidence/native-sample-lm/catalog-response.patch",
+    "response_patch_sha256": "4eb3c6505a0f1d75f0fe7aca8f3039dffd026174b99f9562dda4c38940956e17",
+    "full_contribution_patch": "evidence/native-sample-lm/final-source.patch",
+    "full_contribution_patch_sha256": "81ca16a251114b92786978cbe8d6bb23a74ca031b2cfa1b5fc68dfe7acfa9658",
+    "files": {
+      "lib/levanter/src/levanter/main/sample_lm.py": {
+        "sha256": "d0845a2f49bee2f17d2da84087f83483e06fbcae5c0504314042ff7bb9b3fa8c",
+        "git_blob": "d7a007a0ab39380cfd4a4bd4286219bab11a713e",
+        "unchanged_from_response_base": true
+      },
+      "lib/levanter/docs/design/inference.md": {
+        "sha256": "d5d9ff47304982df64b7365670171f6bf6c72aaf315f93b9ae4badd82b078c11",
+        "git_blob": "180d74425547ebe888daa5f76e4941a9433e388d",
+        "unchanged_from_response_base": true
+      },
+      "lib/levanter/tests/inference/test_native_generation.py": {
+        "sha256": "96b88baff46b30b83a87b0d0c618b7aba4cb879f2b68c68a227a35e8cb49192e",
+        "git_blob": "361e83550e08114f8bb82833f16f9dc15bc4003e",
+        "unchanged_from_response_base": false
+      },
+      "lib/levanter/scripts/bench/bench_llama_native.py": {
+        "sha256": "5b950daced8928deb1b5981a08a79157df6d4ff7f970ac43381525d503e986ac",
+        "git_blob": "6894e6bca874c6a9e1831d6930401ecd6f98299e",
+        "unchanged_from_response_base": false
+      }
+    },
+    "pins_verified": true,
+    "verdict": "no_findings",
+    "findings": [],
+    "catalog_resolutions": [
+      {
+        "rule": "ml-tuple-return-shape",
+        "status": "resolved",
+        "path": "lib/levanter/tests/inference/test_native_generation.py",
+        "lines": "347-374,451,466,479",
+        "assessment": "The three-field fixture now returns a small frozen SamplingSource dataclass with explicit checkpoint, kind and tokenizer_path fields. All fixture consumers use named fields; no tuple indexing or destructuring remains. Exact LocalLlamaCheckpoint payload, source-kind parameterization and tokenizer path are preserved. Weight/precision/logit checks and real engine token/logprob assertions against the independent named oracle remain unchanged."
+      },
+      {
+        "rule": "ml-magic-constant",
+        "status": "resolved",
+        "path": "lib/levanter/scripts/bench/bench_llama_native.py",
+        "lines": "51,99,119",
+        "assessment": "One module-level LAYER_NORM_EPSILON = 1e-5 replaces exactly the two matched legacy/native layer_norm_epsilon literals. The value is identical and both constructors still receive the same epsilon. No other model field, optimizer field, recipe, benchmark execution/JIT path, or numerical tolerance changes. A shared constant prevents the paired configurations from drifting without adding a new knob or abstraction."
+      }
+    ],
+    "maintained_assessment": {
+      "lib/levanter/src/levanter/main/sample_lm.py": "Byte-identical to bcd and the prior reviewed R1 source. Reusable existing caller support, native opt-in and explicit mesh, shared loaders, restored local named checkpoint independence from HF references, unchanged Haliax default, existing engine, and final GenerationResult return remain accepted.",
+      "lib/levanter/docs/design/inference.md": "Byte-identical to bcd and the prior reviewed final prose. Maintained caller/configuration, precision, vocabulary and evidence-boundary documentation remains accurate; no historical trial artifact is introduced.",
+      "lib/levanter/tests/inference/test_native_generation.py": "SamplingSource is a proportionate maintained test fixture record for three distinct fields. Real local HF/Levanter source loading, full vocabulary/weights/precision checks and independent named full-forward/greedy token-logprob oracles remain. R1 missing-reference case is retained. No mock, guard-only, registration or internal-dispatch test is introduced.",
+      "lib/levanter/scripts/bench/bench_llama_native.py": "The inherited maintained matched benchmark receives only the shared epsilon constant. This belongs to its continuing role of constructing equal legacy/native model settings and preserves its numerical configuration; no research-only reproduction artifact is promoted."
+    },
+    "rules_read": [
+      "infra/lint/rules/interfaces/ml-tuple-return-shape.yaml",
+      "infra/lint/rules/robustness/ml-magic-constant.yaml"
+    ],
+    "catalog_findings_read": "<local-catalog-output>",
+    "scope": "Targeted fresh review of the two reported catalog responses and all four final contribution pieces. No recursive full catalog run.",
+    "actions_performed": [
+      "read-only source/diff/rule/catalog-finding inspection",
+      "verify all four file hashes/blobs, both patch hashes, base/tree, response file allowlist and exact unchanged caller/docs",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "network actions",
+      "PR/CI/job/automation actions",
+      "active author-output polling"
+    ],
+    "validation_boundary": "Static independent review. Parent/author reported executions are not independently verified here. Parent owns root validation, required catalog completion, publication and monitoring. CPU success remains distinct from accelerator-kernel or larger-model acceptance.",
+    "next_gate": "No review finding remains for these exact frozen response and full-contribution patches. Any subsequent source fix needs fresh targeted review before commit."
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

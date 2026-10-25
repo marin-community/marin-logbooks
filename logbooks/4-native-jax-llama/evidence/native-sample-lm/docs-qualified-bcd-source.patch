@@ -1,0 +1,374 @@
+diff --git a/lib/levanter/docs/design/inference.md b/lib/levanter/docs/design/inference.md
+index a40229f68d..180d744255 100644
+--- a/lib/levanter/docs/design/inference.md
++++ b/lib/levanter/docs/design/inference.md
+@@ -1,7 +1,8 @@
+ # Draft Design Document for Inference
+ 
+-> **Note**: This document contains the technical design and architecture for
+-> the inference server.
++> The server sections preserve an earlier design and implementation snapshot.
++> Verify HTTP endpoint and streaming support against the current server.
++> The native model and sampling sections describe the current model/caller APIs.
+ 
+ ## References
+ 
+@@ -128,6 +129,33 @@ not validate the accelerator kernel or mixed query/cache dtype support.
+ 
+ The native methods consume and return the existing donated cache state. Callers
+ must retain the returned cache and use existing page-copy/reset behavior for
+-clones and subsequent requests. Canonical model selection and sampling loaders
+-are separate migration steps. All source vocabulary rows are retained; deciding
+-which rows are valid tokenizer outputs remains an entrypoint policy.
++clones and subsequent requests. Canonical model selection remains a separate
++migration step. All source vocabulary rows are retained; deciding which rows
++are valid tokenizer outputs remains an entrypoint policy.
++
++### Sampling entrypoint
++
++`levanter.main.sample_lm` supports native sampling through the opt-in
++`model.type: llama_native`; its default remains `llama`. The caller uses the
++shared model initialization and source loaders, enables explicit mesh axes for
++native models, and passes the existing engine its configured computation mapping.
++HF sources determine the effective architecture before native layout validation.
++For local sampling, `checkpoint_path` names a run directory containing `step-*`
++checkpoints or a concrete checkpoint directory containing the `model/` subtree.
++Set the top-level `tokenizer` to its local tokenizer path and keep `model` set to
++the original architecture. This path does not resolve an HF reference.
++Native Levanter model-subtree checkpoints retain their saved architecture identity
++and full vocabulary through checkpoint metadata validation. For metadata-free native checkpoints, sampling derives the vocabulary size from
++the tokenizer and rounds it for the configured computation mapping. That size
++must equal the checkpoint embedding row count; this entrypoint has no separate
++vocabulary-size override. Use a compatible tokenizer or a metadata-bearing
++checkpoint when the stored model has extra rows.
++
++Both source paths cast loaded parameters to `trainer.mp.compute_dtype` for
++sampling. `engine.compute_dtype` separately controls the KV cache; set both when
++choosing computation precision. HF sources and metadata-bearing native checkpoints retain stored vocabulary
++rows beyond the tokenizer in logits and sampling. Such rows may decode to empty text, so token IDs
++and log probabilities are available from the final `GenerationResult` returned by
++`sample_lm.main`; zero sampling rounds return `None`. Printed per-round output is
++unchanged. This caller support does not establish accelerator kernel correctness,
++performance superiority, or larger-model training acceptance.
+diff --git a/lib/levanter/src/levanter/main/sample_lm.py b/lib/levanter/src/levanter/main/sample_lm.py
+index e1c39ceb97..d7a007a0ab 100644
+--- a/lib/levanter/src/levanter/main/sample_lm.py
++++ b/lib/levanter/src/levanter/main/sample_lm.py
+@@ -3,10 +3,9 @@
+ import logging
+ import time
+ from contextlib import ExitStack
+-from dataclasses import dataclass, field
++from dataclasses import dataclass, field, replace
+ from typing import Optional, cast
+ 
+-import equinox as eqx
+ import haliax as hax
+ import jax.numpy as jnp
+ import jax.random as jrandom
+@@ -17,15 +16,14 @@ import levanter
+ import levanter.config
+ import levanter.tracker
+ from levanter.callbacks import profile_ctx
+-from levanter.checkpoint import latest_checkpoint_path, load_checkpoint
+-from levanter.compat.hf_checkpoints import HFCheckpointConverter, RepoRef, load_tokenizer
+-from levanter.inference.engine import InferenceEngine, InferenceEngineConfig, Request
++from levanter.compat.hf_checkpoints import RepoRef, load_tokenizer
++from levanter.inference.engine import GenerationResult, InferenceEngine, InferenceEngineConfig, Request
+ from levanter.inference.jit_scheduler import SeqDecodingParams
+ from levanter.inference.utils import INVALID
+-from levanter.models.llama import LlamaConfig, LlamaLMHeadModel
++from levanter.main.model_init import ModelInitContext, load_model_from_source, prepare_model_init_context
++from levanter.models.llama import LlamaConfig
+ from levanter.models.lm_model import LmConfig, LmHeadModel
+ from levanter.trainer import TrainerConfig
+-from levanter.utils.jax_utils import use_cpu_device
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -66,44 +64,41 @@ class SampleLmConfig:
+     log_kernel_jaxprs_path: Optional[str] = None
+ 
+ 
+-def _load_model(config: SampleLmConfig, Vocab: Axis, *, key) -> LmHeadModel:
+-    """Load a model either from a checkpoint or HF repo."""
+-
++def _load_model(config: SampleLmConfig, Vocab: Axis, *, tokenizer, key) -> LmHeadModel:
++    """Load sampling parameters in computation precision under the active mesh."""
+     if config.checkpoint_path is None and config.hf_checkpoint is None:
+         raise ValueError("Must specify either checkpoint_path or hf_checkpoint")
+     if config.checkpoint_path is not None and config.hf_checkpoint is not None:
+         raise ValueError("Specify only one of checkpoint_path or hf_checkpoint")
+ 
+-    mp = config.trainer.mp
+-
+-    if config.checkpoint_path is not None:
+-        with use_cpu_device():
+-            model = eqx.filter_eval_shape(config.model.build, Vocab, key=key)
+-            checkpoint_path = latest_checkpoint_path(config.checkpoint_path)
+-            model = load_checkpoint(
+-                model,
+-                checkpoint_path,
+-                subpath="model",
+-                axis_mapping=config.trainer.parameter_axis_mapping,
+-            )
+-            model = mp.cast_to_compute(model)
+-        return model
+-    else:
+-        assert hasattr(config.model, "hf_checkpoint_converter"), "model config lacks HF loader"
+-        converter: HFCheckpointConverter = config.model.hf_checkpoint_converter()
+-        converter = converter.replaced(
+-            reference_checkpoint=config.hf_checkpoint, tokenizer=load_tokenizer(config.tokenizer)
+-        )
+-        model = converter.load_pretrained(
+-            config.model.model_type,
+-            ref=config.hf_checkpoint,
+-            axis_mapping=config.trainer.parameter_axis_mapping,
+-            dtype=config.trainer.mp.compute_dtype,
++    hf_ref = str(config.hf_checkpoint) if config.hf_checkpoint is not None else False
++    if hf_ref:
++        context = prepare_model_init_context(
++            config.model,
++            tokenizer=tokenizer,
++            initialize_from_hf=hf_ref,
++            use_hf_model_config=True,
+         )
+-        return model  # type: ignore[return-value]
+-
+-
+-def main(config: SampleLmConfig):
++    else:
++        context = ModelInitContext(model=config.model, converter=None, use_hf_model_config=False)
++    return load_model_from_source(
++        context=context,
++        Vocab=Vocab,
++        model_key=key,
++        parameter_axis_mapping=config.trainer.parameter_axis_mapping,
++        compute_axis_mapping=config.trainer.compute_axis_mapping,
++        batch_axis_name=config.trainer.batch_axis_name,
++        compute_dtype=config.trainer.mp.compute_dtype,
++        cast_to_param=config.trainer.mp.cast_to_compute,
++        hf_ref=hf_ref,
++        checkpoint_path=config.checkpoint_path,
++    )
++
++
++def main(config: SampleLmConfig) -> GenerationResult | None:
++    """Sample and print text, returning the final round's token IDs and log probabilities."""
++    if config.model.requires_explicit_mesh_axes:
++        config = replace(config, trainer=replace(config.trainer, use_explicit_mesh_axes=True))
+     levanter.trainer.initialize(config)
+     tok_string: str | None = config.tokenizer
+     if tok_string is None and config.hf_checkpoint is not None:
+@@ -117,12 +112,13 @@ def main(config: SampleLmConfig):
+ 
+     key = jrandom.PRNGKey(config.seed)
+ 
++    result = None
++
+     # NB: we use the compute_axis_mapping b/c we're doing inference
+     with config.trainer.use_device_mesh():
+         vocab_size = len(tokenizer)
+         Vocab = round_axis_for_partitioning(Axis("vocab", vocab_size), config.trainer.compute_axis_mapping)
+-        model = _load_model(config, Vocab, key=key)
+-        assert isinstance(model, LlamaLMHeadModel), "Only LlamaLMHeadModel supported"
++        model = _load_model(config, Vocab, tokenizer=tokenizer, key=key)
+ 
+         prompts = config.prompts
+ 
+@@ -215,6 +211,7 @@ def main(config: SampleLmConfig):
+                     print(f"Tokens with text for sequence {seq_id}: {tokens_with_text}")
+ 
+     levanter.tracker.current_tracker().finish()
++    return result
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/lib/levanter/tests/inference/test_native_generation.py b/lib/levanter/tests/inference/test_native_generation.py
+index a1b8468945..7afa57c77c 100644
+--- a/lib/levanter/tests/inference/test_native_generation.py
++++ b/lib/levanter/tests/inference/test_native_generation.py
+@@ -7,12 +7,24 @@ import equinox as eqx
+ import haliax as hax
+ import jax
+ import jax.numpy as jnp
++import jmp
+ import numpy as np
+ import pytest
++from haliax.state_dict import to_torch_compatible_state_dict
+ from jax.sharding import AxisType, Mesh, PartitionSpec as P
+ from tokenizers.processors import TemplateProcessing
+ from transformers import AutoTokenizer
+ 
++from levanter.checkpoint import save_checkpoint
++from levanter.compat.hf_checkpoints import RepoRef
++from levanter.distributed import DistributedConfig
++from levanter.main import sample_lm
++from levanter.models.llama import LlamaConfig
++from levanter.model_loading import load_hf_checkpoint
++from levanter.testing.hf_checkpoints import write_llama_checkpoint
++from levanter.tracker import NoopConfig
++from levanter.trainer import TrainerConfig
++from levanter.utils.mesh import MeshConfig
+ from levanter.eval_harness import LevanterHarnessLM, _LmEvalHarnessWorker
+ 
+ from levanter.grug.attention import AttentionMask
+@@ -20,6 +32,7 @@ from levanter.inference.engine import InferenceEngine, InferenceEngineConfig, Re
+ from levanter.inference.jit_scheduler import SeqDecodingParams, SequenceTable
+ from levanter.inference.page_table import PageTable
+ from levanter.inference.utils import INVALID
++from levanter.layers.attention import AttentionMask as NamedAttentionMask
+ from levanter.layers.rotary import (
+     DefaultRotaryEmbeddingsConfig,
+     Llama3RotaryEmbeddingsConfig,
+@@ -329,3 +342,150 @@ def test_native_generate_until_uses_real_prefill_incremental_cache_and_stop(nati
+     assert actual == expected
+     assert actual[0]
+     assert actual[1].strip() == harness.tokenizer.decode(expected_ids[1][:-1], skip_special_tokens=True)
++
++
++@pytest.fixture(params=["hf", "levanter"])
++def sampling_source(tmp_path, tiny_hf_tokenizer_path, request):
++    named_config = LlamaConfig(
++        hidden_dim=16,
++        intermediate_dim=24,
++        num_layers=1,
++        num_heads=4,
++        num_kv_heads=2,
++        max_seq_len=16,
++        activation_function=ActivationFunctionEnum.gelu_new,
++    )
++    source = write_llama_checkpoint(
++        tmp_path / "sampling-source", named_config, named_config.to_hf_config(32), key=jax.random.PRNGKey(13)
++    )
++    return source, request.param, tiny_hf_tokenizer_path
++
++
++def _sampling_config(sampling_source, tmp_path, native, dtype):
++    source, source_kind, tokenizer_path = sampling_source
++    config_type = NativeLlamaLmConfig if native else LlamaConfig
++    model_config = config_type.from_hf_config(source.config.to_hf_config(32))
++    model_size = 2 if len(jax.devices()) >= 4 else 1
++    trainer = TrainerConfig(
++        mp=jmp.Policy(param_dtype=jnp.float32, compute_dtype=dtype, output_dtype=dtype),
++        mesh=MeshConfig(axes={"data": len(jax.devices()) // model_size, "model": model_size}),
++        require_accelerator=False,
++        distributed=DistributedConfig(initialize_jax_distributed=False),
++        tracker=NoopConfig(),
++        log_dir=tmp_path / "logs",
++    )
++    path = str(source.path)
++    if source_kind == "levanter":
++        with dataclasses.replace(trainer, use_explicit_mesh_axes=native).use_device_mesh():
++            model = load_hf_checkpoint(
++                model_config,
++                path,
++                tokenizer=load_tokenizer(tokenizer_path),
++                compute_dtype=jnp.float32,
++                axis_mapping=trainer.parameter_axis_mapping,
++                compute_axis_mapping=trainer.compute_axis_mapping,
++                batch_axis_name=trainer.batch_axis_name,
++            )
++            path = str(tmp_path / "sampling-checkpoint")
++            metadata = model.checkpoint_metadata() if native else None
++            save_checkpoint({"model": model}, 1, path, metadata=metadata)
++        if not native:
++            # Named checkpoints retain their existing tokenizer-sized template contract.
++            tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
++            tokenizer.add_tokens(["token31"])
++            tokenizer_path = str(tmp_path / "named-tokenizer")
++            tokenizer.save_pretrained(tokenizer_path)
++            # Local checkpoint sampling must only need the outer tokenizer.
++            model_config = dataclasses.replace(
++                model_config, tokenizer=None, reference_checkpoint=str(tmp_path / "unavailable-hf-reference")
++            )
++    else:
++        # Sampling has always inferred the source architecture from HF. A placeholder
++        # config must not become an accidental architecture override for native loads.
++        model_config = dataclasses.replace(model_config, hidden_dim=32, num_layers=2)
++    return sample_lm.SampleLmConfig(
++        model=model_config,
++        trainer=trainer,
++        tokenizer=tokenizer_path,
++        hf_checkpoint=RepoRef.from_string(path) if source_kind == "hf" else None,
++        checkpoint_path=path if source_kind == "levanter" else None,
++        prompts=["token3 token4 token5", "token7"],
++        stop_sequence=None,
++        n_rounds=1,
++        n_generations=1,
++        max_new_tokens=3,
++        temperature=0.0,
++        engine=InferenceEngineConfig(
++            max_seq_len=16,
++            max_seqs=3,
++            max_pages=24,
++            page_size=2,
++            max_queued_tokens=16,
++            max_seqs_in_prefill=2,
++            max_prefill_size=8,
++            max_rounds=4,
++            max_tokens_per_round=2,
++            compute_dtype=dtype,
++        ),
++    )
++
++
++@pytest.mark.tpu
++@pytest.mark.parametrize("native", [False, True], ids=["named", "native"])
++@pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16], ids=["fp32", "bf16"])
++def test_sampling_source_load_preserves_full_vocabulary_weights_and_compute_precision(
++    sampling_source, tmp_path, native, dtype
++):
++    config = _sampling_config(sampling_source, tmp_path, native, dtype)
++    tokenizer = load_tokenizer(config.tokenizer)
++    trainer = dataclasses.replace(config.trainer, use_explicit_mesh_axes=native)
++    source = sampling_source[0]
++    with hax.partitioning.set_mesh(Mesh(np.asarray(jax.devices()), ("data",))):
++        oracle = source.config.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(13))
++        tokens = hax.named(jnp.asarray([3, 4, 5, 6], dtype=jnp.int32), "position")
++        expected_logits = np.asarray(
++            eqx.filter_jit(lambda m, t: m(t, NamedAttentionMask.causal()).array)(oracle, tokens)
++        )
++    with trainer.use_device_mesh():
++        loaded = sample_lm._load_model(
++            config, hax.Axis("vocab", len(tokenizer)), tokenizer=tokenizer, key=jax.random.PRNGKey(0)
++        )
++        actual = to_torch_compatible_state_dict(loaded)
++        assert loaded.Vocab.size == 32
++        if native:
++            assert len(tokenizer) == 31
++        for name, expected in sampling_source[0].weights.items():
++            np.testing.assert_array_equal(actual[name], np.asarray(expected).astype(dtype))
++        assert all(value.dtype == dtype for value in jax.tree.leaves(loaded) if eqx.is_inexact_array(value))
++        if dtype == jnp.float32:
++            tokens = hax.named(jnp.asarray([3, 4, 5, 6], dtype=jnp.int32), "position")
++            logits = eqx.filter_jit(lambda m, t: m(t, NamedAttentionMask.causal()).array)(loaded, tokens)
++            np.testing.assert_allclose(logits, expected_logits, atol=1e-4, rtol=1e-4)
++
++
++@pytest.mark.tpu
++@pytest.mark.parametrize("native", [False, True], ids=["named", "native"])
++def test_sampling_main_checkpoint_generation_matches_independent_named_oracle(sampling_source, tmp_path, native):
++    config = _sampling_config(sampling_source, tmp_path, native, jnp.float32)
++    source = sampling_source[0]
++    with hax.partitioning.set_mesh(Mesh(np.asarray(jax.devices()), ("data",))):
++        oracle = source.config.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(13))
++        for name, weights in to_torch_compatible_state_dict(oracle).items():
++            np.testing.assert_array_equal(weights, source.weights[name])
++        expected_tokens, expected_logprobs = [], []
++        for prompt in [[3, 4, 5], [7]]:
++            sequence = list(prompt)
++            logprobs = []
++            for _ in range(3):
++                tokens = hax.named(jnp.asarray(sequence, dtype=jnp.int32), "position")
++                logits = eqx.filter_jit(lambda m, t: m(t, NamedAttentionMask.causal()).array)(oracle, tokens)[-1]
++                token = int(jnp.argmax(logits))
++                logprobs.append(float(jax.nn.log_softmax(logits)[token]))
++                sequence.append(token)
++            expected_tokens.append(sequence[len(prompt) :])
++            expected_logprobs.append(logprobs)
++    result = sample_lm.main(config)
++    assert result is not None
++    assert result.tokens == expected_tokens
++    assert result.total_generated == 6
++    np.testing.assert_allclose(result.logprobs, expected_logprobs, atol=1e-4, rtol=1e-4)

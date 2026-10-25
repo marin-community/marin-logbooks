@@ -1,0 +1,103 @@
+{
+  "validation": {
+    "response": "R1 named local checkpoint offline regression",
+    "freeze": {
+      "checkout": "<local-checkout>",
+      "branch": "codex/native-jax-sample-lm-support",
+      "base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+      "base_tree": "be984e4a6765408b42befe337e3fae8c51b8a106",
+      "review_response": "R1 local named checkpoint offline regression",
+      "prior_freeze": "evidence/native-sample-lm/source-phases.json",
+      "prior_patch_sha256": "a0c6a36b3d40e25b109a4aac61f3aaeeb6d2c29eaf8620544f4e2eb3163edf2d",
+      "patch": "native-jax-sample-lm-r1-support.patch",
+      "patch_sha256": "1dc171b45f2b08ca0744b3df4c379202b2d599e3bd99ac53954e3a3c7b345a1a",
+      "files": {
+        "lib/levanter/docs/design/inference.md": {
+          "sha256": "a711d71a53627512d3b9bb46b4478155d7b0fd0d44c4fc8d5f65072c22a78f05",
+          "git_blob": "2db86f9d73c2a30c1eb9a5f0fd05a7852482ff42"
+        },
+        "lib/levanter/src/levanter/main/sample_lm.py": {
+          "sha256": "d0845a2f49bee2f17d2da84087f83483e06fbcae5c0504314042ff7bb9b3fa8c",
+          "git_blob": "d7a007a0ab39380cfd4a4bd4286219bab11a713e"
+        },
+        "lib/levanter/tests/inference/test_native_generation.py": {
+          "sha256": "2ca943aca75e504e15e9351140ac6d54db82f4e65288350b84106537694d55e2",
+          "git_blob": "7afa57c77cd65229f876903fa14ec2458d4942d0"
+        }
+      },
+      "source_frozen": true,
+      "committed": false,
+      "published": false
+    },
+    "historical_first_freeze": "evidence/native-sample-lm/source-phases.json",
+    "historical_first_validation": "evidence/native-sample-lm/initial-validation-and-controls.json",
+    "response_only_patch": "evidence/native-sample-lm/r1-response.patch",
+    "response_only_patch_sha256": "c5c882730996008b4e3fdce2f300a4dcb3b43074eac2bd506ea51f6dd10eacbf",
+    "implementation": "Local checkpoints construct existing ModelInitContext with converter=None and use_hf_model_config=False. Only HF sources call prepare_model_init_context. Shared load_model_from_source, native source architecture inference, placement, full vocab and compute casts stay intact.",
+    "regression_case": "Existing named Levanter main/source fixture now has model.tokenizer=None, unavailable absolute model.reference_checkpoint and valid outer local tokenizer. Real generation and named oracle assertions unchanged.",
+    "before_fix": {
+      "log": "native-jax-sample-lm-r1-before-fix.log",
+      "xml": "evidence/native-sample-lm/offline-regression-and-r1.json",
+      "hashes": "evidence/native-sample-lm/offline-regression-and-r1.json",
+      "result": "1 failed named local main via eager HF tokenizer lookup; 1 passed native local main. Offline, no mocks."
+    },
+    "qualification": {
+      "cpu1_sampling": {
+        "xml": "native-jax-sample-lm-r1-cpu1.xml",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cpu1_shared_engine": {
+        "xml": "native-jax-sample-lm-r1-shared-engine-cpu1.xml",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cpu4_sampling_shared_engine": {
+        "xml": "native-jax-sample-lm-r1-cpu4.xml",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "precommit": {
+      "log": "native-jax-sample-lm-r1-precommit.log",
+      "result": "all ordinary contribution checks OK",
+      "command": "./infra/pre-commit.py --files lib/levanter/src/levanter/main/sample_lm.py --files lib/levanter/tests/inference/test_native_generation.py --files lib/levanter/docs/design/inference.md",
+      "local_ipc_permission": "require_escalated for ordinary Black worker, no skipped hooks"
+    },
+    "limits": [
+      "CPU reference paged implementation only; no accelerator or performance claim.",
+      "BF16 source conversion and existing greedy engine covered; full-forward BF16 equivalence remains unclaimed.",
+      "Fresh independent targeted response review and CPU8 remain with root.",
+      "No source edits after response freeze; no commit, push, CI, PR, automation, secret, object-storage or network action."
+    ]
+  },
+  "before_fix_source": {
+    "lib/levanter/src/levanter/main/sample_lm.py": "220c858ba0de82909d53af65cc790e9cb922448cf17c4632f9aed311aa39014b",
+    "lib/levanter/tests/inference/test_native_generation.py": "2ca943aca75e504e15e9351140ac6d54db82f4e65288350b84106537694d55e2"
+  },
+  "actual_before_fix_cases": [
+    {
+      "classname": "tests.inference.test_native_generation",
+      "name": "test_sampling_main_checkpoint_generation_matches_independent_named_oracle[levanter-named]",
+      "seconds": "4.745",
+      "outcome": "failed",
+      "failure_type": "OSError",
+      "short_failure": "OSError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': 'unavailable-hf-reference'. Use `repo_type` argument if needed."
+    },
+    {
+      "classname": "tests.inference.test_native_generation",
+      "name": "test_sampling_main_checkpoint_generation_matches_independent_named_oracle[levanter-native]",
+      "seconds": "6.052",
+      "outcome": "passed",
+      "failure_type": null,
+      "short_failure": null
+    }
+  ],
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

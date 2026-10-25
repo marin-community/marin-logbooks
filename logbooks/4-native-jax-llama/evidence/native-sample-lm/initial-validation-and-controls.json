@@ -1,0 +1,132 @@
+{
+  "freeze": {
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-sample-lm-support",
+    "base": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+    "base_tree": "be984e4a6765408b42befe337e3fae8c51b8a106",
+    "patch": "evidence/native-sample-lm/initial-source.patch",
+    "patch_sha256": "a0c6a36b3d40e25b109a4aac61f3aaeeb6d2c29eaf8620544f4e2eb3163edf2d",
+    "files": {
+      "lib/levanter/docs/design/inference.md": {
+        "sha256": "45d6fb79f042ed1ff0192048da23f104e555ed8508212872c8f6ca69e673d3d4",
+        "git_blob": "379082b881477b71bcf95e0341b187baf717e8ca"
+      },
+      "lib/levanter/src/levanter/main/sample_lm.py": {
+        "sha256": "220c858ba0de82909d53af65cc790e9cb922448cf17c4632f9aed311aa39014b",
+        "git_blob": "fd2b3154d23b65bc330259177531cb61df3ee45a"
+      },
+      "lib/levanter/tests/inference/test_native_generation.py": {
+        "sha256": "d7ad09a8c86dcc7a847d9a09852bcbf261de23ece797a1aa1d8da361bd286b4b",
+        "git_blob": "b5b024149648ff58191383554d5164c95b8c30fb"
+      }
+    },
+    "source_frozen": true,
+    "committed": false,
+    "published": false
+  },
+  "qualification": {
+    "sampling_cpu1": {
+      "path": "native-jax-sample-lm-cpu1.xml",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "shared_loaders_cpu1": {
+      "path": "native-jax-sample-lm-shared-cpu1.xml",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "sampling_and_shared_loaders_cpu4": {
+      "path": "native-jax-sample-lm-cpu4.xml",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_engine_cpu4": {
+      "path": "native-jax-sample-lm-existing-engine-cpu4.xml",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "existing_native_engine_cpu1": {
+    "log": "native-jax-sample-lm-existing-engine-cpu1.log",
+    "passed": 2
+  },
+  "test_commands": [
+    "source native-jax-sample-lm-env.sh; uv run python -m pytest lib/levanter/tests/inference/test_native_generation.py -k sampling -q --tb=short --junitxml=native-jax-sample-lm-cpu1.xml",
+    "source native-jax-sample-lm-env.sh; uv run python -m pytest lib/levanter/tests/test_train_lm.py -k \"native_shared_loaders or native_shared_checkpoint or named_shared_hf_loader\" -n 2 -q --tb=short --junitxml=native-jax-sample-lm-shared-cpu1.xml",
+    "source native-jax-sample-lm-env.sh; JAX_NUM_CPU_DEVICES=4 uv run python -m pytest lib/levanter/tests/inference/test_native_generation.py lib/levanter/tests/test_train_lm.py -k \"sampling or native_shared_loaders or native_shared_checkpoint or named_shared_hf_loader\" -n 2 -q --tb=short --junitxml=native-jax-sample-lm-cpu4.xml",
+    "source native-jax-sample-lm-env.sh; JAX_NUM_CPU_DEVICES=4 uv run python -m pytest lib/levanter/tests/inference/test_native_generation.py::test_native_engine_prefill_incremental_generation_and_reuse -n 2 -q --tb=short --junitxml=native-jax-sample-lm-existing-engine-cpu4.xml"
+  ],
+  "helper_reuse": [
+    "levanter.main.model_init.prepare_model_init_context: native source HF architecture inference and option propagation before validation; named source converter binding",
+    "levanter.main.model_init.load_model_from_source: existing common source routes; cast_to_param argument receives existing mp.cast_to_compute for inference",
+    "levanter.model_loading.load_hf_checkpoint via load_model_from_source: native FP32 master load, full source vocabulary and HF architecture/layout validation",
+    "levanter.model_loading.load_levanter_checkpoint via load_model_from_source: source metadata identity validation, full native source vocabulary and explicit target mesh restore",
+    "TrainerConfig.use_device_mesh plus requires_explicit_mesh_axes existing viz caller pattern",
+    "Existing InferenceEngine.from_model_with_config, cache lifecycle, Requests and GenerationResult; unchanged per-round output loop",
+    "Existing write_llama_checkpoint, tiny_hf_tokenizer_path fixture, save_checkpoint and native checkpoint_metadata for real local assets"
+  ],
+  "evidence_limits": [
+    "CPU source/code qualification only. CPU ragged_paged_attention dispatch uses existing default reference. No accelerator kernel execution, substitution or performance claim.",
+    "BF16 parameter conversion/full source weight identity is checked; BF16 engine check is existing greedy-only coverage. Full-forward BF16 numerical parity is not claimed.",
+    "Named checkpoint keeps existing tokenizer-sized template contract; native metadata preserves stored rows beyond tokenizer.",
+    "Levanter fixture is real native model-subtree restore, not optimizer/full-state migration or partial DPO/LoRA restore evidence.",
+    "Full repository affected suite and independent CPU8 qualification not performed by author; independent maintained review remains pending with root.",
+    "No accelerator, remote object storage, network source lookups, secret reads, CI, PR, automation, commit or push actions."
+  ],
+  "controls": {
+    "script": "native-jax-sample-lm-caller-probe.py",
+    "candidate": {
+      "sample_lm_source": "lib/levanter/src/levanter/main/sample_lm.py",
+      "devices": 1,
+      "records": [
+        {
+          "source_kind": "hf",
+          "status": "generated",
+          "total_generated": 6,
+          "token_ID_count": 6,
+          "tokens_canonical_json_sha256": "449df9b9d59486087e30cd34788b6464a7b4353fe0c947d46f934e7e90d75868",
+          "logprobs_canonical_json_sha256": "cc309b894f823d042697b62c6e134cc92c3673ab79fe8604823f3cd0636fa8f8"
+        },
+        {
+          "source_kind": "levanter",
+          "status": "generated",
+          "total_generated": 6,
+          "token_ID_count": 6,
+          "tokens_canonical_json_sha256": "449df9b9d59486087e30cd34788b6464a7b4353fe0c947d46f934e7e90d75868",
+          "logprobs_canonical_json_sha256": "cc309b894f823d042697b62c6e134cc92c3673ab79fe8604823f3cd0636fa8f8"
+        }
+      ]
+    },
+    "unchanged_base": {
+      "sample_lm_source": "lib/levanter/src/levanter/main/sample_lm.py",
+      "devices": 1,
+      "records": [
+        {
+          "source_kind": "hf",
+          "status": "rejected",
+          "error_type": "AssertionError",
+          "error": "Only LlamaLMHeadModel supported"
+        },
+        {
+          "source_kind": "levanter",
+          "status": "rejected",
+          "error_type": "AssertionError",
+          "error": "Only LlamaLMHeadModel supported"
+        }
+      ]
+    },
+    "unchanged_base_sha": "ec85e20010a4416a47aac9159e75e43f0724ee8a",
+    "source_scope": "Only sample_lm source differs between caller runs; shared loaders/model/engine remain inherited identical source. Each run builds real tiny local HF source and native model-subtree checkpoints from same seeded named source parameters.",
+    "native_HF_and_local_exact_token_logprob_equality": true
+  },
+  "marker_boundary": "Initial and R1 author commands use package defaults notslow/nottorch, no marker override; not root-default qualification.",
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}

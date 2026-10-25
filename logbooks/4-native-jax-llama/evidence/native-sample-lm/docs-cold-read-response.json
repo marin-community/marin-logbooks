@@ -1,0 +1,105 @@
+{
+  "initial": {
+    "review_kind": "cold_read_prose_only",
+    "inputs": [
+      {
+        "path": "native-jax-sample-lm-root-commit-message.txt",
+        "sha256": "1d8e95136aea5ad7ad64d235cb89b56a4090d264bfcc61f020efc6aae116451d"
+      },
+      {
+        "path": "lib/levanter/docs/design/inference.md",
+        "sha256": "a711d71a53627512d3b9bb46b4478155d7b0fd0d44c4fc8d5f65072c22a78f05"
+      }
+    ],
+    "scope": "Only the finished commit message and full documentation were read. No source, tests, notes, diff, conversation, network, or runtime state was consulted. Findings identify ambiguity inside the prose, not verified implementation defects.",
+    "findings": [
+      {
+        "id": "D1",
+        "severity": "medium",
+        "input": "documentation",
+        "lines": [
+          144,
+          152
+        ],
+        "term": "complete vocabulary / fallback vocabulary from the tokenizer",
+        "finding": "The metadata-free checkpoint requirements do not say whether tokenizer vocabulary size must equal the saved model vocabulary size. The next paragraph explicitly permits source vocabulary rows beyond the tokenizer, so a reader cannot determine whether those checkpoints are supported without metadata or how to supply the complete vocabulary.",
+        "suggested_resolution": "State that metadata-free loading derives the model vocabulary size from the tokenizer, name the resulting equality requirement or supported override, and distinguish this case from metadata-backed checkpoints with extra vocabulary rows."
+      },
+      {
+        "id": "D2",
+        "severity": "low",
+        "input": "documentation",
+        "lines": [
+          141,
+          147
+        ],
+        "term": "outer tokenizer / model-subtree checkpoints",
+        "finding": "The local loading instructions introduce an \"outer tokenizer\" and \"model-subtree checkpoints\" without defining which configuration field supplies the tokenizer or which path level the checkpoint option expects. A user cannot reliably translate the paragraph into a local-checkpoint invocation.",
+        "suggested_resolution": "Name the tokenizer and checkpoint configuration keys and explain what the checkpoint path points to; a minimal local sampling configuration would resolve both referents."
+      },
+      {
+        "id": "D3",
+        "severity": "medium",
+        "input": "documentation",
+        "lines": [
+          43,
+          86
+        ],
+        "term": "implemented service behavior versus design targets",
+        "finding": "The architecture and performance sections state that a background loop streams tokens and concurrent requests are supported, and the API section says both completions endpoints are followed. The later Current Status section only establishes single-sequence generation and /v1/completions. The draft does not distinguish which capabilities are implemented from which are planned, making it unsafe for a documentation user to infer the supported HTTP behavior.",
+        "suggested_resolution": "Explicitly label the earlier capabilities as design targets, or expand Current Status to state whether chat completions, concurrent requests, and streaming are implemented."
+      },
+      {
+        "id": "C1",
+        "severity": "low",
+        "input": "commit_message",
+        "lines": [
+          9,
+          9
+        ],
+        "term": "named-model default",
+        "finding": "The commit message does not identify the model that remains the default or explain what \"named-model\" denotes. Read alone months later, this leaves the preserved behavior unspecified.",
+        "suggested_resolution": "Replace \"the named-model default\" with \"the default model.type: llama\" (or an equally explicit name)."
+      }
+    ]
+  },
+  "response": {
+    "review_kind": "cold_read_prose_response",
+    "inputs": [
+      {
+        "path": "native-jax-sample-lm-root-commit-message.txt",
+        "sha256": "61d8066650913f3abb15be51c33373cfe9d62ca3c2a784832ad92f6dd99912c8"
+      },
+      {
+        "path": "lib/levanter/docs/design/inference.md",
+        "sha256": "d5d9ff47304982df64b7365670171f6bf6c72aaf315f93b9ae4badd82b078c11"
+      }
+    ],
+    "scope": "Only the two updated finished drafts were read. No source, tests, notes, diff, network, or runtime verification was consulted. This is a prose assessment, not verification of implementation claims.",
+    "previous_findings": [
+      {
+        "id": "D1",
+        "status": "resolved",
+        "evidence": "The metadata-free case now states tokenizer-based vocabulary rounding, requires equality with checkpoint embedding row count, declares no separate override, and distinguishes HF/metadata-bearing preservation of extra rows."
+      },
+      {
+        "id": "D2",
+        "status": "resolved",
+        "evidence": "Local sampling now names checkpoint_path and top-level tokenizer, defines run-directory versus concrete-checkpoint paths, and names the model/ subtree."
+      },
+      {
+        "id": "D3",
+        "status": "resolved",
+        "evidence": "The opening note explicitly scopes the server sections to an earlier design/implementation snapshot and requires separate verification of present HTTP/streaming support."
+      },
+      {
+        "id": "C1",
+        "status": "resolved",
+        "evidence": "The commit now explicitly names the retained default as model.type: llama."
+      }
+    ],
+    "new_findings": [],
+    "conclusion": "All four prior prose gaps are resolved. No new concrete term, referent, claim-boundary, or causal gap found."
+  },
+  "_archive_note": "Historical phase/source/status retained. Embedded artifact hashes identify original inputs, not sanitized copies; output hashes/lengths and exact transformations are in manifest. No numerical execution during archiving. Paths are normalized; an old review that reused a later patch filename remains qualified by its own historical patch digest."
+}
