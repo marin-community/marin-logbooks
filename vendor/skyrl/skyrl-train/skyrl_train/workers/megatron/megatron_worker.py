@@ -1,3 +1,4 @@
+import math
 import asyncio
 import copy
 import os
@@ -43,6 +44,7 @@ from skyrl_train.training_batch import (
     gradient_accumulation_steps,
 )
 from skyrl_train.utils.metrics import policy_progress_metrics, policy_training_metrics
+from skyrl_train.distributed.step_policy import OptimizerStepResult
 from skyrl_train.utils.profiler import Profiler
 from skyrl_train.utils.progress import tqdm
 from skyrl_train.utils.utils import (
@@ -567,6 +569,7 @@ class MegatronPolicyWorkerBase(MegatronWorker, PolicyWorkerBase):
         status_list = []
         all_metrics = defaultdict(list)
         policy_update_steps = 0
+        optimizer_windows = []
 
         if self.profiler is not None:
             self.profiler.begin_update()
@@ -652,6 +655,7 @@ class MegatronPolicyWorkerBase(MegatronWorker, PolicyWorkerBase):
                             consecutive_nonfinite_steps=self._consecutive_nonfinite_steps,
                             max_consecutive_nonfinite_steps=self.cfg.trainer.policy.max_consecutive_nonfinite_steps,
                         )
+                    assert isinstance(step_result, OptimizerStepResult)
                     checksum_mismatch = None
                     if self.cfg.trainer.policy.megatron_config.check_dp_weight_consistency:
                         with timing.span("megatron_dp_weight_checksum"):
@@ -688,6 +692,13 @@ class MegatronPolicyWorkerBase(MegatronWorker, PolicyWorkerBase):
 
                     pbar.set_postfix(policy_progress_metrics(status_list[-1]))
 
+                    window_statuses = status_list[-len(metrics_list):]
+                    optimizer_windows.append({
+                        "applied": step_result.applied,
+                        "raw_grad_norm": step_result.grad_norm,
+                        "loss_finite": all(math.isfinite(float(status["policy_loss"])) for status in window_statuses),
+                        "policy_loss": sum(float(status["policy_loss"]) for status in window_statuses) / len(window_statuses),
+                    })
                     policy_update_steps += int(step_result.applied)
                     micro_buffer = []
 
@@ -712,7 +723,7 @@ class MegatronPolicyWorkerBase(MegatronWorker, PolicyWorkerBase):
             self._warned_exact_unit_policy_ratio = True
 
         output = TrainingOutputBatch()
-        output.metadata = {"train_status": status_mean}
+        output.metadata = {"train_status": status_mean, "optimizer_windows": optimizer_windows}
         return output
 
     async def expert_block_rpc(self, method: str, *args):

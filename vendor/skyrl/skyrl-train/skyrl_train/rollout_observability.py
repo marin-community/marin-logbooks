@@ -224,9 +224,16 @@ async def run_environment(executor: Executor | None, func: Callable, *args, **kw
             observation.add_wait("env_resume", clock() - stamps[1])
 
 
-def record_group_disposition(*, disposition: str, tokens: int, step: int, dwell_seconds: float | None) -> None:
+def record_group_disposition(
+    *, uid: str, disposition: str, tokens: int, step: int, dwell_seconds: float | None
+) -> None:
     """Count a group's fate and, when known, how long it waited in the buffer."""
     attributes = {"role": TRAINER_ROLE, "step": str(step), "disposition": disposition}
+    record_event(
+        "rollout_group_disposition",
+        {"tokens": tokens, "dwell_seconds": dwell_seconds},
+        attributes={**attributes, "uid": uid},
+    )
     groups.add(1, attributes=attributes)
     group_tokens.add(tokens, attributes=attributes)
     if dwell_seconds is not None:

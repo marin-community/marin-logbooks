@@ -12,6 +12,7 @@ from loguru import logger
 
 from marinskyrl.environment_contract import TRAINING_TYPE_ENV, TrainingType
 from skyrl_train.metric_names import ENVIRONMENT_METRIC_PREFIX
+from skyrl_train.evidence import TrainingEvidence
 
 try:
     from rigging import telemetry
@@ -53,11 +54,13 @@ training_nonfinite_values = telemetry.counter("training_nonfinite_values", unit=
 
 def record_event(
     name: str,
-    fields: dict[str, str | int | float | bool | None],
+    fields: Mapping[str, str | int | float | bool | None],
     *,
     attributes: dict[str, str] | None = None,
 ) -> None:
     """Enqueue a flat event, omitting unavailable values."""
+    if _process_state.evidence is not None:
+        _process_state.evidence.record(name, fields, attributes or {})
     telemetry.event(
         name, EventBody({key: value for key, value in fields.items() if value is not None}), attributes=attributes
     )
@@ -75,6 +78,15 @@ class ConsumedWork:
 def record_consumed_work(work: ConsumedWork, *, step: int) -> None:
     """Record useful work after an optimizer step completes successfully."""
     attributes = {"role": TRAINER_ROLE, "step": str(step)}
+    record_event(
+        "consumed_work",
+        {
+            "sequences": work.sequences,
+            "response_tokens": work.response_tokens,
+            "loss_tokens": work.loss_tokens,
+        },
+        attributes=attributes,
+    )
     for kind, count in (
         ("consumed_sample", work.sequences),
         ("consumed_response_token", work.response_tokens),
@@ -85,6 +97,11 @@ def record_consumed_work(work: ConsumedWork, *, step: int) -> None:
 
 def record_training_metrics(metrics: Mapping[str, object], *, step: int, kind: str) -> None:
     """Mirror the selected trainer scalar families without changing their values."""
+    if _process_state.evidence is not None:
+        _process_state.evidence.record(
+            "training_metrics", {name: value for name, value in metrics.items() if isinstance(value, (int, float))},
+            {"step": str(step), "kind": kind},
+        )
     for name, value in metrics.items():
         if not name.startswith(
             (
@@ -131,6 +148,7 @@ _inert_collector = _InertCollector()
 @dataclass
 class _ProcessState:
     owner: "ProcessTelemetry | None" = None
+    evidence: TrainingEvidence | None = None
     policy_step: int | None = None
     last_progress_timestamp: float | None = None
     queue_depth: int | None = None
@@ -149,6 +167,7 @@ class _ProcessState:
     def release(self, owner: "ProcessTelemetry") -> None:
         if self.owner is owner:
             self.owner = None
+            self.evidence = None
 
 
 # Rigging has one process-wide runtime, so application progress follows its single lifecycle owner.
@@ -310,13 +329,22 @@ class GeneratedWork:
         )
 
 
-def record_generated_work(work: GeneratedWork, weights_step: int) -> None:
+def record_generated_work(work: GeneratedWork, weights_step: int, *, uid: str) -> None:
     """Count generated work against the policy version that produced it.
 
     Not against the step that recorded it: a group can wait in the buffer across step boundaries, so
     the producer cannot know which step will consume it. Staleness is recorded by
     `record_rollout_staleness` where the trainer measures it.
     """
+    record_event(
+        "generated_work",
+        {
+            "rollouts": work.rollout_count,
+            "samples": work.sample_count,
+            "generated_tokens": work.generated_token_count,
+        },
+        attributes={"weights_step": str(weights_step), "uid": uid},
+    )
     rollout_count = work.rollout_count
     progress_time = time.time()
     if work.sample_count:
@@ -357,15 +385,28 @@ def record_rollout_buffer(depth: int, queue_capacity: int) -> None:
 
 
 class ProcessTelemetry:
-    def __init__(self, config: TelemetryConfig, role: str) -> None:
+    def __init__(
+        self,
+        config: TelemetryConfig,
+        role: str,
+        evidence: TrainingEvidence | None = None,
+    ) -> None:
         self._config = config
         self._role = role
         self._configured = False
+        self._evidence = evidence
 
     def __enter__(self) -> "ProcessTelemetry":
         if not _process_state.claim(self):
             logger.warning("Telemetry already has a process owner; leaving the nested lifecycle inert")
             return self
+        if self._evidence is not None:
+            try:
+                self._evidence.start()
+            except BaseException:
+                _process_state.release(self)
+                raise
+            _process_state.evidence = self._evidence
         if self._config.endpoint is None:
             return self
         if self._config.run_id is None or self._config.execution_uid is None:
@@ -386,27 +427,39 @@ class ProcessTelemetry:
 
     def __exit__(self, exc_type, exc, traceback) -> bool:
         del exc, traceback
-        if self._configured:
-            export = telemetry.runtime_status()
-            record_event(
-                "terminal",
-                {
-                    "status": "completed" if exc_type is None else "failed",
-                    "reason": "normal_exit" if exc_type is None else getattr(exc_type, "__name__", "exception"),
-                    "export_queued_records": export.queued_records,
-                    "export_lost_records": export.lost_records,
-                    "policy_step": _process_state.policy_step,
-                    "last_progress_time_seconds": _process_state.last_progress_timestamp,
-                    "queue_depth": _process_state.queue_depth,
-                    "queue_capacity": _process_state.queue_capacity,
-                },
-                attributes={"role": self._role},
-            )
-            telemetry.shutdown(SHUTDOWN_TIMEOUT_SECONDS)
-        self._configured = False
-        _process_state.release(self)
+        try:
+            if self._configured:
+                export = telemetry.runtime_status()
+                record_event(
+                    "terminal",
+                    {
+                        "status": "completed" if exc_type is None else "failed",
+                        "reason": (
+                            "normal_exit"
+                            if exc_type is None
+                            else getattr(exc_type, "__name__", "exception")
+                        ),
+                        "export_queued_records": export.queued_records,
+                        "export_lost_records": export.lost_records,
+                        "policy_step": _process_state.policy_step,
+                        "last_progress_time_seconds": _process_state.last_progress_timestamp,
+                        "queue_depth": _process_state.queue_depth,
+                        "queue_capacity": _process_state.queue_capacity,
+                    },
+                    attributes={"role": self._role},
+                )
+                telemetry.shutdown(SHUTDOWN_TIMEOUT_SECONDS)
+        finally:
+            self._configured = False
+            try:
+                if _process_state.owner is self and self._evidence is not None:
+                    self._evidence.close(failed=exc_type is not None)
+            finally:
+                _process_state.release(self)
         return False
 
 
-def process_telemetry(role: str) -> ProcessTelemetry:
-    return ProcessTelemetry(TelemetryConfig.from_environment(), role)
+def process_telemetry(
+    role: str, *, evidence: TrainingEvidence | None = None
+) -> ProcessTelemetry:
+    return ProcessTelemetry(TelemetryConfig.from_environment(), role, evidence)

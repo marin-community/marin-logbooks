@@ -1,9 +1,13 @@
+import hashlib
+import json
 import datasets
 from loguru import logger
 import os
 from collections.abc import Mapping
 from typing import List
 from transformers import PreTrainedTokenizerBase
+
+from skyrl_train.telemetry import record_event
 
 
 def read_prompt_files(sources: list[str]) -> datasets.Dataset:
@@ -56,6 +60,11 @@ class PromptDataset:
         self.dataframe = read_prompt_files(self.datasets)
         self.dataframe = self.prepare_dataset(self.dataframe)
 
+        self.dataframe = self.dataframe.add_column(
+            "source_row_index", list(range(len(self.dataframe)))
+        )
+        before_count = len(self.dataframe)
+        before_identity = _task_identity_digest(self.dataframe)
         logger.info(f"Total dataset size: {len(self.dataframe)}")
 
         # filter out too long prompts
@@ -71,6 +80,17 @@ class PromptDataset:
             desc=f"Filtering prompts longer than {self.max_prompt_length} tokens",
         )
 
+        record_event(
+            "input_dataset",
+            {
+                "sources_json": json.dumps(self.datasets),
+                "before_rows": before_count,
+                "after_rows": len(self.dataframe),
+                "before_task_identity_sha256": before_identity,
+                "after_task_identity_sha256": _task_identity_digest(self.dataframe),
+                "identity_limit": "In-memory TaskSpec declarations; no external asset or loaded weight attestation",
+            },
+        )
         logger.info(f"Filtered dataset size: {len(self.dataframe)}")
 
     def prepare_dataset(self, dataset):
@@ -114,3 +134,16 @@ def _prompt_token_count(tokenizer: PreTrainedTokenizerBase, prompt, **template_o
     if not isinstance(encoded, list):
         raise TypeError(f"tokenizer chat template returned unsupported token IDs: {type(encoded).__name__}")
     return len(encoded)
+
+
+def _task_identity_digest(dataset: datasets.Dataset) -> str | None:
+    if "task_identity" not in dataset.column_names:
+        return None
+    digest = hashlib.sha256()
+    for row in dataset.with_format(None).select_columns(
+        ["task_identity", "source_row_index"]
+    ):
+        digest.update(
+            json.dumps(row, sort_keys=True, separators=(",", ":")).encode() + b"\n"
+        )
+    return digest.hexdigest()

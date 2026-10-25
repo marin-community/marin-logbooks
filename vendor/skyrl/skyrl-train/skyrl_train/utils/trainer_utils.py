@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from collections.abc import Sequence
 from typing import List, Dict, Any, Union, Callable, Optional
 from omegaconf import OmegaConf, DictConfig
@@ -23,6 +24,7 @@ from marinskyrl.resource_locator import join_resource_path
 from skyrl_train.checkpoint_listing import extract_step_from_path, list_checkpoint_dirs
 from marinskyrl.checkpoint_paths import GLOBAL_STEP_PREFIX
 from skyrl_train.dataset import PromptDataset
+from skyrl_train.task_inputs import TaskIdentity
 from torchdata.stateful_dataloader import StatefulDataLoader
 
 BasicType = Union[int, float, str, bool, type(None)]
@@ -336,6 +338,7 @@ def dump_per_dataset_eval_results(
     concat_all_envs: List[str],
     eval_metrics: Dict[str, float],
     uids: List[str],
+    task_identities: List[TaskIdentity | None],
 ):
     """Dump evaluation results per dataset and overall aggregated results."""
 
@@ -358,10 +361,14 @@ def dump_per_dataset_eval_results(
         filename = join_resource_path(dump_dir_path, f"{sanitized_data_source}.jsonl")
 
         with io.open_file(filename, "w") as f:
+            if not io.is_cloud_path(filename):
+                os.chmod(filename, 0o600)
             for i in indices:
                 verification = (trajectory_batch.get("verification_results") or [None] * len(input_prompts))[i]
                 entry = {
                     "uid": uids[i],
+                    "task_identity": None if task_identities[i] is None else asdict(task_identities[i]),
+                    "task_identity_unavailable_reason": "noncanonical_input" if task_identities[i] is None else None,
                     "prompt_token_ids": trajectory_batch["prompt_token_ids"][i],
                     "response_token_ids": trajectory_batch["response_ids"][i],
                     "input_prompt": input_prompts[i],
@@ -382,6 +389,7 @@ def dump_per_dataset_eval_results(
                         "reason": verification.reason,
                         "score": verification.score,
                         "passed": verification.passed,
+                        "passed_unavailable_reason": "verifier_did_not_supply_boolean" if verification.passed is None else None,
                         "score_min": verification.score_min,
                         "score_max": verification.score_max,
                         "diagnostics": {
@@ -398,6 +406,8 @@ def dump_per_dataset_eval_results(
     # Dump aggregated results file
     aggregated_filename = join_resource_path(dump_dir_path, "aggregated_results.jsonl")
     with io.open_file(aggregated_filename, "w") as f:
+        if not io.is_cloud_path(aggregated_filename):
+            os.chmod(aggregated_filename, 0o600)
         f.write(json.dumps(eval_metrics, ensure_ascii=False) + "\n")
 
     logger.info(f"Dumped aggregated eval metrics to {aggregated_filename}")

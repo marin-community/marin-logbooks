@@ -45,13 +45,19 @@ from skyrl_train.rollouts.loader import PromptLoader, PromptLoaderState, PromptG
 from skyrl_train.rollouts.payloads import MemoryPayloads, ObjectStorePayloads, PayloadStore
 from skyrl_train.rollout_observability import dispatch_wait, observe_rollout_call, record_group_disposition
 from skyrl_train.rollouts.workers import RolloutWorkers
-from skyrl_train.telemetry import GeneratedWork, record_generated_work, record_rollout_buffer
+from skyrl_train.telemetry import (
+    GeneratedWork,
+    record_event,
+    record_generated_work,
+    record_rollout_buffer,
+)
 from skyrl_train.trajectory_runners.trajectory_processing import prepare_trajectory_request
 from skyrl_train.trajectory_runners.types import TrajectoryRequestBatch
 from skyrl_train.config.objective_spec import rollout_logprobs_required
 from skyrl_train.utils.algorithm_registry import PolicyLossRegistry
 
 _T = TypeVar("_T")
+_FINAL_ACCOUNTING_TIMEOUT = 30.0
 
 
 @dataclass(frozen=True)
@@ -219,11 +225,49 @@ class TrainingContext:
         self._dispatcher = asyncio.create_task(self._dispatch())
 
     async def close(self) -> None:
-        tasks = [task for task in (self._dispatcher, *self._running) if task is not None]
-        for task in tasks:
-            task.cancel()
-        await asyncio.gather(*tasks, return_exceptions=True)
-        ray.kill(self._buffer)
+        failure: BaseException | None = None
+        try:
+            tasks = [task for task in (self._dispatcher, *self._running) if task is not None]
+            for task in tasks:
+                task.cancel()
+            if tasks:
+                done, pending = await asyncio.wait(tasks, timeout=_FINAL_ACCOUNTING_TIMEOUT)
+                await asyncio.gather(*done, return_exceptions=True)
+                if pending:
+                    raise TimeoutError("rollout dispatch did not stop before final accounting deadline")
+            finish = asyncio.ensure_future(self._buffer.finish.remote())
+            done, _ = await asyncio.wait((finish,), timeout=_FINAL_ACCOUNTING_TIMEOUT)
+            if not done:
+                finish.cancel()
+                raise TimeoutError("rollout buffer final accounting deadline exceeded")
+            admission, uncommitted = await finish
+            self._record_accounting(admission)
+            record_event(
+                "rollout_closed",
+                {
+                    "driver_dispatch_stopped": True,
+                    "accounting_complete": True,
+                    "uncommitted_leases": uncommitted,
+                    "uncommitted_tokens_known": False,
+                },
+            )
+        except BaseException as error:
+            failure = error
+            record_event(
+                "rollout_closed",
+                {"driver_dispatch_stopped": False, "accounting_complete": False},
+                attributes={"failure_class": type(error).__name__},
+            )
+        finally:
+            try:
+                ray.kill(self._buffer)
+            except BaseException as error:
+                if failure is None:
+                    failure = error
+                else:
+                    failure.add_note(f"Rollout actor cleanup also failed: {type(error).__name__}")
+        if failure is not None:
+            raise failure
 
     async def pause_and_drain(self) -> None:
         """Stop dispatching new generation and finish already submitted groups."""
@@ -304,16 +348,7 @@ class TrainingContext:
             timeout = max(deadline - loop.time(), 0.0)
             admission = await self._until_failure(self._buffer.admit.remote(timeout))
             await self._release(admission)
-            for policy_step, work in admission.generated:
-                record_generated_work(work, policy_step)
-            if self._rollout_spans:
-                for outcome in admission.dispositions:
-                    record_group_disposition(
-                        disposition=outcome.disposition,
-                        tokens=outcome.tokens,
-                        step=self._policy_step,
-                        dwell_seconds=outcome.dwell_seconds,
-                    )
+            self._record_accounting(admission)
             record_rollout_buffer(admission.ready_count, self.config.max_untrained_groups)
             if admission.admitted:
                 admitted = tuple(admission.admitted)
@@ -331,6 +366,18 @@ class TrainingContext:
                     tuple(groups),
                     {**admission.selection.metrics, **self.loader.observe(admission.selection.judged)},
                 )
+
+    def _record_accounting(self, admission: Admission) -> None:
+        for uid, policy_step, work in admission.generated:
+            record_generated_work(work, policy_step, uid=uid)
+        for outcome in admission.dispositions:
+            record_group_disposition(
+                uid=outcome.uid,
+                disposition=outcome.disposition,
+                tokens=outcome.tokens,
+                step=self._policy_step,
+                dwell_seconds=outcome.dwell_seconds,
+            )
 
     async def state_dict(self) -> TrainingContextState:
         """Capture every dispatched group that no trained batch has consumed.

@@ -254,7 +254,7 @@ class Admission:
     batch_id: int
     admitted: list[AdmittedRollout]
     retries: list[dict]
-    generated: list[tuple[int, GeneratedWork]]
+    generated: list[tuple[str, int, GeneratedWork]]
     dispositions: list[GroupDisposition]
     ready_count: int
     selection: BatchSelection | None
@@ -429,7 +429,7 @@ class RolloutBuffer:
         self._unreported: list[ReadyRollout] = []
         self._batch_taken = False
         self._retries: list[dict] = []
-        self._generated: list[tuple[int, GeneratedWork]] = []
+        self._generated: list[tuple[str, int, GeneratedWork]] = []
         self._dispositions: list[GroupDisposition] = []
         self._stats: collections.defaultdict[int, _SelectionStats] = collections.defaultdict(_SelectionStats)
         self._changed = asyncio.Condition()
@@ -452,11 +452,17 @@ class RolloutBuffer:
             self._leases[lease.lease_id] = lease
             return lease
 
-    async def commit(self, lease_id: str, prompt: dict, verdict: RolloutVerdict, payload: PayloadReference) -> None:
+    async def commit(
+        self,
+        lease_id: str,
+        prompt: dict,
+        verdict: RolloutVerdict,
+        payload: PayloadReference,
+    ) -> None:
         """Record a written group and release its lease."""
         async with self._changed:
             lease = self._leases.pop(lease_id)
-            self._generated.append((lease.policy_step, verdict.work))
+            self._generated.append((verdict.uid, lease.policy_step, verdict.work))
             self._ready.append(
                 ReadyRollout(
                     lease_id, lease.policy_step, lease.batch_id, prompt, verdict, payload.value, time.monotonic()
@@ -576,6 +582,17 @@ class RolloutBuffer:
         return BufferSnapshot(
             ready=[*admitted, *self._ready], retries=list(self._retries), leases=frozenset(self._leases)
         )
+
+    async def finish(self) -> tuple[Admission, int]:
+        """Drain unreported committed work after dispatch stops, without claiming unknown lease tokens."""
+        async with self._changed:
+            for rollout in self.snapshot().ready:
+                self._dispose(rollout, "terminal_untrained")
+            admission = Admission(
+                self._policy_step, [], [], self._generated, self._dispositions, 0, None
+            )
+            self._generated, self._dispositions = [], []
+            return admission, len(self._leases)
 
     async def restore(self, snapshot: BufferSnapshot) -> None:
         """Load a checkpoint's groups into an unpublished, empty buffer."""

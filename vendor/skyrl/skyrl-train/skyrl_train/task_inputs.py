@@ -13,6 +13,17 @@ from taskcompendium.runtime.shell import resolve_shell_tool
 from skyrl_train.inference_engines.base import ConversationType
 from skyrl_train.rollouts.group_grader import GroupGraderSpec
 
+
+@dataclass(frozen=True)
+class TaskIdentity:
+    """Identity of the actual in-memory task, before prompt-length filtering."""
+
+    task_id: str
+    task_spec_sha256: str
+    rollout_spec_sha256: str
+    source_row_index: int
+
+
 @dataclass(frozen=True)
 class TrajectoryMetadata:
     uid: str
@@ -20,6 +31,7 @@ class TrajectoryMetadata:
     data_source: str | None = None
     teacher_route: str | None = None
     metric_tags: tuple[str, ...] = ()
+    task_identity: TaskIdentity | None = None
 
 
 @dataclass(frozen=True)

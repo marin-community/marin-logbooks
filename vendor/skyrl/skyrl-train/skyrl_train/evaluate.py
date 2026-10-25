@@ -6,6 +6,7 @@ from typing import Dict, List, Protocol
 from loguru import logger
 from collections import defaultdict
 from dataclasses import dataclass, replace
+from skyrl_train.task_inputs import TaskIdentity
 
 from skyrl_train.utils import Timer
 from skyrl_train.evaluation_pool import EvaluationPool
@@ -49,6 +50,7 @@ class _EvaluationRollouts:
     env_classes: List[str]
     data_sources: List[str | None]
     uids: List[str]
+    task_identities: List[TaskIdentity | None]
     example_prompt: ConversationType
     example_batch: TrajectoryBatch
 
@@ -57,6 +59,7 @@ class _EvaluationAccumulator(Protocol):
     env_classes: List[str]
     data_sources: List[str | None]
     uids: List[str]
+    task_identities: List[TaskIdentity | None]
 
     def record(self, request: TrajectoryRequestBatch, batch: TrajectoryBatch, uids: List[str]) -> None: ...
 
@@ -72,12 +75,16 @@ class _WholeTrajectoryAccumulator:
     env_classes: List[str]
     data_sources: List[str | None]
     uids: List[str]
+    task_identities: List[TaskIdentity | None]
 
-    def record(self, request: TrajectoryRequestBatch, batch: TrajectoryBatch, uids: List[str]) -> None:
+    def record(
+        self, request: TrajectoryRequestBatch, batch: TrajectoryBatch, uids: List[str]
+    ) -> None:
         validate_trajectory_batch(len(request.metadata), batch)
         self.env_classes.extend(row.metric_class for row in request.metadata)
         self.data_sources.extend(row.data_source for row in request.metadata)
         self.uids.extend(uids)
+        self.task_identities.extend(row.task_identity for row in request.metadata)
 
 
 @dataclass
@@ -85,24 +92,32 @@ class _StepWiseAccumulator:
     env_classes: List[str]
     data_sources: List[str | None]
     uids: List[str]
+    task_identities: List[TaskIdentity | None]
 
-    def record(self, request: TrajectoryRequestBatch, batch: TrajectoryBatch, uids: List[str]) -> None:
+    def record(
+        self, request: TrajectoryRequestBatch, batch: TrajectoryBatch, uids: List[str]
+    ) -> None:
         del uids
         trajectory_ids = request.trajectory_ids
         output_ids = batch.get("trajectory_ids")
         if trajectory_ids is None or output_ids is None:
             raise ValueError("step-wise evaluation requires trajectory IDs")
         inputs_by_id = {
-            trajectory_id.instance_id: (row.metric_class, row.data_source)
+            trajectory_id.instance_id: (
+                row.metric_class,
+                row.data_source,
+                row.task_identity,
+            )
             for trajectory_id, row in zip(trajectory_ids, request.metadata, strict=True)
         }
         for trajectory_id in output_ids:
             if trajectory_id.instance_id not in inputs_by_id:
                 raise ValueError(f"Trajectory ID {trajectory_id.instance_id} not found in input")
-            env_class, data_source = inputs_by_id[trajectory_id.instance_id]
+            env_class, data_source, identity = inputs_by_id[trajectory_id.instance_id]
             self.env_classes.append(env_class)
             self.data_sources.append(data_source)
             self.uids.append(trajectory_id.instance_id)
+            self.task_identities.append(identity)
 
 
 async def _collect_evaluation_rollouts(
@@ -171,6 +186,7 @@ async def _collect_evaluation_rollouts(
         env_classes=accumulator.env_classes,
         data_sources=accumulator.data_sources,
         uids=accumulator.uids,
+        task_identities=accumulator.task_identities,
         example_prompt=last_request.public_prompts[0],
         example_batch=last_batch,
     )
@@ -240,6 +256,7 @@ def _dump_eval_results(
             rollouts.env_classes,
             metrics,
             rollouts.uids,
+            rollouts.task_identities,
         )
 
 
@@ -273,7 +290,7 @@ async def evaluate(
     owns_sink = trajectory_sink is None
     active_sink = trajectory_sink or make_trajectory_sink(cfg.generator, tokenizer)
     try:
-        accumulator = _WholeTrajectoryAccumulator([], [], [])
+        accumulator = _WholeTrajectoryAccumulator([], [], [], [])
         session = (
             nullcontext(evaluation_pool)
             if evaluation_pool is not None
@@ -336,7 +353,7 @@ async def evaluate_step_wise(
     Returns:
         Dict[str, float]: evaluation metrics
     """
-    accumulator = _StepWiseAccumulator([], [], [])
+    accumulator = _StepWiseAccumulator([], [], [], [])
     session = (
         nullcontext(evaluation_pool)
         if evaluation_pool is not None

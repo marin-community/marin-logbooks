@@ -296,6 +296,7 @@ def _token_staleness_metrics(
         return {}
     charged = staleness.masked_fill(~trained, 0)
     metrics = {
+        "async/staleness_tokens_count": count,
         "async/staleness_tokens_mean": charged.sum().item() / count,
         "async/staleness_tokens_max": charged.max().item(),
         "async/staleness_tokens_ratio": charged.count_nonzero().item() / count,
@@ -666,12 +667,27 @@ class RayPPOTrainer:
         """Run trainer teardown once, including after partial startup."""
         if getattr(self, "_shutdown_complete", False):
             return
+        failure: BaseException | None = None
         try:
-            await self.context.close()
-            await self._drain_checkpoint_upload()
+            for phase, cleanup in (
+                ("rollout_close", self.context.close),
+                ("checkpoint_drain", self._drain_checkpoint_upload),
+                ("teardown", self._teardown),
+            ):
+                try:
+                    await cleanup()
+                except BaseException as error:
+                    record_event(
+                        "shutdown_failure", {}, attributes={"phase": phase, "failure_class": type(error).__name__}
+                    )
+                    if failure is None:
+                        failure = error
+                    else:
+                        failure.add_note(f"Trainer {phase} also failed: {type(error).__name__}")
         finally:
-            await self._teardown()
             self._shutdown_complete = True
+        if failure is not None:
+            raise failure
 
     @staticmethod
     def _start_exit_watchdog(timeout: int = 120) -> None:
@@ -694,6 +710,7 @@ class RayPPOTrainer:
             if self._rollout_spans_enabled
             else None
         )
+        primary_error: BaseException | None = None
         try:
             if self._distillation_runtime is not None:
                 await self._distillation_runtime.start()
@@ -701,16 +718,28 @@ class RayPPOTrainer:
             if self.eval_trajectory_runner is not self.trajectory_runner:
                 await self.eval_trajectory_runner.startup()
             await self._train_loop()
-        except Exception as error:
-            log_exception_as_text(f"Train loop failed at global_step {self.global_step}", error)
-            receipt = write_exception_receipt("skyrl-trainer", error)
-            if receipt is not None:
-                logger.error("Preserved original trainer exception at {}", receipt)
+        except BaseException as error:
+            primary_error = error
+            if isinstance(error, Exception):
+                log_exception_as_text(f"Train loop failed at global_step {self.global_step}", error)
+                receipt = write_exception_receipt("skyrl-trainer", error)
+                if receipt is not None:
+                    logger.error("Preserved original trainer exception at {}", receipt)
             raise
         finally:
             if loop_monitor is not None:
                 loop_monitor.cancel()
-            await self.shutdown()
+            try:
+                await self.shutdown()
+            except BaseException as error:
+                if primary_error is None:
+                    raise
+                primary_error.add_note(f"Trainer shutdown also failed: {type(error).__name__}")
+                logger.error(
+                    "Trainer shutdown failed while preserving original {}: {}",
+                    type(primary_error).__name__,
+                    type(error).__name__,
+                )
 
     async def _startup_trajectory_runner(self) -> None:
         """Initialize trajectory-runner resources before any rollout can begin."""
@@ -844,8 +873,18 @@ class RayPPOTrainer:
             cleanup_duration = time.monotonic() - cleanup_started
         return time.monotonic() - snapshot.upload_started_at, cleanup_duration
 
-    async def _finish_checkpoint_upload(self, snapshot: CheckpointSnapshot, *, commit: bool) -> tuple[float, float]:
-        return await asyncio.to_thread(self._finish_checkpoint_upload_blocking, snapshot, commit=commit)
+    async def _finish_checkpoint_upload(
+        self, snapshot: CheckpointSnapshot, *, commit: bool
+    ) -> tuple[float, float]:
+        result = await asyncio.to_thread(
+            self._finish_checkpoint_upload_blocking, snapshot, commit=commit
+        )
+        if commit:
+            record_event(
+                "checkpoint_published",
+                {"step": snapshot.step, "marker_path": snapshot.marker_path},
+            )
+        return result
 
     async def _await_checkpoint_upload(self, snapshot: CheckpointSnapshot) -> None:
         await self._finish_checkpoint_upload(snapshot, commit=False)
@@ -1355,6 +1394,13 @@ class RayPPOTrainer:
             await self._handle_resume_at_max_steps()
             return
 
+        record_event(
+            "training_schedule",
+            {
+                "expected_steps": self.total_training_steps,
+                "starting_step": self.global_step,
+            },
+        )
         if self._control.should_training_stop:
             await self._finalize_training(
                 completed_step=self.global_step, epoch=self.global_step // self.num_steps_per_epoch
@@ -1750,7 +1796,9 @@ class RayPPOTrainer:
             del self._distillation_tickets[group.uid]
         return scored
 
-    def convert_rollout_groups_to_training_input(self, groups: List[RolloutGroup]) -> TrainingInputBatch:
+    def convert_rollout_groups_to_training_input(
+        self, groups: List[RolloutGroup]
+    ) -> TrainingInputBatch:
         """Concatenate one batch of admitted groups and convert it to a training batch."""
         batch_size = self.context.config.batch_size
         max_staleness_steps = self.context.config.max_staleness_steps
@@ -1793,12 +1841,16 @@ class RayPPOTrainer:
 
         with Timer("convert_to_training_input", self.all_timings):
             training_input = self.convert_to_training_input(trajectory_batch, uids, rollout_staleness=rollout_staleness)
-        if self._training_metrics_enabled:
-            self._record_consumed_staleness(uids, rollout_staleness, training_input["response_mask"][: len(uids)])
+        self._record_consumed_staleness(
+            uids, rollout_staleness, training_input["response_mask"][: len(uids)]
+        )
         return training_input
 
     def _record_consumed_staleness(
-        self, uids: List[str], rollout_staleness: List[int], response_masks: torch.Tensor
+        self,
+        uids: List[str],
+        rollout_staleness: List[int],
+        response_masks: torch.Tensor,
     ) -> None:
         counts: dict[str, dict[str, int]] = {}
         # One reduction and one device sync for the whole batch, rather than one per row.
@@ -1807,8 +1859,16 @@ class RayPPOTrainer:
             group = counts.setdefault(uid, {"staleness": steps, "groups": 1, "sequences": 0, "response_tokens": 0})
             group["sequences"] += 1
             group["response_tokens"] += int(token_count)
-        for group in counts.values():
-            record_event("consumed_staleness", group, attributes={"role": TRAINER_ROLE, "step": str(self.global_step)})
+        for uid, group in counts.items():
+            record_event(
+                "consumed_staleness",
+                group,
+                attributes={
+                    "role": TRAINER_ROLE,
+                    "step": str(self.global_step),
+                    "uid": uid,
+                },
+            )
 
     def build_models(self, PolicyWorker, CriticWorker, RefWorker, policy_pg: Optional[PlacementGroup] = None):
         """
@@ -2241,8 +2301,10 @@ class RayPPOTrainer:
             rollout_staleness_tensor = _token_staleness(
                 rollout_staleness, policy_steps, response_masks_tensor, self.global_step
             )
+        token_age_metrics = _token_staleness_metrics(rollout_staleness_tensor, loss_masks_tensor, policy_steps)
+        record_event("selected_token_staleness", token_age_metrics, attributes={"step": str(self.global_step)})
         if self._training_metrics_enabled:
-            self.all_metrics.update(_token_staleness_metrics(rollout_staleness_tensor, loss_masks_tensor, policy_steps))
+            self.all_metrics.update(token_age_metrics)
         training_input = TrainingInputBatch(
             {
                 "sequences": sequences_tensor,  # Full trajectories (padded and concatenated prompts and responses)
@@ -3127,6 +3189,13 @@ class RayPPOTrainer:
             empty_cache_refs += self.critic_model.async_run_ray_method("pass_through", "empty_cache")
 
         policy_status = policy_statuses[0].metadata["train_status"]
+        for index, window in enumerate(policy_statuses[0].metadata.get("optimizer_windows", [])):
+            record_event("optimizer_window", window, attributes={"role": TRAINER_ROLE, "step": str(self.global_step), "window": str(index)})
+        record_event(
+            "policy_update",
+            dict(policy_status),
+            attributes={"role": TRAINER_ROLE, "step": str(self.global_step)},
+        )
         for k, v in policy_status.items():
             self.all_metrics.update({f"policy/{k}": v})
         empty_cache_refs += self.policy_model.async_run_ray_method("pass_through", "empty_cache")

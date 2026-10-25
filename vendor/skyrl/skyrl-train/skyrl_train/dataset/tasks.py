@@ -17,6 +17,7 @@ from rolloutengine.harness.assistant_prefix import ASSISTANT_PREFIX_HARNESS, ass
 from rolloutengine.models import MachineRuntimeSpec, TaskRolloutSpec
 from skyrl_gym.rollout_specs import is_shell_harness, rollout_spec, shell_harness
 from skyrl_gym.source_task import session_parameters, source_task
+from taskcompendium.identity import canonical_sha256
 from taskcompendium.models import (
     EnvironmentRequirements,
     NoGrader,
@@ -33,7 +34,12 @@ from skyrl_train.dataset.dataset import PromptDataset, _prompt_token_count
 from skyrl_train.inference_engines.chat_template import assistant_prefix_token_ids
 from skyrl_train.dataset.harbor_import import HARBOR_TRIAL_SESSION
 from skyrl_train.rollouts.group_grader import task_group_grader
-from skyrl_train.task_inputs import TaskInput, TrajectoryMetadata, task_messages
+from skyrl_train.task_inputs import (
+    TaskIdentity,
+    TaskInput,
+    TrajectoryMetadata,
+    task_messages,
+)
 
 TASKCOMPENDIUM_ENVIRONMENT = "taskcompendium"
 TASK_ROLLOUT_COLUMN = "task_rollout_spec"
@@ -48,8 +54,17 @@ def task_prompt(lowered: TaskRolloutSpec) -> dict:
     return {
         TASK_ROLLOUT_COLUMN: lowered.model_dump_json(),
         "prompt": task_messages(lowered),
-        "env_class": TASKCOMPENDIUM_ENVIRONMENT if is_shell_harness(lowered.harness) else lowered.harness,
+        "env_class": (
+            TASKCOMPENDIUM_ENVIRONMENT
+            if is_shell_harness(lowered.harness)
+            else lowered.harness
+        ),
         "data_source": task.source.dataset,
+        "task_identity": {
+            "task_id": task.id,
+            "task_spec_sha256": canonical_sha256(task.model_dump(mode="json")),
+            "rollout_spec_sha256": canonical_sha256(lowered.model_dump(mode="json")),
+        },
     }
 
 
@@ -93,6 +108,10 @@ class TaskDataset(PromptDataset):
                             data_source=extra_info.get("data_source") or extras.get("data_source"),
                             teacher_route=extras.get("teacher_route"),
                             metric_tags=metric_tags,
+                            task_identity=TaskIdentity(
+                                **extras["task_identity"],
+                                source_row_index=extras["source_row_index"],
+                            ),
                         ),
                         group_grader=task_group_grader(lowered),
                     ),
@@ -105,7 +124,10 @@ def _stored_prompt(lowered: TaskRolloutSpec) -> dict:
     prepared = task_prompt(lowered)
     # Session-specific extras stay in the serialized task: mixed task families
     # do not share an Arrow schema. Restore them when yielding a training row.
-    stored = {key: prepared[key] for key in (TASK_ROLLOUT_COLUMN, "env_class", "data_source")}
+    stored = {
+        key: prepared[key]
+        for key in (TASK_ROLLOUT_COLUMN, "env_class", "data_source", "task_identity")
+    }
     # Message fields vary across tasks. JSON preserves missing fields and nested
     # values without inferring a different Arrow struct in each map worker.
     stored["prompt"] = json.dumps(prepared["prompt"], ensure_ascii=False)

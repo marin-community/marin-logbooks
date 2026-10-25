@@ -112,6 +112,11 @@ Require `SUCCESS` from the Iris coordinator submitted by `--run` and its trainin
 child, plus successful completion of the Marin training artifact. With `--export-hf`,
 also require the export child to succeed. Its `terminal.json` records the run result;
 the returned `SkyRLRun` supplies `iris_job_id` and `checkpoint_root` for follow-up inspection.
+
+Each run also retains bounded `exports/training_evidence/` chunks and `manifest.json` beside the evaluation dumps. This records actual per-update applied/skipped/finite metrics, selected group ages, operational intervals and final buffer dispositions even when live telemetry is unavailable. The manifest marks missing steps, interrupted writes and unknown uncommitted generation explicitly; `complete` describes retained history, while `all_updates_finite_and_applied` is a separate result. A missing or still-recording manifest is incomplete evidence. A bounded single publisher keeps storage writes off rollout and policy-update producers; queue pressure, write failure or an expired close deadline makes the run ineligible. Require both successful evidence closure and artifact completion alongside the retained manifest. Chunk write acknowledgements do not establish optimizer resumability or loaded GPU weights.
+
+Evaluation rows carry the observed task ID, TaskSpec and rollout-spec digests, and original source-row index through prompt filtering. Dataset records retain before/after counts and ordered identity digests. These identify in-memory task declarations, including private resource references, without attesting external asset bytes. Boolean verifier passes remain nullable: graders that supply only a numeric score record `verifier_did_not_supply_boolean`; reward sign is not substituted for a verdict.
+
 `hf_model_uri` is populated only when export is requested. Check
 optimizer-update counts, finite metrics, initial/final attempted and scored
 counts and native checkpoint metadata; check the completed HF export only when requested.

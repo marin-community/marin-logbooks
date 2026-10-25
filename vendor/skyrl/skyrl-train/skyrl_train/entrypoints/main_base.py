@@ -43,7 +43,8 @@ from marinskyrl.runtime_options import (
     inference_engines_required,
     static_preference_pairs_requested,
 )
-from marinskyrl.resource_locator import RolloutModelLoading
+from marinskyrl.resource_locator import RolloutModelLoading, join_resource_path
+from skyrl_train.evidence import TrainingEvidence
 from skyrl_train.dataset.preference_pairs import PreferencePairFormat
 
 if TYPE_CHECKING:
@@ -660,7 +661,22 @@ class BasePPOExp:
 
         configure_progress(self.cfg.trainer.progress)
 
-        with process_telemetry(TRAINER_ROLE):
+        evidence = TrainingEvidence(
+            join_resource_path(str(self.cfg.trainer.export_path), "training_evidence"),
+            expected_steps=self.cfg.trainer.max_steps,
+            declarations={
+                "policy_source_uri": self.cfg.trainer.policy.model.get("source_uri"),
+                "policy_source_identity": self.cfg.trainer.policy.model.get(
+                    "source_identity"
+                ),
+                "policy_model_path": self.cfg.trainer.policy.model.path,
+                "train_inputs": list(self.cfg.data.train_data),
+                "validation_inputs": list(self.cfg.data.val_data or []),
+                "strategy": self.cfg.trainer.strategy,
+                "max_staleness_steps": self.cfg.trainer.rollout_buffer.max_staleness_steps,
+            },
+        )
+        with process_telemetry(TRAINER_ROLE, evidence=evidence):
             return self._run()
 
     def _run(self):

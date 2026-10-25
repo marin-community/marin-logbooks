@@ -1,5 +1,7 @@
 """Load canonical task rows into the rollout worker's execution contract."""
 
+import hashlib
+import json
 from pathlib import Path
 
 import pyarrow as pa
@@ -17,6 +19,12 @@ from skyrl_train.dataset.tasks import SourceTaskDataset
 from taskcompendium.models import CommandSemantics, ConversationInput, EnvironmentRequirements, ScriptGrader, TextMessage
 from tests.cpu.task_specs import text_task
 from tokenizers import Tokenizer, models
+from tokenizers.pre_tokenizers import Whitespace
+from taskcompendium.grading_result import GradeResult, Outcome
+from skyrl_train.evidence import TrainingEvidence
+from skyrl_train.telemetry import ProcessTelemetry, TelemetryConfig, TRAINER_ROLE
+from skyrl_train.rollouts.task_projections import verification_result
+from skyrl_train.utils.trainer_utils import dump_per_dataset_eval_results
 from transformers import PreTrainedTokenizerFast
 
 
@@ -81,3 +89,97 @@ def test_canonical_rows_lower_at_load_and_admit_image_and_package_graders(tmp_pa
     }
     for spec in loaded:
         validate_spec(spec, factories)
+
+
+def test_filtered_task_identity_and_nullable_verdict_survive_persisted_evaluation(
+    tmp_path: Path,
+):
+    tasks = [
+        text_task("kept-first", prompt="short Ω"),
+        text_task("filtered", prompt="long " * 200),
+        text_task("kept-last", prompt="last"),
+    ]
+    path = tmp_path / "identity-input.parquet"
+    pq.write_table(
+        pa.Table.from_pylist([{"task_spec": task.model_dump_json()} for task in tasks]),
+        path,
+    )
+    native = Tokenizer(models.WordLevel({"[UNK]": 0}, unk_token="[UNK]"))
+    native.pre_tokenizer = Whitespace()
+    tokenizer = PreTrainedTokenizerFast(
+        tokenizer_object=native,
+        unk_token="[UNK]",
+        chat_template="{% for message in messages %}{{ message.content }} {% endfor %}",
+    )
+    config = get_default_config()
+    root = tmp_path / "evidence"
+    with ProcessTelemetry(
+        TelemetryConfig(),
+        TRAINER_ROLE,
+        TrainingEvidence(str(root), expected_steps=0, declarations={}),
+    ):
+        dataset = SourceTaskDataset(
+            [str(path)],
+            tokenizer,
+            50,
+            num_workers=1,
+            environment_configs=OmegaConf.to_container(
+                config.environment.task_sessions, resolve=True
+            ),
+        )
+    rows = dataset.collate_fn(list(dataset))
+    identities = [row["input"].metadata.task_identity for row in rows]
+    assert [identity.task_id for identity in identities] == ["kept-first", "kept-last"]
+    assert [identity.source_row_index for identity in identities] == [0, 2]
+    first_hash = hashlib.sha256(
+        json.dumps(
+            json.loads(tasks[0].model_dump_json()),
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode()
+    ).hexdigest()
+    assert identities[0].task_spec_sha256 == first_hash
+    manifest = json.loads((root / "manifest.json").read_bytes())
+    retained = [
+        json.loads(line)
+        for chunk in manifest["chunks"]
+        for line in (root / chunk["path"]).read_bytes().splitlines()
+    ]
+    observed = next(row["fields"] for row in retained if row["name"] == "input_dataset")
+    assert (observed["before_rows"], observed["after_rows"]) == (3, 2)
+    assert (
+        observed["before_task_identity_sha256"]
+        != observed["after_task_identity_sha256"]
+    )
+    output = tmp_path / "eval"
+    output.mkdir()
+    batch = {
+        "prompt_token_ids": [[0], [0]],
+        "response_ids": [[0], [0]],
+        "rewards": [1.0, 1.0],
+        "verification_results": [
+            verification_result(GradeResult(Outcome.GRADED, 1.0, passed=True)),
+            verification_result(GradeResult(Outcome.GRADED, 1.0)),
+        ],
+    }
+    dump_per_dataset_eval_results(
+        str(output),
+        tokenizer,
+        batch,
+        ["fixture", "fixture"],
+        ["taskcompendium"] * 2,
+        {},
+        [row["uid"] for row in rows],
+        identities,
+    )
+    persisted = [
+        json.loads(line) for line in (output / "fixture.jsonl").read_text().splitlines()
+    ]
+    assert [row["task_identity"]["source_row_index"] for row in persisted] == [0, 2]
+    assert [row["verification"]["passed"] for row in persisted] == [True, None]
+    assert (
+        persisted[1]["verification"]["passed_unavailable_reason"]
+        == "verifier_did_not_supply_boolean"
+    )
+    assert (output / "fixture.jsonl").stat().st_mode & 0o777 == 0o600
