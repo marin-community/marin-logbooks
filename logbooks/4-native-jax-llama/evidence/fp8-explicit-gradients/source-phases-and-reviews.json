@@ -1,0 +1,336 @@
+{
+  "schema": "native-jax-fp8-backward-evidence-bundle.v1",
+  "phase_records_are_chronological_not_relabelled": true,
+  "records": {
+    "native-jax-fp8-explicit-gradients-source-freeze.json": {
+      "utc": "2026-10-25T02:42:56.931011+00:00",
+      "checkout": "local-artifacts/marin-native-jax-fp8-explicit-gradients",
+      "branch": "codex/native-jax-fp8-explicit-gradients",
+      "base": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "base_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+      "base_status": "Parent verifiedPUBLICPR30; no authorremotequery",
+      "resulting_tree": "2597c0b9db828ffe82a5a4c84b479d2b65608675",
+      "frozen_before_any_tests": true,
+      "tests_executed": false,
+      "files": {
+        "lib/haliax/src/haliax/_src/fp8.py": {
+          "sha256": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264",
+          "git_blob": "ed4d4f0f677f1ee97e2faf5b40639dbc3f20727a",
+          "base_blob": "3bec62614eb57fc710221e282e96fc18467ab910"
+        },
+        "lib/haliax/tests/test_fp8.py": {
+          "sha256": "9cf1579cb934bcd53913040c36c2c9ea16afd3bdd861a514ca924856de5fabf5",
+          "git_blob": "529c205516a622134230cf3ed1fe2135a77b4e35",
+          "base_blob": "1093c001dfe9638723a29b7071e2140dc1a83d7f"
+        }
+      },
+      "patch": "local-artifacts/native-jax-fp8-explicit-gradients-support.patch",
+      "patch_sha256": "f806b36796bf0c29a0ab3c8fdd63076610a95b43598521ab906e6242de041a1a",
+      "production": "ExistingFP8transposehelper only: compute pretransposeaxisorder; nonemptyallExplicitmesh suppliesprimalshardingpermutedviaspec.update+sharding.update asdotout_sharding. Auto/nomeshretainNone; RHSswapreuseshelper. No math/dtype/FP8state/optimizer/guard/converter/microbatch changes.",
+      "source_reference": {
+        "path": "lib/python3.12/site-packages/jax/_src/lax/lax.py",
+        "sha256": "b8d614147a1ed3af668a8bfb7350c8f53076fcb213dfcc40f7299fda6b0ade4c",
+        "lines": "5906-5948 existingJAXtransposeplacementprecedent; no privatehelperimport"
+      },
+      "tests": "ExistingAuto exactrepresentablecase unchangedAST. NewrealFp8DotGeneralOp Explicit numerical/state/storage regression with3layouts: normal, transposedinputaxis0, transposedweightaxis0/RHSnonidentity. ExactNumPyforward/dgrad/wgrad; nonunitscales2,.5,4; all6overwritevalues+shardings; output/input/weightgradientoriginalplacements. CPU1andCPU4planned TP2/data2on4.",
+      "preserved_actual_failure": {
+        "local-artifacts/receipt.json": "6443eaa66acd48e3df0849d145639d529b48941a010e9f261527d1fa88fc3a9f",
+        "local-artifacts/raw-cpu1-r3-execution.json": "24551e76656437b647106ae38a9276a277c324f3329ef3971b5ebbd83c8ea86a"
+      },
+      "actual_failure_scope": "PublishedR3Auto exactvalues/input+weightgrad+6statesPASS; ExplicitforwardcallreturnedbutgradientsShardingTypeError inFP8lhs transposecontractedmodel axes. No microbatch/CPU4researchrun. Originalsource054cleanuntouched.",
+      "ordinary": {
+        "log": "local-artifacts/native-jax-fp8-explicit-gradients-ordinary-final.log",
+        "sha256": "a24768f103e8b11c50e1ec90a84c7c0f70b4490ec4dc1aa6b15ea1a5cf1170e0",
+        "result": "Requiredordinary2filesPASS inclpyrefly; priorinitialpass andformatonlyphase preserved",
+        "command": "./infra/pre-commit.py --files lib/haliax/src/haliax/_src/fp8.py --files lib/haliax/tests/test_fp8.py"
+      },
+      "planned_tests_after_root_release": {
+        "CPU1": "source local-artifacts/native-jax-fp8-explicit-gradients-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python local-artifacts/native-jax-fp8-explicit-gradients-tests.py 1 -c pyproject.toml lib/haliax/tests/test_fp8.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-explicit-gradients-cpu1.xml > local-artifacts/native-jax-fp8-explicit-gradients-cpu1.log 2>&1",
+        "CPU4": "source local-artifacts/native-jax-fp8-explicit-gradients-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python local-artifacts/native-jax-fp8-explicit-gradients-tests.py 4 -c pyproject.toml lib/haliax/tests/test_fp8.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-explicit-gradients-cpu4.xml > local-artifacts/native-jax-fp8-explicit-gradients-cpu4.log 2>&1"
+      },
+      "pending_gate": "RootreviewreleaseBEFOREauthorregressiontests. FreshindependentmaintainedreviewBEFOREcommit; rootownsfullsafeHaliaxCPU8/all-filesordinary/catalog/publication. No commit/push/probeexperimentexecution.",
+      "separate_known_gap": "Fp8DotGeneralOp droppedforwardout_shardingkwargs/genericforwardcontractedsharding remainsoutsidebackwardfix; no claim ofnativequantizationintegration/fullcanonicalacceptance."
+    },
+    "native-jax-fp8-explicit-gradients-r1-source-freeze.json": {
+      "utc": "2026-10-25T02:48:01.151701+00:00",
+      "checkout": "local-artifacts/marin-native-jax-fp8-explicit-gradients",
+      "branch": "codex/native-jax-fp8-explicit-gradients",
+      "base": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "initial_freeze": "local-artifacts/native-jax-fp8-explicit-gradients-source-freeze.json",
+      "initial_tree": "2597c0b9db828ffe82a5a4c84b479d2b65608675",
+      "resulting_tree": "6d1eefc02acbd4e6fab2efc3cef99bb1307985cd",
+      "frozen_before_R1_tests": true,
+      "files": {
+        "lib/haliax/src/haliax/_src/fp8.py": {
+          "sha256": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264",
+          "git_blob": "ed4d4f0f677f1ee97e2faf5b40639dbc3f20727a"
+        },
+        "lib/haliax/tests/test_fp8.py": {
+          "sha256": "948a7153ed1237adc944c52746e671cba90ecc987a4eb2dccf838d3ef11d519f",
+          "git_blob": "3cf976a19dc7afe50158e213daad2f87fe91fab0"
+        }
+      },
+      "patches": {
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-full-contribution.patch": "c7190755839872b06d9776ced7b7a03cde5990c47a3ba1c592b1bd29d0a2cca1",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-response.patch": "31fc6cc965084876300854305f97ef2882a4aef812b54ef8e25fed2de97208b8"
+      },
+      "response_scope": "Onlytestfixturegeometry andsemanticallyequivalentreplicatedstatephysicalplacementoracle; productionbyteexact2939d8; exactnumericandotherphysicalspecassertions unchanged.",
+      "initial_bytes_and_receipts_preserved": {
+        "initial_test": "local-artifacts/native-jax-fp8-explicit-gradients-initial-test_fp8.py",
+        "freeze": "local-artifacts/native-jax-fp8-explicit-gradients-source-freeze.json",
+        "patch": "local-artifacts/native-jax-fp8-explicit-gradients-support.patch",
+        "validation": "local-artifacts/native-jax-fp8-explicit-gradients-initial-validation.json",
+        "log": "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.log",
+        "xml": "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.xml"
+      },
+      "disposition": "local-artifacts/native-jax-fp8-explicit-gradients-r1-disposition.json",
+      "ordinary": {
+        "log": "local-artifacts/native-jax-fp8-explicit-gradients-r1-ordinary.log",
+        "sha256": "a24768f103e8b11c50e1ec90a84c7c0f70b4490ec4dc1aa6b15ea1a5cf1170e0",
+        "result": "Requiredordinary2filesPASSincludingPyrefly; noSKIP",
+        "command": "./infra/pre-commit.py --fix --files lib/haliax/src/haliax/_src/fp8.py --files lib/haliax/tests/test_fp8.py"
+      },
+      "planned_after_root_release": {
+        "CPU1": "source local-artifacts/native-jax-fp8-explicit-gradients-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python local-artifacts/native-jax-fp8-explicit-gradients-tests.py 1 -c pyproject.toml lib/haliax/tests/test_fp8.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.xml > local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.log 2>&1",
+        "CPU4": "source local-artifacts/native-jax-fp8-explicit-gradients-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python local-artifacts/native-jax-fp8-explicit-gradients-tests.py 4 -c pyproject.toml lib/haliax/tests/test_fp8.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.xml > local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.log 2>&1"
+      },
+      "negative_control_plan": "AFTERpositivefixturevalid: separateowncloneHEAD054, onlytestfileoverlaid exactR1sha; allproductionsourceunchanged. Ownsourceimports/inprocessCPU1/sourceassertions; selectexactnewtestfunction3parameters. No baselineclonecreatedyet.",
+      "pending": "RootfreshR1review+testrelease beforeCPU1/4/negative; freshindependentreview beforecommit; rootfullsafeHaliaxCPU8/all-filesordinary/catalog/publication. No sourcecommit/push/researchprobe/accelerator."
+    },
+    "native-jax-fp8-explicit-gradients-maintained-review.json": {
+      "review_type": "fresh_independent_maintained_FP8_Explicit_gradient_extraction_review",
+      "verdict": "changes_requested",
+      "findings": [
+        {
+          "id": "G1",
+          "priority": "P2",
+          "path": "lib/haliax/tests/test_fp8.py",
+          "line": 237,
+          "end_line": 248,
+          "title": "Keep the regression mesh and contraction sizes legal for available devices",
+          "trigger": "On64 devices the test chooses model2/data32 but weight contracting dimension is16 and storage shards it by data; device_put fails before FP8. On5 devices it chooses reshape(2,2) for5 devices and fails immediately. These are legal JAX device inventories, and the literal tpu marker selects this test on larger slices.",
+          "consequence": "All three behavior regressions fail due to fixture geometry rather than FP8 gradient behavior, making the new maintained CPU/TPU coverage dependent on incidental device count.",
+          "requested_change": "Retain real available-device coverage but choose a model mesh size that divides device count and make the host contracting dimension divisible by data_size. For example, use model2 only for even counts>=4, otherwise1, and math.lcm(16,data_size) for both host operand contracting dimensions. Preserve existing CPU1/4/8 arrays, independent oracles, exact assertions and tolerances; do not add guard-mirroring tests."
+        }
+      ],
+      "freeze": {
+        "path": "local-artifacts/native-jax-fp8-explicit-gradients-source-freeze.json",
+        "sha256": "ae877fcf92b8ec2414887f1fd813f37174b73210c51e053a1c3cc677d66b8e2f",
+        "before_any_author_tests": true
+      },
+      "source": {
+        "root": "local-artifacts/marin-native-jax-fp8-explicit-gradients",
+        "branch": "codex/native-jax-fp8-explicit-gradients",
+        "base": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+        "base_tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+        "resulting_tree": "2597c0b9db828ffe82a5a4c84b479d2b65608675",
+        "only_two_changed_paths_verified": true,
+        "patch_matches_git_diff_HEAD_binary": true,
+        "resulting_tree_independently_derived_without_writing_git_objects": true
+      },
+      "patch": {
+        "path": "local-artifacts/native-jax-fp8-explicit-gradients-support.patch",
+        "sha256": "f806b36796bf0c29a0ab3c8fdd63076610a95b43598521ab906e6242de041a1a"
+      },
+      "files": {
+        "lib/haliax/src/haliax/_src/fp8.py": {
+          "sha256": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264",
+          "git_blob": "ed4d4f0f677f1ee97e2faf5b40639dbc3f20727a",
+          "base_blob": "3bec62614eb57fc710221e282e96fc18467ab910",
+          "verified_sha256": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264"
+        },
+        "lib/haliax/tests/test_fp8.py": {
+          "sha256": "9cf1579cb934bcd53913040c36c2c9ea16afd3bdd861a514ca924856de5fabf5",
+          "git_blob": "529c205516a622134230cf3ed1fe2135a77b4e35",
+          "base_blob": "1093c001dfe9638723a29b7071e2140dc1a83d7f",
+          "verified_sha256": "9cf1579cb934bcd53913040c36c2c9ea16afd3bdd861a514ca924856de5fabf5"
+        }
+      },
+      "piece_dispositions": [
+        {
+          "path": "lib/haliax/src/haliax/_src/fp8.py",
+          "future_maintenance": "Maintain. Real shared FP8 custom-VJP backward placement correction, independent of the research harness and native integration.",
+          "correctness": "No actionable static finding. Uses existing pre-transpose axis geometry and original operand aval sharding; inverse partition permutation plus final transpose restores original operand layout. RHS delegates with swapped operands/dimensions and swap_ans, so it targets original rhs layout. Nonempty all-Explicit restriction is deliberate and preserves None output sharding for Auto/no-mesh/mixed; no widened support claim. spec.update/sharding.update retain other metadata. Quantization/scales/global-amax/state/precision and forward are unchanged.",
+          "scope": "Backward only. Adjacent dropped forward out_sharding gap remains separately recorded and is not silently qualified."
+        },
+        {
+          "path": "lib/haliax/tests/test_fp8.py",
+          "future_maintenance": "Maintain after G1 geometry correction. Three layouts protect default, nonidentity input transpose and swapped RHS transpose with real Fp8DotGeneralOp.",
+          "correctness": "Exact independent host NumPy Y,dX,dW; distinct nonunit scales; full six overwrite-state value and placement checks; actual output/input/storage-weight gradient placements; storage-to-compute reshard path. No internal mocks, guard tests or copied quantizer. Existing test-function AST including Auto exact representable case is unchanged. New literal tpu marker is appropriate for placement/collective behavior and preserves default CPU selection.",
+          "finding": "G1: available-device mesh/contraction fixture needs legal geometry."
+        }
+      ],
+      "rules_read": [
+        "root AGENTS.md",
+        "root TESTING.md",
+        "lib/haliax/AGENTS.md",
+        "research-engineering promotion policy"
+      ],
+      "ordinary_log": {
+        "path": "local-artifacts/native-jax-fp8-explicit-gradients-ordinary-final.log",
+        "sha256": "a24768f103e8b11c50e1ec90a84c7c0f70b4490ec4dc1aa6b15ea1a5cf1170e0",
+        "read_and_hash_verified": true,
+        "supplied_result": "All listed applicable ordinary hooks, including Pyrefly, report ok; final OK.",
+        "reviewer_reran": false
+      },
+      "source_reference": {
+        "path": "lib/python3.12/site-packages/jax/_src/lax/lax.py",
+        "sha256": "b8d614147a1ed3af668a8bfb7350c8f53076fcb213dfcc40f7299fda6b0ade4c",
+        "lines": "5906-5948 existingJAXtransposeplacementprecedent; no privatehelperimport"
+      },
+      "preserved_failure_evidence": {
+        "local-artifacts/receipt.json": "6443eaa66acd48e3df0849d145639d529b48941a010e9f261527d1fa88fc3a9f",
+        "local-artifacts/raw-cpu1-r3-execution.json": "24551e76656437b647106ae38a9276a277c324f3329ef3971b5ebbd83c8ea86a"
+      },
+      "execution_boundary": "No tests/project imports/FP8 calls by reviewer. AuthorCPU1/4 and negative controls were in process at assignment; no active outputs were polled or test completion inferred. The freeze is source identity, not a final execution qualification. Any test-only response requires separate exact-byte targeted review.",
+      "historical_boundary": "Published R3 Auto control completed exact values/input+weight gradients and six state checks; Explicit forward returned but its values were unasserted before gradient trace failure. No microbatch/CPU4 research outcome or all-FP8-unsupported claim follows. Original/R1/R2/R3 preparation reviews remain untouched.",
+      "not_performed": [
+        "tests",
+        "project/JAX/probe imports",
+        "private env/secrets reads",
+        "network",
+        "source edits",
+        "catalog rerun",
+        "commit/push/publication",
+        "active output polling"
+      ],
+      "required_next_step": "Fix only fixture geometry; freeze response, obtain fresh targeted review before commit, and qualify exact final source with parent-owned required checks. No new source or execution authority is granted by this review."
+    },
+    "native-jax-fp8-explicit-gradients-r1-disposition.json": {
+      "review": "local-artifacts/native-jax-fp8-explicit-gradients-maintained-review.json",
+      "reviewfinding": "OneP2fixturegeometry5/64; productionnofinding. InitialactualCPU1additionalstateoraclespecrepresentationfailurepreserved.",
+      "response": "TESTONLY: topmath.lcm contracting_size=lcm(16,data_size) inbothKshapes; model2onlycount>=4andevenelse1. Geometry/fixturevalues unchangedCPU1/4/8. Statehistory/scalephysicalplacement via publicSharding.is_equivalent_to(other,ndim), matchinglogicalshardsonsamedevices; acceptsP()/P(None)replicatedspelling. All6exactnumericstateassertions andstrictoutput/input/weightgradientshardings unchanged.",
+      "physical_contract_source": {
+        "path": "lib/python3.12/site-packages/jax/_src/sharding.py",
+        "sha256": "7123c545b132cb68d1c156c02de8ca74678a9171d2ab6083a89ffcdb03098af5",
+        "lines": "209-215 defines same logicalarrayshards on same devices"
+      },
+      "production_sha256_unchanged": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264",
+      "initial_test_bytes": {
+        "path": "local-artifacts/native-jax-fp8-explicit-gradients-initial-test_fp8.py",
+        "sha256": "9cf1579cb934bcd53913040c36c2c9ea16afd3bdd861a514ca924856de5fabf5",
+        "origin": "Exactbytes extracted fromfrozen initialtree2597 Gitblob529c; not reconstructedunfrozenstage."
+      },
+      "initial_failure_receipt": "local-artifacts/native-jax-fp8-explicit-gradients-initial-validation.json",
+      "initial_scope": "10pass3fail1skip; exactforward/dx/dw+physicaloutput/input/weight placement andfirstinputhistory/scale passed, failurephysicalstateP()/P(None)comparison stoppedloopbeforekernel/outputgrad assertions. NoCPU4/baselineyet.",
+      "limits": "No StateNonefilter/guards, tolerance/precision/productionchange. No newtests executed beforeR1freeze. Rootfreshreview/testreleasebeforetests; no researchprobeexecution."
+    },
+    "native-jax-fp8-explicit-gradients-r1-maintained-review.json": {
+      "review_type": "fresh_targeted_maintained_FP8_Explicit_gradients_R1_review",
+      "verdict": "no_findings",
+      "findings": [],
+      "freeze": {
+        "path": "local-artifacts/native-jax-fp8-explicit-gradients-r1-source-freeze.json",
+        "sha256": "2d304bb99d72c8318f2d6f45562af4023fdb37d35c4483dcc088b25e936b7b05",
+        "before_R1_tests": true
+      },
+      "disposition": {
+        "path": "local-artifacts/native-jax-fp8-explicit-gradients-r1-disposition.json",
+        "sha256": "c9313aa49715ad0cd184029e2dcde1c9a592c255192855e07e4712fb1b688148"
+      },
+      "source": {
+        "root": "local-artifacts/marin-native-jax-fp8-explicit-gradients",
+        "branch": "codex/native-jax-fp8-explicit-gradients",
+        "base": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+        "resulting_tree": "6d1eefc02acbd4e6fab2efc3cef99bb1307985cd",
+        "only2_contribution_paths_verified": true,
+        "tree_independently_derived_without_git_writes": true
+      },
+      "files": {
+        "lib/haliax/src/haliax/_src/fp8.py": {
+          "sha256": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264",
+          "git_blob": "ed4d4f0f677f1ee97e2faf5b40639dbc3f20727a"
+        },
+        "lib/haliax/tests/test_fp8.py": {
+          "sha256": "948a7153ed1237adc944c52746e671cba90ecc987a4eb2dccf838d3ef11d519f",
+          "git_blob": "3cf976a19dc7afe50158e213daad2f87fe91fab0"
+        }
+      },
+      "patches": {
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-full-contribution.patch": "c7190755839872b06d9776ced7b7a03cde5990c47a3ba1c592b1bd29d0a2cca1",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-response.patch": "31fc6cc965084876300854305f97ef2882a4aef812b54ef8e25fed2de97208b8"
+      },
+      "piece_dispositions": [
+        {
+          "path": "lib/haliax/src/haliax/_src/fp8.py",
+          "maintained_fit": "Maintain: bounded reusable all-Explicit custom-VJP backward sharding fix in existing helper.",
+          "correctness": "No finding. Exact initial production SHA2939d8 retained; original operand sharding inverse permutation and swapped RHS restoration unchanged. Auto/no-mesh and state/precision/global-amax logic unchanged. All-Explicit support scope remains explicit, with generic forward output-sharding gap separate."
+        },
+        {
+          "path": "lib/haliax/tests/test_fp8.py",
+          "maintained_fit": "Maintain: actual value/gradient/state/placement regression with three meaningful axis layouts.",
+          "correctness": "No finding after both targeted corrections. Independent NumPy exact Y,dX,dW and all six numeric state checks retained. Output/input/storage-weight gradient comparisons remain strict. Existing base test function AST unchanged. No mocks, guard-mirroring tests, copied quantizer or tolerance relaxation."
+        }
+      ],
+      "resolved": [
+        {
+          "id": "G1",
+          "priority": "P2",
+          "status": "resolved",
+          "evidence": "test_fp8.py:238-250",
+          "assessment": "model_size2 only for even counts>=4, otherwise1; product data_size*model_size therefore equals available devices. contracting_size=lcm(16,data_size) makes stored contraction axis shardable. Both operand K dimensions use it; same mathematical NumPy oracles adapt. CPU1/4/8 remain exact original arrays. On5 devices mesh5x1/K80 and on64 mesh32x2/K32 are legal by construction; these are static geometry conclusions, not executed outcomes."
+        },
+        {
+          "id": "initial_CPU1_state_oracle_failure",
+          "status": "resolved_as_test_oracle_contract",
+          "evidence": "test_fp8.py:309-317; installed jax/_src/sharding.py:209-215",
+          "assessment": "Only state physical-sharding comparisons changed to is_equivalent_to(other,ndim). Public JAX contract requires the same logical shards on the same devices, accepting equivalent replicated P()/P(None) representation without weakening physical placement. Exact history/scale values remain in every input/kernel/output-gradient loop iteration. All other numerical/placement assertions unchanged."
+        }
+      ],
+      "physical_equivalence_reference": {
+        "path": "lib/python3.12/site-packages/jax/_src/sharding.py",
+        "sha256": "7123c545b132cb68d1c156c02de8ca74678a9171d2ab6083a89ffcdb03098af5",
+        "lines": "209-215 defines same logicalarrayshards on same devices"
+      },
+      "initial_history": {
+        "original_review": "local-artifacts/native-jax-fp8-explicit-gradients-maintained-review.json",
+        "original_review_sha256": "c78a5794fe60db7d52646a04f923bf71a4fc850809fc4d37e19d484e34bc902d",
+        "original_finding_count": 1,
+        "original_verdict": "changes_requested",
+        "validation_path": "local-artifacts/native-jax-fp8-explicit-gradients-initial-validation.json",
+        "validation_sha256": "d71154b9d4cc063537cc00ac7b23125103085d0af2f435fab544e4d5c3cf60ea",
+        "supplied_terminal_counts": {
+          "pass": 10,
+          "fail": 3,
+          "skip": 1
+        },
+        "qualified_scope": "All three initial new cases passed exact Y/dX/dW, strict output/input/weight placements, and first input history/scale values before failing on P(None) versus P() history representation. Remaining kernel/output-gradient state value assertions were not reached. This historical run does not establish R1 execution results.",
+        "preserved_hashes": {
+          "local-artifacts/native-jax-fp8-explicit-gradients-maintained-review.md": "fce72fdfbec7ac9ca8202f4f58247fa2949f3f685d9c8312617045c04152dfd5",
+          "local-artifacts/native-jax-fp8-explicit-gradients-maintained-review.json": "c78a5794fe60db7d52646a04f923bf71a4fc850809fc4d37e19d484e34bc902d",
+          "local-artifacts/native-jax-fp8-explicit-gradients-source-freeze.json": "ae877fcf92b8ec2414887f1fd813f37174b73210c51e053a1c3cc677d66b8e2f",
+          "local-artifacts/native-jax-fp8-explicit-gradients-support.patch": "f806b36796bf0c29a0ab3c8fdd63076610a95b43598521ab906e6242de041a1a",
+          "local-artifacts/native-jax-fp8-explicit-gradients-initial-test_fp8.py": "9cf1579cb934bcd53913040c36c2c9ea16afd3bdd861a514ca924856de5fabf5",
+          "local-artifacts/native-jax-fp8-explicit-gradients-initial-validation.json": "d71154b9d4cc063537cc00ac7b23125103085d0af2f435fab544e4d5c3cf60ea",
+          "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.xml": "7c1e961e055bfcbc60ad07e138ec97634343c74bc414c8e05a4d60a96d0e4e48",
+          "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.log": "51718edd25d34ca266c161c75e12e9362b5cdebf8135804f045589e555c3e9bc"
+        }
+      },
+      "ordinary": {
+        "log": "local-artifacts/native-jax-fp8-explicit-gradients-r1-ordinary.log",
+        "sha256": "a24768f103e8b11c50e1ec90a84c7c0f70b4490ec4dc1aa6b15ea1a5cf1170e0",
+        "supplied_result": "All listed applicable hooks including Pyrefly report ok; final OK.",
+        "reviewer_read_and_hash_verified": true,
+        "reviewer_reran": false
+      },
+      "verification": [
+        "Verified both file hashes/git blobs, response and full patch SHA256, unchanged production, exact full git diff, and independently derived resulting tree.",
+        "Read targeted response and public installed Sharding.is_equivalent_to source as text.",
+        "Verified initial negative review/frozen test and terminal XML/log history hashes; retained them unchanged.",
+        "Used only stdlib AST parsing for existing-test structural comparison; no probe/project import or code-object compilation."
+      ],
+      "not_performed": [
+        "project/JAX/probe imports",
+        "tests or diagnostic execution",
+        "active test-output polling",
+        "private environment/secrets reads",
+        "network",
+        "source edits",
+        "catalog rerun",
+        "commit/push/publication"
+      ],
+      "execution_status": "No execution by reviewer. R1 author/parent runs are separately owned and were not polled or inferred complete. Static zero-finding review does not establish final runtime qualification.",
+      "next_gate": "No remaining review finding for these exact R1 bytes. Parent retains required final-source validation, ordinary/all-files/catalog and publication gates. Any additional executable or test correction requires fresh targeted review before commit."
+    }
+  }
+}

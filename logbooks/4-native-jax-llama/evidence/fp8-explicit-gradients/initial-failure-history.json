@@ -1,0 +1,53 @@
+{
+  "schema": "native-jax-fp8-backward-evidence-bundle.v1",
+  "phase_records_are_chronological_not_relabelled": true,
+  "records": {
+    "initial-validation-projection": {
+      "source_freeze": "local-artifacts/native-jax-fp8-explicit-gradients-source-freeze.json",
+      "patch_sha256": "f806b36796bf0c29a0ab3c8fdd63076610a95b43598521ab906e6242de041a1a",
+      "run": "initialactualCPU1 fulltest_fp8 -n0 rootconfig/defaultmarkers; launcher/tests sameprocess",
+      "actual_provenance": {
+        "actual_devices": 1,
+        "devices": [
+          "cpu:0"
+        ],
+        "python": "local-artifacts/python",
+        "source_modules": {
+          "levanter": "lib/levanter/src/levanter/__init__.py",
+          "haliax": "lib/haliax/src/haliax/__init__.py",
+          "marin": "lib/marin/src/marin/__init__.py",
+          "iris": "lib/iris/src/iris/__init__.py",
+          "fray": "lib/fray/src/fray/__init__.py",
+          "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+        },
+        "iris_publishing_runtime": false
+      },
+      "exit_code": 1,
+      "passed": 10,
+      "failed": 3,
+      "skipped": 1,
+      "log": "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.log",
+      "xml": "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.xml",
+      "hashes": {
+        "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.xml": "7c1e961e055bfcbc60ad07e138ec97634343c74bc414c8e05a4d60a96d0e4e48",
+        "local-artifacts/native-jax-fp8-explicit-gradients-cpu1.log": "51718edd25d34ca266c161c75e12e9362b5cdebf8135804f045589e555c3e9bc"
+      },
+      "boundary": "Exactnumeric/output-input-weightplacement controls passed before firststatehistoryNamedSharding equality rejectedP(None,)vsP(). Remainingkernel/outputgradstateassertionsnotreached; doNOTclaimall6statespassed. CPU4/baselineNOTstarted. Sourcefrozenunchanged; finalreviewpending geometry+equivalence response.",
+      "failures": [
+        {
+          "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[none]",
+          "message_first_line": "AssertionError: assert NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device) == NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)"
+        },
+        {
+          "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[input]",
+          "message_first_line": "AssertionError: assert NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device) == NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)"
+        },
+        {
+          "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[weight]",
+          "message_first_line": "AssertionError: assert NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device) == NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)"
+        }
+      ],
+      "projection_boundary": "Printed module/array assertion representations omitted; first assertion line and original receipt/XML/log hashes retained. Later state assertions were not reached."
+    }
+  }
+}

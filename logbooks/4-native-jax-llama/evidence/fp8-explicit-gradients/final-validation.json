@@ -1,0 +1,425 @@
+{
+  "schema": "native-jax-fp8-backward-evidence-bundle.v1",
+  "phase_records_are_chronological_not_relabelled": true,
+  "records": {
+    "native-jax-fp8-explicit-gradients-r1-validation.json": {
+      "utc": "2026-10-25T02:52:23.985163+00:00",
+      "freeze": "local-artifacts/native-jax-fp8-explicit-gradients-r1-source-freeze.json",
+      "full_patch": "local-artifacts/native-jax-fp8-explicit-gradients-r1-full-contribution.patch",
+      "full_patch_sha256": "c7190755839872b06d9776ced7b7a03cde5990c47a3ba1c592b1bd29d0a2cca1",
+      "response_patch": "local-artifacts/native-jax-fp8-explicit-gradients-r1-response.patch",
+      "resulting_tree": "6d1eefc02acbd4e6fab2efc3cef99bb1307985cd",
+      "files_hashes_after_validation": {
+        "lib/haliax/src/haliax/_src/fp8.py": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264",
+        "lib/haliax/tests/test_fp8.py": "948a7153ed1237adc944c52746e671cba90ecc987a4eb2dccf838d3ef11d519f"
+      },
+      "positive": {
+        "CPU1": {
+          "exit_code": 0,
+          "passed": 13,
+          "skipped": 1,
+          "summary": "13 passed, 1 skipped, 1 warning in 4.75s",
+          "provenance": {
+            "actual_devices": 1,
+            "devices": [
+              "cpu:0"
+            ],
+            "python": "local-artifacts/python",
+            "source_modules": {
+              "levanter": "lib/levanter/src/levanter/__init__.py",
+              "haliax": "lib/haliax/src/haliax/__init__.py",
+              "marin": "lib/marin/src/marin/__init__.py",
+              "iris": "lib/iris/src/iris/__init__.py",
+              "fray": "lib/fray/src/fray/__init__.py",
+              "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+            },
+            "iris_publishing_runtime": false
+          },
+          "log": "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.log",
+          "xml": "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.xml",
+          "exact_new_cases": [
+            "test_fp8_explicit_values_gradients_and_state_preserve_placement[none]",
+            "test_fp8_explicit_values_gradients_and_state_preserve_placement[input]",
+            "test_fp8_explicit_values_gradients_and_state_preserve_placement[weight]"
+          ],
+          "all_cases": [
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_is_reasonable",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_all_dots_contract_fp8_operands",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_quant_dtype_overrides_reach_dot_operands",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_emits_fp8_kernels_on_gpu",
+              "skipped_reason": "needs an FP8-capable GPU (CUDA sm89+: Ada/Hopper/Blackwell)"
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_grads_match_reference",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_exact_for_representable_inputs",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[none]",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[input]",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[weight]",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_backward_uses_distinct_operand_scales",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_forward_matches_reference_under_nonunit_scales",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp_loop",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_layer_splicing",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8ize_stacking",
+              "skipped_reason": null
+            }
+          ],
+          "command": "source local-artifacts/native-jax-fp8-explicit-gradients-env.sh; export JAX_NUM_CPU_DEVICES=1; uv run python local-artifacts/native-jax-fp8-explicit-gradients-tests.py 1 -c pyproject.toml lib/haliax/tests/test_fp8.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.xml > local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.log 2>&1"
+        },
+        "CPU4": {
+          "exit_code": 0,
+          "passed": 13,
+          "skipped": 1,
+          "summary": "13 passed, 1 skipped, 1 warning in 4.75s",
+          "provenance": {
+            "actual_devices": 4,
+            "devices": [
+              "cpu:0",
+              "cpu:1",
+              "cpu:2",
+              "cpu:3"
+            ],
+            "python": "local-artifacts/python",
+            "source_modules": {
+              "levanter": "lib/levanter/src/levanter/__init__.py",
+              "haliax": "lib/haliax/src/haliax/__init__.py",
+              "marin": "lib/marin/src/marin/__init__.py",
+              "iris": "lib/iris/src/iris/__init__.py",
+              "fray": "lib/fray/src/fray/__init__.py",
+              "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+            },
+            "iris_publishing_runtime": false
+          },
+          "log": "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.log",
+          "xml": "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.xml",
+          "exact_new_cases": [
+            "test_fp8_explicit_values_gradients_and_state_preserve_placement[none]",
+            "test_fp8_explicit_values_gradients_and_state_preserve_placement[input]",
+            "test_fp8_explicit_values_gradients_and_state_preserve_placement[weight]"
+          ],
+          "all_cases": [
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_is_reasonable",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_all_dots_contract_fp8_operands",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_quant_dtype_overrides_reach_dot_operands",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_emits_fp8_kernels_on_gpu",
+              "skipped_reason": "needs an FP8-capable GPU (CUDA sm89+: Ada/Hopper/Blackwell)"
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_grads_match_reference",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_exact_for_representable_inputs",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[none]",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[input]",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[weight]",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_backward_uses_distinct_operand_scales",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8_forward_matches_reference_under_nonunit_scales",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp_loop",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_layer_splicing",
+              "skipped_reason": null
+            },
+            {
+              "classname": "lib.haliax.tests.test_fp8",
+              "name": "test_fp8ize_stacking",
+              "skipped_reason": null
+            }
+          ],
+          "command": "source local-artifacts/native-jax-fp8-explicit-gradients-env.sh; export JAX_NUM_CPU_DEVICES=4; uv run python local-artifacts/native-jax-fp8-explicit-gradients-tests.py 4 -c pyproject.toml lib/haliax/tests/test_fp8.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.xml > local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.log 2>&1"
+        }
+      },
+      "negative": {
+        "exit_code": 1,
+        "failed": 3,
+        "summary": "3 failed, 1 warning in 0.33s",
+        "actual_provenance": {
+          "actual_devices": 1,
+          "devices": [
+            "cpu:0"
+          ],
+          "python": "local-artifacts/python",
+          "source_modules": {
+            "levanter": "lib/levanter/src/levanter/__init__.py",
+            "haliax": "lib/haliax/src/haliax/__init__.py",
+            "marin": "lib/marin/src/marin/__init__.py",
+            "iris": "lib/iris/src/iris/__init__.py",
+            "fray": "lib/fray/src/fray/__init__.py",
+            "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+          },
+          "iris_publishing_runtime": false
+        },
+        "checkout": "local-artifacts/marin-native-jax-fp8-explicit-gradients-baseline",
+        "head": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+        "tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+        "status_before_after": "clean; no tracked/untracked changes",
+        "original_FP8_source_blob": "3bec62614eb57fc710221e282e96fc18467ab910",
+        "original_FP8_source_sha256": "1204299351e150513d72459e17589f9c64af6c34bad9756024f02089d14964f7",
+        "external_test": "local-artifacts/test_fp8.py",
+        "external_test_sha256": "948a7153ed1237adc944c52746e671cba90ecc987a4eb2dccf838d3ef11d519f",
+        "same_final_candidate_test_bytes": true,
+        "cases": [
+          {
+            "classname": "",
+            "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[none]",
+            "message": "jax._src.core.ShardingTypeError: Contracting dimensions are sharded and it is ambiguous how the output should be sharded. Please specify the output sharding via the `out_sharding` parameter. Got lhs_contracting_spec=('model',) and rhs_contracting_spec=('model',)\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.",
+            "callsites": [
+              "lib/haliax/src/haliax/_src/fp8.py:169",
+              "lib/haliax/src/haliax/_src/fp8.py:246"
+            ]
+          },
+          {
+            "classname": "",
+            "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[input]",
+            "message": "jax._src.core.ShardingTypeError: Contracting dimensions are sharded and it is ambiguous how the output should be sharded. Please specify the output sharding via the `out_sharding` parameter. Got lhs_contracting_spec=('model',) and rhs_contracting_spec=('model',)\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.",
+            "callsites": [
+              "lib/haliax/src/haliax/_src/fp8.py:169",
+              "lib/haliax/src/haliax/_src/fp8.py:246"
+            ]
+          },
+          {
+            "classname": "",
+            "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[weight]",
+            "message": "jax._src.core.ShardingTypeError: Contracting dimensions are sharded and it is ambiguous how the output should be sharded. Please specify the output sharding via the `out_sharding` parameter. Got lhs_contracting_spec=('model',) and rhs_contracting_spec=('model',)\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.",
+            "callsites": [
+              "lib/haliax/src/haliax/_src/fp8.py:169",
+              "lib/haliax/src/haliax/_src/fp8.py:246"
+            ]
+          }
+        ],
+        "log": "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-cpu1.log",
+        "xml": "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-cpu1.xml",
+        "plan": "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-plan.json",
+        "boundary": "Only3newfinalcases; samefixture/oracles againstactualunchanged054productionsource, externaltestfileoutsidebase. GenuineFP8ShardingTypeError, not setup/provenance failure. NoCPU4negative needed."
+      },
+      "artifact_hashes": {
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.log": "909e127a255847244ffdaca9c098dd2be2acf5b12e36f0821e9c23e5d81e94b2",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu1.xml": "e1f107e858561c64a215dab525e3d87f946021f076bb309ef6810c865f896382",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.log": "e4994a5267be9f964c051add558ab3aeb1f15db07bf3d623e38395521ded7ae2",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-cpu4.xml": "88a2a10a4a1c79bec2b73df58f9e7d684f4adeab5f5f55bf989c800bc4bc59fc",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-cpu1.log": "d73892feb9356aa8bedce71ddb7a093100b189cb9b39af3b450b10a60a4af609",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-cpu1.xml": "51853b42590f743b613c88b51a64ff42538c0cede7e810eccb7b7a07c978a999",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-proof.json": "76036a0e1db1c108f56e7443fe8fa8041b765a309adcad69801bbe484c906f54",
+        "local-artifacts/native-jax-fp8-explicit-gradients-r1-ordinary.log": "a24768f103e8b11c50e1ec90a84c7c0f70b4490ec4dc1aa6b15ea1a5cf1170e0"
+      },
+      "ordinary": "Required2fileentrypointPASS inclPyrefly; sourcebytesexactR1freezeaftertests. Rootownsall-filesordinarybeforecommit.",
+      "source_scope": "ExistingsharedFP8backwardtransposeoutputplacement only. JAXprecedent/no privateJAXimport; allExplicitprimalplacementpermutedbeforefinaltranspose; RHSreuse. Auto/nomeshNone unchanged. No auto_axes/replicationbypass/math/dtype/tolerance changes.",
+      "history_preserved": {
+        "initial_source_freeze": "local-artifacts/native-jax-fp8-explicit-gradients-source-freeze.json",
+        "initial_patch_sha256": "f806b36796bf0c29a0ab3c8fdd63076610a95b43598521ab906e6242de041a1a",
+        "initial_test_file": "local-artifacts/native-jax-fp8-explicit-gradients-initial-test_fp8.py",
+        "initial_actualCPU1": "10pass3fail1skip; semanticallyequivalentP()/P(None)exactobjectcomparison; kernel/outputgradstateassertionsnotreached.",
+        "initial_validation": "local-artifacts/native-jax-fp8-explicit-gradients-initial-validation.json",
+        "R1_disposition": "local-artifacts/native-jax-fp8-explicit-gradients-r1-disposition.json",
+        "research_failures": "PublishedR3Autoexactcontrolscompleted thenactualExplicitbackwardfailure; originalreceipts referenced/preservedininitialsourcefreeze; NOTsubstituteforsamefinaltestnegative."
+      },
+      "pending_root": [
+        "FreshindependentR1maintainedreviewbeforecommit",
+        "fullsafeHaliaxCPU8",
+        "all-filesordinaryrequiredbyHaliaxAGENTS beforecommit",
+        "catalog/publication/archive"
+      ],
+      "limitations": "FP32localCPU1/4primitive/regressionqualification. GPUFP8kernelcase skipped onCPU; no accelerator/BF16default/performance/largemodel/scientificacceptance claim. NativeLinear/guard/converter/rawmicrobatch/fwdout_shardingkwargs remainseparategaps. No sourcecommit/push/researchprobeexecution."
+    },
+    "native-jax-fp8-explicit-gradients-r1-baseline-proof.json": {
+      "exit_code": 1,
+      "failed": 3,
+      "summary": "3 failed, 1 warning in 0.33s",
+      "actual_provenance": {
+        "actual_devices": 1,
+        "devices": [
+          "cpu:0"
+        ],
+        "python": "local-artifacts/python",
+        "source_modules": {
+          "levanter": "lib/levanter/src/levanter/__init__.py",
+          "haliax": "lib/haliax/src/haliax/__init__.py",
+          "marin": "lib/marin/src/marin/__init__.py",
+          "iris": "lib/iris/src/iris/__init__.py",
+          "fray": "lib/fray/src/fray/__init__.py",
+          "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+        },
+        "iris_publishing_runtime": false
+      },
+      "checkout": "local-artifacts/marin-native-jax-fp8-explicit-gradients-baseline",
+      "head": "054413ea8563f7216a33ee8dd34fc001c13b37ff",
+      "tree": "649b0eb013ee87bab6748cccde8d819f842d0704",
+      "status_before_after": "clean; no tracked/untracked changes",
+      "original_FP8_source_blob": "3bec62614eb57fc710221e282e96fc18467ab910",
+      "original_FP8_source_sha256": "1204299351e150513d72459e17589f9c64af6c34bad9756024f02089d14964f7",
+      "external_test": "local-artifacts/test_fp8.py",
+      "external_test_sha256": "948a7153ed1237adc944c52746e671cba90ecc987a4eb2dccf838d3ef11d519f",
+      "same_final_candidate_test_bytes": true,
+      "cases": [
+        {
+          "classname": "",
+          "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[none]",
+          "message": "jax._src.core.ShardingTypeError: Contracting dimensions are sharded and it is ambiguous how the output should be sharded. Please specify the output sharding via the `out_sharding` parameter. Got lhs_contracting_spec=('model',) and rhs_contracting_spec=('model',)\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.",
+          "callsites": [
+            "lib/haliax/src/haliax/_src/fp8.py:169",
+            "lib/haliax/src/haliax/_src/fp8.py:246"
+          ]
+        },
+        {
+          "classname": "",
+          "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[input]",
+          "message": "jax._src.core.ShardingTypeError: Contracting dimensions are sharded and it is ambiguous how the output should be sharded. Please specify the output sharding via the `out_sharding` parameter. Got lhs_contracting_spec=('model',) and rhs_contracting_spec=('model',)\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.",
+          "callsites": [
+            "lib/haliax/src/haliax/_src/fp8.py:169",
+            "lib/haliax/src/haliax/_src/fp8.py:246"
+          ]
+        },
+        {
+          "classname": "",
+          "name": "test_fp8_explicit_values_gradients_and_state_preserve_placement[weight]",
+          "message": "jax._src.core.ShardingTypeError: Contracting dimensions are sharded and it is ambiguous how the output should be sharded. Please specify the output sharding via the `out_sharding` parameter. Got lhs_contracting_spec=('model',) and rhs_contracting_spec=('model',)\n--------------------\nFor simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.",
+          "callsites": [
+            "lib/haliax/src/haliax/_src/fp8.py:169",
+            "lib/haliax/src/haliax/_src/fp8.py:246"
+          ]
+        }
+      ],
+      "log": "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-cpu1.log",
+      "xml": "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-cpu1.xml",
+      "plan": "local-artifacts/native-jax-fp8-explicit-gradients-r1-baseline-plan.json",
+      "boundary": "Only3newfinalcases; samefixture/oracles againstactualunchanged054productionsource, externaltestfileoutsidebase. GenuineFP8ShardingTypeError, not setup/provenance failure. NoCPU4negative needed."
+    },
+    "native-jax-fp8-explicit-gradients-root-focused-proof.json": {
+      "actual_positive_xml": {
+        "cpu1": {
+          "passed": 13,
+          "skipped": 1,
+          "new3_all_pass": true,
+          "xml_sha256": "e1f107e858561c64a215dab525e3d87f946021f076bb309ef6810c865f896382"
+        },
+        "cpu4": {
+          "passed": 13,
+          "skipped": 1,
+          "new3_all_pass": true,
+          "xml_sha256": "88a2a10a4a1c79bec2b73df58f9e7d684f4adeab5f5f55bf989c800bc4bc59fc"
+        },
+        "cpu8_full": {
+          "passed": 419,
+          "skipped": 37,
+          "new3_all_pass": true,
+          "xml_sha256": "3ad734a43fa6eb598a2e695f876d64066f62cefb891f572c8a983abfad6ce269"
+        }
+      },
+      "actual_unchanged054_same_final3_cases_fail_in_FP8_transpose": true,
+      "source2_bytes_still_final_freeze": true,
+      "root_all_files_ordinary_pass": true,
+      "fresh_independent_R1_review_zero": true,
+      "affected_workspace_pending": true
+    },
+    "native-jax-fp8-explicit-gradients-root-haliax-selection-proof.json": {
+      "actual_haliax_CPU_devices": 8,
+      "all_full_haliax_cases": 456,
+      "full_outcomes": {
+        "skip": 37,
+        "pass": 419
+      },
+      "repository_selected_haliax_cases": 456,
+      "selected_outcomes": {
+        "skip": 37,
+        "pass": 419
+      },
+      "selected_nodeids_all_covered_by_actual_full_suite": true,
+      "full_safe_marker_expression": "not slow and not integration and not data_integration and not cluster and not requires_cluster and not docker and not manual and not torch",
+      "source_frozen_production": "2939d8e790bac65ea8f441d6a0269db130110bda79b2562ce38507fb5a4d8264",
+      "source_frozen_test": "948a7153ed1237adc944c52746e671cba90ecc987a4eb2dccf838d3ef11d519f"
+    }
+  }
+}
