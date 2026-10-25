@@ -1,0 +1,21 @@
+{
+  "actual_unchanged6f9_saved_dtype": {
+    "head": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "actual_devices": 1,
+    "public_main": "inferred; dtype=bfloat16; resize=True31; model subpath",
+    "all_restored_raw_dtypes": {
+      "float32": 21
+    },
+    "vocab": 31,
+    "all_values_bf16_rounded": true,
+    "metadata": {
+      "step": 0,
+      "timestamp": "2026-10-24T18:02:17.680424",
+      "is_temporary": false
+    },
+    "source_clean": true
+  },
+  "candidate_storage_evidence": "R1 real public test inferred-resized-bf16 verifies every restored parameter bfloat16, exact rounded source weights after31 resize, metadata31, and independent Haliax FP32rounded forward at1e-5. No claim full BF16 arithmetic.",
+  "contract": "ImportHfConfig.dtype promises target SAVED dtype. Baseline21FP32parameters with BF16rounded values violate that API; importer-only JMPpostcast fixes it. The initial strict test expectation was correct. Global trainingFP32master policy is unchanged.",
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}

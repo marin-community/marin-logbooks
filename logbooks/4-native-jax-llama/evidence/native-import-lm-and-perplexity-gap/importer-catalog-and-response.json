@@ -1,0 +1,177 @@
+{
+  "native-jax-import-lm-root-catalog-proof.json": {
+    "utc": "2026-10-25T01:22:17.713802+00:00",
+    "directory": "<local-catalog-output>",
+    "reviewed_head": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "merge_base": "86fc7b67c921ad4ac124835ca7379b04ffa1be25",
+    "canonical_main": "2cae063c877172844fe6ff90e94354cc08a273fa",
+    "total_elapsed": 195.3,
+    "timed_out": false,
+    "lanes": [
+      {
+        "lane": "complexity",
+        "exit": 0,
+        "elapsed": 108.67,
+        "output_sha256": "47c620e840fe98c4996560fa4d21b57d4a84db5345380a91e42931e2869f9cc7",
+        "output_bytes": 801460,
+        "terminal_token_report": 182675,
+        "stdout": ""
+      },
+      {
+        "lane": "interfaces",
+        "exit": 0,
+        "elapsed": 147,
+        "output_sha256": "242361865b5a1f9895fac33b8ea853e8a6f9efab1e181062248fb6f50e4aef44",
+        "output_bytes": 518478,
+        "terminal_token_report": 114996,
+        "stdout": "lib/levanter/src/levanter/models/llama_native_lm.py:349: ml-missing-isinstance-narrow (0.90) type(vocab_size) is not int bypasses isinstance-based narrowing before the numeric comparison and int return."
+      },
+      {
+        "lane": "robustness",
+        "exit": 0,
+        "elapsed": 118.74,
+        "output_sha256": "c3c6e7737e2c68b37ff1efea3c0f6ab59bdb88a73b044e1e790e21995b6a908a",
+        "output_bytes": 529473,
+        "terminal_token_report": 120340,
+        "stdout": ""
+      },
+      {
+        "lane": "cruft",
+        "exit": 0,
+        "elapsed": 100.57,
+        "output_sha256": "de56d1b7f8ca0b197b9c386091d921c20307c4b7a83cc5d24875404bd93a9342",
+        "output_bytes": 712234,
+        "terminal_token_report": 194210,
+        "stdout": ""
+      },
+      {
+        "lane": "prose",
+        "exit": 0,
+        "elapsed": 126.55,
+        "output_sha256": "8baef6aba43adccd60f1fe00619d47915ac8dc821c2f81de57c598489458f60b",
+        "output_bytes": 607106,
+        "terminal_token_report": 138940,
+        "stdout": ""
+      },
+      {
+        "lane": "meta",
+        "exit": 0,
+        "elapsed": 189.99,
+        "output_sha256": "f2f03f6e285398c455e7f22d316d2bbe85cab4bf4466acaa8aaa2b9a3e64fba5",
+        "output_bytes": 853490,
+        "terminal_token_report": 198406,
+        "stdout": ""
+      },
+      {
+        "lane": "composer",
+        "exit": 0,
+        "elapsed": 5.31,
+        "output_sha256": "f4f445dd81d2dde51a4e50f11c836dffa167096d6eafc016587195558b233352",
+        "output_bytes": 31540,
+        "terminal_token_report": 15201,
+        "stdout": "lib/levanter/src/levanter/models/llama_native_lm.py:349: ml-missing-isinstance-narrow (0.90) type(vocab_size) is not int bypasses isinstance-based narrowing before the numeric comparison and int return."
+      }
+    ],
+    "finding_count": 1,
+    "finding_rules": [
+      "ml-missing-isinstance-narrow"
+    ],
+    "matching_rules_read": true,
+    "disposition": "Answered without source change: exact built-in JSON integer validation intentionally rejects booleans, float values and int subclasses; isinstance(value,int) alone widens acceptance. Finding demonstrated no concrete type-check or runtime failure. Existing required Pyrefly passed. Fresh independent review agrees.",
+    "raw_stderr_publication": false,
+    "all_findings_resolved": true,
+    "source_changed": false,
+    "targeted_disposition_review": {
+      "path": "evidence/native-import-lm-and-perplexity-gap/importer-catalog-and-response.json",
+      "sha256": "88bab23b72832f9fbbb8942dcfa83b64e73ec0a9a5004496f8850ffa4996aed4",
+      "markdown_path": "native-jax-import-lm-catalog-disposition-review.md",
+      "markdown_sha256": "84cc7252dc80fbecca6b64bf2abac8822508a7f3a60f397f63bd4b160a3a070c"
+    },
+    "disposition_utc": "2026-10-25T01:23:08.060569+00:00"
+  },
+  "native-jax-import-lm-catalog-disposition-review.json": {
+    "review_type": "fresh_independent_targeted_catalog_finding_disposition",
+    "checkout": "<local-checkout>",
+    "head": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "source": {
+      "path": "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "line": 349,
+      "sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+      "git_blob": "c157bb201f6bffe126cde609e7dfacb04e8633a0",
+      "unchanged_from_public_6f9": true
+    },
+    "rule": {
+      "path": "infra/lint/rules/interfaces/ml-missing-isinstance-narrow.yaml",
+      "code": "ml-missing-isinstance-narrow",
+      "sha256": "1442246d31b1bb14d78c4bf17b937a0cd532ae2ef30b559c213bc01322d14e14",
+      "git_blob": "fc322673c4ac350103b3fedbcdd875847b5f89e7",
+      "summary": "Prefers isinstance-based narrowing over manual type checks because the latter may not establish downstream static types."
+    },
+    "catalog_finding": {
+      "path": "<local-catalog-output>",
+      "sha256": "ebba65036c01f019a98442b92cca5ad4a73f772dffce01728e425f434362456c",
+      "text": "lib/levanter/src/levanter/models/llama_native_lm.py:349: ml-missing-isinstance-narrow (0.90) type(vocab_size) is not int bypasses isinstance-based narrowing before the numeric comparison and int return.",
+      "confidence": 0.9
+    },
+    "disposition": "answered_no_source_change",
+    "recommendation": "Retain the exact-type positive-integer validation and answer the catalog finding with the JSON primitive contract. No corrective source change is warranted.",
+    "actionable_findings": [],
+    "reasoning": [
+      "checkpoint_vocab_size is a persisted metadata boundary. It requires a positive built-in int for vocab_size before native_config and the public int return; version and architecture checks nearby deliberately distinguish bool/int/float primitives as well.",
+      "A simple isinstance(vocab_size, int) replacement widens acceptance to bool and integer subclasses. JSON true is a bool but isinstance(True,int) is true; treating it as a vocabulary size violates the existing exact-primitive wire validation.",
+      "The catalog rationale is type-checker narrowing, but no concrete type-checking failure or unsafe public return is demonstrated here. metadata values are Any at the boundary and runtime exact-type validation establishes the returned int. Existing pyrefly success is parent-reported rather than independently rerun in this disposition review.",
+      "Adding a second isinstance check solely to satisfy the lint pattern is redundant; replacing the check with bool exclusion would still widen int-subclass acceptance. A new predicate/helper/framework or guard-mirroring repository test is disproportionate to this finding.",
+      "This is inherited source unchanged from public6f9, not an importer-introduced correctness defect. Keeping it preserves the native checkpoint metadata contract."
+    ],
+    "disposable_control": {
+      "kind": "bounded off-repository Python type-behavior probe, no application/module execution or repository test",
+      "cases": [
+        {
+          "case": "JSON integer",
+          "runtime_type": "int",
+          "exact_int": true,
+          "isinstance_int": true
+        },
+        {
+          "case": "JSON boolean",
+          "runtime_type": "bool",
+          "exact_int": false,
+          "isinstance_int": true
+        },
+        {
+          "case": "JSON float",
+          "runtime_type": "float",
+          "exact_int": false,
+          "isinstance_int": false
+        },
+        {
+          "case": "integer subclass",
+          "runtime_type": "IntegerSubclass",
+          "exact_int": false,
+          "isinstance_int": true
+        }
+      ],
+      "result": "Built-in integer accepted by both predicates; boolean and integer subclass accepted by isinstance only; float rejected by both. Confirms the behavior change from the proposed simple replacement."
+    },
+    "actions_performed": [
+      "read exact finding and lint rule",
+      "read validator and relevant metadata callers/tests",
+      "verify exact HEAD/tree, clean source and inherited file identity",
+      "bounded disposable stdlib type-behavior control",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "repository tests",
+      "pyrefly rerun",
+      "commit/push",
+      "network",
+      "catalog rerun",
+      "PR/CI/job/automation actions"
+    ],
+    "validation_boundary": "Independent disposition/source review with a bounded Python semantics control only. It does not establish new importer execution, pyrefly, CI or accelerator evidence."
+  },
+  "interpretation": "Actual full catalog completed one finding. Fresh independent review answered strict JSON primitive validation without source change. Not zero findings or a recursive full catalog.",
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}

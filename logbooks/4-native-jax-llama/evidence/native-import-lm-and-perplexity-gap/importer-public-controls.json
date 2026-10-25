@@ -1,0 +1,399 @@
+{
+  "native-jax-import-lm-control-report.json": {
+    "question": "Does the existing public native HF importer validate explicit source semantics and durably record complete vocabulary/architecture for shared restore?",
+    "answer": "No: actual offline controls demonstrate both gaps, plus a separate eager unrelated-reference constructor failure. Correct compatible import already preserves complete weights; missing metadata prevents automatic full-vocab and semantic recovery downstream.",
+    "checkout": "<local-checkout>",
+    "head": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "branch": "codex/native-jax-import-lm-controls",
+    "source_clean_before_after": true,
+    "source_provenance": {
+      "head": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+      "tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+      "clean": true,
+      "python": "python",
+      "actual_cpu_devices": 1,
+      "modules": {
+        "levanter": "lib/levanter/src/levanter/__init__.py",
+        "haliax": "lib/haliax/src/haliax/__init__.py",
+        "marin": "lib/marin/src/marin/__init__.py",
+        "iris": "lib/iris/src/iris/__init__.py",
+        "levanter.main.export_hf_to_lm": "lib/levanter/src/levanter/main/export_hf_to_lm.py"
+      },
+      "offline": true,
+      "source_sha256": {
+        "lib/levanter/src/levanter/main/export_hf_to_lm.py": "f146052c3079164628fa9a3e06659230e58644534c5575e9248e35ca60c6630f",
+        "lib/levanter/src/levanter/compat/hf_checkpoints.py": "ca287871e5ad1c10922d68dda7ed0f713174daeecf98ca744cbdcaf965299286",
+        "lib/levanter/src/levanter/model_loading.py": "85924eeec299699e2a49cf2381af67aec85e4e9347ac6b36bb0aad4e66416180",
+        "lib/levanter/src/levanter/models/llama_native_lm.py": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "lib/marin/src/marin/experiment/checkpoints.py": "c270200a5ffe8d43bb6e7acb7bf8ddb7f8d5da4b0a9ed410ac558bea553bae8c"
+      }
+    },
+    "composed_source_equivalence": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+    "command": "source native-jax-import-lm-control-env.sh; uv run python evidence/native-import-lm-and-perplexity-gap/importer-reproducers.json native-jax-import-lm-control-assets > native-jax-import-lm-controls.log 2>&1",
+    "exit_code": 0,
+    "actual_devices": 1,
+    "dtype": "float32",
+    "model_choices": {
+      "vocab_rows": 32,
+      "tokenizer_size": 31,
+      "activation": "gelu_new",
+      "hidden_dim": 16,
+      "num_heads": 4,
+      "head_dim": 8,
+      "implicit_head_dim_without_explicit_override": 4,
+      "num_kv_heads": 2,
+      "rope": {
+        "theta": 50000,
+        "factor": 2
+      },
+      "weights_count": 21,
+      "oracle_logits_shape": [
+        2,
+        4,
+        32
+      ]
+    },
+    "raw_outcomes": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+    "script": "evidence/native-import-lm-and-perplexity-gap/importer-reproducers.json",
+    "log": "native-jax-import-lm-controls.log",
+    "positive_controls": [
+      "Shared native HF loader accepts correct explicit source and yields exact source weights and independent Haliax Llama logits.",
+      "Public compatible explicit and inferred/padded-tokenizer imports complete; shared full32 restore preserves exact source weights/logits.",
+      "Inferred+padded mode emits tokenizer32, preserving wrapper row-count compatibility."
+    ],
+    "negative_controls": [
+      "Same-shaped explicit SiLU or unscaled-RoPE configs accepted by public importer, while existing shared HF loader rejects each mismatch.",
+      "Every successful import writes only step/timestamp/is_temporary.",
+      "Shared restore of compatible imported checkpoint using original tokenizer31 fails with shape32-versus31; actual32 source rows were retained, not silently truncated.",
+      "Full32 wrong-activation restore accepted despite source GELU-new; weights exact, logit max difference0.31719857454299927. Wrong-RoPE import/restoration yields difference0.7032665014266968.",
+      "Unavailable unrelated local model.reference_checkpoint fails before output despite explicit valid outer tokenizer/source; architecture controls use a valid local reference so this failure does not confound acceptance results."
+    ],
+    "recommended_smallest_maintained_fix": [
+      "In existing importer native path, construct converter bound to actual hf_checkpoint/revision and already loaded tokenizer, following existing native shared-loader pattern. Leave named constructor path unchanged.",
+      "Validate effective native config against actual source HF config before generic load_pretrained: explicit config must use existing validate_hf_config; inferred config must continue existing from_hf_config translation/validation. Preserve requested dtype, current explicit CPU placement, revision, full-vocab default and deliberate resize/tokenizer options.",
+      "Pass checkpoint_metadata from actual imported/post-resize native model into existing save_checkpoint. This records actual output vocabulary/architecture for existing shared consumers, without a new reconstruction system or loader API.",
+      "When implementation is separately authorized, extend existing public importer roundtrip tests with a real native source, independent named oracle and actual shared restore. Retain existing named GPT2/Snowball contracts; no mock dispatch or metadata-only test."
+    ],
+    "reuse_sources": [
+      "lib/levanter/src/levanter/model_loading.py: native HF loader constructor+validate_hf_config",
+      "lib/levanter/src/levanter/models/llama_native_lm.py: from_hf_config/validate_hf_config/checkpoint_metadata",
+      "lib/levanter/src/levanter/checkpoint.py: existing save_checkpoint metadata parameter",
+      "lib/levanter/src/levanter/testing/hf_checkpoints.py: real named source writer"
+    ],
+    "sibling_audit": {
+      "report": "native-jax-next-gap-after-export-perplexity-audit.md",
+      "scan": "native-jax-next-gap-after-export-perplexity-sibling-source-scan.json",
+      "interpretation": "Audit compared relevant source versions across90 local checkouts and found no importer fix; this investigation agrees with that source finding. Local duplicate check only, no remote publication claim."
+    },
+    "boundary": "Investigation only. No checked-in tests or source edits, no commit/push/PR/CI/network/accelerator/remote-storage action. Tiny weights remain private assets, not archived. CPU1 FP32 controls do not establish BF16 arithmetic, CPU4/8, acceleration, performance, larger models, wrapper worker execution or canonical/scientific acceptance."
+  },
+  "native-jax-import-lm-control-comparison.json": {
+    "baseline_results": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+    "candidate_results": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+    "baseline_source_control_report": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+    "runtime_sha256": "33382d12bc01608a08859299cf4a82aec23308aa48e29645ad29301be134784e",
+    "same_actual_source_payloads": {
+      "config.json": {
+        "baseline_sha256": "664bd35dae5d82905014cc4858f4c88b8eba84c34327049d368e7316c15da17e",
+        "candidate_sha256": "664bd35dae5d82905014cc4858f4c88b8eba84c34327049d368e7316c15da17e",
+        "identical": true
+      },
+      "model.safetensors": {
+        "baseline_sha256": "1718e283d737cd0f6972ff24152d66d85e87c3bd46f4291a93600ebfa9ed64a6",
+        "candidate_sha256": "1718e283d737cd0f6972ff24152d66d85e87c3bd46f4291a93600ebfa9ed64a6",
+        "identical": true
+      },
+      "tokenizer.json": {
+        "baseline_sha256": "436439f8e2144bc776774f9fcd7ecc934200069161b2a348466be21eb6e2d1f7",
+        "candidate_sha256": "436439f8e2144bc776774f9fcd7ecc934200069161b2a348466be21eb6e2d1f7",
+        "identical": true
+      }
+    },
+    "public_main_cases": [
+      {
+        "public_import": "unavailable_reference",
+        "baseline_outcome": "rejected",
+        "candidate_outcome": "completed",
+        "baseline_error": "Repo id must be in the form 'repo_name' or 'namespace/repo_name': 'unavailable-reference'. Use `repo_type` argument if needed.",
+        "candidate_error": null,
+        "candidate_created_output": true,
+        "baseline_identity_present": null,
+        "candidate_identity_present": true,
+        "candidate_metadata_vocab": 32
+      },
+      {
+        "public_import": "compatible_explicit",
+        "baseline_outcome": "completed",
+        "candidate_outcome": "completed",
+        "baseline_error": null,
+        "candidate_error": null,
+        "candidate_created_output": true,
+        "baseline_identity_present": false,
+        "candidate_identity_present": true,
+        "candidate_metadata_vocab": 32
+      },
+      {
+        "public_import": "wrong_activation_explicit",
+        "baseline_outcome": "completed",
+        "candidate_outcome": "rejected",
+        "baseline_error": null,
+        "candidate_error": "llama_native HF hidden_act mismatch: checkpoint=gelu_new, configured=silu",
+        "candidate_created_output": false,
+        "baseline_identity_present": false,
+        "candidate_identity_present": null,
+        "candidate_metadata_vocab": null
+      },
+      {
+        "public_import": "wrong_rope_explicit",
+        "baseline_outcome": "completed",
+        "candidate_outcome": "rejected",
+        "baseline_error": null,
+        "candidate_error": "llama_native HF RoPE parameters must match the configured RoPE",
+        "candidate_created_output": false,
+        "baseline_identity_present": false,
+        "candidate_identity_present": null,
+        "candidate_metadata_vocab": null
+      },
+      {
+        "public_import": "inferred_with_padded_tokenizer",
+        "baseline_outcome": "completed",
+        "candidate_outcome": "completed",
+        "baseline_error": null,
+        "candidate_error": null,
+        "candidate_created_output": true,
+        "baseline_identity_present": false,
+        "candidate_identity_present": true,
+        "candidate_metadata_vocab": 32
+      }
+    ],
+    "actual_shared_restores": {
+      "compatible_explicit:original32": {
+        "baseline": {
+          "outcome": "restored",
+          "requested_vocab": 32,
+          "restored_vocab": 32,
+          "all_weights_source_exact": true,
+          "actual_weight_shapes": {
+            "model.embed_tokens.weight": [
+              32,
+              16
+            ],
+            "lm_head.weight": [
+              32,
+              16
+            ]
+          },
+          "logits_shape": [
+            2,
+            4,
+            32
+          ],
+          "max_abs_logit_difference": 0.0,
+          "logits_match_named_at_1e5": true
+        },
+        "candidate": {
+          "outcome": "restored",
+          "requested_vocab": 32,
+          "restored_vocab": 32,
+          "all_weights_source_exact": true,
+          "actual_weight_shapes": {
+            "model.embed_tokens.weight": [
+              32,
+              16
+            ],
+            "lm_head.weight": [
+              32,
+              16
+            ]
+          },
+          "logits_shape": [
+            2,
+            4,
+            32
+          ],
+          "max_abs_logit_difference": 0.0,
+          "logits_match_named_at_1e5": true
+        }
+      },
+      "compatible_explicit:tokenizer31": {
+        "baseline": {
+          "outcome": "rejected",
+          "requested_vocab": 31,
+          "type": "ValueError",
+          "message": "Shape mismatch: jnp_shape=(32, 16) hax_axes=(Axis(name='vocab', size=31), Axis(name='embed', size=16))"
+        },
+        "candidate": {
+          "outcome": "restored",
+          "requested_vocab": 31,
+          "restored_vocab": 32,
+          "all_weights_source_exact": true,
+          "actual_weight_shapes": {
+            "model.embed_tokens.weight": [
+              32,
+              16
+            ],
+            "lm_head.weight": [
+              32,
+              16
+            ]
+          },
+          "logits_shape": [
+            2,
+            4,
+            32
+          ],
+          "max_abs_logit_difference": 0.0,
+          "logits_match_named_at_1e5": true
+        }
+      },
+      "compatible_explicit:wrong_activation32": {
+        "baseline": {
+          "outcome": "restored",
+          "requested_vocab": 32,
+          "restored_vocab": 32,
+          "all_weights_source_exact": true,
+          "actual_weight_shapes": {
+            "model.embed_tokens.weight": [
+              32,
+              16
+            ],
+            "lm_head.weight": [
+              32,
+              16
+            ]
+          },
+          "logits_shape": [
+            2,
+            4,
+            32
+          ],
+          "max_abs_logit_difference": 0.31719857454299927,
+          "logits_match_named_at_1e5": false
+        },
+        "candidate": {
+          "outcome": "rejected",
+          "requested_vocab": 32,
+          "type": "ValueError",
+          "message": "Native checkpoint architecture does not match the configured model semantics"
+        }
+      },
+      "inferred_with_padded_tokenizer:original32": {
+        "baseline": {
+          "outcome": "restored",
+          "requested_vocab": 32,
+          "restored_vocab": 32,
+          "all_weights_source_exact": true,
+          "actual_weight_shapes": {
+            "model.embed_tokens.weight": [
+              32,
+              16
+            ],
+            "lm_head.weight": [
+              32,
+              16
+            ]
+          },
+          "logits_shape": [
+            2,
+            4,
+            32
+          ],
+          "max_abs_logit_difference": 0.0,
+          "logits_match_named_at_1e5": true
+        },
+        "candidate": {
+          "outcome": "restored",
+          "requested_vocab": 32,
+          "restored_vocab": 32,
+          "all_weights_source_exact": true,
+          "actual_weight_shapes": {
+            "model.embed_tokens.weight": [
+              32,
+              16
+            ],
+            "lm_head.weight": [
+              32,
+              16
+            ]
+          },
+          "logits_shape": [
+            2,
+            4,
+            32
+          ],
+          "max_abs_logit_difference": 0.0,
+          "logits_match_named_at_1e5": true
+        }
+      }
+    },
+    "baseline_dtype_bug": "evidence/native-import-lm-and-perplexity-gap/importer-saved-dtype-control.json",
+    "candidate_dtype_and_resize_evidence": "R1 real public test inferred-resized-bf16 verifies every restored parameter bfloat16, exact rounded source weights after31 resize, metadata31, and independent Haliax FP32rounded forward at1e-5. No claim full BF16 arithmetic.",
+    "script_boundary": "Candidate script changes only dirty-worktree provenance/allowlist handling from baseline protocol; actual sources freshly recreated from identical config/key/payload. No in-process mocks.",
+    "candidate_command": "source native-jax-import-lm-support-env.sh; uv run python native-jax-import-lm-candidate-controls.py native-jax-import-lm-final-candidate-assets > native-jax-import-lm-final-candidate-controls.log 2>&1",
+    "exit_code": 0
+  },
+  "native-jax-import-lm-source-composition-proof.json": {
+    "control_head": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "control_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "composed_snapshot_repository": "<local-checkout>",
+    "composed_snapshot_tree": "3dae8648cf366a66d153c14abb7323570667cc9d",
+    "comparison": "read-only git show of exact frozen tree blobs; no index/source mutation",
+    "sources": {
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py": {
+        "control_source_sha256": "f146052c3079164628fa9a3e06659230e58644534c5575e9248e35ca60c6630f",
+        "composed_tree_source_sha256": "f146052c3079164628fa9a3e06659230e58644534c5575e9248e35ca60c6630f",
+        "identical": true
+      },
+      "lib/levanter/src/levanter/compat/hf_checkpoints.py": {
+        "control_source_sha256": "ca287871e5ad1c10922d68dda7ed0f713174daeecf98ca744cbdcaf965299286",
+        "composed_tree_source_sha256": "ca287871e5ad1c10922d68dda7ed0f713174daeecf98ca744cbdcaf965299286",
+        "identical": true
+      },
+      "lib/levanter/src/levanter/model_loading.py": {
+        "control_source_sha256": "85924eeec299699e2a49cf2381af67aec85e4e9347ac6b36bb0aad4e66416180",
+        "composed_tree_source_sha256": "85924eeec299699e2a49cf2381af67aec85e4e9347ac6b36bb0aad4e66416180",
+        "identical": true
+      },
+      "lib/levanter/src/levanter/models/llama_native_lm.py": {
+        "control_source_sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "composed_tree_source_sha256": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "identical": true
+      },
+      "lib/marin/src/marin/experiment/checkpoints.py": {
+        "control_source_sha256": "c270200a5ffe8d43bb6e7acb7bf8ddb7f8d5da4b0a9ed410ac558bea553bae8c",
+        "composed_tree_source_sha256": "c270200a5ffe8d43bb6e7acb7bf8ddb7f8d5da4b0a9ed410ac558bea553bae8c",
+        "identical": true
+      }
+    },
+    "boundary": "Only these five relevant files proven identical. No claim all6f9 source equals composed tree."
+  },
+  "native-jax-import-lm-control-artifact-hashes.json": {
+    "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json": "9e60dc35bba0f54c9903bca9d58d156c41c384f784fd7257a8d7cbafcf14320c",
+    "native-jax-import-lm-control-report.md": "2f49c1b5ce1b19654a94e494adc7551054e6ee6e12c317aeaa3cb931acac6ab1",
+    "evidence/native-import-lm-and-perplexity-gap/importer-reproducers.json": "b8a3666d304e9c58a8dd16e5e7f7b69c330a318e994c7804a70909625fedafd3",
+    "native-jax-import-lm-control-env.sh": "4d7b4acdf63a7fd70922be5af854eae6bae17118a827ae6ac2eaf4352d55677d",
+    "native-jax-import-lm-controls.log": "30ae9dae7c4742bcdf4017a3dec980344055844d45a769cc741f008ab0b58770",
+    "config.json": "664bd35dae5d82905014cc4858f4c88b8eba84c34327049d368e7316c15da17e",
+    "tokenizer.json": "436439f8e2144bc776774f9fcd7ecc934200069161b2a348466be21eb6e2d1f7",
+    "metadata.json": "ba1813cca77d21595b0d3578341b5f843ce820107c790d5855a038a65f904201"
+  },
+  "results.json": {
+    "earlier_disposable_pre_storage_candidate_control_provenance": {
+      "head": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+      "recorded_HEAD_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+      "clean": false,
+      "dirty": true,
+      "actual_cpu_devices": 1,
+      "source_sha256": {
+        "lib/levanter/src/levanter/main/export_hf_to_lm.py": "3207969d5f94b7ddfe4bf5e3a8c5513a250b4dd1dbbda9c27686dfe0a916279a",
+        "lib/levanter/src/levanter/compat/hf_checkpoints.py": "ca287871e5ad1c10922d68dda7ed0f713174daeecf98ca744cbdcaf965299286",
+        "lib/levanter/src/levanter/model_loading.py": "85924eeec299699e2a49cf2381af67aec85e4e9347ac6b36bb0aad4e66416180",
+        "lib/levanter/src/levanter/models/llama_native_lm.py": "746a2a604142912c5aff5b39e836e5175155ed871a879620d049f8553cb728c8",
+        "lib/marin/src/marin/experiment/checkpoints.py": "c270200a5ffe8d43bb6e7acb7bf8ddb7f8d5da4b0a9ed410ac558bea553bae8c"
+      }
+    },
+    "recoverability": "Dirty disposable control source identified by full runtimehash; matching source bytes not retained. Recorded tree is HEAD/base tree, not the dirty payload tree. No equivalence to initial unfrozen CPU1test is established. No imports/restores/observations/tracebacks/arrays/weights from raw candidate-results copied."
+  },
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}

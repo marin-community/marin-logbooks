@@ -1,0 +1,158 @@
+{
+  "native-jax-perplexity-gap-composition-final-maintained-review.json": {
+    "review_type": "fresh_independent_precommit_PR20_composition_maintained_and_correctness_review",
+    "checkout": "<local-checkout>",
+    "proof_path": "evidence/native-import-lm-and-perplexity-gap/pr20-composition.json",
+    "parents": {
+      "first": "c13ca7964d7e7e29ea06892c1207d7d1685d1a7c",
+      "second": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57"
+    },
+    "merge_base": [
+      "a86fde611e3f704ea274fed01c6066345d3dd239"
+    ],
+    "candidate_index_tree": "3dae8648cf366a66d153c14abb7323570667cc9d",
+    "delta_patch": "evidence/native-import-lm-and-perplexity-gap/pr20-composition-source.patch",
+    "delta_patch_sha256": "e23b487310c98789c7dde3de627f9a2b9d687bc02c12d6f27e02cfe38cb246c4",
+    "files": {
+      "docs/references/perplexity-gap-analysis.md": {
+        "mode": "100644",
+        "kind": "blob",
+        "object": "7013d122a3b4c55a0257811b19f5bfee80203f7e",
+        "sha256": "616bfc5ba856aff8e37f9a76de30e49eaff00ac69d5346ef7305ac0daf04d2e7"
+      },
+      "lib/levanter/src/levanter/main/perplexity_gap.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "object": "567fdf45ea9637f8b188b94c017cbdb26e4c12b4",
+        "sha256": "f56ce32f7acb4f92b083cffd8d1d0828c9d6032018511c4184660a692219b193"
+      },
+      "lib/levanter/tests/test_perplexity_gap.py": {
+        "mode": "100644",
+        "kind": "blob",
+        "object": "b2c94b663d4a76470b25e3e52f7d5fd2b4adf5c1",
+        "sha256": "4405c325c6a7660196e62332ecd76a7e6b229d5ba01d523ece6571d4debb1f79"
+      }
+    },
+    "ownership_verified": {
+      "candidate_tracked_paths": 6687,
+      "original_c13_paths": 3,
+      "other_paths_exact_second_parent": 6684,
+      "three_paths_exact_c13_mode_kind_blob": true,
+      "all_path_manifest": {
+        "path": "native-jax-perplexity-gap-composition-final-prep-all-paths.json",
+        "sha256": "d13a82d0e32c6ac3cdeff04e6563b9a0c4acdb9e420265591f23bd8bdc006dc3"
+      },
+      "unmerged_paths": 0,
+      "index_worktree_match": true
+    },
+    "verdict": "no_findings",
+    "findings": [],
+    "piece_dispositions": {
+      "lib/levanter/src/levanter/main/perplexity_gap.py": {
+        "disposition": "keep",
+        "assessment": "Existing maintained scoring entrypoints gain the necessary native-loader mappings and per-model mesh execution context. It reuses shared loaders and existing report/loss code; this is future caller support, not an archived research runner."
+      },
+      "lib/levanter/tests/test_perplexity_gap.py": {
+        "disposition": "keep",
+        "assessment": "Real persisted single-model score parity and both mixed pair orders protect native integration, source vocabulary and activation identity with an independent named-model oracle. No new internal mocks, guard-only tests, tolerance relaxation or historical reproduction fixture is introduced."
+      },
+      "docs/references/perplexity-gap-analysis.md": {
+        "disposition": "keep",
+        "assessment": "Operational native scoring requirements and metadata/mesh limitations belong in the existing user guide and remain useful independently of the research history."
+      }
+    },
+    "contract_checks": [
+      {
+        "contract": "Per-runner mesh ownership and mixed ordering",
+        "evidence": [
+          "main/perplexity_gap.py:96,126-143,374-377,410-444",
+          "main/perplexity_gap.py:225-253"
+        ],
+        "assessment": "Each model keeps a concrete mesh with its original physical device layout and mappings. Only native models force Explicit axes on a dataclass-replaced trainer. Loading happens under that trainer mesh; each score batch enters its saved mesh before device_put and jitted losses. Nested contexts restore the surrounding mesh, so named-first and native-first loading/scoring do not overwrite one another."
+      },
+      {
+        "contract": "Shared native model loading and source vocabulary",
+        "evidence": [
+          "main/perplexity_gap.py:384-433",
+          "model_loading.py:49-64,93-105,150-173"
+        ],
+        "assessment": "The caller passes parameter, compute and batch role mappings into existing shared HF/Levanter loaders. HF source vocabulary is preserved and source architecture validated; metadata-bearing native checkpoints recover full source vocabulary and check semantic identity. Metadata-free checkpoints retain the documented original-config/complete-rounded-tokenizer-vocabulary precondition. Shared exporter/checkpoint-resolver/native-model/dropout/sampling paths remain exact second-parent bytes."
+      },
+      {
+        "contract": "Evaluation mapping and named behavior",
+        "evidence": [
+          "main/perplexity_gap.py:386-408",
+          "model_loading.py:49-64"
+        ],
+        "assessment": "Native evaluation reuses the existing mapping normalizer to remove unit batch axes where named loss slicing/rolling requires canonical replication, while keeping nonunit compute placement. Named models retain their configured trainer and compute mapping. The loss, inference mode, computation precision, chunking, per-byte projection and report APIs are unchanged."
+      },
+      {
+        "contract": "Persisted independent model-loss oracle",
+        "evidence": [
+          "tests/test_perplexity_gap.py:967-1060"
+        ],
+        "assessment": "The new cases write real local HF weights and optional metadata-bearing Levanter checkpoints, score through both public single-model entrypoints, read the persisted score artifacts, and compare positive named-model per-byte losses to native losses with 1e-5 tolerances. Sources contain32 vocabulary rows versus tokenizer31, so preserving the full loss denominator matters. SiLU and amplified gelu_new MLPs exercise semantic differences. Both mixed pair orders additionally require zero joined report gap. The numerical oracle is the separately implemented named model, not a mock or the native model against itself."
+      },
+      {
+        "contract": "Maintained API documentation and scope",
+        "evidence": [
+          "docs/references/perplexity-gap-analysis.md:131-141"
+        ],
+        "assessment": "The nearest existing scoring guide explains matching native model configuration, explicit tokenizer, HF/native source selection, metadata-free identity limits, single/paired scoring and separate model mesh axis types. It does not claim accelerator validation, performance, published benchmark parity or automatic architecture inference. The existing PR20 implementation is reused rather than replaced by another runner or report framework."
+      }
+    ],
+    "instructions_read": [
+      "current root TESTING.md",
+      "current lib/levanter/AGENTS.md",
+      "current lib/levanter/docs/design/jit-safety.md",
+      "research-engineering promotion policy"
+    ],
+    "scope": "Fresh review of the three original PR20 contribution paths composed with the exact exporter second-parent tree. No new implementation or duplicate PR is authorized or created. Source ownership verification includes every tracked candidate path.",
+    "actions_performed": [
+      "read-only source/diff/helper/test/doc/instruction inspection",
+      "independently verify parents, merge base, index tree, file hashes, delta hash and all tracked-path mode/kind/blob ownership",
+      "write requested review artifacts"
+    ],
+    "not_performed": [
+      "source edits",
+      "tests",
+      "commit",
+      "push",
+      "network",
+      "PR actions",
+      "full catalog rerun",
+      "job/automation actions",
+      "active author-output polling"
+    ],
+    "validation_boundary": "Static independent review only. Pending or later-updated proof validation fields, author CPU1/CPU4 tests and ordinary checks are not independently verified by this review. Parent owns composition-specific execution, catalog, payload and publication gates. Source evidence is not accelerator or runtime acceptance.",
+    "next_gate": "No review finding remains for the exact no-commit composition tree. Any source fix requires fresh targeted review before commit."
+  },
+  "native-jax-perplexity-gap-composition-final-affected-proof.json": {
+    "utc": "2026-10-25T00:59:12.378691+00:00",
+    "head": "aadfbba38a47d452bfb4d2ac7238131c8d7ef074",
+    "base": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "tree": "3dae8648cf366a66d153c14abb7323570667cc9d",
+    "actual_repository_selected_cases": 29,
+    "paths": [
+      "lib/levanter/tests/test_perplexity_gap.py"
+    ],
+    "actual_passed_CPU1_and_CPU4_cases_exact_selected_ids": true,
+    "selection": "native-jax-perplexity-gap-composition-final-affected-selection.json",
+    "executed_commands_and_junits": "evidence/native-import-lm-and-perplexity-gap/pr20-composition.json",
+    "safe_markers": "not slow and not integration and not data_integration and not cluster and not requires_cluster and not docker and not manual and not torch",
+    "boundary": "Executed original29public tests under root defaults on actualCPU1/4 before committing byte-exact merge. Independent post-commit repository LOCAL_SAFE selection contains exactly same29identities; no second identical test invocation or broader suite claimed."
+  },
+  "native-jax-perplexity-gap-root-final-catalog-disposition-proof.json": {
+    "status": "INITIAL_SCORING_CATALOG_AND_TARGETED_SHARED_FIX_DISPOSITION_COMPLETE",
+    "head": "c13ca7964d7e7e29ea06892c1207d7d1685d1a7c",
+    "original_review_head": "aa459b29bfb4d1a23452d62e27ce4e2634678676",
+    "original_scoring_blobs_exact": true,
+    "restore_finding_fixed_by": "a86fde611e3f704ea274fed01c6066345d3dd239",
+    "policy_finding_answered_at": "https://github.com/dlwh/marin/pull/19#issuecomment-6382986151",
+    "required_checks_passed": true,
+    "CPU1_passed": 29,
+    "CPU4_passed": 29,
+    "no_recursive_whole_scoring_catalog": true
+  },
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}

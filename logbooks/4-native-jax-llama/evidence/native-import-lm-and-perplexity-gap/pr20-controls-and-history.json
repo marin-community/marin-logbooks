@@ -1,0 +1,522 @@
+{
+  "native-jax-perplexity-gap-native-caller-control.json": {
+    "source_head": "a54b003e3e357333ed9c74dd36b9621d4cd64c19",
+    "source_tree": "c0510313087e567287f650d84f4749f39a7f9597",
+    "source_sha256": {
+      "lib/levanter/src/levanter/main/perplexity_gap.py": "c899a945f0817da46635a8980496c904aa6dc67fb5ff24fd9f7f51027b525925",
+      "lib/levanter/src/levanter/model_loading.py": "daccb2b9620bc579cbd951a8ee9dd0e7f54438c2a32ac7fb40abd68a02f5de3a",
+      "lib/levanter/src/levanter/models/llama_native_lm.py": "a74d6f270204ad83d80f0d6183f31d5dd39ddd357b77d9b056fd99c1f0cb8881",
+      "lib/levanter/tests/test_perplexity_gap.py": "47daaeec652179a328b847a051965353b5fdcf647bfb05d19c98e559e558f9c8",
+      "lib/levanter/tests/conftest.py": "80d26acfb8948c0ff75999ff1813cd0eaf02af890ac5535c7acd0497fc785a56",
+      "lib/levanter/src/levanter/testing/tokenizer.py": "84ea2a8ba660091305e16f195e72f404bd8403ccd1aee28d627dca90cd333625"
+    },
+    "device_count": 1,
+    "asset_validity": "Both real local TensorStore model-subtree and local HF sources restored by existing shared loaders with explicit roles, exact state-dict array equality, full vocabulary retained.",
+    "named_control": {
+      "test": "test_perplexity_gap_main_same_model_zero_gap",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "elapsed": 1.799,
+      "junit": "native-jax-perplexity-gap-named-control.xml",
+      "root_addopts": "-p marin.pytest_timeout_guard --session-timeout=600 -n auto --dist=worksteal -m 'not slow and not integration and not data_integration and not cluster and not requires_cluster and not docker and not manual' --import-mode=importlib",
+      "override": "-n 0 only; default marker expression retained"
+    },
+    "observations": [
+      {
+        "route": "native-local",
+        "entrypoint": "levanter.main.perplexity_gap.score_main",
+        "exception_type": "ValueError",
+        "exception": "Loading llama_native requires compute_axis_mapping",
+        "summary_exists": false
+      },
+      {
+        "route": "native-hf",
+        "entrypoint": "levanter.main.perplexity_gap.score_main",
+        "exception_type": "ValueError",
+        "exception": "Loading llama_native requires compute_axis_mapping",
+        "summary_exists": false
+      }
+    ],
+    "evidence_limits": [
+      "Negative runs stop during model loading before warmup/document iteration; they do not establish correctness of native scoring after the missing argument is repaired.",
+      "Assets are real local model/HF/checkpoint data, synthetic tiny text and checked-in tokenizer fixtures, not external research datasets.",
+      "Only one CPU device was used. No accelerator, network, scheduler, CI, PR, archive or automation actions.",
+      "Canonical named same-model gap behavior passed on unchanged frozen source; mixed named/native and non-default batch behavior remain proposed acceptance work.",
+      "No production or repository test source edits and no source publication."
+    ]
+  },
+  "native-jax-perplexity-gap-maintained-review.json": {
+    "schema": "native-jax-perplexity-gap-maintained-review.v1",
+    "at_utc": "2026-10-24T08:52:04.638543+00:00",
+    "scope": "fresh independent read-only maintained-extraction review before any commit",
+    "worktree": "<local-checkout>",
+    "base": "2b65a9e3dbbe6dc28d3093cf2c59052922ca2b2d",
+    "branch": "codex/native-jax-perplexity-gap-support",
+    "patch": {
+      "path": "native-jax-perplexity-gap-support.patch",
+      "bytes": 15192,
+      "sha256": "a635786246118eca0857f35f2ce35f26caeb913b628628e5933b760eee4dc1e2",
+      "reconstructed_current_worktree_exact": true
+    },
+    "freeze": {
+      "path": "native-jax-perplexity-gap-support-freeze.json",
+      "sha256": "47eaf7a3107b0f95fa921a4ed257276f00c4ffb6b99affdbbc509fc8f7c42f78",
+      "all_three_file_hashes_match": true
+    },
+    "verdict": "ONE_ACTIONABLE_FINDING_PRESERVE_EXPLICIT_NAMED_MESH_CHOICE",
+    "findings": [
+      {
+        "id": "F1",
+        "priority": "P2",
+        "title": "Preserve an explicitly requested named-model mesh mode",
+        "path": "lib/levanter/src/levanter/main/perplexity_gap.py",
+        "start_line": 381,
+        "end_line": 381,
+        "body": "_load_model_runner unconditionally sets use_explicit_mesh_axes to spec.model.requires_explicit_mesh_axes. For a named model that property is False, so a caller that explicitly configured trainer.use_explicit_mesh_axes=True now silently loads and scores on Auto axes. The prior public entrypoints used the caller trainer mesh unchanged. LmConfig documents requires_explicit_mesh_axes as whether the model needs Explicit axes; False does not mean that Explicit axes are forbidden. Keep the original caller mesh choice separate from the automatic promotion needed for native models, preserving a named caller's True opt-in while leaving default named runners Auto in mixed pairs. Current added tests construct TrainerConfig with the default False, so they do not cover the lost opt-in.",
+        "basis": [
+          "TrainerConfig.device_mesh constructs Explicit axis types when the caller flag is True (trainer.py:1129-1135).",
+          "LmConfig.requires_explicit_mesh_axes documents a minimum model requirement and defaults False for most named models (lm_model.py:172-181).",
+          "Pre-delta _load_model_runner had no replacement of the trainer mesh choice; it inherited public main/score_main mesh context.",
+          "Current mixed tests use default use_explicit_mesh_axes=False and therefore establish default mixed behavior only."
+        ],
+        "requested_change": "Retain original requested mesh policy separately from capability-based native promotion, then exercise the named explicit opt-in through actual loading/scoring or inspect its resulting concrete model/runner placement in meaningful coverage."
+      }
+    ],
+    "file_assessments": [
+      {
+        "path": "lib/levanter/src/levanter/main/perplexity_gap.py",
+        "sha256": "96ee80903cad40f44413d1f528a1a71ca1626454f33d2a4297f0a812af3fdbbf",
+        "pieces": [
+          {
+            "lines": "96,136-145",
+            "assessment": "Per-model stored mesh and context around device_put/loss computation are maintained runtime behavior needed to compare different axis modes. Losses become host NumPy arrays before the existing report join, so no cross-mesh device arithmetic is introduced."
+          },
+          {
+            "lines": "150-159,229-242",
+            "assessment": "Resolve model specifications before initialization to determine model capability and prepare the trainer. Shared logical/storage mappings and report batching remain unchanged. HF auto-config resolution is the existing function; converter loading semantics are not rewritten."
+          },
+          {
+            "lines": "377-381",
+            "assessment": "Per-model mesh selection is the right boundary, but unconditional capability assignment discards an explicit caller True for named models; see F1."
+          },
+          {
+            "lines": "398-449",
+            "assessment": "Native evaluation reuses existing axis normalization only for loss JIT and forwards original computation/storage roles and custom batch name to the shared loaders. Source identity/full vocabulary semantics remain owned by the maintained loader. Per-model use_device_mesh encloses loading; runner records that mesh for scoring. No source-row masking/truncation, alternate model loader or sampling policy is introduced."
+          }
+        ],
+        "disposition": "maintained runtime integration with one configuration-preservation fix required"
+      },
+      {
+        "path": "lib/levanter/tests/test_perplexity_gap.py",
+        "sha256": "4405c325c6a7660196e62332ecd76a7e6b229d5ba01d523ece6571d4debb1f79",
+        "pieces": [
+          {
+            "lines": "967-1066",
+            "assessment": "One parametrized behavior test covers HF/native sources and SiLU/GELU, real single-model reports, both mixed pair orders, custom examples batch name, nonunit data/model on CPU4 and unit axes on CPU1. Source full vocabulary 32 versus tokenizer 31 and shorter eval chunks exercise relevant source and sequence contracts. Named computation is the independent report oracle; fourfold MLP weights make the nondefault activation consequential. Real report values, tokens and near-zero paired gap are asserted without internal mocks or source-string checks."
+          },
+          {
+            "lines": "986-995",
+            "assessment": "Fixture leaves trainer.use_explicit_mesh_axes at its default False, so it does not protect explicit named-model opt-in; add relevant coverage when fixing F1."
+          }
+        ],
+        "disposition": "maintained meaningful behavior coverage; explicit named mesh choice remains uncovered"
+      },
+      {
+        "path": "docs/references/perplexity-gap-analysis.md",
+        "sha256": "1ccc6c6d758bd66129616f55c669853590c1693dc6e9a91a7f641c8bdf467f8b",
+        "pieces": [
+          {
+            "lines": "131-140",
+            "assessment": "Documents existing shared-loader architecture and complete source-vocabulary semantics, metadata-free original-config trust, both scoring entrypoints and mixed axis-mode support. Metadata-free notes are the established loader contract, not an inferred SiLU restriction. No historical throughput/production migration or accelerator result is promoted."
+          }
+        ],
+        "disposition": "maintained nearby usage documentation; keep mesh-choice wording consistent with F1 resolution"
+      }
+    ],
+    "runtime_evidence_independently_read_not_executed": {
+      "cpu4": {
+        "path": "native-jax-perplexity-gap-final-cpu4.xml",
+        "sha256": "c061400c98a57da30c04db8e234ec93c33f8c01cba2409c20be8a21ba0699d0a",
+        "matches_freeze": true,
+        "tests": 29,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0
+      },
+      "cpu1": {
+        "path": "native-jax-perplexity-gap-final-cpu1.xml",
+        "sha256": "dd5bd738b2abd726d0716c602300b259b49197570be3c1289188dcf34c52e98e",
+        "matches_freeze": true,
+        "tests": 29,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0
+      },
+      "baseline": {
+        "path": "native-jax-perplexity-gap-baseline.xml",
+        "sha256": "7475515de451a492611c7cb136a1fc409ef100e94d16519e4e41e85440a1a816",
+        "matches_freeze": true,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skips": 0
+      },
+      "wrong_activation_control": {
+        "path": "native-jax-perplexity-gap-wrong-activation.xml",
+        "sha256": "179f3d0e73ae3af7cdbceb4232166f02c460669959756cb1259e78931fa8294d",
+        "matches_freeze": true,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skips": 0
+      }
+    },
+    "control_assessment": "Baseline XML fails due omitted required native compute_axis_mapping. Forced-SiLU control fails actual per-byte report comparison with max absolute difference 0.0117869 beyond atol/rtol 1e-5; this supports the GELU fixture sensitivity. Neither control establishes explicit named True behavior.",
+    "precommit": "Read log shows Ruff/Black/license/Pyrefly/large files/AST/merge conflicts/whitespace/EOF/Markdown checks all ok. Freeze records exit 0; no rerun by reviewer.",
+    "affected_selection": "Read selector plan identifies only full test_perplexity_gap module, covered by supplied CPU1/CPU4 module XML. Dedicated levanter-tpu remains CI-owned; no broad or wrapper-execution claim.",
+    "instruction_reuse": "Current AGENTS, TESTING, Levanter AGENTS, JIT rules and review-pr skill were byte-compared equal to the previously read PR17 checkout. Existing writing reference guidance reused.",
+    "boundaries": {
+      "tests_run_by_reviewer": false,
+      "runtime_imports": false,
+      "source_edits": false,
+      "network": false,
+      "catalog": false,
+      "commit": false,
+      "push_publication": false,
+      "qualification": "Source review plus independent reading/hash verification of supplied local artifacts; no accelerator/kernel/performance/production/deployment qualification."
+    }
+  },
+  "native-jax-perplexity-gap-maintained-response-review.json": {
+    "schema": "native-jax-perplexity-gap-maintained-response-review.v1",
+    "at_utc": "2026-10-24T09:01:57.485538+00:00",
+    "scope": "fresh targeted maintained response plus complete final three-file assessment; not a full catalog rerun",
+    "worktree": "<local-checkout>",
+    "base": "2b65a9e3dbbe6dc28d3093cf2c59052922ca2b2d",
+    "branch": "codex/native-jax-perplexity-gap-support",
+    "patch": {
+      "path": "native-jax-perplexity-gap-support-final.patch",
+      "bytes": 13706,
+      "sha256": "f8a821f6b6704e7cc58367287b347e88426e1237a7afc026ababd6d66fb53ec8",
+      "current_worktree_exact": true
+    },
+    "freeze": {
+      "path": "native-jax-perplexity-gap-support-final-freeze.json",
+      "sha256": "d8fb0c34ab75d27fefd2013b1111da600eec01bc585e259950e79e456f1adb74",
+      "all_three_current_file_hashes_match": true
+    },
+    "verdict": "NO_ACTIONABLE_FINDINGS_F1_RESOLVED_FINAL_MAINTAINED_CONTRIBUTION_ACCEPTABLE",
+    "findings": [],
+    "first_review_preserved": {
+      "path": "evidence/native-import-lm-and-perplexity-gap/pr20-controls-and-history.json",
+      "sha256": "b81586ea826f42a44fc002361aa59f074d039f1547e3e5e24c51962f13d11701",
+      "rejected_patch_sha256": "a635786246118eca0857f35f2ce35f26caeb913b628628e5933b760eee4dc1e2",
+      "F1_resolution": "Native-only local promotion preserves caller named mesh choice; old named public entrypoints and resolution are base-exact."
+    },
+    "independent_AST_check": {
+      "changed_definitions": [
+        "_ModelRunner",
+        "_load_model_runner"
+      ],
+      "score_main_main_resolution_exact": true
+    },
+    "file_assessments": [
+      {
+        "path": "lib/levanter/src/levanter/main/perplexity_gap.py",
+        "sha256": "f56ce32f7acb4f92b083cffd8d1d0828c9d6032018511c4184660a692219b193",
+        "disposition": "maintained runtime integration; F1 resolved",
+        "pieces": [
+          {
+            "lines": "96,136-145",
+            "assessment": "Runner retains its own concrete mesh; batch placement and loss JIT execute inside it. Loss arrays become host NumPy values before existing report accumulation/join, avoiding cross-mesh device arithmetic. Input tokens/loss weights and mask/report semantics are unchanged."
+          },
+          {
+            "lines": "374-377",
+            "assessment": "Only a model whose capability requires Explicit axes receives a replaced trainer with True. Named models retain the caller trainer object and configured flag, resolving the first-freeze F1/P2. Default named Auto and caller Explicit choices are no longer collapsed into one forced mode."
+          },
+          {
+            "lines": "393-408",
+            "assessment": "Native loss JIT reuses maintained native_evaluation_axis_mapping, with original storage and computation roles and the concrete local native mesh. Non-native loss mapping remains the original one. Native unit-batch normalization is reused rather than copied."
+          },
+          {
+            "lines": "410-434",
+            "assessment": "Loads under the retained per-model mesh and creates the template PRNG key inside that same context, preventing Auto-key/Explicit-template conflicts. Both shared loaders receive original computation/storage mappings and batch-axis name. Existing named HF converter/source reconstruction semantics and named checkpoint loader paths remain owned by unchanged shared loaders; no alternate loading framework is introduced."
+          },
+          {
+            "lines": "437-445",
+            "assessment": "Records the local concrete mesh with the resulting model and compiled scoring function for repeated score/warmup use. Mesh shapes/devices and logical roles remain shared across pairs; only required axis modes differ."
+          },
+          {
+            "lines": "public score_main/main/_resolved_model_spec",
+            "assessment": "Independent AST comparison to base confirms complete identity of both public entrypoints, initialization ordering, model resolution, configuration behavior and every other top-level definition outside _ModelRunner/_load_model_runner. No global promotion or pre-initialization HF resolution remains."
+          }
+        ]
+      },
+      {
+        "path": "lib/levanter/tests/test_perplexity_gap.py",
+        "sha256": "4405c325c6a7660196e62332ecd76a7e6b229d5ba01d523ece6571d4debb1f79",
+        "disposition": "maintained meaningful behavior coverage, unchanged from first freeze",
+        "pieces": [
+          {
+            "lines": "967-1066",
+            "assessment": "Four source-kind x SiLU/GELU cases use real local checkpoint/HF sources, independent named computation, single-model persisted per-byte reports and paired mixed orders. Custom examples batch name, data/model roles, shorter evaluation chunks and source Vocab32 vs tokenizer31 protect actual boundary behavior. No masking/truncation of padded source vocabulary is added."
+          },
+          {
+            "lines": "997-1001,1040-1046",
+            "assessment": "Fourfold MLP fixture scaling makes activation mismatch consequential at the actual persisted report oracle. Final forced-SiLU XML fails the report assertion with max absolute deviation0.0117869 beyond atol/rtol1e-5, protecting against a weak random-model comparison."
+          },
+          {
+            "lines": "1048-1066",
+            "assessment": "Both named-first/native-first calls exercise retained contexts and host report join; near-zero independent gap is checked. Existing marker, tolerance, fixture defaults and all old tests remain unchanged. No internal dispatch mocks, source-string tests or benchmark artifacts are promoted."
+          }
+        ]
+      },
+      {
+        "path": "docs/references/perplexity-gap-analysis.md",
+        "sha256": "616bfc5ba856aff8e37f9a76de30e49eaff00ac69d5346ef7305ac0daf04d2e7",
+        "disposition": "maintained nearby usage and boundary documentation",
+        "pieces": [
+          {
+            "lines": "131-140",
+            "assessment": "Documents explicit native config/tokenizer/source prerequisites, maintained shared-loader source-vocabulary and identity validation, and existing metadata-free original-config/full-Vocab trust. Mixed-pair wording now preserves named configured axes and enables Explicit only for native model, matching F1 correction. No new metadata-free restriction, inferred SiLU, sampling-row policy, accelerator result or performance claim."
+          }
+        ]
+      }
+    ],
+    "independently_read_XML": {
+      "cpu4": {
+        "path": "native-jax-perplexity-gap-complete-cpu4.xml",
+        "sha256": "1edbede3184b82db6f7f7564ce892cbe81d22a67cd5de01331a3c093856b29cb",
+        "matches_final_freeze": true,
+        "cases": 29,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0
+      },
+      "affected_cpu1": {
+        "path": "native-jax-perplexity-gap-complete-affected-cpu1.xml",
+        "sha256": "4e1ad67bb904fdf3eb6423b6a5cd1cc4698b2a917d44444e3af3e544a1fd711f",
+        "matches_final_freeze": true,
+        "cases": 29,
+        "failures": 0,
+        "errors": 0,
+        "skips": 0
+      },
+      "baseline_public_failure": {
+        "path": "native-jax-perplexity-gap-baseline.xml",
+        "sha256": "7475515de451a492611c7cb136a1fc409ef100e94d16519e4e41e85440a1a816",
+        "matches_final_freeze": true,
+        "cases": 1,
+        "failures": 1,
+        "errors": 0,
+        "skips": 0
+      },
+      "wrong_activation_control": {
+        "path": "native-jax-perplexity-gap-complete-wrong-activation.xml",
+        "sha256": "a65660ef8ae788f5d075036f76a9e821f7043bbfae6d39c4d18ba5718fa0d149",
+        "matches_final_freeze": true,
+        "cases": 1,
+        "failures": 1,
+        "errors": 0,
+        "skips": 0
+      }
+    },
+    "normal_precommit": {
+      "path": "native-jax-perplexity-gap-corrected-precommit.log",
+      "sha256": "e44691fcdbda0c310b81cb90bd3b02f67e314a6022cc12b1660d139e9b484598",
+      "matches_freeze": true,
+      "assessment": "Read all checks ok, including Pyrefly and Markdown. Exit0 supplied by author freeze; no rerun."
+    },
+    "affected_runner": "Read actual final affected-cpu1 log: base2b65, --maxprocesses2, default full safe marker exclusions and selected full test_perplexity_gap module;29pass15.75s. Final CPU4 module XML has29pass16.796s. No broad-suite claim.",
+    "preservation_controls": {
+      "proof_path": "native-jax-perplexity-gap-support-preservation-proof.json",
+      "sha256": "90d2f4a67a1bb268c68125cf917fe2ff658f05272e4b39797d95d2f1e7fb0cc9",
+      "named_explicit": "Read baseline/candidate logs: same ValueError message for preexisting shard_map input placement mismatch. This proves neither positive named Explicit TP support nor complete traceback equality. It is preserved baseline behavior, not a candidate regression.",
+      "invalid_empty_mapping_fixture": "Reported invalid existing MeshConfig input; not support evidence. No further runtime search by reviewer.",
+      "intermediate_key_conflict": "Earlier corrected-run failures are diagnostic artifacts, not green evidence. Final source places PRNG key creation inside actual load mesh and final frozen-head tests pass as supplied."
+    },
+    "reuse_maintenance": "Concrete changes stay in existing model runner; shared loaders/axis policy/model implementations remain unchanged. Tests and nearby docs support actual maintained callers; no historical research artifact, new report layer, registry/default migration or sampling policy is extracted.",
+    "review_limits": {
+      "reviewer_ran_tests": false,
+      "runtime_imports": false,
+      "source_edits": false,
+      "network": false,
+      "catalog": false,
+      "commit": false,
+      "push_publication": false,
+      "claim": "Source/AST/hash review plus independent reading of existing author runtime artifacts. Root release, commit/catalog/publication and accelerator validation remain separate."
+    }
+  },
+  "native-jax-perplexity-gap-support-handoff.json": {
+    "source": {
+      "base": "2b65a9e3dbbe6dc28d3093cf2c59052922ca2b2d",
+      "branch": "codex/native-jax-perplexity-gap-support",
+      "worktree": "<local-checkout>",
+      "patch_path": "native-jax-perplexity-gap-support-final.patch",
+      "patch_bytes": 13706,
+      "patch_sha256": "f8a821f6b6704e7cc58367287b347e88426e1237a7afc026ababd6d66fb53ec8",
+      "files": {
+        "docs/references/perplexity-gap-analysis.md": "616bfc5ba856aff8e37f9a76de30e49eaff00ac69d5346ef7305ac0daf04d2e7",
+        "lib/levanter/src/levanter/main/perplexity_gap.py": "f56ce32f7acb4f92b083cffd8d1d0828c9d6032018511c4184660a692219b193",
+        "lib/levanter/tests/test_perplexity_gap.py": "4405c325c6a7660196e62332ecd76a7e6b229d5ba01d523ece6571d4debb1f79"
+      },
+      "validation": {
+        "cpu4": {
+          "xml": "native-jax-perplexity-gap-complete-cpu4.xml",
+          "sha256": "1edbede3184b82db6f7f7564ce892cbe81d22a67cd5de01331a3c093856b29cb",
+          "exit_code": 0,
+          "tests": 29,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "time": "16.796"
+        },
+        "affected_cpu1": {
+          "xml": "native-jax-perplexity-gap-complete-affected-cpu1.xml",
+          "sha256": "4e1ad67bb904fdf3eb6423b6a5cd1cc4698b2a917d44444e3af3e544a1fd711f",
+          "exit_code": 0,
+          "tests": 29,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "time": "15.746"
+        },
+        "baseline_public_failure": {
+          "xml": "native-jax-perplexity-gap-baseline.xml",
+          "sha256": "7475515de451a492611c7cb136a1fc409ef100e94d16519e4e41e85440a1a816",
+          "exit_code": 1,
+          "tests": 1,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "time": "7.298"
+        },
+        "wrong_activation_control": {
+          "xml": "native-jax-perplexity-gap-complete-wrong-activation.xml",
+          "sha256": "a65660ef8ae788f5d075036f76a9e821f7043bbfae6d39c4d18ba5718fa0d149",
+          "exit_code": 1,
+          "tests": 1,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "time": "7.741"
+        },
+        "precommit": {
+          "exit_code": 0,
+          "log": "native-jax-perplexity-gap-corrected-precommit.log",
+          "sha256": "e44691fcdbda0c310b81cb90bd3b02f67e314a6022cc12b1660d139e9b484598"
+        },
+        "preservation_proof": "native-jax-perplexity-gap-support-preservation-proof.json"
+      },
+      "previous_rejected_freeze": {
+        "patch": "native-jax-perplexity-gap-support.patch",
+        "sha256": "a635786246118eca0857f35f2ce35f26caeb913b628628e5933b760eee4dc1e2",
+        "reason": "Fresh maintained review F1/P2: forced named Auto overrode caller explicit opt-in; fixed by native-only local promotion.",
+        "review": "evidence/native-import-lm-and-perplexity-gap/pr20-controls-and-history.json"
+      },
+      "temporary_venv_symlink_removed": true,
+      "environment_target_preserved": ".venv",
+      "all_author_test_handles_terminal": true,
+      "status": "CORRECTED_FREEZE_PENDING_FRESH_RESPONSE_REVIEW_NO_COMMIT"
+    },
+    "implementation": [
+      "Original score_main/main/automatic HF resolution AST is exact PR17. Trainer initialization and source resolution ordering unchanged.",
+      "Only native runner locally promotes Explicit axes. Named runner retains original requested flag, physical mesh, logical mappings, source discovery and shared named loading behavior.",
+      "Existing runner retains actual Mesh, constructs template PRNG key in its load context, loads there, and enters it for batch allocation/scoring. Reports join the same host arrays as before.",
+      "Both shared loader calls receive original parameter/compute mappings and configured batch axis name. Native loss JIT reuses native_evaluation_axis_mapping normalization. No model, checkpoint, tokenizer, optimizer, registry, defaults or shared-loader edits."
+    ],
+    "behavioral_coverage": {
+      "new_cases": "SiLU/gelu_new \u00d7 real HF/native Levanter checkpoint; same canonical 32-row weights, real31-token fast tokenizer, GQA, 8-token chunk boundary, custom examples batch axis. Native persisted per-byte arrays compare against independently loaded old named Llama. Mixed pairs run both orders.",
+      "activation_sensitivity": "Runtime-only forced SiLU control on final exact source fails persisted report assertion: 56/64 elements differ, max absolute violation0.0117869 at unchanged1e-5 tolerance. Control lives only native_jax_wrong_activation_control.py.",
+      "initial_public_baseline": "Actual unchanged PR17 production code2b65 successfully wrote named score report then native score_main failed missing compute_axis_mapping. Initial regression fixture predates later MLPscale4 and both-order strengthening; do not claim final exact test file ran on baseline.",
+      "final_counts": {
+        "cpu4": {
+          "xml": "native-jax-perplexity-gap-complete-cpu4.xml",
+          "sha256": "1edbede3184b82db6f7f7564ce892cbe81d22a67cd5de01331a3c093856b29cb",
+          "exit_code": 0,
+          "tests": 29,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "time": "16.796"
+        },
+        "affected_cpu1": {
+          "xml": "native-jax-perplexity-gap-complete-affected-cpu1.xml",
+          "sha256": "4e1ad67bb904fdf3eb6423b6a5cd1cc4698b2a917d44444e3af3e544a1fd711f",
+          "exit_code": 0,
+          "tests": 29,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "time": "15.746"
+        },
+        "baseline_public_failure": {
+          "xml": "native-jax-perplexity-gap-baseline.xml",
+          "sha256": "7475515de451a492611c7cb136a1fc409ef100e94d16519e4e41e85440a1a816",
+          "exit_code": 1,
+          "tests": 1,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "time": "7.298"
+        },
+        "wrong_activation_control": {
+          "xml": "native-jax-perplexity-gap-complete-wrong-activation.xml",
+          "sha256": "a65660ef8ae788f5d075036f76a9e821f7043bbfae6d39c4d18ba5718fa0d149",
+          "exit_code": 1,
+          "tests": 1,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "time": "7.741"
+        },
+        "precommit": {
+          "exit_code": 0,
+          "log": "native-jax-perplexity-gap-corrected-precommit.log",
+          "sha256": "e44691fcdbda0c310b81cb90bd3b02f67e314a6022cc12b1660d139e9b484598"
+        },
+        "preservation_proof": "native-jax-perplexity-gap-support-preservation-proof.json"
+      },
+      "commands": {
+        "precommit": "source native-jax-perplexity-gap-support-env.sh; uv run --no-sync --python python python infra/pre-commit.py --files lib/levanter/src/levanter/main/perplexity_gap.py lib/levanter/tests/test_perplexity_gap.py docs/references/perplexity-gap-analysis.md --fix",
+        "cpu4": "source native-jax-perplexity-gap-support-env.sh; uv run --no-sync --package marin-levanter python -m pytest -c pyproject.toml -n 0 lib/levanter/tests/test_perplexity_gap.py -q --junitxml=native-jax-perplexity-gap-complete-cpu4.xml",
+        "affected_cpu1": "source native-jax-perplexity-gap-support-env.sh; uv run --no-project --python python python infra/ci/run_tests.py --base-ref 2b65a9e3dbbe6dc28d3093cf2c59052922ca2b2d --workers 2 -- -q --junitxml=native-jax-perplexity-gap-complete-affected-cpu1.xml",
+        "wrong_activation_control": "same own environment plus PYTHONPATH=/private/tmp:$PYTHONPATH; uv run --no-sync --package marin-levanter python -m pytest -c pyproject.toml -n 0 -p native_jax_wrong_activation_control lib/levanter/tests/test_perplexity_gap.py::test_native_perplexity_reports_match_named[gelu_new-hf] -q --junitxml=native-jax-perplexity-gap-complete-wrong-activation.xml"
+      },
+      "environment": {
+        "env_script": "native-jax-perplexity-gap-support-env.sh",
+        "python": "python",
+        "offline_no_sync": true,
+        "dtype": "FP32 model/compute for new caller coverage",
+        "default_markers_unchanged": true,
+        "no_installs_or_lock_mutations": true
+      }
+    },
+    "review": {
+      "initial": {
+        "result": "ONE_P2_FIXED_IN_FINAL",
+        "md": "native-jax-perplexity-gap-maintained-review.md",
+        "json": "evidence/native-import-lm-and-perplexity-gap/pr20-controls-and-history.json",
+        "sha256": "b81586ea826f42a44fc002361aa59f074d039f1547e3e5e24c51962f13d11701",
+        "finding": "F1: forced named Auto overrode explicit caller flag."
+      },
+      "final_response": {
+        "status": "PASS_ZERO_ACTIONABLE_FINDINGS_F1_RESOLVED",
+        "reviewer": "/root/native_callers_contribution_maintained_review",
+        "json": "evidence/native-import-lm-and-perplexity-gap/pr20-controls-and-history.json",
+        "json_sha256": "6a34f0f8120d030ee721710d6c10da7d3a9451f2a5c283f39af39c8b13622292",
+        "md": "native-jax-perplexity-gap-maintained-response-review.md",
+        "md_sha256": "b8a216d4e0f7660db10941e1d603c7ed731e28249bff269e2ddc6129b88800a4"
+      }
+    },
+    "diagnostic_boundaries": [
+      "Initial a635 source freeze passed29CPU1/4 but had maintained-review P2, so superseded; retained original patch/freeze/review artifacts.",
+      "Intermediate local-only native promotion initially created checkpoint template key in outer Auto mesh;27pass2fail CPU1/4 diagnostic logs preserved. Final key is created inside actual loadmesh; final29/29 pass supersedes these failures.",
+      "Actual clean2b65 namedExplicit data2/model2 attempt and final candidate both fail same shard_map in_specs ValueError. This proves explicit opt-in is not silently disabled, not positive support for that named Explicit layout. No full traceback byte-equivalence claim.",
+      "One attempted fullyreplicated namedExplicit control used empty logical mappings rejected by existing MeshConfig._norm before math; invalid fixture only. Search stopped; no support verdict from it.",
+      "All new runtime evidence is local CPU, portable/reference backend, tiny models. No accelerator, full-size trajectory, production-scale, or performance claim."
+    ]
+  },
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}

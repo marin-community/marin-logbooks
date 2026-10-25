@@ -1,0 +1,177 @@
+{
+  "native-jax-import-lm-root-qualification-proof.json": {
+    "utc": "2026-10-25T01:14:43.658212+00:00",
+    "source_base": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "source_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "full_patch_sha256": "c1b0eb6223f3bb5680b8ac43fb4ec63cb839c5bd70188da19dc3a6bc63904b21",
+    "freeze": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "51a3108b5f0b37c81dd50b54dfb4b9c6e7f9c6d59ecdf04bb85bfef4249eaf96",
+        "git_blob": "98aba8cab26587f549064d93d37132014a6ce422"
+      },
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py": {
+        "sha256": "33382d12bc01608a08859299cf4a82aec23308aa48e29645ad29301be134784e",
+        "git_blob": "f98dc04c99c821849edbd86b69c6289be138b113"
+      },
+      "lib/levanter/tests/test_export_hf_to_lm.py": {
+        "sha256": "8de98ae92df739283f53cd67906a27c712ef1d7887dd0ab45e436be343d1ac7e",
+        "git_blob": "d8ad171cca7c494ab69f86f339542b6f339452c5"
+      }
+    },
+    "focused_runs": [
+      {
+        "actual_devices": 1,
+        "passed": 5,
+        "xml": "evidence/native-import-lm-and-perplexity-gap/importer-r1-cpu1.xml",
+        "xml_sha256": "ba9ee2c867be65dff054abf95d2b8c733641de9232f1b0a214655ef03cfa16b2",
+        "provenance": {
+          "actual_devices": 1,
+          "devices": [
+            "cpu:0"
+          ],
+          "python": "python",
+          "source_modules": {
+            "levanter": "lib/levanter/src/levanter/__init__.py",
+            "haliax": "lib/haliax/src/haliax/__init__.py",
+            "marin": "lib/marin/src/marin/__init__.py",
+            "iris": "lib/iris/src/iris/__init__.py"
+          }
+        },
+        "log": "native-jax-import-lm-r1-cpu1.log"
+      },
+      {
+        "actual_devices": 4,
+        "passed": 5,
+        "xml": "evidence/native-import-lm-and-perplexity-gap/importer-r1-cpu4.xml",
+        "xml_sha256": "b469525f75e90f1064c144a8bda431f98104e8ab596aad73a403eabb2f79d42b",
+        "provenance": {
+          "actual_devices": 4,
+          "devices": [
+            "cpu:0",
+            "cpu:1",
+            "cpu:2",
+            "cpu:3"
+          ],
+          "python": "python",
+          "source_modules": {
+            "levanter": "lib/levanter/src/levanter/__init__.py",
+            "haliax": "lib/haliax/src/haliax/__init__.py",
+            "marin": "lib/marin/src/marin/__init__.py",
+            "iris": "lib/iris/src/iris/__init__.py"
+          }
+        },
+        "log": "native-jax-import-lm-r1-cpu4.log"
+      },
+      {
+        "actual_devices": 8,
+        "passed": 5,
+        "xml": "evidence/native-import-lm-and-perplexity-gap/importer-r1-root-cpu8.xml",
+        "xml_sha256": "7edbbb8b66578dee8d4f405839b83794e80d5a372684b470282b439ac884d820",
+        "provenance": {
+          "actual_devices": 8,
+          "devices": [
+            "cpu:0",
+            "cpu:1",
+            "cpu:2",
+            "cpu:3",
+            "cpu:4",
+            "cpu:5",
+            "cpu:6",
+            "cpu:7"
+          ],
+          "python": "python",
+          "source_modules": {
+            "levanter": "lib/levanter/src/levanter/__init__.py",
+            "haliax": "lib/haliax/src/haliax/__init__.py",
+            "marin": "lib/marin/src/marin/__init__.py",
+            "iris": "lib/iris/src/iris/__init__.py"
+          }
+        },
+        "log": "native-jax-import-lm-root-r1-cpu8.log"
+      }
+    ],
+    "same_five_case_identities": [
+      [
+        "lib.levanter.tests.test_export_hf_to_lm",
+        "test_import_hf_to_lm_saves_model_under_subpath_and_emits_padded_tokenizer"
+      ],
+      [
+        "lib.levanter.tests.test_export_hf_to_lm",
+        "test_native_import_preserves_source_semantics_vocab_and_storage_dtype[explicit-full]"
+      ],
+      [
+        "lib.levanter.tests.test_export_hf_to_lm",
+        "test_native_import_preserves_source_semantics_vocab_and_storage_dtype[inferred-resized-bf16]"
+      ],
+      [
+        "lib.levanter.tests.test_export_hf_to_lm",
+        "test_native_import_rejects_same_shape_source_mismatch_before_writing[activation]"
+      ],
+      [
+        "lib.levanter.tests.test_export_hf_to_lm",
+        "test_native_import_rejects_same_shape_source_mismatch_before_writing[rope]"
+      ]
+    ],
+    "same_five_each_actual_device_count": true,
+    "affected": {
+      "selected": 29,
+      "paths": 6,
+      "passed": 29,
+      "skipped": 0,
+      "failed": 0,
+      "errors": 0,
+      "all_selected_unique_ids_accounted_for": true,
+      "elapsed": 23.42,
+      "command": [
+        "python",
+        "infra/ci/run_tests.py",
+        "--base-ref",
+        "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+        "--workers",
+        "2",
+        "--",
+        "--junitxml=native-jax-import-lm-root-affected.xml"
+      ],
+      "safe_markers": "not slow and not integration and not data_integration and not cluster and not requires_cluster and not docker and not manual and not torch",
+      "per_test_timeout": 60,
+      "session_timeout": 600,
+      "xml": "native-jax-import-lm-root-affected.xml",
+      "xml_sha256": "c2b0e72889252156abf0bb6a91eef177c2494630dea95bc627fe847a930690b5",
+      "selection": "native-jax-import-lm-root-affected-selection.json",
+      "boundary": "Actual suite ran R1 runtime/test tree086800; later docs-only tree63f2 preserves both runtime/testfiles byte-exact. No runtime repeat for doc prose."
+    },
+    "ordinary_all3_exit": 0,
+    "maintained_R1_findings": 0,
+    "maintained_docs_R2_findings": 0,
+    "initial_I1_changes_requested_preserved": true,
+    "initial_dtype_bug_and_oracle_failure_stages": "Preserved in author validation and initialfreeze; current five-case storage/hostoracle assertions retained without tolerance weakening.",
+    "cold_read": "native-jax-import-lm-root-publication-r1-cold-read.md",
+    "catalog": "not yet run; initial local commit then required catalog before publication",
+    "published": false
+  },
+  "native-jax-import-lm-root-commit-proof.json": {
+    "utc": "2026-10-25T01:15:14.224463+00:00",
+    "head": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "parent": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "clean": true,
+    "exact_reviewed_message": true,
+    "message_sha256": "782446d5484bcb4194273ebc2e4cf899cf4f3addcb24dd222f4cd3bc3d228996",
+    "full_patch_sha256": "c1b0eb6223f3bb5680b8ac43fb4ec63cb839c5bd70188da19dc3a6bc63904b21",
+    "qualification": "evidence/native-import-lm-and-perplexity-gap/importer-release-and-publication.json",
+    "fresh_R1_and_docs_R2_reviews_zero": true,
+    "ordinary_all3_exit": 0,
+    "CPU_focused5_each": [
+      1,
+      4,
+      8
+    ],
+    "safe_selected29_pass": true,
+    "published": false,
+    "catalog": "next required full six-lane catalog before publication",
+    "canonical_main": "2cae063c877172844fe6ff90e94354cc08a273fa",
+    "merge_base": "86fc7b67c921ad4ac124835ca7379b04ffa1be25"
+  },
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}

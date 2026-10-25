@@ -1,0 +1,190 @@
+{
+  "native-jax-import-lm-r1-validation.json": {
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-import-lm-support",
+    "base": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "freeze": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "patch_sha256": "81ead6e8f0c37991444e3b7fee7f6af5583568e969c186bc416469ac6bd4a7dd",
+    "incremental_response_sha256": "9647052ece3c85a94bbd4eed9d2f416f81d4de13b3d1c1afaddb9872f08c8dd0",
+    "resulting_tree": "0868005a379bb252a5887b7ff27159ef1d50a318",
+    "three_source_hashes_verified_after_terminal_runs": true,
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "a390ca09941cd5887d881e3ddbd4acb4ff0258c0498295d2fe93ce7c124cf72b",
+        "git_blob": "6c134b3b67d58965246999022d291a779cb14687"
+      },
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py": {
+        "sha256": "33382d12bc01608a08859299cf4a82aec23308aa48e29645ad29301be134784e",
+        "git_blob": "f98dc04c99c821849edbd86b69c6289be138b113"
+      },
+      "lib/levanter/tests/test_export_hf_to_lm.py": {
+        "sha256": "8de98ae92df739283f53cd67906a27c712ef1d7887dd0ab45e436be343d1ac7e",
+        "git_blob": "d8ad171cca7c494ab69f86f339542b6f339452c5"
+      }
+    },
+    "actual_results": {
+      "1": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "actual_cpu_devices": 1,
+        "log": "native-jax-import-lm-r1-cpu1.log",
+        "xml": "evidence/native-import-lm-and-perplexity-gap/importer-r1-cpu1.xml",
+        "provenance": {
+          "actual_devices": 1,
+          "devices": [
+            "cpu:0"
+          ],
+          "python": "python",
+          "source_modules": {
+            "levanter": "lib/levanter/src/levanter/__init__.py",
+            "haliax": "lib/haliax/src/haliax/__init__.py",
+            "marin": "lib/marin/src/marin/__init__.py",
+            "iris": "lib/iris/src/iris/__init__.py"
+          }
+        },
+        "environment_setup": "source native-jax-import-lm-support-env.sh",
+        "argv": [
+          "uv",
+          "run",
+          "python",
+          "native-jax-export-lm-tests.py",
+          "1",
+          "-c",
+          "pyproject.toml",
+          "lib/levanter/tests/test_export_hf_to_lm.py",
+          "-n",
+          "2",
+          "-q",
+          "--tb=short",
+          "--junitxml=evidence/native-import-lm-and-perplexity-gap/importer-r1-cpu1.xml"
+        ],
+        "default_safety_markers": "root -c pyproject.toml; unchanged complete default marker expression; no -m override",
+        "pytest_wall_time": 25.52
+      },
+      "4": {
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "actual_cpu_devices": 4,
+        "log": "native-jax-import-lm-r1-cpu4.log",
+        "xml": "evidence/native-import-lm-and-perplexity-gap/importer-r1-cpu4.xml",
+        "provenance": {
+          "actual_devices": 4,
+          "devices": [
+            "cpu:0",
+            "cpu:1",
+            "cpu:2",
+            "cpu:3"
+          ],
+          "python": "python",
+          "source_modules": {
+            "levanter": "lib/levanter/src/levanter/__init__.py",
+            "haliax": "lib/haliax/src/haliax/__init__.py",
+            "marin": "lib/marin/src/marin/__init__.py",
+            "iris": "lib/iris/src/iris/__init__.py"
+          }
+        },
+        "environment_setup": "source native-jax-import-lm-support-env.sh; export JAX_NUM_CPU_DEVICES=4",
+        "argv": [
+          "uv",
+          "run",
+          "python",
+          "native-jax-export-lm-tests.py",
+          "4",
+          "-c",
+          "pyproject.toml",
+          "lib/levanter/tests/test_export_hf_to_lm.py",
+          "-n",
+          "2",
+          "-q",
+          "--tb=short",
+          "--junitxml=evidence/native-import-lm-and-perplexity-gap/importer-r1-cpu4.xml"
+        ],
+        "default_safety_markers": "root -c pyproject.toml; unchanged complete default marker expression; no -m override",
+        "pytest_wall_time": 26.12
+      }
+    },
+    "exact_nodeids": [
+      "lib/levanter/tests/test_export_hf_to_lm.py::test_import_hf_to_lm_saves_model_under_subpath_and_emits_padded_tokenizer",
+      "lib/levanter/tests/test_export_hf_to_lm.py::test_native_import_preserves_source_semantics_vocab_and_storage_dtype[explicit-full]",
+      "lib/levanter/tests/test_export_hf_to_lm.py::test_native_import_preserves_source_semantics_vocab_and_storage_dtype[inferred-resized-bf16]",
+      "lib/levanter/tests/test_export_hf_to_lm.py::test_native_import_rejects_same_shape_source_mismatch_before_writing[activation]",
+      "lib/levanter/tests/test_export_hf_to_lm.py::test_native_import_rejects_same_shape_source_mismatch_before_writing[rope]"
+    ],
+    "ordinary": {
+      "environment_setup": "source native-jax-import-lm-support-env.sh",
+      "argv": [
+        "./infra/pre-commit.py",
+        "--files",
+        "lib/levanter/src/levanter/main/export_hf_to_lm.py",
+        "--files",
+        "lib/levanter/tests/test_export_hf_to_lm.py",
+        "--files",
+        "lib/levanter/docs/Training-On-Your-Data.md"
+      ],
+      "exit_code": 0,
+      "result": "all3OK noSKIP",
+      "log": "evidence/native-import-lm-and-perplexity-gap/ordinary-checks.txt",
+      "local_IPC": "authorized require_escalated"
+    },
+    "control_comparison": "evidence/native-import-lm-and-perplexity-gap/importer-saved-dtype-control.json",
+    "provenance_helper": "native-jax-export-lm-tests.py",
+    "immutable_baseline": "Original clean6f9 control clone/assets/report unchanged. Additional BF16 baseline output is separate; no source edits.",
+    "preserved_stages": [
+      {
+        "stage": "first pre-storage-fix CPU1",
+        "passed": 4,
+        "failed": 1,
+        "reason": "Actual BF16storage remainedFP32. Expectation retained; unchanged6f9 actualcontrol proves inheritedbug. Importer-only JMPstoragecast added by rootauthorization.",
+        "log": "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json"
+      },
+      {
+        "stage": "66c9 firstfreeze after storagefix CPU1/4",
+        "passed_each": 4,
+        "failed_each": 1,
+        "reason": "BF16dtype assertion passed, then expected JAXAuto array.astype in Explicitcontext failed in testoracle. R1 np.asarray hostconversion only; no runtime/tolerance change.",
+        "logs": [
+          "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json",
+          "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json"
+        ],
+        "freeze": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json"
+      }
+    ],
+    "guide_cold_read": {
+      "path": "evidence/native-import-lm-and-perplexity-gap/importer-reviews-and-prose.json",
+      "result": "Three clarity issues reported to root; source remains R1 frozen while bounded docs-only followup is considered.",
+      "scope": "Defaulttokenizer, internalmodelsubpath, howto retain matchingconfig forrestore"
+    },
+    "pending_root_owned": [
+      "fresh independent maintained review beforecommit",
+      "docs coldread disposition",
+      "independent CPU8",
+      "broader affected tests",
+      "catalog",
+      "publication/archive"
+    ],
+    "boundary": "Author source/local CPU1/4 checks, real exact source parameters and configured meshes. Target BF16 checkpoint storage is qualified; BF16 arithmetic parity is not. No remote/accelerator/storage/network/PR/CI/automation/commit/push."
+  },
+  "observed_unfrozen_pre_storage_phase": {
+    "outcomes": {
+      "passed": 4,
+      "failed": 1
+    },
+    "full_runtime_sha256": null,
+    "matching_runtime_bytes_retained": false,
+    "immutable_source_snapshot": false,
+    "interpretation": "InitialCPU1test was an observed unfrozen intermediate; retained log has no runtimehash and is not a freeze. No matching exactsource payload or reconstruction invented. Separate earlier dirty disposablecontrols recorded runtime3207969... in candidate-results provenance, not proof of initialCPUtest runtime. Reproducible before/after source pair is public6f9 baseline vs finalc1b0.",
+    "retained_initial_log": {
+      "private_path": "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json",
+      "basename": "native-jax-import-lm-initial-cpu1.log",
+      "bytes": 4719,
+      "sha256": "decd7575c5b4df648646daf199f462b7178e4b7952934b6777572bf2168f6a77"
+    }
+  },
+  "initial_failure_non_array_excerpt": "lib/levanter/tests/test_export_hf_to_lm.py:213: in test_native_import_preserves_source_semantics_vocab_and_storage_dtype\n    assert value.dtype == storage_dtype\nE   AssertionError: assert dtype('float32') == dtype(bfloat16)\n1 failed, 4 passed, 1 warning in 23.04s",
+  "recoverability_boundary": "Original initial raw log preserved privately, exact hash/length in manifest. Public copy omits printed array line. Observed unfrozen intermediate only; no matching retained runtime bytes, no invented full hash/source. Reproduce public6f9 vs finalc1b0 instead.",
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}

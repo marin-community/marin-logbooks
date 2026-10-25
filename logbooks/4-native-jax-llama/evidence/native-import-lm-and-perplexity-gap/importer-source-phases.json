@@ -1,0 +1,357 @@
+{
+  "native-jax-import-lm-source-freeze.json": {
+    "utc": "2026-10-25T01:05:08.314250+00:00",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-import-lm-support",
+    "base": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "base_status": "Parent supplied verified public PR28 source; no remote query by author",
+    "base_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "resulting_tree": "c29a43b6c6b327844b7f5f4de7c8201fb1c12b31",
+    "patch": "evidence/native-import-lm-and-perplexity-gap/importer-initial-source.patch",
+    "patch_sha256": "66c90e3e2089a7aade7a78dc2316b6a87c1b8af12c27e472821eb1ca2e235ea8",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "a390ca09941cd5887d881e3ddbd4acb4ff0258c0498295d2fe93ce7c124cf72b",
+        "git_blob": "6c134b3b67d58965246999022d291a779cb14687"
+      },
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py": {
+        "sha256": "33382d12bc01608a08859299cf4a82aec23308aa48e29645ad29301be134784e",
+        "git_blob": "f98dc04c99c821849edbd86b69c6289be138b113"
+      },
+      "lib/levanter/tests/test_export_hf_to_lm.py": {
+        "sha256": "863f5eb4c0d3afa008be0d8bd502e8a4393b924059f04cbca0cd62e1b67e52a6",
+        "git_blob": "b31c430b29de280bcd1305ea2a1d56ecc26d3d53"
+      }
+    },
+    "source_frozen": true,
+    "committed": false,
+    "published": false,
+    "scope": "Existing native HF importer binds actual source/tokenizer; validates effective architecture before model/weight/output; writes actual postresize/postcast native identity and full output vocab. Native checkpoint parameters cast after loading with existing JMP policy to honor saved target dtype; named constructor/load/save behavior preserved.",
+    "exact_reuse": [
+      "NativeLlamaLmConfig.hf_checkpoint_converter(actual_source,tokenizer=loaded_tokenizer)",
+      "existing type(config.model).from_hf_config and NativeLlamaLmConfig.validate_hf_config",
+      "existing HFCheckpointConverter.load_pretrained under existing Explicit local CPU mesh",
+      "existing JMP Policy.cast_to_param with already resolved jnp targetdtype, no new dtype string parser",
+      "actual NativeLlamaLmHeadModel.checkpoint_metadata and existing save_checkpoint(metadata=...)",
+      "existing write_llama_checkpoint source fixture and independent initialized named Llama oracle"
+    ],
+    "preserved": [
+      "named defaultmodel remains LlamaConfig",
+      "named converter construction remains original path",
+      "use_hf_model_config true/false",
+      "HF RepoRef revision and explicit tokenizer_revision",
+      "dtype=None behavior, original getattr(jnp,config.dtype) dtype surface",
+      "source full-vocab default, explicit resize and padded-tokenizer flags",
+      "model/bare/custom subpath behavior and async completion"
+    ],
+    "production_files_changed": [
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py"
+    ],
+    "tests": "Five public importer cases (existing named1+new native2roundtrip+2genuine source mismatch cases), actual CPU1/4 running at freeze; no tolerance changes.",
+    "ordinary": {
+      "log": "native-jax-import-lm-precommit-final-dtype.log",
+      "result": "all3OK noSKIP",
+      "exit_code": 0,
+      "local_formatter_IPC": "authorized require_escalated"
+    },
+    "historical_stages": {
+      "immutable_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+      "initial_cpu1": "4PASS1FAIL before target-storage fix: BF16 stored FP32, test expectation retained",
+      "initial_cpu1_log": "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json",
+      "inherited_storage_bug_proof": "evidence/native-import-lm-and-perplexity-gap/importer-saved-dtype-control.json",
+      "storage_fix_boundary": "Actual unchanged6f9 reproduces21FP32 arrays with BF16rounded values. Importer dtype promises target SAVED storage; root authorized native-only postload policycast. No global native FP32master/training policy change.",
+      "pre_storage_fix_candidate_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json"
+    },
+    "pending_root_owned": [
+      "fresh independent maintained review before commit",
+      "CPU8 independent qualification",
+      "broader affected tests",
+      "full catalog and publication"
+    ],
+    "limits": "Local CPU code/source qualification. Exact BF16 storage casts plus FP32rounded independent logits do not establish full BF16 math, accelerator/performance/scientific acceptance or canonical replacement. No network, remote storage, accelerator, jobs, PR/CI/automation, commit or push."
+  },
+  "native-jax-import-lm-r1-source-freeze.json": {
+    "utc": "2026-10-25T01:06:17.633318+00:00",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-import-lm-support",
+    "base": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "base_status": "Parent supplied verified public PR28 source; no remote query by author",
+    "base_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "resulting_tree": "0868005a379bb252a5887b7ff27159ef1d50a318",
+    "patch": "native-jax-import-lm-r1-support.patch",
+    "patch_sha256": "81ead6e8f0c37991444e3b7fee7f6af5583568e969c186bc416469ac6bd4a7dd",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "a390ca09941cd5887d881e3ddbd4acb4ff0258c0498295d2fe93ce7c124cf72b",
+        "git_blob": "6c134b3b67d58965246999022d291a779cb14687"
+      },
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py": {
+        "sha256": "33382d12bc01608a08859299cf4a82aec23308aa48e29645ad29301be134784e",
+        "git_blob": "f98dc04c99c821849edbd86b69c6289be138b113"
+      },
+      "lib/levanter/tests/test_export_hf_to_lm.py": {
+        "sha256": "8de98ae92df739283f53cd67906a27c712ef1d7887dd0ab45e436be343d1ac7e",
+        "git_blob": "d8ad171cca7c494ab69f86f339542b6f339452c5"
+      }
+    },
+    "source_frozen": true,
+    "committed": false,
+    "published": false,
+    "scope": "Existing native HF importer binds actual source/tokenizer; validates effective architecture before model/weight/output; writes actual postresize/postcast native identity and full output vocab. Native checkpoint parameters cast after loading with existing JMP policy to honor saved target dtype; named constructor/load/save behavior preserved.",
+    "exact_reuse": [
+      "NativeLlamaLmConfig.hf_checkpoint_converter(actual_source,tokenizer=loaded_tokenizer)",
+      "existing type(config.model).from_hf_config and NativeLlamaLmConfig.validate_hf_config",
+      "existing HFCheckpointConverter.load_pretrained under existing Explicit local CPU mesh",
+      "existing JMP Policy.cast_to_param with already resolved jnp targetdtype, no new dtype string parser",
+      "actual NativeLlamaLmHeadModel.checkpoint_metadata and existing save_checkpoint(metadata=...)",
+      "existing write_llama_checkpoint source fixture and independent initialized named Llama oracle"
+    ],
+    "preserved": [
+      "named defaultmodel remains LlamaConfig",
+      "named converter construction remains original path",
+      "use_hf_model_config true/false",
+      "HF RepoRef revision and explicit tokenizer_revision",
+      "dtype=None behavior, original getattr(jnp,config.dtype) dtype surface",
+      "source full-vocab default, explicit resize and padded-tokenizer flags",
+      "model/bare/custom subpath behavior and async completion"
+    ],
+    "production_files_changed": [
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py"
+    ],
+    "tests": "R1 five public importer cases actual CPU1/4 running at freeze; root owns fresh maintained review of exact R1 test bytes. Prior66c9 CPU1/4 each4PASS1FAIL from host oracle mesh error are preserved; import/storage/restore succeeded before that oracle error.",
+    "ordinary": {
+      "log": "evidence/native-import-lm-and-perplexity-gap/ordinary-checks.txt",
+      "result": "all3OK noSKIP",
+      "exit_code": 0,
+      "local_formatter_IPC": "authorized require_escalated"
+    },
+    "historical_stages": {
+      "immutable_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+      "initial_cpu1": "4PASS1FAIL before target-storage fix: BF16 stored FP32, test expectation retained",
+      "initial_cpu1_log": "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json",
+      "inherited_storage_bug_proof": "evidence/native-import-lm-and-perplexity-gap/importer-saved-dtype-control.json",
+      "storage_fix_boundary": "Actual unchanged6f9 reproduces21FP32 arrays with BF16rounded values. Importer dtype promises target SAVED storage; root authorized native-only postload policycast. No global native FP32master/training policy change.",
+      "pre_storage_fix_candidate_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json"
+    },
+    "pending_root_owned": [
+      "fresh independent maintained review before commit",
+      "CPU8 independent qualification",
+      "broader affected tests",
+      "full catalog and publication"
+    ],
+    "limits": "Local CPU code/source qualification. Exact BF16 storage casts plus FP32rounded independent logits do not establish full BF16 math, accelerator/performance/scientific acceptance or canonical replacement. No network, remote storage, accelerator, jobs, PR/CI/automation, commit or push.",
+    "prior_freeze": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "prior_full_patch_sha256": "66c90e3e2089a7aade7a78dc2316b6a87c1b8af12c27e472821eb1ca2e235ea8",
+    "incremental_response_patch": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "incremental_response_patch_sha256": "9647052ece3c85a94bbd4eed9d2f416f81d4de13b3d1c1afaddb9872f08c8dd0",
+    "response_scope": "One test-oracle exactweight expectation converts Auto-mesh expected arrays to host np.asarray before dtype cast, avoiding explicit-context JAX cast. Original BF16dtype assertion, sourceexactweights, namedFP32roundedoracle, 1e-5tolerances unchanged.",
+    "runtime_and_guide_byte_identical_to_prior_freeze": true
+  },
+  "native-jax-import-lm-r1-response.patch": {
+    "raw_patch_utf8_exact": "diff --git a/lib/levanter/tests/test_export_hf_to_lm.py b/lib/levanter/tests/test_export_hf_to_lm.py\nindex b31c430b29de280bcd1305ea2a1d56ecc26d3d53..d8ad171cca7c494ab69f86f339542b6f339452c5 100644\n--- a/lib/levanter/tests/test_export_hf_to_lm.py\n+++ b/lib/levanter/tests/test_export_hf_to_lm.py\n@@ -211,7 +211,7 @@\n         assert actual_weights.keys() == expected_weights.keys()\n         for name, value in actual_weights.items():\n             assert value.dtype == storage_dtype\n-            np.testing.assert_array_equal(value, expected_weights[name].astype(storage_dtype))\n+            np.testing.assert_array_equal(value, np.asarray(expected_weights[name]).astype(storage_dtype))\n         restored_fp32 = jax.tree.map(\n             lambda value: value.astype(jnp.float32) if eqx.is_inexact_array(value) else value, restored\n         )\n",
+    "sha256": "9647052ece3c85a94bbd4eed9d2f416f81d4de13b3d1c1afaddb9872f08c8dd0",
+    "bytes": 840
+  },
+  "native-jax-import-lm-docs-r2-source-freeze.json": {
+    "utc": "2026-10-25T01:10:47.829871+00:00",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-import-lm-support",
+    "base": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "base_status": "Parent supplied verified public PR28 source; no remote query by author",
+    "base_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "resulting_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "patch": "evidence/native-import-lm-and-perplexity-gap/importer-final-public-source.patch",
+    "patch_sha256": "c1b0eb6223f3bb5680b8ac43fb4ec63cb839c5bd70188da19dc3a6bc63904b21",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "51a3108b5f0b37c81dd50b54dfb4b9c6e7f9c6d59ecdf04bb85bfef4249eaf96",
+        "git_blob": "98aba8cab26587f549064d93d37132014a6ce422"
+      },
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py": {
+        "sha256": "33382d12bc01608a08859299cf4a82aec23308aa48e29645ad29301be134784e",
+        "git_blob": "f98dc04c99c821849edbd86b69c6289be138b113"
+      },
+      "lib/levanter/tests/test_export_hf_to_lm.py": {
+        "sha256": "8de98ae92df739283f53cd67906a27c712ef1d7887dd0ab45e436be343d1ac7e",
+        "git_blob": "d8ad171cca7c494ab69f86f339542b6f339452c5"
+      }
+    },
+    "source_frozen": true,
+    "committed": false,
+    "published": false,
+    "scope": "Existing native HF importer binds actual source/tokenizer; validates effective architecture before model/weight/output; writes actual postresize/postcast native identity and full output vocab. Native checkpoint parameters cast after loading with existing JMP policy to honor saved target dtype; named constructor/load/save behavior preserved.",
+    "exact_reuse": [
+      "NativeLlamaLmConfig.hf_checkpoint_converter(actual_source,tokenizer=loaded_tokenizer)",
+      "existing type(config.model).from_hf_config and NativeLlamaLmConfig.validate_hf_config",
+      "existing HFCheckpointConverter.load_pretrained under existing Explicit local CPU mesh",
+      "existing JMP Policy.cast_to_param with already resolved jnp targetdtype, no new dtype string parser",
+      "actual NativeLlamaLmHeadModel.checkpoint_metadata and existing save_checkpoint(metadata=...)",
+      "existing write_llama_checkpoint source fixture and independent initialized named Llama oracle"
+    ],
+    "preserved": [
+      "named defaultmodel remains LlamaConfig",
+      "named converter construction remains original path",
+      "use_hf_model_config true/false",
+      "HF RepoRef revision and explicit tokenizer_revision",
+      "dtype=None behavior, original getattr(jnp,config.dtype) dtype surface",
+      "source full-vocab default, explicit resize and padded-tokenizer flags",
+      "model/bare/custom subpath behavior and async completion"
+    ],
+    "production_files_changed": [
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py"
+    ],
+    "tests": "No runtime tests repeated for docs-only response. Identical R1runtime/testbytes passed all5publiccases onactualCPU1/4, zero failures/skips; receipts ...-r1-validation.json and ...-r1-cpu{1,4}.{log,xml}.",
+    "ordinary": {
+      "log": "evidence/native-import-lm-and-perplexity-gap/ordinary-checks.txt",
+      "result": "all3OK noSKIP",
+      "exit_code": 0,
+      "local_formatter_IPC": "authorized require_escalated"
+    },
+    "historical_stages": {
+      "immutable_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+      "initial_cpu1": "4PASS1FAIL before target-storage fix: BF16 stored FP32, test expectation retained",
+      "initial_cpu1_log": "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json",
+      "inherited_storage_bug_proof": "evidence/native-import-lm-and-perplexity-gap/importer-saved-dtype-control.json",
+      "storage_fix_boundary": "Actual unchanged6f9 reproduces21FP32 arrays with BF16rounded values. Importer dtype promises target SAVED storage; root authorized native-only postload policycast. No global native FP32master/training policy change.",
+      "pre_storage_fix_candidate_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json"
+    },
+    "pending_root_owned": [
+      "fresh independent maintained/factual review of exact finalsource/docs beforecommit",
+      "independent CPU8",
+      "broader affected tests",
+      "full catalog",
+      "publication/archive"
+    ],
+    "limits": "Local CPU code/source qualification. Exact BF16 storage casts plus FP32rounded independent logits do not establish full BF16 math, accelerator/performance/scientific acceptance or canonical replacement. No network, remote storage, accelerator, jobs, PR/CI/automation, commit or push.",
+    "prior_freeze": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "prior_full_patch_sha256": "81ead6e8f0c37991444e3b7fee7f6af5583568e969c186bc416469ac6bd4a7dd",
+    "incremental_response_patch": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "incremental_response_patch_sha256": "bfb630de7934d8a65e30e6e98afac7b5cef424f628ce8c385bb5bdbca2ebe07e",
+    "response_scope": "Only the new importer guide paragraph: default tokenizer source and explicit tokenizer_revision; internal model subtree vs output checkpoint path; retain sourceconfig/tokenizer or matching explicitnativeconfig because metadata validates ratherthanconstructsconfig.",
+    "runtime_and_guide_byte_identical_to_prior_freeze": true,
+    "runtime_and_tests_byte_identical_to_r1": true,
+    "cold_read": {
+      "first_findings": "evidence/native-import-lm-and-perplexity-gap/importer-reviews-and-prose.json",
+      "finished_excerpt": "native-jax-import-lm-guide-r2-excerpt.md",
+      "response": "evidence/native-import-lm-and-perplexity-gap/importer-reviews-and-prose.json",
+      "result": "All3 priorclarityissues resolved; no remaining concrete issues"
+    },
+    "previous_test_response": "Historical66c9->R1 hostoracle np.asarray correction retained in originalR1freeze and logs; unchanged bydocsresponse."
+  },
+  "native-jax-import-lm-docs-r2-source-freeze-v2.json": {
+    "utc": "2026-10-25T01:10:47.829871+00:00",
+    "checkout": "<local-checkout>",
+    "branch": "codex/native-jax-import-lm-support",
+    "base": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "base_status": "Parent supplied verified public PR28 source; no remote query by author",
+    "base_tree": "6254729c84fc9bbbde7c988d4f1e9eacc170dc4c",
+    "resulting_tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "patch": "evidence/native-import-lm-and-perplexity-gap/importer-final-public-source.patch",
+    "patch_sha256": "c1b0eb6223f3bb5680b8ac43fb4ec63cb839c5bd70188da19dc3a6bc63904b21",
+    "files": {
+      "lib/levanter/docs/Training-On-Your-Data.md": {
+        "sha256": "51a3108b5f0b37c81dd50b54dfb4b9c6e7f9c6d59ecdf04bb85bfef4249eaf96",
+        "git_blob": "98aba8cab26587f549064d93d37132014a6ce422"
+      },
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py": {
+        "sha256": "33382d12bc01608a08859299cf4a82aec23308aa48e29645ad29301be134784e",
+        "git_blob": "f98dc04c99c821849edbd86b69c6289be138b113"
+      },
+      "lib/levanter/tests/test_export_hf_to_lm.py": {
+        "sha256": "8de98ae92df739283f53cd67906a27c712ef1d7887dd0ab45e436be343d1ac7e",
+        "git_blob": "d8ad171cca7c494ab69f86f339542b6f339452c5"
+      }
+    },
+    "source_frozen": true,
+    "committed": false,
+    "published": false,
+    "scope": "Existing native HF importer binds actual source/tokenizer; validates effective architecture before model/weight/output; writes actual postresize/postcast native identity and full output vocab. Native checkpoint parameters cast after loading with existing JMP policy to honor saved target dtype; named constructor/load/save behavior preserved.",
+    "exact_reuse": [
+      "NativeLlamaLmConfig.hf_checkpoint_converter(actual_source,tokenizer=loaded_tokenizer)",
+      "existing type(config.model).from_hf_config and NativeLlamaLmConfig.validate_hf_config",
+      "existing HFCheckpointConverter.load_pretrained under existing Explicit local CPU mesh",
+      "existing JMP Policy.cast_to_param with already resolved jnp targetdtype, no new dtype string parser",
+      "actual NativeLlamaLmHeadModel.checkpoint_metadata and existing save_checkpoint(metadata=...)",
+      "existing write_llama_checkpoint source fixture and independent initialized named Llama oracle"
+    ],
+    "preserved": [
+      "named defaultmodel remains LlamaConfig",
+      "named converter construction remains original path",
+      "use_hf_model_config true/false",
+      "HF RepoRef revision and explicit tokenizer_revision",
+      "dtype=None behavior, original getattr(jnp,config.dtype) dtype surface",
+      "source full-vocab default, explicit resize and padded-tokenizer flags",
+      "model/bare/custom subpath behavior and async completion"
+    ],
+    "production_files_changed": [
+      "lib/levanter/src/levanter/main/export_hf_to_lm.py"
+    ],
+    "tests": "No runtime tests repeated for docs-only response. Identical R1runtime/testbytes passed all5publiccases onactualCPU1/4, zero failures/skips; receipts ...-r1-validation.json and ...-r1-cpu{1,4}.{log,xml}.",
+    "ordinary": {
+      "log": "evidence/native-import-lm-and-perplexity-gap/ordinary-checks.txt",
+      "result": "all3OK noSKIP",
+      "exit_code": 0,
+      "local_formatter_IPC": "authorized require_escalated"
+    },
+    "historical_stages": {
+      "immutable_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json",
+      "initial_cpu1": "4PASS1FAIL before target-storage fix: BF16 stored FP32, test expectation retained",
+      "initial_cpu1_log": "evidence/native-import-lm-and-perplexity-gap/importer-failed-phases-and-r1-validation.json",
+      "inherited_storage_bug_proof": "evidence/native-import-lm-and-perplexity-gap/importer-saved-dtype-control.json",
+      "storage_fix_boundary": "Actual unchanged6f9 reproduces21FP32 arrays with BF16rounded values. Importer dtype promises target SAVED storage; root authorized native-only postload policycast. No global native FP32master/training policy change.",
+      "pre_storage_fix_candidate_controls": "evidence/native-import-lm-and-perplexity-gap/importer-public-controls.json"
+    },
+    "pending_root_owned": [
+      "fresh independent maintained/factual review of exact finalsource/docs beforecommit",
+      "independent CPU8",
+      "broader affected tests",
+      "full catalog",
+      "publication/archive"
+    ],
+    "limits": "Local CPU code/source qualification. Exact BF16 storage casts plus FP32rounded independent logits do not establish full BF16 math, accelerator/performance/scientific acceptance or canonical replacement. No network, remote storage, accelerator, jobs, PR/CI/automation, commit or push.",
+    "prior_freeze": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "prior_full_patch_sha256": "81ead6e8f0c37991444e3b7fee7f6af5583568e969c186bc416469ac6bd4a7dd",
+    "incremental_response_patch": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json",
+    "incremental_response_patch_sha256": "bfb630de7934d8a65e30e6e98afac7b5cef424f628ce8c385bb5bdbca2ebe07e",
+    "response_scope": "Only the new importer guide paragraph: default tokenizer source and explicit tokenizer_revision; internal model subtree vs output checkpoint path; retain sourceconfig/tokenizer or matching explicitnativeconfig because metadata validates ratherthanconstructsconfig.",
+    "runtime_and_tests_byte_identical_to_r1": true,
+    "cold_read": {
+      "first_findings": "evidence/native-import-lm-and-perplexity-gap/importer-reviews-and-prose.json",
+      "finished_excerpt": "native-jax-import-lm-guide-r2-excerpt.md",
+      "response": "evidence/native-import-lm-and-perplexity-gap/importer-reviews-and-prose.json",
+      "result": "All3 priorclarityissues resolved; no remaining concrete issues"
+    },
+    "previous_test_response": "Historical66c9->R1 hostoracle np.asarray correction retained in originalR1freeze and logs; unchanged bydocsresponse.",
+    "metadata_record_revision": "v2 removes inherited R1 runtime_and_guide equality field: R2 changes guide; only runtime/tests are identical. Source patch, tree and all file hashes unchanged.",
+    "superseded_metadata_record": "evidence/native-import-lm-and-perplexity-gap/importer-source-phases.json"
+  },
+  "native-jax-import-lm-docs-r2-response.patch": {
+    "raw_patch_utf8_exact": "diff --git a/lib/levanter/docs/Training-On-Your-Data.md b/lib/levanter/docs/Training-On-Your-Data.md\nindex 6c134b3b67d58965246999022d291a779cb14687..98aba8cab26587f549064d93d37132014a6ce422 100644\n--- a/lib/levanter/docs/Training-On-Your-Data.md\n+++ b/lib/levanter/docs/Training-On-Your-Data.md\n@@ -306,14 +306,20 @@\n \n Native import derives the architecture from the requested HF source in this mode. With\n `use_hf_model_config: false`, the supplied native architecture must match the source, including\n-activation and RoPE. The importer uses an explicit local CPU mesh and records the resulting model's\n-vocabulary and semantic architecture for later restore without the original HF source. Restore still\n-requires a matching native configuration and tokenizer.\n-`dtype` controls the stored weights. The complete source vocabulary is preserved by default;\n-`resize_vocab_to_match_tokenizer: true` instead records the resized vocabulary.\n-Set `emit_padded_tokenizer: true` to also save a tokenizer padded to the source vocabulary.\n-An explicit `tokenizer` and optional `tokenizer_revision` select the tokenizer independently of\n-`model.reference_checkpoint`.\n+activation and RoPE. The importer uses an explicit local CPU mesh. `dtype` controls the stored weights.\n+The complete source vocabulary is preserved by default; `resize_vocab_to_match_tokenizer: true`\n+instead saves the resized vocabulary. Set `emit_padded_tokenizer: true` to also save a tokenizer padded\n+to the source vocabulary.\n+\n+If `tokenizer` is omitted, the tokenizer is loaded from the `hf_checkpoint` path. Set `tokenizer` to\n+select a different tokenizer path and `tokenizer_revision` to pin the tokenizer revision.\n+`subpath: model` stores an internal `model` subtree in the checkpoint at `output_path`, matching the\n+shared model loaders. Pass `output_path` as the checkpoint directory when restoring.\n+\n+For later restore, retain the source `config.json` and tokenizer, or a matching explicit native\n+configuration and tokenizer. Use `NativeLlamaLmConfig.from_hf_config` to derive the native architecture\n+from the saved HF config. The checkpoint metadata records the resulting vocabulary and semantic\n+identity to validate the supplied configuration; it does not construct that configuration.\n \n ### LoRA adapters\n \n",
+    "sha256": "bfb630de7934d8a65e30e6e98afac7b5cef424f628ce8c385bb5bdbca2ebe07e",
+    "bytes": 2293
+  },
+  "native-jax-import-lm-root-commit-proof.json": {
+    "utc": "2026-10-25T01:15:14.224463+00:00",
+    "head": "06941a509aabad0830c32ce1689daecaccfe3cdb",
+    "parent": "6f9a8fa8b9467a0e01e88590aea0af419fcb3c57",
+    "tree": "63f2fd7a1299b48c0faceaad6de348e0e4b702c7",
+    "clean": true,
+    "exact_reviewed_message": true,
+    "message_sha256": "782446d5484bcb4194273ebc2e4cf899cf4f3addcb24dd222f4cd3bc3d228996",
+    "full_patch_sha256": "c1b0eb6223f3bb5680b8ac43fb4ec63cb839c5bd70188da19dc3a6bc63904b21",
+    "qualification": "evidence/native-import-lm-and-perplexity-gap/importer-release-and-publication.json",
+    "fresh_R1_and_docs_R2_reviews_zero": true,
+    "ordinary_all3_exit": 0,
+    "CPU_focused5_each": [
+      1,
+      4,
+      8
+    ],
+    "safe_selected29_pass": true,
+    "published": false,
+    "catalog": "next required full six-lane catalog before publication",
+    "canonical_main": "2cae063c877172844fe6ff90e94354cc08a273fa",
+    "merge_base": "86fc7b67c921ad4ac124835ca7379b04ffa1be25"
+  },
+  "_archive_note": "Original chronological statuses retained, including stale-v1 metadata corrected explicitly by v2. Later publication does not rewrite historical pending/unpublished flags. Original/output hashes/bytes/transforms are in manifest; CPU/static scope only."
+}
