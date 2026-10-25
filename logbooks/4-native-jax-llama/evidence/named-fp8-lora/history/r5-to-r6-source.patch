@@ -1,0 +1,19 @@
+--- r5/train_lm.py
++++ r6/train_lm.py
+@@ -14,7 +14,6 @@
+ import jax.random as jrandom
+ from haliax import Axis
+ from haliax.partitioning import named_jit, round_axis_for_partitioning
+-from haliax.quantization import quantize_linear_layers
+ from jax.sharding import PartitionSpec as P
+ 
+ import levanter
+@@ -25,7 +24,7 @@
+ import levanter.eval
+ import levanter.eval_harness
+ from levanter import callbacks
+-from levanter.quantization import cast_model_preserving_quantization_state
++from levanter.quantization import cast_model_preserving_quantization_state, quantize_linear_layers
+ from levanter.callbacks._iris_status import iris_status_reporter
+ from levanter.callbacks.labeled_eval import LabeledLmEvalConfig, add_labeled_lm_eval_callbacks
+ from levanter.adaptor import AdaptorConfig, AdaptorExportConfig, LoraAdaptorConfig, NoAdaptorConfig

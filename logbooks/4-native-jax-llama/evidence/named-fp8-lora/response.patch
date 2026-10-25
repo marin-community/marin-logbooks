@@ -1,0 +1,198 @@
+diff --git a/lib/levanter/scripts/bench/bench_llama_native.py b/lib/levanter/scripts/bench/bench_llama_native.py
+index f4f6888a25..e45b4114ae 100644
+--- a/lib/levanter/scripts/bench/bench_llama_native.py
++++ b/lib/levanter/scripts/bench/bench_llama_native.py
+@@ -49,6 +49,10 @@ from levanter.utils.mesh import MeshConfig
+ 
+ 
+ LAYER_NORM_EPSILON = 1e-5
++UPDATES = "updates"
++PARAMETERS_AFTER_ONE_STEP = "parameters_after_one_step"
++EXECUTION_PARAMETERS_AFTER_ONE_STEP = "execution_parameters_after_one_step"
++MEASURED_STEP_LOSSES = "measured_step_losses"
+ 
+ 
+ @dataclasses.dataclass(frozen=True)
+@@ -257,9 +261,9 @@ def numerical_acceptance(parity: dict, config: BenchmarkConfig) -> dict:
+     for label, comparison in parity.items():
+         relative_l2_limit = None
+         if config.compute_dtype == "float32":
+-            if label in ("updates", "parameters_after_one_step", "execution_parameters_after_one_step"):
++            if label in (UPDATES, PARAMETERS_AFTER_ONE_STEP, EXECUTION_PARAMETERS_AFTER_ONE_STEP):
+                 relative_l2_limit = config.update_parameter_relative_l2
+-            elif label == "measured_step_losses":
++            elif label == MEASURED_STEP_LOSSES:
+                 relative_l2_limit = config.loss_trajectory_relative_l2
+         acceptance[label] = {
+             "metric": "elementwise" if relative_l2_limit is None else "relative_l2",
+@@ -430,8 +434,8 @@ def _run_variant(
+     diagnostic_data = {
+         "loss": {"loss": diagnostic.loss},
+         "gradients": _canonical_parameters(gradients),
+-        "updates": _canonical_parameters(updates),
+-        "parameters_after_one_step": _canonical_parameters(diagnostic.new_state.model),
++        UPDATES: _canonical_parameters(updates),
++        PARAMETERS_AFTER_ONE_STEP: _canonical_parameters(diagnostic.new_state.model),
+         "adam_mu": _canonical_parameters(diagnostic.new_state.opt_state[0].mu),
+         "adam_nu": _canonical_parameters(diagnostic.new_state.opt_state[0].nu),
+         "adam_count": {"count": diagnostic.new_state.opt_state[0].count},
+@@ -443,8 +447,8 @@ def _run_variant(
+         "gradients": _array_manifest(diagnostic_data["gradients"]),
+         "gradients_raw": _tree_manifest(gradients),
+         "updates_raw": _tree_manifest(updates),
+-        "updates": _array_manifest(diagnostic_data["updates"]),
+-        "parameters_after_one_step": _array_manifest(diagnostic_data["parameters_after_one_step"]),
++        UPDATES: _array_manifest(diagnostic_data[UPDATES]),
++        PARAMETERS_AFTER_ONE_STEP: _array_manifest(diagnostic_data[PARAMETERS_AFTER_ONE_STEP]),
+         "adam_mu": _array_manifest(diagnostic_data["adam_mu"]),
+         "adam_nu": _array_manifest(diagnostic_data["adam_nu"]),
+         "adam_count": _array_manifest(diagnostic_data["adam_count"]),
+@@ -474,7 +478,7 @@ def _run_variant(
+     state = result.new_state
+     del result
+     execution_data = {
+-        "execution_parameters_after_one_step": _canonical_parameters(state.model),
++        EXECUTION_PARAMETERS_AFTER_ONE_STEP: _canonical_parameters(state.model),
+         "execution_adam_mu": _canonical_parameters(state.opt_state[0].mu),
+         "execution_adam_nu": _canonical_parameters(state.opt_state[0].nu),
+         "execution_adam_count": {"count": state.opt_state[0].count},
+@@ -501,7 +505,7 @@ def _run_variant(
+     # Retain only device scalars during timing; transfer the trajectory after
+     # every measured step has finished.
+     measured_step_losses = [float(loss) for loss in measured_losses]
+-    diagnostics["measured_step_losses"] = {"losses": np.asarray(measured_step_losses, dtype=np.float32)}
++    diagnostics[MEASURED_STEP_LOSSES] = {"losses": np.asarray(measured_step_losses, dtype=np.float32)}
+     final_step = int(state.step)
+     profile_path = None
+     if config.profile_steps:
+@@ -523,7 +527,7 @@ def _run_variant(
+         "first_execution_seconds": first_execution_seconds,
+         "compiled_memory_analysis": memory,
+         "timing": _timing_summary(samples, config.batch_size * config.seq_len),
+-        "measured_step_losses": measured_step_losses,
++        MEASURED_STEP_LOSSES: measured_step_losses,
+         "final_loss": measured_step_losses[-1],
+         "final_step": final_step,
+         "profile": {"path": str(profile_path), "steps": config.profile_steps} if profile_path is not None else None,
+@@ -693,12 +697,12 @@ def run_benchmark(
+         for label in (
+             "parameters",
+             "gradients",
+-            "updates",
+-            "parameters_after_one_step",
++            UPDATES,
++            PARAMETERS_AFTER_ONE_STEP,
+             "adam_mu",
+             "adam_nu",
+             "adam_count",
+-            "execution_parameters_after_one_step",
++            EXECUTION_PARAMETERS_AFTER_ONE_STEP,
+             "execution_adam_mu",
+             "execution_adam_nu",
+             "execution_adam_count",
+diff --git a/lib/levanter/src/levanter/analysis/tree_stats.py b/lib/levanter/src/levanter/analysis/tree_stats.py
+index 8378d64c11..9658db1fef 100644
+--- a/lib/levanter/src/levanter/analysis/tree_stats.py
++++ b/lib/levanter/src/levanter/analysis/tree_stats.py
+@@ -10,25 +10,13 @@ import haliax.nn
+ from haliax import NamedArray, is_named_array
+ from haliax.jax_utils import is_jax_array_like
+ 
+-from levanter.layers.stacked import ArrayStacked
++from levanter.layers.stacked import ArrayStacked, layer_in_axes
+ from levanter.tracker.histogram import SummaryStats
+ from levanter.utils import jax_utils
+ 
+ _SplitScanContainer = (haliax.nn.Stacked, ArrayStacked)
+ 
+ 
+-def _array_stacked_layer_in_axes(stacked: Any, num_layers: int) -> Any:
+-    """`jax.vmap` in_axes tree that maps over the leading layer axis of layer-batched leaves.
+-
+-    ``ArrayStacked`` stores per-layer arrays with a leading ``num_layers`` axis and shares any
+-    other leaf across layers, so mapped leaves get axis 0 and shared leaves get ``None``.
+-    """
+-    return jax.tree.map(
+-        lambda x: 0 if (is_jax_array_like(x) and getattr(x, "ndim", 0) > 0 and x.shape[0] == num_layers) else None,
+-        stacked,
+-    )
+-
+-
+ def _stacked_leaves(stacked: Any) -> list[tuple[str, Any]]:
+     """(key path, leaf) for each array leaf of a scan module's stacked body.
+ 
+@@ -103,7 +91,7 @@ def summary_statistics_for_tree(
+ 
+             elif split_scan_layers and isinstance(g, ArrayStacked):
+                 num_layers = g.num_layers
+-                in_axes = _array_stacked_layer_in_axes(g.stacked, num_layers)
++                in_axes = layer_in_axes(g.stacked, num_layers, is_array_like=is_jax_array_like)
+                 vmapped_norms, vmapped_hists = jax.vmap(_rec_log_magnitudes, in_axes=(None, None, None, in_axes))(
+                     {}, {}, "", g.stacked
+                 )
+diff --git a/lib/levanter/src/levanter/layers/stacked.py b/lib/levanter/src/levanter/layers/stacked.py
+index 9cbc0cda60..a2b161a128 100644
+--- a/lib/levanter/src/levanter/layers/stacked.py
++++ b/lib/levanter/src/levanter/layers/stacked.py
+@@ -57,8 +57,8 @@ def _normalize_unroll(unroll: int | bool | None, num_layers: int) -> int | bool:
+     return resolved
+ 
+ 
+-def _is_layer_batched_leaf(x: Any, num_layers: int) -> bool:
+-    return _is_array_like(x) and x.ndim > 0 and x.shape[0] == num_layers
++def _is_layer_batched_leaf(x: Any, num_layers: int, *, is_array_like: Callable[[Any], bool] = _is_array_like) -> bool:
++    return is_array_like(x) and getattr(x, "ndim", 0) > 0 and x.shape[0] == num_layers
+ 
+ 
+ def _slice_layer(x: Any, index: int, num_layers: int) -> Any:
+@@ -251,7 +251,7 @@ class ArrayStacked(eqx.Module, Generic[M]):
+ 
+             return jax.vmap(
+                 mapped,
+-                in_axes=(_layer_in_axes(self.stacked, self.num_layers), args_axes, kwargs_axes),
++                in_axes=(layer_in_axes(self.stacked, self.num_layers), args_axes, kwargs_axes),
+                 out_axes=out_axes,
+             )(self.stacked, args, kwargs)
+ 
+@@ -333,9 +333,10 @@ def _slice_with_axis(x: Any, axis: AxisSpec, layer_index: int, num_layers: int,
+     return jnp.take(x, layer_index, axis=resolved_axis)
+ 
+ 
+-def _layer_in_axes(tree: Any, num_layers: int) -> Any:
++def layer_in_axes(tree: Any, num_layers: int, *, is_array_like: Callable[[Any], bool] = _is_array_like) -> Any:
++    """Map leading layer axes to zero, retaining the caller's array-leaf policy."""
+     return jax.tree.map(
+-        lambda leaf: 0 if _is_layer_batched_leaf(leaf, num_layers) else None,
++        lambda leaf: 0 if _is_layer_batched_leaf(leaf, num_layers, is_array_like=is_array_like) else None,
+         tree,
+     )
+ 
+diff --git a/lib/levanter/src/levanter/utils/tree_utils.py b/lib/levanter/src/levanter/utils/tree_utils.py
+index 36fe474974..9f2e0c59d7 100644
+--- a/lib/levanter/src/levanter/utils/tree_utils.py
++++ b/lib/levanter/src/levanter/utils/tree_utils.py
+@@ -13,7 +13,7 @@ from enum import Enum
+ 
+ import haliax as hax
+ 
+-from levanter.layers.stacked import ArrayStacked
++from levanter.layers.stacked import ArrayStacked, layer_in_axes
+ 
+ 
+ def scan_aware_tree_map(fn, tree, *rest, is_leaf: Callable[[Any], bool] | None = None):
+@@ -32,14 +32,7 @@ def scan_aware_tree_map(fn, tree, *rest, is_leaf: Callable[[Any], bool] | None =
+         if isinstance(node, ArrayStacked):
+             bodies = (node.stacked, *[other.stacked for other in others])
+             in_axes = tuple(
+-                jax.tree.map(
+-                    lambda leaf: (
+-                        0
+-                        if isinstance(leaf, jax.Array) and leaf.ndim > 0 and leaf.shape[0] == node.num_layers
+-                        else None
+-                    ),
+-                    body,
+-                )
++                layer_in_axes(body, node.num_layers, is_array_like=lambda leaf: isinstance(leaf, jax.Array))
+                 for body in bodies
+             )
+             inner = jax.vmap(mapped_fn, in_axes=in_axes)(*bodies)
