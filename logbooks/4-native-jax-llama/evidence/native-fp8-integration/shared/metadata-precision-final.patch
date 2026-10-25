@@ -1,0 +1,488 @@
+diff --git a/lib/levanter/src/levanter/dpo.py b/lib/levanter/src/levanter/dpo.py
+index b2d020af5d..6c2b61804d 100644
+--- a/lib/levanter/src/levanter/dpo.py
++++ b/lib/levanter/src/levanter/dpo.py
+@@ -19,6 +19,7 @@ from haliax.partitioning import ResourceMapping, named_jit
+ 
+ from rigging.filesystem.storage_path import StoragePath, prefix_join
+ 
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.data.dataset import AsyncDataset
+ from levanter.data.loader import DataLoader
+ from levanter.data.text.preference import DpoExample
+@@ -276,7 +277,7 @@ def build_reference_eval_cache(
+ 
+     @named_jit(axis_resources=compute_axis_mapping)
+     def ref_logprobs_fn(ref_model, batch: DpoExample):
+-        ref_model = mp.cast_to_compute(ref_model)
++        ref_model = cast_model_preserving_quantization_state(ref_model, mp.cast_to_compute)
+         ref_model = inference_mode(ref_model, True)
+         return (
+             jax.lax.stop_gradient(logp_sum(ref_model, batch.chosen, key=None)),
+diff --git a/lib/levanter/src/levanter/eval.py b/lib/levanter/src/levanter/eval.py
+index 7e757db5c2..aad0b22f68 100644
+--- a/lib/levanter/src/levanter/eval.py
++++ b/lib/levanter/src/levanter/eval.py
+@@ -25,6 +25,7 @@ import haliax as hax
+ from haliax.partitioning import ResourceMapping
+ 
+ import levanter.tracker
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.callbacks import ProgressEvent, StepInfo, progress_event_scope
+ from levanter.data.dataset import AsyncDataset
+ from levanter.data.loader import DataLoader
+@@ -232,7 +233,7 @@ def _default_lm_eval_loss_fn(
+     model = inference_mode(model, True)
+     named_batch = _ensure_named_lm_example(batch, EvalBatch=EvalBatch, model_pos=model.Pos)
+     if mp is not None:
+-        model = mp.cast_to_compute(model)
++        model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+     per_pos_loss = model.compute_next_token_loss(named_batch, reduction=None, reduction_axis=()).array
+     per_pos_weight = named_batch.loss_weight.array
+     per_pos_token_id = jnp.roll(named_batch.tokens.array, -1, axis=-1)
+@@ -272,7 +273,7 @@ def _default_labeled_lm_eval_loss_fn(
+         pos_axis_name=model.Pos.name,
+     )
+     if mp is not None:
+-        model = mp.cast_to_compute(model)
++        model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+     per_pos_loss = model.compute_next_token_loss(named_batch, reduction=None, reduction_axis=()).array
+     per_pos_token_id = jnp.roll(named_batch.tokens.array, -1, axis=-1)
+     return per_pos_loss, loss_labels.array, per_pos_token_id
+diff --git a/lib/levanter/src/levanter/eval_harness.py b/lib/levanter/src/levanter/eval_harness.py
+index fa476906fb..b6f15c8f3b 100644
+--- a/lib/levanter/src/levanter/eval_harness.py
++++ b/lib/levanter/src/levanter/eval_harness.py
+@@ -43,6 +43,7 @@ from haliax import NamedArray
+ from jax.sharding import PartitionSpec
+ 
+ import levanter.tracker
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.compat.hf_checkpoints import load_tokenizer
+ from levanter.data.packing import (
+     PromptCompletion,
+@@ -278,7 +279,7 @@ class _LmEvalHarnessWorker:
+             """
+ 
+             if self.mp is not None:
+-                model = self.mp.cast_to_compute(model)
++                model = cast_model_preserving_quantization_state(model, self.mp.cast_to_compute)
+ 
+             activations, _ = split_activations(
+                 model.activations(packed_example.tokens, attn_mask=packed_example.attn_mask)
+diff --git a/lib/levanter/src/levanter/main/eval_lm.py b/lib/levanter/src/levanter/main/eval_lm.py
+index b499ca5962..cf15c237c5 100644
+--- a/lib/levanter/src/levanter/main/eval_lm.py
++++ b/lib/levanter/src/levanter/main/eval_lm.py
+@@ -18,6 +18,7 @@ import levanter
+ import levanter.analysis
+ import levanter.config
+ import levanter.tracker
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.compat.hf_checkpoints import RepoRef
+ from levanter.data.loader import DataLoader
+ from levanter.data.text.datasets import LmDataConfig
+@@ -103,7 +104,7 @@ def main(config: EvalLmConfig):
+ 
+         def eval_loss_fn(model: LmHeadModel, batch: LmExample) -> LossFnOutput:
+             model = inference_mode(model, True)
+-            model = mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+             per_pos_loss = model.compute_next_token_loss(batch, reduction=None, reduction_axis=()).array
+             per_pos_weight = batch.loss_weight.array
+             per_pos_token_id = jnp.roll(batch.tokens.array, -1, axis=-1)
+@@ -122,12 +123,12 @@ def main(config: EvalLmConfig):
+         @hax.named_jit(axis_resources=compute_axis_mapping)
+         def compute_loss(model: LmHeadModel, example: LmExample):
+             model = inference_mode(model, True)
+-            model = mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+             return model.compute_next_token_loss(example, key=None)
+ 
+         @hax.named_jit(axis_resources=compute_axis_mapping)
+         def compute_logits(model: LmHeadModel, example: LmExample):
+-            model = mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+             activations, _ = split_activations(
+                 model.activations(example.tokens, key=None, attn_mask=example.attn_mask)
+             )
+diff --git a/lib/levanter/src/levanter/main/inference_repl.py b/lib/levanter/src/levanter/main/inference_repl.py
+index 74e5aecfe4..56fb7455ca 100644
+--- a/lib/levanter/src/levanter/main/inference_repl.py
++++ b/lib/levanter/src/levanter/main/inference_repl.py
+@@ -38,6 +38,7 @@ from rich.panel import Panel
+ 
+ import levanter
+ import levanter.config
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.checkpoint import latest_checkpoint_path, load_checkpoint
+ from levanter.compat.hf_checkpoints import HFCheckpointConverter, load_tokenizer
+ from levanter.tokenizers import MarinTokenizer
+@@ -95,7 +96,7 @@ def _load_model(
+                 subpath="model",
+                 axis_mapping=trainer_config.parameter_axis_mapping,
+             )
+-            model = mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+             return model, None
+         else:
+             assert hf_checkpoint
+diff --git a/lib/levanter/src/levanter/main/perplexity_gap.py b/lib/levanter/src/levanter/main/perplexity_gap.py
+index 02e8253091..95b7f28eba 100644
+--- a/lib/levanter/src/levanter/main/perplexity_gap.py
++++ b/lib/levanter/src/levanter/main/perplexity_gap.py
+@@ -20,6 +20,7 @@ from haliax.partitioning import round_axis_for_partitioning
+ import levanter
+ import levanter.config
+ import levanter.tracker
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.analysis.model_perplexity import (
+     ModelScoreReportBuilder,
+     ScoredDocument,
+@@ -387,7 +388,7 @@ def _load_model_runner(
+     @hax.named_jit(axis_resources=compute_axis_mapping)
+     def compute_losses(model: LmHeadModel, batch: GrugLmExample):
+         model = inference_mode(model, True)
+-        model = mp.cast_to_compute(model)
++        model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+         named_batch = named_lm_example_from_grug(batch, Pos=Pos, batch_axis=EvalBatch)
+         return model.compute_next_token_loss(named_batch, reduction=None, reduction_axis=()).array
+ 
+diff --git a/lib/levanter/src/levanter/main/sample_lm.py b/lib/levanter/src/levanter/main/sample_lm.py
+index d7a007a0ab..3a69f9329d 100644
+--- a/lib/levanter/src/levanter/main/sample_lm.py
++++ b/lib/levanter/src/levanter/main/sample_lm.py
+@@ -15,6 +15,7 @@ from haliax.partitioning import round_axis_for_partitioning
+ import levanter
+ import levanter.config
+ import levanter.tracker
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.callbacks import profile_ctx
+ from levanter.compat.hf_checkpoints import RepoRef, load_tokenizer
+ from levanter.inference.engine import GenerationResult, InferenceEngine, InferenceEngineConfig, Request
+@@ -89,7 +90,7 @@ def _load_model(config: SampleLmConfig, Vocab: Axis, *, tokenizer, key) -> LmHea
+         compute_axis_mapping=config.trainer.compute_axis_mapping,
+         batch_axis_name=config.trainer.batch_axis_name,
+         compute_dtype=config.trainer.mp.compute_dtype,
+-        cast_to_param=config.trainer.mp.cast_to_compute,
++        cast_to_param=lambda model: cast_model_preserving_quantization_state(model, config.trainer.mp.cast_to_compute),
+         hf_ref=hf_ref,
+         checkpoint_path=config.checkpoint_path,
+     )
+diff --git a/lib/levanter/src/levanter/main/train_asr.py b/lib/levanter/src/levanter/main/train_asr.py
+index 87e314055b..494dd4c65b 100644
+--- a/lib/levanter/src/levanter/main/train_asr.py
++++ b/lib/levanter/src/levanter/main/train_asr.py
+@@ -18,6 +18,7 @@ import levanter
+ import levanter.config
+ import levanter.tracker
+ from levanter import callbacks
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.callbacks._iris_status import iris_status_reporter
+ from levanter.compat.hf_checkpoints import HFCompatConfig, ModelWithHfSerializationMixin, save_hf_checkpoint_callback
+ from levanter.data.audio import AudioIODatasetConfig, AudioMixtureDatasetConfig, AudioTextDataset
+@@ -200,7 +201,7 @@ def main(config: TrainASRConfig):
+             out_axis_resources=compute_axis_mapping,
+         )
+         def compute_log_probs(model, example):
+-            model = trainer.mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, trainer.mp.cast_to_compute)
+             logprobs = model.compute_loss(example, key=None, reduction=None)
+             # roll forward to get the loss for each predicted token
+             logprobs = hax.roll(logprobs, 1, Pos)
+diff --git a/lib/levanter/src/levanter/main/train_dpo.py b/lib/levanter/src/levanter/main/train_dpo.py
+index 28c8346a92..14a642a19a 100644
+--- a/lib/levanter/src/levanter/main/train_dpo.py
++++ b/lib/levanter/src/levanter/main/train_dpo.py
+@@ -23,6 +23,7 @@ import levanter.tracker
+ import levanter.callbacks
+ import levanter.eval
+ from levanter import callbacks
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.callbacks._iris_status import iris_status_reporter
+ from levanter.adaptor import (
+     AdaptorConfig,
+@@ -443,7 +444,10 @@ def _load_separate_reference_model(
+         checkpoint_path=None if config.reference.is_hf else config.reference.model_path,
+     )
+     reference_model = inference_mode(reference_model, True)
+-    return named_jit(trainer.mp.cast_to_compute, parameter_axis_mapping)(reference_model)
++    return named_jit(
++        lambda model: cast_model_preserving_quantization_state(model, trainer.mp.cast_to_compute),
++        parameter_axis_mapping,
++    )(reference_model)
+ 
+ 
+ def _reference_eval_cache_identity(config: TrainDpoConfig) -> dict[str, Any]:
+@@ -897,7 +901,7 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+ 
+                 def lm_eval_loss(model: DpoModel | LmHeadModel, batch: LmExample) -> levanter.eval.LossFnOutput:
+                     policy_model = inference_mode(_policy_model_for_hf_save(model), True)
+-                    policy_model = trainer.mp.cast_to_compute(policy_model)
++                    policy_model = cast_model_preserving_quantization_state(policy_model, trainer.mp.cast_to_compute)
+                     per_pos_loss = policy_model.compute_next_token_loss(batch, reduction=None, reduction_axis=()).array
+                     per_pos_weight = batch.loss_weight.array
+                     per_pos_token_id = jnp.roll(batch.tokens.array, -1, axis=-1)
+@@ -933,7 +937,7 @@ def main(config: TrainDpoConfig) -> callbacks.StepInfo:
+ 
+                 @eqx.filter_jit
+                 def eval_loss(model, *batch, **batch_kwargs):
+-                    model = trainer.mp.cast_to_compute(model)
++                    model = cast_model_preserving_quantization_state(model, trainer.mp.cast_to_compute)
+                     return trainer.loss_fn(model, *batch, **batch_kwargs, key=None)
+ 
+                 compute_loss = callbacks.compute_validation_loss(
+diff --git a/lib/levanter/src/levanter/main/train_lm.py b/lib/levanter/src/levanter/main/train_lm.py
+index f9f698c88e..695119e1bb 100644
+--- a/lib/levanter/src/levanter/main/train_lm.py
++++ b/lib/levanter/src/levanter/main/train_lm.py
+@@ -24,6 +24,7 @@ import levanter.callbacks
+ import levanter.eval
+ import levanter.eval_harness
+ from levanter import callbacks
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.callbacks._iris_status import iris_status_reporter
+ from levanter.callbacks.labeled_eval import LabeledLmEvalConfig, add_labeled_lm_eval_callbacks
+ from levanter.adaptor import AdaptorConfig, AdaptorExportConfig, LoraAdaptorConfig, NoAdaptorConfig
+@@ -575,7 +576,7 @@ def main(config: TrainLmConfig) -> callbacks.StepInfo:
+ 
+         @named_jit(axis_resources=compute_axis_mapping)
+         def compute_logits(model: LmHeadModel, example: LmExample):
+-            model = trainer.mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, trainer.mp.cast_to_compute)
+             activations, _ = split_activations(
+                 model.activations(example.tokens, key=None, attn_mask=example.attn_mask)
+             )
+diff --git a/lib/levanter/src/levanter/main/viz_logprobs.py b/lib/levanter/src/levanter/main/viz_logprobs.py
+index 0ba8a8f7d4..5d7ef722fa 100644
+--- a/lib/levanter/src/levanter/main/viz_logprobs.py
++++ b/lib/levanter/src/levanter/main/viz_logprobs.py
+@@ -15,6 +15,7 @@ from haliax.partitioning import round_axis_for_partitioning
+ 
+ import levanter
+ import levanter.config
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.data.loader import DataLoader
+ from levanter.data.text.datasets import LmDataConfig
+ from levanter.model_loading import load_hf_checkpoint, load_levanter_checkpoint, native_evaluation_axis_mapping
+@@ -88,7 +89,7 @@ def main(config: VizLmConfig):
+         @hax.named_jit(axis_resources=compute_axis_mapping)
+         def compute_log_probs(model: LmHeadModel, example: LmExample):
+             model = inference_mode(model, True)
+-            model = mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, mp.cast_to_compute)
+ 
+             activations, _ = split_activations(model.activations(example.tokens, example.attn_mask, key=key))
+             logits = hax.dot(activations, model.get_lm_head(), axis=model.Embed)
+diff --git a/lib/levanter/src/levanter/quantization.py b/lib/levanter/src/levanter/quantization.py
+new file mode 100644
+index 0000000000..bf975b2d0f
+--- /dev/null
++++ b/lib/levanter/src/levanter/quantization.py
+@@ -0,0 +1,21 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Mixed precision at the model and gradient-carried state boundary."""
++
++from collections.abc import Callable
++from typing import TypeVar
++
++import equinox as eqx
++from haliax import NamedArray
++from haliax.quantization import CustomGradientAccumulation, partition_for_grad_overwrite
++
++T = TypeVar("T")
++
++
++def cast_model_preserving_quantization_state(model: T, cast_fn: Callable[[T], T]) -> T:
++    """Cast ordinary model arrays while leaving custom gradient state unchanged."""
++    state, parameters = partition_for_grad_overwrite(model)
++    return eqx.combine(
++        state, cast_fn(parameters), is_leaf=lambda node: isinstance(node, (NamedArray, CustomGradientAccumulation))
++    )
+diff --git a/lib/levanter/src/levanter/trainer.py b/lib/levanter/src/levanter/trainer.py
+index fc26f829d7..9e6eee6ee0 100644
+--- a/lib/levanter/src/levanter/trainer.py
++++ b/lib/levanter/src/levanter/trainer.py
+@@ -55,6 +55,7 @@ import levanter.checkpoint
+ import levanter.tracker
+ import levanter.tracker.wandb
+ import levanter.utils.logging
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.callbacks import (
+     Callback,
+     CBInfo,
+@@ -271,7 +272,7 @@ class WrappedLossFunction:
+         Always returns (loss, wrapped_metrics) where metrics are Metric objects.
+         """
+         with nullcontext() if self._compute_axis_mapping is None else hax.axis_mapping(self._compute_axis_mapping):
+-            model = self._mp.cast_to_compute(model)
++            model = cast_model_preserving_quantization_state(model, self._mp.cast_to_compute)
+             result = self._raw_fn(model, *batch, **batch_kwargs)
+ 
+         if isinstance(result, tuple) and len(result) == 2:
+@@ -752,7 +753,7 @@ class Trainer:
+ 
+             @eqx.filter_jit
+             def eval_loss(model, *batch, **batch_kwargs):
+-                model = self.mp.cast_to_compute(model)
++                model = cast_model_preserving_quantization_state(model, self.mp.cast_to_compute)
+                 return self.loss_fn(model, *batch, **batch_kwargs, key=None)
+ 
+             self.add_hook(
+@@ -844,7 +845,7 @@ class Trainer:
+         def obj_fun(trainable_model):
+             model = eqx.combine(trainable_model, state.model)
+             with self._compute_context():
+-                model = self.mp.cast_to_compute(model)
++                model = cast_model_preserving_quantization_state(model, self.mp.cast_to_compute)
+                 result = self._raw_loss_function(model, *batch, **batch_kwargs, key=key)
+                 # result is (loss, metrics) tuple
+                 loss_for_opt, _metrics = result
+diff --git a/lib/levanter/src/levanter/trainer_state.py b/lib/levanter/src/levanter/trainer_state.py
+index 9907f6c2c7..733a9d902a 100644
+--- a/lib/levanter/src/levanter/trainer_state.py
++++ b/lib/levanter/src/levanter/trainer_state.py
+@@ -15,6 +15,7 @@ from jax import numpy as jnp
+ from jaxtyping import PRNGKeyArray, PyTree
+ from optax import GradientTransformation, OptState
+ 
++from levanter.quantization import cast_model_preserving_quantization_state
+ from levanter.optim.model_averaging import ModelAveraging, ModelAveragingConfig
+ from levanter.utils.jax_utils import is_inexact_arrayish
+ from levanter.utils.tree_utils import inference_mode
+@@ -208,8 +209,8 @@ def cast_params_by_trainability(model, mp, is_trainable):
+     Trainable parameters are cast to param precision, non-trainable parameters are cast to compute precision.
+     """
+     trainable, non_trainable = _partition_trainable_params(model, is_trainable)
+-    trainable = mp.cast_to_param(trainable)
+-    non_trainable = mp.cast_to_compute(non_trainable)
++    trainable = cast_model_preserving_quantization_state(trainable, mp.cast_to_param)
++    non_trainable = cast_model_preserving_quantization_state(non_trainable, mp.cast_to_compute)
+     return eqx.combine(trainable, non_trainable, is_leaf=lambda x: isinstance(x, haliax.NamedArray))
+ 
+ 
+diff --git a/lib/levanter/tests/test_explicit_trainer.py b/lib/levanter/tests/test_explicit_trainer.py
+index 66dc075a8f..bceff5d4cd 100644
+--- a/lib/levanter/tests/test_explicit_trainer.py
++++ b/lib/levanter/tests/test_explicit_trainer.py
+@@ -5,6 +5,7 @@ import dataclasses
+ from math import lcm
+ 
+ import equinox as eqx
++import haliax as hax
+ import jax
+ import jax.numpy as jnp
+ import jmp
+@@ -13,14 +14,14 @@ import optax
+ import pytest
+ from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P, reshard
+ 
+-from haliax.quantization import Fp8DotGeneralOp
++from haliax.quantization import Fp8DotGeneralOp, QuantizationConfig
+ 
+ from levanter.grad_accum import microbatched_arrays
+-from levanter.checkpoint import CheckpointerConfig, discover_checkpoint_candidates, save_checkpoint
++from levanter.checkpoint import CheckpointerConfig, discover_checkpoint_candidates, load_checkpoint, save_checkpoint
+ from levanter.metrics import Metric, ReductionType
+ from levanter.optim.model_averaging import EmaModelAveragingConfig
+ from levanter.tracker import NoopConfig
+-from levanter.trainer import ExplicitTrainingLayout, Trainer, TrainerConfig
++from levanter.trainer import ExplicitTrainingLayout, Trainer, TrainerConfig, WrappedLossFunction
+ from levanter.trainer_state import TrainerState
+ from levanter.testing.cpu_devices import run_on_cpu_devices
+ 
+@@ -406,3 +407,92 @@ def test_raw_microbatch_fp8_state_uses_maxima_without_averaging():
+             assert value.sharding.is_equivalent_to(replicated, value.ndim)
+         for name, expected in expected_states.items():
+             np.testing.assert_array_equal(getattr(state, name), expected)
++
++
++class _Fp8NamedBlock(eqx.Module):
++    projection: hax.nn.Linear
++
++    @staticmethod
++    def init(axis, *, key):
++        return _Fp8NamedBlock(hax.nn.Linear.init(axis, axis.alias("out"), key=key, use_bias=False))
++
++    def __call__(self, value):
++        return self.projection(value).rename({"out": "feature"})
++
++
++@pytest.mark.parametrize("policy", ["f32", "params=float32,compute=bfloat16,output=float32"])
++def test_fp8_compute_cast_preserves_metadata_through_remat_and_checkpoint_next_update(tmp_path, policy):
++    mesh = Mesh(np.asarray(jax.devices()[:1]), ("data",), axis_types=(AxisType.Auto,))
++    mp = jmp.get_policy(policy)
++    feature = hax.Axis("feature", 8)
++    layer = hax.Axis("layer", 2)
++    with jax.set_mesh(mesh), hax.axis_mapping({}):
++        model = hax.nn.Stacked.init(layer, _Fp8NamedBlock, gradient_checkpointing=True)(
++            feature, key=jax.random.split(jax.random.PRNGKey(51), layer.size)
++        )
++        state = TrainerState.init(
++            optax.adam(1e-3),
++            model,
++            key=jax.random.PRNGKey(71),
++            mp=mp,
++            quantization=QuantizationConfig(fp8=True, amax_history_length=4),
++        )
++        operation = state.model.stacked.projection.dot_general
++        operation = dataclasses.replace(
++            operation,
++            input_scale=jnp.array([[1.003], [2.007]], jnp.float32),
++            kernel_scale=jnp.array([[0.503], [1.007]], jnp.float32),
++            output_grad_scale=jnp.array([[2.007], [4.013]], jnp.float32),
++            input_amax_history=jnp.array([[1.003, 2.007, 3.011, 4.013], [2.007, 4.013, 6.017, 8.021]]),
++            kernel_amax_history=jnp.array([[0.503, 1.007, 1.511, 2.013], [1.007, 2.013, 3.017, 4.021]]),
++            output_grad_amax_history=jnp.array([[2.007, 4.013, 6.017, 8.021], [4.013, 8.021, 12.029, 16.037]]),
++        )
++        state = eqx.tree_at(lambda s: s.model.stacked.projection.dot_general, state, operation)
++        inputs = hax.named(jnp.arange(32, dtype=jnp.float32).reshape(4, 8) / 16, (hax.Axis("batch", 4), feature))
++        observed_compute_dtypes = []
++
++        def loss(model, batch, *, key):
++            del key
++            projection = model.stacked.projection
++            observed_compute_dtypes.append((projection.weight.dtype, projection.dot_general.input_scale.dtype))
++            output = model.fold(batch)
++            return hax.mean(hax.square(output).astype(jnp.float32)).array
++
++        wrapped = WrappedLossFunction(loss, mp, None)
++
++        def reference_loss(model):
++            # An independent precision control casts only the known model weights.
++            # The FP8 operation and every one of its state arrays stay untouched.
++            weights = model.stacked.projection.weight.astype(mp.compute_dtype)
++            compute_model = eqx.tree_at(lambda m: m.stacked.projection.weight, model, weights)
++            return loss(compute_model, inputs, key=None)
++
++        expected_loss, expected_gradient = eqx.filter_jit(eqx.filter_value_and_grad(reference_loss))(state.model)
++        (actual_loss, _), gradient = eqx.filter_jit(eqx.filter_value_and_grad(wrapped, has_aux=True))(
++            state.model, inputs, key=None
++        )
++        np.testing.assert_array_equal(actual_loss, expected_loss)
++        for actual, expected in zip(jax.tree.leaves(gradient), jax.tree.leaves(expected_gradient), strict=True):
++            np.testing.assert_array_equal(actual, expected)
++        assert all(
++            weight == mp.compute_dtype and metadata == jnp.float32 for weight, metadata in observed_compute_dtypes
++        )
++
++        @eqx.filter_jit
++        def step(state):
++            key, next_key = jax.random.split(state.training_key)
++            (loss_value, _), grads = eqx.filter_value_and_grad(wrapped, has_aux=True)(state.model, inputs, key=key)
++            return state.take_step(grads, key=next_key, loss=loss_value)[0]
++
++        first = step(state)
++        checkpoint_path = tmp_path / "step-1"
++        save_checkpoint(first.saveable_state, step=1, checkpoint_path=checkpoint_path)
++        expected = step(first)
++        restored = load_checkpoint(state, checkpoint_path, mesh=mesh)
++        actual = step(restored)
++        assert int(actual.step) == 2
++        for actual_leaf, expected_leaf in zip(jax.tree.leaves(actual), jax.tree.leaves(expected), strict=True):
++            np.testing.assert_array_equal(actual_leaf, expected_leaf)
++        assert actual.model.stacked.projection.weight.dtype == jnp.float32
++        for leaf in jax.tree.leaves(actual.model.stacked.projection.dot_general):
++            assert leaf.dtype == jnp.float32

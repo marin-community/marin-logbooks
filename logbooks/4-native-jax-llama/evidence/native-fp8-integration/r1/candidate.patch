@@ -1,0 +1,567 @@
+diff --git a/lib/haliax/src/haliax/quantization.py b/lib/haliax/src/haliax/quantization.py
+index 7a5bbcbfec..3ec366634a 100644
+--- a/lib/haliax/src/haliax/quantization.py
++++ b/lib/haliax/src/haliax/quantization.py
+@@ -318,6 +318,15 @@ class QuantizationConfig:
+     def __post_init__(self):
+         assert not (self.fp8 and self.int8), "Cannot use FP8 and INT8 quantization at the same time."
+ 
++    def matches_target(self, key_path: tuple) -> bool:
++        """Match final names in a target list or regexes against the full dotted path."""
++        if self.targets is None:
++            return True
++        if isinstance(self.targets, list):
++            key = _key_path_to_str(key_path[-1:]) if key_path else ""
++            return key in self.targets
++        return re.match(self.targets, _key_path_to_str(key_path)) is not None
++
+ 
+ def quantize_linear_layers(tree: T, config: QuantizationConfig) -> T:
+     """
+@@ -359,7 +368,7 @@ def _quantize_linear_layers(tree: T, config: QuantizationConfig, dot_general_cls
+             )
+             return dataclasses.replace(module, stacked=new_inner)  # type: ignore
+         elif isinstance(module, hnn.Linear):
+-            if _matches_target(path, config):
++            if config.matches_target(path):
+                 vmapped_dg = _batchify_ctor(dot_general_cls.init, batch_dims)(*args, **kwargs)
+                 module = dataclasses.replace(module, dot_general=vmapped_dg)  # type: ignore
+             return module
+@@ -371,21 +380,6 @@ def _quantize_linear_layers(tree: T, config: QuantizationConfig, dot_general_cls
+     )
+ 
+ 
+-def _matches_target(key_path, config: QuantizationConfig) -> bool:
+-    if not key_path:
+-        key = ""
+-    else:
+-        key = _key_path_to_str(key_path[-1:])
+-
+-    if config.targets is None:
+-        return True
+-    if isinstance(config.targets, list):
+-        return key in config.targets
+-
+-    key_path_str = _key_path_to_str(key_path)
+-    return re.match(config.targets, key_path_str) is not None
+-
+-
+ def _key_path_to_str(key_path: tuple) -> str:
+     out = ""
+     for k in key_path:
+diff --git a/lib/levanter/src/levanter/layers/linear.py b/lib/levanter/src/levanter/layers/linear.py
+index bacba9a9e4..fc9c63a2c6 100644
+--- a/lib/levanter/src/levanter/layers/linear.py
++++ b/lib/levanter/src/levanter/layers/linear.py
+@@ -27,12 +27,26 @@ class LinearProjection(Protocol):
+     ) -> Float[Array, "... Out"]: ...
+ 
+ 
++class RawDotGeneralOp(Protocol):
++    """Array contraction with an explicit result layout."""
++
++    def __call__(
++        self,
++        lhs: Array,
++        rhs: Array,
++        dimension_numbers: tuple[tuple[tuple[int, ...], tuple[int, ...]], tuple[tuple[int, ...], tuple[int, ...]]],
++        *,
++        out_sharding: PartitionSpec,
++    ) -> Array: ...
++
++
+ class Linear(eqx.Module):
+     """Output-first weights, optionally gathered from an FSDP storage layout."""
+ 
+     weight: Float[Array, "Out In"]
+     bias: Float[Array, "Out"] | None
+     compute_spec: PartitionSpec = eqx.field(static=True)
++    dot_general: RawDotGeneralOp | None = None
+ 
+     @staticmethod
+     def init(
+@@ -65,7 +79,12 @@ class Linear(eqx.Module):
+     ) -> Float[Array, "... Out"]:
+         del key, dropout_layout
+         weight = reshard(self.weight, self.compute_spec)
+-        output = jnp.einsum("...i,oi->...o", x, weight, out_sharding=out_sharding)
++        if self.dot_general is None:
++            output = jnp.einsum("...i,oi->...o", x, weight, out_sharding=out_sharding)
++        else:
++            output = self.dot_general(
++                x, weight, (((x.ndim - 1,), (1,)), ((), ())), out_sharding=out_sharding
++            )
+         if self.bias is not None:
+             output = output + reshard(self.bias, PartitionSpec(self.compute_spec[0]))
+         return output
+diff --git a/lib/levanter/src/levanter/main/train_lm.py b/lib/levanter/src/levanter/main/train_lm.py
+index f9f698c88e..d002068c58 100644
+--- a/lib/levanter/src/levanter/main/train_lm.py
++++ b/lib/levanter/src/levanter/main/train_lm.py
+@@ -228,7 +228,10 @@ def main(config: TrainLmConfig) -> callbacks.StepInfo:
+             config = dataclasses.replace(config, model=native_model_context.model)
+         export_config.validate_native(config.model)
+         if config.trainer.quantization is not None:
+-            raise ValueError("llama_native training does not support Haliax quantization")
++            if not config.trainer.quantization.fp8:
++                raise ValueError("llama_native quantization supports FP8 only")
++            if not isinstance(config.adapter, NoAdaptorConfig):
++                raise ValueError("llama_native FP8 does not support adapters")
+         config = dataclasses.replace(config, trainer=dataclasses.replace(config.trainer, use_explicit_mesh_axes=True))
+         _native_llama_sharding(config.trainer)
+     tokenizer = config.data.the_tokenizer
+diff --git a/lib/levanter/src/levanter/models/llama_native.py b/lib/levanter/src/levanter/models/llama_native.py
+index 4535179aa7..f9732f7ffb 100644
+--- a/lib/levanter/src/levanter/models/llama_native.py
++++ b/lib/levanter/src/levanter/models/llama_native.py
+@@ -544,6 +544,9 @@ class NativeLlamaModel(eqx.Module):
+         return self.unembed(hidden, sharding=self.sharding)
+ 
+     def unembed(self, hidden: Float[Array, "B S D"], *, sharding: NativeLlamaSharding) -> Float[Array, "B S V"]:
++        if self.lm_head is not None and self.lm_head.dot_general is not None:
++            projection = dataclasses.replace(self.lm_head, compute_spec=sharding.column_compute)
++            return projection(hidden, out_sharding=sharding.logits)
+         head = reshard(self.get_lm_head(), sharding.column_compute)
+         return jnp.einsum("bsd,vd->bsv", hidden, head, out_sharding=sharding.logits)
+ 
+diff --git a/lib/levanter/src/levanter/trainer.py b/lib/levanter/src/levanter/trainer.py
+index fc26f829d7..3775cd11a5 100644
+--- a/lib/levanter/src/levanter/trainer.py
++++ b/lib/levanter/src/levanter/trainer.py
+@@ -331,8 +331,8 @@ class Trainer:
+         self.optimizer = optimizer
+         self.explicit_layout = explicit_layout
+         self._checkpoint_metadata = checkpoint_metadata
+-        if explicit_layout is not None and config.quantization is not None:
+-            raise ValueError("Explicit raw-array training does not support Haliax linear quantization")
++        if explicit_layout is not None and config.quantization is not None and not config.quantization.fp8:
++            raise ValueError("Explicit raw-array quantization supports FP8 only")
+         self._raw_loss_function = loss_fn
+         self._checkpointer: Optional[Checkpointer] = None
+         self._xla_dump_upload: Callable[[StepInfo], None] | None = None
+diff --git a/lib/levanter/src/levanter/trainer_state.py b/lib/levanter/src/levanter/trainer_state.py
+index 9907f6c2c7..40b9b28e87 100644
+--- a/lib/levanter/src/levanter/trainer_state.py
++++ b/lib/levanter/src/levanter/trainer_state.py
+@@ -9,13 +9,14 @@ import jax
+ import jmp
+ 
+ import haliax
+-from haliax.quantization import QuantizationConfig, apply_updates, partition_for_grad_overwrite, quantize_linear_layers
++from haliax.quantization import QuantizationConfig, apply_updates, partition_for_grad_overwrite
+ from haliax.types import IntScalar, Scalar
+ from jax import numpy as jnp
+ from jaxtyping import PRNGKeyArray, PyTree
+ from optax import GradientTransformation, OptState
+ 
+ from levanter.optim.model_averaging import ModelAveraging, ModelAveragingConfig
++from levanter.quantization import has_array_linears, quantize_linear_layers
+ from levanter.utils.jax_utils import is_inexact_arrayish
+ from levanter.utils.tree_utils import inference_mode
+ from levanter.utils.types import FilterTree
+@@ -100,6 +101,8 @@ class TrainerState(eqx.Module, Generic[M]):
+             mp = jmp.get_policy("f32")
+ 
+         if quantization is not None:
++            if is_trainable is not True and has_array_linears(model):
++                raise ValueError("Array-native FP8 requires all model parameters to be trainable")
+             model = quantize_linear_layers(model, quantization)
+ 
+         trainable_model = trainables_only(model, is_trainable)
+diff --git a/lib/levanter/tests/test_explicit_trainer.py b/lib/levanter/tests/test_explicit_trainer.py
+index 66dc075a8f..5f6bec848a 100644
+--- a/lib/levanter/tests/test_explicit_trainer.py
++++ b/lib/levanter/tests/test_explicit_trainer.py
+@@ -13,11 +13,14 @@ import optax
+ import pytest
+ from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P, reshard
+ 
+-from haliax.quantization import Fp8DotGeneralOp
++from haliax.quantization import Fp8DotGeneralOp, QuantizationConfig
+ 
+ from levanter.grad_accum import microbatched_arrays
+ from levanter.checkpoint import CheckpointerConfig, discover_checkpoint_candidates, save_checkpoint
+ from levanter.metrics import Metric, ReductionType
++from levanter.models.llama_native import NativeLlamaConfig
++from levanter.quantization import quantize_linear_layers
++from levanter.grug.attention import AttentionMask
+ from levanter.optim.model_averaging import EmaModelAveragingConfig
+ from levanter.tracker import NoopConfig
+ from levanter.trainer import ExplicitTrainingLayout, Trainer, TrainerConfig
+@@ -406,3 +409,52 @@ def test_raw_microbatch_fp8_state_uses_maxima_without_averaging():
+             assert value.sharding.is_equivalent_to(replicated, value.ndim)
+         for name, expected in expected_states.items():
+             np.testing.assert_array_equal(getattr(state, name), expected)
++
++
++@pytest.mark.parametrize("targets", [["q_proj"], r"layers\.stacked\.self_attn\.q_proj$"])
++def test_native_fp8_conversion_batches_state_and_remat_matches_unrolled_layers(targets):
++    mesh = Mesh(np.asarray(jax.devices()[:1]), ("data",), axis_types=(AxisType.Explicit,))
++    with jax.set_mesh(mesh):
++        model = NativeLlamaConfig(
++            vocab_size=16, hidden_dim=8, intermediate_dim=16, num_heads=2, num_kv_heads=2,
++            num_layers=2, max_seq_len=4, gradient_checkpointing="nested",
++        ).build(key=jax.random.PRNGKey(21))
++        model = quantize_linear_layers(model, QuantizationConfig(fp8=True, targets=targets, amax_history_length=4))
++        operation = model.layers.stacked.self_attn.q_proj.dot_general
++        assert model.layers.stacked.self_attn.k_proj.dot_general is None
++        assert model.lm_head.dot_general is None
++        for name in ("input_scale", "kernel_scale", "output_grad_scale"):
++            np.testing.assert_array_equal(getattr(operation, name), np.ones((2, 1), np.float32))
++        for name in ("input_amax_history", "kernel_amax_history", "output_grad_amax_history"):
++            np.testing.assert_array_equal(getattr(operation, name), np.zeros((2, 4), np.float32))
++        operation = dataclasses.replace(
++            operation,
++            input_scale=jnp.array([[1.], [2.]]), kernel_scale=jnp.array([[.5], [1.]]),
++            output_grad_scale=jnp.array([[2.], [4.]]),
++            input_amax_history=jnp.array([[448., 224., 112., 56.], [896., 448., 224., 112.]]),
++            kernel_amax_history=jnp.array([[224., 112., 56., 28.], [448., 224., 112., 56.]]),
++            output_grad_amax_history=jnp.array([[114688., 57344., 28672., 14336.],
++                                               [229376., 114688., 57344., 28672.]]),
++        )
++        model = eqx.tree_at(lambda m: m.layers.stacked.self_attn.q_proj.dot_general, model, operation)
++        tokens = jnp.arange(16).reshape(4, 4) % 16
++
++        def scanned(model):
++            return jnp.square(model.activations(tokens)).mean()
++
++        def unrolled(model):
++            hidden = model.embed_tokens(tokens, sharding=model.sharding)
++            positions = jnp.broadcast_to(jnp.arange(4), tokens.shape)
++            for layer in model.layers.unstacked():
++                hidden = layer(hidden, AttentionMask.causal(), positions)
++            return jnp.square(model.norm(hidden)).mean()
++
++        actual_loss, actual = eqx.filter_jit(eqx.filter_value_and_grad(scanned))(model)
++        expected_loss, expected = eqx.filter_jit(eqx.filter_value_and_grad(unrolled))(model)
++        np.testing.assert_allclose(actual_loss, expected_loss, atol=1e-5, rtol=1e-5)
++        for actual_leaf, expected_leaf in zip(jax.tree.leaves(actual), jax.tree.leaves(expected), strict=True):
++            np.testing.assert_allclose(actual_leaf, expected_leaf, atol=1e-5, rtol=1e-5)
++        state = actual.layers.stacked.self_attn.q_proj.dot_general
++        for name in ("input_scale", "kernel_scale", "output_grad_scale", "input_amax_history",
++                     "kernel_amax_history", "output_grad_amax_history"):
++            assert not np.array_equal(getattr(state, name)[0], getattr(state, name)[1])
+diff --git a/lib/levanter/tests/test_llama_native.py b/lib/levanter/tests/test_llama_native.py
+index c4c1452f9e..6a5215d9f6 100644
+--- a/lib/levanter/tests/test_llama_native.py
++++ b/lib/levanter/tests/test_llama_native.py
+@@ -10,11 +10,13 @@ import jax
+ import jax.numpy as jnp
+ import numpy as np
+ import pytest
+-from jax.sharding import AxisType, Mesh, PartitionSpec as P
++from haliax.quantization import Fp8DotGeneralOp
++from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P
+ 
+ from levanter.grug.attention import AttentionMask
+ from levanter.grug.loss import fused_linear_softmax_cross_entropy_loss
+ from levanter.layers.attention import AttentionBackend, AttentionMask as NamedAttentionMask
++from levanter.layers.linear import Linear
+ from levanter.layers.rotary import (
+     DefaultRotaryEmbeddingsConfig,
+     Llama3RotaryEmbeddingsConfig,
+@@ -32,6 +34,154 @@ from levanter.tokenizers import load_tokenizer
+ from levanter.utils.activation import ActivationFunctionEnum
+ 
+ 
++def _native_fp8_operation():
++    return dataclasses.replace(
++        Fp8DotGeneralOp.init(amax_history_length=4),
++        input_scale=jnp.array([7], jnp.float32),
++        kernel_scale=jnp.array([3], jnp.float32),
++        output_grad_scale=jnp.array([9], jnp.float32),
++        input_amax_history=jnp.array([896, 448, 224, 112], jnp.float32),
++        kernel_amax_history=jnp.array([224, 112, 56, 28], jnp.float32),
++        output_grad_amax_history=jnp.array([229376, 114688, 57344, 28672], jnp.float32),
++    )
++
++
++def _assert_native_fp8_state(operation, update, inputs, weight, cotangent):
++    expected = {
++        "input_scale": [2],
++        "kernel_scale": [0.5],
++        "output_grad_scale": [4],
++        "input_amax_history": [np.max(np.abs(inputs)), 224, 112, 896],
++        "kernel_amax_history": [np.max(np.abs(weight)), 56, 28, 224],
++        "output_grad_amax_history": [np.max(np.abs(cotangent)), 57344, 28672, 229376],
++    }
++    for name, values in expected.items():
++        actual = getattr(update, name)
++        np.testing.assert_array_equal(actual, np.asarray(values, np.float32), err_msg=name)
++        source = getattr(operation, name)
++        assert actual.sharding.is_equivalent_to(source.sharding, actual.ndim), name
++
++
++@pytest.mark.tpu
++@pytest.mark.parametrize("projection", ["column", "row"])
++def test_native_linear_fp8_values_gradients_state_and_storage_layout(projection):
++    model_size = 2 if len(jax.devices()) >= 4 else 1
++    devices = jax.devices()[: 2 * model_size if model_size == 2 else 1]
++    mesh = Mesh(
++        np.asarray(devices).reshape(-1, model_size),
++        ("data", "model"),
++        axis_types=(AxisType.Explicit,) * 2,
++    )
++    layout = NativeLlamaSharding(batch_axes=("data",), fsdp_axis="data", model_axis="model")
++    column = projection == "column"
++    storage = layout.column_storage if column else layout.row_storage
++    compute = layout.column_compute if column else layout.row_compute
++    input_spec = layout.residual if column else layout.intermediate
++    output_spec = layout.intermediate if column else layout.residual
++    # Exact FP8 values make NumPy's ordinary matmul an independent forward/VJP oracle.
++    inputs = ((np.arange(64).reshape(4, 2, 8) % 9) - 4).astype(np.float32) / 2
++    weight = ((np.arange(64).reshape(8, 8) % 7) - 3).astype(np.float32) / 8
++    bias = np.arange(8, dtype=np.float32) / 16
++    cotangent = ((np.arange(64).reshape(4, 2, 8) % 5) - 2).astype(np.float32) / 4
++    expected_output = inputs @ weight.T + bias
++    expected_input_grad = cotangent @ weight
++    expected_weight_grad = cotangent.reshape(-1, 8).T @ inputs.reshape(-1, 8)
++    with jax.set_mesh(mesh):
++        operation = jax.tree.map(
++            lambda value: jax.device_put(value, NamedSharding(mesh, P())), _native_fp8_operation()
++        )
++        linear = Linear(
++            jax.device_put(weight, NamedSharding(mesh, storage)),
++            jax.device_put(bias, NamedSharding(mesh, P(storage[0]))),
++            compute,
++            operation,
++        )
++        x = jax.device_put(inputs, NamedSharding(mesh, input_spec))
++        ct = jax.device_put(cotangent, NamedSharding(mesh, output_spec))
++
++        def objective(parameters, output_cotangent):
++            model, inputs = parameters
++            output = model(inputs, out_sharding=output_spec)
++            return jnp.sum(output * output_cotangent), output
++
++        (_, output), (gradient, input_gradient) = eqx.filter_jit(
++            eqx.filter_value_and_grad(objective, has_aux=True)
++        )((linear, x), ct)
++        np.testing.assert_array_equal(output, expected_output)
++        np.testing.assert_array_equal(input_gradient, expected_input_grad)
++        np.testing.assert_array_equal(gradient.weight, expected_weight_grad)
++        np.testing.assert_array_equal(gradient.bias, cotangent.sum(axis=(0, 1)))
++        assert output.sharding == NamedSharding(mesh, output_spec)
++        assert input_gradient.sharding == x.sharding
++        assert gradient.weight.sharding == linear.weight.sharding
++        assert gradient.bias.sharding == linear.bias.sharding
++        _assert_native_fp8_state(operation, gradient.dot_general, inputs, weight, cotangent)
++
++
++@pytest.mark.tpu
++@pytest.mark.parametrize("tied", [False, True], ids=["untied-fp8", "tied"])
++def test_native_llama_logits_and_unembed_preserve_quantized_and_tied_head_behavior(tied):
++    model_size = 2 if len(jax.devices()) >= 4 else 1
++    devices = jax.devices()[: 2 * model_size if model_size == 2 else 1]
++    mesh = Mesh(
++        np.asarray(devices).reshape(-1, model_size),
++        ("data", "model"),
++        axis_types=(AxisType.Explicit,) * 2,
++    )
++    layout = NativeLlamaSharding(batch_axes=("data",), fsdp_axis="data", model_axis="model")
++    config = NativeLlamaConfig(
++        vocab_size=16, hidden_dim=8, intermediate_dim=16, num_layers=1,
++        num_heads=2, num_kv_heads=1, max_seq_len=4, tie_word_embeddings=tied,
++    )
++    with jax.set_mesh(mesh):
++        model = config.build(key=jax.random.key(0), sharding=layout)
++        if not tied:
++            operation = jax.tree.map(
++                lambda value: jax.device_put(value, NamedSharding(mesh, P())), _native_fp8_operation()
++            )
++            model = eqx.tree_at(lambda value: value.lm_head.dot_general, model, operation, is_leaf=lambda x: x is None)
++        tokens = jax.device_put(np.arange(16, dtype=np.int32).reshape(4, 4), NamedSharding(mesh, layout.tokens))
++        hidden = eqx.filter_jit(lambda value: value.activations(tokens))(model)
++        weight = np.asarray(model.get_lm_head())
++        if tied:
++            expected_logits = np.asarray(hidden) @ weight.T
++        else:
++            # Delayed histories select scales 2 and .5; NumPy performs only the
++            # elementwise FP8 casts and an ordinary, dequantized reference matmul.
++            quantized_hidden = (np.asarray(hidden) / 2).astype(jnp.float8_e4m3fn).astype(np.float32) * 2
++            quantized_weight = (weight / 0.5).astype(jnp.float8_e4m3fn).astype(np.float32) * 0.5
++            expected_logits = quantized_hidden @ quantized_weight.T
++            assert np.max(np.abs(expected_logits - np.asarray(hidden) @ weight.T)) > 1e-5
++        logits = eqx.filter_jit(lambda value: value.logits(tokens))(model)
++        np.testing.assert_allclose(logits, expected_logits, atol=1e-5, rtol=1e-5)
++        assert logits.sharding == NamedSharding(mesh, layout.logits)
++
++        # Override compute placement separately from the model's configured
++        # tensor parallelism, as callers of the shared unembed method may do.
++        override = NativeLlamaSharding(batch_axes=("data",), fsdp_axis="data")
++        standalone_hidden = jax.device_put(np.full((4, 2, 8), 0.3, np.float32), NamedSharding(mesh, override.residual))
++
++        def objective(value):
++            output = value.unembed(standalone_hidden, sharding=override)
++            return output.sum(), output
++
++        (_, output), gradient = eqx.filter_jit(eqx.filter_value_and_grad(objective, has_aux=True))(model)
++        if tied:
++            expected_output = np.asarray(standalone_hidden) @ weight.T
++            assert gradient.lm_head is None
++            np.testing.assert_allclose(
++                gradient.token_embeddings, np.full_like(weight, 8 * 0.3), atol=1e-5, rtol=1e-5
++            )
++        else:
++            expected_output = np.full((4, 2, 8), 0.3125, np.float32) @ quantized_weight.T
++            _assert_native_fp8_state(
++                operation, gradient.lm_head.dot_general, np.asarray(standalone_hidden), weight, np.ones((4, 2, 16))
++            )
++            assert gradient.lm_head.weight.sharding == model.lm_head.weight.sharding
++        np.testing.assert_allclose(output, expected_output, atol=1e-5, rtol=1e-5)
++        assert output.sharding == NamedSharding(mesh, override.logits)
++
++
+ @pytest.mark.tpu
+ @pytest.mark.parametrize("save_dtype", [None, jnp.bfloat16], ids=["master", "bf16"])
+ @pytest.mark.parametrize(
+diff --git a/lib/levanter/tests/test_train_lm.py b/lib/levanter/tests/test_train_lm.py
+index 754aefce4e..1dfd7e4997 100644
+--- a/lib/levanter/tests/test_train_lm.py
++++ b/lib/levanter/tests/test_train_lm.py
+@@ -1396,3 +1396,82 @@ def test_native_train_lm_lora_hf_update_resume_and_local_exports(
+         )
+     for name in ("full", "resumed"):
+         _assert_training_recorded(str(tmp_path / name / "tracker"))
++
++
++@pytest.mark.timeout(180)
++@pytest.mark.parametrize("policy", ["f32", "params=float32,compute=bfloat16,output=float32"])
++@pytest.mark.parametrize("microbatch", [False, True])
++def test_native_train_lm_fp8_checkpoint_resume_preserves_next_update(tmp_path, policy, microbatch):
++    examples = ListAsyncDataset([
++        GrugLmExample.causal((jnp.arange(4) + index) % 16) for index in range(8 * len(jax.devices()))
++    ])
++    data = LmDataConfig(
++        tokenizer="passthrough", vocab_size=16, shuffle=False,
++        components={"direct": DirectDatasetComponent(datasets={"train": examples})},
++    )
++    optimizer = AdamConfig(learning_rate=1e-3, warmup=0, lr_schedule=ConstantLrSchedule(), weight_decay=0.0)
++    mp = jmp.get_policy(policy)
++
++    def configuration(name, steps, *, resume=False):
++        return train_lm.TrainLmConfig(
++            model=NativeLlamaLmConfig(
++                hidden_dim=8, intermediate_dim=16, num_layers=2, num_heads=2, num_kv_heads=2,
++                max_seq_len=4, gradient_checkpointing="nested",
++            ),
++            data=data, data_seed=7, train_seq_len=4, optimizer=optimizer,
++            trainer=train_lm.TrainerConfig(
++                id="native-fp8", seed=42, num_train_steps=steps, train_batch_size=4 * len(jax.devices()),
++                per_device_parallelism=2 if microbatch else -1, mp=mp,
++                quantization=QuantizationConfig(fp8=True, amax_history_length=4),
++                mesh=MeshConfig(axes={"data": 1, "model": 1}, batch_axis_name="examples"),
++                tracker=NoopConfig(),
++                checkpointer=CheckpointerConfig(base_path=str(tmp_path / name), keep=[{"every": 1}]),
++                load_checkpoint=resume, require_accelerator=False,
++                distributed=DistributedConfig(initialize_jax_distributed=False),
++                log_xla_hlo=False, log_jaxprs=False,
++            ),
++        )
++
++    full = configuration("full", 2)
++    train_lm.main(full)
++    train_lm.main(configuration("resumed", 1))
++    train_lm.main(configuration("resumed", 2, resume=True))
++    mesh = dataclasses.replace(full.trainer, use_explicit_mesh_axes=True).device_mesh
++    sharding = native_llama_sharding(
++        full.trainer.parameter_axis_mapping, full.trainer.compute_axis_mapping, full.trainer.batch_axis_name
++    )
++    with jax.set_mesh(mesh):
++        model = full.model.build(Axis("vocab", 16), key=jrandom.PRNGKey(0), sharding=sharding)
++        template = TrainerState.init(
++            optimizer.build(2), model, key=jrandom.PRNGKey(0), mp=mp, quantization=full.trainer.quantization
++        )
++        expected = load_checkpoint(template, latest_checkpoint_path(tmp_path / "full/native-fp8"), mesh=mesh)
++        actual = load_checkpoint(template, latest_checkpoint_path(tmp_path / "resumed/native-fp8"), mesh=mesh)
++        first = load_checkpoint(
++            template, discover_checkpoint_candidates(tmp_path / "resumed/native-fp8")[0].path, mesh=mesh
++        )
++    assert int(actual.step) == 2
++    for actual_leaf, expected_leaf in zip(_array_leaves(actual), _array_leaves(expected), strict=True):
++        np.testing.assert_array_equal(actual_leaf, expected_leaf)
++    assert actual.model.native.layers.stacked.self_attn.q_proj.weight.dtype == jnp.float32
++    assert not np.array_equal(actual.model.native.layers.stacked.self_attn.q_proj.weight,
++                              first.model.native.layers.stacked.self_attn.q_proj.weight)
++    operation = actual.model.native.layers.stacked.self_attn.q_proj.dot_general
++    for name in ("input_scale", "kernel_scale", "output_grad_scale"):
++        assert getattr(operation, name).shape == (2, 1)
++        assert getattr(operation, name).dtype == jnp.float32
++    for name in ("input_amax_history", "kernel_amax_history", "output_grad_amax_history"):
++        value = getattr(operation, name)
++        assert value.shape == (2, 4)
++        assert value.dtype == jnp.float32
++        assert np.any(value != 0)
++    # The production fused CE takes raw head weights, so attaching its operation
++    # preserves logits quantization without inventing a quantized training GEMM.
++    np.testing.assert_array_equal(actual.model.native.lm_head.dot_general.input_amax_history, np.zeros(4))
++    adam_states = jax.tree.leaves(actual.opt_state, is_leaf=lambda node: isinstance(node, optax.ScaleByAdamState))
++    adam_states = [node for node in adam_states if isinstance(node, optax.ScaleByAdamState)]
++    assert adam_states
++    for adam in adam_states:
++        for moments in (adam.mu, adam.nu):
++            assert moments.native.layers.stacked.self_attn.q_proj.dot_general.input_scale is None
++            assert np.any(moments.native.layers.stacked.self_attn.q_proj.weight != 0)
+diff --git a/lib/levanter/src/levanter/quantization.py b/lib/levanter/src/levanter/quantization.py
+new file mode 100644
+index 0000000000..e9cc6fa9e3
+--- /dev/null
++++ b/lib/levanter/src/levanter/quantization.py
+@@ -0,0 +1,57 @@
++# Copyright The Levanter Authors
++# SPDX-License-Identifier: Apache-2.0
++
++"""Attach shared quantization operations to named and array-native projections."""
++
++import dataclasses
++from typing import TypeVar
++
++import equinox as eqx
++import jax
++from jax.tree_util import GetAttrKey
++
++from haliax.quantization import Fp8DotGeneralOp, QuantizationConfig
++from haliax.quantization import quantize_linear_layers as quantize_named_linear_layers
++
++from levanter.layers.linear import Linear
++from levanter.layers.stacked import ArrayStacked
++
++T = TypeVar("T")
++
++
++def has_array_linears(tree) -> bool:
++    return any(isinstance(leaf, Linear) for leaf in jax.tree.leaves(tree, is_leaf=lambda leaf: isinstance(leaf, Linear)))
++
++
++def quantize_linear_layers(tree: T, config: QuantizationConfig) -> T:
++    """Convert projections, preserving the shared named-layer quantization contract.
++
++    Array-native layers support FP8 only. Their stacked state is initialized
++    independently for each layer, matching the leading axis of their parameters.
++    """
++    if not has_array_linears(tree):
++        return quantize_named_linear_layers(tree, config)
++    if not config.fp8 or config.int8:
++        raise ValueError("Array-native quantization supports FP8 only")
++
++    tree = quantize_named_linear_layers(tree, config)
++
++    def is_projection_or_stack(module):
++        return isinstance(module, (Linear, ArrayStacked))
++
++    def convert(subtree, prefix):
++        def convert_module(path, module):
++            path = prefix + path
++            if isinstance(module, ArrayStacked):
++                stacked = eqx.filter_vmap(
++                    lambda layer: convert(layer, path + (GetAttrKey("stacked"),)), axis_size=module.num_layers
++                )(module.stacked)
++                return dataclasses.replace(module, stacked=stacked)
++            if isinstance(module, Linear) and config.matches_target(path):
++                operation = Fp8DotGeneralOp.init(config.amax_history_length, config.compute_dtype)
++                return dataclasses.replace(module, dot_general=operation)
++            return module
++
++        return jax.tree_util.tree_map_with_path(convert_module, subtree, is_leaf=is_projection_or_stack)
++
++    return convert(tree, ())

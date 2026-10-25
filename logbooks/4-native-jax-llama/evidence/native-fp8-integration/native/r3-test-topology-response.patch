@@ -1,0 +1,26 @@
+--- a/lib/levanter/tests/test_train_lm.py
++++ b/lib/levanter/tests/test_train_lm.py
+@@ -1412,6 +1412,7 @@
+         shuffle=False,
+         components={"direct": DirectDatasetComponent(datasets={"train": examples})},
+     )
++    parallel_size = 2 if len(jax.devices()) % 4 == 0 else 1
+     optimizer = AdamConfig(learning_rate=1e-3, warmup=0, lr_schedule=ConstantLrSchedule(), weight_decay=0.0)
+     mp = jmp.get_policy(policy)
+ 
+@@ -1434,11 +1435,13 @@
+                 id="native-fp8",
+                 seed=42,
+                 num_train_steps=steps,
+-                train_batch_size=4 * len(jax.devices()),
++                train_batch_size=4 * len(jax.devices()) // parallel_size,
+                 per_device_parallelism=2 if microbatch else -1,
+                 mp=mp,
+                 quantization=QuantizationConfig(fp8=True, amax_history_length=4),
+-                mesh=MeshConfig(axes={"data": 1, "model": 1}, batch_axis_name="examples"),
++                mesh=MeshConfig(
++                    axes={"replica": -1, "data": parallel_size, "model": parallel_size}, batch_axis_name="examples"
++                ),
+                 tracker=NoopConfig(),
+                 checkpointer=CheckpointerConfig(base_path=str(tmp_path / name), keep=[{"every": 1}]),
+                 load_checkpoint=resume,

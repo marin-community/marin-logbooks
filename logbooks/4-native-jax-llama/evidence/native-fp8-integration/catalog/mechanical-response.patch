@@ -1,0 +1,112 @@
+diff --git a/lib/levanter/scripts/bench/bench_llama_native.py b/lib/levanter/scripts/bench/bench_llama_native.py
+index 6894e6bca8..f4f6888a25 100644
+--- a/lib/levanter/scripts/bench/bench_llama_native.py
++++ b/lib/levanter/scripts/bench/bench_llama_native.py
+@@ -82,9 +82,11 @@ class BenchmarkConfig:
+ 
+ class _CaptureStep(JitCallback):
+     def inside_step(self, state: TrainerState, inside_info: InsideJitInfo):
++        del state
+         return inside_info.grads, inside_info.updates
+ 
+     def on_step(self, step_info, cb_info):
++        del step_info, cb_info
+         return None
+ 
+ 
+diff --git a/lib/levanter/src/levanter/checkpoint.py b/lib/levanter/src/levanter/checkpoint.py
+index 914418e526..51b1e8cb63 100644
+--- a/lib/levanter/src/levanter/checkpoint.py
++++ b/lib/levanter/src/levanter/checkpoint.py
+@@ -51,6 +51,7 @@ logger = logging.getLogger(__name__)
+ 
+ _CHECKPOINT_CURRENT = telemetry.snapshot_attributes("gauge", telemetry.CURRENT_SNAPSHOT)
+ _CHECKPOINT_PHASE_DURATION_METRIC = "checkpoint_phase_duration_seconds"
++_CHECKPOINT_METADATA_FILENAME = "metadata.json"
+ 
+ PathLike = Union[str, pathlib.Path]
+ 
+@@ -932,7 +933,7 @@ def _save_metadata(checkpoint_path, step, is_temporary, extra_metadata=None):
+         "is_temporary": is_temporary,
+     }
+     if jax.process_index() == 0:
+-        metadata_path = StoragePath(prefix_join(checkpoint_path, "metadata.json"))
++        metadata_path = StoragePath(prefix_join(checkpoint_path, _CHECKPOINT_METADATA_FILENAME))
+         if metadata_path.is_remote:
+             # Object-store writers publish the completed object when they close. A sibling rename
+             # would copy and then delete its temporary source, which protected checkpoint prefixes
+@@ -1115,7 +1116,7 @@ def load_checkpoint_or_initialize(
+ def _load_metadata(checkpoint_path, fs=None):
+     if fs is None:
+         fs, _, _ = fsspec.get_fs_token_paths(str(checkpoint_path))
+-    with fs.open(os.path.join(checkpoint_path, "metadata.json")) as metadata_in:
++    with fs.open(os.path.join(checkpoint_path, _CHECKPOINT_METADATA_FILENAME)) as metadata_in:
+         metadata = json.load(metadata_in)
+     return metadata
+ 
+@@ -1164,7 +1165,7 @@ def resolve_checkpoint(checkpoint_path: PathLike) -> ResolvedCheckpoint:
+     if candidates:
+         candidate = candidates[-1]
+         return ResolvedCheckpoint(path=candidate.path, metadata=candidate.metadata)
+-    if StoragePath(prefix_join(checkpoint_path, "metadata.json")).exists():
++    if StoragePath(prefix_join(checkpoint_path, _CHECKPOINT_METADATA_FILENAME)).exists():
+         return ResolvedCheckpoint(path=checkpoint_path, metadata=_load_metadata(checkpoint_path))
+     return ResolvedCheckpoint(path=checkpoint_path, metadata={})
+ 
+@@ -1255,7 +1256,7 @@ def _discover_checkpoint_paths_single(checkpoint_path: str, fs: AbstractFileSyst
+     base_path_protocol = urllib.parse.urlparse(str(checkpoint_path)).scheme
+ 
+     def is_checkpoint_dir(path: str):
+-        return fs.exists(os.path.join(path, "metadata.json"))
++        return fs.exists(os.path.join(path, _CHECKPOINT_METADATA_FILENAME))
+ 
+     def maybe_unstrip_protocol(path: str):
+         if base_path_protocol != "" and urllib.parse.urlparse(path).scheme == "":
+@@ -1371,7 +1372,7 @@ def is_checkpoint_path(path: str) -> bool:
+         # Sometimes we have incomplete checkpoints due to preemption or other issues.
+         # try to find a metadata file in the path
+         fs, plain_path = _get_fs_and_plain_path(path)
+-        metadata_path = os.path.join(plain_path, "metadata.json")
++        metadata_path = os.path.join(plain_path, _CHECKPOINT_METADATA_FILENAME)
+         if fs.exists(metadata_path):
+             return True
+         # if we don't find a metadata file, we can check if the path has any checkpoint subdirectories
+diff --git a/lib/levanter/src/levanter/models/llama_native_lm.py b/lib/levanter/src/levanter/models/llama_native_lm.py
+index 7dd28699f2..aa4b5f22b2 100644
+--- a/lib/levanter/src/levanter/models/llama_native_lm.py
++++ b/lib/levanter/src/levanter/models/llama_native_lm.py
+@@ -53,6 +53,7 @@ from levanter.utils.activation import ActivationFunctionEnum
+ 
+ _LEVANTER_MODEL_METADATA_KEY = "levanter_model"
+ _NATIVE_CHECKPOINT_VERSION = 1
++_NATIVE_MODEL_TYPE = "llama_native"
+ 
+ 
+ def _paged_attention(
+@@ -164,7 +165,7 @@ def _native_rotary_config(config: RotaryEmbeddingsConfig) -> NativeRotaryConfig:
+     raise ValueError(f"Unsupported native Llama RoPE configuration: {type(config).__name__}")
+ 
+ 
+-@LmConfig.register_subclass("llama_native")
++@LmConfig.register_subclass(_NATIVE_MODEL_TYPE)
+ @dataclass(frozen=True)
+ class NativeLlamaLmConfig(LlamaConfig):
+     """Llama training configuration with raw-array parameters and explicit placement.
+@@ -343,7 +344,7 @@ class NativeLlamaLmConfig(LlamaConfig):
+         if (
+             type(identity["version"]) is not int
+             or identity["version"] != _NATIVE_CHECKPOINT_VERSION
+-            or identity["type"] != "llama_native"
++            or identity["type"] != _NATIVE_MODEL_TYPE
+         ):
+             raise ValueError("Unsupported checkpoint model metadata version or implementation")
+         vocab_size = identity["vocab_size"]
+@@ -416,7 +417,7 @@ class NativeLlamaLmHeadModel(ModuleWithStateDictSerialization, LmHeadModel[Nativ
+         return {
+             _LEVANTER_MODEL_METADATA_KEY: {
+                 "version": _NATIVE_CHECKPOINT_VERSION,
+-                "type": "llama_native",
++                "type": _NATIVE_MODEL_TYPE,
+                 "vocab_size": self.Vocab.size,
+                 "architecture": _checkpoint_architecture(self.native.config),
+             }
