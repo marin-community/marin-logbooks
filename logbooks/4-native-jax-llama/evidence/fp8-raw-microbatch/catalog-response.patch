@@ -1,0 +1,72 @@
+diff --git a/lib/levanter/src/levanter/models/llama_native.py b/lib/levanter/src/levanter/models/llama_native.py
+index 23b4c09786..4535179aa7 100644
+--- a/lib/levanter/src/levanter/models/llama_native.py
++++ b/lib/levanter/src/levanter/models/llama_native.py
+@@ -31,6 +31,8 @@ from levanter.layers.stacked import ArrayStacked, StateDictWriter
+ from levanter.utils.activation import ActivationFunctionEnum, JaxActivationFunction
+ 
+ 
++_HF_TOKEN_EMBEDDING_WEIGHT_KEY = "model.embed_tokens.weight"
++_HF_FINAL_NORM_PREFIX = "model.norm"
+ _LAYER_NORM_FIELDS = ("input_layernorm", "post_attention_layernorm", "post_attn_layernorm", "post_mlp_layernorm")
+ _ATTENTION_FIELDS = ("q_proj", "k_proj", "v_proj", "o_proj", "q_norm", "k_norm")
+ _MLP_FIELDS = ("gate_proj", "up_proj", "down_proj")
+@@ -586,8 +588,8 @@ class NativeLlamaModel(eqx.Module):
+     def to_state_dict(self, prefix: str | None = None) -> dict[str, jax.Array]:
+         """Export canonical HF keys and output-first arrays, also for gradients."""
+         state: dict[str, jax.Array] = {}
+-        _put(state, "model.embed_tokens.weight", self.token_embeddings)
+-        _put_module(state, "model.norm", self.norm)
++        _put(state, _HF_TOKEN_EMBEDDING_WEIGHT_KEY, self.token_embeddings)
++        _put_module(state, _HF_FINAL_NORM_PREFIX, self.norm)
+         if self.embedding_norm is not None:
+             _put_module(state, "norm", self.embedding_norm)
+         if self.lm_head is not None:
+@@ -612,10 +614,12 @@ class NativeLlamaModel(eqx.Module):
+         model = eqx.tree_at(
+             lambda m: m.token_embeddings,
+             self,
+-            _load(source["model.embed_tokens.weight"], self.token_embeddings, self.sharding.column_storage),
++            _load(source[_HF_TOKEN_EMBEDDING_WEIGHT_KEY], self.token_embeddings, self.sharding.column_storage),
+         )
+         model = eqx.tree_at(
+-            lambda m: m.norm, model, _load_module(model.norm, source, "model.norm", self.sharding.norm_storage)
++            lambda m: m.norm,
++            model,
++            _load_module(model.norm, source, _HF_FINAL_NORM_PREFIX, self.sharding.norm_storage),
+         )
+         if model.embedding_norm is not None:
+             model = eqx.tree_at(
+diff --git a/lib/levanter/src/levanter/models/llama_native_lm.py b/lib/levanter/src/levanter/models/llama_native_lm.py
+index c157bb201f..7dd28699f2 100644
+--- a/lib/levanter/src/levanter/models/llama_native_lm.py
++++ b/lib/levanter/src/levanter/models/llama_native_lm.py
+@@ -51,6 +51,7 @@ from levanter.tokenizers import MarinTokenizer
+ from levanter.utils.activation import ActivationFunctionEnum
+ 
+ 
++_LEVANTER_MODEL_METADATA_KEY = "levanter_model"
+ _NATIVE_CHECKPOINT_VERSION = 1
+ 
+ 
+@@ -334,9 +335,9 @@ class NativeLlamaLmConfig(LlamaConfig):
+ 
+         Checkpoints without model metadata retain the explicit-config initialization path.
+         """
+-        if "levanter_model" not in metadata:
++        if _LEVANTER_MODEL_METADATA_KEY not in metadata:
+             return None
+-        identity = metadata["levanter_model"]
++        identity = metadata[_LEVANTER_MODEL_METADATA_KEY]
+         if not isinstance(identity, dict) or set(identity) != {"version", "type", "vocab_size", "architecture"}:
+             raise ValueError("Malformed native checkpoint model metadata")
+         if (
+@@ -413,7 +414,7 @@ class NativeLlamaLmHeadModel(ModuleWithStateDictSerialization, LmHeadModel[Nativ
+     def checkpoint_metadata(self) -> Mapping[str, Any]:
+         """Describe the actual stored model without source paths or runtime placement policy."""
+         return {
+-            "levanter_model": {
++            _LEVANTER_MODEL_METADATA_KEY: {
+                 "version": _NATIVE_CHECKPOINT_VERSION,
+                 "type": "llama_native",
+                 "vocab_size": self.Vocab.size,

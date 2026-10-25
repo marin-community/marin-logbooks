@@ -1,0 +1,115 @@
+{
+  "schema": "native-jax-fp8-raw-microbatch-evidence.v1",
+  "records": {
+    "native-jax-fp8-raw-microbatch-maintained-review.json": {
+      "review": "independent maintained-source and extraction review",
+      "result": "no actionable issues found",
+      "findings": [],
+      "maintained_source_suitable": true,
+      "research_only_pieces_to_extract": [],
+      "root": "local-artifacts/marin-native-jax-fp8-raw-microbatch",
+      "base": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "branch": "codex/native-jax-fp8-raw-microbatch",
+      "candidate_tree_from_freeze": "f7a73d71b5f67e99b266b629f542aab8934b5e46",
+      "freeze_sha256_verified": true,
+      "files": {
+        "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+        "lib/levanter/tests/test_explicit_trainer.py": "15411d6f5db09846ea500b94330359d39fed579c56c51ceb55bb8d87ef4f7b2a"
+      },
+      "patch_sha256": "0cab2a1059a0054cc9a604b69e6ac774536ff1c8ec4b515eadee95f2c0b89758",
+      "reviewed": [
+        "entire two-file contribution and surrounding callers/helpers",
+        "atomic CustomGradientAccumulation reduction and averaging exclusion",
+        "ordinary gradient, loss, metrics and RNG source preservation",
+        "shape, JIT and explicit-placement safety",
+        "real FP8 custom-VJP test and independent NumPy/analytic oracle",
+        "all six state values and physical placements",
+        "device-count geometry, operand representation and cotangent arithmetic",
+        "durability and absence of research-only scaffolding"
+      ],
+      "baseline_proof_read": "local-artifacts/native-jax-fp8-raw-microbatch-baseline-proof.json",
+      "baseline_proof_boundary": "Supplied prior execution evidence; reported input history 16.5 versus 32 failure. Later kernel/output history assertions unreached. Not executed by this reviewer.",
+      "candidate_tests_run_by_reviewer": false,
+      "candidate_code_imported": false,
+      "candidate_source_edited": false,
+      "committed_or_published": false,
+      "runtime_or_job_queries": false,
+      "candidate_later_validation_outcome": "not established by this review",
+      "validation_boundaries": [
+        "freeze before-tests status is historical and does not establish later validation",
+        "no runtime claim for CPU, GPU, TPU, arbitrary device counts or multihost",
+        "non-power-of-two backend exact-reduction arithmetic remains unexecuted, with no established failure",
+        "no accelerator-performance, native-model, overwrite-lifecycle or canonical-acceptance claim"
+      ],
+      "report": "local-artifacts/native-jax-fp8-raw-microbatch-maintained-review.md"
+    },
+    "native-jax-fp8-raw-microbatch-maintained-review.md": "# Maintained-source and extraction review\n\nNo actionable issues found in the frozen two-file contribution. The contribution is suitable maintained library code and regression coverage; no research-only machinery needs to be extracted from these files.\n\nReviewed base `ba58e83e3310163e8d674ea9e95a85094d236a7a`, branch `codex/native-jax-fp8-raw-microbatch`, candidate tree recorded by the freeze as `f7a73d71b5f67e99b266b629f542aab8934b5e46`. Current source SHA-256 values and support-patch SHA-256 were independently checked against `local-artifacts/native-jax-fp8-raw-microbatch-source-freeze.json`; all match. The only tracked modifications are the two authorized files.\n\n## Production source\n\n- `grad_accum.py:100` reuses `haliax.quantization.accumulate_gradients`, the same helper already used by named `microbatched`. Ordinary array leaves still add; custom accumulation modules are treated atomically and dispatch to their existing associative reduction. The zero-like initial custom module satisfies the helper's documented identity contract. There is no new FP8-specific reducer or parallel implementation.\n- `grad_accum.py:104-108` keeps custom modules atomic while excluding them from division. This is necessary independently of custom reduction: averaging the returned scales or rolled history tail would corrupt overwrite state even when maxima were combined correctly. The logic matches named `microbatched`.\n- The docstring now states this actual distinction. Loss averaging, metric folding and identities, RNG splitting, argument reuse, batch reshaping, accumulator shape inference, and bypass behavior are unchanged. The helper preserves the ordinary addition semantics for the existing raw-array gradient trees, including `None` leaves.\n- The new type checks depend only on static pytree structure and module type. They do not introduce data-dependent Python control flow or dynamic shapes. Existing shape-derived zero allocation retains physical sharding; FP8 maxima operate on identically replicated state and ordinary addition/division preserve the gradient placement. No new host/device transfer, mesh selection, donation, or live infrastructure dependency appears in production code.\n\n## Maintained regression\n\n- The test uses real `Fp8DotGeneralOp` custom VJPs inside jitted `microbatched_arrays`, rather than a substitute reducer or internal-dispatch mock. Mixed high/low microbatches distinguish maximum from mean, sum, and last-microbatch state. Nonzero histories distinguish rolled persisted state from discarded or incorrectly averaged state. Distinct non-unit scales expose accidental scale averaging.\n- NumPy matrix multiplication and the analytic full-batch MSE derivative independently establish ordinary output, loss, and weight-gradient behavior. The custom-state expected values do not call the production accumulator or FP8 metadata helpers. The output-gradient state correctly uses the microbatch objective's cotangent, while the ordinary gradient oracle uses the full-batch objective.\n- The seeded histories maintain scales 2, 0.5 and 4: their maxima divided by E4M3/E5M2 maxima give those values. Their expected tails follow the existing one-step roll, and the fresh input maximum must remain 32. This is a behavior regression with observable returned state, not a helper-wiring or constant-only assertion.\n- The mesh geometry supports any positive device count structurally: model size is either 1 or 2 and divides the four output features; `lcm(8, data_size)` makes the stored contracting axis divisible by data size; both full and microbatch leading dimensions are divisible by data size. For odd device counts the model axis is size 1. Let `d=data_size`, `K=lcm(8,d)`: the high microbatch MSE cotangent is `K/d = 8/gcd(8,d)`, a power of two, and the low cotangent is 1/32 of it. Operand/scaling values are likewise FP8-representable. This supports the choice of a small exact numerical oracle.\n- Storage and compute layouts intentionally differ for the weight. Assertions check returned ordinary-gradient layout, requested forward layout, replicated scalar loss and all six state arrays, plus input and stored-weight reuse. These protect placement and ownership contracts alongside numeric reduction behavior.\n- The `tpu` marker is appropriate for transfer/collective and accelerator lowering coverage while retaining CPU eligibility under root testing policy. Device discovery occurs inside the test, and `lcm`, `reshard`, and the real operation are directly used. The test extends existing explicit-trainer/raw-microbatch coverage without adding a standalone research harness, configurations, fixtures, dependencies, or permanent skip.\n\n## Evidence boundaries\n\nThis is an independent read-only source review following root/module instructions, root testing policy, JIT-safety guidance, and the review-pr standard. I ran no tests, imported no candidate code, edited no source, and made no commits, publication, or runtime/job queries.\n\nThe supplied baseline proof reports that the same regression on unchanged base failed at input history 16.5 versus 32 after ordinary numerical and placement checks passed. I read that proof as prior execution evidence, not as a test performed by this reviewer. Its later kernel/output-history numeric assertions were unreached. The source freeze's 'candidate tests not yet run' status is a historical checkpoint and establishes no later test outcome.\n\nCandidate CPU1/4 validation is running elsewhere and is not a prerequisite to completing this source review. This review does not claim runtime passage on CPU, GPU, TPU, arbitrary device counts, or multihost setups. In particular, structural divisibility and representable exact cotangents do not establish that every backend's lowering/reduction order will satisfy every exact equality for non-power-of-two device counts. No such backend failure was established here, so this is a validation boundary, not a finding. It also does not establish accelerator performance, native-model integration, trainer overwrite/application lifecycle, or canonical research acceptance.\n",
+    "native-jax-fp8-raw-microbatch-r1-maintained-review.json": {
+      "review": "independent final maintained-contribution source review before commit",
+      "verdict": "no_actionable_findings",
+      "findings": [],
+      "suitable_for_proposed_maintained_code_commit": true,
+      "candidate": "local-artifacts/marin-native-jax-fp8-raw-microbatch",
+      "base": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "freeze": "local-artifacts/native-jax-fp8-raw-microbatch-r1-source-freeze.json",
+      "recorded_tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+      "verified_sha256": {
+        "full_contribution_patch": "6f4c8f58f13a04ce702468560bcf0ecd807017e612b1927b6e5dbed366b124c2",
+        "r1_response_patch": "581e92307ce2fff71b95b163c1a65959c9c378d5e79d74499aa8de5e50c9081c",
+        "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+        "lib/levanter/tests/test_explicit_trainer.py": "37830a044fd4c76467ef88ede1e2a37d82055bfe38262752b1c2d2f2ce7ecb7f"
+      },
+      "frozen_and_live_sources_match": true,
+      "scope_exactly_two_files": true,
+      "diff_check": "passed",
+      "production_reuses_existing_custom_gradient_reducer": true,
+      "custom_state_excluded_from_final_averaging": true,
+      "ordinary_gradient_loss_averaging_preserved": true,
+      "metrics_rng_logic_and_existing_tests_unchanged": true,
+      "jit_review": "static tree/type dispatch; scan carry structure and placement retained; no new dynamic shapes or data-dependent Python branches",
+      "oracle": "independent NumPy matmul and analytic squared-mean derivative; explicit FP8 state expectations",
+      "all_six_fp8_metadata_value_and_placement_assertions_preserved": true,
+      "r1_is_test_only": true,
+      "tolerances_changed": false,
+      "r1_addresses_observed_arithmetic_geometry_concern": true,
+      "available_vs_used_devices": {
+        "selection": "largest power-of-two prefix of available devices",
+        "seven_available": {
+          "used_mesh_devices": 4,
+          "data_axis": 2,
+          "model_axis": 2
+        },
+        "one_four_eight_available_geometry_and_values_unchanged": true,
+        "all_positive_counts_geometry": "legal by source inspection; not executed at every count",
+        "full_seven_device_layout_validated": false
+      },
+      "observed_external_validation_artifacts": {
+        "r1_cpu1_xml": "one focused test passed",
+        "r1_cpu4_xml": "one focused test passed",
+        "r1_ordinary_log": "checks passed",
+        "initial_cpu7_validation_json": "exact loss comparison failed: 25112.501953125 versus 25112.5"
+      },
+      "caller_supplied_evidence_not_rerun": [
+        "initial candidate module and focused passes",
+        "old-base regression failure 16.5 versus 32"
+      ],
+      "reviewer_execution": {
+        "project_imports": false,
+        "tests": false,
+        "source_edits": false,
+        "job_queries": false,
+        "commit_or_push": false,
+        "reports_written_only": true
+      },
+      "limits": [
+        "Separate validator owns final R1 source-bound validation record",
+        "No accelerator or Native qualification",
+        "No full odd-device layout claim",
+        "No multi-host topology, performance, production-run, publication or merge claim"
+      ],
+      "report": "local-artifacts/native-jax-fp8-raw-microbatch-r1-maintained-review.md"
+    },
+    "native-jax-fp8-raw-microbatch-r1-maintained-review.md": "# R1 final maintained-contribution review\n\nVerdict: **no actionable findings; the frozen two-file contribution is suitable for the proposed maintained-code commit**, within the validation limits below. This is an independent source review, not accelerator or Native qualification and not authorization to publish or merge.\n\n## Reviewed identity and scope\n\n- Candidate: `local-artifacts/marin-native-jax-fp8-raw-microbatch`.\n- Base: `ba58e83e3310163e8d674ea9e95a85094d236a7a`.\n- R1 tree recorded by freeze: `46a5abd500f921dd778d4765e5112f8e5e9d27ef`.\n- Freeze: `local-artifacts/native-jax-fp8-raw-microbatch-r1-source-freeze.json`.\n- Full contribution SHA-256: `6f4c8f58f13a04ce702468560bcf0ecd807017e612b1927b6e5dbed366b124c2`.\n- R1 response SHA-256: `581e92307ce2fff71b95b163c1a65959c9c378d5e79d74499aa8de5e50c9081c`.\n- `grad_accum.py` SHA-256: `c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53`.\n- `test_explicit_trainer.py` SHA-256: `37830a044fd4c76467ef88ede1e2a37d82055bfe38262752b1c2d2f2ce7ecb7f`.\n\nThe frozen snapshots and the candidate's live two source files match these hashes. `git diff --stat BASE` shows exactly these two changed files, and `git diff --check BASE` passes. I read the full patch, response, surrounding raw and named microbatch implementations, existing ordinary metrics/RNG test, Haliax custom-gradient accumulation contract, FP8 reduction and custom VJP, root/module instructions, root TESTING.md and Levanter JIT-safety guide. No additional module TESTING.md was found under Levanter. No project imports, test execution, source edits, job queries, commit or push were performed by this reviewer.\n\n## Maintained behavior and design\n\nThe production correction is small and uses the existing abstraction. The raw-array scan now calls `hq.accumulate_gradients`, whose ordinary leaves remain additive and whose `CustomGradientAccumulation` leaves invoke their associative reducer. The initial zero-shaped custom state is consistent with that reducer's documented identity contract. The final averaging map treats the whole custom object as a leaf and returns it unchanged; ordinary gradients and loss still divide by the number of microbatches. This matches the already maintained named-array microbatch path, rather than introducing an FP8-specific branch or a second reduction implementation.\n\nThe added tree/type decisions are static during tracing. The scan carry retains its structure and placement; no new data-dependent Python control flow or dynamic shape is introduced. Batch reshaping, key splitting, keyword sharing, metric identities and metric folding are unchanged. Existing ordinary-gradient, metrics and split-RNG assertions remain unchanged. The production docstring states the new custom-state behavior at the API boundary.\n\nThe test belongs in maintained coverage: it exercises a public raw microbatch wrapper with the actual FP8 custom VJP, checks ordinary gradient and loss parity, and checks the externally returned gradient-carried state and explicit placements. It contains no research launcher, temporary artifact dependency, runtime monkeypatch, mock, duplicated reducer, or incidental helper-dispatch assertion. The literal TPU marker is appropriate for accelerator coverage of transfers and explicit sharding, while permitting supported CPU execution under the repository policy.\n\n## Independent oracle and retained regression strength\n\nThe output and ordinary weight-gradient oracle is a small NumPy matrix product and analytic squared-mean derivative, independent of the custom-gradient reducer and FP8 helper implementation. The fixture uses representable operands and fixed delayed-scaling histories; it does not derive its expected state by invoking the reducer under test.\n\nTwo microbatches put the larger input first (32 versus 1), so keeping only the last microbatch or averaging the newest amax entries cannot satisfy the expected input history entry 32. The original additive-then-average behavior would produce 16.5. Taking maxima and then averaging would produce 16. The three scale checks and full history checks also retain unaveraged state and the expected rolled tails. The output-gradient history uses the microbatch loss normalization, separately from the full-batch gradient oracle. These are meaningful behavior assertions, including all six metadata fields, rather than registration or configuration checks.\n\nR1 changes only device selection and its explanatory comment. It removes no state, numerical, placement, input-reuse, or weight-reuse assertion; it changes no tolerance. The 1-, 4- and 8-available-device fixtures retain their previous values and geometry by inspection.\n\n## R1 arithmetic and mesh geometry\n\nThe prior actual 7-device failure is documented in `local-artifacts/native-jax-fp8-raw-microbatch-cpu7-validation.json`: JAX loss 25112.501953125 versus NumPy 25112.5 at the exact loss comparison. R1 addresses its fixture arithmetic cause by choosing the largest power-of-two prefix of the available devices. Consequently the data dimension, contracting dimension and squared-mean divisors are powers of two for this constructed exact oracle, avoiding the denominator-7 reciprocal/reduction discrepancy rather than accepting it with a looser comparison.\n\nFor every positive available-device count, selection yields a positive power-of-two used-device count. With 1 or 2 used devices, model size is 1; with at least 4 it is 2. Data size is therefore integral, the `(data, model)` mesh reshape is legal, output width 4 is divisible by model size, and `lcm(8, data_size)` makes the weight's contracting dimension divisible by its data partition. Both full and microbatch leading dimensions are divisible by data size. The forward reshard from `P(\"model\", \"data\")` to `P(\"model\", None)` supplies the contracting operand placement used by the explicit data/model output. The test checks returned output, scalar loss, weight gradient and replicated metadata placement.\n\nExamples: 1 available uses 1 (1 data x 1 model); 2 or 3 available uses 2 (2 x 1); 4 through 7 available uses 4 (2 x 2); 8 through 15 available uses 8 (4 x 2). Thus **7 available devices means 4 mesh devices, not a full 7-device layout**. The same distinction applies to every non-power-of-two available count. Geometry legality by inspection is not a claim of runtime execution at all counts.\n\n## Evidence boundary\n\nThe R1 CPU1 and CPU4 JUnit artifacts available during this review each report one focused test passing, and the R1 ordinary-check log reports lint/format/type/AST checks passing. These are read artifacts from the separate validator, not tests independently run by this reviewer. Fresh R1 validation remains owned by that validator; this report does not supply or replace its final source-bound validation record.\n\nThe caller supplied earlier initial-candidate module/focused passes and an old-base regression failure; the 16.5-versus-32 old behavior is independently explained by the reviewed source, but this reviewer did not re-execute that comparison. No accelerator was exercised here. CPU placement and FP8 arithmetic coverage do not qualify accelerator FP8 kernel behavior, accelerator numerical parity, Native training, production runs, performance, a full odd-device layout, or distributed multi-host device topology.\n"
+  },
+  "routine_setup_repairs_omitted": "Initial private originals remain hash-addressed; setup repair added no scientific evidence."
+}

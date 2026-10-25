@@ -1,0 +1,13 @@
+diff --git a/lib/levanter/tests/test_explicit_trainer.py b/lib/levanter/tests/test_explicit_trainer.py
+index 19eaa22bf8..66dc075a8f 100644
+--- a/lib/levanter/tests/test_explicit_trainer.py
++++ b/lib/levanter/tests/test_explicit_trainer.py
+@@ -325,6 +325,8 @@ def test_trainer_checkpoint_hook_commits_model_metadata(tmp_path):
+ @pytest.mark.tpu
+ def test_raw_microbatch_fp8_state_uses_maxima_without_averaging():
+     devices = jax.devices()
++    # Keep mean divisors powers of two for the exact NumPy oracle.
++    devices = devices[: 1 << (len(devices).bit_length() - 1)]
+     model_size = 2 if len(devices) >= 4 and len(devices) % 2 == 0 else 1
+     data_size = len(devices) // model_size
+     contracting_size = lcm(8, data_size)

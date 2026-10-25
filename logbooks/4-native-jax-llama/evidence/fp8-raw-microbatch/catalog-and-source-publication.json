@@ -1,0 +1,153 @@
+{
+  "schema": "native-jax-fp8-raw-microbatch-release.v1",
+  "source_publication": {
+    "status": "pushed-owned-topic-no-PR",
+    "repository": "dlwh/marin",
+    "branch": "codex/native-jax-fp8-raw-microbatch",
+    "head": "1a0a0a4fcb474b57a2046d882191ee32f32182ba",
+    "tree": "f6716eaeea3c0ecad521a5947d0db394118e8373",
+    "parent": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+    "base_branch": "codex/native-jax-fp8-forward-sharding",
+    "base_head": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "source_commit_url": "https://github.com/dlwh/marin/commit/1a0a0a4fcb474b57a2046d882191ee32f32182ba",
+    "remote_tip_verified": true,
+    "remote_git_commit_tree_parent_verified": true,
+    "duplicate_PR_preflight": [],
+    "PR_created": false,
+    "catalog": {
+      "path": "local-artifacts/native-jax-fp8-raw-microbatch-root-catalog-proof.json",
+      "sha256": "1766425abe35f8a88d8d526fb5126f7e7045f62eaff39547d6340d1161db5931"
+    },
+    "runtime_qualification_head": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+    "post_qualification_change": "constant-only serializer cleanup with exact expanded AST equality and independent source review",
+    "verified_utc": "2026-10-25T05:10:11.252846+00:00"
+  },
+  "catalog": {
+    "reviewed_head": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+    "reviewed_tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+    "merge_base": "86fc7b67c921ad4ac124835ca7379b04ffa1be25",
+    "verified_upstream_main": "8577d258214dd0dcb992c04458ee4eb10496d4e5",
+    "log_dir": "local-artifacts/20261025T045915-hshcajrc",
+    "all_six_lanes_and_composer_inspected": true,
+    "initial_findings_count": 2,
+    "initial_findings": [
+      "lib/levanter/src/levanter/models/llama_native.py:615: ml-magic-constant (0.90) HF keys \"model.embed_tokens.weight\" and \"model.norm\" repeat literals from the exporter, allowing import and export mappings to drift independently.",
+      "lib/levanter/src/levanter/models/llama_native_lm.py:416: ml-magic-constant (0.90) The \"levanter_model\" metadata namespace repeats literals from the reader; writer/reader drift could silently bypass semantic validation."
+    ],
+    "arms": {
+      "complexity": {
+        "exit": 0,
+        "stdout": "",
+        "sha256": "bc5875d22e145db42767621c0f04295eb2396fed0fa49e49d0b2882c9160c4c6",
+        "bytes": 797102,
+        "tokens": 181302
+      },
+      "interfaces": {
+        "exit": 0,
+        "stdout": "",
+        "sha256": "59ee48e4bfd0388b4669222ea5c9b46e79f5c01860d6cd092862517dd329edd7",
+        "bytes": 804962,
+        "tokens": 203538
+      },
+      "robustness": {
+        "exit": 0,
+        "stdout": "lib/levanter/src/levanter/models/llama_native.py:615: ml-magic-constant (0.90) HF keys \"model.embed_tokens.weight\" and \"model.norm\" repeat literals from the exporter, allowing import and export mappings to drift independently.\nlib/levanter/src/levanter/models/llama_native_lm.py:416: ml-magic-constant (0.90) The \"levanter_model\" metadata namespace repeats literals from the reader; writer/reader drift could silently bypass semantic validation.",
+        "sha256": "721556543cae5384d22631508653c30c3691e0342992142f5d785eae60a7c12c",
+        "bytes": 546868,
+        "tokens": 119346
+      },
+      "cruft": {
+        "exit": 0,
+        "stdout": "",
+        "sha256": "6692ee207379799c9c01b605d0a1c6a54bedaf9f9c9359f3218ba243ce7c4acb",
+        "bytes": 870263,
+        "tokens": 203472
+      },
+      "prose": {
+        "exit": 0,
+        "stdout": "",
+        "sha256": "c09f02f3d053ae4c790d5adffa0035bdc79257c232b82d4ed6cac1cb3da1cffe",
+        "bytes": 637537,
+        "tokens": 157550
+      },
+      "meta": {
+        "exit": 0,
+        "stdout": "",
+        "sha256": "7b47890c25bae0ef776fcfb69c085b5978da1ab3ccae1b2605ebfba741bb307b",
+        "bytes": 746003,
+        "tokens": 165354
+      },
+      "composer": {
+        "exit": 0,
+        "stdout": "lib/levanter/src/levanter/models/llama_native.py:615: ml-magic-constant (0.90) HF keys \"model.embed_tokens.weight\" and \"model.norm\" repeat literals from the exporter, allowing import and export mappings to drift independently.\nlib/levanter/src/levanter/models/llama_native_lm.py:416: ml-magic-constant (0.90) The \"levanter_model\" metadata namespace repeats literals from the reader; writer/reader drift could silently bypass semantic validation.",
+        "sha256": "698d596602489dd3d2fb471a0acacb1415a332efd23f062f806da63f53de2699",
+        "bytes": 32824,
+        "tokens": 8535
+      }
+    },
+    "summary_sha256": "f352fd43bbb49ba8904fcad1dc6abbeb4df0f35cd6fbcc931b651585d503db5f",
+    "command": [
+      "./infra/pre-commit.py",
+      "--review",
+      "--agent-command=codex exec --ephemeral --sandbox read-only -"
+    ],
+    "outer_sandbox": "require_escalated (authorized read-only reviewer endpoint access)",
+    "terminal_session": 86958,
+    "exit": 0,
+    "elapsed": 267.81,
+    "initial_stalled_attempt": {
+      "path": "local-artifacts/native-jax-fp8-raw-microbatch-root-catalog-stalled-proof.json",
+      "sha256": "fb232697d23052ffc232d76f086c29d30e9fa9f63c5eab410e86eb1d634cd892"
+    },
+    "disposition": "both findings fixed with three module-local string constants in separately reviewed targeted response; all original wire values preserved",
+    "final_head": "1a0a0a4fcb474b57a2046d882191ee32f32182ba",
+    "final_tree": "f6716eaeea3c0ecad521a5947d0db394118e8373",
+    "resolved_findings_count": 2,
+    "remaining_findings": 0,
+    "response_commit": "1a0a0a4fcb474b57a2046d882191ee32f32182ba",
+    "response_source_freeze": {
+      "path": "local-artifacts/native-jax-fp8-raw-microbatch-catalog-response-source-freeze.json",
+      "sha256": "3862cd6d23939f7a665e3d6472ffdf0273be17770b45f568167378670559c28a"
+    },
+    "fresh_response_review": {
+      "path": "local-artifacts/native-jax-fp8-raw-microbatch-catalog-response-maintained-review.json",
+      "sha256": "d114dc203fa23ef7d10cad8475d43d08a8a4cd98f4af4ffb72d2270308a82554"
+    },
+    "response_required_ordinary": {
+      "exit": 0,
+      "path": "local-artifacts/native-jax-fp8-raw-microbatch-catalog-response-ordinary.log",
+      "sha256": "18b57bd4c281d2638b0edfe5fcd00592d24702fc8fe0668756b4fa64ed4de0e8",
+      "command": "./infra/pre-commit.py lib/levanter/src/levanter/models/llama_native.py lib/levanter/src/levanter/models/llama_native_lm.py",
+      "fix": false,
+      "skipped_hooks": false
+    },
+    "response_AST_equivalence": {
+      "path": "local-artifacts/native-jax-fp8-raw-microbatch-catalog-response-ast-proof.json",
+      "sha256": "1553b93620f1778c74f7619966ff05d83995382f15846a8e484d87bf74652e5f",
+      "script": "local-artifacts/native-jax-fp8-raw-microbatch-catalog-response-ast-proof.py",
+      "script_sha256": "bda77f5f195fe1ec7c6972247d02c989d9335eb8584581e74eef1d60e10349f3",
+      "all_original_literal_string_values_preserved": true,
+      "normalization": "expand only new three constantloadrefs and remove their exact literaldefinitions; original full AST equal"
+    },
+    "catalog_rerun": false,
+    "catalog_rerun_policy": "manage-pr: do not recursively rerun fullcatalog after targeted findings fixes; mechanical edits get normal lint/format checks",
+    "runtime_qualification_boundary": "938case qualification remains pinned7bc; finalhead changes only serialization key constants, root/fresh-review AST expansion identical; no new runtime check claimed"
+  },
+  "routine_catalog_attempt_boundary": {
+    "source": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+    "command": [
+      "./infra/pre-commit.py",
+      "--review",
+      "--agent-command=codex exec --ephemeral --sandbox read-only -"
+    ],
+    "outcome": "local reviewer command stalled beyond600second configured per-lane timeout; no terminal lane/composer receipt; root terminated verified owned local process tree",
+    "network": "initial command inherited restricted outer sandbox; not established as causal",
+    "credited_review": false,
+    "log": "local-artifacts/native-jax-fp8-raw-microbatch-root-catalog-stalled.log",
+    "log_sha256": "fcca1b6705e50fca6f0c8c027072787b8db76c4359f8114dcc10d30972ea78b6",
+    "recovery": "separate explicit network-enabled invocation; no source change or accelerator action"
+  },
+  "projection": "Review terminal tails and routine owned-PID list omitted; original proof/log hashes and all lane/composer exits, stdout dispositions and token counts retained. No review credit for stalled attempt.",
+  "publication_state": "Public owned source topic; no PR at this receipt. Root creates PR after public archive evidence.",
+  "measurement_boundary": "938-case runtime qualification is historical7bc. Final1a0 changes serializer string definitions only, with AST equivalence and fresh review; no new runtime claim."
+}

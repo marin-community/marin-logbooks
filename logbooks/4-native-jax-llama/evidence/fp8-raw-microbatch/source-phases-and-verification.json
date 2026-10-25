@@ -1,0 +1,201 @@
+{
+  "schema": "native-jax-fp8-raw-microbatch-evidence.v1",
+  "records": {
+    "native-jax-fp8-raw-microbatch-baseline-source-freeze.json": {
+      "phase": "before any source/test edits; maintained regression outside cleanba58 clone",
+      "head": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+      "clean_status": "",
+      "root": "local-artifacts/marin-native-jax-fp8-raw-microbatch",
+      "files": {
+        "lib/levanter/src/levanter/grad_accum.py": {
+          "sha256": "908fe328eee1055a726ef9e4f86955164e52b1a5f606a4bbd19433ac3f5f1fce",
+          "blob": "4d8ee5fd2d427a123f4ac13e87dfe8682bab007a"
+        },
+        "lib/levanter/tests/test_explicit_trainer.py": {
+          "sha256": "38c290da4176db095519ffaf2e40c5e9260141facfd493611ce9f74407ad6029",
+          "blob": "700c6e943105231f751e6a85147f42bb229e4d0b"
+        }
+      },
+      "private_fixture": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-regression.py",
+        "sha256": "0f321c02d1720def0d48f1f8393eecb0e0a136b89ad0391f93322fb763350836"
+      },
+      "runner": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-tests.py",
+        "sha256": "a7649533abff4bd92a6d325adccfb2f3417d0409c9c408073d70e3963d73643c"
+      },
+      "env": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-env.sh",
+        "sha256": "a53894242a746fca6cb29c953887a00e12e0191266cfaceb687ae1f26d3a9426"
+      }
+    },
+    "native-jax-fp8-raw-microbatch-source-freeze.json": {
+      "scope": "two-file raw custom-gradient microbatch fix; no candidate tests yet",
+      "root": "local-artifacts/marin-native-jax-fp8-raw-microbatch",
+      "base": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "base_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+      "branch": "codex/native-jax-fp8-raw-microbatch",
+      "candidate_tree": "f7a73d71b5f67e99b266b629f542aab8934b5e46",
+      "files": {
+        "lib/levanter/src/levanter/grad_accum.py": {
+          "sha256": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+          "blob": "6e944907fea5a907bc78ab6f23b08de86299acf3",
+          "snapshot": "local-artifacts/grad_accum.py"
+        },
+        "lib/levanter/tests/test_explicit_trainer.py": {
+          "sha256": "15411d6f5db09846ea500b94330359d39fed579c56c51ceb55bb8d87ef4f7b2a",
+          "blob": "19eaa22bf803283657c7afb2bf687c71684eeb86",
+          "snapshot": "local-artifacts/test_explicit_trainer.py"
+        }
+      },
+      "patch": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-support.patch",
+        "sha256": "0cab2a1059a0054cc9a604b69e6ac774536ff1c8ec4b515eadee95f2c0b89758"
+      },
+      "baseline_proof": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-baseline-proof.json",
+        "sha256": "f3f1c0078e6bc2c4e0b4ab6813fd06fd23458c6ced7661e84085f949a7ea89c9"
+      },
+      "exact_new_test_AST_matches_executed_negative_fixture": true,
+      "ordinary": {
+        "exit": 0,
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-ordinary.log",
+        "sha256": "18b57bd4c281d2638b0edfe5fcd00592d24702fc8fe0668756b4fa64ed4de0e8"
+      },
+      "helpers_reused": [
+        "haliax.quantization.accumulate_gradients",
+        "CustomGradientAccumulation atomic handling matching existing named microbatched path"
+      ],
+      "candidate_validation": "not run before this freeze; authorized narrow CPU1/4 next",
+      "excluded": [
+        "native model guards",
+        "quantization converter",
+        "microbatch research repro execution",
+        "accelerator/performance/canonical acceptance",
+        "commit/push/publication"
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-r1-source-freeze.json": {
+      "phase": "R1 test-only portability response before any new checks",
+      "root": "local-artifacts/marin-native-jax-fp8-raw-microbatch",
+      "base": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "branch": "codex/native-jax-fp8-raw-microbatch",
+      "initial_tree": "f7a73d71b5f67e99b266b629f542aab8934b5e46",
+      "candidate_tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+      "initial_source_freeze": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-source-freeze.json",
+        "sha256": "3a904e78cdc462d23c4ffff49c432d4c78e91f4e2f2171d9874efaed249a718c"
+      },
+      "response": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-response.patch",
+        "sha256": "581e92307ce2fff71b95b163c1a65959c9c378d5e79d74499aa8de5e50c9081c"
+      },
+      "full_patch": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-full-contribution.patch",
+        "sha256": "6f4c8f58f13a04ce702468560bcf0ecd807017e612b1927b6e5dbed366b124c2"
+      },
+      "files": {
+        "lib/levanter/src/levanter/grad_accum.py": {
+          "sha256": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+          "blob": "6e944907fea5a907bc78ab6f23b08de86299acf3",
+          "snapshot": "local-artifacts/grad_accum.py"
+        },
+        "lib/levanter/tests/test_explicit_trainer.py": {
+          "sha256": "37830a044fd4c76467ef88ede1e2a37d82055bfe38262752b1c2d2f2ce7ecb7f",
+          "blob": "66dc075a8fef781a3d70229b023a032c70d02699",
+          "snapshot": "local-artifacts/test_explicit_trainer.py"
+        }
+      },
+      "production_unchanged": true,
+      "unchanged_existing_functions_AST": [
+        "_loss",
+        "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch",
+        "test_native_microbatch_metrics_use_their_reduction_and_split_rng",
+        "test_explicit_trainer_checkpoint_resumes_same_next_step",
+        "test_explicit_trainer_microbatch_preserves_data_and_parameter_sharding",
+        "test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization",
+        "test_trainer_checkpoint_hook_commits_model_metadata"
+      ],
+      "preserved_CPU1_4_8_fixture_values_and_assertions": true,
+      "CPU7_boundary": "7 available process devices; fixture deliberately uses largest power-of-two prefix =4 mesh devices; no full7-layout claim",
+      "prior_CPU7_actual_loss_failure": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu7-validation.json",
+        "sha256": "3cd4ff3be88495b3600cdbc42d90578ec5a3fb1d3da97c8ae474e41075cc317e"
+      },
+      "checks": "not yet run on R1; ordinary then focused actual1/4/7available next",
+      "excluded": [
+        "tolerance/assertion changes",
+        "production edits",
+        "whole-module/broad/research/accelerator execution",
+        "commit/push/catalog/publication"
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-root-verification.json": {
+      "source_freeze": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+      "files": {
+        "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+        "lib/levanter/tests/test_explicit_trainer.py": "37830a044fd4c76467ef88ede1e2a37d82055bfe38262752b1c2d2f2ce7ecb7f"
+      },
+      "checks": "root independently verified exact source, R1 XML/log hashes and successful case outcomes, import provenance and seven unchanged functions AST",
+      "ordinary_all_files_exit": 0,
+      "review": "no_actionable_findings",
+      "staged_tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+      "base": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "baseline_xml_case_count": 1,
+      "baseline_failure": "input_amax_history actual16.5 expected32; later numeric assertions unreached",
+      "original_cpu7_failure": "exact loss25112.501953125 versus25112.5; later assertions unreached",
+      "baseline_and_cpu7_hashes_verified": true
+    },
+    "native-jax-fp8-raw-microbatch-root-commit-proof.json": {
+      "head": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+      "tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+      "parent": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "message": "[levanter] Preserve FP8 state in raw microbatches\n\nRaw microbatch accumulation averaged FP8 histories alongside ordinary\nparameter gradients. With input maxima 32 and 1, this stored 16.5 instead\nof the required maximum 32.\n\nReuse the shared custom-gradient reducer during accumulation and exclude\ncustom state from gradient averaging. Keep metric reductions and RNG\nsplitting unchanged. Add a real FP8 regression with independent NumPy\nloss and weight-gradient references and explicit scale/history checks.\n\nPart of https://github.com/marin-community/marin-logbooks/issues/4.\n",
+      "clean": true
+    },
+    "native-jax-fp8-raw-microbatch-ordinary.log": "warning: No lockfile found for Python script (ignoring `--frozen`); run `uv lock --script` to generate a lockfile\nwarning: `--no-sync` is a no-op for Python scripts with inline metadata, which always run in isolation\n  Ruff linter............................. ok\n  Black formatter (lib/levanter/pyproject.toml) ok\n  License headers (lib/levanter/etc/license_header.txt) ok\n  Pyrefly type checker.................... ok\n  Large files............................. ok\n  Python AST.............................. ok\n  Merge conflicts......................... ok\n  Trailing whitespace..................... ok\n  End-of-file newline..................... ok\n============================================================\nOK\n============================================================\n",
+    "native-jax-fp8-raw-microbatch-r1-ordinary.log": "warning: No lockfile found for Python script (ignoring `--frozen`); run `uv lock --script` to generate a lockfile\nwarning: `--no-sync` is a no-op for Python scripts with inline metadata, which always run in isolation\n  Ruff linter............................. ok\n  Black formatter (lib/levanter/pyproject.toml) ok\n  License headers (lib/levanter/etc/license_header.txt) ok\n  Pyrefly type checker.................... ok\n  Large files............................. ok\n  Python AST.............................. ok\n  Merge conflicts......................... ok\n  Trailing whitespace..................... ok\n  End-of-file newline..................... ok\n============================================================\nOK\n============================================================\n",
+    "native-jax-fp8-raw-microbatch-root-all-files.log": "warning: No lockfile found for Python script (ignoring `--frozen`); run `uv lock --script` to generate a lockfile\nInstalled 2 packages in 2ms\nwarning: `--no-sync` is a no-op for Python scripts with inline metadata, which always run in isolation\n  Ruff linter............................. ok\n  Black formatter (lib/levanter/pyproject.toml) ok\n  License headers (lib/levanter/etc/license_header.txt) ok\n  Ruff linter............................. ok\n  Black formatter (lib/haliax/pyproject.toml) ok\n  License headers (lib/haliax/etc/license_header.txt) ok\n  Ruff linter............................. ok\n  Black formatter......................... ok\n  License headers (etc/license_header.txt) ok\n  Ruff linter............................. ok\n  Black formatter......................... ok\n  License headers (etc/license_header.txt) ok\n  Pyrefly type checker.................... ok\n  Large files............................. ok\n  Python AST.............................. ok\n  Merge conflicts......................... ok\n  TOML and YAML........................... ok\n  Trailing whitespace..................... ok\n  End-of-file newline..................... ok\n  JSON formatter.......................... ok\n  Jupyter notebooks....................... ok\n  Markdown pre-commit command............. ok\n  Skill metadata.......................... ok\n============================================================\nOK\n============================================================\n",
+    "native-jax-fp8-raw-microbatch-root-all-files-proof.json": {
+      "kind": "ordinary required all-files validation",
+      "candidate_tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+      "candidate_root": "local-artifacts/marin-native-jax-fp8-raw-microbatch-final",
+      "source_at_execution": "uncommitted final R1 tree, later committed byte-exact as7bcab4c6385967bad9935807033d2b30b61da9aa",
+      "command": [
+        "./infra/pre-commit.py",
+        "--all-files"
+      ],
+      "exit": 0,
+      "exit_observation": "foreground handle17545 terminal exit0, resumed by root",
+      "log": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-root-all-files.log",
+        "sha256": "543e938916d132ba2bc1e45a3dd231d709b7b6886da37641cc8fb462cc3c9a07"
+      },
+      "environment": {
+        "UV_CACHE_DIR": "local-artifacts/marin-native-jax-uv-cache",
+        "UV_PROJECT_ENVIRONMENT": "local-artifacts/.venv",
+        "UV_TOOL_DIR": "local-artifacts/native-jax-sample-lm-tools",
+        "UV_NO_SYNC": "1",
+        "UV_OFFLINE": "1",
+        "UV_FROZEN": "1",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "BLACK_NUM_WORKERS": "1"
+      },
+      "fix": false,
+      "skip_hooks": false,
+      "scope": "ordinary checks only; no tests/catalog performed by this command"
+    }
+  },
+  "routine_setup_repairs_omitted": "Initial private originals remain hash-addressed; setup repair added no scientific evidence.",
+  "final_source": {
+    "commit": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+    "parent": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef"
+  },
+  "research_R2_result_is_separate": {
+    "archive_commit": "d09186c7ef1bcad65ed2fb20aa086fd5243a983d",
+    "path": "evidence/fp8-microbatch-contract/r2-result-manifest.json"
+  },
+  "publication_phase_note": "This bundle preserves the initial7bc source/verification phase. Later1a0 publication and catalog-response evidence are separate payloads."
+}

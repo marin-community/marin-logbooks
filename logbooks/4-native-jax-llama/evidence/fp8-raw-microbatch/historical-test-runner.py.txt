@@ -1,0 +1,28 @@
+import json
+import sys
+from pathlib import Path
+import jax
+import levanter
+import haliax
+import marin
+import iris
+import fray
+import zephyr
+from iris.runtime.telemetry import resolve
+import pytest
+
+
+def main():
+    expected = int(sys.argv[1])
+    assert jax.device_count() == expected
+    assert all(d.platform == "cpu" for d in jax.devices())
+    assert resolve() is None, "No Iris publishing runtime permitted"
+    root = str(Path.cwd())
+    modules = {m.__name__: m.__file__ for m in (levanter, haliax, marin, iris, fray, zephyr)}
+    assert all(root in path for path in modules.values()), modules
+    print(json.dumps({"actual_devices": jax.device_count(), "devices": [str(d) for d in jax.devices()], "python": sys.executable, "source_modules": modules, "iris_publishing_runtime": False}), flush=True)
+    raise SystemExit(pytest.main(sys.argv[2:]))
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,819 @@
+{
+  "schema": "native-jax-fp8-raw-microbatch-evidence.v1",
+  "records": {
+    "native-jax-fp8-raw-microbatch-baseline-proof.json": {
+      "source_freeze": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-baseline-source-freeze.json",
+        "sha256": "66cbd4bd5c7a9e847f90ea28f1cd6d82a9dc4bc05434c63196c14f3082001317"
+      },
+      "clean_before_after": true,
+      "head": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "actual_CPU1_own_six_imports_noIris_inprocess": true,
+      "exit": 1,
+      "outcome": "same maintained regression fails input_amax_history16.5 vs32 on unchangedba58",
+      "checks_before_failure": [
+        "NumPy exact output/loss/ordinary weight gradient",
+        "output/loss/input/stored-weight/gradient placement",
+        "all six state physical placements",
+        "three retained scales exact"
+      ],
+      "unreached_numeric_assertions": [
+        "kernel_amax_history",
+        "output_grad_amax_history"
+      ],
+      "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\nuv run --no-sync python local-artifacts/native-jax-fp8-raw-microbatch-tests.py 1 -c pyproject.toml local-artifacts/native-jax-fp8-raw-microbatch-regression.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-raw-microbatch-baseline-cpu1.xml > local-artifacts/native-jax-fp8-raw-microbatch-baseline-cpu1.log 2>&1",
+      "files": {
+        "-regression.py": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-regression.py",
+          "sha256": "0f321c02d1720def0d48f1f8393eecb0e0a136b89ad0391f93322fb763350836"
+        },
+        "-baseline-cpu1.log": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-baseline-cpu1.log",
+          "sha256": "d2e2eb6902de3211988776cb2102e47671b841a1a6b34436c8bbb7a0c85a6f9f"
+        },
+        "-baseline-cpu1.xml": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-baseline-cpu1.xml",
+          "sha256": "b90ac25baff1405da1a263087742c55f3ee0aa00b7b18574ac15f302c51a59cb"
+        }
+      }
+    },
+    "native-jax-fp8-raw-microbatch-validation.json": {
+      "source_freeze": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-source-freeze.json",
+        "sha256": "3a904e78cdc462d23c4ffff49c432d4c78e91f4e2f2171d9874efaed249a718c"
+      },
+      "source_hashes_before": {
+        "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+        "lib/levanter/tests/test_explicit_trainer.py": "15411d6f5db09846ea500b94330359d39fed579c56c51ceb55bb8d87ef4f7b2a"
+      },
+      "source_hashes_after": {
+        "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+        "lib/levanter/tests/test_explicit_trainer.py": "15411d6f5db09846ea500b94330359d39fed579c56c51ceb55bb8d87ef4f7b2a"
+      },
+      "all_hashes_match": true,
+      "candidate_tree": "f7a73d71b5f67e99b266b629f542aab8934b5e46",
+      "base": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "git_status": " M lib/levanter/src/levanter/grad_accum.py\n M lib/levanter/tests/test_explicit_trainer.py\n",
+      "tests": {
+        "cpu1": {
+          "exit": 0,
+          "selection": "lib/levanter/tests/test_explicit_trainer.py",
+          "summary": {
+            "name": "pytest",
+            "errors": "0",
+            "failures": "0",
+            "skipped": "0",
+            "tests": "11",
+            "time": "4.351",
+            "timestamp": "2026-10-24T21:36:03.241145-07:00",
+            "hostname": "local-host"
+          },
+          "case_ids": [
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-f32]",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-params=float32,compute=bfloat16,output=float32]",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-f32]",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-params=float32,compute=bfloat16,output=float32]",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_native_microbatch_metrics_use_their_reduction_and_split_rng",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_explicit_trainer_checkpoint_resumes_same_next_step",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_explicit_trainer_microbatch_preserves_data_and_parameter_sharding",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[False]",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[True]",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_trainer_checkpoint_hook_commits_model_metadata",
+              "status": "passed"
+            },
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+              "status": "passed"
+            }
+          ],
+          "preflight": {
+            "actual_devices": 1,
+            "devices": [
+              "cpu:0"
+            ],
+            "python": "local-artifacts/python",
+            "source_modules": {
+              "levanter": "lib/levanter/src/levanter/__init__.py",
+              "haliax": "lib/haliax/src/haliax/__init__.py",
+              "marin": "lib/marin/src/marin/__init__.py",
+              "iris": "lib/iris/src/iris/__init__.py",
+              "fray": "lib/fray/src/fray/__init__.py",
+              "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+            },
+            "iris_publishing_runtime": false
+          },
+          "log": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.log",
+            "sha256": "a9aa15f56034ee3825c8b89bfb1fd47a23e1a84a6d72c08de4caf008f83d6744"
+          },
+          "xml": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+            "sha256": "6cb492ed3b78802b029d9d2d20629164d007cd754590e4daeff6c4d9a26c61c2"
+          },
+          "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\nuv run --no-sync python local-artifacts/native-jax-fp8-raw-microbatch-tests.py 1 -c pyproject.toml lib/levanter/tests/test_explicit_trainer.py -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml > local-artifacts/native-jax-fp8-raw-microbatch-cpu1.log 2>&1"
+        },
+        "cpu4": {
+          "exit": 0,
+          "selection": "lib/levanter/tests/test_explicit_trainer.py::test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "summary": {
+            "name": "pytest",
+            "errors": "0",
+            "failures": "0",
+            "skipped": "0",
+            "tests": "1",
+            "time": "0.932",
+            "timestamp": "2026-10-24T21:36:32.581987-07:00",
+            "hostname": "local-host"
+          },
+          "case_ids": [
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+              "status": "passed"
+            }
+          ],
+          "preflight": {
+            "actual_devices": 4,
+            "devices": [
+              "cpu:0",
+              "cpu:1",
+              "cpu:2",
+              "cpu:3"
+            ],
+            "python": "local-artifacts/python",
+            "source_modules": {
+              "levanter": "lib/levanter/src/levanter/__init__.py",
+              "haliax": "lib/haliax/src/haliax/__init__.py",
+              "marin": "lib/marin/src/marin/__init__.py",
+              "iris": "lib/iris/src/iris/__init__.py",
+              "fray": "lib/fray/src/fray/__init__.py",
+              "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+            },
+            "iris_publishing_runtime": false
+          },
+          "log": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu4.log",
+            "sha256": "5d2126d3302daedb0967733827ac6f290fbd64d7caef4bb78b2109db81a6f9de"
+          },
+          "xml": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu4.xml",
+            "sha256": "fd75b6b0360f82a9ef1db209463f6e255b94d7c90f4ae5ef6e0950b9914672bf"
+          },
+          "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\nexport JAX_NUM_CPU_DEVICES=4\nuv run --no-sync python local-artifacts/native-jax-fp8-raw-microbatch-tests.py 4 -c pyproject.toml lib/levanter/tests/test_explicit_trainer.py::test_raw_microbatch_fp8_state_uses_maxima_without_averaging -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-raw-microbatch-cpu4.xml > local-artifacts/native-jax-fp8-raw-microbatch-cpu4.log 2>&1"
+        }
+      },
+      "baseline": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-baseline-proof.json",
+        "sha256": "f3f1c0078e6bc2c4e0b4ab6813fd06fd23458c6ced7661e84085f949a7ea89c9"
+      },
+      "ordinary": {
+        "exit": 0,
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-ordinary.log",
+        "sha256": "18b57bd4c281d2638b0edfe5fcd00592d24702fc8fe0668756b4fa64ed4de0e8"
+      },
+      "boundaries": [
+        "CPU1 full module11passes; CPU4 only new regression1pass",
+        "no global CPU1 JAX_NUM_CPU_DEVICES; child4-device fixture retains own topology",
+        "CPU4 maintained regression is not research probe execution",
+        "broader affected suite pending fresh review/sourcefreeze",
+        "no native model/guard/converter integration or accelerator/performance/canonical qualification",
+        "no commit/push/catalog/publication"
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-cpu7-validation.json": {
+      "source_freeze": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-source-freeze.json",
+        "sha256": "3a904e78cdc462d23c4ffff49c432d4c78e91f4e2f2171d9874efaed249a718c"
+      },
+      "source_before": {
+        "freeze": "local-artifacts/native-jax-fp8-raw-microbatch-source-freeze.json",
+        "source_sha256": {
+          "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+          "lib/levanter/tests/test_explicit_trainer.py": "15411d6f5db09846ea500b94330359d39fed579c56c51ceb55bb8d87ef4f7b2a"
+        },
+        "matches_freeze": true,
+        "purpose": "one extra focused maintained regression for odd data7 NumPy/JAX mean review concern; no fixture changes/retry"
+      },
+      "source_after": {
+        "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+        "lib/levanter/tests/test_explicit_trainer.py": "15411d6f5db09846ea500b94330359d39fed579c56c51ceb55bb8d87ef4f7b2a"
+      },
+      "all_source_matches_original_freeze": true,
+      "one_execution_no_retry": true,
+      "preflight": {
+        "actual_devices": 7,
+        "devices": [
+          "cpu:0",
+          "cpu:1",
+          "cpu:2",
+          "cpu:3",
+          "cpu:4",
+          "cpu:5",
+          "cpu:6"
+        ],
+        "python": "local-artifacts/python",
+        "source_modules": {
+          "levanter": "lib/levanter/src/levanter/__init__.py",
+          "haliax": "lib/haliax/src/haliax/__init__.py",
+          "marin": "lib/marin/src/marin/__init__.py",
+          "iris": "lib/iris/src/iris/__init__.py",
+          "fray": "lib/fray/src/fray/__init__.py",
+          "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+        },
+        "iris_publishing_runtime": false
+      },
+      "exit": 1,
+      "summary": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "1",
+        "skipped": "0",
+        "tests": "1",
+        "time": "1.032",
+        "timestamp": "2026-10-24T21:39:22.643424-07:00",
+        "hostname": "local-host"
+      },
+      "case": {
+        "class": "lib.levanter.tests.test_explicit_trainer",
+        "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+        "failure": "lib/levanter/tests/test_explicit_trainer.py:393: in test_raw_microbatch_fp8_state_uses_maxima_without_averaging\n    np.testing.assert_array_equal(loss, np.mean(expected_output**2))\nE   AssertionError: \nE   Arrays are not equal\nE   \nE   Mismatched elements: 1 / 1 (100%)\nE   Max absolute difference among violations: 0.00195312\nE   Max relative difference among violations: 7.777501e-08\nE    ACTUAL: array(25112.502, dtype=float32)\nE    DESIRED: array(25112.5, dtype=float32)"
+      },
+      "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\nexport JAX_NUM_CPU_DEVICES=7\nuv run --no-sync python local-artifacts/native-jax-fp8-raw-microbatch-tests.py 7 -c pyproject.toml lib/levanter/tests/test_explicit_trainer.py::test_raw_microbatch_fp8_state_uses_maxima_without_averaging -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-raw-microbatch-cpu7.xml > local-artifacts/native-jax-fp8-raw-microbatch-cpu7.log 2>&1",
+      "artifacts": {
+        "-cpu7-before.json": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu7-before.json",
+          "sha256": "2e7e60aca436ea5f9de143cacb24486f1ff5071e3995fbe2ed47bcf408fea289"
+        },
+        "-cpu7.log": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu7.log",
+          "sha256": "59556d1838bb422b5ae0faacfb4588cfd8e67dc8d2785633167315233d1b1d79"
+        },
+        "-cpu7.xml": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu7.xml",
+          "sha256": "934b8e3c0d59ca7b8cd56849e1e3fd35cb067bfaac5c5c125aee83fcbcd40149"
+        },
+        "-tests.py": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-tests.py",
+          "sha256": "a7649533abff4bd92a6d325adccfb2f3417d0409c9c408073d70e3963d73643c"
+        },
+        "-env.sh": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-env.sh",
+          "sha256": "a53894242a746fca6cb29c953887a00e12e0191266cfaceb687ae1f26d3a9426"
+        }
+      },
+      "boundary": "extra ordinary maintained regression, no research probe/accelerator/source edits"
+    },
+    "native-jax-fp8-raw-microbatch-r1-validation.json": {
+      "phase": "R1 explicit test geometry response; no production change",
+      "freeze": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-source-freeze.json",
+        "sha256": "5b65e1756b539c9ea26b2fa5887f2083b62493dea8ef60feda5b0fcbb5d391c7"
+      },
+      "candidate_tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+      "production_sha256": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+      "source_before_after_matches_frozen": true,
+      "source_after": {
+        "lib/levanter/src/levanter/grad_accum.py": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+        "lib/levanter/tests/test_explicit_trainer.py": "37830a044fd4c76467ef88ede1e2a37d82055bfe38262752b1c2d2f2ce7ecb7f"
+      },
+      "git_status": " M lib/levanter/src/levanter/grad_accum.py\n M lib/levanter/tests/test_explicit_trainer.py\n",
+      "focused_runs": {
+        "cpu1": {
+          "exit": 0,
+          "available_devices": 1,
+          "fixture_mesh_devices": 1,
+          "mesh": {
+            "data": 1,
+            "model": 1
+          },
+          "fixture_usage_proof": "Frozen source selects largest-power-of-two prefix; successful output/gradient/state NamedSharding equality assertions validate that mesh placement",
+          "preflight": {
+            "actual_devices": 1,
+            "devices": [
+              "cpu:0"
+            ],
+            "python": "local-artifacts/python",
+            "source_modules": {
+              "levanter": "lib/levanter/src/levanter/__init__.py",
+              "haliax": "lib/haliax/src/haliax/__init__.py",
+              "marin": "lib/marin/src/marin/__init__.py",
+              "iris": "lib/iris/src/iris/__init__.py",
+              "fray": "lib/fray/src/fray/__init__.py",
+              "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+            },
+            "iris_publishing_runtime": false
+          },
+          "summary": {
+            "name": "pytest",
+            "errors": "0",
+            "failures": "0",
+            "skipped": "0",
+            "tests": "1",
+            "time": "0.897",
+            "timestamp": "2026-10-24T21:41:31.172742-07:00",
+            "hostname": "local-host"
+          },
+          "case_ids": [
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging"
+            }
+          ],
+          "xml": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu1.xml",
+            "sha256": "c2268be86943805e070fa335e8158869f0fc3bb3506b57509b88eb1faa076375"
+          },
+          "log": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu1.log",
+            "sha256": "808bc6bd162b9d069086432e9f46d308636a56836f02b59974cf2683c1fb1f3d"
+          },
+          "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\nuv run --no-sync python local-artifacts/native-jax-fp8-raw-microbatch-tests.py 1 -c pyproject.toml lib/levanter/tests/test_explicit_trainer.py::test_raw_microbatch_fp8_state_uses_maxima_without_averaging -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu1.xml > local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu1.log 2>&1"
+        },
+        "cpu4": {
+          "exit": 0,
+          "available_devices": 4,
+          "fixture_mesh_devices": 4,
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "fixture_usage_proof": "Frozen source selects largest-power-of-two prefix; successful output/gradient/state NamedSharding equality assertions validate that mesh placement",
+          "preflight": {
+            "actual_devices": 4,
+            "devices": [
+              "cpu:0",
+              "cpu:1",
+              "cpu:2",
+              "cpu:3"
+            ],
+            "python": "local-artifacts/python",
+            "source_modules": {
+              "levanter": "lib/levanter/src/levanter/__init__.py",
+              "haliax": "lib/haliax/src/haliax/__init__.py",
+              "marin": "lib/marin/src/marin/__init__.py",
+              "iris": "lib/iris/src/iris/__init__.py",
+              "fray": "lib/fray/src/fray/__init__.py",
+              "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+            },
+            "iris_publishing_runtime": false
+          },
+          "summary": {
+            "name": "pytest",
+            "errors": "0",
+            "failures": "0",
+            "skipped": "0",
+            "tests": "1",
+            "time": "0.883",
+            "timestamp": "2026-10-24T21:41:36.758251-07:00",
+            "hostname": "local-host"
+          },
+          "case_ids": [
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging"
+            }
+          ],
+          "xml": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu4.xml",
+            "sha256": "efbd936d2a0c74c118bed27cf9dc15823dcab7f89868b96c700943058c64c607"
+          },
+          "log": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu4.log",
+            "sha256": "3abc9bc763f5218596b5fdd6d01e34bbf9e87d100ff67c3b6eac193e7602efa1"
+          },
+          "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\nexport JAX_NUM_CPU_DEVICES=4\nuv run --no-sync python local-artifacts/native-jax-fp8-raw-microbatch-tests.py 4 -c pyproject.toml lib/levanter/tests/test_explicit_trainer.py::test_raw_microbatch_fp8_state_uses_maxima_without_averaging -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu4.xml > local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu4.log 2>&1"
+        },
+        "cpu7": {
+          "exit": 0,
+          "available_devices": 7,
+          "fixture_mesh_devices": 4,
+          "mesh": {
+            "data": 2,
+            "model": 2
+          },
+          "fixture_usage_proof": "Frozen source selects largest-power-of-two prefix; successful output/gradient/state NamedSharding equality assertions validate that mesh placement",
+          "preflight": {
+            "actual_devices": 7,
+            "devices": [
+              "cpu:0",
+              "cpu:1",
+              "cpu:2",
+              "cpu:3",
+              "cpu:4",
+              "cpu:5",
+              "cpu:6"
+            ],
+            "python": "local-artifacts/python",
+            "source_modules": {
+              "levanter": "lib/levanter/src/levanter/__init__.py",
+              "haliax": "lib/haliax/src/haliax/__init__.py",
+              "marin": "lib/marin/src/marin/__init__.py",
+              "iris": "lib/iris/src/iris/__init__.py",
+              "fray": "lib/fray/src/fray/__init__.py",
+              "zephyr": "lib/zephyr/src/zephyr/__init__.py"
+            },
+            "iris_publishing_runtime": false
+          },
+          "summary": {
+            "name": "pytest",
+            "errors": "0",
+            "failures": "0",
+            "skipped": "0",
+            "tests": "1",
+            "time": "0.899",
+            "timestamp": "2026-10-24T21:41:54.741566-07:00",
+            "hostname": "local-host"
+          },
+          "case_ids": [
+            {
+              "class": "lib.levanter.tests.test_explicit_trainer",
+              "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging"
+            }
+          ],
+          "xml": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu7.xml",
+            "sha256": "6ab75740e76bcf0a741f4507572e725c8427f1b5a381be0619960ab04bdcccb7"
+          },
+          "log": {
+            "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu7.log",
+            "sha256": "09708a3be5f9e6164da0df98586a41a0ffa5426727cdc97851d358767c6597cc"
+          },
+          "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\nexport JAX_NUM_CPU_DEVICES=7\nuv run --no-sync python local-artifacts/native-jax-fp8-raw-microbatch-tests.py 7 -c pyproject.toml lib/levanter/tests/test_explicit_trainer.py::test_raw_microbatch_fp8_state_uses_maxima_without_averaging -n 0 -q --tb=short --junitxml=local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu7.xml > local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu7.log 2>&1"
+        }
+      },
+      "ordinary": {
+        "exit": 0,
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-r1-ordinary.log",
+        "sha256": "18b57bd4c281d2638b0edfe5fcd00592d24702fc8fe0668756b4fa64ed4de0e8",
+        "command": "source local-artifacts/native-jax-fp8-raw-microbatch-env.sh\n./infra/pre-commit.py lib/levanter/src/levanter/grad_accum.py lib/levanter/tests/test_explicit_trainer.py",
+        "skip": false,
+        "fix": false
+      },
+      "composite_existing_module_qualification": {
+        "boundary": "The10unchanged existing cases passed actualCPU1 on initial source c646/test1541; each unchanged function AST verified in R1freeze. R1 newcase passed separately onCPU1; no whole-module R1 rerun or whole-file simultaneous11case claim.",
+        "existing_case_ids": [
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-f32]"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-params=float32,compute=bfloat16,output=float32]"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-f32]"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-params=float32,compute=bfloat16,output=float32]"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_native_microbatch_metrics_use_their_reduction_and_split_rng"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_explicit_trainer_checkpoint_resumes_same_next_step"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_explicit_trainer_microbatch_preserves_data_and_parameter_sharding"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[False]"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[True]"
+          },
+          {
+            "class": "lib.levanter.tests.test_explicit_trainer",
+            "name": "test_trainer_checkpoint_hook_commits_model_metadata"
+          }
+        ],
+        "prior_module_XML": {
+          "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+          "sha256": "6cb492ed3b78802b029d9d2d20629164d007cd754590e4daeff6c4d9a26c61c2"
+        }
+      },
+      "preserved_actual_CPU7_original_failure": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-cpu7-validation.json",
+        "sha256": "3cd4ff3be88495b3600cdbc42d90578ec5a3fb1d3da97c8ae474e41075cc317e"
+      },
+      "baseline_negative": {
+        "path": "local-artifacts/native-jax-fp8-raw-microbatch-baseline-proof.json",
+        "sha256": "f3f1c0078e6bc2c4e0b4ab6813fd06fd23458c6ced7661e84085f949a7ea89c9"
+      },
+      "boundaries": [
+        "CPU7available uses4-device submesh, not full7layout",
+        "CPU1/4/8 fixture values and all exact assertions unchanged",
+        "ordinary maintained regression, no research probe/accelerator/performance/native-model qualification",
+        "fresh independent review/broad suite/commit/publication pending"
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-affected-reuse-proof.json": {
+      "scope": "honest composite reuse of11selected module cases, not simultaneous wholefileR1run",
+      "cases": {
+        "lib/levanter/tests/test_explicit_trainer.py::test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-f32]": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-params=float32,compute=bfloat16,output=float32]": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-f32]": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-params=float32,compute=bfloat16,output=float32]": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_native_microbatch_metrics_use_their_reduction_and_split_rng": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_explicit_trainer_checkpoint_resumes_same_next_step": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_explicit_trainer_microbatch_preserves_data_and_parameter_sharding": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[False]": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[True]": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_trainer_checkpoint_hook_commits_model_metadata": "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml",
+        "lib/levanter/tests/test_explicit_trainer.py::test_raw_microbatch_fp8_state_uses_maxima_without_averaging": "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu1.xml"
+      },
+      "count": 11,
+      "production_sha256": "c646baac71c5f8f22cd8926373a1c6f8fe2d0a883a0033bca094c313243a1d53",
+      "prior_initial10case_functions_AST_unchanged": true,
+      "R1newcase_source_exact": true,
+      "receipts": {
+        "local-artifacts/native-jax-fp8-raw-microbatch-cpu1.xml": {
+          "sha256": "6cb492ed3b78802b029d9d2d20629164d007cd754590e4daeff6c4d9a26c61c2"
+        },
+        "local-artifacts/native-jax-fp8-raw-microbatch-r1-cpu1.xml": {
+          "sha256": "c2268be86943805e070fa335e8158869f0fc3bb3506b57509b88eb1faa076375"
+        },
+        "local-artifacts/native-jax-fp8-raw-microbatch-r1-validation.json": {
+          "sha256": "2cbff408f6e62b82e0f46bb76b7cd9cfc981359049b12938fae05a662911d6a6"
+        },
+        "local-artifacts/native-jax-fp8-raw-microbatch-r1-source-freeze.json": {
+          "sha256": "5b65e1756b539c9ea26b2fa5887f2083b62493dea8ef60feda5b0fcbb5d391c7"
+        }
+      }
+    },
+    "native-jax-fp8-raw-microbatch-env.sh": "export PATH=local-artifacts/native-jax-replacement-tool-bin:$PATH\nexport UV_PROJECT_ENVIRONMENT=local-artifacts/.venv\nexport UV_CACHE_DIR=local-artifacts/marin-native-jax-uv-cache\nexport UV_NO_SYNC=1 UV_OFFLINE=1 UV_FROZEN=1\nexport JAX_PLATFORMS=cpu\nunset JAX_NUM_CPU_DEVICES\nexport XLA_FLAGS=--xla_allow_excess_precision=false\nexport HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1\nexport UV_TOOL_DIR=local-artifacts/native-jax-sample-lm-tools\nexport PYTHONPATH=lib/ducky/src:lib/dupekit/src:lib/finelog/src:lib/finestore/src:lib/fray/src:lib/haliax/src:lib/iris/src:lib/levanter/src:lib/marin/src:lib/rigging/src:lib/rolloutengine/src:lib/shellbox/src:lib/taskcompendium/src:lib/taskforge/src:lib/verifyit/src:lib/zephyr/src\n"
+  },
+  "routine_setup_repairs_omitted": "Initial private originals remain hash-addressed; setup repair added no scientific evidence.",
+  "all_XML_case_identities_and_outcomes": {
+    "native-jax-fp8-raw-microbatch-baseline-cpu1.xml": {
+      "origin": {
+        "artifact_basename": "native-jax-fp8-raw-microbatch-baseline-cpu1.xml",
+        "bytes": 1209,
+        "sha256": "b90ac25baff1405da1a263087742c55f3ee0aa00b7b18574ac15f302c51a59cb"
+      },
+      "ordered_cases": [
+        {
+          "class": "",
+          "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "status": "failed",
+          "time": "0.142",
+          "failure": "../native-jax-fp8-raw-microbatch-regression.py:96: in test_raw_microbatch_fp8_state_uses_maxima_without_averaging\n    np.testing.assert_array_equal(getattr(state, name), expected)\nE   AssertionError: \nE   Arrays are not equal\nE   \nE   Mismatched elements: 1 / 4 (25%)\nE   Max absolute difference among violations: 15.5\nE   Max relative difference among violations: 0.484375\nE    ACTUAL: array([ 16.5, 224. , 112. , 896. ], dtype=float32)\nE    DESIRED: array([ 32., 224., 112., 896.], dtype=float32)",
+          "error": null,
+          "skip": null
+        }
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-cpu1.xml": {
+      "origin": {
+        "artifact_basename": "native-jax-fp8-raw-microbatch-cpu1.xml",
+        "bytes": 2090,
+        "sha256": "6cb492ed3b78802b029d9d2d20629164d007cd754590e4daeff6c4d9a26c61c2"
+      },
+      "ordered_cases": [
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-f32]",
+          "status": "passed",
+          "time": "0.340",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[False-params=float32,compute=bfloat16,output=float32]",
+          "status": "passed",
+          "time": "0.094",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-f32]",
+          "status": "passed",
+          "time": "0.060",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_explicit_trainer_matches_adamw_with_frozen_params_ema_and_reusable_batch[True-params=float32,compute=bfloat16,output=float32]",
+          "status": "passed",
+          "time": "0.057",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_native_microbatch_metrics_use_their_reduction_and_split_rng",
+          "status": "passed",
+          "time": "0.279",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_explicit_trainer_checkpoint_resumes_same_next_step",
+          "status": "passed",
+          "time": "0.167",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_explicit_trainer_microbatch_preserves_data_and_parameter_sharding",
+          "status": "passed",
+          "time": "2.162",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[False]",
+          "status": "passed",
+          "time": "0.114",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_trainer_pins_checkpoint_or_fresh_start_before_model_initialization[True]",
+          "status": "passed",
+          "time": "0.057",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_trainer_checkpoint_hook_commits_model_metadata",
+          "status": "passed",
+          "time": "0.165",
+          "failure": null,
+          "error": null,
+          "skip": null
+        },
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "status": "passed",
+          "time": "0.112",
+          "failure": null,
+          "error": null,
+          "skip": null
+        }
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-cpu4.xml": {
+      "origin": {
+        "artifact_basename": "native-jax-fp8-raw-microbatch-cpu4.xml",
+        "bytes": 398,
+        "sha256": "fd75b6b0360f82a9ef1db209463f6e255b94d7c90f4ae5ef6e0950b9914672bf"
+      },
+      "ordered_cases": [
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "status": "passed",
+          "time": "0.172",
+          "failure": null,
+          "error": null,
+          "skip": null
+        }
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-cpu7.xml": {
+      "origin": {
+        "artifact_basename": "native-jax-fp8-raw-microbatch-cpu7.xml",
+        "bytes": 1200,
+        "sha256": "934b8e3c0d59ca7b8cd56849e1e3fd35cb067bfaac5c5c125aee83fcbcd40149"
+      },
+      "ordered_cases": [
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "status": "failed",
+          "time": "0.181",
+          "failure": "lib/levanter/tests/test_explicit_trainer.py:393: in test_raw_microbatch_fp8_state_uses_maxima_without_averaging\n    np.testing.assert_array_equal(loss, np.mean(expected_output**2))\nE   AssertionError: \nE   Arrays are not equal\nE   \nE   Mismatched elements: 1 / 1 (100%)\nE   Max absolute difference among violations: 0.00195312\nE   Max relative difference among violations: 7.777501e-08\nE    ACTUAL: array(25112.502, dtype=float32)\nE    DESIRED: array(25112.5, dtype=float32)",
+          "error": null,
+          "skip": null
+        }
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-r1-cpu1.xml": {
+      "origin": {
+        "artifact_basename": "native-jax-fp8-raw-microbatch-r1-cpu1.xml",
+        "bytes": 398,
+        "sha256": "c2268be86943805e070fa335e8158869f0fc3bb3506b57509b88eb1faa076375"
+      },
+      "ordered_cases": [
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "status": "passed",
+          "time": "0.128",
+          "failure": null,
+          "error": null,
+          "skip": null
+        }
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-r1-cpu4.xml": {
+      "origin": {
+        "artifact_basename": "native-jax-fp8-raw-microbatch-r1-cpu4.xml",
+        "bytes": 398,
+        "sha256": "efbd936d2a0c74c118bed27cf9dc15823dcab7f89868b96c700943058c64c607"
+      },
+      "ordered_cases": [
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "status": "passed",
+          "time": "0.170",
+          "failure": null,
+          "error": null,
+          "skip": null
+        }
+      ]
+    },
+    "native-jax-fp8-raw-microbatch-r1-cpu7.xml": {
+      "origin": {
+        "artifact_basename": "native-jax-fp8-raw-microbatch-r1-cpu7.xml",
+        "bytes": 398,
+        "sha256": "6ab75740e76bcf0a741f4507572e725c8427f1b5a381be0619960ab04bdcccb7"
+      },
+      "ordered_cases": [
+        {
+          "class": "lib.levanter.tests.test_explicit_trainer",
+          "name": "test_raw_microbatch_fp8_state_uses_maxima_without_averaging",
+          "status": "passed",
+          "time": "0.165",
+          "failure": null,
+          "error": null,
+          "skip": null
+        }
+      ]
+    }
+  },
+  "initial_seven_failure": "Exact loss failed; later ordinary-gradient, placement and state assertions were not reached.",
+  "r1_seven_boundary": "Seven process devices available; four-device mesh used. No full-seven layout qualification.",
+  "source_fix_not_research_rerun": true,
+  "coverage_limit": "Equal retained scale fixtures do not distinguish latest-scale selection from averaging equal scales; histories distinguish reducers.",
+  "excluded": [
+    "native model quantization",
+    "accelerator/scientific acceptance",
+    "tolerance changes"
+  ]
+}

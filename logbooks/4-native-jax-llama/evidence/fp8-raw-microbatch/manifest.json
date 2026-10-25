@@ -1,0 +1,558 @@
+{
+  "schema": "native-jax-fp8-raw-microbatch-archive.v1",
+  "base_archive": "d09186c7ef1bcad65ed2fb20aa086fd5243a983d",
+  "source_commit": "1a0a0a4fcb474b57a2046d882191ee32f32182ba",
+  "source_tree": "f6716eaeea3c0ecad521a5947d0db394118e8373",
+  "source_parent": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+  "contribution_base": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+  "qualified_runtime_source_commit": "7bcab4c6385967bad9935807033d2b30b61da9aa",
+  "qualified_runtime_source_tree": "46a5abd500f921dd778d4765e5112f8e5e9d27ef",
+  "source_commit_url": "https://github.com/dlwh/marin/commit/1a0a0a4fcb474b57a2046d882191ee32f32182ba",
+  "source_publication_status": "pushed-owned-topic-no-PR",
+  "required_prior_inventories": {
+    "manifest.json": {
+      "bytes": 511345,
+      "sha256": "956201564c7e0162394e38a20bcabb97df69c121bb37b14eb47dbf7dfb58b51f"
+    },
+    "analysis/oproj-stage-a/result/manifest.json": {
+      "bytes": 12634,
+      "sha256": "3c5b3b7cbfb04fafe1c7279b942bbdd3411691af70176104e39ca53eb0290a98"
+    },
+    "prepared/oproj-callback-compatibility/manifest.json": {
+      "bytes": 87716,
+      "sha256": "eff58a3c421226f32292dff64786e95a9ee1f9a7f1c7013ef7a9e982701face5"
+    },
+    "prepared/oproj-callback-cpu-backend/manifest.json": {
+      "bytes": 78500,
+      "sha256": "59cf0529e48676f47c22de5a0f901e193ed7d6a151e89b786b549971c2e43a8c"
+    },
+    "prepared/fp32-source-identity/manifest.json": {
+      "bytes": 29964,
+      "sha256": "0152200ed0f08c5cef9d3618607f7b03f2649407dac912b8072236d961e8821a"
+    },
+    "prepared/oproj-full-cpu-backend/manifest.json": {
+      "bytes": 72657,
+      "sha256": "0db2b87a94bdcaf66b8be992f466aab26c300233aabd66a88371a5ee4e23e29a"
+    },
+    "evidence/broadcast-shard-explicit/manifest.json": {
+      "bytes": 30151,
+      "sha256": "9eaaa19f2861eb31438f7f5ad10911f98f7582e71ab98fac37f358c682a8c378"
+    },
+    "evidence/native-lm-lora/manifest.json": {
+      "bytes": 50151,
+      "sha256": "c0b4965fa642bd3996735904e85dc5446349426b58e6ea59e8ed852589e02ebe"
+    },
+    "evidence/native-dpo-lora/manifest.json": {
+      "bytes": 57704,
+      "sha256": "af785ab26934f09add1495e0b35c64e672ae463598dc11b1034e07f79df92f51"
+    },
+    "evidence/native-lora-dropout/manifest.json": {
+      "bytes": 41653,
+      "sha256": "3a1431965a065933f0cc9c7e0a3bdf634a1f96d4e061c4ec4c17eb4413e56158"
+    },
+    "evidence/native-hf-config/manifest.json": {
+      "bytes": 50754,
+      "sha256": "32eeeb132a4162f35720e7f8c6ee60bc4ea51e5c17d80e21c40281ad6b50d69a"
+    },
+    "evidence/native-dpo-dropout/manifest.json": {
+      "bytes": 74512,
+      "sha256": "a4a04f82161402f5da00dd8907ff5eb9d5fc1e9525d05cd18e7220c91c89ed0b"
+    },
+    "evidence/native-sample-lm/manifest.json": {
+      "bytes": 67117,
+      "sha256": "a7d470288405f81c9897ae513d2704bf98b0a54a7d634929d593a45b7f8c6c87"
+    },
+    "evidence/native-export-lm/manifest.json": {
+      "bytes": 75621,
+      "sha256": "51e782bae175520e5a19f3a097cf92588e4f04017d9d5b151015816afe40380b"
+    },
+    "evidence/native-import-lm-and-perplexity-gap/manifest.json": {
+      "bytes": 110369,
+      "sha256": "b9ee4bb16d1de05c73af3bdc3d62d3342b59f92191bf21ac8f7ea89b6aaf85e4"
+    },
+    "evidence/native-trace-eval/manifest.json": {
+      "bytes": 51255,
+      "sha256": "ce4798477c3a38e46494a0c506a575f58a3c2631c61392b3abb60571007447fd"
+    },
+    "prepared/core-fp8-prelaunch/manifest.json": {
+      "bytes": 34055,
+      "sha256": "010a3147593944987d93db71206d91a2b8832bc10f88031f2df187ac56fc4726"
+    },
+    "prepared/core-fp8-auto-control-r3/manifest.json": {
+      "bytes": 19497,
+      "sha256": "48a5f562c9e31748becd1bf43a1381b499899ed9cb42872dc792fda4cc1ccdd8"
+    },
+    "evidence/core-fp8-controls/r3-result-manifest.json": {
+      "bytes": 6617,
+      "sha256": "d34246ef0aa3589101bd6bef4ffb6be0680e534a909df69048cc02613b6193e0"
+    },
+    "evidence/fp8-explicit-gradients/manifest.json": {
+      "bytes": 21946,
+      "sha256": "61b9fa383db009f19e483012c467b294733cc24fc380181fb043639215c3de78"
+    },
+    "evidence/fp8-forward-sharding/manifest.json": {
+      "bytes": 21130,
+      "sha256": "ac4279ae983ebf5a6038dfd44942adc03b2d8958fa21003821cceb7ddc7aa5b2"
+    },
+    "prepared/fp8-microbatch-contract/manifest.json": {
+      "bytes": 20198,
+      "sha256": "689c776741c6d45fd518d13268a24d927aaa8d043f19c32596c8987da4be8b69"
+    },
+    "prepared/fp8-microbatch-contract-r2/manifest.json": {
+      "bytes": 15593,
+      "sha256": "e5ee99c27f5c65c1013bec402c08882a9d48f6a5ff2e7ad6d7f74040c6336fca"
+    },
+    "evidence/fp8-microbatch-contract/r2-result-manifest.json": {
+      "bytes": 7246,
+      "sha256": "934479ecdf173c940cd1bf8a962b89c3a2671982f7f240329b381d51a358d6b0"
+    }
+  },
+  "preserved_prior_selected_count": 1257,
+  "file_count": 13,
+  "total_selected_including_prior": 1270,
+  "total_stored_bytes": 524425,
+  "selected_files": [
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/initial-source-fix.patch",
+      "bytes": 7435,
+      "sha256": "0cab2a1059a0054cc9a604b69e6ac774536ff1c8ec4b515eadee95f2c0b89758",
+      "role": "Exact phase-specific source patch.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-support.patch",
+          "bytes": 7435,
+          "sha256": "0cab2a1059a0054cc9a604b69e6ac774536ff1c8ec4b515eadee95f2c0b89758"
+        }
+      ],
+      "transformation": [
+        "Exact bytes; no transformation."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/r1-test-response.patch",
+      "bytes": 732,
+      "sha256": "581e92307ce2fff71b95b163c1a65959c9c378d5e79d74499aa8de5e50c9081c",
+      "role": "Exact phase-specific source patch.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-r1-response.patch",
+          "bytes": 732,
+          "sha256": "581e92307ce2fff71b95b163c1a65959c9c378d5e79d74499aa8de5e50c9081c"
+        }
+      ],
+      "transformation": [
+        "Exact bytes; no transformation."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/qualified-7bc-contribution.patch",
+      "bytes": 7566,
+      "sha256": "6f4c8f58f13a04ce702468560bcf0ecd807017e612b1927b6e5dbed366b124c2",
+      "role": "Exact phase-specific source patch.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-r1-full-contribution.patch",
+          "bytes": 7566,
+          "sha256": "6f4c8f58f13a04ce702468560bcf0ecd807017e612b1927b6e5dbed366b124c2"
+        }
+      ],
+      "transformation": [
+        "Exact bytes; no transformation."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/catalog-response.patch",
+      "bytes": 3811,
+      "sha256": "73cc2a9489a76bb24e179146e6536497cfa3ea0588da801e2c6ba8b0c748fecb",
+      "role": "Exact phase-specific source patch.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-support.patch",
+          "bytes": 3811,
+          "sha256": "73cc2a9489a76bb24e179146e6536497cfa3ea0588da801e2c6ba8b0c748fecb"
+        }
+      ],
+      "transformation": [
+        "Exact bytes; no transformation."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/final-four-file-contribution.patch",
+      "bytes": 11377,
+      "sha256": "dcd5e9cf4159407e1fee5346ec34130d6548aefc82cb5668269c6cbf442edd0f",
+      "role": "Exact phase-specific source patch.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-full-contribution.patch",
+          "bytes": 11377,
+          "sha256": "dcd5e9cf4159407e1fee5346ec34130d6548aefc82cb5668269c6cbf442edd0f"
+        }
+      ],
+      "transformation": [
+        "Exact bytes; no transformation."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/source-phases-and-verification.json",
+      "bytes": 13769,
+      "sha256": "0299f15cfddaaff3769fee71495616a031bf757e16f3fbe59540cc0530bd2ef1",
+      "role": "Unchanged-parent maintained regression, initial source fix and test-only R1 freezes, final ordinary checks/root verification/commit proof.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-baseline-source-freeze.json",
+          "bytes": 1210,
+          "sha256": "66cbd4bd5c7a9e847f90ea28f1cd6d82a9dc4bc05434c63196c14f3082001317"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-source-freeze.json",
+          "bytes": 2458,
+          "sha256": "3a904e78cdc462d23c4ffff49c432d4c78e91f4e2f2171d9874efaed249a718c"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-r1-source-freeze.json",
+          "bytes": 2730,
+          "sha256": "5b65e1756b539c9ea26b2fa5887f2083b62493dea8ef60feda5b0fcbb5d391c7"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-verification.json",
+          "bytes": 936,
+          "sha256": "8cc84e3a21ff78a9920c1155a0a34708476925caea292e867d2e40c4d80c7af9"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-commit-proof.json",
+          "bytes": 789,
+          "sha256": "19d68fb859230fd6ec849188b130689a41a937b1664900466eb3649e5c6b6b84"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-ordinary.log",
+          "bytes": 774,
+          "sha256": "18b57bd4c281d2638b0edfe5fcd00592d24702fc8fe0668756b4fa64ed4de0e8"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-r1-ordinary.log",
+          "bytes": 774,
+          "sha256": "18b57bd4c281d2638b0edfe5fcd00592d24702fc8fe0668756b4fa64ed4de0e8"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-all-files.log",
+          "bytes": 1460,
+          "sha256": "543e938916d132ba2bc1e45a3dd231d709b7b6886da37641cc8fb462cc3c9a07"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-all-files-proof.json",
+          "bytes": 1145,
+          "sha256": "742d5047a8a02b010a6ff2ef846b7e6494bf84a529bbecf0b350629ca9be7dbd"
+        }
+      ],
+      "transformation": [
+        "Structured projection; private paths become relative source paths or artifact basenames; local host names normalized.",
+        "All material source pins, numerical values, commands, case identities/outcomes and original hashes retained. Historical pending states remain historical."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/maintained-reviews.json",
+      "bytes": 19879,
+      "sha256": "f1b12db1c635565d0df1a6193b94e3dc51ec18598cec4f7c4341eaed363f1d32",
+      "role": "Independent maintained-contribution reviews at initial and final test phases.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-maintained-review.json",
+          "bytes": 2393,
+          "sha256": "f013059f2ab0db31b2e5518e7a284beaba5e5902e21515e8207e02fb9cf0eb8f"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-maintained-review.md",
+          "bytes": 6101,
+          "sha256": "b2d6fba375d44b9385454c5957881a48d21bf81c6a781933127514de269b914a"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-r1-maintained-review.json",
+          "bytes": 3053,
+          "sha256": "0daa6f984caa0954149d2a235f75ac2fdd5e1c9856485e67cd0433e717ea3666"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-r1-maintained-review.md",
+          "bytes": 7304,
+          "sha256": "13ae67cee94cce531df97db7ebb36d2f03c52c50847e9454a119dc23c392a4e9"
+        }
+      ],
+      "transformation": [
+        "Structured projection; private paths become relative source paths or artifact basenames; local host names normalized.",
+        "All material source pins, numerical values, commands, case identities/outcomes and original hashes retained. Historical pending states remain historical."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/controls-and-validation.json",
+      "bytes": 40526,
+      "sha256": "08ab5ff2adf6778fd8314f87dba48a40fadd4094150c2b3052ea9c37bdf0b8df",
+      "role": "Actual maintained parent negative, initial candidate passes/odd-seven loss failure, final R1 focused passes and old-ten AST composite.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-baseline-proof.json",
+          "bytes": 1748,
+          "sha256": "f3f1c0078e6bc2c4e0b4ab6813fd06fd23458c6ced7661e84085f949a7ea89c9"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-validation.json",
+          "bytes": 9041,
+          "sha256": "df802a2d760eb8b8ff4ca8bdc8fef7798a362e57c73de478fe5ee63c26f4f2be"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-cpu7-validation.json",
+          "bytes": 4342,
+          "sha256": "3cd4ff3be88495b3600cdbc42d90578ec5a3fb1d3da97c8ae474e41075cc317e"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-r1-validation.json",
+          "bytes": 12038,
+          "sha256": "2cbff408f6e62b82e0f46bb76b7cd9cfc981359049b12938fae05a662911d6a6"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-reuse-proof.json",
+          "bytes": 3042,
+          "sha256": "66fcbaa6bebc727ca48bed501200f3a5b2cb830b1cfde6eeb4523dfd801ae7a2"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-env.sh",
+          "bytes": 1584,
+          "sha256": "a53894242a746fca6cb29c953887a00e12e0191266cfaceb687ae1f26d3a9426"
+        }
+      ],
+      "transformation": [
+        "Structured projection; private paths become relative source paths or artifact basenames; local host names normalized.",
+        "All material source pins, numerical values, commands, case identities/outcomes and original hashes retained. Historical pending states remain historical."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/unchanged-parent-regression.py.txt",
+      "bytes": 4416,
+      "sha256": "0f321c02d1720def0d48f1f8393eecb0e0a136b89ad0391f93322fb763350836",
+      "role": "Historical maintained-validation script; archive only.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-regression.py",
+          "bytes": 4416,
+          "sha256": "0f321c02d1720def0d48f1f8393eecb0e0a136b89ad0391f93322fb763350836"
+        }
+      ],
+      "transformation": [
+        "Exact original script bytes; not imported or executed by archive preparation."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/historical-test-runner.py.txt",
+      "bytes": 894,
+      "sha256": "a7649533abff4bd92a6d325adccfb2f3417d0409c9c408073d70e3963d73643c",
+      "role": "Historical maintained-validation script; archive only.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-tests.py",
+          "bytes": 894,
+          "sha256": "a7649533abff4bd92a6d325adccfb2f3417d0409c9c408073d70e3963d73643c"
+        }
+      ],
+      "transformation": [
+        "Exact original script bytes; not imported or executed by archive preparation."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/affected-workspace-summary.json",
+      "bytes": 382571,
+      "sha256": "2a4fc8937df017f8e0e3c0ee726847c18ed70f229ba3f0f65848adc83b95953f",
+      "role": "Terminal938-case affected validation:927newactual CPU1 plus11honest composite;13actual-parent-baseline-matched failures.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-archive-affected-artifacts.json",
+          "bytes": 18184,
+          "sha256": "9fa6ddbae349ad264614d5a8e7c0d9800b83c30896efb7184d259deb68744dc6"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-qualification.json",
+          "bytes": 4945,
+          "sha256": "0f3e52bbc97b56ca4956dabf598cd980c8e3148b45bd87c4ffac8a6c69260134"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-validation.json",
+          "bytes": 145480,
+          "sha256": "1dca334fabd9afd57d6780b369056d4e990d46cdef56762e41fc2066565ee613"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-plan.json",
+          "bytes": 12719,
+          "sha256": "3a8adc07f00144274b9015be274673ffd015b4b2d509e74cdfc9faab5d20604f"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-collection-command.json",
+          "bytes": 3052,
+          "sha256": "2339c8a8661591f49b2f05d4bc45da3db3807d1181360d303f523e3689d9201d"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-collect.journal.collection.json",
+          "bytes": 97503,
+          "sha256": "19d038d320d325b04c29959f3f178ef2fe5ae6813bc8f4e803dd1a354358b9a4"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-batches.json",
+          "bytes": 112177,
+          "sha256": "dd920df0c6328fe1657d3f45c8d7d0d32ba9180f114e9806db1ee133476ca234"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-assignments.json",
+          "bytes": 535,
+          "sha256": "d59e7ae8bab6a29bc19d1629bf6f54cfa451d699a868d163ce249a47772fec84"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-env.sh",
+          "bytes": 1723,
+          "sha256": "3f5afc518340dbd1ebd8e132b8b9e85fc203e548226a21d170da9dd1d53a91c0"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-cloud-baseline-ba58-proof.json",
+          "bytes": 8063,
+          "sha256": "64d3fdf6b1a23403e7402fa8897faa5a7ed6c5ac6217b0b9c75dcc1f407cd6b1"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-affected-reuse-proof.json",
+          "bytes": 3042,
+          "sha256": "66fcbaa6bebc727ca48bed501200f3a5b2cb830b1cfde6eeb4523dfd801ae7a2"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-aggregate-proof.json",
+          "bytes": 6079,
+          "sha256": "95c09dd654d60d77eab63ef7f434fd252f57fc657e528be3b6a96c0eb1537e48"
+        }
+      ],
+      "transformation": [
+        "Compact JSON structured projection; all938case IDs/outcomes retained; all83original terminal artifacts hash/size checked.",
+        "Private paths/hostnames normalized. Thirteen XML failure details preserved; no tolerance, test outcome or source changes."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/catalog-response-and-verification.json",
+      "bytes": 22703,
+      "sha256": "615627efa221a0c02983dd3e5c2fc80cdc1d791d04d4cb6f0d7596898fd95e36",
+      "role": "Separate post-qualification two-file/three-constant/seven-reference catalog response: frozen patch, AST equivalence, ordinary checks, fresh source review and commit disposition.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-source-freeze.json",
+          "bytes": 3595,
+          "sha256": "3862cd6d23939f7a665e3d6472ffdf0273be17770b45f568167378670559c28a"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-ast-proof.json",
+          "bytes": 2029,
+          "sha256": "1553b93620f1778c74f7619966ff05d83995382f15846a8e484d87bf74652e5f"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-ast-proof.py",
+          "bytes": 3817,
+          "sha256": "bda77f5f195fe1ec7c6972247d02c989d9335eb8584581e74eef1d60e10349f3"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-maintained-review.json",
+          "bytes": 4458,
+          "sha256": "d114dc203fa23ef7d10cad8475d43d08a8a4cd98f4af4ffb72d2270308a82554"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-maintained-review.md",
+          "bytes": 2691,
+          "sha256": "f05b809ba9d8f29f63121f06fbaddf9831d129b1958102e53e42d94fb2da7168"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-ordinary.log",
+          "bytes": 774,
+          "sha256": "18b57bd4c281d2638b0edfe5fcd00592d24702fc8fe0668756b4fa64ed4de0e8"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-root-verification.json",
+          "bytes": 655,
+          "sha256": "a9029faaa2cd18c50a16c9bb4e5bd73758adefbb8bd65268797670fe7b6ef0c5"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-root-commit-proof.json",
+          "bytes": 1595,
+          "sha256": "ec86a6470c99b8ff3c245a3da81b8a153126c10d1a80a19020cb78c6f444dd0e"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-commit-message.txt",
+          "bytes": 314,
+          "sha256": "35b8b8d1e83cea7a10edf11d3c094c693222f2813a9ea4757892046d90b40e92"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-catalog-response-commit-cold-read.md",
+          "bytes": 250,
+          "sha256": "7d783189a87458aa0e15945f288a44a9364bf44a2df2b405a2949ad8ce13472f"
+        }
+      ],
+      "transformation": [
+        "Structured projection; private paths become relative source paths or artifact basenames; local host names normalized.",
+        "All material source pins, numerical values, commands, case identities/outcomes and original hashes retained. Historical pending states remain historical."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    },
+    {
+      "archive_relative": "evidence/fp8-raw-microbatch/catalog-and-source-publication.json",
+      "bytes": 8746,
+      "sha256": "e6b17d0f6bf68426be23455a406fab08d0afd3e786b03f5955d2804a502530ed",
+      "role": "Exact public final source and completed catalog qualification with targeted response disposition; no PR assumption.",
+      "origin_artifacts": [
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-source-publication-proof.json",
+          "bytes": 1088,
+          "sha256": "50f54ef26c4ce349486da36eb7a44d8bd6bc9a96c0e1530d99932c91d3d449ad"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-catalog-proof.json",
+          "bytes": 9175,
+          "sha256": "1766425abe35f8a88d8d526fb5126f7e7045f62eaff39547d6340d1161db5931"
+        },
+        {
+          "artifact_basename": "native-jax-fp8-raw-microbatch-root-catalog-stalled-proof.json",
+          "bytes": 885,
+          "sha256": "fb232697d23052ffc232d76f086c29d30e9fa9f63c5eab410e86eb1d634cd892"
+        }
+      ],
+      "transformation": [
+        "Structured sanitized projection; original proof/log hashes and lane statuses retained; irrelevant terminal tails omitted."
+      ],
+      "measurement_or_source_pin": "Final public source 1a0a0a4fcb474b57a2046d882191ee32f32182ba; runtime-qualified phase 7bcab4c6385967bad9935807033d2b30b61da9aa; earlier phase pins retained.",
+      "status": "PUBLIC_SOURCE_PHASED_CPU_EVIDENCE_PRIVATE_ARCHIVE_PREVIEW"
+    }
+  ],
+  "selected_files_canonical_json_sha256": "84490e89c69c78822fbf8d694aa89aeb0977b7809279a053dfd909cca2ae5fa0",
+  "notebook_prior_bytes": 303232,
+  "notebook_prior_sha256": "6f61635f81abef27f415015e70c6b9b564b0fb8f0db7094035078f613f52d96d",
+  "readme_exact_sha256": "6b3a092eb085ebc80ccceb8d660d852be312a1dcc6bbc0b8574e67597b5337d4",
+  "new_inventory_number": 25,
+  "required_prior_inventory_count": 24,
+  "preserved_prior_gzip_original_count": 261,
+  "prior_task_root_tree": "1cde618cd230e47d60bc7279f3797efa0fe66ef5",
+  "source_public_before_archive": true,
+  "scope": "Maintained raw FP8 reduction CPU validation plus separately reviewed constant-only serializer response. No native FP8, accelerator, full-seven layout, performance or scientific qualification.",
+  "phase_boundaries": "ResearchR2 negative remains prior history; separate maintained parent regression, initialodd7loss failure, test-onlyR1,7bc938-case composite and final1a0 catalog response remain separately pinned.",
+  "shared_archive_written": false,
+  "new_runtime_execution": false
+}
