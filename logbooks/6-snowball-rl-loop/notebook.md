@@ -147,6 +147,29 @@ The user explicitly chose “Accept evidence-limited A3 qualification.” This a
 
 D3 preparation may proceed against a clean, frozen source and dependency snapshot with a pinned `uv` executable and outer `uv run --locked` invocation. The preparation must bind the export-off source, resolved configuration, cohort/comparison protocol, request and packaged payload. Submission still requires exact fresh version, artifact, checkpoint and job identities, with lookup errors kept distinct from confirmed absence, no overlapping run, and a durable one-submit record with acknowledgement capture. Preparation is not launch authority; a separate exact submission approval is still required. D3 and all four 25-update screens remain unlaunched, and no dashboard result is appended.
 
+### 2026-10-25 02:09 UTC - Record bounded asynchronous qualification results
+
+D3 requested three asynchronous updates with HF export disabled. Its coordinator reached terminal success, and the retained artifact records success and reports child success. Final child-task states were not directly observed. Invocation-to-coordinator-terminal time was 39.737657 minutes; acknowledgement-to-coordinator-terminal time was 39.622353 minutes. This export-off completion contract is not directly comparable with A3's historical 61.23-minute export-on qualification cost. The original A3 result is unchanged.
+
+Each D3 evaluation endpoint contains 100 usable numeric verifier scores marked `verified`, with no serialized exception or server-error rows. Dataset UIDs link to the cached cohort mapping, which attributes 20 rows to each family. This is cached attribution, not fresh attestation of input bytes, row order, filtering loss or a TaskSpec attached to each verdict. Mean normalized verifier score fell from 0.28928048 to 0.22114198, a change of −0.06813850.
+
+| Cached family attribution | Initial mean normalized verifier score | Final mean |
+| --- | ---: | ---: |
+| Calendar | 0.35 | 0.10 |
+| Competitive coding | 0.05 | 0.00 |
+| Reasoning gym | 0.49640241 | 0.40570990 |
+| STEM | 0.20 | 0.25 |
+| Structural | 0.35 | 0.35 |
+| All 100 | 0.28928048 | 0.22114198 |
+
+All 200 `passed` fields are null. Numeric score coverage establishes neither boolean pass rates nor statistical significance, quality improvement or a trusted cross-arm ranking. These are descriptive before/after objective scores only.
+
+The native checkpoint publication marker identifies step 3, and four checkpoint control objects have nonempty recorded sizes. Their bodies and checkpoint tensors were not read. This is publication evidence, not proof of all three finite applied optimizer updates, tensor integrity or optimizer/scheduler/RNG resume. The no-export result's null HF model and global-step fields are expected for this path; no HF export was requested.
+
+The artifact's `dep_paths` is empty. Declared dependency identities, fingerprints and retained configuration/source declarations do not independently attest resolved input bytes. Submitted ZIP source binding is recorded, but it does not establish the installed or loaded GPU runtime, package or weight identities. Configuration agreement at the reviewed pre-validator phases does not attest later active GPU validator state. Immutable served judge revision and external asset bytes remain unknown.
+
+Complete applied-update and consumed-rollout-age evidence, observed nonzero consumed age, age-bound compliance, generation/update overlap and closed accounting of stale discarded and regenerated work remain missing. Missing accounting is not zero waste. D3's bounded operational and numeric observations are accepted; its qualification is not. The A3 user exception does not extend to D3. Qualification, dashboard/ranking use and all four 25-update screens remain held, with no D3 policy exception granted. All job and retained-result read scopes are permanently retired; this result authorizes no further reads or execution.
+
 ## Final decision
 
-A3 is accepted as an evidence-limited prerequisite by explicit user decision. Its 61.23-minute export-on qualification cost and mean normalized verifier score decline of 0.0601 remain unchanged; pass rates, runtime equivalence, all-step applied-update evidence and optimizer recovery are still unestablished. D3 preparation may proceed under the frozen-source, pinned-launcher, configuration/cohort, freshness and one-submit gates above. Launch authority remains withheld: D3 and all four 25-update export-off screens are planned but have not launched. No approach is selected for promotion or dashboard ranking. Preserve the original A3 evidence and publish the reviewed source/configuration before any later authorized execution.
+The strict hold remains. D3 has accepted bounded operational and descriptive evidence, including numeric-score decline and native checkpoint publication, but it has not met qualification. All-step finite applied-update evidence, consumed ages and overlap, complete stale-work accounting, input/runtime attestation and optimizer recovery remain incomplete. A3 retains its explicit evidence-limited user acceptance; that exception does not apply to D3. No trusted arm ranking, dashboard result, statistical improvement or boolean pass rate is established. All four 25-update export-off screens remain unlaunched and held. Preserve both qualification outcomes and their different timing contracts; no new reader, retry or experiment follows from this record.
