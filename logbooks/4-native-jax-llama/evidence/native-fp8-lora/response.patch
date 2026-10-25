@@ -1,0 +1,383 @@
+diff --git a/lib/levanter/docs/Getting-Started-Training.md b/lib/levanter/docs/Getting-Started-Training.md
+index f9a5b9e58e..9f99ba6ba6 100644
+--- a/lib/levanter/docs/Getting-Started-Training.md
++++ b/lib/levanter/docs/Getting-Started-Training.md
+@@ -160,11 +160,13 @@ checkpoint. Omit `targets` to quantize every linear projection, use a list for
+ final module names such as `[q_proj, up_proj]`, or a regex for the full native
+ pytree path such as `native\.layers\.stacked\.self_attn\.q_proj$`. The untied head
+ uses FP8 for logits; the fused training loss continues to use its raw weights.
+-Tied embeddings remain unquantized. Native INT8 and combining native FP8 with
+-LoRA or frozen parameters remain unqualified and are rejected.
++Tied embeddings remain unquantized. Native INT8 remains unsupported.
+ 
+-LoRA, including adapter dropout, is available without quantization through
+-`adapter.type: lora`; see [adapter training](Training-On-Your-Data.md#lora-adapters).
++`train_lm` also supports native FP8 with LoRA, including adapter dropout. Frozen
++base weights and quantization state stay fixed; trainable factors and their FP8
++state resume from partial checkpoints after reconstructing the original base.
++See [adapter training](Training-On-Your-Data.md#lora-adapters) for source and
++precision requirements. Native DPO quantization remains unsupported.
+ Existing `model.type: llama` configurations retain their behavior.
+ 
+ ## Set Custom Training Configuration
+diff --git a/lib/levanter/docs/Training-On-Your-Data.md b/lib/levanter/docs/Training-On-Your-Data.md
+index c6eebe264f..d20f58557b 100644
+--- a/lib/levanter/docs/Training-On-Your-Data.md
++++ b/lib/levanter/docs/Training-On-Your-Data.md
+@@ -358,11 +358,12 @@ reference; frozen reference weights are reloaded rather than stored in the
+ training checkpoint.
+ 
+ In `train_lm`, native LoRA also supports `trainer.quantization.fp8: true`.
+-FP8 operations attach to the frozen projections and trainable factors. Frozen
++With `targets` omitted, FP8 operations attach to frozen projections and trainable
++factors. Frozen
+ weights, scales and histories stay fixed; factors update their FP32 scales and
+ histories through the custom-gradient state path, outside Adam. Partial
+-checkpoints retain factor quantization state along with weights and optimizer
+-state. Resume requires the original base and unchanged precision, quantization
++checkpoints retain factor quantization state along with LoRA factor weights and
++optimizer state. Resume requires the original base and unchanged precision, quantization
+ and adapter settings. Portable PEFT/HF exports contain ordinary weights, not
+ FP8 histories. Native INT8 and native DPO quantization remain unsupported.
+ 
+diff --git a/lib/levanter/docs/reference/Array-Stacked.md b/lib/levanter/docs/reference/Array-Stacked.md
+index e68f6adabb..ef9ba985c4 100644
+--- a/lib/levanter/docs/reference/Array-Stacked.md
++++ b/lib/levanter/docs/reference/Array-Stacked.md
+@@ -131,7 +131,7 @@ Pass `gradient_checkpointing` to `ArrayStacked.init`; it defaults to `False`.
+ For example, `ArrayStacked.init(num_layers, Block, gradient_checkpointing="nested")`
+ returns an initializer that uses nested rematerialization. The setting accepts a
+ boolean, a shorthand string, or
+-[levanter.layers.scan_checkpoint.ScanCheckpointPolicy][]. `True` checkpoints
++[haliax.ScanCheckpointPolicy][]. `True` checkpoints
+ each block, `False` disables rematerialization, `"full"` recomputes carries during
+ the backward pass, `"nested"` checkpoints groups of layers for backward-pass
+ recomputation, and `"offload"` saves carries and inputs
+@@ -145,7 +145,7 @@ Use an explicit JAX mesh and native parameter shardings. Sharding is independent
+ of layer count and shape names; the stack does not infer distribution from a
+ logical-axis mapping.
+ 
+-::: levanter.layers.scan_checkpoint.ScanCheckpointPolicy
++::: haliax.ScanCheckpointPolicy
+ 
+ 
+ ## Native Llama
+diff --git a/lib/levanter/scripts/bench/bench_llama_native.py b/lib/levanter/scripts/bench/bench_llama_native.py
+index e45b4114ae..efa60c9a8c 100644
+--- a/lib/levanter/scripts/bench/bench_llama_native.py
++++ b/lib/levanter/scripts/bench/bench_llama_native.py
+@@ -49,6 +49,16 @@ from levanter.utils.mesh import MeshConfig
+ 
+ 
+ LAYER_NORM_EPSILON = 1e-5
++LOSS = "loss"
++PARAMETERS = "parameters"
++GRADIENTS = "gradients"
++ACTIVATIONS = "activations"
++ADAM_MU = "adam_mu"
++ADAM_NU = "adam_nu"
++ADAM_COUNT = "adam_count"
++EXECUTION_ADAM_MU = "execution_adam_mu"
++EXECUTION_ADAM_NU = "execution_adam_nu"
++EXECUTION_ADAM_COUNT = "execution_adam_count"
+ UPDATES = "updates"
+ PARAMETERS_AFTER_ONE_STEP = "parameters_after_one_step"
+ EXECUTION_PARAMETERS_AFTER_ONE_STEP = "execution_parameters_after_one_step"
+@@ -432,26 +442,26 @@ def _run_variant(
+     jax.block_until_ready(diagnostic)
+     gradients, updates = diagnostic.hook_infos[0]
+     diagnostic_data = {
+-        "loss": {"loss": diagnostic.loss},
+-        "gradients": _canonical_parameters(gradients),
++        LOSS: {LOSS: diagnostic.loss},
++        GRADIENTS: _canonical_parameters(gradients),
+         UPDATES: _canonical_parameters(updates),
+         PARAMETERS_AFTER_ONE_STEP: _canonical_parameters(diagnostic.new_state.model),
+-        "adam_mu": _canonical_parameters(diagnostic.new_state.opt_state[0].mu),
+-        "adam_nu": _canonical_parameters(diagnostic.new_state.opt_state[0].nu),
+-        "adam_count": {"count": diagnostic.new_state.opt_state[0].count},
++        ADAM_MU: _canonical_parameters(diagnostic.new_state.opt_state[0].mu),
++        ADAM_NU: _canonical_parameters(diagnostic.new_state.opt_state[0].nu),
++        ADAM_COUNT: {"count": diagnostic.new_state.opt_state[0].count},
+     }
+     # Materialize parity outputs on the host so they do not pollute live device
+     # memory while measuring subsequent full training steps.
+     diagnostics = {label: jax.tree.map(np.asarray, tensors) for label, tensors in diagnostic_data.items()}
+     diagnostic_manifests = {
+-        "gradients": _array_manifest(diagnostic_data["gradients"]),
++        GRADIENTS: _array_manifest(diagnostic_data[GRADIENTS]),
+         "gradients_raw": _tree_manifest(gradients),
+         "updates_raw": _tree_manifest(updates),
+         UPDATES: _array_manifest(diagnostic_data[UPDATES]),
+         PARAMETERS_AFTER_ONE_STEP: _array_manifest(diagnostic_data[PARAMETERS_AFTER_ONE_STEP]),
+-        "adam_mu": _array_manifest(diagnostic_data["adam_mu"]),
+-        "adam_nu": _array_manifest(diagnostic_data["adam_nu"]),
+-        "adam_count": _array_manifest(diagnostic_data["adam_count"]),
++        ADAM_MU: _array_manifest(diagnostic_data[ADAM_MU]),
++        ADAM_NU: _array_manifest(diagnostic_data[ADAM_NU]),
++        ADAM_COUNT: _array_manifest(diagnostic_data[ADAM_COUNT]),
+         "optimizer_state_after_one_step": _tree_manifest(diagnostic.new_state.opt_state),
+     }
+     del diagnostic_state, diagnostic, diagnostic_data, gradients, updates
+@@ -479,9 +489,9 @@ def _run_variant(
+     del result
+     execution_data = {
+         EXECUTION_PARAMETERS_AFTER_ONE_STEP: _canonical_parameters(state.model),
+-        "execution_adam_mu": _canonical_parameters(state.opt_state[0].mu),
+-        "execution_adam_nu": _canonical_parameters(state.opt_state[0].nu),
+-        "execution_adam_count": {"count": state.opt_state[0].count},
++        EXECUTION_ADAM_MU: _canonical_parameters(state.opt_state[0].mu),
++        EXECUTION_ADAM_NU: _canonical_parameters(state.opt_state[0].nu),
++        EXECUTION_ADAM_COUNT: {"count": state.opt_state[0].count},
+     }
+     for label, tensors in execution_data.items():
+         # The state is donated again below; keep independent host snapshots.
+@@ -532,10 +542,10 @@ def _run_variant(
+         "final_step": final_step,
+         "profile": {"path": str(profile_path), "steps": config.profile_steps} if profile_path is not None else None,
+         "layouts": {
+-            "parameters": model_manifest,
++            PARAMETERS: model_manifest,
+             "parameters_raw": raw_model_manifest,
+             "optimizer_state_initial": optimizer_manifest,
+-            "activations": activations_manifest,
++            ACTIVATIONS: activations_manifest,
+             **diagnostic_manifests,
+         },
+     }
+@@ -695,18 +705,18 @@ def run_benchmark(
+         for label in diagnostics["legacy"]:
+             parity[label] = _numerical_comparison(diagnostics["legacy"][label], diagnostics["native"][label], config)
+         for label in (
+-            "parameters",
+-            "gradients",
++            PARAMETERS,
++            GRADIENTS,
+             UPDATES,
+             PARAMETERS_AFTER_ONE_STEP,
+-            "adam_mu",
+-            "adam_nu",
+-            "adam_count",
++            ADAM_MU,
++            ADAM_NU,
++            ADAM_COUNT,
+             EXECUTION_PARAMETERS_AFTER_ONE_STEP,
+-            "execution_adam_mu",
+-            "execution_adam_nu",
+-            "execution_adam_count",
+-            "activations",
++            EXECUTION_ADAM_MU,
++            EXECUTION_ADAM_NU,
++            EXECUTION_ADAM_COUNT,
++            ACTIVATIONS,
+         ):
+             _assert_matching_manifests(
+                 variants["legacy"]["layouts"][label], variants["native"]["layouts"][label], label=label
+diff --git a/lib/levanter/src/levanter/layers/scan_checkpoint.py b/lib/levanter/src/levanter/layers/scan_checkpoint.py
+deleted file mode 100644
+index 14c4e22124..0000000000
+--- a/lib/levanter/src/levanter/layers/scan_checkpoint.py
++++ /dev/null
+@@ -1,105 +0,0 @@
+-# Copyright The Levanter Authors
+-# SPDX-License-Identifier: Apache-2.0
+-
+-"""Checkpoint policies for native JAX layer scans."""
+-
+-from __future__ import annotations
+-
+-import dataclasses
+-from typing import Literal, Sequence
+-
+-import equinox as eqx
+-import jax
+-
+-
+-@dataclasses.dataclass(frozen=True)
+-class ScanCheckpointPolicy:
+-    """Choose which layer inputs and intermediates survive the forward pass.
+-
+-    Carries and extra inputs receive separate checkpoint names. Named block
+-    internals can be saved or offloaded independently; ``nested`` groups layers
+-    into a second rematerialized scan to reduce saved carry memory.
+-    """
+-
+-    save_carries: bool | Literal["offload"] = True
+-    save_inputs: bool | Literal["offload"] = False
+-    save_block_internals: bool | list[str] = False
+-    offload_block_internals: list[str] = dataclasses.field(default_factory=list)
+-    prevent_cse: bool = False
+-    disable: bool = False
+-    simple: bool = False
+-    nested: bool | int = False
+-
+-    @staticmethod
+-    def from_bool_or_str(remat_policy: bool | str):
+-        """Resolve a shorthand into a scan rematerialization policy.
+-
+-        ``True`` checkpoints each block; ``False`` disables checkpointing.
+-        ``offload`` moves saved carries/inputs to pinned host memory, ``full``
+-        (or ``recompute``) saves no intermediates, ``save_all`` saves everything,
+-        and ``nested`` additionally checkpoints groups of layers.
+-        """
+-        if remat_policy == "offload":
+-            return ScanCheckpointPolicy(save_carries="offload", save_inputs="offload", save_block_internals=False)
+-        elif remat_policy == "recompute" or remat_policy == "full":
+-            return ScanCheckpointPolicy(save_carries=False, save_inputs=False, save_block_internals=False)
+-        elif remat_policy == "save_all":
+-            return ScanCheckpointPolicy(save_carries=True, save_inputs=True, save_block_internals=True)
+-        elif remat_policy == "nested":
+-            return ScanCheckpointPolicy(nested=True)
+-        elif remat_policy is True:
+-            return ScanCheckpointPolicy(simple=True)
+-        elif remat_policy is False:
+-            return ScanCheckpointPolicy(save_carries=True, save_inputs=True, save_block_internals=True, disable=True)
+-        else:
+-            raise ValueError(f"Invalid checkpoint policy {remat_policy}")
+-
+-    @staticmethod
+-    def from_spec(remat_policy: bool | str | "ScanCheckpointPolicy") -> "ScanCheckpointPolicy":
+-        if isinstance(remat_policy, ScanCheckpointPolicy):
+-            return remat_policy
+-        else:
+-            return ScanCheckpointPolicy.from_bool_or_str(remat_policy)
+-
+-    def checkpoint(self, carry_name: str, input_name: str, callable):
+-        if self.disable:
+-            return callable
+-        elif self.simple:
+-            return eqx.filter_checkpoint(callable, prevent_cse=self.prevent_cse)
+-        else:
+-            policy = self._to_jax_policy(carry_name, input_name)
+-            return eqx.filter_checkpoint(callable, policy=policy, prevent_cse=self.prevent_cse)
+-
+-    def _to_jax_policy(self, carry_name: str, input_name: str):
+-        names_to_save = []
+-        names_to_offload = []
+-        names_to_recompute = []
+-        for name, setting in ((carry_name, self.save_carries), (input_name, self.save_inputs)):
+-            if setting is True:
+-                names_to_save.append(name)
+-            elif setting == "offload":
+-                names_to_offload.append(name)
+-            else:
+-                assert setting is False, f"Invalid checkpoint setting {setting}"
+-                names_to_recompute.append(name)
+-
+-        if isinstance(self.save_block_internals, Sequence):
+-            names_to_save.extend(self.save_block_internals)
+-        names_to_offload.extend(self.offload_block_internals)
+-        if names_to_offload:
+-            if self.save_block_internals is True:
+-                raise ValueError("Can't save all block internals and offload too. Use a list of names instead.")
+-            return jax.checkpoint_policies.save_and_offload_only_these_names(
+-                names_which_can_be_saved=names_to_save,
+-                names_which_can_be_offloaded=names_to_offload,
+-                offload_src="device",
+-                offload_dst="pinned_host",
+-            )
+-        if self.save_block_internals is True:
+-            return jax.checkpoint_policies.save_anything_except_these_names(*names_to_recompute)
+-        if names_to_save:
+-            return jax.checkpoint_policies.save_only_these_names(*names_to_save)
+-        return None
+-
+-
+-ScanCheckpointSpec = ScanCheckpointPolicy | bool | Literal["offload", "recompute", "full", "save_all", "nested"]
+diff --git a/lib/levanter/src/levanter/layers/stacked.py b/lib/levanter/src/levanter/layers/stacked.py
+index a2b161a128..2dd802e700 100644
+--- a/lib/levanter/src/levanter/layers/stacked.py
++++ b/lib/levanter/src/levanter/layers/stacked.py
+@@ -11,7 +11,7 @@ import jax.numpy as jnp
+ import numpy as np
+ from jax.ad_checkpoint import checkpoint_name
+ 
+-from levanter.layers.scan_checkpoint import ScanCheckpointPolicy, ScanCheckpointSpec
++from haliax.nn.scan import ScanCheckpointPolicy, ScanCheckpointSpec
+ 
+ M = TypeVar("M", bound=eqx.Module)
+ CarryT = TypeVar("CarryT")
+@@ -90,7 +90,8 @@ class ArrayStacked(eqx.Module, Generic[M]):
+     ) -> ModuleInit["ArrayStacked[M]"]:
+         if num_layers < 1:
+             raise ValueError(f"num_layers must be >= 1; got {num_layers}.")
+-        gradient_checkpointing = ScanCheckpointPolicy.from_spec(gradient_checkpointing)
++        if not isinstance(gradient_checkpointing, ScanCheckpointPolicy):
++            gradient_checkpointing = ScanCheckpointPolicy.from_bool_or_str(gradient_checkpointing)
+ 
+         @functools.wraps(module)
+         def init_fn(*args, **kwargs):
+diff --git a/lib/levanter/src/levanter/models/llama_native.py b/lib/levanter/src/levanter/models/llama_native.py
+index f9732f7ffb..71c3e68b10 100644
+--- a/lib/levanter/src/levanter/models/llama_native.py
++++ b/lib/levanter/src/levanter/models/llama_native.py
+@@ -26,13 +26,14 @@ from levanter.layers.dropout import DropoutLayout
+ from levanter.layers.linear import INITIALIZER_TRUNCATION_BOUND, Linear, LinearProjection
+ from levanter.layers.rms_norm import RmsNorm
+ from levanter.layers.rotary_native import NativeRotaryConfig, RotaryConfig, apply_rotary
+-from levanter.layers.scan_checkpoint import ScanCheckpointSpec
++from haliax.nn.scan import ScanCheckpointSpec
+ from levanter.layers.stacked import ArrayStacked, StateDictWriter
+ from levanter.utils.activation import ActivationFunctionEnum, JaxActivationFunction
+ 
+ 
+ _HF_TOKEN_EMBEDDING_WEIGHT_KEY = "model.embed_tokens.weight"
+ _HF_FINAL_NORM_PREFIX = "model.norm"
++_HF_LAYER_PREFIX = "model.layers."
+ _LAYER_NORM_FIELDS = ("input_layernorm", "post_attention_layernorm", "post_attn_layernorm", "post_mlp_layernorm")
+ _ATTENTION_FIELDS = ("q_proj", "k_proj", "v_proj", "o_proj", "q_norm", "k_norm")
+ _MLP_FIELDS = ("gate_proj", "up_proj", "down_proj")
+@@ -598,7 +599,7 @@ class NativeLlamaModel(eqx.Module):
+         if self.lm_head is not None:
+             _put_module(state, "lm_head", self.lm_head)
+         for index, layer in enumerate(self.layers.unstacked()):
+-            path = f"model.layers.{index}"
++            path = f"{_HF_LAYER_PREFIX}{index}"
+             for name in _LAYER_NORM_FIELDS:
+                 module = getattr(layer, name)
+                 if module is not None:
+@@ -638,7 +639,7 @@ class NativeLlamaModel(eqx.Module):
+             )
+         layers = []
+         for index, layer in enumerate(model.layers.unstacked()):
+-            path = f"model.layers.{index}"
++            path = f"{_HF_LAYER_PREFIX}{index}"
+             for name in _LAYER_NORM_FIELDS:
+                 module = getattr(layer, name)
+                 if module is not None:
+diff --git a/lib/levanter/src/levanter/models/llama_native_lm.py b/lib/levanter/src/levanter/models/llama_native_lm.py
+index aa4b5f22b2..cb62b83428 100644
+--- a/lib/levanter/src/levanter/models/llama_native_lm.py
++++ b/lib/levanter/src/levanter/models/llama_native_lm.py
+@@ -43,7 +43,6 @@ from levanter.layers.rotary_native import (
+     YarnRotaryConfig,
+     yarn_attention_factor,
+ )
+-from levanter.layers.scan_checkpoint import ScanCheckpointPolicy as NativeScanCheckpointPolicy
+ from levanter.models.llama import LlamaConfig
+ from levanter.models.llama_native import NativeLlamaConfig, NativeLlamaModel, NativeLlamaSharding
+ from levanter.models.lm_model import LmConfig, LmExample, LmHeadModel
+@@ -377,10 +376,6 @@ class NativeLlamaLmConfig(LlamaConfig):
+             for field in dataclasses.fields(NativeLlamaConfig)
+             if field.name not in {"vocab_size", "rope", "attention_implementation"}
+         }
+-        if isinstance(self.gradient_checkpointing, hax.ScanCheckpointPolicy):
+-            fields["gradient_checkpointing"] = NativeScanCheckpointPolicy(
+-                **dataclasses.asdict(self.gradient_checkpointing)
+-            )
+         return NativeLlamaConfig(
+             vocab_size=vocab_size,
+             rope=_native_rotary_config(self.rope),
+diff --git a/lib/levanter/tests/test_array_stacked.py b/lib/levanter/tests/test_array_stacked.py
+index 5038e49ec1..3c8e899d1d 100644
+--- a/lib/levanter/tests/test_array_stacked.py
++++ b/lib/levanter/tests/test_array_stacked.py
+@@ -9,7 +9,7 @@ from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec as P
+ import pytest
+ 
+ from levanter.layers.stacked import ArrayStacked
+-from levanter.layers.scan_checkpoint import ScanCheckpointPolicy
++from haliax.nn.scan import ScanCheckpointPolicy
+ from levanter.utils.tree_utils import scan_aware_tree_map
+ 
+ 
