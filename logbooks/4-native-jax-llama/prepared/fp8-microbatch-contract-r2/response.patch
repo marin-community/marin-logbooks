@@ -1,0 +1,23 @@
+--- native-jax-fp8-microbatch-preparation-worker.py
++++ native-jax-fp8-microbatch-preparation-r2-worker.py
+@@ -21,6 +21,7 @@
+ import marin
+ import numpy as np
+ from haliax.quantization import (
++    CustomGradientAccumulation,
+     Fp8DotGeneralOp,
+     QuantizationConfig,
+     accumulate_gradients,
+@@ -345,7 +346,11 @@
+             checkpoint("microbatch.explicit.shared_reference", control_kind="explicit")
+             reduced = accumulate_gradients(per_microbatch[0][1], per_microbatch[1][1])
+             overwrites, additive = partition_for_grad_overwrite(reduced)
+-            reference_gradients = eqx.combine(overwrites, jax.tree.map(lambda leaf: leaf / 2, additive))
++            reference_gradients = eqx.combine(
++                overwrites,
++                jax.tree.map(lambda leaf: leaf / 2, additive),
++                is_leaf=lambda leaf: isinstance(leaf, CustomGradientAccumulation),
++            )
+             reference_loss = (per_microbatch[0][0][0] + per_microbatch[1][0][0]) / 2
+             check_result(
+                 ((reference_loss, {}), reference_gradients),

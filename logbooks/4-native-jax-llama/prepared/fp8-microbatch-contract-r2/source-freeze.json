@@ -1,0 +1,47 @@
+{
+  "status": "R2_RESEARCH_HARNESS_RESPONSE_FROZEN_UNEXECUTED_FRESH_REVIEW_PENDING",
+  "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+  "source_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+  "prior_public_research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+  "source_changed": false,
+  "artifacts": {
+    "native-jax-fp8-microbatch-preparation-r2-probe.py": {"bytes":4646,"sha256":"2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28","runner_byte_exact_initial_and_R3":true},
+    "native-jax-fp8-microbatch-preparation-r2-worker.py": {"bytes":21308,"sha256":"90d5c1b4b8e8b03ca5b927d5cf9295a1095b782d07a84485e9d68b8ec0471740"},
+    "native-jax-fp8-microbatch-preparation-r2-config.json": {"bytes":7037,"sha256":"3c2464a91287767a24317116f43b41516d70b5903e0c3420cecdf4a23d9e1797"},
+    "response.patch": {"bytes":1094,"sha256":"71af4afd5047fdab14627ffef2b3c8ec906fb1ebb602242ec0adb5388da3f58c"}
+  },
+  "initial_public_artifacts": {
+    "runner_sha256":"2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+    "worker_sha256":"bef822486ef522576e1eacb6f08032e135c0df2437415c3b646a72a822f78cb4",
+    "config_sha256":"55ec5ecbbb1cbf8f12ff1b4c6c7744be264e5880cd54dd7b6e00317860d411e7",
+    "initial_preparation_freeze_sha256":"56034ade2152cb43bbdcb96901046d8a443c4b6c4d635dbc9964eb721801fe7a",
+    "preserved_unchanged":true
+  },
+  "observed_initial_failure": {
+    "terminal_exit":1,
+    "duration_seconds":7.955907,
+    "stage":"microbatch.explicit.shared_reference",
+    "completed_controls":["direct_full","no_microbatch_wrapper","per_microbatch_0","per_microbatch_1"],
+    "classification":"Research shared-reference merge harness failure before raw accumulation; not metadata averaging evidence.",
+    "receipt_sha256":"29ba06aaf72bed84edd821313f463426beab4e42b6c5560ec26e23533d699515",
+    "root_result_proof_basename":"native-jax-fp8-microbatch-contract-cpu1-root-result-proof.json",
+    "root_result_proof_sha256":"54313a3effb3eaf06fee58ea39d420640b72d3ad867ccf8b992867b3f641e4ec"
+  },
+  "minimal_change": {
+    "worker":"Import existing CustomGradientAccumulation at top level; pass is_leaf=lambda leaf: isinstance(leaf, CustomGradientAccumulation) to the existing eqx.combine used only to reconstruct the shared-reference gradient tree.",
+    "config":"Only sibling worker filename and hash change; all25 source pins and all question/fixture configuration remain unchanged.",
+    "unchanged":["runner bytes","source commit/tree","independent NumPy oracles","fixture arrays/scales/histories","shared reducer and overwrite partition calls","ordinary gradient division","actual raw accumulator call","placement checks","exact comparisons","failure/stop behavior"],
+    "not_a_maintained_source_fix":true
+  },
+  "static_API_basis": {
+    "module":"equinox._filters",
+    "source_sha256":"802d0f88de57469b2a959053fae26b9e36ef489e51a48b857476e0463c5b2be1",
+    "source_lines":"199-232",
+    "finding":"combine accepts is_leaf and internally treats None or the supplied predicate as leaves; matches shared partition_for_grad_overwrite atomic custom-operation boundary.",
+    "qualification":"Local source text read only; no import or runtime API proof."
+  },
+  "checks_not_performed":["project imports","AST compilation","ordinary hooks","tests","probe execution","candidate implementation changes","network","archive writes","commit","push"],
+  "gates":["fresh independent static review of this versioned response","ordinary artifact hooks after review","publish/read back exact source and R2 research recipe","separate root CPU1 release with fresh output and existing bounded network-denied execution boundary","manual stop on first meaningful failure; CPU4 not released"],
+  "execution_authority":"NONE for R2; root explicitly reviews the response before any new execution; no blind retry.",
+  "TPU_job_monitor_windows":"paused"
+}

@@ -1,0 +1,116 @@
+{
+  "status": "R2_STATIC_CODE_REVIEW_AND_ORDINARY_CHECKS_PASSED_UNEXECUTED_PUBLICATION_RELEASE_PENDING",
+  "review": {
+    "original_basename": "native-jax-fp8-microbatch-r2-independent-review.json",
+    "original_sha256": "71fb67b1a4a322c05927f46e946222798e8505b12b900108022a879e1fa9c83b",
+    "markdown_original_sha256": "598dce77a3fb6c0ceecc4feb8c499b2031fa5543bcff51d4de37928e13ea8efd",
+    "record": {
+      "status": "INDEPENDENT_STATIC_REVIEW_PASSED_NO_BLOCKING_CODE_FINDINGS_R2_UNEXECUTED",
+      "scope": "Frozen R2 research harness response, compared with original public research artifacts and actual initial CPU1 evidence",
+      "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "source_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+      "source_currently_clean": true,
+      "prior_public_research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+      "reviewed_artifact_sha256": {
+        "runner": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+        "worker": "90d5c1b4b8e8b03ca5b927d5cf9295a1095b782d07a84485e9d68b8ec0471740",
+        "config": "3c2464a91287767a24317116f43b41516d70b5903e0c3420cecdf4a23d9e1797",
+        "response_patch": "71af4afd5047fdab14627ffef2b3c8ec906fb1ebb602242ec0adb5388da3f58c",
+        "installed_equinox_filters": "802d0f88de57469b2a959053fae26b9e36ef489e51a48b857476e0463c5b2be1",
+        "initial_cpu1_receipt": "29ba06aaf72bed84edd821313f463426beab4e42b6c5560ec26e23533d699515",
+        "initial_root_proof": "54313a3effb3eaf06fee58ea39d420640b72d3ad867ccf8b992867b3f641e4ec"
+      },
+      "findings": [],
+      "fix_assessment": {
+        "addresses_actual_tree_mismatch": true,
+        "actual_gradient_tree": "(Fp8DotGeneralOp, ordinary_weight_array)",
+        "overwrite_tree": "(operation, None)",
+        "averaged_additive_tree": "(None, array / 2)",
+        "merge_result": "(unchanged_reduced_operation, averaged_weight_array)",
+        "installed_combine_accepts_predicate": true,
+        "combine_itself_also_treats_none_as_leaf": true,
+        "named_array_predicate_required_for_this_fixture": false,
+        "basis": "Static source and actual initial traceback only; no R2 runtime validation"
+      },
+      "delta_verified": {
+        "runner_byte_exact_initial": true,
+        "worker_only_import_and_reference_merge_predicate": true,
+        "config_only_worker_basename_and_hash": true,
+        "all_25_source_pin_entries_unchanged": true,
+        "independent_numpy_oracle_unchanged": true,
+        "state_fixture_and_placement_unchanged": true,
+        "shared_and_actual_reducer_calls_unchanged": true,
+        "exact_comparisons_and_stop_semantics_unchanged": true
+      },
+      "initial_result_interpretation": {
+        "stage": "microbatch.explicit.shared_reference",
+        "completed_independent_controls": [
+          "direct_full",
+          "no_microbatch_wrapper",
+          "per_microbatch_0",
+          "per_microbatch_1"
+        ],
+        "shared_reducer_numerically_qualified": false,
+        "actual_raw_accumulation_reached": false,
+        "observed_metadata_averaging_result": false
+      },
+      "nonblocking_provenance_note": {
+        "field": "source-freeze.json initial_public_artifacts.initial_preparation_freeze_sha256",
+        "original_private_freeze_sha256": "56034ade2152cb43bbdcb96901046d8a443c4b6c4d635dbc9964eb721801fe7a",
+        "archived_public_projection_sha256": "0cecadf1511acb32a0900c959ecb6f30ab58c68be38dd0d2e2e49b5e994ecadd",
+        "consistent_with_public_projection_provenance_and_manifest": true,
+        "guidance": "Keep original-versus-projected hash labels explicit in future publication records"
+      },
+      "limits": [
+        "R2 shared-reducer numerical and raw-scan behavior remain unobserved",
+        "Equal retained scales do not qualify varied-scale selection",
+        "CPU1 does not qualify nontrivial physical partitioning",
+        "Timeout and network denial remain execution-release responsibilities"
+      ],
+      "checks_not_performed": [
+        "project imports",
+        "harness execution",
+        "AST compilation",
+        "tests",
+        "hooks",
+        "source edits",
+        "network",
+        "publication",
+        "runtime release"
+      ],
+      "remaining_gates": [
+        "ordinary artifact checks",
+        "publish and read back exact R2 recipe and artifact bytes with unchanged source",
+        "separate owner-issued CPU1 release with fresh output and existing bounded network-denied execution boundary"
+      ],
+      "runtime_release_authorized_by_review": false,
+      "CPU4_released": false,
+      "candidate_implementation_executed": false
+    }
+  },
+  "original_versus_public_freeze": {
+    "frozen_R2_record": "source-freeze.json",
+    "field": "initial_public_artifacts.initial_preparation_freeze_sha256",
+    "original_PRIVATE_freeze_sha256": "56034ade2152cb43bbdcb96901046d8a443c4b6c4d635dbc9964eb721801fe7a",
+    "published_sanitized_projection": {
+      "research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+      "archive_relative": "prepared/fp8-microbatch-contract/initial-preparation-freeze.json",
+      "sha256": "0cecadf1511acb32a0900c959ecb6f30ab58c68be38dd0d2e2e49b5e994ecadd"
+    },
+    "interpretation": "56034ade identifies original private preparation bytes. The public807 sanitized projection has distinct bytes/hash0cecadf. This separate clarification preserves the frozen R2 phase; it does not claim the two files are byte-identical."
+  },
+  "ordinary_checks": {
+    "status": "PASS",
+    "exit": 0,
+    "entrypoint": "./infra/pre-commit.py",
+    "entrypoint_sha256": "16b61a69d1f83f2cb2ef0b7c68060ca6249c318b2410aec2bf4e2b68e937bb97",
+    "checked_file_count": 10,
+    "scope": "Actual initial partial-result projection plus all R2 prepared files including manifest, each as an explicit --files argument; no --fix/skip/suppression",
+    "log_artifact_basename": "native-jax-fp8-microbatch-r2-ordinary-final.log",
+    "log_sha256": "53e31c7fccc3c09c75076ae0a788e99a643e83619e1743c0b37f38733c320834",
+    "timing": "Repeated after final readiness/manifest metadata; no project imports/probes/tests."
+  },
+  "R2_execution": "NOT_RELEASED_NOT_EXECUTED",
+  "CPU4_released": false,
+  "all_TPU_job_monitor_windows": "paused"
+}

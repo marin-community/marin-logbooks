@@ -1,0 +1,764 @@
+{
+  "schema": "native-jax-fp8-microbatch-initial-cpu1-partial-result.v1",
+  "classification": "HARNESS_SHARED_REFERENCE_MERGE_FAILURE_BEFORE_RAW_ACCUMULATION",
+  "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+  "source_tree": "223c7ff9b639ff2966941d8d9ea762ec157cb501",
+  "research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+  "origin_artifacts": [
+    {
+      "artifact_basename": "receipt.json",
+      "role": "terminal microbatch-cpu1 receipt",
+      "sha256": "29ba06aaf72bed84edd821313f463426beab4e42b6c5560ec26e23533d699515"
+    },
+    {
+      "artifact_basename": "execution.json",
+      "sha256": "109238e47199a9b695790eb43720c2db8874906cf676aed29e4d07cfa47f0994"
+    },
+    {
+      "artifact_basename": "microbatch-cpu1.log",
+      "sha256": "ae63aaf84597dbd44f0ad1ec599eebe9365f16379218d670fe7b2c801eb73410",
+      "selected_content": false
+    }
+  ],
+  "transformation": [
+    "Retain complete original receipt including all four completed controls, all six state arrays, placement records, original generic failure classification, exception and traceback; normalize only concrete source/research/output/venv/tool/cache paths to role placeholders.",
+    "Retain actual execution argv/environment/timestamps/exit with same path normalization. Original artifact hashes permit exact private provenance; raw log content is omitted."
+  ],
+  "elapsed_seconds": 7.955907,
+  "elapsed_interpretation": "About 8 seconds; derived from recorded start/finish timestamps, not a performance benchmark.",
+  "completed_control_names": [
+    "direct_full",
+    "no_microbatch_wrapper",
+    "per_microbatch_0",
+    "per_microbatch_1"
+  ],
+  "shared_reference_control_completed": false,
+  "raw_accumulation_reached": false,
+  "raw_metadata_averaging_observed": false,
+  "CPU4_executed": false,
+  "interpretation": "Preflight and four independent prerequisite controls passed. The research harness failed while combining custom-overwrite and additive subtrees before shared-reference assertions or actual raw accumulation. This is not evidence for or against raw metadata averaging, native-model FP8 support or accelerator behavior.",
+  "receipt": {
+    "mode": "microbatch",
+    "source_root": "<execution-source-root>",
+    "research_root": "<research-root>",
+    "config_path": "<research-root>/native-jax-fp8-microbatch-preparation-config.json",
+    "probe_path": "<research-root>/native-jax-fp8-microbatch-preparation-probe.py",
+    "python": "<installed-venv>/bin/python",
+    "requested_devices": 1,
+    "project_imports_and_execution": "same process",
+    "preflight_complete": true,
+    "stage": "microbatch.explicit.shared_reference",
+    "completed_controls": {
+      "direct_full": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 512.5,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            32.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            4.0,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      },
+      "no_microbatch_wrapper": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 512.5,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            32.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            4.0,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      },
+      "per_microbatch_0": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 1024.0,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            32.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            8.0,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      },
+      "per_microbatch_1": {
+        "outcome": "independent_exact_loss_gradient_state_and_placement",
+        "loss": 1.0,
+        "state": {
+          "input_scale": [
+            2.0
+          ],
+          "kernel_scale": [
+            0.5
+          ],
+          "output_grad_scale": [
+            4.0
+          ],
+          "input_amax_history": [
+            1.0,
+            224.0,
+            112.0,
+            896.0
+          ],
+          "kernel_amax_history": [
+            0.125,
+            56.0,
+            28.0,
+            224.0
+          ],
+          "output_grad_amax_history": [
+            0.25,
+            57344.0,
+            28672.0,
+            229376.0
+          ]
+        }
+      }
+    },
+    "probe_sha256": "2c9e7640edf9991dda223daaa51e94a9e60e8e328290fa831bb225852f449f28",
+    "config_sha256": "55ec5ecbbb1cbf8f12ff1b4c6c7744be264e5880cd54dd7b6e00317860d411e7",
+    "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "observed_source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "source_status": "",
+    "verified_source_files": [
+      "lib/levanter/tests/test_train_lm.py",
+      "lib/haliax/src/haliax/quantization.py",
+      "lib/haliax/src/haliax/_src/fp8.py",
+      "lib/haliax/src/haliax/nn/linear.py",
+      "lib/haliax/tests/test_fp8.py",
+      "lib/levanter/src/levanter/layers/linear.py",
+      "lib/levanter/src/levanter/layers/stacked.py",
+      "lib/levanter/src/levanter/models/llama.py",
+      "lib/levanter/src/levanter/models/llama_native.py",
+      "lib/levanter/src/levanter/models/llama_native_lm.py",
+      "lib/levanter/src/levanter/models/lm_model.py",
+      "lib/levanter/src/levanter/trainer.py",
+      "lib/levanter/src/levanter/trainer_state.py",
+      "lib/levanter/src/levanter/grad_accum.py",
+      "lib/levanter/src/levanter/main/train_lm.py",
+      "lib/levanter/src/levanter/layers/attention.py",
+      "lib/levanter/src/levanter/checkpoint.py",
+      "lib/levanter/src/levanter/adaptor/__init__.py",
+      "lib/levanter/src/levanter/adaptor/lora.py",
+      "lib/levanter/tests/test_grad_accum.py",
+      "lib/levanter/src/levanter/testing/tiny_corpus.py",
+      "lib/levanter/src/levanter/testing/tokenizer.py",
+      "lib/levanter/src/levanter/tracker/json_file.py",
+      "lib/levanter/src/levanter/data/text/datasets.py",
+      "lib/levanter/src/levanter/pipeline.py"
+    ],
+    "current_source_file": "lib/levanter/src/levanter/pipeline.py",
+    "worker_path": "<research-root>/native-jax-fp8-microbatch-preparation-worker.py",
+    "worker_sha256": "bef822486ef522576e1eacb6f08032e135c0df2437415c3b646a72a822f78cb4",
+    "source_modules": {
+      "haliax": "<execution-source-root>/lib/haliax/src/haliax/__init__.py",
+      "levanter": "<execution-source-root>/lib/levanter/src/levanter/__init__.py",
+      "marin": "<execution-source-root>/lib/marin/src/marin/__init__.py",
+      "iris": "<execution-source-root>/lib/iris/src/iris/__init__.py",
+      "haliax.quantization": "<execution-source-root>/lib/haliax/src/haliax/quantization.py",
+      "haliax._src.fp8": "<execution-source-root>/lib/haliax/src/haliax/_src/fp8.py",
+      "levanter.grad_accum": "<execution-source-root>/lib/levanter/src/levanter/grad_accum.py",
+      "levanter.pipeline": "<execution-source-root>/lib/levanter/src/levanter/pipeline.py"
+    },
+    "actual_device_count": 1,
+    "actual_devices": [
+      "cpu:0"
+    ],
+    "device_platforms": [
+      "cpu"
+    ],
+    "iris_publishing_runtime": false,
+    "control_kind": "explicit",
+    "placements": {
+      "inputs": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('data', None), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('data', None), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "stored_weight": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "direct_full.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "direct_full.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "direct_full.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "direct_full.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "direct_full.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "direct_full.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "direct_full.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "direct_full.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "no_microbatch_wrapper.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "no_microbatch_wrapper.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_0.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "per_microbatch_0.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "per_microbatch_0.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_0.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_0.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_0.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_0.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_0.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_1.loss": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [],
+        "local_shard_shapes": [
+          []
+        ]
+      },
+      "per_microbatch_1.weight_gradient": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P('model', 'data'), memory_kind=device)",
+        "shape": [
+          4,
+          8
+        ],
+        "local_shard_shapes": [
+          [
+            4,
+            8
+          ]
+        ]
+      },
+      "per_microbatch_1.input_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_1.kernel_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_1.output_grad_scale": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          1
+        ],
+        "local_shard_shapes": [
+          [
+            1
+          ]
+        ]
+      },
+      "per_microbatch_1.input_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_1.kernel_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      },
+      "per_microbatch_1.output_grad_amax_history": {
+        "observed": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(None,), memory_kind=device)",
+        "expected": "NamedSharding(mesh=Mesh('data': 1, 'model': 1, axis_types=(Explicit, Explicit)), spec=P(), memory_kind=device)",
+        "shape": [
+          4
+        ],
+        "local_shard_shapes": [
+          [
+            4
+          ]
+        ]
+      }
+    },
+    "failure_classification": "diagnostic_control_failure_review_required",
+    "exception": {
+      "type": "ValueError",
+      "message": "pytree structure error: different types at key path\n    tree_map tree[0]\nAt that key path, the prefix pytree tree_map tree has a subtree of type\n    <class 'haliax.quantization.Fp8DotGeneralOp'>\nbut at the same key path the full pytree has a subtree of different type\n    <class 'NoneType'>.",
+      "traceback": "Traceback (most recent call last):\n  File \"<research-root>/native-jax-fp8-microbatch-preparation-probe.py\", line 86, in main\n    receipt[\"result\"] = worker.execute(args, receipt, checkpoint)\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<research-root>/native-jax-fp8-microbatch-preparation-worker.py\", line 421, in execute\n    return microbatch_state(devices)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<research-root>/native-jax-fp8-microbatch-preparation-worker.py\", line 348, in microbatch_state\n    reference_gradients = eqx.combine(overwrites, jax.tree.map(lambda leaf: leaf / 2, additive))\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<installed-venv>/lib/python3.12/site-packages/equinox/_filters.py\", line 232, in combine\n    return jtu.tree_map(_combine, *pytrees, is_leaf=_is_leaf)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<installed-venv>/lib/python3.12/site-packages/jax/_src/tree_util.py\", line 399, in tree_map\n    raise (err('tree_map tree') if err is not None else e) from None\nValueError: pytree structure error: different types at key path\n    tree_map tree[0]\nAt that key path, the prefix pytree tree_map tree has a subtree of type\n    <class 'haliax.quantization.Fp8DotGeneralOp'>\nbut at the same key path the full pytree has a subtree of different type\n    <class 'NoneType'>.\n"
+    }
+  },
+  "execution": {
+    "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+    "research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+    "release_sha256": "02a304e14183cbe79821b8ab340d57f69d152406e11d4551d30a4dea505b4903",
+    "command": [
+      "<wall-timeout-command>",
+      "--signal=TERM",
+      "--kill-after=5s",
+      "180s",
+      "<modern-uv>",
+      "run",
+      "--no-sync",
+      "--offline",
+      "--directory",
+      "<execution-source-root>",
+      "python",
+      "<research-root>/native-jax-fp8-microbatch-preparation-probe.py",
+      "microbatch",
+      "--source-root",
+      "<execution-source-root>",
+      "--research-root",
+      "<research-root>",
+      "--config",
+      "<research-root>/native-jax-fp8-microbatch-preparation-config.json",
+      "--devices",
+      "1",
+      "--output",
+      "<output-root>/microbatch-cpu1"
+    ],
+    "environment": {
+      "JAX_NUM_CPU_DEVICES": "1",
+      "JAX_PLATFORMS": "cpu",
+      "UV_PROJECT_ENVIRONMENT": "<installed-venv>",
+      "UV_NO_SYNC": "1",
+      "UV_OFFLINE": "1",
+      "UV_FROZEN": "1",
+      "UV_CACHE_DIR": "<uv-cache>",
+      "XLA_FLAGS": "--xla_allow_excess_precision=false",
+      "HF_HUB_OFFLINE": "1",
+      "HF_DATASETS_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "WANDB_MODE": "disabled",
+      "TOKENIZERS_PARALLELISM": "false",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "PYTHONPATH": "<execution-source-root>/lib/ducky/src:<execution-source-root>/lib/dupekit/src:<execution-source-root>/lib/finelog/src:<execution-source-root>/lib/finestore/src:<execution-source-root>/lib/fray/src:<execution-source-root>/lib/haliax/src:<execution-source-root>/lib/iris/src:<execution-source-root>/lib/levanter/src:<execution-source-root>/lib/marin/src:<execution-source-root>/lib/rigging/src:<execution-source-root>/lib/rolloutengine/src:<execution-source-root>/lib/shellbox/src:<execution-source-root>/lib/taskcompendium/src:<execution-source-root>/lib/taskforge/src:<execution-source-root>/lib/verifyit/src:<execution-source-root>/lib/zephyr/src"
+    },
+    "execution_boundary": "functions.exec exec_command use_default; session filesystem sandbox and restricted network policy; no require_escalated",
+    "started_utc": "2026-10-25T04:16:28.772654+00:00",
+    "no_automatic_recovery": true,
+    "exit_code": 1,
+    "finished_utc": "2026-10-25T04:16:36.728561+00:00",
+    "log_sha256": "ae63aaf84597dbd44f0ad1ec599eebe9365f16379218d670fe7b2c801eb73410",
+    "source_clean_after": true
+  },
+  "root_verification": {
+    "artifact_basename": "native-jax-fp8-microbatch-contract-cpu1-root-result-proof.json",
+    "original_sha256": "54313a3effb3eaf06fee58ea39d420640b72d3ad867ccf8b992867b3f641e4ec",
+    "record": {
+      "status": "ROOT_VERIFIED_PARTIAL_CPU1_REFERENCE_ASSEMBLY_FAILURE",
+      "utc": "2026-10-25T04:19:15.489431+00:00",
+      "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+      "research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+      "preflight_passed": true,
+      "actual_logical_cpu_devices": 1,
+      "completed_independent_exact_controls": [
+        "direct_full",
+        "no_microbatch_wrapper",
+        "per_microbatch_0",
+        "per_microbatch_1"
+      ],
+      "all_six_state_arrays_each_control_match_stated_oracles": true,
+      "shared_reducer_not_numerically_qualified": true,
+      "raw_accumulation_not_reached": true,
+      "no_metadata_averaging_result": true,
+      "failure": "eqx.combine must treat custom gradient-overwrite operation as an atomic leaf when merging with None",
+      "CPU4_released": false,
+      "no_retry_or_candidate_executed": true,
+      "exit_code": 1,
+      "duration_seconds": 7.955907,
+      "source_clean_after": true,
+      "artifacts": {
+        "receipt.json": {
+          "bytes": 23209,
+          "sha256": "29ba06aaf72bed84edd821313f463426beab4e42b6c5560ec26e23533d699515"
+        },
+        "execution.json": {
+          "bytes": 3505,
+          "sha256": "109238e47199a9b695790eb43720c2db8874906cf676aed29e4d07cfa47f0994"
+        },
+        "microbatch-cpu1.log": {
+          "bytes": 1948,
+          "sha256": "ae63aaf84597dbd44f0ad1ec599eebe9365f16379218d670fe7b2c801eb73410"
+        },
+        "native-jax-fp8-microbatch-contract-cpu1-release.json": {
+          "bytes": 1464,
+          "sha256": "02a304e14183cbe79821b8ab340d57f69d152406e11d4551d30a4dea505b4903"
+        },
+        "run_native_jax_fp8_microbatch_cpu1_published.py": {
+          "bytes": 3997,
+          "sha256": "964585de4ef9bcaec586892b50c342c1b72cc7b900804c26d3e952763887e20c"
+        }
+      }
+    }
+  },
+  "prior_publication_proof": {
+    "artifact_basename": "native-jax-fp8-microbatch-prelaunch-root-publication-proof.json",
+    "original_sha256": "27cfee3d771091241ad78bc9191c4a5f9cfd05946206b290115bad7246daa958",
+    "research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489"
+  }
+}

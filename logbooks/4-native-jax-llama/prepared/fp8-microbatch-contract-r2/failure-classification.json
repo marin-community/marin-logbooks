@@ -1,0 +1,66 @@
+{
+  "status": "ACTUAL_INITIAL_CPU1_RESEARCH_HARNESS_FAILURE_R2_RESPONSE_UNEXECUTED",
+  "source_commit": "ba58e83e3310163e8d674ea9e95a85094d236a7a",
+  "research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+  "execution": {
+    "started_utc": "2026-10-25T04:16:28.772654+00:00",
+    "finished_utc": "2026-10-25T04:16:36.728561+00:00",
+    "exit_code": 1,
+    "duration_seconds": 7.955907,
+    "logical_CPU_devices": 1,
+    "stage": "microbatch.explicit.shared_reference"
+  },
+  "original_runner_failure_classification": "diagnostic_control_failure_review_required",
+  "root_interpretation": "Invalid shared-reference assembly in the research worker, before raw accumulation; no metadata-averaging result.",
+  "failure": {
+    "exception": "ValueError",
+    "site": "initial research worker line348: eqx.combine(overwrites, jax.tree.map(lambda leaf: leaf / 2, additive))",
+    "detail": "partition_for_grad_overwrite treats a CustomGradientAccumulation subtree as atomic. combine without that leaf predicate descends into the Fp8DotGeneralOp from the overwrite tree while the additive tree has None at that position, producing the observed Fp8DotGeneralOp-versus-None pytree mismatch."
+  },
+  "completed_exact_controls": [
+    "direct_full",
+    "no_microbatch_wrapper",
+    "per_microbatch_0",
+    "per_microbatch_1"
+  ],
+  "retained_observations": "Each completed control passed its independent loss, ordinary weight gradient, all six state arrays and placement checks; source/module provenance, one CPU, no Iris publishing runtime, clean source also passed. Full arrays/placements are retained in initial-cpu1-partial-result.json.",
+  "not_qualified": [
+    "shared reducer numerical control",
+    "actual raw accumulation",
+    "raw metadata averaging",
+    "CPU4 physical partitioning",
+    "native model quantization",
+    "BF16/optimizer/checkpoint behavior",
+    "accelerator/scientific acceptance"
+  ],
+  "R2_response": "Research worker only: import existing CustomGradientAccumulation at top level and supply its atomic is_leaf predicate to the existing reference eqx.combine. No oracle/fixture/reducer/numerical criterion/source implementation changes.",
+  "evidence": {
+    "receipt_sha256": "29ba06aaf72bed84edd821313f463426beab4e42b6c5560ec26e23533d699515",
+    "execution_sha256": "109238e47199a9b695790eb43720c2db8874906cf676aed29e4d07cfa47f0994",
+    "log_sha256": "ae63aaf84597dbd44f0ad1ec599eebe9365f16379218d670fe7b2c801eb73410",
+    "root_verification_sha256": "54313a3effb3eaf06fee58ea39d420640b72d3ad867ccf8b992867b3f641e4ec"
+  },
+  "preservation": "Original public recipe/runner/worker/config, initial freeze, actual receipt/execution/log and original generic classification remain unchanged. This is a later explicit interpretation and versioned response.",
+  "releases": {
+    "R2_CPU1": false,
+    "CPU4": false,
+    "automatic_retry": false,
+    "candidate_fix_execution": false,
+    "TPU_job_monitor_windows": "paused"
+  },
+  "freeze_provenance_clarification": {
+    "note": "The frozen source-freeze.json key initial_public_artifacts.initial_preparation_freeze_sha256 refers to the original PRIVATE preparation freeze hash, not public byte identity. Preserve that frozen phase; this later note labels the two identities explicitly.",
+    "original_private_freeze": {
+      "artifact_basename": "native-jax-fp8-microbatch-preparation-freeze.json",
+      "bytes": 5362,
+      "sha256": "56034ade2152cb43bbdcb96901046d8a443c4b6c4d635dbc9964eb721801fe7a"
+    },
+    "published_sanitized_projection": {
+      "research_commit": "807b14f1304a5fe0ae5118c5fe40f2a004a66489",
+      "archive_relative": "prepared/fp8-microbatch-contract/initial-preparation-freeze.json",
+      "bytes": 5989,
+      "sha256": "0cecadf1511acb32a0900c959ecb6f30ab58c68be38dd0d2e2e49b5e994ecadd"
+    },
+    "runner_worker_config_initial_hashes": "These three exact runnable/config hashes do match the public807 bytes; only the freeze hash is an original-artifact reference."
+  }
+}
