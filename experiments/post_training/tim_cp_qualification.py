@@ -157,7 +157,7 @@ def performance_recipe(smoke):
         enable_auto_tool_choice=True,
         tool_call_parser="hermes",
         logprobs_mode="processed_logprobs",
-        logits_processors=["skyrl_train.inference_engines.vllm.sc_sampled_capture.SampledScoreCapture"],
+        logits_processors=["skyrl_train.inference_engines.vllm.sc_sampled_capture:SampledScoreCapture"],
         profiler_config={
             "profiler": "torch",
             "torch_profiler_dir": "/tmp/sc-performance-13-profiles",

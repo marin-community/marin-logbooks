@@ -21,7 +21,7 @@ from rigging.filesystem.storage_path import StoragePath
 from vllm import SamplingParams
 from vllm.inputs import TokensPrompt
 
-from skyrl_train.inference_engines.response_topk import select_flat_chat_response_topk
+from skyrl_train.inference_engines.response_topk import CHAT_TOPK_WIDTH_KEY, select_flat_chat_response_topk
 from skyrl_train.inference_engines.vllm.sc_sampled_capture import CAPTURE_KEY
 
 PROFILE_DIRECTORY = Path("/tmp/sc-performance-13-profiles")
@@ -129,7 +129,7 @@ async def stop_numeric_route(owner):
 
 
 async def profile_chat(owner, payload):
-    await owner.llm.start_profile()
+    await owner.llm.start_profile(profile_prefix=f"sc-performance-k{payload.get(CHAT_TOPK_WIDTH_KEY, 0)}")
     profile = cProfile.Profile()
     profile.enable()
     try:
@@ -176,5 +176,11 @@ def export_profiles(root):
         with path.open("rb") as source, destination.open("wb") as output:
             while block := source.read(4 * 1024 * 1024):
                 output.write(block)
-        reports.append({"uri": str(destination), "bytes": path.stat().st_size})
+        reports.append(
+            {
+                "uri": str(destination),
+                "bytes": path.stat().st_size,
+                "relative_path": str(path.relative_to(PROFILE_DIRECTORY)),
+            }
+        )
     return reports

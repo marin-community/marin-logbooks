@@ -76,6 +76,12 @@ Source `a7b6fcdb8ea08022b6d520c7b298db0b30f377a3` ran with version `2026.10.26.3
 
 The earlier local dataset check omitted the recipe's custom tokenizer template and therefore missed this failure. The corrected preflight constructs the tokenizer from the actual composed config, loads all selected rows through the normal dataset and task preparations, and validates their sampling options. It passed four Qwen rows and eight Grug rows, with tools included in prompt lengths: maxima 4,079 and 5,579 tokens, below 14,336 and 53,248. No model timing or accuracy result is claimed from the failed startup.
 
+### Fourth Qwen startup: plugin registration
+
+Source `4fc1ede066ba0781a3b4d52ce7c3390d901b07af` ran with version `2026.10.26.4` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.4-coordinator-4d82131c`. Dataset loading passed and execution reached inference initialization. The research hook used a dot-separated class path; the pinned vLLM loader requires `module:Class`. The engine failed before capture or training measurements. The client retried engine creation inside the same allocation; the coordinator was cancelled once the deterministic configuration error was established. The registration and its research-only guard now use the pinned syntax. Profiler calls also use the documented prefix argument to label K0/K32/K128 traces.
+
+Source inspection further identifies the measured request boundary. `TaskWorker` constructs `InferenceEngineClient` with its HTTP endpoint disabled and wraps it in `DirectModelClient`. These Snowball task requests call the worker's native chat handler through Ray. SkyRL also owns an HTTP server for other clients; native vLLM API-server endpoint plugins do not register routes in it. The comparison uses the same worker and rendered prefix for native chat over Ray and the job-local numeric HTTP route. It excludes client-side rendering and does not establish an end-to-end chat replacement. A replacement would still need native tool, reasoning, continuation and policy-version behavior.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.

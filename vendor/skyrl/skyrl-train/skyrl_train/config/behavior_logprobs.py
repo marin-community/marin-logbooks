@@ -88,7 +88,7 @@ def configure_behavior_logprob_sampling(generator: DictConfig) -> None:
     # Keep this exception out of promoted product changes.
     research_observer = os.environ.get("TIM_CP_MODE") == "performance" and list(
         options.get("logits_processors") or []
-    ) == ["skyrl_train.inference_engines.vllm.sc_sampled_capture.SampledScoreCapture"]
+    ) == ["skyrl_train.inference_engines.vllm.sc_sampled_capture:SampledScoreCapture"]
     if options.get("override_generation_config") or (options.get("logits_processors") and not research_observer):
         mismatches.append("engine-level generation overrides or logits processors")
     if mismatches:
