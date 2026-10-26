@@ -234,6 +234,13 @@ def _gather_panel_records(record: dict) -> list[dict]:
 def _measure_panel(capture, *, layer_index: int, query_count: int) -> dict:
     panel = replay_attention_panel(capture, layer_index=layer_index, query_count=query_count)
     jax.block_until_ready(panel)
+    replay_error = float(jnp.max(panel.replay_output_max_abs_error))
+    tail_error = float(capture.tail_output_max_abs_error)
+    if replay_error != 0 or tail_error != 0:
+        raise ValueError(
+            f"Invalid attention boundary capture at layer {layer_index}: "
+            f"tail max error={tail_error}, replay max error={replay_error}; exact BF16 parity is required"
+        )
     host = jax.tree.map(lambda value: np.asarray(value.addressable_shards[0].data), panel)
     key_positions = np.arange(host.k.shape[1])[None, None, :]
     key_mask = (
