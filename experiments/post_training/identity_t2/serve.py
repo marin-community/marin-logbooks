@@ -26,6 +26,7 @@ from iris.cluster.types import Entrypoint, EnvironmentSpec
 from iris.rpc import job_pb2
 from marin.inference.config import IrisConfig, ServedModelConfig, VllmEngineConfig, VllmLauncherType
 from marin.inference.iris import IrisServiceConfig, run_iris_service
+from marin.inference.vllm_server import _write_virtual_hosted_s3_config
 from rigging.secrets import SecretBehavior
 from rigging.timing import Duration
 
@@ -33,7 +34,7 @@ from vendor.skyrl.cloud.iris.runtime_environment import IRIS_TASK_IMAGE, Runtime
 
 MODEL = "s3://marin-rno2a/marin/models/marin-snowball-67b-a2b-v0.1-adc0078a"
 TIMEOUT_SECONDS = 7200
-JOB_NAME = "cd16t2-generation-r1"
+JOB_NAME = "cd16t2-generation-r2"
 ENDPOINT_NAME = "/serve/" + JOB_NAME
 PROFILE_ENV = "/app/vendor/skyrl/.cd16t2-vllm-runtime"
 
@@ -65,6 +66,12 @@ def worker_command(activation_file: Path = Path("/app/vendor/skyrl/.iris-runtime
         'exec "$root_python" -u -m experiments.post_training.identity_t2.serve worker'
     )
     return ["bash", "-c", script]
+
+
+def configure_worker_s3() -> None:
+    # PreinstalledVllm.env() is empty. Match IsolatedCudaVllm.env() explicitly:
+    # CoreWeave rejects the Run:ai metadata loader's default path-style requests.
+    os.environ["AWS_CONFIG_FILE"] = _write_virtual_hosted_s3_config()
 
 
 def validate_runtime() -> None:
@@ -157,7 +164,7 @@ def submission(credentials: dict[str, str]):
         "timeout": Duration.from_seconds(TIMEOUT_SECONDS),
         "max_retries_failure": 0,
         "max_retries_preemption": 0,
-        "priority_band": job_pb2.PRIORITY_BAND_PRODUCTION,
+        "priority_band": job_pb2.PRIORITY_BAND_INTERACTIVE,
     }
 
 
@@ -169,7 +176,9 @@ def safe_plan() -> dict:
         "source_revision": "adc0078a19a4383bc998fcdb43867b3360baf5f3",
         "resources": {"replicas": 1, "H100_per_task": 8, "CPU_per_task": 32, "RAM": "512g", "disk": "512g"},
         "placement": "cw-rno2a",
-        "priority": "production",
+        "priority": "interactive",
+        "AWS_CONFIG_FILE": "/tmp/marin-vllm-virtual-hosted-s3.conf",
+        "S3_addressing_style": "virtual (same native config as IsolatedCudaVllm.env)",
         "native_timeout_seconds": TIMEOUT_SECONDS,
         "application_TTL_seconds": TIMEOUT_SECONDS,
         "failure_retries": 0,
@@ -214,6 +223,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     if args.mode == "worker":
+        configure_worker_s3()
         validate_runtime()
         run_iris_service(service_config())
     else:

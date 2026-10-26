@@ -3,11 +3,19 @@
 
 import os
 import subprocess
+from urllib.parse import urlsplit
 
+import botocore.session
+import pytest
 from iris.cluster.runtime.entrypoint import build_runtime_entrypoint
 from iris.cluster.types import Entrypoint, EnvironmentSpec
 
-from experiments.post_training.identity_t2.serve import environment_setup_scripts, setup_script, worker_command
+from experiments.post_training.identity_t2.serve import (
+    configure_worker_s3,
+    environment_setup_scripts,
+    setup_script,
+    worker_command,
+)
 
 
 def test_native_compiled_setup_keeps_root_provisioning_before_the_separate_profile():
@@ -42,3 +50,41 @@ def test_worker_executes_root_python_while_profile_vllm_remains_first_on_path(tm
     result = subprocess.run(worker_command(activation), env=env, check=True, capture_output=True, text=True)
     lines = result.stdout.splitlines()
     assert lines == ["ROOT_WORKER", str(vllm), "-u -m experiments.post_training.identity_t2.serve worker"]
+
+
+def test_native_aws_config_changes_actual_sdk_request_to_virtual_hosted(tmp_path, monkeypatch):
+    empty_config = tmp_path / "empty-aws-config"
+    empty_config.write_text("")
+    monkeypatch.setenv("AWS_CONFIG_FILE", str(empty_config))
+
+    class StopBeforeNetwork(Exception):
+        pass
+
+    def prepared_url():
+        client = botocore.session.get_session().create_client(
+            "s3",
+            endpoint_url="https://rno2a.cwobject.test",
+            region_name="us-east-1",
+            aws_access_key_id="dummy-probe-key",
+            aws_secret_access_key="dummy-probe-secret",
+        )
+        urls = []
+
+        def intercept(request, **kwargs):
+            urls.append(request.url)
+            raise StopBeforeNetwork
+
+        # Use the real SDK resolver/serializer/signer; intercept only external I/O.
+        client.meta.events.register("before-send.s3.ListObjectsV2", intercept)
+        with pytest.raises(StopBeforeNetwork):
+            client.list_objects_v2(Bucket="marin-rno2a", Prefix="metadata-probe/")
+        assert len(urls) == 1
+        return urlsplit(urls[0])
+
+    before = prepared_url()
+    assert before.hostname == "rno2a.cwobject.test"
+    assert before.path == "/marin-rno2a"
+    configure_worker_s3()
+    after = prepared_url()
+    assert after.hostname == "marin-rno2a.rno2a.cwobject.test"
+    assert after.path == "/"
