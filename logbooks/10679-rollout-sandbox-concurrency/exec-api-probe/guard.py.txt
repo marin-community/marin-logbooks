@@ -1,0 +1,278 @@
+"""RNO-only safety monitor. Never deletes a pod without a study ownership label."""
+import argparse
+import collections
+import json
+import re
+from pathlib import Path
+import statistics
+import subprocess
+import time
+
+from iris.cli.connect import connect_controller, rpc_client, open_iris_client
+from iris.rpc import controller_pb2, job_pb2
+from iris.cluster.platforms.k8s.types import IRIS_TASK_ID_ANNOTATION
+from kubernetes.utils.quantity import parse_quantity
+
+CONTEXT = 'marin-rn02a_RNO2A'
+PREFIX = 'atqamar.atqamar-sbc-'
+LOG = Path('/home/ahmad/oa-data/rollout-sandbox-concurrency/rno-guard.jsonl')
+
+
+def emit(kind, **values):
+    record = {'utc': subprocess.check_output(['date','-u','+%Y-%m-%dT%H:%M:%SZ'],text=True).strip(), 'kind': kind, **values}
+    with LOG.open('a') as stream:
+        stream.write(json.dumps(record) + '\n')
+    print(json.dumps(record), flush=True)
+
+
+def kube(*args):
+    result = subprocess.run(['kubectl', '--context', CONTEXT, '-n', 'iris', *args],
+                            capture_output=True, text=True, check=True, timeout=15)
+    return json.loads(result.stdout) if result.stdout.strip().startswith('{') else result.stdout.strip()
+
+
+def owned(pod):
+    return pod['metadata'].get('labels', {}).get('iris.job_id', '').startswith(PREFIX)
+
+
+def pods():
+    return kube('get', 'pods', '-o', 'json')['items']
+
+
+def quantity(value):
+    return float(parse_quantity(str(value)))
+
+
+def memory_gib(value):
+    return quantity(value)/1024**3
+
+
+def snapshot(items):
+    other = [p for p in items if not owned(p)]
+    active = [p for p in items if p['status'].get('phase') not in ('Succeeded','Failed')]
+    cpu = sum(quantity(c.get('resources',{}).get('requests',{}).get('cpu','0')) for p in active for c in p['spec'].get('containers',[]))
+    memory=sum(memory_gib(c.get('resources',{}).get('requests',{}).get('memory','0')) for p in active for c in p['spec'].get('containers',[]))
+    return {'pods':len(items), 'other_phases':dict(collections.Counter(p['status'].get('phase') for p in other)),
+            'owned_phases':dict(collections.Counter(p['status'].get('phase') for p in items if owned(p))),
+            'active_cpu_requests':cpu,'active_memory_requests_gib':memory,
+            'other_pending':[p['metadata']['name'] for p in other if p['status'].get('phase')=='Pending'],
+            'other_failed':[p['metadata']['name'] for p in other if p['status'].get('phase')=='Failed']}
+
+
+
+INFRASTRUCTURE_ERROR = re.compile(
+    r'OOMKilled|OutOfMemory|out of memory|Evict(?:ed|ion)|ImagePull|ErrImage|CrashLoop|Unschedulable|'
+    r'SchedulingGated|NodeNotReady|(?:node|worker).*(?:unreachable|lost|not.ready|failure)|'
+    r'Connect(?:ion)?(?:Error|Reset|Aborted|Refused)|ConnectWireError|TransportError|HTTPError|'
+    r'connection.*(?:refused|reset|closed|timed.out)|reconcil|RESOURCE_EXHAUSTED|'
+    r'DeadlineExceeded|TimeoutError|ServiceUnavailable|disk.pressure|memory.pressure|No space left', re.I)
+APPLICATION_FRAME = re.compile(r"File [\"'](?:/app/)?(?:vendor/skyrl/|users/|experiments/|tests/|examples/)[^\"']+[\"']")
+ERROR_LINE = re.compile(r'^\s*(?:E\s+)?(?:[\w.]+\.)?(\w*(?:Error|Exception))(?::.*)?$')
+
+
+def application_error_line(pod, logs):
+    states=[c.get('state',{}) for c in [*pod['status'].get('containerStatuses',[]), *pod['status'].get('initContainerStatuses',[])]]
+    causes=' '.join([pod['status'].get('reason',''),pod['status'].get('message',''),*[str(v.get('terminated',{})) for v in states]])
+    if INFRASTRUCTURE_ERROR.search(causes+'\n'+logs): return None
+    if any(v.get('terminated',{}).get('exitCode') in (137,143) for v in states): return None
+    lines=logs.splitlines()
+    errors=[line.strip() for line in lines if ERROR_LINE.match(line)]
+    if not errors: return None
+    pytest_assertion=any('AssertionError' in line for line in errors) and any(re.match(r'\s*FAILED\s+\S+',line) for line in lines)
+    frames=[line for line in lines if re.search(r'File [\"\']',line)]
+    user_exception='Traceback (most recent call last)' in logs and frames and APPLICATION_FRAME.search(frames[-1])
+    if not (pytest_assertion or user_exception): return None
+    line=errors[-1]
+    if re.search(r'api.?key|password|secret|authorization|bearer|token',line,re.I):
+        line=line.split(':',1)[0]+': [credential-bearing error text redacted]'
+    return line[:1000]
+
+
+def verified_application_failure(pod):
+    name=pod['metadata']['name']
+    result=subprocess.run(['kubectl','--context',CONTEXT,'-n','iris','logs',name,'-c','task','--tail=200'],capture_output=True,text=True,check=True,timeout=15)
+    line=application_error_line(pod,result.stdout)
+    if line is None: return None
+    task=pod['metadata'].get('annotations',{}).get(IRIS_TASK_ID_ANNOTATION,'')
+    if not task: return None
+    return {'job':task.rsplit('/',1)[0], 'task':task,'pod':name,'error_line':line,'pod_uid':pod['metadata']['uid']}
+
+
+def cleanup():
+    clear_since=None
+    with open_iris_client(cluster_name='marin', workspace=None) as client:
+        for iteration in range(40):
+            names = client.active_job_names_for_prefix('/atqamar/atqamar-sbc-')
+            selected=[]
+            for job in sorted(names,key=lambda job:len(job.to_wire())):
+                if not any(job.to_wire().startswith(parent.to_wire()+'/') for parent in selected):
+                    selected.append(job)
+            for job in selected:
+                client.cancel_job(job)
+            mine = [p for p in pods() if owned(p)]
+            # Iris cancels live pods; completed pods follow the backend retention policy.
+            emit('cleanup', iteration=iteration, active_jobs=[job.to_wire() for job in names], pods=[p['metadata']['name'] for p in mine])
+            if not names and not mine:
+                clear_since=clear_since or time.monotonic()
+                if time.monotonic()-clear_since>=60:
+                    emit('cleanup_confirmed',empty_for_seconds=time.monotonic()-clear_since)
+                    return
+            else:
+                clear_since=None
+            time.sleep(5)
+    raise RuntimeError('Study cleanup has not converged')
+
+
+def monitor(name, command, *, local_probe=False):
+    with connect_controller(cluster_name='cw-rno2a') as endpoint, rpc_client(endpoint.url, endpoint.credentials, timeout_ms=5000) as rpc:
+        lat=[]
+        for _ in range(8):
+            start=time.monotonic(); rpc.get_current_user(job_pb2.GetCurrentUserRequest()); lat.append(time.monotonic()-start)
+        baseline=statistics.median(lat[1:]); threshold=max(.5, baseline*4)
+        backend=rpc.list_backends(controller_pb2.Controller.ListBackendsRequest()).backends[0]
+        initial=pods(); info=snapshot(initial)
+        wanted=1 if local_probe else int(command[command.index('--concurrency')+1])
+        grading='host' if local_probe else (command[command.index('--grading')+1] if '--grading' in command else 'fresh')
+        maximum=wanted*(2 if grading=='fresh' else 1)
+        if maximum>1024: raise RuntimeError('Requested sandbox ceiling exceeds authorization')
+        capacity=backend.detail.kubernetes
+        emit('preflight', stage=name, latency=lat, abort_latency=threshold,
+             nodes=capacity.total_nodes, schedulable_nodes=capacity.schedulable_nodes,
+             allocatable_cpu=capacity.allocatable_cpu, allocatable_memory=capacity.allocatable_memory,
+             **info)
+        if info['active_cpu_requests']+maximum+4>float(capacity.allocatable_cpu.split()[0])*.9:
+            raise RuntimeError('Insufficient CPU request headroom for this stage')
+        if info['active_memory_requests_gib']+maximum*2+8>float(capacity.allocatable_memory.split()[0])*.9:
+            raise RuntimeError('Insufficient memory request headroom for this stage')
+        if info['other_pending'] or info['owned_phases']:
+            raise RuntimeError('Preflight has pending unrelated pods or retained study pods')
+        if baseline>.15 or max(lat[1:])>.5:
+            raise RuntimeError('Controller preflight latency already elevated')
+        warnings={e['metadata']['uid']:e.get('count',1) for e in kube('get','events','--field-selector','type=Warning','-o','json')['items']}
+        failed={p['metadata']['uid'] for p in initial if p['status'].get('phase')=='Failed'}
+        seen_pending={}
+        restarts={(p['metadata']['uid'],c['name']):c.get('restartCount',0) for p in initial for c in p['status'].get('containerStatuses',[])}
+        output=LOG.parent / f'{name}-submit.log'
+        with output.open('w') as stream:
+            submit=subprocess.Popen(command, stdout=stream, stderr=subprocess.STDOUT)
+        deadline=time.monotonic()+1100
+        stage_seen=False
+        ready=False
+        seen_records=set()
+        recent=[]
+        timeline={}
+        try:
+            while time.monotonic()<deadline:
+                start=time.monotonic(); rpc.get_current_user(job_pb2.GetCurrentUserRequest()); latency=time.monotonic()-start
+                recent.append(latency)
+                if latency>threshold or (len(recent)>=3 and statistics.median(recent[-3:])>max(.15,2*baseline)):
+                    raise RuntimeError(f'Controller latency rose: {latency:.3f}s; baseline {baseline:.3f}s')
+                items=pods(); info=snapshot(items)
+                reason=None
+                if info['active_cpu_requests']>float(capacity.allocatable_cpu.split()[0])*.9 or info['active_memory_requests_gib']>float(capacity.allocatable_memory.split()[0])*.9:
+                    reason='namespace resource requests exceed preflight headroom'
+                if latency>threshold: reason=f'controller latency {latency:.3f}s exceeds {threshold:.3f}s'
+                for event in kube('get','events','--field-selector','type=Warning','-o','json')['items']:
+                    uid=event['metadata']['uid'];count=event.get('count',1)
+                    pdb_status_warning=(event.get('reason')=='UnmanagedPods' and event.get('involvedObject',{}).get('kind')=='PodDisruptionBudget')
+                    if count>warnings.get(uid,0) and not pdb_status_warning:
+                        reason=f'new Kubernetes warning: {event.get("reason")}: {event.get("involvedObject",{}).get("name")}'
+                    warnings[uid]=count
+                mine=[p for p in items if owned(p)]
+                visible=set()
+                for pod in mine:
+                    uid=pod['metadata']['uid'];visible.add(uid)
+                    entry=timeline.setdefault(uid,{'name':pod['metadata']['name'],'task_hash':pod['metadata'].get('labels',{}).get('iris.task_hash'),'job_label':pod['metadata'].get('labels',{}).get('iris.job_id'),'created':pod['metadata'].get('creationTimestamp')})
+                    entry.update(last_seen_epoch=time.time(),phase=pod['status'].get('phase'),node=pod['spec'].get('nodeName'),conditions=pod['status'].get('conditions',[]),containers=[{'name':c['name'],'state':c.get('state',{})} for c in pod['status'].get('containerStatuses',[])])
+                for uid,entry in timeline.items():
+                    if uid not in visible: entry.setdefault('first_absent_epoch',time.time())
+                stage=[p for p in mine if p['metadata'].get('labels',{}).get('iris.job_id')==f'atqamar.{name}']
+                if stage: stage_seen=True
+                for coordinator in ([] if local_probe else stage):
+                    if coordinator['status'].get('phase')!='Running': continue
+                    result=subprocess.run(['kubectl','--context',CONTEXT,'-n','iris','logs',coordinator['metadata']['name'],'-c','task','--tail=5000'],capture_output=True,text=True,check=True,timeout=15)
+                    for line in result.stdout.splitlines():
+                        if 'SBC ' not in line or line in seen_records: continue
+                        seen_records.add(line)
+                        record=json.loads(line.split('SBC ',1)[1])
+                        with (LOG.parent/f'{name}.jsonl').open('a') as stream: stream.write(json.dumps(record)+'\n')
+                        if record['kind']=='fatal': reason=f'rollout error: {record}'
+                        if record['kind']=='summary':
+                            emit('rollout_summary',stage=name,summary=record)
+                            if record.get('failures') or record.get('remaining_sandboxes'): reason='rollout summary has failures or retained handles'
+                        if record['kind']=='ready_for_cleanup': ready=True
+                sandboxes=[p for p in mine if '.shellbox-' in p['metadata'].get('labels',{}).get('iris.job_id','')]
+                if len(sandboxes)>1024: reason='sandbox pod ceiling exceeded'
+                new_failed=[]
+                for p in items:
+                    uid=p['metadata']['uid']; phase=p['status'].get('phase'); podname=p['metadata']['name']
+                    if phase=='Failed' and uid not in failed: new_failed.append(p)
+                    for c in p['status'].get('containerStatuses',[]):
+                        key=(uid,c['name']);count=c.get('restartCount',0)
+                        if count>restarts.get(key,0) and c.get('lastState',{}).get('terminated',{}).get('reason')=='OOMKilled': reason=f'new OOM restart {podname}'
+                        restarts[key]=count
+                    if phase=='Pending' and not owned(p):
+                        reason=f'other workload Pending growth {podname}'
+                        seen_pending.setdefault(uid,time.monotonic())
+                        conditions=p['status'].get('conditions',[])
+                        if any(c.get('reason')=='Unschedulable' for c in conditions) or time.monotonic()-seen_pending[uid]>15:
+                            reason=f'other workload scheduling delay {podname}'
+                    if owned(p):
+                        for c in p['status'].get('containerStatuses',[]):
+                            waiting=c.get('state',{}).get('waiting',{}).get('reason','')
+                            if waiting in ('CrashLoopBackOff','ImagePullBackOff','ErrImagePull'): reason=f'owned container failure {podname}: {waiting}'
+                if new_failed:
+                    verified=[]
+                    healthy_limit=max(.15,2*baseline)
+                    if reason or latency>healthy_limit:
+                        reason=reason or 'new failed pod while controller latency is not healthy'
+                    else:
+                        for pod in new_failed:
+                            if owned(pod):
+                                reason=f'new failed study pod {pod["metadata"]["name"]}'
+                                break
+                            evidence=verified_application_failure(pod)
+                            if evidence is None:
+                                reason=f'unverified or infrastructure pod failure {pod["metadata"]["name"]}'
+                                break
+                            verified.append(evidence)
+                    if not reason:
+                        check=time.monotonic();rpc.get_current_user(job_pb2.GetCurrentUserRequest());check_latency=time.monotonic()-check
+                        current=pods();current_info=snapshot(current)
+                        current_events=kube('get','events','--field-selector','type=Warning','-o','json')['items']
+                        extra_warning=any(e.get('count',1)>warnings.get(e['metadata']['uid'],0)
+                            and not (e.get('reason')=='UnmanagedPods' and e.get('involvedObject',{}).get('kind')=='PodDisruptionBudget')
+                            for e in current_events)
+                        extra_failed={p['metadata']['uid'] for p in current if p['status'].get('phase')=='Failed'}-failed-{r['pod_uid'] for r in verified}
+                        if check_latency>healthy_limit or current_info['other_pending'] or extra_warning or extra_failed or current_info['active_cpu_requests']>float(capacity.allocatable_cpu.split()[0])*.9 or current_info['active_memory_requests_gib']>float(capacity.allocatable_memory.split()[0])*.9:
+                            reason='health changed while verifying an application failure'
+                        else:
+                            for evidence in verified:
+                                emit('ignored_application_failure',stage=name,controller_latency=check_latency,**evidence)
+                                failed.add(evidence['pod_uid'])
+                emit('sample',stage=name,latency=latency,sandbox_pods=len(sandboxes),**info)
+                if reason: raise RuntimeError(reason)
+                if submit.poll() is not None and submit.returncode:
+                    raise RuntimeError(f'submission exited {submit.returncode}; see {output}')
+                if (local_probe and submit.poll()==0) or ready or (not local_probe and stage_seen and stage and all(p['status'].get('phase')=='Succeeded' for p in stage)):
+                    emit('stage_succeeded',stage=name)
+                    return
+                time.sleep(5)
+            raise TimeoutError('Stage deadline exceeded')
+        except BaseException as error:
+            emit('abort',stage=name,error=repr(error))
+            raise
+        finally:
+            if submit.poll() is None:
+                submit.terminate(); submit.wait(timeout=15)
+            try:
+                cleanup()
+            finally:
+                (LOG.parent/f'{name}-pods.json').write_text(json.dumps({'stage':name,'polling_seconds':5,'pods':timeline},indent=2)+'\n')
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser();parser.add_argument('--cleanup',action='store_true');parser.add_argument('--name');parser.add_argument('--local-probe',action='store_true');parser.add_argument('command',nargs=argparse.REMAINDER)
+    args=parser.parse_args()
+    if args.cleanup: cleanup()
+    else: monitor(args.name,args.command[1:] if args.command[:1]==['--'] else args.command,local_probe=args.local_probe)

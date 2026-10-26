@@ -57,3 +57,11 @@ The profile records idle and per-thread stacks at 5 Hz for 15 s. Guest timing ad
 ## Remaining evidence
 
 Matched 256, sustained holds, 1K profiles, slow grading and large payloads remain unqualified. PR10118 contains separate command-framing and raw pod-JSON work; it is not part of this measured startup comparison. No numerical maximum backend concurrency follows from this pair.
+
+## 2026-10-26T03:41:00Z: correction to the 256-session stop and next isolation
+
+Recovered worker logs contain3343 rows; the earlier guard capture ended five seconds early. Before the start of the recorded01:20:05 abort second,256 launches,1184 status polls and56 execs completed across seven sandboxes. Actual agent tools began at01:20:02.225. The earlier “before first tool” sentence is invalid. This stopped attempt remains excluded from completed scaling/performance comparisons. The source trace receipt is retained in the local study; results.json carries the corrected counts.
+
+All ramps remain stopped. The next authorized experiment uses one exact study-owned CPU-only RNO sandbox and one sequential client at2 exec/s. Compare fresh ApiClients with a reused client; every exec opens its own websocket. Preserve per-stage wall, process and calling-thread CPU, with alternating arm order and output/exit validation. The existing strict health guard supervises the local probe and confirms cleanup over60 seconds. No shared controller deployment or pool/default change.
+
+The first probe submitted and cancelled its job before any exec measurement: immediate task-status lookup returned task-not-found. Its correction waits for the exact study pod's task container readiness through the Kubernetes API and submits directly to RNO. A fresh preflight is required after confirmed empty cleanup. Supporting exact source and manifest are in exec-api-probe/. Restore the two .py suffixes into sbc/ on the recorded Marin base and use the supplied service.py only for the local client-reuse draft. This archive does not open that PR or change the frozen10679 contribution.

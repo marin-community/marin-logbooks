@@ -1,0 +1,177 @@
+"""Single-process, sequential Kubernetes exec comparison; run under sbc.guard."""
+
+import argparse
+import hashlib
+import importlib.metadata
+import json
+import signal
+import subprocess
+import time
+from pathlib import Path
+
+import kubernetes.client
+import kubernetes.stream
+from iris.cli.connect import open_iris_client
+from iris.cluster.constraints import Constraint, ConstraintOp
+from iris.cluster.platforms.k8s.service import CloudK8sService
+from iris.cluster.types import Entrypoint, EnvironmentSpec, ResourceSpec
+from iris.rpc import job_pb2
+from rigging.timing import Duration
+
+IMAGE = "docker.io/library/python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1"
+CONTEXT = "marin-rn02a_RNO2A"
+KUBECONFIG = "/home/ahmad/.cache/oa/sbc-coreweave-kubeconfig"
+
+
+def emit(kind, **values):
+    print(json.dumps({"kind": kind, "utc": subprocess.check_output(
+        ["date", "-u", "+%Y-%m-%dT%H:%M:%SZ"], text=True).strip(), **values}), flush=True)
+
+
+def clock():
+    return time.perf_counter_ns(), time.process_time_ns(), time.thread_time_ns()
+
+
+def elapsed(start):
+    return dict(zip(("wall_ns", "process_cpu_ns", "thread_cpu_ns"),
+                    (end - begin for begin, end in zip(start, clock()))))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--name", required=True)
+    parser.add_argument("--pairs", type=int, default=20)
+    parser.add_argument("--rate", type=float, default=2)
+    parser.add_argument("--kubeconfig", default=KUBECONFIG)
+    args = parser.parse_args()
+    if not args.name.startswith("atqamar-sbc-rno-execapi-") or not 0 < args.rate <= 10 or not 1 <= args.pairs <= 40:
+        parser.error("Use an exact study prefix, at most 10 sequential exec/s and at most 40 pairs")
+
+    service = CloudK8sService(namespace="iris", kubeconfig_path=args.kubeconfig, context=CONTEXT)
+    job = None
+    shared = None
+    api = None
+    next_start = 0
+
+    def paced():
+        nonlocal next_start
+        time.sleep(max(0, next_start - time.monotonic()))
+        next_start = time.monotonic() + 1 / args.rate
+
+    def sample(arm, phase, index, exit_code=0):
+        nonlocal shared
+        paced()
+        stages = {}
+        total = clock()
+        started = clock()
+        client = service.create_api_client() if arm == "fresh" else shared
+        core = kubernetes.client.CoreV1Api(client)
+        stages["client"] = elapsed(started)
+        response = None
+        try:
+            started = clock()
+            response = kubernetes.stream.stream(
+                core.connect_get_namespaced_pod_exec,
+                name=pod_name, namespace="iris", container="task",
+                command=["sh", "-c", f"printf 'sbc-out\\n'; printf 'sbc-err\\n' >&2; exit {exit_code}"],
+                stdout=True, stderr=True, stdin=False, tty=False,
+                _preload_content=False, _request_timeout=10,
+            )
+            stages["websocket_setup"] = elapsed(started)
+            started = clock()
+            response.run_forever(timeout=10)
+            stdout = response.read_stdout(timeout=0) or ""
+            stderr = response.read_stderr(timeout=0) or ""
+            open_stream = response.is_open()
+            actual_code = None if open_stream else response.returncode
+            stages["stream_and_drain"] = elapsed(started)
+            if open_stream or actual_code != exit_code or stdout != "sbc-out\n" or stderr != "sbc-err\n":
+                raise RuntimeError("Exec output/exit/timeout contract failed")
+        finally:
+            started = clock()
+            if response is not None:
+                response.close()
+            if arm == "fresh":
+                client.close()
+            stages["close"] = elapsed(started)
+        timing = elapsed(total)
+        emit("exec", arm=arm, phase=phase, index=index, expected_exit=exit_code,
+             returncode=actual_code, stages=stages, total=timing)
+
+    def terminate(_signal, _frame):
+        raise SystemExit("Health guard terminated probe")
+
+    signal.signal(signal.SIGTERM, terminate)
+    emit("manifest", source_commit=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+         tracked_diff_sha256=hashlib.sha256(subprocess.check_output(["git", "diff", "HEAD"])).hexdigest(),
+         probe_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+         kubernetes=importlib.metadata.version("kubernetes"), pairs=args.pairs,
+         rate=args.rate, context=CONTEXT, image=IMAGE, cpu=1, memory_bytes=2*1024**3,
+         client_configuration="Devbox kubeconfig; not the controller's in-cluster configuration loader",
+         websocket_reuse=False)
+    with open_iris_client(cluster_name="cw-rno2a", workspace=None) as iris:
+        try:
+            job = iris.submit(
+                Entrypoint.from_command("sh", "-c", "trap 'exit 0' TERM INT; sleep infinity & wait"),
+                args.name, resources=ResourceSpec(cpu=1, memory=2*1024**3, disk=10*1024**3),
+                environment=EnvironmentSpec(setup_scripts=[]), task_image=IMAGE,
+                container_profile=job_pb2.CONTAINER_PROFILE_SANDBOX,
+                egress_policy=job_pb2.EGRESS_POLICY_NONE,
+                constraints=[Constraint.create(key="cluster", op=ConstraintOp.EQ, value="cw-rno2a")],
+                timeout=Duration.from_seconds(300), scheduling_timeout=Duration.from_seconds(90),
+                priority_band=job_pb2.PRIORITY_BAND_BATCH,
+                max_retries_failure=0, max_retries_preemption=0, user="atqamar",
+            )
+            emit("submitted", job=job.job_id.to_wire())
+            api = service.create_api_client()
+            core = kubernetes.client.CoreV1Api(api)
+            deadline = time.monotonic() + 90
+            while time.monotonic() < deadline:
+                pods = core.list_namespaced_pod(
+                    "iris", label_selector=f"iris.job_id=atqamar.{args.name}", _request_timeout=10).items
+                if len(pods) > 1 or any(p.status.phase == "Failed" for p in pods):
+                    raise RuntimeError("Exact study target duplicated or failed")
+                if pods and pods[0].status.phase == "Running" and any(
+                    c.name == "task" and c.ready for c in (pods[0].status.container_statuses or [])
+                ):
+                    break
+                time.sleep(1)
+            else:
+                raise TimeoutError("Single study sandbox startup exceeded 90 seconds")
+            pod_name = pods[0].metadata.name
+            emit("target", pod=pod_name, task=job.task(0).task_id.to_wire())
+            started = clock()
+            shared = service.create_api_client()
+            emit("reused_client_init", timing=elapsed(started))
+            for exit_code in (0, 7, 0):
+                for arm in ("fresh", "reused"):
+                    sample(arm, "contract", exit_code, exit_code)
+            for pair in range(args.pairs):
+                for arm in (("fresh", "reused") if pair % 2 == 0 else ("reused", "fresh")):
+                    sample(arm, "timed", pair)
+            for exit_code in (0, 7, 0):
+                paced()
+                started = clock()
+                result = service.exec(pod_name, ["sh", "-c", f"printf 'production-path\\n'; exit {exit_code}"],
+                                      container="task", timeout=10)
+                timing = elapsed(started)
+                if result.returncode != exit_code or result.stdout != "production-path\n" or result.stderr:
+                    raise RuntimeError("Patched service exec contract failed")
+                emit("production_exec", timing=timing, returncode=result.returncode)
+            emit("probe_complete", pairs=args.pairs)
+        finally:
+            if shared is not None:
+                shared.close()
+            if api is not None:
+                api.close()
+            if job is not None:
+                job.cancel()
+                emit("cancelled", job=job.job_id.to_wire())
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except BaseException as error:
+        emit("probe_failed", error_type=type(error).__name__)
+        raise
