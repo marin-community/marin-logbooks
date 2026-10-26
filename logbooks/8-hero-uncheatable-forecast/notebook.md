@@ -25,3 +25,9 @@ uv run --no-project --with numpy --with scipy --with matplotlib python logbooks/
 ```
 
 No accelerator work or live training change is part of this task. Final 4K predictions are conditional on the original schedule; they do not predict the later 16K or 262K metric.
+
+## 2026-10-25: narrow the comparison to Paloma's method
+
+User direction: first reproduce the poor Uncheatable forecast, then apply the method that worked for Paloma, and only then diagnose a further repair if needed. Early-Hero calibration and detailed subset model selection are deferred. The previously archived `forecast.py` preserves that unexecuted broader comparison; `compare_methods.py` is the selected experiment.
+
+The Paloma source uses per-percentile log-OLS on `log(loss - floor)` against `log(compute)`, excluding output-head compute. Its floor is fixed at 1.5 for Paloma. Keep Uncheatable's existing 1.4 floor for the first transfer, because the corpus differs. Also test an empirical shared floor fitted from the ladder alone, retaining log-OLS at every percentile. Profile raw-loss SSE to choose this floor. Compare total/body compute and fixed/fitted floors as a 2×2; this distinguishes changing the compute convention alone from refitting the asymptote. Score actual published lines separately because they use different run coverage and sparse plotting points. Use the same 46 Hero points, steps 119,999–254,999, for all comparisons, and report the later 25 points separately. No Hero loss selects the floor or any scaling coefficient.
