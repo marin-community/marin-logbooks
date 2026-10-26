@@ -44,6 +44,20 @@ Initial live CI inspection found two failing probe summary checks whose prerequi
 
 Prior-work retrieval found historical Qwen evidence that top-k capture/transport dominated collection cost. It predates the current numeric adapter and is a hypothesis for profiling, not a current measurement. The captured October 25 reverse-engineering discussion reports an eight-sample estimator; this task must verify the derivation and pinned API independently.
 
+### 2026-10-26 — Numerical references and the complete cost driver
+
+The [independent reference](coefficient_reference.py), published at `9acdabb32cc90698e1a6359c93f33fbc91663511`, passed the clipped-PPO/TIS coefficient, sampled-estimator expectation and conditional-support comparisons. The [derivation](derivation.md) explains why raw correction loss values are unsuitable for accuracy comparisons and gives the full logit-gradient L1 formula. The synthetic L1 formula error was at most `3.33e-16`; twelve filter-replay gradient comparisons differed by at most `3.89e-16`. Eight draws were unbiased in the enumerated reference, but their gradient noise exceeded the correction itself in some synthetic rows. These are numerical checks, not model evidence.
+
+A research implementation now exposes `trainer.algorithm.score_centering_top_k`, shared with probes and independent of the sampling filter. The provisional value remains 128 pending measurements. The probe adds unit and actual advantage L1 norms and their ratio to the ordinary sampled-token gradient norm. Fifteen behavioral tests passed, including K32/K128 request cadence, consumed evidence, an independent dense gradient reference, long positions, masks and exact optimizer isolation.
+
+The driver interleaves ordinary TIS, SC K128/K32 and probes K128/K32 on one allocation. It uses fixed weights (learning rate zero), full-batch admission at staleness zero and a fixed subset of the actual Snowball RLVR1 artifact. Zero-reward group filtering is disabled to keep that workload fixed. These controls define a serialized cost experiment; they cannot establish asynchronous throughput or learning benefit. A second comparison replays identical tokens, masks and actual router decisions through ordinary reference scoring, old-policy scoring, advantages and optimizer code. Controlled long inputs separately exercise 102,400/49,152-token packing at both candidate widths.
+
+The source dataset is the RLVR1 arm used by the reference workload, version `2026.10.16.3`, 63,590 rows and 203,196,043 bytes. The source selector checks its object ETag and keeps fixed instruction, tool and calendar rows. Startup uses four shorter rows on Qwen; Grug uses eight rows. Math tasks fall back to an external judge whose credentials are unavailable here, so this workload uses local graders. It measures collection/training cost without third-party judge latency, rather than the full Snowball task mixture. The fixed subset and admission changes are reported limits.
+
+The pinned V1 sampler's documented logits-processor interface supports a research eight-draw collector for unfiltered sampling. It leaves logits and the action RNG unchanged. Validate its probabilities against a same-forward full-vocabulary oracle before treating it as actual-prefix capture. A thin job-local numeric HTTP route uses the public engine API on the same worker; compare token/head parity and costs while retaining native chat semantics as a separate requirement. No serving backend or wheel changes are made.
+
+Before the Grug allocation, run the whole reference-enabled Qwen driver, including every arm, capture profiles, a numeric-route comparison, dense prefix export, physical-memory sampling and final result export. The resource board announces one interactive H100 node for startup and a contingent eleven-node batch allocation afterward. Initial probe CI cancellation summaries are now resolved: both unchanged-head workflow reruns passed.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.

@@ -8,8 +8,10 @@ from pathlib import Path
 
 import click
 import yaml
+from fray.types import ResourceConfig
 from marin.execution.build_context import resolve_version
-from marin.execution.lazy import ArtifactStep
+from marin.execution.lazy import OUT, ArtifactStep, apply
+from marin.execution.remote import remote
 from marin.experiment.namespacing import user_owned_name
 from marin.rl.cli import rl_build_options
 from marin.rl.skyrl import (
@@ -29,6 +31,7 @@ from marin.training.training import LevanterCheckpoint
 from experiments.models import qwen2_5_0_5b_instruct
 from experiments.post_training.cat_count_canary.data import TRAIN_FILENAME, VALIDATION_FILENAME, cat_count_data_step
 from experiments.post_training.cat_count_canary.launcher import training_config
+from experiments.post_training.sc_performance_data import SOURCE_URI, prepare_performance_data
 
 GRUG_URI = "s3://marin-rno2a/marin/users/dml/models/grug-67b-a2b-datakit-sft-262k-2026.10.05-8c76b22a/2026.10.22/hf"
 GRUG_HF = "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05"
@@ -132,11 +135,56 @@ def qualification_recipe(smoke):
     return cfg, plan, counts
 
 
-def build_qualification(version, smoke):
+def performance_recipe(smoke):
     cfg, plan, counts = qualification_recipe(smoke)
-    data = cat_count_data_step(
-        user_owned_name("documents/tim-cp-qualification"), version, train_ns=counts, train_rows=256, seed=17
+    trainer = cfg["trainer"]
+    trainer.update(max_steps=15 if smoke else 30, epochs=40, project_name="score-centering-performance")
+    trainer["policy"]["optimizer_config"]["lr"] = 0.0
+    trainer["rollout_buffer"].update(
+        batch_policy="full_batch", max_staleness_steps=0, max_in_flight=plan.train_batch_size
     )
+    trainer["algorithm"].update(score_centering_top_k=128, rloo_n_filter_zero_reward_groups=False)
+    cfg["data"]["shuffle"] = False
+    cfg["context_budget"] = {
+        "request_window_tokens": 16384 if smoke else 102400,
+        "max_new_tokens_per_turn": 2048 if smoke else 49152,
+        "max_turns": 1,
+    }
+    cfg["extra_env"]["TIM_CP_MODE"] = "performance"
+    cfg["generator"].setdefault("engine_init_kwargs", {}).update(
+        enable_auto_tool_choice=True,
+        tool_call_parser="hermes",
+        logprobs_mode="processed_logprobs",
+        logits_processors=["skyrl_train.inference_engines.vllm.sc_sampled_capture.SampledScoreCapture"],
+        profiler_config={
+            "profiler": "torch",
+            "torch_profiler_dir": "/tmp/sc-performance-13-profiles",
+            "torch_profiler_with_stack": False,
+            "max_iterations": 8,
+        },
+    )
+    # Reserve permission for one-prefix dense numerical oracles. Evaluation is
+    # disabled; ordinary requests still capture only their explicit width.
+    cfg["generator"].setdefault("eval_sampling_params", {})["logprobs"] = 200000
+    return cfg, plan, counts
+
+
+def build_qualification(version, smoke, performance=False):
+    cfg, plan, counts = performance_recipe(smoke) if performance else qualification_recipe(smoke)
+    if performance:
+        source = ArtifactStep.adopt(user_owned_name("documents/sc-performance-pivot-source"), "2026.10.16.3", SOURCE_URI)
+        data = apply(
+            user_owned_name("documents/sc-performance-snowball"),
+            remote(prepare_performance_data, resources=ResourceConfig.with_cpu(cpu=2, ram="16g")),
+            version=version,
+            source_path=source,
+            output_path=OUT,
+            smoke=smoke,
+        )
+    else:
+        data = cat_count_data_step(
+            user_owned_name("documents/tim-cp-qualification"), version, train_ns=counts, train_rows=256, seed=17
+        )
     if smoke:
         model, tokenizer, revision = (
             qwen2_5_0_5b_instruct,
@@ -150,7 +198,7 @@ def build_qualification(version, smoke):
         tokenizer, revision = GRUG_HF, GRUG_REVISION
     return skyrl_step(
         SkyRLSpec(
-            name=user_owned_name("checkpoints/tim-cp-qualification"),
+            name=user_owned_name("checkpoints/sc-performance" if performance else "checkpoints/tim-cp-qualification"),
             version=version,
             config_yaml=yaml.safe_dump(cfg),
             model=ArtifactHfModel(model, tokenizer, revision, relative_path=""),
@@ -180,9 +228,12 @@ def build_qualification(version, smoke):
 
 @click.command()
 @click.option("--smoke/--full", default=False)
+@click.option("--performance", is_flag=True)
 @rl_build_options
-def main(smoke):
-    return build_qualification(resolve_version("tim-cp-qualification", None), smoke)
+def main(smoke, performance):
+    return build_qualification(
+        resolve_version("sc-performance" if performance else "tim-cp-qualification", None), smoke, performance
+    )
 
 
 if __name__ == "__main__":

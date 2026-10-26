@@ -9,6 +9,7 @@ import asyncio
 import copy
 import hashlib
 import json
+import os
 import time
 from dataclasses import replace
 
@@ -136,9 +137,43 @@ def numeric_reference(wrapper):
 
 
 class QualificationPolicyWorker(MegatronPolicyWorkerBase):
+    performance_mode = False
+
+    def performance_set_arm(self, enabled, count):
+        self.performance_mode = True
+        self.cfg.trainer.algorithm.score_centering_enabled = enabled
+        self.cfg.trainer.algorithm.score_centering_top_k = count
+        self.model.cfg.trainer.algorithm.score_centering_enabled = enabled
+        self.model.cfg.trainer.algorithm.score_centering_top_k = count
+        assert all(group["lr"] == 0 for group in self.optimizer.param_groups)
+
+    def performance_reset_peaks(self):
+        torch.cuda.synchronize()
+        torch.cuda.reset_peak_memory_stats()
+
+    def performance_rng(self, restore=False):
+        if restore:
+            MegatronStrategy.load_rng_state(self.performance_rng_state)
+            get_cuda_rng_tracker().set_states(copy.deepcopy(self.performance_tracker_state))
+        else:
+            self.performance_rng_state = MegatronStrategy.get_rng_state()
+            self.performance_tracker_state = copy.deepcopy(get_cuda_rng_tracker().get_states())
+
+    def performance_peaks(self):
+        torch.cuda.synchronize()
+        return {
+            "rank": self._rank,
+            "dp": mpu.get_data_parallel_rank(),
+            "cp": mpu.get_context_parallel_rank(),
+            "pp": mpu.get_pipeline_model_parallel_rank(),
+            "allocated": torch.cuda.max_memory_allocated(),
+            "reserved": torch.cuda.max_memory_reserved(),
+        }
+
     def qualification_layout(self):
         config = self.strategy.hf_config
         return {
+            "vocabulary": config.vocab_size,
             "layers": self.model.router_replay.num_moe_layers_total if self.model.router_replay is not None else 0,
             "top_k": getattr(config, "num_experts_per_tok", 1),
             "experts": getattr(config, "num_experts", getattr(config, "num_local_experts", 1)),
@@ -146,7 +181,8 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
 
     def _ppo_train_impl(self, data, timing):
         torch.cuda.synchronize()
-        torch.cuda.reset_peak_memory_stats()
+        if not self.performance_mode:
+            torch.cuda.reset_peak_memory_stats()
         started = time.perf_counter()
         result = super()._ppo_train_impl(data, timing)
         torch.cuda.synchronize()
@@ -166,7 +202,9 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
     def qualification_report(self):
         return getattr(self, "qualification_updates", [])
 
-    def qualification_benchmark(self, token_ids, actions, reference_scores, label, warmups, repeats):
+    def qualification_benchmark(
+        self, token_ids, actions, reference_scores, label, warmups, repeats, candidate_count=128
+    ):
         self.backload_to_gpu()
         device = torch.cuda.current_device()
         dp = mpu.get_data_parallel_rank()
@@ -197,14 +235,14 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
             local, _ = preprocess_packed_seqs(query_map, attention_mask.bool())
             row, col = local.nonzero(as_tuple=True)
             query = local[row, col] - 1
-            values, indices = logits[..., : config.vocab_size].topk(128, dim=-1)
+            values, indices = logits[..., : config.vocab_size].topk(candidate_count, dim=-1)
             selected = (
                 result.scores[0, query, None]
                 + values[row, col].float()
                 - logits[row, col, sequences[0, -num_actions:][query]][:, None].float()
             )
-            ids = torch.zeros((1, num_actions, 128), dtype=torch.long, device=device)
-            scores = torch.zeros((1, num_actions, 128), device=device)
+            ids = torch.zeros((1, num_actions, candidate_count), dtype=torch.long, device=device)
+            scores = torch.zeros((1, num_actions, candidate_count), device=device)
             ids[0, query], scores[0, query] = indices[row, col], selected
             dist.all_reduce(ids, group=mpu.get_context_parallel_group())
             dist.all_reduce(scores, group=mpu.get_context_parallel_group())
@@ -219,8 +257,8 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
             self.model._response_logprobs = original_response
         if not last:
             captured = {
-                "ids": torch.empty((1, actions, 128), dtype=torch.long, device=device),
-                "head": torch.empty((1, actions, 128), device=device),
+                "ids": torch.empty((1, actions, candidate_count), dtype=torch.long, device=device),
+                "head": torch.empty((1, actions, candidate_count), device=device),
                 "sampled": torch.empty((1, actions), device=device),
             }
         for value in captured.values():
@@ -275,7 +313,9 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
                         captured["ids"].to(device)
                         if arm == "sc"
                         else (
-                            captured["ids"].gather(1, probe_positions.cpu()[..., None].expand(-1, -1, 128)).to(device)
+                            captured["ids"]
+                            .gather(1, probe_positions.cpu()[..., None].expand(-1, -1, candidate_count))
+                            .to(device)
                             if arm == "probe"
                             else None
                         )
@@ -332,7 +372,7 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
                         summary_started = time.perf_counter()
                         metrics = hypothetical_score_probe(
                             host_head,
-                            q_head.gather(1, probe_positions.cpu()[..., None].expand(-1, -1, 128)),
+                            q_head.gather(1, probe_positions.cpu()[..., None].expand(-1, -1, candidate_count)),
                             host_scores.gather(1, probe_positions.cpu()),
                             q_sampled.gather(1, probe_positions).cpu(),
                             advantages.gather(1, probe_positions).cpu(),
@@ -379,6 +419,7 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
                             "cp": cp,
                             "pp": pp,
                             "label": label,
+                            "candidates": candidate_count,
                             "arm": arm,
                             "repeat": repeat,
                             "seconds": elapsed,
@@ -568,4 +609,11 @@ def run(cfg):
             return {**prepare_environment(config), "NCCL_NVLS_ENABLE": "0"}
 
         runtime_utils.prepare_runtime_environment = smoke_environment
-    run_ray_driver(cfg, qualification_entrypoint)
+    if os.environ.get("TIM_CP_MODE") == "performance":
+        # The performance driver reuses the worker above; import after this
+        # module is initialized to break that research-only dependency cycle.
+        from experiments.post_training.sc_performance_measure import performance_entrypoint  # noqa: PLC0415
+
+        run_ray_driver(cfg, performance_entrypoint)
+    else:
+        run_ray_driver(cfg, qualification_entrypoint)
