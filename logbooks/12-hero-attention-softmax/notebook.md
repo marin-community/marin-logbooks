@@ -123,6 +123,22 @@ serialization. GPU-only native execution remains for the rack run.
 The run first executes a small native fused two-key saturation control on every
 rank. That result is kept separate from checkpoint measurements.
 
+### 2026-10-26 19:43 UTC — Authorized launch submitted
+
+- Published source/config shipped: `e71598bfb54216b9a0c555433d613d2e07bc6cd6`.
+- Coordinator: `/dlwh/hero-attention-softmax-20261026-a1-coord`, submitted at
+  2026-10-26 19:43:07 UTC (12:43:07 America/Los_Angeles).
+- Expected child: `grug-train-hero-attention-softmax-20261026-a1` under that coordinator.
+- Request file SHA256: `edfb99bd023beebf34ac2fb8ddd141c83d33d722d116b595ef6f7907cc0de774`.
+- The implementation was tested at originating source revision `8c31314d20ab501fa82dd985153a246d7726429d`;
+  its parity-gate change is preserved in archive commit `833280836c` with identical source content.
+- Submit matched the reproduction command below, replacing `<launch-commit>` with
+  the full shipped revision above. W&B is disabled; timeout7200; no new checkpoints.
+- Native synthetic control and checkpoint measurements are pending. A running
+  coordinator or successful CPU tests do not establish a successful fused GPU comparison.
+- This chat owns heartbeat monitoring and will publish validated results before
+  updating the issue's conclusion.
+
 ## Reproduction
 
 Pure CPU checks:
