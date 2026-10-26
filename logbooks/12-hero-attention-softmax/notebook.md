@@ -378,6 +378,19 @@ BF16 public output and baseline LSE; its cost includes both forwards. The native
 projection hybrid is a sampled-query accuracy prototype; a scalable dense port
 is still required before it could be used in training.
 
+### 2026-10-26 16:51 America/Los_Angeles — Mitigation comparison submitted
+
+The bounded rack comparison was submitted from published source
+`8541bd0419acdd89a10c20d29739be4a1411976e`. It first runs native acceptance
+smokes, then the three-checkpoint comparison and dense timing panel described
+above. Eight focused CPU tests and required lint passed before submission.
+GPU acceptance and mitigation results are pending.
+
+The canonical launch command, resolved request checksum, execution identities,
+and private output locations are retained in the local operational record.
+A heartbeat owns monitoring and result validation. No optimizer updates or live
+Hero changes are part of this frozen comparison.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
