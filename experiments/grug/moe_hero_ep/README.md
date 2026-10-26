@@ -42,6 +42,30 @@ The attention, shared-expert, language-model-head, and optimizer states use the 
 Bounded diagnostics write metrics only by default. `--save-checkpoints` writes checkpoints below
 `--checkpoint-path` and resumes from the newest complete checkpoint.
 
+## Output-softmax checkpoint diagnostics
+
+`python -m experiments.grug.moe_hero_ep.softmax_collapse --request request.json`
+dispatches a read-only, one-rack diagnostic through an Iris coordinator. It restores
+permanent weights and pending QB biases, evaluates the same training-mixture batch
+at every checkpoint, and writes compact JSON results under `output_root`. It writes
+no checkpoints and makes no optimizer updates.
+
+The request records `run_id`, `source_revision`, `production_revision`, the resolved
+`model` and `data` configurations, `seed`, nullable `data_seed`,
+`production_batch_size`, diagnostic `batch_size` (256 for one production rack),
+`data_reference_step`, position-sampling `stride` (16), and `output_root`.
+Each entry in `checkpoints` records `uri`, numeric `step`, and `metadata_digest`.
+Use a caller-owned output root and a bounded coordinator timeout.
+
+`production_zero_ce_count / production_valid_count` measures the production
+streaming kernel's zero-CE rate over the full batch. The sampled margin excludes
+the target from log-sum-exp; its histogram and `margin_above_fp32_cliff_count`
+measure the precision cliff described in [Barron et al.](https://arxiv.org/abs/2610.31642).
+Dense diagnostic projections can differ from the production kernel's GEMM rounding.
+CE gradient diagnostics exclude the final-logit z-loss and precede weighting and
+bf16 backward casts. Tokens within a sequence are correlated; the sample is not
+a set of independent Bernoulli trials.
+
 ## Inference export
 
 Choose a permanent checkpoint and fresh destination in the same region.
