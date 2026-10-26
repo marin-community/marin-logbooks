@@ -374,8 +374,17 @@ class IrisMachineFactory:
                     raise RuntimeError(f"Iris sandbox task failed before running: {status.error_message}")
                 await asyncio.sleep(min(2, max(0, deadline - loop.time())))
             raise TimeoutError(f"Iris sandbox did not start within {self.scheduling_timeout} seconds")
-        except BaseException:
-            await machine.close()
+        except BaseException as startup_error:
+            cleanup = asyncio.create_task(machine.close())
+            cleanup_cancellation: asyncio.CancelledError | None = None
+            while not cleanup.done():
+                try:
+                    await asyncio.wait((cleanup,))
+                except asyncio.CancelledError as error:
+                    cleanup_cancellation = error
+            cleanup.result()
+            if cleanup_cancellation is not None:
+                raise cleanup_cancellation from startup_error
             raise
 
     def _submit_sync(self, spec: MachineSpec, source: RegistryImage) -> IrisMachine:

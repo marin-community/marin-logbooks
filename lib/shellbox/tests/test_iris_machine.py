@@ -440,12 +440,16 @@ def test_factory_readiness_wait_allows_commands_in_the_same_executor(monkeypatch
     asyncio.run(scenario())
 
 
-@pytest.mark.parametrize("phase", ["submission", "readiness"])
+@pytest.mark.parametrize("phase", ["submission", "readiness", "cleanup"])
 def test_factory_cancelled_during_startup_cancels_accepted_job(monkeypatch, tmp_path, phase):
     async def scenario():
         loop = asyncio.get_running_loop()
         reached = asyncio.Event()
         release = threading.Event()
+        blocked = asyncio.Event()
+        blocker = None
+        if phase == "cleanup":
+            loop.set_default_executor(ThreadPoolExecutor(max_workers=1))
         task = LocalTask(TaskState.RUNNING)
         job = LocalJob(task)
 
@@ -456,7 +460,7 @@ def test_factory_cancelled_during_startup_cancels_accepted_job(monkeypatch, tmp_
                     assert release.wait(timeout=5)
                 return super().submit(**kwargs)
 
-        if phase == "readiness":
+        if phase in ("readiness", "cleanup"):
 
             def status():
                 loop.call_soon_threadsafe(reached.set)
@@ -474,13 +478,26 @@ def test_factory_cancelled_during_startup_cancels_accepted_job(monkeypatch, tmp_
         )
         try:
             await asyncio.wait_for(reached.wait(), timeout=5)
+            if phase == "cleanup":
+
+                def block_executor():
+                    loop.call_soon_threadsafe(blocked.set)
+                    assert release.wait(timeout=5)
+
+                blocker = loop.run_in_executor(None, block_executor)
+                await asyncio.wait_for(blocked.wait(), timeout=5)
             creation.cancel()
+            if phase == "cleanup":
+                await asyncio.sleep(0)
+                creation.cancel()
             release.set()
             with pytest.raises(asyncio.CancelledError):
                 await creation
             assert job.cancelled
         finally:
             release.set()
+            if blocker is not None:
+                await blocker
             job.cancel()
 
     asyncio.run(scenario())
