@@ -188,9 +188,7 @@ def main() -> None:
     args = parser.parse_args()
     request = json.loads(args.request.read_text())
     configure_logging(logging.INFO)
-    resources = ResourceConfig.with_gpu(
-        "GB200", count=4, cpu=120, ram="890g", disk="1t", replicas=16, target_cluster="cw-us-east-08a"
-    )
+    resources = ResourceConfig.with_gpu("GB200", count=4, cpu=120, ram="890g", disk="1t", replicas=16)
     dispatch_grug_training_run(
         run_id=request["run_id"],
         config=request,
