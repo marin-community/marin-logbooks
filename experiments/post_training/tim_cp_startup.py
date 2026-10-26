@@ -1,3 +1,6 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
 """One-node packed CP2 Qwen startup for the SC extension; research only."""
 
 from dataclasses import replace
@@ -47,18 +50,20 @@ def startup_recipe():
     config["trainer"]["use_sample_packing"] = True
     config["trainer"]["resume_mode"] = "none"
     config["trainer"]["algorithm"].update(
-        score_centering_enabled=True, score_centering_probe={"interval": 0}, off_policy_correction="tis",
-        advantage_estimator="rloo_n", group_advantage_min_size=4,
+        score_centering_enabled=True,
+        score_centering_probe={"interval": 0},
+        off_policy_correction="tis",
+        advantage_estimator="rloo_n",
+        group_advantage_min_size=4,
     )
     for role in ("policy", "ref"):
         config["trainer"][role]["megatron_config"]["context_parallel_size"] = 2
     config["generator"]["gpu_memory_utilization"] = 0.35
     config["trajectory_runner"] = {
-        "max_concurrent_tasks": 8, "rollout_workers": {"num_workers": 2, "cpus_per_worker": 2}
+        "max_concurrent_tasks": 8,
+        "rollout_workers": {"num_workers": 2, "cpus_per_worker": 2},
     }
-    config["trainer"]["callbacks"] = [
-        c for c in config["trainer"]["callbacks"] if c["type"] != "database_registration"
-    ]
+    config["trainer"]["callbacks"] = [c for c in config["trainer"]["callbacks"] if c["type"] != "database_registration"]
     for callback in config["trainer"]["callbacks"]:
         if callback["type"] == "evaluation":
             callback["additional_evaluations"] = {}
@@ -89,10 +94,17 @@ def build_startup(version: str) -> ArtifactStep:
             seed=17,
         ),
         IrisSkyRLExecution(
-            cluster="cw-rno2a", cluster_config="lib/iris/config/cw-rno2a.yaml",
-            cpu=64, memory="256GB", disk="400GB", priority="interactive", max_retries=0,
-            target_cluster="cw-rno2a", parent_cluster_config=IRIS_HUB_CLUSTER_CONFIG,
-            coordinator_timeout_hours=2, job_timeout_seconds=3600,
+            cluster="cw-rno2a",
+            cluster_config="lib/iris/config/cw-rno2a.yaml",
+            cpu=64,
+            memory="256GB",
+            disk="400GB",
+            priority="interactive",
+            max_retries=0,
+            target_cluster="cw-rno2a",
+            parent_cluster_config=IRIS_HUB_CLUSTER_CONFIG,
+            coordinator_timeout_hours=2,
+            job_timeout_seconds=3600,
         ),
         export_hf=True,
     )

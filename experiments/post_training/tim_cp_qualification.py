@@ -1,3 +1,6 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
 """Launch the session-only packed-CP correctness and cost qualification."""
 
 import json

@@ -1,3 +1,6 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
 """Session-only packed CP qualification; never part of the product PRs."""
 
 from __future__ import annotations
@@ -271,9 +274,11 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
                     ids = (
                         captured["ids"].to(device)
                         if arm == "sc"
-                        else captured["ids"].gather(1, probe_positions.cpu()[..., None].expand(-1, -1, 128)).to(device)
-                        if arm == "probe"
-                        else None
+                        else (
+                            captured["ids"].gather(1, probe_positions.cpu()[..., None].expand(-1, -1, 128)).to(device)
+                            if arm == "probe"
+                            else None
+                        )
                     )
                     behavior_head = q_head.to(device) if arm == "sc" else None
                     torch.cuda.synchronize()
@@ -303,9 +308,7 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
                     old_head = (
                         old.selected_logprobs
                         if last and ids is not None
-                        else torch.empty_like(ids, dtype=torch.float32)
-                        if ids is not None
-                        else None
+                        else torch.empty_like(ids, dtype=torch.float32) if ids is not None else None
                     )
                     dist.broadcast(
                         old_scores,
@@ -389,12 +392,12 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
                             "peak_reserved": torch.cuda.max_memory_reserved(),
                             "gradient_sum": float(fingerprints[0]),
                             "gradient_l2_squared": float(fingerprints[1]),
-                            "old_head_bytes": host_head.numel() * host_head.element_size()
-                            if host_head is not None
-                            else 0,
-                            "owned_queries": ownership["full" if arm == "sc" else "compact"]
-                            if arm != "tis" and last
-                            else 0,
+                            "old_head_bytes": (
+                                host_head.numel() * host_head.element_size() if host_head is not None else 0
+                            ),
+                            "owned_queries": (
+                                ownership["full" if arm == "sc" else "compact"] if arm != "tis" and last else 0
+                            ),
                             "nonpadding_tokens": len(token_ids),
                             "response_tokens": actions,
                         }
