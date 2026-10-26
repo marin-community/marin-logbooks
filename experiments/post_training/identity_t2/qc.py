@@ -103,8 +103,18 @@ def history_reasons(answer: str, *, require_name: bool, lab: str | None) -> list
         if lab is None or any(match.group().casefold() != lab.casefold() for match in mentions):
             reasons.append("history_unapproved_other_lab")
             continue
-        separate = re.search(rf"\b(?:separate from|not (?:a )?part of)\s+(?:the\s+)?{re.escape(lab)}\b", sentence, re.I)
-        if not separate or "Open Athena" not in sentence or RELATIONSHIP.search(sentence):
+        separate = re.search(
+            rf"\bOpen Athena\s+(?:is\s+)?(?:separate from|not (?:a )?part of)\s+(?:the\s+)?{re.escape(lab)}\b",
+            sentence,
+            re.I,
+        )
+        contradictory = re.search(
+            r"\b(?:not|never|isn't|is not)\s+separate\b|\bnot\s+not\s+(?:a\s+)?part\b|"
+            r"\b(?:not true|false|incorrect)\s+that\b",
+            sentence,
+            re.I,
+        )
+        if not separate or contradictory or RELATIONSHIP.search(sentence):
             reasons.append("control_relationship_outside_scoped_non_affiliation")
     return reasons
 
@@ -365,11 +375,31 @@ def qc_rows(kept: list[dict], all_rows: list[dict]) -> tuple[list[dict], list[di
                 ),
                 key=rank,
             )
-            chosen.extend(pool[:quota])
+            chosen.extend({**row, "QC_role": "eligible_candidate"} for row in pool[:quota])
             if len(pool) < quota:
+                diagnostics = sorted(
+                    (
+                        row
+                        for row in all_rows
+                        if row["candidate"]["group"] == group
+                        and row["candidate"]["family"] == family
+                        and row["candidate"]["enable_thinking"] == mode
+                        and row["decision"]["rejection_reasons"]
+                    ),
+                    key=rank,
+                )[: quota - len(pool)]
+                chosen.extend({**row, "QC_role": "rejected_diagnostic_never_train"} for row in diagnostics)
                 shortages.append(
-                    {"group": group, "family": family, "thinking": mode, "requested": quota, "available": len(pool)}
+                    {
+                        "group": group,
+                        "family": family,
+                        "thinking": mode,
+                        "requested": quota,
+                        "eligible_available": len(pool),
+                        "rejected_diagnostic_ids": [row["id"] for row in diagnostics],
+                    }
                 )
+    ordinary_sources = set()
     for mode in (False, True):
         special = sorted(
             (
@@ -386,11 +416,24 @@ def qc_rows(kept: list[dict], all_rows: list[dict]) -> tuple[list[dict], list[di
                 for row in kept
                 if row["candidate"]["group"] == "third_person"
                 and row["candidate"]["source_id"] not in SPECIAL
+                and row["candidate"]["source_id"] not in ordinary_sources
                 and row["candidate"]["enable_thinking"] == mode
             ),
             key=rank,
         )
-        chosen.extend(special + ordinary[:7])
+        chosen.extend(
+            {
+                **row,
+                "QC_role": (
+                    "mandatory_rejected_raw_control"
+                    if row["decision"]["rejection_reasons"]
+                    else "mandatory_eligible_control"
+                ),
+            }
+            for row in special
+        )
+        chosen.extend({**row, "QC_role": "eligible_candidate"} for row in ordinary[:7])
+        ordinary_sources.update(row["candidate"]["source_id"] for row in ordinary[:7])
         if len(ordinary) < 7:
             shortages.append(
                 {"group": "third_person", "thinking": mode, "requested_ordinary": 7, "available": len(ordinary)}
@@ -434,9 +477,19 @@ def run(raw: Path, manifest: Path, audit: Path, expectations: Path, tokenizer: P
         "per_family_mode_kept": family_mode_counts(kept),
         "rejections_and_cap_exclusions": dict(Counter(reason for row in exclusions for reason in row["reasons"])),
         "QC_rows": len(pack),
+        "QC_role_counts": dict(Counter(row["QC_role"] for row in pack)),
+        "QC_ordinary_distinct_prompt_count": len(
+            {
+                row["candidate"]["source_id"]
+                for row in pack
+                if row["candidate"]["group"] == "third_person" and row["candidate"]["source_id"] not in SPECIAL
+            }
+        ),
         "QC_cell_shortages": shortages,
         "all_six_special_controls_in_QC": sum(row["candidate"]["source_id"] in SPECIAL for row in pack) == 6,
         "candidate_set_is_not_a_freeze": True,
+        "candidate_set_scope": "new rows only; unchanged base767 not combined or modified",
+        "QC_never_train_ids": [row["id"] for row in pack if "rejected" in row["QC_role"]],
         "native_training_input_support_and_token_share_pending": True,
         "human_QC_approved": False,
         "training_approved": False,
@@ -465,7 +518,8 @@ def run(raw: Path, manifest: Path, audit: Path, expectations: Path, tokenizer: P
         c = row["candidate"]
         lines.extend(
             [
-                f"## {number:03d} {row['id']} ({c['group']}/{c['family']}/thinking={c['enable_thinking']})",
+                f"## {number:03d} {row['id']} ({c['group']}/{c['family']}/thinking={c['enable_thinking']}) "
+                f"[{row['QC_role']}]",
                 "",
                 "Automatic rejection reasons: " + json.dumps(row["decision"]["rejection_reasons"]),
                 "Raw record: " + row["raw_record"] + " SHA256=" + row["raw_record_sha256"],

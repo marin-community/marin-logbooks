@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from experiments.post_training.identity_t2 import scorer_snapshot, v4r2_snapshot
-from experiments.post_training.identity_t2.qc import family_reasons, history_reasons, select, tool_reasons
+from experiments.post_training.identity_t2.qc import family_reasons, history_reasons, qc_rows, select, tool_reasons
 
 
 @pytest.mark.parametrize("module", [scorer_snapshot, v4r2_snapshot])
@@ -95,6 +95,92 @@ def test_special_control_name_optional_but_relationship_scope_narrow():
     assert "control_relationship_outside_scoped_non_affiliation" in history_reasons(
         base.replace("is separate from", "is not involved with"), require_name=False, lab="OpenAI"
     )
+
+
+@pytest.mark.parametrize(
+    "claim",
+    [
+        "Open Athena is NOT separate from OpenAI.",
+        "Open Athena is not not part of OpenAI.",
+        "It is not true that Open Athena is separate from OpenAI.",
+    ],
+)
+def test_negated_or_contradictory_separation_cannot_pass(claim):
+    answer = claim + " See https://marin.community and https://github.com/marin-community/marin."
+    assert "control_relationship_outside_scoped_non_affiliation" in history_reasons(
+        answer, require_name=False, lab="OpenAI"
+    )
+
+
+def control_rows():
+    rows = []
+    for index in range(40):
+        for mode in (False, True):
+            source = f"v2-third-person-{index:03d}"
+            identifier = source + ("-on-s00" if mode else "-off-s00")
+            rows.append(
+                {
+                    "id": identifier,
+                    "candidate": {
+                        "id": identifier,
+                        "source_id": source,
+                        "group": "third_person",
+                        "family": "third_person",
+                        "enable_thinking": mode,
+                    },
+                    "decision": {"rejection_reasons": ["incomplete_finish"] if index == 38 and mode else []},
+                }
+            )
+    return rows
+
+
+def test_control_packet_has_fourteen_distinct_ordinary_prompts_across_modes():
+    rows = control_rows()
+    kept = [row for row in rows if not row["decision"]["rejection_reasons"]]
+    packet, _ = qc_rows(kept, rows)
+    controls = [row for row in packet if row["candidate"]["group"] == "third_person"]
+    ordinary = [
+        row
+        for row in controls
+        if row["candidate"]["source_id"] not in {"v2-third-person-037", "v2-third-person-038", "v2-third-person-039"}
+    ]
+    assert len(controls) == 20 and sum(row["candidate"]["enable_thinking"] for row in controls) == 10
+    assert len(ordinary) == 14 and len({row["candidate"]["source_id"] for row in ordinary}) == 14
+    assert sum(row["candidate"]["source_id"] == "v2-third-person-030" for row in ordinary) <= 1
+    truncated = next(row for row in controls if row["id"] == "v2-third-person-038-on-s00")
+    assert truncated["QC_role"] == "mandatory_rejected_raw_control"
+
+
+def test_shortfall_diagnostics_never_promote_or_mutate_candidates():
+    all_rows = control_rows()
+    negation = []
+    for index in range(10):
+        identifier = f"neg-{index}"
+        negation.append(
+            {
+                "id": identifier,
+                "candidate": {
+                    "id": identifier,
+                    "source_id": identifier,
+                    "group": "identity_v2",
+                    "family": "negation",
+                    "enable_thinking": True,
+                },
+                "decision": {"rejection_reasons": [] if index < 2 else ["wrong_answer_identity"]},
+            }
+        )
+    all_rows.extend(negation)
+    kept = [row for row in all_rows if not row["decision"]["rejection_reasons"]]
+    before = copy.deepcopy(all_rows)
+    packet, shortages = qc_rows(kept, all_rows)
+    selected = [row for row in packet if row["candidate"]["family"] == "negation"]
+    assert len(selected) == 7
+    assert sum(row["QC_role"] == "rejected_diagnostic_never_train" for row in selected) == 5
+    assert all(
+        row["decision"]["rejection_reasons"] for row in selected if row["QC_role"] == "rejected_diagnostic_never_train"
+    )
+    assert all_rows == before
+    assert shortages
 
 
 def tool_candidate():
