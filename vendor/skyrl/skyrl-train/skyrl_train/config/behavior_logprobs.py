@@ -1,6 +1,7 @@
 """Probability convention for objectives that consume rollout logprobs."""
 
 import math
+import os
 from collections.abc import Mapping
 from typing import Any
 
@@ -83,7 +84,12 @@ def configure_behavior_logprob_sampling(generator: DictConfig) -> None:
     for key, required in ROLLOUT_LOGPROB_ENGINE_OPTIONS.items():
         if key in options and options[key] != required:
             mismatches.append(f"{key}={options[key]!r} (required value: {required!r})")
-    if options.get("override_generation_config") or options.get("logits_processors"):
+    # Research-only observer: it leaves logits and the action RNG untouched.
+    # Keep this exception out of promoted product changes.
+    research_observer = os.environ.get("TIM_CP_MODE") == "performance" and list(
+        options.get("logits_processors") or []
+    ) == ["skyrl_train.inference_engines.vllm.sc_sampled_capture.SampledScoreCapture"]
+    if options.get("override_generation_config") or (options.get("logits_processors") and not research_observer):
         mismatches.append("engine-level generation overrides or logits processors")
     if mismatches:
         raise ValueError(

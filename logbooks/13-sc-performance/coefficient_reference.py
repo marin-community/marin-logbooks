@@ -35,7 +35,7 @@ def logit_l1(head_probability, residual):
     return head + tail
 
 
-def candidate_comparison(logits, old, behavior, advantage, count):
+def candidate_comparison(logits, old, behavior, advantage, count, cap=1.3):
     point = logits.detach().clone().requires_grad_()
     logp = point.log_softmax(-1)
     ids = behavior.topk(count, dim=-1).indices
@@ -46,7 +46,7 @@ def candidate_comparison(logits, old, behavior, advantage, count):
         behavior.gather(-1, ids).unsqueeze(0),
         advantage.squeeze(-1).unsqueeze(0),
         torch.ones(1, len(logits)),
-        tis_cap=1.3,
+        tis_cap=cap,
         eps_clip_low=0.2,
         eps_clip_high=0.2,
     )
@@ -57,7 +57,7 @@ def candidate_comparison(logits, old, behavior, advantage, count):
 
     reference_point = logits.detach().clone().requires_grad_()
     reference_logp = reference_point.log_softmax(-1)
-    weighted = behavior.exp() * coefficients(reference_logp, old, behavior, advantage)
+    weighted = behavior.exp() * coefficients(reference_logp, old, behavior, advantage, cap=cap)
     reference_loss = (weighted * reference_logp).sum()
     expected = torch.autograd.grad(reference_loss, reference_point)[0]
     error = got - expected
@@ -73,12 +73,15 @@ def candidate_comparison(logits, old, behavior, advantage, count):
     }
 
 
-def sampled_comparison(logits, old, behavior, advantage, repetitions, generator):
+def sampled_comparison(logits, old, behavior, advantage, repetitions, generator, subtract_policy_score=False):
     point = logits.detach().clone().requires_grad_()
     logp = point.log_softmax(-1)
     coefficient = coefficients(logp, old, behavior, advantage)
     q, p = behavior.exp(), logp.detach().exp()
     expected = q * coefficient - p * (q * coefficient).sum(-1, keepdim=True)
+    if subtract_policy_score:
+        # E_q[(p/q) grad log p] = 0 on a complete, positive q support.
+        coefficient = coefficient - advantage * p / q
     # Enumerating every possible one-draw gradient proves the estimator's mean.
     score = torch.eye(logits.shape[-1], dtype=logits.dtype)[None] - p[:, None]
     draw_gradients = coefficient[..., None] * score
@@ -110,6 +113,7 @@ def sampled_comparison(logits, old, behavior, advantage, repetitions, generator)
         )
     return {
         "draws_per_prefix": 8,
+        "subtract_policy_score": subtract_policy_score,
         "repetitions": repetitions,
         "enumerated_mean_max_abs_error": float((enumerated - expected).abs().max()),
         "sampled_surrogate_gradient_max_abs_error": float((actual - direct).abs().max()),
@@ -179,6 +183,9 @@ def main():
                 "label": label,
                 "top_k": [candidate_comparison(logits, old_logp, behavior, advantage, k) for k in (32, 128)],
                 "sampled8": sampled_comparison(logits, old_logp, behavior, advantage, args.repetitions, generator),
+                "sampled8_policy_control": sampled_comparison(
+                    logits, old_logp, behavior, advantage, args.repetitions, generator, subtract_policy_score=True
+                ),
             }
         )
     filters = [
