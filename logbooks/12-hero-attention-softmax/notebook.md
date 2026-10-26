@@ -139,6 +139,24 @@ rank. That result is kept separate from checkpoint measurements.
 - This chat owns heartbeat monitoring and will publish validated results before
   updating the issue's conclusion.
 
+### 2026-10-26 19:44 UTC — Native fused GPU control reproduced cancellation
+
+The actual SM100 fused GPU VJP completed on the controlled two-key case before
+checkpoint restoration. [synthetic.json](synthetic.json) preserves the full numeric
+comparison. The BF16-quantized score margin is9.9878832843 and the FP64 maximum
+probability is0.9999540487, below the nominal FP32 probability cliff.
+
+All four query-head gradient vectors were exactly zero in the actual fused VJP;
+the FP64 reference dQ norm was8.122739e-6 (4.061370e-6 per head), giving relative
+L2 error1.0. Actual dK had relative L2 error0.7071077 and lost one of two nonzero
+reference key-gradient vectors. The stored BF16 output was1; its reconstructed
+winner-score gradient was0 while the stable reference was4.594915e-5.
+
+This is direct evidence of the mechanism in the actual fused kernel on synthetic
+inputs. It does not estimate the prevalence or effect in checkpoint attention.
+Coordinator and child were both running at the initial startup check; real-data
+checkpoint comparisons remained pending. The heartbeat owns further monitoring.
+
 ## Reproduction
 
 Pure CPU checks:
