@@ -1,0 +1,669 @@
+{
+  "checks": [
+    "Finite JSON numeric values across synthetic, summaries, and all1920 individual panels",
+    "Three pinned checkpoints, ten requested layers each, and64 unique ranks per layer",
+    "Exact per-layer summary equality with the completion manifest",
+    "All additive count/squared-norm/absolute-error fields and histogram sums recomputed from per-rank panels",
+    "Relative L2 recomputed from aggregate squared error/reference norms, not averaged panel ratios",
+    "Control alignment and residual identity verified from individual rank metrics",
+    "Identical selected sequences, head groups, and positions across checkpoints",
+    "Bitwise BF16 capture-tail and replay-output parity across every panel",
+    "Bounded event selection reproduced from per-rank records",
+    "Actual fused synthetic probe confirms winner-gradient cancellation"
+  ],
+  "checkpoints": [
+    {
+      "step": 270000,
+      "regularized_loss": 1.1222885847091675,
+      "all": {
+        "dq": {
+          "relative_l2_error": 0.005483113902721421,
+          "reference_l2": 1.5785368069230905e-07,
+          "error_l2": 8.655297111997477e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 10240
+        },
+        "dk": {
+          "relative_l2_error": 0.003964783295145974,
+          "reference_l2": 2.809101508164243e-07,
+          "error_l2": 1.1137478733938954e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 4265319
+        },
+        "dv": {
+          "relative_l2_error": 0.0020577847021847956,
+          "reference_l2": 8.567220855066997e-06,
+          "error_l2": 1.7629496015795412e-08,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 4265319
+        },
+        "output": {
+          "relative_l2_error": 0.0018675277381762522,
+          "reference_l2": 387.8323585624663,
+          "error_l2": 0.7242876873777239,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 10240
+        },
+        "multi_key_rows": 10240,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 4,
+        "margin_histogram": [
+          8187,
+          1747,
+          269,
+          37,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 11.5780524837749,
+        "max_retained_dq_relative_error": 1.40427297223073
+      },
+      "local": {
+        "dq": {
+          "relative_l2_error": 0.005417238990625421,
+          "reference_l2": 1.2178700366473755e-07,
+          "error_l2": 6.597493048040572e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "dk": {
+          "relative_l2_error": 0.004023659123184109,
+          "reference_l2": 2.26065990698099e-07,
+          "error_l2": 9.096124859140601e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 1609893
+        },
+        "dv": {
+          "relative_l2_error": 0.0020708248828903257,
+          "reference_l2": 7.94004382203716e-06,
+          "error_l2": 1.6442440317914154e-08,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 1609893
+        },
+        "output": {
+          "relative_l2_error": 0.0017371095871290677,
+          "reference_l2": 129.33087220369157,
+          "error_l2": 0.2246618980167969,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "multi_key_rows": 5120,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 0,
+        "margin_histogram": [
+          4377,
+          722,
+          20,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 8.196497431670334,
+        "max_retained_dq_relative_error": 1.2114401100709233
+      },
+      "global": {
+        "dq": {
+          "relative_l2_error": 0.00557857677584119,
+          "reference_l2": 1.0042763686592785e-07,
+          "error_l2": 5.602432826728777e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "dk": {
+          "relative_l2_error": 0.0038542227579228413,
+          "reference_l2": 1.667473558452825e-07,
+          "error_l2": 6.426814537223461e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 2655426
+        },
+        "dv": {
+          "relative_l2_error": 0.0019765205119201493,
+          "reference_l2": 3.2176042770397403e-06,
+          "error_l2": 6.359660852811049e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 2655426
+        },
+        "output": {
+          "relative_l2_error": 0.0018832095664878105,
+          "reference_l2": 365.63296328853863,
+          "error_l2": 0.6885634942882624,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "multi_key_rows": 5120,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 4,
+        "margin_histogram": [
+          3810,
+          1025,
+          249,
+          36,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 11.5780524837749,
+        "max_retained_dq_relative_error": 1.40427297223073
+      },
+      "control_fused_error_alignment": {
+        "actual_stored_output": {
+          "dq": {
+            "cosine_error_alignment": 0.8728089610340415,
+            "residual_error_l2_over_fused_error_l2": 0.49160581470472026
+          },
+          "dk": {
+            "cosine_error_alignment": 0.806421947528695,
+            "residual_error_l2_over_fused_error_l2": 0.591385303068577
+          }
+        },
+        "bf16_rounded_reference_output": {
+          "dq": {
+            "cosine_error_alignment": 0.4383275075409341,
+            "residual_error_l2_over_fused_error_l2": 0.990636985853532
+          },
+          "dk": {
+            "cosine_error_alignment": 0.26070586751921176,
+            "residual_error_l2_over_fused_error_l2": 1.0821428113532243
+          }
+        }
+      }
+    },
+    {
+      "step": 300000,
+      "regularized_loss": 1.1046943664550781,
+      "all": {
+        "dq": {
+          "relative_l2_error": 0.0047751762847658055,
+          "reference_l2": 1.570446449964474e-07,
+          "error_l2": 7.499158644365005e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 10240
+        },
+        "dk": {
+          "relative_l2_error": 0.0035859504983442665,
+          "reference_l2": 2.2834619433766202e-07,
+          "error_l2": 8.188381493801559e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 4265319
+        },
+        "dv": {
+          "relative_l2_error": 0.002094945127987422,
+          "reference_l2": 5.334751583896712e-06,
+          "error_l2": 1.1176011839707598e-08,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 4265319
+        },
+        "output": {
+          "relative_l2_error": 0.0018237391462846665,
+          "reference_l2": 492.0709260335907,
+          "error_l2": 0.8974090105560059,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 10240
+        },
+        "multi_key_rows": 10240,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 4,
+        "margin_histogram": [
+          8204,
+          1749,
+          251,
+          35,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 14.956124156464682,
+        "max_retained_dq_relative_error": 2.9338968636491356
+      },
+      "local": {
+        "dq": {
+          "relative_l2_error": 0.00433843575185451,
+          "reference_l2": 1.2131638147481367e-07,
+          "error_l2": 5.263233266759518e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "dk": {
+          "relative_l2_error": 0.003453407787818171,
+          "reference_l2": 1.7005167630654184e-07,
+          "error_l2": 5.872577832885463e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 1609893
+        },
+        "dv": {
+          "relative_l2_error": 0.002079840288864307,
+          "reference_l2": 4.836731465654458e-06,
+          "error_l2": 1.0059628968685853e-08,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 1609893
+        },
+        "output": {
+          "relative_l2_error": 0.001735483590826738,
+          "reference_l2": 135.32419093626132,
+          "error_l2": 0.23485291281178589,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "multi_key_rows": 5120,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 1,
+        "margin_histogram": [
+          4394,
+          697,
+          28,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 14.956124156464682,
+        "max_retained_dq_relative_error": 1.0706595761004378
+      },
+      "global": {
+        "dq": {
+          "relative_l2_error": 0.005356542091342112,
+          "reference_l2": 9.972640627194823e-08,
+          "error_l2": 5.341886928139747e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "dk": {
+          "relative_l2_error": 0.0037444322907824686,
+          "reference_l2": 1.5239557688406984e-07,
+          "error_l2": 5.706349190571334e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 2655426
+        },
+        "dv": {
+          "relative_l2_error": 0.0021633345394705614,
+          "reference_l2": 2.250689492363741e-06,
+          "error_l2": 4.8689943164539445e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 2655426
+        },
+        "output": {
+          "relative_l2_error": 0.0018307717750500382,
+          "reference_l2": 473.0974102602991,
+          "error_l2": 0.866133385553824,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "multi_key_rows": 5120,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 3,
+        "margin_histogram": [
+          3810,
+          1052,
+          223,
+          35,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 11.744950312321306,
+        "max_retained_dq_relative_error": 2.9338968636491356
+      },
+      "control_fused_error_alignment": {
+        "actual_stored_output": {
+          "dq": {
+            "cosine_error_alignment": 0.8798905718546165,
+            "residual_error_l2_over_fused_error_l2": 0.47529685954768947
+          },
+          "dk": {
+            "cosine_error_alignment": 0.7606271746245309,
+            "residual_error_l2_over_fused_error_l2": 0.6491950878491745
+          }
+        },
+        "bf16_rounded_reference_output": {
+          "dq": {
+            "cosine_error_alignment": 0.5772767322849204,
+            "residual_error_l2_over_fused_error_l2": 0.8561667139654585
+          },
+          "dk": {
+            "cosine_error_alignment": 0.5373089331745443,
+            "residual_error_l2_over_fused_error_l2": 0.8608200920355682
+          }
+        }
+      }
+    },
+    {
+      "step": 330000,
+      "regularized_loss": 1.0781720876693726,
+      "all": {
+        "dq": {
+          "relative_l2_error": 0.031118463923427164,
+          "reference_l2": 1.9269386382845606e-07,
+          "error_l2": 5.996337049811596e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 10240
+        },
+        "dk": {
+          "relative_l2_error": 0.024963462063977822,
+          "reference_l2": 3.472469273011219e-07,
+          "error_l2": 8.668485496514421e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 4265319
+        },
+        "dv": {
+          "relative_l2_error": 0.0018017921863362504,
+          "reference_l2": 2.1414624210656432e-05,
+          "error_l2": 3.8584702576087855e-08,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 4265319
+        },
+        "output": {
+          "relative_l2_error": 0.0018427298251996577,
+          "reference_l2": 682.969361757668,
+          "error_l2": 1.2585280126084295,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 10240
+        },
+        "multi_key_rows": 10240,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 4,
+        "margin_histogram": [
+          8206,
+          1734,
+          271,
+          26,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 15.421632418608851,
+        "max_retained_dq_relative_error": 3.5228478992910053
+      },
+      "local": {
+        "dq": {
+          "relative_l2_error": 0.0055304351777143105,
+          "reference_l2": 1.6010882688381204e-07,
+          "error_l2": 8.854714884608049e-10,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "dk": {
+          "relative_l2_error": 0.004377351095639309,
+          "reference_l2": 2.585113638860924e-07,
+          "error_l2": 1.1315950019419986e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 1609893
+        },
+        "dv": {
+          "relative_l2_error": 0.0019464071143171096,
+          "reference_l2": 9.136345518833678e-06,
+          "error_l2": 1.7783047916717113e-08,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 1609893
+        },
+        "output": {
+          "relative_l2_error": 0.001741635599947887,
+          "reference_l2": 143.15478729575105,
+          "error_l2": 0.24932347385724754,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "multi_key_rows": 5120,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 1,
+        "margin_histogram": [
+          4341,
+          739,
+          38,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 15.421632418608851,
+        "max_retained_dq_relative_error": 2.0241130981518034
+      },
+      "global": {
+        "dq": {
+          "relative_l2_error": 0.05531252295477251,
+          "reference_l2": 1.0721981491790159e-07,
+          "error_l2": 5.930598473852892e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "dk": {
+          "relative_l2_error": 0.037069129285306236,
+          "reference_l2": 2.3184542967637504e-07,
+          "error_l2": 8.594308206880921e-09,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 2655426
+        },
+        "dv": {
+          "relative_l2_error": 0.0017680032111592999,
+          "reference_l2": 1.9367842436474962e-05,
+          "error_l2": 3.424240762091509e-08,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 2655426
+        },
+        "output": {
+          "relative_l2_error": 0.0018472425343477009,
+          "reference_l2": 667.7977657749273,
+          "error_l2": 1.233584437281809,
+          "zero_actual_nonzero_reference_vectors": 0,
+          "reference_nonzero_vectors": 5120
+        },
+        "multi_key_rows": 5120,
+        "margin_above_fp32_cliff": 0,
+        "stored_output_control_winner_cancellations": 3,
+        "margin_histogram": [
+          3865,
+          995,
+          233,
+          26,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "max_retained_margin": 12.298755377199875,
+        "max_retained_dq_relative_error": 3.5228478992910053
+      },
+      "control_fused_error_alignment": {
+        "actual_stored_output": {
+          "dq": {
+            "cosine_error_alignment": 0.9971864420617169,
+            "residual_error_l2_over_fused_error_l2": 0.07498317540270681
+          },
+          "dk": {
+            "cosine_error_alignment": 0.996173265268114,
+            "residual_error_l2_over_fused_error_l2": 0.08740082857156863
+          }
+        },
+        "bf16_rounded_reference_output": {
+          "dq": {
+            "cosine_error_alignment": 0.993809648181236,
+            "residual_error_l2_over_fused_error_l2": 0.11231611343908483
+          },
+          "dk": {
+            "cosine_error_alignment": 0.995142297774881,
+            "residual_error_l2_over_fused_error_l2": 0.09906969964895154
+          }
+        }
+      }
+    }
+  ],
+  "files_sha256": {
+    "step-270000/layer-0-panels.json": "28a62f88c712b40e9cbf1f90155286a6a0f8b51f727f51e60f572123533d64e4",
+    "step-270000/layer-0-summary.json": "aed8e744bf97fcb100aff597adc0de909699a440d60ee89e432972cb41858b38",
+    "step-270000/layer-3-panels.json": "a09acb80dc578c88586ceabacff7de01d0a5f59bd502c3a65f351164342ca2f3",
+    "step-270000/layer-3-summary.json": "c3308aa9ff13587e469d2674a10d4df4781bf275529c2dac637c7f9ae75d1aa7",
+    "step-270000/layer-12-panels.json": "2a82b94055bcfb4d21449f53d80c548c9806d1c88b05b530dd67e1cf83cc09c5",
+    "step-270000/layer-12-summary.json": "bdbfccbc4f1c37fb0cff14838b5331cbf7926eddae3feeb751f5214e22c7dc71",
+    "step-270000/layer-15-panels.json": "d7f5c18b82273ec87f93e55b6651e8e98b16ef904e4caadb54afe7ea6bffcf89",
+    "step-270000/layer-15-summary.json": "bf32453e3f31e77b90497260a217ae0b7f1b4364c3974993a7687ca975d9d984",
+    "step-270000/layer-24-panels.json": "4b0274c14055241797445d507c605c4baa8ff0ab3c41303d969573437bcb802e",
+    "step-270000/layer-24-summary.json": "864c3279597f6d1e9ecd5b1ed72e22518e2bc71e7822374a0b564d23c0561974",
+    "step-270000/layer-27-panels.json": "820e714a1bee7c51c1b20200bd4c4891ee6c86fd829e89dfb8ab86045743a01b",
+    "step-270000/layer-27-summary.json": "e9b4a66e8d9d3f2d2c03c8d2610d1786fdf9d61aa3ad600fc90bc4e0dc58d0ec",
+    "step-270000/layer-36-panels.json": "9d24086a915ea2f8e2975c82172157f15f91c5d4b059f427898a885c99867dc4",
+    "step-270000/layer-36-summary.json": "45ed5b58e27618a6524b55a0a1cd11bc125079eb6ae57550898c46aceef1a6ea",
+    "step-270000/layer-39-panels.json": "64312eaf2d70284612947e2fc7788e88e0ed4a4aa307e3ab0dbd32a1513ab123",
+    "step-270000/layer-39-summary.json": "6bdb66da45d14f8ce91dda2cf6c55b68aa16c4f4c861cd78bdf4f1640fc917ca",
+    "step-270000/layer-44-panels.json": "380afda081e23bde498e9730b9c59a742ad566a847d9384ce716055c0ef2c40c",
+    "step-270000/layer-44-summary.json": "73e1f4c639fb8aaaa29a934a4d72d5ced22a0f4dda908f80e33ce20e75f080a3",
+    "step-270000/layer-47-panels.json": "c69c4b3c2f0824d175706a1a8a91e09b8f582517dfa53bfaaeeeac21d9984284",
+    "step-270000/layer-47-summary.json": "27455948d55fd545f48aad0075c5ec0c38c410e9487a92674210b80bcc947db2",
+    "step-300000/layer-0-panels.json": "f20f8fcd29bac84eab0ca0a94f4a6081ed7bc5eb2f30d327d05257518695076e",
+    "step-300000/layer-0-summary.json": "2c9623ab756517372db1dd8655707474f4c0b3ffaf2ab7238ff8755b376a9068",
+    "step-300000/layer-3-panels.json": "c810bf1082d0951cdd9296ae8fd7588c6391421a0c656b93e2c4ac35e45c48f6",
+    "step-300000/layer-3-summary.json": "d360769e1a9f619e86d51c7f52b2ddfa73c2780405e316baebb875909bcdb25a",
+    "step-300000/layer-12-panels.json": "ad487a47ff0b280d5984a1d8f61d6ea68ae51d190b23920cbd6c56183d79df1a",
+    "step-300000/layer-12-summary.json": "559ab000b051771f9830b36855f1b6281f896df4412e68e194120c1f7734e1f0",
+    "step-300000/layer-15-panels.json": "f09f4527791b3f8fcb5beac31d6dcfde8c87ea6e86c3d2ddf1f631c05f43798f",
+    "step-300000/layer-15-summary.json": "6c296e9775ca1f52ad81d7e75d61cd5dfb2f24e57503e12a17cdf54fe111420d",
+    "step-300000/layer-24-panels.json": "7956626cda5e9444b5336771d285caea7b28d390ab4f42c98002a524dc79bd26",
+    "step-300000/layer-24-summary.json": "49a6ddc66c19bdaeb0864320a9168aade09b8166d7587bc964580d4a1d9c84d8",
+    "step-300000/layer-27-panels.json": "c8591c504a12ed04bfefb1ea75c609eab114aa4d78c9beb6dc134dbb250dc0df",
+    "step-300000/layer-27-summary.json": "94eb9db4eb78b93517ab239bada182fc3bc8ac76a2a6dd5dc2ca3d5b89577b5f",
+    "step-300000/layer-36-panels.json": "7da174e39271aec3e9bd15c393d8d93ba9f464b43715b812eb5577e1be9ddcfd",
+    "step-300000/layer-36-summary.json": "5d740bdb708f56ef87c38721fbeca4b834c72295f89b57ed4f60cab50e27d0df",
+    "step-300000/layer-39-panels.json": "d265e4813b5d44acfa2da12912a66a90af50adb06b63b597bb14f542f42cec1c",
+    "step-300000/layer-39-summary.json": "c860a615c116595919db9731b16fd2d81d05aabe4bed2fa5798606e22510f02e",
+    "step-300000/layer-44-panels.json": "b5bbc987a268b7db31b1db1ccd6e185d643b96b6d1e43e053e112bdac3bea157",
+    "step-300000/layer-44-summary.json": "75718bccfd03b2d62e4a3394659e46bc775d682f5f9ca6cd2d3995d3409bc0d0",
+    "step-300000/layer-47-panels.json": "fcc6fd79978bbf9d5a502199c6d51fed25739f3243c1c7e775b8dca1c30fc8b7",
+    "step-300000/layer-47-summary.json": "ba2a3c15318b865d885c8585aef46a020033bf045853b8541f964df4cc1ff6df",
+    "step-330000/layer-0-panels.json": "6b9fb8260b9651e051be14c209d0e9e545936631df6862d6bbfb300953002181",
+    "step-330000/layer-0-summary.json": "9bfd8696122f95364c250b08bf11a0e6099beca6577478f84a860316b3cc6700",
+    "step-330000/layer-3-panels.json": "5ecf2c94ffab909a9117b901ce83f6dcd3337544f0db176190162d18ec82029a",
+    "step-330000/layer-3-summary.json": "81a3a99135852e33a18090f8dc9a5b52dc0c3fcfabe12149f6892c76d0030f88",
+    "step-330000/layer-12-panels.json": "9c75457a013c905f66df3969bda1d297b3657bd24941a402b8078b9c5df7cbe5",
+    "step-330000/layer-12-summary.json": "1bb047716e63dfa5cc9e76e3067832d56f963799c247e0c1f9e3184772e9d080",
+    "step-330000/layer-15-panels.json": "07f029c43912e361a0c738ca4d212837f04771ad220c495274c62ad99edf134b",
+    "step-330000/layer-15-summary.json": "985347142faa7c28e04fbb059ef692ced3fcd5e221d2f0143f4ffb14503cefd8",
+    "step-330000/layer-24-panels.json": "468a5cd26db3838072efb7352f5b0f49aceb926839cc6b826a64d960dddb5da0",
+    "step-330000/layer-24-summary.json": "6be586ce76502a56779fc8c0af41dee5731de7cad6ca3899bc65692058b10dd1",
+    "step-330000/layer-27-panels.json": "7565926c0705aa3ffc2fb9305fdb0f03e6df6d14dd8c1533a345c1e13241547e",
+    "step-330000/layer-27-summary.json": "0b0a70768951baa2904d03fa0d0eb1eeccc73fe1977cafd15ed3c4770a38e14c",
+    "step-330000/layer-36-panels.json": "d25c8ee74eb0ea42450efe9c988be7f562471598370820e4a94342f9ad68b089",
+    "step-330000/layer-36-summary.json": "3ee9e40df9677a07bbbf4c1aea9995e4b67c1faeb66af383eba4bf28be5c3da9",
+    "step-330000/layer-39-panels.json": "fccbbe270ab525dd0c62281b53e684f92a1a814553ae0c6fb76eb56fcc1d72ec",
+    "step-330000/layer-39-summary.json": "a1e5c796ba7d093202e6414dd405bf1488741fa354ec449fb300dc95525a0fde",
+    "step-330000/layer-44-panels.json": "c417d91886e945797be543c9c00b867c5fd0188973b927083f573479562ff281",
+    "step-330000/layer-44-summary.json": "1c6fea7cbe24714f24c546fa14b0452ea46f92583dfc151ed77298627cbe33dd",
+    "step-330000/layer-47-panels.json": "7d879de38ade1b4fb267a3105e1fef0ca2b4edadf2243c92d8c1d1e8e401a2a0",
+    "step-330000/layer-47-summary.json": "1d1c0a5671cd94c4d4e4cb77d2270fc5082cd797070285a8becd2424f4884d58",
+    "results.json": "9285449ac70cab4f1f4b731f520cd7f609e97f9b3ce0da456d4a6120eb181ebb"
+  },
+  "all_checkpoints": {
+    "dq": {
+      "relative_l2_error": 0.020731304585677575,
+      "reference_l2": 2.944685555153712e-07,
+      "error_l2": 6.104717315293665e-09,
+      "zero_actual_nonzero_reference_vectors": 0,
+      "reference_nonzero_vectors": 30720
+    },
+    "dk": {
+      "relative_l2_error": 0.017498976655346398,
+      "reference_l2": 5.016302680463672e-07,
+      "error_l2": 8.778016350158538e-09,
+      "zero_actual_nonzero_reference_vectors": 0,
+      "reference_nonzero_vectors": 12795957
+    },
+    "dv": {
+      "relative_l2_error": 0.0018530672067164171,
+      "reference_l2": 2.3673676894918882e-05,
+      "error_l2": 4.3868914316374316e-08,
+      "zero_actual_nonzero_reference_vectors": 0,
+      "reference_nonzero_vectors": 12795957
+    },
+    "output": {
+      "relative_l2_error": 0.0018417755074486423,
+      "reference_l2": 926.8197687227853,
+      "error_l2": 1.7069939498528413,
+      "zero_actual_nonzero_reference_vectors": 0,
+      "reference_nonzero_vectors": 30720
+    },
+    "multi_key_rows": 30720,
+    "margin_above_fp32_cliff": 0,
+    "stored_output_control_winner_cancellations": 12,
+    "margin_histogram": [
+      24597,
+      5230,
+      791,
+      98,
+      2,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "max_retained_margin": 15.421632418608851,
+    "max_retained_dq_relative_error": 3.5228478992910053,
+    "panel_count": 1920,
+    "control_fused_error_alignment": {
+      "actual_stored_output": {
+        "dq": {
+          "cosine_error_alignment": 0.9931306830404003,
+          "residual_error_l2_over_fused_error_l2": 0.11701149990552846
+        },
+        "dk": {
+          "cosine_error_alignment": 0.9915911658111465,
+          "residual_error_l2_over_fused_error_l2": 0.129410197693091
+        }
+      },
+      "bf16_rounded_reference_output": {
+        "dq": {
+          "cosine_error_alignment": 0.9786395818135321,
+          "residual_error_l2_over_fused_error_l2": 0.2072665455183852
+        },
+        "dk": {
+          "cosine_error_alignment": 0.9825716819389474,
+          "residual_error_l2_over_fused_error_l2": 0.18673812920891872
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Raw checkpoint-derived Q/K/V/dO arrays were not archived here; the norm inputs cannot be recomputed from this JSON alone",
+    "Stored-output correction events are labeled reconstruction controls, not measured internal fused dS",
+    "Sparse query dK includes only chosen cotangents and one expanded KV group per rank",
+    "Global expanded KV boundary duplicates logical KV heads; this does not sum gradients at the original logical K projection",
+    "One batch, ten selected layers, four stratified multi-key queries and one sequence per rank, with correlated samples",
+    "High relative errors on tiny gradients do not establish downstream optimizer or quality effect",
+    "The largest retained row-relative error covers three bounded event lists and is not necessarily the maximum across every measured row"
+  ]
+}

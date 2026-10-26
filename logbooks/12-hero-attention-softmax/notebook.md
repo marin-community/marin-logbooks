@@ -8,7 +8,7 @@ related_issues:
 research_branch: "codex/12-hero-attention-softmax"
 marin_base_revision: "8577d258214dd0dcb992c04458ee4eb10496d4e5"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: active
+status: completed
 ---
 
 # Hero attention softmax gradient diagnostic
@@ -157,7 +157,152 @@ inputs. It does not estimate the prevalence or effect in checkpoint attention.
 Coordinator and child were both running at the initial startup check; real-data
 checkpoint comparisons remained pending. The heartbeat owns further monitoring.
 
+### 2026-10-26 20:43 UTC — Checkpoint comparison completed
+
+The actual native SM100 fused attention VJP was compared with a stable NumPy FP64
+mathematical VJP using identical quantized BF16 Q/K/V and output cotangents (dO).
+Q and K denote the query and key arrays at the fused-attention boundary.
+
+The coordinator and all 16 child tasks succeeded with exit 0, no failures, and no
+preemptions. The final result was written at 19:50:53 UTC, about eight minutes after
+submission. [results.json.gz](results.json.gz) retains the complete compact output, including
+per-layer summaries and numerical events. The launch source remains
+`e71598bfb54216b9a0c555433d613d2e07bc6cd6`; no replacement run was needed.
+
+All three checkpoints contain ten selected layers and 64 rank panels per layer.
+Each rank panel selects one local sequence and one grouped-query-attention (GQA)
+KV group, with four seeded stratified multi-key query positions and four query
+heads sharing that KV group. It keeps all original keys and masks: 10,240
+multi-key query-head observations per checkpoint, 30,720 across checkpoints.
+There were no masked rows, single-key rows, or selection fallbacks. Both exact BF16
+forward-parity gates passed with maximum absolute difference 0 in every panel:
+original Block output versus the capture path rebuilt from the attention output,
+and captured full-attention output versus the native one-GQA-group replay output
+at selected queries.
+
+The following errors concatenate gradients within each checkpoint and attention
+category. Relative L2 is `sqrt(sum(error_squared_norm) / sum(reference_squared_norm))`,
+not an average of per-panel relative errors. Absolute norms use the recorded
+one-rack mean regularized-loss scaling (CE plus final-logit z-loss weight 1e-4),
+with downstream dO propagated from the loss-weighted mean over the fixed
+256 x 16384 batch (zero-weight target positions excluded from the denominator).
+The replay supplies dO only at the four selected query positions. Both dQ and dK
+therefore differentiate this same sparse objective; dK sums its selected
+cotangents across the grouped heads.
+
+| Step | Attention | dQ relative L2 | dK relative L2 | dQ error L2 | dK error L2 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| 270000 | all | 0.5483% | 0.3965% | 8.655297e-10 | 1.113748e-09 |
+| 270000 | local | 0.5417% | 0.4024% | 6.597493e-10 | 9.096125e-10 |
+| 270000 | global | 0.5579% | 0.3854% | 5.602433e-10 | 6.426815e-10 |
+| 300000 | all | 0.4775% | 0.3586% | 7.499159e-10 | 8.188381e-10 |
+| 300000 | local | 0.4338% | 0.3453% | 5.263233e-10 | 5.872578e-10 |
+| 300000 | global | 0.5357% | 0.3744% | 5.341887e-10 | 5.706349e-10 |
+| 330000 | all | 3.1118% | 2.4963% | 5.996337e-09 | 8.668485e-09 |
+| 330000 | local | 0.5530% | 0.4377% | 8.854715e-10 | 1.131595e-09 |
+| 330000 | global | 5.5313% | 3.7069% | 5.930598e-09 | 8.594308e-09 |
+
+| Step | dQ reference L2 | dK reference L2 | dQ max component error | dK max component error |
+| --- | ---: | ---: | ---: | ---: |
+| 270000 | 1.578537e-07 | 2.809102e-07 | 1.061798e-10 | 2.031454e-10 |
+| 300000 | 1.570446e-07 | 2.283462e-07 | 6.043000e-11 | 1.030537e-10 |
+| 330000 | 1.926939e-07 | 3.472469e-07 | 1.520135e-09 | 2.097472e-09 |
+
+No actual fused dQ or dK vector was exactly zero when its FP64 reference vector was
+nonzero: dQ 0/10,240 and dK 0/4,265,319 per checkpoint. The dK denominator contains
+nonzero key vectors from the sparse objective; it is not a token-prevalence
+denominator. Raw counts of exact-zero components with nonzero reference were dQ 0/1/0
+and dK 200/194/228 at 270k/300k/330k. These component counts include arbitrarily tiny
+reference values and do not measure model harm.
+
+The 330k outlier is global layer 15 (zero-based): dQ relative L2 12.0572% and dK
+13.1156%. Its largest absolute dQ-error event is rank 43, sequence 175, query 7194,
+query head 41, expanded boundary KV head 10. The reference dQ norm is 1.315417e-8,
+fused norm 1.813559e-8, and error norm 5.885925e-9 (44.7457% relative). Its maximum
+attention probability is 0.9695174, aggregate winner-versus-tail margin 3.4596409,
+and entropy 0.2978795 nats. This one row accounts for 96.3513% of all sampled
+330k dQ squared error. This event occurs well below the nominal FP32 threshold.
+
+The same event has reference winning score derivative 1.383374e-8. Reconstructing
+`p*(dP-dot(dO,O))` with the actual stored BF16 output gives 1.966823e-8 and a
+dQ norm of 1.812870e-8; using BF16-rounded reference output gives a dQ norm of
+1.820124e-8. At layer 15, those controls have dQ/dK relative errors of
+12.0305%/13.1221% and 12.1967%/13.2479%, respectively. This agreement is consistent
+with error from the stored-output correction. The controls omit actual fused
+internal arithmetic, so they do not establish causal attribution.
+
+| Step | Maximum aggregate margin | Mean entropy (nats) | Rows with margin >=8 | Rows with margin >24 ln(2) | Stored-output zero-winner control |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 270000 | 11.578052 | 3.851748 | 37/10240 | 0/10240 | 4/10240 (0.0391%) |
+| 300000 | 14.956124 | 3.854881 | 36/10240 | 0/10240 | 4/10240 (0.0391%) |
+| 330000 | 15.421632 | 3.889846 | 29/10240 | 0/10240 | 4/10240 (0.0391%) |
+
+Here margin means winner score minus logsumexp of all other visible scores; it
+is not the top-two score gap. All 30,720 sampled rows were below `24 ln(2)`
+(16.6355), the nominal round-to-nearest threshold where adding the aggregate
+exponential tail to 1 in FP32 can round back to 1. The fused kernel has other
+rounding operations; this threshold is not a universal kernel-collapse boundary.
+The reconstructed zero winning-score derivative occurs 4/10,240 times
+per checkpoint (0.0390625%), with a nonzero stable reference. This is a control
+count; the fused internal score gradients are not exposed. It does not count
+actual fused Q/K vectors lost to collapse. The observations reuse one batch
+across layers and checkpoints and are correlated; no independent-token confidence
+interval or whole-run bound follows from the zero-vector counts.
+
+One concrete saturation-tail example at 300k (layer 3, rank 54, query 3945, head 38)
+has margin 10.60836 and reference winning-score derivative -1.176382e-13. The
+stored-output control returns exactly zero; actual fused dQ has norm 1.185765e-13
+against reference 1.735565e-13, with error 1.176505e-13 (67.7880%). The numerical
+event remains small in absolute norm even though its relative error is large.
+
+| Step | Stored-output control dQ/dK relative L2 | BF16-reference-output control dQ/dK relative L2 |
+| --- | ---: | ---: |
+| 270000 | 0.5109%/0.3226% | 0.4687%/0.2972% |
+| 300000 | 0.4253%/0.2717% | 0.3986%/0.2545% |
+| 330000 | 3.0975%/2.4861% | 3.1440%/2.5119% |
+
+The [native synthetic control](synthetic.json) had zero actual fused dQ for all
+four query-head vectors against a nonzero FP64 reference, giving relative dQ
+error 1.0 and dK error 0.7071. It demonstrates that the kernel can erase gradients.
+Checkpoint attention shows measurable Q/K error against the FP64
+reference, including a concentrated 330k global-layer outlier. This fixed panel
+did not show complete loss of any sampled Q/K vector or any aggregate margin
+above the nominal FP32 cliff. Those negative observations do not certify the
+kernel or bound checkpoint-wide error. The experiment supports keeping attention
+backward precision in the numerical follow-up; it does not measure a training-loss
+or model-quality benefit from changing it. No live Hero change or Marin contribution
+PR was selected, and no further accelerator work is part of this completed task.
+
+The measured gradients are at the expanded fused-attention boundary, with dK
+accumulated only over the four sampled-query cotangents and one GQA group.
+Production global layers duplicate logical KV heads. Results do not include the
+post-duplication projection gradient, dense full-step dK, or a comparison of full
+FP64 model training. The native grouped replay has exact output parity with the
+captured full-head attention at selected queries. Full-head versus grouped
+backward bit parity was not separately measured, and this does not assert bitwise
+identity with a live eleven-rack backward.
+
+Large per-rank panels remain under
+`s3://marin-us-east-02a/marin/users/dlwh/hero-attention-softmax/20261026-a1` as
+`step-<step>/layer-<layer>-panels.json`. Compact results retain bounded worst events.
+[validation.json](validation.json) records finite/count/parity checks, recomputed
+aggregates, and 61 artifact SHA256 values. [validate_results.py](validate_results.py)
+reproduces the checks when the per-layer JSON files are fetched alongside it.
+[checksums.sha256](checksums.sha256) identifies the compact archived evidence.
+Raw token IDs, Q/K/V, and cotangents were not published.
+
 ## Reproduction
+
+The complete result is gzip-compressed to fit the repository artifact-size limit.
+Decompress `results.json.gz` to `results.json` before validation; the compressed
+artifact preserves the original S3 bytes. `validation.json` hashes the original
+remote objects, and `checksums.sha256` hashes the archived compressed copy.
+
+The post-run arithmetic validator needs the per-layer JSON directories fetched
+from the recorded output root into this notebook directory. Then run
+`uv run --no-sync python logbooks/12-hero-attention-softmax/validate_results.py`.
+It checks counts, squared-norm aggregates, selected events, identities, and finite
+values; it cannot reconstruct gradients without the original operand arrays.
 
 Pure CPU checks:
 
