@@ -13,6 +13,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import shlex
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 from fray.iris_backend import convert_constraints, convert_resources
@@ -39,9 +44,49 @@ def setup_script() -> str:
     # No lock edits, dependency substitution, worker patch or model monkeypatch.
     return (
         "set -euo pipefail\n(\n"
-        f"export IRIS_VENV={PROFILE_ENV}\n"
-        + task_setup_script(RuntimeProfile.MEGATRON)
-        + "\n)\nsource /app/vendor/skyrl/.iris-runtime-env\n"
+        f"export IRIS_VENV={PROFILE_ENV}\n" + task_setup_script(RuntimeProfile.MEGATRON) + "\n)\n"
+    )
+
+
+def environment_setup_scripts() -> list[str]:
+    # Explicit setup replaces Iris defaults. Resolve the native GPU root setup
+    # (including its CUDA toolchain step), then append the separate profile.
+    # Iris itself adds its runtime-deps step when compiling the task entrypoint.
+    root_steps = EnvironmentSpec(extras=["gpu"]).to_proto().setup_scripts
+    return [*root_steps, setup_script()]
+
+
+def worker_command(activation_file: Path = Path("/app/vendor/skyrl/.iris-runtime-env")) -> list[str]:
+    # The K8s run phase reactivates the root venv, and IRIS_PYTHON is just 'python'.
+    # Capture its absolute interpreter before profile activation changes PATH.
+    script = (
+        'set -euo pipefail\nroot_python="$IRIS_VENV/bin/python"\n'
+        f"source {shlex.quote(str(activation_file))}\n"
+        'exec "$root_python" -u -m experiments.post_training.identity_t2.serve worker'
+    )
+    return ["bash", "-c", script]
+
+
+def validate_runtime() -> None:
+    root = Path(os.environ["IRIS_VENV"])
+    if Path(sys.prefix).resolve() != root.resolve():
+        raise RuntimeError("Worker is not running in the provisioned Marin environment")
+    expected = Path(PROFILE_ENV) / "bin/vllm"
+    if shutil.which("vllm") != str(expected):
+        raise RuntimeError("Frozen profile vLLM binary is not first on PATH")
+    version = (
+        subprocess.check_output(
+            [str(Path(PROFILE_ENV) / "bin/python"), "-c", "import vllm; print(vllm.__version__)"],
+            text=True,
+            timeout=60,
+        )
+        .strip()
+        .splitlines()[-1]
+    )
+    if not version.startswith("0.0.0.dev20260929+marin.39e62869693c"):
+        raise RuntimeError("Frozen profile vLLM version differs from the reviewed build")
+    print(
+        json.dumps({"Marin_worker_prefix": str(root), "vllm_binary": str(expected), "vllm_version": version}), flush=True
     )
 
 
@@ -96,13 +141,7 @@ def submission(credentials: dict[str, str]):
         secrets["HF_TOKEN"] = credentials["HF_TOKEN"]
     return {
         "name": JOB_NAME,
-        "entrypoint": Entrypoint(
-            command=[
-                "bash",
-                "-c",
-                'exec "$IRIS_PYTHON" -u -m experiments.post_training.identity_t2.serve worker',
-            ]
-        ),
+        "entrypoint": Entrypoint(command=worker_command()),
         "task_image": IRIS_TASK_IMAGE,
         "resources": convert_resources(resources),
         "constraints": convert_constraints(resources),
@@ -112,7 +151,7 @@ def submission(credentials: dict[str, str]):
             extras=["gpu"],
             secret_behavior=SecretBehavior.ISOLATE,
             secrets=secrets,
-            setup_scripts=[setup_script()],
+            setup_scripts=environment_setup_scripts(),
             env_vars={"UV_FROZEN": "1", "OMP_NUM_THREADS": "1", "VLLM_TARGET_DEVICE": "cuda"},
         ),
         "timeout": Duration.from_seconds(TIMEOUT_SECONDS),
@@ -156,6 +195,10 @@ def safe_plan() -> dict:
         "enforce_eager": False,
         "strict_tool_calling_environment_override": False,
         "setup_script_sha256": hashlib.sha256(setup_script().encode()).hexdigest(),
+        "environment_setup_step_sha256": [
+            hashlib.sha256(step.encode()).hexdigest() for step in environment_setup_scripts()
+        ],
+        "worker_entrypoint_sha256": hashlib.sha256(json.dumps(worker_command()).encode()).hexdigest(),
         "secret_behavior": "ISOLATE",
         "secret_names_only": ["CW_KEY_ID", "CW_KEY_SECRET", "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "HF_TOKEN"],
         "executor_release": (
@@ -171,6 +214,7 @@ def main() -> None:
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     if args.mode == "worker":
+        validate_runtime()
         run_iris_service(service_config())
     else:
         if args.out is None:
