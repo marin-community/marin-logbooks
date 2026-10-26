@@ -5,13 +5,17 @@ import hashlib
 import importlib.metadata
 import json
 import signal
+import ssl
 import subprocess
 import time
+from contextlib import ExitStack
 from pathlib import Path
 
 import kubernetes.client
 import kubernetes.stream
-from iris.cli.connect import open_iris_client
+from kubernetes.config import kube_config
+from kubernetes.stream import ws_client
+from iris.cli.connect import connect_controller, open_iris_client, rpc_client
 from iris.cluster.platforms.k8s.service import CloudK8sService
 from iris.cluster.types import Entrypoint, EnvironmentSpec, ResourceSpec
 from iris.rpc import job_pb2
@@ -50,7 +54,21 @@ def main():
     job = None
     shared = None
     api = None
+    shared_core = None
     next_start = 0
+
+    def health_sample(phase):
+        started = time.perf_counter_ns()
+        health.get_current_user(job_pb2.GetCurrentUserRequest())
+        latency = (time.perf_counter_ns() - started) / 1e6
+        emit("health", phase=phase, wall_ms=latency, normal_below_100ms=latency < 100)
+        return latency
+
+    def require_normal(phase):
+        latency = health_sample(phase)
+        if latency >= 100:
+            raise RuntimeError(f"Health RPC is {latency:.3f} ms; requires <100 ms")
+        return latency
 
     def paced():
         nonlocal next_start
@@ -60,23 +78,61 @@ def main():
     def sample(arm, phase, index, exit_code=0):
         nonlocal shared
         paced()
+        pre_health = require_normal("before_exec")
         stages = {}
         total = clock()
         started = clock()
-        client = service.create_api_client() if arm == "fresh" else shared
-        core = kubernetes.client.CoreV1Api(client)
-        stages["client"] = elapsed(started)
+        original_api_client = kube_config.ApiClient
+
+        def measured_client(*args, **kwargs):
+            begin = clock()
+            result = original_api_client(*args, **kwargs)
+            stages["api_client_constructor"] = elapsed(begin)
+            return result
+
+        try:
+            kube_config.ApiClient = measured_client
+            client = service.create_api_client() if arm == "fresh" else shared
+            core = kubernetes.client.CoreV1Api(client) if arm == "fresh" else shared_core
+        finally:
+            kube_config.ApiClient = original_api_client
+        stages["client_factory_total"] = elapsed(started)
+        stages.setdefault("api_client_constructor", {key: 0 for key in stages["client_factory_total"]})
         response = None
+        original_open = ws_client.create_websocket
+        original_wrap = ssl.SSLContext.wrap_socket
+        tls = []
+
+        def measured_open(*args, **kwargs):
+            begin = clock()
+            try:
+                return original_open(*args, **kwargs)
+            finally:
+                stages["websocket_open_tls_upgrade"] = elapsed(begin)
+
+        def measured_wrap(context, *args, **kwargs):
+            begin = clock()
+            try:
+                return original_wrap(context, *args, **kwargs)
+            finally:
+                tls.append(elapsed(begin))
+
         try:
             started = clock()
-            response = kubernetes.stream.stream(
-                core.connect_get_namespaced_pod_exec,
-                name=pod_name, namespace="iris", container="task",
-                command=["sh", "-c", f"printf 'sbc-out\\n'; printf 'sbc-err\\n' >&2; exit {exit_code}"],
-                stdout=True, stderr=True, stdin=False, tty=False,
-                _preload_content=False, _request_timeout=10,
-            )
-            stages["websocket_setup"] = elapsed(started)
+            try:
+                ws_client.create_websocket = measured_open
+                ssl.SSLContext.wrap_socket = measured_wrap
+                response = kubernetes.stream.stream(
+                    core.connect_get_namespaced_pod_exec,
+                    name=pod_name, namespace="iris", container="task",
+                    command=["sh", "-c", f"printf 'sbc-out\\n'; printf 'sbc-err\\n' >&2; exit {exit_code}"],
+                    stdout=True, stderr=True, stdin=False, tty=False,
+                    _preload_content=False, _request_timeout=10,
+                )
+            finally:
+                ws_client.create_websocket = original_open
+                ssl.SSLContext.wrap_socket = original_wrap
+            stages["api_stream_setup_total"] = elapsed(started)
             started = clock()
             response.run_forever(timeout=10)
             stdout = response.read_stdout(timeout=0) or ""
@@ -94,8 +150,13 @@ def main():
                 client.close()
             stages["close"] = elapsed(started)
         timing = elapsed(total)
+        post_health = health_sample("after_exec")
         emit("exec", arm=arm, phase=phase, index=index, expected_exit=exit_code,
-             returncode=actual_code, stages=stages, total=timing)
+             returncode=actual_code, stages=stages, total=timing, tls_handshakes=tls,
+             health_before_ms=pre_health, health_after_ms=post_health,
+             health_qualified=pre_health < 100 and post_health < 100)
+        if post_health >= 100:
+            raise RuntimeError("Post-exec health RPC exceeds 100 ms; stop immediately")
 
     def terminate(_signal, _frame):
         raise SystemExit("Health guard terminated probe")
@@ -108,7 +169,12 @@ def main():
          rate=args.rate, context=CONTEXT, image=IMAGE, cpu=1, memory_bytes=2*1024**3,
          client_configuration="Devbox kubeconfig; not the controller's in-cluster configuration loader",
          websocket_reuse=False)
-    with open_iris_client(cluster_name="cw-rno2a", workspace=None) as iris:
+    with ExitStack() as connections:
+        endpoint = connections.enter_context(connect_controller(cluster_name="cw-rno2a"))
+        health = connections.enter_context(rpc_client(endpoint.url, endpoint.credentials, timeout_ms=5000))
+        health_sample("connection_warmup_no_sandbox")
+        require_normal("before_submit")
+        iris = connections.enter_context(open_iris_client(cluster_name="cw-rno2a", workspace=None))
         try:
             job = iris.submit(
                 Entrypoint.from_command("sh", "-c", "trap 'exit 0' TERM INT; sleep infinity & wait"),
@@ -125,6 +191,7 @@ def main():
             core = kubernetes.client.CoreV1Api(api)
             deadline = time.monotonic() + 90
             while time.monotonic() < deadline:
+                require_normal("sandbox_startup")
                 pods = core.list_namespaced_pod(
                     "iris", label_selector=f"iris.job_id=atqamar.{args.name}", _request_timeout=10).items
                 if len(pods) > 1 or any(p.status.phase == "Failed" for p in pods):
@@ -140,6 +207,7 @@ def main():
             emit("target", pod=pod_name, task=job.task(0).task_id.to_wire())
             started = clock()
             shared = service.create_api_client()
+            shared_core = kubernetes.client.CoreV1Api(shared)
             emit("reused_client_init", timing=elapsed(started))
             for exit_code in (0, 7, 0):
                 for arm in ("fresh", "reused"):
@@ -149,6 +217,7 @@ def main():
                     sample(arm, "timed", pair)
             for exit_code in (0, 7, 0):
                 paced()
+                require_normal("before_production_exec")
                 started = clock()
                 result = service.exec(pod_name, ["sh", "-c", f"printf 'production-path\\n'; exit {exit_code}"],
                                       container="task", timeout=10)
@@ -156,6 +225,7 @@ def main():
                 if result.returncode != exit_code or result.stdout != "production-path\n" or result.stderr:
                     raise RuntimeError("Patched service exec contract failed")
                 emit("production_exec", timing=timing, returncode=result.returncode)
+                require_normal("after_production_exec")
             emit("probe_complete", pairs=args.pairs)
         finally:
             if shared is not None:

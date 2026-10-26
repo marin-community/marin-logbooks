@@ -130,7 +130,7 @@ def monitor(name, command, *, local_probe=False):
         lat=[]
         for _ in range(8):
             start=time.monotonic(); rpc.get_current_user(job_pb2.GetCurrentUserRequest()); lat.append(time.monotonic()-start)
-        baseline=statistics.median(lat[1:]); threshold=max(.5, baseline*4)
+        baseline=statistics.median(lat[1:]); threshold=.1 if local_probe else max(.5, baseline*4)
         backend=rpc.list_backends(controller_pb2.Controller.ListBackendsRequest()).backends[0]
         initial=pods(); info=snapshot(initial)
         wanted=1 if local_probe else int(command[command.index('--concurrency')+1])
@@ -148,6 +148,8 @@ def monitor(name, command, *, local_probe=False):
             raise RuntimeError('Insufficient memory request headroom for this stage')
         if info['other_pending'] or info['owned_phases']:
             raise RuntimeError('Preflight has pending unrelated pods or retained study pods')
+        if local_probe and max(lat[1:])>=.1:
+            raise RuntimeError('Local exec probe requires every warmed preflight health RPC <100 ms')
         if baseline>.15 or max(lat[1:])>.5:
             raise RuntimeError('Controller preflight latency already elevated')
         if any(statistics.median(lat[index:index+3])>max(.15,2*baseline) for index in range(1,len(lat)-2)):
@@ -169,7 +171,7 @@ def monitor(name, command, *, local_probe=False):
                 and not (e.get('reason')=='UnmanagedPods' and e.get('involvedObject',{}).get('kind')=='PodDisruptionBudget')
                 for e in current_events)
             new_failed={p['metadata']['uid'] for p in current if p['status'].get('phase')=='Failed'}-failed
-            if check_latency>max(.15,2*baseline) or current_info['other_pending'] or new_warning or new_failed:
+            if check_latency>(.1 if local_probe else max(.15,2*baseline)) or current_info['other_pending'] or new_warning or new_failed:
                 raise RuntimeError('Health changed while verifying pre-existing application failures')
             for evidence in verified:
                 emit('ignored_application_failure',stage=name,controller_latency=check_latency,**evidence)
@@ -246,7 +248,7 @@ def monitor(name, command, *, local_probe=False):
                             if waiting in ('CrashLoopBackOff','ImagePullBackOff','ErrImagePull'): reason=f'owned container failure {podname}: {waiting}'
                 if new_failed:
                     verified=[]
-                    healthy_limit=max(.15,2*baseline)
+                    healthy_limit=.1 if local_probe else max(.15,2*baseline)
                     if reason or latency>healthy_limit:
                         reason=reason or 'new failed pod while controller latency is not healthy'
                     else:

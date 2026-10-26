@@ -1,8 +1,8 @@
 {
   "marin_base": "8577d258214dd0dcb992c04458ee4eb10496d4e5",
   "source_sha256": {
-    "exec_api_probe.py": "7ef0c3e5959bf8476bb809f47b0f190e9533841198ebcbae177583f5ab7477ef",
-    "guard.py": "632584c0e20b80729bd2b0fbffae9b02de5f2891e518dbcf9abb44ca75749c0d",
+    "guard.py": "52b5426d7dfa8be937b2e52f274c326b44f2ae3718bb95c537c8862c7924900f",
+    "exec_api_probe.py": "ea3e231002d59c942035d535ba8d223d441765a5d07737aadb5631803840989e",
     "service.py": "d34c4e3594899fd0df0d91f0ad4ab649fc662218d980646e5e2934fedb54b10a"
   },
   "pairs": 20,
@@ -13,5 +13,15 @@
   "shared_controller_deployment": false,
   "websocket_reused": false,
   "local_draft_commit": "b821b846bcf346b6bae099a763c344b85edf224c",
-  "status": "stopped; no API exec benchmark completed"
+  "status": "preparing one guarded comparison; no ramps",
+  "health_rpc_limit_ms_exclusive": 100,
+  "stages": [
+    "client factory total",
+    "nested ApiClient constructor",
+    "API stream setup total",
+    "nested websocket open including TLS/upgrade",
+    "nested TLS socket handshake",
+    "post-upgrade execution/drain",
+    "close"
+  ]
 }
