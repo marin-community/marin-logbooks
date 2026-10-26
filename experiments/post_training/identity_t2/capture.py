@@ -203,7 +203,7 @@ def capture_one(index: int, row: dict[str, Any], *, endpoint: str, model: str, t
             record["roundtrip"] = roundtrip(tokenizer, row, ids)
             record["length_stop"] = payload["choices"][0].get("finish_reason") == "length"
             if not record["roundtrip"]["ok"] and not record["length_stop"]:
-                record["fatal"] = "raw_fidelity_failure"
+                record["fidelity_rejected"] = True
         except Exception as error:
             record["error_type"] = type(error).__name__
             record["fatal"] = "transport_protocol_or_capture_failure"
@@ -241,8 +241,48 @@ def pilot_passes(records: list[dict]) -> bool:
     return False
 
 
+class FidelityBudget:
+    """Thread-safe completed-attempt accounting; a failed row is never repaired.
+
+    Includes the five pilot attempts. Length stops keep their separate rejection
+    policy. Check non-length fidelity rejects every 100 completions and at finish.
+    """
+
+    def __init__(self) -> None:
+        self.attempted = 0
+        self.rejects: list[dict] = []
+        self.checkpoints: list[dict] = []
+        self.exceeded = False
+        self.fatal_protocol = False
+        self._lock = threading.Lock()
+
+    def _check(self, *, final: bool) -> None:
+        over = len(self.rejects) * 100 > self.attempted * 5
+        self.exceeded |= over
+        self.checkpoints.append(
+            {"attempted": self.attempted, "fidelity_rejects": len(self.rejects), "over_5_percent": over, "final": final}
+        )
+
+    def observe(self, record: dict) -> bool:
+        with self._lock:
+            self.attempted += 1
+            self.fatal_protocol |= bool(record.get("fatal"))
+            if record.get("fidelity_rejected"):
+                self.rejects.append(
+                    {"index": record["index"], "id": record["candidate"]["id"], "reason": record["roundtrip"]["reason"]}
+                )
+            if self.attempted % 100 == 0:
+                self._check(final=False)
+            return self.exceeded or self.fatal_protocol
+
+    def finish(self) -> bool:
+        with self._lock:
+            self._check(final=True)
+            return self.exceeded
+
+
 def capture(rows: list[dict], *, endpoint: str, model: str, tokenizer: Any, out: Path) -> dict:
-    """At most eight in-flight requests, no retries/resume/reseed; stop on fatal fidelity faults."""
+    """Eight in flight; strict pilot/protocol gates, row drops and a 5% fidelity stop."""
     if not endpoint.startswith("https://") or not endpoint.endswith("/v1"):
         raise ValueError("Require a TLS-protected owned OpenAI endpoint ending in /v1")
     for row in rows:
@@ -250,12 +290,17 @@ def capture(rows: list[dict], *, endpoint: str, model: str, tokenizer: Any, out:
         prompt_ids(tokenizer, row)
     out.mkdir(parents=True, exist_ok=False)
     stopped = threading.Event()
+    budget = FidelityBudget()
 
     def one(index: int) -> dict | None:
         if stopped.is_set():
             return None
-        record = capture_one(index, rows[index], endpoint=endpoint, model=model, tokenizer=tokenizer, out=out)
-        if record.get("fatal"):
+        try:
+            record = capture_one(index, rows[index], endpoint=endpoint, model=model, tokenizer=tokenizer, out=out)
+        except Exception:
+            stopped.set()
+            raise
+        if budget.observe(record):
             stopped.set()
         return record
 
@@ -275,15 +320,20 @@ def capture(rows: list[dict], *, endpoint: str, model: str, tokenizer: Any, out:
     with (out / "live-five.json").open("x") as file:
         json.dump({"passed": True, "ids": [r["candidate"]["id"] for r in first_five]}, file, indent=2)
         file.write("\n")
-    attempted = 5
     with ThreadPoolExecutor(max_workers=8) as pool:
         futures = [pool.submit(one, i) for i in range(5, len(rows))]
         for future in as_completed(futures):
-            if future.result() is not None:
-                attempted += 1
+            future.result()
+    if budget.finish():
+        stopped.set()
     summary = {
-        "attempted": attempted,
+        "attempted": budget.attempted,
         "planned": len(rows),
+        "unattempted": len(rows) - budget.attempted,
+        "fidelity_rejects": sorted(budget.rejects, key=lambda row: row["index"]),
+        "fidelity_checkpoints": budget.checkpoints,
+        "fidelity_budget_exceeded": budget.exceeded,
+        "fatal_protocol": budget.fatal_protocol,
         "stopped_on_fatal": stopped.is_set(),
         "training_approved": False,
     }
@@ -291,5 +341,5 @@ def capture(rows: list[dict], *, endpoint: str, model: str, tokenizer: Any, out:
         json.dump(summary, file, indent=2)
         file.write("\n")
     if stopped.is_set():
-        raise RuntimeError("Capture stopped after fatal fidelity/protocol fault; no retry authorized")
+        raise RuntimeError("Capture stopped after protocol fault or >5% fidelity rejects; no retry authorized")
     return summary

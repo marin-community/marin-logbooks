@@ -34,7 +34,7 @@ from vendor.skyrl.cloud.iris.runtime_environment import IRIS_TASK_IMAGE, Runtime
 
 MODEL = "s3://marin-rno2a/marin/models/marin-snowball-67b-a2b-v0.1-adc0078a"
 TIMEOUT_SECONDS = 7200
-JOB_NAME = "cd16t2-generation-r2"
+JOB_NAME = "cd16t2-generation-r3"
 ENDPOINT_NAME = "/serve/" + JOB_NAME
 PROFILE_ENV = "/app/vendor/skyrl/.cd16t2-vllm-runtime"
 
@@ -179,6 +179,14 @@ def safe_plan() -> dict:
         "priority": "interactive",
         "AWS_CONFIG_FILE": "/tmp/marin-vllm-virtual-hosted-s3.conf",
         "S3_addressing_style": "virtual (same native config as IsolatedCudaVllm.env)",
+        "capture_fidelity_policy": {
+            "pilot": "all five must pass before bulk",
+            "bulk_failed_roundtrip": "retain and drop row; never repair or train",
+            "rate_hard_stop": ">5% of completed attempts, every 100 completions and at finish",
+            "length_stops": "separate retained rejects, not non-length fidelity faults",
+            "transport_or_protocol_failure": "immediate hard stop",
+            "resume_retry_topup": False,
+        },
         "native_timeout_seconds": TIMEOUT_SECONDS,
         "application_TTL_seconds": TIMEOUT_SECONDS,
         "failure_retries": 0,
