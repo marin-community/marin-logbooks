@@ -31,7 +31,7 @@ No change to live Hero training is part of this run.
 
 ## Baseline and launch contract
 
-- Diagnostic implementation commit: `4ed4e6bbb1ad488d9fa93b972e3310fb56a86dc0`.
+- Diagnostic implementation commit: `8c31314d20ab501fa82dd985153a246d7726429d`.
 - The launch archive commit adds this notebook/configuration and removes inherited CI.
   It will be supplied explicitly through `--source-revision` and recorded in results.
 - Recorded production source: `eadf76a1bc24c2bdd9e0e8cbcd75b8da843551b0`.
@@ -72,7 +72,9 @@ The cotangent normalization is the one-rack regularized mean loss. This is not a
 bitwise replay of the live eleven-rack training backward. GPU fusion may also differ
 between blockwise and scanned execution. Selected capture records its reconstructed
 tail's maximum absolute output error and the original output RMS against the
-ordinary Block call.
+ordinary Block call. Exact BF16 forward parity is required for both the captured
+Block tail and head-group replay. A nonzero maximum discrepancy invalidates the
+panel and stops the diagnostic; no tolerance is silently relaxed.
 
 Selected zero-based layers are `[0,3,12,15,24,27,36,39,44,47]`: five local and five
 global layers. Each rank selects one local sequence and one KV boundary group.
