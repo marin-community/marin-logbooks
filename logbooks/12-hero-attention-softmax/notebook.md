@@ -332,8 +332,15 @@ compute authorization. Sources and configuration are published before this launc
 
 ## Final decision
 
-Pending the native control and checkpoint results. No maintained Marin contribution
-or production-kernel change has been selected. Interpret total fused/reference
-disagreement separately from cancellation-control events and retain remaining
-uncertainty about full training trajectories and model quality.
+The native control and all three checkpoint comparisons completed. Sampled fused
+dQ/dK relative errors were 0.5483%/0.3965%, 0.4775%/0.3586%, and 3.1118%/2.4963%
+at 270k/300k/330k. The 330k discrepancy is concentrated in one global-layer query
+with maximum probability 0.9695; stored-output controls closely reproduce its
+error. No sampled complete Q/K vector vanished against a nonzero reference.
+
+Preserve this result as evidence for attention-backward precision work. No
+maintained Marin contribution or production-kernel change has been selected.
+Cancellation-control events remain distinct from actual fused Q/K measurements.
+Full training trajectories, optimizer effects, and model quality remain untested;
+further accelerator work requires separate authorization.
 
