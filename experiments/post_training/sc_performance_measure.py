@@ -312,30 +312,44 @@ async def inference_comparison(trainer, root, smoke):
                             "numeric_fields": list(results["numeric"]),
                         }
                     )
-            # The documented collector draws from actual logits, never a saved head.
-            sampled = []
+            # Use one transport for TIS, both heads and the actual-q collector.
+            captured = []
+            methods = (("tis", 0, False), ("head32", 32, False), ("head128", 128, False), ("iid8", 0, True))
             for repeat in range(-1, 2 if smoke else 5):
                 _, prompt = await chat_payload(client, messages, 0)
-                started = time.perf_counter()
-                arrays = await engine.performance_generate.remote(
-                    {
-                        "prompt_token_ids": prompt,
-                        "candidate_count": 0,
-                        "sampled8": True,
-                        "sampling_params": {"max_tokens": 16, "seed": 97},
-                    }
-                )
-                sampled.append(
-                    {
-                        "repeat": repeat,
-                        "seconds": time.perf_counter() - started,
-                        "response_tokens": len(arrays["token_ids"]),
-                        "captured_bytes": arrays["iid_indices"].nbytes + arrays["iid_logprobs"].nbytes,
-                    }
-                )
+                outputs, block = {}, []
+                offset = (repeat + 1) % len(methods)
+                for method, width, iid in methods[offset:] + methods[:offset]:
+                    started = time.perf_counter()
+                    arrays = await engine.performance_generate.remote(
+                        {
+                            "prompt_token_ids": prompt,
+                            "candidate_count": width,
+                            "sampled8": iid,
+                            "sampling_params": {"max_tokens": 16, "seed": 97},
+                        }
+                    )
+                    elapsed = time.perf_counter() - started
+                    outputs[method] = arrays["token_ids"]
+                    block.append(
+                        {
+                            "method": method,
+                            "repeat": repeat,
+                            "seconds": elapsed,
+                            "response_tokens": len(arrays["token_ids"]),
+                            "candidate_payload_bytes": (
+                                arrays["iid_indices"].nbytes + arrays["iid_logprobs"].nbytes
+                                if iid
+                                else arrays["candidate_ids"].nbytes + arrays["candidate_logprobs"].nbytes
+                            ),
+                        }
+                    )
+                for row in block:
+                    row["same_tokens_as_tis"] = bool(np.array_equal(outputs[row["method"]], outputs["tis"]))
+                captured.extend(block)
     finally:
         await engine.performance_stop_route.remote()
-    result = {"route_comparison": comparisons, "sampled8": sampled}
+    result = {"route_comparison": comparisons, "capture_comparison": captured}
     write_record(root, "inference-comparison.json", result)
     return result
 
