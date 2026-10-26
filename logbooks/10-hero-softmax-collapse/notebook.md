@@ -257,10 +257,31 @@ aggregation, and masked/nonfinite rows. A singleton explicit-mesh probe exercise
 the streaming 4096-vocabulary tile with a 4097-entry vocabulary. Archival validation
 reran the synthetic probe and recomputed all CSV rates from the raw result.
 
+### 2026-10-26 — Archival review correction: scope of the prevalence result
+
+The full-batch table counts rounded-zero CE, which is narrower than all possible
+target-gradient collapse. In FP32, `exp(-CE)` can round to one for a sufficiently
+small positive CE, giving a zero reconstructed target gradient. The implementation
+did not retain a separate production count for that condition. Consequently the
+full-batch zero-CE counts are not a bound on the complete target-gradient-collapse
+frequency, and the comparison with 0.1% applies specifically to zero CE.
+
+The single sampled positive-tail event was retained only as an aggregate count.
+Its individual production LSE, dense target logit, stable margin/CE, and non-target
+mass were not saved. The aggregate checks therefore cannot quantify numerical
+agreement or practical effect at that event. The archived record preserves the
+measurement as performed; resolving either gap would require another diagnostic.
+No further accelerator job was launched for archival.
+
+This narrows the earlier low-urgency interpretation: rounded-zero CE is rare on
+the fixed panel and the sampled margin tail is small, but a complete production
+zero-target-gradient prevalence estimate and an event-level comparison remain open.
+
 ## Final decision
 
-The kernel is susceptible and rare rounding occurs, but this panel does not support
-a 0.1% rate on the tested data. Preserve the diagnostic as research evidence and
+The kernel is susceptible. Rounded-zero CE occurred on 0.000048–0.000167% of the
+tested tokens, below the 0.1% comparison threshold for that measured condition.
+The complete target-gradient-collapse rate was not measured. Preserve this as research evidence and
 close issue #10. No code is selected for a maintained Marin contribution and no
 Marin contribution PR was opened. The archive index PR is separate documentation.
 
@@ -271,7 +292,9 @@ comparator, not an adopted production training path.
 
 Remaining uncertainty: one batch, correlated token positions, three checkpoints,
 capacity-limited inference, dense-vs-streaming GEMM rounding, reconstructed logit
-gradients, and no parameter-gradient, optimizer-continuation, or quality comparison.
+gradients, no production count of zero target gradients with positive CE, no
+individual values for the sampled event, and no parameter-gradient,
+optimizer-continuation, or quality comparison.
 Earlier phases and other data mixtures may differ. Z-loss may constrain logit growth,
 but its causal protection was not tested. Reopen with new evidence if prevalence
 rises or a matched continuation shows a material effect.
