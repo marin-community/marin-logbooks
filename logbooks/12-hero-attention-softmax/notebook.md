@@ -63,7 +63,7 @@ No change to live Hero training is part of this run.
 
 Restore authoritative weights and pending router biases, then cast to the production
 FP32-parameter/BF16-compute policy. Keep the recorded capacity-limited EP64 MoE path.
-Run all48 blocks forward with frozen parameters. Reverse layer-by-layer with respect
+Run all 48 blocks forward with frozen parameters. Reverse layer-by-layer with respect
 to hidden states only, starting from the regularized output loss with z-loss1e-4.
 This supplies real downstream raw-attention-output cotangents, including XSA, head
 gating, output projection, branch convolutions and downstream MLP effects.
@@ -319,7 +319,7 @@ hybrid for accuracy investigation. Its sampled export storage and timing do not
 establish the cost of a fully fused dense implementation.
 
 Retain the same three checkpoints, fixed batch, and ten layers. Expand replay to
-all48 query heads and12 expanded KV heads for one selected sequence per rank,
+all 48 query heads and 12 expanded KV heads for one selected sequence per rank,
 with the same four stratified positions. All keys and original masks remain.
 Both gradients use that sparse selected-query objective; dense full-step dK
 accuracy remains outside this first comparison. The FP64 mathematical reference
@@ -327,19 +327,19 @@ uses identical represented inputs and real downstream cotangents.
 
 Before checkpoint restoration, native smoke cases must compile and pass capture,
 forward, and accumulator-decoder parity gates. Decoder acceptance compares native
-postprocessing at scale1 and the real softmax scale; no plain reshape of packed
+postprocessing at scale 1 and the real softmax scale; no plain reshape of packed
 MMA accumulators is assumed. Instrumentation-versus-baseline backward differences
 are measured separately. Both candidate accuracy and absolute errors matter;
 no improvement will be inferred from a zero-sum statistic alone.
 
 Benchmark full-head dense-cotangent forward+backward separately at sequence
-lengths256,2048,16384, local/global layer masks, with warmup and repeated timings.
+lengths 256, 2048, 16384, local/global layer masks, with warmup and repeated timings.
 Report first-call compile-including latency and per-rank steady-state samples.
 The shadow variant includes both forwards. Keep the projection hybrid's sparse
 accuracy evidence distinct from dense production-cost claims. Record exact
 shapes, device counts, flags, source identities, and saved-state byte estimates.
 
-The first compute allocation is bounded to one spare64-GPU rack with batch
+The first compute allocation is bounded to one spare 64-GPU rack with batch
 priority and a two-hour timeout, including native smoke, checkpoint comparison,
 and benchmarks. Stop on distributed/OOM/unclear failures. Small obvious script
 exceptions may be corrected under distinct source/job/output identities; no
@@ -347,6 +347,36 @@ cluster mutation, unrelated cancellation, or production restart is authorized.
 Source and resolved request will be published before submission. Only after
 validated results will a paired training continuation be configured and logged;
 no long-run quality claim can follow from this frozen comparison.
+
+### 2026-10-26 — Mitigation implementation ready for native acceptance
+
+Source implementation `16f78514bf3e39027343721c53bbe79d2181aeab` is preserved
+in this archive with identical contents. Eight focused CPU tests pass, covering
+saved-output correction precision, exact post-cast projection witnesses, packed
+all-head selection, and missing/corrupt operand-export rejection. Required lint
+passes. An independent preflight review found no FFI argument or scaling error;
+its requested operand coverage/contraction gates were added before launch.
+
+[mitigation-comparison-config.json](mitigation-comparison-config.json) records
+public scientific settings. Resolved storage inputs and operational identities
+remain in the private run record; the entry point accepts that private resolved
+JSON. This redaction avoids publishing additional internal infrastructure
+identifiers. Source and public configuration are published before compute.
+
+The rack job will first execute two native smoke cases: a constructed two-key
+cancellation case and a packed multi-head case. It must pass exact forward and
+accumulator-decoder parity, valid probability coverage, masked-operand zeros,
+and actual score-operand contraction checks. The latter use explicit analytic
+FP32 rounding bounds rather than an adjustable empirical tolerance. Failure of
+an accuracy gate invalidates the panel. The algebraic projected row-mass residual
+is telemetry, not independent proof of correct projection.
+
+No GPU acceptance, checkpoint mitigation result, or training improvement has been
+established by these CPU checks. The optimized FP32-output candidate and the
+fixed-forward FP32-shadow candidate remain distinct. The latter uses original
+BF16 public output and baseline LSE; its cost includes both forwards. The native
+projection hybrid is a sampled-query accuracy prototype; a scalable dense port
+is still required before it could be used in training.
 
 ## Reproduction
 

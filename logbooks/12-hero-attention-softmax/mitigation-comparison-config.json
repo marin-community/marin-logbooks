@@ -1,0 +1,55 @@
+{
+  "layers": [
+    0,
+    3,
+    12,
+    15,
+    24,
+    27,
+    36,
+    39,
+    44,
+    47
+  ],
+  "query_count": 4,
+  "batch_size": 256,
+  "production_batch_size": 2816,
+  "data_reference_step": 330000,
+  "z_loss_weight": 0.0001,
+  "benchmark_lengths": [
+    256,
+    2048,
+    16384
+  ],
+  "benchmark_layers": [
+    0,
+    15
+  ],
+  "benchmark_checkpoint": 330000,
+  "benchmark_warmup": 2,
+  "benchmark_repetitions": 8,
+  "seed": 0,
+  "checkpoint_steps": [
+    270000,
+    300000,
+    330000
+  ],
+  "model_shape": {
+    "num_layers": 48,
+    "num_heads": 48,
+    "num_kv_heads": 12,
+    "head_dim": 128,
+    "max_seq_len": 16384
+  },
+  "implementations": [
+    "baseline",
+    "fp32_saved_output",
+    "fp32_saved_output_shadow",
+    "postcast_output_control",
+    "native_instrumented",
+    "native_gproj_hybrid"
+  ],
+  "private_configuration": "Resolved storage and execution identifiers are retained in the private run record.",
+  "reference": "Stable CPU FP64 VJP; same BF16 operands, all heads, four selected query positions, full keys.",
+  "dense_projection_status": "The native+XLA sampled-operand projection is an accuracy prototype, not an efficient dense kernel."
+}
