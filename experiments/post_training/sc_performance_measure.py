@@ -508,8 +508,8 @@ def performance_entrypoint(cfg):
     with exp.get_tracker() as tracker:
         try:
             trainer = exp._setup_trainer(tracker)
-            engine_runtime = await asyncio.gather(
-                *(engine.performance_info.remote() for engine in trainer.inference_engine_client.engines)
+            engine_runtime = ray.get(
+                [engine.performance_info.remote() for engine in trainer.inference_engine_client.engines]
             )
             assert all("39e62869693c" in engine["vllm_version"] for engine in engine_runtime), engine_runtime
             write_record(root, "engine-runtime.json", engine_runtime)

@@ -90,6 +90,10 @@ The observer introduces an experimental confound even when it captures nothing: 
 
 A separate filtered-capture prototype requests an explicit 128-token head plus one extra natural candidate. A non-finite extra candidate certifies that every allowed token fits; otherwise it reports incomplete support. It never changes the requested sampling filter. Interleaved chosen-only, bounded-head and full-vocabulary comparisons measure this capture path on each selected prefix. The existing conditional-support derivation remains separate from a production change to PPO, TIS, KL or entropy normalization. The Grug batch timeout is eight hours, including queue time, with a ten-hour CPU coordinator deadline.
 
+### Sixth Qwen startup: metadata-check compilation
+
+Source `2c4ce341c30582cacd87570e0d35c580ca1ed8bc` ran with version `2026.10.26.6` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.6-coordinator-7253aee9`. Import stopped on an `await` added to the synchronous Ray driver while collecting engine metadata. It now uses synchronous `ray.get`. Bytecode compilation of the whole research driver is added to the local checks; AST parsing alone did not catch this context error. No timing or accuracy result was produced.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
