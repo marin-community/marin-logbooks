@@ -47,4 +47,14 @@ python -m experiments.post_training.identity_t2.prepare \
   --out /new/local/preview
 ```
 
-The preview checks old cache/source hashes, writes the native cache catalog and reports actual supervised identity/tool token shares over the first128 positions. Cache relocation, freeze approval, runtime dataset-audit binding and training authorization remain separate.
+The preview checks old cache/source hashes, writes the native cache catalog and reports actual supervised identity/tool token shares over the first128 positions. Logical freeze, regional readback and training approval are separate stages.
+
+## Regional freeze and training
+
+`relocate.py` stages only the logically cleared small source/cache files into a fresh RNO prefix. It preserves all 45 cache files byte-for-byte, preserves component insertion order, relocates configuration/catalog coordinates and verifies each uploaded SHA256. It then reads the regional native stream: all 128 mixture positions must match the approved IDs/token/mask fingerprints and shares; all 322 new rows must reproduce their explicit-length validity proof. The regional receipt also records native query/key segment fingerprints for every one of the 1,089 rows. Baseline lengths are observed from native segments; new-row lengths additionally bind to the captured prefix and target lengths.
+
+`train.py` passes the approved data and audit callbacks into the unchanged CD16 `run_identity_sft` loop. It retains the source/model/precision/optimizer recipe, 16 updates, batch eight and seed 310. After distributed initialization, every regional small-file hash is rechecked before model loading. The actual trainer iterator's first 16 batches are buffered and audited before learning, including query/key segment fingerprints. Each consumed batch is checked again immediately before its update. Binary loss masks and explicit dispatch validity are checked separately.
+
+The original loop checks the initialized FP32 masters, router-dot precision, frozen biases and dispatch metrics. It commits the native checkpoint before writing the BF16 HF export with 26 FP32 router biases and running the in-memory-master export audit. Both outputs use label `step-15`, which represents 16 completed updates.
+
+`launch.py` materializes the native plan without submitting. It verifies that all non-data configuration equals CD16 and reproduces the exact reviewed precision receipt. Submission requires the exact clean reviewed pin, a hash-bound combined Marten CLEAR, unchanged orders, an unused launch receipt/job/output namespace, a real R8 positive control and four fresh named idle H100x8 hosts. The native submission uses interactive priority, an explicit timeout and zero failure/preemption retries. On submission ambiguity, inspect the owned job and receipt; never rerun the launcher automatically. Regional export readback must pass before evaluations. OPD remains paused.
