@@ -30,7 +30,7 @@ The CPU coordinator first runs 20-step probes at the smallest and largest shapes
 
 Pilot LR centers: AdamW 0.001, Muon 0.02, AdamH 0.01, MuonH sqrt(0.02*0.1). Adam fallback LR is 0.001. Sweep common matrix/fallback multipliers 0.3, 1, 3 independently per optimizer. Across rungs, transfer the selected multiplier with sqrt(batch/reference_batch)*(reference_tokens/tokens)^0.3. All recipes use beta1=0.9, beta2=0.95, epsilon=1e-8, 1% warmup, cosine decay to 10%, and no clipping. AdamW and Muon use decoupled weight decay 0.1; AdamH and MuonH use zero decay. The H recipes preserve matrix norms and use AdamH on the head. The Muon recipe uses AdamW on the head. This is a three-point LR calibration, not proof of individually optimal recipes; endpoint winners and transfer across scale remain caveats.
 
-All runs use W&B marin-community/marin_moe, group hero-dense-opt-20261026. IDs encode campaign, budget, optimizer, and LR multiplier; probes append -smoke. Durable outputs are under the caller-owned regional users/<username>/grug/<run-id>/2026.10.26 paths. Rolling checkpoints use the existing region-local 30-day temporary checkpoint helper, retain one, and save hourly. Keep only final durable checkpoints. Probes save no checkpoints. Allocation-free model shape inspection gives 106M, 205M, 326M, 600M, 842M, 1.711B, and 2.807B parameters. Conservative optimizer-inclusive checkpoint estimates at 12 bytes/parameter range from 1.28 GB to 33.69 GB. Four final checkpoints per rung total at most about 317 GB; one rolling checkpoint per run adds at most another 317 GB. The eight extra calibration finals add about 10.2 GB. These estimates omit small serialization overhead and conservatively price Muon momentum as Adam moments. No checkpoint source is inherited from another experiment.
+All runs use W&B marin-community/marin_moe, group hero-dense-opt-20261026. IDs encode campaign, budget, optimizer, and LR multiplier; probes append -smoke. Durable outputs are under the caller-owned regional users/<username>/grug/<run-id>/2026.10.26 paths. Rolling checkpoints use the existing region-local 14-day temporary checkpoint helper, retain one, and save hourly. Keep only final durable checkpoints. Probes save no checkpoints. Allocation-free model shape inspection gives 106M, 205M, 326M, 600M, 842M, 1.711B, and 2.807B parameters. Conservative optimizer-inclusive checkpoint estimates at 12 bytes/parameter range from 1.28 GB to 33.69 GB. Four final checkpoints per rung total at most about 317 GB; one rolling checkpoint per run adds at most another 317 GB. The eight extra calibration finals add about 10.2 GB. These estimates omit small serialization overhead and conservatively price Muon momentum as Adam moments. No checkpoint source is inherited from another experiment.
 
 Coordinator command after ordinary Iris bundle submission:
 
@@ -41,3 +41,24 @@ python -m experiments.grug.fast_track.dense_ladder --campaign hero-dense-opt-202
 Print the plan with the same command without --run. The checked-in plan.json records the derived recipes. The published source revision and actual job identity will be recorded after source publication and submission. No dirty training source is authorized. The user is the DRI; this chat owns monitoring through a 15-minute heartbeat until verified completion or an actionable failure.
 
 Local validation: six numerical optimizer tests pass, including independent AdamW and AdamH references, per-layer norm preservation, and stacked Muon parity. File-scoped repository lint passes. Full affected-runner and integration review are in progress. Store metadata reports success and sampled cell ledgers and validation caches are complete; this does not guarantee every future data read succeeds.
+
+## 2026-10-26: Source publication and submission
+
+Published source: `4dff62de22d525417dcc56abb0516a20e8157a59`, with no uncommitted source changes. Iris bundled 16.0 MB of workspace source. The coordinator `/dlwh/hero-dense-opt-20261026-coord` was submitted at 16:55:48 America/Los_Angeles through the Marin hub to `cw-us-east-02a`. This is submission evidence, not training progress or completion.
+
+The local affected runner passed its selected six optimizer tests and 990 isolated Harbor checks selected by the archive workflow removal. The three newly added budget-contract cases also passed separately. File-scoped required lint passes. Independent allocation-free probes built both endpoint models and all four optimizer state trees, and smoke/full artifact fingerprints and data wiring passed. The test runner's unrelated lockfile rewrite was reverted before source bundling.
+
+The run keeps the original dataset, topology, seed, and optimizer choices from the plan. The temporary checkpoint helper's actual default is 14 days (corrected above); it retains one checkpoint. Top-rung optimizer-inclusive state is estimated at 33.69 GB each for AdamW/AdamH and 25.09 GB each for Muon/MuonH. These are shape estimates, not observed checkpoint bytes.
+
+The 15-minute heartbeat `watch-dense-hero-optimizer-ladder` owns monitoring in the originating chat. It reports phase changes, failure, or required action and stays quiet on unchanged healthy/pending status. Final artifacts, loss comparisons, and throughput are still unobserved.
+
+Scrubbed submission command (credentials inherited through Iris secret delivery):
+
+```bash
+iris --config lib/iris/config/marin.yaml job run --no-wait \
+  --enable-extra-resources --target-cluster cw-us-east-02a --priority batch \
+  --cpu 2 --memory 8GB --disk 32GB --timeout 0 \
+  --job-name hero-dense-opt-20261026-coord -- \
+  python -m experiments.grug.fast_track.dense_ladder \
+  --campaign hero-dense-opt-20261026 --version 2026.10.26 --max-concurrent 8 --run
+```
