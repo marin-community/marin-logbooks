@@ -135,7 +135,7 @@ def qualification_recipe(smoke):
     return cfg, plan, counts
 
 
-def performance_recipe(smoke):
+def performance_recipe(smoke, sampled_observer=False):
     cfg, plan, counts = qualification_recipe(smoke)
     trainer = cfg["trainer"]
     trainer.update(max_steps=15 if smoke else 30, epochs=40, project_name="score-centering-performance")
@@ -157,7 +157,6 @@ def performance_recipe(smoke):
         enable_auto_tool_choice=True,
         tool_call_parser="hermes",
         logprobs_mode="processed_logprobs",
-        logits_processors=["skyrl_train.inference_engines.vllm.sc_sampled_capture:SampledScoreCapture"],
         profiler_config={
             "profiler": "torch",
             "torch_profiler_dir": "/tmp/sc-performance-13-profiles",
@@ -165,14 +164,18 @@ def performance_recipe(smoke):
             "max_iterations": 8,
         },
     )
+    if sampled_observer:
+        cfg["generator"]["engine_init_kwargs"]["logits_processors"] = [
+            "skyrl_train.inference_engines.vllm.sc_sampled_capture:SampledScoreCapture"
+        ]
     # Reserve permission for one-prefix dense numerical oracles. Evaluation is
     # disabled; ordinary requests still capture only their explicit width.
     cfg["generator"].setdefault("eval_sampling_params", {})["logprobs"] = 200000
     return cfg, plan, counts
 
 
-def build_qualification(version, smoke, performance=False):
-    cfg, plan, counts = performance_recipe(smoke) if performance else qualification_recipe(smoke)
+def build_qualification(version, smoke, performance=False, sampled_observer=False):
+    cfg, plan, counts = performance_recipe(smoke, sampled_observer) if performance else qualification_recipe(smoke)
     if performance:
         source = ArtifactStep.adopt(user_owned_name("documents/sc-performance-pivot-source"), "2026.10.16.3", SOURCE_URI)
         data = apply(
@@ -220,8 +223,8 @@ def build_qualification(version, smoke, performance=False):
             max_retries=0,
             target_cluster="cw-rno2a",
             parent_cluster_config=IRIS_HUB_CLUSTER_CONFIG,
-            coordinator_timeout_hours=4,
-            job_timeout_seconds=10800,
+            coordinator_timeout_hours=4 if smoke else 10,
+            job_timeout_seconds=10800 if smoke else 28800,
             wandb_entity="marin-community",
         ),
         export_hf=False,
@@ -231,10 +234,18 @@ def build_qualification(version, smoke, performance=False):
 @click.command()
 @click.option("--smoke/--full", default=False)
 @click.option("--performance", is_flag=True)
+@click.option(
+    "--sampled-observer", is_flag=True, help="Qualify the V1-only sampling prototype separately from cost runs."
+)
 @rl_build_options
-def main(smoke, performance):
+def main(smoke, performance, sampled_observer):
+    if sampled_observer and not performance:
+        raise click.UsageError("--sampled-observer requires --performance")
     return build_qualification(
-        resolve_version("sc-performance" if performance else "tim-cp-qualification", None), smoke, performance
+        resolve_version("sc-performance" if performance else "tim-cp-qualification", None),
+        smoke,
+        performance,
+        sampled_observer,
     )
 
 

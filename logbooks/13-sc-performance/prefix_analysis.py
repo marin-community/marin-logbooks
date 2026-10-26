@@ -110,6 +110,7 @@ def analyze_prefix(record, cap, index):
                 "original_probability_mass": float(q_log.exp().sum()),
                 "q_on_recorded_support_l1_error": float((got_q.exp() - expected_q.exp()).abs().sum()),
                 "logical_ids_and_scores_bytes_per_token": int(support.sum()) * 8,
+                "capture_comparison": item.get("capture_comparison", []),
                 "conditional_full_support_correction": reference,
             }
         )
@@ -140,6 +141,7 @@ def main():
             "The observed case uses current=old with unit positive and negative advantages.",
             "Logit movement is a synthetic sensitivity experiment, not a measured policy update.",
             "Eight-draw RMSE is the exact conditional L2 variance, not a learning-benefit prediction.",
+            "Each prefix records V1 GPU capture or CPU full-vocabulary reference sampling; these have different costs.",
             "Filtered references condition trainer probabilities on the recorded native sampling support.",
             "Payload sizes are logical ID/score bytes, not measured network traffic.",
         ],

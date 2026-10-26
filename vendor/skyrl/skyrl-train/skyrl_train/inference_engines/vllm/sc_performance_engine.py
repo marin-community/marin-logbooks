@@ -6,6 +6,7 @@
 import asyncio
 import cProfile
 import io
+from importlib.metadata import version
 import pstats
 import socket
 import time
@@ -27,11 +28,22 @@ from skyrl_train.inference_engines.vllm.sc_sampled_capture import CAPTURE_KEY
 PROFILE_DIRECTORY = Path("/tmp/sc-performance-13-profiles")
 
 
+def engine_info(engine):
+    return {
+        "vllm_version": version("vllm"),
+        "use_v2_model_runner": engine.vllm_config.use_v2_model_runner,
+        "logits_processors": list(engine.vllm_config.model_config.logits_processors or []),
+    }
+
+
 async def numeric_generate(engine, request):
     width = int(request["candidate_count"])
+    support_limit = int(request.get("support_capture_limit", 0))
     complete = width == -1
     vocabulary = engine.model_config.get_vocab_size()
-    capture = vocabulary if complete else width + 1 if width else 0
+    if support_limit and not 0 < support_limit < vocabulary:
+        raise ValueError("support capture limit must be positive and smaller than the vocabulary")
+    capture = support_limit + 1 if support_limit else vocabulary if complete else width + 1 if width else 0
     params = {
         "temperature": 1.0,
         "top_k": -1,
@@ -62,7 +74,12 @@ async def numeric_generate(engine, request):
     response = output.outputs[0]
     tokens = list(response.token_ids)
     flat = response.logprobs
-    if complete:
+    if support_limit:
+        ids = np.asarray(flat.token_ids, dtype=np.int32).reshape(len(tokens), capture + 1)
+        scores = np.asarray(flat.logprobs, dtype=np.float32).reshape(ids.shape)
+        assert np.array_equal(ids[:, 0], tokens)
+        chosen, head_ids, head_scores = scores[:, 0], ids[:, 1:-1], scores[:, 1:-1]
+    elif complete:
         ids = np.asarray(flat.token_ids, dtype=np.int32).reshape(len(tokens), vocabulary + 1)
         scores = np.asarray(flat.logprobs, dtype=np.float32).reshape(ids.shape)
         assert np.array_equal(ids[:, 0], tokens)
@@ -82,6 +99,11 @@ async def numeric_generate(engine, request):
         "candidate_ids": head_ids,
         "candidate_logprobs": head_scores,
     }
+    if support_limit:
+        # A non-finite extra natural candidate proves every finite token fits.
+        # Otherwise report incomplete support; never cap the sampling filter.
+        result["support_complete"] = np.isneginf(scores[:, -1])
+        result["support_size"] = np.isfinite(head_scores).sum(-1).astype(np.int32)
     if request.get("sampled8"):
         per_worker = await engine.collective_rpc("performance_sampled_capture", args=(key,))
         samples = [sample for worker in per_worker for sample in worker]

@@ -155,7 +155,10 @@ async def _render_chat_prompt(
 ) -> tuple[list[dict[str, Any]], list[int]]:
     async def render(request: dict[str, Any], current_continuation: ChatContinuation | None) -> list[int] | None:
         if current_continuation is None:
-            return (await tokenize(request)).get("tokens")
+            tokenized = await tokenize(request)
+            if tokenized.get("error"):
+                raise RuntimeError(f"Native chat tokenization failed: {tokenized['error']}")
+            return tokenized.get("tokens")
         return await render_exact_chat_continuation(
             tokenize,
             request,

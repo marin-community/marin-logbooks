@@ -314,7 +314,9 @@ async def inference_comparison(trainer, root, smoke):
                     )
             # Use one transport for TIS, both heads and the actual-q collector.
             captured = []
-            methods = (("tis", 0, False), ("head32", 32, False), ("head128", 128, False), ("iid8", 0, True))
+            methods = (("tis", 0, False), ("head32", 32, False), ("head128", 128, False))
+            if trainer.cfg.generator.engine_init_kwargs.get("logits_processors"):
+                methods += (("iid8", 0, True),)
             for repeat in range(-1, 2 if smoke else 5):
                 _, prompt = await chat_payload(client, messages, 0)
                 outputs, block = {}, []
@@ -354,7 +356,42 @@ async def inference_comparison(trainer, root, smoke):
     return result
 
 
+async def filter_capture_cost(engine, prefix, sampling, seed, repeats):
+    methods = (("chosen_only", 0, 0), ("bounded128", 0, 128), ("full_vocabulary", -1, 0))
+    records = []
+    for repeat in range(-1, repeats):
+        offset = (repeat + 1) % len(methods)
+        for method, count, support_limit in methods[offset:] + methods[:offset]:
+            started = time.perf_counter()
+            arrays = await engine.performance_generate.remote(
+                {
+                    "prompt_token_ids": prefix,
+                    "candidate_count": count,
+                    "support_capture_limit": support_limit,
+                    "sampling_params": {"max_tokens": 1, "seed": seed, **sampling},
+                }
+            )
+            elapsed = time.perf_counter() - started
+            record = {
+                "method": method,
+                "repeat": repeat,
+                "seconds": elapsed,
+                "response_tokens": len(arrays["token_ids"]),
+                "candidate_payload_bytes": arrays["candidate_ids"].nbytes + arrays["candidate_logprobs"].nbytes,
+            }
+            if support_limit:
+                complete = bool(arrays["support_complete"].all())
+                record.update(support_complete=complete, captured_finite_tokens=int(arrays["support_size"].sum()))
+                if complete:
+                    mass = np.exp(arrays["candidate_logprobs"].astype(np.float64)).sum(-1)
+                    np.testing.assert_allclose(mass, 1, atol=1e-5, rtol=1e-5)
+            records.append(record)
+    return records
+
+
 async def dense_prefixes(trainer, base, root):
+    sampled_observer = bool(trainer.cfg.generator.engine_init_kwargs.get("logits_processors"))
+    repeats = 2 if trainer.cfg.trainer.placement.policy_num_nodes == 1 else 5
     layout = (await asyncio.gather(*trainer.policy_model.async_run_ray_method("pass_through", "qualification_layout")))[
         0
     ]
@@ -405,12 +442,18 @@ async def dense_prefixes(trainer, base, root):
             {
                 "prompt_token_ids": request["prefix"],
                 "candidate_count": -1,
-                "sampled8": True,
+                "sampled8": sampled_observer,
                 "sampling_params": {"max_tokens": 1, "seed": 97 + index},
             }
         )
         q = np.empty(vocabulary, dtype=np.float32)
         q[arrays["candidate_ids"][0]] = arrays["candidate_logprobs"][0]
+        if not sampled_observer:
+            probabilities = np.exp(q.astype(np.float64))
+            probabilities /= probabilities.sum()
+            draws = np.random.default_rng(97 + index).choice(vocabulary, size=8, replace=True, p=probabilities)
+            arrays["iid_indices"] = draws.astype(np.int32)[None]
+            arrays["iid_logprobs"] = q[draws][None]
         np.testing.assert_allclose(q[arrays["iid_indices"][0]], arrays["iid_logprobs"][0], atol=1e-5, rtol=1e-5)
         oracle = {
             "current_logprobs": scored[request["row"], request["slot"]].numpy(),
@@ -420,6 +463,7 @@ async def dense_prefixes(trainer, base, root):
             "prefix_token_ids": np.asarray(request["prefix"], dtype=np.int32),
         }
         record = {key: value for key, value in request.items() if key != "prefix"}
+        record["iid_capture"] = "v1_gpu_observer" if sampled_observer else "cpu_full_vocabulary_reference"
         record["prefix_length"] = len(request["prefix"])
         record["arrays"] = write_arrays(root, f"dense-prefix-{index}.npz", oracle)
         record["filters"] = []
@@ -437,7 +481,14 @@ async def dense_prefixes(trainer, base, root):
                 root, f"dense-prefix-{index}-filter-{len(record['filters'])}.npz", {"behavior_logprobs": values}
             )
             record["filters"].append(
-                {"sampling": sampling, "support": int(np.isfinite(values).sum()), "arrays": array_ref}
+                {
+                    "sampling": sampling,
+                    "support": int(np.isfinite(values).sum()),
+                    "arrays": array_ref,
+                    "capture_comparison": await filter_capture_cost(
+                        engine, request["prefix"], sampling, 97 + index, repeats
+                    ),
+                }
             )
         reports.append(record)
         write_record(root, "dense-prefixes.json", reports)
@@ -457,6 +508,11 @@ def performance_entrypoint(cfg):
     with exp.get_tracker() as tracker:
         try:
             trainer = exp._setup_trainer(tracker)
+            engine_runtime = await asyncio.gather(
+                *(engine.performance_info.remote() for engine in trainer.inference_engine_client.engines)
+            )
+            assert all("39e62869693c" in engine["vllm_version"] for engine in engine_runtime), engine_runtime
+            write_record(root, "engine-runtime.json", engine_runtime)
             observers = [
                 DeviceMemory.options(
                     scheduling_strategy=NodeAffinitySchedulingStrategy(node["NodeID"], soft=False)
@@ -590,9 +646,14 @@ def performance_entrypoint(cfg):
                         "ranks": len(updates),
                         "config": public_config(OmegaConf.to_container(cfg, resolve=True)),
                         "weight_lr": 0.0,
+                        "engine_runtime": engine_runtime,
                         "limits": [
                             "Serialized fixed-workload cycles; not asynchronous throughput or a learning comparison.",
                             "Learning rate zero and zero-reward group filtering disabled for fixed prompt workloads.",
+                            (
+                                "IID samples without the V1 observer are CPU full-vocabulary references, "
+                                "not a cheap capture implementation. The observer changes the model runner."
+                            ),
                             (
                                 "Dense q is recaptured in one-step requests at generated prefixes; "
                                 "it is not assumed equal to the original decode distribution."

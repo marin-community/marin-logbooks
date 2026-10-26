@@ -79,6 +79,7 @@ from skyrl_train.inference_engines.response_topk import (
 from skyrl_train.inference_engines.vllm.compact_chat import CompactChatEngineClient
 from skyrl_train.inference_engines.vllm.sc_sampled_capture import pop_captures
 from skyrl_train.inference_engines.vllm.sc_performance_engine import (
+    engine_info,
     export_profiles,
     numeric_generate,
     profile_chat,
@@ -2001,6 +2002,9 @@ class AsyncVLLMInferenceEngine(InferenceEngineInterface):
 
     async def performance_generate(self, request):
         return await numeric_generate(self.llm, request)
+
+    def performance_info(self):
+        return engine_info(self.llm)
 
     async def performance_start_route(self):
         return await start_numeric_route(self)

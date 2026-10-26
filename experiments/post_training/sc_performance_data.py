@@ -23,7 +23,7 @@ AGENTS = (
 
 def prepare_performance_data(source_path: str, output_path: str, smoke: bool) -> None:
     targets = dict(zip(AGENTS, (3, 1, 0) if smoke else (4, 2, 2), strict=True))
-    counts, selected, source_rows = Counter(), [], []
+    counts, selected, source_rows, source_hashes = Counter(), [], [], []
     filesystem, source_file = filesystem_for(str(StoragePath(source_path) / "train.parquet"))
     observed_etag = filesystem.info(source_file)["ETag"]
     assert observed_etag == SOURCE_ETAG, observed_etag
@@ -38,6 +38,26 @@ def prepare_performance_data(source_path: str, output_path: str, smoke: bool) ->
                     continue
                 if smoke and len(json.dumps(row["prompt"])) > 16000:
                     continue
+                source_hashes.append(
+                    hashlib.sha256(json.dumps(row, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+                )
+                ultra = row["extra_info"]["nemotron_ultra"]
+                request = json.loads(ultra["request_json"])
+                if request.get("tools"):
+                    # The released rows use Responses-style flat function tools.
+                    # Keep their schemas intact inside the native chat envelope.
+                    request["tools"] = [
+                        (
+                            {
+                                "type": "function",
+                                "function": {key: value for key, value in tool.items() if key != "type"},
+                            }
+                            if tool.get("type") == "function" and "function" not in tool
+                            else tool
+                        )
+                        for tool in request["tools"]
+                    ]
+                    ultra["request_json"] = json.dumps(request)
                 selected.append(row)
                 source_rows.append(index)
                 counts[agent] += 1
@@ -53,6 +73,7 @@ def prepare_performance_data(source_path: str, output_path: str, smoke: bool) ->
         "source_uri": SOURCE_URI,
         "source_etag": SOURCE_ETAG,
         "source_rows": source_rows,
+        "source_row_sha256": source_hashes,
         "agents": dict(counts),
         "rows": len(selected),
         "smoke": smoke,
@@ -63,6 +84,7 @@ def prepare_performance_data(source_path: str, output_path: str, smoke: bool) ->
         "limits": [
             "A fixed subset of the original RLVR1 workload; not its full task mixture.",
             "Only locally graded tasks are selected; external math-judge credentials are unavailable.",
+            "Legacy function-tool schemas use a native chat envelope; original row hashes are retained separately.",
             "The validation file repeats the workload for startup wiring only; no held-out evaluation is run.",
             "Smoke selects shorter prompts and omits calendar tasks.",
         ],
