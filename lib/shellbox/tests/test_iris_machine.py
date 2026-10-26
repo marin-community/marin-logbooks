@@ -84,10 +84,13 @@ class LocalJob:
     def __init__(self, task: LocalTask | None = None):
         self.cancelled = False
         self.killed = threading.Event()
-        self.task = task
+        self._task = task
 
     def tasks(self):
-        return [] if self.task is None else [self.task]
+        return [] if self._task is None else [self._task]
+
+    def task(self, index):
+        return self.tasks()[index]
 
     def cancel(self):
         self.cancelled = True
@@ -390,6 +393,95 @@ def test_factory_returns_a_running_machine(monkeypatch, tmp_path):
             assert workdir.is_dir()
         finally:
             await machine.close()
+
+    asyncio.run(scenario())
+
+
+def test_factory_readiness_wait_allows_commands_in_the_same_executor(monkeypatch, tmp_path):
+    async def scenario():
+        loop = asyncio.get_running_loop()
+        loop.set_default_executor(ThreadPoolExecutor(max_workers=1))
+        polled = asyncio.Event()
+        ready = threading.Event()
+        task = LocalTask(TaskState.PENDING)
+
+        def status():
+            loop.call_soon_threadsafe(polled.set)
+            return SimpleNamespace(state=TaskState.RUNNING if ready.is_set() else TaskState.PENDING, error_message="")
+
+        task.status = status
+        job = LocalJob(task)
+        monkeypatch.setattr(iris_backend, "connect_controller", lambda **_: LocalEndpoint())
+        monkeypatch.setattr(iris_backend.IrisClient, "remote", lambda *_, **__: TaskClient(job))
+        monkeypatch.setattr(iris_backend, "ControllerServiceClientSync", lambda **_: LocalRpc())
+        factory = IrisMachineFactory(controller_url="http://controller")
+        existing_root = tmp_path / "existing"
+        existing_root.mkdir()
+        existing, _ = local_machine(existing_root)
+        creation = asyncio.create_task(
+            factory.create(MachineSpec(source=RegistryImage("ubuntu:24.04"), workdir=str(tmp_path / "starting")))
+        )
+        command = None
+        try:
+            await asyncio.wait_for(polled.wait(), timeout=5)
+            command = asyncio.create_task(existing.run(Command(("printf", "ready"))))
+            done, _ = await asyncio.wait((command,), timeout=5)
+            assert command in done
+            assert command.result().stdout == b"ready"
+        finally:
+            ready.set()
+            machine = await creation
+            await machine.close()
+            if command is not None:
+                await command
+            await existing.close()
+        assert job.cancelled
+
+    asyncio.run(scenario())
+
+
+@pytest.mark.parametrize("phase", ["submission", "readiness"])
+def test_factory_cancelled_during_startup_cancels_accepted_job(monkeypatch, tmp_path, phase):
+    async def scenario():
+        loop = asyncio.get_running_loop()
+        reached = asyncio.Event()
+        release = threading.Event()
+        task = LocalTask(TaskState.RUNNING)
+        job = LocalJob(task)
+
+        class StartingClient(TaskClient):
+            def submit(self, **kwargs):
+                if phase == "submission":
+                    loop.call_soon_threadsafe(reached.set)
+                    assert release.wait(timeout=5)
+                return super().submit(**kwargs)
+
+        if phase == "readiness":
+
+            def status():
+                loop.call_soon_threadsafe(reached.set)
+                return SimpleNamespace(
+                    state=TaskState.RUNNING if release.is_set() else TaskState.PENDING, error_message=""
+                )
+
+            task.status = status
+        monkeypatch.setattr(iris_backend, "connect_controller", lambda **_: LocalEndpoint())
+        monkeypatch.setattr(iris_backend.IrisClient, "remote", lambda *_, **__: StartingClient(job))
+        monkeypatch.setattr(iris_backend, "ControllerServiceClientSync", lambda **_: LocalRpc())
+        factory = IrisMachineFactory(controller_url="http://controller")
+        creation = asyncio.create_task(
+            factory.create(MachineSpec(source=RegistryImage("ubuntu:24.04"), workdir=str(tmp_path / "starting")))
+        )
+        try:
+            await asyncio.wait_for(reached.wait(), timeout=5)
+            creation.cancel()
+            release.set()
+            with pytest.raises(asyncio.CancelledError):
+                await creation
+            assert job.cancelled
+        finally:
+            release.set()
+            job.cancel()
 
     asyncio.run(scenario())
 
