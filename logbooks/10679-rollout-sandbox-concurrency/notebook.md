@@ -83,3 +83,9 @@ Contribution10679 is draft62674f2bcdbda68a792c5e7332ecf364c357b2af, exactly the 
 The exec comparison requires every warmed preflight health RPC below100 ms, plus the existing workload/scheduling safeguards. At2 exec/s it records wall/process/thread CPU for fresh/reused clients, with the actual SDK constructor, websocket open including TLS and upgrade, a nested SSL handshake timer, and post-upgrade drain. The guest can start during websocket opening; the drain stage alone is not full guest runtime. No client-reuse PR or shared controller deployment.
 
 Before any sandbox load,29 warmed RNO health RPCs had median64.45 ms, p95(type7 linear)631.68 ms, max840.33 ms;18 were below100 ms. This is a devbox-to-controller full-RPC observation through the existing tunnel, not controller process CPU. The next attempt performs the strict preflight first and creates at most one exact study-owned CPU sandbox only if it passes. All ramps stay stopped.
+
+## 2026-10-26T05:03:48Z: strict preflight stopped before sandbox creation
+
+API attempt a3 did not launch a target: preflight found another Pending workload and warmed health readings115.7–402.3 ms. No API exec sample or measured client-reuse gain exists. #10679 minimal head62674f2bcd now has green CI (57 observed checks, including skips) and remains draft.
+
+A local-only real-kubeconfig helper now separately records actual SDK ApiClient constructor CPU/wall inside its full client-factory cost. It opens no socket and sends no API request; this component probe may run independently of the failed cluster-health gate. Source: exec-api-probe/exec_client_init.py.txt. It does not substitute for websocket/exec timing or establish the controller's in-cluster loader cost.

@@ -1,0 +1,72 @@
+"""Local configuration component only; sends no API request or exec."""
+
+import argparse
+import json
+import statistics
+import subprocess
+import time
+from pathlib import Path
+
+import kubernetes.client
+from kubernetes.config import kube_config
+from iris.cluster.platforms.k8s.service import CloudK8sService
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--kubeconfig", required=True)
+parser.add_argument("--output", type=Path, required=True)
+args = parser.parse_args()
+service = CloudK8sService(namespace="iris", kubeconfig_path=args.kubeconfig, context="marin-rn02a_RNO2A")
+
+
+def clock():
+    return time.perf_counter_ns(), time.process_time_ns(), time.thread_time_ns()
+
+
+def elapsed(start):
+    return dict(zip(("wall_ns", "process_cpu_ns", "thread_cpu_ns"),
+                    (a - b for a, b in zip(clock(), start))))
+
+
+start = clock()
+cached = service._exec_core_v1
+init = elapsed(start)
+rows = []
+for pair in range(20):
+    for arm in (("fresh", "reused") if pair % 2 == 0 else ("reused", "fresh")):
+        constructor = []
+        original_constructor = kube_config.ApiClient
+
+        def measured_constructor(*values, **kwargs):
+            beginning = clock()
+            result = original_constructor(*values, **kwargs)
+            constructor.append(elapsed(beginning))
+            return result
+
+        start = clock()
+        try:
+            kube_config.ApiClient = measured_constructor
+            if arm == "fresh":
+                with service.create_api_client() as client:
+                    core = kubernetes.client.CoreV1Api(client)
+            else:
+                core = service._exec_core_v1
+        finally:
+            kube_config.ApiClient = original_constructor
+        rows.append({"arm": arm, "pair": pair, **elapsed(start), "api_client_constructor": constructor})
+result = {
+    "utc": subprocess.check_output(["date", "-u", "+%Y-%m-%dT%H:%M:%SZ"], text=True).strip(),
+    "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+    "scope": "Local devbox kubeconfig/client init only. No websocket/API/exec. Controller config loading differs.",
+    "reused_initialization": init,
+    "median_ms": {arm: {metric: statistics.median(r[metric] for r in rows if r["arm"] == arm) / 1e6
+                        for metric in ("wall_ns", "process_cpu_ns", "thread_cpu_ns")}
+                  for arm in ("fresh", "reused")},
+    "fresh_constructor_median_ms": {
+        metric: statistics.median(c[metric] for row in rows if row["arm"] == "fresh"
+                                  for c in row["api_client_constructor"]) / 1e6
+        for metric in ("wall_ns", "process_cpu_ns", "thread_cpu_ns")
+    },
+    "samples": rows,
+}
+with args.output.open("x") as output:
+    output.write(json.dumps(result, indent=2) + "\n")
