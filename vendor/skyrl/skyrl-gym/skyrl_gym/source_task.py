@@ -42,7 +42,9 @@ def source_task(
     parameters = SessionParameters(extras=extras, config=config)
     return TaskSpec(
         id=f"{source.dataset}:{source.row}",
-        context=chat_input(prompt),
+        # The archived RLVR1 Arrow structs fill absent chat fields with null.
+        # Strip those fields before the current strict chat-event reader.
+        context=chat_input([{key: value for key, value in message.items() if value is not None} for message in prompt]),
         environment_requirements=EnvironmentRequirements() if environment is None else environment,
         answer_type=AnswerType.TEXT,
         answer_format=PlainText(),

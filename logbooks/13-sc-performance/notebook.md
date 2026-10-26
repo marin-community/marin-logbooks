@@ -64,6 +64,12 @@ The pinned V1 sampler's documented logits-processor interface supports a researc
 
 Before the Grug allocation, run the whole reference-enabled Qwen driver, including every arm, capture profiles, a numeric-route comparison, dense prefix export, physical-memory sampling and final result export. The resource board announces one interactive H100 node for startup and a contingent eleven-node batch allocation afterward. Initial probe CI cancellation summaries are now resolved: both unchanged-head workflow reruns passed.
 
+### Second Qwen startup: archived chat schema
+
+Source `187feef6586707bbd1fb8570df6f54dec850936f` ran with version `2026.10.26.2` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.2-coordinator-49486883`. The sampling guard passed. Task loading then failed because the archived Arrow message structs include null `tool_call_id` and `tool_calls` fields on plain text messages. The current strict reader rejects those extra fields. No model cost or accuracy result was produced. The research import boundary now drops absent fields while retaining the original source-row hash and non-null message content. Both normal dataset constructors and all task preparations passed locally: four Qwen rows and eight Grug rows, with temperature 1 and top-p 1 unchanged.
+
+The [policy-control numerical comparison](synthetic-policy-control.json) also passed. Its enumerated expected gradient differs from the dense reference by at most `5.00e-16`. Removing the policy score reduced some noise but increased it on other synthetic prefixes with large importance ratios. One pre-update row's analytic eight-draw L2 RMSE rose from `0.479` to `1.413`. This motivates measuring both estimators on model prefixes; it does not reject either from synthetic results alone. The [prefix analysis](prefix_analysis.py) compares both estimators, K32/K128 errors and native filtered supports without constructing a vocabulary-squared tensor.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
