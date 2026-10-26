@@ -1,0 +1,80 @@
+"""Measure public RPC calls made by this benchmark process."""
+import functools
+import threading
+import time
+import re
+import uuid
+
+from iris.rpc.controller_connect import ControllerServiceClientSync
+
+from sbc.bench import distribution
+
+
+class RpcProbe:
+    def __init__(self):
+        self.lock=threading.Lock()
+        self.values={}
+        self.payloads={}
+        self.errors=[]
+        self.on_error=lambda error: None
+        self.on_record=lambda record: None
+
+    def install(self):
+        for name in ['exec_in_container','launch_job','list_tasks','get_task_status','terminate_job']:
+            original=getattr(ControllerServiceClientSync,name)
+            setattr(ControllerServiceClientSync,name,self.wrap(name,original))
+
+    def wrap(self,name,original):
+        @functools.wraps(original)
+        def measured(client,request,*args,**kwargs):
+            category=name
+            if name=='exec_in_container':
+                argv=list(request.command);script=argv[-1] if argv else ''
+                if 'wc -c <' in script: category+=':output_size'
+                elif 'tail -c +' in script: category+=':output_read'
+                elif script.startswith('rm -f '): category+=':cleanup'
+                elif 'base64 -d >>' in script: category+=':upload'
+                elif '> /tmp/.shellbox-' in script: category+=':command'
+                else: category+=':setup_or_transfer'
+            sent=time.time_ns()
+            marker=None
+            if name=='exec_in_container':
+                marker='__SBC_'+uuid.uuid4().hex
+                wrapped=type(request)();wrapped.CopyFrom(request)
+                original_command=list(wrapped.command)
+                del wrapped.command[:]
+                script=f'''printf '\n{marker}_START_%s\n' "$(date +%s%N)" >&2
+"$@"
+sbc_exit=$?
+printf '\n{marker}_END_%s\n' "$(date +%s%N)" >&2
+exit "$sbc_exit"
+'''
+                wrapped.command.extend(['sh','-c',script,'sbc-timing',*original_command])
+                request=wrapped
+            start=time.monotonic()
+            response=None
+            try:
+                response=original(client,request,*args,**kwargs)
+                received=time.time_ns()
+                if marker is not None:
+                    pattern=r'\n'+marker+r'_(START|END)_(\d+)\n'
+                    stamps={kind:int(value) for kind,value in re.findall(pattern,response.stderr)}
+                    response.stderr=re.sub(pattern,'',response.stderr)
+                    self.on_record({'operation':category,'task_id':request.task_id,'client_sent_ns':sent,
+                                    'client_received_ns':received,'sandbox_start_ns':stamps.get('START'),
+                                    'sandbox_end_ns':stamps.get('END')})
+                return response
+            except Exception as error:
+                with self.lock: self.errors.append({'operation':category,'type':type(error).__name__,'error':str(error)[:700]})
+                self.on_error(error)
+                raise
+            finally:
+                with self.lock:
+                    self.values.setdefault(category,[]).append(time.monotonic()-start)
+                    self.payloads.setdefault(category,[]).append((request.ByteSize(),response.ByteSize() if response is not None else 0))
+        return measured
+
+    def summary(self):
+        return {'rpc_wall_seconds':{name:distribution(values) for name,values in self.values.items()},
+                'rpc_payload_bytes':{name:{'request':distribution([x[0] for x in values]),'response':distribution([x[1] for x in values])} for name,values in self.payloads.items()},
+                'rpc_errors':self.errors}

@@ -1,0 +1,253 @@
+import argparse
+import asyncio
+import hashlib
+import functools
+import json
+import math
+import os
+import resource
+import subprocess
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+from rolloutengine.test_support import ReplayModel, arithmetic_task, engine, machine_runtime, rollout_spec, shell_call
+from shellbox.backends.iris.machine import IrisMachineFactory
+from shellbox.machine import PackageSpec
+from taskcompendium.grading_result import Outcome
+from taskcompendium.models import CommandSemantics, EnvironmentRequirements, ScriptGrader
+
+IMAGE = "docker.io/library/python@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1"
+
+
+def emit(kind, **values):
+    print("SBC " + json.dumps({"kind": kind, "utc_epoch": time.time(), **values}), flush=True)
+
+
+class MeasuredExecutor(ThreadPoolExecutor):
+    def __init__(self, workers):
+        super().__init__(max_workers=workers, thread_name_prefix="rollout-worker")
+        self.lock = threading.Lock()
+        self.active = 0
+        self.peak = 0
+        self.waits = []
+        self.operations = {}
+
+    def submit(self, function, /, *args, **kwargs):
+        submitted = time.monotonic()
+        target = function.args[0] if isinstance(function, functools.partial) and function.args else function
+        if getattr(function,"__name__",None)=="run" and args and callable(args[0]):
+            target=args[0]
+        name = getattr(target, "__qualname__", type(target).__name__)
+
+        def measured():
+            with self.lock:
+                self.waits.append(time.monotonic() - submitted)
+                self.active += 1
+                self.peak = max(self.peak, self.active)
+            started = time.monotonic()
+            try:
+                return function(*args, **kwargs)
+            finally:
+                with self.lock:
+                    self.active -= 1
+                    self.operations.setdefault(name, []).append(time.monotonic() - started)
+
+        return super().submit(measured)
+
+
+class MeasuredMachine:
+    def __init__(self, base, factory, key):
+        self.base = base
+        self.factory = factory
+        self.key = key
+
+    async def run(self, command):
+        started = time.monotonic()
+        try:
+            result = await self.base.run(command)
+        except Exception as error:
+            self.factory.on_error(error)
+            raise
+        self.factory.operations.append(("run", time.monotonic() - started))
+        return result
+
+    async def upload(self, source, target):
+        started=time.monotonic()
+        try:
+            result=await self.base.upload(source, target)
+            self.factory.operations.append(("upload",time.monotonic()-started))
+            return result
+        except Exception as error:
+            self.factory.on_error(error)
+            raise
+
+    async def download(self, source, target):
+        started=time.monotonic()
+        try:
+            result=await self.base.download(source, target)
+            self.factory.operations.append(("download",time.monotonic()-started))
+            return result
+        except Exception as error:
+            self.factory.on_error(error)
+            raise
+
+    async def close(self):
+        started=time.monotonic()
+        try:
+            await self.base.close()
+        finally:
+            self.factory.operations.append(("close",time.monotonic()-started))
+            self.factory.live -= 1
+            emit("closed", sandbox=self.key, live=self.factory.live)
+
+
+class MeasuredFactory:
+    def __init__(self, base, kind):
+        self.base = base
+        self.kind = kind
+        self.backend = base.backend
+        self.live = 0
+        self.peak = 0
+        self.operations = []
+        self.on_error = lambda error: None
+
+    def check_environment(self, requirements, spec):
+        self.base.check_environment(requirements, spec)
+
+    async def create(self, spec):
+        started = time.monotonic()
+        try:
+            machine = await self.base.create(spec)
+        except Exception as error:
+            self.on_error(error)
+            raise
+        self.operations.append(("create", time.monotonic() - started))
+        self.live += 1
+        self.peak = max(self.live, self.peak)
+        key = str(machine.task.task_id) if self.kind == "iris" else machine.sandbox.id if self.kind == "daytona" else str(machine.root)
+        emit("created", sandbox=key, live=self.live)
+        return MeasuredMachine(machine, self, key)
+
+
+def distribution(values):
+    values = sorted(values)
+    if not values:
+        return {"n": 0}
+    return {"n": len(values), **{f"p{p}": values[min(len(values) - 1, int((len(values) - 1) * p / 100))] for p in (50, 95, 99)}, "max": values[-1], "sum": math.fsum(values), "mean": math.fsum(values)/len(values)}
+
+
+async def main(args):
+    executor = MeasuredExecutor(args.executor_threads)
+    asyncio.get_running_loop().set_default_executor(executor)
+    if args.backend == "iris":
+        base = IrisMachineFactory(controller_url=os.environ["IRIS_CONTROLLER_ADDRESS"], scheduling_timeout=args.startup_timeout, job_ttl=900)
+    elif args.backend == "daytona":
+        from functools import partial
+        from daytona import AsyncDaytona, DaytonaConfig
+        from rigging.secrets import require_secret
+        from shellbox.backends.daytona.machine import DaytonaMachineFactory
+
+        key = require_secret("DAYTONA_RL_API_KEY")
+        base = DaytonaMachineFactory(client_factory=partial(AsyncDaytona, DaytonaConfig(api_key=key)), ttl_minutes=15)
+    else:
+        from shellbox.backends.local.machine import LocalMachineFactory
+
+        base = LocalMachineFactory()
+    factory = MeasuredFactory(base, args.backend)
+    requirement = EnvironmentRequirements(
+        command_semantics=CommandSemantics.LINUX_PROCESS,
+        capabilities=("shell", "filesystem", "process"),
+        docker_image=None if args.backend == "local" else IMAGE,
+        package_spec=PackageSpec() if args.backend == "local" else None,
+        working_directory="/workspace",
+    )
+    task = arithmetic_task(
+        environment_requirements=requirement,
+        output_paths=("/workspace/result.txt",),
+        grader=ScriptGrader(
+            environment=requirement,
+            argv=("python3", "-c", "from pathlib import Path; print(float(Path('/app/answer.txt').read_text().strip() == '12' and Path('/workspace/result.txt').read_text() == '12'))"),
+        ),
+    )
+    runtime = machine_runtime(backend=args.backend, cpus=None if args.backend == "local" else args.cpus, memory_mb=None if args.backend == "local" else args.memory_mb, startup_timeout=args.startup_timeout + 30, cleanup_timeout=60)
+    spec = rollout_spec(task, machine=runtime, verifier_machine=runtime, verifier_timeout=240, cleanup_timeout=90, attempt_timeout=420)
+    durations = []
+    grades = []
+    failures = []
+    phase_timings = []
+    barrier = asyncio.Barrier(args.concurrency) if args.barrier else None
+
+    class Model(ReplayModel):
+        async def complete(self, request):
+            if barrier is not None and not self.requests:
+                await barrier.wait()
+            return await super().complete(request)
+
+    class Observer:
+        async def on_event(self, event):
+            value = event.payload
+            if value.type != "attempt_started":
+                phase_timings.append({"type": value.type, "duration": value.duration})
+
+    async def one(index):
+        started = time.monotonic()
+        model = Model([shell_call("printf '12' > result.txt; test \"$(cat result.txt)\" = 12"), {"role": "assistant", "content": "12"}])
+        try:
+            result = await engine(model, {args.backend: factory}, observer=Observer()).run_task(spec, run_id=f"sbc-{index}")
+            grades.append((str(result.grade.status), result.grade.reward))
+            if result.grade.status != Outcome.GRADED or result.grade.reward != 1:
+                failures.append({"index": index, "grade": str(result.grade)})
+        except Exception as error:
+            if barrier is not None:
+                await barrier.abort()
+            failures.append({"index": index, "type": type(error).__name__, "error": str(error)[:700], "cause": repr(error.__cause__)[:700]})
+        durations.append(time.monotonic() - started)
+
+    started = time.monotonic()
+    usage_start = resource.getrusage(resource.RUSAGE_SELF)
+    profiler = None
+    if args.profile:
+        output = Path(os.environ.get("IRIS_OUTPUT_DIR", "/tmp"))
+        output.mkdir(parents=True, exist_ok=True)
+        profiler = subprocess.Popen(["py-spy", "record", "--pid", str(os.getpid()), "--duration", "60", "--rate", "9", "--format", "raw", "--output", str(output / "shellbox-client.raw"), "--nonblocking", "--threads", "--idle"])
+    emit("start", concurrency=args.concurrency, executor_threads=args.executor_threads,
+         backend=args.backend, cpus=args.cpus, memory_mb=args.memory_mb,
+         barrier=args.barrier,
+         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+         task=os.environ.get("IRIS_TASK_ID"), workload="actual shell command and fresh ScriptGrader; protocol workload")
+    await asyncio.gather(*(one(index) for index in range(args.concurrency)))
+    usage = resource.getrusage(resource.RUSAGE_SELF)
+    elapsed = time.monotonic() - started
+    emit("summary", concurrency=args.concurrency, elapsed=elapsed,
+         completed=len(grades), failures=failures, grades=grades,
+         trajectories_per_second=len(grades)/elapsed,
+         peak_sandboxes=factory.peak, remaining_sandboxes=factory.live,
+         create=distribution([dt for name, dt in factory.operations if name == "create"]),
+         command=distribution([dt for name, dt in factory.operations if name == "run"]),
+         trajectory=distribution(durations), executor_peak=executor.peak,
+         executor_operations={name:distribution(values) for name,values in executor.operations.items()},
+         executor_queue_wait=distribution(executor.waits), rss_max_kib=usage.ru_maxrss,
+         cpu_seconds=usage.ru_utime + usage.ru_stime - usage_start.ru_utime - usage_start.ru_stime,
+         phase_timings={name:distribution([x["duration"] for x in phase_timings if x["type"] == name]) for name in {x["type"] for x in phase_timings}})
+    if profiler is not None:
+        if profiler.poll() is None:
+            profiler.send_signal(2)
+        profiler.wait(timeout=15)
+        emit("profile", returncode=profiler.returncode)
+    if failures or factory.live:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--concurrency", type=int, default=1)
+    parser.add_argument("--executor-threads", type=int, default=256)
+    parser.add_argument("--backend", choices=["iris", "daytona", "local"], default="iris")
+    parser.add_argument("--cpus", type=float, default=1)
+    parser.add_argument("--memory-mb", type=int, default=2048)
+    parser.add_argument("--startup-timeout", type=int, default=120)
+    parser.add_argument("--profile", action="store_true")
+    parser.add_argument("--barrier", action="store_true")
+    asyncio.run(main(parser.parse_args()))

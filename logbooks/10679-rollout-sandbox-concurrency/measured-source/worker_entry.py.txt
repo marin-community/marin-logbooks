@@ -1,0 +1,9 @@
+import json
+import runpy
+import time
+
+try:
+    runpy.run_module('sbc.worker_bench',run_name='__main__')
+except BaseException as error:
+    print('SBC '+json.dumps({'kind':'fatal','error':repr(error),'utc_epoch':time.time()}),flush=True)
+    time.sleep(1500)

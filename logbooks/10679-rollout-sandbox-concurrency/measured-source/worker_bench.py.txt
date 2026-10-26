@@ -1,0 +1,225 @@
+import argparse
+import base64
+import gzip
+import asyncio
+import hashlib
+import inspect
+import platform
+import os
+import resource
+import subprocess
+import time
+import threading
+from pathlib import Path
+
+import shellbox
+import skyrl_train
+from rolloutengine.models import RolloutLimits
+from rolloutengine.test_support import arithmetic_task, machine_runtime, shell_call
+from shellbox.backends.iris.machine import IrisMachineFactory
+from skyrl_gym.rollout_specs import rollout_spec
+from skyrl_train.config.utils import get_default_config
+from skyrl_train.rollouts.task_projections import WholeTaskProjection
+from skyrl_train.rollouts.task_worker import TaskRolloutWorker
+from skyrl_train.rollouts import task_worker as worker_module
+from skyrl_train.task_inputs import TaskInput, TrajectoryMetadata
+from skyrl_train.trajectory_runners.types import TaskRequestBatch, TokenProvenance
+from taskcompendium.models import CommandSemantics, EnvironmentRequirements, ScriptGrader
+
+from sbc.bench import IMAGE, MeasuredExecutor, MeasuredFactory, distribution, emit
+from sbc.rpc_probe import RpcProbe
+
+
+class Model:
+    def __init__(self, count, hold_seconds, tool_rate, plateau, mode):
+        self.turns = {}
+        self.count = count
+        self.hold_seconds = hold_seconds
+        self.tool_rate = tool_rate
+        self.mode=mode
+        self.barrier = asyncio.Barrier(count) if mode=="hold" else None
+        self.started = None
+        self.next_tool = 0
+        self.plateau = plateau
+        self.commands = 0
+
+    async def generate(self, request):
+        session = request['session_ids'][0]
+        turn = self.turns.get(session, 0)
+        self.turns[session] = turn + 1
+        if turn == 0:
+            if self.barrier is not None:
+                await self.barrier.wait()
+            if self.started is None:
+                self.started = time.monotonic()
+                self.next_tool = self.started
+                emit('plateau' if self.mode=='hold' else 'tool_phase', target_actors=self.count, hold_seconds=self.hold_seconds, global_tool_rate=self.tool_rate)
+                self.plateau.set()
+        now = time.monotonic()
+        use_tool = turn == 0 or now-self.started < self.hold_seconds
+        if use_tool:
+            slot = max(now, self.next_tool)
+            self.next_tool = slot + 1 / self.tool_rate
+            await asyncio.sleep(max(0, slot-time.monotonic()))
+            use_tool = turn == 0 or time.monotonic()-self.started < self.hold_seconds
+        if use_tool:
+            self.commands += 1
+            message = shell_call("printf '12' > result.txt; test \"$(cat result.txt)\" = 12")
+        else:
+            message = {'role':'assistant', 'content':'12'}
+        previous = (request.get('chat_continuations') or [None])[0]
+        prompt = [10,11] if previous is None else [*previous['served_prefix_token_ids'],90,91]
+        return {'token_provenance':TokenProvenance.ENGINE, 'responses':[message.get('content','')],
+                'assistant_messages':[message], 'prompt_ids':[prompt], 'response_ids':[[20+turn]],
+                'response_logprobs':[[-0.5]], 'stop_reasons':['stop']}
+
+
+async def main(args):
+    if args.concurrency*(2 if args.grading=='fresh' else 1)>1024:
+        raise ValueError('Actors plus fresh verifiers exceed the authorized ceiling')
+    phase_timings=[]
+    class Observer:
+        async def on_event(self,event):
+            payload=event.payload
+            if payload.type!='attempt_started':
+                phase_timings.append((payload.type,payload.duration))
+    class ObservedEngine(worker_module.RolloutEngine):
+        def __init__(self,*args,**kwargs):
+            super().__init__(*args,observer=Observer(),**kwargs)
+    worker_module.RolloutEngine=ObservedEngine
+    rpc_probe=RpcProbe();rpc_probe.install()
+    rpc_probe.on_record=lambda record:emit('rpc_event',**record)
+    pool = MeasuredExecutor(args.executor_threads)
+    asyncio.get_running_loop().set_default_executor(pool)
+    base = IrisMachineFactory(controller_url=os.environ['IRIS_CONTROLLER_ADDRESS'], scheduling_timeout=600, job_ttl=1800)
+    factory = MeasuredFactory(base,'iris')
+    environment = EnvironmentRequirements(command_semantics=CommandSemantics.LINUX_PROCESS,
+        capabilities=('shell','filesystem','process'), docker_image=IMAGE, working_directory='/workspace')
+    task_options = dict(environment_requirements=environment, output_paths=('/workspace/result.txt',))
+    if args.grading=='fresh':
+        task_options['grader'] = ScriptGrader(environment=environment, argv=('python3','-c',
+            "from pathlib import Path; print(float(Path('/app/answer.txt').read_text().strip() == '12' and Path('/workspace/result.txt').read_text() == '12'))"))
+    task = arithmetic_task(**task_options)
+    runtime = machine_runtime(backend='iris',cpus=1,memory_mb=2048,startup_timeout=660,cleanup_timeout=90)
+    limits = RolloutLimits(max_turns=4096,max_total_tokens=None,model_turn_timeout=None,
+        tool_turn_timeout=120,total_turn_timeout=None,attempt_timeout=1500,verifier_timeout=300,cleanup_timeout=90)
+    session = {**limits.model_dump(),'task_session':'shellbox','shell_tool':{},'command_timeout':30}
+    spec = rollout_spec(task,session,task_machine=runtime,verifier_machine=runtime if args.grading=='fresh' else None)
+    generator = get_default_config().generator
+    generator.backend='vllm';generator.max_input_length=4096
+    plateau=asyncio.Event()
+    model=Model(args.concurrency,args.hold_seconds,args.tool_rate,plateau,args.mode)
+    worker=TaskRolloutWorker(generator,WholeTaskProjection(generator,None),model,{'iris':factory},
+        max_verifier_workers=32,concurrent_tasks=args.concurrency,shutdown_timeout=120)
+    rows=tuple(TaskInput(spec,TrajectoryMetadata(uid=f'sbc-{i}',metric_class='taskcompendium')) for i in range(args.concurrency))
+    started=time.monotonic();usage_start=resource.getrusage(resource.RUSAGE_SELF)
+    emit('start',workload='actual TaskRolloutWorker.generate; paced fake model; real tools and grading',
+        concurrency=args.concurrency,grading=args.grading,hold_seconds=args.hold_seconds,tool_rate=args.tool_rate,mode=args.mode,
+        source_commit=os.environ.get('SBC_SOURCE_COMMIT'),tracked_diff_sha256=os.environ.get('SBC_TRACKED_DIFF_SHA256'),bundle_id=os.environ.get('IRIS_BUNDLE_ID'),
+        source_manifest={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in Path(__file__).parent.glob('*.py')},
+        iris_machine_sha256=hashlib.sha256(Path(inspect.getfile(IrisMachineFactory)).read_bytes()).hexdigest(),
+        python_version=platform.python_version(),cpu_count=os.cpu_count(),fd_limits=resource.getrlimit(resource.RLIMIT_NOFILE),
+        executor_threads=args.executor_threads,source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        skyrl_source=skyrl_train.__file__,shellbox_source=shellbox.__file__,task=os.environ.get('IRIS_TASK_ID'))
+    profiler=None
+    profile_exported=False
+    loop_lags=[]
+
+    def export_profile():
+        nonlocal profile_exported
+        if profile_exported:
+            return
+        path=Path(os.environ.get('IRIS_OUTPUT_DIR','/tmp'))/'skyrl-worker-client.raw'
+        raw=path.read_bytes(); compressed=base64.b64encode(gzip.compress(raw)).decode()
+        for offset in range(0,len(compressed),2048):
+            emit('profile_chunk',offset=offset,data=compressed[offset:offset+2048])
+        emit('profile_complete',raw_sha256=hashlib.sha256(raw).hexdigest(),raw_bytes=len(raw))
+        profile_exported=True
+
+    async def sample_loop():
+        target=time.monotonic()+1
+        while True:
+            await asyncio.sleep(max(0,target-time.monotonic()))
+            loop_lags.append(max(0,time.monotonic()-target));target=time.monotonic()+1
+            if len(loop_lags)%10==0:
+                usage=resource.getrusage(resource.RUSAGE_SELF)
+                emit('worker_sample',actors=factory.live,executor_active=pool.active,
+                    rss_max_kib=usage.ru_maxrss,open_fds=len(os.listdir('/proc/self/fd')),loop_lag=loop_lags[-1],
+                    thread_names={name:sum(t.name.startswith(name) for t in threading.enumerate()) for name in ['rollout-worker','task-verifier']})
+
+    async def profile_plateau():
+        nonlocal profiler
+        if args.profile_phase=='plateau':
+            await plateau.wait()
+        if args.profile:
+            output=Path(os.environ.get('IRIS_OUTPUT_DIR','/tmp'));output.mkdir(parents=True,exist_ok=True)
+            profiler=subprocess.Popen(['py-spy','record','--pid',str(os.getpid()),'--duration','120' if args.mode=='hold' else '15','--rate','5',
+                '--format','raw','--output',str(output/'skyrl-worker-client.raw'),'--nonblocking','--threads','--idle'])
+            while profiler.poll() is None:
+                await asyncio.sleep(.2)
+            emit('profile',returncode=profiler.returncode)
+            export_profile()
+
+    sampler=asyncio.create_task(sample_loop());profile=asyncio.create_task(profile_plateau())
+    await worker.startup()
+    try:
+        generation=asyncio.create_task(worker.generate(TaskRequestBatch(rows,sampling_params={'logprobs':0})))
+        loop=asyncio.get_running_loop()
+        def failed(error):
+            emit('fatal',error=repr(error))
+            loop.call_soon_threadsafe(generation.cancel)
+        factory.on_error=failed
+        rpc_probe.on_error=failed
+        rollouts=await generation
+        failures=[{'status':str(r.grade.status),'failure':str(r.failure),'error':r.grade.error,
+                   'output':repr(r.outputs.get('/workspace/result.txt'))}
+                  for r in rollouts if str(r.grade.status)!='graded' or r.grade.reward!=1 or r.outputs.get('/workspace/result.txt')!=b'12']
+        usage=resource.getrusage(resource.RUSAGE_SELF)
+        probe=rpc_probe.summary()
+        for name,wall in probe['rpc_wall_seconds'].items():
+            emit('rpc_operation',operation=name,wall_seconds=wall,payload_bytes=probe['rpc_payload_bytes'][name])
+        emit('phase_summary',phases={name:distribution([dt for kind,dt in phase_timings if kind==name]) for name in {kind for kind,dt in phase_timings}})
+        emit('machine_summary',operations={name:distribution([dt for kind,dt in factory.operations if kind==name]) for name in {kind for kind,dt in factory.operations}})
+        emit('executor_summary',operations={name:distribution(values) for name,values in pool.operations.items()})
+        emit('summary',concurrency=args.concurrency,elapsed=time.monotonic()-started,commands=model.commands,
+            completed=len(rollouts)-len(failures),failures=failures,peak_sandboxes=factory.peak,remaining_sandboxes=factory.live,
+            create=distribution([dt for name,dt in factory.operations if name=='create']),
+            command=distribution([dt for name,dt in factory.operations if name=='run']),executor_peak=pool.peak,
+            executor_queue_wait=distribution(pool.waits),event_loop_lag=distribution(loop_lags),rss_max_kib=usage.ru_maxrss,
+            cpu_seconds=usage.ru_utime+usage.ru_stime-usage_start.ru_utime-usage_start.ru_stime)
+        if failures: raise RuntimeError('One or more real tool/grading checks failed')
+    finally:
+        await worker.shutdown()
+        sampler.cancel();profile.cancel()
+        await asyncio.gather(sampler,profile,return_exceptions=True)
+        if profiler is not None:
+            if profiler.poll() is None: profiler.send_signal(2)
+            profiler.wait(timeout=15);emit('profile',returncode=profiler.returncode)
+    if args.profile:
+        export_profile()
+    emit('ready_for_cleanup')
+    if args.park:
+        await asyncio.Event().wait()
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--concurrency',type=int,default=1)
+    parser.add_argument('--mode',choices=['natural','hold'],default='hold')
+    parser.add_argument('--executor-threads',type=int,default=256)
+    parser.add_argument('--hold-seconds',type=float,default=180)
+    parser.add_argument('--tool-rate',type=float,default=8)
+    parser.add_argument('--grading',choices=['fresh','host'],default='fresh')
+    parser.add_argument('--profile',action='store_true')
+    parser.add_argument('--profile-phase',choices=['start','plateau'],default='plateau')
+    parser.add_argument('--park',action='store_true')
+    args=parser.parse_args()
+    async def entry():
+        try:
+            await main(args)
+        except BaseException as error:
+            emit('fatal',error=repr(error))
+            if args.park:
+                await asyncio.Event().wait()
+            raise
+    asyncio.run(entry())

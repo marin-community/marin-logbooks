@@ -1,0 +1,241 @@
+{
+  "measurement": "one matched pair of real CPU-only RNO natural-churn waves",
+  "baseline_revision": "2cae063c877172844fe6ff90e94354cc08a273fa",
+  "startup_revision": "8e4c8102511be38b54ed1da0c230c72136e3a26e",
+  "wave_config": {
+    "concurrency": 64,
+    "worker_count": 1,
+    "coordinator_cpu": 4,
+    "coordinator_memory_gib": 8,
+    "sandbox_cpu": 1,
+    "sandbox_memory_mib": 2048,
+    "executor_threads": 256,
+    "grading": "real host Verifyit NumericSpec(12), captured result.txt bytes12",
+    "model": "scripted exact-token model, no GPU",
+    "tool_command": "printf '12' > result.txt; test \"$(cat result.txt)\" = 12",
+    "mode": "natural",
+    "hold_seconds": 0,
+    "global_tool_rate": 1000,
+    "worker_profile_seconds": 15,
+    "worker_profile_hz": 5
+  },
+  "metric_definitions": {
+    "tool": "RolloutEngine ToolCallCompleted.duration; dispatch through command/output retrieval",
+    "startup_executor_occupancy": "base: summed synchronous factory create durations; fix: submission+status calls+initial mkdir RPC durations; includes small wrapper approximation, excludes asynchronous sleep",
+    "percentiles": "lower order statistics; one wave per revision",
+    "wave": "actual TaskRolloutWorker.generate with real shell/file capture/host grading"
+  },
+  "startup_executor_seconds": {
+    "base": 877.9150687661022,
+    "fix": 78.86292772134766,
+    "fix_parts": {
+      "submission": 24.416976877022535,
+      "status": 37.72877631196752,
+      "initial_mkdir_rpc": 16.717174532357603
+    }
+  },
+  "outcomes": {
+    "base": {
+      "job": "/atqamar/atqamar-sbc-rno-h64-base-a1",
+      "completed": 64,
+      "failures": [],
+      "remaining_sandboxes": 0,
+      "peak_acquired_handles": 48,
+      "elapsed_seconds": 26.89017274323851,
+      "cpu_seconds": 1.5336280000000015,
+      "rss_max_kib": 735420,
+      "executor_peak": 64,
+      "executor_queue_wait": {
+        "n": 1280,
+        "p50": 7.444480434060097e-05,
+        "p95": 0.0006257360801100731,
+        "p99": 0.001356509979814291,
+        "max": 0.006089490372687578,
+        "sum": 0.24398312577977777,
+        "mean": 0.00019061181701545137
+      },
+      "phases": {
+        "machine_ready": {
+          "n": 64,
+          "p50": 12.068186972290277,
+          "p95": 18.748511652927846,
+          "p99": 21.635169201996177,
+          "max": 21.678593466989696,
+          "sum": 880.3800356988795,
+          "mean": 13.755938057794992
+        },
+        "tool_call_completed": {
+          "n": 64,
+          "p50": 0.8827365660108626,
+          "p95": 1.069734854158014,
+          "p99": 2.018772115930915,
+          "max": 2.0944994729943573,
+          "sum": 58.84738155733794,
+          "mean": 0.9194903368334053
+        },
+        "conversation_started": {
+          "n": 64,
+          "p50": 0.00014880532398819923,
+          "p95": 0.0002634911797940731,
+          "p99": 0.0003116978332400322,
+          "max": 0.00031505897641181946,
+          "sum": 0.011023259721696377,
+          "mean": 0.0001722384331515059
+        },
+        "attempt_ended": {
+          "n": 64,
+          "p50": 18.54077265691012,
+          "p95": 24.06324226781726,
+          "p99": 26.859420573804528,
+          "max": 26.87530042603612,
+          "sum": 1260.9104272769764,
+          "mean": 19.701725426202756
+        },
+        "transition_completed": {
+          "n": 128,
+          "p50": 7.275491952896118e-05,
+          "p95": 1.0194775434210896,
+          "p99": 1.882293096743524,
+          "max": 2.09459143364802,
+          "sum": 58.85534546663985,
+          "mean": 0.4598073864581238
+        },
+        "graded": {
+          "n": 64,
+          "p50": 4.176630022935569,
+          "p95": 5.158623702824116,
+          "p99": 5.234737879596651,
+          "max": 5.3018152471631765,
+          "sum": 263.4153795139864,
+          "mean": 4.115865304906038
+        },
+        "model_turn_completed": {
+          "n": 128,
+          "p50": 7.352232933044434e-05,
+          "p95": 0.0011469931341707706,
+          "p99": 0.0016986196860671043,
+          "max": 0.0025074840523302555,
+          "sum": 0.025053349789232016,
+          "mean": 0.00019572929522837512
+        }
+      },
+      "factory_create": {
+        "n": 64,
+        "p50": 12.033518326003104,
+        "p95": 18.70402355492115,
+        "p99": 21.59372439235449,
+        "max": 21.63952986896038,
+        "sum": 877.9491095128469,
+        "mean": 13.717954836138233
+      }
+    },
+    "async": {
+      "job": "/atqamar/atqamar-sbc-rno-h64-async-a1",
+      "completed": 64,
+      "failures": [],
+      "remaining_sandboxes": 0,
+      "peak_acquired_handles": 53,
+      "elapsed_seconds": 22.75257690809667,
+      "cpu_seconds": 1.3847100000000008,
+      "rss_max_kib": 737932,
+      "executor_peak": 64,
+      "executor_queue_wait": {
+        "n": 1761,
+        "p50": 6.122468039393425e-05,
+        "p95": 0.0006136172451078892,
+        "p99": 0.0012712129391729832,
+        "max": 0.007716082036495209,
+        "sum": 0.291780199855566,
+        "mean": 0.00016569006238249063
+      },
+      "phases": {
+        "tool_call_completed": {
+          "n": 64,
+          "p50": 0.8705038130283356,
+          "p95": 1.2904660059139132,
+          "p99": 1.490695044863969,
+          "max": 1.4984350423328578,
+          "sum": 57.696800608653575,
+          "mean": 0.9015125095102121
+        },
+        "conversation_started": {
+          "n": 64,
+          "p50": 0.00013692909851670265,
+          "p95": 0.00029362598434090614,
+          "p99": 0.00030870968475937843,
+          "max": 0.00036434177309274673,
+          "sum": 0.010408959351480007,
+          "mean": 0.0001626399898668751
+        },
+        "transition_completed": {
+          "n": 128,
+          "p50": 8.304882794618607e-05,
+          "p95": 1.050416854210198,
+          "p99": 1.376401521731168,
+          "max": 1.4985029152594507,
+          "sum": 57.70424903463572,
+          "mean": 0.4508144455830916
+        },
+        "model_turn_completed": {
+          "n": 128,
+          "p50": 7.06259161233902e-05,
+          "p95": 0.0011508231982588768,
+          "p99": 0.0017156689427793026,
+          "max": 0.0030916547402739525,
+          "sum": 0.029521506279706955,
+          "mean": 0.00023063676781021059
+        },
+        "attempt_ended": {
+          "n": 64,
+          "p50": 16.849052189849317,
+          "p95": 22.69329219404608,
+          "p99": 22.73272188473493,
+          "max": 22.742867567110807,
+          "sum": 1134.8458661627956,
+          "mean": 17.73196665879368
+        },
+        "graded": {
+          "n": 64,
+          "p50": 4.2504882221110165,
+          "p95": 4.501679538283497,
+          "p99": 4.608072853181511,
+          "max": 4.654155761003494,
+          "sum": 267.0497046485543,
+          "mean": 4.172651635133661
+        },
+        "machine_ready": {
+          "n": 64,
+          "p50": 11.221322998870164,
+          "p95": 17.62533366912976,
+          "p99": 17.64406359894201,
+          "max": 17.64876288268715,
+          "sum": 787.5822719419375,
+          "mean": 12.305972999092774
+        }
+      },
+      "factory_create": {
+        "n": 64,
+        "p50": 11.204763137735426,
+        "p95": 17.582391443196684,
+        "p99": 17.626808017026633,
+        "max": 17.632451059296727,
+        "sum": 785.233874373138,
+        "mean": 12.26927928708028
+      }
+    }
+  },
+  "source_sha256": {
+    "rpc_probe.py": "d25d06602a77e714133ad3278c1e3882afd7ec240677f29fc8d37369deb5fe84",
+    "worker_bench.py": "2af1fd94a0d264edccb38b41dd6253a84d0a7c47c78db0ebc9aa3358d5aea81f",
+    "bench.py": "c97007274c679a38d842b372e52ec7ad1dbf90b9506347984013fc729a0b356f",
+    "worker_entry.py": "682ad17125999e7ad8f0bf8f2cf3dcef837fbec060f9075132bff895d840c24b"
+  },
+  "stopped256": {
+    "revision": "8e4c8102511be38b54ed1da0c230c72136e3a26e",
+    "mode": "natural host grading",
+    "concurrency": 256,
+    "tools_started": false,
+    "reason": "controller RTT543ms versus77ms preflight; safety cancelled",
+    "qualification": "excluded from performance/capacity claims"
+  }
+}
