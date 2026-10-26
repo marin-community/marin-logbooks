@@ -8,7 +8,7 @@ related_issues:
 research_branch: "codex/12-hero-attention-softmax"
 marin_base_revision: "8577d258214dd0dcb992c04458ee4eb10496d4e5"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: completed
+status: active
 ---
 
 # Hero attention softmax gradient diagnostic
@@ -291,6 +291,63 @@ reproduces the checks when the per-layer JSON files are fetched alongside it.
 [checksums.sha256](checksums.sha256) identifies the compact archived evidence.
 Raw token IDs, Q/K/V, and cotangents were not published.
 
+### 2026-10-26 — Authorized mitigation comparison
+
+The checkpoint diagnostic above is complete. A follow-up request authorized
+implementing and comparing mitigations on the spare rack, then selecting a
+bounded paired continuation if accuracy and cost justify one. Live Hero remains
+unchanged. This phase reuses the task issue and research branch.
+
+Compare the untouched native SM100 backward with genuine FP32 pre-cast saved
+output and a post-BF16 score-gradient projection. The projection follows the
+zero-row-sum correction described in [Chen et al.](https://arxiv.org/html/2609.34272v1).
+Its FA3 results do not establish FA4 accuracy or performance.
+
+The FP32-output kernel has a different shared-memory layout and pipeline depth.
+Its BF16 cast output and LSE differences will be measured. A separate fixed-forward
+shadow candidate retains the untouched public BF16 output and baseline LSE while
+using a genuine FP32 shadow output only for the backward correction. A control
+uses the same correction implementation with the baseline output upcast from
+BF16. This distinguishes saved-state precision from reduction-order changes.
+
+The initial projection candidate instruments a private, hash-checked copy of the
+pinned SM100 mainloop. It exports actual BF16 probability and score-gradient
+operands at the selected query rows. The correction acts on decoded native FP32
+Q/K accumulators before their final casts. Both Q and K receive corrections,
+including the BF16(lambda*Q) arithmetic of the key pass. This is a native+XLA
+hybrid for accuracy investigation. Its sampled export storage and timing do not
+establish the cost of a fully fused dense implementation.
+
+Retain the same three checkpoints, fixed batch, and ten layers. Expand replay to
+all48 query heads and12 expanded KV heads for one selected sequence per rank,
+with the same four stratified positions. All keys and original masks remain.
+Both gradients use that sparse selected-query objective; dense full-step dK
+accuracy remains outside this first comparison. The FP64 mathematical reference
+uses identical represented inputs and real downstream cotangents.
+
+Before checkpoint restoration, native smoke cases must compile and pass capture,
+forward, and accumulator-decoder parity gates. Decoder acceptance compares native
+postprocessing at scale1 and the real softmax scale; no plain reshape of packed
+MMA accumulators is assumed. Instrumentation-versus-baseline backward differences
+are measured separately. Both candidate accuracy and absolute errors matter;
+no improvement will be inferred from a zero-sum statistic alone.
+
+Benchmark full-head dense-cotangent forward+backward separately at sequence
+lengths256,2048,16384, local/global layer masks, with warmup and repeated timings.
+Report first-call compile-including latency and per-rank steady-state samples.
+The shadow variant includes both forwards. Keep the projection hybrid's sparse
+accuracy evidence distinct from dense production-cost claims. Record exact
+shapes, device counts, flags, source identities, and saved-state byte estimates.
+
+The first compute allocation is bounded to one spare64-GPU rack with batch
+priority and a two-hour timeout, including native smoke, checkpoint comparison,
+and benchmarks. Stop on distributed/OOM/unclear failures. Small obvious script
+exceptions may be corrected under distinct source/job/output identities; no
+cluster mutation, unrelated cancellation, or production restart is authorized.
+Source and resolved request will be published before submission. Only after
+validated results will a paired training continuation be configured and logged;
+no long-run quality claim can follow from this frozen comparison.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -332,15 +389,7 @@ compute authorization. Sources and configuration are published before this launc
 
 ## Final decision
 
-The native control and all three checkpoint comparisons completed. Sampled fused
-dQ/dK relative errors were 0.5483%/0.3965%, 0.4775%/0.3586%, and 3.1118%/2.4963%
-at 270k/300k/330k. The 330k discrepancy is concentrated in one global-layer query
-with maximum probability 0.9695; stored-output controls closely reproduce its
-error. No sampled complete Q/K vector vanished against a nonzero reference.
-
-Preserve this result as evidence for attention-backward precision work. No
-maintained Marin contribution or production-kernel change has been selected.
-Cancellation-control events remain distinct from actual fused Q/K measurements.
-Full training trajectories, optimizer effects, and model quality remain untested;
-further accelerator work requires separate authorization.
-
+The original frozen diagnostic is complete. Its checkpoint results and numerical
+limitations are retained above. The newly authorized mitigation comparison is
+active; no production change or training winner has been selected. Its source,
+request, launch identity, and results will be recorded before any continuation.
