@@ -3,6 +3,7 @@
 
 """Publish the frozen Uncheatable method comparison as a separate W&B forecast."""
 
+import argparse
 import json
 from pathlib import Path
 
@@ -18,6 +19,9 @@ PALOMA = "eval_dropless/paloma/macro_loss"
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--report-only", action="store_true")
+    args = parser.parse_args()
     result = json.loads((ROOT / "method-results.json").read_text())
     data = json.loads((ROOT / "inputs.json").read_text())
     run_id = "hero-uncheatable-paloma-method-20261025"
@@ -39,48 +43,50 @@ def main():
             rows.setdefault(step, {})[field] = value
             if metric == PALOMA:
                 rows[step]["comparison/paloma/published"] = published
-    with wandb.init(
-        entity=ENTITY,
-        project=PROJECT,
-        id=run_id,
-        name="Uncheatable forecast: Paloma method + fitted floor (4K)",
-        job_type="forecast",
-        config={
-            "forecast_only": True,
-            "hero_loss_used": False,
-            "eval_context_length": 4096,
-            "uncheatable_subsets": 7,
-            "floor": result["metrics"][UNCHEATABLE]["models"]["body_fit"]["floor"],
-            "method": (
-                "per-percentile log-OLS; output-head-excluded compute; shared ladder-fitted floor"
-                " profiled in raw-loss SSE"
-            ),
-            "source": "https://github.com/marin-community/marin-logbooks/tree/codex/8-hero-uncheatable-forecast",
-            "scoring_start": 119999,
-            "scoring_end": 254999,
-            "stop_after_steps": 390251,
-        },
-    ) as run:
-        for step, values in sorted(rows.items()):
-            run.log(values, step=step)
-        run.summary["comparison/uncheatable/published_rmse"] = result["metrics"][UNCHEATABLE]["models"]["published"][
-            "all_4k"
-        ]["rmse"]
-        run.summary["comparison/uncheatable/repaired_rmse"] = result["metrics"][UNCHEATABLE]["models"]["body_fit"][
-            "all_4k"
-        ]["rmse"]
-        artifact = wandb.Artifact("hero-uncheatable-paloma-method-20261025", type="forecast-data")
-        for name in (
-            "inputs.json",
-            "compare_methods.py",
-            "forecast.py",
-            "method-results.json",
-            "method-comparison.png",
-            "notebook.md",
-        ):
-            artifact.add_file(str(ROOT / name), name=name)
-        run.log_artifact(artifact)
-        run_url = run.url
+    run_url = f"https://wandb.ai/{ENTITY}/{PROJECT}/runs/{run_id}"
+    if not args.report_only:
+        with wandb.init(
+            entity=ENTITY,
+            project=PROJECT,
+            id=run_id,
+            name="Uncheatable forecast: Paloma method + fitted floor (4K)",
+            job_type="forecast",
+            config={
+                "forecast_only": True,
+                "hero_loss_used": False,
+                "eval_context_length": 4096,
+                "uncheatable_subsets": 7,
+                "floor": result["metrics"][UNCHEATABLE]["models"]["body_fit"]["floor"],
+                "method": (
+                    "per-percentile log-OLS; output-head-excluded compute; shared ladder-fitted floor"
+                    " profiled in raw-loss SSE"
+                ),
+                "source": "https://github.com/marin-community/marin-logbooks/tree/codex/8-hero-uncheatable-forecast",
+                "scoring_start": 119999,
+                "scoring_end": 254999,
+                "stop_after_steps": 390251,
+            },
+        ) as run:
+            for step, values in sorted(rows.items()):
+                run.log(values, step=step)
+            run.summary["comparison/uncheatable/published_rmse"] = result["metrics"][UNCHEATABLE]["models"]["published"][
+                "all_4k"
+            ]["rmse"]
+            run.summary["comparison/uncheatable/repaired_rmse"] = result["metrics"][UNCHEATABLE]["models"]["body_fit"][
+                "all_4k"
+            ]["rmse"]
+            artifact = wandb.Artifact("hero-uncheatable-paloma-method-20261025", type="forecast-data")
+            for name in (
+                "inputs.json",
+                "compare_methods.py",
+                "forecast.py",
+                "method-results.json",
+                "method-comparison.png",
+                "notebook.md",
+            ):
+                artifact.add_file(str(ROOT / name), name=name)
+            run.log_artifact(artifact)
+            run_url = run.url
     report = wr.Report(
         entity=ENTITY,
         project=PROJECT,
@@ -88,7 +94,7 @@ def main():
         description="Pre-switch 4K method comparison; no Hero losses used to fit the forecasts.",
         width="fluid",
     )
-    runset = wr.Runset(entity=ENTITY, project=PROJECT, filters=f"ID == {run_id}")
+    runset = wr.Runset(entity=ENTITY, project=PROJECT, filters=f"ID == {json.dumps(run_id)}")
     report.blocks = [
         wr.P(
             "On 46 Hero evaluations at steps 119,999-254,999, the published Uncheatable forecast "
