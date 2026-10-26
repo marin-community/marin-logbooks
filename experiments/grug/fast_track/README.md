@@ -1,5 +1,28 @@
 # fast_track — dense vs MoE scaling ladder (H100, 16k BPE)
 
+## Dense optimizer comparison on Hero
+
+`dense_ladder.py` compares AdamW, Muon, AdamH, and MuonH on the original
+128k-tokenizer Hero mixture, at seven budgets from 1e18 through 1e21 analytic
+training FLOPs. It first checks both endpoint shapes for 20 steps, then selects
+each optimizer's learning-rate multiplier from three complete 1e18 runs before
+starting the remaining budgets. Optimizers share a shape, seed, and token order
+at each budget. The comparison uses one seed and a limited learning-rate search.
+
+Print the derived recipes, or add `--run` inside an Iris CPU coordinator pinned
+to `cw-us-east-02a`. Eight concurrent H100x8 runs cap training at 64 GPUs:
+
+```bash
+uv run python -m experiments.grug.fast_track.dense_ladder \
+  --campaign hero-dense-opt-20261026 --version 2026.10.26 --max-concurrent 8
+```
+
+Use a unique campaign/version for a new comparison. Reusing them resumes the
+existing experiment. Runs keep one hourly temporary checkpoint and a permanent
+final checkpoint in the caller's namespace. W&B group names match the campaign
+in `marin-community/marin_moe`. This experiment uses the original Hero data;
+the historical results below use the separate 16k-tokenizer flat cache.
+
 Self-contained grug variant with 16k vocab size for fast iteration. Dense and MoE baselines shown
 below from 9.4e16 to 4.3e19 FLOPs.
 
