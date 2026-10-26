@@ -12,7 +12,6 @@ from pathlib import Path
 import kubernetes.client
 import kubernetes.stream
 from iris.cli.connect import open_iris_client
-from iris.cluster.constraints import Constraint, ConstraintOp
 from iris.cluster.platforms.k8s.service import CloudK8sService
 from iris.cluster.types import Entrypoint, EnvironmentSpec, ResourceSpec
 from iris.rpc import job_pb2
@@ -117,7 +116,6 @@ def main():
                 environment=EnvironmentSpec(setup_scripts=[]), task_image=IMAGE,
                 container_profile=job_pb2.CONTAINER_PROFILE_SANDBOX,
                 egress_policy=job_pb2.EGRESS_POLICY_NONE,
-                constraints=[Constraint.create(key="cluster", op=ConstraintOp.EQ, value="cw-rno2a")],
                 timeout=Duration.from_seconds(300), scheduling_timeout=Duration.from_seconds(90),
                 priority_band=job_pb2.PRIORITY_BAND_BATCH,
                 max_retries_failure=0, max_retries_preemption=0, user="atqamar",

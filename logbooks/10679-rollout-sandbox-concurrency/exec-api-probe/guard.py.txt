@@ -61,6 +61,7 @@ def snapshot(items):
 
 
 INFRASTRUCTURE_ERROR = re.compile(
+    r'ActorDiedError|RayActorError|NodeDiedError|WorkerCrashedError|RaySystemError|'
     r'OOMKilled|OutOfMemory|out of memory|Evict(?:ed|ion)|ImagePull|ErrImage|CrashLoop|Unschedulable|'
     r'SchedulingGated|NodeNotReady|(?:node|worker).*(?:unreachable|lost|not.ready|failure)|'
     r'Connect(?:ion)?(?:Error|Reset|Aborted|Refused)|ConnectWireError|TransportError|HTTPError|'
@@ -80,9 +81,10 @@ def application_error_line(pod, logs):
     if not errors: return None
     pytest_assertion=any('AssertionError' in line for line in errors) and any(re.match(r'\s*FAILED\s+\S+',line) for line in lines)
     frames=[line for line in lines if re.search(r'File [\"\']',line)]
-    user_exception='Traceback (most recent call last)' in logs and frames and APPLICATION_FRAME.search(frames[-1])
+    user_exception=('Traceback (most recent call last)' in logs and frames and APPLICATION_FRAME.search(frames[-1])
+                    and not any('CalledProcessError' in error for error in errors))
     if not (pytest_assertion or user_exception): return None
-    line=errors[-1]
+    line=next((error for error in errors if 'AssertionError' in error), errors[-1]) if pytest_assertion else errors[-1]
     if re.search(r'api.?key|password|secret|authorization|bearer|token',line,re.I):
         line=line.split(':',1)[0]+': [credential-bearing error text redacted]'
     return line[:1000]
@@ -148,8 +150,29 @@ def monitor(name, command, *, local_probe=False):
             raise RuntimeError('Preflight has pending unrelated pods or retained study pods')
         if baseline>.15 or max(lat[1:])>.5:
             raise RuntimeError('Controller preflight latency already elevated')
+        if any(statistics.median(lat[index:index+3])>max(.15,2*baseline) for index in range(1,len(lat)-2)):
+            raise RuntimeError('Controller preflight rolling latency already elevated')
         warnings={e['metadata']['uid']:e.get('count',1) for e in kube('get','events','--field-selector','type=Warning','-o','json')['items']}
         failed={p['metadata']['uid'] for p in initial if p['status'].get('phase')=='Failed'}
+        verified=[]
+        for pod in initial:
+            if pod['status'].get('phase')!='Failed': continue
+            evidence=verified_application_failure(pod)
+            if evidence is None:
+                raise RuntimeError(f'Preflight has an unverified failed workload: {pod["metadata"]["name"]}')
+            verified.append(evidence)
+        if verified:
+            check=time.monotonic();rpc.get_current_user(job_pb2.GetCurrentUserRequest());check_latency=time.monotonic()-check
+            current=pods();current_info=snapshot(current)
+            current_events=kube('get','events','--field-selector','type=Warning','-o','json')['items']
+            new_warning=any(e.get('count',1)>warnings.get(e['metadata']['uid'],0)
+                and not (e.get('reason')=='UnmanagedPods' and e.get('involvedObject',{}).get('kind')=='PodDisruptionBudget')
+                for e in current_events)
+            new_failed={p['metadata']['uid'] for p in current if p['status'].get('phase')=='Failed'}-failed
+            if check_latency>max(.15,2*baseline) or current_info['other_pending'] or new_warning or new_failed:
+                raise RuntimeError('Health changed while verifying pre-existing application failures')
+            for evidence in verified:
+                emit('ignored_application_failure',stage=name,controller_latency=check_latency,**evidence)
         seen_pending={}
         restarts={(p['metadata']['uid'],c['name']):c.get('restartCount',0) for p in initial for c in p['status'].get('containerStatuses',[])}
         output=LOG.parent / f'{name}-submit.log'
