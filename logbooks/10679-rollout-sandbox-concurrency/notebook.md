@@ -89,3 +89,9 @@ Before any sandbox load,29 warmed RNO health RPCs had median64.45 ms, p95(type7 
 API attempt a3 did not launch a target: preflight found another Pending workload and warmed health readings115.7–402.3 ms. No API exec sample or measured client-reuse gain exists. #10679 minimal head62674f2bcd now has green CI (57 observed checks, including skips) and remains draft.
 
 A local-only real-kubeconfig helper now separately records actual SDK ApiClient constructor CPU/wall inside its full client-factory cost. It opens no socket and sends no API request; this component probe may run independently of the failed cluster-health gate. Source: exec-api-probe/exec_client_init.py.txt. It does not substitute for websocket/exec timing or establish the controller's in-cluster loader cost.
+
+## 2026-10-26T05:12:51Z: local construction split and empty cleanup
+
+Actual SDK ApiClient construction inside20 fresh local kubeconfig/client-factory calls measured median0.0507 ms wall/0.0478 ms process CPU. The whole fresh factory was5.935/5.910 ms, and warm lookup0.00706/0.00707 ms. These are local components with no socket/API/exec; the in-cluster loader differs. Construction is nested inside the factory total. No websocket/exec latency or reuse gain is inferred. Source was preserved in c5a6c05b22 before this local probe; compact result is exec-api-probe/local-init-result.json.
+
+The strict API attempt remains unexecuted after preflight. Final checks at05:00:18Z and05:01:24Z found no active study jobs or owned pods on RNO/East,66 seconds apart. No new assigned study tasks/CPU-hours; allocated study total remains18.94 CPU-hours. All ramps/shared deployments stay stopped and the client-reuse PR is unopened.
