@@ -70,6 +70,12 @@ Source `187feef6586707bbd1fb8570df6f54dec850936f` ran with version `2026.10.26.2
 
 The [policy-control numerical comparison](synthetic-policy-control.json) also passed. Its enumerated expected gradient differs from the dense reference by at most `5.00e-16`. Removing the policy score reduced some noise but increased it on other synthetic prefixes with large importance ratios. One pre-update row's analytic eight-draw L2 RMSE rose from `0.479` to `1.413`. This motivates measuring both estimators on model prefixes; it does not reject either from synthetic results alone. The [prefix analysis](prefix_analysis.py) compares both estimators, K32/K128 errors and native filtered supports without constructing a vocabulary-squared tensor.
 
+### Third Qwen startup: inherited smoke template
+
+Source `a7b6fcdb8ea08022b6d520c7b298db0b30f377a3` ran with version `2026.10.26.3` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.3-coordinator-4b17e164`. Task import passed, then prompt-length filtering failed on the tool-history row. The smoke recipe inherited `qwen2_5_with_generation_tag_simplified`, intended for count-only prompts. Its concatenation of a null assistant content field raised a template error. The model's staged template matches the pinned Hugging Face template; model assets and dependencies do not need changing. The performance recipe now uses the native model template for Qwen as it already did for Grug.
+
+The earlier local dataset check omitted the recipe's custom tokenizer template and therefore missed this failure. The corrected preflight constructs the tokenizer from the actual composed config, loads all selected rows through the normal dataset and task preparations, and validates their sampling options. It passed four Qwen rows and eight Grug rows, with tools included in prompt lengths: maxima 4,079 and 5,579 tokens, below 14,336 and 53,248. No model timing or accuracy result is claimed from the failed startup.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.

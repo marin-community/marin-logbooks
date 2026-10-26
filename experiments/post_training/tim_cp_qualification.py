@@ -151,6 +151,8 @@ def performance_recipe(smoke):
         "max_turns": 1,
     }
     cfg["extra_env"]["TIM_CP_MODE"] = "performance"
+    # The count-only smoke template cannot render real tool-history rows.
+    cfg["generator"]["chat_template"] = {"source": "name", "name_or_path": None}
     cfg["generator"].setdefault("engine_init_kwargs", {}).update(
         enable_auto_tool_choice=True,
         tool_call_parser="hermes",
