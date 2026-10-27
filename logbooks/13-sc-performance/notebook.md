@@ -98,6 +98,10 @@ Source `2c4ce341c30582cacd87570e0d35c580ca1ed8bc` ran with version `2026.10.26.6
 
 Source `afb2416304a2d429b2c6df1829f08b2688321b87` ran with version `2026.10.26.7` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.7-coordinator-41a1bb9a`. Initialization reached the inference client, then metadata collection called a research method on `RayWrappedInferenceEngine`, which only forwards its declared interface. Research RPCs now use its public `inference_engine_actor` handle consistently, including metadata, CPU profiling, native chat and numeric comparisons. The normal task path continues through the wrapper. No model cost result was produced.
 
+### Eighth Qwen startup: request-spec mutation
+
+Source `28777a2d99c85b5646e9cc5f821503d608a4d046` ran with version `2026.10.26.8` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.8-coordinator-af69258d`. Two optimizer cycles ran, but the third arm failed the exact candidate-width check. The research driver assigned a new, unused `request_spec` attribute; the rollout coordinator reads `_request_spec`. This left capture at its initial width while the trainer changed widths. The first two cycle timings are therefore invalid as an adoption comparison, including the nominal capture-off baseline. The driver now updates the field actually consumed before opening the next batch’s leases and records the requested capture width with every live cycle. Staleness zero and the one-batch in-flight limit provide the arm boundary. No production code changed.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.

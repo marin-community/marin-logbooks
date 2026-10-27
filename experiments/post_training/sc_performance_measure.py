@@ -146,7 +146,9 @@ async def choose_arm(trainer, arm):
     trainer.cfg.trainer.algorithm.score_centering_enabled = enabled
     trainer.cfg.trainer.algorithm.score_centering_top_k = count
     trainer.cfg.trainer.algorithm.score_centering_probe.interval = 1 if arm.startswith("probe") else 0
-    trainer.context.request_spec = RolloutRequestSpec.from_config(trainer.cfg)
+    # The coordinator reads this field when it opens the next batch's leases.
+    # Staleness zero and one in-flight batch keep previous-arm requests drained.
+    trainer.context._request_spec = RolloutRequestSpec.from_config(trainer.cfg)
     await asyncio.gather(
         *trainer.policy_model.async_run_ray_method("pass_through", "performance_set_arm", enabled, count)
     )
@@ -557,6 +559,9 @@ def performance_entrypoint(cfg):
                             "step": step,
                             "arm": arm,
                             "repeat": repeat,
+                            "requested_candidate_count": trainer.context._request_spec.sampling_params.get(
+                                "logprobs", 0
+                            ),
                             "seconds": elapsed,
                             "metrics": dict(payload),
                             "memory": memory,
