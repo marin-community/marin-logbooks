@@ -85,3 +85,11 @@ The retry uses the same command as the first submission with `--job-name hero-de
 ```
 
 The existing 15-minute heartbeat now follows the retry coordinator. No training result or successful probe has yet been verified. The archive index PR is https://github.com/marin-community/marin-logbooks/pull/16; it remains a draft and is not merged.
+
+## 2026-10-26: Endpoint gates passed; calibration started
+
+At 17:09–17:10 America/Los_Angeles, Iris reports all eight 20-step endpoint probes succeeded. W&B independently reports all eight finished with final `_step=19` and finite training loss. This verifies the small and large shapes for all four optimizer state/update paths and clears the initial rendezvous failure. The probes have no evaluation or checkpoint contract and do not establish optimizer quality rankings.
+
+The coordinator automatically started the first eight of twelve complete 1e18 LR calibration runs at 17:06:55–17:06:56. Live W&B summaries show training progress at steps 46–91, fresh timestamps, and finite losses. These runs are still warming up; no final Paloma scores or selected multipliers exist yet. The remaining four calibration jobs will start as slots free. All runs still use the published retry source `1d6cca120eeebfe2446bf690e8e8dbb6d4559422` and the original recipes. No resubmission or configuration change was made at this heartbeat.
+
+The draft archive index PR remains open/draft with no feedback or checks. The next decision is the automatic minimum-final-Paloma-loss LR selection after all twelve calibrations succeed; the six larger budgets stay gated until then.
