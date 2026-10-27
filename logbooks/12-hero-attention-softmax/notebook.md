@@ -469,6 +469,19 @@ Nine CPU tests and required lint pass. The next acceptance attempt remains a
 single-GPU check, now bounded to 30 minutes to distinguish slow compilation from
 a stall. Both cases must pass before checkpoint comparison resumes.
 
+### 2026-10-26 — Explicit lowering compatibility correction
+
+The runtime-aligned acceptance attempt stopped at the first lowering marker with
+`AttributeError: PjitFunction has no attribute _fun`. This came from Equinox's
+explicit lowering path against the GPU environment's JAX version, before kernel
+execution. It does not evaluate the runtime-alignment hypothesis or the second
+native case.
+
+The smoke helper now uses JAX's public `jit`/`lower`/`compile` API with static
+shape arguments. A local compiled-call check and required lint pass. Native
+inputs, mitigation arithmetic, and acceptance criteria are unchanged. The next
+single-GPU attempt retains phase markers and the same 30-minute bound.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
