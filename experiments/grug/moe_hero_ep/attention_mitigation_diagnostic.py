@@ -5,6 +5,7 @@
 
 import argparse
 import gc
+import importlib
 import json
 import logging
 import os
@@ -400,10 +401,12 @@ def main() -> None:
     request = json.loads(StoragePath(args.request).read_text())
     request["source_revision"] = args.source_revision
     configure_logging(logging.INFO)
+    # Worker imports must construct JAX objects in the worker environment.
+    worker = importlib.import_module("experiments.grug.moe_hero_ep.attention_mitigation_diagnostic")
     dispatch_grug_training_run(
         run_id=request["run_id"],
         config=request,
-        local_entrypoint=run_comparison,
+        local_entrypoint=worker.run_comparison,
         resources=ResourceConfig.with_gpu("GB200", count=4, cpu=120, ram="890g", disk="1t", replicas=16),
         processes_per_task=4,
         max_retries_failure=0,

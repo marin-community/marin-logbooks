@@ -5,6 +5,7 @@
 
 import argparse
 import faulthandler
+import importlib
 import json
 import logging
 import time
@@ -97,10 +98,13 @@ def main() -> None:
     parser.add_argument("--output-root", required=True)
     parser.add_argument("--source-revision", required=True)
     args = parser.parse_args()
+    # Dispatch an importable worker so its JAX objects are built on the worker,
+    # rather than cloudpickling coordinator-side JIT/AOT closures from __main__.
+    worker = importlib.import_module("experiments.grug.moe_hero_ep.attention_mitigation_acceptance")
     dispatch_grug_training_run(
         run_id=args.run_id,
         config={"output_root": args.output_root, "source_revision": args.source_revision},
-        local_entrypoint=run_acceptance,
+        local_entrypoint=worker.run_acceptance,
         resources=ResourceConfig.with_gpu("GB200", count=1, cpu=24, ram="128g", disk="64g", replicas=1),
         processes_per_task=1,
         max_retries_failure=0,

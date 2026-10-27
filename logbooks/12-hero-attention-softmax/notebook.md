@@ -482,6 +482,26 @@ shape arguments. A local compiled-call check and required lint pass. Native
 inputs, mitigation arithmetic, and acceptance criteria are unchanged. The next
 single-GPU attempt retains phase markers and the same 30-minute bound.
 
+### 2026-10-26 — Worker import boundary correction
+
+The public JAX `.lower()` call also raised `PjitFunction has no attribute _fun`
+before kernel execution. This corrects the preceding attribution: the available
+trace did not establish Equinox as the cause. The acceptance entrypoint was a
+function in `__main__`, which Iris serializes by value together with its
+referenced jitted smoke helper. A local CPU reproduction confirmed that a
+JAX-jitted function executes after a cloudpickle roundtrip but its explicit
+`.lower()` raises the same error. This reproduces with one JAX version; a
+version mismatch is not required.
+
+The acceptance and frozen-checkpoint comparison launchers now resolve their
+worker function from its importable module before dispatch. This lets the worker
+import its own JAX wrappers instead of receiving serialized wrappers. GPU
+verification of the change is pending. Phase markers, input cases, mitigation
+arithmetic, and acceptance gates are unchanged. The next acceptance attempt
+retains the one-GPU, 30-minute bound. Both the two-key 128-token/four-head case
+and the packed 256-token/eight-head case must pass before the three-checkpoint
+rack comparison.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -526,6 +546,6 @@ compute authorization. Sources and configuration are published before this launc
 The original diagnostic is complete. The two-key native acceptance case passed
 strict parity and operand-contract checks, with both mitigation candidates
 recovering its lost query gradients. The second packed case timed out without
-a numerical verdict. Runtime alignment and phase diagnostics are prepared for
-the next authorized acceptance attempt. Checkpoint comparisons, performance,
+a numerical verdict. Worker import boundaries now avoid the reproduced serialization failure in
+explicit lowering; native verification of that correction is pending. Checkpoint comparisons, performance,
 and any training winner remain pending.
