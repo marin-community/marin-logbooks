@@ -438,6 +438,37 @@ Operational identities remain in the private run record. A heartbeat owns this
 acceptance phase and the conditional transition to the checkpoint suite. Live
 Hero remains unchanged.
 
+### 2026-10-26 — Two-key acceptance passed; second case timed out
+
+The strict BF16 representation checks passed the native two-key case, as did
+all operand coverage, mask, finite-value, and contraction gates. This resolves
+the previous gate failure for that case without changing the decoder or
+increasing tolerances. [Partial summary](mitigation-two-key-partial-summary.json)
+retains the measured Q/K errors.
+
+On this constructed case, baseline dQ/dK relative errors were 100%/70.7108%.
+FP32 saved output and its fixed-forward shadow gave 0.2032%/0.1604%; native
+projection gave 0.2032%/0.2131%. All 16 baseline query vectors were zero against
+nonzero references; both mitigation candidates retained all 16. The same
+postcast-output control retained the baseline failure. These are synthetic
+results and establish neither checkpoint prevalence nor training benefit.
+
+The packed eight-head case did not finish before the 15-minute parent timeout.
+The last cache-miss message precedes both compilation and execution, so the
+existing log cannot identify the stalled phase. No numerical failure was
+recorded for that case. The acceptance harness also omitted Hero runtime
+defaults, including its existing command-buffer workaround. The next source
+aligns those settings and persists lowering, compilation, dispatch, and
+synchronization markers, with periodic Python stack dumps. Whether the runtime
+mismatch caused the timeout remains unverified.
+
+The optimized FP32-output forward comparison now observes BF16 bit patterns as
+well. The previous float-roundtrip difference could be affected by the same
+cast folding, so it is not evidence of represented BF16 output disagreement.
+Nine CPU tests and required lint pass. The next acceptance attempt remains a
+single-GPU check, now bounded to 30 minutes to distinguish slow compilation from
+a stall. Both cases must pass before checkpoint comparison resumes.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -479,7 +510,9 @@ compute authorization. Sources and configuration are published before this launc
 
 ## Final decision
 
-The original diagnostic is complete. A single-GPU acceptance retry is running
-with the strict bit-pattern checker. It must pass before the newly authorized
-checkpoint mitigation suite resumes. No mitigation or training winner has been
-selected; checkpoint accuracy and performance measurements remain pending.
+The original diagnostic is complete. The two-key native acceptance case passed
+strict parity and operand-contract checks, with both mitigation candidates
+recovering its lost query gradients. The second packed case timed out without
+a numerical verdict. Runtime alignment and phase diagnostics are prepared for
+the next authorized acceptance attempt. Checkpoint comparisons, performance,
+and any training winner remain pending.
