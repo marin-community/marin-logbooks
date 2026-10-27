@@ -93,3 +93,11 @@ At 17:09–17:10 America/Los_Angeles, Iris reports all eight 20-step endpoint pr
 The coordinator automatically started the first eight of twelve complete 1e18 LR calibration runs at 17:06:55–17:06:56. Live W&B summaries show training progress at steps 46–91, fresh timestamps, and finite losses. These runs are still warming up; no final Paloma scores or selected multipliers exist yet. The remaining four calibration jobs will start as slots free. All runs still use the published retry source `1d6cca120eeebfe2446bf690e8e8dbb6d4559422` and the original recipes. No resubmission or configuration change was made at this heartbeat.
 
 The draft archive index PR remains open/draft with no feedback or checks. The next decision is the automatic minimum-final-Paloma-loss LR selection after all twelve calibrations succeed; the six larger budgets stay gated until then.
+
+## 2026-10-26: Calibration preemptions and automatic recovery
+
+At 17:57–17:59 America/Los_Angeles, two calibration runs are successful in Iris and finished in W&B: AdamW LR multiplier 0.3 and 3, each at final `_step=4962` (4963 updates). Their final Paloma macro losses are 4.3715143 and 3.9749632, respectively. This is a partial LR sweep, not a completed optimizer comparison or final selection.
+
+Six initial calibration jobs were preempted by the scheduler. Iris reports zero application failures; preemption counts are one each for AdamW LR1, Muon LR0.3/LR1/LR3, and AdamH LR0.3, and two for AdamH LR1. Kueue diagnostics explicitly report eviction to accommodate another workload. Some retries are running; others wait behind scheduling gates. The coordinator has also dispatched AdamH LR3 and MuonH LR0.3 as slots freed. No manual resubmission, priority increase, cluster mutation, or recipe change was made.
+
+The affected attempts had not reached their first hourly checkpoint. A live Muon LR1 retry (attempt 1) restarted from the beginning and reached update 1003 by 17:57:47 with finite losses. W&B refuses to log steps below the prior attempt's recorded step (4246), so its old summary and crashed status do not establish that the current retry is dead. Monitor actual attempt-aware Iris logs until the retry catches up. This lost work delays calibration; it is not evidence of an optimizer regression. The larger ladder remains gated until all twelve complete successfully.
