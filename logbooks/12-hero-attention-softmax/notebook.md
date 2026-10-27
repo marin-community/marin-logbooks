@@ -391,6 +391,40 @@ and private output locations are retained in the local operational record.
 A heartbeat owns monitoring and result validation. No optimizer updates or live
 Hero changes are part of this frozen comparison.
 
+### 2026-10-26 — Native smoke stopped at the decoder verification gate
+
+The experiment compares FP32 saved attention output with a post-cast Q/K
+projection. Its decoder reconstructs native packed matrix-multiply accumulators
+as logical FP32 gradient arrays before the final BF16 cast.
+
+The initial mitigation attempt failed during its first constructed two-key
+native smoke (a small fused-attention GPU test with two allowed keys per selected
+query), before checkpoint loading. The native kernels compiled and ran,
+but the key-gradient decoder comparison returned maximum absolute difference
+3.2281968742609024e-7 against the untouched BF16 postprocessor. The decoder gate has not passed, and whether the checker caused the failure
+remains unverified. There are no checkpoint mitigation or performance results.
+
+An independent check reproduced that difference exactly: unrounded FP32 scaled
+gradient 0.001838361262343824 versus represented BF16 gradient
+0.00183868408203125. GPU fusion may have removed the FP32-to-BF16-to-FP32 roundtrip in
+the numerical-difference checker. This is an inference awaiting a GPU test;
+no decoder-layout defect has been established.
+
+The prepared correction observes BF16 integer representations and requires zero
+mismatches, ignoring signed-zero differences as the original numerical gate did.
+No tolerance was increased. A regression verifies the reproduced rounding case
+and rejects an adjacent BF16 value. Full gate vectors will be preserved before
+validation raises, improving failure evidence. Nine focused CPU tests and
+required lint pass; GPU acceptance remains unverified.
+
+A separate single-GPU acceptance entry point is ready for a bounded 15-minute
+check of the two-key case and a second packed-sequence case with eight query
+heads. The initial attempt stopped before reaching that second case. The
+acceptance entry point loads no Hero checkpoints. Replacement
+compute is awaiting user judgment under the job-monitoring failure policy; the
+original rack job has ended. Further checkpoint comparison and any training
+continuation remain pending. Operational details are retained privately.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -432,7 +466,8 @@ compute authorization. Sources and configuration are published before this launc
 
 ## Final decision
 
-The original frozen diagnostic is complete. Its checkpoint results and numerical
-limitations are retained above. The newly authorized mitigation comparison is
-active; no production change or training winner has been selected. Its source,
-request, launch identity, and results will be recorded before any continuation.
+The original diagnostic is complete. The first mitigation comparison stopped
+before checkpoints at a decoder-verification gate. A strict bit-pattern checker
+and a separate single-GPU acceptance entry point are prepared, with nine CPU
+tests and lint passing. GPU confirmation and permission for the bounded retry
+are pending. No mitigation or training winner has been selected.
