@@ -540,6 +540,38 @@ the passed synthetic case and the stalled phase. Complete operational records,
 original objects, and checksums are retained privately. The rack comparison
 remains conditional on acceptance; no training-quality conclusion follows.
 
+### 2026-10-26 — Native acceptance passed
+
+The single-query-stage FP32-output candidate completed all three isolated
+forward probes: a two-key distribution in a 128-token/four-head tensor, packed
+256-token/eight-head attention, and fully causal 256-token/eight-head attention
+spanning multiple key tiles. Each probe compared actual BF16 output storage
+against the unchanged baseline and checked finite FP32 saved output and
+log-sum-exp state on valid rows. All violation counts were zero.
+
+The complete cancellation and packed-random forward/backward replay cases also
+passed all eleven required parity and native operand-contract gates. Iris
+reported success for coordinator and GPU worker. Native probability/score-gradient
+exports agreed with decoded accumulators within the unchanged FP32 rounding
+bounds. Packed-case maximum absolute contraction differences were 5.96e-8 for Q
+and 2.98e-8 for K.
+
+Relative L2 gradient errors use the stable CPU FP64 reference on identical
+quantized operands and the same sparse selected-query objective. On the
+constructed cancellation case, FP32 saved output and its fixed-forward shadow
+retained the earlier 0.2032%/0.1604% Q/K errors. All sixteen query gradients that
+were entirely zero in baseline became nonzero. The shadow keeps baseline public
+BF16 output and LSE while using FP32 saved output for backward correction.
+On the packed random case, baseline Q/K errors were 0.2398%/0.2415%, FP32 saved
+output 0.2376%/0.2397%, and the sampled native+XLA score-gradient projection
+0.2334%/0.2366%. That projection uses exported post-BF16 operands only for the
+selected query rows.
+
+These acceptance cases measure neither Hero checkpoint prevalence nor training
+quality. [Compact gates and squared norms](mitigation-acceptance-passed.json)
+preserve the evidence. The prepared frozen-checkpoint comparison can now
+proceed. Dense forward/backward runtime and memory cost remain unmeasured.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -587,5 +619,6 @@ recovering its lost query gradients. The second packed case timed out without
 a numerical verdict. Importable worker entrypoints resolved the serialization failure. The packed
 case then stalled in GPU execution and timed out. A source-confirmed FP32-output
 pipeline dependency cycle is addressed by the next single-query-stage candidate;
-its staged native checks are pending. Checkpoint comparisons, performance,
+all three isolated forward probes and both full native cases passed. The
+prepared frozen-checkpoint comparison can proceed. Checkpoint comparisons, performance,
 and any training winner remain pending.
