@@ -610,6 +610,10 @@ def performance_entrypoint(cfg):
                     )
                 write_record(root, "live-updates.json", updates)
                 await matched_training(trainer, saved["base"], observers, root, smoke)
+                # Colocated finalization sleeps at level 2, which discards weights.
+                # Waking alone allocates storage; the normal sync restores the policy.
+                await trainer._sync_policy_for_rollouts(reason="performance_component_comparisons")
+                write_record(root, "comparison-weight-sync.json", {"policy_version_step": trainer.policy_version_step})
                 await inference_comparison(trainer, root, smoke)
                 await dense_prefixes(trainer, saved["base"], root)
                 lengths = saved["base"]["response_mask"].sum(-1)

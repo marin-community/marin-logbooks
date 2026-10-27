@@ -106,6 +106,12 @@ Source `28777a2d99c85b5646e9cc5f821503d608a4d046` ran with version `2026.10.26.8
 
 Source `5091e81913006660c5aef372eb944c61e857d28d` ran with version `2026.10.26.9` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.9-coordinator-7544af8c`. All fifteen live cycles and fifteen matched-token trainer replays completed. The live baseline requested no head; both probe arms consumed positions. The pinned wheel and Model Runner V2 were confirmed. These partial records are retained, but this is not complete driver qualification: the following profiling request omitted `return_token_ids`, so its response had no token-ID vector. The research component request now explicitly asks for token IDs and preserves special tokens, matching the numeric comparison. No product code changed.
 
+### Tenth Qwen startup: complete execution and invalid component probabilities
+
+Source `d3b8f0340fd70fa33139ea0936949becac07420c` ran with version `2026.10.26.10` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.10-coordinator-0f6daeab`. The program exported fifteen live cycles, fifteen matched-token replays, native/numeric comparisons, twelve dense prefixes and both candidate-width qualification records on eight learner ranks. Analysis then found nearly uniform recaptured behavior probabilities despite a concentrated trainer distribution. SkyRL colocated finalization calls level-2 sleep, discarding inference weights. The component comparison woke storage without restoring those weights. Its capture timings, profiles and dense-prefix results are invalid as model evidence, including the apparent native/numeric parity. The live cycles use the normal weight publication path, and the matched trainer replays retain learner weights; those records are retained separately. This is not sufficient preflight for the large run.
+
+The driver now calls the normal policy-to-inference synchronization after matched replay and before component requests, and exports its policy version. This restores discarded weights through the existing trainer mechanism. Recheck the whole Qwen driver before Grug. The cost-analysis program at `9ee2e186be` reports paired-block uncertainty and all-rank/device memory from saved records; it does not change the GPU driver.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
