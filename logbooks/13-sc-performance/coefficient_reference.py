@@ -67,7 +67,9 @@ def candidate_comparison(logits, old, behavior, advantage, count, cap=1.3):
         "current_head_mass_mean": float(head.detach().exp().sum(-1).mean()),
         "gradient_max_abs_error": float(error.abs().max()),
         "gradient_l1_error_mean": float(error.abs().sum(-1).mean()),
+        "gradient_l2_error_mean": float(error.norm(dim=-1).mean()),
         "dense_gradient_l1_mean": float(expected.abs().sum(-1).mean()),
+        "dense_gradient_l2_mean": float(expected.norm(dim=-1).mean()),
         "approximate_gradient_l1_mean": float(formula.mean()),
         "l1_formula_max_abs_error": float((formula - got.abs().sum(-1)).abs().max()),
     }
