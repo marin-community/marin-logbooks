@@ -51,5 +51,15 @@
   ],
   "private_configuration": "Resolved storage and execution identifiers are retained in the private run record.",
   "reference": "Stable CPU FP64 VJP; same BF16 operands, all heads, four selected query positions, full keys.",
-  "dense_projection_status": "The native+XLA sampled-operand projection is an accuracy prototype, not an efficient dense kernel."
+  "dense_projection_status": "The native+XLA sampled-operand projection is an accuracy prototype, not an efficient dense kernel.",
+  "saved_output_forward_configuration": {
+    "tile": [
+      128,
+      128
+    ],
+    "query_stages": 1,
+    "estimated_kv_stages": 4,
+    "baseline_query_stages": 2,
+    "reason": "Experimental FP32 output with two query stages leaves one aliased KV slot and a multi-key pipeline circular wait. Candidate scheduling and performance require new measurement."
+  }
 }

@@ -42,6 +42,7 @@ from experiments.grug.moe_hero_ep.attention_mitigation_replay import (
     smoke_local_replay,
 )
 from experiments.grug.moe_hero_ep.attention_mitigation_saved_output import (
+    FP32_FORWARD_Q_STAGE,
     saved_output_backward,
     saved_output_forward,
     shadow_saved_output_forward,
@@ -207,6 +208,13 @@ def _dense_pair(capture: AttentionCapture, *, implementation: str, length: int):
 
 def _benchmark(capture: AttentionCapture, request: dict, *, layer_index: int) -> list[dict]:
     records = []
+    baseline_forward = sm100_flash4_cute_kernel_config().sm100_forward
+    assert baseline_forward is not None
+    query_stage_schedules = {
+        "baseline": [baseline_forward.q_stage],
+        "fp32_saved_output": [FP32_FORWARD_Q_STAGE],
+        "fp32_saved_output_shadow": [baseline_forward.q_stage, FP32_FORWARD_Q_STAGE],
+    }
     for length in request["benchmark_lengths"]:
         for name in ("baseline", "fp32_saved_output", "fp32_saved_output_shadow"):
             start = time.perf_counter()
@@ -235,6 +243,8 @@ def _benchmark(capture: AttentionCapture, request: dict, *, layer_index: int) ->
                 "device_type": jax.local_devices()[0].device_kind,
                 "device_count": jax.device_count(),
                 "block_sizes": {"forward": [128, 128], "backward": [128, 128]},
+                # One entry per actual forward; the shadow candidate runs both.
+                "forward_query_stages": query_stage_schedules[name],
                 "compile_time": first_call,
                 "compile_time_definition": "first invocation including compilation and first execution",
                 "steady_state_time": statistics.median(times),

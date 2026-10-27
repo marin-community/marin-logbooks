@@ -502,6 +502,44 @@ retains the one-GPU, 30-minute bound. Both the two-key 128-token/four-head case
 and the packed 256-token/eight-head case must pass before the three-checkpoint
 rack comparison.
 
+### 2026-10-26 — Multi-key FP32-output pipeline deadlock
+
+The importable-worker correction allowed the first native case to complete:
+a constructed two-key attention distribution in a 128-token, four-head tensor.
+All eighteen reported gate metrics were zero, including BF16 cast-output parity
+against the unchanged baseline. Its six Q/K error comparisons repeat
+the earlier synthetic result. The packed 256-token/eight-head case completed
+lowering in 13 seconds and compilation in 2 seconds, then dispatched but never
+completed GPU synchronization. The coordinator reached its 30-minute timeout.
+This is an execution failure without a packed-case numerical verdict. No
+checkpoint comparison or dense benchmark ran.
+
+Source inspection identifies a circular wait in the FP32-output configuration.
+For D128 without split-KV, the native kernel does not overlap shared Q and O
+buffers. Two query stages use 64 KiB for BF16 Q and 128 KiB for FP32 O, leaving
+one 32 KiB slot holding either a K tile or a V tile within the kernel's
+224 KiB allocation budget. In the multi-key-tile loop, query stage 0 waits for the next K before query stage 1
+releases the current V occupying that slot. The loader cannot supply that K
+until V is released. The one-key-tile case bypasses this loop. Two independent
+source inspections confirmed the dependency cycle. GPU isolation of this
+specific call is still needed to verify its attribution within the combined
+forward/backward replay of six candidate and control variants.
+
+The next candidate explicitly uses the native kernel's supported single query
+stage, retaining 128-by-128 MMA tiles. Q then uses 32 KiB and FP32 O uses 64 KiB,
+leaving four KV slots. This changes the experimental candidate's scheduling;
+it requires new parity and performance measurements. The production baseline
+remains the original two-stage kernel. A staged one-GPU check will synchronize
+baseline and candidate forward calls separately for the two existing cases and
+an additional fully causal 256-token case that forces multiple key tiles even
+with one query stage: later queries attend both 128-key tiles. Exact BF16 output
+parity and finite FP32 output and log-sum-exp state are required before the unchanged complete native acceptance cases run.
+
+[Compact acceptance evidence](mitigation-native-acceptance-summary.json) records
+the passed synthetic case and the stalled phase. Complete operational records,
+original objects, and checksums are retained privately. The rack comparison
+remains conditional on acceptance; no training-quality conclusion follows.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -546,6 +584,8 @@ compute authorization. Sources and configuration are published before this launc
 The original diagnostic is complete. The two-key native acceptance case passed
 strict parity and operand-contract checks, with both mitigation candidates
 recovering its lost query gradients. The second packed case timed out without
-a numerical verdict. Worker import boundaries now avoid the reproduced serialization failure in
-explicit lowering; native verification of that correction is pending. Checkpoint comparisons, performance,
+a numerical verdict. Importable worker entrypoints resolved the serialization failure. The packed
+case then stalled in GPU execution and timed out. A source-confirmed FP32-output
+pipeline dependency cycle is addressed by the next single-query-stage candidate;
+its staged native checks are pending. Checkpoint comparisons, performance,
 and any training winner remain pending.

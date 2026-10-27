@@ -8,6 +8,8 @@ Requesting Float32 preserves its normalized accumulator before the usual BF16
 epilogue cast; converting the returned BF16 output back to FP32 would not do so.
 This changes the native output layout and KV pipeline depth, so cast-output
 parity and end-to-end cost must be measured against the untouched baseline.
+The FP32 candidate uses one query stage at the original 128x128 MMA tile.
+Two query stages exhaust the KV pipeline slots and deadlock on multiple K tiles.
 
 All functions consume fully local BSHD arrays inside the caller's shard_map.
 The production backend remains unchanged. This adapter reuses its pinned native
@@ -15,6 +17,7 @@ launcher, sparse metadata, backward mainloop, and gradient postprocessing.
 """
 
 import math
+from dataclasses import replace
 from functools import partial
 from typing import NamedTuple
 
@@ -39,6 +42,8 @@ from levanter.grug.attention._fa4_cute_kernels import (
 )
 
 LOG2_E = math.log2(math.e)
+FP32_FORWARD_Q_STAGE = 1
+SM100_FORWARD_SHARED_MEMORY_BUDGET = 224 * 1024
 
 
 class SavedOutputState(NamedTuple):
@@ -97,6 +102,17 @@ def saved_output_forward(
     config = kernel_config.sm100_forward
     if config is None or kernel_config.sm100_backward is None:
         raise ValueError("Saved-output experiment requires explicit SM100 forward/backward configs")
+    if config.tile != (128, 128) or config.q_stage not in (1, 2):
+        raise ValueError("FP32 saved-output candidate requires native 128x128 forward tiles")
+    # Two query stages plus FP32 O leave only one aliased KV slot. The native
+    # multi-key loop waits for next K before releasing V from the second query
+    # stage, which deadlocks with one slot. One query stage retains four slots.
+    config = replace(config, q_stage=FP32_FORWARD_Q_STAGE)
+    query_and_output_bytes = config.q_stage * config.tile[0] * 128 * (2 + 4)
+    kv_tile_bytes = config.tile[1] * 128 * 2
+    kv_stages = (SM100_FORWARD_SHARED_MEMORY_BUDGET - query_and_output_bytes) // kv_tile_bytes
+    if kv_stages < 2:
+        raise ValueError("FP32 saved-output forward requires at least two native KV pipeline slots")
     modules = _import_cutlass_cute()
     sparse = _packed_segment_forward_block_sparse_indices_with_full(
         lower_bounds,
