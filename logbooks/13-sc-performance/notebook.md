@@ -102,6 +102,10 @@ Source `afb2416304a2d429b2c6df1829f08b2688321b87` ran with version `2026.10.26.7
 
 Source `28777a2d99c85b5646e9cc5f821503d608a4d046` ran with version `2026.10.26.8` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.8-coordinator-af69258d`. Two optimizer cycles ran, but the third arm failed the exact candidate-width check. The research driver assigned a new, unused `request_spec` attribute; the rollout coordinator reads `_request_spec`. This left capture at its initial width while the trainer changed widths. The first two cycle timings are therefore invalid as an adoption comparison, including the nominal capture-off baseline. The driver now updates the field actually consumed before opening the next batch’s leases and records the requested capture width with every live cycle. Staleness zero and the one-batch in-flight limit provide the arm boundary. No production code changed.
 
+### Ninth Qwen startup: component request protocol
+
+Source `5091e81913006660c5aef372eb944c61e857d28d` ran with version `2026.10.26.9` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.9-coordinator-7544af8c`. All fifteen live cycles and fifteen matched-token trainer replays completed. The live baseline requested no head; both probe arms consumed positions. The pinned wheel and Model Runner V2 were confirmed. These partial records are retained, but this is not complete driver qualification: the following profiling request omitted `return_token_ids`, so its response had no token-ID vector. The research component request now explicitly asks for token IDs and preserves special tokens, matching the numeric comparison. No product code changed.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.

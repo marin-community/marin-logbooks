@@ -242,6 +242,8 @@ async def chat_payload(client, messages, width, *, seed=97, max_tokens=16):
         "max_completion_tokens": max_tokens,
         "seed": seed,
         "return_tokens_as_token_ids": True,
+        "return_token_ids": True,
+        "skip_special_tokens": False,
         "include_stop_str_in_output": True,
     }
     payload = {"json": body, "headers": {"x-request-id": f"sc-perf-{seed}-{width}"}}
