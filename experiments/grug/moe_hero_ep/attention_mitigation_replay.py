@@ -44,7 +44,7 @@ EXPORT_CHECK_NAMES = (
 REQUIRED_ZERO_GATE_NAMES = (*_BASE_REQUIRED_ZERO_GATE_NAMES, *EXPORT_CHECK_NAMES[:5])
 REPLAY_GATE_NAMES = (
     *_BASE_REQUIRED_ZERO_GATE_NAMES,
-    "fp32_output_cast_max_abs_error",
+    "fp32_output_cast_mismatch_count",
     "fp32_output_lse_max_abs_error",
     "instrumented_q_max_abs_difference",
     "instrumented_k_max_abs_difference",
@@ -313,7 +313,7 @@ def replay_mitigation_local(
             bf16_mismatch_count((decoded_k * scale).astype(k.dtype), instrumented.gradients[1]),
             bf16_mismatch_count(decoded_q.astype(q.dtype), scale_one_gradients[0]),
             bf16_mismatch_count(decoded_k.astype(k.dtype), scale_one_gradients[1]),
-            _max_abs_difference(fp32_output, baseline_output),
+            bf16_mismatch_count(fp32_output, baseline_output),
             jnp.max(jnp.abs(finite_lse_difference)),
             *(
                 _max_abs_difference(actual, expected)
