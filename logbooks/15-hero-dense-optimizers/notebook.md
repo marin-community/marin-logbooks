@@ -72,3 +72,16 @@ Use the existing `initialize_jax(endpoint_name=...)` API with the unique trainer
 A separate startup observation showed CoreWeave's shared scratch default pointing at us-east-08a despite the us-east-02a compute placement. The retry explicitly sets `MARIN_TEMP_PREFIX=s3://marin-us-east-02a` and `JAX_COMPILATION_CACHE_DIR=s3://marin-us-east-02a/tmp/ttl=30d/compilation-cache`. Parent job environment is inherited by children. The original Hero dataset stays in place; no data is copied.
 
 The retry keeps campaign and artifact identities because there was no training progress or checkpoint state to fork, and uses a new coordinator job name ending in `-r2` to separate execution attempts. Successful artifacts would be reused; failed smoke artifacts are rerun by the executor. The revised source revision and job identity follow after publication.
+
+## 2026-10-26: Retry submitted
+
+Published retry source: `1d6cca120eeebfe2446bf690e8e8dbb6d4559422`. All nine focused numerical/budget tests pass after the rendezvous fix, and required lint passes. The clean-tree 16.0 MB source bundle was submitted as `/dlwh/hero-dense-opt-20261026-coord-r2` at 17:01:20 America/Los_Angeles. The first tree is terminal (failed/killed probes and a cancelled coordinator).
+
+The retry uses the same command as the first submission with `--job-name hero-dense-opt-20261026-coord-r2` and these explicit environment arguments before `--`:
+
+```text
+-e MARIN_TEMP_PREFIX s3://marin-us-east-02a
+-e JAX_COMPILATION_CACHE_DIR s3://marin-us-east-02a/tmp/ttl=30d/compilation-cache
+```
+
+The existing 15-minute heartbeat now follows the retry coordinator. No training result or successful probe has yet been verified. The archive index PR is https://github.com/marin-community/marin-logbooks/pull/16; it remains a draft and is not merged.
