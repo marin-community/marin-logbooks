@@ -251,7 +251,7 @@ async def chat_payload(client, messages, width, *, seed=97, max_tokens=16):
 async def inference_comparison(trainer, root, smoke):
     client = trainer.inference_engine_client
     await client.wake_up()
-    engine = client.engines[0]
+    engine = client.engines[0].inference_engine_actor
     messages = [{"role": "user", "content": "Explain how to check an arithmetic result carefully."}]
     profiles = []
     for width in (0, 32, 128):
@@ -435,7 +435,7 @@ async def dense_prefixes(trainer, base, root):
     outputs = await asyncio.gather(*trainer.policy_model.async_run_ray_method("mesh", "forward", batch))
     scored = concatenate_outputs_after_mesh_dispatch(trainer.policy_model.actor_infos, outputs)["score_old_logprobs"]
     await trainer.inference_engine_client.wake_up()
-    engine = trainer.inference_engine_client.engines[0]
+    engine = trainer.inference_engine_client.engines[0].inference_engine_actor
     reports = []
     for index, request in enumerate(requests):
         arrays = await engine.performance_generate.remote(
@@ -508,9 +508,8 @@ def performance_entrypoint(cfg):
     with exp.get_tracker() as tracker:
         try:
             trainer = exp._setup_trainer(tracker)
-            engine_runtime = ray.get(
-                [engine.performance_info.remote() for engine in trainer.inference_engine_client.engines]
-            )
+            inference_actors = [engine.inference_engine_actor for engine in trainer.inference_engine_client.engines]
+            engine_runtime = ray.get([engine.performance_info.remote() for engine in inference_actors])
             assert all("39e62869693c" in engine["vllm_version"] for engine in engine_runtime), engine_runtime
             write_record(root, "engine-runtime.json", engine_runtime)
             observers = [
@@ -529,12 +528,7 @@ def performance_entrypoint(cfg):
                 repeat, arm = planned[step - 1]
                 await choose_arm(trainer, arm)
                 if repeat == -1 and arm == "sc128":
-                    await asyncio.gather(
-                        *(
-                            engine.performance_start_cpu_profile.remote()
-                            for engine in trainer.inference_engine_client.engines
-                        )
-                    )
+                    await asyncio.gather(*(engine.performance_start_cpu_profile.remote() for engine in inference_actors))
                 await reset_memory(trainer, observers, f"live-{step}")
                 starts[step] = time.perf_counter()
                 await original_publish(step)
@@ -570,12 +564,7 @@ def performance_entrypoint(cfg):
                     )
                     if repeat == -1 and arm == "sc128":
                         profiles.extend(
-                            ray.get(
-                                [
-                                    engine.performance_stop_cpu_profile.remote()
-                                    for engine in trainer.inference_engine_client.engines
-                                ]
-                            )
+                            ray.get([engine.performance_stop_cpu_profile.remote() for engine in inference_actors])
                         )
                         write_record(root, "cpu-capture-profiles.json", profiles)
                     write_record(root, "live-cycles.json", live)

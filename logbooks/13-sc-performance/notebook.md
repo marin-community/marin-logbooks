@@ -94,6 +94,10 @@ A separate filtered-capture prototype requests an explicit 128-token head plus o
 
 Source `2c4ce341c30582cacd87570e0d35c580ca1ed8bc` ran with version `2026.10.26.6` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.6-coordinator-7253aee9`. Import stopped on an `await` added to the synchronous Ray driver while collecting engine metadata. It now uses synchronous `ray.get`. Bytecode compilation of the whole research driver is added to the local checks; AST parsing alone did not catch this context error. No timing or accuracy result was produced.
 
+### Seventh Qwen startup: wrapper boundary
+
+Source `afb2416304a2d429b2c6df1829f08b2688321b87` ran with version `2026.10.26.7` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.7-coordinator-41a1bb9a`. Initialization reached the inference client, then metadata collection called a research method on `RayWrappedInferenceEngine`, which only forwards its declared interface. Research RPCs now use its public `inference_engine_actor` handle consistently, including metadata, CPU profiling, native chat and numeric comparisons. The normal task path continues through the wrapper. No model cost result was produced.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
