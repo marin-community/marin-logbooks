@@ -1,0 +1,119 @@
+{
+  "source_revision": "f4a443b9ea2e2f6039644a0990b04d266925a659",
+  "coordinator": "/romain/users-romain-checkpoints-sc-performance-2026.10.26.11-coordinator-1ea3b2a1",
+  "gpu_job": "/romain/users-romain-checkpoints-sc-performance-2026.10.26.11-coordinator-1ea3b2a1/users-romain-checkpoints-sc-performance-2026.10.26.11-681804071f07",
+  "model": "Qwen/Qwen2.5-0.5B-Instruct@7ae557604adf67be50417f59c2c2f167def9a775",
+  "physical_gpus": 8,
+  "learner_ranks": 8,
+  "engine_runtime": [
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    }
+  ],
+  "live_cycles": 15,
+  "matched_trainer_replays": 15,
+  "dense_prefixes": 12,
+  "natural_response_lengths": [
+    590,
+    1431,
+    1943,
+    2048
+  ],
+  "behavior_head_mass": {
+    "32": {
+      "min": 0.24009920746492192,
+      "mean": 0.7914729934875587,
+      "max": 0.9892924851165368
+    },
+    "128": {
+      "min": 0.3793197129578883,
+      "mean": 0.8580237259389052,
+      "max": 0.9939644935826951
+    }
+  },
+  "comparison_weight_sync": {
+    "policy_version_step": 15
+  },
+  "ordinary_baseline_capture_counts": [
+    0,
+    0,
+    0
+  ],
+  "probe_consumption": {
+    "probe128": {
+      "observed": 2.0,
+      "sampled_responses": 8.0,
+      "sampled_tokens": 256.0
+    },
+    "probe32": {
+      "observed": 2.0,
+      "sampled_responses": 8.0,
+      "sampled_tokens": 253.0
+    }
+  },
+  "controlled_geometry": {
+    "32": {
+      "nonpadding_tokens": 256,
+      "response_tokens": 128,
+      "ranks": 8,
+      "independent_numeric_reference_reports": 16
+    },
+    "128": {
+      "nonpadding_tokens": 256,
+      "response_tokens": 128,
+      "ranks": 8,
+      "independent_numeric_reference_reports": 16
+    }
+  },
+  "record_sha256": {
+    "completed.json": "28bd4c1b34f492b159b9ec7af2e334651291c552a16105f49122a75756dedeed",
+    "live-cycles.json": "ba514c39ed9e4c315782be562b122ccce7dcdcfb32d59cd38a5c62f1aff7bb90",
+    "matched-training.json": "ca22b712a47ad7f78fe4a7c70b3245a27a8b66c9b130f9e7de4bd57682e9a544",
+    "dense-prefixes.json": "553604312a8f36689052619c46895762a6210e12fa85d145b7dbe8484d76e279",
+    "long-k128.json": "38a66cc49189a7c655829c9b6320bf172cd650be6e1006fff4a71247ad7628a5",
+    "long-k32.json": "c640c3b1e1121f2f944b45c79981c32485b2b89f398efb75d07982e54ba692e5"
+  },
+  "limits": [
+    "Small-model complete-driver qualification; not the Grug 100K qualification or an adoption-default decision.",
+    "Two steady repeat blocks; use the larger study for cost conclusions.",
+    "Dense behavior probabilities recaptured at generated prefixes after normal policy weight synchronization.",
+    "Eight draws here are CPU full-vocabulary references, not a cheap capture implementation."
+  ]
+}

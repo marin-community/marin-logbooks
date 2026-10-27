@@ -112,6 +112,12 @@ Source `d3b8f0340fd70fa33139ea0936949becac07420c` ran with version `2026.10.26.1
 
 The driver now calls the normal policy-to-inference synchronization after matched replay and before component requests, and exports its policy version. This restores discarded weights through the existing trainer mechanism. Recheck the whole Qwen driver before Grug. The cost-analysis program at `9ee2e186be` reports paired-block uncertainty and all-rank/device memory from saved records; it does not change the GPU driver.
 
+### Eleventh Qwen startup: valid complete-driver qualification
+
+Source `f4a443b9ea2e2f6039644a0990b04d266925a659` ran with version `2026.10.26.11` under coordinator `/romain/users-romain-checkpoints-sc-performance-2026.10.26.11-coordinator-1ea3b2a1`. The normal V2 sampler and pinned wheel completed all fifteen live cycles, fifteen matched trainer replays, native/numeric and filtered-capture comparisons, twelve dense prefixes and both controlled-shape candidate widths on eight learners. The post-replay policy synchronization restored the expected probabilities. The independent prefix analysis passed on all twelve records; their natural responses range from 590 to 2,048 tokens. Mean captured behavior mass is 0.7915 for K32 and 0.8580 for K128 on this small selection. These numbers do not choose the Grug default.
+
+The [qualification summary](qwen-driver-qualification.json) retains counts, source/execution identities, geometry and record hashes. Qwen uses eight colocated physical GPUs, with a 256/128-token controlled geometry. It qualifies the whole driver, not the Grug 102,400/49,152-token layout. The forthcoming Grug comparison keeps the normal sampler and the same five arms, with five steady repeats after warmup, reference scoring and learner-first placement. It requests eleven nodes (80 learners plus eight inference GPUs) at batch priority.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
