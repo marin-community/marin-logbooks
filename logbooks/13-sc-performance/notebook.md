@@ -140,6 +140,32 @@ Source `a6f1acf5e1f97735b543692fe7c50e9c6d398bb2` passed both complete small-mod
 
 Grug version 15 was submitted from that source as `/romain/users-romain-checkpoints-sc-performance-2026.10.26.15-coordinator-bf477d03`, requesting eleven H100 nodes at batch priority. Both pools were inspected first; RNO had 44 unrequested GPUs and East had none, so the gang may queue. This execution collects one reference-enabled batch and the remaining accuracy, alternatives and actual 100K qualification evidence. Version 12 remains the separate source for completed cost comparisons.
 
+### Completed Grug cost study
+
+The [cost summary](grug-costs.json) retains all distributions, paired repeat changes, memory counters, probe consumption and source-record hashes from version 12. Each arm has one warmup and five interleaved steady blocks. The allocation, fixed weights, prompt subset and sampling settings match within this comparison. The trainer replay additionally fixes tokens, masks, expert routes and RNG state: 74,585 loss tokens and one batch hash across every arm. Learning rate is zero. The workload is eight locally graded Snowball prompts, four responses each, rather than the full mixture and its external judge latency.
+
+| Arm | Live cycle mean, seconds | Relative to TIS, 95% interval | Matched trainer mean, seconds | Relative to TIS, 95% interval |
+| --- | --- | --- | --- | --- |
+| TIS, heads and probes off | 113.627 | baseline | 14.752 | baseline |
+| SC, K128 | 131.934 | +16.11% [−18.18%, +58.18%] | 16.779 | +13.74% [+11.58%, +16.63%] |
+| SC, K32 | 140.590 | +23.73% [−16.67%, +85.74%] | 14.799 | +0.32% [−2.93%, +4.49%] |
+| TIS with K128 probes | 128.526 | +13.11% [−3.68%, +32.36%] | 14.451 | −2.04% [−4.69%, +1.20%] |
+| TIS with K32 probes | 114.774 | +1.01% [−14.58%, +22.29%] | 14.302 | −3.05% [−4.86%, −0.93%] |
+
+Intervals resample whole paired repeat blocks 10,000 times with seed 41 and report ratios of means. Five blocks give weak uncertainty estimates. Live response lengths vary substantially, so their raw means do not establish causal overhead. The negative probe estimates do not establish a general speedup. These serialized cycles include collection, grading, reference and old scoring, advantages, policy training, optimizer and normal weight publication. They exclude harness export and final host logging; they do not measure asynchronous throughput or learning benefit.
+
+The matched trainer difference is concentrated in policy training and scoring. TIS old/reference scoring averaged 11.239 seconds and policy training 3.360 seconds; K128 averaged 11.909 and 4.454 seconds. K32 averaged 10.999 and 3.527 seconds. Reducing K is the largest contained improvement measured here: it lowers matched trainer time by 11.8% relative to K128 and divides candidate-array sizes by four. Accuracy evidence must determine whether to use that trade-off by default.
+
+Capture and transfer are logical bytes and host stage durations, not measured network traffic or exclusive GPU stages. Mean SC128 generation/grading request lifetimes summed to 211.852 seconds per live cycle, assembly took 0.574 seconds and collation took 0.434 seconds. The corresponding K32 values are 237.052, 0.617 and 0.134 seconds, with different generated lengths. Captured/exported heads averaged 66,414,797 bytes for K128 and 19,107,533 bytes for K32. Matched trainer returned-score arrays used exactly 175,996,928 and 43,999,232 bytes respectively. These sums include the actual transport/packing layout; they cannot be subtracted from cycle time as disjoint stages.
+
+Every steady arm records all 80 learner ranks and 88 physical GPUs. Maximum policy-process Torch allocation was 34.851 GiB for live TIS, 34.956 for SC128 and 34.943 for SC32. Matched replay maxima were 31.747, 31.811 and 31.768 GiB. The largest physical-device observation was 68.973 GiB in every arm; the inference allocation dominates that maximum. Physical memory is sampled every 50 ms, while Torch reports exact allocator peaks. Startup is outside these measurement windows.
+
+Both live probe arms consumed five events, twenty responses and 640 sampled positions after warmup. Live probe groups were short: none reached 2,048 response tokens. Both matched probe arms consumed five events, 160 responses and 5,120 positions, including 1,920 positions across sixty response observations of at least 2,048 tokens; the longest response was 10,742 tokens. The replay samples all responses, so its density differs from the live one-group schedule. Mean live CPU summary cost was 6.9 ms at K128 and 3.2 ms at K32. Probe interval 1 was an experimental setting; the maintained default remains startup/every ten published steps, zero off, and at most 32 positions per response.
+
+The unit-advantage diagnostic remains defined for flat rewards. Actual-advantage correction and ordinary output-gradient norms vanish on flat groups. On the fixed replay, 37.5% of sampled positions have zero advantage; actual correction L1 means are about 4.08e−5 and ordinary gradient L1 is 0.1579 at both widths. The ratio describes the hypothetical output-gradient correction at current=old, not a parameter-gradient error or a learning result.
+
+Public Torch traces, with CUDA graphs enabled, cover one separate 16-token request per width on the first inference engine, outside timed repeats. They retain model kernels and graph launches. The pinned worker reuses its initial `k0` filename prefix; the three widths must be assigned by trace timestamps in the known 0/32/128 call order. CPU profiles over all eight engines attribute 5.176 summed self-seconds to vLLM's logprob append path, 0.642 to SkyRL recording, 0.554 to flat response-head selection and 0.027 to flat-array conversion. These are accumulated CPU times, not the cycle critical path. They support keeping the small caller conversion and measuring candidate width before undertaking a serving rewrite. Version 15 will provide the completed accuracy and alternative-path evidence.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
