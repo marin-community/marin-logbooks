@@ -134,6 +134,12 @@ A research-only follow-up mode collects one reference-enabled SC128 batch and th
 
 The Grug router uses a persistent frozen query-bias buffer: its provider enables that storage with load balancing disabled, and its custom forward does not perform adaptive bias updates. Learning rate zero plus captured route replay preserves the fixed-weight comparison.
 
+### Qwen versions 13 and 14: corrected lifecycle and follow-up qualified
+
+Source `a6f1acf5e1f97735b543692fe7c50e9c6d398bb2` passed both complete small-model checks. Version 13 ran all fifteen live cycles and fifteen matched trainer replays. Version 14 exercised the evidence-only mode with one reference-enabled SC128 live batch. Both exported twelve dense prefixes and K32/K128 controlled-geometry checks on all eight learner ranks, restored colocated inference weights, and finished with authoritative GPU-child state `succeeded`. The [separate qualification summary](qwen-driver-followup-qualification.json) preserves source, executions and hashes without replacing the earlier valid version 11 evidence.
+
+Grug version 15 was submitted from that source as `/romain/users-romain-checkpoints-sc-performance-2026.10.26.15-coordinator-bf477d03`, requesting eleven H100 nodes at batch priority. Both pools were inspected first; RNO had 44 unrequested GPUs and East had none, so the gang may queue. This execution collects one reference-enabled batch and the remaining accuracy, alternatives and actual 100K qualification evidence. Version 12 remains the separate source for completed cost comparisons.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
