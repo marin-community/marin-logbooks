@@ -425,6 +425,19 @@ compute is awaiting user judgment under the job-monitoring failure policy; the
 original rack job has ended. Further checkpoint comparison and any training
 continuation remain pending. Operational details are retained privately.
 
+### 2026-10-26 — Single-GPU acceptance retry authorized and submitted
+
+The follow-up request explicitly authorized the prepared acceptance retry and
+routine harness fixes needed to get the suite running. The single-GPU check was
+submitted from published source `136b1c39f8fe2efb58a23700bca1c0089fac3921`,
+with a 15-minute timeout. It loads no checkpoints and preserves the exact zero-
+mismatch and operand-contract criteria. Both native cases must pass before the
+bounded rack comparison resumes. GPU acceptance is pending.
+
+Operational identities remain in the private run record. A heartbeat owns this
+acceptance phase and the conditional transition to the checkpoint suite. Live
+Hero remains unchanged.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -466,8 +479,7 @@ compute authorization. Sources and configuration are published before this launc
 
 ## Final decision
 
-The original diagnostic is complete. The first mitigation comparison stopped
-before checkpoints at a decoder-verification gate. A strict bit-pattern checker
-and a separate single-GPU acceptance entry point are prepared, with nine CPU
-tests and lint passing. GPU confirmation and permission for the bounded retry
-are pending. No mitigation or training winner has been selected.
+The original diagnostic is complete. A single-GPU acceptance retry is running
+with the strict bit-pattern checker. It must pass before the newly authorized
+checkpoint mitigation suite resumes. No mitigation or training winner has been
+selected; checkpoint accuracy and performance measurements remain pending.
