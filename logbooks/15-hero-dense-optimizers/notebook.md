@@ -62,3 +62,13 @@ iris --config lib/iris/config/marin.yaml job run --no-wait \
   python -m experiments.grug.fast_track.dense_ladder \
   --campaign hero-dense-opt-20261026 --version 2026.10.26 --max-concurrent 8 --run
 ```
+
+## 2026-10-26: Startup rendezvous collision
+
+The first probes failed before model training. Multiple sibling gangs resolved the same default `jax_coordinator-attempt-0` endpoint; JAX reported “unexpectedly tried to connect with a different incarnation.” Iris namespaces endpoints to the root job, so distinct child jobs need distinct coordinator endpoint names. The experiment tree was cancelled; no calibration or full ladder runs were started.
+
+Use the existing `initialize_jax(endpoint_name=...)` API with the unique trainer ID before the ordinary trainer initialization. The latter is idempotent. This changes discovery isolation and preserves the recipe. A named port alone would not isolate the shared endpoint registry.
+
+A separate startup observation showed CoreWeave's shared scratch default pointing at us-east-08a despite the us-east-02a compute placement. The retry explicitly sets `MARIN_TEMP_PREFIX=s3://marin-us-east-02a` and `JAX_COMPILATION_CACHE_DIR=s3://marin-us-east-02a/tmp/ttl=30d/compilation-cache`. Parent job environment is inherited by children. The original Hero dataset stays in place; no data is copied.
+
+The retry keeps campaign and artifact identities because there was no training progress or checkpoint state to fork, and uses a new coordinator job name ending in `-r2` to separate execution attempts. Successful artifacts would be reused; failed smoke artifacts are rerun by the executor. The revised source revision and job identity follow after publication.

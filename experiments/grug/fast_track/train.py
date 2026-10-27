@@ -23,6 +23,7 @@ import optax
 from fray.cluster import ResourceConfig
 from haliax import Axis
 from haliax.partitioning import set_mesh
+from iris.jax.init import initialize_jax
 from jax._src import config as jax_config
 from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
@@ -686,6 +687,8 @@ def _run_grug_local(config: GrugRunConfig) -> None:
         set_jagged_array_read_cache_bytes(config.tensorstore_cache_bytes)
 
     trainer = config.trainer.trainer
+    # Sibling training gangs share the parent Iris endpoint namespace.
+    initialize_jax(endpoint_name=f"jax_coordinator-{trainer.id}")
     trainer.initialize()
     levanter.tracker.log_configuration(config)
 
