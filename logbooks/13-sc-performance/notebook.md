@@ -118,6 +118,12 @@ Source `f4a443b9ea2e2f6039644a0990b04d266925a659` ran with version `2026.10.26.1
 
 The [qualification summary](qwen-driver-qualification.json) retains counts, source/execution identities, geometry and record hashes. Qwen uses eight colocated physical GPUs, with a 256/128-token controlled geometry. It qualifies the whole driver, not the Grug 102,400/49,152-token layout. The forthcoming Grug comparison keeps the normal sampler and the same five arms, with five steady repeats after warmup, reference scoring and learner-first placement. It requests eleven nodes (80 learners plus eight inference GPUs) at batch priority.
 
+### Startup output preservation and cleanup
+
+Temporary outputs from the ten completed versions `2026.10.26.1` through `2026.10.26.10` were preserved in a content-addressed archive before removal. It contains 14,800 original objects (138,980,816 bytes) in a 12,534,810-byte compressed archive. Every member hash and the uploaded archive hash were verified; the source objects were checked unchanged before deletion, and all ten temporary roots were checked empty afterward. Archive SHA256: `e5800b4f510c6875c9b2f51dee967855cb7c91dc691e969fc655ea750c914f04`. The private restore manifest and receipts are `startup-archive-proof.json` and `startup-cleanup-receipt.json` in native session `01a16b97-e977-75f3-8b2b-fd07bbd1c609`. The archive contains exact source URIs, file hashes, original object metadata, job/source identities and its capture program. Earlier temporary-output references require that restore.
+
+The valid Qwen version 11 evidence and active Grug version 12 outputs remain available for analysis. Model caches, dataset sources and other work were outside this cleanup. The Grug run has completed warmup in all five arms; its first baseline had zero candidate-head bytes, and memory records cover all 80 learner ranks and 88 physical GPUs. Steady repeats are still in progress. No Grug performance conclusion has been selected.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.
