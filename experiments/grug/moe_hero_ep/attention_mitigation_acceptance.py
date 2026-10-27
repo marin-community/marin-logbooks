@@ -72,7 +72,7 @@ def run_acceptance(request: dict) -> None:
                 compiled = lowered.compile()
                 phase("compile_complete")
                 phase("dispatch_begin")
-                replay = compiled(length=length, heads=heads)
+                replay = compiled()
                 phase("dispatch_complete")
                 phase("synchronize_begin")
                 jax.block_until_ready(replay)

@@ -10,6 +10,7 @@ import logging
 import os
 import statistics
 import time
+from functools import partial
 
 import draccus
 import equinox as eqx
@@ -321,7 +322,7 @@ def _checkpoint_comparison(model, batch, request: dict, checkpoint: dict) -> dic
     }
 
 
-@eqx.filter_jit
+@partial(jax.jit, static_argnames=("length", "heads"))
 def _native_smoke(*, length: int, heads: int):
     return jax.shard_map(
         lambda: smoke_local_replay(sequence_length=length, query_heads=heads), out_specs=P(), check_vma=False
