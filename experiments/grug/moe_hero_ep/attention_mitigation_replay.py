@@ -27,10 +27,10 @@ from experiments.grug.moe_hero_ep.attention_softmax_replay import BATCH_AXES, se
 _BASE_REQUIRED_ZERO_GATE_NAMES = (
     "capture_tail_max_abs_error",
     "baseline_forward_max_abs_error",
-    "decoder_q_final_cast_max_abs_error",
-    "decoder_k_final_cast_max_abs_error",
-    "decoder_q_scale_one_max_abs_error",
-    "decoder_k_scale_one_max_abs_error",
+    "decoder_q_final_cast_mismatch_count",
+    "decoder_k_final_cast_mismatch_count",
+    "decoder_q_scale_one_mismatch_count",
+    "decoder_k_scale_one_mismatch_count",
 )
 EXPORT_CHECK_NAMES = (
     "export_invalid_probability_row_count",
@@ -119,6 +119,23 @@ def select_full_head_panel(
 
 def _max_abs_difference(first: jax.Array, second: jax.Array) -> jax.Array:
     return jnp.max(jnp.abs(first.astype(jnp.float32) - second.astype(jnp.float32)))
+
+
+def bf16_mismatch_count(first: jax.Array, second: jax.Array) -> jax.Array:
+    """Compare represented BF16 bits without an optimizable FP32 roundtrip.
+
+    The compared values may be produced inside the same GPU fusion. Observing
+    their integer representations forces the rounding boundary to be visible.
+    Acceptance still requires exactly zero mismatches. Zero signs are ignored,
+    matching the original exact numerical-difference gate.
+    """
+    if first.dtype != jnp.bfloat16 or second.dtype != jnp.bfloat16:
+        raise TypeError("BF16 representation parity requires two BF16 arrays")
+    first_bits = jax.lax.bitcast_convert_type(first, jnp.uint16)
+    second_bits = jax.lax.bitcast_convert_type(second, jnp.uint16)
+    first_bits = jnp.where((first_bits & 0x7FFF) == 0, jnp.uint16(0), first_bits)
+    second_bits = jnp.where((second_bits & 0x7FFF) == 0, jnp.uint16(0), second_bits)
+    return jnp.sum(first_bits != second_bits, dtype=jnp.float32)
 
 
 def native_operand_export_checks(
@@ -292,10 +309,10 @@ def replay_mitigation_local(
         (
             capture.tail_output_max_abs_error,
             _max_abs_difference(baseline_output, selected.original_output),
-            _max_abs_difference((decoded_q * scale).astype(q.dtype), instrumented.gradients[0]),
-            _max_abs_difference((decoded_k * scale).astype(k.dtype), instrumented.gradients[1]),
-            _max_abs_difference(decoded_q.astype(q.dtype), scale_one_gradients[0]),
-            _max_abs_difference(decoded_k.astype(k.dtype), scale_one_gradients[1]),
+            bf16_mismatch_count((decoded_q * scale).astype(q.dtype), instrumented.gradients[0]),
+            bf16_mismatch_count((decoded_k * scale).astype(k.dtype), instrumented.gradients[1]),
+            bf16_mismatch_count(decoded_q.astype(q.dtype), scale_one_gradients[0]),
+            bf16_mismatch_count(decoded_k.astype(k.dtype), scale_one_gradients[1]),
             _max_abs_difference(fp32_output, baseline_output),
             jnp.max(jnp.abs(finite_lse_difference)),
             *(

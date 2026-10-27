@@ -95,7 +95,9 @@ def _panel_record(replay, *, layer_index: int, global_sequence_index: int) -> di
     gates = dict(zip(REPLAY_GATE_NAMES, host.gates.reshape(-1).tolist(), strict=True))
     for name in REQUIRED_ZERO_GATE_NAMES:
         if gates[name] != 0:
-            raise ValueError(f"Mitigation parity gate failed at layer {layer_index}: {name}={gates[name]}")
+            raise ValueError(
+                f"Mitigation parity gate failed at layer {layer_index}: {name}={gates[name]}; all gates={gates}"
+            )
     key_positions = np.arange(host.k.shape[1])[None, None, :]
     mask = (
         host.valid[..., None]
@@ -348,6 +350,11 @@ def run_comparison(request: dict) -> None:
             logger.info("Compiling native mitigation smoke length=%d heads=%d", length, heads)
             replay = _native_smoke(length=length, heads=heads)
             jax.block_until_ready(replay)
+            if jax.process_index() == 0:
+                gates = dict(zip(REPLAY_GATE_NAMES, _host_arrays(replay.gates).reshape(-1).tolist(), strict=True))
+                (StoragePath(request["output_root"]) / f"smoke-{length}-{heads}-gates.json").write_text(
+                    json.dumps(gates, allow_nan=False)
+                )
             record = _panel_record(replay, layer_index=-1, global_sequence_index=-1)
             if jax.process_index() == 0:
                 (StoragePath(request["output_root"]) / f"smoke-{length}-{heads}.json").write_text(

@@ -5,9 +5,28 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from experiments.grug.moe_hero_ep.attention_mitigation_replay import native_operand_export_checks, select_full_head_panel
+from experiments.grug.moe_hero_ep.attention_mitigation_replay import (
+    bf16_mismatch_count,
+    native_operand_export_checks,
+    select_full_head_panel,
+)
 from experiments.grug.moe_hero_ep.attention_softmax_capture import AttentionCapture
 from experiments.grug.moe_hero_ep.attention_softmax_replay import select_attention_panel
+
+
+def test_native_parity_observes_bf16_rounding_and_rejects_an_adjacent_value():
+    # The failed GPU gate differed by exactly this FP32-to-BF16 rounding error.
+    raw = np.float32(0.020798683166503906)
+    scale = np.float32(128**-0.5)
+    expected = jnp.asarray([0.00183868408203125], dtype=jnp.bfloat16)
+    rounded = jax.jit(lambda x: bf16_mismatch_count((x * scale).astype(jnp.bfloat16), expected))
+    assert float(rounded(jnp.asarray([raw]))) == 0
+    expected_bits = np.asarray(expected).view(np.uint16)
+    adjacent_bits = jnp.asarray(expected_bits + 1)
+    adjacent = jax.lax.bitcast_convert_type(adjacent_bits, jnp.bfloat16)
+    assert float(jax.jit(bf16_mismatch_count)(expected, adjacent)) == 1
+    zeros = jnp.asarray([0.0, -0.0], dtype=jnp.bfloat16)
+    assert float(jax.jit(bf16_mismatch_count)(zeros, zeros[::-1])) == 0
 
 
 def test_full_head_selection_preserves_prior_sequence_positions_and_every_head_cotangent():
