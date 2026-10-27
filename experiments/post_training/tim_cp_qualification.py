@@ -135,10 +135,13 @@ def qualification_recipe(smoke):
     return cfg, plan, counts
 
 
-def performance_recipe(smoke, sampled_observer=False):
+def performance_recipe(smoke, sampled_observer=False, followup=False):
     cfg, plan, counts = qualification_recipe(smoke)
     trainer = cfg["trainer"]
     trainer.update(max_steps=15 if smoke else 30, epochs=40, project_name="score-centering-performance")
+    if followup:
+        trainer["max_steps"] = 1
+        cfg["extra_env"]["TIM_CP_PERFORMANCE_FOLLOWUP"] = "1"
     trainer["policy"]["optimizer_config"]["lr"] = 0.0
     trainer["rollout_buffer"].update(
         batch_policy="full_batch", max_staleness_steps=0, max_in_flight=plan.train_batch_size
@@ -174,8 +177,10 @@ def performance_recipe(smoke, sampled_observer=False):
     return cfg, plan, counts
 
 
-def build_qualification(version, smoke, performance=False, sampled_observer=False):
-    cfg, plan, counts = performance_recipe(smoke, sampled_observer) if performance else qualification_recipe(smoke)
+def build_qualification(version, smoke, performance=False, sampled_observer=False, performance_followup=False):
+    cfg, plan, counts = (
+        performance_recipe(smoke, sampled_observer, performance_followup) if performance else qualification_recipe(smoke)
+    )
     if performance:
         source = ArtifactStep.adopt(user_owned_name("documents/sc-performance-pivot-source"), "2026.10.16.3", SOURCE_URI)
         data = apply(
@@ -235,17 +240,23 @@ def build_qualification(version, smoke, performance=False, sampled_observer=Fals
 @click.option("--smoke/--full", default=False)
 @click.option("--performance", is_flag=True)
 @click.option(
+    "--performance-followup", is_flag=True, help="Collect remaining evidence after one reference-enabled SC batch."
+)
+@click.option(
     "--sampled-observer", is_flag=True, help="Qualify the V1-only sampling prototype separately from cost runs."
 )
 @rl_build_options
-def main(smoke, performance, sampled_observer):
+def main(smoke, performance, sampled_observer, performance_followup):
     if sampled_observer and not performance:
         raise click.UsageError("--sampled-observer requires --performance")
+    if performance_followup and not performance:
+        raise click.UsageError("--performance-followup requires --performance")
     return build_qualification(
         resolve_version("sc-performance" if performance else "tim-cp-qualification", None),
         smoke,
         performance,
         sampled_observer,
+        performance_followup,
     )
 
 

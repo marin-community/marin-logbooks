@@ -8,6 +8,7 @@ import copy
 import hashlib
 import io
 import math
+import os
 import threading
 import time
 
@@ -435,7 +436,7 @@ async def dense_prefixes(trainer, base, root):
         }
     )
     await choose_arm(trainer, "tis")
-    trainer.policy_model.backload_to_gpu()
+    trainer.policy_model.backload_to_gpu(backload_optimizer=False)
     outputs = await asyncio.gather(*trainer.policy_model.async_run_ray_method("mesh", "forward", batch))
     scored = concatenate_outputs_after_mesh_dispatch(trainer.policy_model.actor_infos, outputs)["score_old_logprobs"]
     await trainer.inference_engine_client.wake_up()
@@ -502,7 +503,8 @@ async def dense_prefixes(trainer, base, root):
 @ray.remote(num_cpus=1, max_retries=0, max_calls=1)
 def performance_entrypoint(cfg):
     smoke = cfg.trainer.placement.policy_num_nodes == 1
-    planned = schedule(2 if smoke else 5)
+    followup = os.environ.get("TIM_CP_PERFORMANCE_FOLLOWUP") == "1"
+    planned = [(-1, "sc128")] if followup else schedule(2 if smoke else 5)
     assert cfg.trainer.max_steps == len(planned)
     before = set(placement_group_table())
     exp = BasePPOExp(cfg)
@@ -600,6 +602,8 @@ def performance_entrypoint(cfg):
                     for rank in updates
                 )
                 for arm in ("probe128", "probe32"):
+                    if not any(row["arm"] == arm for row in live):
+                        continue
                     assert (
                         sum(
                             row["metrics"].get("score_centering_probe/sampled_tokens", 0)
@@ -609,11 +613,17 @@ def performance_entrypoint(cfg):
                         > 0
                     )
                 write_record(root, "live-updates.json", updates)
-                await matched_training(trainer, saved["base"], observers, root, smoke)
+                if not followup:
+                    await matched_training(trainer, saved["base"], observers, root, smoke)
                 # Colocated finalization sleeps at level 2, which discards weights.
                 # Waking alone allocates storage; the normal sync restores the policy.
-                await trainer._sync_policy_for_rollouts(reason="performance_component_comparisons")
-                write_record(root, "comparison-weight-sync.json", {"policy_version_step": trainer.policy_version_step})
+                if trainer.colocate_all:
+                    await trainer._sync_policy_for_rollouts(reason="performance_component_comparisons")
+                write_record(
+                    root,
+                    "comparison-weight-sync.json",
+                    {"policy_version_step": trainer.policy_version_step, "reloaded_after_sleep": trainer.colocate_all},
+                )
                 await inference_comparison(trainer, root, smoke)
                 await dense_prefixes(trainer, saved["base"], root)
                 lengths = saved["base"]["response_mask"].sum(-1)
@@ -646,6 +656,7 @@ def performance_entrypoint(cfg):
                         "ranks": len(updates),
                         "config": public_config(OmegaConf.to_container(cfg, resolve=True)),
                         "weight_lr": 0.0,
+                        "followup_only": followup,
                         "engine_runtime": engine_runtime,
                         "limits": [
                             "Serialized fixed-workload cycles; not asynchronous throughput or a learning comparison.",

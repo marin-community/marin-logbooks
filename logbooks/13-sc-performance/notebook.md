@@ -124,6 +124,16 @@ Temporary outputs from the ten completed versions `2026.10.26.1` through `2026.1
 
 The valid Qwen version 11 evidence and active Grug version 12 outputs remain available for analysis. Model caches, dataset sources and other work were outside this cleanup. The Grug run has completed warmup in all five arms; its first baseline had zero candidate-head bytes, and memory records cover all 80 learner ranks and 88 physical GPUs. Steady repeats are still in progress. No Grug performance conclusion has been selected.
 
+### Grug version 12: complete cost records, late qualification failure
+
+Source `93ff2d8bcbe3231b20f1edee3f52e8d55796eb2f` ran as `/romain/users-romain-checkpoints-sc-performance-2026.10.26.12-coordinator-5fbb7b91`, GPU child `users-romain-checkpoints-sc-performance-2026.10.26.12-7253f0946134`, on all eleven H100 nodes at batch priority. All thirty live cycles and thirty matched-token trainer replays were exported. Five steady blocks consumed probes at both widths. The native V2 wheel remained pinned, and memory records cover all eighty learner ranks and eighty-eight physical GPUs. The completed cost records remain separate from the failed later qualification.
+
+After those measurements, the evidence phase reported a CUDA illegal memory access while `dense_prefixes` redundantly restored optimizer gradient storage for a scoring-only forward. `load_megatron_grads_to_gpu` unconditionally resizes and zeros buffers, including already resident buffers; this extra transition is unnecessary. The harness now restores model weights only for scoring. Controlled long qualification restores the optimizer once after its known reference-scoring offload, and no longer repeats that restore inside each worker benchmark. Colocated samplers still reload discarded weights; separate fixed-weight samplers retain their resident weights. No backend or product code changed. The first reported error does not by itself prove the original faulting CUDA operation.
+
+A research-only follow-up mode collects one reference-enabled SC128 batch and the remaining native/numeric, dense-prefix and 100K evidence. It skips the already completed cost repeats. Exercise both the normal Qwen driver and this follow-up mode before another Grug allocation. Keep version 12 as the cost source and record the follow-up as a separate execution, without treating it as a new cost comparison.
+
+The Grug router uses a persistent frozen query-bias buffer: its provider enables that storage with load balancing disabled, and its custom forward does not perform adaptive bias updates. Learning rate zero plus captured route replay preserves the fixed-weight comparison.
+
 ## Final decision
 
 Pending experiments. No candidate default, alternative implementation or PR boundary has been selected.

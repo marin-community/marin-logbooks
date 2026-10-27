@@ -205,7 +205,8 @@ class QualificationPolicyWorker(MegatronPolicyWorkerBase):
     def qualification_benchmark(
         self, token_ids, actions, reference_scores, label, warmups, repeats, candidate_count=128
     ):
-        self.backload_to_gpu()
+        # The caller restores model and optimizer once, after reference scoring.
+        # Re-loading resident Megatron gradient storage can invalidate its views.
         device = torch.cuda.current_device()
         dp = mpu.get_data_parallel_rank()
         cp = mpu.get_context_parallel_rank()
