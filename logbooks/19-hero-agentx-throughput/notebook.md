@@ -69,4 +69,14 @@ The first GPU operation will capture the actual installed dependencies, critical
 
 ## Final decision
 
-Pending experiments. No new accelerator work has run in this program.
+Pending throughput experiments.
+
+### 2026-10-28 21:56 UTC — held runtime and native kernel check
+
+Held job `/romain/dev-gpu-hero-agentx-01a1846a` acquired four four-GPU nodes at interactive priority. [The allocation record](allocation.json) retains Pod UIDs, start times, resources and actual image digests. Fresh Kubernetes inventory before allocation and after admission confirmed one NVLink domain with no Hero pretraining. The four admitted hosts are distinct and match the allowed-node receipt. The task image is the baseline digest `b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467`.
+
+The isolated runtime launch prefix was copied from the recorded C32 command, with its exact constraints and `UV_NO_CONFIG=1`. The captures on [host 0](runtime-host-0.json), [host 1](runtime-host-1.json), [host 2](runtime-host-2.json) and [host 3](runtime-host-3.json) agree on all 205 installed packages, nine critical Python-source hashes and eighteen compiled-extension hashes. Normalized package names and versions exactly match the retained startup inventory: no changed, missing or additional package. Torch is 2.14.1+cu132, CUDA runtime 13.2 and NCCL 2.30.7. Sixteen unique physical GPU UUIDs are recorded. The installed Grug module matches the retained released-source snapshot byte for byte.
+
+The [native ShortConv probe](shortconv-probe.json) passed on one GPU with the release's unchanged reference calculation and tolerances. It checks profiling without state mutation, separate request prefill histories and subsequent decode isolation. It does not qualify full-engine prefix caching or CUDA graphs.
+
+Next run: [fresh C32 baseline](experiments/baseline-c32.json), unchanged one-hour AgentX recipe, all 393 traces, normal preset warmup/replay and the same seed. Use the held Pods with the existing `experiments.evaluation.agentx.run.run` entry point. The recipe fingerprint remains `55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a`. No intrusive profiler, Marin metrics collector or NCCL collector is enabled. All allocation time, including the runtime capture and setup, is charged to this program.
