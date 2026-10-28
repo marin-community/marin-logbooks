@@ -35,6 +35,7 @@ from rigging.filesystem.storage_path import StoragePath
 from rigging.log_setup import configure_logging
 
 from experiments.grug.dispatch import dispatch_grug_training_run
+from experiments.grug.moe_hero_ep.attention_mitigation_compile_probe import replay_with_compile_evidence
 from experiments.grug.moe_hero_ep.attention_mitigation_replay import (
     REPLAY_GATE_NAMES,
     REQUIRED_ZERO_GATE_NAMES,
@@ -289,7 +290,19 @@ def _checkpoint_comparison(model, batch, request: dict, checkpoint: dict) -> dic
         layer = model.stacked_blocks.get_layer(index)
         if index in request["layers"]:
             capture = selected_attention_vjp(layer, x, dy, mask, jnp.asarray(is_global))
-            replay = replay_attention_mitigations(capture, layer_index=index, query_count=request["query_count"])
+            if index in request["compile_evidence_layers"]:
+                evidence_root = (
+                    StoragePath(request["output_root"])
+                    / "compile-evidence"
+                    / f"step-{checkpoint['step']}"
+                    / f"layer-{index}"
+                    / f"rank-{jax.process_index()}"
+                )
+                replay = replay_with_compile_evidence(
+                    capture, root=evidence_root, layer_index=index, query_count=request["query_count"]
+                )
+            else:
+                replay = replay_attention_mitigations(capture, layer_index=index, query_count=request["query_count"])
             jax.block_until_ready(replay)
             start = capture.q.addressable_shards[0].index[0].indices(capture.q.shape[0])[0]
             local_row = int(_host_arrays(replay.local_row).reshape(-1)[0])

@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Two-GPU synthetic compile-key probe for the unchanged Hero mitigation replay.
+"""Synthetic distributed compile-key probe for the unchanged Hero mitigation replay.
 
 This restores no checkpoint and performs no optimizer updates. Inputs are random
 BF16 synthetic tensors, with four local sequences per GPU, packed causal/window
@@ -21,8 +21,11 @@ import logging
 import os
 import re
 import shlex
+import socket
 import tempfile
 import time
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from functools import partial
 from pathlib import Path
@@ -30,6 +33,7 @@ from pathlib import Path
 import jax
 import jax.numpy as jnp
 import numpy as np
+from finestore.cache import PersistentKvCache
 from fray.cluster import ResourceConfig
 from iris.jax.compile_guard import install_gpu_compile_guard
 from jax.sharding import PartitionSpec as P
@@ -45,6 +49,7 @@ from experiments.grug.dispatch import dispatch_grug_training_run
 from experiments.grug.moe_hero_ep.attention_mitigation_replay import (
     REPLAY_GATE_NAMES,
     REQUIRED_ZERO_GATE_NAMES,
+    MitigationReplay,
     replay_attention_mitigations,
 )
 from experiments.grug.moe_hero_ep.attention_softmax_capture import AttentionCapture
@@ -97,6 +102,40 @@ class CacheKeyFileHandler(logging.Handler):
     def close(self) -> None:
         self.stream.close()
         super().close()
+
+
+@contextmanager
+def _cache_key_evidence(root: StoragePath) -> Iterator[CacheKeyFileHandler]:
+    key_logger = logging.getLogger("jax._src.cache_key")
+    previous_level, previous_propagation = key_logger.level, key_logger.propagate
+    with tempfile.TemporaryDirectory(prefix="hero-compile-probe-") as directory:
+        handler = CacheKeyFileHandler(Path(directory) / "cache-key-components.log", root / "cache-key-components.log.gz")
+        key_logger.setLevel(logging.DEBUG)
+        key_logger.propagate = False
+        key_logger.addHandler(handler)
+        try:
+            yield handler
+        finally:
+            handler.publish()
+            key_logger.removeHandler(handler)
+            key_logger.setLevel(previous_level)
+            key_logger.propagate = previous_propagation
+            handler.close()
+
+
+def _phase_recorder(root: StoragePath, handler: CacheKeyFileHandler) -> Callable[..., None]:
+    phases = []
+    started = time.monotonic()
+
+    def phase(name: str, **details) -> None:
+        phases.append(
+            {"phase": name, "utc": datetime.now(UTC).isoformat(), "elapsed": time.monotonic() - started, **details}
+        )
+        (root / "phases.json").write_text(json.dumps(phases, allow_nan=False))
+        handler.publish()
+        logger.info("COMPILE_EVIDENCE_PHASE rank=%d phase=%s", jax.process_index(), name)
+
+    return phase
 
 
 def _capture_specs() -> AttentionCapture:
@@ -155,6 +194,63 @@ def _array_metadata(capture: AttentionCapture) -> dict:
     }
 
 
+def _decode_mlir_bytes(value: str) -> bytes:
+    """Decode MLIR byte strings, rejecting malformed or unknown escapes."""
+    result = bytearray()
+    index = 0
+    while index < len(value):
+        char = value[index]
+        if char != "\\":
+            if ord(char) > 127:
+                raise ValueError("MLIR binary string contains an unescaped non-ASCII byte")
+            result.append(ord(char))
+            index += 1
+            continue
+        hexadecimal = value[index + 1 : index + 3]
+        if len(hexadecimal) == 2 and all(digit in "0123456789abcdefABCDEF" for digit in hexadecimal):
+            result.append(int(hexadecimal, 16))
+            index += 3
+        elif index + 1 < len(value) and value[index + 1] in ("\\", '"'):
+            result.append(ord(value[index + 1]))
+            index += 2
+        else:
+            raise ValueError(f"Unsupported MLIR binary-string escape at offset {index}")
+    return bytes(result)
+
+
+def _custom_call_metadata(text: str) -> list[dict]:
+    calls = []
+    for line in text.splitlines():
+        target = re.search(r"custom_call\s+@([^\s(]+)", line)
+        if target is None:
+            continue
+        record = {
+            "ordinal": len(calls),
+            "target": target.group(1),
+            "operation_line_sha256": hashlib.sha256(line.encode()).hexdigest(),
+            "line_bytes": len(line.encode()),
+        }
+        config_start = line.find("mhlo.backend_config = {")
+        if config_start >= 0:
+            config = line[config_start:]
+            key_match = re.search(r'\bkey\s*=\s*"((?:[^"\\]|\\.)*)"', config)
+            module_match = re.search(r'\bmodule\s*=\s*"((?:[^"\\]|\\.)*)"', config)
+            if key_match is not None and module_match is not None:
+                key = _decode_mlir_bytes(key_match.group(1))
+                module = _decode_mlir_bytes(module_match.group(1))
+                module_sha256 = hashlib.sha256(module).hexdigest()
+                record.update(
+                    backend_config_module_sha256=module_sha256,
+                    backend_config_module_bytes=len(module),
+                    backend_config_key_hex=key.hex(),
+                    module_sha256_equals_key=module_sha256 == key.hex(),
+                )
+        if target.group(1).startswith("CuteDSLRT_") and "backend_config_module_sha256" not in record:
+            raise ValueError("CuTe custom call is missing its expected module/key byte attributes")
+        calls.append(record)
+    return calls
+
+
 def _write_lowered(root: StoragePath, name: str, lowered) -> dict:
     # EqxLowered publicly exposes as_text(); do not unwrap private JIT functions.
     text = lowered.as_text()
@@ -164,23 +260,7 @@ def _write_lowered(root: StoragePath, name: str, lowered) -> dict:
     compressed = gzip.compress(encoded, mtime=0)
     artifact = root / f"{name}-lowered.mlir.gz"
     artifact.write_bytes(compressed)
-    calls = []
-    for line in text.splitlines():
-        target = re.search(r"custom_call\s+@([^\s(]+)", line)
-        if target is None:
-            continue
-        config_match = re.search(r'backend_config\s*=\s*("(?:[^"\\]|\\.)*")', line)
-        calls.append(
-            {
-                "ordinal": len(calls),
-                "target": target.group(1),
-                "operation_line_sha256": hashlib.sha256(line.encode()).hexdigest(),
-                "quoted_backend_config_sha256": (
-                    hashlib.sha256(config_match.group(1).encode()).hexdigest() if config_match is not None else None
-                ),
-                "line_bytes": len(line.encode()),
-            }
-        )
+    calls = _custom_call_metadata(text)
     (root / f"{name}-custom-calls.json").write_text(json.dumps(calls, allow_nan=False))
     kernels = _cutlass_compile_metadata()
     (root / f"{name}-cutlass-cache.json").write_text(json.dumps(kernels, allow_nan=False))
@@ -215,26 +295,8 @@ def _cutlass_compile_metadata() -> list[dict]:
     return sorted(records, key=lambda record: (str(record["launcher_identity"]), record["specification_sha256"]))
 
 
-def run_compile_probe(request: dict) -> None:
-    """Run the bounded distributed probe from an importable worker identity."""
-    _apply_hero_ep_runtime_defaults(
-        inline_watch_enabled=True,
-        moe_implementation=RAGGED_MOE_IMPLEMENTATION,
-        remat_mode=OFFLOAD_CARRY_REMAT_MODE,
-        processes_per_task=1,
-    )
-    faulthandler.dump_traceback_later(TRACEBACK_INTERVAL, repeat=True)
-    DistributedConfig().initialize()
-    install_gpu_compile_guard()
-    configure_logging(logging.INFO)
-    if jax.process_count() != 2 or jax.local_device_count() != 1 or jax.device_count() != 2:
-        raise ValueError("Compile probe requires two distributed processes with one GPU each")
-    install(cutlass_kernel_cache())
-    root = StoragePath(request["output_root"]) / f"rank-{jax.process_index()}"
-    metadata = {
-        "source_revision": request["source_revision"],
-        "evidence_kind": "synthetic_compile_probe_no_checkpoint_or_training",
-        "compile_guard": "iris.jax.compile_guard installed; required numerical gates unchanged",
+def _runtime_metadata() -> dict:
+    return {
         "process_index": jax.process_index(),
         "process_count": jax.process_count(),
         "local_device_count": jax.local_device_count(),
@@ -243,20 +305,25 @@ def run_compile_probe(request: dict) -> None:
         "cutlass_version": importlib.metadata.version("nvidia-cutlass-dsl"),
         "flash_attention_version": importlib.metadata.version("flash-attn-4"),
         "probe_file_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "hostname": socket.gethostname(),
+        "placement": {
+            key: os.environ.get(key)
+            for key in (
+                "IRIS_TASK_ID",
+                "IRIS_NUM_TASKS",
+                "IRIS_MULTIGPU_PROCESS_INDEX",
+                "IRIS_MULTIGPU_PROCESS_COUNT",
+                "IRIS_MULTIGPU_LOCAL_DEVICE_IDS",
+            )
+        },
         "devices": [str(device) for device in jax.devices()],
         "local_device_kinds": [device.device_kind for device in jax.local_devices()],
         "local_gpu_compute_capability": gpu_compute_capability(),
         "kernel_cache_device_architecture": _device_architecture(),
-        "local_batch": LOCAL_BATCH,
-        "global_kv_duplication": 1,
-        "layer_index": LAYER_INDEX,
-        "query_count": QUERY_COUNT,
-        "required_zero_gate_names": list(REQUIRED_ZERO_GATE_NAMES),
         "xla_flags": shlex.split(os.environ.get("XLA_FLAGS", "")),
         "environment": {
             key: os.environ.get(key)
             for key in (
-                "XLA_FLAGS",
                 "JAX_ENABLE_X64",
                 "JAX_PLATFORMS",
                 "JAX_COMPILATION_CACHE_DIR",
@@ -267,28 +334,101 @@ def run_compile_probe(request: dict) -> None:
             )
         },
     }
+
+
+def _compile_replay(
+    capture: AttentionCapture,
+    *,
+    root: StoragePath,
+    name: str,
+    layer_index: int,
+    query_count: int,
+    phase: Callable[..., None],
+) -> MitigationReplay:
+    phase(f"{name}-lower-begin", arrays=_array_metadata(capture))
+    lowered = replay_attention_mitigations.lower(capture, layer_index=layer_index, query_count=query_count)
+    phase(f"{name}-lower-complete", lowered=_write_lowered(root, name, lowered))
+    phase(f"{name}-compile-begin")
+    compiled = lowered.compile()
+    phase(f"{name}-compile-complete")
+    replay = compiled(capture, layer_index=layer_index, query_count=query_count)
+    phase(f"{name}-dispatched")
+    return replay
+
+
+def replay_with_compile_evidence(
+    capture: AttentionCapture, *, root: StoragePath, layer_index: int, query_count: int
+) -> MitigationReplay:
+    """Run the unchanged replay while preserving bounded private compile evidence.
+
+    ``root`` must identify this process's private evidence directory. Inputs stay
+    dynamic, including actual checkpoint-derived values; only shapes, placement,
+    compiler IR and kernel identities are recorded. The guard remains installed
+    and numerical acceptance remains with the caller's unchanged gate checks.
+    """
+    install_gpu_compile_guard()
+    metadata = {
+        **_runtime_metadata(),
+        "layer_index": layer_index,
+        "query_count": query_count,
+        "evidence_kind": "compile_evidence_for_supplied_capture",
+        "required_zero_gate_names": list(REQUIRED_ZERO_GATE_NAMES),
+    }
     (root / "metadata.json").write_text(json.dumps(metadata, allow_nan=False))
-    phases = []
-    started = time.monotonic()
+    with _cache_key_evidence(root) as handler:
+        phase = _phase_recorder(root, handler)
+        try:
+            return _compile_replay(
+                capture, root=root, name="replay", layer_index=layer_index, query_count=query_count, phase=phase
+            )
+        except Exception as exc:
+            phase("failed", error_type=type(exc).__name__, error=str(exc))
+            raise
 
-    def phase(name: str, **details) -> None:
-        phases.append(
-            {"phase": name, "utc": datetime.now(UTC).isoformat(), "elapsed": time.monotonic() - started, **details}
-        )
-        (root / "phases.json").write_text(json.dumps(phases, allow_nan=False))
-        handler.publish()
-        logger.info("COMPILE_PROBE_PHASE rank=%d phase=%s", jax.process_index(), name)
 
-    key_logger = logging.getLogger("jax._src.cache_key")
-    previous_level, previous_propagation = key_logger.level, key_logger.propagate
-    with tempfile.TemporaryDirectory(prefix="hero-compile-probe-") as directory:
-        handler = CacheKeyFileHandler(Path(directory) / "cache-key-components.log", root / "cache-key-components.log.gz")
-        key_logger.setLevel(logging.DEBUG)
-        key_logger.propagate = False
-        key_logger.addHandler(handler)
+def run_compile_probe(request: dict) -> None:
+    """Run the bounded distributed probe from an importable worker identity."""
+    _apply_hero_ep_runtime_defaults(
+        inline_watch_enabled=True,
+        moe_implementation=RAGGED_MOE_IMPLEMENTATION,
+        remat_mode=OFFLOAD_CARRY_REMAT_MODE,
+        processes_per_task=request["gpus_per_task"],
+    )
+    faulthandler.dump_traceback_later(TRACEBACK_INTERVAL, repeat=True)
+    DistributedConfig().initialize()
+    install_gpu_compile_guard()
+    configure_logging(logging.INFO)
+    world = request["gpus_per_task"] * request["replicas"]
+    if jax.process_count() != world or jax.local_device_count() != 1 or jax.device_count() != world:
+        raise ValueError("Compile probe requires one distributed process per requested GPU")
+    if request["kernel_cache"] == "persistent":
+        cache = cutlass_kernel_cache()
+    elif request["kernel_cache"] == "in_memory":
+        cache = PersistentKvCache.in_memory()
+    else:
+        raise ValueError(f"Unknown declared kernel cache mode: {request['kernel_cache']}")
+    install(cache)
+    root = StoragePath(request["output_root"]) / f"rank-{jax.process_index()}"
+    metadata = {
+        **_runtime_metadata(),
+        "source_revision": request["source_revision"],
+        "evidence_kind": "synthetic_compile_probe_no_checkpoint_or_training",
+        "compile_guard": "iris.jax.compile_guard installed; required numerical gates unchanged",
+        "local_batch": LOCAL_BATCH,
+        "global_kv_duplication": 1,
+        "layer_index": LAYER_INDEX,
+        "query_count": QUERY_COUNT,
+        "required_zero_gate_names": list(REQUIRED_ZERO_GATE_NAMES),
+        "kernel_cache": request["kernel_cache"],
+        "gpus_per_task": request["gpus_per_task"],
+        "replicas": request["replicas"],
+    }
+    (root / "metadata.json").write_text(json.dumps(metadata, allow_nan=False))
+    with _cache_key_evidence(root) as handler:
+        phase = _phase_recorder(root, handler)
         try:
             results = []
-            with jax.set_mesh(compact_grug_mesh(expert_axis_size=2, replica_axis_size=1)):
+            with jax.set_mesh(compact_grug_mesh(expert_axis_size=world, replica_axis_size=1)):
                 for length, heads in PROBE_CASES:
                     case = f"length-{length}-heads-{heads}"
                     phase(f"{case}-synthetic-lower-begin")
@@ -303,16 +443,14 @@ def run_compile_probe(request: dict) -> None:
                     capture = compiled_capture()
                     jax.block_until_ready(capture)
                     phase(f"{case}-synthetic-ready", arrays=_array_metadata(capture))
-                    phase(f"{case}-replay-lower-begin")
-                    lowered = replay_attention_mitigations.lower(
-                        capture, layer_index=LAYER_INDEX, query_count=QUERY_COUNT
+                    replay = _compile_replay(
+                        capture,
+                        root=root,
+                        name=f"{case}-replay",
+                        layer_index=LAYER_INDEX,
+                        query_count=QUERY_COUNT,
+                        phase=phase,
                     )
-                    phase(f"{case}-replay-lower-complete", lowered=_write_lowered(root, f"{case}-replay", lowered))
-                    phase(f"{case}-replay-compile-begin")
-                    compiled = lowered.compile()
-                    phase(f"{case}-replay-compile-complete")
-                    replay = compiled(capture, layer_index=LAYER_INDEX, query_count=QUERY_COUNT)
-                    phase(f"{case}-replay-dispatched")
                     jax.block_until_ready(replay)
                     host_gates = np.asarray(replay.gates.addressable_shards[0].data).reshape(-1)
                     if not np.isfinite(host_gates).all():
@@ -332,11 +470,6 @@ def run_compile_probe(request: dict) -> None:
             phase("failed", error_type=type(exc).__name__, error=str(exc))
             raise
         finally:
-            handler.publish()
-            key_logger.removeHandler(handler)
-            key_logger.setLevel(previous_level)
-            key_logger.propagate = previous_propagation
-            handler.close()
             faulthandler.cancel_dump_traceback_later()
 
 
@@ -345,14 +478,32 @@ def main() -> None:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--output-root", required=True, help="Explicit private object-storage output URI")
     parser.add_argument("--source-revision", required=True)
+    parser.add_argument("--kernel-cache", required=True, choices=("persistent", "in_memory"))
+    parser.add_argument("--gpus-per-task", required=True, type=int, choices=(1, 2, 4))
+    parser.add_argument("--replicas", required=True, type=int)
     args = parser.parse_args()
+    if args.replicas <= 0:
+        parser.error("--replicas must be positive")
     worker = importlib.import_module("experiments.grug.moe_hero_ep.attention_mitigation_compile_probe")
     dispatch_grug_training_run(
         run_id=args.run_id,
-        config={"output_root": args.output_root, "source_revision": args.source_revision},
+        config={
+            "output_root": args.output_root,
+            "source_revision": args.source_revision,
+            "kernel_cache": args.kernel_cache,
+            "gpus_per_task": args.gpus_per_task,
+            "replicas": args.replicas,
+        },
         local_entrypoint=worker.run_compile_probe,
-        resources=ResourceConfig.with_gpu("GB200", count=1, cpu=24, ram="128g", disk="64g", replicas=2),
-        processes_per_task=1,
+        resources=ResourceConfig.with_gpu(
+            "GB200",
+            count=args.gpus_per_task,
+            cpu=24 * args.gpus_per_task,
+            ram=f"{128 * args.gpus_per_task}g",
+            disk="64g",
+            replicas=args.replicas,
+        ),
+        processes_per_task=args.gpus_per_task,
         max_retries_failure=0,
         max_task_failures=0,
     )

@@ -43,10 +43,10 @@ No change to live Hero training is part of this run.
   production batch schedule2816 (sequence offset929280000).
 - Hardware: one spare NVL72 rack, 16 GB200 workers × four GPUs, one process per GPU.
   Each worker requests120 CPUs, 890GB RAM, 1TB scratch. Expert axis64, replica1, context1.
-- Unique run: `hero-attention-softmax-20261026-a1`; coordinator uses the same stem
+- Unique run: `<private-run-id>`; coordinator uses the same stem
   plus `-coord`; JAX port32961; batch priority; timeout7200 seconds.
 - Output root:
-  `s3://marin-us-east-02a/marin/users/dlwh/hero-attention-softmax/20261026-a1`.
+  `<private-storage-location>`.
 - W&B disabled; no optimizer state or parameter-gradient tree, optimizer updates,
   checkpoint writes, or exports. New checkpoint retention0 and projected bytes0.
 - Full-model input carries move to pinned host between layer passes. Estimated
@@ -126,9 +126,9 @@ rank. That result is kept separate from checkpoint measurements.
 ### 2026-10-26 19:43 UTC — Authorized launch submitted
 
 - Published source/config shipped: `e71598bfb54216b9a0c555433d613d2e07bc6cd6`.
-- Coordinator: `/dlwh/hero-attention-softmax-20261026-a1-coord`, submitted at
+- Coordinator: `<private-execution-identity>`, submitted at
   2026-10-26 19:43:07 UTC (12:43:07 America/Los_Angeles).
-- Expected child: `grug-train-hero-attention-softmax-20261026-a1` under that coordinator.
+- Expected child: `<private-run-id>` under that coordinator.
 - Request file SHA256: `edfb99bd023beebf34ac2fb8ddd141c83d33d722d116b595ef6f7907cc0de774`.
 - The implementation was tested at originating source revision `8c31314d20ab501fa82dd985153a246d7726429d`;
   its parity-gate change is preserved in archive commit `833280836c` with identical source content.
@@ -283,7 +283,7 @@ backward bit parity was not separately measured, and this does not assert bitwis
 identity with a live eleven-rack backward.
 
 Large per-rank panels remain under
-`s3://marin-us-east-02a/marin/users/dlwh/hero-attention-softmax/20261026-a1` as
+`<private-storage-location>` as
 `step-<step>/layer-<layer>-panels.json`. Compact results retain bounded worst events.
 [validation.json](validation.json) records finite/count/parity checks, recomputed
 aggregates, and 61 artifact SHA256 values. [validate_results.py](validate_results.py)
@@ -627,6 +627,35 @@ policy, generated source paths, or arithmetic. Raw compiler artifacts and
 operational identifiers remain private. Passing this synthetic probe alone will
 not establish a checkpoint mitigation result.
 
+### 2026-10-28 — Two-process replay agrees; isolate cold compilation next
+
+The two-GPU synthetic probe completed successfully on both processes. The
+256-token/eight-head and 16384-token/48-head cases each passed all eleven required
+numerical gates with the distributed compile guard enabled. All 64 recorded
+cache-key component entries per process matched between processes. The four lowered IR artifacts
+(input-generation/baseline-forward and replay, each at both sizes) matched byte for byte
+between processes. All 24 entries in the final native kernel cache manifest also
+matched, including six experimental entries that compile independently rather
+than using the persistent cache.
+
+This does not reproduce or explain the earlier 64-process failure. The matching
+native object bytes, absent debug sections and absent generated-source paths
+provide no evidence for rewriting temporary paths or weakening fingerprints.
+The next inexpensive control keeps the same two-process shapes and arithmetic
+but uses fresh per-process in-memory CuTe caches, so native kernels cannot be
+loaded from the shared persistent archive. This also forces local generation
+for production kernels that could use shared objects in the first probe. If it
+also agrees, the next control compares two GPU processes within one task against
+two separate one-GPU tasks, with placement recorded explicitly. Neither control is a checkpoint
+mitigation or training-quality result.
+
+[Sanitized probe summary](mitigation-two-gpu-probe-summary.json) preserves gates
+and comparison counts. Original compiler artifacts, runtime details and checksums
+remain private. The follow-up manifest reads the actual nested
+`mhlo.backend_config` object; an earlier field hashed the empty legacy
+`backend_config` string. The conclusions above use full IR and decoded kernel
+objects, rather than that legacy field.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -653,10 +682,10 @@ archive SHA substituted for `<launch-commit>`:
 
 ```bash
 uv run --no-sync iris --config lib/iris/config/marin.yaml job run --no-wait \
-  --enable-extra-resources --target-cluster cw-us-east-08a --priority batch \
+  --enable-extra-resources --target-cluster <private-cluster> --priority batch \
   --cpu 2 --memory 8GB --disk 32GB --timeout 7200 \
-  --job-name hero-attention-softmax-20261026-a1-coord \
-  -e IRIS_PORT_JAX 32961 \
+  --job-name <private-run-id> \
+  -e IRIS_PORT_JAX <private-port> \
   -- python -m experiments.grug.moe_hero_ep.attention_softmax_diagnostic \
      --request logbooks/12-hero-attention-softmax/request.json \
      --source-revision <launch-commit>
@@ -680,3 +709,5 @@ Checkpoint mitigation and dense performance results remain unavailable. Checkpoi
 and any training winner remain pending.
 
 Recovery ownership: renewed autonomous diagnosis is active; compile-key isolation is the next bounded attempt.
+
+Operational identifiers in this public notebook are redacted. The exact execution and storage record is preserved privately.
