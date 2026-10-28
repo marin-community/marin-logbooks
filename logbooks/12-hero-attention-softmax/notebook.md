@@ -705,6 +705,33 @@ neither checkpoint gradient accuracy nor training quality.
 records the gates and comparison counts. Exact execution metadata, original
 compiler artifacts and checksums remain private.
 
+### 2026-10-28 — Larger topology reproduces native object divergence
+
+The eight-process control reproduced the distributed compile mismatch on the
+16384-key/48-query-head replay. All eight processes passed all eleven required
+gates in the preceding 256-key/eight-head case. At the larger replay, seven
+compiler fingerprints agreed and one differed; the guard stopped execution
+before XLA compilation, so there is no numerical verdict for this case.
+
+Every recorded cache-key component except the computation matched. The lowered
+programs were byte-identical after removing only native-module payloads and
+their keys. One of 24 native manifest entries in the outlier process differed
+from the seven agreeing processes: the candidate FP32-output forward kernel,
+with the same launcher specification. ELF inspection found different embedded
+GPU instruction bytes and section sizes. Stripping metadata or suppressing
+fingerprints would not address this difference. The evidence localizes the
+recorded difference to one native object; its cause and relationship to the
+earlier larger-world failure remain unproven.
+
+The next bounded control retains the same topology and cache policy and
+preserves generated compiler IR/PTX privately before the unchanged guard. If
+the divergence recurs, those artifacts can help locate its origin within the
+captured compiler stages. No checkpoint mitigation result is available.
+
+[Sanitized topology summary](mitigation-eight-process-probe-summary.json)
+records the failed control and comparison scope. Original compiler artifacts,
+execution metadata and checksums remain private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.

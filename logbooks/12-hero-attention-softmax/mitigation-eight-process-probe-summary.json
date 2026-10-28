@@ -1,0 +1,37 @@
+{
+  "source_revision": "69471130c5d64b44968d3d10c6b59d65edf4490a",
+  "evidence_kind": "eight_process_two_task_cold_cache_control",
+  "process_count": 8,
+  "gpus_per_task": 4,
+  "replicas": 2,
+  "kernel_cache": "fresh per-process in-memory cache",
+  "small_case": {
+    "length": 256,
+    "query_heads": 8,
+    "processes_passing_all_required_gates": 8,
+    "required_gates_per_process": 11
+  },
+  "full_case": {
+    "length": 16384,
+    "query_heads": 48,
+    "terminal_outcome": "distributed compile-consistency guard rejected unequal fingerprints before XLA compilation",
+    "fingerprint_group_counts": [
+      7,
+      1
+    ],
+    "numerical_verdict": null
+  },
+  "cache_key_component_entries_per_process": 56,
+  "differing_component": "computation",
+  "other_components_equal": true,
+  "lowered_hlo_equal_after_removing_only_native_modules_and_keys": true,
+  "native_manifest_entries_per_process": 24,
+  "differing_native_entries": 1,
+  "differing_kernel": "candidate FP32-output forward; tile128x128,query_stages1,D128,GQA4; identical launcher specification",
+  "embedded_gpu_instruction_section_bytes": [
+    156544,
+    156032
+  ],
+  "interpretation": "The observed divergence is in generated native GPU instructions, not just debug metadata. Its cause and relationship to the earlier larger-world failure remain unproven. Guard and numerical tolerances remain unchanged.",
+  "next_control": "Retain topology/cache policy and preserve generated compiler IR/PTX privately before the unchanged guard."
+}
