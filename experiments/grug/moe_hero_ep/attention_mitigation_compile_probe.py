@@ -17,6 +17,8 @@ import gzip
 import hashlib
 import importlib
 import importlib.metadata
+import inspect
+import io
 import json
 import logging
 import os
@@ -78,6 +80,7 @@ class NativeCompilerArtifacts:
     published_sha256: dict[str, str] = field(default_factory=dict)
     uploaded_bytes: int = 0
     kernel_records: list[dict] = field(default_factory=list)
+    compiler_call_index: int = 0
 
 
 @contextmanager
@@ -91,7 +94,7 @@ def _native_compiler_artifact_directory(mode: str) -> Iterator[NativeCompilerArt
     with tempfile.TemporaryDirectory(prefix="hero-native-compiler-") as directory:
         dump_directory = Path(directory) / "live"
         dump_directory.mkdir()
-        os.environ["CUTE_DSL_KEEP"] = "ir,ptx,cubin"
+        os.environ["CUTE_DSL_KEEP"] = "ir,ir-debug,ptx,cubin"
         os.environ["CUTE_DSL_DUMP_DIR"] = str(dump_directory)
         try:
             yield NativeCompilerArtifacts(Path(directory), dump_directory)
@@ -152,6 +155,10 @@ def _snapshot_native_kernel(
                         "sha256": hashlib.sha256(data).hexdigest(),
                     }
                 )
+                # These observation files belong to this wrapper; keep their
+                # immutable copies without accumulating duplicate live copies.
+                if source.name.startswith("compiler-call-"):
+                    source.unlink()
             record.update(status="captured", files=files)
     artifacts.kernel_records.append(record)
     (artifacts.directory / "native-kernel-records.json").write_text(
@@ -181,6 +188,45 @@ def _native_kernel_snapshots(artifacts: NativeCompilerArtifacts | None) -> Itera
         yield
     finally:
         primitive.get_or_compile_kernel = original
+
+
+@contextmanager
+def _native_compiler_calls(artifacts: NativeCompilerArtifacts | None) -> Iterator[None]:
+    if artifacts is None:
+        yield
+        return
+    compiler = importlib.import_module("cutlass.base_dsl.compiler").Compiler
+    original = compiler.compile
+    signature = inspect.signature(original)
+
+    @wraps(original)
+    def compile_native(self, module, pipeline, *args, **kwargs):
+        bound = signature.bind(self, module, pipeline, *args, **kwargs)
+        bound.apply_defaults()
+        arguments = {name: value for name, value in bound.arguments.items() if name not in ("self", "module")}
+        prefix = artifacts.dump_directory / f"compiler-call-{artifacts.compiler_call_index:04d}"
+        artifacts.compiler_call_index += 1
+        bytecode = io.BytesIO()
+        module.operation.write_bytecode(bytecode)
+        serialized = bytecode.getvalue()
+        assembly = module.operation.get_asm(enable_debug_info=True).encode()
+        prefix.with_suffix(".mlirbc").write_bytes(serialized)
+        prefix.with_suffix(".mlir").write_bytes(assembly)
+        record = {
+            "arguments": arguments,
+            "module_bytecode_sha256": hashlib.sha256(serialized).hexdigest(),
+            "module_bytecode_bytes": len(serialized),
+            "module_asm_sha256": hashlib.sha256(assembly).hexdigest(),
+            "module_asm_bytes": len(assembly),
+        }
+        prefix.with_suffix(".json").write_text(json.dumps(record, allow_nan=False))
+        return original(self, module, pipeline, *args, **kwargs)
+
+    compiler.compile = compile_native
+    try:
+        yield
+    finally:
+        compiler.compile = original
 
 
 def _publish_native_compiler_artifacts(artifacts: NativeCompilerArtifacts, root: StoragePath) -> dict:
@@ -640,7 +686,11 @@ def _run_compile_probe(request: dict, *, native_directory: NativeCompilerArtifac
         "native_artifacts": request["native_artifacts"],
     }
     (root / "metadata.json").write_text(json.dumps(metadata, allow_nan=False))
-    with _cache_key_evidence(root) as handler, _native_kernel_snapshots(native_directory):
+    with (
+        _cache_key_evidence(root) as handler,
+        _native_kernel_snapshots(native_directory),
+        _native_compiler_calls(native_directory),
+    ):
         phase = _phase_recorder(root, handler)
         try:
             results = []

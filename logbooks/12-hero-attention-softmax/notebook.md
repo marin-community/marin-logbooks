@@ -799,6 +799,19 @@ the pinned DSL already disables context multithreading.
 records the comparison scope. Exact compiler artifacts remain private. No
 checkpoint mitigation or training-quality result is available.
 
+### 2026-10-28 — Observe original compiler inputs
+
+The next synthetic control retains the same topology, cache policy and replay
+arithmetic. It records the original module bytecode and assembly plus the
+rendered pipeline and compiler arguments with defaults resolved before each
+compiler call, then forwards the original module, arguments and result unchanged.
+Raw prepass IR retention is also enabled without line/debug compiler flags.
+CPU checks verified unchanged MLIR bytecode before/after observation, forwarding
+and wrapper restoration; required lint and all nine focused CPU tests pass.
+Native input capture still requires GPU validation and remains private. This
+observation does not claim a repair or numerical equivalence between the two
+compiled objects.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
