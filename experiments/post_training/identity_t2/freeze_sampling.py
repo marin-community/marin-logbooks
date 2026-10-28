@@ -16,8 +16,8 @@ from experiments.post_training.identity_t2.relocate import encoded, relocate_pat
 from experiments.post_training.identity_t2.sampling_preview import preview
 
 T2_PACKET_SHA = "ae730c5772a3cfc3e2783ebc726ebcafa4f4ff7a3b3322e7b644ab4f7c01ae1c"
-WEIGHTS = {"identity": 264.0, "preservation": 547.0, "identity_v2": 504.0, "tools": 312.0, "third_person": 324.0}
-ROW_WEIGHTS = {"identity": 1.2, "preservation": 1.0, "identity_v2": 4.5, "tools": 2.0, "third_person": 6.0}
+WEIGHTS = {"identity": 264.0, "preservation": 547.0, "identity_v2": 504.0, "tools": 468.0, "third_person": 324.0}
+ROW_WEIGHTS = {"identity": 1.2, "preservation": 1.0, "identity_v2": 4.5, "tools": 3.0, "third_person": 6.0}
 
 
 def propose(source: Path, parent_packet: Path, sampler: Path, out: Path, packet: Path) -> dict:
@@ -62,13 +62,19 @@ def propose(source: Path, parent_packet: Path, sampler: Path, out: Path, packet:
         {
             "sampling_weights": WEIGHTS,
             "per_row_weights": ROW_WEIGHTS,
+            "tool_row_sampling_weight": 3.0,
+            "T3_pre_results_owner_tool_weight_amendment": True,
             "first128": report["first128"],
             "per_update": [summarize(occurrences[i : i + 8]) for i in range(0, 128, 8)],
             "cache_catalog_sha256": sha(payloads["cache-catalog.json"]),
             "state": "PROPOSED_T3_WEIGHTS_ONLY_NOT_REVIEWED",
         }
     )
-    for field in ("per_identity_row_sampling_weight", "control_and_preservation_row_sampling_weight"):
+    for field in (
+        "per_identity_row_sampling_weight",
+        "control_and_preservation_row_sampling_weight",
+        "pre_freeze_owner_tool_weight_amendment",
+    ):
         del share[field]
     share["mean_update_identity_token_fraction"] = (
         sum(update["identity_token_share"] for update in share["per_update"]) / 16

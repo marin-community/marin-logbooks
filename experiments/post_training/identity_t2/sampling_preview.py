@@ -66,8 +66,8 @@ def preview(source: Path, out: Path, new_identity_weight: float, binding_packet:
     assert original.auto_build_caches is False and original.permutation_type == "feistel"
     assert original.mixture_block_size == 2048
     assert new_identity_weight == 4.5
-    weights = {**original.train_weights, "identity_v2": 112 * new_identity_weight, "third_person": 324.0}
-    assert weights["identity"] == 264.0 and weights["tools"] == 312.0 and weights["preservation"] == 547.0
+    weights = {**original.train_weights, "identity_v2": 112 * new_identity_weight, "tools": 468.0, "third_person": 324.0}
+    assert weights["identity"] == 264.0 and weights["preservation"] == 547.0
     data = dataclasses.replace(original, train_weights=weights)
     assert dataclasses.replace(data, train_weights=original.train_weights) == original
     lookup = {(row["tokens_sha256"], row["target_mask_sha256"]): identifier for identifier, row in metadata.items()}
@@ -110,7 +110,7 @@ def preview(source: Path, out: Path, new_identity_weight: float, binding_packet:
         "per_row_sampling_weights": {
             "old_identity": 1.2,
             "new_identity_v2": new_identity_weight,
-            "tools": 2.0,
+            "tools": 3.0,
             "third_person_controls": 6.0,
             "preservation": 1.0,
         },
