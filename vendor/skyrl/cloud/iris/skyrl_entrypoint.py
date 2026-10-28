@@ -21,6 +21,8 @@ def run_config(config_path: Path) -> None:
     run = cast(Callable[[DictConfig], None], getattr(importlib.import_module(module), "run"))
     if os.environ.get("TIM_CP_QUALIFICATION") == "1" and module == "skyrl_train.entrypoints.main_base":
         from experiments.post_training.tim_cp_measure import run
+    if os.environ.get("SC_DEFAULT_STUDY") == "1":
+        from experiments.post_training.sc_default_measure import run
     if config.skyrl.get("trainer", {}).get("mismatch_probe", {}).get("enabled"):
         with open_dict(config.skyrl):
             config.skyrl.runtime = {

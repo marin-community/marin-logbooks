@@ -1,0 +1,212 @@
+{
+  "status": "predeclared before any study training or SC learning outcomes",
+  "declared_utc": "2026-10-28T03:46:50.296804+00:00",
+  "question": "Recommend separate SC enablement and candidate-count defaults; leave actual defaults unchanged.",
+  "arms": {
+    "tis": {
+      "score_centering_enabled": false,
+      "candidate_capture": false,
+      "hypothetical_probe_interval": 0
+    },
+    "sc128": {
+      "score_centering_enabled": true,
+      "score_centering_top_k": 128,
+      "hypothetical_probe_interval": 0
+    },
+    "sc32": {
+      "score_centering_enabled": true,
+      "score_centering_top_k": 32,
+      "hypothetical_probe_interval": 0
+    }
+  },
+  "model": {
+    "id": "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05",
+    "revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0"
+  },
+  "source_data": {
+    "uri": "s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k/2026.10.23.2",
+    "train_parquet_sha256": "bc9326bc87e9fd992748147aaa3f8261e649819456027645cb00cbc23dc7e94d",
+    "rows": 100000
+  },
+  "split": {
+    "seed": 20261028,
+    "method": "SHA256(seed:task_id) order within each family; choose first 2000 distinct public-task semantic fingerprints; exclude all selected public fingerprints and contracts from training",
+    "heldout_rows": 10000,
+    "heldout_per_family": 2000,
+    "training_exposure_limit": "Exact RL split separation only; prior SFT/pretraining exposure and semantic similarity are unknown.",
+    "fingerprints": "Public fingerprint: canonical content hash of the complete public task and resources, excluding source IDs and private grading fields. Contract: canonical hash that also preserves the private grading contract. These establish exact content separation, not absence of similar questions."
+  },
+  "families": [
+    "calendar",
+    "competitive_coding",
+    "reasoning_gym",
+    "stem",
+    "structural"
+  ],
+  "training_domain_weights": "Uniform sampling from the fixed retained training pool, as in the healthy full-inventory recipe. Exact family and source weights are the retained counts divided by retained total, published in selection.json before the first Grug run. All arms reuse identical pool bytes.",
+  "primary_metric": {
+    "name": "equal-family held-out full-task success",
+    "definition": "Mean across five equally weighted family means of indicator(normalized verifier reward >= 1 - 1e-6). Missing/infrastructure grades never become failures or zeros.",
+    "family_weights": [
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.2
+    ],
+    "secondary": "Equal-family normalized mean verifier reward, per-family full success, response lengths and stop reasons."
+  },
+  "initial_seeds": [
+    1701,
+    2903,
+    4517
+  ],
+  "run_order_by_seed": {
+    "1701": [
+      "tis",
+      "sc128",
+      "sc32"
+    ],
+    "2903": [
+      "sc128",
+      "sc32",
+      "tis"
+    ],
+    "4517": [
+      "sc32",
+      "tis",
+      "sc128"
+    ]
+  },
+  "primary_comparison": "sc32 - tis",
+  "supporting_comparisons": [
+    "sc128 - tis",
+    "sc32 - sc128"
+  ],
+  "training": {
+    "planned_updates": 50,
+    "prompts_per_update": 128,
+    "answers_per_prompt": 4,
+    "policy_minibatch_prompts": 128,
+    "optimizer": "AdamW",
+    "learning_rate": 1e-06,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "weight_decay": 0,
+    "max_grad_norm": 0.5,
+    "ppo_clip": [
+      0.8,
+      1.2
+    ],
+    "off_policy_correction": "existing tokenwise TIS",
+    "KL_auxiliary_loss": false,
+    "entropy_auxiliary_loss": false,
+    "advantage": "rloo_n, minimum eligible group size 2, no batch normalization",
+    "packing": true,
+    "rollout_buffer": {
+      "batch_policy": "rolling",
+      "max_staleness_steps": 2,
+      "max_in_flight": 256
+    },
+    "request_window_tokens": 24576,
+    "max_response_tokens": 8192,
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "top_k": -1,
+    "reference": "No reference model/scoring in the selected main recipe; zero reference cost reported. The Qwen startup additionally exercises reference scoring with KL coefficient 0.01."
+  },
+  "hardware": {
+    "GPUs": 40,
+    "type": "H100",
+    "policy_nodes": 4,
+    "inference_nodes": 1,
+    "policy": {
+      "TP": 1,
+      "SP": 1,
+      "PP": 2,
+      "CP": 1,
+      "EP": 8
+    },
+    "serving": {
+      "engines": 1,
+      "TP": 1,
+      "DP": 8,
+      "EP": 8
+    },
+    "placement": "One CoreWeave H100 region selected before the first main run and held fixed; larger gangs use batch. The previous actual packed-CP5/100K qualification is retained unchanged, not rerun or generalized to this shorter recipe."
+  },
+  "evaluation": {
+    "decoding": "greedy, one answer per task, same 8192-token reply and 24576-token request budget across arms",
+    "schedule": {
+      "0": 1000,
+      "25": 1000,
+      "50": 10000
+    },
+    "curve_panel": "First 200 interleaved held-out tasks per family, a fixed balanced subset of final endpoint tasks. Same ordered task identities in every run.",
+    "endpoint": "Update 50 only; no checkpoint/metric selection from outcomes.",
+    "grading": "Pinned canonical graders and package lock; Together openai/gpt-oss-120b where declared, real readiness gate before main allocation; no silent grader substitution.",
+    "failures": "Retain raw generated answer and original failure. Retry grading only with the identical contract; no regeneration or zero imputation. Incomplete coverage prevents a default claim."
+  },
+  "uncertainty": {
+    "quality": "For each matched seed, calculate the equal-family mean paired task-success difference. Seed variance contribution is sample variance of these seed contrasts / number of seeds. Task contribution is sum over families of weight^2 * sample variance across distinct held-out public tasks of their across-seed mean paired difference / tasks in family. Use sqrt(sum of the two contributions), with Student t critical value at df=seeds-1. This deliberately does not subtract the seed-task interaction and is conservative under the crossed seed/task model.",
+    "cost": "Per matched seed, log ratio of complete training-cycle elapsed time over the same 50 updates. Student t interval for mean log ratio at df=seeds-1, then exponentiate; report geometric relative cost and arithmetic per-seed times.",
+    "report": "Report nominal two-sided 95% intervals and two-look-adjusted intervals. No tokens, updates or repeated answers are independent training runs.",
+    "optional_extension": "Two possible inferential looks only. Each metric in each predeclared comparison uses a two-sided 97.5% interval for its decision gate at either look. Bonferroni gives 95% coverage across those two looks for that metric in that comparison. This is not a joint 95% coverage claim across quality, cost and all comparisons.",
+    "resampling_unit": "Training seed and held-out public task; repeated task occurrences are not separate task units."
+  },
+  "cost": {
+    "primary": "Training-cycle elapsed time: span from first rollout publication through final training weight publication, less measured exclusive evaluation sessions. It includes generation, candidate capture, transport, grading, policy scoring, optimization, weight publication and their normal overlap. The selected main recipe has no reference scoring. Startup, evaluation, checkpoint/export and teardown are separate costs.",
+    "reported": "Elapsed per policy update, cumulative trained loss/response tokens and throughput, response-length distributions, phase timings, startup, evaluation, checkpoint/export, teardown, and all allocated GPU-hours including failures/retries/validation.",
+    "checkpoint_policy": "Save terminal resumable checkpoint and HF export, retain one native checkpoint. Their exclusive work occurs after the primary cycle endpoint and is reported separately."
+  },
+  "decision": {
+    "quality_margin_percentage_points": -1.0,
+    "relative_cost_margin_percent": 5.0,
+    "acceptable": "Lower quality bound is above -1 percentage point and upper cost bound is below +5%. Equality at a boundary is inconclusive.",
+    "regression": "Quality upper bound below -1 point or cost lower bound above +5%.",
+    "otherwise": "Inconclusive. Nonsignificance alone is insufficient.",
+    "K_comparison": "Also show SC32 versus SC128 using the same one-point quality and five-percent cost margins; recommend separately from enabling SC."
+  },
+  "extension": {
+    "maximum_additional_matched_seeds": [
+      6101,
+      7919,
+      10007
+    ],
+    "maximum_additional_runs": 9,
+    "updates_per_run": 50,
+    "trigger": "Initial primary or candidate-count decision inconclusive, with a documented precision benefit based on observed seed/task components and full-cycle cost. Publish finite choice and revised estimate before launch.",
+    "inference": "Retain original nine-run endpoint table unchanged, then pool all predeclared matched seeds for the second and final look. No duration extension or new outcome metric.",
+    "further_expansion": "Consult before any second expansion; preserve work and continue independent analysis/cleanup."
+  },
+  "qualification": {
+    "CPU": "Published input/contract census and real canonical grading for all 13 sources before main allocation.",
+    "Qwen": "Same driver, actual mixed tasks and disjoint heldout grading, nonzero optimizer updates, reference scoring, every sampler replica restored after sleep, weight hashes change, and result/checkpoint export. Startup is excluded from Grug inference.",
+    "Grug": "Complete the first TIS seed through all training and evaluation before expanding submissions. Reuse it as one of the nine if all predeclared settings and coverage checks pass."
+  },
+  "planning_estimate": {
+    "healthy_source": "https://github.com/marin-community/marin/issues/10314#issuecomment-6308654380",
+    "window_rationale": "The healthy full-mixture runs improve by updates 25 and 50. The original 100-update continuation used about 2h41m for the first 50 updates including its smaller in-run evaluation and checkpointing. This study adds TIS, normal staleness-2 overlap, packing, the existing October-5 Grug initializer, and a fresh larger evaluation; source timings are estimates, not study measurements.",
+    "initial_GPU_hours": [
+      1500,
+      2500
+    ],
+    "possible_extension_GPU_hours": [
+      1500,
+      2500
+    ],
+    "startup_validation_GPU_hours_estimate": [
+      5,
+      25
+    ],
+    "precision": "At 10000 held-out tasks, a paired success-disagreement rate of 5%, 10% or 20% gives task-only standard error about 0.224, 0.316 or 0.447 points before seed uncertainty. Three seeds may not resolve a one-point margin. The one extension improves seed precision but does not guarantee equivalence; remaining uncertainty is a valid final outcome."
+  },
+  "product": "No experimental code in product PRs; defaults remain SC off and K128; pinned vLLM/dependencies/compiled CUDA graphs unchanged.",
+  "arms_definition": "Every arm uses the same clipped token loss and tokenwise truncated importance sampling (TIS). Score centering (SC) subtracts the sampling policy expectation of that training score; the approximation retains the most probable 32 or 128 candidate tokens at each response position and models the remaining tail. Baseline omits only SC, hypothetical probes and candidate capture.",
+  "matched_seeds": "Within each triplet, the immutable starting weights, trainer/optimizer RNG seed, inference engine sampling seed and data-shuffle seed match. Generated answers, asynchronous admission order and learned weights may diverge naturally. Pairing does not imply identical consumed batches or deterministic GPU execution.",
+  "pre_execution_amendments": [
+    "Before any training, use the healthy uniform sampler over retained canonical tasks. The canonical loader deliberately drops arbitrary routing metadata; no loader patch or new sampler is needed. Report the resulting fixed mixture counts before Grug submission."
+  ]
+}
