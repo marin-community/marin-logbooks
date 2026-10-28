@@ -748,6 +748,27 @@ these checks do not exercise the GPU kernels. Effectiveness of native artifact
 retention still needs GPU validation.
 Full requests, generated compiler files and environment values remain private.
 
+### 2026-10-28 — Preserve each native compilation separately
+
+Compiler-stage retention reproduced the same seven-to-one split in the larger
+synthetic case (16384 keys/48 query heads), with the same pair of native object hashes as the preceding
+control. The outlier process changed. All eight processes again passed the
+small-case gates; the larger case stopped before XLA compilation. Retained runtime
+source hashes match the inspected pinned compiler sources.
+
+CuTe did produce IR/PTX/cubin files, but later kernel compilations reused their
+filenames. The final dump files describe a later small wrapper, so they cannot
+identify where the divergent forward kernel changed. The next probe will
+snapshot each kernel immediately after compilation and associate its artifacts
+with the returned module hash and launcher specification before files can be
+overwritten. Replay math, cache policy and guard remain unchanged; the interpreter
+hash-seed hypothesis remains untested. No checkpoint mitigation or training-quality
+conclusion follows.
+
+[Sanitized compiler-stage capture summary](mitigation-compiler-stage-capture-summary.json)
+records the repeated failure and capture limitation. Original artifacts and
+checksums remain private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.

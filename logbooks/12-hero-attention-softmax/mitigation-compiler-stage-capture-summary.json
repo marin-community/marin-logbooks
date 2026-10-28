@@ -1,0 +1,30 @@
+{
+  "source_revision": "b3bcc8cdf52ec5917cd24ee8524ca4eb369cffec",
+  "evidence_kind": "compiler_stage_capture_control",
+  "process_count": 8,
+  "small_case": {
+    "length": 256,
+    "query_heads": 8,
+    "all_required_gates_passed_processes": 8,
+    "required_gates_per_process": 11
+  },
+  "full_case": {
+    "length": 16384,
+    "query_heads": 48,
+    "fingerprint_group_counts": [
+      7,
+      1
+    ],
+    "same_pair_of_native_objects_as_preceding_control": true,
+    "minority_process_changed": true,
+    "outcome": "unchanged compile-consistency guard failure",
+    "numerical_verdict": null
+  },
+  "runtime_source_hashes_match_inspected_pinned_sources": true,
+  "native_stage_capture": {
+    "nonempty_ir_ptx_cubin": true,
+    "complete_for_divergent_forward_kernel": false,
+    "limitation": "Later kernel compilations reused filenames and overwrote the divergent kernel dumps; final retained files describe a later small wrapper."
+  },
+  "next_control": "Snapshot each native compile result immediately, associate retained files with returned module hash and launcher specification. Replay math, cache policy, topology and guard remain unchanged."
+}
