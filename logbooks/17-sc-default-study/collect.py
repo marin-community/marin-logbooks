@@ -26,8 +26,9 @@ def write_json(path: Path, content) -> None:
     path.write_text(json.dumps(content, indent=2) + "\n")
 
 
-def collect_grades(export: str, step: int, index: list[dict], output: Path) -> dict:
+def collect_grades(export: str, step: int, index: list[dict], output: Path, excluded: set[str] | None = None) -> dict:
     expected = {row["uid"]: row for row in index}
+    excluded = set(expected) & (excluded or set())
     if len(expected) != len(index):
         raise ValueError("Duplicate evaluation-index identities")
     fs, prefix = filesystem_for(export + f"/dumped_evals/global_step_{step}_evals")
@@ -87,11 +88,18 @@ def collect_grades(export: str, step: int, index: list[dict], output: Path) -> d
                 count += 1
         source_objects.append({"uri": "s3://" + key, "rows": count, "sha256": digest.hexdigest()})
     ordered = [rows[row["uid"]] for row in index if row["uid"] in rows]
+    admitted = [row for row in ordered if row["uid"] not in excluded]
     with (output / f"grades-{step:04d}.jsonl").open("w") as stream:
-        for row in ordered:
+        for row in admitted:
             stream.write(json.dumps(row) + "\n")
+    if excluded:
+        with (output / f"excluded-grades-{step:04d}.jsonl").open("w") as stream:
+            for row in ordered:
+                if row["uid"] in excluded:
+                    stream.write(json.dumps(row) + "\n")
     missing = sorted(set(expected) - set(rows))
     ungraded = [row["uid"] for row in ordered if row["full_success"] is None]
+    admitted_ungraded = [uid for uid in ungraded if uid not in excluded]
     coverage = {
         "step": step,
         "expected": len(index),
@@ -99,12 +107,16 @@ def collect_grades(export: str, step: int, index: list[dict], output: Path) -> d
         "graded": len(rows) - len(ungraded),
         "missing_uids": missing,
         "ungraded_uids": ungraded,
+        "excluded_uids": sorted(excluded, key=int),
+        "analysis_expected": len(index) - len(excluded),
+        "analysis_graded": len(admitted) - len(admitted_ungraded),
         "source_objects": source_objects,
     }
     write_json(output / f"coverage-{step:04d}.json", coverage)
-    if missing or ungraded:
+    if missing or admitted_ungraded:
         raise ValueError(f"Incomplete evaluation at step {step}; saved compact evidence for grade-only recovery")
-    return {"step": step, **summarize(ordered), "curve_panel": summarize(ordered[:1000]), "coverage": coverage}
+    curve = [row for row in ordered[:1000] if row["uid"] not in excluded]
+    return {"step": step, **summarize(admitted), "curve_panel": summarize(curve), "coverage": coverage}
 
 
 def summarize(ordered: list[dict]) -> dict:
@@ -137,9 +149,31 @@ def summarize(ordered: list[dict]) -> dict:
     }
 
 
-def collect(export: str, index_path: Path, output: Path, steps: list[int]) -> dict:
+def collect(export: str, index_path: Path, output: Path, steps: list[int], eligibility_path: Path | None = None) -> dict:
     output.mkdir(parents=True, exist_ok=True)
     index = json.loads(index_path.read_text())
+    excluded, eligibility_sha = set(), None
+    if eligibility_path is not None:
+        eligibility = json.loads(eligibility_path.read_text())
+        if (
+            not eligibility.get("approved")
+            or eligibility["frozen_index_sha256"] != hashlib.sha256(index_path.read_bytes()).hexdigest()
+        ):
+            raise ValueError("Eligibility needs approval and the exact frozen evaluation index")
+        indexed = {row["uid"]: row for row in index}
+        for row in eligibility["excluded"]:
+            if row["uid"] in excluded or int(row["uid"]) < 1000:
+                raise ValueError("Eligibility repeats a task or changes the fixed curve panel")
+            if any(row[key] != indexed[row["uid"]][key] for key in ("study_id", "teacher_route", "contract", "public")):
+                raise ValueError("Excluded task differs from its original frozen contract")
+            excluded.add(row["uid"])
+        retained = [row for row in index if row["uid"] not in excluded]
+        if (
+            len(retained) != eligibility["retained_quality_tasks"]
+            or dict(Counter(row["teacher_route"] for row in retained)) != eligibility["retained_family_counts"]
+        ):
+            raise ValueError("Approved quality denominators changed")
+        eligibility_sha = hashlib.sha256(eligibility_path.read_bytes()).hexdigest()
     training = read_json(export + "/study/completed-training.json")
     write_json(output / "completed-training.json", training)
     cycles = training["steps"]
@@ -161,7 +195,7 @@ def collect(export: str, index_path: Path, output: Path, steps: list[int]) -> di
     evaluations, curves = [], []
     for step in steps:
         panel = index if step == steps[-1] else index[: min(1000, len(index))]
-        result = collect_grades(export, step, panel, output)
+        result = collect_grades(export, step, panel, output, excluded)
         evaluations.append(result)
         curve = result["curve_panel"]
         cycle = cycles[step - 1] if step else {}
@@ -178,13 +212,17 @@ def collect(export: str, index_path: Path, output: Path, steps: list[int]) -> di
     report = {
         "export": export,
         "index_sha256": hashlib.sha256(index_path.read_bytes()).hexdigest(),
+        "eligibility_sha256": eligibility_sha,
         "evaluations": evaluations,
         "curves": curves,
         "cycles": cycles,
         "training_cycle_seconds": cycles[-1]["training_cycle_elapsed_seconds"],
         "startup": read_json(export + "/study/startup.json"),
         "evaluation_times": [read_json(export + f"/study/evaluation-time-{step:04d}.json") for step in steps],
-        "limits": "Curves always use the same balanced first 1,000 tasks; full final panel is the primary endpoint.",
+        "limits": (
+            "Curves always use the same balanced first 1,000 tasks. All original final answers remain required; "
+            "the approved common quality mask is applied identically to every arm and seed."
+        ),
     }
     write_json(output / "summary.json", report)
     return report
@@ -196,5 +234,8 @@ if __name__ == "__main__":
     parser.add_argument("index", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--steps", type=int, nargs="+", default=[0, 25, 50])
+    parser.add_argument(
+        "--eligibility", type=Path, help="Approved fixed quality exclusions; generation coverage stays exact"
+    )
     args = parser.parse_args()
-    collect(args.export.rstrip("/"), args.index, args.output, args.steps)
+    collect(args.export.rstrip("/"), args.index, args.output, args.steps, args.eligibility)

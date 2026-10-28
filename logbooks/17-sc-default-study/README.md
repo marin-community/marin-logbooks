@@ -37,10 +37,11 @@ complete run, use its recorded export URI and manifest `collected` subdirectory:
 ```sh
 PYTHONPATH=vendor/skyrl/skyrl-gym:. uv run --frozen python \
   logbooks/17-sc-default-study/collect.py \
-  "$study_export" "$study_index" "$study_results/collected/tis-seed1701"
+  "$study_export" "$study_index" "$study_results/collected/tis-seed1701" \
+  --eligibility logbooks/17-sc-default-study/eligibility.json
 ```
 
-The collector requires complete graded coverage and keeps missing grades
+The collector requires complete admitted graded coverage and keeps missing grades
 explicit. A live unreadable verdict writes a pending marker while training and
 export continue. Before admitting the run, retry only its missing judge verdicts
 with the recorded model, endpoint and original task contract:
@@ -58,7 +59,8 @@ their original machine recovery. The saved answers are never regenerated for
 grading. The collector calculates full-task success from
 the existing normalized verifier score, not from shaped optimization rewards.
 Every curve uses the same 1,000-task subset, including at update 50. The complete
-10,000-task endpoint supplies primary inference. Timings retain normal overlap;
+9,991-task quality endpoint supplies primary inference. All 10,000 original
+answers must still be generated. Timings retain normal overlap;
 phase totals must not be summed.
 
 Use `--uids` to retry particular saved answers while investigating a different
@@ -74,9 +76,17 @@ PYTHONHASHSEED=0 uv run --frozen python logbooks/17-sc-default-study/grader_audi
   "$study_tasks" "$study_results/grader-audit.json"
 ```
 
-The proposed nine-task exclusion requires approval and has not been applied.
-The original complete-coverage gate remains in force while that decision is
-pending.
+Romain approved the common nine-task exclusion after the first TIS baseline and
+before any SC run or outcome. The fixed [eligibility file](eligibility.json)
+identifies two unusable schemas and seven date-sensitive generator contracts.
+It applies to every arm and seed, including any excluded task that happens to
+receive a valid grade. The collector verifies the original index and contract
+identities, preserves excluded rows separately, and requires a valid verdict for
+every retained task. Reasoning Gym retains 1,993 tasks and structural retains
+1,998; the other families retain 2,000 each. Each family still has weight 0.2.
+The fixed 1,000-task curves, training inputs and all cost measurements are
+unchanged. Omitting `--eligibility` retains the original strict coverage gate;
+such a collection cannot enter the amended comparison.
 
 After auditing all nine initial runs, assemble and analyze their compact matrix:
 

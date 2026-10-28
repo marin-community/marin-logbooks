@@ -97,7 +97,8 @@ def analyze(path: Path, protocol_path: Path) -> dict:
         raise ValueError("Seeds differ from the fixed initial study and bounded extension")
     if set(arms) != {"tis", "sc128", "sc32"} or len(arms) != 3:
         raise ValueError("All three predeclared arms are required")
-    if len(tasks) != len(set(tasks.tolist())) or len(tasks) != protocol["split"]["heldout_rows"]:
+    quality_rows = protocol["evaluation"].get("quality_rows", protocol["split"]["heldout_rows"])
+    if len(tasks) != len(set(tasks.tolist())) or len(tasks) != quality_rows:
         raise ValueError("The complete unique held-out task panel is required")
     if success.shape != (len(seeds), 3, len(tasks)) or scores.shape != success.shape:
         raise ValueError("The seed/arm/task matrix is incomplete")
@@ -107,7 +108,10 @@ def analyze(path: Path, protocol_path: Path) -> dict:
         raise ValueError("Every seed/arm needs a positive complete-cycle measurement")
     if updates.shape != seconds.shape or not (updates == protocol["training"]["planned_updates"]).all():
         raise ValueError("All arms must reach the same predeclared policy-update endpoint")
-    if any((families == family).sum() != protocol["split"]["heldout_per_family"] for family in weights):
+    family_counts = protocol["evaluation"].get(
+        "quality_per_family", {family: protocol["split"]["heldout_per_family"] for family in weights}
+    )
+    if any((families == family).sum() != family_counts[family] for family in weights):
         raise ValueError("The held-out family denominators changed")
 
     positions = {arm: arms.index(arm) for arm in arms}

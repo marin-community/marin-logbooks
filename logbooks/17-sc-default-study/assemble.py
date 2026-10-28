@@ -34,8 +34,11 @@ def assemble(manifest_path: Path, protocol_path: Path, seeds: list[int], output:
             grade_path = root / f"grades-{endpoint:04d}.jsonl"
             summary = json.loads(summary_path.read_text())
             grades = [json.loads(line) for line in grade_path.read_text().splitlines()]
-            if len(grades) != protocol["split"]["heldout_rows"] or len(summary["cycles"]) != endpoint:
+            quality_rows = protocol["evaluation"].get("quality_rows", protocol["split"]["heldout_rows"])
+            if len(grades) != quality_rows or len(summary["cycles"]) != endpoint:
                 raise ValueError("Incomplete endpoint or policy-update window")
+            if summary.get("eligibility_sha256") != protocol["evaluation"].get("eligibility_sha256"):
+                raise ValueError("Run used a different quality eligibility rule")
             identities = [row["task"] for row in grades]
             domains = [row["family"] for row in grades]
             public = [row["public_fingerprint"] for row in grades]
