@@ -11,6 +11,7 @@ import logging
 import os
 import statistics
 import time
+from contextlib import AbstractContextManager
 from functools import partial
 
 import draccus
@@ -18,6 +19,7 @@ import equinox as eqx
 import jax
 import jax.numpy as jnp
 import numpy as np
+from finestore.cache import PersistentKvCache
 from fray.cluster import ResourceConfig
 from jax.experimental import multihost_utils
 from jax.sharding import PartitionSpec as P
@@ -35,6 +37,7 @@ from rigging.filesystem.storage_path import StoragePath
 from rigging.log_setup import configure_logging
 
 from experiments.grug.dispatch import dispatch_grug_training_run
+from experiments.grug.moe_hero_ep.attention_mitigation_compile_consensus import NativeCompilation, native_compilation
 from experiments.grug.moe_hero_ep.attention_mitigation_compile_probe import replay_with_compile_evidence
 from experiments.grug.moe_hero_ep.attention_mitigation_replay import (
     REPLAY_GATE_NAMES,
@@ -75,6 +78,53 @@ from experiments.grug.moe_hero_ep.weights import restore_weights
 
 logger = logging.getLogger(__name__)
 MAX_RECORD_BYTES = 1_048_576
+
+
+def _validate_native_compilation_request(request: dict) -> None:
+    mode = NativeCompilation(request["native_compilation"])
+    policy = request["kernel_cache"]
+    if policy not in ("in_memory", "persistent"):
+        raise ValueError(f"Unknown declared native kernel cache policy: {policy}")
+    if mode is NativeCompilation.SHARED_OBJECT and policy != "in_memory":
+        raise ValueError("Shared native objects require an explicitly isolated in-memory kernel cache")
+    timeout = request["native_object_timeout"]
+    if not np.isfinite(timeout) or timeout <= 0:
+        raise ValueError("Native object rendezvous timeout must be finite and positive")
+
+
+def _install_declared_kernel_cache(policy: str) -> dict:
+    primitive = importlib.import_module("cutlass.jax.primitive")
+    compiler = importlib.import_module("cutlass.jax.compile")
+    if compiler._CUTLASS_COMPILE_CACHE:
+        raise RuntimeError("Native kernels compiled before diagnostic cache isolation")
+    existing = getattr(primitive.get_or_compile_kernel, "_levanter_kernel_cache", None)
+    if existing is not None:
+        # install() is idempotent. Replace only its recognized wrapper, before
+        # any native compile, so a persistent cache cannot survive this request.
+        primitive.get_or_compile_kernel = compiler.get_or_compile_kernel
+    elif primitive.get_or_compile_kernel is not compiler.get_or_compile_kernel:
+        raise RuntimeError("Unexpected native compiler wrapper before diagnostic cache isolation")
+    if policy == "in_memory":
+        cache = PersistentKvCache.in_memory()
+    elif policy == "persistent":
+        cache = cutlass_kernel_cache()
+    else:
+        raise ValueError(f"Unknown declared native kernel cache policy: {policy}")
+    install(cache)
+    if getattr(primitive.get_or_compile_kernel, "_levanter_kernel_cache", None) is not cache:
+        raise RuntimeError("Declared diagnostic native kernel cache was not installed")
+    return {"kernel_cache": policy, "fresh_native_compile_cache": True, "replaced_cache_wrapper": existing is not None}
+
+
+def _native_object_context(request: dict, *, phase: str) -> AbstractContextManager[None]:
+    return native_compilation(
+        NativeCompilation(request["native_compilation"]),
+        evidence_root=(
+            StoragePath(request["output_root"]) / "native-object-consensus" / phase / f"rank-{jax.process_index()}"
+        ),
+        source_revision=request["source_revision"],
+        timeout=request["native_object_timeout"],
+    )
 
 
 def _gather_records(record: dict) -> list[dict]:
@@ -207,7 +257,13 @@ def _dense_pair(capture: AttentionCapture, *, implementation: str, length: int):
     return jax.shard_map(local, in_specs=(specs,), out_specs=P(BATCH_AXES), check_vma=False)(values)
 
 
-def _benchmark(capture: AttentionCapture, request: dict, *, layer_index: int) -> list[dict]:
+def _benchmark(capture: AttentionCapture, request: dict, *, layer_index: int, checkpoint_step: int) -> list[dict]:
+    phase = f"checkpoint/step-{checkpoint_step}/layer-{layer_index}/dense-benchmark"
+    with _native_object_context(request, phase=phase):
+        return _benchmark_records(capture, request, layer_index=layer_index)
+
+
+def _benchmark_records(capture: AttentionCapture, request: dict, *, layer_index: int) -> list[dict]:
     records = []
     baseline_forward = sm100_flash4_cute_kernel_config().sm100_forward
     assert baseline_forward is not None
@@ -225,6 +281,8 @@ def _benchmark(capture: AttentionCapture, request: dict, *, layer_index: int) ->
             for _ in range(request["benchmark_warmup"]):
                 result = _dense_pair(capture, implementation=name, length=length)
                 jax.block_until_ready(result)
+            # Native object RPCs happen during lowering above. These cached
+            # executable calls retain the original steady-state timing procedure.
             times = []
             for _ in range(request["benchmark_repetitions"]):
                 start = time.perf_counter()
@@ -257,6 +315,7 @@ def _benchmark(capture: AttentionCapture, request: dict, *, layer_index: int) ->
                 "rank": jax.process_index(),
                 "layer": layer_index,
                 "projection_dense_supported": False,
+                "native_compilation": request["native_compilation"],
                 "saved_output_extra_bytes_per_rank": (
                     int(np.prod(local_shape) * (4 if name.endswith("shadow") else 2)) if name != "baseline" else 0
                 ),
@@ -290,26 +349,28 @@ def _checkpoint_comparison(model, batch, request: dict, checkpoint: dict) -> dic
         layer = model.stacked_blocks.get_layer(index)
         if index in request["layers"]:
             capture = selected_attention_vjp(layer, x, dy, mask, jnp.asarray(is_global))
-            if index in request["compile_evidence_layers"]:
-                evidence_root = (
-                    StoragePath(request["output_root"])
-                    / "compile-evidence"
-                    / f"step-{checkpoint['step']}"
-                    / f"layer-{index}"
-                    / f"rank-{jax.process_index()}"
-                )
-                replay = replay_with_compile_evidence(
-                    capture, root=evidence_root, layer_index=index, query_count=request["query_count"]
-                )
-            else:
-                replay = replay_attention_mitigations(capture, layer_index=index, query_count=request["query_count"])
-            jax.block_until_ready(replay)
+            phase = f"checkpoint/step-{checkpoint['step']}/layer-{index}/replay"
+            with _native_object_context(request, phase=phase):
+                if index in request["compile_evidence_layers"]:
+                    evidence_root = (
+                        StoragePath(request["output_root"])
+                        / "compile-evidence"
+                        / f"step-{checkpoint['step']}"
+                        / f"layer-{index}"
+                        / f"rank-{jax.process_index()}"
+                    )
+                    replay = replay_with_compile_evidence(
+                        capture, root=evidence_root, layer_index=index, query_count=request["query_count"]
+                    )
+                else:
+                    replay = replay_attention_mitigations(capture, layer_index=index, query_count=request["query_count"])
+                jax.block_until_ready(replay)
             start = capture.q.addressable_shards[0].index[0].indices(capture.q.shape[0])[0]
             local_row = int(_host_arrays(replay.local_row).reshape(-1)[0])
             record = _panel_record(replay, layer_index=index, global_sequence_index=start + local_row)
             del replay
             record["benchmarks"] = (
-                _benchmark(capture, request, layer_index=index)
+                _benchmark(capture, request, layer_index=index, checkpoint_step=checkpoint["step"])
                 if index in request["benchmark_layers"] and checkpoint["step"] == request["benchmark_checkpoint"]
                 else []
             )
@@ -354,6 +415,7 @@ def _native_smoke(*, length: int, heads: int):
 
 
 def run_comparison(request: dict) -> None:
+    _validate_native_compilation_request(request)
     model_config = draccus.decode(GrugModelConfig, request["model"])
     _apply_hero_ep_runtime_defaults(
         inline_watch_enabled=True,
@@ -363,8 +425,11 @@ def run_comparison(request: dict) -> None:
     )
     DistributedConfig().initialize()
     configure_logging(logging.INFO if jax.process_index() == 0 else logging.WARNING)
+    cache_policy = _install_declared_kernel_cache(request["kernel_cache"])
+    (StoragePath(request["output_root"]) / "native-cache-policy" / f"rank-{jax.process_index()}.json").write_text(
+        json.dumps(cache_policy, allow_nan=False)
+    )
     verify_ragged_pjrt()
-    install(cutlass_kernel_cache())
     mesh = compact_grug_mesh(expert_axis_size=64, replica_axis_size=1)
     data_config = draccus.decode(LmDataConfig, request["data"])
     data_key = jax.random.split(jax.random.PRNGKey(request["seed"]), 2)[0]
@@ -373,8 +438,9 @@ def run_comparison(request: dict) -> None:
     with jax.set_mesh(mesh):
         for length, heads in ((128, 4), (256, 8)):
             logger.info("Compiling native mitigation smoke length=%d heads=%d", length, heads)
-            replay = _native_smoke(length=length, heads=heads)
-            jax.block_until_ready(replay)
+            with _native_object_context(request, phase=f"smoke/length-{length}-heads-{heads}"):
+                replay = _native_smoke(length=length, heads=heads)
+                jax.block_until_ready(replay)
             if jax.process_index() == 0:
                 gates = dict(zip(REPLAY_GATE_NAMES, _host_arrays(replay.gates).reshape(-1).tolist(), strict=True))
                 (StoragePath(request["output_root"]) / f"smoke-{length}-{heads}-gates.json").write_text(
@@ -423,6 +489,7 @@ def main() -> None:
     args = parser.parse_args()
     request = json.loads(StoragePath(args.request).read_text())
     request["source_revision"] = args.source_revision
+    _validate_native_compilation_request(request)
     configure_logging(logging.INFO)
     # Worker imports must construct JAX objects in the worker environment.
     worker = importlib.import_module("experiments.grug.moe_hero_ep.attention_mitigation_diagnostic")

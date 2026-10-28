@@ -901,6 +901,24 @@ mandatory.
 records the successful checks. Per-process identity manifests, actual native
 objects, full results and checksums remain private.
 
+### 2026-10-28 — Frozen comparison integration ready
+
+The frozen comparison now declares shared native-object compilation and an
+isolated memory cache. Startup verifies cache isolation before native compilation.
+Private object-proof scopes cover each native smoke, selected checkpoint replay
+and dense benchmark; existing first calls and warmups remain before the unchanged
+timed loops. Required lint, nine focused CPU numerical tests, request/cache-isolation
+checks and a CPU benchmark tracing/scope check pass. Independent source review
+found no correctness findings. The shared helper passed eight-process synthetic
+GPU acceptance; this
+integration has not yet run end to end on the checkpoints. The next run retains
+the original checkpoints, training-mixture batch, selected queries, FP64 reference
+and all strict numerical gates.
+
+The resolved configuration and complete execution identity are preserved privately
+before launch. [Scientific comparison configuration](mitigation-comparison-config.json)
+records the numerical and compilation policies without storage identifiers.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
