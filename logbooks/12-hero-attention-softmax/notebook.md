@@ -776,6 +776,29 @@ associated nonempty IR/PTX/cubin files before interpreting compiler stages.
 records the repeated failure and capture limitation. Original artifacts and
 checksums remain private.
 
+### 2026-10-28 — Clean CuTe IR agrees, PTX differs
+
+Per-kernel capture preserved the candidate forward's IR/PTX/cubin files, linked
+to the returned object hash and launcher specification. The larger synthetic
+case again stopped at the unchanged guard with a seven-to-one split and the
+same two object hashes as the preceding controls. All eight processes passed the
+small case's eleven required numerical gates.
+
+The saved cleaned CuTe IR was byte-identical across all eight processes.
+Associated PTX and cubin already differed between the two object groups. The
+clean IR contains no external link-library attributes; the original compiler
+input still needs inspection, and no library-ordering repair is justified.
+This is still not proof that
+identical original compiler inputs produced different PTX: the saved clean IR
+is a canonicalized clone, while compilation uses the original module and
+rendered pipeline. The next bounded control records those exact inputs/options
+without changing them. Generic MLIR threading disablement is also unsupported:
+the pinned DSL already disables context multithreading.
+
+[Sanitized per-kernel stage summary](mitigation-per-kernel-stage-summary.json)
+records the comparison scope. Exact compiler artifacts remain private. No
+checkpoint mitigation or training-quality result is available.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.

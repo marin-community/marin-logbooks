@@ -1,0 +1,37 @@
+{
+  "source_revision": "0bec95667e511b4244e7bc535202f333187ed9cd",
+  "evidence_kind": "per_kernel_compiler_stage_capture",
+  "process_count": 8,
+  "small_case": {
+    "length": 256,
+    "query_heads": 8,
+    "processes_passing_all11_required_gates": 8
+  },
+  "larger_case": {
+    "length": 16384,
+    "query_heads": 48,
+    "outcome": "unchanged pre-XLA compile-consistency guard failure",
+    "object_group_counts": [
+      7,
+      1
+    ],
+    "same_pair_of_objects_as_preceding_controls": true,
+    "numerical_verdict": null
+  },
+  "native_manifest_entries_per_process": 24,
+  "native_call_records_per_process": 26,
+  "candidate_artifacts_associated_with_returned_module_and_specification": true,
+  "saved_candidate_clean_ir_equal_all_processes": true,
+  "candidate_clean_ir_bytes": 2209385,
+  "candidate_ptx_bytes": [
+    538235,
+    537902
+  ],
+  "candidate_cubin_bytes": [
+    209648,
+    208560
+  ],
+  "clean_ir_contains_external_link_library_attributes": false,
+  "limitation": "Saved clean IR is a canonicalized clone; exact original compiler input and rendered pipeline were not captured. Equality does not yet establish compiler nondeterminism.",
+  "next_control": "Preserve original module and rendered pipeline/options without changing them; no hash-seed, linker-order, fingerprint or numerical workaround."
+}
