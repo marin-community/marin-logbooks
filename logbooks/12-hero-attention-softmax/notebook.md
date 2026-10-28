@@ -597,6 +597,36 @@ options and native kernel payload identities while retaining the consistency
 guard. No replacement compute was launched. Automated job monitoring stops at
 this distributed-failure handoff; the research issue remains open.
 
+### 2026-10-28 — Isolate distributed compile-key divergence
+
+The user authorized continued autonomous diagnosis and bounded diagnostic retries.
+The checkpoint mitigation comparison remains incomplete. Source inspection found no rank-dependent
+Python branch in replay; rank affects sequence/query selection through runtime
+array values. Inspection
+of the pinned CuTe implementation also confirmed that cold compilation and cache
+reconstruction both fingerprint the complete ELF object with SHA-256. Different
+object bytes remain a hypothesis, rather than an established cause.
+
+The next probe uses two GPUs with synthetic inputs and no checkpoint restore or
+training. Four local sequences per process retain the BF16 batch/sequence/head/width
+layout. Replay selects one local sequence, giving the same native panel shapes:
+16384 keys, 48 query heads, 12 KV heads and width128. The global mesh has two
+processes, compared with64 in the failed attempt.
+A smaller 256-token/eight-head case runs first. Both cases retain the unchanged
+Iris compile-consistency guard and the eleven required parity, decoder and
+native operand-contract gates defined in `attention_mitigation_replay.py`. The attempt is bounded to 20 minutes.
+
+CuTe kernel objects are generated during lowering. Before the surrounding
+replay enters XLA compilation, each process saves compressed lowered IR, kernel
+object hashes and specifications, input shapes/shardings, and runtime settings
+privately. JAX's existing component-hash logging localizes differences to the
+computation, compiler options, flags, backend or accelerator configuration. That
+localizes the differing input component; its cause still requires inspection.
+The probe collects evidence before changing cache
+policy, generated source paths, or arithmetic. Raw compiler artifacts and
+operational identifiers remain private. Passing this synthetic probe alone will
+not establish a checkpoint mitigation result.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -648,3 +678,5 @@ all three isolated forward probes and both full native cases passed. The
 rack attempt subsequently aborted on differing distributed compile keys.
 Checkpoint mitigation and dense performance results remain unavailable. Checkpoint comparisons, performance,
 and any training winner remain pending.
+
+Recovery ownership: renewed autonomous diagnosis is active; compile-key isolation is the next bounded attempt.
