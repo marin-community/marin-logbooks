@@ -8,10 +8,14 @@ related_issues:
 research_branch: "codex/12-hero-attention-softmax"
 marin_base_revision: "8577d258214dd0dcb992c04458ee4eb10496d4e5"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: active
+status: complete
 ---
 
 # Hero attention softmax gradient diagnostic
+
+The frozen diagnostic and mitigation comparison are complete. See the
+[validated mitigation report](mitigation-comparison-report.md) for checkpoint
+accuracy, the concentrated layer-15 outlier, forward parity and dense cost.
 
 ## Question and decision criteria
 
@@ -41,10 +45,10 @@ No change to live Hero training is part of this run.
 - Inputs, seed, mixture schedule, packing, and document masks match the fixed batch
   from #10: 256 sequences × 16384 positions at production data step330000 and
   production batch schedule2816 (sequence offset929280000).
-- Hardware: one spare NVL72 rack, 16 GB200 workers × four GPUs, one process per GPU.
-  Each worker requests120 CPUs, 890GB RAM, 1TB scratch. Expert axis64, replica1, context1.
+- Hardware: GB200/SM100, one process per GPU, with 64 rank panels per layer.
+  Expert axis64, replica1, context1; operational resource allocations remain private.
 - Unique run: `<private-run-id>`; coordinator uses the same stem
-  plus `-coord`; JAX port32961; batch priority; timeout7200 seconds.
+  plus `-coord`; private JAX port; batch priority; bounded timeout.
 - Output root:
   `<private-storage-location>`.
 - W&B disabled; no optimizer state or parameter-gradient tree, optimizer updates,
@@ -133,7 +137,7 @@ rank. That result is kept separate from checkpoint measurements.
 - The implementation was tested at originating source revision `8c31314d20ab501fa82dd985153a246d7726429d`;
   its parity-gate change is preserved in archive commit `833280836c` with identical source content.
 - Submit matched the reproduction command below, replacing `<launch-commit>` with
-  the full shipped revision above. W&B is disabled; timeout7200; no new checkpoints.
+  the full shipped revision above. W&B is disabled; bounded timeout; no new checkpoints.
 - Native synthetic control and checkpoint measurements are pending. A running
   coordinator or successful CPU tests do not establish a successful fused GPU comparison.
 - This chat owns heartbeat monitoring and will publish validated results before
@@ -340,7 +344,7 @@ accuracy evidence distinct from dense production-cost claims. Record exact
 shapes, device counts, flags, source identities, and saved-state byte estimates.
 
 The first compute allocation is bounded to one spare 64-GPU rack with batch
-priority and a two-hour timeout, including native smoke, checkpoint comparison,
+priority and a bounded timeout, including native smoke, checkpoint comparison,
 and benchmarks. Stop on distributed/OOM/unclear failures. Small obvious script
 exceptions may be corrected under distinct source/job/output identities; no
 cluster mutation, unrelated cancellation, or production restart is authorized.
@@ -417,7 +421,7 @@ and rejects an adjacent BF16 value. Full gate vectors will be preserved before
 validation raises, improving failure evidence. Nine focused CPU tests and
 required lint pass; GPU acceptance remains unverified.
 
-A separate single-GPU acceptance entry point is ready for a bounded 15-minute
+A separate single-GPU acceptance entry point is ready for a bounded execution interval
 check of the two-key case and a second packed-sequence case with eight query
 heads. The initial attempt stopped before reaching that second case. The
 acceptance entry point loads no Hero checkpoints. Replacement
@@ -430,7 +434,7 @@ continuation remain pending. Operational details are retained privately.
 The follow-up request explicitly authorized the prepared acceptance retry and
 routine harness fixes needed to get the suite running. The single-GPU check was
 submitted from published source `136b1c39f8fe2efb58a23700bca1c0089fac3921`,
-with a 15-minute timeout. It loads no checkpoints and preserves the exact zero-
+with a bounded execution interval. It loads no checkpoints and preserves the exact zero-
 mismatch and operand-contract criteria. Both native cases must pass before the
 bounded rack comparison resumes. GPU acceptance is pending.
 
@@ -453,7 +457,7 @@ nonzero references; both mitigation candidates retained all 16. The same
 postcast-output control retained the baseline failure. These are synthetic
 results and establish neither checkpoint prevalence nor training benefit.
 
-The packed eight-head case did not finish before the 15-minute parent timeout.
+The packed eight-head case did not finish before the bounded parent timeout.
 The last cache-miss message precedes both compilation and execution, so the
 existing log cannot identify the stalled phase. No numerical failure was
 recorded for that case. The acceptance harness also omitted Hero runtime
@@ -466,7 +470,7 @@ The optimized FP32-output forward comparison now observes BF16 bit patterns as
 well. The previous float-roundtrip difference could be affected by the same
 cast folding, so it is not evidence of represented BF16 output disagreement.
 Nine CPU tests and required lint pass. The next acceptance attempt remains a
-single-GPU check, now bounded to 30 minutes to distinguish slow compilation from
+single-GPU check, now subject to a bounded timeout to distinguish slow compilation from
 a stall. Both cases must pass before checkpoint comparison resumes.
 
 ### 2026-10-26 — Explicit lowering compatibility correction
@@ -480,7 +484,7 @@ native case.
 The smoke helper now uses JAX's public `jit`/`lower`/`compile` API with static
 shape arguments. A local compiled-call check and required lint pass. Native
 inputs, mitigation arithmetic, and acceptance criteria are unchanged. The next
-single-GPU attempt retains phase markers and the same 30-minute bound.
+single-GPU attempt retains phase markers and the same bounded execution interval.
 
 ### 2026-10-26 — Worker import boundary correction
 
@@ -498,7 +502,7 @@ worker function from its importable module before dispatch. This lets the worker
 import its own JAX wrappers instead of receiving serialized wrappers. GPU
 verification of the change is pending. Phase markers, input cases, mitigation
 arithmetic, and acceptance gates are unchanged. The next acceptance attempt
-retains the one-GPU, 30-minute bound. Both the two-key 128-token/four-head case
+retains the one-GPU, bounded execution interval. Both the two-key 128-token/four-head case
 and the packed 256-token/eight-head case must pass before the three-checkpoint
 rack comparison.
 
@@ -510,7 +514,7 @@ All eighteen reported gate metrics were zero, including BF16 cast-output parity
 against the unchanged baseline. Its six Q/K error comparisons repeat
 the earlier synthetic result. The packed 256-token/eight-head case completed
 lowering in 13 seconds and compilation in 2 seconds, then dispatched but never
-completed GPU synchronization. The coordinator reached its 30-minute timeout.
+completed GPU synchronization. The coordinator reached its bounded timeout.
 This is an execution failure without a packed-case numerical verdict. No
 checkpoint comparison or dense benchmark ran.
 
@@ -614,7 +618,7 @@ layout. Replay selects one local sequence, giving the same native panel shapes:
 processes, compared with64 in the failed attempt.
 A smaller 256-token/eight-head case runs first. Both cases retain the unchanged
 Iris compile-consistency guard and the eleven required parity, decoder and
-native operand-contract gates defined in `attention_mitigation_replay.py`. The attempt is bounded to 20 minutes.
+native operand-contract gates defined in `attention_mitigation_replay.py`. The attempt is subject to a bounded timeout.
 
 CuTe kernel objects are generated during lowering. Before the surrounding
 replay enters XLA compilation, each process saves compressed lowered IR, kernel
@@ -933,6 +937,35 @@ gate remains mandatory. The run is read-only with respect to model parameters
 and checkpoints. Results are pending and will be validated before conclusions
 are published.
 
+### 2026-10-28 — Validated frozen comparison complete
+
+The coordinator and worker succeeded. Independent arithmetic and executable-proof
+validation passed for all three checkpoints, ten layers, 64 panels per layer,
+six variants, eleven mandatory zero gates and the complete dense timing panel.
+The [final report](mitigation-comparison-report.md) records full results,
+limitations and the next decision; its [summary](mitigation-comparison-summary.json.gz)
+preserves squared norms, distributions, forward differences and numerical bounds.
+
+At 330k, pooled Q/K error decreases from 0.9323%/0.8173% to 0.2767%/0.2487%
+with genuine FP32 saved O. Global layer 15 decreases from 4.4781%/4.5292% to
+0.3465%/0.3233%. The matched large row has baseline Q error 45.8507%; the
+FP32-O/shadow row error is bounded above by 0.366867%, using audited top-eight
+absolute-error events. This is an upper bound, not a retained exact row error.
+Upcasting rounded BF16 O does not repair the error. The optimized path changes
+about 0.062–0.066% of public BF16 output components; the shadow keeps public
+forward O/LSE fixed. At 16k, measured attention forward/backward cost rises about
+8% for FP32 saved O and 34–38% for the shadow. No model-quality result is claimed.
+
+The earlier compiler inconsistency remains unexplained. This comparison uses
+verified actual executable sharing with the ordinary compile guard intact.
+All 34 scope provenances, 12480 per-process request proofs and 153 producer
+object files passed private validation; cached phases may require no new native
+compilation. No equivalence of the earlier differing binaries is inferred.
+
+The investigation finishes with a frozen diagnostic result. An efficient FP32
+auxiliary-output implementation and any paired training continuation require a
+separate scoped task. Live Hero and checkpoint state remain unchanged.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -960,7 +993,7 @@ archive SHA substituted for `<launch-commit>`:
 ```bash
 uv run --no-sync iris --config lib/iris/config/marin.yaml job run --no-wait \
   --enable-extra-resources --target-cluster <private-cluster> --priority batch \
-  --cpu 2 --memory 8GB --disk 32GB --timeout 7200 \
+  --cpu <private-cpu> --memory <private-memory> --disk <private-disk> --timeout <private-timeout> \
   --job-name <private-run-id> \
   -e IRIS_PORT_JAX <private-port> \
   -- python -m experiments.grug.moe_hero_ep.attention_softmax_diagnostic \
@@ -974,17 +1007,14 @@ compute authorization. Sources and configuration are published before this launc
 
 ## Final decision
 
-The original diagnostic is complete. The two-key native acceptance case passed
-strict parity and operand-contract checks, with both mitigation candidates
-recovering its lost query gradients. The second packed case timed out without
-a numerical verdict. Importable worker entrypoints resolved the serialization failure. The packed
-case then stalled in GPU execution and timed out. A source-confirmed FP32-output
-pipeline dependency cycle is addressed by the next single-query-stage candidate;
-all three isolated forward probes and both full native cases passed. The
-rack attempt subsequently aborted on differing distributed compile keys.
-Checkpoint mitigation and dense performance results remain unavailable. Checkpoint comparisons, performance,
-and any training winner remain pending.
+The original attention diagnostic and frozen mitigation comparison are complete.
+Genuine FP32 saved O repairs most measured Q/K error, including the concentrated
+layer-15 observation. The shadow preserves public forward values at greater
+attention cost. The sampled projection remains an accuracy prototype.
+[The final report](mitigation-comparison-report.md) contains the decision,
+rejected controls, remaining compiler uncertainty and training-quality limits.
 
-Recovery ownership: shared-object GPU acceptance is complete and the frozen checkpoint comparison is submitted. Active monitoring and arithmetic validation remain owned by the current investigation. Checkpoint accuracy and dense timing results are pending.
-
-Operational identifiers in this public notebook are redacted. The exact execution and storage record is preserved privately.
+Next-phase ownership belongs to a separately scoped production implementation
+and, if maintainers authorize it, a bounded paired training comparison. No further
+compute or live-training change is part of this completed investigation.
+Operational metadata and complete original results remain private.
