@@ -1,0 +1,90 @@
+{
+  "attempts": [
+    {
+      "tag": "qwen-v1-training",
+      "task_id": "/romain/users-romain-checkpoints-sc-default-study-qwen-seed1701-2026.10.28.1-coordinator-06661f86/users-romain-checkpoints-sc-default-study-qwen-seed1701-2026.10.28.1-fecaa1b56db9/0",
+      "attempt": 0,
+      "state": "TASK_STATE_SUCCEEDED",
+      "pod_name": "iris-romain-users-romain-checkpoint-8875b7e0-0-2e2b1c07ae44019f",
+      "gpus": 8,
+      "controller_attempt_seconds": 550.5339999198914,
+      "pod_created": "2026-10-28T04:29:01Z",
+      "pod_started": "2026-10-28T04:29:33Z",
+      "pod_scheduled": "2026-10-28T04:29:33Z",
+      "node": "gb960a0",
+      "containers": [
+        {
+          "name": "output-uploader",
+          "started": "2026-10-28T04:29:37Z",
+          "finished": "2026-10-28T04:38:49Z"
+        },
+        {
+          "name": "task",
+          "started": "2026-10-28T04:29:37Z",
+          "finished": "2026-10-28T04:38:47Z"
+        }
+      ],
+      "pod_bound_seconds": 556.0,
+      "conservative_allocation_seconds": 556.0,
+      "H100_hours": 1.2355555555555555
+    },
+    {
+      "tag": "qwen-v1-export",
+      "task_id": "/romain/users-romain-checkpoints-sc-default-study-qwen-seed1701-2026.10.28.1-coordinator-06661f86/users-romain-checkpoints-sc-default-study-qwen-seed1701-2026.10.28.1-fecaa1b56db9-export-2/0",
+      "attempt": 0,
+      "state": "TASK_STATE_FAILED",
+      "pod_name": "iris-romain-users-romain-checkpoint-0f10bed0-0-d223a6a34bc29ad7",
+      "gpus": 8,
+      "controller_attempt_seconds": 115.14999985694885,
+      "pod_created": "2026-10-28T04:39:06Z",
+      "pod_started": "2026-10-28T04:39:07Z",
+      "pod_scheduled": "2026-10-28T04:39:07Z",
+      "node": "gb95d00",
+      "containers": [
+        {
+          "name": "output-uploader",
+          "started": "2026-10-28T04:39:11Z",
+          "finished": "2026-10-28T04:41:07Z"
+        },
+        {
+          "name": "task",
+          "started": "2026-10-28T04:39:11Z",
+          "finished": "2026-10-28T04:41:00Z"
+        }
+      ],
+      "pod_bound_seconds": 120.0,
+      "conservative_allocation_seconds": 120.0,
+      "H100_hours": 0.26666666666666666
+    },
+    {
+      "tag": "qwen-export-v2",
+      "task_id": "/romain/sc-default-qwen-export-01a16b97-v2/0",
+      "attempt": 0,
+      "state": "TASK_STATE_SUCCEEDED",
+      "pod_name": "iris-romain-sc-default-qwen-export-87617e2d-0-bb0535d40483400e",
+      "gpus": 8,
+      "controller_attempt_seconds": 180.6600000858307,
+      "pod_created": "2026-10-28T04:51:51Z",
+      "pod_started": "2026-10-28T04:52:24Z",
+      "pod_scheduled": "2026-10-28T04:52:24Z",
+      "node": "gb95d00",
+      "containers": [
+        {
+          "name": "output-uploader",
+          "started": "2026-10-28T04:52:27Z",
+          "finished": "2026-10-28T04:55:25Z"
+        },
+        {
+          "name": "task",
+          "started": "2026-10-28T04:52:27Z",
+          "finished": "2026-10-28T04:55:17Z"
+        }
+      ],
+      "pod_bound_seconds": 181.0,
+      "conservative_allocation_seconds": 181.0,
+      "H100_hours": 0.4022222222222222
+    }
+  ],
+  "total_H100_hours": 1.9044444444444444,
+  "definition": "For each GPU attempt, use the larger of controller-attempt duration and scheduled-pod-to-final-container-exit duration. Includes setup, training/evaluation, failure and teardown; excludes unbound queue wait. Conservative by a few seconds of controller bookkeeping where applicable."
+}

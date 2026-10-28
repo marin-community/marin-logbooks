@@ -58,3 +58,11 @@ The normal converter recovered the saved checkpoint as `/romain/sc-default-qwen-
 The [collector](collect.py) reads saved verifier verdicts, preserves missing grades, applies their declared normalization, and keeps the same balanced 1,000-task panel for every learning-curve point. It collected all thirty saved Qwen grades and their response lengths. The full 10,000-task update-50 endpoint remains separate from that curve panel.
 
 Use `cw-rno2a` for the entire Grug matrix. At the pre-submission check it had 16 unrequested H100s; East had seven. These snapshots do not reserve capacity, so the five-node 40-H100 baseline uses batch and may wait. Submit only TIS seed 1701, version `2026.10.28.1`, through `python -m experiments.post_training.sc_default_study --version 2026.10.28.1 --arm tis --seed 1701 --full --cluster cw-rno2a --run`. Complete its planned 50 updates, held-out grading and exports before expanding submissions. Its settings are unchanged from the frozen protocol, and it will count toward the initial matrix if valid.
+
+### Baseline queued; analysis path checked
+
+The [run manifest](runs.json) records the first Grug coordinator and actual five-task GPU child, both using source `56e9d2eac9b327be8e392780b8ced8d737705cc9`. The data-preparation child succeeded. The [remote data check](main-remote-data-validation.json) confirms the exact training/evaluation file hashes and all 10,000 evaluation-index entries from the independent CPU freeze. The gang is waiting for batch quota; no Grug optimizer update has run yet.
+
+The [reproduction guide](README.md) connects collection, matrix assembly, inference and plotting. The [reporting check](reporting-verification.json) exercised that path on explicitly synthetic data and rejected a changed task identity. It does not supply study results. Final curves will use each run's actual consumed loss tokens and measured cycle span.
+
+The [startup allocation accounting](startup-allocations.json) supplements controller durations with pod scheduling and final-container timestamps. Conservatively taking the larger duration for each attempt gives 1.904 H100-hours across Qwen training, the failed export, and its successful recovery. Unbound queue time consumes no GPUs. All startup jobs are terminal.
