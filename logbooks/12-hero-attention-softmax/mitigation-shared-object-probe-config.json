@@ -1,0 +1,46 @@
+{
+  "evidence_kind": "synthetic_shared_native_object_acceptance",
+  "process_count": 8,
+  "processes_per_task": 4,
+  "task_count": 2,
+  "cases": [
+    {
+      "length": 256,
+      "query_heads": 8
+    },
+    {
+      "length": 16384,
+      "query_heads": 48
+    }
+  ],
+  "head_dim": 128,
+  "gqa_ratio": 4,
+  "local_batch": 4,
+  "query_count": 4,
+  "layer_index": 47,
+  "native_compilation": "shared_object",
+  "kernel_cache": "in_memory",
+  "native_artifacts": "none",
+  "native_object_producer_process": 0,
+  "identity_agreement": "Every intercepted compilation request, including process-cache hits: ordinal, launcher, full specification, recorded source/dependency and runtime/device ABI manifest.",
+  "object_validation": [
+    "actual byte count",
+    "actual SHA256",
+    "normal CompileResult reconstruction"
+  ],
+  "ordinary_compile_consistency_guard": "unchanged",
+  "numerical_acceptance": "All 11 required zero gates in both cases on every process; finite values; Iris root and child success.",
+  "object_evidence_acceptance": "Matching per-request identities/object hashes/counts across all processes.",
+  "limits": {
+    "module_bytes": 524288,
+    "object_envelope_bytes": 1048576,
+    "identity_bytes": 65536,
+    "producer_unique_object_bytes_per_context": 33554432,
+    "evidence_bytes_per_process_context": 16777216,
+    "native_calls_per_context": 4096
+  },
+  "checkpoint_reads": false,
+  "training_updates": false,
+  "checkpoint_writes": false,
+  "limitation": "No claim of deterministic code generation, equivalence of previously differing binaries or training-quality benefit."
+}

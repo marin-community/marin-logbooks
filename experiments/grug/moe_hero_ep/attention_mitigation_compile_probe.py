@@ -50,6 +50,7 @@ from rigging.filesystem.storage_path import StoragePath
 from rigging.log_setup import configure_logging
 
 from experiments.grug.dispatch import dispatch_grug_training_run
+from experiments.grug.moe_hero_ep.attention_mitigation_compile_consensus import NativeCompilation, native_compilation
 from experiments.grug.moe_hero_ep.attention_mitigation_replay import (
     REPLAY_GATE_NAMES,
     REQUIRED_ZERO_GATE_NAMES,
@@ -70,6 +71,7 @@ MAX_HLO_BYTES = 64 * 1024 * 1024
 MAX_NATIVE_ARTIFACT_BYTES = 256 * 1024 * 1024
 MAX_NATIVE_UPLOAD_BYTES = 64 * 1024 * 1024
 TRACEBACK_INTERVAL = 120
+NATIVE_OBJECT_TIMEOUT = 300
 PROBE_CASES = ((256, 8), (16384, 48))
 NATIVE_INPUT_CAPTURE_SELECTION = {
     "launcher_factory": "levanter.grug.attention._fa4_cute_kernels.segmented_flash_attention_forward_sm100_launcher",
@@ -717,10 +719,17 @@ def _run_compile_probe(request: dict, *, native_directory: NativeCompilerArtifac
         "gpus_per_task": request["gpus_per_task"],
         "replicas": request["replicas"],
         "native_artifacts": request["native_artifacts"],
+        "native_compilation": request["native_compilation"],
         "native_input_capture_selection": NATIVE_INPUT_CAPTURE_SELECTION if native_directory is not None else None,
     }
     (root / "metadata.json").write_text(json.dumps(metadata, allow_nan=False))
     with (
+        native_compilation(
+            NativeCompilation(request["native_compilation"]),
+            evidence_root=root / "native-object-consensus",
+            source_revision=request["source_revision"],
+            timeout=NATIVE_OBJECT_TIMEOUT,
+        ),
         _cache_key_evidence(root) as handler,
         _native_kernel_snapshots(native_directory),
         _native_compiler_calls(native_directory),
@@ -785,9 +794,12 @@ def main() -> None:
     parser.add_argument("--gpus-per-task", required=True, type=int, choices=(1, 2, 4))
     parser.add_argument("--replicas", required=True, type=int)
     parser.add_argument("--native-artifacts", required=True, choices=("none", "ir_ptx_cubin"))
+    parser.add_argument("--native-compilation", required=True, choices=tuple(mode.value for mode in NativeCompilation))
     args = parser.parse_args()
     if args.replicas <= 0:
         parser.error("--replicas must be positive")
+    if args.native_compilation == NativeCompilation.SHARED_OBJECT and args.kernel_cache != "in_memory":
+        parser.error("--native-compilation shared_object requires --kernel-cache in_memory")
     worker = importlib.import_module("experiments.grug.moe_hero_ep.attention_mitigation_compile_probe")
     dispatch_grug_training_run(
         run_id=args.run_id,
@@ -798,6 +810,7 @@ def main() -> None:
             "gpus_per_task": args.gpus_per_task,
             "replicas": args.replicas,
             "native_artifacts": args.native_artifacts,
+            "native_compilation": args.native_compilation,
         },
         local_entrypoint=worker.run_compile_probe,
         resources=ResourceConfig.with_gpu(

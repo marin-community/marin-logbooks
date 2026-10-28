@@ -865,6 +865,22 @@ acceptance must pass before the checkpoint comparison resumes.
 records the validated gates and equality scope. Original modules, exact rendered
 pipelines, execution metadata and checksums remain private.
 
+### 2026-10-28 — Shared-object mode ready for GPU acceptance
+
+The shared-object mode passed CPU protocol checks for identity/order mismatches,
+producer exceptions, transfer size/checksum corruption, cache-hit rendezvous,
+normal cache-result reconstruction and wrapper restoration. Independent source
+review found no correctness findings. Required lint, CLI checks and all nine
+focused CPU numerical tests passed. These checks do not establish GPU acceptance;
+the next eight-process control must pass both cases with every required gate zero
+and matching request identities and actual object SHA256 hashes. Compilation
+uses an isolated memory cache
+and leaves the normal compile guard enabled.
+
+[Scientific shared-object probe configuration](mitigation-shared-object-probe-config.json)
+records the mode and acceptance criteria. Source/specification manifests,
+execution metadata, actual native objects and per-process proofs stay private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
