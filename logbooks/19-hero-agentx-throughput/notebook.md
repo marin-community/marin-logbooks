@@ -87,6 +87,16 @@ One graph hypothesis is worth testing after profiling. The [native compilation s
 
 The earlier 571-token short-input producer is `marin-community/MarinSkyRL@dfdc80be6643f49af8d22ab9adda5319ae34befa`, file `hero_serving_capacity.py`. It used batch-invariant mode, a Ray-managed engine client, captured routed experts, disabled FlashInfer autotuning, a 4K cap and 256 sequences/rank. Its fixed bank has SHA256 `b15aeac7c3eb714fe45fc6b8e274342ad26f00970d84f2b7985b42c422b4e905`. The supplied window covers native counter deltas between 20% and 80% of requests completing, before the final drain. These differences must be recorded in a current-runtime reproduction; the old output rate cannot by itself diagnose AgentX.
 
+### 2026-10-28 22:38 UTC — actual baseline window; diagnostic controls
+
+Native warmup completed at 22:38:09.752 UTC: 351 completed requests, no cancellations and zero errors. The measured profiling phase began at 22:38:09.843 UTC with a 3,600-second target. Kueue's admission and quota-reservation transitions both occurred at 21:50:38 UTC; GPU accounting starts there, including setup and warmup. The held allocation still has its original four attempt UIDs. No throughput conclusion is drawn from the unfinished window.
+
+[cache_probe.py](cache_probe.py) prepares full-engine comparisons using the pinned tokenizer, an 8K-token shared prefix and three distinct continuations. Independent salted requests supply cold references and a cold repeat. A shared salt then exercises different branches and API batch sizes 1/2/3/1, always using native `X-data-parallel-rank: 0`. It retains all inputs, requests, responses, cache usage and logprob differences. Sixteen forced output tokens make this a small diagnostic; those output controls do not apply to AgentX. The comparison reports numerical differences without assigning a new tolerance. First run it with caching disabled as a negative control, then on a separate cache-enabled server.
+
+[The diagnostic cases](experiments/native-diagnostics.json) use the released native `vllm bench serve` client and existing CPU-load sampler. One-token 4K and 64K input banks compare representative long-prefill shapes with the historical probes; random input tokens and current runtime are explicit differences. Separate five-step traces cover long prefill and short-input decoding. Short-input load points can show whether increasing concurrent decoding fills the experts. Execute them adaptively after the cheapest cases; these are neither AgentX points nor a direct reproduction of the historical Ray client. Keep intrusive profiles separate from the throughput cases.
+
+The diagnostic launcher can now replace only prefix caching, token budget or sequence limit, and records those overrides next to its actual command. PP4 is a separate topology choice. No native serving implementation, dependency pin or baseline recipe has changed.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.

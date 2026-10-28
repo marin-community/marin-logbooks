@@ -28,7 +28,16 @@ from experiments.evaluation.agentx.recipe import load_series, series_path
 from experiments.evaluation.agentx.run import create_server, interrupt
 
 
-def serve(manifest: dict, output: Path, pipeline_stages: int, serve_duration: float, profile: bool) -> None:
+def serve(
+    manifest: dict,
+    output: Path,
+    pipeline_stages: int,
+    serve_duration: float,
+    profile: bool,
+    prefix_cache: bool,
+    max_batched_tokens: int | None,
+    max_num_seqs: int | None,
+) -> None:
     recipe = series_path(manifest["profile"])
     assert hashlib.sha256(recipe.read_bytes()).hexdigest() == manifest["series_sha256"]
     series = load_series(recipe)
@@ -52,6 +61,11 @@ def serve(manifest: dict, output: Path, pipeline_stages: int, serve_duration: fl
         },
         "physical_gpus": devices,
         "profiler_configured": profile,
+        "overrides": {
+            "prefix_cache": prefix_cache,
+            "max_batched_tokens": max_batched_tokens,
+            "max_num_seqs": max_num_seqs,
+        },
         "status": "starting",
     }
     record_path = output / "diagnostic.json"
@@ -66,6 +80,15 @@ def serve(manifest: dict, output: Path, pipeline_stages: int, serve_duration: fl
             data_parallel_size_local=hardware["gpus"],
         ) as launch:
             server = create_server(manifest, output, launch)
+            if prefix_cache:
+                server.extra_cli_args.remove("--no-enable-prefix-caching")
+                server.extra_cli_args.append("--enable-prefix-caching")
+            for flag, value in (
+                ("--max-num-batched-tokens", max_batched_tokens),
+                ("--max-num-seqs", max_num_seqs),
+            ):
+                if value is not None:
+                    server.extra_cli_args[server.extra_cli_args.index(flag) + 1] = str(value)
             if profile:
                 config = {
                     "profiler": "torch",
@@ -119,10 +142,22 @@ def main() -> None:
     parser.add_argument("--pipeline-stages", type=int, choices=(1, 4), default=1)
     parser.add_argument("--serve-duration", type=float, default=1800)
     parser.add_argument("--profile", action="store_true")
+    parser.add_argument("--prefix-cache", action="store_true")
+    parser.add_argument("--max-batched-tokens", type=int)
+    parser.add_argument("--max-num-seqs", type=int)
     args = parser.parse_args()
     signal.signal(signal.SIGTERM, interrupt)
     signal.signal(signal.SIGINT, interrupt)
-    serve(json.loads(args.manifest.read_text()), args.output, args.pipeline_stages, args.serve_duration, args.profile)
+    serve(
+        json.loads(args.manifest.read_text()),
+        args.output,
+        args.pipeline_stages,
+        args.serve_duration,
+        args.profile,
+        args.prefix_cache,
+        args.max_batched_tokens,
+        args.max_num_seqs,
+    )
 
 
 if __name__ == "__main__":

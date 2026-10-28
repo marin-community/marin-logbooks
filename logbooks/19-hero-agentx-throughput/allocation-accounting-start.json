@@ -1,0 +1,81 @@
+{
+  "observed_utc": "2026-10-28T22:44:05.041950+00:00",
+  "job_id": "/romain/dev-gpu-hero-agentx-01a1846a",
+  "pod_group": "iris-pg-40ebb904f1b4cd40-0",
+  "workloads": [
+    {
+      "name": "iris-pg-40ebb904f1b4cd40-0",
+      "creationTimestamp": "2026-10-28T21:50:38Z",
+      "status": {
+        "admission": {
+          "clusterQueue": "iris-cq",
+          "podSetAssignments": [
+            {
+              "count": 4,
+              "flavors": {
+                "cpu": "cw-tas",
+                "ephemeral-storage": "cw-tas",
+                "memory": "cw-tas",
+                "nvidia.com/gpu": "cw-tas",
+                "rdma/ib": "cw-tas"
+              },
+              "name": "e4f06c71",
+              "resourceUsage": {
+                "cpu": "128600m",
+                "ephemeral-storage": "4Ti",
+                "memory": "3146496Mi",
+                "nvidia.com/gpu": "16",
+                "rdma/ib": "16"
+              },
+              "topologyAssignment": {
+                "levels": [
+                  "kubernetes.io/hostname"
+                ],
+                "slices": [
+                  {
+                    "domainCount": 4,
+                    "podCounts": {
+                      "universal": 1
+                    },
+                    "valuesPerLevel": [
+                      {
+                        "individual": {
+                          "prefix": "s",
+                          "roots": [
+                            "6xsxs6",
+                            "6xvdgb",
+                            "7xsxs6",
+                            "9jtxs6"
+                          ],
+                          "suffix": "4"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "conditions": [
+          {
+            "lastTransitionTime": "2026-10-28T21:50:38Z",
+            "message": "Quota reserved in ClusterQueue iris-cq",
+            "observedGeneration": 1,
+            "reason": "QuotaReserved",
+            "status": "True",
+            "type": "QuotaReserved"
+          },
+          {
+            "lastTransitionTime": "2026-10-28T21:50:38Z",
+            "message": "The workload is admitted",
+            "observedGeneration": 1,
+            "reason": "Admitted",
+            "status": "True",
+            "type": "Admitted"
+          }
+        ]
+      }
+    }
+  ]
+}
