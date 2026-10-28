@@ -765,6 +765,13 @@ overwritten. Replay math, cache policy and guard remain unchanged; the interpret
 hash-seed hypothesis remains untested. No checkpoint mitigation or training-quality
 conclusion follows.
 
+The per-kernel snapshot fix passed a CPU overwrite simulation: two compilations
+reused the same filenames, and both original snapshots survived with their
+returned module identities. Wrapper argument/result forwarding, restoration and
+cache-hit recording were also checked. Required lint and all nine focused CPU
+tests pass. GPU validation must verify that the candidate forward object has
+associated nonempty IR/PTX/cubin files before interpreting compiler stages.
+
 [Sanitized compiler-stage capture summary](mitigation-compiler-stage-capture-summary.json)
 records the repeated failure and capture limitation. Original artifacts and
 checksums remain private.

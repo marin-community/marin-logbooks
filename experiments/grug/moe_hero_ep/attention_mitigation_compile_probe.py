@@ -29,7 +29,7 @@ from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from functools import partial
+from functools import partial, wraps
 from pathlib import Path
 
 import jax
@@ -74,8 +74,10 @@ PROBE_CASES = ((256, 8), (16384, 48))
 @dataclass
 class NativeCompilerArtifacts:
     directory: Path
+    dump_directory: Path
     published_sha256: dict[str, str] = field(default_factory=dict)
     uploaded_bytes: int = 0
+    kernel_records: list[dict] = field(default_factory=list)
 
 
 @contextmanager
@@ -87,16 +89,98 @@ def _native_compiler_artifact_directory(mode: str) -> Iterator[NativeCompilerArt
         raise ValueError(f"Unknown native compiler artifact mode: {mode}")
     previous = {name: os.environ.get(name) for name in ("CUTE_DSL_KEEP", "CUTE_DSL_DUMP_DIR")}
     with tempfile.TemporaryDirectory(prefix="hero-native-compiler-") as directory:
+        dump_directory = Path(directory) / "live"
+        dump_directory.mkdir()
         os.environ["CUTE_DSL_KEEP"] = "ir,ptx,cubin"
-        os.environ["CUTE_DSL_DUMP_DIR"] = directory
+        os.environ["CUTE_DSL_DUMP_DIR"] = str(dump_directory)
         try:
-            yield NativeCompilerArtifacts(Path(directory))
+            yield NativeCompilerArtifacts(Path(directory), dump_directory)
         finally:
             for name, value in previous.items():
                 if value is None:
                     os.environ.pop(name, None)
                 else:
                     os.environ[name] = value
+
+
+def _native_dump_file_metadata(directory: Path) -> dict[str, tuple[int, int]]:
+    files = {}
+    for path in sorted(directory.rglob("*")):
+        if path.is_symlink():
+            raise ValueError(f"Native compiler artifact must not be a symlink: {path}")
+        if path.is_file():
+            stat = path.stat()
+            files[path.relative_to(directory).as_posix()] = (stat.st_size, stat.st_mtime_ns)
+    return files
+
+
+def _snapshot_native_kernel(
+    artifacts: NativeCompilerArtifacts, fn, spec, result, before: dict[str, tuple[int, int]], *, cache_hit: bool
+) -> None:
+    specification = repr(spec)
+    module_sha256 = hashlib.sha256(result.module).hexdigest()
+    record = {
+        "ordinal": len(artifacts.kernel_records),
+        "launcher_identity": getattr(fn, "_levanter_cute_kernel_identity", None),
+        "specification": specification,
+        "specification_sha256": hashlib.sha256(specification.encode()).hexdigest(),
+        "module_sha256": module_sha256,
+        "module_bytes": len(result.module),
+    }
+    if cache_hit:
+        record.update(status="in_process_cache_hit", files=[])
+    else:
+        after = _native_dump_file_metadata(artifacts.dump_directory)
+        changed = [name for name, metadata in after.items() if before.get(name) != metadata]
+        record["changed_dump_files"] = changed
+        if not changed:
+            record.update(status="no_new_compiler_artifacts", files=[])
+        else:
+            snapshot = artifacts.directory / "kernels" / module_sha256 / str(record["ordinal"])
+            snapshot.mkdir(parents=True)
+            files = []
+            for name in changed:
+                source = artifacts.dump_directory / name
+                data = source.read_bytes()
+                destination = snapshot / name
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(data)
+                files.append(
+                    {
+                        "path": destination.relative_to(artifacts.directory).as_posix(),
+                        "bytes": len(data),
+                        "sha256": hashlib.sha256(data).hexdigest(),
+                    }
+                )
+            record.update(status="captured", files=files)
+    artifacts.kernel_records.append(record)
+    (artifacts.directory / "native-kernel-records.json").write_text(
+        json.dumps(artifacts.kernel_records, allow_nan=False)
+    )
+
+
+@contextmanager
+def _native_kernel_snapshots(artifacts: NativeCompilerArtifacts | None) -> Iterator[None]:
+    if artifacts is None:
+        yield
+        return
+    primitive = importlib.import_module("cutlass.jax.primitive")
+    compile_module = importlib.import_module("cutlass.jax.compile")
+    original = primitive.get_or_compile_kernel
+
+    @wraps(original)
+    def get_or_compile_kernel(fn, spec):
+        cached = compile_module._CUTLASS_COMPILE_CACHE.get((fn, spec))
+        before = _native_dump_file_metadata(artifacts.dump_directory) if cached is None else {}
+        result = original(fn, spec)
+        _snapshot_native_kernel(artifacts, fn, spec, result, before, cache_hit=cached is result)
+        return result
+
+    primitive.get_or_compile_kernel = get_or_compile_kernel
+    try:
+        yield
+    finally:
+        primitive.get_or_compile_kernel = original
 
 
 def _publish_native_compiler_artifacts(artifacts: NativeCompilerArtifacts, root: StoragePath) -> dict:
@@ -556,7 +640,7 @@ def _run_compile_probe(request: dict, *, native_directory: NativeCompilerArtifac
         "native_artifacts": request["native_artifacts"],
     }
     (root / "metadata.json").write_text(json.dumps(metadata, allow_nan=False))
-    with _cache_key_evidence(root) as handler:
+    with _cache_key_evidence(root) as handler, _native_kernel_snapshots(native_directory):
         phase = _phase_recorder(root, handler)
         try:
             results = []
