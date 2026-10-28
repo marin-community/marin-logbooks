@@ -1,0 +1,185 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Collect compact grades and curves from one immutable study export directory."""
+
+import argparse
+import hashlib
+import json
+from collections import Counter
+from pathlib import Path
+
+import numpy as np
+from rigging.filesystem.buckets import filesystem_for
+from skyrl_gym.verification import VerificationResult, VerificationStatus, normalized_verifier_score
+
+
+def read_json(uri: str):
+    fs, key = filesystem_for(uri)
+    with fs.open(key, "rt") as stream:
+        return json.load(stream)
+
+
+def write_json(path: Path, content) -> None:
+    path.write_text(json.dumps(content, indent=2) + "\n")
+
+
+def collect_grades(export: str, step: int, index: list[dict], output: Path) -> dict:
+    expected = {row["uid"]: row for row in index}
+    if len(expected) != len(index):
+        raise ValueError("Duplicate evaluation-index identities")
+    fs, prefix = filesystem_for(export + f"/dumped_evals/global_step_{step}_evals")
+    rows, source_objects = {}, []
+    for key in sorted(fs.find(prefix)):
+        if not key.endswith(".jsonl") or key.endswith("/aggregated_results.jsonl"):
+            continue
+        digest = hashlib.sha256()
+        count = 0
+        with fs.open(key, "rt") as stream:
+            for line in stream:
+                digest.update(line.encode())
+                value = json.loads(line)
+                uid = str(value["uid"])
+                if uid not in expected or uid in rows:
+                    raise ValueError(f"Unexpected or repeated task uid at step {step}: {uid}")
+                task = expected[uid]
+                verification = value.get("verification")
+                score = None
+                if verification is not None:
+                    verdict = VerificationResult(
+                        **{**verification, "status": VerificationStatus(verification["status"])}
+                    )
+                    if verdict.status is VerificationStatus.VERIFIED:
+                        score = normalized_verifier_score(verdict)
+                rows[uid] = {
+                    "uid": uid,
+                    "task": task["study_id"],
+                    "family": task["teacher_route"],
+                    "public_fingerprint": task["public"],
+                    "source": task["source"],
+                    # The frozen index names the curriculum import; dumps name
+                    # its upstream dataset (several imports share TaskTrove).
+                    "upstream_dataset": value["data_source"],
+                    "normalized_verifier_score": score,
+                    "full_success": None if score is None else int(score >= 1 - 1e-6),
+                    "verification": verification,
+                    "response_tokens": len(value["response_token_ids"]),
+                    "stop_reason": value["stop_reason"],
+                    "exception_type": value["exception_type"],
+                    "error_treatment": value["error_treatment"],
+                    "server_error": value["server_error"],
+                }
+                count += 1
+        source_objects.append({"uri": "s3://" + key, "rows": count, "sha256": digest.hexdigest()})
+    ordered = [rows[row["uid"]] for row in index if row["uid"] in rows]
+    with (output / f"grades-{step:04d}.jsonl").open("w") as stream:
+        for row in ordered:
+            stream.write(json.dumps(row) + "\n")
+    missing = sorted(set(expected) - set(rows))
+    ungraded = [row["uid"] for row in ordered if row["full_success"] is None]
+    coverage = {
+        "step": step,
+        "expected": len(index),
+        "generated": len(rows),
+        "graded": len(rows) - len(ungraded),
+        "missing_uids": missing,
+        "ungraded_uids": ungraded,
+        "source_objects": source_objects,
+    }
+    write_json(output / f"coverage-{step:04d}.json", coverage)
+    if missing or ungraded:
+        raise ValueError(f"Incomplete evaluation at step {step}; saved compact evidence for grade-only recovery")
+    return {"step": step, **summarize(ordered), "curve_panel": summarize(ordered[:1000]), "coverage": coverage}
+
+
+def summarize(ordered: list[dict]) -> dict:
+    families = sorted({row["family"] for row in ordered})
+    family_results = {
+        family: {
+            "tasks": sum(row["family"] == family for row in ordered),
+            "full_success": float(np.mean([row["full_success"] for row in ordered if row["family"] == family])),
+            "mean_verifier_reward": float(
+                np.mean([row["normalized_verifier_score"] for row in ordered if row["family"] == family])
+            ),
+        }
+        for family in families
+    }
+    lengths = [row["response_tokens"] for row in ordered]
+    return {
+        "tasks": len(ordered),
+        "families": family_results,
+        "macro_full_success": float(np.mean([row["full_success"] for row in family_results.values()])),
+        "macro_mean_verifier_reward": float(np.mean([row["mean_verifier_reward"] for row in family_results.values()])),
+        "response_tokens": sum(lengths),
+        "response_length_quantiles": dict(
+            zip(
+                ("min", "median", "p90", "p99", "max"),
+                np.quantile(lengths, (0, 0.5, 0.9, 0.99, 1)).tolist(),
+                strict=True,
+            )
+        ),
+        "stop_counts": dict(Counter(row["stop_reason"] for row in ordered)),
+    }
+
+
+def collect(export: str, index_path: Path, output: Path, steps: list[int]) -> dict:
+    output.mkdir(parents=True, exist_ok=True)
+    index = json.loads(index_path.read_text())
+    training = read_json(export + "/study/completed-training.json")
+    write_json(output / "completed-training.json", training)
+    cycles = training["steps"]
+    if [row["step"] for row in cycles] != list(range(1, steps[-1] + 1)):
+        raise ValueError("Missing or repeated policy-update measurements")
+    cumulative_loss, cumulative_response = 0, 0
+    for row in cycles:
+        cumulative_loss += row["trained_loss_tokens"]
+        cumulative_response += row["response_tokens"]
+        row["cumulative_trained_loss_tokens"] = cumulative_loss
+        row["cumulative_response_tokens"] = cumulative_response
+    metrics = []
+    fs, prefix = filesystem_for(export + "/study")
+    for key in sorted(fs.find(prefix)):
+        if "/metrics-" in key and key.endswith(".json"):
+            with fs.open(key, "rt") as stream:
+                metrics.append(json.load(stream))
+    write_json(output / "ordinary-metrics.json", metrics)
+    evaluations, curves = [], []
+    for step in steps:
+        panel = index if step == steps[-1] else index[: min(1000, len(index))]
+        result = collect_grades(export, step, panel, output)
+        evaluations.append(result)
+        curve = result["curve_panel"]
+        cycle = cycles[step - 1] if step else {}
+        curves.append(
+            {
+                "step": step,
+                "tasks": curve["tasks"],
+                "macro_full_success": curve["macro_full_success"],
+                "macro_mean_verifier_reward": curve["macro_mean_verifier_reward"],
+                "trained_loss_tokens": cycle.get("cumulative_trained_loss_tokens", 0),
+                "training_cycle_elapsed_seconds": cycle.get("training_cycle_elapsed_seconds", 0),
+            }
+        )
+    report = {
+        "export": export,
+        "index_sha256": hashlib.sha256(index_path.read_bytes()).hexdigest(),
+        "evaluations": evaluations,
+        "curves": curves,
+        "cycles": cycles,
+        "training_cycle_seconds": cycles[-1]["training_cycle_elapsed_seconds"],
+        "startup": read_json(export + "/study/startup.json"),
+        "evaluation_times": [read_json(export + f"/study/evaluation-time-{step:04d}.json") for step in steps],
+        "limits": "Curves always use the same balanced first 1,000 tasks; full final panel is the primary endpoint.",
+    }
+    write_json(output / "summary.json", report)
+    return report
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("export")
+    parser.add_argument("index", type=Path)
+    parser.add_argument("output", type=Path)
+    parser.add_argument("--steps", type=int, nargs="+", default=[0, 25, 50])
+    args = parser.parse_args()
+    collect(args.export.rstrip("/"), args.index, args.output, args.steps)
