@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "input": "qwen-v1-resolved-launch.yaml",
+      "sha256": "f3656fda51e99d7998af31d7ec2e3246e90b245f4f2de8e5e74127671ca98de6",
+      "actual_registered_module": "skyrl_train.entrypoints.taskcompendium",
+      "selected": "training-measurement"
+    },
+    {
+      "input": "grug-tis1701-v1-resolved-launch.yaml",
+      "sha256": "dd08111ebe358d512eb55a50b2115c3b33f92786a07bcf61ce988031378449b2",
+      "actual_registered_module": "skyrl_train.entrypoints.taskcompendium",
+      "selected": "training-measurement"
+    },
+    {
+      "input": "qwen-export-v2-resolved.yaml",
+      "sha256": "127413ec0447b0ca66d24c571cb9b24f45b770dd8187c41ee9b7e2b0370f6f1d",
+      "actual_registered_module": "skyrl_train.entrypoints.checkpoint_export",
+      "selected": "registered-entrypoint"
+    }
+  ],
+  "correction": "The earlier mock assumed main_base. Both actual training documents register taskcompendium, which also calls unmodified BasePPOExp. Export remains the native checkpoint_export entrypoint.",
+  "limits": "Actual launch-document dispatch replay on CPU; model/optimizer/evaluation code and qualified export converter are unchanged."
+}

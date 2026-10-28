@@ -21,8 +21,11 @@ def run_config(config_path: Path) -> None:
     run = cast(Callable[[DictConfig], None], getattr(importlib.import_module(module), "run"))
     if os.environ.get("TIM_CP_QUALIFICATION") == "1" and module == "skyrl_train.entrypoints.main_base":
         from experiments.post_training.tim_cp_measure import run
-    if os.environ.get("SC_DEFAULT_STUDY") == "1" and module == "skyrl_train.entrypoints.main_base":
-        from experiments.post_training.sc_default_measure import run
+    if os.environ.get("SC_DEFAULT_STUDY") == "1":
+        if module in ("skyrl_train.entrypoints.main_base", "skyrl_train.entrypoints.taskcompendium"):
+            from experiments.post_training.sc_default_measure import run
+        elif module != "skyrl_train.entrypoints.checkpoint_export":
+            raise ValueError(f"The score-centering study does not measure {module}")
     if config.skyrl.get("trainer", {}).get("mismatch_probe", {}).get("enabled"):
         with open_dict(config.skyrl):
             config.skyrl.runtime = {

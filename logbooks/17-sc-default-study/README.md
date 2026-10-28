@@ -13,7 +13,7 @@ published configuration and results contain no secret values.
 
 ```sh
 uv run --frozen python -m experiments.post_training.sc_default_study \
-  --version 2026.10.28.1 --arm tis --seed 1701 --full --cluster cw-rno2a --run
+  --version 2026.10.28.2 --arm tis --seed 1701 --full --cluster cw-rno2a --run
 ```
 
 Omit `--run` to print the artifact graph. `--smoke --arm sc32 --seed 1701`
