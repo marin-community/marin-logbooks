@@ -97,6 +97,16 @@ Native warmup completed at 22:38:09.752 UTC: 351 completed requests, no cancella
 
 The diagnostic launcher can now replace only prefix caching, token budget or sequence limit, and records those overrides next to its actual command. PP4 is a separate topology choice. No native serving implementation, dependency pin or baseline recipe has changed.
 
+### 2026-10-28 23:13 UTC — exact historical inputs recovered
+
+The retained full historical GB200 report is still available locally. Its 207,112,626 bytes hash to the issue's `04b728f72b5dd8a67b19efb4b4c884d5c525da531685e3bcc2f4cd47012c289a`. Extracting only its first workload bank recovered all 1,024 rows. Canonical JSON hashes to the recorded `b15aeac7c3eb714fe45fc6b8e274342ad26f00970d84f2b7985b42c422b4e905`. [The receipt](historical-workload.json) retains the original source and a permanent copy in this program's S3 prefix.
+
+[historical_bank.py](historical_bank.py) supplies those original token IDs and output lengths to the released native benchmark's `SampleRequest` interface. Native HTTP requests, concurrency, measurement and detailed exports remain unchanged. This avoids a text/token round trip or a Ray environment refresh. It permits matching the historical input bank on the current runtime; API, runtime, batch-invariant mode, sequence/context limits and warmup differences still need to be stated. Compare whole-bank rates before making a supplied-window comparison.
+
+The profiling launcher also records native NCCL initialization and graph selection with INFO logs in the separate diagnostic server. [summarize_profile.py](summarize_profile.py) reports per-device interval unions, NCCL overlap, CUDA runtime/driver calls and native operators. A disposable known-overlap gzip-trace check passed. Kernel sums do not establish critical-path shares, and busy NCCL intervals do not distinguish transfer from waiting.
+
+[loaded_runtime.py](loaded_runtime.py) will take a read-only process-map and FlashInfer cache inventory during the baseline. It uses no CUDA/NVML calls and defers file hashing until after the measured run. This supplements the pre-start wheel inventory with dynamic libraries and downloaded cubins; cached membership alone does not prove execution.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.

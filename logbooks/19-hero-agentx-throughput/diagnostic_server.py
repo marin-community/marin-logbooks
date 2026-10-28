@@ -23,6 +23,7 @@ from marin.inference.iris_vllm import (
     notify_iris_vllm_stopped,
     wait_for_iris_vllm_shutdown,
 )
+from marin.inference.vllm_server import VllmLauncherWithEnvironment
 
 from experiments.evaluation.agentx.recipe import load_series, series_path
 from experiments.evaluation.agentx.run import create_server, interrupt
@@ -90,6 +91,13 @@ def serve(
                 if value is not None:
                     server.extra_cli_args[server.extra_cli_args.index(flag) + 1] = str(value)
             if profile:
+                nccl_environment = {
+                    "NCCL_DEBUG": "INFO",
+                    "NCCL_DEBUG_SUBSYS": "INIT,GRAPH",
+                    "NCCL_DEBUG_FILE": str(output / "nccl-%h-%p.log"),
+                }
+                server.launcher = VllmLauncherWithEnvironment(server.launcher, nccl_environment)
+                record["nccl_environment"] = nccl_environment
                 config = {
                     "profiler": "torch",
                     "torch_profiler_dir": str(output / "torch-profiler"),
@@ -99,6 +107,7 @@ def serve(
                     "torch_profiler_with_memory": False,
                     "delay_iterations": 2,
                     "warmup_iterations": 1,
+                    "active_iterations": 5,
                     "max_iterations": 5,
                 }
                 server.extra_cli_args.extend(["--profiler-config", json.dumps(config)])
