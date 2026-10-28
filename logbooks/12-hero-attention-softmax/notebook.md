@@ -682,6 +682,29 @@ the successful gates and cross-policy comparisons. The exact execution record,
 placement, compiler artifacts and checksums remain private. No checkpoint
 mitigation or training-quality result is available from these synthetic controls.
 
+### 2026-10-28 — Single-task cold-cache control also agrees
+
+The single-task, two-process cold-cache control succeeded. Both processes passed
+all eleven required gates in both synthetic cases: 256 keys/eight query heads
+and 16384 keys/48 query heads. All 64 recorded cache-key component entries per
+process matched between processes and matched the preceding two-task control.
+All 24 final native object entries per process also matched across controls,
+paired by launcher identity and specification, with identical object SHA256
+hashes. Task grouping did not reproduce the earlier discrepancy in these small
+synthetic runs; physical placement and the full model prelude are not controlled
+by this comparison.
+
+One final bounded topology control will use two tasks with four GPU processes
+per task, retaining the same cold-cache policy, shapes and arithmetic. This
+matches the original number of processes per task while keeping the distributed
+world smaller. If that also passes, the checkpoint replay will run with evidence
+captured before the unchanged compile-consistency guard. These controls establish
+neither checkpoint gradient accuracy nor training quality.
+
+[Sanitized single-task summary](mitigation-single-task-probe-summary.json)
+records the gates and comparison counts. Exact execution metadata, original
+compiler artifacts and checksums remain private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
