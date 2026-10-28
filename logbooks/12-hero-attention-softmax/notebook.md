@@ -812,6 +812,24 @@ Native input capture still requires GPU validation and remains private. This
 observation does not claim a repair or numerical equivalence between the two
 compiled objects.
 
+### 2026-10-28 — Restrict original-input capture to the target kernel
+
+The exact-input control stopped at the unchanged diagnostic artifact bound.
+All eight processes passed the small-case gates, but raw compiler observations
+exceeded the per-process retention limit during larger-case lowering. This is
+neither a numerical failure nor another measured compile-key mismatch; the
+larger case has no numerical verdict. The
+uploaded records do not preserve the larger candidate's original inputs, so no
+compiler-causality claim follows.
+
+The next control removes global raw-IR dumping and serializes exact compiler
+inputs only for the candidate FP32-output forward at the larger shape, while
+retaining existing IR/PTX/cubin snapshots and the same artifact bounds. Replay
+arithmetic and acceptance gates remain unchanged.
+
+[Sanitized artifact-bound summary](mitigation-exact-input-capture-bound-summary.json)
+records the incomplete attempt. Original manifests and checksums remain private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
