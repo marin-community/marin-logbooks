@@ -919,6 +919,20 @@ The resolved configuration and complete execution identity are preserved private
 before launch. [Scientific comparison configuration](mitigation-comparison-config.json)
 records the numerical and compilation policies without storage identifiers.
 
+### 2026-10-28 — Frozen checkpoint comparison submitted
+
+The frozen three-checkpoint comparison has been submitted from the
+[published integration source](https://github.com/marin-community/marin-logbooks/commit/a125b7d91c09028f907603f9fa499ae9bc709cf0).
+Its private resolved configuration was uploaded and read back byte-for-byte
+before launch. It retains the original training-mixture batch, checkpoints at
+steps 270000/300000/330000, ten selected layers, all-head sparse-query gradient
+objective, six variants and dense benchmark panel. The shared-object mode
+previously accepted on synthetic inputs covers smoke, replay and dense
+benchmarking; every original numerical
+gate remains mandatory. The run is read-only with respect to model parameters
+and checkpoints. Results are pending and will be validated before conclusions
+are published.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -971,6 +985,6 @@ rack attempt subsequently aborted on differing distributed compile keys.
 Checkpoint mitigation and dense performance results remain unavailable. Checkpoint comparisons, performance,
 and any training winner remain pending.
 
-Recovery ownership: shared-object GPU acceptance is complete. Integration into the frozen checkpoint comparison is active; checkpoint accuracy and dense timing remain pending.
+Recovery ownership: shared-object GPU acceptance is complete and the frozen checkpoint comparison is submitted. Active monitoring and arithmetic validation remain owned by the current investigation. Checkpoint accuracy and dense timing results are pending.
 
 Operational identifiers in this public notebook are redacted. The exact execution and storage record is preserved privately.
