@@ -12,7 +12,6 @@ import argparse
 import hashlib
 import json
 import os
-import subprocess
 import time
 from pathlib import Path
 
@@ -20,10 +19,16 @@ from pathlib import Path
 def snapshot(pid_file: Path) -> dict:
     root = int(pid_file.read_text())
     os.kill(root, 0)
-    parents = [
-        tuple(map(int, line.split()))
-        for line in subprocess.check_output(["ps", "-eo", "pid=,ppid="], text=True).splitlines()
-    ]
+    parents = []
+    for process in Path("/proc").iterdir():
+        if not process.name.isdigit():
+            continue
+        try:
+            status = (process / "status").read_text().splitlines()
+        except FileNotFoundError:
+            continue
+        parent = next(int(line.split()[1]) for line in status if line.startswith("PPid:"))
+        parents.append((int(process.name), parent))
     processes = {root}
     while children := {pid for pid, parent in parents if parent in processes} - processes:
         processes.update(children)
