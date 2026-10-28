@@ -53,6 +53,8 @@ def serve(
         "iris_bundle_id": os.environ["IRIS_BUNDLE_ID"],
         "iris_task_id": os.environ["IRIS_TASK_ID"],
         "iris_attempt_uid": os.environ["IRIS_ATTEMPT_UID"],
+        "iris_node_name": os.environ["IRIS_NODE_NAME"],
+        "worker_pid": os.getpid(),
         "started_unix": time.time(),
         "requested_parallelism": {
             "tp": 1,

@@ -47,7 +47,7 @@ def snapshot(pid_file: Path) -> dict:
                 and ".so" in line
             }
         )
-    paths = {Path(name) for names in libraries.values() for name in names}
+    paths = {Path(name) for names in libraries.values() for name in names if not name.endswith(" (deleted)")}
     flashinfer = Path.home() / ".cache/flashinfer"
     paths.update(
         path for path in flashinfer.rglob("*") if path.suffix in (".cubin", ".so") or path.name == "checksums.txt"
@@ -55,8 +55,18 @@ def snapshot(pid_file: Path) -> dict:
     files = {}
     for path in sorted(paths):
         stat = path.stat()
-        files[str(path)] = {"bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns}
-    return {"observed_unix": time.time(), "root_pid": root, "mapped_libraries": libraries, "files": files}
+        files[str(path)] = {"bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "inode": stat.st_ino}
+    return {
+        "observed_unix": time.time(),
+        "root_pid": root,
+        "mapped_libraries": libraries,
+        "deleted_mappings": {
+            pid: [name for name in names if name.endswith(" (deleted)")]
+            for pid, names in libraries.items()
+            if any(name.endswith(" (deleted)") for name in names)
+        },
+        "files": files,
+    }
 
 
 def main() -> None:
@@ -73,7 +83,11 @@ def main() -> None:
         for name, entry in record["files"].items():
             path = Path(name)
             stat = path.stat()
-            assert stat.st_size == entry["bytes"] and stat.st_mtime_ns == entry["mtime_ns"], name
+            assert (stat.st_size, stat.st_mtime_ns, stat.st_ino) == (
+                entry["bytes"],
+                entry["mtime_ns"],
+                entry["inode"],
+            ), name
             with path.open("rb") as stream:
                 entry["sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
         record["hashed_unix"] = time.time()
