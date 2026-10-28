@@ -112,3 +112,19 @@ their recorded object stores. Publish compact matrices, summaries, plots and
 checksums with exact source/configuration and restore references. Preserve
 failed attempts in resource accounting. Clean only owned temporary bulk after
 all consumers stop and preservation has been verified.
+
+Verify each native update-50 export with the run root and source revision from
+the run manifest and the exact initializer URI recorded in
+[export-verifier-replay.json](export-verifier-replay.json):
+
+```sh
+uv run --frozen python logbooks/17-sc-default-study/verify_export.py \
+  "$study_run_root" "$study_initial_model" "$study_run_source" \
+  "$study_results/export-verification.json"
+```
+
+This requires a completed native export and all 39 indexed weight shards. It
+compares one router tensor and one attention tensor with the initializer using
+small byte-range reads. The replay check reproduces the original baseline
+manifest, byte count and both tensor checks. It does not verify every parameter
+or replace the Qwen check of live serving weights after sleep.
