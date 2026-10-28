@@ -71,6 +71,12 @@ MAX_NATIVE_ARTIFACT_BYTES = 256 * 1024 * 1024
 MAX_NATIVE_UPLOAD_BYTES = 64 * 1024 * 1024
 TRACEBACK_INTERVAL = 120
 PROBE_CASES = ((256, 8), (16384, 48))
+NATIVE_INPUT_CAPTURE_SELECTION = {
+    "launcher_factory": "levanter.grug.attention._fa4_cute_kernels.segmented_flash_attention_forward_sm100_launcher",
+    "configuration": "Flash4CuteSm100ForwardConfig(tile=(128, 128), q_stage=1)",
+    "query_sequence_length": 16384,
+    "first_output_dtype": "float32",
+}
 
 
 @dataclass
@@ -81,6 +87,7 @@ class NativeCompilerArtifacts:
     uploaded_bytes: int = 0
     kernel_records: list[dict] = field(default_factory=list)
     compiler_call_index: int = 0
+    native_input_capture: dict | None = None
 
 
 @contextmanager
@@ -94,7 +101,7 @@ def _native_compiler_artifact_directory(mode: str) -> Iterator[NativeCompilerArt
     with tempfile.TemporaryDirectory(prefix="hero-native-compiler-") as directory:
         dump_directory = Path(directory) / "live"
         dump_directory.mkdir()
-        os.environ["CUTE_DSL_KEEP"] = "ir,ir-debug,ptx,cubin"
+        os.environ["CUTE_DSL_KEEP"] = "ir,ptx,cubin"
         os.environ["CUTE_DSL_DUMP_DIR"] = str(dump_directory)
         try:
             yield NativeCompilerArtifacts(Path(directory), dump_directory)
@@ -117,6 +124,25 @@ def _native_dump_file_metadata(directory: Path) -> dict[str, tuple[int, int]]:
     return files
 
 
+def _native_input_capture(fn, spec) -> dict | None:
+    identity = getattr(fn, "_levanter_cute_kernel_identity", None)
+    if identity is None:
+        return None
+    parts = identity.split("|")
+    if (
+        parts[0] != NATIVE_INPUT_CAPTURE_SELECTION["launcher_factory"]
+        or f"config={NATIVE_INPUT_CAPTURE_SELECTION['configuration']}" not in parts
+        or spec.in_args[0].shape[1] != NATIVE_INPUT_CAPTURE_SELECTION["query_sequence_length"]
+        or np.dtype(spec.out_args[0].dtype) != np.dtype(NATIVE_INPUT_CAPTURE_SELECTION["first_output_dtype"])
+    ):
+        return None
+    return {
+        "selection": NATIVE_INPUT_CAPTURE_SELECTION,
+        "launcher_identity": identity,
+        "specification_sha256": hashlib.sha256(repr(spec).encode()).hexdigest(),
+    }
+
+
 def _snapshot_native_kernel(
     artifacts: NativeCompilerArtifacts, fn, spec, result, before: dict[str, tuple[int, int]], *, cache_hit: bool
 ) -> None:
@@ -129,6 +155,7 @@ def _snapshot_native_kernel(
         "specification_sha256": hashlib.sha256(specification.encode()).hexdigest(),
         "module_sha256": module_sha256,
         "module_bytes": len(result.module),
+        "exact_input_capture_selected": _native_input_capture(fn, spec) is not None,
     }
     if cache_hit:
         record.update(status="in_process_cache_hit", files=[])
@@ -179,7 +206,12 @@ def _native_kernel_snapshots(artifacts: NativeCompilerArtifacts | None) -> Itera
     def get_or_compile_kernel(fn, spec):
         cached = compile_module._CUTLASS_COMPILE_CACHE.get((fn, spec))
         before = _native_dump_file_metadata(artifacts.dump_directory) if cached is None else {}
-        result = original(fn, spec)
+        previous = artifacts.native_input_capture
+        artifacts.native_input_capture = _native_input_capture(fn, spec)
+        try:
+            result = original(fn, spec)
+        finally:
+            artifacts.native_input_capture = previous
         _snapshot_native_kernel(artifacts, fn, spec, result, before, cache_hit=cached is result)
         return result
 
@@ -206,19 +238,20 @@ def _native_compiler_calls(artifacts: NativeCompilerArtifacts | None) -> Iterato
         arguments = {name: value for name, value in bound.arguments.items() if name not in ("self", "module")}
         prefix = artifacts.dump_directory / f"compiler-call-{artifacts.compiler_call_index:04d}"
         artifacts.compiler_call_index += 1
-        bytecode = io.BytesIO()
-        module.operation.write_bytecode(bytecode)
-        serialized = bytecode.getvalue()
-        assembly = module.operation.get_asm(enable_debug_info=True).encode()
-        prefix.with_suffix(".mlirbc").write_bytes(serialized)
-        prefix.with_suffix(".mlir").write_bytes(assembly)
-        record = {
-            "arguments": arguments,
-            "module_bytecode_sha256": hashlib.sha256(serialized).hexdigest(),
-            "module_bytecode_bytes": len(serialized),
-            "module_asm_sha256": hashlib.sha256(assembly).hexdigest(),
-            "module_asm_bytes": len(assembly),
-        }
+        record = {"arguments": arguments, "exact_input_capture": artifacts.native_input_capture}
+        if artifacts.native_input_capture is not None:
+            bytecode = io.BytesIO()
+            module.operation.write_bytecode(bytecode)
+            serialized = bytecode.getvalue()
+            assembly = module.operation.get_asm(enable_debug_info=True).encode()
+            prefix.with_suffix(".mlirbc").write_bytes(serialized)
+            prefix.with_suffix(".mlir").write_bytes(assembly)
+            record.update(
+                module_bytecode_sha256=hashlib.sha256(serialized).hexdigest(),
+                module_bytecode_bytes=len(serialized),
+                module_asm_sha256=hashlib.sha256(assembly).hexdigest(),
+                module_asm_bytes=len(assembly),
+            )
         prefix.with_suffix(".json").write_text(json.dumps(record, allow_nan=False))
         return original(self, module, pipeline, *args, **kwargs)
 
@@ -684,6 +717,7 @@ def _run_compile_probe(request: dict, *, native_directory: NativeCompilerArtifac
         "gpus_per_task": request["gpus_per_task"],
         "replicas": request["replicas"],
         "native_artifacts": request["native_artifacts"],
+        "native_input_capture_selection": NATIVE_INPUT_CAPTURE_SELECTION if native_directory is not None else None,
     }
     (root / "metadata.json").write_text(json.dumps(metadata, allow_nan=False))
     with (

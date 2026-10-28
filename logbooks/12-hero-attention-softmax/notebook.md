@@ -827,6 +827,15 @@ inputs only for the candidate FP32-output forward at the larger shape, while
 retaining existing IR/PTX/cubin snapshots and the same artifact bounds. Replay
 arithmetic and acceptance gates remain unchanged.
 
+The selective capture implementation matches the forward launcher,
+tile 128x128/query-stage 1, query length 16384 and FP32 first output. In this
+harness the selected case has both query and key length 16384 and 48 query
+heads; head count is fixed by the harness rather than the selector. Other
+kernels retain pipeline argument records and existing IR/PTX/cubin snapshots.
+CPU selectivity, forwarding, restoration and serialization-nonmutation checks
+passed, along with required lint and all nine focused CPU tests; the narrowed
+GPU capture remains unvalidated.
+
 [Sanitized artifact-bound summary](mitigation-exact-input-capture-bound-summary.json)
 records the incomplete attempt. Original manifests and checksums remain private.
 
