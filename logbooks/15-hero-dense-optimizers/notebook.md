@@ -101,3 +101,26 @@ At 17:57–17:59 America/Los_Angeles, two calibration runs are successful in Iri
 Six initial calibration jobs were preempted by the scheduler. Iris reports zero application failures; preemption counts are one each for AdamW LR1, Muon LR0.3/LR1/LR3, and AdamH LR0.3, and two for AdamH LR1. Kueue diagnostics explicitly report eviction to accommodate another workload. Some retries are running; others wait behind scheduling gates. The coordinator has also dispatched AdamH LR3 and MuonH LR0.3 as slots freed. No manual resubmission, priority increase, cluster mutation, or recipe change was made.
 
 The affected attempts had not reached their first hourly checkpoint. A live Muon LR1 retry (attempt 1) restarted from the beginning and reached update 1003 by 17:57:47 with finite losses. W&B refuses to log steps below the prior attempt's recorded step (4246), so its old summary and crashed status do not establish that the current retry is dead. Monitor actual attempt-aware Iris logs until the retry catches up. This lost work delays calibration; it is not evidence of an optimizer regression. The larger ladder remains gated until all twelve complete successfully.
+
+## 2026-10-27: Calibration complete and larger ladder active
+
+The saved monitoring state was last updated on October 26 at 19:31 America/Los_Angeles; the next live verification occurred on October 27 around 19:28. Runs continued under the coordinator during this observation gap. The heartbeat trigger carried an older scheduled timestamp; current state below comes from live Iris, W&B, and object metadata rather than that trigger time.
+
+All twelve 1e18 calibration runs succeeded in Iris, finished in W&B at `_step=4962`, and have final checkpoint metadata at update 4963. The durable coordinator selection matches the independently read final summaries. The complete three-point sweep and run identities are in [calibration-results.json](calibration-results.json).
+
+| Optimizer | Best tested LR multiplier | Final Paloma macro loss |
+|---|---:|---:|
+| AdamW | 3 | 3.9749632 |
+| Muon | 3 | 3.9614902 |
+| AdamH | 3 | 4.0136013 |
+| MuonH | 1 | 4.1018953 |
+
+Muon is 0.01347 loss lower than AdamW at this single small scale. The comparison has one seed, and the AdamW/Muon/AdamH winners hit the upper search boundary, so it does not establish statistically significant optimizer differences or a compute-optimal scaling ranking. The larger runs use the selected recipe transfer already specified in the launch contract; no new settings were introduced.
+
+The coordinator automatically dispatched four 1e21 runs and four 3e20 runs at 2026-10-27 02:54:06 UTC (October 26 at 19:54 America/Los_Angeles), starting the larger budgets first. The remaining sixteen smaller-budget jobs have not been dispatched yet because these eight occupy the concurrency slots. None of the twenty-four larger-budget runs is complete.
+
+At the current observation, Iris reports zero application failures on all eight larger jobs. Three have running GPU tasks (1e21 AdamW, 1e21 MuonH, 3e20 MuonH); five are behind scheduling gates. Preemption counts are 4,4,4,2 for the 1e21 AdamW/Muon/AdamH/MuonH jobs and 3,5,4,4 for the corresponding 3e20 jobs. Thus only 24 of the allowed 64 H100s are actually working on this campaign at this instant. No priority, allocation cap, or cluster change was made.
+
+Fresh W&B and attempt-aware logs show finite losses and advancing steps on the three active tasks. The furthest 1e21 run, MuonH, is at about 15196/113219 updates (13.4%). Its instantaneous throughput is about 172k tokens/s. The 1e21 AdamW retry is around 3898 updates and the 3e20 MuonH retry around 3211. Other W&B summaries marked crashed are retained observations of preempted attempts, not current queued-task application failures. ETA remains dominated by variable GPU availability; no completion date is asserted.
+
+The archive index PR remains open and draft with no feedback. Its twelve-hour monitoring window has expired; this heartbeat stops its PR arm while continuing the experiment monitor. The PR is not merged or marked ready.
