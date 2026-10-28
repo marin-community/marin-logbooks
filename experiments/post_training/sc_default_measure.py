@@ -162,6 +162,12 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
         with local.open("a") as stream:
             stream.write(json.dumps(record, default=float) + "\n")
         write_json(root + f"/metrics-{kind}-{step:04d}.json", record)
+        if kind == "eval":
+            expected = expected_rows if smoke or step == cfg.trainer.max_steps else 1000
+            if payload.get("eval/all/num_scored") != expected:
+                raise RuntimeError(
+                    "Evaluation has missing or infrastructure-failed grades; preserve answers for regrading"
+                )
         if kind == "train" and step == cfg.trainer.max_steps:
             if smoke and len({row["weight_sha256"] for row in syncs}) < 2:
                 raise ValueError("Qualification did not change published inference weights")

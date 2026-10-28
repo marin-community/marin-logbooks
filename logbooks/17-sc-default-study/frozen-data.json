@@ -1,0 +1,93 @@
+{
+  "source_uri": "s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k/2026.10.23.2",
+  "source_sha256": "bc9326bc87e9fd992748147aaa3f8261e649819456027645cb00cbc23dc7e94d",
+  "source_rows": 100000,
+  "source_counts": {
+    "eurus2_code": 10317,
+    "nemotron_ultra_rlvr1_ultra_sft_step3200_calendar_v2": 743,
+    "nemotron_ultra_rlvr1_ultra_sft_step3200_comp_coding": 5752,
+    "nemotron_ultra_rlvr1_ultra_sft_step3200_reasoning_gym": 1921,
+    "nemotron_ultra_rlvr1_ultra_sft_step3200_stem_mcqa": 1931,
+    "nemotron_ultra_rlvr1_ultra_sft_step3200_structured_outputs_v2": 2079,
+    "openscience": 20790,
+    "reasoning_gym_generated": 20800,
+    "snowball-v01-structure-closure-train": 11634,
+    "tasktrove-glaive_code": 6653,
+    "tasktrove-calendar": 2699,
+    "tasktrove-if_calendar": 5673,
+    "tasktrove-structured": 9008
+  },
+  "split_seed": 20261028,
+  "selection": "SHA256(seed:task_id), first 2,000 distinct public fingerprints per family; all matching public fingerprints excluded from training",
+  "smoke": false,
+  "rows": {
+    "train": 89557,
+    "validation": 10000
+  },
+  "family_counts": {
+    "train": {
+      "calendar": 7115,
+      "competitive_coding": 20432,
+      "reasoning_gym": 20588,
+      "stem": 20721,
+      "structural": 20701
+    },
+    "validation": {
+      "calendar": 2000,
+      "competitive_coding": 2000,
+      "reasoning_gym": 2000,
+      "stem": 2000,
+      "structural": 2000
+    }
+  },
+  "public_overlap": 0,
+  "contract_overlap": 0,
+  "limits": [
+    "A fresh RL holdout from the frozen representative curriculum; earlier SFT/pretraining exposure is unknown.",
+    "Exact public and full-contract separation does not establish semantic decontamination.",
+    "The earlier 910-task model-selection panel is not used for the primary endpoint."
+  ],
+  "train_sha256": "54e40005a259f34d5234cc864bc3284bbb8a9db5ff0154b430a6d26553bb40ce",
+  "train_ids_sha256": "85f8b2d925b22280c7a7e8516bd93570fde48eda9871e22904f8e5299284e0df",
+  "validation_sha256": "323eca1fa9ab912c74e941a6eab8e464f8c66f5268c6d934918073f70d1668cd",
+  "validation_ids_sha256": "a6624fb5fd671065676e72455f7c6f8f9a1d9d47ab2eaecc4cc25fa19fb606c5",
+  "retained_source_counts": {
+    "train": {
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_calendar_v2": 590,
+      "tasktrove-calendar": 2090,
+      "tasktrove-if_calendar": 4435,
+      "eurus2_code": 9432,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_comp_coding": 4940,
+      "tasktrove-glaive_code": 6060,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_reasoning_gym": 1734,
+      "reasoning_gym_generated": 18854,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_stem_mcqa": 1758,
+      "openscience": 18963,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_structured_outputs_v2": 1872,
+      "snowball-v01-structure-closure-train": 10621,
+      "tasktrove-structured": 8208
+    },
+    "validation": {
+      "tasktrove-if_calendar": 1238,
+      "tasktrove-glaive_code": 593,
+      "reasoning_gym_generated": 1826,
+      "openscience": 1827,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_structured_outputs_v2": 207,
+      "tasktrove-calendar": 609,
+      "eurus2_code": 885,
+      "snowball-v01-structure-closure-train": 993,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_comp_coding": 522,
+      "tasktrove-structured": 800,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_calendar_v2": 153,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_stem_mcqa": 173,
+      "nemotron_ultra_rlvr1_ultra_sft_step3200_reasoning_gym": 174
+    }
+  },
+  "training_family_weights": {
+    "calendar": 0.07944660942193241,
+    "competitive_coding": 0.22814520361334123,
+    "reasoning_gym": 0.22988711100193174,
+    "stem": 0.23137219871143516,
+    "structural": 0.23114887725135946
+  }
+}

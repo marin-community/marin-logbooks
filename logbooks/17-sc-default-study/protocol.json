@@ -147,7 +147,8 @@
     "curve_panel": "First 200 interleaved held-out tasks per family, a fixed balanced subset of final endpoint tasks. Same ordered task identities in every run.",
     "endpoint": "Update 50 only; no checkpoint/metric selection from outcomes.",
     "grading": "Pinned canonical graders and package lock; Together openai/gpt-oss-120b where declared, real readiness gate before main allocation; no silent grader substitution.",
-    "failures": "Retain raw generated answer and original failure. Retry grading only with the identical contract; no regeneration or zero imputation. Incomplete coverage prevents a default claim."
+    "failures": "Retain raw generated answer and original failure. Retry grading only with the identical contract; no regeneration or zero imputation. Incomplete coverage prevents a default claim.",
+    "native_continuations": "Canonical native structural imports retain their full release name as provenance. The research Hydra config group selects the existing assistant_prefix harness under that literal name; all other tasks retain Shellbox."
   },
   "uncertainty": {
     "quality": "For each matched seed, calculate the equal-family mean paired task-success difference. Seed variance contribution is sample variance of these seed contrasts / number of seeds. Task contribution is sum over families of weight^2 * sample variance across distinct held-out public tasks of their across-seed mean paired difference / tasks in family. Use sqrt(sum of the two contributions), with Student t critical value at df=seeds-1. This deliberately does not subtract the seed-task interaction and is conservative under the crossed seed/task model.",
@@ -208,5 +209,23 @@
   "matched_seeds": "Within each triplet, the immutable starting weights, trainer/optimizer RNG seed, inference engine sampling seed and data-shuffle seed match. Generated answers, asynchronous admission order and learned weights may diverge naturally. Pairing does not imply identical consumed batches or deterministic GPU execution.",
   "pre_execution_amendments": [
     "Before any training, use the healthy uniform sampler over retained canonical tasks. The canonical loader deliberately drops arbitrary routing metadata; no loader patch or new sampler is needed. Report the resulting fixed mixture counts before Grug submission."
-  ]
+  ],
+  "frozen_data": {
+    "train_rows": 89557,
+    "validation_rows": 10000,
+    "train_sha256": "54e40005a259f34d5234cc864bc3284bbb8a9db5ff0154b430a6d26553bb40ce",
+    "validation_sha256": "323eca1fa9ab912c74e941a6eab8e464f8c66f5268c6d934918073f70d1668cd",
+    "train_ids_sha256": "85f8b2d925b22280c7a7e8516bd93570fde48eda9871e22904f8e5299284e0df",
+    "validation_ids_sha256": "a6624fb5fd671065676e72455f7c6f8f9a1d9d47ab2eaecc4cc25fa19fb606c5",
+    "training_family_weights": {
+      "calendar": 0.07944660942193241,
+      "competitive_coding": 0.22814520361334123,
+      "reasoning_gym": 0.22988711100193174,
+      "stem": 0.23137219871143516,
+      "structural": 0.23114887725135946
+    },
+    "public_overlap": 0,
+    "contract_overlap": 0,
+    "detail": "frozen-data.json"
+  }
 }

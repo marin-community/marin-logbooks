@@ -130,6 +130,10 @@ def prepare_study_data(source_path: str, output_path: str, smoke: bool) -> None:
             label: dict(Counter(row["teacher_route"] for row in rows))
             for label, rows in (("train", training), ("validation", evaluation))
         },
+        "retained_source_counts": {
+            label: dict(Counter(row["source"] for row in rows))
+            for label, rows in (("train", training), ("validation", evaluation))
+        },
         "public_overlap": len({row["public"] for row in training} & {row["public"] for row in evaluation}),
         "contract_overlap": len({row["contract"] for row in training} & {row["contract"] for row in evaluation}),
         "limits": [

@@ -100,6 +100,7 @@ def study_recipe(arm: str, seed: int, smoke: bool) -> tuple[dict, SkyRLRolePlan]
     )
     cfg["data"].update(shuffle=True)
     cfg["environment"]["task_sessions"].pop("daytona", None)
+    cfg["config_groups"] = {"sc_default_study": "default"}
     cfg["generator"].update(enable_http_endpoint=False, weight_sync_transport="broadcast")
     cfg["generator"].setdefault("engine_init_kwargs", {}).update(
         logprobs_mode="processed_logprobs",
