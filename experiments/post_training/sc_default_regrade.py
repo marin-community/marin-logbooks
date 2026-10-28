@@ -36,7 +36,7 @@ def read_json(uri: str):
         return json.load(stream)
 
 
-def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None) -> dict:
+def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None, uids: set[str] | None = None) -> dict:
     fs, prefix = filesystem_for(export + f"/dumped_evals/global_step_{step}_evals")
     task_specs = pq.read_table(task_path, columns=["task_spec"]).column(0).to_pylist()
     manifest_uri = export + f"/study/regrades-{step:04d}.json"
@@ -50,15 +50,19 @@ def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None
     connection = JudgeConnection(remote["base_url"], require_secret(remote["api_key_env"]))
     tokenizer = None
     adopted_grade = json.loads(adopted.read_text()) if adopted is not None else None
+    seen = set()
     for key in sorted(fs.find(prefix)):
         if not key.endswith(".jsonl") or key.endswith("/aggregated_results.jsonl"):
             continue
         with fs.open(key, "rt") as stream:
             for line in stream:
                 row = json.loads(line)
+                uid = str(row["uid"])
+                if uids is not None and uid not in uids:
+                    continue
+                seen.add(uid)
                 if (row.get("verification") or {}).get("status") == "verified":
                     continue
-                uid = str(row["uid"])
                 if uid in recovery["rows"]:
                     if recovery["rows"][uid]["row_sha256"] != fingerprint(row):
                         raise ValueError("Previously recovered answer changed")
@@ -120,6 +124,7 @@ def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None
                     "task": task.id,
                     "contract": deduplication_key(task),
                     "row_sha256": fingerprint(row),
+                    "recovery_tool_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                     "judge_model": judge_model,
                     "judge_base_url": remote["base_url"],
                     "original_verification": row.get("verification"),
@@ -136,6 +141,8 @@ def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None
                     },
                 }
                 write_json(manifest_uri, recovery)
+    if uids is not None and uids - seen:
+        raise ValueError(f"Requested saved answer UIDs were not found: {sorted(uids - seen)}")
     return recovery
 
 
@@ -145,7 +152,11 @@ if __name__ == "__main__":
     parser.add_argument("tasks", type=Path)
     parser.add_argument("--step", required=True, type=int)
     parser.add_argument(
+        "--uids", nargs="+", help="Retry only these saved answer UIDs; complete analysis coverage remains required"
+    )
+    parser.add_argument(
         "--adopt", type=Path, help="Keep the first valid verdict already recorded during operator recovery"
     )
     args = parser.parse_args()
-    print(json.dumps(regrade(args.export.rstrip("/"), args.tasks, args.step, args.adopt), indent=2))
+    selected = set(args.uids) if args.uids is not None else None
+    print(json.dumps(regrade(args.export.rstrip("/"), args.tasks, args.step, args.adopt, selected), indent=2))

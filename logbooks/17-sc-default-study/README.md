@@ -61,6 +61,23 @@ Every curve uses the same 1,000-task subset, including at update 50. The complet
 10,000-task endpoint supplies primary inference. Timings retain normal overlap;
 phase totals must not be summed.
 
+Use `--uids` to retry particular saved answers while investigating a different
+grader failure. This selects recovery work only; it does not relax the analysis
+coverage requirement or exclude tasks from the panel.
+
+The contract audit checks local schema references and replays the original
+date-sensitive Reasoning Gym generator without calling its scorer or using
+model answers:
+
+```sh
+PYTHONHASHSEED=0 uv run --frozen python logbooks/17-sc-default-study/grader_audit.py \
+  "$study_tasks" "$study_results/grader-audit.json"
+```
+
+The proposed nine-task exclusion requires approval and has not been applied.
+The original complete-coverage gate remains in force while that decision is
+pending.
+
 After auditing all nine initial runs, assemble and analyze their compact matrix:
 
 ```sh
