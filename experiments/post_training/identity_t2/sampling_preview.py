@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""CPU-only T3 sampling draft over unchanged T2 caches. No freeze, staging or jobs."""
+"""CPU-only T3 sampling preview over unchanged T2 caches; no staging or jobs."""
 
 from __future__ import annotations
 
@@ -65,7 +65,8 @@ def preview(source: Path, out: Path, new_identity_weight: float, binding_packet:
     }
     assert original.auto_build_caches is False and original.permutation_type == "feistel"
     assert original.mixture_block_size == 2048
-    weights = {**original.train_weights, "identity_v2": 112 * new_identity_weight, "third_person": 108.0}
+    assert new_identity_weight == 4.5
+    weights = {**original.train_weights, "identity_v2": 112 * new_identity_weight, "third_person": 324.0}
     assert weights["identity"] == 264.0 and weights["tools"] == 312.0 and weights["preservation"] == 547.0
     data = dataclasses.replace(original, train_weights=weights)
     assert dataclasses.replace(data, train_weights=original.train_weights) == original
@@ -110,7 +111,7 @@ def preview(source: Path, out: Path, new_identity_weight: float, binding_packet:
             "old_identity": 1.2,
             "new_identity_v2": new_identity_weight,
             "tools": 2.0,
-            "third_person_controls": 2.0,
+            "third_person_controls": 6.0,
             "preservation": 1.0,
         },
         "first128": totals,
