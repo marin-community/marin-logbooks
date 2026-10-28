@@ -75,14 +75,28 @@ def fresh_root(root: str) -> dict:
             assert ancestor.startswith("s3://marin-rno2a/")
 
 
-def run(old: Path, preview: Path, root: str, out: Path, logical_packet: Path) -> dict:
+def run(
+    old: Path, preview: Path, root: str, out: Path, logical_packet: Path, approved_logical_packet_sha256: str
+) -> dict:
     if jax.default_backend() != "cpu" or not root.startswith("s3://marin-rno2a/"):
         raise ValueError("Only CPU data staging to RNO is authorized")
     assert not out.exists()
+    assert sha(logical_packet.read_bytes()) == approved_logical_packet_sha256
     authority = json.loads(logical_packet.read_bytes())
-    assert authority["code_pin"] == "c01d32afaf5175009d78f73d5afb98358ba8e254"
     expected = json.loads((preview / "share-preview.json").read_bytes())
-    assert expected["first128"]["identity_token_share"] <= 0.08 and expected["sampling_weights"]["tools"] == 312
+    assert expected["first128"]["identity_token_share"] <= 0.08
+    assert expected["sampling_weights"] == authority["sampling_weights"]
+    assert expected["per_row_weights"] == authority["per_row_weights"]
+    assert expected["sampling_weights"] == {
+        group: count * expected["per_row_weights"][group]
+        for group, count in (
+            ("identity", 220),
+            ("preservation", 547),
+            ("identity_v2", 112),
+            ("tools", 156),
+            ("third_person", 54),
+        )
+    }
     for name in (
         "share-preview.json",
         "data-config.json",
@@ -259,7 +273,7 @@ def run(old: Path, preview: Path, root: str, out: Path, logical_packet: Path) ->
         "new_cache_files_byte_identical": 27,
         "component_order": expected["component_order"],
         "sampling_weights": expected["sampling_weights"],
-        "per_row_weights": {"identity": 1.2, "tools": 2.0, "other": 1.0},
+        "per_row_weights": expected["per_row_weights"],
         "seed": SEED,
         "feistel": True,
         "mixture_block_size": 2048,
@@ -296,8 +310,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("old", "preview", "root", "out", "logical-packet"):
         parser.add_argument("--" + name, required=True, type=str if name == "root" else Path)
+    parser.add_argument("--approved-logical-packet-sha256", required=True)
     args = parser.parse_args()
-    run(args.old, args.preview, args.root, args.out, args.logical_packet)
+    run(args.old, args.preview, args.root, args.out, args.logical_packet, args.approved_logical_packet_sha256)
 
 
 if __name__ == "__main__":

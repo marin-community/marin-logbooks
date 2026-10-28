@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Materialize the native T2 plan; submit once only with a matching combined CLEAR."""
+"""Materialize the native T3 plan; submit once only with a matching combined CLEAR."""
 
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ from experiments.post_training.identity_context_distill.sft_launch import (
     source_object_list,
 )
 from experiments.post_training.identity_t2.relocate import R8_SHA, R8_URI, encoded, fresh_root, sha
-from experiments.post_training.identity_t2.train import bound_worker, load_inputs, t2_config
+from experiments.post_training.identity_t3.train import bound_worker, load_inputs, t3_config
 
 
 def capacity() -> dict:
@@ -97,18 +97,18 @@ def main() -> None:
         raise ValueError("Explicit timeout must be positive and no greater than the reviewed native bound")
     run_root = args.run_root.rstrip("/")
     if not run_root.startswith("s3://marin-rno2a/"):
-        raise ValueError("T2 training must write in RNO")
+        raise ValueError("T3 training must write in RNO")
     receipt_bytes = args.runtime_receipt.read_bytes()
     receipt = sft_runtime_receipt(receipt_bytes, args.runtime_receipt_sha256)
     frozen = load_inputs(args.freeze_root, args.freeze_sha256)
     config_bytes = read_remote(BASE_MODEL + "config.json")
     generation_bytes = read_remote(BASE_MODEL + "generation_config.json")
     data_bytes = encoded(frozen.data_config)
-    config = t2_config(run_root, args.job_name, config_bytes, generation_bytes, data_bytes, receipt)
+    config = t3_config(run_root, args.job_name, config_bytes, generation_bytes, data_bytes, receipt)
     old_bytes, _ = frozen_mixture()
     baseline = sft_config(run_root, args.job_name, config_bytes, generation_bytes, old_bytes, receipt)
     if dataclasses.replace(config, data=baseline.data) != baseline:
-        raise ValueError("T2 differs from the CD16 recipe outside the approved data replacement")
+        raise ValueError("T3 differs from the CD16 recipe outside the approved sampling replacement")
     reference = receipt["routing_reference"]
     configured, observed = configure_precision_runtime(
         config,
@@ -120,7 +120,7 @@ def main() -> None:
         xla_precision=receipt["xla_precision"],
     )
     if observed != receipt or configured.data != config.data:
-        raise ValueError("T2 did not reproduce the exact CD16 precision receipt")
+        raise ValueError("T3 did not reproduce the exact CD16 precision receipt")
     lr0 = lr0_pass(args.lr0_run_root, receipt)
     objects = source_object_list(args.source_object_list)
     orders = args.orders.read_bytes()
@@ -166,13 +166,19 @@ def main() -> None:
         "lr0_pass": lr0,
         "source_object_list": objects,
         "downstream": {
-            "all_priority": "interactive",
+            "gate_priority": "production",
+            "all_other_priority": "interactive",
             "executor": "margay",
             "after_export_audit": ["gate", "screen", "paired_math", "BFCL"],
             "panel60_executor": "vizcacha",
+            "panel60_blind_graded_together_with": "cd16t2",
             "no_OPD": True,
         },
-        "budget": {"soft_report_only": True, "OPD_plus_T2_flag_H100h": 300, "closed_before_train_H100h": 138.2672066667},
+        "budget": {
+            "soft_report_only": True,
+            "OPD_plus_T2_T3_flag_H100h": 300,
+            "closed_OPD_T2_before_T3_H100h": 168.4101977778,
+        },
     }
     raw_plan = encoded(job_plan)
     if args.plan_output.exists():

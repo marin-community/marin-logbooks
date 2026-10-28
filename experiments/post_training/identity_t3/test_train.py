@@ -17,7 +17,7 @@ from experiments.post_training.identity_t2.prepare import (
     encoded_record,
     summarize,
 )
-from experiments.post_training.identity_t2.train import FrozenInputs, checked_batch, verify_arrays
+from experiments.post_training.identity_t3.train import FrozenInputs, checked_batch, verify_arrays
 
 
 @pytest.fixture

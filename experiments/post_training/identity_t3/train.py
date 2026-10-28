@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Bind T2 data to the unchanged CD16 training/precision/export loop."""
+"""Bind T3 sampling to unchanged T2 inputs and the CD16 training/precision/export loop."""
 
 from __future__ import annotations
 
@@ -46,7 +46,7 @@ from experiments.post_training.identity_t2.prepare import (
     summarize,
 )
 
-LOGICAL_PACKET_SHA = "ae730c5772a3cfc3e2783ebc726ebcafa4f4ff7a3b3322e7b644ab4f7c01ae1c"
+LOGICAL_PACKET_SHA = "4f320bf5226777bcf173c0e7c52f14bc02e28f329ee12d9ec0f53cc0b6baee7e"
 UPDATES = 16
 
 
@@ -68,7 +68,7 @@ def checked_manifest(root: str, freeze_sha256: str) -> dict:
         raise ValueError("Regional freeze manifest differs from reviewed bytes")
     freeze = json.loads(raw)
     if freeze["root"] != root or freeze["logical_packet_sha256"] != LOGICAL_PACKET_SHA:
-        raise ValueError("Regional freeze is not the logically cleared T2 dataset")
+        raise ValueError("Regional freeze is not the logically cleared T3 dataset")
     return freeze
 
 
@@ -133,7 +133,7 @@ def verify_arrays(tokens, weights, query, keys, update: int, frozen: FrozenInput
 
 def collective_failure(error: Exception | None) -> None:
     if np.any(gather_host_scalar(int(error is not None))):
-        raise ValueError("T2 dataset audit failed on at least one rank") from error
+        raise ValueError("T3 dataset audit failed on at least one rank") from error
 
 
 def checked_batch(batch: LmExample, update: int, frozen: FrozenInputs) -> dict:
@@ -141,7 +141,7 @@ def checked_batch(batch: LmExample, update: int, frozen: FrozenInputs) -> dict:
     arrays = None
     try:
         if not batch.attn_mask.is_causal:
-            raise ValueError("T2 training requires the unchanged native causal attention mask")
+            raise ValueError("T3 training requires the unchanged native causal attention mask")
         query, keys = batch.attn_mask.segment_ids
         arrays = (batch.tokens.array, batch.loss_weight.array, query.array, keys.array)
     except Exception as exc:
@@ -167,9 +167,9 @@ def audit_iterator(
     error = None
     try:
         if config.data_seed != SEED or config.train_seq_len != SEQ_LEN:
-            raise ValueError("T2 requires unchanged seed and context length")
+            raise ValueError("T3 requires unchanged seed and context length")
         if config.trainer.train_batch_size != BATCH_SIZE or config.trainer.microbatch_size != BATCH_SIZE:
-            raise ValueError("T2 requires CD16's global and microbatch size of eight")
+            raise ValueError("T3 requires CD16's global and microbatch size of eight")
         if draccus.encode(config.data) != frozen.data_config:
             raise ValueError("Resolved data differs from the regional frozen config")
     except Exception as exc:
@@ -209,7 +209,7 @@ def audit_iterator(
     return itertools.chain(buffered, batches), report
 
 
-def t2_config(
+def t3_config(
     run_root: str,
     run_id: str,
     config_bytes: bytes,
@@ -222,20 +222,20 @@ def t2_config(
     if list(data.components) != expected_order or data.train_weights != {
         "identity": 264.0,
         "preservation": 547.0,
-        "identity_v2": 134.4,
-        "tools": 312.0,
-        "third_person": 54.0,
+        "identity_v2": 504.0,
+        "tools": 468.0,
+        "third_person": 324.0,
     }:
-        raise ValueError("T2 component order or sampling weights differ")
+        raise ValueError("T3 component order or sampling weights differ")
     if data.auto_build_caches or data.permutation_type != "feistel" or data.mixture_block_size != 2048:
-        raise ValueError("T2 requires frozen caches and CD16 sampling")
+        raise ValueError("T3 requires frozen caches and CD16 sampling")
     for name, component in data.components.items():
         if component.pack is not False or component.format.pack is not False:
-            raise ValueError("T2 rows must remain unpacked native chat examples")
+            raise ValueError("T3 rows must remain unpacked native chat examples")
         if component.format.slice_strategy != "raise" or not component.format.mask_user_turns:
-            raise ValueError("T2 cannot crop or supervise source user turns")
+            raise ValueError("T3 cannot crop or supervise source user turns")
         if name in ("identity_v2", "tools", "third_person") and not isinstance(component.format, CapturedChatFormat):
-            raise ValueError("New T2 rows must use the native captured-target format")
+            raise ValueError("New T3 rows must use the native captured-target format")
     identity = data.components["identity"]
     base = identity_sft_config(
         dataset_uri=identity.source.train_urls[0],
@@ -298,7 +298,7 @@ def bound_worker(
         raise ValueError("Worker data config differs from regional readback")
     config_bytes = read_remote(BASE_MODEL + "config.json")
     generation_bytes = read_remote(BASE_MODEL + "generation_config.json")
-    base = t2_config(run_root, run_id, config_bytes, generation_bytes, data_bytes, runtime_receipt)
+    base = t3_config(run_root, run_id, config_bytes, generation_bytes, data_bytes, runtime_receipt)
     reference = runtime_receipt["routing_reference"]
     config, observed = configure_precision_runtime(
         base,
@@ -310,7 +310,7 @@ def bound_worker(
         xla_precision=xla_precision_in_process(),
     )
     if observed != runtime_receipt or config.data != base.data:
-        raise ValueError("T2 changed the reviewed CD16 precision runtime or data")
+        raise ValueError("T3 changed the reviewed CD16 precision runtime or data")
     config = dataclasses.replace(config, trainer=dataclasses.replace(config.trainer, tracker=NoopConfig()))
     result = run_identity_sft(
         config,
