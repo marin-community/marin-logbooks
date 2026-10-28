@@ -67,10 +67,6 @@ marin-env env MARIN_TEMP_PREFIX=s3://marin-us-east-08a \
 
 The first GPU operation will capture the actual installed dependencies, critical Python sources and compiled vLLM extension hashes on all four held hosts, using [capture_runtime.py](capture_runtime.py) in the same constrained isolated environment as serving. Then [native_shortconv_probe.py](native_shortconv_probe.py) will run the unchanged native request-history/isolation regression on one GPU. Its external test source is `tests/models/test_grugmoe.py` at vLLM `3a054c458ca8a32609ba2bc578c4d9b93eabb395`, SHA256 `e94366312fc412bbd17cb91cc5f10c25825b142b622ca4a36b0ed0e63459d670`. This small test does not establish full-engine prefix-cache or graph correctness. It retains the native reference calculation and numerical tolerances.
 
-## Final decision
-
-Pending throughput experiments.
-
 ### 2026-10-28 21:56 UTC — held runtime and native kernel check
 
 Held job `/romain/dev-gpu-hero-agentx-01a1846a` acquired four four-GPU nodes at interactive priority. [The allocation record](allocation.json) retains Pod UIDs, start times, resources and actual image digests. Fresh Kubernetes inventory before allocation and after admission confirmed one NVLink domain with no Hero pretraining. The four admitted hosts are distinct and match the allowed-node receipt. The task image is the baseline digest `b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467`.
@@ -80,3 +76,17 @@ The isolated runtime launch prefix was copied from the recorded C32 command, wit
 The [native ShortConv probe](shortconv-probe.json) passed on one GPU with the release's unchanged reference calculation and tolerances. It checks profiling without state mutation, separate request prefill histories and subsequent decode isolation. It does not qualify full-engine prefix caching or CUDA graphs.
 
 Next run: [fresh C32 baseline](experiments/baseline-c32.json), unchanged one-hour AgentX recipe, all 393 traces, normal preset warmup/replay and the same seed. Use the held Pods with the existing `experiments.evaluation.agentx.run.run` entry point. The recipe fingerprint remains `55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a`. No intrusive profiler, Marin metrics collector or NCCL collector is enabled. All allocation time, including the runtime capture and setup, is charged to this program.
+
+### 2026-10-28 22:10 UTC — full Hero ready; next diagnostics prepared
+
+The fresh C32 server became ready at 22:10:05 UTC and AgentX began its native warmup. All sixteen DP/EP worker ranks logged their expected expert ownership and native kernel/communication paths. The four holder attempt UIDs still match admission. The native record calls the whole client phase `measuring`; that includes warmup and is not evidence that the one-hour profiling window has started. The run's actual profiling timestamps and validity will come from AgentX's export.
+
+[diagnostic_server.py](diagnostic_server.py) prepares the next controlled experiments inside the same held Pods. It reuses the benchmark's server and Iris adapter, records the actual command and stops on a local file or a bounded deadline. It can configure the native Torch profiler for five iterations, with two delayed iterations, one warmup iteration, CPU stacks and tensor shapes, and no memory tracing. It has not run yet. Profiling will use a separate server state from AgentX confirmation. The adapter can also express TP1/DP4/EP4/PP4 on the same sixteen GPUs; its actual rank placement must be checked before interpreting a topology result.
+
+One graph hypothesis is worth testing after profiling. The [native compilation setting](https://github.com/marin-community/vllm/blob/3a054c458ca8a32609ba2bc578c4d9b93eabb395/vllm/config/compilation.py) excludes listed `splitting_ops` from piecewise CUDA graphs. The baseline's effective list includes `vllm::short_conv`, while [Hero calls `vllm::grug_moe_short_conv`](https://github.com/marin-community/vllm/blob/3a054c458ca8a32609ba2bc578c4d9b93eabb395/vllm/model_executor/models/grugmoe.py). The Hero name is absent from the list. Keeping ShortConv outside graphs may permit graphs around other compiled pieces. This is an untested hypothesis, not the established cause of the earlier NaNs or a reason to remove the full-graph guard. It needs changing-batch, cold/warm and branched-state numerical tests before a full-model throughput trial.
+
+The earlier 571-token short-input producer is `marin-community/MarinSkyRL@dfdc80be6643f49af8d22ab9adda5319ae34befa`, file `hero_serving_capacity.py`. It used batch-invariant mode, a Ray-managed engine client, captured routed experts, disabled FlashInfer autotuning, a 4K cap and 256 sequences/rank. Its fixed bank has SHA256 `b15aeac7c3eb714fe45fc6b8e274342ad26f00970d84f2b7985b42c422b4e905`. The supplied window covers native counter deltas between 20% and 80% of requests completing, before the final drain. These differences must be recorded in a current-runtime reproduction; the old output rate cannot by itself diagnose AgentX.
+
+## Final decision
+
+Pending throughput experiments. No optimization gain or final serving recipe is established.
