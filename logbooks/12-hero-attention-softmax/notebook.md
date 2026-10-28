@@ -839,6 +839,32 @@ GPU capture remains unvalidated.
 [Sanitized artifact-bound summary](mitigation-exact-input-capture-bound-summary.json)
 records the incomplete attempt. Original manifests and checksums remain private.
 
+### 2026-10-28 — Targeted original-input control passes
+
+The targeted eight-process control succeeded. Both synthetic cases passed all
+eleven required gates on every process; all 64 recorded cache-key component
+entries per process agreed. The candidate's original module assembly and bytecode
+matched across all eight processes for both compiler calls. Rendered compiler
+options differed only in the two declared diagnostic dump destinations; PTX,
+cubin and returned object bytes also matched. This validates acceptance and
+capture, not a repair: this attempt did not reproduce different PTX from
+identical original inputs.
+
+The next diagnostic mode will compile each native kernel on one process and
+distribute the actual executable bytes, following existing cache-hit
+reconstruction semantics. Every native-compilation request first checks call
+ordinal, the recorded research-source/dependency manifest, launcher/specification
+and device/ABI agreement. The ordinary guard still checks the resulting real program, and any
+identity/order mismatch or transfer error fails. This changes diagnostic
+compilation ownership and preserves the specified attention arithmetic; it
+does not prove the earlier two objects numerically equivalent or improve
+training quality. A bounded synthetic
+acceptance must pass before the checkpoint comparison resumes.
+
+[Sanitized targeted-input summary](mitigation-targeted-input-capture-summary.json)
+records the validated gates and equality scope. Original modules, exact rendered
+pipelines, execution metadata and checksums remain private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
