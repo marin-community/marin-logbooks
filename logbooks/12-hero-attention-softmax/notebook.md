@@ -572,6 +572,31 @@ quality. [Compact gates and squared norms](mitigation-acceptance-passed.json)
 preserve the evidence. The prepared frozen-checkpoint comparison can now
 proceed. Dense forward/backward runtime and memory cost remain unmeasured.
 
+### 2026-10-28 — Distributed compile guard stopped checkpoint comparison
+
+The rack attempt on October 27 passed both native synthetic smoke cases, then
+aborted at the distributed pre-compilation consistency check for
+`replay_attention_mitigations`. All 64 processes reached the check. Their compile
+keys formed two groups of 60 and 4 processes. The guard rejected that mismatch
+before this replay entered XLA compilation. Coordinator connection errors occurred after this guard error and do not
+identify why the compile keys differed.
+
+The output contains the resolved run configuration and two synthetic smoke
+records. Each smoke case passed all eleven required parity, decoder and native
+operand-contract gates. There is no checkpoint-comparison result, layer panel,
+or dense timing result. This failure does not establish a mitigation outcome or
+model instability. The [single-GPU acceptance evidence](mitigation-acceptance-passed.json) remains
+valid within its stated synthetic scope. The failed attempt shipped the published source
+`e9fbce7d182ac814ef675cbe758802bb78313daa`; complete execution identities,
+original errors and artifact checksums remain private.
+
+[Sanitized failure evidence](mitigation-rack-failure-summary.json) records the
+observed compile-key split. The cause of the differing keys remains unresolved.
+The next diagnostic should compare per-rank lowered modules, shapes, compiler
+options and native kernel payload identities while retaining the consistency
+guard. No replacement compute was launched. Automated job monitoring stops at
+this distributed-failure handoff; the research issue remains open.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -620,5 +645,6 @@ a numerical verdict. Importable worker entrypoints resolved the serialization fa
 case then stalled in GPU execution and timed out. A source-confirmed FP32-output
 pipeline dependency cycle is addressed by the next single-query-stage candidate;
 all three isolated forward probes and both full native cases passed. The
-prepared frozen-checkpoint comparison can proceed. Checkpoint comparisons, performance,
+rack attempt subsequently aborted on differing distributed compile keys.
+Checkpoint mitigation and dense performance results remain unavailable. Checkpoint comparisons, performance,
 and any training winner remain pending.

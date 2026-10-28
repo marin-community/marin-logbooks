@@ -1,0 +1,27 @@
+{
+  "source_revision": "e9fbce7d182ac814ef675cbe758802bb78313daa",
+  "outcome": "Distributed pre-compilation consistency guard aborted checkpoint replay",
+  "function": "replay_attention_mitigations",
+  "participating_processes": 64,
+  "distinct_compile_fingerprints": 2,
+  "fingerprint_group_sizes": [
+    60,
+    4
+  ],
+  "synthetic_native_smokes": [
+    {
+      "sequence_length": 128,
+      "query_heads": 4,
+      "required_gate_failure_count": 0
+    },
+    {
+      "sequence_length": 256,
+      "query_heads": 8,
+      "required_gate_failure_count": 0
+    }
+  ],
+  "checkpoint_comparison_results_available": false,
+  "dense_timing_results_available": false,
+  "interpretation": "This is a distributed compilation failure. It does not establish a numerical mitigation result or model instability. The cause of the different compile keys remains unresolved.",
+  "next_step": "Compare per-rank lowered modules, shapes, compiler options and native kernel payload identities while retaining the consistency guard before authorizing another bounded compute attempt."
+}
