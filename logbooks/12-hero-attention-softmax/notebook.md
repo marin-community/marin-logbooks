@@ -881,6 +881,26 @@ and leaves the normal compile guard enabled.
 records the mode and acceptance criteria. Source/specification manifests,
 execution metadata, actual native objects and per-process proofs stay private.
 
+### 2026-10-28 — Shared-object GPU acceptance passes
+
+Shared-object GPU acceptance succeeded. Both synthetic cases passed all eleven
+required gates on every process. Each process recorded 26 native-compilation
+requests covering 24 unique selected objects; request identities and actual
+object SHA256 hashes agreed across all eight processes. The producer's stored
+object bytes passed checksum/count checks, and lowered native payloads matched
+those selected objects. All 64 cache-key component entries per process agreed;
+the ordinary guard remained enabled.
+
+This validates diagnostic object sharing, not deterministic compilation,
+equivalence of prior binary variants or training quality. The next step is the
+frozen checkpoint comparison with the same mode around native smoke, attention
+replay and dense benchmark compilation; original parity/reference gates remain
+mandatory.
+
+[Sanitized shared-object acceptance summary](mitigation-shared-object-acceptance-summary.json)
+records the successful checks. Per-process identity manifests, actual native
+objects, full results and checksums remain private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
@@ -933,6 +953,6 @@ rack attempt subsequently aborted on differing distributed compile keys.
 Checkpoint mitigation and dense performance results remain unavailable. Checkpoint comparisons, performance,
 and any training winner remain pending.
 
-Recovery ownership: renewed autonomous diagnosis is active; compile-key isolation is the next bounded attempt.
+Recovery ownership: shared-object GPU acceptance is complete. Integration into the frozen checkpoint comparison is active; checkpoint accuracy and dense timing remain pending.
 
 Operational identifiers in this public notebook are redacted. The exact execution and storage record is preserved privately.
