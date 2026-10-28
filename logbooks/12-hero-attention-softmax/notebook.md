@@ -656,6 +656,32 @@ remain private. The follow-up manifest reads the actual nested
 `backend_config` string. The conclusions above use full IR and decoded kernel
 objects, rather than that legacy field.
 
+### 2026-10-28 — Cold native generation also agrees
+
+The fresh per-process in-memory CuTe-cache control completed successfully. Both
+processes passed all eleven required numerical gates in both synthetic cases,
+including the 16384-key, 48-query-head native replay. For each process, 64 recorded cache-key
+component entries spanning both cases matched its peer and the corresponding
+entries in the earlier persistent-cache probe. All 24 entries in each final
+native object manifest also matched across processes and policies when paired
+by launcher identity and specification. The pinned runtime/compiler versions,
+synthetic input generator and native replay arithmetic were unchanged; the
+diagnostic wrapper gained metadata and parser support. This control provides no evidence
+for a cold-versus-cached object mismatch in the tested configuration.
+
+The earlier larger-job failure remains unexplained. The next bounded control
+retains the cold cache policy and the same synthetic BF16 input shapes and
+fused attention replay operations but runs two GPU
+processes within a single task, compared with two separate one-GPU tasks. This
+tests whether the discrepancy depends on task grouping and worker context; it does not recreate the full
+model prelude or the original larger distributed world. The same consistency and
+numerical guards remain enabled.
+
+[Sanitized cold-cache summary](mitigation-cold-cache-probe-summary.json) records
+the successful gates and cross-policy comparisons. The exact execution record,
+placement, compiler artifacts and checksums remain private. No checkpoint
+mitigation or training-quality result is available from these synthetic controls.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
