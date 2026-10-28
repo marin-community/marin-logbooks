@@ -13,6 +13,8 @@ import numpy as np
 from rigging.filesystem.buckets import filesystem_for
 from skyrl_gym.verification import VerificationResult, VerificationStatus, normalized_verifier_score
 
+from experiments.post_training.sc_default_regrade import fingerprint
+
 
 def read_json(uri: str):
     fs, key = filesystem_for(uri)
@@ -29,6 +31,9 @@ def collect_grades(export: str, step: int, index: list[dict], output: Path) -> d
     if len(expected) != len(index):
         raise ValueError("Duplicate evaluation-index identities")
     fs, prefix = filesystem_for(export + f"/dumped_evals/global_step_{step}_evals")
+    recovery_uri = export + f"/study/regrades-{step:04d}.json"
+    recovery_fs, recovery_key = filesystem_for(recovery_uri)
+    recovered = read_json(recovery_uri)["rows"] if recovery_fs.exists(recovery_key) else {}
     rows, source_objects = {}, []
     for key in sorted(fs.find(prefix)):
         if not key.endswith(".jsonl") or key.endswith("/aggregated_results.jsonl"):
@@ -44,6 +49,15 @@ def collect_grades(export: str, step: int, index: list[dict], output: Path) -> d
                     raise ValueError(f"Unexpected or repeated task uid at step {step}: {uid}")
                 task = expected[uid]
                 verification = value.get("verification")
+                grade_recovery = recovered.get(uid)
+                if grade_recovery is not None:
+                    if verification is not None and verification["status"] == "verified":
+                        raise ValueError("Grade recovery must not replace an existing valid verdict")
+                    if grade_recovery["contract"] != task["contract"] or grade_recovery["row_sha256"] != fingerprint(
+                        value
+                    ):
+                        raise ValueError("Grade recovery differs from the saved answer or original contract")
+                    verification = grade_recovery["verification"]
                 score = None
                 if verification is not None:
                     verdict = VerificationResult(
@@ -63,6 +77,7 @@ def collect_grades(export: str, step: int, index: list[dict], output: Path) -> d
                     "normalized_verifier_score": score,
                     "full_success": None if score is None else int(score >= 1 - 1e-6),
                     "verification": verification,
+                    "grade_recovery": grade_recovery,
                     "response_tokens": len(value["response_token_ids"]),
                     "stop_reason": value["stop_reason"],
                     "exception_type": value["exception_type"],

@@ -165,8 +165,14 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
         if kind == "eval":
             expected = expected_rows if smoke or step == cfg.trainer.max_steps else 1000
             if payload.get("eval/all/num_scored") != expected:
-                raise RuntimeError(
-                    "Evaluation has missing or infrastructure-failed grades; preserve answers for regrading"
+                write_json(
+                    root + f"/grading-pending-{step:04d}.json",
+                    {
+                        "step": step,
+                        "expected": expected,
+                        "graded": payload.get("eval/all/num_scored"),
+                        "status": "Saved answers require grade-only recovery before analysis eligibility",
+                    },
                 )
         if kind == "train" and step == cfg.trainer.max_steps:
             if smoke and len({row["weight_sha256"] for row in syncs}) < 2:

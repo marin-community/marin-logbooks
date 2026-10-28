@@ -13,7 +13,7 @@ published configuration and results contain no secret values.
 
 ```sh
 uv run --frozen python -m experiments.post_training.sc_default_study \
-  --version 2026.10.28.2 --arm tis --seed 1701 --full --cluster cw-rno2a --run
+  --version 2026.10.28.3 --arm tis --seed 1701 --full --cluster cw-rno2a --run
 ```
 
 Omit `--run` to print the artifact graph. `--smoke --arm sc32 --seed 1701`
@@ -41,7 +41,21 @@ PYTHONPATH=vendor/skyrl/skyrl-gym:. uv run --frozen python \
 ```
 
 The collector requires complete graded coverage and keeps missing grades
-explicit. It never regenerates answers. It calculates full-task success from
+explicit. A live unreadable verdict writes a pending marker while training and
+export continue. Before admitting the run, retry only its missing judge verdicts
+with the recorded model, endpoint and original task contract:
+
+```sh
+uv run --frozen python -m experiments.post_training.sc_default_regrade \
+  "$study_export" "$study_tasks" --step 50
+```
+
+Here `study_tasks` is the frozen validation Parquet. Repeat for a missing grade
+at update 0 or 25, then collect again. Recovery preserves the original failure
+and stops at the first valid verdict. The collector verifies the answer and
+contract hashes; it cannot replace a valid grade. Non-judge failures require
+their original machine recovery. The saved answers are never regenerated for
+grading. The collector calculates full-task success from
 the existing normalized verifier score, not from shaped optimization rewards.
 Every curve uses the same 1,000-task subset, including at update 50. The complete
 10,000-task endpoint supplies primary inference. Timings retain normal overlap;
