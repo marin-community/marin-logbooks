@@ -11,6 +11,7 @@ explicit private output root, including potentially sensitive compiler IR.
 """
 
 import argparse
+import ast
 import faulthandler
 import gzip
 import hashlib
@@ -26,6 +27,7 @@ import tempfile
 import time
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from functools import partial
 from pathlib import Path
@@ -63,8 +65,118 @@ QUERY_COUNT = 4
 LAYER_INDEX = 47
 MAX_DEBUG_BYTES = 8 * 1024 * 1024
 MAX_HLO_BYTES = 64 * 1024 * 1024
+MAX_NATIVE_ARTIFACT_BYTES = 256 * 1024 * 1024
+MAX_NATIVE_UPLOAD_BYTES = 64 * 1024 * 1024
 TRACEBACK_INTERVAL = 120
 PROBE_CASES = ((256, 8), (16384, 48))
+
+
+@dataclass
+class NativeCompilerArtifacts:
+    directory: Path
+    published_sha256: dict[str, str] = field(default_factory=dict)
+    uploaded_bytes: int = 0
+
+
+@contextmanager
+def _native_compiler_artifact_directory(mode: str) -> Iterator[NativeCompilerArtifacts | None]:
+    if mode == "none":
+        yield None
+        return
+    if mode != "ir_ptx_cubin":
+        raise ValueError(f"Unknown native compiler artifact mode: {mode}")
+    previous = {name: os.environ.get(name) for name in ("CUTE_DSL_KEEP", "CUTE_DSL_DUMP_DIR")}
+    with tempfile.TemporaryDirectory(prefix="hero-native-compiler-") as directory:
+        os.environ["CUTE_DSL_KEEP"] = "ir,ptx,cubin"
+        os.environ["CUTE_DSL_DUMP_DIR"] = directory
+        try:
+            yield NativeCompilerArtifacts(Path(directory))
+        finally:
+            for name, value in previous.items():
+                if value is None:
+                    os.environ.pop(name, None)
+                else:
+                    os.environ[name] = value
+
+
+def _publish_native_compiler_artifacts(artifacts: NativeCompilerArtifacts, root: StoragePath) -> dict:
+    files = []
+    total_bytes = 0
+    for path in sorted(artifacts.directory.rglob("*")):
+        if path.is_symlink():
+            raise ValueError(f"Native compiler artifact must not be a symlink: {path}")
+        if not path.is_file():
+            continue
+        size = path.stat().st_size
+        total_bytes += size
+        files.append((path, size))
+    manifest = {
+        "files": [],
+        "total_bytes": total_bytes,
+        "process_byte_bound": MAX_NATIVE_ARTIFACT_BYTES,
+        "compressed_upload_byte_bound": MAX_NATIVE_UPLOAD_BYTES,
+        "uploaded_bytes": artifacts.uploaded_bytes,
+    }
+    if total_bytes > MAX_NATIVE_ARTIFACT_BYTES:
+        reason = f"Native compiler artifacts exceed the {MAX_NATIVE_ARTIFACT_BYTES}-byte raw process bound"
+        manifest.update(status="bounds_exceeded", reason=reason)
+        manifest["files"] = [
+            {"path": path.relative_to(artifacts.directory).as_posix(), "bytes": size} for path, size in files
+        ]
+        (root / "native-compiler-manifest.json").write_text(json.dumps(manifest, allow_nan=False))
+        raise ValueError(reason)
+    records = []
+    uploads = []
+    pending_upload_bytes = 0
+    for path, size in files:
+        relative = path.relative_to(artifacts.directory).as_posix()
+        data = path.read_bytes()
+        if len(data) != size:
+            raise ValueError(f"Native compiler artifact changed while publishing: {path}")
+        compressed = gzip.compress(data, mtime=0)
+        digest = hashlib.sha256(data).hexdigest()
+        records.append(
+            {
+                "path": relative,
+                "bytes": size,
+                "sha256": digest,
+                "compressed_bytes": len(compressed),
+            }
+        )
+        if artifacts.published_sha256.get(relative) != digest:
+            pending_upload_bytes += len(compressed)
+            uploads.append((relative, digest, compressed))
+    manifest["files"] = records
+    if artifacts.uploaded_bytes + pending_upload_bytes > MAX_NATIVE_UPLOAD_BYTES:
+        reason = f"Native compiler artifacts exceed the {MAX_NATIVE_UPLOAD_BYTES}-byte compressed process upload bound"
+        manifest.update(status="bounds_exceeded", reason=reason, pending_upload_bytes=pending_upload_bytes)
+        (root / "native-compiler-manifest.json").write_text(json.dumps(manifest, allow_nan=False))
+        raise ValueError(reason)
+    for relative, digest, compressed in uploads:
+        (root / "native-compiler" / f"{relative}.gz").write_bytes(compressed)
+        artifacts.published_sha256[relative] = digest
+        artifacts.uploaded_bytes += len(compressed)
+    manifest.update(status="complete", uploaded_bytes=artifacts.uploaded_bytes)
+    (root / "native-compiler-manifest.json").write_text(json.dumps(manifest, allow_nan=False))
+    return {"file_count": len(records), "total_bytes": total_bytes}
+
+
+def _write_native_compiler_source_evidence(artifacts: NativeCompilerArtifacts) -> None:
+    records = []
+    for name in ("env_manager", "dsl", "compiler"):
+        module = importlib.import_module(f"cutlass.base_dsl.{name}")
+        source_path = Path(module.__file__)
+        source = source_path.read_bytes()
+        record = {"module": module.__name__, "sha256": hashlib.sha256(source).hexdigest()}
+        if name == "dsl":
+            text = source.decode()
+            record["merge_gpu_link_libraries_source"] = [
+                ast.get_source_segment(text, node)
+                for node in ast.walk(ast.parse(text))
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == "_merge_gpu_link_libraries"
+            ]
+        records.append(record)
+    (artifacts.directory / "compiler-source-evidence.json").write_text(json.dumps(records, allow_nan=False))
 
 
 class CacheKeyFileHandler(logging.Handler):
@@ -251,7 +363,9 @@ def _custom_call_metadata(text: str) -> list[dict]:
     return calls
 
 
-def _write_lowered(root: StoragePath, name: str, lowered) -> dict:
+def _write_lowered(
+    root: StoragePath, name: str, lowered, native_directory: NativeCompilerArtifacts | None = None
+) -> dict:
     # EqxLowered publicly exposes as_text(); do not unwrap private JIT functions.
     text = lowered.as_text()
     encoded = text.encode()
@@ -264,6 +378,9 @@ def _write_lowered(root: StoragePath, name: str, lowered) -> dict:
     (root / f"{name}-custom-calls.json").write_text(json.dumps(calls, allow_nan=False))
     kernels = _cutlass_compile_metadata()
     (root / f"{name}-cutlass-cache.json").write_text(json.dumps(kernels, allow_nan=False))
+    native_artifacts = (
+        _publish_native_compiler_artifacts(native_directory, root) if native_directory is not None else None
+    )
     return {
         "artifact": str(artifact),
         "sha256": hashlib.sha256(encoded).hexdigest(),
@@ -271,6 +388,7 @@ def _write_lowered(root: StoragePath, name: str, lowered) -> dict:
         "compressed_bytes": len(compressed),
         "custom_call_count": len(calls),
         "cutlass_kernel_count": len(kernels),
+        "native_compiler_artifacts": native_artifacts,
     }
 
 
@@ -331,6 +449,11 @@ def _runtime_metadata() -> dict:
                 "CUTE_DSL_DEBUG",
                 "CUTE_DSL_LINEINFO",
                 "CUTE_DSL_LOC_TRACEBACKS",
+                "CUTE_DSL_KEEP",
+                "CUTE_DSL_DUMP_DIR",
+                "CUTE_DSL_COMPILER_OPT",
+                "CUTE_DSL_ARCH",
+                "CUTE_DSL_LIBS",
             )
         },
     }
@@ -344,10 +467,11 @@ def _compile_replay(
     layer_index: int,
     query_count: int,
     phase: Callable[..., None],
+    native_directory: NativeCompilerArtifacts | None = None,
 ) -> MitigationReplay:
     phase(f"{name}-lower-begin", arrays=_array_metadata(capture))
     lowered = replay_attention_mitigations.lower(capture, layer_index=layer_index, query_count=query_count)
-    phase(f"{name}-lower-complete", lowered=_write_lowered(root, name, lowered))
+    phase(f"{name}-lower-complete", lowered=_write_lowered(root, name, lowered, native_directory))
     phase(f"{name}-compile-begin")
     compiled = lowered.compile()
     phase(f"{name}-compile-complete")
@@ -388,6 +512,11 @@ def replay_with_compile_evidence(
 
 def run_compile_probe(request: dict) -> None:
     """Run the bounded distributed probe from an importable worker identity."""
+    with _native_compiler_artifact_directory(request["native_artifacts"]) as native_directory:
+        _run_compile_probe(request, native_directory=native_directory)
+
+
+def _run_compile_probe(request: dict, *, native_directory: NativeCompilerArtifacts | None) -> None:
     _apply_hero_ep_runtime_defaults(
         inline_watch_enabled=True,
         moe_implementation=RAGGED_MOE_IMPLEMENTATION,
@@ -408,6 +537,8 @@ def run_compile_probe(request: dict) -> None:
     else:
         raise ValueError(f"Unknown declared kernel cache mode: {request['kernel_cache']}")
     install(cache)
+    if native_directory is not None:
+        _write_native_compiler_source_evidence(native_directory)
     root = StoragePath(request["output_root"]) / f"rank-{jax.process_index()}"
     metadata = {
         **_runtime_metadata(),
@@ -422,6 +553,7 @@ def run_compile_probe(request: dict) -> None:
         "kernel_cache": request["kernel_cache"],
         "gpus_per_task": request["gpus_per_task"],
         "replicas": request["replicas"],
+        "native_artifacts": request["native_artifacts"],
     }
     (root / "metadata.json").write_text(json.dumps(metadata, allow_nan=False))
     with _cache_key_evidence(root) as handler:
@@ -435,7 +567,7 @@ def run_compile_probe(request: dict) -> None:
                     lowered_capture = synthetic_capture.lower(length=length, heads=heads)
                     phase(
                         f"{case}-synthetic-lower-complete",
-                        lowered=_write_lowered(root, f"{case}-synthetic", lowered_capture),
+                        lowered=_write_lowered(root, f"{case}-synthetic", lowered_capture, native_directory),
                     )
                     phase(f"{case}-synthetic-compile-begin")
                     compiled_capture = lowered_capture.compile()
@@ -450,6 +582,7 @@ def run_compile_probe(request: dict) -> None:
                         layer_index=LAYER_INDEX,
                         query_count=QUERY_COUNT,
                         phase=phase,
+                        native_directory=native_directory,
                     )
                     jax.block_until_ready(replay)
                     host_gates = np.asarray(replay.gates.addressable_shards[0].data).reshape(-1)
@@ -470,6 +603,8 @@ def run_compile_probe(request: dict) -> None:
             phase("failed", error_type=type(exc).__name__, error=str(exc))
             raise
         finally:
+            if native_directory is not None:
+                _publish_native_compiler_artifacts(native_directory, root)
             faulthandler.cancel_dump_traceback_later()
 
 
@@ -481,6 +616,7 @@ def main() -> None:
     parser.add_argument("--kernel-cache", required=True, choices=("persistent", "in_memory"))
     parser.add_argument("--gpus-per-task", required=True, type=int, choices=(1, 2, 4))
     parser.add_argument("--replicas", required=True, type=int)
+    parser.add_argument("--native-artifacts", required=True, choices=("none", "ir_ptx_cubin"))
     args = parser.parse_args()
     if args.replicas <= 0:
         parser.error("--replicas must be positive")
@@ -493,6 +629,7 @@ def main() -> None:
             "kernel_cache": args.kernel_cache,
             "gpus_per_task": args.gpus_per_task,
             "replicas": args.replicas,
+            "native_artifacts": args.native_artifacts,
         },
         local_entrypoint=worker.run_compile_probe,
         resources=ResourceConfig.with_gpu(

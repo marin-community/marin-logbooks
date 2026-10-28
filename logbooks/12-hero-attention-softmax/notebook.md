@@ -732,6 +732,22 @@ captured compiler stages. No checkpoint mitigation result is available.
 records the failed control and comparison scope. Original compiler artifacts,
 execution metadata and checksums remain private.
 
+### 2026-10-28 — Capture native compiler stages before retry
+
+The next probe retains the eight-process topology, fresh per-process cache
+policy, synthetic inputs and arithmetic. It enables CuTe's documented IR/PTX/cubin
+retention without debug or line information, and uploads bounded generated
+artifacts privately before the existing compile guard. The interpreter hash-seed
+configuration remains unchanged. This is diagnostic instrumentation, not a proposed
+numerical repair. If divergence recurs and capture is nonempty, comparing stages
+may help distinguish differing native input/code generation from later
+machine-code compilation.
+
+Local CLI/helper checks, required lint and all nine focused CPU tests pass;
+these checks do not exercise the GPU kernels. Effectiveness of native artifact
+retention still needs GPU validation.
+Full requests, generated compiler files and environment values remain private.
+
 ## Reproduction
 
 The complete result is gzip-compressed to fit the repository artifact-size limit.
