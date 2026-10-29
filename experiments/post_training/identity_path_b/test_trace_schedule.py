@@ -101,6 +101,9 @@ def test_fixed_ledger_fallback_matches_base_and_traces_repack_without_new_occurr
     assert report["final_text_tokens"] == baseline["final_text_tokens"]
     assert report["updates"] > baseline["updates"]
     assert report["identity_trace_encounters"]["on_accepted_trace"] == encountered_on
+    assert report["identity_trace_final_text_tokens"]["on_accepted_trace"] == 3 * encountered_on
+    assert report["identity_trace_reasoning_text_tokens"]["on_accepted_trace"] == 20 * encountered_on
+    assert report["identity_on_trace_row_fraction"] == 1
     assert report["cumulative_batches"][-1]["identity_reasoning_text_tokens"] == 20 * encountered_on
     packed = pq.read_table(traced / "packed.parquet").to_pylist()
     assert len(packed) == report["updates"] * 8

@@ -179,6 +179,8 @@ def pack_schedule(rows: dict[str, ScheduledRow], ledger: Path, baseline: dict, o
     family_final, family_raw, family_reasoning, family_rows = Counter(), Counter(), Counter(), Counter()
     mode_final, encounters, source_occurrences, rendered_occurrences = Counter(), Counter(), Counter(), Counter()
     identity_rendered = Counter()
+    trace_final, trace_raw, trace_reasoning = Counter(), Counter(), Counter()
+    trace_weighted = defaultdict(float)
     tokens, weights, segments, row_ids = [], [], [], []
     sequence_count, epoch_steps, summaries = 0, [], []
     identity_total = 0
@@ -278,6 +280,10 @@ def pack_schedule(rows: dict[str, ScheduledRow], ledger: Path, baseline: dict, o
                     else ("on_accepted_trace" if dose.reasoning_text else "on_empty_fallback")
                 )
                 encounters[category] += 1
+                trace_final[category] += dose.final_text
+                trace_raw[category] += dose.raw
+                trace_reasoning[category] += dose.reasoning_text
+                trace_weighted[category] += dose.weighted
                 if identity_total % baseline["identity_original_sources"] == 0:
                     epoch_steps.append(math.ceil((sequence_count + 1) / GLOBAL_BATCH))
         if tokens:
@@ -324,6 +330,17 @@ def pack_schedule(rows: dict[str, ScheduledRow], ledger: Path, baseline: dict, o
         "mode_final_text_tokens": dict(mode_final),
         "structural_target_tokens_by_source": dict(structural),
         "identity_trace_encounters": dict(encounters),
+        "identity_trace_final_text_tokens": dict(trace_final),
+        "identity_trace_raw_supervised_tokens": dict(trace_raw),
+        "identity_trace_reasoning_text_tokens": dict(trace_reasoning),
+        "identity_trace_weighted_mass": dict(trace_weighted),
+        "identity_on_trace_row_fraction": (
+            encounters["on_accepted_trace"] / max(1, encounters["on_accepted_trace"] + encounters["on_empty_fallback"])
+        ),
+        "identity_on_trace_canonical_final_token_fraction": (
+            trace_final["on_accepted_trace"]
+            / max(1, trace_final["on_accepted_trace"] + trace_final["on_empty_fallback"])
+        ),
         "identity_source_occurrences": dict(source_occurrences),
         "maximum_identity_source_occurrences_across_modes": max(source_occurrences.values(), default=0),
         "row_occurrences": dict(rendered_occurrences),
