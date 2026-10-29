@@ -169,6 +169,49 @@ def old_tools(path: Path, tokenizer) -> list[dict]:
     return result
 
 
+def protocol_reasons(content: str, target: list[int], *, thinking: bool, tools: list, sequence_tokens: int) -> list[str]:
+    """Identical replay protocol checks for historical and fresh native targets."""
+    answer, reasoning = shared.split_reasoning({"content": content})
+    reasons = []
+    if not answer.strip():
+        reasons.append("empty_final_answer")
+    if not thinking and reasoning.strip():
+        reasons.append("unexpected_reasoning_in_off")
+    if content.count("<|start_think|>") != content.count("<|end_think|>") or content.count("<|start_think|>") > 1:
+        reasons.append("malformed_thinking_structure")
+    if 128002 in target or 128003 in target:
+        if target.count(128002) != 1 or target.count(128003) != 1 or target[0] != 128002 or target.index(128003) == 0:
+            reasons.append("malformed_native_think_order")
+    if not tools and t2.TOOL_OPEN_ID in target:
+        reasons.append("unprovided_tool_call")
+    if ROLE_SPOOF.search(content):
+        reasons.append("role_or_tool_result_spoof")
+    if sequence_tokens > SEQUENCE_LENGTH:
+        reasons.append("overlength_whole_row_never_truncate")
+    return sorted(set(reasons))
+
+
+def historical_protocol(rows: list[dict], tokenizer) -> tuple[list[dict], list[dict]]:
+    kept, rejects = [], []
+    for row in rows:
+        target = row["input_ids"][row["target_start"] :]
+        content = tokenizer.decode(target[:-1], skip_special_tokens=False, clean_up_tokenization_spaces=False)
+        reasons = protocol_reasons(
+            content, target, thinking=row["enable_thinking"], tools=row["tools"], sequence_tokens=len(row["input_ids"])
+        )
+        if reasons:
+            rejects.append(
+                {
+                    "id": row["provenance"]["original_id"],
+                    "rejection_reasons": reasons,
+                    "raw_provenance": row["provenance"],
+                }
+            )
+        else:
+            kept.append(row)
+    return kept, rejects
+
+
 def fresh_candidate(record: dict, selected: dict, tokenizer) -> tuple[dict | None, list[str]]:
     candidate = serving_row(selected)
     if record["candidate"] != candidate or record["request"] != t2.request_body(candidate, SOURCE_MODEL):
@@ -192,22 +235,13 @@ def fresh_candidate(record: dict, selected: dict, tokenizer) -> tuple[dict | Non
         return None, ["output_fidelity_reject_never_repair"]
     content = fidelity["content"]
     answer, reasoning = shared.split_reasoning({"content": content})
-    reasons = []
-    if not answer.strip():
-        reasons.append("empty_final_answer")
-    if not candidate["enable_thinking"] and reasoning.strip():
-        reasons.append("unexpected_reasoning_in_off")
-    if content.count("<|start_think|>") != content.count("<|end_think|>") or content.count("<|start_think|>") > 1:
-        reasons.append("malformed_thinking_structure")
-    if 128002 in target or 128003 in target:
-        if target.count(128002) != 1 or target.count(128003) != 1 or target[0] != 128002 or target.index(128003) == 0:
-            reasons.append("malformed_native_think_order")
-    if not candidate["tools"] and t2.TOOL_OPEN_ID in target:
-        reasons.append("unprovided_tool_call")
-    if ROLE_SPOOF.search(content):
-        reasons.append("role_or_tool_result_spoof")
-    if len(prefix) + len(target) > SEQUENCE_LENGTH:
-        reasons.append("overlength_whole_row_never_truncate")
+    reasons = protocol_reasons(
+        content,
+        target,
+        thinking=candidate["enable_thinking"],
+        tools=candidate["tools"],
+        sequence_tokens=len(prefix) + len(target),
+    )
     for span in (answer, reasoning):
         if legacy.foreign_self_identity(span):
             reasons.append("foreign_self_identity_prescreen")
@@ -302,7 +336,8 @@ def build_candidates(
     )
     historical += old_tools(notes / "t310/cd16-t3/freeze-preview-r2/tools.jsonl", tokenizer)
     blocked = {hit["source_id"] for hit in exclusions["hits"] if hit["group"] != "identity"}
-    kept = [row for row in historical if row["provenance"]["original_id"] not in blocked]
+    protocol_kept, protocol_rejects = historical_protocol(historical, tokenizer)
+    kept = [row for row in protocol_kept if row["provenance"]["original_id"] not in blocked]
     raw_hashes, decisions = {}, []
     actual = {p.name for p in captures.iterdir() if re.fullmatch(r"[0-9]+\.json", p.name)}
     expected = {f"{index:04d}.json" for index in range(len(selected))}
@@ -336,6 +371,8 @@ def build_candidates(
         "expanded_exclusion_report_sha256": exclusion_sha256,
         "historical_rows_before_overlap_drop": len(historical),
         "historical_overlap_dropped_ids": sorted(blocked),
+        "historical_protocol_rejects": protocol_rejects,
+        "historical_total_reject_union": sorted(blocked | {r["id"] for r in protocol_rejects}),
         "all_fresh_preselected_completion_rows": len(selected),
         "fresh_captured_records": len(actual),
         "fresh_accepted_candidates": sum(not d["rejection_reasons"] for d in decisions),
