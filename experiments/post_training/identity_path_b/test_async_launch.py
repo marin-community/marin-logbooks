@@ -2,16 +2,21 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+from queue import Queue
+from types import SimpleNamespace
 from typing import cast
 
 import pytest
+from iris.actor.resolver import FixedResolver
+from iris.actor.server import ActorServer
 from iris.client.client import IrisClient, IrisContext, iris_ctx_scope
 from iris.cluster.client import ClusterClient
-from iris.cluster.types import JobName, TaskAttempt
+from iris.cluster.types import Entrypoint, JobName, TaskAttempt
 from iris.rpc import job_pb2
 from marin.evaluation.evalchemy.client import CONFIG_ENV_KEY, build_model_args
 from marin.inference.types import OpenAIEndpoint, RunningModel
 
+from experiments.post_training.identity_context_distill.lr0_probe import RESOURCES
 from experiments.post_training.identity_path_b import async_launch
 from experiments.post_training.identity_path_b.async_launch import (
     CheckpointHookFactory,
@@ -20,6 +25,7 @@ from experiments.post_training.identity_path_b.async_launch import (
 )
 from experiments.post_training.identity_path_b.checkpoints import CheckpointEvent
 from experiments.post_training.identity_path_b.trend import gsm_config, gsm_submission
+from experiments.post_training.identity_path_b.workflow import CheckpointInbox
 
 
 class SubmissionTransport:
@@ -60,9 +66,16 @@ def native_context(monkeypatch, transport):
     )
 
 
-def test_background_export_uses_native_parent_context_and_never_waits_for_child(monkeypatch, tmp_path):
-    transport = SubmissionTransport()
-    context = native_context(monkeypatch, transport)
+def test_checkpoint_callback_enqueues_over_native_rpc_without_waiting_for_diagnostics(monkeypatch, tmp_path):
+
+    messages = Queue()
+    inbox = CheckpointInbox(messages, {"arm": "identity10"}, (25,))
+    server = ActorServer(host="127.0.0.1", port=0)
+    actor_name = "/karan/root/checkpoint-inbox-0"
+    server.register(actor_name, inbox)
+    port = server.serve_background()
+    resolver = FixedResolver({actor_name: f"http://127.0.0.1:{port}"})
+    monkeypatch.setattr(async_launch, "regional_task_context", lambda: SimpleNamespace(resolver=resolver))
 
     def local_storage(path):
         result = tmp_path / path.removeprefix("s3://marin-rno2a/tmp/ttl=14d/")
@@ -70,33 +83,23 @@ def test_background_export_uses_native_parent_context_and_never_waits_for_child(
         return result
 
     monkeypatch.setattr(async_launch, "StoragePath", local_storage)
-    receipt = json.dumps({"xla_precision": "no_excess_precision"}).encode()
-    binding = ExportBinding("fixture", receipt, "c" * 64, {}, {}, TrendInputs("identity", "controls"))
-    with iris_ctx_scope(context):
-        hook = CheckpointHookFactory("s3://marin-rno2a/tmp/ttl=14d/path-b/fixture", binding)()
+    try:
+        hook = CheckpointHookFactory("s3://marin-rno2a/tmp/ttl=14d/path-b/fixture", actor_name)()
         name = hook.publish_committed(event())
         hook.finish_submissions()
-    result = json.loads(
-        local_storage(
-            f"s3://marin-rno2a/tmp/ttl=14d/path-b/fixture/checkpoint-events/{name}-submission.json"
-        ).read_bytes()
-    )
-    assert result["submitted"]
-    assert result["jobs"]["export"] == "/karan/pathb-fixture/export-000025"
-    request = transport.submissions[0]
-    assert request["replicas"] == 4
-    assert request["ports"] == ["jax"]
-    assert request["resources"].device.gpu.count == 8
-    assert request["max_retries_failure"] == request["max_retries_preemption"] == 0
-    assert request["priority_band"] == job_pb2.PRIORITY_BAND_INTERACTIVE
-    assert request["timeout"].to_seconds() == 43200
-    assert request["environment"].env_vars["XLA_FLAGS"] == "--xla_allow_excess_precision=false"
-    assert request["environment"].env_vars["UNCHANGED_PARENT_ENV"] == "fixture"
-    assert list(request["environment"].setup_scripts) == ["reviewed-parent-setup"]
-    # OPD ambient children do not send another federation cluster constraint.
-    assert not request["constraints"]
-    pending = json.loads(local_storage(event().eval_scratch + "/trend-pending.json").read_bytes())
-    assert pending["event"]["exposure"]["identity_final_text_tokens"] == 150000
+        kind, received = messages.get_nowait()
+        assert kind == "checkpoint" and received == event()
+        assert messages.empty()
+        result = json.loads(
+            local_storage(
+                f"s3://marin-rno2a/tmp/ttl=14d/path-b/fixture/checkpoint-events/{name}-submission.json"
+            ).read_bytes()
+        )
+        assert result["submitted"] and result["jobs"]["cpu_root_enqueued"]
+        # There are no export/eval job handles in the actor or GPU callback.
+        assert "export" not in result["jobs"]
+    finally:
+        server.stop()
 
 
 def test_gsm_native_payload_preserves_historical_decode_and_transport_with_explicit_job_policy(monkeypatch):
@@ -127,42 +130,69 @@ def test_gsm_native_payload_preserves_historical_decode_and_transport_with_expli
     assert request["priority_band"] == job_pb2.PRIORITY_BAND_INTERACTIVE
 
 
-def test_partial_or_mismatched_export_never_admits_an_eval_child(monkeypatch, tmp_path):
-    transport = SubmissionTransport()
-    context = native_context(monkeypatch, transport)
-
+def test_export_returns_without_descendants_and_requires_matching_audited_marker(monkeypatch, tmp_path):
     def local_storage(path):
         result = tmp_path / path.removeprefix("s3://marin-rno2a/tmp/ttl=14d/")
         result.parent.mkdir(parents=True, exist_ok=True)
         return result
 
     monkeypatch.setattr(async_launch, "StoragePath", local_storage)
-    # The full cleared worker is independently tested. This test exercises
-    # only the child-admission boundary after the worker returns.
     monkeypatch.setattr(async_launch, "export_worker", lambda **kwargs: None)
     monkeypatch.setattr(async_launch.jax, "process_index", lambda: 0)
     binding = ExportBinding("fixture", b"{}", "c" * 64, {}, {}, TrendInputs("identity", "controls"))
-    local_storage(event().hf_export + "/config.json").write_text("{}")
     marker = local_storage(event().hf_export + "/path-b-checkpoint-event.json")
+    with pytest.raises(FileNotFoundError):
+        async_launch.export_checkpoint(event(), binding)
+    marker.write_text(json.dumps({**event().payload(), "completed_updates": 99}))
+    with pytest.raises(ValueError, match="completion event"):
+        async_launch.export_checkpoint(event(), binding)
+    marker.write_text(json.dumps(event().payload()))
+    async_launch.export_checkpoint(event(), binding)
+    assert json.loads(marker.read_bytes()) == event().payload()
+
+
+def test_native_submit_retains_four_rank_mesh_in_assigned_root_context(monkeypatch):
+
+    transport = SubmissionTransport()
+    context = native_context(monkeypatch, transport)
     with iris_ctx_scope(context):
-        with pytest.raises(FileNotFoundError):
-            async_launch.export_then_submit_trend(event(), binding)
-        marker.write_text(json.dumps({**event().payload(), "completed_updates": 99}))
-        with pytest.raises(ValueError, match="completion event"):
-            async_launch.export_then_submit_trend(event(), binding)
-        assert not transport.submissions
-        marker.write_text(json.dumps(event().payload()))
-        async_launch.export_then_submit_trend(event(), binding)
-    assert str(transport.submissions[0]["job_id"]) == "/karan/pathb-fixture/trend-000025"
-    assert transport.submissions[0]["timeout"].to_seconds() == 86400
+        job = async_launch.native_submit(
+            Entrypoint.from_command("true"),
+            name="export-000025",
+            resources=RESOURCES,
+            replicas=4,
+            env_vars={"XLA_FLAGS": "--xla_allow_excess_precision=false"},
+            lifetime=43200,
+        )
+    assert str(job.job_id) == "/karan/pathb-fixture/export-000025"
+    request = transport.submissions[0]
+    assert request["replicas"] == 4 and request["ports"] == ["jax"]
+    assert request["resources"].device.gpu.count == 8
+    assert request["max_retries_failure"] == request["max_retries_preemption"] == 0
+    assert request["priority_band"] == job_pb2.PRIORITY_BAND_INTERACTIVE
+    assert request["timeout"].to_seconds() == 43200
+    assert request["environment"].env_vars["UNCHANGED_PARENT_ENV"] == "fixture"
+    assert list(request["environment"].setup_scripts) == ["reviewed-parent-setup"]
+    assert not request["constraints"]
 
-    def bad_export(**kwargs):
-        raise ValueError("fixture failed storage audit")
 
-    marker.unlink()
-    monkeypatch.setattr(async_launch, "export_worker", bad_export)
-    with iris_ctx_scope(context), pytest.raises(ValueError, match="storage audit"):
-        async_launch.export_then_submit_trend(event(), binding)
-    failure = json.loads(local_storage(event().eval_scratch + "/export-failed-task-0.json").read_bytes())
-    assert failure["status"] == "export_failed" and failure["event"] == event().payload()
-    assert len(transport.submissions) == 1
+def test_optional_receipt_and_enqueue_failures_remain_diagnostics_not_training_errors(monkeypatch, caplog):
+
+    class FailedActor:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def enqueue(self, payload):
+            raise ConnectionError("root enqueue unavailable")
+
+    def unavailable_storage(path):
+        raise OSError("optional receipt storage unavailable")
+
+    monkeypatch.setattr(async_launch, "ActorClient", FailedActor)
+    monkeypatch.setattr(async_launch, "regional_task_context", lambda: SimpleNamespace(resolver=None))
+    monkeypatch.setattr(async_launch, "StoragePath", unavailable_storage)
+    hook = CheckpointHookFactory("s3://marin-rno2a/tmp/ttl=14d/path-b/fixture", "root-inbox")()
+    hook.publish_committed(event())
+    hook.finish_submissions()
+    assert "Diagnostic receipt write failed" in caplog.text
+    assert "no retry" in caplog.text
