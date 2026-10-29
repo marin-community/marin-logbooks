@@ -183,3 +183,9 @@ exclusive midpoint evaluation pause. The cost curves use the primary
 training-cycle time with that pause excluded. Endpoint charts show nominal
 95% intervals in black and the predeclared 97.5% decision intervals in gray.
 Use the outer decision intervals when comparing with the fixed margins.
+
+Give `publish_machine_grade.py` a separate local staging path for that machine
+verdict. It stages the singleton machine result, then merges it into the remote
+recovery manifest while preserving existing judge rows. Finish all judge
+publication for the panel before adding its machine verdict. Keep the judge
+and machine staging files separately for provenance.
