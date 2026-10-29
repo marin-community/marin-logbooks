@@ -36,7 +36,7 @@ def main() -> None:
     series = load_series(path)
     assert manifest["profile"] == "gb200"
     assert hashlib.sha256(path.read_bytes()).hexdigest() == manifest["series_sha256"]
-    assert manifest["vllm_release"] == runtime_metadata("gb200")
+    assert json.dumps(manifest["vllm_release"], sort_keys=True) == json.dumps(runtime_metadata("gb200"), sort_keys=True)
     assert args.budget > 0 and args.serve_duration > 0
     hardware = series["profiles"]["gb200"]
     command = (
