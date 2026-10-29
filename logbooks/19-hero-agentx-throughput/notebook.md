@@ -224,3 +224,9 @@ The next communication hypotheses use existing one-sided and PP4 flags before cu
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.
+
+### 2026-10-29 05:55 UTC — automatic experts and native PP4 trial
+
+The batch automatic-MoE trial succeeded on all four tasks, but runtime logs selected **TRITON / TritonExperts**, the same expert implementation as the baseline. Its success does not qualify a different BF16 expert kernel or establish a performance gain. All three initial groups had sixteen physical UUIDs each and a union of forty-eight, with no overlap. The automatic trial released its group; the two native C128 points continue untouched.
+
+The next supported flag trial uses TP1/PP4/DP4/EP4 with prefix caching, budget2048, the original3a wheel and separate native rendezvous31400/31401. It tests whether shrinking expert communication groups and increasing work per replica offsets pipeline bubbles. The cheapest useful experiment is the existing unprofiled cache/state controls plus fixed short decode and 64K-prefill banks. No new implementation is needed. Fixed-history parallel/shard numerical checks and full AgentX confirmation would be required before retaining it. The latest provider snapshot shows32 program GPUs on the sole spare rack, no Hero training there; the trial is batch priority and raises the total to48 at most.
