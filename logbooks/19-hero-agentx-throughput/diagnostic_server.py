@@ -71,6 +71,7 @@ def serve(
     api_server_count: int | None,
     profile_light: bool,
     run_controls: bool,
+    master_port: int | None,
 ) -> None:
     recipe = series_path(manifest["profile"])
     assert hashlib.sha256(recipe.read_bytes()).hexdigest() == manifest["series_sha256"]
@@ -105,6 +106,7 @@ def serve(
             "all2all_backend": all2all_backend,
             "numa_bind": numa_bind,
             "api_server_count": api_server_count,
+            "master_port": master_port,
         },
         "status": "starting",
     }
@@ -137,6 +139,10 @@ def serve(
                     server.extra_cli_args.extend([flag, str(value)])
             if numa_bind:
                 server.extra_cli_args.append("--numa-bind")
+            if master_port is not None:
+                for flag, port in (("--master-port", master_port), ("--data-parallel-rpc-port", master_port + 1)):
+                    if flag in server.extra_cli_args:
+                        server.extra_cli_args[server.extra_cli_args.index(flag) + 1] = str(port)
             if profile:
                 nccl_environment = {
                     "NCCL_DEBUG": "INFO",
@@ -226,6 +232,7 @@ def main() -> None:
     parser.add_argument("--api-server-count", type=int)
     parser.add_argument("--profile-light", action="store_true")
     parser.add_argument("--run-controls", action="store_true")
+    parser.add_argument("--master-port", type=int)
     args = parser.parse_args()
     signal.signal(signal.SIGTERM, interrupt)
     signal.signal(signal.SIGINT, interrupt)
@@ -246,6 +253,7 @@ def main() -> None:
         args.api_server_count,
         args.profile_light,
         args.run_controls,
+        args.master_port,
     )
 
 

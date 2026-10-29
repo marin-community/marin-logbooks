@@ -29,6 +29,9 @@ def main() -> None:
     parser.add_argument("--name", required=True)
     parser.add_argument("--budget", type=int, default=2048)
     parser.add_argument("--moe-backend", choices=("triton", "auto"), default="triton")
+    parser.add_argument("--master-port", type=int)
+    parser.add_argument("--pipeline-stages", type=int, choices=(1, 4), default=1)
+    parser.add_argument("--all2all-backend", choices=("allgather_reducescatter", "flashinfer_nvlink_one_sided"))
     parser.add_argument("--serve-duration", type=int, default=3600)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -47,6 +50,11 @@ def main() -> None:
         f"--prefix-cache --max-batched-tokens {args.budget} --serve-duration {args.serve_duration} "
         f"--moe-backend {args.moe_backend} --run-controls"
     )
+    command += f" --pipeline-stages {args.pipeline_stages}"
+    if args.master_port is not None:
+        command += f" --master-port {args.master_port}"
+    if args.all2all_backend is not None:
+        command += f" --all2all-backend {args.all2all_backend}"
     entrypoint = Entrypoint(
         command=["bash", "-c", command],
         workdir_files={"diagnostic-manifest.json": args.manifest.read_bytes()},

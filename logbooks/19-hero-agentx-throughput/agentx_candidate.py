@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Use native AgentX orchestration with two recorded serving overrides.
+"""Use native AgentX orchestration with recorded serving overrides.
 
 The manifest pins the unchanged base recipe/runtime and separately identifies
 the effective prefix-cache and private-wheel overrides. Replay, preparation,
@@ -32,11 +32,20 @@ def create_candidate_server(
     overrides = manifest["runtime_overrides"]
     assert overrides["enable_prefix_caching"] is True
     server = BASE_CREATE_SERVER(manifest, output, launch)
-    receipt = use_candidate_wheel(server, Path(overrides["candidate_receipt"]), manifest["vllm_release"])
-    assert receipt["wheel_sha256"] == overrides["wheel_sha256"]
-    assert receipt["source_commit"] == overrides["source_commit"]
+    receipt = None
+    if "candidate_receipt" in overrides:
+        receipt = use_candidate_wheel(server, Path(overrides["candidate_receipt"]), manifest["vllm_release"])
+        assert receipt["wheel_sha256"] == overrides["wheel_sha256"]
+        assert receipt["source_commit"] == overrides["source_commit"]
     server.extra_cli_args.remove("--no-enable-prefix-caching")
     server.extra_cli_args.append("--enable-prefix-caching")
+    for key, flag in (("max_num_batched_tokens", "--max-num-batched-tokens"), ("master_port", "--master-port")):
+        if key in overrides:
+            server.extra_cli_args[server.extra_cli_args.index(flag) + 1] = str(overrides[key])
+    if "master_port" in overrides and "--data-parallel-rpc-port" in server.extra_cli_args:
+        server.extra_cli_args[server.extra_cli_args.index("--data-parallel-rpc-port") + 1] = str(
+            overrides["master_port"] + 1
+        )
     (output / "runtime-overrides.json").write_text(
         json.dumps({"requested": overrides, "wheel": receipt}, indent=2) + "\n"
     )
