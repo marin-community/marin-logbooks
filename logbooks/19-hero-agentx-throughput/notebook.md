@@ -121,6 +121,18 @@ The separate diagnostic server started at 23:48 UTC from published source `cd751
 
 The disabled-cache branch control returned finite logprobs throughout. Single-request cold and final branch-A repeats matched exactly. Changing API batch sizes shifted some logprobs by up to 0.4039, and branch A's greedy continuation changed in the three-request batch despite caching being disabled. Later cache/graph comparisons must account for this existing batch sensitivity and compare corresponding cold/warm batch shapes; no tolerance was relaxed.
 
+### 2026-10-29 00:58 UTC — native profile and focused next candidates
+
+[The full-hour aggregate and four-host validation/retention receipts](results/baseline-c32.json) are now exported. [The separate diagnostic profile](results/diagnostic-baseline-profiles.json) captured five actual 512-token prefill steps on all sixteen ranks. Rank 0's GPU timeline spans 2,572.6 ms: 1,581.4 ms with only NCCL active, 442.3 ms with compute/memory active and 548.9 ms empty. This intrusive capture includes CPU stacks and shapes. It inflates rank skew and does not assign those fractions to the unprofiled baseline or distinguish collective transfer from waiting. Native transport logs explicitly select P2P/MNNVL across the sixteen-rank NVLink clique; NET/IB availability is not evidence of an IB fallback.
+
+Five steps contain 720 ShortConv calls and roughly 16,370 CUDA launch calls on rank 0. The native ShortConv path allocates a decode result, stacks the decode/prefill pieces and copies the stack to its caller's buffer. A focused [source candidate](https://github.com/marin-community/vllm/commit/7b161cb460) writes decode directly into that buffer and copies prefill once. It adds a mixed decode/resumed-prefill check to the existing independent history/isolation regression, with its tolerances unchanged. GPU validation and performance measurement are pending; it is not a measured gain. The fork branch retains current main's already merged router fix, so any baseline-wheel overlay must isolate only this ShortConv delta.
+
+The second native profile request returned success but emitted no new trace. Its schedule was exhausted after the first capture and the worker retains that profiler instance. Preserve this failed collector. The decode-only workload nevertheless completed all 32 requests, with mean inter-token latency 294.09 ms. The next fresh diagnostic server uses the native profiler with zero scheduled warmup and a five-iteration limit; check that the files exist before claiming a capture.
+
+The historical C1024 case is still draining its original 4,096 requests. Its client monitor has no CPU throttling and uses substantially less than one core. Do not start another GPU diagnostic concurrently. A whole-bank C32 run would take roughly two hours at the observed decode rate; the queued lower-load cases are optional and will not be launched as a blind sweep.
+
+The next focused full-engine case enables native prefix caching on a fresh released-wheel server, with all other limits fixed. [Its launch](experiments/diagnostic-prefix-cache.sh) retains the original graph guard. The branch probe now includes independent cold references at each API batch shape, because the disabled-cache control already showed batch-dependent logits. Requested settings are not proof of cache hits: retain effective Mamba mode, cache counters, cached-token usage and matching-shape branch comparisons before an AgentX trial.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.

@@ -38,6 +38,7 @@ def serve(
     prefix_cache: bool,
     max_batched_tokens: int | None,
     max_num_seqs: int | None,
+    profile_warmup_iterations: int,
 ) -> None:
     recipe = series_path(manifest["profile"])
     assert hashlib.sha256(recipe.read_bytes()).hexdigest() == manifest["series_sha256"]
@@ -108,7 +109,7 @@ def serve(
                     "torch_profiler_record_shapes": True,
                     "torch_profiler_with_memory": False,
                     "delay_iterations": 2,
-                    "warmup_iterations": 1,
+                    "warmup_iterations": profile_warmup_iterations,
                     "active_iterations": 5,
                     "max_iterations": 5,
                 }
@@ -156,6 +157,7 @@ def main() -> None:
     parser.add_argument("--prefix-cache", action="store_true")
     parser.add_argument("--max-batched-tokens", type=int)
     parser.add_argument("--max-num-seqs", type=int)
+    parser.add_argument("--profile-warmup-iterations", type=int, default=1)
     args = parser.parse_args()
     signal.signal(signal.SIGTERM, interrupt)
     signal.signal(signal.SIGINT, interrupt)
@@ -168,6 +170,7 @@ def main() -> None:
         args.prefix_cache,
         args.max_batched_tokens,
         args.max_num_seqs,
+        args.profile_warmup_iterations,
     )
 
 

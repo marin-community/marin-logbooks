@@ -13,6 +13,7 @@ import ast
 import hashlib
 import json
 import tempfile
+from dataclasses import replace
 from pathlib import Path
 
 import torch
@@ -44,6 +45,7 @@ def main() -> None:
         node.decorator_list = []
     namespace = {
         "torch": torch,
+        "replace": replace,
         "GrugMoeShortConv": GrugMoeShortConv,
         "ShortConvAttentionMetadata": ShortConvAttentionMetadata,
         "set_forward_context": set_forward_context,

@@ -1,0 +1,1177 @@
+{
+  "aggregate": {
+    "hw": "gb200",
+    "conc": 32,
+    "image": "marin-vllm:0.0.0.dev20261012+marin.3a054c458ca8.cu132@3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+    "model": "marin-community/Hero-535B-step144000",
+    "infmax_model_prefix": "hero144k",
+    "framework": "vllm",
+    "precision": "bf16",
+    "spec_decoding": "none",
+    "disagg": false,
+    "scenario_type": "agentic-coding",
+    "is_multinode": true,
+    "num_gpus": 16,
+    "tp": 16,
+    "ep": 16,
+    "dp_attention": "true",
+    "kv_offloading": "none",
+    "kv_offload_backend": null,
+    "allocated_cpu_dram_gb": 0,
+    "num_requests_total": 1177,
+    "num_requests_successful": 826,
+    "request_accounting": {
+      "records_total": 1177,
+      "records_profiled": 826,
+      "records_dropped_total": 351,
+      "records_warmup_dropped": 351,
+      "records_error_dropped": 0,
+      "error_categories": {}
+    },
+    "pp": 1,
+    "dcp_size": 1,
+    "pcp_size": 1,
+    "dataset": {
+      "source_type": "public_dataset",
+      "loader": "semianalysis_cc_traces_weka_062126_256k",
+      "hf_dataset_name": "semianalysisai/cc-traces-weka-062126-256k",
+      "hf_split": "train",
+      "num_dataset_entries": 393
+    },
+    "request_metrics": {
+      "qps": {
+        "window_seconds": 1,
+        "samples": 3623,
+        "mean": 0.22771,
+        "p50": 0.0,
+        "p75": 0.0,
+        "p90": 1,
+        "p95": 1,
+        "std": 0.4881
+      },
+      "latency": {
+        "ttft": {
+          "mean": 55.43738,
+          "p50": 46.46276,
+          "p75": 72.6105,
+          "p90": 104.45605,
+          "p95": 122.58881,
+          "std": 41.21363
+        },
+        "e2el": {
+          "mean": 171.99591,
+          "p50": 113.97154,
+          "p75": 179.94418,
+          "p90": 319.85708,
+          "p95": 489.8972,
+          "std": 214.84235
+        },
+        "itl": {
+          "mean": 0.27121,
+          "p50": 0.27234,
+          "p75": 0.27612,
+          "p90": 0.28016,
+          "p95": 0.28352,
+          "std": 0.00883
+        },
+        "tpot": {
+          "mean": 0.27121,
+          "p50": 0.27234,
+          "p75": 0.27612,
+          "p90": 0.28016,
+          "p95": 0.28352,
+          "std": 0.00883
+        },
+        "intvty": {
+          "mean": 3.6872,
+          "p50": 3.67184,
+          "p75": 3.62156,
+          "p90": 3.56936,
+          "p95": 3.52708,
+          "std": 0.12655
+        },
+        "e2e_norm_intvty": {
+          "mean": 1.44992,
+          "p50": 2.16266,
+          "p75": 1.58059,
+          "p90": 1.10228,
+          "p95": 0.86812,
+          "std": 0.76512
+        },
+        "full_response_itl": {
+          "mean": 0.27123,
+          "p50": 0.27234,
+          "p75": 0.27613,
+          "p90": 0.28017,
+          "p95": 0.28352,
+          "std": 0.00881
+        },
+        "full_response_intvty": {
+          "mean": 3.68695,
+          "p50": 3.67183,
+          "p75": 3.62153,
+          "p90": 3.56925,
+          "p95": 3.52704,
+          "std": 0.12613
+        }
+      },
+      "tokens": {
+        "input": {
+          "mean": 69629.03632,
+          "p50": 56876,
+          "p75": 94855.5,
+          "p90": 129812,
+          "p95": 146348.25,
+          "std": 40838.7467
+        },
+        "output_actual": {
+          "mean": 429.79661,
+          "p50": 191.5,
+          "p75": 391.5,
+          "p90": 924,
+          "p95": 1564.25,
+          "std": 734.27739
+        },
+        "output_expected": {}
+      },
+      "throughput": {
+        "input": {
+          "tokens_per_second": 15844.69072
+        },
+        "output": {
+          "tokens_per_second": 97.80394
+        },
+        "total": {
+          "tokens_per_second": 15942.49467
+        },
+        "duration_seconds": 3629.83317,
+        "per_gpu": {
+          "total_tput_tps": 996.40592,
+          "output_tput_tps": 6.11275,
+          "input_tput_tps": 990.29317
+        }
+      },
+      "cache": {
+        "theoretical_cache_hit_rate": 0.94076
+      }
+    },
+    "server_metrics": {
+      "present": true,
+      "adapter": "vllm",
+      "metric_count": 41,
+      "cache": {
+        "gpu_cache_hit_rate": 0.0,
+        "cpu_cache_hit_rate": 0.0,
+        "external_cache_hit_rate": 0.0,
+        "overall_cache_hit_rate": 0.0,
+        "prefix_cache_hits": 0.0,
+        "prefix_cache_queries": 0.0,
+        "external_prefix_cache_hits": 0.0,
+        "external_prefix_cache_queries": 0.0,
+        "cached_tokens_by_source": {},
+        "frontend_cache_hit_rate": null,
+        "router_kv_hit_rate": null,
+        "router_shared_cache_hit_rate": null,
+        "frontend_cached_tokens": null,
+        "frontend_input_tokens": null
+      },
+      "kv_cache": {
+        "gpu_usage_pct": 0.65389,
+        "gpu_total_tokens": null,
+        "cpu_usage_pct": null,
+        "cpu_used_tokens": null,
+        "cpu_total_tokens": null
+      },
+      "kv_offload": {
+        "bytes_gpu_to_cpu": null,
+        "bytes_cpu_to_gpu": null,
+        "time_gpu_to_cpu": null,
+        "time_cpu_to_gpu": null,
+        "bandwidth_gpu_to_cpu_bytes_per_second": null,
+        "bandwidth_cpu_to_gpu_bytes_per_second": null
+      },
+      "tokens": {
+        "prompt_total": 60900465,
+        "generation_total": 407782,
+        "requests_completed": 826,
+        "prompt_by_source": {
+          "gpu_cache_hit": 0.0,
+          "cpu_or_external_cache_hit": 0.0,
+          "computed": 60900465,
+          "raw": {
+            "external_kv_transfer": 0.0,
+            "local_cache_hit": 0.0,
+            "local_compute": 60900465
+          }
+        }
+      },
+      "sources": [
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=0",
+          "role": "combined",
+          "prompt_tokens": 4071746,
+          "generation_tokens": 22821,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.36782
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=1",
+          "role": "combined",
+          "prompt_tokens": 4748298,
+          "generation_tokens": 22632,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.49159
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=10",
+          "role": "combined",
+          "prompt_tokens": 3723173,
+          "generation_tokens": 27245,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.31053
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=11",
+          "role": "combined",
+          "prompt_tokens": 4552619,
+          "generation_tokens": 20235,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.31875
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=12",
+          "role": "combined",
+          "prompt_tokens": 4001070,
+          "generation_tokens": 25468,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.42002
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=13",
+          "role": "combined",
+          "prompt_tokens": 3353609,
+          "generation_tokens": 27185,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.61895
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=14",
+          "role": "combined",
+          "prompt_tokens": 4492675,
+          "generation_tokens": 23773,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.42653
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=15",
+          "role": "combined",
+          "prompt_tokens": 3169988,
+          "generation_tokens": 27847,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.41038
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=2",
+          "role": "combined",
+          "prompt_tokens": 3637115,
+          "generation_tokens": 25245,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.35379
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=3",
+          "role": "combined",
+          "prompt_tokens": 3521535,
+          "generation_tokens": 27903,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.33276
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=4",
+          "role": "combined",
+          "prompt_tokens": 3272699,
+          "generation_tokens": 27846,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.42954
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=5",
+          "role": "combined",
+          "prompt_tokens": 3319289,
+          "generation_tokens": 24255,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.27769
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=6",
+          "role": "combined",
+          "prompt_tokens": 4108582,
+          "generation_tokens": 24244,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.42834
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=7",
+          "role": "combined",
+          "prompt_tokens": 4137994,
+          "generation_tokens": 23372,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.39856
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=8",
+          "role": "combined",
+          "prompt_tokens": 3749324,
+          "generation_tokens": 25084,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.39992
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=9",
+          "role": "combined",
+          "prompt_tokens": 3040749,
+          "generation_tokens": 32627,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.65389
+        }
+      ]
+    },
+    "kv_cache_pool_tokens": null
+  },
+  "hosts": [
+    {
+      "host": 0,
+      "validation": {
+        "submission_valid": true,
+        "profiling_requests": 826,
+        "profiling_errors": 0,
+        "profiling_error_ratio": 0.0,
+        "coverage": {
+          "phase_name": "profiling",
+          "expected_duration_seconds": 3600.0,
+          "required_ratio": 0.95,
+          "ttft_ratio": 1.0,
+          "inter_token_latency_ratio": 1.0
+        },
+        "profile_start": "2026-10-28T22:38:09.843193",
+        "profile_end": "2026-10-28T23:38:49.843569"
+      },
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c32/host-0/outputs-5e4b8290ffd212088198899dd6070932ca51c693612ea1e20555293aa74c52c3.tar.zst",
+        "archive_sha256": "5e4b8290ffd212088198899dd6070932ca51c693612ea1e20555293aa74c52c3",
+        "archive_bytes": 43653904
+      }
+    },
+    {
+      "host": 1,
+      "validation": {
+        "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+        "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+        "profile": "gb200",
+        "concurrency": 32,
+        "vllm_release": {
+          "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+          "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+          "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+          "torch_backend": "cu132",
+          "torch_version": "2.14.1+cu132",
+          "wheels": [
+            {
+              "architecture": "aarch64",
+              "sm_targets": [
+                "10.0"
+              ],
+              "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+              "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+            },
+            {
+              "architecture": "x86_64",
+              "sm_targets": [
+                "9.0"
+              ],
+              "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+              "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+            }
+          ],
+          "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+        },
+        "workload": {
+          "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+          "recipe": {
+            "version": 1,
+            "inputs": {
+              "model": "marin-community/Hero-535B-step144000",
+              "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+              "harness_version": "1.0.12",
+              "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+              "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+              "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+              "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+              "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+              "sessions": 393,
+              "max_context": 262144,
+              "random_seed": 42,
+              "trace_idle_gap_cap_seconds": 300,
+              "tokenizer": "marin-community/marin-tokenizer",
+              "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+            },
+            "code_sha256": {
+              "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+              "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+            },
+            "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+          },
+          "archive_uri": "s3://marin-us-east-08a/tmp/ttl=30d/agentx-workload/5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84/workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+          "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+          "archive_bytes": 166033271,
+          "lineage": {
+            "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+            "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+            "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+            "sessions": 393,
+            "filtered_sessions": 0,
+            "tokenizer": "marin-community/marin-tokenizer",
+            "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+            "tokenizer_files": {
+              ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+              "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+              "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+              "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+              "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+              "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+            },
+            "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+            "native_manifest_version": 26,
+            "conversations": 9602,
+            "turns": 68266,
+            "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+            "preparation_version": 1,
+            "harness_version": "1.0.12",
+            "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+            "preparation_seconds": 233.21300347405486,
+            "peak_memory_kib": 9010624
+          },
+          "cache_status": "hit"
+        },
+        "placement": {
+          "cluster": "cw-us-east-08a",
+          "nvlink_domain": "DH1-125-US-EAST-08A",
+          "nodes": [
+            "s2lrxs64",
+            "s45txs64",
+            "s5xm6j84",
+            "s6htxs64",
+            "s6rrxs64",
+            "s6vrxs64",
+            "s6xsxs64",
+            "s6xvdgb4",
+            "s76txs64",
+            "s7xsxs64",
+            "s8ltxs64",
+            "s9jtxs64",
+            "scb62nb4",
+            "sdysxs64",
+            "sf4fys64",
+            "sg6txs64",
+            "sh5rxs64",
+            "sjxqxs64"
+          ],
+          "verified_utc": "2026-10-28T21:50:15.999085+00:00",
+          "inventory_sha256": "548da1ed15352b6f9e9f246399e497d1e50576dbf2439e93de522eb2d8e9565a",
+          "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-allocation-gate.json",
+          "hero_training_gpus": 0,
+          "other_gpus": 32
+        },
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "head_sha": "6a12dc9565012e8f6f1888d8016507666edbb8f1",
+          "experiment": "baseline-c32",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "architecture": "aarch64",
+        "status": "succeeded",
+        "server_parallelism": {
+          "tp": 1,
+          "dp": 16,
+          "ep": 16,
+          "pp": 1
+        },
+        "task_index": 1,
+        "hostname": "s6xvdgb4",
+        "iris_node_name": "s6xvdgb4",
+        "gpu_uuids": [
+          "GPU-932c0415-ff19-97d1-f921-4580326909ed",
+          "GPU-4fdb4918-ac68-a948-adbe-0e9ed06fe762",
+          "GPU-77dde072-ba4f-9b78-6d6d-94a62bde9562",
+          "GPU-a10bc07c-f75b-5db5-4128-c700ac6cc196"
+        ],
+        "iris_task_id": "/romain/dev-gpu-hero-agentx-01a1846a/1:0",
+        "iris_attempt_uid": "cd9dba4a0b437390",
+        "iris_bundle_id": "f651885291ad17f3750cfa87dae707ea8cebdbaca9c683d8957786c0175dd759",
+        "started_unix": 1793224812.1525352,
+        "workload_restored_unix": 1793224837.114277,
+        "benchmark_command": null,
+        "server_command": [
+          "uvx",
+          "--from",
+          "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+          "--with",
+          "runai-model-streamer[s3]==0.16.1",
+          "--with",
+          "torch==2.14.1+cu132",
+          "--with",
+          "nvidia-cuda-nvcc==13.2.86",
+          "--with",
+          "nvidia-cuda-crt==13.2.86",
+          "--with",
+          "nvidia-nvvm==13.2.86",
+          "--python",
+          "3.12",
+          "--index",
+          "https://download.pytorch.org/whl/cu132",
+          "--index",
+          "https://download.pytorch.org/whl/cpu",
+          "--index-strategy",
+          "unsafe-best-match",
+          "python",
+          "-c",
+          "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+          "python",
+          "-c",
+          "import runpy\nimport sys\n\nentrypoint = sys.argv.pop(1)\nrunpy.run_path(entrypoint, run_name=\"__main__\")\n",
+          "/app/lib/marin/src/marin/inference/vllm_wheel_entrypoint.py",
+          "{\"release_tag\": \"marin-vllm-gpu-20261012-3a054c458ca8\", \"sm_targets\": [\"10.0\"], \"source_commit\": \"3a054c458ca8a32609ba2bc578c4d9b93eabb395\", \"version\": \"0.0.0.dev20261012+marin.3a054c458ca8.cu132\", \"wheel_sha256\": \"e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15\", \"wheel_url\": \"https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl\"}",
+          "serve",
+          "s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1",
+          "--trust-remote-code",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "38197",
+          "--load-format",
+          "runai_streamer",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--served-model-name",
+          "marin-community/Hero-535B-step144000",
+          "--dtype",
+          "bfloat16",
+          "--enable-expert-parallel",
+          "--max-model-len",
+          "262144",
+          "--max-num-seqs",
+          "64",
+          "--max-num-batched-tokens",
+          "512",
+          "--gpu-memory-utilization",
+          "0.9",
+          "--enable-prompt-tokens-details",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--no-enable-prefix-caching",
+          "--tensor-parallel-size",
+          "1",
+          "--pipeline-parallel-size",
+          "1",
+          "--data-parallel-size",
+          "16",
+          "--data-parallel-size-local",
+          "4",
+          "--nnodes",
+          "4",
+          "--node-rank",
+          "1",
+          "--master-addr",
+          "10.186.210.75",
+          "--master-port",
+          "29500",
+          "--device-ids",
+          "0,1,2,3",
+          "--data-parallel-address",
+          "10.186.210.75",
+          "--data-parallel-rpc-port",
+          "29501",
+          "--data-parallel-backend",
+          "mp",
+          "--headless",
+          "--seed",
+          "42",
+          "--hf-config-path",
+          "/iris/outputs/baseline-c32/point",
+          "--hf-overrides",
+          "{\"max_seq_len\": 262144, \"max_position_embeddings\": 262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\": true, \"concurrency\": 8, \"memory_limit\": 2147483648}",
+          "--kernel-config",
+          "{\"moe_backend\": \"triton\"}"
+        ],
+        "server_environment": {
+          "MODEL_IMPL_TYPE": "vllm",
+          "TOKENIZERS_PARALLELISM": "false",
+          "VLLM_ENGINE_READY_TIMEOUT_S": "4200",
+          "VLLM_CACHE_ROOT": "/tmp/marin-vllm-compilation-cache/v5/entries/111c0417d2ecb5f7f5a8a0b49779a977ac23dc69f0552192d2b0b6f5ab1f4ca4/cache/vllm",
+          "VLLM_COMPILE_CACHE_SAVE_FORMAT": "binary",
+          "TORCHINDUCTOR_CACHE_DIR": "/tmp/marin-vllm-compilation-cache/v5/entries/111c0417d2ecb5f7f5a8a0b49779a977ac23dc69f0552192d2b0b6f5ab1f4ca4/cache/torchinductor",
+          "TRITON_CACHE_DIR": "/tmp/marin-vllm-compilation-cache/v5/entries/111c0417d2ecb5f7f5a8a0b49779a977ac23dc69f0552192d2b0b6f5ab1f4ca4/cache/triton",
+          "CUDA_CACHE_PATH": "/tmp/marin-vllm-compilation-cache/v5/entries/111c0417d2ecb5f7f5a8a0b49779a977ac23dc69f0552192d2b0b6f5ab1f4ca4/cache/cuda"
+        },
+        "compilation_cache": "managed",
+        "finished_unix": 1793230934.0111265
+      },
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c32/host-1/outputs-e22268af416b3c3409f0598173091fd26e20db197252345e3fe9b0a19d4790dc.tar.zst",
+        "archive_sha256": "e22268af416b3c3409f0598173091fd26e20db197252345e3fe9b0a19d4790dc",
+        "archive_bytes": 5568167
+      }
+    },
+    {
+      "host": 2,
+      "validation": {
+        "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+        "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+        "profile": "gb200",
+        "concurrency": 32,
+        "vllm_release": {
+          "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+          "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+          "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+          "torch_backend": "cu132",
+          "torch_version": "2.14.1+cu132",
+          "wheels": [
+            {
+              "architecture": "aarch64",
+              "sm_targets": [
+                "10.0"
+              ],
+              "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+              "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+            },
+            {
+              "architecture": "x86_64",
+              "sm_targets": [
+                "9.0"
+              ],
+              "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+              "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+            }
+          ],
+          "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+        },
+        "workload": {
+          "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+          "recipe": {
+            "version": 1,
+            "inputs": {
+              "model": "marin-community/Hero-535B-step144000",
+              "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+              "harness_version": "1.0.12",
+              "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+              "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+              "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+              "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+              "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+              "sessions": 393,
+              "max_context": 262144,
+              "random_seed": 42,
+              "trace_idle_gap_cap_seconds": 300,
+              "tokenizer": "marin-community/marin-tokenizer",
+              "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+            },
+            "code_sha256": {
+              "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+              "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+            },
+            "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+          },
+          "archive_uri": "s3://marin-us-east-08a/tmp/ttl=30d/agentx-workload/5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84/workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+          "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+          "archive_bytes": 166033271,
+          "lineage": {
+            "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+            "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+            "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+            "sessions": 393,
+            "filtered_sessions": 0,
+            "tokenizer": "marin-community/marin-tokenizer",
+            "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+            "tokenizer_files": {
+              ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+              "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+              "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+              "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+              "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+              "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+            },
+            "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+            "native_manifest_version": 26,
+            "conversations": 9602,
+            "turns": 68266,
+            "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+            "preparation_version": 1,
+            "harness_version": "1.0.12",
+            "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+            "preparation_seconds": 233.21300347405486,
+            "peak_memory_kib": 9010624
+          },
+          "cache_status": "hit"
+        },
+        "placement": {
+          "cluster": "cw-us-east-08a",
+          "nvlink_domain": "DH1-125-US-EAST-08A",
+          "nodes": [
+            "s2lrxs64",
+            "s45txs64",
+            "s5xm6j84",
+            "s6htxs64",
+            "s6rrxs64",
+            "s6vrxs64",
+            "s6xsxs64",
+            "s6xvdgb4",
+            "s76txs64",
+            "s7xsxs64",
+            "s8ltxs64",
+            "s9jtxs64",
+            "scb62nb4",
+            "sdysxs64",
+            "sf4fys64",
+            "sg6txs64",
+            "sh5rxs64",
+            "sjxqxs64"
+          ],
+          "verified_utc": "2026-10-28T21:50:15.999085+00:00",
+          "inventory_sha256": "548da1ed15352b6f9e9f246399e497d1e50576dbf2439e93de522eb2d8e9565a",
+          "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-allocation-gate.json",
+          "hero_training_gpus": 0,
+          "other_gpus": 32
+        },
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "head_sha": "6a12dc9565012e8f6f1888d8016507666edbb8f1",
+          "experiment": "baseline-c32",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "architecture": "aarch64",
+        "status": "succeeded",
+        "server_parallelism": {
+          "tp": 1,
+          "dp": 16,
+          "ep": 16,
+          "pp": 1
+        },
+        "task_index": 2,
+        "hostname": "s7xsxs64",
+        "iris_node_name": "s7xsxs64",
+        "gpu_uuids": [
+          "GPU-937a362c-739a-3d4b-3e82-8b508b298faf",
+          "GPU-738edefe-d164-47b3-f971-4a2052486fd7",
+          "GPU-18d58751-acf7-3109-a061-ff5ae8e013b7",
+          "GPU-cada2f1a-ecdb-de25-c998-38be4b6c3cef"
+        ],
+        "iris_task_id": "/romain/dev-gpu-hero-agentx-01a1846a/2:0",
+        "iris_attempt_uid": "91a37c80e10493ec",
+        "iris_bundle_id": "f651885291ad17f3750cfa87dae707ea8cebdbaca9c683d8957786c0175dd759",
+        "started_unix": 1793224809.3369668,
+        "workload_restored_unix": 1793224814.4121904,
+        "benchmark_command": null,
+        "server_command": [
+          "uvx",
+          "--from",
+          "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+          "--with",
+          "runai-model-streamer[s3]==0.16.1",
+          "--with",
+          "torch==2.14.1+cu132",
+          "--with",
+          "nvidia-cuda-nvcc==13.2.86",
+          "--with",
+          "nvidia-cuda-crt==13.2.86",
+          "--with",
+          "nvidia-nvvm==13.2.86",
+          "--python",
+          "3.12",
+          "--index",
+          "https://download.pytorch.org/whl/cu132",
+          "--index",
+          "https://download.pytorch.org/whl/cpu",
+          "--index-strategy",
+          "unsafe-best-match",
+          "python",
+          "-c",
+          "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+          "python",
+          "-c",
+          "import runpy\nimport sys\n\nentrypoint = sys.argv.pop(1)\nrunpy.run_path(entrypoint, run_name=\"__main__\")\n",
+          "/app/lib/marin/src/marin/inference/vllm_wheel_entrypoint.py",
+          "{\"release_tag\": \"marin-vllm-gpu-20261012-3a054c458ca8\", \"sm_targets\": [\"10.0\"], \"source_commit\": \"3a054c458ca8a32609ba2bc578c4d9b93eabb395\", \"version\": \"0.0.0.dev20261012+marin.3a054c458ca8.cu132\", \"wheel_sha256\": \"e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15\", \"wheel_url\": \"https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl\"}",
+          "serve",
+          "s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1",
+          "--trust-remote-code",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "38197",
+          "--load-format",
+          "runai_streamer",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--served-model-name",
+          "marin-community/Hero-535B-step144000",
+          "--dtype",
+          "bfloat16",
+          "--enable-expert-parallel",
+          "--max-model-len",
+          "262144",
+          "--max-num-seqs",
+          "64",
+          "--max-num-batched-tokens",
+          "512",
+          "--gpu-memory-utilization",
+          "0.9",
+          "--enable-prompt-tokens-details",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--no-enable-prefix-caching",
+          "--tensor-parallel-size",
+          "1",
+          "--pipeline-parallel-size",
+          "1",
+          "--data-parallel-size",
+          "16",
+          "--data-parallel-size-local",
+          "4",
+          "--nnodes",
+          "4",
+          "--node-rank",
+          "2",
+          "--master-addr",
+          "10.186.210.75",
+          "--master-port",
+          "29500",
+          "--device-ids",
+          "0,1,2,3",
+          "--data-parallel-address",
+          "10.186.210.75",
+          "--data-parallel-rpc-port",
+          "29501",
+          "--data-parallel-backend",
+          "mp",
+          "--headless",
+          "--seed",
+          "42",
+          "--hf-config-path",
+          "/iris/outputs/baseline-c32/point",
+          "--hf-overrides",
+          "{\"max_seq_len\": 262144, \"max_position_embeddings\": 262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\": true, \"concurrency\": 8, \"memory_limit\": 2147483648}",
+          "--kernel-config",
+          "{\"moe_backend\": \"triton\"}"
+        ],
+        "server_environment": {
+          "MODEL_IMPL_TYPE": "vllm",
+          "TOKENIZERS_PARALLELISM": "false",
+          "VLLM_ENGINE_READY_TIMEOUT_S": "4200",
+          "VLLM_CACHE_ROOT": "/tmp/marin-vllm-compilation-cache/v5/entries/325a83545b8e1de69f016aeb845099a8102f4d0824466ae48b7c36d18d85e04b/cache/vllm",
+          "VLLM_COMPILE_CACHE_SAVE_FORMAT": "binary",
+          "TORCHINDUCTOR_CACHE_DIR": "/tmp/marin-vllm-compilation-cache/v5/entries/325a83545b8e1de69f016aeb845099a8102f4d0824466ae48b7c36d18d85e04b/cache/torchinductor",
+          "TRITON_CACHE_DIR": "/tmp/marin-vllm-compilation-cache/v5/entries/325a83545b8e1de69f016aeb845099a8102f4d0824466ae48b7c36d18d85e04b/cache/triton",
+          "CUDA_CACHE_PATH": "/tmp/marin-vllm-compilation-cache/v5/entries/325a83545b8e1de69f016aeb845099a8102f4d0824466ae48b7c36d18d85e04b/cache/cuda"
+        },
+        "compilation_cache": "managed",
+        "finished_unix": 1793230956.1836886
+      },
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c32/host-2/outputs-fc9642412fb2e1c8cb3c7f0610f2cf7d0a4c078572b071e2dd9ff134aa068253.tar.zst",
+        "archive_sha256": "fc9642412fb2e1c8cb3c7f0610f2cf7d0a4c078572b071e2dd9ff134aa068253",
+        "archive_bytes": 5572028
+      }
+    },
+    {
+      "host": 3,
+      "validation": {
+        "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+        "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+        "profile": "gb200",
+        "concurrency": 32,
+        "vllm_release": {
+          "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+          "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+          "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+          "torch_backend": "cu132",
+          "torch_version": "2.14.1+cu132",
+          "wheels": [
+            {
+              "architecture": "aarch64",
+              "sm_targets": [
+                "10.0"
+              ],
+              "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+              "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+            },
+            {
+              "architecture": "x86_64",
+              "sm_targets": [
+                "9.0"
+              ],
+              "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+              "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+            }
+          ],
+          "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+        },
+        "workload": {
+          "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+          "recipe": {
+            "version": 1,
+            "inputs": {
+              "model": "marin-community/Hero-535B-step144000",
+              "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+              "harness_version": "1.0.12",
+              "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+              "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+              "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+              "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+              "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+              "sessions": 393,
+              "max_context": 262144,
+              "random_seed": 42,
+              "trace_idle_gap_cap_seconds": 300,
+              "tokenizer": "marin-community/marin-tokenizer",
+              "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+            },
+            "code_sha256": {
+              "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+              "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+            },
+            "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+          },
+          "archive_uri": "s3://marin-us-east-08a/tmp/ttl=30d/agentx-workload/5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84/workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+          "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+          "archive_bytes": 166033271,
+          "lineage": {
+            "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+            "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+            "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+            "sessions": 393,
+            "filtered_sessions": 0,
+            "tokenizer": "marin-community/marin-tokenizer",
+            "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+            "tokenizer_files": {
+              ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+              "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+              "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+              "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+              "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+              "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+            },
+            "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+            "native_manifest_version": 26,
+            "conversations": 9602,
+            "turns": 68266,
+            "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+            "preparation_version": 1,
+            "harness_version": "1.0.12",
+            "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+            "preparation_seconds": 233.21300347405486,
+            "peak_memory_kib": 9010624
+          },
+          "cache_status": "hit"
+        },
+        "placement": {
+          "cluster": "cw-us-east-08a",
+          "nvlink_domain": "DH1-125-US-EAST-08A",
+          "nodes": [
+            "s2lrxs64",
+            "s45txs64",
+            "s5xm6j84",
+            "s6htxs64",
+            "s6rrxs64",
+            "s6vrxs64",
+            "s6xsxs64",
+            "s6xvdgb4",
+            "s76txs64",
+            "s7xsxs64",
+            "s8ltxs64",
+            "s9jtxs64",
+            "scb62nb4",
+            "sdysxs64",
+            "sf4fys64",
+            "sg6txs64",
+            "sh5rxs64",
+            "sjxqxs64"
+          ],
+          "verified_utc": "2026-10-28T21:50:15.999085+00:00",
+          "inventory_sha256": "548da1ed15352b6f9e9f246399e497d1e50576dbf2439e93de522eb2d8e9565a",
+          "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-allocation-gate.json",
+          "hero_training_gpus": 0,
+          "other_gpus": 32
+        },
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "head_sha": "6a12dc9565012e8f6f1888d8016507666edbb8f1",
+          "experiment": "baseline-c32",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "architecture": "aarch64",
+        "status": "succeeded",
+        "server_parallelism": {
+          "tp": 1,
+          "dp": 16,
+          "ep": 16,
+          "pp": 1
+        },
+        "task_index": 3,
+        "hostname": "s9jtxs64",
+        "iris_node_name": "s9jtxs64",
+        "gpu_uuids": [
+          "GPU-9978a515-1190-07aa-2aa0-3a91d8234d58",
+          "GPU-5fb725a5-534a-1838-9661-56ea98e4dc75",
+          "GPU-947b19fa-ac76-2621-b4f2-8e4542432457",
+          "GPU-d1e09ddc-c49f-1cd2-73bc-b7c8996e31d7"
+        ],
+        "iris_task_id": "/romain/dev-gpu-hero-agentx-01a1846a/3:0",
+        "iris_attempt_uid": "ec7c459e8b00d47a",
+        "iris_bundle_id": "f651885291ad17f3750cfa87dae707ea8cebdbaca9c683d8957786c0175dd759",
+        "started_unix": 1793224809.3660557,
+        "workload_restored_unix": 1793224814.6169722,
+        "benchmark_command": null,
+        "server_command": [
+          "uvx",
+          "--from",
+          "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+          "--with",
+          "runai-model-streamer[s3]==0.16.1",
+          "--with",
+          "torch==2.14.1+cu132",
+          "--with",
+          "nvidia-cuda-nvcc==13.2.86",
+          "--with",
+          "nvidia-cuda-crt==13.2.86",
+          "--with",
+          "nvidia-nvvm==13.2.86",
+          "--python",
+          "3.12",
+          "--index",
+          "https://download.pytorch.org/whl/cu132",
+          "--index",
+          "https://download.pytorch.org/whl/cpu",
+          "--index-strategy",
+          "unsafe-best-match",
+          "python",
+          "-c",
+          "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+          "python",
+          "-c",
+          "import runpy\nimport sys\n\nentrypoint = sys.argv.pop(1)\nrunpy.run_path(entrypoint, run_name=\"__main__\")\n",
+          "/app/lib/marin/src/marin/inference/vllm_wheel_entrypoint.py",
+          "{\"release_tag\": \"marin-vllm-gpu-20261012-3a054c458ca8\", \"sm_targets\": [\"10.0\"], \"source_commit\": \"3a054c458ca8a32609ba2bc578c4d9b93eabb395\", \"version\": \"0.0.0.dev20261012+marin.3a054c458ca8.cu132\", \"wheel_sha256\": \"e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15\", \"wheel_url\": \"https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl\"}",
+          "serve",
+          "s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1",
+          "--trust-remote-code",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "38197",
+          "--load-format",
+          "runai_streamer",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--served-model-name",
+          "marin-community/Hero-535B-step144000",
+          "--dtype",
+          "bfloat16",
+          "--enable-expert-parallel",
+          "--max-model-len",
+          "262144",
+          "--max-num-seqs",
+          "64",
+          "--max-num-batched-tokens",
+          "512",
+          "--gpu-memory-utilization",
+          "0.9",
+          "--enable-prompt-tokens-details",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--no-enable-prefix-caching",
+          "--tensor-parallel-size",
+          "1",
+          "--pipeline-parallel-size",
+          "1",
+          "--data-parallel-size",
+          "16",
+          "--data-parallel-size-local",
+          "4",
+          "--nnodes",
+          "4",
+          "--node-rank",
+          "3",
+          "--master-addr",
+          "10.186.210.75",
+          "--master-port",
+          "29500",
+          "--device-ids",
+          "0,1,2,3",
+          "--data-parallel-address",
+          "10.186.210.75",
+          "--data-parallel-rpc-port",
+          "29501",
+          "--data-parallel-backend",
+          "mp",
+          "--headless",
+          "--seed",
+          "42",
+          "--hf-config-path",
+          "/iris/outputs/baseline-c32/point",
+          "--hf-overrides",
+          "{\"max_seq_len\": 262144, \"max_position_embeddings\": 262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\": true, \"concurrency\": 8, \"memory_limit\": 2147483648}",
+          "--kernel-config",
+          "{\"moe_backend\": \"triton\"}"
+        ],
+        "server_environment": {
+          "MODEL_IMPL_TYPE": "vllm",
+          "TOKENIZERS_PARALLELISM": "false",
+          "VLLM_ENGINE_READY_TIMEOUT_S": "4200",
+          "VLLM_CACHE_ROOT": "/tmp/marin-vllm-compilation-cache/v5/entries/a8cb81852e25d012bc3e8f1b06cea705831088c3635c98f8a2a2ac54344b3200/cache/vllm",
+          "VLLM_COMPILE_CACHE_SAVE_FORMAT": "binary",
+          "TORCHINDUCTOR_CACHE_DIR": "/tmp/marin-vllm-compilation-cache/v5/entries/a8cb81852e25d012bc3e8f1b06cea705831088c3635c98f8a2a2ac54344b3200/cache/torchinductor",
+          "TRITON_CACHE_DIR": "/tmp/marin-vllm-compilation-cache/v5/entries/a8cb81852e25d012bc3e8f1b06cea705831088c3635c98f8a2a2ac54344b3200/cache/triton",
+          "CUDA_CACHE_PATH": "/tmp/marin-vllm-compilation-cache/v5/entries/a8cb81852e25d012bc3e8f1b06cea705831088c3635c98f8a2a2ac54344b3200/cache/cuda"
+        },
+        "compilation_cache": "managed",
+        "finished_unix": 1793230925.767239
+      },
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c32/host-3/outputs-0bb8ab66036b48cfc39d41d05aaba2b44efda453c0854e69b5c98c3d865c2739.tar.zst",
+        "archive_sha256": "0bb8ab66036b48cfc39d41d05aaba2b44efda453c0854e69b5c98c3d865c2739",
+        "archive_bytes": 5568357
+      }
+    }
+  ]
+}

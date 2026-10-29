@@ -83,6 +83,8 @@ def run(tokenizer_path: Path, base_url: str, output: Path, prefix_tokens: int, r
         ("cold-b", [1], salt + "-b"),
         ("cold-c", [2], salt + "-c"),
         ("cold-a-repeat", [0], salt + "-a-repeat"),
+        ("cold-ba", [1, 0], salt + "-ba"),
+        ("cold-cab", [2, 0, 1], salt + "-cab"),
         ("shared-a", [0], salt + "-shared"),
         ("shared-ba", [1, 0], salt + "-shared"),
         ("shared-cab", [2, 0, 1], salt + "-shared"),
@@ -120,10 +122,14 @@ def run(tokenizer_path: Path, base_url: str, output: Path, prefix_tokens: int, r
             choices = sorted(response["choices"], key=lambda choice: choice["index"])
             assert len(choices) == len(branches)
             for branch, choice in zip(branches, choices, strict=True):
-                if branch not in references:
-                    references[branch] = choice
+                key = (tuple(branches), branch)
+                if key not in references:
+                    references[key] = (name, choice)
                 else:
-                    comparisons.append({"wave": name, "branch": branch, **compare(references[branch], choice)})
+                    reference_name, reference = references[key]
+                    comparisons.append(
+                        {"wave": name, "branch": branch, "reference_wave": reference_name, **compare(reference, choice)}
+                    )
             print(name, "elapsed_seconds", round(entry["elapsed_seconds"], 3), "usage", response["usage"], flush=True)
     summary = {"rank": rank, "prefix_tokens": prefix_tokens, "comparisons": comparisons}
     (output / "comparison.json").write_text(json.dumps(summary, indent=2) + "\n")
