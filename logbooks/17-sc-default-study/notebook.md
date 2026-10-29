@@ -567,3 +567,29 @@ refusing the still-running archive worker. It makes no model, grader or source
 delete call. The full archive preflight and removal remain unexecuted. Continue
 monitoring the same archive job; extend quiet checks to roughly fifteen minutes
 while large objects finish. RNO still explicitly rejects writes at 19:33 UTC.
+
+### 2026-10-29 21:00 UTC: Writes recover, but free capacity is still below one run's checkpoint/export requirement
+
+A [small write/readback and a five-MiB multipart round trip](storage-write-recovery-insufficient-headroom.json)
+pass at 20:47–20:50 UTC and remove their synthetic objects. The fresh official
+collector still shows the unchanged 100-TiB quota, with only **69,932,525,133
+bytes free**. This study has deleted no native checkpoint state; the external
+recovery action is unknown. Successful tiny writes do not supply the roughly
+one-TB native-checkpoint plus portable-export capacity needed for the last arm.
+Do not allocate another GPU run on this evidence. Continue the full-state
+archive route and recheck capacity before retrying.
+
+The [preparatory runtime comparison](sc1284517-retry-runtime-source-comparison.json)
+confirms that complete `experiments`, `vendor`, `lib` and `infra` trees, plus
+`uv.lock` and `pyproject.toml`, are unchanged from the last SC128/4517 training
+source. Archive-only helpers do not change its recipe. Fresh-root, resolved
+launch, both pools and resource coordination checks remain required at launch.
+
+Only metadata has been prepared for the [remaining seven completed checkpoints](native-preservation-remaining-plan.json):
+315 objects totaling **5,640,230,670,287 bytes** in immutable per-run input
+manifests. No additional native transfer has begun. After the entire first
+805-GB pilot passes and its worker stops, the finite batch may use at most seven
+CPU copy jobs with two streams each, under refreshed headroom and shared-resource
+checks. All measured GPU consumers must stay stopped during that bulk I/O.
+This completes the original full-state preservation scope; no unique optimizer
+state is discarded and any later source cleanup keeps exact restore proofs.
