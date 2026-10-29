@@ -143,8 +143,7 @@ def math_workspace(archive, expected_sha):
     raw = Path(archive).read_bytes()
     if hashlib.sha256(raw).hexdigest() != expected_sha:
         raise ValueError("Pinnedf5 source archive changed")
-    destination = Path("/tmp") / f"pathb-f5-source-{expected_sha[:16]}"
-    destination.mkdir(exist_ok=False)
+    destination = Path(tempfile.mkdtemp(prefix=f"pathb-f5-source-{expected_sha[:16]}-"))
     with zipfile.ZipFile(io.BytesIO(raw)) as bundle:
         for name in bundle.namelist():
             if Path(name).is_absolute() or ".." in Path(name).parts:

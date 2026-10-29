@@ -14,7 +14,7 @@ native_run = original.run_evalchemy
 
 def scoped_run(model, config, output, env_vars, *, backend_state):
     config = replace(config, runtime=replace(config.runtime, dataset_cache=output + "/dataset-cache"))
-    return native_run(model, config, output, env_vars, backend_state=backend_state)
+    return native_run(model, config, output, env_vars=env_vars, backend_state=backend_state)
 
 
 if __name__ == "__main__":
