@@ -1,0 +1,759 @@
+{
+  "utc": "2026-10-29T22:41:57.033753+00:00",
+  "source_commit": "c132d87a5678073310985f619ae78542bf72eda5",
+  "candidate_source": "48e3d3b01baa21f2581fc801f2b2c80f15ed435d",
+  "candidate_sha256": "27b49083d67ecb64ade4cd1732d610621397615b0bdb593b6425756cea614b8c",
+  "native_runs": [
+    {
+      "label": "graph-only",
+      "command": [
+        "uvx",
+        "--from",
+        "vllm @ file:///iris/candidates/9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/vllm-0.0.0.dev20261012%2Bmarin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+        "--with",
+        "runai-model-streamer[s3]==0.16.1",
+        "--with",
+        "torch==2.14.1+cu132",
+        "--with",
+        "nvidia-cuda-nvcc==13.2.86",
+        "--with",
+        "nvidia-cuda-crt==13.2.86",
+        "--with",
+        "nvidia-nvvm==13.2.86",
+        "--python",
+        "3.12",
+        "--index",
+        "https://download.pytorch.org/whl/cu132",
+        "--index",
+        "https://download.pytorch.org/whl/cpu",
+        "--index-strategy",
+        "unsafe-best-match",
+        "python",
+        "-c",
+        "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+        "python",
+        "/iris/candidates/research-c132d87a5678073310985f619ae78542bf72eda5/logbooks/19-hero-agentx-throughput/native_shortconv_probe.py",
+        "--test-source",
+        "/iris/candidates/research-c132d87a5678073310985f619ae78542bf72eda5/logbooks/19-hero-agentx-throughput/shortconv_combined_checks.py",
+        "--source-sha256",
+        "45679daad3c90e8a648eb7f71b0769a293eb6392a5aa3bef2f0ab63e2a840a8d",
+        "--extra-test",
+        "test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows",
+        "--output",
+        "/iris/outputs/combined-shortconv-module-r1/graph-only.json"
+      ],
+      "result": {
+        "source_sha256": "45679daad3c90e8a648eb7f71b0769a293eb6392a5aa3bef2f0ab63e2a840a8d",
+        "forward_source_sha256": null,
+        "functions": [
+          "_causal_depthwise_reference",
+          "test_hero_grug_moe_sconv_preserves_request_history_and_isolation",
+          "test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows"
+        ],
+        "status": "passed"
+      }
+    },
+    {
+      "label": "combined",
+      "command": [
+        "uvx",
+        "--from",
+        "vllm @ file:///iris/candidates/9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/vllm-0.0.0.dev20261012%2Bmarin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+        "--with",
+        "runai-model-streamer[s3]==0.16.1",
+        "--with",
+        "torch==2.14.1+cu132",
+        "--with",
+        "nvidia-cuda-nvcc==13.2.86",
+        "--with",
+        "nvidia-cuda-crt==13.2.86",
+        "--with",
+        "nvidia-nvvm==13.2.86",
+        "--python",
+        "3.12",
+        "--index",
+        "https://download.pytorch.org/whl/cu132",
+        "--index",
+        "https://download.pytorch.org/whl/cpu",
+        "--index-strategy",
+        "unsafe-best-match",
+        "python",
+        "-c",
+        "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+        "python",
+        "/iris/candidates/research-c132d87a5678073310985f619ae78542bf72eda5/logbooks/19-hero-agentx-throughput/native_shortconv_probe.py",
+        "--test-source",
+        "/iris/candidates/research-c132d87a5678073310985f619ae78542bf72eda5/logbooks/19-hero-agentx-throughput/shortconv_combined_checks.py",
+        "--source-sha256",
+        "45679daad3c90e8a648eb7f71b0769a293eb6392a5aa3bef2f0ab63e2a840a8d",
+        "--extra-test",
+        "test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows",
+        "--output",
+        "/iris/outputs/combined-shortconv-module-r1/combined.json",
+        "--forward-source",
+        "/iris/candidates/combined-shortconv-48e3.py",
+        "--forward-source-sha256",
+        "27b49083d67ecb64ade4cd1732d610621397615b0bdb593b6425756cea614b8c"
+      ],
+      "result": {
+        "source_sha256": "45679daad3c90e8a648eb7f71b0769a293eb6392a5aa3bef2f0ab63e2a840a8d",
+        "forward_source_sha256": "27b49083d67ecb64ade4cd1732d610621397615b0bdb593b6425756cea614b8c",
+        "functions": [
+          "_causal_depthwise_reference",
+          "test_hero_grug_moe_sconv_preserves_request_history_and_isolation",
+          "test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows"
+        ],
+        "status": "passed"
+      }
+    }
+  ],
+  "benchmark": {
+    "manifest": {
+      "purpose": "Cheap module-level interaction screen for direct ShortConv outputs plus explicit PIECEWISE graph compatibility; no AgentX gain is assumed.",
+      "baseline_source": "9383b951dd7d7f4fa7801fd479490ad9915b88ce",
+      "candidate_source": "48e3d3b01baa21f2581fc801f2b2c80f15ed435d",
+      "candidate_repository": "https://github.com/marin-community/vllm",
+      "candidate_method": "GrugMoeShortConv.forward_impl only for numerical/module screen; full private wheel must retain both graph guard files",
+      "method_file_sha256": "27b49083d67ecb64ade4cd1732d610621397615b0bdb593b6425756cea614b8c",
+      "config_source_sha256": "7ccd9cc250dbdaaf0d964ea60425231aed7f186816bd933d9b52e151dd64855e",
+      "test_source": "shortconv_combined_checks.py",
+      "test_source_sha256": "45679daad3c90e8a648eb7f71b0769a293eb6392a5aa3bef2f0ab63e2a840a8d",
+      "test_functions": [
+        "_causal_depthwise_reference",
+        "test_hero_grug_moe_sconv_preserves_request_history_and_isolation",
+        "test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows"
+      ],
+      "baseline_wheel": {
+        "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/piecewise-9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4"
+      },
+      "value_hypothesis": {
+        "bottleneck": "ShortConv remains outside piecewise capture; previous complete module-call measurements saved roughly50us/call.",
+        "plausible_saved_time_per_model_step_ms": [
+          6.7,
+          8.1
+        ],
+        "reason": "144 ShortConv calls per48-layer step; host dispatch/allocations are included. Critical-path overlap can reduce end-to-end value.",
+        "cheapest_trial": "Use one otherwise idle GPU in a correctly placed held group. Run unchanged history/mixed-prefill checks plus full-width BF16 inactive-row checks under graph-only and combined methods, then existing strict50-comparison/module benchmark. If promising, compare combined full-model fixed-history numerics and short request banks at matched all-DP shapes.",
+        "cost": "CPU source composition only so far. A native module screen should take minutes within a held group; one fresh16GPU model qualification/short-bank screen costs roughly2GPU-hours. No additional full hour until numerical parity and useful short-workload gain.",
+        "maintenance": "Reuse PR107 and PR108 source deltas; no dependency refresh, guard bypass, or new serving subsystem."
+      },
+      "execution": "Reuse native_shortconv_probe.py --test-source shortconv_combined_checks.py --extra-test test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows with and without --forward-source candidate. Then shortconv_benchmark.py --manifest this_file --candidate-source candidate, on baseline9ea. The existing constraints file and native runtime stay pinned.",
+      "status": "prepared_not_gpu_validated"
+    },
+    "script_sha256": "65470df44710f0eaeeb338afc691607a8150c8d22245fa98aaff9a2384e77d79",
+    "gpu": "NVIDIA GB200",
+    "results": [
+      {
+        "kind": "bf16_numerics",
+        "dim": 1536,
+        "batch": 1,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 1,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 182.86815145984292,
+        "cuda_elapsed_microseconds_per_call": 183.44959259033203
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 1,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 133.9051011018455,
+        "cuda_elapsed_microseconds_per_call": 134.15488243103027
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 1,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 177.3078111000359,
+        "cuda_elapsed_microseconds_per_call": 177.55935668945312
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 1,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 124.83339058235288,
+        "cuda_elapsed_microseconds_per_call": 125.10047912597656
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 1,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 172.42041882127523,
+        "cuda_elapsed_microseconds_per_call": 172.6540756225586
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 1,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 129.43659909069538,
+        "cuda_elapsed_microseconds_per_call": 129.68671798706055
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 1536,
+        "batch": 2,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 2,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 186.44863041117787,
+        "cuda_elapsed_microseconds_per_call": 186.77215576171875
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 2,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 136.54669979587197,
+        "cuda_elapsed_microseconds_per_call": 136.80319786071777
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 2,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 179.03805011883378,
+        "cuda_elapsed_microseconds_per_call": 179.30816650390625
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 2,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 135.213581379503,
+        "cuda_elapsed_microseconds_per_call": 135.43840408325195
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 2,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 173.9234710112214,
+        "cuda_elapsed_microseconds_per_call": 174.19679641723633
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 2,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 124.83625905588269,
+        "cuda_elapsed_microseconds_per_call": 125.06591796875
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 1536,
+        "batch": 8,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 8,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 175.78972037881613,
+        "cuda_elapsed_microseconds_per_call": 176.05279922485352
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 8,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 132.16492952778935,
+        "cuda_elapsed_microseconds_per_call": 132.36895561218262
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 8,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 167.92729031294584,
+        "cuda_elapsed_microseconds_per_call": 168.15135955810547
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 8,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 123.2711412012577,
+        "cuda_elapsed_microseconds_per_call": 123.49056243896484
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 8,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 166.91321041435003,
+        "cuda_elapsed_microseconds_per_call": 167.1526336669922
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 8,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 126.81226944550872,
+        "cuda_elapsed_microseconds_per_call": 127.03392028808594
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 1536,
+        "batch": 32,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 32,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 183.60381945967674,
+        "cuda_elapsed_microseconds_per_call": 183.8969612121582
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 32,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 131.54956977814436,
+        "cuda_elapsed_microseconds_per_call": 131.8000030517578
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 32,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 176.54940020292997,
+        "cuda_elapsed_microseconds_per_call": 176.8137550354004
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 32,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 132.76237063109875,
+        "cuda_elapsed_microseconds_per_call": 132.98272132873535
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 32,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 174.5138713158667,
+        "cuda_elapsed_microseconds_per_call": 174.7545623779297
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 32,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 127.19755060970783,
+        "cuda_elapsed_microseconds_per_call": 127.43712425231934
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 1536,
+        "batch": 64,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 64,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 172.1465098671615,
+        "cuda_elapsed_microseconds_per_call": 172.39072799682617
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 64,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 127.7092401869595,
+        "cuda_elapsed_microseconds_per_call": 127.93120384216309
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 64,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 174.15547044947743,
+        "cuda_elapsed_microseconds_per_call": 174.40767288208008
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 64,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 125.81643182784319,
+        "cuda_elapsed_microseconds_per_call": 126.04255676269531
+      },
+      {
+        "implementation": "baseline",
+        "dim": 1536,
+        "batch": 64,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 173.18971222266555,
+        "cuda_elapsed_microseconds_per_call": 173.4681510925293
+      },
+      {
+        "implementation": "candidate",
+        "dim": 1536,
+        "batch": 64,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 128.66124045103788,
+        "cuda_elapsed_microseconds_per_call": 128.87776374816895
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 6144,
+        "batch": 1,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 1,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 171.85466829687357,
+        "cuda_elapsed_microseconds_per_call": 172.1343994140625
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 1,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 129.7825202345848,
+        "cuda_elapsed_microseconds_per_call": 130.02304077148438
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 1,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 171.51483101770282,
+        "cuda_elapsed_microseconds_per_call": 171.75392150878906
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 1,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 126.62220047786832,
+        "cuda_elapsed_microseconds_per_call": 126.85088157653809
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 1,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 166.67031915858388,
+        "cuda_elapsed_microseconds_per_call": 166.89023971557617
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 1,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 124.58954937756062,
+        "cuda_elapsed_microseconds_per_call": 124.80447769165039
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 6144,
+        "batch": 2,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 2,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 179.114849306643,
+        "cuda_elapsed_microseconds_per_call": 179.40576553344727
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 2,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 134.7889401949942,
+        "cuda_elapsed_microseconds_per_call": 135.04159927368164
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 2,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 178.09501150622964,
+        "cuda_elapsed_microseconds_per_call": 178.36544036865234
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 2,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 128.69451893493533,
+        "cuda_elapsed_microseconds_per_call": 128.9299201965332
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 2,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 165.1154411956668,
+        "cuda_elapsed_microseconds_per_call": 165.35808563232422
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 2,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 123.96906036883593,
+        "cuda_elapsed_microseconds_per_call": 124.1817569732666
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 6144,
+        "batch": 8,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 8,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 171.84538999572396,
+        "cuda_elapsed_microseconds_per_call": 172.0979118347168
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 8,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 126.92268006503582,
+        "cuda_elapsed_microseconds_per_call": 127.16799736022949
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 8,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 171.1800997145474,
+        "cuda_elapsed_microseconds_per_call": 171.4124870300293
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 8,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 129.6657184138894,
+        "cuda_elapsed_microseconds_per_call": 129.86432075500488
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 8,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 170.16985919326544,
+        "cuda_elapsed_microseconds_per_call": 170.4217529296875
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 8,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 121.20201950892806,
+        "cuda_elapsed_microseconds_per_call": 121.4252758026123
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 6144,
+        "batch": 32,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 32,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 184.7993489354849,
+        "cuda_elapsed_microseconds_per_call": 185.08127212524414
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 32,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 134.60494112223387,
+        "cuda_elapsed_microseconds_per_call": 134.8566436767578
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 32,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 175.39131920784712,
+        "cuda_elapsed_microseconds_per_call": 175.6528091430664
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 32,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 131.6042896360159,
+        "cuda_elapsed_microseconds_per_call": 131.83584213256836
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 32,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 171.6037909500301,
+        "cuda_elapsed_microseconds_per_call": 171.84511184692383
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 32,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 127.81194876879454,
+        "cuda_elapsed_microseconds_per_call": 128.05343627929688
+      },
+      {
+        "kind": "bf16_numerics",
+        "dim": 6144,
+        "batch": 64,
+        "steps": 5,
+        "output_and_state_bitwise": true
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 64,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 176.775639411062,
+        "cuda_elapsed_microseconds_per_call": 177.04383850097656
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 64,
+        "repetition": 0,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 127.81867058947682,
+        "cuda_elapsed_microseconds_per_call": 128.04351806640625
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 64,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 172.1855509094894,
+        "cuda_elapsed_microseconds_per_call": 172.42048263549805
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 64,
+        "repetition": 1,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 127.82956007868052,
+        "cuda_elapsed_microseconds_per_call": 128.06143760681152
+      },
+      {
+        "implementation": "baseline",
+        "dim": 6144,
+        "batch": 64,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 175.582361407578,
+        "cuda_elapsed_microseconds_per_call": 175.84991455078125
+      },
+      {
+        "implementation": "candidate",
+        "dim": 6144,
+        "batch": 64,
+        "repetition": 2,
+        "calls": 100,
+        "host_submit_microseconds_per_call": 124.99786913394928,
+        "cuda_elapsed_microseconds_per_call": 125.22720336914062
+      }
+    ]
+  }
+}

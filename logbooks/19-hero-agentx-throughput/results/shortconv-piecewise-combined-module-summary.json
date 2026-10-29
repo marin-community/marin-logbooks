@@ -1,0 +1,109 @@
+{
+  "strict_bf16_comparisons": 50,
+  "native_checks": [
+    "graph-only",
+    "combined"
+  ],
+  "timing_summary": [
+    {
+      "batch": 1,
+      "dim": {
+        "1536": {
+          "baseline": 177.3078111000359,
+          "candidate": 129.43659909069538,
+          "saved_us": 47.871212009340525,
+          "ratio": 0.7300106988386885
+        },
+        "6144": {
+          "baseline": 171.51483101770282,
+          "candidate": 126.62220047786832,
+          "saved_us": 44.8926305398345,
+          "ratio": 0.7382580254228807
+        }
+      },
+      "model_step_host_submit_saved_ms_if_serial": 6.750482618808746
+    },
+    {
+      "batch": 2,
+      "dim": {
+        "1536": {
+          "baseline": 179.03805011883378,
+          "candidate": 135.213581379503,
+          "saved_us": 43.82446873933077,
+          "ratio": 0.7552225981558505
+        },
+        "6144": {
+          "baseline": 178.09501150622964,
+          "candidate": 128.69451893493533,
+          "saved_us": 49.40049257129431,
+          "ratio": 0.7226172021692684
+        }
+      },
+      "model_step_host_submit_saved_ms_if_serial": 6.5783726423978806
+    },
+    {
+      "batch": 8,
+      "dim": {
+        "1536": {
+          "baseline": 167.92729031294584,
+          "candidate": 126.81226944550872,
+          "saved_us": 41.115020867437124,
+          "ratio": 0.7551617679841316
+        },
+        "6144": {
+          "baseline": 171.1800997145474,
+          "candidate": 126.92268006503582,
+          "saved_us": 44.257419649511576,
+          "ratio": 0.7414569817209281
+        }
+      },
+      "model_step_host_submit_saved_ms_if_serial": 6.07139814645052
+    },
+    {
+      "batch": 32,
+      "dim": {
+        "1536": {
+          "baseline": 176.54940020292997,
+          "candidate": 131.54956977814436,
+          "saved_us": 44.999830424785614,
+          "ratio": 0.7451147929527839
+        },
+        "6144": {
+          "baseline": 175.39131920784712,
+          "candidate": 131.6042896360159,
+          "saved_us": 43.787029571831226,
+          "ratio": 0.750346654728439
+        }
+      },
+      "model_step_host_submit_saved_ms_if_serial": 6.421761140227318
+    },
+    {
+      "batch": 64,
+      "dim": {
+        "1536": {
+          "baseline": 173.18971222266555,
+          "candidate": 127.7092401869595,
+          "saved_us": 45.48047203570604,
+          "ratio": 0.7373950712659365
+        },
+        "6144": {
+          "baseline": 175.582361407578,
+          "candidate": 127.81867058947682,
+          "saved_us": 47.76369081810117,
+          "ratio": 0.7279698801451492
+        }
+      },
+      "model_step_host_submit_saved_ms_if_serial": 6.658782474696636
+    }
+  ],
+  "scope": "Complete module calls, including CPU dispatch and allocation. No end-to-end AgentX gain implied.",
+  "retention": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/combined-shortconv-module-r1/outputs-4cb521eb0dff8fd238a9132bbfe228900703a06c8303e681d14b7c1919382f67.tar.zst",
+    "sha256": "4cb521eb0dff8fd238a9132bbfe228900703a06c8303e681d14b7c1919382f67",
+    "readback_sha256": "4cb521eb0dff8fd238a9132bbfe228900703a06c8303e681d14b7c1919382f67",
+    "bytes": 8184
+  },
+  "source_commit": "c132d87a5678073310985f619ae78542bf72eda5",
+  "candidate_source_commit": "48e3d3b01baa21f2581fc801f2b2c80f15ed435d",
+  "full_model_qualified": false
+}
