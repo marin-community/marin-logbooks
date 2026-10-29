@@ -15,7 +15,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from diagnostic_server import stage_candidate_wheel, use_candidate_wheel
+from diagnostic_server import stage_candidate_wheel, use_candidate_wheel, use_numa_binding
 from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import IrisVllmLaunch
 from marin.inference.vllm_server import VllmEnvironment
@@ -59,6 +59,9 @@ def create_candidate_server(
         server.extra_cli_args[server.extra_cli_args.index("--data-parallel-rpc-port") + 1] = str(
             overrides["master_port"] + 1
         )
+    if overrides.get("numa_bind"):
+        assert overrides["numa_bind"] is True
+        use_numa_binding(server, manifest["numactl_input"])
     (output / "runtime-overrides.json").write_text(
         json.dumps(
             {

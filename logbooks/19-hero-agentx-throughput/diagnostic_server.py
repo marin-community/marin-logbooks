@@ -73,6 +73,21 @@ def use_candidate_wheel(server: VllmEnvironment, receipt_file: Path, base: dict)
     return receipt
 
 
+def use_numa_binding(server: VllmEnvironment, utility: dict) -> None:
+    directory = Path("/iris/candidates") / ("numactl-" + utility["deb"]["sha256"])
+    directory.mkdir(parents=True, exist_ok=True)
+    package = directory / utility["deb"]["name"]
+    copy_file(utility["deb"]["uri"], str(package))
+    assert hashlib.sha256(package.read_bytes()).hexdigest() == utility["deb"]["sha256"]
+    subprocess.run(["dpkg-deb", "--extract", str(package), str(directory / "root")], check=True)
+    binary = directory / "root/usr/bin/numactl"
+    assert hashlib.sha256(binary.read_bytes()).hexdigest() == utility["binary_sha256"]
+    server.launcher = VllmLauncherWithEnvironment(
+        server.launcher, {"PATH": str(binary.parent) + os.pathsep + os.environ["PATH"]}
+    )
+    server.extra_cli_args.append("--numa-bind")
+
+
 def serve(
     manifest: dict,
     output: Path,
@@ -186,20 +201,8 @@ def serve(
                 if value is not None:
                     server.extra_cli_args.extend([flag, str(value)])
             if numa_bind:
-                utility = manifest["numactl_input"]
-                directory = Path("/iris/candidates") / ("numactl-" + utility["deb"]["sha256"])
-                directory.mkdir(parents=True, exist_ok=True)
-                package = directory / utility["deb"]["name"]
-                copy_file(utility["deb"]["uri"], str(package))
-                assert hashlib.sha256(package.read_bytes()).hexdigest() == utility["deb"]["sha256"]
-                subprocess.run(["dpkg-deb", "--extract", str(package), str(directory / "root")], check=True)
-                binary = directory / "root/usr/bin/numactl"
-                assert hashlib.sha256(binary.read_bytes()).hexdigest() == utility["binary_sha256"]
-                server.launcher = VllmLauncherWithEnvironment(
-                    server.launcher, {"PATH": str(binary.parent) + os.pathsep + os.environ["PATH"]}
-                )
-                record["private_numactl"] = utility
-                server.extra_cli_args.append("--numa-bind")
+                use_numa_binding(server, manifest["numactl_input"])
+                record["private_numactl"] = manifest["numactl_input"]
             memory_fraction = manifest.get("diagnostic_request", {}).get("gpu_memory_utilization")
             if memory_fraction is not None:
                 server.extra_cli_args[server.extra_cli_args.index("--gpu-memory-utilization") + 1] = str(memory_fraction)

@@ -104,7 +104,12 @@ def main() -> None:
         command = prefix + argv
         record = {"source": manifest["source"], "command": command, "started_unix": time.time(), "diagnostic": True}
         (output / "command.json").write_text(json.dumps(record, indent=2) + "\n")
+        # Native counters bracket the entire client process, outside its timed requests.
+        with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
+            (output / "server-metrics-before.txt").write_bytes(response.read())
         run_logged(command, dict(os.environ), output / "client.log", timeout=1800)
+        with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
+            (output / "server-metrics-after.txt").write_bytes(response.read())
         result = json.loads((output / "result.json").read_text())
         assert result["failed"] == 0 and result["completed"] == int(argv[argv.index("--num-prompts") + 1])
         record["finished_unix"] = time.time()
