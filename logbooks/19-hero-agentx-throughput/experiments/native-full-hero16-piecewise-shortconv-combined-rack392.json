@@ -127,7 +127,7 @@
     "moe_backend": "triton",
     "prefix_cache": true,
     "run_controls": true,
-    "neighbor_activity": "Prepared during disjoint graph16C128 andgraph32C256fullhours. Acquireonlyafterfreshinventory+resourceboard; do not interrupthealthymeasurements. Recordconcurrentactivityandphysicaldisjointness.",
+    "neighbor_activity": "Prepared during disjoint graph16 C128 and graph32 C256 full hours. Refresh provider inventory and resource-board intentions before allocation. Preserve healthy measurements. Record actual concurrent work and disjoint GPU UUIDs.",
     "master_port": 34700,
     "pipeline_stages": 1,
     "data_parallel_size": 16,
@@ -295,7 +295,8 @@
     "numa_bind": true,
     "gpu_memory_utilization": 0.95,
     "numerics_only": false,
-    "compare_graph_replay": false
+    "compare_graph_replay": false,
+    "trace_control_batches": true
   },
   "purpose": "Cheap full-model interaction/numerical and performance screen for composing focused PR107 andPR108, after independent module references passed. No finalAgentXclaim.",
   "numerical_comparison": "Compare identical generated histories and recorded active internal schedules; retain all outputs. No relaxed tolerances. Existing independent BF16 short-conv history/isolation/resumed-prefill/padded-row tests stay unchanged.",
@@ -367,5 +368,12 @@
     "wheel_sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
     "result": "results/full-hero-graph-qualified-controls.json",
     "policy": "Compareeveryfixedhistorywave, scheduledandpaddedglobalDPvectors,finitepointwiselogprobsandchoices. Zero delta/identicalchoicesexpectedfromdirectoutput. No toleranceweakening ortrajectorypostfilter. Investigateanyshapedifferencebeforeclaimingcorrectness."
+  },
+  "graph_coverage_question": {
+    "observation": "Retained graph16 numerical traces record 4096-token prefill as NONE and at most64-token scheduled batches as PIECEWISE. This is a numerical probe, not full AgentX coverage.",
+    "pinned_code": "vllm/v1/worker/gpu/dp_utils.py: any rank requesting NONE makes all ranks use NONE. PIECEWISE agreement pads every rank to the largest scheduled token count. vllm/v1/worker/gpu/cudagraph_utils.py: mixed PIECEWISE captures can exceed max_num_seqs.",
+    "next_measurement": "Record existing native CPU dispatch metadata around all six short banks. Report replay frequency and scheduled/padded token vectors; batch counts are not time shares. No GPU synchronization or profiler. Instrumented diagnostic rates do not replace full-hour confirmation.",
+    "decision": "Consider supported larger capture sizes only after measuring mixed-prefill coverage and padding cost. Large captures may increase dummy work and graph memory; no automatic assumption of a gain.",
+    "cost": "About16 extra research lines reuse the existing worker RPC. No serving-code change, new subsystem, benchmark dependency or production default. Existing diagnostic allocation will collect the metadata."
   }
 }

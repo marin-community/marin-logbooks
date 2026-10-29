@@ -16,6 +16,7 @@ import time
 import urllib.request
 from pathlib import Path
 
+from cache_probe import batch_trace
 from huggingface_hub import hf_hub_download
 
 from experiments.evaluation.agentx.processes import run_logged
@@ -118,6 +119,9 @@ def main() -> None:
     prefill = next(case for case in cases if case["name"] == "long64k-c16")
     selected = [("decode-first", decode), ("decode-repeat", decode), ("long64k-c16", prefill)]
     selected += [(case["name"], case) for case in manifest.get("diagnostic_request", {}).get("additional_cases", [])]
+    trace_controls = manifest.get("diagnostic_request", {}).get("trace_control_batches", False)
+    if trace_controls:
+        assert manifest["diagnostic_request"]["trace_batches"] is True
     for name, case in selected:
         output = args.output / "clients" / name
         output.mkdir(parents=True, exist_ok=False)
@@ -129,7 +133,14 @@ def main() -> None:
         # Native counters bracket the entire client process, outside its timed requests.
         with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
             (output / "server-metrics-before.txt").write_bytes(response.read())
+        if trace_controls:
+            batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace")
+            record["collector"] = "Native CPU dispatch metadata; no GPU synchronization or profiler"
         run_logged(command, dict(os.environ), output / "client.log", timeout=1800)
+        if trace_controls:
+            traces = batch_trace("http://127.0.0.1:38197", "take_hero_batch_trace")
+            (output / "dispatch-batches.json").write_text(json.dumps(traces, indent=2) + "\n")
+            batch_trace("http://127.0.0.1:38197", "stop_hero_batch_trace")
         with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
             (output / "server-metrics-after.txt").write_bytes(response.read())
         result = json.loads((output / "result.json").read_text())
