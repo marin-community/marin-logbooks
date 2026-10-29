@@ -156,6 +156,9 @@ def serve(
             if prefix_cache:
                 server.extra_cli_args.remove("--no-enable-prefix-caching")
                 server.extra_cli_args.append("--enable-prefix-caching")
+            if "expert_load" in manifest.get("diagnostic_request", {}):
+                server.extra_cli_args.append("--enable-return-routed-experts")
+                record["overrides"]["return_routed_experts"] = True
             for flag, value in (
                 ("--max-num-batched-tokens", max_batched_tokens),
                 ("--max-num-seqs", max_num_seqs),
@@ -216,7 +219,13 @@ def serve(
                         run_logged(
                             [
                                 sys.executable,
-                                str(Path(__file__).with_name("flag_controls.py")),
+                                str(
+                                    Path(__file__).with_name(
+                                        "expert_load.py"
+                                        if "expert_load" in manifest.get("diagnostic_request", {})
+                                        else "flag_controls.py"
+                                    )
+                                ),
                                 "--manifest",
                                 str(control_manifest),
                                 "--output",
