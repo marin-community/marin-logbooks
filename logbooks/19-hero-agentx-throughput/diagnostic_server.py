@@ -13,6 +13,7 @@ import json
 import os
 import shutil
 import signal
+import sys
 import time
 from dataclasses import replace
 from pathlib import Path
@@ -27,6 +28,7 @@ from marin.inference.iris_vllm import (
 )
 from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmLauncherWithEnvironment, VllmType
 
+from experiments.evaluation.agentx.processes import run_logged
 from experiments.evaluation.agentx.recipe import load_series, series_path
 from experiments.evaluation.agentx.run import create_server, interrupt
 
@@ -68,6 +70,7 @@ def serve(
     numa_bind: bool,
     api_server_count: int | None,
     profile_light: bool,
+    run_controls: bool,
 ) -> None:
     recipe = series_path(manifest["profile"])
     assert hashlib.sha256(recipe.read_bytes()).hexdigest() == manifest["series_sha256"]
@@ -172,6 +175,23 @@ def serve(
                 print("HERO_DIAGNOSTIC_READY", flush=True)
                 deadline = time.monotonic() + serve_duration
                 with iris_vllm_followers(launch):
+                    if run_controls:
+                        control_manifest = output / "control-manifest.json"
+                        control_manifest.write_text(json.dumps(manifest, indent=2) + "\n")
+                        run_logged(
+                            [
+                                sys.executable,
+                                str(Path(__file__).with_name("flag_controls.py")),
+                                "--manifest",
+                                str(control_manifest),
+                                "--output",
+                                str(output),
+                            ],
+                            dict(os.environ),
+                            output / "controls.log",
+                            timeout=serve_duration,
+                        )
+                        (output / "stop").touch()
                     while not (output / "stop").exists() and time.monotonic() < deadline:
                         server.check_alive()
                         time.sleep(1)
@@ -205,6 +225,7 @@ def main() -> None:
     parser.add_argument("--numa-bind", action="store_true")
     parser.add_argument("--api-server-count", type=int)
     parser.add_argument("--profile-light", action="store_true")
+    parser.add_argument("--run-controls", action="store_true")
     args = parser.parse_args()
     signal.signal(signal.SIGTERM, interrupt)
     signal.signal(signal.SIGINT, interrupt)
@@ -224,6 +245,7 @@ def main() -> None:
         args.numa_bind,
         args.api_server_count,
         args.profile_light,
+        args.run_controls,
     )
 
 

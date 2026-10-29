@@ -5,7 +5,7 @@
 
 The native Iris allocation, whole-attempt retries, environment and output
 capture are unchanged. Placement is checked again by the serving entry point.
-The caller runs controlled clients, then creates the leader's stop file.
+Run the fixed native controls after readiness, then stop and capture output.
 """
 
 import argparse
@@ -45,7 +45,7 @@ def main() -> None:
         '"$IRIS_WORKDIR/logbooks/19-hero-agentx-throughput/diagnostic_server.py" '
         '--manifest "$IRIS_WORKDIR/diagnostic-manifest.json" --output "$IRIS_OUTPUT_DIR/diagnostic" '
         f"--prefix-cache --max-batched-tokens {args.budget} --serve-duration {args.serve_duration} "
-        f"--moe-backend {args.moe_backend}"
+        f"--moe-backend {args.moe_backend} --run-controls"
     )
     entrypoint = Entrypoint(
         command=["bash", "-c", command],
