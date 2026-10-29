@@ -459,3 +459,27 @@ passes, publish and coordinate one bounded real-checkpoint pilot. No source
 cleanup is permitted without that pilot's verified full-content archive and
 stopped-consumer proof; all ordinary native metadata must remain available for
 the final-model verifier. No study recipe, endpoint or inference rule changes.
+
+### 2026-10-29 18:43 UTC: East tiny backup control passes; qualify the real CPU launch before the native pilot
+
+The [local cross-region control](cross-region-preservation-control-verification.json)
+passes under published clean source `b521b5958fea807fa1e364ec2fc00471a8dbfb6d`.
+All three original RNO objects remain byte-for-byte unchanged. The new East
+copy has matching full SHA256s, the deliberately wrong same-size member is
+repaired, and a second invocation returns the identical complete manifest.
+The immutable complete-manifest SHA is
+`02339074f67fb83a532e628cd8fa55aed6c9899d1ec7579d6053acaaadbc510e`.
+No native checkpoint was copied or deleted.
+
+The [next tiny control](cross-region-preservation-iris-control-plan.json) repeats
+this path inside the actual RNO Iris CPU environment, including source packaging
+and dependency setup, before any large transfer. Its portable operator checks
+its own and the archive tool's published hashes; the client records clean Git
+source and the actual resolved job identity. Iris result capture uses its
+ordinary output directory. The finite [native pilot](native-preservation-pilot-plan.json)
+then covers only the first completed TIS checkpoint tree: 45 objects,
+805,115,247,605 bytes, two streaming threads, zero GPUs. Source inventory and
+archive readback must both pass in full. Only a later separately guarded cleanup
+may use that verified full-state archive under the existing preservation rule.
+The unresolved unique-state-discard question does not grant cleanup authority
+and is unnecessary if this full-preservation route succeeds.

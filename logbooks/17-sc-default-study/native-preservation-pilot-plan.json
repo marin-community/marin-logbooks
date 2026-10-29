@@ -1,0 +1,32 @@
+{
+  "purpose": "One finite full-size native-checkpoint archive and readback after the tiny Iris control passes; no source deletion in this job.",
+  "source_prefix": "s3://marin-rno2a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/checkpoints/",
+  "archive_prefix": "s3://marin-us-east-02a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/preserved-native-checkpoints/tis-seed1701/2026.10.28.3",
+  "run_source_revision": "4642b64a9654eda85a347044faacc13cc3d49d1a",
+  "objects_expected": 45,
+  "bytes_expected": 805115247605,
+  "includes": "The full global_step50 native state, optimizer, trainer metadata, tokenizers, completed export request and latest-step marker.",
+  "transfer": "Two CPU threads, 64MiB streaming blocks, source SHA256 during transfer, full archive SHA256 readback, exact source inventory before and after.",
+  "runtime": {
+    "target_cluster": "cw-rno2a",
+    "controller_config": "lib/iris/config/marin.yaml",
+    "cpu": 4,
+    "memory": "16GB",
+    "disk": "128GB",
+    "gpus": 0,
+    "priority": "batch",
+    "timeout_seconds": 43200
+  },
+  "tool_source_sha256": "77acd783dbddc6abf85f5ca2eacea1e424b32af6790d98303c0f27ea34ef26b0",
+  "gates": [
+    "Tiny cross-region Iris control passes under its actual published source and resolved launch.",
+    "All measured study GPU consumers remain stopped.",
+    "Current archive-region headroom and shared resource intentions are checked.",
+    "Publish this plan and exact tool source before the archive job.",
+    "Inventory matches the finite 45-object,805115247605-byte checkpoint tree."
+  ],
+  "source_deletions": 0,
+  "model_or_grading_calls": 0,
+  "later_cleanup": "Only after a full immutable complete manifest verifies every byte, unchanged source and archive object identities, stopped consumers and final portable model proof. Preserve source export-verification metadata. This uses the original full-preservation rule and does not discard unique optimizer state.",
+  "status": "Planned; no real native transfer started"
+}

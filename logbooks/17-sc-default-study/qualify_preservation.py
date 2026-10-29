@@ -6,7 +6,7 @@
 import argparse
 import hashlib
 import json
-import subprocess
+import os
 from pathlib import Path
 
 import preserve
@@ -15,17 +15,12 @@ from rigging.filesystem.s3_compat import configure_coreweave_s3
 
 def qualify(plan_path, execution_source_revision, output):
     directory = Path(__file__).resolve().parent
-    root = directory.parents[1]
-    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    if head != execution_source_revision:
-        raise ValueError("Qualification must execute the declared source revision")
-    if subprocess.check_output(["git", "status", "--porcelain"], cwd=root, text=True).strip():
-        raise ValueError("Qualification requires the published clean tree")
     raw = plan_path.read_bytes()
     plan = json.loads(raw)
     tool_sha = hashlib.sha256((directory / "preserve.py").read_bytes()).hexdigest()
-    if tool_sha != plan["tool_source_sha256"]:
-        raise ValueError("Preservation tool differs from the published plan")
+    operator_sha = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    if tool_sha != plan["tool_source_sha256"] or operator_sha != plan["operator_sha256"]:
+        raise ValueError("Preservation tool or operator differs from the published plan")
     payloads = {
         "pattern.bin": bytes(range(251)) * 1024,
         "nested/metadata.json": b'{"kind":"sc-default-preservation-control","version":1}\n',
@@ -72,7 +67,7 @@ def qualify(plan_path, execution_source_revision, output):
         "passed": True,
         "execution_source_revision": execution_source_revision,
         "run_source_revision": plan["run_source_revision"],
-        "operator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "operator_sha256": operator_sha,
         "plan_sha256": hashlib.sha256(raw).hexdigest(),
         "tool_source_sha256": tool_sha,
         "source_prefix": plan["source_prefix"],
@@ -100,8 +95,9 @@ def qualify(plan_path, execution_source_revision, output):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("plan", type=Path)
-    parser.add_argument("output", type=Path)
+    parser.add_argument("output", type=Path, nargs="?")
     parser.add_argument("--execution-source-revision", required=True)
     args = parser.parse_args()
     configure_coreweave_s3()
-    print(json.dumps(qualify(args.plan, args.execution_source_revision, args.output)))
+    output = args.output or Path(os.environ["IRIS_OUTPUT_DIR"]) / "preservation-control-verification.json"
+    print(json.dumps(qualify(args.plan, args.execution_source_revision, output)))
