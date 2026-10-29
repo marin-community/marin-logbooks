@@ -2,7 +2,6 @@
   "baseline": "diagnostic-prefix-cache",
   "candidate": "diagnostic-shortconv-direct-output",
   "fixed_prompts_match": true,
-  "matching_batch_shapes": true,
   "caveat": "S2 server had a native Torch profiler configured and previously used; S3 did not. Numerical comparison only, not throughput attribution.",
   "comparisons": [
     {
@@ -154,5 +153,8 @@
   "raw_sources": [
     "results/prefix-cache-diagnostics.json",
     "results/shortconv-full-retention.json"
-  ]
+  ],
+  "matching_api_batch_lists": true,
+  "matching_internal_execution_shapes": null,
+  "shape_correction": "Only API batch lists matched; internal prefill/decode execution shapes were not recorded. No exact full-model parity claim."
 }
