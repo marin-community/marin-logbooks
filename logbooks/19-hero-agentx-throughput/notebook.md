@@ -151,6 +151,10 @@ The replacement collector emitted all sixteen decode traces. Rank 0 captured fiv
 
 [The next full-hour C32 point](experiments/agentx-prefix-shortconv-c32.json) uses a fresh server with prefix caching and that isolated ShortConv change. Its base recipe identifiers remain explicit, while a separate effective-recipe digest and runtime-overrides record identify the candidate. [agentx_candidate.py](agentx_candidate.py) changes only the native server factory: existing preparation, replay, warmup, duration, processing and validity/attempt fences remain unchanged. A process monitor now recognizes the exact AgentX CLI arguments as well as native benchmark clients. The native workload retains all 393 eligible traces, its fixed corpus/tokenizer, seed and context. The partial-graph experiment remains unqualified and separate.
 
+### 2026-10-29 02:23 UTC — full-hour wrapper preflight correction
+
+The first launch exited on all four hosts before model startup: the wrapper passed an output argument to native `run`, whose single argument is the manifest. The native function derives its point directory from `IRIS_OUTPUT_DIR`. The wrapper now uses that contract, and an import/signature preflight passed. Preserve the original `agentx-prefix-shortconv-c32` logs and monitor files; retry in a fresh `agentx-prefix-shortconv-c32-r1` root. No benchmark window ran in the failed launch, and all held setup/idle time stays in the allocation accounting.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.
