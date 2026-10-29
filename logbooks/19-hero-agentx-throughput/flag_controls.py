@@ -58,6 +58,9 @@ def main() -> None:
         row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
         for row in comparison["comparisons"]
     )
+    if manifest.get("diagnostic_request", {}).get("numerics_only"):
+        print("NATIVE_NUMERICAL_CONTROL_DONE", flush=True)
+        return
     if manifest.get("diagnostic_request", {}).get("session_affinity"):
         metrics_url = "http://127.0.0.1:38197/metrics"
         with urllib.request.urlopen(metrics_url, timeout=30) as response:
