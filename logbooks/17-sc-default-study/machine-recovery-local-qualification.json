@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "grading_calls": 0,
+  "replay_driver_sha256": "0a24637767e31adccb262d65c3caffdced9e218405cea26cff5de559e30d729b",
+  "publisher_sha256": "c33f2778de080e55ac3416d78998a313b01e05dcda055ae4fca266376f70eac7",
+  "resource_window": {
+    "tests": 101,
+    "per_test_timeout_seconds": 10,
+    "finite_child_deadline_seconds": 1116,
+    "original_script_timeout_seconds": 330.0,
+    "replay_script_timeout_seconds": 1176,
+    "max_memory_bytes": 4294967296,
+    "original_grade_script_sha256": "bac88232c33f997d1aeb69e740ced7dedc1f41933fd1c7e602b9f8dd240b82d3",
+    "replay_grade_script_sha256": "0bda6d5f564ab13d885389aa617f24d593633f382cb6b2545546ac8d40960aab",
+    "original_code_scorer_sha256": "da243b691ba49cdea20bb313e6bd0d96af7d65dddc701b2fe65b6da4b4dd0fa3",
+    "original_lcb_executor_sha256": "0426a2b81ec67fe519027ac6245a64ee3edda15a5929d51dc75b2bf42e7b0c93",
+    "original_test_config_sha256": "b8e4809e4fb1eb38d2092ab917237cc869d99e087e8eebada3e5e5977d98ee31",
+    "replay_task_spec_sha256": "9e5b76d2b1303cd5b64845ac09a328ed1ad5fb394d320744fc28ca06aa53a723",
+    "replay_contract": "8f2acbd2df35865c6892c2a7b9eda386cf2070bc13f2856b35ffc34fb886374f",
+    "scope": "The 300-second process resource cap is replaced by the existing finite sum-of-test windows. Original test data, candidate code, ordering, short circuit, ten-second per-test limit and four-GiB child memory cap are retained."
+  },
+  "checks": [
+    "actual frozen TaskSpec changes only its enclosing script timeout and one watchdog argument in grade.py",
+    "all other task fields and verifier resources remain identical",
+    "101 original tests retain ten-second per-test budget, ordering, short circuit and four-GiB memory cap",
+    "actual approved prime-factor parser failure qualifies",
+    "actual unrelated code-test timeout does not qualify for the format rule"
+  ]
+}
