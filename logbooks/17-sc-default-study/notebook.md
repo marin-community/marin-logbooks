@@ -508,3 +508,23 @@ with a twelve-hour queue-plus-run ceiling and no GPUs. Shared storage rows
 before launching the real copy, record its actual source and job, and verify
 the complete full-byte archive before considering any restorable source cleanup.
 All measured GPU consumers remain stopped.
+
+### 2026-10-29 19:05 UTC: One full native archive is running on a CPU worker
+
+The [actual pilot submission](native-preservation-pilot-submission.json) uses
+published clean source `e867ae0b2a777b1dc0267d8d4336f5ec7c9a2efe` in
+`/romain/sc-default-preserve-tis1701-01a16b97-r1`. The resolved request SHA is
+`a2d3579b95cb9c064444b6e01e09018d95a29bebca45abc6aae8fecbc7b5ff6a`.
+The controller reports running on its original attempt with four CPUs, sixteen
+GiB RAM, 128 GiB disk and **zero GPUs**. The submitted command binds the exact
+immutable 45-object input. Source files remain read-only.
+
+The archive progress receipt is live in East and reports copying/verifying
+with two threads, with no source deletion. Large members count as verified
+only after their full archive readback. Shared storage row 1624 is running;
+row 1586 retains the RNO source/cleanup context. All measured study GPU runs
+remain terminal. Next verify this complete 805.115-GB native archive, then use
+its full-state restore proof to assess source cleanup under the original
+preservation policy. The optional unique-state discard question is still
+unanswered; this backup route retains that state and does not require it.
+No scientific inference, new training arm, extension or default change is made.
