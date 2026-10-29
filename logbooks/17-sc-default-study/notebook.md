@@ -360,3 +360,21 @@ A fresh official read-only [storage workflow](https://github.com/marin-community
 The eight completed native update-50 checkpoints total **6,445,345,917,876 bytes** and have no verified full-state archive. Their portable final models, all original evaluation answers/results and ordinary telemetry remain stored separately. Romain has been asked whether the study may retain those verified final models/results while discarding completed native restart/optimizer state. That would change the preservation plan; **the decision is pending and no native state has been deleted**.
 
 The [read-only disposal planner](discard_native_state.py) freshly rechecks all eight final model exports and their recorded manifest/sample hashes, verifies the exact native inventories, and selects only their 256 `.distcp` tensor shards, totaling **6,440,504,852,224 bytes**. It retains all other native metadata, including completed export requests, and excludes the active run. Its disposal command requires a matching explicit approval record and preserves per-run receipts. Source lint and the actual read-only preflight pass; no disposal command has been run. Resource-board rows 1586 and 1604 record the quota hold and current 40-H100 allocation. Eight initial runs remain admitted; formal inference, any extension decision and native cleanup remain subject to their existing gates.
+
+### 2026-10-29 17:05 UTC: A bounded private probe confirms provider write suspension
+
+A fresh [study-owned small-object probe](storage-write-denial-20261029-1705.json)
+returns HTTP **405 MethodNotAllowed** in 0.187 seconds with the exact provider
+message `Account is write suspended for this availability zone. Please check
+capacity quota and contact support.` It uses one request attempt with five-second
+connect and ten-second read bounds, removing `Expect` only on that private
+probe client. No running trainer or shared client configuration is changed.
+This provides a direct provider response in addition to the earlier 25-second
+probe's inconclusive timeout. The [16:58 UTC collector](https://github.com/marin-community/marin/actions/runs/40916651419)
+still reports the same 636,959,327,416-byte quota excess.
+
+The existing [shared October 29 incident](https://marina.oa.dev/echo/wiki/893)
+now includes this study's update-40 reporting hold; no duplicate incident was
+created. All five live task attempts remain running with durable telemetry at
+39. The retention decision is still pending, and no native restart state has
+been deleted. Formal inference continues to wait for the ninth valid endpoint.
