@@ -160,3 +160,11 @@ Verify the successful recovery with `verify_export.py --terminal-uri <its-termin
 --expected-job-id <its-exact-job-id>`. Keep the failed attempt and its resource
 cost. A new terminal record must identify the actual successful recovery;
 completed training is not repeated.
+
+Combine the published terminal allocation proofs with `allocation_accounting.py
+<output.json> <proofs...>`. Include the historical reconstruction and each later
+per-job proof exactly once. The combiner recomputes GPU-hours from the retained
+clocks, rejects repeated jobs and attempts, and keeps preexecution quota
+reservation separate. Active jobs enter only after their terminal proofs exist.
+These reconstructed spans have the timing limits documented in their sources;
+they are not exact provider billing or certified bounds.
