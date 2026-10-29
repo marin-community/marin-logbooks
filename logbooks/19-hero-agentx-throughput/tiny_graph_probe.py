@@ -13,6 +13,7 @@ import hashlib
 import importlib.metadata
 import json
 import math
+import sys
 import time
 from pathlib import Path
 
@@ -20,11 +21,41 @@ from vllm import LLM, SamplingParams
 from vllm.config import CompilationConfig
 
 
+def install_batch_trace(worker) -> None:
+    # Record native CPU dispatch metadata; do not synchronize or profile the GPU.
+    worker.hero_batch_trace = []
+    module = sys.modules[type(worker.model_runner).__module__]
+    dispatch = module.dispatch_cg_and_sync_dp
+
+    def traced_dispatch(*args, **kwargs):
+        result = dispatch(*args, **kwargs)
+        descriptor = result[0]
+        worker.hero_batch_trace.append(
+            {
+                "requests": args[1],
+                "scheduled_tokens": args[2],
+                "padded_tokens": descriptor.num_tokens,
+                "graph_mode": descriptor.cg_mode.name,
+                "max_query_len": kwargs.get("max_query_len"),
+            }
+        )
+        return result
+
+    module.dispatch_cg_and_sync_dp = traced_dispatch
+
+
+def take_batch_trace(worker) -> list[dict]:
+    rows = worker.hero_batch_trace
+    worker.hero_batch_trace = []
+    return rows
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--mode", choices=("NONE", "PIECEWISE"), required=True)
     parser.add_argument("--capture-sizes", type=int, nargs="+", default=[1, 2, 4, 8])
+    parser.add_argument("--trace-batches", action="store_true")
     parser.add_argument("--prefix-cache", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -72,6 +103,8 @@ def main() -> None:
             use_v2_model_runner=actual.use_v2_model_runner,
         )
         assert proof["actual_cudagraph_mode"] == args.mode
+        if args.trace_batches:
+            llm.collective_rpc(install_batch_trace)
         prefix = [1, 2, 3] * 16
         prompts = [prefix + suffix for suffix in ([1, 2, 3], [3, 2], [4, 5, 6])]
         for branches in ([0], [1, 0], [2, 0, 1], [0]) * 2:
@@ -90,6 +123,8 @@ def main() -> None:
                     for output in outputs
                 ],
             }
+            if args.trace_batches:
+                row["internal_batches"] = llm.collective_rpc(take_batch_trace)
             proof["rows"].append(row)
             assert all(
                 math.isfinite(value) for request in row["logprobs"] for item in request for value in item.values()

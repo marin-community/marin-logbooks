@@ -67,6 +67,8 @@ def main() -> None:
             "--output",
             str(output),
         ]
+        if config.get("trace_batches"):
+            command.append("--trace-batches")
         (args.output / f"{index}-command.json").write_text(json.dumps(command, indent=2) + "\n")
         with (args.output / f"{index}-{mode}.log").open("w") as log:
             subprocess.run(command, env=environment, stdout=log, stderr=subprocess.STDOUT, timeout=900, check=True)
