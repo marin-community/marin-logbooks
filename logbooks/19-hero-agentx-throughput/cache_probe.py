@@ -62,8 +62,25 @@ def compare(reference: dict, observed: dict) -> dict:
     }
 
 
+def batch_trace(base_url: str, method: str) -> dict:
+    request = urllib.request.Request(
+        base_url + "/collective_rpc",
+        data=json.dumps({"method": method, "args": [], "kwargs": {}, "timeout": 60}).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(request, timeout=90) as response:
+        raw = response.read()
+    return json.loads(raw) if raw else {}
+
+
 def run(
-    tokenizer_path: Path, base_url: str, output: Path, prefix_tokens: int, rank: int | None, session_id: str | None
+    tokenizer_path: Path,
+    base_url: str,
+    output: Path,
+    prefix_tokens: int,
+    rank: int | None,
+    session_id: str | None,
+    trace_batches: bool = False,
 ) -> None:
     assert hashlib.sha256(tokenizer_path.read_bytes()).hexdigest() == TOKENIZER_SHA256
     output.mkdir(parents=True, exist_ok=False)
@@ -99,6 +116,9 @@ def run(
     ]
     references = {}
     comparisons = []
+    if trace_batches:
+        assert rank == 0
+        batch_trace(base_url, "install_hero_batch_trace")
     with (output / "requests.jsonl").open("w") as stream:
         for name, branches, cache_salt in waves:
             payload = {
@@ -125,6 +145,8 @@ def run(
                 "request": payload,
                 "response": response,
             }
+            if trace_batches:
+                entry["internal_batches"] = batch_trace(base_url, "take_hero_batch_trace")["results"]
             stream.write(json.dumps(entry) + "\n")
             stream.flush()
             choices = sorted(response["choices"], key=lambda choice: choice["index"])
@@ -139,6 +161,8 @@ def run(
                         {"wave": name, "branch": branch, "reference_wave": reference_name, **compare(reference, choice)}
                     )
             print(name, "elapsed_seconds", round(entry["elapsed_seconds"], 3), "usage", response["usage"], flush=True)
+    if trace_batches:
+        batch_trace(base_url, "stop_hero_batch_trace")
     summary = {"rank": rank, "session_id": session_id, "prefix_tokens": prefix_tokens, "comparisons": comparisons}
     (output / "comparison.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2), flush=True)
@@ -152,9 +176,10 @@ def main() -> None:
     parser.add_argument("--prefix-tokens", type=int, default=8192)
     parser.add_argument("--rank", type=int)
     parser.add_argument("--session-id")
+    parser.add_argument("--trace-batches", action="store_true")
     args = parser.parse_args()
     rank = args.rank if args.rank is not None or args.session_id is not None else 0
-    run(args.tokenizer, args.base_url, args.output, args.prefix_tokens, rank, args.session_id)
+    run(args.tokenizer, args.base_url, args.output, args.prefix_tokens, rank, args.session_id, args.trace_batches)
 
 
 if __name__ == "__main__":

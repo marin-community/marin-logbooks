@@ -49,6 +49,8 @@ def main() -> None:
         "--output",
         str(args.output / "cache-probe-matched"),
     ]
+    if manifest.get("diagnostic_request", {}).get("trace_batches"):
+        probe.append("--trace-batches")
     (args.output / "cache-probe-command.json").write_text(json.dumps(probe, indent=2) + "\n")
     run_logged(probe, dict(os.environ), args.output / "cache-probe.log", timeout=900)
     comparison = json.loads((args.output / "cache-probe-matched" / "comparison.json").read_text())

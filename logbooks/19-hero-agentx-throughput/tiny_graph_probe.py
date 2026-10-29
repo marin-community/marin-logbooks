@@ -26,6 +26,7 @@ def install_batch_trace(worker) -> None:
     worker.hero_batch_trace = []
     module = sys.modules[type(worker.model_runner).__module__]
     dispatch = module.dispatch_cg_and_sync_dp
+    worker.hero_dispatch_original = dispatch
 
     def traced_dispatch(*args, **kwargs):
         result = dispatch(*args, **kwargs)
@@ -50,9 +51,15 @@ def take_batch_trace(worker) -> list[dict]:
     return rows
 
 
+def stop_batch_trace(worker) -> None:
+    module = sys.modules[type(worker.model_runner).__module__]
+    module.dispatch_cg_and_sync_dp = worker.hero_dispatch_original
+
+
 class BatchTraceWorkerExtension:
     install_hero_batch_trace = install_batch_trace
     take_hero_batch_trace = take_batch_trace
+    stop_hero_batch_trace = stop_batch_trace
 
 
 def main() -> None:

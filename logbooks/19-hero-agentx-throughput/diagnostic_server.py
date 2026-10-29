@@ -207,6 +207,23 @@ def serve(
             if memory_fraction is not None:
                 server.extra_cli_args[server.extra_cli_args.index("--gpu-memory-utilization") + 1] = str(memory_fraction)
                 record["overrides"]["gpu_memory_utilization"] = memory_fraction
+            diagnostic = manifest.get("diagnostic_request", {})
+            if "compilation_config" in diagnostic:
+                compilation = diagnostic["compilation_config"]
+                assert compilation["cudagraph_mode"] in ("NONE", "PIECEWISE")
+                server.extra_cli_args[server.extra_cli_args.index("--compilation-config") + 1] = json.dumps(compilation)
+                record["overrides"]["compilation_config"] = compilation
+            if diagnostic.get("trace_batches"):
+                assert server.host == "127.0.0.1"
+                server.extra_cli_args.extend(["--worker-extension-cls", "tiny_graph_probe.BatchTraceWorkerExtension"])
+                server.launcher = VllmLauncherWithEnvironment(
+                    server.launcher,
+                    {
+                        "VLLM_SERVER_DEV_MODE": "1",
+                        "PYTHONPATH": os.pathsep.join([str(Path(__file__).parent), os.environ.get("PYTHONPATH", "")]),
+                    },
+                )
+                record["overrides"]["trace_batches"] = "Native named worker RPC; CPU dispatch metadata only"
             if master_port is not None:
                 for flag, port in (("--master-port", master_port), ("--data-parallel-rpc-port", master_port + 1)):
                     if flag in server.extra_cli_args:
