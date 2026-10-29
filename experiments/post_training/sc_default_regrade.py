@@ -22,9 +22,25 @@ from taskcompendium.models import ConversationTrace, GradingAttempt, TaskSpec, T
 from taskcompendium.pipeline.fingerprints import deduplication_key
 from taskcompendium.runtime.task_grading import grade_task
 from transformers import AutoTokenizer
+from verifyit.modes import grade_judge
 from verifyit.modes.grade_judge import JudgeConnection
 
 from experiments.post_training.sc_default_data import write_json
+
+STRICT_JUDGE_SCORE = grade_judge._score
+
+
+def recover_score_line(reply: str, allowed_scores: tuple[float, ...]) -> float | None:
+    """Read one trailing score field when the judge omitted its preceding newline."""
+    score = STRICT_JUDGE_SCORE(reply, allowed_scores)
+    if score is not None:
+        return score
+    matches = list(grade_judge.SCORE_PATTERN.finditer(reply))
+    if len(matches) != 1 or reply[matches[0].end() :].strip():
+        return None
+    if matches[0].start() and not reply[matches[0].start() - 1].isspace():
+        return None
+    return STRICT_JUDGE_SCORE(matches[0].group(), allowed_scores)
 
 
 def fingerprint(value) -> str:
@@ -184,6 +200,7 @@ def regrade(
                     "recovery_tool_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                     "judge_model": judge_model,
                     "judge_base_url": remote["base_url"],
+                    "judge_reply_format_recovery": grade_judge._score is recover_score_line,
                     "original_verification": row.get("verification"),
                     "attempts": attempts,
                     "answer_reconstruction": reconstruction,
@@ -225,8 +242,17 @@ if __name__ == "__main__":
     parser.add_argument(
         "--publish-staged", action="store_true", help="Validate saved-answer hashes and publish the local verdicts"
     )
+    parser.add_argument(
+        "--recover-score-line",
+        action="store_true",
+        help="Read a single trailing SCORE field when the judge omitted the preceding newline",
+    )
     args = parser.parse_args()
     selected = set(args.uids) if args.uids is not None else None
+    if args.recover_score_line:
+        # This standalone recovery process only; training and live graders keep
+        # their pinned implementation. The allowed numeric scores are unchanged.
+        grade_judge._score = recover_score_line
     print(
         json.dumps(
             regrade(

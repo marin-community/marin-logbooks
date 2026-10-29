@@ -35,13 +35,22 @@ def tensor(model: str, index: dict, name: str) -> tuple[np.ndarray, list[int]]:
     return value, entry["shape"]
 
 
-def verify(root: str, initial: str, revision: str) -> dict:
+def verify(
+    root: str,
+    initial: str,
+    revision: str,
+    terminal_uri: str | None = None,
+    expected_job_id: str | None = None,
+) -> dict:
     """Verify native completion, the shard inventory and sampled weight changes."""
     temporary = root.replace("s3://marin-rno2a/marin/", "s3://marin-rno2a/tmp/ttl=14d/skyrl/marin/", 1)
     request = json.loads(read_bytes(temporary + "/checkpoints/global_step_50/hf_export_request.json"))
-    terminal = json.loads(read_bytes(temporary + "/attempts/export-50/terminal.json"))["result"]
+    terminal_uri = terminal_uri or temporary + "/attempts/export-50/terminal.json"
+    terminal = json.loads(read_bytes(terminal_uri))["result"]
     if request["status"] != "complete" or request["last_exit_code"] != 0 or terminal["state"] != "succeeded":
         raise ValueError("Native export did not finish successfully")
+    if expected_job_id is not None and terminal["iris_job_id"] != expected_job_id:
+        raise ValueError("Native terminal record belongs to a different export job")
     model = root + "/exports/global_step_50/policy"
     manifest = read_bytes(model + "/.marinskyrl-model-manifest.json")
     index = json.loads(read_bytes(model + "/model.safetensors.index.json"))
@@ -80,6 +89,8 @@ def verify(root: str, initial: str, revision: str) -> dict:
         "export_request_status": request["status"],
         "export_request_last_exit_code": request["last_exit_code"],
         "export_terminal_state": terminal["state"],
+        "export_terminal_uri": terminal_uri,
+        "export_iris_job_id": terminal["iris_job_id"],
         "model_export": model,
         "model_manifest_sha256": hashlib.sha256(manifest).hexdigest(),
         "weight_shards": len(shards),
@@ -99,7 +110,15 @@ if __name__ == "__main__":
     parser.add_argument("initial_model")
     parser.add_argument("source_revision")
     parser.add_argument("output", type=Path)
+    parser.add_argument("--terminal-uri", help="Successful recovery attempt's own native terminal record")
+    parser.add_argument("--expected-job-id", help="Require the terminal record to identify this exact export job")
     args = parser.parse_args()
-    proof = verify(args.run_root.rstrip("/"), args.initial_model.rstrip("/"), args.source_revision)
+    proof = verify(
+        args.run_root.rstrip("/"),
+        args.initial_model.rstrip("/"),
+        args.source_revision,
+        args.terminal_uri,
+        args.expected_job_id,
+    )
     args.output.write_text(json.dumps(proof, indent=2) + "\n")
     print(json.dumps({key: proof[key] for key in ("passed", "weight_shards", "weight_shard_bytes")}))

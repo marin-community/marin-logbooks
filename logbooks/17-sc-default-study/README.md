@@ -78,6 +78,14 @@ and judge configuration before uploading the manifest. It makes no additional
 judge calls. Existing valid verdicts cannot be replaced. Then run the ordinary
 collector against the remote export as usual.
 
+Use `--recover-score-line` for a missing judge verdict whose reply puts one
+trailing `SCORE` field on the same line as its explanation. This recovery-only
+reader passes that field to the original parser and retains its allowed numeric
+scores. It rejects ambiguous fields, extra trailing text and out-of-range
+scores. Use the same fallback for missing verdicts in any arm. Already valid
+grades, prompts, judge configuration, aggregation and live training graders
+remain unchanged.
+
 The contract audit checks local schema references and replays the original
 date-sensitive Reasoning Gym generator without calling its scorer or using
 model answers:
@@ -139,3 +147,16 @@ compares one router tensor and one attention tensor with the initializer using
 small byte-range reads. The replay check reproduces the original baseline
 manifest, byte count and both tensor checks. It does not verify every parameter
 or replace the Qwen check of live serving weights after sleep.
+
+For an export-only recovery, use [the prepared plans](export-recovery-plans.json)
+and the ordinary request-driven converter through `export_checkpoint.py`. The
+input and derived configs are in `recovery-configs/`; each uses its existing
+update-50 checkpoint and a fresh attempt directory. Recheck storage headroom
+and both GPU pools, coordinate the batch allocation, and publish the exact
+launch source before submission. Run with the normal SkyRL CPU environment
+and `PYTHONPATH=vendor/skyrl:vendor/skyrl/skyrl-train:vendor/skyrl/skyrl-gym:.`.
+
+Verify the successful recovery with `verify_export.py --terminal-uri <its-terminal-uri>
+--expected-job-id <its-exact-job-id>`. Keep the failed attempt and its resource
+cost. A new terminal record must identify the actual successful recovery;
+completed training is not repeated.
