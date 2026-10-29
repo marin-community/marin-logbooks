@@ -25,6 +25,22 @@ The recipe uses the permanent BF16 split export with manifest `b20fdd303eb6ff899
 
 The earlier 571 output tokens/s/GPU result used 3,072 clients that immediately started a new request when one finished, roughly 149 input / 767 output tokens and 256 sequences/rank. Its token counters cover the interval while requests were still being supplied; final draining is excluded. It used another runtime. It is a reference to reproduce under matched conditions, not an AgentX target or a measured regression ratio.
 
+## Optimization coverage
+
+This table tracks the revised goal. Pending trials are not evidence that a family is exhausted. Prefer supported flags to additional implementation. Each retained recipe still needs matching-shape numerical checks and full-hour AgentX confirmation.
+
+| Family and hypothesis | Status and numerical checks | Measured effect / next decision |
+| --- | --- | --- |
+| Prefix reuse and routing: avoid repeated long prefills | Native caching passed cold/warm, branched-history and request-isolation controls with exact matching-shape token/logprob parity. Combined C32 replay running. Native DP load balancing does not use the conversation ID for cache affinity. | Live replay at 34 minutes reports 36.4% actual hits versus 94.5% theoretical; final counter deltas and per-rank reuse remain pending. No final gain yet. |
+| Batching and offered load: amortize 512-token steps and expose the knee | Pending supported 2,048/8,192-token budget trials, then higher AgentX concurrency. Keep 64 sequences/rank unless measured occupancy binds it. | Long prompts and repeated small steps make this the next configuration priority. Compare short fixed banks first, with fresh server state per configuration. |
+| Server CPU and NUMA: reduce dispatch delays or contention | Client sampler shows ample headroom at C32, but that does not qualify server CPU. Read-only process/cgroup/placement sampling is prepared for all four hosts. | Measure engine/worker/API CPU use and throttling before changing native binding or API process count. |
+| Kernels and graphs: reduce expert and launch cost | ShortConv output-buffer change passed native independent-history/mixed-state regression and full-model matching-shape branch controls. Module improves 23–28%; AgentX attribution pending. Supported BF16 auto expert backend remains untested. Partial-graph fixture/source prepared, unqualified. | Prioritize automatic expert selection before more graph engineering. Attention is native FlashInfer. Graph work must pass changing batches, padded rows and resumed prefill; blind full graphs previously produced NaNs. |
+| Communication and topology: reduce transfers or rank waits | Actual transport is sixteen-rank NVLink P2P/MNNVL. Intrusive traces include substantial waiting/export distortion. Native one-sided BF16 backend and PP4/DP4/EP4 remain candidate flag trials. | Reuse native collective benchmark to bound transfer time if needed; do not interpret NCCL kernel duration alone as bandwidth saturation. PP changes require fixed-history numerical comparisons. |
+| Expert imbalance: reduce hot-rank delays | Pending load evidence. Current Grug model lacks the native MixtureOfExperts/EPLB model interface; source inspection alone does not quantify imbalance. | Assess existing expert/rank timing and placement controls before proposing EPLB integration. No unsupported EPLB switch or simulated routing. |
+| Communication overlap: hide transfers | Pinned DBO requires DeepEP and full graphs; Hero forces graphs off, and the prepared candidate permits piecewise only. | DBO is incompatible with the qualified execution path. Full stateful graph support plus DeepEP qualification would be substantial compatibility work; do not implement without an evidence-backed proposal. |
+
+The cheapest next useful experiment is a native fixed-token bank with a larger scheduling budget. Its serving code cost is a flag change; numerical cost is matching-shape logprob/branch controls; maintenance cost is recording the chosen setting. The plausible end-to-end gain comes from fewer prefill steps and more work per collective, and remains unquantified until this trial. A custom graph/collective implementation has higher validation and maintenance cost and waits behind these supported choices.
+
 ## Entries
 
 ### 2026-10-28 21:36 UTC — audit before new GPU work
@@ -154,6 +170,14 @@ The replacement collector emitted all sixteen decode traces. Rank 0 captured fiv
 ### 2026-10-29 02:23 UTC — full-hour wrapper preflight correction
 
 The first launch exited on all four hosts before model startup: the wrapper passed an output argument to native `run`, whose single argument is the manifest. The native function derives its point directory from `IRIS_OUTPUT_DIR`. The wrapper now uses that contract, and an import/signature preflight passed. Preserve the original `agentx-prefix-shortconv-c32` logs and monitor files; retry in a fresh `agentx-prefix-shortconv-c32-r1` root. No benchmark window ran in the failed launch, and all held setup/idle time stays in the allocation accounting.
+
+### 2026-10-29 03:31 UTC — revised coverage and server CPU evidence
+
+The continued goal explicitly requires family coverage, fixed-history numerical checks and engineering-value decisions. The table above records unresolved work without restarting the completed audit or healthy C32 hour. Its actual profiling window began at 02:54:45.269 UTC; sending should finish at 03:54:45 UTC before native draining and shutdown. No competing GPU experiment runs during it. Four runtime captures match the baseline's 205 packages and eighteen compiled extensions; only the intended Grug Python module changes.
+
+[server_cpu.py](server_cpu.py) takes thirteen read-only process/cgroup samples at five-second intervals, plus GPU/NUMA topology. It makes no CUDA calls or affinity changes. Run it once per held host during this hour and retain the raw JSONL. This supplements the client-only sampler; low client CPU is not evidence of server headroom.
+
+The ShortConv [draft PR #107](https://github.com/marin-community/vllm/pull/107) is unmerged. Ordinary checks are terminal green. Native five-lane Codex advisory lint inspected the actual diff and found no material issues. Claude review could not authenticate; no unrelated authentication repair was attempted. The final bounded High-tier goal review remains pending.
 
 ## Final decision
 
