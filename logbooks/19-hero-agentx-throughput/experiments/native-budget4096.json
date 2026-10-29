@@ -91,6 +91,10 @@
     "cluster": "cw-us-east-08a",
     "nvlink_domain": "DH1-125-US-EAST-08A",
     "nodes": [
+      "s2lrxs64",
+      "s45txs64",
+      "s5xm6j84",
+      "s6htxs64",
       "s6rrxs64",
       "s6vrxs64",
       "s6xsxs64",
@@ -106,22 +110,15 @@
       "sh5rxs64",
       "sjxqxs64"
     ],
-    "verified_utc": "2026-10-29T11:41:29.277004+00:00",
-    "inventory_sha256": "244eb469419cc03c716e9f0540ac0154da0c55f01b1cbdb914fc740ee2a2428a",
-    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-numa-memory-controls-gate.json",
+    "verified_utc": "2026-10-29T14:36:40.685024+00:00",
+    "inventory_sha256": "4d124a83d1650bd93b806359f64d827fd73a2c85171ebd24cf7f8a49529a7677",
     "hero_training_gpus": 0,
-    "excluded_active_batch_nodes": [
-      "s2lrxs64",
-      "s45txs64",
-      "s5xm6j84",
-      "s6htxs64"
-    ],
-    "neighbor_activity": "Original interactive16 holder has released. One new32 interactive serving group and native-affinity16 batch group use disjoint nodes. This independent16 batch group makes64 maximum. No intrusive GPU profiler during full-hour confirmation."
+    "neighbor_activity": "Our32GPU interactive upstream-router C128 and16GPU batch upstream-router C128 continue scoring on disjoint nodes. Tiny16 is completed and released. No intrusive GPU profiler; accepts queueing/preemption."
   },
   "source": {
     "kind": "research",
     "repository": "marin-community/marin-logbooks",
-    "head_sha": "33e11b43e4f974f43edfe21e78d7d8a2528a9231",
+    "head_sha": "9a3587c8bf4eb2de937467256d978bc190922cfe",
     "experiment": "native-budget4096",
     "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
   },
@@ -130,7 +127,7 @@
     "moe_backend": "triton",
     "prefix_cache": true,
     "run_controls": true,
-    "neighbor_activity": "Native affinity C128 full-hour control on a disjoint batch group. No intrusive GPU profiler. This upstream-router test is functional and numerical; no AgentX throughput claim.",
+    "neighbor_activity": "Our32GPU interactive upstream-router C128 and16GPU batch upstream-router C128 continue scoring on disjoint nodes. Tiny16 is completed and released. No intrusive GPU profiler; accepts queueing/preemption.",
     "master_port": 33040,
     "pipeline_stages": 1,
     "data_parallel_size": 16,
@@ -276,5 +273,6 @@
     "disable_retries": true,
     "session_id": "hero-agentx-router-qualification",
     "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
-  }
+  },
+  "purpose": "Adaptive scheduler-budget screen: native4096 vs retained2048 at matching short and64K banks. Useful output throughput plus cache/computed/preemption counters; higher decode latency alone does not reject. All8 unchanged native state/numerical checks required."
 }
