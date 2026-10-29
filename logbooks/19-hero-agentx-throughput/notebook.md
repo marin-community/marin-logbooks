@@ -197,6 +197,14 @@ The revised goal authorizes two additional sixteen-GB200 batch groups. The 03:48
 
 Next, keep the 512-token numerical restart control on the original interactive nodes and use one independent batch group for the released-wheel, prefix-enabled 2,048-token control. Both use native Triton, BF16 and graphs NONE with no intrusive profiler. This resolves a useful configuration comparison while strict module checks and result processing reuse the existing group. [submit_diagnostic.py](submit_diagnostic.py) submits the existing diagnostic entry point through native Iris resources, retries and output capture; it adds no reservation service or shared runner change. Batch attempts must restart their own window and server after preemption. Short-bank timings with neighboring work remain diagnostics, not final AgentX gains.
 
+### 2026-10-29 04:07 UTC — C32 complete; exact BF16 module check
+
+The C32 replay finished sending at 03:54:45 UTC and drained through 03:55:25 UTC: 920 successful requests, zero errors and 35 normal cancellations. Native submission validity is true and `was_cancelled` is false. Profiling coverage passed at 99.6% TTFT and 100% inter-token latency. All four server commands exited zero, and all sixteen GPUs were free of compute processes before the next native server launch. Native attempt/window validation and the final live gang-UID fence passed. All four raw roots are retained with complete SHA256 readback; throughput processing remains separate.
+
+The strict BF16 module comparison passed: output and state were bitwise equal for five fixed decode inputs at widths 1,536 and 6,144, with batches 1/2/8/32/64. This checks decode arithmetic/state under the output-buffer change. It does not explain the earlier full-model drift or replace prefill/branch controls. The released-wheel, prefix-enabled 512-token restart control is loading on the original nodes.
+
+The first batch preflight stopped before allocation because JSON wheel lists differ from native tuples under Python equality. Reusing native JSON comparison fixed that. The first submitted batch job then failed before model startup because the script directory did not put `/app` on Python's import path. Native retries also failed; retain this job as failed, not as a performance experiment. The command now supplies `PYTHONPATH="$IRIS_WORKDIR"`, as the interactive commands already do. An exact shell/import preflight from `/tmp` passes. Retry as a new native job with a fresh output/attempt set; count both failed admissions. No package or shared service change is involved.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.

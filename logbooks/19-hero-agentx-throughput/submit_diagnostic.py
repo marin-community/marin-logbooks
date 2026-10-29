@@ -40,7 +40,8 @@ def main() -> None:
     assert args.budget > 0 and args.serve_duration > 0
     hardware = series["profiles"]["gb200"]
     command = (
-        'exec "$IRIS_PYTHON" "$IRIS_WORKDIR/logbooks/19-hero-agentx-throughput/diagnostic_server.py" '
+        'exec env PYTHONPATH="$IRIS_WORKDIR" "$IRIS_PYTHON" '
+        '"$IRIS_WORKDIR/logbooks/19-hero-agentx-throughput/diagnostic_server.py" '
         '--manifest "$IRIS_WORKDIR/diagnostic-manifest.json" --output "$IRIS_OUTPUT_DIR/diagnostic" '
         f"--prefix-cache --max-batched-tokens {args.budget} --serve-duration {args.serve_duration}"
     )
