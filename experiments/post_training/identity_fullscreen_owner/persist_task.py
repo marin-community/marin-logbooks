@@ -16,7 +16,7 @@ from rigging.filesystem.s3_compat import configure_coreweave_s3
 from experiments.post_training.identity_fullscreen_owner.persistence import persist_tree
 
 
-def execute(candidate, kind, trial=None):
+def execute(candidate, kind, trial: str | None = None):
     configure_coreweave_s3()
     base = Path(os.environ["IRIS_WORKDIR"])
     if kind == "generation":
@@ -25,6 +25,8 @@ def execute(candidate, kind, trial=None):
         remote = candidate["artifact_root"]
         unit = "generation-execution"
     else:
+        if trial is None:
+            raise ValueError("Math execution requires a bound trial")
         spec = next(row for row in candidate["math"] if row["trial"] == trial)
         argv = spec["argv"]
         output = base / "_pathb_fullscreen/task-logs" / trial

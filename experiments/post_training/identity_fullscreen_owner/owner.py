@@ -16,6 +16,7 @@ import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from iris.client.client import IrisClient, iris_ctx
 from iris.cluster.client.job_info import get_job_info
@@ -56,8 +57,6 @@ def regional_context():
 def submit_serve(candidate, info):
     """Let the unchanged9e CLI build its exact service; intercept only native submission."""
     original_submit = IrisClient.submit
-    old_connection = frozen_serve.connect_controller
-    old_client = frozen_serve.IrisClient
     submitted = []
 
     @contextlib.contextmanager
@@ -81,20 +80,17 @@ def submit_serve(candidate, info):
         submitted.append(str(job.job_id))
         raise ServeSubmitted
 
-    try:
-        frozen_serve.connect_controller = assigned_connection
-        frozen_serve.IrisClient = SimpleNamespace(remote=assigned_client)
-        IrisClient.submit = submit
+    with (
+        patch.object(frozen_serve, "connect_controller", assigned_connection),
+        patch.object(frozen_serve, "IrisClient", SimpleNamespace(remote=assigned_client)),
+        patch.object(IrisClient, "submit", submit),
+    ):
         # No stdout/capability from the submit-only CLI becomes a public receipt.
         with contextlib.redirect_stdout(io.StringIO()):
             try:
                 frozen_serve.main.main(args=candidate["screen"]["serve_argv"][2:], standalone_mode=False)
             except ServeSubmitted:
                 pass
-    finally:
-        IrisClient.submit = original_submit
-        frozen_serve.connect_controller = old_connection
-        frozen_serve.IrisClient = old_client
     if len(submitted) != 1:
         raise RuntimeError("Expected exactly one owned serve submission")
     return iris_ctx().client.job(JobName.from_wire(submitted[0]))
@@ -168,7 +164,7 @@ def math_workspace(archive, expected_sha):
     return destination
 
 
-def task_entrypoint(kind, trial=None):
+def task_entrypoint(kind, trial: str | None = None):
     base = Path(os.environ["IRIS_WORKDIR"])
     command = [
         "bash",
@@ -194,8 +190,13 @@ def task_entrypoint(kind, trial=None):
     return Entrypoint(command=command, workdir_files=files)
 
 
-def submit_cpu(client, candidate, kind, endpoint, trial=None):
-    name = "generation" if kind == "generation" else "math-" + trial
+def submit_cpu(client, candidate, kind, endpoint, trial: str | None = None):
+    if kind == "generation":
+        name = "generation"
+    else:
+        if trial is None:
+            raise ValueError("Math submission requires a bound trial")
+        name = "math-" + trial
     return client.submit(
         entrypoint=task_entrypoint(kind, trial),
         name=name,
