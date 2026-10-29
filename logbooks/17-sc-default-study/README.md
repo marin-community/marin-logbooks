@@ -189,3 +189,13 @@ verdict. It stages the singleton machine result, then merges it into the remote
 recovery manifest while preserving existing judge rows. Finish all judge
 publication for the panel before adding its machine verdict. Keep the judge
 and machine staging files separately for provenance.
+
+The archive destination may be this session's owned namespace in RNO or East-02A.
+For the other region, `preserve.py` streams through separate source and target
+filesystems and verifies the full archived content. A source ending in
+`<run>/<version>/checkpoints/` preserves the native checkpoint tree without
+copying temporary attempt logs. Qualify the published tiny control with
+`qualify_preservation.py <plan.json> <output.json> --execution-source-revision
+<commit>` before the finite full-size pilot. The driver never deletes source
+objects; any later cleanup still needs stopped consumers, unchanged inventory,
+verified full-content preservation and exact restore references.

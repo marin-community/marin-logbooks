@@ -429,3 +429,33 @@ fifty-update cycle comparison; total study allocation includes both. No partial
 endpoint, shortened training duration, adjusted valid-run clock, extra task
 exclusion, default change or scientific extension is adopted. Formal inference
 and any justified finite extension still wait for a ninth admitted endpoint.
+
+### 2026-10-29 18:38 UTC: Qualify full-state backup in East before concluding the storage hold is an impasse
+
+The previous goal turn made progress by releasing the stalled allocation and
+publishing its evidence. Fresh checks still show provider write suspension in
+RNO and no surviving study GPU pods. The [18:25 UTC official collector](storage-headroom-east-preservation.json),
+however, reports **270,519,747,299,050 bytes of East-02A headroom**. A full native
+backup there may restore RNO capacity while preserving every optimizer byte,
+under the goal's existing verified-preservation cleanup rule. This is an
+alternative to discarding unique restart state; that separate retention-change
+question remains unanswered and cannot authorize such a discard.
+
+The [archive driver](preserve.py) now resolves source and archive filesystems
+separately and streams between the two explicitly owned bucket namespaces,
+hashing the source during copying and reading the archive back in full. It
+retains the same immutable input, unchanged-source, exact-restore and resume
+checks. It may inventory a run's `checkpoints/` subtree, which avoids copying
+14,536 temporary attempt-log objects merely to preserve one native checkpoint.
+The first TIS run's checkpoint tree is 45 objects and **805,115,247,605 bytes**,
+including the two-byte latest-step marker. All source objects remain read-only.
+
+Publish the [tiny control plan](cross-region-preservation-control-plan.json) and
+[control operator](qualify_preservation.py) before execution. The control reuses
+the three original 257,079-byte RNO payloads, deliberately corrupts only a new
+East-derived copy, and checks full bytes, repair and identical-manifest resume.
+It uses no GPU, model, grader or native checkpoint transfer. Only after it
+passes, publish and coordinate one bounded real-checkpoint pilot. No source
+cleanup is permitted without that pilot's verified full-content archive and
+stopped-consumer proof; all ordinary native metadata must remain available for
+the final-model verifier. No study recipe, endpoint or inference rule changes.

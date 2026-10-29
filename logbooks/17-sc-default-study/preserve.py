@@ -12,7 +12,10 @@ from pathlib import Path, PurePosixPath
 from rigging.filesystem.buckets import filesystem_for
 
 SOURCE_BASE = "s3://marin-rno2a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/sc-default-study/"
-ARCHIVE_BASE = "s3://marin-rno2a/marin/users/romain/research/" "sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/"
+ARCHIVE_BASES = (
+    "s3://marin-rno2a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/",
+    "s3://marin-us-east-02a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/",
+)
 BLOCK_BYTES = 64 * 2**20
 
 
@@ -54,9 +57,10 @@ def check_prefixes(source, archive):
     if not source.startswith(SOURCE_BASE) or not source.endswith("/") or source == SOURCE_BASE:
         raise ValueError("Source must be one stopped run under the owned study scratch")
     parts = source.removeprefix(SOURCE_BASE).strip("/").split("/")
-    if len(parts) != 2 or any(part in ("", ".", "..") for part in parts):
-        raise ValueError("Source must identify one run and artifact version")
-    if not archive.startswith(ARCHIVE_BASE) or archive == ARCHIVE_BASE or archive.endswith("/"):
+    valid_tree = len(parts) == 2 or (len(parts) == 3 and parts[-1] == "checkpoints")
+    if not valid_tree or any(part in ("", ".", "..") for part in parts):
+        raise ValueError("Source must identify one run/version or its checkpoint tree")
+    if not any(archive.startswith(base) and archive != base for base in ARCHIVE_BASES) or archive.endswith("/"):
         raise ValueError("Archive must be a named member of this session's owned namespace")
 
 
@@ -103,6 +107,19 @@ def checksum(fs, key, size):
     return digest.hexdigest()
 
 
+def stream_copy(source_fs, source_key, archive_fs, archive_key, size):
+    digest, count = hashlib.sha256(), 0
+    with source_fs.open(source_key, "rb", block_size=BLOCK_BYTES, cache_type="none") as src:
+        with archive_fs.open(archive_key, "wb", block_size=BLOCK_BYTES) as dst:
+            while block := src.read(BLOCK_BYTES):
+                digest.update(block)
+                count += len(block)
+                dst.write(block)
+    if count != size:
+        raise ValueError(f"Unexpected streamed source length: {source_key}")
+    return digest.hexdigest()
+
+
 def preserve(manifest_uri, execution_source_revision):
     raw = read(manifest_uri)
     manifest_sha = hashlib.sha256(raw).hexdigest()
@@ -117,6 +134,8 @@ def preserve(manifest_uri, execution_source_revision):
     if any(not row["source"].startswith(source) or not row["archive"].startswith(archive + "/objects/") for row in rows):
         raise ValueError("Object escaped the input's source/archive prefixes")
     fs, prefix = filesystem_for(source)
+    archive_fs, _ = filesystem_for(archive)
+    same_bucket = source.split("/")[2] == archive.split("/")[2]
     expected = {row["source"].removeprefix("s3://"): (row["bytes"], row["etag"], row["last_modified"]) for row in rows}
 
     def unchanged():
@@ -136,31 +155,43 @@ def preserve(manifest_uri, execution_source_revision):
         archive_key = row["archive"].removeprefix("s3://")
         previous = verified.get(row["source"])
         try:
-            observed = fs.info(archive_key)
+            observed = archive_fs.info(archive_key)
         except FileNotFoundError:
             observed = None
         if previous and observed and previous["archive_etag"] == observed["ETag"] and observed["size"] == row["bytes"]:
             return previous
-        source_sha = checksum(fs, source_key, row["bytes"])
-        if observed is None:
-            fs.cp_file(source_key, archive_key)
-            fs.invalidate_cache(archive_key)
-            observed = fs.info(archive_key)
-        archive_sha = checksum(fs, archive_key, row["bytes"]) if observed["size"] == row["bytes"] else None
+        copy_method = "existing unverified copy"
+        if observed is None and not same_bucket:
+            source_sha = stream_copy(fs, source_key, archive_fs, archive_key, row["bytes"])
+            copy_method = "streamed between buckets"
+            archive_fs.invalidate_cache(archive_key)
+            observed = archive_fs.info(archive_key)
+        else:
+            source_sha = checksum(fs, source_key, row["bytes"])
+            if observed is None:
+                fs.cp_file(source_key, archive_key)
+                copy_method = "same-bucket server copy"
+                archive_fs.invalidate_cache(archive_key)
+                observed = archive_fs.info(archive_key)
+        archive_sha = checksum(archive_fs, archive_key, row["bytes"]) if observed["size"] == row["bytes"] else None
         streamed_recovery = False
         if source_sha != archive_sha:
             # Only this unverified derived archive member is replaced; source stays read-only.
-            with fs.open(source_key, "rb", block_size=BLOCK_BYTES, cache_type="none") as src:
-                with fs.open(archive_key, "wb", block_size=BLOCK_BYTES) as dst:
-                    while block := src.read(BLOCK_BYTES):
-                        dst.write(block)
-            archive_sha = checksum(fs, archive_key, row["bytes"])
+            if stream_copy(fs, source_key, archive_fs, archive_key, row["bytes"]) != source_sha:
+                raise ValueError(f"Source bytes changed during repair: {row['source']}")
+            archive_sha = checksum(archive_fs, archive_key, row["bytes"])
             streamed_recovery = True
         if source_sha != archive_sha:
             raise ValueError(f"Archive bytes differ from source: {row['source']}")
-        fs.invalidate_cache(archive_key)
-        observed = fs.info(archive_key)
-        return {**row, "sha256": source_sha, "archive_etag": observed["ETag"], "streamed_recovery": streamed_recovery}
+        archive_fs.invalidate_cache(archive_key)
+        observed = archive_fs.info(archive_key)
+        return {
+            **row,
+            "sha256": source_sha,
+            "archive_etag": observed["ETag"],
+            "copy_method": copy_method,
+            "streamed_recovery": streamed_recovery,
+        }
 
     def save(status):
         write(checkpoint_uri, canonical({"input_manifest_sha256": manifest_sha, "members": verified}))
