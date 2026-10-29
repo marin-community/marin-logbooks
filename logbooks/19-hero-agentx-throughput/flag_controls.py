@@ -94,7 +94,9 @@ def main() -> None:
         if "--random-output-len" in case["argv"] and case["argv"][case["argv"].index("--random-output-len") + 1] == "64"
     )
     prefill = next(case for case in cases if case["name"] == "long64k-c16")
-    for name, case in (("decode-first", decode), ("decode-repeat", decode), ("long64k-c16", prefill)):
+    selected = [("decode-first", decode), ("decode-repeat", decode), ("long64k-c16", prefill)]
+    selected += [(case["name"], case) for case in manifest.get("diagnostic_request", {}).get("additional_cases", [])]
+    for name, case in selected:
         output = args.output / "clients" / name
         output.mkdir(parents=True, exist_ok=False)
         argv = [item for item in case["argv"] if item != "--profile"]
