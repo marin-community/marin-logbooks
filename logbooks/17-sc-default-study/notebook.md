@@ -483,3 +483,28 @@ archive readback must both pass in full. Only a later separately guarded cleanup
 may use that verified full-state archive under the existing preservation rule.
 The unresolved unique-state-discard question does not grant cleanup authority
 and is unnecessary if this full-preservation route succeeds.
+
+### 2026-10-29 18:58 UTC: Actual CPU backup control succeeds; one full native checkpoint is ready to copy
+
+The [actual Iris control](cross-region-preservation-iris-control-verification.json)
+succeeds under clean published source `c108fbaf4f079d9f056ca38796b5228009f9a0dc`
+in job `/romain/sc-default-preserve-control-east-01a16b97-r1`. Its actual request
+has four CPUs, sixteen GiB RAM and no GPU. The unchanged source/target hashes,
+wrong-copy repair and identical-manifest resume all pass. The complete manifest
+`3ee5b7791a74d5947fd47393b53e5ff5fdbb99ea021da141c6530db27113e6bc`
+is independently read back and its digest checked. The task then spends its
+bounded finalization period on local-result capture before reporting success;
+large-copy receipts go directly to East, and that driver emits no local output
+file. The control and prior stopped GPU task pods are now absent.
+
+The [full native pilot's immutable input](native-preservation-pilot-input.json)
+contains exactly **45 objects and 805,115,247,605 bytes**. Its SHA is
+`ff0161d8ab60c6d0787441c6c50d4f7d6bf0c94f9c1213cc70ea9809ef723a35`.
+Only inventory metadata has been written to East; no real checkpoint tensor
+has been transferred or removed yet. The [finite plan](native-preservation-pilot-plan.json)
+uses the same qualified archive code, two streaming threads and one CPU job,
+with a twelve-hour queue-plus-run ceiling and no GPUs. Shared storage rows
+1586 and 1624 announce the RNO read and East archive. Publish this evidence
+before launching the real copy, record its actual source and job, and verify
+the complete full-byte archive before considering any restorable source cleanup.
+All measured GPU consumers remain stopped.
