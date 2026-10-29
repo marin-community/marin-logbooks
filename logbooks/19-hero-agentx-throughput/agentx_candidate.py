@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 from diagnostic_server import use_candidate_wheel
+from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import IrisVllmLaunch
 from marin.inference.vllm_server import VllmEnvironment
 
@@ -51,7 +52,9 @@ def main() -> None:
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
     output.mkdir(parents=True, exist_ok=True)
     monitor = None
-    if os.environ["IRIS_TASK_ID"].endswith("/0"):
+    job_info = get_job_info()
+    assert job_info is not None
+    if job_info.task_index == 0:
         monitor = subprocess.Popen(
             [
                 sys.executable,

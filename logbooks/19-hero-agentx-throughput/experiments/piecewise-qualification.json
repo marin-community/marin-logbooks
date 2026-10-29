@@ -1,0 +1,63 @@
+{
+  "purpose": "Numerical graph/state qualification on a synthetic fixture; all throughput runs keep full Hero step144000. CPU preparation only during active AgentX. No GPU qualification until that point closes.",
+  "candidate_source": {
+    "head": "9383b951dd7d7f4fa7801fd479490ad9915b88ce",
+    "branch": "codex/hero-piecewise-baseline-probe-01a1846a",
+    "base": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "source_patch": "4829a80d411d92b8a23739869a18992fe9015939",
+    "files": {
+      "vllm/model_executor/models/grugmoe.py": {
+        "local_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/piecewise-baseline-grugmoe.py",
+        "sha256": "78563576172625505820fb2aa2a19b4ee8e8f112d6435cd2bdafb6db311311b8"
+      },
+      "vllm/model_executor/models/config.py": {
+        "local_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/piecewise-baseline-config.py",
+        "sha256": "7ccd9cc250dbdaaf0d964ea60425231aed7f186816bd933d9b52e151dd64855e"
+      }
+    }
+  },
+  "test_source": "4829a80d411d92b8a23739869a18992fe9015939",
+  "test_source_sha256": "583f3060bb382257beda96d51f5766b1327c1356d1f19a806a0d4045be1d9c22",
+  "extra_test": "test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows",
+  "fixture_source": {
+    "repository": "marin-community/MarinSkyRL",
+    "commit": "ca2fb7269cb77a1fead32d400d5debd276eb0e32",
+    "original_probe": "https://github.com/marin-community/vllm/pull/95",
+    "adaptation": "Reuse the producer functions unchanged; replace only TOKENIZER with the task-pinned local tokenizer. AST avoids unrelated Ray/Megatron GPU-test imports."
+  },
+  "fixture_source_sha256": {
+    "skyrl-train/tests/gpu/grug_tiny_checkpoint.py": "b18b76c22a9ab195e6b80162f3b7ccc6f3210a8a5e6e70e397c8f6c9cf389330",
+    "skyrl-train/tests/gpu/test_hero_megatron.py": "82fea02853a41aa7e06054cc78da798267fbb9956c87fa1741997fbcbd01bf3e"
+  },
+  "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+  "tokenizer_sha256": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+  "graph_modes": [
+    "NONE",
+    "PIECEWISE"
+  ],
+  "capture_sizes": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "branch_batches": [
+    [
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      2,
+      0,
+      1
+    ],
+    [
+      0
+    ]
+  ],
+  "repetitions": 2,
+  "native_numerics": "Retain history/isolation tolerances; padded BF16 output/state checks are exact. Record all tiny-model outputs and compare against NONE before full-Hero qualification. Never bypass the full-graph guard."
+}
