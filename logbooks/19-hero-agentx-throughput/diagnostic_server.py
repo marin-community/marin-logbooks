@@ -73,6 +73,22 @@ def use_candidate_wheel(server: VllmEnvironment, receipt_file: Path, base: dict)
     return receipt
 
 
+def prefetch_flashinfer_headers(server: VllmEnvironment, output: Path) -> None:
+    command = server.command
+    prefix = command[: command.index("python")]
+    run_logged(
+        [
+            *prefix,
+            "python",
+            str(Path(__file__).with_name("flashinfer_prefetch.py")),
+            str(output / "flashinfer-prefetch.json"),
+        ],
+        dict(os.environ) | server.launcher.env(),
+        output / "flashinfer-prefetch.log",
+        timeout=600,
+    )
+
+
 def use_numa_binding(server: VllmEnvironment, utility: dict) -> None:
     directory = Path("/iris/candidates") / ("numactl-" + utility["deb"]["sha256"])
     directory.mkdir(parents=True, exist_ok=True)
@@ -250,6 +266,8 @@ def serve(
                 }
                 server.extra_cli_args.extend(["--profiler-config", json.dumps(config)])
                 record["profiler_config"] = config
+            if diagnostic.get("prefetch_flashinfer_headers"):
+                prefetch_flashinfer_headers(server, output)
             with server:
                 assert server.vllm_server is not None
                 native_logs = Path(server.vllm_server.log_dir)
