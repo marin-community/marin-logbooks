@@ -199,3 +199,13 @@ copying temporary attempt logs. Qualify the published tiny control with
 <commit>` before the finite full-size pilot. The driver never deletes source
 objects; any later cleanup still needs stopped consumers, unchanged inventory,
 verified full-content preservation and exact restore references.
+
+For restorable cleanup, use `cleanup_preserved_native.py plan` with the complete
+archive URI, reviewed native inventory, current run manifest and actual archive
+submission record. It freshly verifies the full archive identities, portable
+model and terminal consumers, then writes a read-only selection. The separate
+`remove` command rechecks those facts and removes only the covered 32 native
+tensor shards, retaining metadata and the full archived restart state. Preserve
+the intent/receipt and immutable complete manifest as exact restore references.
+This is separate from disposing of unarchived optimizer state, which still
+requires the explicit retention approval enforced by `discard_native_state.py`.

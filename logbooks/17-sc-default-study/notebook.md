@@ -528,3 +528,24 @@ its full-state restore proof to assess source cleanup under the original
 preservation policy. The optional unique-state discard question is still
 unanswered; this backup route retains that state and does not require it.
 No scientific inference, new training arm, extension or default change is made.
+
+### 2026-10-29 19:24 UTC: Prepare cleanup that retains the complete native restart state
+
+The [preserved-state cleanup helper](cleanup_preserved_native.py) is prepared
+while the native archive runs. Its read-only plan requires a complete immutable
+full-content manifest, the original input digest and scope, matching source
+and archive object identities, the recorded archive job request, and fresh
+controller checks that the original coordinator, learner, exporters and archive
+worker are all terminal. It also reuses the current portable-model verifier.
+Only the exact 32 covered native tensor shards may be removed; all checkpoint
+metadata, including the export request and latest-step marker, stays in RNO.
+The complete native restart state and exact restore paths remain in East.
+
+This route implements the goal's original verified-preservation cleanup rule.
+It does not weaken or invoke the separate [unique-state disposal](discard_native_state.py)
+approval path, whose retention-change question remains pending. A bound local
+intent/receipt supports a partial removal retry without accepting changed
+source, archive or metadata. Source lint passes, but the real read-only
+preflight still awaits the full native archive; **no cleanup command has been
+executed**. The active 805.115-GB pilot retains its published source and all
+measured study GPU consumers remain stopped.
