@@ -17,6 +17,8 @@ Find the causes of Hero's low AgentX throughput and validate a faster BF16 servi
 
 Use one interactive allocation of four four-GPU nodes in a currently spare NVLink domain. Verify placement before allocation and after admission or replacement. Count setup, idle time and failures in GPU-hours. Keep large raw artifacts in object storage. Preserve baseline and failed trials. Publish retained code as focused draft PRs, leave every PR unmerged and hand the recipe to the benchmark owner.
 
+The 03:47 UTC goal revision permits that interactive group plus up to two sixteen-GB200 batch groups, at most 48 GPUs across independent experiments. Each experiment stays within sixteen GPUs. Introduce a group only for useful independent work, verify disjoint nodes/UUIDs and spare-rack placement, and record concurrent fabric/storage/CPU activity. Avoid intrusive profiling during full-hour confirmation. Keep mutable caches separate and release unused groups.
+
 ## Baseline
 
 The completed [C8](https://github.com/marin-community/marin/actions/runs/40705471793), [C16](https://github.com/marin-community/marin/actions/runs/40724334189) and [C32](https://github.com/marin-community/marin/actions/runs/40740879931) points share Marin source `ce69fe2538f26525a75d8d96e1820dce68cc568d` and [the frozen recipe](https://github.com/marin-community/marin/blob/ce69fe2538f26525a75d8d96e1820dce68cc568d/experiments/evaluation/agentx/hero.yaml). C8 means eight concurrent live agent session trees; subagent requests can raise instantaneous request concurrency above eight. The three points delivered 2.23178 / 3.27650 / 6.51112 output tokens/s/GPU with 262 / 418 / 841 completed measured requests and zero measured errors. C64 has no completed profiling window.
@@ -188,6 +190,12 @@ Before the budget trial, start a fresh released-wheel, prefix-enabled, 512-token
 The server CPU sample covered 03:32:25–03:33:26 UTC. Median task use was 8.20 / 7.20 / 7.26 / 7.33 cores. All tasks see CPUs 0–143 and both CPU NUMA nodes, with no CPU quota or throttling. GPU0/1 are near NUMA0; GPU2/3 near NUMA1. Four resident engines and four resident GPU workers run per host; older zero-RSS process entries are not additional active workers. Several resident workers approach one core each. This rules out task-wide CPU quota starvation in the sample, not a serial dispatch limit. Native `numactl` is absent from the task image; keep CPU-placement evaluation pending rather than silently treating native binding as tested.
 
 The diagnostic launcher now exposes existing native expert-backend, collective, API-process and NUMA flags, plus a lighter native Torch collection mode. They change no shared launcher or benchmark code. Use one factor per trial and inspect the effective runtime path. Batching remains first among optimization trials after the numerical control.
+
+### 2026-10-29 03:52 UTC — parallel resource limits
+
+The revised goal authorizes two additional sixteen-GB200 batch groups. The 03:48:46 UTC provider inventory and native `list-backends` show the current spare domain has 72 GPUs, sixteen held by this program and 56 unused. All other domains have 64 protected Hero-training GPUs and fewer than sixteen other GPUs per domain. The current hour stays alone through sending, draining and server shutdown.
+
+Next, keep the 512-token numerical restart control on the original interactive nodes and use one independent batch group for the released-wheel, prefix-enabled 2,048-token control. Both use native Triton, BF16 and graphs NONE with no intrusive profiler. This resolves a useful configuration comparison while strict module checks and result processing reuse the existing group. [submit_diagnostic.py](submit_diagnostic.py) submits the existing diagnostic entry point through native Iris resources, retries and output capture; it adds no reservation service or shared runner change. Batch attempts must restart their own window and server after preemption. Short-bank timings with neighboring work remain diagnostics, not final AgentX gains.
 
 ## Final decision
 

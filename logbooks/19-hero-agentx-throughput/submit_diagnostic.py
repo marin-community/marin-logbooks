@@ -1,0 +1,81 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Submit one bounded native diagnostic server at batch priority.
+
+The native Iris allocation, whole-attempt retries, environment and output
+capture are unchanged. Placement is checked again by the serving entry point.
+The caller runs controlled clients, then creates the leader's stop file.
+"""
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+from iris.cli.connect import connect_controller
+from iris.client.client import IrisClient
+from iris.cluster.types import CoschedulingConfig, Entrypoint, EnvironmentSpec, ResourceSpec, gpu_device
+from iris.rpc import job_pb2
+from rigging.timing import Duration
+
+from experiments.evaluation.agentx.recipe import load_series, series_path
+from experiments.evaluation.agentx.runtime import runtime_metadata
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--name", required=True)
+    parser.add_argument("--budget", type=int, default=2048)
+    parser.add_argument("--serve-duration", type=int, default=3600)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    manifest = json.loads(args.manifest.read_text())
+    path = series_path(manifest["profile"])
+    series = load_series(path)
+    assert manifest["profile"] == "gb200"
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == manifest["series_sha256"]
+    assert manifest["vllm_release"] == runtime_metadata("gb200")
+    assert args.budget > 0 and args.serve_duration > 0
+    hardware = series["profiles"]["gb200"]
+    command = (
+        'exec "$IRIS_PYTHON" "$IRIS_WORKDIR/logbooks/19-hero-agentx-throughput/diagnostic_server.py" '
+        '--manifest "$IRIS_WORKDIR/diagnostic-manifest.json" --output "$IRIS_OUTPUT_DIR/diagnostic" '
+        f"--prefix-cache --max-batched-tokens {args.budget} --serve-duration {args.serve_duration}"
+    )
+    entrypoint = Entrypoint(
+        command=["bash", "-c", command],
+        workdir_files={"diagnostic-manifest.json": args.manifest.read_bytes()},
+    )
+    with connect_controller(cluster_name="cw-us-east-08a") as endpoint:
+        with IrisClient.remote(endpoint.url, credentials=endpoint.credentials, workspace=Path.cwd()) as client:
+            job = client.submit(
+                entrypoint=entrypoint,
+                name=args.name,
+                resources=ResourceSpec(
+                    cpu=hardware["cpu"],
+                    memory=hardware["memory"],
+                    disk=hardware["disk"],
+                    device=gpu_device(hardware["gpu"], hardware["gpus"]),
+                ),
+                environment=EnvironmentSpec(sync_packages=["marin-core"], extras=["cpu"]),
+                constraints=[],
+                replicas=hardware["hosts"],
+                coscheduling=CoschedulingConfig(group_by="nvlink.domain"),
+                priority_band=job_pb2.PRIORITY_BAND_BATCH,
+                scheduling_timeout=Duration.from_seconds(series["scheduling_timeout"]),
+                timeout=Duration.from_seconds(series["ready_timeout"] + args.serve_duration + 600),
+                max_retries_failure=series["max_retries_failure"],
+                max_task_failures=series["max_retries_failure"],
+                max_retries_preemption=series["max_retries_preemption"],
+                existing_job_policy=job_pb2.EXISTING_JOB_POLICY_KEEP,
+                task_image=series["task_image"],
+            )
+            record = {"job_id": str(job.job_id), "priority": "batch", "command": command, "manifest": manifest}
+            args.output.write_text(json.dumps(record, indent=2) + "\n")
+            print(json.dumps(record), flush=True)
+
+
+if __name__ == "__main__":
+    main()
