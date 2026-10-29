@@ -211,6 +211,16 @@ The [validated C32 export](results/agentx-prefix-shortconv-c32.json) measures 6.
 
 A fresh unchanged C128 baseline starts on the original group to distinguish offered load from serving changes. Its source/input and complete protocol are [pinned separately](experiments/baseline-c128.json). Client and server CPU observers remain separate from native throughput collection. The batch2048 branch control passed all matching-shape cold/warm comparisons. Next compare native BF16 auto at budget2048 and Triton at budget8192, using at most two additional batch groups and no intrusive profiler during the full-hour baseline. Record admission and neighboring activity; short-bank comparisons only select candidates.
 
+### 2026-10-29 05:27 UTC — native flag results and matched C128 confirmation
+
+The native Triton8192 job completed all four tasks successfully. Its eight matching-shape cold/warm comparisons were exact and finite. Short decode controls had 251.39/248.26 ms mean ITL; sixteen64K-input requests had12.43s mean TTFT and15.36s total bank duration. The2048 controls had217.59/227.93ms ITL and14.39s TTFT. These are short diagnostics on different nodes with recorded neighboring work. The8192 prefill gain is modest and decode was slower, so confirm the supported2048 setting on AgentX before choosing8192.
+
+The auto2048 trial failed before model loading: rank0 could not bind TCP port29500 (EADDRINUSE), and peers later timed out in rendezvous. This is an infrastructure failure, not evidence against the backend. All time remains charged. The retry uses native master/RPC ports31200/31201; no other process or service is stopped. The held C128 baseline keeps its original ports and recipe.
+
+The [fresh C128 stock-wheel candidate](experiments/agentx-prefix2048-c128.json) enables caching and raises the prefill budget to2048, with separate native rendezvous ports. The wrapper changes only the server factory; it retains native AgentX preparation, all393 eligible sessions, replay/cache-busting controls, seed, context, warmup and full-hour duration. It uses the permanent byte-identical workload archive. The baseline C128 warmup requests1406 completions, versus351 at C32; this is native protocol scaling, not an edited warmup. Its profiling window has not started.
+
+The next communication hypotheses use existing one-sided and PP4 flags before custom routing or kernel work. Their initial cost is a flag trial plus the same state controls; retain them only after relevant numerical/shard checks and AgentX confirmation.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.
