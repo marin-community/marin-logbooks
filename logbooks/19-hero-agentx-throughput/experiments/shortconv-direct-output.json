@@ -1,0 +1,12 @@
+{
+  "purpose": "Isolate the output-buffer change without importing the router fix or changing dependencies. Diagnostic native numerical regression, not an AgentX throughput measurement.",
+  "baseline_source": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "candidate_source": "7b161cb4606663d86da947d702b726b295745f54",
+  "candidate_repository": "https://github.com/marin-community/vllm",
+  "candidate_method": "GrugMoeShortConv.forward_impl only",
+  "method_file_sha256": "f5bf8837a078ca4f306b03e36d56cbbd3cfcde8ce723f961b0d70096e2b16acd",
+  "test_file_sha256": "6a45a8601ed2d392854c8251a2223ad9b5c12fd24dcf054507d6e402781a4baa",
+  "test": "test_hero_grug_moe_sconv_preserves_request_history_and_isolation",
+  "candidate_test_changes": "Extend native pure prefill/decode reference check with mixed decode and resumed prefill; retain all original tolerances.",
+  "execution": "Run native_shortconv_probe.py twice in the original isolated pinned runtime: first without --forward-source, then with the exact candidate source/hash. Use the candidate test source/hash for both. One GPU inside the held sixteen-GPU allocation, after benchmark requests stop."
+}
