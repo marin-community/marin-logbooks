@@ -10,6 +10,7 @@ import os
 import time
 from dataclasses import asdict
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 import pyarrow.parquet as pq
 import yaml
@@ -36,12 +37,56 @@ def read_json(uri: str):
         return json.load(stream)
 
 
-def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None, uids: set[str] | None = None) -> dict:
+def save_local(path: Path, value) -> None:
+    """Keep the first valid verdict before any remote write is attempted."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with NamedTemporaryFile(mode="w", dir=path.parent, delete=False) as destination:
+        json.dump(value, destination, indent=2, default=lambda scalar: scalar.item())
+        destination.flush()
+        os.fsync(destination.fileno())
+        temporary = Path(destination.name)
+    temporary.replace(path)
+    directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
+
+
+def regrade(
+    export: str,
+    task_path: Path,
+    step: int,
+    adopted: Path | None = None,
+    uids: set[str] | None = None,
+    local_manifest: Path | None = None,
+    publish_staged: bool = False,
+) -> dict:
     fs, prefix = filesystem_for(export + f"/dumped_evals/global_step_{step}_evals")
     task_specs = pq.read_table(task_path, columns=["task_spec"]).column(0).to_pylist()
     manifest_uri = export + f"/study/regrades-{step:04d}.json"
     recovery_fs, recovery_key = filesystem_for(manifest_uri)
     recovery = read_json(manifest_uri) if recovery_fs.exists(recovery_key) else {"step": step, "rows": {}}
+    if local_manifest is not None:
+        if local_manifest.exists():
+            staged = json.loads(local_manifest.read_text())
+            if staged["export"] != export or staged["step"] != step:
+                raise ValueError("Staged verdicts belong to a different run or step")
+            for uid, value in recovery["rows"].items():
+                if uid in staged["rows"] and staged["rows"][uid] != value:
+                    raise ValueError("Staged verdict would replace an existing recovered verdict")
+            staged["rows"].update(recovery["rows"])
+            recovery = staged
+        else:
+            if publish_staged:
+                raise ValueError("No local verdict manifest to publish")
+            recovery["export"] = export
+    if publish_staged:
+        if local_manifest is None or not recovery["rows"]:
+            raise ValueError("Publishing requires a nonempty local verdict manifest")
+        if uids is not None and uids != set(recovery["rows"]):
+            raise ValueError("Publication must validate every staged saved answer")
+        uids = set(recovery["rows"])
     source_fs, source_key = filesystem_for(export.removesuffix("/exports") + "/resolved-launch.yaml")
     launch = yaml.safe_load(source_fs.cat_file(source_key))["config"]
     judge_model = launch["runtime"]["task_env"]["VERIFYIT_JUDGE_MODEL"]
@@ -62,10 +107,18 @@ def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None
                     continue
                 seen.add(uid)
                 if (row.get("verification") or {}).get("status") == "verified":
+                    if uid in recovery["rows"]:
+                        raise ValueError("Recovery cannot replace an original valid grade")
                     continue
                 if uid in recovery["rows"]:
-                    if recovery["rows"][uid]["row_sha256"] != fingerprint(row):
+                    previous = recovery["rows"][uid]
+                    if previous["row_sha256"] != fingerprint(row):
                         raise ValueError("Previously recovered answer changed")
+                    task = TaskSpec.model_validate_json(task_specs[int(uid)])
+                    if previous["contract"] != deduplication_key(task):
+                        raise ValueError("Previously recovered grading contract changed")
+                    if previous["judge_model"] != judge_model or previous["judge_base_url"] != remote["base_url"]:
+                        raise ValueError("Previously recovered judge configuration changed")
                     continue
                 raw = task_specs[int(uid)]
                 task = TaskSpec.model_validate_json(raw)
@@ -118,7 +171,11 @@ def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None
                         if grade.status is not Outcome.INFRA_ERROR:
                             break
                 if verdict["status"] != Outcome.GRADED or verdict["reward"] is None:
-                    write_json(manifest_uri + ".pending", {"uid": uid, "attempts": attempts})
+                    pending = {"uid": uid, "attempts": attempts}
+                    if local_manifest is not None:
+                        save_local(local_manifest.with_name(local_manifest.name + ".pending"), pending)
+                    else:
+                        write_json(manifest_uri + ".pending", pending)
                     raise RuntimeError(f"Judge recovery still lacks a verdict at uid {uid}")
                 recovery["rows"][uid] = {
                     "task": task.id,
@@ -140,9 +197,14 @@ def regrade(export: str, task_path: Path, step: int, adopted: Path | None = None
                         "diagnostics": {"grade_only_recovery": True},
                     },
                 }
-                write_json(manifest_uri, recovery)
+                if local_manifest is not None:
+                    save_local(local_manifest, recovery)
+                else:
+                    write_json(manifest_uri, recovery)
     if uids is not None and uids - seen:
         raise ValueError(f"Requested saved answer UIDs were not found: {sorted(uids - seen)}")
+    if publish_staged:
+        write_json(manifest_uri, recovery)
     return recovery
 
 
@@ -157,6 +219,25 @@ if __name__ == "__main__":
     parser.add_argument(
         "--adopt", type=Path, help="Keep the first valid verdict already recorded during operator recovery"
     )
+    parser.add_argument(
+        "--local-manifest", type=Path, help="Durably stage verdicts locally without writing remote storage"
+    )
+    parser.add_argument(
+        "--publish-staged", action="store_true", help="Validate saved-answer hashes and publish the local verdicts"
+    )
     args = parser.parse_args()
     selected = set(args.uids) if args.uids is not None else None
-    print(json.dumps(regrade(args.export.rstrip("/"), args.tasks, args.step, args.adopt, selected), indent=2))
+    print(
+        json.dumps(
+            regrade(
+                args.export.rstrip("/"),
+                args.tasks,
+                args.step,
+                args.adopt,
+                selected,
+                args.local_manifest,
+                args.publish_staged,
+            ),
+            indent=2,
+        )
+    )

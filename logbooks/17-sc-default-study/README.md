@@ -67,6 +67,17 @@ Use `--uids` to retry particular saved answers while investigating a different
 grader failure. This selects recovery work only; it does not relax the analysis
 coverage requirement or exclude tasks from the panel.
 
+If object-store writes are unavailable, add `--local-manifest /absolute/path/to/recovery.json`
+to the same grade-only command. Each first valid verdict is atomically saved and
+flushed to local disk; no remote manifest is written. Keep this private file and
+its hash. Repeating the command validates and reuses recorded verdicts.
+
+After a storage write/readback probe passes, repeat with the same local manifest
+and `--publish-staged`. This validates every staged saved-answer hash, contract
+and judge configuration before uploading the manifest. It makes no additional
+judge calls. Existing valid verdicts cannot be replaced. Then run the ordinary
+collector against the remote export as usual.
+
 The contract audit checks local schema references and replays the original
 date-sensitive Reasoning Gym generator without calling its scorer or using
 model answers:
