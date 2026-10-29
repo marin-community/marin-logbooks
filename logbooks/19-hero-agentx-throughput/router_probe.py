@@ -39,7 +39,7 @@ def main() -> None:
     manifest = json.loads(args.manifest.read_text())
     config = manifest["router"]
     server = json.loads(args.server_record.read_text())
-    assert server["status"] == "ready"
+    assert server["status"] in ("ready", "measuring")
     command = server["server_command"]
     prefix = command[: command.index("python")]
     environment = os.environ | {

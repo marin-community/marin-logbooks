@@ -13,6 +13,7 @@ import json
 import os
 import subprocess
 import sys
+import urllib.request
 from pathlib import Path
 
 from diagnostic_server import stage_candidate_wheel, use_candidate_wheel
@@ -100,6 +101,32 @@ def main() -> None:
             if "agentx" not in command or "profile" not in command:
                 BASE_RUN_LOGGED(command, environment, log, timeout=timeout)
                 return
+            if manifest.get("router_preflight"):
+                tokenizer = next(Path(environment["HF_HOME"]).rglob("tokenizer.json"))
+                BASE_RUN_LOGGED(
+                    [
+                        sys.executable,
+                        str(Path(__file__).with_name("router_probe.py")),
+                        "--manifest",
+                        str(args.manifest.resolve()),
+                        "--server-record",
+                        str(log.parent / "attempt.json"),
+                        "--output",
+                        str(log.parent / "router-preflight"),
+                        "--tokenizer",
+                        str(tokenizer),
+                    ],
+                    environment,
+                    log.parent / "router-preflight.log",
+                    timeout=1900,
+                )
+                request = urllib.request.Request(
+                    manifest["router"]["backend_url"] + "/reset_prefix_cache", method="POST"
+                )
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    (log.parent / "preflight-cache-reset.json").write_text(
+                        json.dumps({"status": response.status}) + "\n"
+                    )
             with upstream_router(manifest["router"], log.parent):
                 BASE_RUN_LOGGED(command, environment, log, timeout=timeout)
 
