@@ -31,6 +31,21 @@ FUNCTIONS = (
 )
 
 
+def install_forward(source: Path, digest: str) -> None:
+    implementation = source.read_bytes()
+    assert hashlib.sha256(implementation).hexdigest() == digest
+    model_tree = ast.parse(implementation)
+    module_class = next(
+        node for node in model_tree.body if isinstance(node, ast.ClassDef) and node.name == "GrugMoeShortConv"
+    )
+    forward = next(
+        node for node in module_class.body if isinstance(node, ast.FunctionDef) and node.name == "forward_impl"
+    )
+    candidate = {}
+    exec(compile(ast.Module(body=[forward], type_ignores=[]), str(source), "exec"), vars(grugmoe), candidate)
+    GrugMoeShortConv.forward_impl = candidate["forward_impl"]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--test-source", type=Path, required=True)
@@ -42,22 +57,7 @@ def main() -> None:
     source = args.test_source.read_bytes()
     assert hashlib.sha256(source).hexdigest() == args.source_sha256
     if args.forward_source is not None:
-        implementation = args.forward_source.read_bytes()
-        assert hashlib.sha256(implementation).hexdigest() == args.forward_source_sha256
-        model_tree = ast.parse(implementation)
-        module_class = next(
-            node for node in model_tree.body if isinstance(node, ast.ClassDef) and node.name == "GrugMoeShortConv"
-        )
-        forward = next(
-            node for node in module_class.body if isinstance(node, ast.FunctionDef) and node.name == "forward_impl"
-        )
-        candidate = {}
-        exec(
-            compile(ast.Module(body=[forward], type_ignores=[]), str(args.forward_source), "exec"),
-            vars(grugmoe),
-            candidate,
-        )
-        GrugMoeShortConv.forward_impl = candidate["forward_impl"]
+        install_forward(args.forward_source, args.forward_source_sha256)
     tree = ast.parse(source)
     selected = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in FUNCTIONS]
     assert tuple(node.name for node in selected) == FUNCTIONS

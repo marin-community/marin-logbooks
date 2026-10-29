@@ -133,6 +133,14 @@ The historical C1024 case is still draining its original 4,096 requests. Its cli
 
 The next focused full-engine case enables native prefix caching on a fresh released-wheel server, with all other limits fixed. [Its launch](experiments/diagnostic-prefix-cache.sh) retains the original graph guard. The branch probe now includes independent cold references at each API batch shape, because the disabled-cache control already showed batch-dependent logits. Requested settings are not proof of cache hits: retain effective Mamba mode, cache counters, cached-token usage and matching-shape branch comparisons before an AgentX trial.
 
+### 2026-10-29 01:14 UTC — historical bank complete; native cache trial
+
+[The historical-bank diagnostic](results/historical-c1024.json) completed all 4,096 requests with zero failures in 1,716.00475 seconds: 611,412 input and 3,140,608 output tokens, **114.38663 output tokens/s/physical GPU**. Every forced output-length histogram matches the original 1,024-row bank repeated four times. Mean inter-token latency is 297.99 ms. The native one-second peak of 291.5 output tokens/s/GPU differs from the earlier counter-based supplied window and is not a regression ratio. The API client, no batch-invariant mode, 64 sequences/rank and 256K context still differ from the historical Ray run. Native peak-concurrent estimation reported 1,083 despite the 1,024 semaphore cap; do not present that estimate as an engine-level count.
+
+The batch-matched disabled-cache control reproduced all greedy tokens and top-k logprobs exactly at each corresponding 1/2/3/1 API batch shape. The separate ShortConv regression passed for both the released method and the candidate method, including mixed decode/resumed prefill and unchanged reference tolerances. The qualification overlay isolates only the method from source `7b161cb4606663d86da947d702b726b295745f54`. A [baseline-derived full-module source](https://github.com/marin-community/vllm/commit/3ba294594b864e86d399ae7dc4c5a96a12acf7f7) contains only this production delta, preserving the old router implementation for attribution. No throughput benefit is established.
+
+All four diagnostic server workers stopped normally before further GPU work. [Complete baseline and diagnostic archives](results/retention-readback.json), including raw requests/traces, passed full SHA256 readback in the same storage region. A fresh prefix-enabled server then started on the original Pods at 01:09 UTC from source `606e2bbee4eac546150b4db97c0dcc51ae1935f9`, still using the released wheel, token budget 512, 64 sequences/rank and the graph guard. The next profile/control cases use 64 forced decode outputs rather than 512 to qualify the collector cheaply. They are diagnostics; AgentX output controls remain unchanged.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.
