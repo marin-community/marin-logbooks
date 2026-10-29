@@ -644,3 +644,9 @@ Headroom now permits the ninth initial arm's version-4 retry. After recording
 the completed archive and any covered-source cleanup, defer the other seven
 large copies while that measured GPU run executes. The published retry plan,
 unchanged runtime trees and same-recipe gates remain in force.
+
+### 2026-10-29 21:59 UTC: covered native duplicates removed; final retry ready
+
+The TIS/1701 full 45-object checkpoint archive is verified byte for byte in East. The checked cleanup removed exactly 32 duplicate RNO tensor objects (805,063,106,528 bytes), retained all 13 metadata objects, and freshly revalidated the final model and stopped consumers. No unique optimizer state was discarded. The receipt and archive restore identity are in `native-preservation-pilot-cleanup-verification.json`.
+
+Small and 5 MiB multipart write/readback/delete probes both passed at 21:58 UTC. Both candidate pools were checked: RNO has 384 unrequested H100s; East has 0. These are snapshots, not reservations. The SC128/4517 version 4 source and temporary roots remain empty. The archive worker is terminal, and the remaining seven bulk archives stay deferred while this measured run executes. `sc1284517-v4-readiness-verification.json` records the gates. This replaces the rejected infrastructure-interrupted slot; it is not a scientific extension.
