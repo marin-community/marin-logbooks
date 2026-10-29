@@ -57,6 +57,7 @@ class ExecutionBoundary:
                 job_id=ref.wire_id,
                 ref=ref,
                 kwargs=call_kwargs,
+                submit_options=kwargs,
                 wait=lambda **unused: future.result(timeout=30),
                 future=future,
             )
@@ -145,6 +146,7 @@ def test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_s
         thread.start()
         inbox = root_events.get(timeout=10)
         train = execution.get("train")
+        assert train.submit_options["env_vars"]["JAX_PLATFORMS"] == "cuda,cpu"
         assert train.kwargs["checkpoint_hook_factory"].root_actor_name == "/journey/pathb-cpu-root/checkpoint-inbox-0"
         inbox.enqueue(sample_event(25).payload())
         execution.get("export-000025")
@@ -155,6 +157,7 @@ def test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_s
         second = sample_event(50)
         inbox.enqueue(second.payload())
         export = execution.get("export-000050")
+        assert export.submit_options["env_vars"]["JAX_PLATFORMS"] == "cuda,cpu"
         local_storage(second.hf_export + "/path-b-checkpoint-event.json").write_text(json.dumps(second.payload()))
         execution.finish("export-000050")
         trend = execution.get("trend-000050")

@@ -132,7 +132,7 @@ class Workflow:
                 replicas=4,
                 env_vars={
                     **xla_precision_env(json.loads(self.binding.runtime_bytes)["xla_precision"]),
-                    "JAX_PLATFORMS": "cuda",
+                    "JAX_PLATFORMS": "cuda,cpu",
                 },
                 lifetime=CHILD_LIFETIME,
             )
@@ -239,7 +239,7 @@ def workflow_worker(*, training: dict, binding: ExportBinding) -> None:
                 replicas=4,
                 env_vars={
                     **xla_precision_env(json.loads(binding.runtime_bytes)["xla_precision"]),
-                    "JAX_PLATFORMS": "cuda",
+                    "JAX_PLATFORMS": "cuda,cpu",
                 },
                 lifetime=CHILD_LIFETIME,
             )
