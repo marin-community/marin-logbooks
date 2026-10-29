@@ -11,7 +11,6 @@ warmup, benchmark duration and all native validity/attempt fences stay native.
 import argparse
 import json
 import os
-import signal
 import subprocess
 import sys
 from pathlib import Path
@@ -46,13 +45,11 @@ def create_candidate_server(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
     native.create_server = create_candidate_server
-    signal.signal(signal.SIGTERM, native.interrupt)
-    signal.signal(signal.SIGINT, native.interrupt)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
+    output = Path(os.environ["IRIS_OUTPUT_DIR"])
+    output.mkdir(parents=True, exist_ok=True)
     monitor = None
     if os.environ["IRIS_TASK_ID"].endswith("/0"):
         monitor = subprocess.Popen(
@@ -60,13 +57,13 @@ def main() -> None:
                 sys.executable,
                 str(Path(__file__).with_name("client_load.py")),
                 "--output",
-                str(args.output.parent / "client-load.jsonl"),
+                str(output / "client-load.jsonl"),
                 "--duration",
                 "10800",
             ]
         )
     try:
-        native.run(manifest, args.output)
+        native.run(manifest)
     finally:
         if monitor is not None:
             monitor.terminate()
