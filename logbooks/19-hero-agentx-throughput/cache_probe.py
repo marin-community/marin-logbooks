@@ -122,6 +122,8 @@ def run(
     if trace_batches:
         assert rank == 0
         batch_trace(base_url, "install_hero_batch_trace", [reference_capture_sizes, disable_graph_replay])
+        storage = batch_trace(base_url, "hero_cache_storage")
+        (output / "cache-storage.json").write_text(json.dumps(storage, indent=2) + "\n")
     else:
         assert reference_capture_sizes is None and not disable_graph_replay
     with (output / "requests.jsonl").open("w") as stream:

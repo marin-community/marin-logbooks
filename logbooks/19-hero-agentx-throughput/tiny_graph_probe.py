@@ -13,6 +13,7 @@ import hashlib
 import importlib.metadata
 import json
 import math
+import os
 import sys
 import time
 from dataclasses import replace
@@ -91,10 +92,36 @@ def stop_batch_trace(worker) -> None:
     module.dispatch_cg_and_sync_dp = worker.hero_dispatch_original
 
 
+def cache_storage(worker) -> dict:
+    """Record native CUDA KV tensor storage metadata without reading GPU data."""
+    runner = worker.model_runner
+    storage = {}
+    for tensor in runner.kv_caches:
+        assert tensor.is_cuda
+        allocation = tensor.untyped_storage()
+        key = (str(tensor.device), allocation.data_ptr())
+        storage[key] = {"bytes": allocation.nbytes(), "backing_tensor_dtype": str(tensor.dtype)}
+    record = {
+        "unix": time.time(),
+        "dp_rank": runner.dp_rank,
+        "native_num_blocks": runner.kv_cache_config.num_blocks,
+        "cache_tensor_count": len(runner.kv_caches),
+        "unique_cuda_storage_count": len(storage),
+        "unique_cuda_storage_bytes": sum(item["bytes"] for item in storage.values()),
+        "storage": list(storage.values()),
+        "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync.",
+    }
+    path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"kv-storage-dp{runner.dp_rank}.jsonl"
+    with path.open("a") as stream:
+        stream.write(json.dumps(record) + "\n")
+    return record
+
+
 class BatchTraceWorkerExtension:
     install_hero_batch_trace = install_batch_trace
     take_hero_batch_trace = take_batch_trace
     stop_hero_batch_trace = stop_batch_trace
+    hero_cache_storage = cache_storage
 
 
 def main() -> None:
