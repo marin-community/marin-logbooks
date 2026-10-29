@@ -1,0 +1,50 @@
+{
+  "scope": "Intrusive stock-3a 64K-input, C64, 1024-output native benchmark. Five steady generation steps on all 16 ranks; no full-hour confirmation overlapped.",
+  "launch": {
+    "command": "cd /app && exec env PYTHONPATH=/app uv run --no-sync python /iris/candidates/research-688e36eec6616cd3966f9ad950ef3ef3f4ad1bf2/logbooks/19-hero-agentx-throughput/diagnostic_server.py --manifest /iris/candidates/steady-profile-manifest.json --output /iris/outputs/diagnostic-steady-profile --prefix-cache --max-batched-tokens 2048 --moe-backend triton --master-port 31900 --profile --profile-light --profile-warmup-iterations 0 --serve-duration 1200",
+    "manifest_source": "490c45463f",
+    "script_source": "688e36eec6616cd3966f9ad950ef3ef3f4ad1bf2",
+    "pods": [
+      "iris-romain-dev-gpu-hero-agentx-01a-c05d3902-0-61b3c5a54949f80e",
+      "iris-romain-dev-gpu-hero-agentx-01a-e8d3f164-0-cd9dba4a0b437390",
+      "iris-romain-dev-gpu-hero-agentx-01a-cce4753d-0-91a37c80e10493ec",
+      "iris-romain-dev-gpu-hero-agentx-01a-ab19b459-0-ec7c459e8b00d47a"
+    ]
+  },
+  "driver": {
+    "source": "7022bf1384e1c98d017b398ced7ebf5efe49e10e",
+    "archive_sha256": "291dc793983c799091bf999fef199f2250af106ac263423eacd727b6b698c416",
+    "command": "cd /app && exec env PYTHONPATH=/app uv run --no-sync python /iris/candidates/research-7022bf1384e1c98d017b398ced7ebf5efe49e10e/logbooks/19-hero-agentx-throughput/steady_profile_client.py --output /iris/outputs/diagnostic-steady-profile"
+  },
+  "artifacts": [
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/diagnostic-steady-profile/host-0/outputs-834b59f936ebf2a303c0be1aff42eec33a68bd2d4ea0f0841491f5a2713b8a55.tar.zst",
+      "archive_sha256": "834b59f936ebf2a303c0be1aff42eec33a68bd2d4ea0f0841491f5a2713b8a55",
+      "archive_bytes": 19166969,
+      "readback_sha256": "834b59f936ebf2a303c0be1aff42eec33a68bd2d4ea0f0841491f5a2713b8a55",
+      "traces": 4
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/diagnostic-steady-profile/host-1/outputs-582f4b66c0b48ba740b153aa4132406c89d4e402347781e9e7c5651e33c89e20.tar.zst",
+      "archive_sha256": "582f4b66c0b48ba740b153aa4132406c89d4e402347781e9e7c5651e33c89e20",
+      "archive_bytes": 17347257,
+      "readback_sha256": "582f4b66c0b48ba740b153aa4132406c89d4e402347781e9e7c5651e33c89e20",
+      "traces": 4
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/diagnostic-steady-profile/host-2/outputs-33a78a8c64f1964c300c6da1a37d058acca0638f1325c68edfba8cc5fcce570d.tar.zst",
+      "archive_sha256": "33a78a8c64f1964c300c6da1a37d058acca0638f1325c68edfba8cc5fcce570d",
+      "archive_bytes": 17428949,
+      "readback_sha256": "33a78a8c64f1964c300c6da1a37d058acca0638f1325c68edfba8cc5fcce570d",
+      "traces": 4
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/diagnostic-steady-profile/host-3/outputs-8a7aa8dcad97adde3ad27d55e95699fb97e9b8cab7da831e6f5627fc423a1580.tar.zst",
+      "archive_sha256": "8a7aa8dcad97adde3ad27d55e95699fb97e9b8cab7da831e6f5627fc423a1580",
+      "archive_bytes": 17374676,
+      "readback_sha256": "8a7aa8dcad97adde3ad27d55e95699fb97e9b8cab7da831e6f5627fc423a1580",
+      "traces": 4
+    }
+  ],
+  "interpretation": "Compute spans are similar across ranks. Rank 3 has about 2517 ms of empty GPU time over five steps, while other ranks spend about 2400 ms in NCCL. This indicates rank waiting; CPU scheduling and profiler overhead are hypotheses, not proven unprofiled causes. Do not read the NCCL duration as fabric bandwidth utilization."
+}

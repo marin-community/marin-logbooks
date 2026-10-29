@@ -98,9 +98,7 @@ def serve(
     devices = hardware["hosts"] * hardware["gpus"]
     assert devices == 16
     output.mkdir(parents=True, exist_ok=False)
-    identity = {
-        key: os.environ[key] for key in ("IRIS_TASK_ID", "IRIS_ATTEMPT_UID", "IRIS_NODE_NAME", "IRIS_BUNDLE_ID")
-    }
+    identity = {key: os.environ[key] for key in ("IRIS_TASK_ID", "IRIS_ATTEMPT_UID", "IRIS_NODE_NAME", "IRIS_BUNDLE_ID")}
     identity["captured_unix"] = time.time()
     identity["gpus"] = subprocess.check_output(
         ["nvidia-smi", "--query-gpu=uuid,name,driver_version", "--format=csv,noheader"], text=True

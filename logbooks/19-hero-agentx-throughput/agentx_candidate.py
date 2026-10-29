@@ -45,7 +45,11 @@ def create_candidate_server(
         assert receipt["source_commit"] == overrides["source_commit"]
     server.extra_cli_args.remove("--no-enable-prefix-caching")
     server.extra_cli_args.append("--enable-prefix-caching")
-    for key, flag in (("max_num_batched_tokens", "--max-num-batched-tokens"), ("master_port", "--master-port")):
+    for key, flag in (
+        ("max_num_batched_tokens", "--max-num-batched-tokens"),
+        ("master_port", "--master-port"),
+        ("gpu_memory_utilization", "--gpu-memory-utilization"),
+    ):
         if key in overrides:
             server.extra_cli_args[server.extra_cli_args.index(flag) + 1] = str(overrides[key])
     if "master_port" in overrides and "--data-parallel-rpc-port" in server.extra_cli_args:
@@ -79,6 +83,16 @@ def main() -> None:
         native.workload_environment = affinity_environment
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
     output.mkdir(parents=True, exist_ok=True)
+    observer = subprocess.Popen(
+        [
+            sys.executable,
+            str(Path(__file__).with_name("server_cpu.py")),
+            "--output",
+            str(output / "server-cpu.jsonl"),
+            "--samples",
+            "3600",
+        ]
+    )
     monitor = None
     job_info = get_job_info()
     assert job_info is not None
@@ -96,6 +110,8 @@ def main() -> None:
     try:
         native.run(manifest)
     finally:
+        observer.terminate()
+        observer.wait(timeout=10)
         if monitor is not None:
             monitor.terminate()
             monitor.wait(timeout=10)
