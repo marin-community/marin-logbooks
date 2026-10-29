@@ -39,11 +39,11 @@ from experiments.post_training.identity_context_distill.sft import (
     source_export_overrides,
 )
 from experiments.post_training.identity_context_distill.sft_launch import sft_runtime_receipt, source_bind
-from experiments.post_training.identity_path_b.base import check_base_exposure
 from experiments.post_training.identity_path_b.checkpoints import AsyncCheckpoints, CheckpointEvent
 from experiments.post_training.identity_path_b.native import packed_dataset
 from experiments.post_training.identity_path_b.recipe import freeze_special_rows, path_b_config, special_row_values
 from experiments.post_training.identity_path_b.rehydrate import restore_trained_model
+from experiments.post_training.identity_path_b.smoke import check_training_exposure
 from experiments.post_training.identity_path_b.storage_audit import (
     assert_special_row_bits,
     audit_export_storage,
@@ -147,7 +147,7 @@ def train_worker(
     """All training ranks: admit source/actual packed data, update, commit, emit async events."""
     packed_raw = read_pinned(packed_path, packed_sha256)
     exposure = json.loads(read_pinned(exposure_path, exposure_sha256))
-    check_base_exposure(exposure, arm)
+    check_training_exposure(exposure, arm)
     config, receipt, source, _ = runtime_config(
         run_root=run_root,
         run_id=run_id,

@@ -8,6 +8,7 @@ from dataclasses import replace
 import jax
 import jax.numpy as jnp
 import optax
+from jax.sharding import NamedSharding, PartitionSpec
 from levanter.adaptor import FrozenParameterAdaptorConfig
 from levanter.main.train_lm import TrainLmConfig
 from levanter.trainer_state import TrainerState
@@ -20,6 +21,19 @@ FROZEN_FIELDS = ("w_q", "w_k", "router", "router_bias")
 FROZEN_TOKEN_IDS = tuple(sorted(LOW_WEIGHT_IDS | END_IDS))
 
 
+def row_output_sharding(leaf, *, replicated: bool = False):
+    """Bind row collectives to the real array mesh or traced explicit spec."""
+    if not isinstance(leaf, jax.core.Tracer):
+        sharding = leaf.sharding
+        if replicated and isinstance(sharding, NamedSharding):
+            return NamedSharding(sharding.mesh, PartitionSpec())
+        return sharding if isinstance(sharding, NamedSharding) else None
+    sharding = jax.typeof(leaf).sharding
+    if sharding.mesh.empty:
+        return None
+    return PartitionSpec() if replicated else sharding.spec
+
+
 def mask_special_rows(tree):
     """Zero selected vocabulary rows, respecting the native head's transposition."""
     ids = jnp.asarray(FROZEN_TOKEN_IDS)
@@ -29,9 +43,9 @@ def mask_special_rows(tree):
             return leaf
         field = path[-1].name
         if field == "token_embed":
-            return leaf.at[ids, :].set(0)
+            return leaf.at[ids, :].set(0, out_sharding=row_output_sharding(leaf))
         if field == "output_proj":
-            return leaf.at[:, ids].set(0)
+            return leaf.at[:, ids].set(0, out_sharding=row_output_sharding(leaf))
         return leaf
 
     return jax.tree_util.tree_map_with_path(mask, tree)
@@ -63,8 +77,18 @@ def special_row_values(model) -> dict[str, jax.Array]:
             continue
         field = path[-1].name
         if field in ("token_embed", "output_proj"):
-            axis = 0 if field == "token_embed" else 1
-            values[field] = jnp.take(leaf, ids, axis=axis).copy()
+            # Vocabulary and hidden axes are both partitioned in the explicit
+            # native mesh. Small immutable snapshots must be replicated; JAX
+            # cannot infer this collective gather from jnp.take.
+            output = row_output_sharding(leaf, replicated=True)
+            index = (ids, slice(None)) if field == "token_embed" else (slice(None), ids)
+            if leaf.dtype != jnp.float32:
+                raise ValueError("Special vocabulary row snapshots require FP32 masters")
+            # Explicit gathers may reduce masked float contributions, turning
+            # -0.0 into+0.0. Collect uint32 representations to preserve bits.
+            bits = jax.lax.bitcast_convert_type(leaf, jnp.uint32)
+            gathered = bits.at[index].get(out_sharding=output)
+            values[field] = jax.lax.bitcast_convert_type(gathered, leaf.dtype).copy()
     if set(values) != {"token_embed", "output_proj"}:
         raise ValueError("Expected exactly one native embedding and output projection")
     for value in values.values():
@@ -80,10 +104,12 @@ def restore_special_row_values(model, values: dict[str, jax.Array]):
         if not path or not isinstance(path[-1], jax.tree_util.GetAttrKey):
             return leaf
         field = path[-1].name
-        if field == "token_embed":
-            return leaf.at[ids, :].set(values[field])
-        if field == "output_proj":
-            return leaf.at[:, ids].set(values[field])
+        if field in ("token_embed", "output_proj"):
+            index = (ids, slice(None)) if field == "token_embed" else (slice(None), ids)
+            bits = jax.lax.bitcast_convert_type(leaf, jnp.uint32)
+            original = jax.lax.bitcast_convert_type(values[field], jnp.uint32)
+            restored = bits.at[index].set(original, out_sharding=row_output_sharding(leaf))
+            return jax.lax.bitcast_convert_type(restored, leaf.dtype)
         return leaf
 
     return jax.tree_util.tree_map_with_path(restore, model)
