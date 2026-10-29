@@ -138,3 +138,19 @@ and artifact version, run IDs, checkpoint lineage, training recipes, batch
 priority, and the eight-job/64-GPU cap. Verify that condition in live Iris and
 Kubernetes state before cancelling the existing coordinator and submitting its
 replacement from the updated source revision.
+
+## 2026-10-29: Relaunch with 15-minute temporary saves
+
+Relaunched the existing campaign from source
+`5e46cfb93934c8c5e9a218f45117685887410d59` after all eight GPU tasks were
+confirmed queued. Each retained checkpoint had metadata, both manifests, and
+its data directory. The old coordinator and its task pods stopped before the
+replacement was submitted.
+
+The replacement reused the completed smoke and calibration artifacts and
+dispatched the same eight selected large-budget runs. The campaign identifier
+`hero-dense-opt-20261026` and artifact version `2026.10.26` remain fixed, as do
+the W&B run IDs, checkpoint paths, training recipes, batch priority, and 64-GPU
+cap. The replacement source configures temporary saves every 15 minutes. Its
+GPU tasks are queued; checkpoint restore and the first saves at the new interval
+remain unverified.
