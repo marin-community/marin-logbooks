@@ -23,7 +23,7 @@ from experiments.post_training.identity_t2.capture import checked_tokenizer
 RELAY_JOB = "/muchanem/glm53-relay-rno2a-d"
 CAPTURE_CLUSTER = "cw-rno2a"
 CANONICAL_SHA256 = "d430314e7bc9b950a5a0fb0e8dc492f74c726ef75c984de8e3ba4b35eae6ab71"
-CONTEXT_SHA256 = "2b42018cae87bfb49fd59fabbcfcae424450ed26ac152d60bf3a62ba19cb0efd"
+CONTEXT_SHA256 = "01e148c75cf658fb5b5c2bfa28f0df6a0ae58465a5dbe151a4f12e3e6f28a729"
 TRACE_FIELD = "choices[0].message.content"
 
 
