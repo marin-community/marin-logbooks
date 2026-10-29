@@ -1008,6 +1008,14 @@ class SnowballLMHeadModel(ModuleWithStateDictSerialization, LmHeadModel[Snowball
             return AttentionMask.causal()
         sequence = input_ids.array.shape[-1]
         query, keys = attn_mask.segment_ids
+        # The native Grug -> named reader deliberately gives KV its own axis.
+        # Normalize that alias before broadcasting/flattening, preserving values.
+        if "key_position" in keys.axis_names:
+            key_position = keys.resolve_axis("key_position")
+            position = input_ids.axes[-1]
+            if key_position.size != position.size or position.name in keys.axis_names:
+                raise ValueError("Snowball key_position must match the input position axis exactly")
+            keys = keys.rename({"key_position": position})
         query = query.broadcast_to(input_ids.axes).array.reshape(-1, sequence)
         keys = keys.broadcast_to(input_ids.axes).array.reshape(-1, sequence)
         query = reshard(query, P(_BATCH_AXES, _context_axis()))

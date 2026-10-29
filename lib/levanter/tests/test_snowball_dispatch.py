@@ -12,7 +12,7 @@ import numpy as np
 import pytest
 
 from levanter.data.text.datasets import ChatDataset
-from levanter.data.text.examples import named_lm_example_from_grug
+from levanter.data.text.examples import GrugLmExample, named_lm_example_from_grug
 from levanter.grug.attention import AttentionMask as GrugAttentionMask
 from levanter.grug.sharding import compact_grug_mesh
 from levanter.layers.attention_mask import AttentionMask
@@ -127,10 +127,23 @@ def test_packed_documents_isolate_real_hidden_states_and_target_loss(implementat
     # Only docB query positions that predict another docB token carry loss.
     weights = hax.named(jnp.broadcast_to(jnp.asarray([0] * 4 + [1] * 5 + [0] * 3), first.shape), (batch, position))
     ids = [hax.named(value, (batch, position)) for value in (first, changed)]
-    examples = [hax.vmap(LmExample.causal, batch)(value, loss_weight=weights, segment_ids=segments) for value in ids]
-    controls = [
-        hax.vmap(LmExample.causal, batch)(value, loss_weight=weights, segment_ids=control_segments) for value in ids
+    examples = [
+        named_lm_example_from_grug(
+            jax.vmap(GrugLmExample.causal)(value.array, loss_weight=weights.array, segment_ids=segments.array),
+            position,
+            batch,
+        )
+        for value in ids
     ]
+    controls = [
+        named_lm_example_from_grug(
+            jax.vmap(GrugLmExample.causal)(value.array, loss_weight=weights.array, segment_ids=control_segments.array),
+            position,
+            batch,
+        )
+        for value in ids
+    ]
+    assert examples[0].attn_mask.segment_ids[1].axes[-1].name == "key_position"
     single = hax.vmap(LmExample.causal, batch)(
         ids[0], segment_ids=hax.named(jnp.zeros(first.shape, jnp.int32), ids[0].axes)
     )
@@ -169,6 +182,16 @@ def test_packed_documents_isolate_real_hidden_states_and_target_loss(implementat
             replace(single.attn_mask, bidirectional_window=2),
             all_valid,
         ]
+        document_mask = examples[0].attn_mask
+        assert isinstance(document_mask, AttentionMask) and document_mask.segment_ids is not None
+        query, keys = document_mask.segment_ids
+        distinct_keys = keys + 7
+        converted = model._attention_mask(ids[0], replace(document_mask, segment_ids=(query, distinct_keys)))
+        assert converted is not None and converted.segment_ids is not None
+        np.testing.assert_array_equal(converted.segment_ids[0], query.array)
+        np.testing.assert_array_equal(converted.segment_ids[1], distinct_keys.array)
+        bad_keys = hax.named(jnp.zeros((batch.size, 11), jnp.int32), (batch, hax.Axis("key_position", 11)))
+        unsupported.append(replace(document_mask, segment_ids=(query, bad_keys)))
         for mask in unsupported:
             with pytest.raises(ValueError, match="Snowball"):
                 forward(ids[0], all_valid, attn_mask=mask)
