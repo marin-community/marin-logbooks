@@ -119,8 +119,13 @@ def compare_exported_tensor(name: str, host: np.ndarray, record, source: dict) -
     with open_audit_stream(record.file_path) as stream:
         stream.seek(record.byte_start)
         for start in range(0, flat.size, count):
-            expected = flat[start : start + count].astype(record.dtype).tobytes()
+            converted = flat[start : start + count].astype(record.dtype)
+            if not np.isfinite(converted).all():
+                raise ValueError(f"Nonfinite cast/output chunk in exported tensor: {name}")
+            expected = converted.tobytes()
             payload = stream.read(len(expected))
+            if len(payload) == len(expected) and not np.isfinite(np.frombuffer(payload, dtype=record.dtype)).all():
+                raise ValueError(f"Nonfinite saved output chunk in exported tensor: {name}")
             if payload != expected:
                 raise ValueError(
                     f"Saved export differs from {'frozen source' if frozen else 'actual master cast'}: {name}"

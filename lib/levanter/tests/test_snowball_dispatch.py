@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import asyncio
+from dataclasses import replace
 
 import equinox as eqx
 import haliax as hax
@@ -12,7 +13,9 @@ import pytest
 
 from levanter.data.text.datasets import ChatDataset
 from levanter.data.text.examples import named_lm_example_from_grug
+from levanter.grug.attention import AttentionMask as GrugAttentionMask
 from levanter.grug.sharding import compact_grug_mesh
+from levanter.layers.attention_mask import AttentionMask
 from levanter.models.lm_model import LmExample
 from levanter.models.snowball import (
     SnowballConfig,
@@ -95,6 +98,88 @@ def test_stats_forward_preserves_observer_and_loss():
         reference = eqx.filter_jit(model.compute_next_token_loss)(example)
         np.testing.assert_allclose(loss.array, reference.array, rtol=1e-5, atol=1e-5)
         np.testing.assert_array_equal(metrics["moe_dropped"], stats.dropped)
+
+
+@pytest.mark.parametrize("implementation", ["reference", "torch_order"])
+@pytest.mark.timeout(120)
+def test_packed_documents_isolate_real_hidden_states_and_target_loss(implementation):
+    config = SnowballConfig(
+        vocab_size=32,
+        hidden_dim=16,
+        intermediate_dim=16,
+        shared_expert_intermediate_dim=16,
+        num_experts=8,
+        num_experts_per_token=2,
+        num_layers=2,
+        num_heads=2,
+        num_kv_heads=1,
+        head_dim=8,
+        max_seq_len=16,
+        sliding_window=4,
+        initializer_std=0.1,
+        attention_implementation=implementation,
+    )  # First layer is short/RoPE; the last is long/NoPE.
+    batch, position = hax.Axis("batch", 2 * jax.device_count()), hax.Axis("position", 12)
+    first = jnp.broadcast_to(jnp.asarray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0]), (batch.size, 12))
+    changed = first.at[:, :4].set(jnp.asarray([11, 12, 13, 14]))
+    segments = hax.named(jnp.broadcast_to(jnp.asarray([0] * 4 + [1] * 6 + [-1] * 2), first.shape), (batch, position))
+    control_segments = hax.where(segments >= 0, 0, -1)
+    # Only docB query positions that predict another docB token carry loss.
+    weights = hax.named(jnp.broadcast_to(jnp.asarray([0] * 4 + [1] * 5 + [0] * 3), first.shape), (batch, position))
+    ids = [hax.named(value, (batch, position)) for value in (first, changed)]
+    examples = [hax.vmap(LmExample.causal, batch)(value, loss_weight=weights, segment_ids=segments) for value in ids]
+    controls = [
+        hax.vmap(LmExample.causal, batch)(value, loss_weight=weights, segment_ids=control_segments) for value in ids
+    ]
+    single = hax.vmap(LmExample.causal, batch)(
+        ids[0], segment_ids=hax.named(jnp.zeros(first.shape, jnp.int32), ids[0].axes)
+    )
+    with (
+        jax.set_mesh(compact_grug_mesh(expert_axis_size=1)),
+        hax.axis_mapping({"batch": ("replica_dcn", "data", "expert"), "vocab": "model"}),
+    ):
+        model = SnowballLMHeadModel.init(hax.Axis("vocab", 32), config, key=jax.random.PRNGKey(310))
+        forward = eqx.filter_jit(model.activations_with_stats)
+        measured = [forward(value, segments >= 0, attn_mask=examples[0].attn_mask) for value in ids]
+        for _, stats in measured:
+            np.testing.assert_array_equal(stats.dropped, np.zeros(2))
+        np.testing.assert_array_equal(measured[0][0].array[:, 4:10], measured[1][0].array[:, 4:10])
+        examples = [hax.auto_sharded(example) for example in examples]
+        controls = [hax.auto_sharded(example) for example in controls]
+        checked = eqx.filter_jit(snowball_loss_with_dispatch_stats)
+        losses = [checked(model, example)[0].array for example in examples]
+        np.testing.assert_array_equal(losses[0], losses[1])
+        ordinary = eqx.filter_jit(model.compute_next_token_loss)(examples[0])
+        np.testing.assert_allclose(losses[0], ordinary.array, rtol=1e-5, atol=1e-5)
+        unsegmented = [forward(value, segments >= 0, attn_mask=controls[0].attn_mask) for value in ids]
+        difference = np.max(np.abs(np.asarray(unsegmented[0][0].array[:, 4:10] - unsegmented[1][0].array[:, 4:10])))
+        assert difference > 1e-6
+        control_losses = [checked(model, example)[0].array for example in controls]
+        assert abs(float(control_losses[0]) - float(control_losses[1])) > 1e-6
+        all_valid = hax.named(jnp.ones(first.shape, dtype=jnp.bool_), ids[0].axes)
+        no_mask = forward(ids[0], all_valid)[0].array
+        one_document = forward(ids[0], all_valid, attn_mask=single.attn_mask)[0].array
+        np.testing.assert_array_equal(no_mask, one_document)
+        np.testing.assert_array_equal(eqx.filter_jit(model.activations)(ids[0]).array, no_mask)
+        unsupported = [
+            AttentionMask(is_causal=False),
+            replace(single.attn_mask, explicit_mask=all_valid),
+            replace(single.attn_mask, causal_offset=hax.named(jnp.asarray(0), ())),
+            replace(single.attn_mask, sliding_window=2),
+            replace(single.attn_mask, bidirectional_window=2),
+            all_valid,
+        ]
+        for mask in unsupported:
+            with pytest.raises(ValueError, match="Snowball"):
+                forward(ids[0], all_valid, attn_mask=mask)
+        raw_masks = [
+            GrugAttentionMask(is_causal=False),
+            GrugAttentionMask.causal(sliding_window=2),
+            GrugAttentionMask.causal().with_fa4_bounds(jnp.zeros(first.shape, jnp.int32), all_valid.array),
+        ]
+        for mask in raw_masks:
+            with pytest.raises(ValueError, match="Snowball transformer"):
+                eqx.filter_jit(model.transformer.with_stats)(ids[0].array, all_valid.array, mask)
 
 
 @pytest.mark.timeout(240)

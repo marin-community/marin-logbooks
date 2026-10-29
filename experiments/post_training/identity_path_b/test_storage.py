@@ -15,6 +15,7 @@ import pytest
 from levanter.adaptor import FrozenParameterAdaptorConfig
 from levanter.checkpoint import save_checkpoint
 from levanter.checkpoint_manifest import read_manifest, write_manifest
+from levanter.compat.fsspec_safetensor import TensorRecord
 from levanter.trainer_state import FrozenParameterStorage, TrainerState
 from safetensors.numpy import save_file
 
@@ -33,7 +34,20 @@ from experiments.post_training.identity_path_b.storage_audit import (
     audit_export_storage,
     audit_initialized_storage,
     check_source_tensor,
+    compare_exported_tensor,
 )
+
+
+def test_finite_fp32_master_overflow_to_matching_bf16_infinity_is_rejected(tmp_path):
+    host = np.asarray([np.finfo(np.float32).max, 1.0], dtype=np.float32)
+    with np.errstate(over="ignore"):
+        saved = host.astype(jnp.bfloat16)
+    assert np.isfinite(host).all() and not np.isfinite(saved).all()
+    path = tmp_path / "overflow.bin"
+    path.write_bytes(saved.tobytes())
+    record = TensorRecord("trainable.overflow.weight", np.dtype(jnp.bfloat16), host.shape, str(path), 0, saved.nbytes)
+    with np.errstate(over="ignore"), pytest.raises(ValueError, match="Nonfinite cast/output"):
+        compare_exported_tensor(record.key, host, record, {"shape": list(host.shape)})
 
 
 class Layer(eqx.Module):

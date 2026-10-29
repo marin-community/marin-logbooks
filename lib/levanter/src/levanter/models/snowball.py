@@ -609,7 +609,9 @@ def snowball_loss_with_dispatch_stats(
     model: "SnowballLMHeadModel", example: LmExample, *, key=None
 ) -> tuple[NamedArray | Array, dict[str, Array]]:
     """Compute next-token loss and dispatch counts in one validity-masked forward."""
-    hidden, stats = model.activations_with_stats(example.tokens, dispatch_token_validity(example))
+    hidden, stats = model.activations_with_stats(
+        example.tokens, dispatch_token_validity(example), attn_mask=example.attn_mask
+    )
     loss = maybe_fused_next_token_loss(
         model.Pos,
         model.Embed,
@@ -863,9 +865,11 @@ class SnowballTransformer(eqx.Module):
         assert routes is not None
         return hidden, routes
 
-    def with_stats(self, token_ids: Array, token_valid: Array) -> tuple[Array, MoeForwardStats]:
-        """Run the ordinary causal forward with explicit dispatch validity and counts."""
-        hidden, routes, counts = self._forward(token_ids, None, True, token_valid)
+    def with_stats(
+        self, token_ids: Array, token_valid: Array, mask: AttentionMask | None = None
+    ) -> tuple[Array, MoeForwardStats]:
+        """Run causal attention with document segments, dispatch validity and counts."""
+        hidden, routes, counts = self._forward(token_ids, mask, True, token_valid)
         assert routes is not None and counts is not None
         return hidden, MoeForwardStats(routes, counts.sender_dropped, counts.receiver_dropped)
 
@@ -879,7 +883,14 @@ class SnowballTransformer(eqx.Module):
         cfg = self.config
         if mask is None:
             mask = AttentionMask.causal()
-        segment_ids = mask.segment_ids if isinstance(mask, AttentionMask) else None
+        if (
+            not isinstance(mask, AttentionMask)
+            or not mask.is_causal
+            or mask.sliding_window is not None
+            or mask.fa4_bounds is not None
+        ):
+            raise ValueError("Snowball transformer masks may only add causal document segments")
+        segment_ids = mask.segment_ids
         short_mask = AttentionMask(is_causal=True, sliding_window=cfg.sliding_window, segment_ids=segment_ids)
         long_mask = AttentionMask(is_causal=True, sliding_window=None, segment_ids=segment_ids)
 
@@ -948,30 +959,67 @@ class SnowballLMHeadModel(ModuleWithStateDictSerialization, LmHeadModel[Snowball
         key=None,
         pos_ids: NamedArray | None = None,
     ) -> NamedArray:
-        return self._activations(input_ids, return_routes=False)[0]
+        return self._activations(input_ids, return_routes=False, attn_mask=attn_mask)[0]
 
-    def activations_with_routes(self, input_ids: NamedArray) -> tuple[NamedArray, Array]:
+    def activations_with_routes(
+        self, input_ids: NamedArray, attn_mask: LmHeadAttentionMask | NamedArray | None = None
+    ) -> tuple[NamedArray, Array]:
         """The activations and every layer's selected expert ids ``[L, B, S, K]`` from this forward (an observer)."""
-        hidden, routes = self._activations(input_ids, return_routes=True)
+        hidden, routes = self._activations(input_ids, return_routes=True, attn_mask=attn_mask)
         assert routes is not None
         return hidden, routes
 
     def activations_with_stats(
-        self, input_ids: NamedArray, token_valid: NamedArray
+        self,
+        input_ids: NamedArray,
+        token_valid: NamedArray,
+        *,
+        attn_mask: LmHeadAttentionMask | NamedArray | None = None,
     ) -> tuple[NamedArray, MoeForwardStats]:
         """Return hidden states, routes and valid-assignment drops from the same forward."""
         if token_valid.axes != input_ids.axes or token_valid.dtype != jnp.bool_:
             raise ValueError("token_valid must be boolean with the token axes")
         sequence = input_ids.array.shape[-1]
         hidden, stats = self.transformer.with_stats(
-            input_ids.array.reshape(-1, sequence), token_valid.array.reshape(-1, sequence)
+            input_ids.array.reshape(-1, sequence),
+            token_valid.array.reshape(-1, sequence),
+            mask=self._attention_mask(input_ids, attn_mask),
         )
         hidden = hidden.reshape(*input_ids.array.shape, self.Embed.size)
         return hax.named(hidden, (*input_ids.axes, self.Embed)), stats
 
-    def _activations(self, input_ids: NamedArray, return_routes: bool) -> tuple[NamedArray, Array | None]:
-        # attn_mask is ignored: the pinned recipe builds its own per-layer short/long causal masks
-        # inside the transformer core. Segmented/packed inputs are a follow-up (see plan).
+    def _attention_mask(
+        self, input_ids: NamedArray, attn_mask: LmHeadAttentionMask | NamedArray | None
+    ) -> AttentionMask | None:
+        """Preserve document IDs while the model retains its short/long causal windows."""
+        if attn_mask is None:
+            return None
+        if not isinstance(attn_mask, LmHeadAttentionMask):
+            raise ValueError("Snowball accepts structured causal document masks, not dense masks")
+        if (
+            not attn_mask.is_causal
+            or attn_mask.explicit_mask is not None
+            or attn_mask.causal_offset is not None
+            or attn_mask.bidirectional_window is not None
+            or attn_mask.sliding_window is not None
+        ):
+            raise ValueError("Snowball document masks cannot override the model's causal/window policy")
+        if attn_mask.segment_ids is None:
+            return AttentionMask.causal()
+        sequence = input_ids.array.shape[-1]
+        query, keys = attn_mask.segment_ids
+        query = query.broadcast_to(input_ids.axes).array.reshape(-1, sequence)
+        keys = keys.broadcast_to(input_ids.axes).array.reshape(-1, sequence)
+        query = reshard(query, P(_BATCH_AXES, _context_axis()))
+        keys = reshard(keys, P(_BATCH_AXES, None))
+        return AttentionMask.causal().with_segment_ids(query, keys)
+
+    def _activations(
+        self,
+        input_ids: NamedArray,
+        return_routes: bool,
+        attn_mask: LmHeadAttentionMask | NamedArray | None,
+    ) -> tuple[NamedArray, Array | None]:
         Pos = input_ids.resolve_axis(self.Pos.name)
         raw = input_ids.array
         lead = raw.shape[:-1]
@@ -979,7 +1027,10 @@ class SnowballLMHeadModel(ModuleWithStateDictSerialization, LmHeadModel[Snowball
         b = int(np.prod(lead)) if lead else 1
         tokens = reshard(raw.reshape(b, s), P(_BATCH_AXES, _context_axis()))
         # [B, S, D], and [L, B, S, K] with return_routes
-        hidden, routes = self.transformer.with_routes(tokens) if return_routes else (self.transformer(tokens), None)
+        mask = self._attention_mask(input_ids, attn_mask)
+        hidden, routes = (
+            self.transformer.with_routes(tokens, mask) if return_routes else (self.transformer(tokens, mask), None)
+        )
         hidden = hidden.reshape(*lead, s, self.Embed.size) if lead else hidden.reshape(s, self.Embed.size)
         out_axes = (*input_ids.axes, self.Embed) if lead else (Pos, self.Embed)
         return hax.named(hidden, out_axes), routes
