@@ -290,7 +290,7 @@
         "vllm::grug_moe_short_conv"
       ]
     },
-    "scope": "Full535B TP1DP16EP16 combined direct ShortConv plusPIECEWISE. Tenfixedhistorywaves withall16DPcounts andall6native shortbanks. Crossserver graph9ea fixedhistory/globalshapereference mustpassbeforeAgentXclaim; unchangedgraphcode reusessameserver replayoffqualification.",
+    "scope": "Full Hero 535B TP1/DP16/EP16: direct ShortConv outputs plus PIECEWISE graphs. Ten fixed-history waves record all 16 DP token counts; six native short banks measure diagnostic throughput. Require the cross-server graph9ea fixed-history/global-shape reference before an AgentX claim. Reuse replay-disabled qualification of unchanged graph code.",
     "prefetch_flashinfer_headers": true,
     "numa_bind": true,
     "gpu_memory_utilization": 0.95,
@@ -357,23 +357,23 @@
     "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
   },
   "value_hypothesis": {
-    "bottleneck": "ShortConv remains outside piecewise graph segments; its Python dispatch/allocation repeats144times permodelstep. BusyworkerCPUalone doesnotprovecriticalpath.",
-    "plausible_gain": "Measured41\u201349us/call yields6.1\u20136.8ms/step onlyifserialcriticalpath. CompleteBF16modulecallssave24.5\u201327.7%; noendtoendgainassumed.",
-    "cheapest_useful_experiment": "Reuse16GPU native diagnostic: fixedhistories andallDPbatchshapes againstgraph9ea reference, actualKVstorage, then6native shortbanks. Reuseunchangedindependentmoduleandgraphreplayoffchecks. No fullhour unlessfullmodelnumerics passandshortresults justifyit.",
-    "engineering_cost": "Already3added/9removedlines composedontheprivatebaseline; no newsubsystem,compiledextension,dependency,officialrelease orshareddefault. About15\u201330min\u00d716GPUsincludingcoldstartup; compare againstalreadyretainedgraphreferencewithoutrepeatingitsfullhour."
+    "bottleneck": "ShortConv stays outside piecewise graph segments. Python dispatch and allocation repeat 144 times per model step. Busy worker CPU alone does not establish critical-path cost.",
+    "plausible_gain": "Measured 41\u201349 microseconds/call imply 6.1\u20136.8 milliseconds/step only if those calls are on the serial critical path. Complete BF16 module calls save 24.5\u201327.7%; no end-to-end gain is assumed.",
+    "cheapest_useful_experiment": "Reuse the native sixteen-GPU diagnostic: fixed histories and every DP batch shape against graph9ea, actual KV storage, then six short banks. Reuse unchanged independent module and graph-replay reference checks. A full hour requires full-model numerical qualification and supporting short-bank results.",
+    "engineering_cost": "The private source composes 3 added/9 removed lines. No new subsystem, compiled extension, dependency, official release or shared default. Estimate 15\u201330 minutes on 16 GPUs including startup. Reuse the retained graph reference."
   },
   "rack_change_note": "Fresh source/server/nativewarmup/hour required after20:07 externaltermination. Do notsplicepriorpartialpoints. Currentverifiedspare392.",
   "numerical_reference": {
     "source_commit": "17c7b0f70206ca294335ca877f818d2619fc95cc",
     "wheel_sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
     "result": "results/full-hero-graph-qualified-controls.json",
-    "policy": "Compareeveryfixedhistorywave, scheduledandpaddedglobalDPvectors,finitepointwiselogprobsandchoices. Zero delta/identicalchoicesexpectedfromdirectoutput. No toleranceweakening ortrajectorypostfilter. Investigateanyshapedifferencebeforeclaimingcorrectness."
+    "policy": "Compare every fixed-history wave, scheduled and padded global DP vectors, finite pointwise logprobs and choices. Direct outputs should give zero delta and identical choices. Preserve tolerances and every trajectory. Investigate shape differences before claiming correctness."
   },
   "graph_coverage_question": {
-    "observation": "Retained graph16 numerical traces record 4096-token prefill as NONE and at most64-token scheduled batches as PIECEWISE. This is a numerical probe, not full AgentX coverage.",
+    "observation": "Retained sixteen-GPU numerical traces record 4,096-token prefill batches as NONE and scheduled batches of at most 64 tokens as PIECEWISE. This probe does not measure full AgentX graph coverage.",
     "pinned_code": "vllm/v1/worker/gpu/dp_utils.py: any rank requesting NONE makes all ranks use NONE. PIECEWISE agreement pads every rank to the largest scheduled token count. vllm/v1/worker/gpu/cudagraph_utils.py: mixed PIECEWISE captures can exceed max_num_seqs.",
-    "next_measurement": "Record existing native CPU dispatch metadata around all six short banks. Report replay frequency and scheduled/padded token vectors; batch counts are not time shares. No GPU synchronization or profiler. Instrumented diagnostic rates do not replace full-hour confirmation.",
-    "decision": "Consider supported larger capture sizes only after measuring mixed-prefill coverage and padding cost. Large captures may increase dummy work and graph memory; no automatic assumption of a gain.",
+    "next_measurement": "Record existing native CPU dispatch metadata around all six short banks. Report selected NONE/PIECEWISE modes and scheduled/padded token counts across all 16 ranks. These show dispatch selection and extra token rows, not execution time or graph memory. No GPU synchronization or profiler. Instrumented diagnostic rates do not replace full-hour confirmation.",
+    "decision": "Missing PIECEWISE selection during mixed prefill/decode can justify a supported larger-token-capture trial. First report selected modes and extra padded token rows. Check actual throughput and native KV/graph memory in that trial; do not infer a gain from greater coverage. No minimum positive replay fraction is required.",
     "cost": "About16 extra research lines reuse the existing worker RPC. No serving-code change, new subsystem, benchmark dependency or production default. Existing diagnostic allocation will collect the metadata."
   }
 }
