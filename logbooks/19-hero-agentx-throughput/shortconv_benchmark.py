@@ -25,7 +25,7 @@ from vllm.model_executor.models.grugmoe import GrugMoeShortConv
 from vllm.v1.attention.backends.short_conv_attn import ShortConvAttentionMetadata
 
 
-def benchmark(config: dict, candidate_source: Path) -> list[dict]:
+def benchmark(config: dict, candidate_source: Path, numerics_only: bool) -> list[dict]:
     original = GrugMoeShortConv.forward_impl
     install_forward(candidate_source, config["method_file_sha256"])
     candidate = GrugMoeShortConv.forward_impl
@@ -61,6 +61,22 @@ def benchmark(config: dict, candidate_source: Path) -> list[dict]:
                 torch.inference_mode(),
                 set_forward_context({prefix: metadata}, get_current_vllm_config(), num_tokens=batch),
             ):
+                initial_state = module.kv_cache[0].clone()
+                fixed_inputs = [torch.randn_like(hidden) for _ in range(5)]
+                references = []
+                GrugMoeShortConv.forward_impl = original
+                for fixed_input in fixed_inputs:
+                    references.append((module(fixed_input).clone(), module.kv_cache[0].clone()))
+                module.kv_cache[0].copy_(initial_state)
+                GrugMoeShortConv.forward_impl = candidate
+                for fixed_input, (expected_output, expected_state) in zip(fixed_inputs, references, strict=True):
+                    torch.testing.assert_close(module(fixed_input), expected_output, rtol=0, atol=0)
+                    torch.testing.assert_close(module.kv_cache[0], expected_state, rtol=0, atol=0)
+                results.append(
+                    {"kind": "bf16_numerics", "dim": dim, "batch": batch, "steps": 5, "output_and_state_bitwise": True}
+                )
+                if numerics_only:
+                    continue
                 # Alternate implementations to reduce order/clock bias. All JIT
                 # work and the warmup calls are outside the measured loop.
                 for repetition in range(3):
@@ -97,6 +113,7 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--candidate-source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--numerics-only", action="store_true")
     args = parser.parse_args()
     config = json.loads(args.manifest.read_text())
     with tempfile.TemporaryDirectory() as directory, set_current_vllm_config(VllmConfig()):
@@ -105,7 +122,7 @@ def main() -> None:
         )
         initialize_model_parallel(1, 1)
         try:
-            results = benchmark(config, args.candidate_source)
+            results = benchmark(config, args.candidate_source, args.numerics_only)
         finally:
             cleanup_dist_env_and_memory()
     record = {

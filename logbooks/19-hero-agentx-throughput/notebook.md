@@ -179,6 +179,16 @@ The continued goal explicitly requires family coverage, fixed-history numerical 
 
 The ShortConv [draft PR #107](https://github.com/marin-community/vllm/pull/107) is unmerged. Ordinary checks are terminal green. Native five-lane Codex advisory lint inspected the actual diff and found no material issues. Claude review could not authenticate; no unrelated authentication repair was attempted. The final bounded High-tier goal review remains pending.
 
+### 2026-10-29 03:40 UTC — cross-run numerical drift changes the next control
+
+The first direct comparison of the earlier S2 and S3 full-model logprobs found drift, despite exact cold/warm comparisons within each server. All prompts and API batch lists match, but internal scheduler/compiled shapes were not captured. At the first output token, chosen-token logprob differences range from 0.0083 to 0.0742; shared top-20 entries differ by as much as 0.2891. Across generated histories, one branch changes a token. Later-token differences after that divergence are not comparisons on fixed histories. S2 had a Torch profiler configured; S3 did not. These differences remain unexplained and do not qualify the change merely because outputs are finite or mostly equal.
+
+Before the budget trial, start a fresh released-wheel, prefix-enabled, 512-token server with no profiler using [this control](experiments/diagnostic-prefix-control.sh). Repeat the fixed histories to measure baseline restart variation, and compare with S3. [shortconv_benchmark.py](shortconv_benchmark.py) also prepares a strict BF16 comparison: reset identical state, replay five fixed inputs under each original/candidate method, and require bitwise-equal output and state across both native widths and five batch sizes. Its `--numerics-only` mode avoids repeating timings. This is a diagnostic prerequisite, not a relaxed tolerance or a full-model correctness claim. No GPU check runs until the healthy hour and its server shutdown finish.
+
+The server CPU sample covered 03:32:25–03:33:26 UTC. Median task use was 8.20 / 7.20 / 7.26 / 7.33 cores. All tasks see CPUs 0–143 and both CPU NUMA nodes, with no CPU quota or throttling. GPU0/1 are near NUMA0; GPU2/3 near NUMA1. Four resident engines and four resident GPU workers run per host; older zero-RSS process entries are not additional active workers. Several resident workers approach one core each. This rules out task-wide CPU quota starvation in the sample, not a serial dispatch limit. Native `numactl` is absent from the task image; keep CPU-placement evaluation pending rather than silently treating native binding as tested.
+
+The diagnostic launcher now exposes existing native expert-backend, collective, API-process and NUMA flags, plus a lighter native Torch collection mode. They change no shared launcher or benchmark code. Use one factor per trial and inspect the effective runtime path. Batching remains first among optimization trials after the numerical control.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.

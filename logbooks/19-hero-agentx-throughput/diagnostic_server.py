@@ -63,6 +63,11 @@ def serve(
     max_num_seqs: int | None,
     profile_warmup_iterations: int,
     candidate_wheel: Path | None,
+    moe_backend: str | None,
+    all2all_backend: str | None,
+    numa_bind: bool,
+    api_server_count: int | None,
+    profile_light: bool,
 ) -> None:
     recipe = series_path(manifest["profile"])
     assert hashlib.sha256(recipe.read_bytes()).hexdigest() == manifest["series_sha256"]
@@ -93,6 +98,10 @@ def serve(
             "prefix_cache": prefix_cache,
             "max_batched_tokens": max_batched_tokens,
             "max_num_seqs": max_num_seqs,
+            "moe_backend": moe_backend,
+            "all2all_backend": all2all_backend,
+            "numa_bind": numa_bind,
+            "api_server_count": api_server_count,
         },
         "status": "starting",
     }
@@ -116,9 +125,15 @@ def serve(
             for flag, value in (
                 ("--max-num-batched-tokens", max_batched_tokens),
                 ("--max-num-seqs", max_num_seqs),
+                ("--kernel-config", json.dumps({"moe_backend": moe_backend}) if moe_backend is not None else None),
             ):
                 if value is not None:
                     server.extra_cli_args[server.extra_cli_args.index(flag) + 1] = str(value)
+            for flag, value in (("--all2all-backend", all2all_backend), ("--api-server-count", api_server_count)):
+                if value is not None:
+                    server.extra_cli_args.extend([flag, str(value)])
+            if numa_bind:
+                server.extra_cli_args.append("--numa-bind")
             if profile:
                 nccl_environment = {
                     "NCCL_DEBUG": "INFO",
@@ -131,8 +146,8 @@ def serve(
                     "profiler": "torch",
                     "torch_profiler_dir": str(output / "torch-profiler"),
                     "ignore_frontend": True,
-                    "torch_profiler_with_stack": True,
-                    "torch_profiler_record_shapes": True,
+                    "torch_profiler_with_stack": not profile_light,
+                    "torch_profiler_record_shapes": not profile_light,
                     "torch_profiler_with_memory": False,
                     "delay_iterations": 2,
                     "warmup_iterations": profile_warmup_iterations,
@@ -185,6 +200,11 @@ def main() -> None:
     parser.add_argument("--max-num-seqs", type=int)
     parser.add_argument("--profile-warmup-iterations", type=int, default=1)
     parser.add_argument("--candidate-wheel", type=Path)
+    parser.add_argument("--moe-backend", choices=("triton", "auto", "flashinfer_trtllm", "flashinfer_cutlass"))
+    parser.add_argument("--all2all-backend", choices=("allgather_reducescatter", "flashinfer_nvlink_one_sided"))
+    parser.add_argument("--numa-bind", action="store_true")
+    parser.add_argument("--api-server-count", type=int)
+    parser.add_argument("--profile-light", action="store_true")
     args = parser.parse_args()
     signal.signal(signal.SIGTERM, interrupt)
     signal.signal(signal.SIGINT, interrupt)
@@ -199,6 +219,11 @@ def main() -> None:
         args.max_num_seqs,
         args.profile_warmup_iterations,
         args.candidate_wheel,
+        args.moe_backend,
+        args.all2all_backend,
+        args.numa_bind,
+        args.api_server_count,
+        args.profile_light,
     )
 
 
