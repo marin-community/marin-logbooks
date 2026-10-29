@@ -1,0 +1,36 @@
+{
+  "purpose": "Qualify exact-byte archive and resume using only three tiny owned control objects; no native checkpoint copy",
+  "source_prefix": "s3://marin-rno2a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/sc-default-study/preservation-control-01a16b97/2026.10.29.1/",
+  "archive_prefix": "s3://marin-rno2a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/preservation-control-v1",
+  "objects": [
+    {
+      "relative_path": "pattern.bin",
+      "bytes": 257024,
+      "sha256": "0d143b311424605f13b3e6f47e54faf1a95ba7e08ea373ef40f946208d276647"
+    },
+    {
+      "relative_path": "nested/metadata.json",
+      "bytes": 55,
+      "sha256": "75caed498c4d036391ba5390f7d003e6c03af9858f8e93524b73af04e9d62124"
+    },
+    {
+      "relative_path": "empty",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "total_source_bytes": 257079,
+  "deliberately_corrupted_derived_member": "pattern.bin",
+  "corruption": "An unverified archive copy has the same length and different bytes; source is never modified",
+  "expected": [
+    "All source and archive SHA256 digests match the declared payloads",
+    "Original source inventory is unchanged",
+    "The deliberately wrong derived copy is repaired by streaming",
+    "A second invocation reuses verified members and returns the same complete manifest",
+    "No source object is deleted"
+  ],
+  "gpu_count": 0,
+  "model_or_grading_calls": 0,
+  "bulk_checkpoint_copy": "Deferred until every measured GPU consumer has stopped; coordinate and publish the finite bulk plan first",
+  "tool_source_sha256": "9b9eb9eb0c080d34587b4ed2e0253053df3cdc05918cb7b7d897eb0689633c1e"
+}
