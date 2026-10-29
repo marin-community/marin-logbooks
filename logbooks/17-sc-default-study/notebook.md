@@ -378,3 +378,25 @@ now includes this study's update-40 reporting hold; no duplicate incident was
 created. All five live task attempts remain running with durable telemetry at
 39. The retention decision is still pending, and no native restart state has
 been deleted. Formal inference continues to wait for the ninth valid endpoint.
+
+### 2026-10-29 17:45 UTC: Bound the idle allocation while preserving the interrupted run's evidence
+
+The provider still rejects the private study write at 17:40 UTC. With no
+capacity remedy yet authorized, keeping forty H100s idle costs another forty
+H100-hours per hour. The [operational stop plan](sc1284517-storage-hold-stop-plan.json)
+sets 18:15 UTC (11:15 a.m. Pacific) to release this exact owned coordinator and
+its descendants if writes remain blocked and no authorized recovery is underway.
+Romain has been told the deadline. This avoids an indefinite idle allocation;
+it does not end the study or authorize native checkpoint deletion.
+
+A bounded local snapshot now preserves **99 existing objects totaling
+75,584,683 bytes**, including all original initial/midpoint answers and ordinary
+telemetry. Every captured object's SHA256 is rechecked locally. The plan records
+the exact source, capture-manifest identity and restore directory. It does not
+preserve the live optimizer; no step-40 native checkpoint exists. If stopped,
+the forty-update attempt remains ineligible under the existing fifty-update
+admission gate, with all consumed GPU-hours retained. Complete the same arm
+later from the frozen initializer at a fresh artifact version after verified
+storage recovery. Apply the same operational response to any arm with this
+external hold. No valid endpoint or cycle clock is replaced or adjusted, and
+no scientific extension is declared.
