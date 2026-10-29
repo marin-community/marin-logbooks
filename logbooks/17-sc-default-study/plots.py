@@ -40,10 +40,24 @@ def plot(manifest_path: Path, analysis_path: Path, output: Path) -> None:
         raise ValueError("Plot input differs from the complete inference matrix")
 
     learning, axes = plt.subplots(1, 3, figsize=(13, 3.6), sharey=True, layout="constrained")
-    x_fields = ("step", "trained_loss_tokens", "training_cycle_elapsed_seconds")
+    x_fields = ("step", "trained_loss_tokens", "elapsed_including_evaluation_seconds")
     scales = (1, 1e6, 60)
     for arm, color in COLORS.items():
-        curves = [summary["curves"] for row, summary in data if row["arm"] == arm]
+        curves = [
+            [
+                {
+                    **point,
+                    "elapsed_including_evaluation_seconds": (
+                        summary["cycles"][point["step"] - 1]["elapsed_including_evaluation_seconds"]
+                        if point["step"]
+                        else 0
+                    ),
+                }
+                for point in summary["curves"]
+            ]
+            for row, summary in data
+            if row["arm"] == arm
+        ]
         if any([point["step"] for point in curve] != [0, 25, 50] for curve in curves):
             raise ValueError("Learning curves must retain the fixed checkpoint schedule")
         if any(point["tasks"] != 1000 for curve in curves for point in curve):
@@ -56,7 +70,13 @@ def plot(manifest_path: Path, analysis_path: Path, output: Path) -> None:
             axis.plot(x.mean(axis=0), y.mean(axis=0), "o-", color=color, label=LABELS[arm], linewidth=2)
     axes[0].set_ylabel("Equal-family full success (%)")
     for axis, label in zip(
-        axes, ("Policy updates", "Trained loss tokens (millions)", "Training-cycle time (minutes)"), strict=True
+        axes,
+        (
+            "Policy updates",
+            "Trained loss tokens (millions)",
+            "Elapsed from first rollout (minutes)\nIncludes evaluation pauses",
+        ),
+        strict=True,
     ):
         axis.set_xlabel(label)
     axes[0].legend(frameon=False)
@@ -86,18 +106,31 @@ def plot(manifest_path: Path, analysis_path: Path, output: Path) -> None:
     labels = [name.replace("_versus_", " - ").upper() for name in comparisons]
     for axis, metric, margin in zip(axes, ("quality_difference", "relative_training_cycle_cost"), (-1, 5), strict=True):
         for position, comparison in enumerate(comparisons):
-            value = analysis["comparisons"][comparison]["intervals"]["0.95"][metric]
-            estimate, low, high = (100 * value[key] for key in ("estimate", "low", "high"))
-            axis.errorbar(
-                estimate, position, xerr=[[estimate - low], [high - estimate]], fmt="o", color="#333333", capsize=4
-            )
+            for confidence, width, color, marker in (
+                ("0.975", 1, "#999999", "none"),
+                ("0.95", 2.5, "#333333", "o"),
+            ):
+                value = analysis["comparisons"][comparison]["intervals"][confidence][metric]
+                estimate, low, high = (100 * value[key] for key in ("estimate", "low", "high"))
+                axis.errorbar(
+                    estimate,
+                    position,
+                    xerr=[[estimate - low], [high - estimate]],
+                    fmt=marker,
+                    color=color,
+                    elinewidth=width,
+                    capsize=4,
+                )
         axis.axvline(0, color="#999999", linewidth=1)
         axis.axvline(margin, color="#B22222", linestyle="--", linewidth=1)
         axis.set_yticks(range(len(labels)), labels)
         axis.invert_yaxis()
     axes[0].set_xlabel("Held-out success difference (percentage points)")
     axes[1].set_xlabel("Relative training-cycle cost (%)")
-    intervals.suptitle("Update-50 endpoint: paired seed/task 95% intervals; dashed lines mark margins")
+    intervals.suptitle(
+        "Update-50 endpoint: inner 95%, outer 97.5% intervals\n"
+        "Decisions use outer intervals; dashed lines mark margins"
+    )
     save(intervals, output, "endpoint-intervals")
 
 

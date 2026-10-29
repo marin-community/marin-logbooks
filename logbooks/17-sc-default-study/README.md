@@ -177,3 +177,9 @@ it on a CPU worker in RNO with `preserve.py inventory <source-prefix/>
 before bulk I/O. The complete manifest records full content hashes and exact
 restore paths. Cleanup requires verified preservation of the unchanged source
 inventory and stopped consumers; this driver never deletes source objects.
+
+Learning curves show elapsed time from the first rollout, including the
+exclusive midpoint evaluation pause. The cost curves use the primary
+training-cycle time with that pause excluded. Endpoint charts show nominal
+95% intervals in black and the predeclared 97.5% decision intervals in gray.
+Use the outer decision intervals when comparing with the fixed margins.
