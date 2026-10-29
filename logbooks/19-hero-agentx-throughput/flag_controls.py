@@ -80,7 +80,10 @@ def main() -> None:
             explicit, session = json.loads(explicit_text), json.loads(session_text)
             assert explicit["wave"] == session["wave"] and explicit["branches"] == session["branches"]
             parity.append(
-                {"wave": explicit["wave"], "exact_choices": explicit["response"]["choices"] == session["response"]["choices"]}
+                {
+                    "wave": explicit["wave"],
+                    "exact_choices": explicit["response"]["choices"] == session["response"]["choices"],
+                }
             )
         (args.output / "affinity-numerics.json").write_text(json.dumps(parity, indent=2) + "\n")
         assert all(row["exact_choices"] for row in parity)

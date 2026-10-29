@@ -47,7 +47,8 @@ def main() -> None:
         assert hashlib.sha256(config_source).hexdigest() == args.config_source_sha256
         replacements["vllm/model_executor/models/config.py"] = config_source
     distribution = importlib.metadata.distribution("vllm")
-    assert hashlib.sha256(Path(distribution.locate_file(args.module)).read_bytes()).hexdigest() == args.base_module_sha256
+    original = Path(distribution.locate_file(args.module)).read_bytes()
+    assert hashlib.sha256(original).hexdigest() == args.base_module_sha256
     record = next(path for path in distribution.files if path.name == "RECORD")
     entries = []
     args.output.parent.mkdir(parents=True, exist_ok=True)
