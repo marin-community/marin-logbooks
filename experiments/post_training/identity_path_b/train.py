@@ -20,6 +20,7 @@ from experiments.post_training.identity_path_b.recipe import (
     restore_frozen_state,
     special_row_values,
 )
+from experiments.post_training.identity_path_b.storage_audit import assert_special_row_bits
 
 
 def frozen_field_bits(model) -> dict:
@@ -110,6 +111,7 @@ def run_updates(
             continue
         if frozen_field_bits(state.model) != frozen:
             raise ValueError("A frozen Q/K/router/bias parameter changed bits")
+        partial_row_hashes = assert_special_row_bits(state.model, rows)
         label = completed - 1
         checkpointer.on_step(tree=state.saveable_state, step=label, force=True)
         checkpointer.wait_until_finished()
@@ -132,6 +134,7 @@ def run_updates(
                 "dispatch": counts,
                 "native_checkpoint": native,
                 "exposure": event.exposure,
+                "frozen_special_row_sha256": partial_row_hashes,
             }
         )
     run_on_export_writer(checkpoint_hook.finish_submissions)
