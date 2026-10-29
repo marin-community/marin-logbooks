@@ -400,3 +400,32 @@ later from the frozen initializer at a fresh artifact version after verified
 storage recovery. Apply the same operational response to any arm with this
 external hold. No valid endpoint or cycle clock is replaced or adjusted, and
 no scientific extension is declared.
+
+### 2026-10-29 18:20 UTC: Storage-stalled SC128 seed 4517 stopped; all forty GPUs released
+
+The private write probe still returns HTTP 405 at 18:15 UTC, with no authorized
+capacity remedy underway. The [published stop plan](sc1284517-storage-hold-stop-plan.json)
+is executed against only this run's exact coordinator at 18:16 UTC. The
+[verification](sc1284517-v3-storage-stop-verification.json) records coordinator
+and all five GPU tasks killed, their original attempt identities, and all task
+pods absent by 18:17 UTC. The live-clock [allocation proof](grug-sc1284517-v3-allocation.json)
+retains **197.524 H100-hours**, including startup, useful work and the storage
+hold, with the same clock limitations as the other proofs. Resource-board row
+1604 is closed; this study now has no active GPU allocation or grade-replay job.
+
+Forty optimizer updates and sampler publications completed, but durable metrics
+end at 39. The blocked reporting write never completed. This partial attempt
+has no update-50 quality endpoint or native export and remains ineligible under
+the frozen gates. Its in-memory optimizer state was lost at termination; the
+verified 99-object original-evidence snapshot and unchanged remote answers and
+telemetry remain preserved. No completed native restart checkpoint was deleted,
+and the retention decision remains pending. The [manifest](runs.json) retains
+the stopped attempt and its cost rather than replacing its history.
+
+Eight initial runs remain admitted. After verified storage recovery, complete
+the same SC128/4517 arm from the fixed initializer at a fresh artifact version.
+The failed infrastructure attempt is separate from that replacement's valid
+fifty-update cycle comparison; total study allocation includes both. No partial
+endpoint, shortened training duration, adjusted valid-run clock, extra task
+exclusion, default change or scientific extension is adopted. Formal inference
+and any justified finite extension still wait for a ninth admitted endpoint.
