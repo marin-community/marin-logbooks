@@ -26,8 +26,12 @@ from iris.env_resources import _read_iris_resource_proto
 from iris.jax.compile_cache import configure_jax_compilation_cache
 from iris.jax.init import initialize_jax, resolve_coordinator_port
 
-INITIAL_ATTEMPT_ENDPOINT_NAME = "/testuser/testjob/jax_coordinator-attempt-0"
-RETRY_ATTEMPT_ENDPOINT_NAME = "/testuser/testjob/jax_coordinator-attempt-3"
+INITIAL_ATTEMPT_ENDPOINT_NAME = (
+    "jax_coordinator-testuser-7213e19eb76e17be1965680b03f629fc21be2293e874f7f606e452cac9791250-attempt-0"
+)
+RETRY_ATTEMPT_ENDPOINT_NAME = (
+    "jax_coordinator-testuser-7213e19eb76e17be1965680b03f629fc21be2293e874f7f606e452cac9791250-attempt-3"
+)
 
 
 @dataclass

@@ -369,7 +369,10 @@ def child(root, rank, port, mode):
         patch.setattr(Trainer, "train_step", before_step)
 
         def register(name, address):
-            assert name == "/test/sft-startup/jax_coordinator-attempt-0" and address == f"127.0.0.1:{port}"
+            assert (
+                name == "jax_coordinator-test-1968694550d8e962e9374e404728accd3ab91c4d67d492c954a9711a4b7dbe9d-attempt-0"
+                and address == f"127.0.0.1:{port}"
+            )
             (root / "coordinator.json").write_text(json.dumps({"name": name, "address": address}))
             return "fixture-endpoint"
 
@@ -461,7 +464,8 @@ def test_bound_sft_startup_reaches_training_after_the_real_frozen_input_gather(t
         ranks.add(report["process"])
     assert ranks == set(range(4))
     assert (
-        json.loads((tmp_path / "coordinator.json").read_bytes())["name"] == "/test/sft-startup/jax_coordinator-attempt-0"
+        json.loads((tmp_path / "coordinator.json").read_bytes())["name"]
+        == "jax_coordinator-test-1968694550d8e962e9374e404728accd3ab91c4d67d492c954a9711a4b7dbe9d-attempt-0"
     )
     assert not (tmp_path / "run/sft-result.json").exists()
 

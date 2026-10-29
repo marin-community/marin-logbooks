@@ -152,8 +152,8 @@ def _parse_local_device_ids(raw: str | None) -> list[int] | None:
 
 def _attempt_endpoint_name(endpoint_name: str, job_info: JobInfo) -> str:
     # Actor namespaces span the whole root hierarchy; JAX worlds do not.
-    # An absolute name bypasses that root prefix and isolates sibling jobs.
-    return f"{job_info.job_id.to_wire()}/{endpoint_name.lstrip('/')}-attempt-{job_info.attempt_id}"
+    # Match the child-job/attempt key scheme in the shared Iris fix (#10420).
+    return f"{endpoint_name}-{job_info.job_id.to_safe_token()}-attempt-{job_info.attempt_id}"
 
 
 def _register_coordinator(job_info: JobInfo, port: int | None, endpoint_name: str) -> str:
