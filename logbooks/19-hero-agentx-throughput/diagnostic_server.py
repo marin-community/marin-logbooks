@@ -74,7 +74,7 @@ def use_candidate_wheel(server: VllmEnvironment, receipt_file: Path, base: dict)
 
 
 def prefetch_flashinfer_headers(server: VllmEnvironment, output: Path) -> None:
-    command = server.command
+    command = server.launcher.command()
     prefix = command[: command.index("python")]
     run_logged(
         [
