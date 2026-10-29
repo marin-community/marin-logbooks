@@ -1,0 +1,414 @@
+{
+  "native_processor_aggregate": {
+    "hw": "gb200",
+    "conc": 128,
+    "image": "marin-vllm:0.0.0.dev20261012+marin.3a054c458ca8.cu132@3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+    "model": "marin-community/Hero-535B-step144000",
+    "infmax_model_prefix": "hero144k",
+    "framework": "vllm",
+    "precision": "bf16",
+    "spec_decoding": "none",
+    "disagg": false,
+    "scenario_type": "agentic-coding",
+    "is_multinode": true,
+    "num_gpus": 16,
+    "tp": 16,
+    "ep": 16,
+    "dp_attention": "true",
+    "kv_offloading": "none",
+    "kv_offload_backend": null,
+    "allocated_cpu_dram_gb": 0,
+    "num_requests_total": 2904,
+    "num_requests_successful": 1498,
+    "request_accounting": {
+      "records_total": 2904,
+      "records_profiled": 1498,
+      "records_dropped_total": 1406,
+      "records_warmup_dropped": 1406,
+      "records_error_dropped": 10,
+      "error_categories": {
+        "InvalidInferenceResultError": 10
+      }
+    },
+    "pp": 1,
+    "dcp_size": 1,
+    "pcp_size": 1,
+    "dataset": {
+      "source_type": "public_dataset",
+      "loader": "semianalysis_cc_traces_weka_062126_256k",
+      "hf_dataset_name": "semianalysisai/cc-traces-weka-062126-256k",
+      "hf_split": "train",
+      "num_dataset_entries": 393
+    },
+    "request_metrics": {
+      "qps": {
+        "window_seconds": 1,
+        "samples": 3623,
+        "mean": 0.41319,
+        "p50": 0.0,
+        "p75": 1,
+        "p90": 1,
+        "p95": 2,
+        "std": 0.65079
+      },
+      "latency": {
+        "ttft": {
+          "mean": 292.45333,
+          "p50": 270.43629,
+          "p75": 391.92203,
+          "p90": 498.35803,
+          "p95": 569.73235,
+          "std": 196.11125
+        },
+        "e2el": {
+          "mean": 473.04687,
+          "p50": 426.6844,
+          "p75": 577.51533,
+          "p90": 766.62918,
+          "p95": 984.37573,
+          "std": 307.14588
+        },
+        "itl": {
+          "mean": 0.27511,
+          "p50": 0.27473,
+          "p75": 0.279,
+          "p90": 0.28279,
+          "p95": 0.28578,
+          "std": 0.00677
+        },
+        "tpot": {
+          "mean": 0.27511,
+          "p50": 0.27473,
+          "p75": 0.279,
+          "p90": 0.28279,
+          "p95": 0.28578,
+          "std": 0.00677
+        },
+        "intvty": {
+          "mean": 3.63485,
+          "p50": 3.63989,
+          "p75": 3.5842,
+          "p90": 3.53623,
+          "p95": 3.49918,
+          "std": 0.0901
+        },
+        "e2e_norm_intvty": {
+          "mean": 0.5326,
+          "p50": 1.09852,
+          "p75": 0.59233,
+          "p90": 0.32942,
+          "p95": 0.2421,
+          "std": 0.87595
+        },
+        "full_response_itl": {
+          "mean": 0.27512,
+          "p50": 0.27473,
+          "p75": 0.279,
+          "p90": 0.28279,
+          "p95": 0.28578,
+          "std": 0.00677
+        },
+        "full_response_intvty": {
+          "mean": 3.63477,
+          "p50": 3.63988,
+          "p75": 3.58419,
+          "p90": 3.53619,
+          "p95": 3.49915,
+          "std": 0.09008
+        }
+      },
+      "tokens": {
+        "input": {
+          "mean": 63028.36248,
+          "p50": 43545,
+          "p75": 93571.75,
+          "p90": 135591.7,
+          "p95": 177891,
+          "std": 54942.94741
+        },
+        "output_actual": {
+          "mean": 657.04139,
+          "p50": 392,
+          "p75": 811.5,
+          "p90": 1431.8,
+          "p95": 2035.45,
+          "std": 848.94303
+        },
+        "output_expected": {}
+      },
+      "throughput": {
+        "input": {
+          "tokens_per_second": 26018.6455
+        },
+        "output": {
+          "tokens_per_second": 271.23229
+        },
+        "total": {
+          "tokens_per_second": 26289.87779
+        },
+        "duration_seconds": 3628.80101,
+        "per_gpu": {
+          "total_tput_tps": 1643.11736,
+          "output_tput_tps": 16.95202,
+          "input_tput_tps": 1626.16534
+        }
+      },
+      "cache": {
+        "theoretical_cache_hit_rate": 0.92618
+      }
+    },
+    "server_metrics": {
+      "present": true,
+      "adapter": "vllm",
+      "metric_count": 41,
+      "cache": {
+        "gpu_cache_hit_rate": 0.0,
+        "cpu_cache_hit_rate": 0.0,
+        "external_cache_hit_rate": 0.0,
+        "overall_cache_hit_rate": 0.0,
+        "prefix_cache_hits": 0.0,
+        "prefix_cache_queries": 0.0,
+        "external_prefix_cache_hits": 0.0,
+        "external_prefix_cache_queries": 0.0,
+        "cached_tokens_by_source": {},
+        "frontend_cache_hit_rate": null,
+        "router_kv_hit_rate": null,
+        "router_shared_cache_hit_rate": null,
+        "frontend_cached_tokens": null,
+        "frontend_input_tokens": null
+      },
+      "kv_cache": {
+        "gpu_usage_pct": 0.99922,
+        "gpu_total_tokens": null,
+        "cpu_usage_pct": null,
+        "cpu_used_tokens": null,
+        "cpu_total_tokens": null
+      },
+      "kv_offload": {
+        "bytes_gpu_to_cpu": null,
+        "bytes_cpu_to_gpu": null,
+        "time_gpu_to_cpu": null,
+        "time_cpu_to_gpu": null,
+        "bandwidth_gpu_to_cpu_bytes_per_second": null,
+        "bandwidth_cpu_to_gpu_bytes_per_second": null
+      },
+      "tokens": {
+        "prompt_total": 102705336,
+        "generation_total": 1156168,
+        "requests_completed": 1498,
+        "prompt_by_source": {
+          "gpu_cache_hit": 0.0,
+          "cpu_or_external_cache_hit": 0.0,
+          "computed": 102705336,
+          "raw": {
+            "external_kv_transfer": 0.0,
+            "local_cache_hit": 0.0,
+            "local_compute": 102705336
+          }
+        }
+      },
+      "sources": [
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=0",
+          "role": "combined",
+          "prompt_tokens": 6273216,
+          "generation_tokens": 92848,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.83939
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=1",
+          "role": "combined",
+          "prompt_tokens": 6376517,
+          "generation_tokens": 76823,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.9234
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=10",
+          "role": "combined",
+          "prompt_tokens": 6134056,
+          "generation_tokens": 57348,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.96135
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=11",
+          "role": "combined",
+          "prompt_tokens": 6407349,
+          "generation_tokens": 55344,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.77532
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=12",
+          "role": "combined",
+          "prompt_tokens": 6412382,
+          "generation_tokens": 79429,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.91954
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=13",
+          "role": "combined",
+          "prompt_tokens": 6491437,
+          "generation_tokens": 60310,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.73834
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=14",
+          "role": "combined",
+          "prompt_tokens": 6409930,
+          "generation_tokens": 83523,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.95573
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=15",
+          "role": "combined",
+          "prompt_tokens": 6416276,
+          "generation_tokens": 84418,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.99922
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=2",
+          "role": "combined",
+          "prompt_tokens": 6534835,
+          "generation_tokens": 62517,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.89453
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=3",
+          "role": "combined",
+          "prompt_tokens": 6647789,
+          "generation_tokens": 83751,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.71285
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=4",
+          "role": "combined",
+          "prompt_tokens": 6702088,
+          "generation_tokens": 93974,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.90253
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=5",
+          "role": "combined",
+          "prompt_tokens": 6645408,
+          "generation_tokens": 59454,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.71785
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=6",
+          "role": "combined",
+          "prompt_tokens": 6399968,
+          "generation_tokens": 72500,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.82349
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=7",
+          "role": "combined",
+          "prompt_tokens": 6565881,
+          "generation_tokens": 57451,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.83075
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=8",
+          "role": "combined",
+          "prompt_tokens": 5716920,
+          "generation_tokens": 81359,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.99878
+        },
+        {
+          "id": "combined|http://127.0.0.1:38197/metrics|engine=9",
+          "role": "combined",
+          "prompt_tokens": 6571284,
+          "generation_tokens": 55119,
+          "prefix_cache_hit_rate": null,
+          "gpu_kv_cache_usage_pct": 0.84028
+        }
+      ]
+    },
+    "kv_cache_pool_tokens": null
+  },
+  "interpretation": {
+    "scope": "Matched C128 full normal-hour native AgentX, fixed all393 eligible traces and released3a BF16/nativeKV. Baseline cacheOFF/budget512; candidate stock wheel/cacheON/budget2048. No intrusive profiler.",
+    "output_tokens_per_second_per_gpu": 16.95202,
+    "error_accounting": "Native scoring export has0 actual error records for baseline,2 connection errors for candidate. Upstream total error_dropped also counts error records in warmup; these are not additional scoring failures. Native validity gates unchanged.",
+    "source": "experiments/baseline-c128.json",
+    "neighbor_activity": "Own automatic/8192/PP4/one-sided trials at separate times; neighboring wg0420 ep4 batch32 began06:04 on the same spare rack. Shared-fabric interference possible; quiet repeats depend on whether the conclusion could change."
+  },
+  "raw_retention": [
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c128/host-0/outputs-7186a32f84b341d114e22c1cadd2c5507e0f623dc1c6137d0f9455fd44e4ce71.tar.zst",
+      "archive_sha256": "7186a32f84b341d114e22c1cadd2c5507e0f623dc1c6137d0f9455fd44e4ce71",
+      "archive_bytes": 39859981,
+      "readback_sha256": "7186a32f84b341d114e22c1cadd2c5507e0f623dc1c6137d0f9455fd44e4ce71",
+      "validation": {
+        "attempt_valid": true,
+        "attempt_uid": "61b3c5a54949f80e",
+        "window": {
+          "submission_valid": true,
+          "profiling_requests": 1498,
+          "profiling_errors": 0,
+          "profiling_error_ratio": 0.0,
+          "coverage": {
+            "phase_name": "profiling",
+            "expected_duration_seconds": 3600.0,
+            "required_ratio": 0.95,
+            "ttft_ratio": 0.9995697516088888,
+            "inter_token_latency_ratio": 1.0
+          },
+          "profile_start": "2026-10-29T05:58:59.883608",
+          "profile_end": "2026-10-29T06:59:39.884639"
+        },
+        "live_gang_fence": {
+          "/romain/dev-gpu-hero-agentx-01a1846a/0": "61b3c5a54949f80e",
+          "/romain/dev-gpu-hero-agentx-01a1846a/1": "cd9dba4a0b437390",
+          "/romain/dev-gpu-hero-agentx-01a1846a/2": "91a37c80e10493ec",
+          "/romain/dev-gpu-hero-agentx-01a1846a/3": "ec7c459e8b00d47a"
+        }
+      }
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c128/host-1/outputs-6bceecb141cf29f63458bfb77314fbd90b7d5cc11f45b80661c9425a75d2597d.tar.zst",
+      "archive_sha256": "6bceecb141cf29f63458bfb77314fbd90b7d5cc11f45b80661c9425a75d2597d",
+      "archive_bytes": 2684103,
+      "readback_sha256": "6bceecb141cf29f63458bfb77314fbd90b7d5cc11f45b80661c9425a75d2597d",
+      "validation": {
+        "attempt_valid": true,
+        "attempt_uid": "cd9dba4a0b437390"
+      }
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c128/host-2/outputs-1e4cc850041ef701da1ae4e0ebe0885e8e881c64c6e00ede2eef401ca2e8744c.tar.zst",
+      "archive_sha256": "1e4cc850041ef701da1ae4e0ebe0885e8e881c64c6e00ede2eef401ca2e8744c",
+      "archive_bytes": 2715595,
+      "readback_sha256": "1e4cc850041ef701da1ae4e0ebe0885e8e881c64c6e00ede2eef401ca2e8744c",
+      "validation": {
+        "attempt_valid": true,
+        "attempt_uid": "91a37c80e10493ec"
+      }
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/baseline-c128/host-3/outputs-f4f96fa217aeda55caa20c952ad8d1810a73f0eca990053e51435f5282eb30bc.tar.zst",
+      "archive_sha256": "f4f96fa217aeda55caa20c952ad8d1810a73f0eca990053e51435f5282eb30bc",
+      "archive_bytes": 2718292,
+      "readback_sha256": "f4f96fa217aeda55caa20c952ad8d1810a73f0eca990053e51435f5282eb30bc",
+      "validation": {
+        "attempt_valid": true,
+        "attempt_uid": "ec7c459e8b00d47a"
+      }
+    }
+  ]
+}
