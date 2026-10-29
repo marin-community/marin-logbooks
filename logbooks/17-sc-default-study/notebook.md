@@ -549,3 +549,21 @@ source, archive or metadata. Source lint passes, but the real read-only
 preflight still awaits the full native archive; **no cleanup command has been
 executed**. The active 805.115-GB pilot retains its published source and all
 measured study GPU consumers remain stopped.
+
+### 2026-10-29 19:40 UTC: Full-size multipart members verify; the complete checkpoint is still pending
+
+The [per-member checkpoint](native-preservation-large-members-check.json) now
+records 11 verified objects totaling **117,970,591,549 bytes**,
+including two 58,967,880,123-byte native tensor shards. Both large files pass
+streaming source SHA256 and full archive readback. This provides actual
+full-size multipart evidence beyond the tiny controls; it does not complete
+the 45-object native archive or its final unchanged-source check. The original
+checkpoint remains intact and no source cleanup is allowed on this partial
+evidence. The CPU worker is healthy and uses no GPU.
+
+The prepared cleanup helper's [live consumer check](preserved-cleanup-consumer-check.json)
+also verifies the completed control job and its recorded request digest, while
+refusing the still-running archive worker. It makes no model, grader or source
+delete call. The full archive preflight and removal remain unexecuted. Continue
+monitoring the same archive job; extend quiet checks to roughly fifteen minutes
+while large objects finish. RNO still explicitly rejects writes at 19:33 UTC.
