@@ -116,6 +116,7 @@ def pack_arm(
     epoch_steps, batch_summaries, packed = [], [], []
     tokens, masks, segments, row_ids = [], [], [], []
     metadata = []
+    occurrence_ledger = []
     source_pool = {r["id"]: target_counts(r) for r in [*identity, *replay]}
     if len(source_pool) != len(identity) + len(replay):
         raise ValueError("Identity/replay rendered IDs must be unique")
@@ -182,6 +183,17 @@ def pack_arm(
             if source_occurrences[row["source_id"]] > 3:
                 raise ValueError("Identity source conversation exceeds three TOTAL occurrences across modes")
         dose = source_pool[row["id"]]
+        occurrence_ledger.append(
+            {
+                "occurrence": len(occurrence_ledger),
+                "row_id": row["id"],
+                "source_id": row["source_id"],
+                "source": source,
+                "enable_thinking": row["enable_thinking"],
+                "family": row["family"],
+                "canonical_final_text_tokens": dose.final_text,
+            }
+        )
         total[source] += dose.raw
         final[source] += dose.final_text
         reasoning[source] += dose.reasoning_text
@@ -210,8 +222,11 @@ def pack_arm(
     )
     pq.write_table(pa.Table.from_pylist(packed, schema=schema), output / "packed.parquet", compression="zstd")
     (output / "sequence-rows.jsonl").write_text("".join(json.dumps(r) + "\n" for r in metadata))
+    ledger_bytes = "".join(json.dumps(row, sort_keys=True) + "\n" for row in occurrence_ledger).encode()
+    (output / "occurrence-ledger.jsonl").write_bytes(ledger_bytes)
     report = {
         "updates": updates,
+        "ordered_occurrence_ledger_sha256": hashlib.sha256(ledger_bytes).hexdigest(),
         "batch_size": GLOBAL_BATCH,
         "sequence_length": SEQUENCE_LENGTH,
         "identity_share_target": identity_share,

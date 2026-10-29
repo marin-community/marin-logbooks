@@ -44,6 +44,14 @@ def test_packed_dose_separates_actual_reasoning_and_final_tokens_and_source_occu
     by_id = {row["id"]: row for row in [*identity, *replay]}
     rows = pq.read_table(output / "packed.parquet").to_pylist()
     metadata = [json.loads(line) for line in (output / "sequence-rows.jsonl").read_text().splitlines()]
+    schedule = [json.loads(line) for line in (output / "occurrence-ledger.jsonl").read_text().splitlines()]
+    assert [row["row_id"] for row in schedule] == [row_id for packed in metadata for row_id in packed["ids"]]
+    for index, occurrence in enumerate(schedule):
+        original = by_id[occurrence["row_id"]]
+        assert occurrence["occurrence"] == index
+        assert occurrence["source_id"] == original["source_id"]
+        assert occurrence["enable_thinking"] == original["enable_thinking"]
+        assert occurrence["canonical_final_text_tokens"] == target_counts(original).final_text
     final, reasoning, raw, source_counts = Counter(), Counter(), Counter(), Counter()
     for packed, binding in zip(rows, metadata, strict=True):
         assert len(packed["input_ids"]) == SEQUENCE_LENGTH

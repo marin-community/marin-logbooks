@@ -93,6 +93,20 @@ def compile_corpus(args: argparse.Namespace) -> dict:
         for path in paths:
             add(corpus, path.parent.name, path.read_text())
             receipt(path, corpus, revision)
+    gpqa_manifest = json.loads((args.gpqa_questions.parent / "manifest.json").read_text())
+    gpqa = [json.loads(line) for line in args.gpqa_questions.read_bytes().splitlines()]
+    if (
+        gpqa_manifest["revision"] != "83022cefff930aea54f654c0b282e74b9eeda5c6"
+        or len(gpqa) != 198
+        or len({row["sha256"] for row in gpqa}) != 198
+    ):
+        raise ValueError("Expected the authorized pinned198-question GPQA diamond reference")
+    for row in gpqa:
+        if hashlib.sha256(row["question"].encode()).hexdigest() != row["sha256"]:
+            raise ValueError("GPQA raw question hash changed")
+        add("gpqa-diamond-local-only", str(row["record_id"]), row["question"])
+    receipt(args.gpqa_questions, "gpqa-diamond-local-only", gpqa_manifest["revision"])
+    receipt(args.gpqa_questions.parent / "manifest.json", "gpqa-provenance-local-only", gpqa_manifest["revision"])
     for path in args.protected:
         raw = path.read_bytes()
         rows = (
@@ -117,12 +131,12 @@ def compile_corpus(args: argparse.Namespace) -> dict:
         "corpus_sha256": hashlib.sha256(corpus_path.read_bytes()).hexdigest(),
         "sources": sources,
         "coverage_gaps": [
-            "GPQA diamond unavailable(401); no alternate or credential changes",
             "Historical suite snapshot equality not yet attested",
             "Sotopia instruction inputs only, not every dynamic profile/environment message",
             "LiveCodeBench/semantic equivalence not certified by these references",
         ],
         "purpose": "Exclusion references only; never replay training prompts or assistant targets",
+        "distribution": "LOCAL ONLY: includes authorized gated GPQA questions; never publish corpus text",
     }
     (args.output / "report.json").write_text(json.dumps(report, indent=2) + "\n")
     return report
@@ -135,6 +149,7 @@ def main() -> None:
     parser.add_argument("--vendor", type=Path, required=True)
     parser.add_argument("--hub", type=Path, required=True)
     parser.add_argument("--protected", type=Path, action="append", required=True)
+    parser.add_argument("--gpqa-questions", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     report = compile_corpus(args)
