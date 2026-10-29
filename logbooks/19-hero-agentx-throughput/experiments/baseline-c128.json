@@ -1,0 +1,113 @@
+{
+  "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+  "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+  "profile": "gb200",
+  "concurrency": 128,
+  "vllm_release": {
+    "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+    "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+      },
+      {
+        "architecture": "x86_64",
+        "sm_targets": [
+          "9.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+      }
+    ],
+    "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+  },
+  "workload": {
+    "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+    "recipe": {
+      "version": 1,
+      "inputs": {
+        "model": "marin-community/Hero-535B-step144000",
+        "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+        "harness_version": "1.0.12",
+        "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+        "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+        "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+        "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+        "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+        "sessions": 393,
+        "max_context": 262144,
+        "random_seed": 42,
+        "trace_idle_gap_cap_seconds": 300,
+        "tokenizer": "marin-community/marin-tokenizer",
+        "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+      },
+      "code_sha256": {
+        "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+        "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    },
+    "archive_uri": "s3://marin-us-east-08a/tmp/ttl=30d/agentx-workload/5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84/workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+    "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+    "archive_bytes": 166033271,
+    "lineage": {
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "filtered_sessions": 0,
+      "tokenizer": "marin-community/marin-tokenizer",
+      "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "tokenizer_files": {
+        ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+        "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+        "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+        "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+        "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+        "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+      },
+      "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+      "native_manifest_version": 26,
+      "conversations": 9602,
+      "turns": 68266,
+      "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+      "preparation_version": 1,
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "preparation_seconds": 233.21300347405486,
+      "peak_memory_kib": 9010624
+    },
+    "cache_status": "hit"
+  },
+  "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-125-US-EAST-08A",
+    "nodes": [
+      "s6xsxs64",
+      "s6xvdgb4",
+      "s7xsxs64",
+      "s9jtxs64"
+    ],
+    "verified_utc": "2026-10-29T04:27:03.895378+00:00",
+    "inventory_sha256": "414ca35948ffdaea787e18746e8bcbc975016becf5cdcfaefde1878dd16cbf6c",
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-c128-gate.json",
+    "hero_training_gpus": 0,
+    "concurrent_program_gpus": 32,
+    "neighbor_activity": "Separate batch group: baseline3a prefix-on budget2048 diagnostics; no intrusive profiling during this confirmation."
+  },
+  "source": {
+    "kind": "research",
+    "repository": "marin-community/marin-logbooks",
+    "head_sha": "34cd5042d114db3d16c040f0b9d5624efc924b7f",
+    "experiment": "baseline-c128",
+    "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+  }
+}
