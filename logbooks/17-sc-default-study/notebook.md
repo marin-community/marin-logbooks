@@ -615,3 +615,32 @@ prior source. Publish this plan before launch, recheck readiness, then capture
 the actual source, IDs and resolved configuration. No GPU has been submitted
 and no scientific extension is declared. The stopped version-3 attempt and
 all its allocation cost remain recorded.
+
+### 2026-10-29 21:52 UTC: The full native pilot and restorable-cleanup preflight pass
+
+The [full pilot verification](native-preservation-pilot-verification.json)
+passes for all **45 objects and 805,115,247,605 bytes**. Its immutable complete
+manifest SHA is
+`167ffb077b0c41b34df51f36f8557a6c1689dfe4f61adb1d8935cba8ef00bc70`.
+Every source/archive SHA256 matches and the full original source inventory
+remains unchanged. The worker succeeds; Kubernetes reports its task and output
+uploader both terminated with exit zero. The completed Pod object remains
+visible for retention, but no copy command is running. This is the first
+fully preserved native optimizer/restart checkpoint, not just sampled weights.
+
+The [real read-only cleanup preflight](native-preservation-pilot-cleanup-preflight.json)
+also passes. It rechecks the immutable input and complete digests, all source
+and archive object identities, the exact archive request, the current portable
+model, and live terminal state for all four original/copy consumers. It selects
+only **32 redundant source tensor objects totaling 805,063,106,528 bytes** and
+retains thirteen metadata objects, including the export request and latest-step
+marker. Full native restart state remains in the exact-byte East archive.
+Publish this concrete result before running the separately guarded removal.
+No source removal has occurred yet, and no unique-state-discard permission is
+assumed. The original full-preservation cleanup rule authorizes this restorable
+removal; the optional question about losing optimizer state remains separate.
+
+Headroom now permits the ninth initial arm's version-4 retry. After recording
+the completed archive and any covered-source cleanup, defer the other seven
+large copies while that measured GPU run executes. The published retry plan,
+unchanged runtime trees and same-recipe gates remain in force.
