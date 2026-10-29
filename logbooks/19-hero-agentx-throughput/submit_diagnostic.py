@@ -27,6 +27,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--name", required=True)
+    parser.add_argument(
+        "--agentx", action="store_true", help="Run the unchanged full AgentX protocol with recorded overrides"
+    )
     parser.add_argument("--budget", type=int, default=2048)
     parser.add_argument("--moe-backend", choices=("triton", "auto"), default="triton")
     parser.add_argument("--master-port", type=int)
@@ -58,6 +61,13 @@ def main() -> None:
         command += f" --master-port {args.master_port}"
     if args.all2all_backend is not None:
         command += f" --all2all-backend {args.all2all_backend}"
+    if args.agentx:
+        assert "runtime_overrides" in manifest and "diagnostic_request" not in manifest
+        command = (
+            'exec env PYTHONPATH="$IRIS_WORKDIR" "$IRIS_PYTHON" '
+            '"$IRIS_WORKDIR/logbooks/19-hero-agentx-throughput/agentx_candidate.py" '
+            '--manifest "$IRIS_WORKDIR/diagnostic-manifest.json"'
+        )
     entrypoint = Entrypoint(
         command=["bash", "-c", command],
         workdir_files={"diagnostic-manifest.json": args.manifest.read_bytes()},
@@ -79,9 +89,11 @@ def main() -> None:
                 coscheduling=CoschedulingConfig(group_by="nvlink.domain"),
                 priority_band=job_pb2.PRIORITY_BAND_BATCH,
                 scheduling_timeout=Duration.from_seconds(series["scheduling_timeout"]),
-                timeout=Duration.from_seconds(series["ready_timeout"] + args.serve_duration + 600),
-                max_retries_failure=0,
-                max_task_failures=0,
+                timeout=Duration.from_seconds(
+                    series["task_timeout"] if args.agentx else series["ready_timeout"] + args.serve_duration + 600
+                ),
+                max_retries_failure=series["max_retries_failure"] if args.agentx else 0,
+                max_task_failures=series["max_retries_failure"] if args.agentx else 0,
                 max_retries_preemption=series["max_retries_preemption"],
                 existing_job_policy=job_pb2.EXISTING_JOB_POLICY_KEEP,
                 task_image=series["task_image"],
