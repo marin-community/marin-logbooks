@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "run_root": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed4517/2026.10.28.4",
+  "arm": "tis",
+  "seed": 4517,
+  "actual_registered_entrypoint": "skyrl_train.entrypoints.taskcompendium",
+  "resolved_launch_sha256": "4e7fe7bb63ffb8ff2554556952b8ebe774f077c8228fe06c165b981b144dee85",
+  "trainer_config_sha256": "a085784cf48344ff5b06bd147bb0afa8d011c5540341ffd4e38ab90d0e12b2c3",
+  "model": {
+    "chat_template": null,
+    "identity": "users/romain/models/sc-default-grug-8c76b22a@2026.10.28:521ac962",
+    "local_path": "/tmp/marinskyrl/models/sc-default-grug-8c76b22a",
+    "tokenizer_revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0",
+    "tokenizer_uri": "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05",
+    "uri": "s3://marin-rno2a/marin/users/dml/models/grug-67b-a2b-datakit-sft-262k-2026.10.05-8c76b22a/2026.10.22/hf"
+  },
+  "train_data": [
+    {
+      "identity": "users/romain/documents/sc-default-study@2026.10.28.1:f07d9723",
+      "kind": "directory",
+      "local_path": "/tmp/marinskyrl/data/sc-default-study",
+      "relative_path": "train.parquet",
+      "uri": "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1"
+    }
+  ],
+  "validation_data": [
+    {
+      "identity": "users/romain/documents/sc-default-study@2026.10.28.1:f07d9723",
+      "kind": "directory",
+      "local_path": "/tmp/marinskyrl/data/sc-default-study",
+      "relative_path": "validation.parquet",
+      "uri": "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1"
+    }
+  ],
+  "checks": [
+    "RNO batch40H100 geometry",
+    "planned50updates and matched seed",
+    "TIS and intended SC arm",
+    "128prompts with4answers recipe",
+    "AdamW1e-6 and packing",
+    "normal rolling-staleness2 overlap",
+    "PP2/CP1/EP8,TP1/SP1",
+    "hypothetical probes off",
+    "no KL/entropy auxiliary loss",
+    "24K serving budget",
+    "native continuation source literal preserved",
+    "no synthetic qualification control"
+  ],
+  "limits": "Resolved configuration check. Actual updates, coverage, runtime and learned weights require run outputs."
+}
