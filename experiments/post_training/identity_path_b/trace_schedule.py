@@ -19,13 +19,14 @@ import numpy as np
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from experiments.post_training.identity_path_b.data import LOW_WEIGHT_IDS
 from experiments.post_training.identity_path_b.exposure import (
     GLOBAL_BATCH,
     SEQUENCE_LENGTH,
     TargetDose,
     checkpoint_cadence,
+    special_token_weight,
     target_counts,
+    weighted_dose,
 )
 
 
@@ -154,13 +155,16 @@ def load_variant(
     }
 
 
-def pack_schedule(rows: dict[str, ScheduledRow], ledger: Path, baseline: dict, output: Path) -> dict:
+def pack_schedule(
+    rows: dict[str, ScheduledRow], ledger: Path, baseline: dict, output: Path, *, special_token_loss_weight: float = 0.1
+) -> dict:
     """Preserve every ordered occurrence; pad the final batch without extra rows.
 
     Raw/weighted shares and step counts are measured after replacement. The
     canonical-final minima, source repeats, replay and occurrence ledger remain
     bound to B-base. A returned proposal still needs native/science review.
     """
+    special_token_weight(0, special_token_loss_weight)
     ledger_bytes = ledger.read_bytes()
     ledger_sha = hashlib.sha256(ledger_bytes).hexdigest()
     if ledger_sha != baseline["ordered_occurrence_ledger_sha256"]:
@@ -250,11 +254,12 @@ def pack_schedule(rows: dict[str, ScheduledRow], ledger: Path, baseline: dict, o
             ids, masks = row.input_ids.tolist(), row.assistant_masks.tolist()
             tokens.extend(ids)
             weights.extend(
-                float(mask) * (0.1 if token in LOW_WEIGHT_IDS else 1.0) for token, mask in zip(ids, masks, strict=True)
+                float(mask) * special_token_weight(token, special_token_loss_weight)
+                for token, mask in zip(ids, masks, strict=True)
             )
             segments.extend([segment] * n)
             row_ids.append(row.row_id)
-            dose = row.dose
+            dose = weighted_dose(row.dose, special_token_loss_weight)
             total[source] += dose.raw
             final[source] += dose.final_text
             reasoning[source] += dose.reasoning_text
@@ -350,6 +355,8 @@ def pack_schedule(rows: dict[str, ScheduledRow], ledger: Path, baseline: dict, o
         "cumulative_batches": summaries,
         "state": "FIXED_LEDGER_PACKED_PROPOSAL_REQUIRES_NATIVE_AND_SCIENCE_REVIEW",
     }
+    if special_token_loss_weight != 0.1:
+        report["special_token_loss_weight"] = special_token_loss_weight
     (output / "occurrence-ledger.jsonl").write_bytes(ledger_bytes)
     (output / "exposure.json").write_text(json.dumps(report, indent=2) + "\n")
     return report

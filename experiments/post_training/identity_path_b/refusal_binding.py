@@ -109,6 +109,23 @@ def check_capped_exposure(exposure: dict, arm: str) -> None:
     variant = exposure.get("experiment")
     if variant not in CAP_BINDINGS or arm not in CAP_BINDINGS[variant]:
         raise ValueError("Unknown capped variant/arm")
+    if exposure.get("special_token_loss_weight") != 1.0:
+        raise ValueError("Current capped r5 admission requires explicit all-token loss weight one")
+    if exposure["weighted_mass"] != exposure["raw_supervised_tokens"]:
+        raise ValueError("Weight-one mass must equal raw supervised-token counts")
+    if (
+        exposure["family_weighted_mass"] != exposure["family_raw_supervised_tokens"]
+        or exposure["identity_trace_weighted_mass"] != exposure["identity_trace_raw_supervised_tokens"]
+        or exposure["realized_identity_weighted_share"] != exposure["realized_identity_supervised_share"]
+    ):
+        raise ValueError("Weight-one family/trace/share accounting differs from raw targets")
+    for batch in exposure["cumulative_batches"]:
+        if (
+            batch["identity_weighted_mass"] != batch["identity_supervised_tokens"]
+            or batch["all_weighted_mass"] != batch["all_supervised_tokens"]
+            or batch["family_weighted_mass"] != batch["family_raw_supervised_tokens"]
+        ):
+            raise ValueError("Weight-one cumulative mass differs from actual raw targets")
     expected = CAP_BINDINGS[variant][arm]
     if any(exposure.get(k) != v for k, v in expected.items()):
         raise ValueError("Capped exposure differs from exact reviewed source/ledger/dose")

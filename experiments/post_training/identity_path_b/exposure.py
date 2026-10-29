@@ -32,6 +32,28 @@ class TargetDose:
     structural: Counter[str]
 
 
+def special_token_weight(token: int, special_token_loss_weight: float = 0.1) -> float:
+    """Separate optimization weight from structural-token and frozen-row membership."""
+    if not 0.0 <= special_token_loss_weight <= 1.0:
+        raise ValueError("Special-token loss weight must be finite and between zero and one")
+    return special_token_loss_weight if token in LOW_WEIGHT_IDS else 1.0
+
+
+def weighted_dose(dose: TargetDose, special_token_loss_weight: float = 0.1) -> TargetDose:
+    """Reweight the same raw targets without changing lexical/structural dose."""
+    special_token_weight(0, special_token_loss_weight)
+    if special_token_loss_weight == 0.1:
+        return dose  # Preserve historical floating-point accounting exactly.
+    structural = sum(count for token, count in dose.structural.items() if int(token) in LOW_WEIGHT_IDS)
+    return TargetDose(
+        raw=dose.raw,
+        final_text=dose.final_text,
+        reasoning_text=dose.reasoning_text,
+        weighted=dose.raw - (1.0 - special_token_loss_weight) * structural,
+        structural=dose.structural,
+    )
+
+
 def target_counts(row: dict) -> TargetDose:
     """Count actual masked target IDs; reasoning never contributes to final-answer dose."""
     target = [t for t, m in zip(row["input_ids"], row["assistant_masks"], strict=True) if m]
