@@ -81,6 +81,9 @@ def wait_for_owned_endpoint(job, endpoint_name: str) -> str:
             raise RuntimeError("Owned checkpoint serving job finished before endpoint registration")
         try:
             return context.client.resolve_endpoint(endpoint_name).rstrip("/")
+        except ConnectionError:
+            # Native in-cluster resolution raises this while the registry is empty.
+            pass
         except ConnectError as error:
             if error.code != Code.NOT_FOUND:
                 raise
