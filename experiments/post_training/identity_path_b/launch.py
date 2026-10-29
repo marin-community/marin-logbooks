@@ -31,9 +31,10 @@ SOURCE_OBJECTS = {
 
 def submission(*, name: str, training: dict, binding: ExportBinding, credentials: dict[str, str]) -> dict:
     """Build one native RNO CPU lifetime owner; never submit or discover capacity."""
-    if not re.fullmatch(r"pathb-bbase-(?:10|25)-[a-z0-9-]+", name):
-        raise ValueError("Require a fresh unambiguous B-base arm root name")
-    if training["arm"] not in {"10", "25"} or not name.startswith(f"pathb-bbase-{training['arm']}-"):
+    matched = re.fullmatch(r"pathb-(?:bbase|btraces)-(10|25)-[a-z0-9-]+", name)
+    if not matched:
+        raise ValueError("Require a fresh unambiguous Path B arm root name")
+    if training["arm"] not in {"10", "25"} or matched.group(1) != training["arm"]:
         raise ValueError("Root name and arm differ")
     if re.fullmatch(r"[0-9a-f]{40}", training["training_pin"]) is None:
         raise ValueError("Root requires an immutable full training revision")

@@ -46,10 +46,11 @@ def inputs(monkeypatch):
     return training, binding
 
 
-def test_root_submission_serializes_exact_bindings_without_credentials_and_uses_cpu_policy(monkeypatch):
+@pytest.mark.parametrize("variant", ["bbase", "btraces"])
+def test_root_submission_serializes_exact_bindings_without_credentials_and_uses_cpu_policy(monkeypatch, variant):
     training, binding = inputs(monkeypatch)
     request = launch.submission(
-        name="pathb-bbase-10-fixture",
+        name=f"pathb-{variant}-10-fixture",
         training=training,
         binding=binding,
         credentials={"CW_KEY_ID": "fake-id", "CW_KEY_SECRET": "fake-private-value"},

@@ -43,13 +43,13 @@ from experiments.post_training.identity_path_b.checkpoints import AsyncCheckpoin
 from experiments.post_training.identity_path_b.native import packed_dataset
 from experiments.post_training.identity_path_b.recipe import freeze_special_rows, path_b_config, special_row_values
 from experiments.post_training.identity_path_b.rehydrate import restore_trained_model
-from experiments.post_training.identity_path_b.smoke import check_training_exposure
 from experiments.post_training.identity_path_b.storage_audit import (
     assert_special_row_bits,
     audit_export_storage,
     audit_initialized_storage,
 )
 from experiments.post_training.identity_path_b.train import run_updates
+from experiments.post_training.identity_path_b.training_admission import check_training_exposure
 
 
 def read_pinned(path: str, expected_sha256: str) -> bytes:
