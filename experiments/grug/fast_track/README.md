@@ -18,8 +18,8 @@ uv run python -m experiments.grug.fast_track.dense_ladder \
 ```
 
 Use a unique campaign/version for a new comparison. Reusing them resumes the
-existing experiment. Runs keep one hourly temporary checkpoint and a permanent
-final checkpoint in the caller's namespace. W&B group names match the campaign
+existing experiment. Runs save a temporary checkpoint every 15 minutes, retaining
+the latest one, and a permanent final checkpoint in the caller's namespace. W&B group names match the campaign
 in `marin-community/marin_moe`. This experiment uses the original Hero data;
 the historical results below use the separate 16k-tokenizer flat cache.
 

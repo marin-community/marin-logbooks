@@ -124,3 +124,17 @@ At the current observation, Iris reports zero application failures on all eight 
 Fresh W&B and attempt-aware logs show finite losses and advancing steps on the three active tasks. The furthest 1e21 run, MuonH, is at about 15196/113219 updates (13.4%). Its instantaneous throughput is about 172k tokens/s. The 1e21 AdamW retry is around 3898 updates and the 3e20 MuonH retry around 3211. Other W&B summaries marked crashed are retained observations of preempted attempts, not current queued-task application failures. ETA remains dominated by variable GPU availability; no completion date is asserted.
 
 The archive index PR remains open and draft with no feedback. Its twelve-hour monitoring window has expired; this heartbeat stops its PR arm while continuing the experiment monitor. The PR is not merged or marked ready.
+
+## 2026-10-29: Shorter temporary checkpoint interval for the next launch
+
+Change the dense optimizer ladder's temporary checkpoint interval from one hour
+to 15 minutes for the next launch. Keep one rolling temporary checkpoint and the
+permanent final export. The existing coordinator uses the original source
+snapshot; this edit does not change its running or automatically retried tasks.
+
+A replacement coordinator is authorized once all campaign GPU tasks are
+preempted or waiting, with none running or initializing. Preserve the campaign
+and artifact version, run IDs, checkpoint lineage, training recipes, batch
+priority, and the eight-job/64-GPU cap. Verify that condition in live Iris and
+Kubernetes state before cancelling the existing coordinator and submitting its
+replacement from the updated source revision.

@@ -172,7 +172,7 @@ def build_run(
             checkpointer=CheckpointerConfig(
                 base_path=checkpoint_path,
                 temporary_base_path=temporary_checkpoint_base_path(ctx.output_path),
-                save_interval=timedelta(hours=1),
+                save_interval=timedelta(minutes=15),
                 keep=None,
                 append_run_id_to_base_path=False,
                 delete_old_temp_checkpoints=True,
