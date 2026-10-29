@@ -168,3 +168,12 @@ clocks, rejects repeated jobs and attempts, and keeps preexecution quota
 reservation separate. Active jobs enter only after their terminal proofs exist.
 These reconstructed spans have the timing limits documented in their sources;
 they are not exact provider billing or certified bounds.
+
+After all measured consumers stop, inventory each owned scratch run and preserve
+it on a CPU worker in RNO with `preserve.py inventory <source-prefix/>
+<archive-prefix> --run-source-revision <training-commit>`, then
+`preserve.py copy <immutable-manifest-uri> --execution-source-revision
+<archive-tool-commit>`. Check the resource board and current storage headroom
+before bulk I/O. The complete manifest records full content hashes and exact
+restore paths. Cleanup requires verified preservation of the unchanged source
+inventory and stopped consumers; this driver never deletes source objects.
