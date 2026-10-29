@@ -91,6 +91,10 @@
     "cluster": "cw-us-east-08a",
     "nvlink_domain": "DH1-125-US-EAST-08A",
     "nodes": [
+      "s2lrxs64",
+      "s45txs64",
+      "s5xm6j84",
+      "s6htxs64",
       "s6rrxs64",
       "s6vrxs64",
       "s6xsxs64",
@@ -106,11 +110,11 @@
       "sh5rxs64",
       "sjxqxs64"
     ],
-    "verified_utc": "2026-10-29T11:41:29.277004+00:00",
-    "inventory_sha256": "244eb469419cc03c716e9f0540ac0154da0c55f01b1cbdb914fc740ee2a2428a",
-    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-numa-memory-controls-gate.json",
+    "verified_utc": "2026-10-29T16:28:11.225741+00:00",
+    "inventory_sha256": "c21f72b052c25dc4a1985cb7abfad1f39eec06cd31b9881fdd3cf7a047607b0b",
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-c25616-final-gate.json",
     "hero_training_gpus": 0,
-    "neighbor_activity": "Original interactive16 holder has released. One new32 interactive serving group and native-affinity16 batch group use disjoint nodes. This independent16 batch group makes64 maximum. No intrusive GPU profiler during full-hour confirmation.",
+    "neighbor_activity": "Owned32 interactive C256 plus16 batch C128 recapture; another owner16 occupies spare rack. This16 batch point may queue until16 physical slots free. Never exceed32batch/64owned; no GPU profiler.",
     "excluded_active_batch_nodes": [
       "s2lrxs64",
       "s45txs64",
@@ -121,9 +125,10 @@
   "source": {
     "kind": "research",
     "repository": "marin-community/marin-logbooks",
-    "head_sha": "285bc9276f9e154bb68a57c0d0faffd56abe56bd",
     "experiment": "agentx-upstream-router2048-16gpu-c256",
-    "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+    "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d",
+    "parent_commit": "878066d45e23fdd0cda8dd92f94ce7848a221257",
+    "effective_inputs": "Committed manifest and actual Iris source bundle identify this run; inherited source head was stale."
   },
   "runtime_overrides": {
     "enable_prefix_caching": true,
@@ -131,7 +136,7 @@
     "master_port": 33400,
     "session_affinity": true
   },
-  "effective_recipe_sha256": "a4bd40c88f2fe74f4e61611b0cac8ef45f40665427d99ca1d9cfe5e3077f64bf",
+  "effective_recipe_sha256": "0e3e70017922f87c126687958cadbcee6c854a521705daa97f59dd9069655b1a",
   "effective_recipe_hash_input": {
     "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
     "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
@@ -139,9 +144,10 @@
     "source": {
       "kind": "research",
       "repository": "marin-community/marin-logbooks",
-      "head_sha": "285bc9276f9e154bb68a57c0d0faffd56abe56bd",
       "experiment": "agentx-upstream-router2048-16gpu-c256",
-      "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+      "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d",
+      "parent_commit": "878066d45e23fdd0cda8dd92f94ce7848a221257",
+      "effective_inputs": "Committed manifest and actual Iris source bundle identify this run; inherited source head was stale."
     },
     "runtime_overrides": {
       "enable_prefix_caching": true,
@@ -166,6 +172,11 @@
       "disable_retries": true,
       "session_id": "hero-agentx-router-qualification",
       "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
+    },
+    "metrics_collection": {
+      "explicit_url": "http://127.0.0.1:38201/metrics",
+      "discovered_url": "http://127.0.0.1:38201/metrics",
+      "effective_endpoints": 1
     }
   },
   "identity_note": "Base recipe/runtime pins are unchanged. Source, runtime_overrides, actual commands and effective_recipe_hash_input identify this stock-wheel candidate. All393 sessions, context, seed, warmup/replay/cache-busting and duration remain native. The workload archive is the permanent byte-identical retained copy.",
@@ -188,5 +199,10 @@
     "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
   },
   "purpose": "Native full-hour C256 scaling/load point on one16GPU serving group. Same393 sessions and full native replay/warmup/validity; no truncation, output caps or altered delays.",
-  "neighbor_activity": "One disjoint upstream-router group at the other size when admitted; no intrusive profiler. Spare rack currently has other-owner16 batch GPUs; accepts queueing. Actual admission/UUID proof required."
+  "neighbor_activity": "One disjoint upstream-router group at the other size when admitted; no intrusive profiler. Spare rack currently has other-owner16 batch GPUs; accepts queueing. Actual admission/UUID proof required.",
+  "metrics_collection": {
+    "explicit_url": "http://127.0.0.1:38201/metrics",
+    "discovered_url": "http://127.0.0.1:38201/metrics",
+    "effective_endpoints": 1
+  }
 }

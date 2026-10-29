@@ -1,0 +1,194 @@
+From d3b561f1e924de4b5780c8d64814b4218024639b Mon Sep 17 00:00:00 2001
+From: Romain Yon <1596570+yonromai@users.noreply.github.com>
+Date: Thu, 29 Oct 2026 08:46:41 -0700
+Subject: [PATCH] Preserve large AgentX metrics through Iris output capture
+
+---
+ experiments/evaluation/agentx/README.md       |  2 +
+ experiments/evaluation/agentx/artifacts.py    | 42 +++++++++++++++++++
+ experiments/evaluation/agentx/collect.py      | 10 ++++-
+ experiments/evaluation/agentx/run.py          |  3 ++
+ .../evaluation/agentx/test_coordinator.py     | 38 +++++++++++++++--
+ 5 files changed, 91 insertions(+), 4 deletions(-)
+
+diff --git a/experiments/evaluation/agentx/README.md b/experiments/evaluation/agentx/README.md
+index e81b5d8d30..333eb20ca9 100644
+--- a/experiments/evaluation/agentx/README.md
++++ b/experiments/evaluation/agentx/README.md
+@@ -154,6 +154,8 @@ without submitting GPU jobs. Before preparation completes there is nothing to
+ salvage. Submit a fresh run for unfinished points; cancelled sources are excluded
+ from ingestion.
+ 
++Server-metrics JSON is stored as `server_metrics_export.json.zst` with a checksum receipt so large exports fit Iris task-output limits. Collection restores the original bytes before invoking the unchanged processor. Older plain JSON exports remain readable.
++
+ Successful measurements, raw AgentX output and lineage become durable. A final
+ failure retains its configuration, reason, job/attempt identity and up to 100 log
+ lines when available. Full failed/preempted archives stay under
+diff --git a/experiments/evaluation/agentx/artifacts.py b/experiments/evaluation/agentx/artifacts.py
+index e9fc74ce16..83778eedef 100644
+--- a/experiments/evaluation/agentx/artifacts.py
++++ b/experiments/evaluation/agentx/artifacts.py
+@@ -66,3 +66,45 @@ def retain_artifacts(artifacts: Path, bundle: Path, prefix: str, *, name: str) -
+     uri = prefix_join(prefix, f"{name}-{digest}.tar.zst")
+     copy_file(str(bundle), uri)
+     return uri, digest
++
++
++def pack_server_metrics(point: Path) -> None:
++    """Keep lossless server metrics within Iris's uncompressed task-output limit."""
++    source = point / "aiperf_artifacts/server_metrics_export.json"
++    if not source.is_file():
++        return
++    encoded = source.with_suffix(".json.zst")
++    expected = file_digest(source)
++    with source.open("rb") as reader, encoded.open("wb") as writer:
++        with zstandard.ZstdCompressor().stream_writer(writer) as compressed:
++            shutil.copyfileobj(reader, compressed, length=8 * 1024**2)
++    with encoded.open("rb") as compressed, zstandard.ZstdDecompressor().stream_reader(compressed) as decoded:
++        if hashlib.file_digest(decoded, "sha256").hexdigest() != expected:
++            raise ValueError("Compressed server metrics differ from the original bytes")
++    receipt = {
++        "raw_sha256": expected,
++        "raw_bytes": source.stat().st_size,
++        "compressed_sha256": file_digest(encoded),
++        "compressed_bytes": encoded.stat().st_size,
++        "codec": "zstandard",
++    }
++    encoded.with_suffix(".receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
++    source.unlink()
++
++
++def restore_server_metrics(point: Path) -> None:
++    """Restore the original metrics bytes for the unchanged result processor."""
++    source = point / "aiperf_artifacts/server_metrics_export.json"
++    encoded = source.with_suffix(".json.zst")
++    if source.exists() or not encoded.exists():
++        return
++    receipt = json.loads(encoded.with_suffix(".receipt.json").read_text())
++    if file_digest(encoded) != receipt["compressed_sha256"]:
++        raise ValueError("Compressed server metrics checksum mismatch")
++    temporary = source.with_suffix(".json.tmp")
++    with encoded.open("rb") as compressed, zstandard.ZstdDecompressor().stream_reader(compressed) as decoded:
++        with temporary.open("wb") as writer:
++            shutil.copyfileobj(decoded, writer, length=8 * 1024**2)
++    if temporary.stat().st_size != receipt["raw_bytes"] or file_digest(temporary) != receipt["raw_sha256"]:
++        raise ValueError("Restored server metrics checksum mismatch")
++    temporary.replace(source)
+diff --git a/experiments/evaluation/agentx/collect.py b/experiments/evaluation/agentx/collect.py
+index 636a76bddd..315d633a06 100644
+--- a/experiments/evaluation/agentx/collect.py
++++ b/experiments/evaluation/agentx/collect.py
+@@ -15,7 +15,14 @@ from iris.client.workload import AttemptStatus, JobStatus, TaskOutputArchiveStat
+ from iris.resources.state import JobState, TaskState
+ from rigging.filesystem.storage_path import prefix_join
+ 
+-from experiments.evaluation.agentx.artifacts import copy_file, file_digest, retain_artifacts, unpack, write_record
++from experiments.evaluation.agentx.artifacts import (
++    copy_file,
++    file_digest,
++    restore_server_metrics,
++    retain_artifacts,
++    unpack,
++    write_record,
++)
+ from experiments.evaluation.agentx.recipe import SERIES_PATH, PointManifest, load_series, processor_package, series_path
+ 
+ logger = logging.getLogger(__name__)
+@@ -85,6 +92,7 @@ def validate_window(point: Path, manifest: PointManifest, attempt_uid: str) -> d
+ 
+ def process_point(point: Path, manifest: PointManifest, artifacts: Path) -> None:
+     """Invoke the pinned upstream processor in a separate Python environment."""
++    restore_server_metrics(point)
+     series = load_series(series_path(manifest["profile"]))
+     profile = manifest["profile"]
+     hardware = series["profiles"][profile]
+diff --git a/experiments/evaluation/agentx/run.py b/experiments/evaluation/agentx/run.py
+index 4e4c273833..04f904f094 100644
+--- a/experiments/evaluation/agentx/run.py
++++ b/experiments/evaluation/agentx/run.py
+@@ -34,6 +34,7 @@ from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmL
+ from rigging.filesystem.buckets import filesystem_for
+ from rigging.filesystem.storage_path import prefix_join
+ 
++from experiments.evaluation.agentx.artifacts import pack_server_metrics
+ from experiments.evaluation.agentx.processes import run_logged
+ from experiments.evaluation.agentx.recipe import (
+     PointManifest,
+@@ -300,6 +301,8 @@ def run_point(manifest: PointManifest, output: Path, bundle: Path, launch: IrisV
+         record_path.write_text(json.dumps(record, indent=2))
+         if native_log_dir is not None:
+             shutil.copytree(native_log_dir, output / "server-logs")
++        if leader:
++            pack_server_metrics(output)
+         print(f"AGENTX_ATTEMPT_STATUS {record['status']}", flush=True)
+         if launch is not None and not leader and record["status"] == "succeeded":
+             notify_iris_vllm_stopped(launch)
+diff --git a/experiments/evaluation/agentx/test_coordinator.py b/experiments/evaluation/agentx/test_coordinator.py
+index 451b711e4d..fe7aaae678 100644
+--- a/experiments/evaluation/agentx/test_coordinator.py
++++ b/experiments/evaluation/agentx/test_coordinator.py
+@@ -10,6 +10,7 @@ import json
+ import os
+ import sys
+ import tarfile
++import threading
+ from pathlib import Path
+ from types import SimpleNamespace
+ 
+@@ -19,15 +20,24 @@ from connectrpc.code import Code
+ from connectrpc.errors import ConnectError
+ from iris.client.workload import JobStatus, ResourceRequest
+ from iris.client.workload_codec import task_status_from_proto
++from iris.cluster.runtime.output_capture import ResolvedOutputDestination, TaskOutputLimits, capture_task_outputs
+ from iris.cluster.types import JobName
+ from iris.resources.state import FederationState, JobState, TaskState
+ from iris.rpc import job_pb2
+ from marin.external_dependencies import VLLM_GPU_RELEASE
+ from marin.inference.vllm_release import vllm_gpu_wheel_for_architecture, vllm_gpu_wheel_provenance
+ from marin.inference.vllm_server import IsolatedCudaVllm, VllmType
+-from rigging.timing import Timestamp
+-
+-from experiments.evaluation.agentx.artifacts import read_record, retain_artifacts, unpack, write_record
++from rigging.filesystem.storage_path import StoragePath
++from rigging.timing import Deadline, Timestamp
++
++from experiments.evaluation.agentx.artifacts import (
++    pack_server_metrics,
++    read_record,
++    restore_server_metrics,
++    retain_artifacts,
++    unpack,
++    write_record,
++)
+ from experiments.evaluation.agentx.collect import collect_terminal, validate_gang, validate_window
+ from experiments.evaluation.agentx.control import coordinator_plan, materialize, pending_result
+ from experiments.evaluation.agentx.coordinator import recover_results, resolve_plan, run_points
+@@ -502,3 +512,25 @@ def test_successful_attempt_waits_for_capture_then_retains_a_missing_output_fail
+     assert receipt["status"] == "failed"
+     assert receipt["attempt_uid"] == "attempt-1"
+     assert "artifacts_uri" not in receipt
++
++
++def test_server_metrics_survive_native_output_limit_and_restore_exact_bytes(tmp_path):
++    point = tmp_path / "outputs/point"
++    source = point / "aiperf_artifacts/server_metrics_export.json"
++    source.parent.mkdir(parents=True)
++    original = b'{ "metrics": [' + b'{"rank":0,"tokens":123},' * 1000 + b"{}] }\n"
++    source.write_bytes(original)
++    destination = ResolvedOutputDestination(
++        StoragePath("file://" + str(tmp_path / "captured.tar.zst")),
++        job_pb2.TaskOutputArchive.TASK_OUTPUT_ARCHIVE_RETENTION_LOCAL_CLUSTER,
++    )
++    limits = TaskOutputLimits(max_bytes=2048, max_entries=100)
++    before = capture_task_outputs(point.parent, destination, limits, Deadline.from_seconds(30), threading.Event())
++    assert before.state == job_pb2.TaskOutputArchive.TASK_OUTPUT_ARCHIVE_STATE_FAILED
++    pack_server_metrics(point)
++    after = capture_task_outputs(point.parent, destination, limits, Deadline.from_seconds(30), threading.Event())
++    assert after.state == job_pb2.TaskOutputArchive.TASK_OUTPUT_ARCHIVE_STATE_UPLOADED
++    unpack(tmp_path / "captured.tar.zst", tmp_path / "retained")
++    restored_point = tmp_path / "retained/point"
++    restore_server_metrics(restored_point)
++    assert (restored_point / "aiperf_artifacts/server_metrics_export.json").read_bytes() == original
+-- 
+2.54.0
+

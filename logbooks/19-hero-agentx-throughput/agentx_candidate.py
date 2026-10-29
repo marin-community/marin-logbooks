@@ -123,8 +123,10 @@ def main() -> None:
 
         def router_benchmark_command(series: dict, concurrency: int, url: str, output: Path) -> list[str]:
             command = BASE_BENCHMARK_COMMAND(series, concurrency, url, output)
-            # Server metrics retain the direct backend URL and native polling.
-            command[command.index("--url") + 1] = manifest["router"]["base_url"]
+            router_url = manifest["router"]["base_url"]
+            command[command.index("--url") + 1] = router_url
+            # AIPerf also discovers --url/metrics. Use that same endpoint once.
+            command[command.index("--server-metrics") + 1] = f"{router_url}/metrics"
             return command
 
         def run_with_router(command: list[str], environment: dict, log: Path, *, timeout: int) -> None:
