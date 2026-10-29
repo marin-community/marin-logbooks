@@ -11,8 +11,8 @@ import sys
 import pytest
 
 # A fresh subprocess admits backends from JAX_PLATFORMS before any JAX backend
-# initialization. Only the CUDA initialization seam is replaced: it creates a
-# real CPU client instead. This never initializes the resident local GPU and
+# initialization. CUDA visibility is simulated true (portable to CPU-only CI), and the CUDA
+# initialization seam creates a real CPU client instead. This never initializes the resident local GPU and
 # does not establish CUDA-device coverage. The actual CPU backend, JAX backend
 # admission and native _single_cpu_sharding implementation are not mocked.
 CPU_ONLY_PROBE = """
@@ -20,6 +20,9 @@ import json
 from jax._src import xla_bridge
 
 native_init = xla_bridge._init_backend
+# CPU-only CI normally skips CUDA before the init seam. Simulate visibility;
+# initialization below still creates CPU clients only, never a NVIDIA client.
+xla_bridge.hardware_utils.has_visible_nvidia_gpu = lambda: True
 initialized = []
 def cpu_only_cuda_seam(platform):
     initialized.append(platform)
