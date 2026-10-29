@@ -25,6 +25,7 @@ def main() -> None:
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--mode", choices=("NONE", "PIECEWISE"), required=True)
     parser.add_argument("--capture-sizes", type=int, nargs="+", default=[1, 2, 4, 8])
+    parser.add_argument("--prefix-cache", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     compilation = {
@@ -41,6 +42,7 @@ def main() -> None:
     proof = {
         "scope": "One GB200, tiny Hero, TP1; not full-Hero, EP16, H100, or throughput qualification",
         "mode": args.mode,
+        "prefix_caching": args.prefix_cache,
         "compilation_requested": compilation,
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "versions": {name: importlib.metadata.version(name) for name in ("vllm", "torch", "flashinfer-python")},
@@ -56,7 +58,7 @@ def main() -> None:
         max_num_batched_tokens=128,
         gpu_memory_utilization=0.15,
         enforce_eager=False,
-        enable_prefix_caching=True,
+        enable_prefix_caching=args.prefix_cache,
         kernel_config={"moe_backend": "triton"},
         compilation_config=compilation,
         seed=42,

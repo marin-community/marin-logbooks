@@ -61,6 +61,7 @@ def main() -> None:
             str(fixture),
             "--mode",
             mode,
+            "--prefix-cache" if config.get("prefix_caching", True) else "--no-prefix-cache",
             "--capture-sizes",
             *map(str, config["capture_sizes"]),
             "--output",
