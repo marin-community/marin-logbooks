@@ -1,0 +1,49 @@
+{
+  "full_native_unentered_combined_hook_pass": true,
+  "overrides": {
+    "enable_prefix_caching": true,
+    "max_num_batched_tokens": 4096,
+    "master_port": 34100,
+    "session_affinity": true,
+    "prefetch_flashinfer_headers": true,
+    "gpu_memory_utilization": 0.95,
+    "numa_bind": true,
+    "compilation_config": {
+      "mode": 3,
+      "cudagraph_mode": "PIECEWISE",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64
+      ],
+      "splitting_ops": [
+        "vllm::unified_attention_with_output",
+        "vllm::unified_mla_attention_with_output",
+        "vllm::mamba_mixer2",
+        "vllm::mamba_mixer",
+        "vllm::short_conv",
+        "vllm::qwen4_exp_ple_short_conv",
+        "vllm::qwen4_exp_qsa_with_output",
+        "vllm::linear_attention",
+        "vllm::qwen_gdn_attention_core",
+        "vllm::qwen_gdn_attention_core_fused_norm_packed",
+        "vllm::gdn_attention_core_xpu",
+        "vllm::olmo_hybrid_gdn_full_forward",
+        "vllm::sparse_attn_indexer",
+        "vllm::rocm_aiter_sparse_attn_indexer",
+        "vllm::deepseek_v4_attention",
+        "vllm::hpc_rope_norm_forward",
+        "vllm::unified_kv_cache_update",
+        "vllm::unified_mla_kv_cache_update",
+        "vllm::grug_moe_short_conv"
+      ]
+    },
+    "candidate_receipt": "/iris/candidates/9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/receipt.json",
+    "wheel_sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+    "source_commit": "9383b951dd7d7f4fa7801fd479490ad9915b88ce"
+  }
+}
