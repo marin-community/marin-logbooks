@@ -23,13 +23,14 @@ def test_committed_snapshot_persists_before_independent_submission_finishes(tmp_
         write_submission_result=lambda name, result: results.append((name, result)),
     )
     event = CheckpointEvent(
-        50,
-        "s3://marin-rno2a/run/checkpoints/step-49",
-        "s3://marin-rno2a/run/hf/updates-50",
-        {"identity_final_text_tokens": 125001},
-        "reviewed-training-pin",
-        "packed-sha",
-        "identity10",
+        completed_updates=50,
+        native_checkpoint="s3://marin-rno2a/tmp/ttl=14d/path-b/run/checkpoints/step-49",
+        hf_export="s3://marin-rno2a/tmp/ttl=14d/path-b/run/hf/updates-50",
+        eval_scratch="s3://marin-rno2a/tmp/ttl=14d/path-b/run/eval/updates-50",
+        exposure={"identity_final_text_tokens": 125001},
+        training_pin="reviewed-training-pin",
+        packed_data_sha256="packed-sha",
+        arm="identity10",
     )
     try:
         name = hook.publish_committed(event)

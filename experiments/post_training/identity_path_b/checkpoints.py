@@ -9,28 +9,32 @@ from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 
+TEMPORARY_PREFIX = "s3://marin-rno2a/tmp/ttl=14d/"
+
 
 @dataclass(frozen=True)
 class CheckpointEvent:
     completed_updates: int
     native_checkpoint: str
     hf_export: str
+    eval_scratch: str
     exposure: dict
     training_pin: str
     packed_data_sha256: str
     arm: str
 
     def payload(self) -> dict:
-        if not self.native_checkpoint.startswith("s3://marin-rno2a/") or not self.hf_export.startswith(
-            "s3://marin-rno2a/"
+        if any(
+            not path.startswith(TEMPORARY_PREFIX) for path in (self.native_checkpoint, self.hf_export, self.eval_scratch)
         ):
-            raise ValueError("Checkpoint and export must remain in the training region")
+            raise ValueError("Intermediate checkpoints, exports and eval scratch require the RNO14-day TTL prefix")
         return {
             "schema_version": 1,
             "arm": self.arm,
             "completed_updates": self.completed_updates,
             "native_checkpoint": self.native_checkpoint,
             "hf_export": self.hf_export,
+            "eval_scratch": self.eval_scratch,
             "exposure": self.exposure,
             "training_pin": self.training_pin,
             "packed_data_sha256": self.packed_data_sha256,

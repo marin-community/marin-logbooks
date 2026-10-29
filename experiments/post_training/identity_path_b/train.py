@@ -14,7 +14,7 @@ from levanter.tracker import current_tracker
 
 from experiments.interp.snowball_identity.multihost import gather_global
 from experiments.post_training.identity_context_distill.sft_launch import DispatchMetrics
-from experiments.post_training.identity_path_b.checkpoints import AsyncCheckpoints, CheckpointEvent
+from experiments.post_training.identity_path_b.checkpoints import TEMPORARY_PREFIX, AsyncCheckpoints, CheckpointEvent
 from experiments.post_training.identity_path_b.recipe import (
     FROZEN_FIELDS,
     restore_frozen_state,
@@ -80,6 +80,10 @@ def run_updates(
     this loop. The caller must use the row-masked optimizer and no default save hooks.
     """
     updates = exposure["updates"]
+    if not run_root.startswith(TEMPORARY_PREFIX):
+        raise ValueError("Training intermediates require the owner's RNO14-day TTL root")
+    if not trainer.config.checkpointer.expanded_path(trainer.run_id).startswith(TEMPORARY_PREFIX):
+        raise ValueError("Native checkpointer is outside the required temporary output root")
     if trainer.config.train_batch_size != 8 or trainer.config.microbatch_size != 8:
         raise ValueError("Weighted loss requires one logical global batch, with no microbatch ratio averaging")
     if int(state.step) != 0 or len(packed_rows) != updates * 8:
@@ -111,13 +115,14 @@ def run_updates(
         checkpointer.wait_until_finished()
         native = f"{trainer.config.checkpointer.expanded_path(trainer.run_id)}/step-{label}"
         event = CheckpointEvent(
-            completed,
-            native,
-            f"{run_root}/hf/updates-{completed}",
-            exposure["cumulative_batches"][completed - 1],
-            training_pin,
-            packed_data_sha256,
-            arm,
+            completed_updates=completed,
+            native_checkpoint=native,
+            hf_export=f"{run_root}/hf/updates-{completed}",
+            eval_scratch=f"{run_root}/eval/updates-{completed}",
+            exposure=exposure["cumulative_batches"][completed - 1],
+            training_pin=training_pin,
+            packed_data_sha256=packed_data_sha256,
+            arm=arm,
         )
         run_on_export_writer(partial(checkpoint_hook.publish_committed, event))
         records.append(

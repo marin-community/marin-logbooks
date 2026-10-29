@@ -13,6 +13,7 @@ from levanter.main.train_lm import TrainLmConfig
 from levanter.trainer_state import TrainerState
 
 from experiments.post_training.identity_context_distill.sft import identity_sft_config
+from experiments.post_training.identity_path_b.checkpoints import TEMPORARY_PREFIX
 from experiments.post_training.identity_path_b.data import END_IDS, LOW_WEIGHT_IDS
 
 FROZEN_FIELDS = ("w_q", "w_k", "router", "router_bias")
@@ -103,6 +104,8 @@ def path_b_config(
     *, data, updates: int, output_uri: str, run_id: str, source_config: dict, source_generation_config: dict
 ) -> TrainLmConfig:
     """Keep the reviewed CD16 precision/mesh recipe, changing the authorized knobs."""
+    if not output_uri.startswith(TEMPORARY_PREFIX):
+        raise ValueError("Path B intermediate outputs must use s3://marin-rno2a/tmp/ttl=14d/")
     base = identity_sft_config(
         dataset_uri="path-b-reviewed-input",
         cache_uri="path-b-reviewed-cache",
