@@ -29,7 +29,7 @@ class TargetDose:
     final_text: int
     reasoning_text: int
     weighted: float
-    structural: Counter
+    structural: Counter[str]
 
 
 def target_counts(row: dict) -> TargetDose:
@@ -109,8 +109,9 @@ def pack_arm(
     """
     output.mkdir(parents=True, exist_ok=False)
     streams = {"identity": IdentityStream(identity), "replay": RowStream(replay)}
-    total, weighted, final, reasoning, occurrences = Counter(), Counter(), Counter(), Counter(), Counter()
-    family, family_raw, family_weighted, family_reasoning = Counter(), Counter(), Counter(), Counter()
+    total, final, reasoning, occurrences = Counter(), Counter(), Counter(), Counter()
+    weighted, family_weighted = defaultdict(float), defaultdict(float)
+    family, family_raw, family_reasoning = Counter(), Counter(), Counter()
     family_rows, mode, structural, answer_rows, answer_final = Counter(), Counter(), Counter(), Counter(), Counter()
     epoch_steps, batch_summaries, packed = [], [], []
     tokens, masks, segments, row_ids = [], [], [], []
@@ -156,7 +157,7 @@ def pack_arm(
                         "replay_reasoning_text_tokens": reasoning["replay"],
                         "all_supervised_tokens": total.total(),
                         "identity_weighted_mass": weighted["identity"],
-                        "all_weighted_mass": weighted.total(),
+                        "all_weighted_mass": sum(weighted.values()),
                         "family_final_text_tokens": dict(family),
                         "family_reasoning_text_tokens": dict(family_reasoning),
                         "family_raw_supervised_tokens": dict(family_raw),
@@ -219,7 +220,7 @@ def pack_arm(
         "reasoning_text_tokens": dict(reasoning),
         "weighted_mass": dict(weighted),
         "realized_identity_supervised_share": total["identity"] / total.total(),
-        "realized_identity_weighted_share": weighted["identity"] / weighted.total(),
+        "realized_identity_weighted_share": weighted["identity"] / sum(weighted.values()),
         "identity_minimum_excludes_structural_tokens": final_identity_minimum,
         "family_final_text_tokens": dict(family),
         "family_reasoning_text_tokens": dict(family_reasoning),

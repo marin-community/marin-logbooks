@@ -77,6 +77,7 @@ def test_packed_loss_follows_predicted_token_and_excludes_padding():
         }
     )
     np.testing.assert_allclose(example.loss_weight, [0.1, 1, 1, 0, 0], rtol=0, atol=1e-8)
+    assert example.attn_mask.segment_ids is not None
     query, keys = example.attn_mask.segment_ids
     np.testing.assert_array_equal(query, [0, 0, 0, 0, -1])
     np.testing.assert_array_equal(keys, query)

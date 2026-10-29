@@ -11,6 +11,7 @@ import re
 import urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
+from typing import cast
 
 import pyarrow.parquet as pq
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
@@ -145,8 +146,8 @@ def render_record(row: dict, thinking: bool, tokenizer: PreTrainedTokenizerBase,
     if reasoning_policy == "empty":
         messages[-1]["content"] = ("<|start_think|><|end_think|>" if thinking else "") + final
     kwargs = {"enable_thinking": thinking, "tools": [], "tokenize": True, "return_dict": False}
-    prefix_ids = tokenizer.apply_chat_template(messages[:-1], add_generation_prompt=True, **kwargs)
-    ids = tokenizer.apply_chat_template(messages, add_generation_prompt=False, **kwargs)
+    prefix_ids = cast(list[int], tokenizer.apply_chat_template(messages[:-1], add_generation_prompt=True, **kwargs))
+    ids = cast(list[int], tokenizer.apply_chat_template(messages, add_generation_prompt=False, **kwargs))
     if ids[: len(prefix_ids)] != prefix_ids:
         raise ValueError("Tokenization changed the prompt boundary")
     target = ids[len(prefix_ids) :]
