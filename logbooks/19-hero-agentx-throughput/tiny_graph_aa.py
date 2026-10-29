@@ -23,6 +23,12 @@ def main() -> None:
     args.output.mkdir(parents=True, exist_ok=True)
     config = json.loads(args.manifest.read_text())
     assert os.environ["IRIS_NODE_NAME"] in config["placement"]["nodes"]
+    task_index = int(os.environ["IRIS_TASK_ID"].rsplit("/", 1)[1].split(":")[0])
+    prefix_caching = (
+        config["prefix_caching_by_task"][task_index]
+        if "prefix_caching_by_task" in config
+        else config.get("prefix_caching", True)
+    )
     identity = {key: os.environ[key] for key in ("IRIS_NODE_NAME", "IRIS_TASK_ID", "IRIS_ATTEMPT_UID", "IRIS_BUNDLE_ID")}
     identity["gpus"] = subprocess.check_output(
         ["nvidia-smi", "--query-gpu=uuid,name,driver_version", "--format=csv,noheader"], text=True
@@ -61,12 +67,14 @@ def main() -> None:
             str(fixture),
             "--mode",
             mode,
-            "--prefix-cache" if config.get("prefix_caching", True) else "--no-prefix-cache",
+            "--prefix-cache" if prefix_caching else "--no-prefix-cache",
             "--capture-sizes",
             *map(str, config["capture_sizes"]),
             "--output",
             str(output),
         ]
+        if config.get("deterministic_batches"):
+            command.append("--deterministic-batches")
         if config.get("trace_batches"):
             command.append("--trace-batches")
         (args.output / f"{index}-command.json").write_text(json.dumps(command, indent=2) + "\n")

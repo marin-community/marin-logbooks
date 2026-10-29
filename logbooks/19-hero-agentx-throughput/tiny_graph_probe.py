@@ -60,6 +60,7 @@ def main() -> None:
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--mode", choices=("NONE", "PIECEWISE"), required=True)
     parser.add_argument("--capture-sizes", type=int, nargs="+", default=[1, 2, 4, 8])
+    parser.add_argument("--deterministic-batches", action="store_true")
     parser.add_argument("--trace-batches", action="store_true")
     parser.add_argument("--prefix-cache", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -79,6 +80,7 @@ def main() -> None:
         "scope": "One GB200, tiny Hero, TP1; not full-Hero, EP16, H100, or throughput qualification",
         "mode": args.mode,
         "prefix_caching": args.prefix_cache,
+        "deterministic_batches": args.deterministic_batches,
         "compilation_requested": compilation,
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "versions": {name: importlib.metadata.version(name) for name in ("vllm", "torch", "flashinfer-python")},
@@ -115,11 +117,18 @@ def main() -> None:
         prompts = [prefix + suffix for suffix in ([1, 2, 3], [3, 2], [4, 5, 6])]
         for branches in ([0], [1, 0], [2, 0, 1], [0]) * 2:
             started = time.monotonic()
-            outputs = llm.generate(
-                [{"prompt_token_ids": prompts[index]} for index in branches],
-                SamplingParams(temperature=0, seed=42, max_tokens=8, min_tokens=8, ignore_eos=True, logprobs=5),
-                use_tqdm=False,
-            )
+            inputs = [{"prompt_token_ids": prompts[index]} for index in branches]
+            sampling = SamplingParams(temperature=0, seed=42, max_tokens=8, min_tokens=8, ignore_eos=True, logprobs=5)
+            if args.deterministic_batches:
+                # This barrier is only a numerical diagnostic, never an AgentX control.
+                llm.llm_engine.engine_core.call_utility("pause_scheduler", "keep", False)
+                try:
+                    llm.enqueue(inputs, sampling)
+                finally:
+                    llm.llm_engine.engine_core.call_utility("resume_scheduler")
+                outputs = llm.wait_for_completion(use_tqdm=False)
+            else:
+                outputs = llm.generate(inputs, sampling, use_tqdm=False)
             row = {
                 "branches": branches,
                 "seconds": time.monotonic() - started,
