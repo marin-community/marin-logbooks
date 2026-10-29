@@ -62,10 +62,10 @@ def compare(reference: dict, observed: dict) -> dict:
     }
 
 
-def batch_trace(base_url: str, method: str) -> dict:
+def batch_trace(base_url: str, method: str, args: list | None = None) -> dict:
     request = urllib.request.Request(
         base_url + "/collective_rpc",
-        data=json.dumps({"method": method, "args": [], "kwargs": {}, "timeout": 60}).encode(),
+        data=json.dumps({"method": method, "args": args or [], "kwargs": {}, "timeout": 60}).encode(),
         headers={"Content-Type": "application/json"},
     )
     with urllib.request.urlopen(request, timeout=90) as response:
@@ -81,6 +81,7 @@ def run(
     rank: int | None,
     session_id: str | None,
     trace_batches: bool = False,
+    reference_capture_sizes: list[int] | None = None,
 ) -> None:
     assert hashlib.sha256(tokenizer_path.read_bytes()).hexdigest() == TOKENIZER_SHA256
     output.mkdir(parents=True, exist_ok=False)
@@ -118,7 +119,9 @@ def run(
     comparisons = []
     if trace_batches:
         assert rank == 0
-        batch_trace(base_url, "install_hero_batch_trace")
+        batch_trace(base_url, "install_hero_batch_trace", [reference_capture_sizes])
+    else:
+        assert reference_capture_sizes is None
     with (output / "requests.jsonl").open("w") as stream:
         for name, branches, cache_salt in waves:
             payload = {
@@ -177,9 +180,19 @@ def main() -> None:
     parser.add_argument("--rank", type=int)
     parser.add_argument("--session-id")
     parser.add_argument("--trace-batches", action="store_true")
+    parser.add_argument("--reference-capture-sizes", type=int, nargs="+")
     args = parser.parse_args()
     rank = args.rank if args.rank is not None or args.session_id is not None else 0
-    run(args.tokenizer, args.base_url, args.output, args.prefix_tokens, rank, args.session_id, args.trace_batches)
+    run(
+        args.tokenizer,
+        args.base_url,
+        args.output,
+        args.prefix_tokens,
+        rank,
+        args.session_id,
+        args.trace_batches,
+        args.reference_capture_sizes,
+    )
 
 
 if __name__ == "__main__":

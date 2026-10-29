@@ -51,6 +51,10 @@ def main() -> None:
     ]
     if manifest.get("diagnostic_request", {}).get("trace_batches"):
         probe.append("--trace-batches")
+    if sizes := manifest.get("diagnostic_request", {}).get("reference_capture_sizes"):
+        assert manifest["diagnostic_request"]["numerics_only"] is True
+        assert manifest["diagnostic_request"]["compilation_config"]["cudagraph_mode"] == "NONE"
+        probe += ["--reference-capture-sizes", *map(str, sizes)]
     (args.output / "cache-probe-command.json").write_text(json.dumps(probe, indent=2) + "\n")
     run_logged(probe, dict(os.environ), args.output / "cache-probe.log", timeout=900)
     comparison = json.loads((args.output / "cache-probe-matched" / "comparison.json").read_text())

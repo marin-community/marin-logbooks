@@ -15,13 +15,36 @@ import json
 import math
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 
+import torch
 from vllm import LLM, SamplingParams
-from vllm.config import CompilationConfig
+from vllm.config import CompilationConfig, CUDAGraphMode
 
 
-def install_batch_trace(worker) -> None:
+def pad_reference_dispatch(result, capture_sizes: list[int]):
+    """Match PIECEWISE's cross-DP row counts while executing with graphs off.
+
+    Only a numerical reference uses this. Native DP coordination runs first;
+    model inputs, attention/state metadata and supported-mode guards stay native.
+    """
+    descriptor, sync = result
+    assert descriptor.cg_mode == CUDAGraphMode.NONE
+    assert descriptor.num_ubatches == 1
+    if sync is None:
+        return result
+    largest = int(sync.num_tokens_across_dp.max())
+    if largest == 0 or largest > max(capture_sizes):
+        return result
+    padded = min(size for size in capture_sizes if size >= largest)
+    return (
+        replace(descriptor, num_tokens=padded),
+        replace(sync, num_tokens_across_dp=torch.full_like(sync.num_tokens_across_dp, padded)),
+    )
+
+
+def install_batch_trace(worker, reference_capture_sizes: list[int] | None = None) -> None:
     # Record native CPU dispatch metadata; do not synchronize or profile the GPU.
     worker.hero_batch_trace = []
     module = sys.modules[type(worker.model_runner).__module__]
@@ -30,7 +53,10 @@ def install_batch_trace(worker) -> None:
 
     def traced_dispatch(*args, **kwargs):
         result = dispatch(*args, **kwargs)
+        if reference_capture_sizes:
+            result = pad_reference_dispatch(result, reference_capture_sizes)
         descriptor = result[0]
+        sync = result[1]
         worker.hero_batch_trace.append(
             {
                 "requests": args[1],
@@ -38,6 +64,8 @@ def install_batch_trace(worker) -> None:
                 "padded_tokens": descriptor.num_tokens,
                 "graph_mode": descriptor.cg_mode.name,
                 "max_query_len": kwargs.get("max_query_len"),
+                "tokens_across_dp": sync.num_tokens_across_dp.tolist() if sync is not None else None,
+                "reference_capture_sizes": reference_capture_sizes,
             }
         )
         return result
