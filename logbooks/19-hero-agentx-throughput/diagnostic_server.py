@@ -142,8 +142,19 @@ def serve(
     record_path = output / "diagnostic.json"
     record_path.write_text(json.dumps(record, indent=2) + "\n")
     native_logs = None
+    observer = None
     launch: IrisVllmLaunch | None = None
     try:
+        observer = subprocess.Popen(
+            [
+                sys.executable,
+                str(Path(__file__).with_name("server_cpu.py")),
+                "--output",
+                str(output / "server-cpu.jsonl"),
+                "--samples",
+                "720",
+            ]
+        )
         with iris_vllm_launch(
             pipeline_parallel_size=pipeline_stages,
             tensor_parallel_size=1,
@@ -170,7 +181,24 @@ def serve(
                 if value is not None:
                     server.extra_cli_args.extend([flag, str(value)])
             if numa_bind:
+                utility = manifest["numactl_input"]
+                directory = Path("/iris/candidates") / ("numactl-" + utility["deb"]["sha256"])
+                directory.mkdir(parents=True, exist_ok=True)
+                package = directory / utility["deb"]["name"]
+                copy_file(utility["deb"]["uri"], str(package))
+                assert hashlib.sha256(package.read_bytes()).hexdigest() == utility["deb"]["sha256"]
+                subprocess.run(["dpkg-deb", "--extract", str(package), str(directory / "root")], check=True)
+                binary = directory / "root/usr/bin/numactl"
+                assert hashlib.sha256(binary.read_bytes()).hexdigest() == utility["binary_sha256"]
+                server.launcher = VllmLauncherWithEnvironment(
+                    server.launcher, {"PATH": str(binary.parent) + os.pathsep + os.environ["PATH"]}
+                )
+                record["private_numactl"] = utility
                 server.extra_cli_args.append("--numa-bind")
+            memory_fraction = manifest.get("diagnostic_request", {}).get("gpu_memory_utilization")
+            if memory_fraction is not None:
+                server.extra_cli_args[server.extra_cli_args.index("--gpu-memory-utilization") + 1] = str(memory_fraction)
+                record["overrides"]["gpu_memory_utilization"] = memory_fraction
             if master_port is not None:
                 for flag, port in (("--master-port", master_port), ("--data-parallel-rpc-port", master_port + 1)):
                     if flag in server.extra_cli_args:
@@ -244,6 +272,9 @@ def serve(
         record.update(status="failed", error=f"{type(error).__name__}: {error}")
         raise
     finally:
+        if observer is not None:
+            observer.terminate()
+            observer.wait(timeout=10)
         record["finished_unix"] = time.time()
         record_path.write_text(json.dumps(record, indent=2) + "\n")
         if native_logs is not None:

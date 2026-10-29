@@ -31,6 +31,7 @@ def main() -> None:
     parser.add_argument("--moe-backend", choices=("triton", "auto"), default="triton")
     parser.add_argument("--master-port", type=int)
     parser.add_argument("--pipeline-stages", type=int, choices=(1, 4), default=1)
+    parser.add_argument("--numa-bind", action="store_true")
     parser.add_argument("--all2all-backend", choices=("allgather_reducescatter", "flashinfer_nvlink_one_sided"))
     parser.add_argument("--serve-duration", type=int, default=3600)
     parser.add_argument("--output", type=Path, required=True)
@@ -51,6 +52,8 @@ def main() -> None:
         f"--moe-backend {args.moe_backend} --run-controls"
     )
     command += f" --pipeline-stages {args.pipeline_stages}"
+    if args.numa_bind:
+        command += " --numa-bind"
     if args.master_port is not None:
         command += f" --master-port {args.master_port}"
     if args.all2all_backend is not None:
