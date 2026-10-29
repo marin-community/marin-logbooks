@@ -50,6 +50,11 @@ def take_batch_trace(worker) -> list[dict]:
     return rows
 
 
+class BatchTraceWorkerExtension:
+    install_hero_batch_trace = install_batch_trace
+    take_hero_batch_trace = take_batch_trace
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", type=Path, required=True)
@@ -82,6 +87,7 @@ def main() -> None:
     started = time.monotonic()
     llm = LLM(
         model=str(args.model),
+        worker_extension_cls="tiny_graph_probe.BatchTraceWorkerExtension" if args.trace_batches else "",
         dtype="bfloat16",
         tensor_parallel_size=1,
         max_model_len=128,
@@ -104,7 +110,7 @@ def main() -> None:
         )
         assert proof["actual_cudagraph_mode"] == args.mode
         if args.trace_batches:
-            llm.collective_rpc(install_batch_trace)
+            llm.collective_rpc("install_hero_batch_trace")
         prefix = [1, 2, 3] * 16
         prompts = [prefix + suffix for suffix in ([1, 2, 3], [3, 2], [4, 5, 6])]
         for branches in ([0], [1, 0], [2, 0, 1], [0]) * 2:
@@ -124,7 +130,7 @@ def main() -> None:
                 ],
             }
             if args.trace_batches:
-                row["internal_batches"] = llm.collective_rpc(take_batch_trace)
+                row["internal_batches"] = llm.collective_rpc("take_hero_batch_trace")
             proof["rows"].append(row)
             assert all(
                 math.isfinite(value) for request in row["logprobs"] for item in request for value in item.values()

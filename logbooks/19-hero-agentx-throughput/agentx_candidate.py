@@ -9,12 +9,15 @@ warmup, benchmark duration and all native validity/attempt fences stay native.
 """
 
 import argparse
+import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
+import zstandard
 from diagnostic_server import stage_candidate_wheel, use_candidate_wheel, use_numa_binding
 from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import IrisVllmLaunch
@@ -22,6 +25,7 @@ from marin.inference.vllm_server import VllmEnvironment
 from router_process import upstream_router
 
 from experiments.evaluation.agentx import run as native
+from experiments.evaluation.agentx.artifacts import file_digest
 from experiments.evaluation.agentx.recipe import PointManifest
 
 BASE_CREATE_SERVER = native.create_server
@@ -74,6 +78,30 @@ def create_candidate_server(
         + "\n"
     )
     return server
+
+
+def pack_metrics_export(output: Path) -> None:
+    source = output / "point/aiperf_artifacts/server_metrics_export.json"
+    if not source.exists() or source.stat().st_size < 512 * 1024**2:
+        return
+    compressed = source.with_suffix(".json.zst")
+    expected = file_digest(source)
+    size = source.stat().st_size
+    with source.open("rb") as reader, compressed.open("wb") as writer:
+        with zstandard.ZstdCompressor().stream_writer(writer) as encoded:
+            shutil.copyfileobj(reader, encoded, length=8 * 1024**2)
+    with compressed.open("rb") as encoded, zstandard.ZstdDecompressor().stream_reader(encoded) as decoded:
+        assert hashlib.file_digest(decoded, "sha256").hexdigest() == expected
+    receipt = {
+        "raw_sha256": expected,
+        "raw_bytes": size,
+        "compressed_sha256": file_digest(compressed),
+        "compressed_bytes": compressed.stat().st_size,
+        "codec": "zstandard",
+        "restore": "Decompress server_metrics_export.json.zst; verify raw_sha256 before processing.",
+    }
+    compressed.with_suffix(".receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    source.unlink()
 
 
 def main() -> None:
@@ -142,6 +170,8 @@ def main() -> None:
         if monitor is not None:
             monitor.terminate()
             monitor.wait(timeout=10)
+        if job_info.task_index == 0:
+            pack_metrics_export(output)
 
 
 if __name__ == "__main__":
