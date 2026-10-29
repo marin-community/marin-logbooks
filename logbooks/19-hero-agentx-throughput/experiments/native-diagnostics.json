@@ -41,7 +41,11 @@
         "--max-concurrency",
         "16",
         "--num-prompts",
-        "16"
+        "16",
+        "--temperature",
+        "0",
+        "--extra-body",
+        "{\"seed\":42}"
       ],
       "timeout_seconds": 1800
     },
@@ -77,7 +81,11 @@
         "--max-concurrency",
         "16",
         "--num-prompts",
-        "16"
+        "16",
+        "--temperature",
+        "0",
+        "--extra-body",
+        "{\"seed\":42}"
       ],
       "timeout_seconds": 1800
     },
@@ -114,7 +122,11 @@
         "32",
         "--num-prompts",
         "32",
-        "--profile"
+        "--profile",
+        "--temperature",
+        "0",
+        "--extra-body",
+        "{\"seed\":42}"
       ],
       "timeout_seconds": 1800
     },
@@ -151,7 +163,11 @@
         "32",
         "--num-prompts",
         "32",
-        "--profile"
+        "--profile",
+        "--temperature",
+        "0",
+        "--extra-body",
+        "{\"seed\":42}"
       ],
       "timeout_seconds": 1800
     },
@@ -184,7 +200,11 @@
         "--max-concurrency",
         "32",
         "--num-prompts",
-        "1024"
+        "1024",
+        "--temperature",
+        "0",
+        "--extra-body",
+        "{\"seed\":42}"
       ],
       "timeout_seconds": 3600
     },
@@ -217,7 +237,11 @@
         "--max-concurrency",
         "256",
         "--num-prompts",
-        "1024"
+        "1024",
+        "--temperature",
+        "0",
+        "--extra-body",
+        "{\"seed\":42}"
       ],
       "timeout_seconds": 3600
     },
@@ -250,11 +274,16 @@
         "--max-concurrency",
         "1024",
         "--num-prompts",
-        "4096"
+        "4096",
+        "--temperature",
+        "0",
+        "--extra-body",
+        "{\"seed\":42}"
       ],
       "timeout_seconds": 3600
     }
   ],
   "historical_bank_receipt": "../historical-workload.json",
-  "selection_note": "The exact historical bank replaces the planned random short-input load points. None of those removed points ran. Profile and inspect the cheapest cases before choosing higher loads."
+  "selection_note": "The exact historical bank replaces the planned random short-input load points. None of those removed points ran. Profile and inspect the cheapest cases before choosing higher loads.",
+  "sampling_note": "Native --seed controls dataset generation. Explicit temperature 0 and per-request seed 42 are separate controls. The first long4k-c16 diagnostic ran before these explicit request controls; retain it under its recorded original command."
 }
