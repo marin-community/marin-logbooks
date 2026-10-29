@@ -40,7 +40,11 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
-    path = series_path(manifest["profile"])
+    path = (
+        Path(__file__).with_name(manifest["series_filename"])
+        if "series_filename" in manifest
+        else series_path(manifest["profile"])
+    )
     series = load_series(path)
     assert manifest["profile"] == "gb200"
     assert hashlib.sha256(path.read_bytes()).hexdigest() == manifest["series_sha256"]

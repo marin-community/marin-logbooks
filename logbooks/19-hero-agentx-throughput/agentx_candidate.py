@@ -19,12 +19,15 @@ from diagnostic_server import stage_candidate_wheel, use_candidate_wheel
 from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import IrisVllmLaunch
 from marin.inference.vllm_server import VllmEnvironment
+from router_process import upstream_router
 
 from experiments.evaluation.agentx import run as native
 from experiments.evaluation.agentx.recipe import PointManifest
 
 BASE_CREATE_SERVER = native.create_server
 BASE_WORKLOAD_ENVIRONMENT = native.workload_environment
+BASE_BENCHMARK_COMMAND = native.benchmark_command
+BASE_RUN_LOGGED = native.run_logged
 SESSION_HEADER_ENV = "AIPERF_HTTP_X_SESSION_ID_FROM_CORRELATION_ID"
 
 
@@ -75,12 +78,33 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
+    if "series_filename" in manifest:
+        path = Path(__file__).with_name(manifest["series_filename"])
+        native.series_path = lambda profile: path
     if "candidate_wheel_input" in manifest:
         receipt = stage_candidate_wheel(manifest["candidate_wheel_input"])
         assert str(receipt) == manifest["runtime_overrides"]["candidate_receipt"]
     native.create_server = create_candidate_server
     if manifest["runtime_overrides"].get("session_affinity"):
         native.workload_environment = affinity_environment
+    if "router" in manifest:
+        assert manifest["runtime_overrides"]["session_affinity"] is True
+
+        def router_benchmark_command(series: dict, concurrency: int, url: str, output: Path) -> list[str]:
+            command = BASE_BENCHMARK_COMMAND(series, concurrency, url, output)
+            # Server metrics retain the direct backend URL and native polling.
+            command[command.index("--url") + 1] = manifest["router"]["base_url"]
+            return command
+
+        def run_with_router(command: list[str], environment: dict, log: Path, *, timeout: int) -> None:
+            if "agentx" not in command or "profile" not in command:
+                BASE_RUN_LOGGED(command, environment, log, timeout=timeout)
+                return
+            with upstream_router(manifest["router"], log.parent):
+                BASE_RUN_LOGGED(command, environment, log, timeout=timeout)
+
+        native.benchmark_command = router_benchmark_command
+        native.run_logged = run_with_router
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
     output.mkdir(parents=True, exist_ok=True)
     observer = subprocess.Popen(

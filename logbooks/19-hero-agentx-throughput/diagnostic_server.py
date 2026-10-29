@@ -29,6 +29,7 @@ from marin.inference.iris_vllm import (
 )
 from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmLauncherWithEnvironment, VllmType
 
+from experiments.evaluation.agentx import run as native
 from experiments.evaluation.agentx.artifacts import copy_file
 from experiments.evaluation.agentx.processes import run_logged
 from experiments.evaluation.agentx.recipe import load_series, series_path
@@ -91,12 +92,18 @@ def serve(
     run_controls: bool,
     master_port: int | None,
 ) -> None:
-    recipe = series_path(manifest["profile"])
+    recipe = (
+        Path(__file__).with_name(manifest["series_filename"])
+        if "series_filename" in manifest
+        else series_path(manifest["profile"])
+    )
+    if "series_filename" in manifest:
+        native.series_path = lambda profile: recipe
     assert hashlib.sha256(recipe.read_bytes()).hexdigest() == manifest["series_sha256"]
     series = load_series(recipe)
     hardware = series["profiles"][manifest["profile"]]
     devices = hardware["hosts"] * hardware["gpus"]
-    assert devices == 16
+    assert devices in (16, 32)
     output.mkdir(parents=True, exist_ok=False)
     identity = {key: os.environ[key] for key in ("IRIS_TASK_ID", "IRIS_ATTEMPT_UID", "IRIS_NODE_NAME", "IRIS_BUNDLE_ID")}
     identity["captured_unix"] = time.time()

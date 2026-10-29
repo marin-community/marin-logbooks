@@ -57,9 +57,14 @@ def main() -> None:
             timeout=900,
         )
         after = counters(config["backend_url"], args.output / "backend-metrics-after.txt")
-        deltas = [{"name": name, "engine": rank, "delta": value - before[(name, rank)]} for (name, rank), value in after.items()]
+        deltas = [
+            {"name": name, "engine": rank, "delta": value - before[(name, rank)]}
+            for (name, rank), value in after.items()
+        ]
         (args.output / "counter-deltas.json").write_text(json.dumps(deltas, indent=2) + "\n")
-        owners = [row["engine"] for row in deltas if row["name"] == "vllm:prefix_cache_queries_total" and row["delta"] > 0]
+        owners = [
+            row["engine"] for row in deltas if row["name"] == "vllm:prefix_cache_queries_total" and row["delta"] > 0
+        ]
         assert len(owners) == 1, owners
         assert len(after) == 2 * config["data_parallel_size"]
         rank = owners[0]
@@ -78,10 +83,16 @@ def main() -> None:
                 for row in comparisons
             )
         rows = []
-        for a, b in zip((direct / "requests.jsonl").read_text().splitlines(), (routed / "requests.jsonl").read_text().splitlines(), strict=True):
+        for a, b in zip(
+            (direct / "requests.jsonl").read_text().splitlines(),
+            (routed / "requests.jsonl").read_text().splitlines(),
+            strict=True,
+        ):
             left, right = json.loads(a), json.loads(b)
             assert left["wave"] == right["wave"] and left["branches"] == right["branches"]
-            rows.append({"wave": left["wave"], "exact_choices": left["response"]["choices"] == right["response"]["choices"]})
+            rows.append(
+                {"wave": left["wave"], "exact_choices": left["response"]["choices"] == right["response"]["choices"]}
+            )
         result = {
             "scope": "Functional DP-owner and numerical cache/history check; no AgentX throughput claim",
             "router": config,

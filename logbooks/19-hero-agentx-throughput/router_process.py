@@ -63,7 +63,7 @@ def upstream_router(config: dict, output: Path):
                     break
                 except (urllib.error.URLError, TimeoutError):
                     if time.monotonic() >= deadline:
-                        raise TimeoutError("Upstream router did not become healthy")
+                        raise TimeoutError("Upstream router did not become healthy") from None
                     time.sleep(1)
             with urllib.request.urlopen(config["base_url"] + "/workers", timeout=10) as response:
                 (output / "router-workers.json").write_bytes(response.read())
