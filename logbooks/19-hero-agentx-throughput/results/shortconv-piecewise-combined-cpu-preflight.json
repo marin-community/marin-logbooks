@@ -1,0 +1,30 @@
+{
+  "scope": "CPU/static preparation only; no combined GPU numerical or throughput claim.",
+  "candidate_source": "48e3d3b01baa21f2581fc801f2b2c80f15ed435d",
+  "baseline_source": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "files_changed_from_baseline": [
+    "vllm/model_executor/models/config.py",
+    "vllm/model_executor/models/grugmoe.py"
+  ],
+  "config_file_sha256_unchanged_from_graph_overlay": "7ccd9cc250dbdaaf0d964ea60425231aed7f186816bd933d9b52e151dd64855e",
+  "model_file_sha256": "27b49083d67ecb64ade4cd1732d610621397615b0bdb593b6425756cea614b8c",
+  "native_history_and_mixed_prefill_function_asts_unchanged": true,
+  "padded_row_regression_dim": 6144,
+  "tolerances_changed": false,
+  "affected_test_selector": {
+    "command": "uv run --no-project infra/ci/run_tests.py --base-ref HEAD",
+    "base_commit": "9f363744f7ab",
+    "changed_files": 3,
+    "selected_packages": 0,
+    "exit_code": 0
+  },
+  "mechanical_checks": "Native vLLM and research pre-commit pass. No GPU numerical or performance check has run for this combined source.",
+  "gpu_status": "pending",
+  "branch_validation": {
+    "command": "uv run --no-project infra/ci/run_tests.py --base-ref ce69fe2538f26525a75d8d96e1820dce68cc568d",
+    "selected_packages": 0,
+    "harbor_offline_unit_passed": 987,
+    "harbor_build_probe_passed": 3,
+    "exit_code": 0
+  }
+}

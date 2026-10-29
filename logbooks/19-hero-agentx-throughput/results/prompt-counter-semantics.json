@@ -1,0 +1,75 @@
+{
+  "scope": "Interpretation correction for native serving counters; retained numeric values and AgentX throughput results are unchanged.",
+  "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "semantics": {
+    "local_compute": "vllm:prompt_tokens_by_source{source=local_compute} comes from PrefillStats.num_computed_tokens, set for the first scheduled prefill while request.num_preemptions<=0. It excludes post-preemption repeat prefills.",
+    "prefix_cache_queries": "KVCacheManager records a new request cache lookup at admission. PrefixCacheStats puts previously preempted lookups in separate preempted_queries/preempted_hits fields; the inspected Prometheus logger exposes queries/hits for new requests.",
+    "emission_time": "PrefillStats is consumed on the first emitted engine output. New-admission queries/hits and first-output prompt/source counters therefore have different phase boundaries. Their differences are not estimates of repeated compute.",
+    "physical_scope": "Selecting one endpoint prevents duplicate engine streams. This does not make the prompt counter an accounting of all physical prefill work.",
+    "interpretation": "Comparisons support lower reported first-prefill work and changed reuse/capacity pressure. Total repeated prefill work and its critical-path cost remain unmeasured by these counters."
+  },
+  "source_links": [
+    "https://github.com/marin-community/vllm/blob/3a054c458ca8a32609ba2bc578c4d9b93eabb395/vllm/v1/core/sched/scheduler.py#L1004",
+    "https://github.com/marin-community/vllm/blob/3a054c458ca8a32609ba2bc578c4d9b93eabb395/vllm/v1/metrics/stats.py#L131",
+    "https://github.com/marin-community/vllm/blob/3a054c458ca8a32609ba2bc578c4d9b93eabb395/vllm/v1/metrics/stats.py#L282",
+    "https://github.com/marin-community/vllm/blob/3a054c458ca8a32609ba2bc578c4d9b93eabb395/vllm/v1/core/sched/scheduler.py#L2121",
+    "https://github.com/marin-community/vllm/blob/3a054c458ca8a32609ba2bc578c4d9b93eabb395/vllm/v1/metrics/loggers.py#L1042"
+  ],
+  "points": [
+    {
+      "result": "c128-cache-phase-summary.json",
+      "first_prefill_local_compute": 180751956.0,
+      "first_prefill_local_cache_hit": 7984624.0,
+      "first_prefill_external_kv_transfer": 0.0,
+      "first_prefill_prompt_tokens": 188736580.0,
+      "prefix_cache_queries_new_admissions": 189901935.0,
+      "prefix_cache_hits_new_admissions": 7984624.0,
+      "queries_minus_first_prefill_prompt_tokens": 1165355.0,
+      "request_preemptions": 0
+    },
+    {
+      "result": "native-affinity-c128-cache-phase-summary.json",
+      "first_prefill_local_compute": 147828693.0,
+      "first_prefill_local_cache_hit": 42068496.0,
+      "first_prefill_external_kv_transfer": 0.0,
+      "first_prefill_prompt_tokens": 189897189.0,
+      "prefix_cache_queries_new_admissions": 190217982.0,
+      "prefix_cache_hits_new_admissions": 42068496.0,
+      "queries_minus_first_prefill_prompt_tokens": 320793.0,
+      "request_preemptions": 37.0
+    },
+    {
+      "result": "upstream-router16-c128-r2-exact-physical-phase.json",
+      "first_prefill_local_compute": 140888846.0,
+      "first_prefill_local_cache_hit": 52220624.0,
+      "first_prefill_external_kv_transfer": 0.0,
+      "first_prefill_prompt_tokens": 193109470.0,
+      "prefix_cache_queries_new_admissions": 194110887.0,
+      "prefix_cache_hits_new_admissions": 52220624.0,
+      "queries_minus_first_prefill_prompt_tokens": 1001417.0,
+      "request_preemptions": 33.0
+    },
+    {
+      "result": "upstream-router32-c128-exact-physical-phase.json",
+      "first_prefill_local_compute": 49238331.0,
+      "first_prefill_local_cache_hit": 219485920.0,
+      "first_prefill_external_kv_transfer": 0.0,
+      "first_prefill_prompt_tokens": 268724251.0,
+      "prefix_cache_queries_new_admissions": 268352289.0,
+      "prefix_cache_hits_new_admissions": 219123392.0,
+      "queries_minus_first_prefill_prompt_tokens": -371962.0,
+      "request_preemptions": 4.0
+    },
+    {
+      "result": "upstream-router32-c256.json",
+      "first_prefill_local_compute": 220744883.0,
+      "first_prefill_local_cache_hit": 147666800.0,
+      "first_prefill_external_kv_transfer": 0.0,
+      "first_prefill_prompt_tokens": 368411683.0,
+      "prefix_cache_queries_new_admissions": 369852571.0,
+      "prefix_cache_hits_new_admissions": 147666800.0,
+      "queries_minus_first_prefill_prompt_tokens": 1440888.0,
+      "request_preemptions": 9.0
+    }
+  ]
+}

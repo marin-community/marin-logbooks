@@ -1,0 +1,33 @@
+{
+  "purpose": "Cheap module-level interaction screen for direct ShortConv outputs plus explicit PIECEWISE graph compatibility; no AgentX gain is assumed.",
+  "baseline_source": "9383b951dd7d7f4fa7801fd479490ad9915b88ce",
+  "candidate_source": "48e3d3b01baa21f2581fc801f2b2c80f15ed435d",
+  "candidate_repository": "https://github.com/marin-community/vllm",
+  "candidate_method": "GrugMoeShortConv.forward_impl only for numerical/module screen; full private wheel must retain both graph guard files",
+  "method_file_sha256": "27b49083d67ecb64ade4cd1732d610621397615b0bdb593b6425756cea614b8c",
+  "config_source_sha256": "7ccd9cc250dbdaaf0d964ea60425231aed7f186816bd933d9b52e151dd64855e",
+  "test_source": "shortconv_combined_checks.py",
+  "test_source_sha256": "45679daad3c90e8a648eb7f71b0769a293eb6392a5aa3bef2f0ab63e2a840a8d",
+  "test_functions": [
+    "_causal_depthwise_reference",
+    "test_hero_grug_moe_sconv_preserves_request_history_and_isolation",
+    "test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows"
+  ],
+  "baseline_wheel": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/piecewise-9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4"
+  },
+  "value_hypothesis": {
+    "bottleneck": "ShortConv remains outside piecewise capture; previous complete module-call measurements saved roughly50us/call.",
+    "plausible_saved_time_per_model_step_ms": [
+      6.7,
+      8.1
+    ],
+    "reason": "144 ShortConv calls per48-layer step; host dispatch/allocations are included. Critical-path overlap can reduce end-to-end value.",
+    "cheapest_trial": "Use one otherwise idle GPU in a correctly placed held group. Run unchanged history/mixed-prefill checks plus full-width BF16 inactive-row checks under graph-only and combined methods, then existing strict50-comparison/module benchmark. If promising, compare combined full-model fixed-history numerics and short request banks at matched all-DP shapes.",
+    "cost": "CPU source composition only so far. A native module screen should take minutes within a held group; one fresh16GPU model qualification/short-bank screen costs roughly2GPU-hours. No additional full hour until numerical parity and useful short-workload gain.",
+    "maintenance": "Reuse PR107 and PR108 source deltas; no dependency refresh, guard bypass, or new serving subsystem."
+  },
+  "execution": "Reuse native_shortconv_probe.py --test-source shortconv_combined_checks.py --extra-test test_hero_grug_moe_sconv_padded_decode_zeros_inactive_rows with and without --forward-source candidate. Then shortconv_benchmark.py --manifest this_file --candidate-source candidate, on baseline9ea. The existing constraints file and native runtime stay pinned.",
+  "status": "prepared_not_gpu_validated"
+}
