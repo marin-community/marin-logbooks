@@ -593,3 +593,25 @@ CPU copy jobs with two streams each, under refreshed headroom and shared-resourc
 checks. All measured GPU consumers must stay stopped during that bulk I/O.
 This completes the original full-state preservation scope; no unique optimizer
 state is discarded and any later source cleanup keeps exact restore proofs.
+
+### 2026-10-29 21:41 UTC: Eleven TB of headroom permits preparing the last initial arm's fresh attempt
+
+A new [official headroom observation](storage-headroom-pre-sc1284517-v4.json)
+reports **11,170,336,264,899 bytes free at 21:26 UTC** under the same quota.
+The external capacity action remains unknown; this study still deleted no
+native state. This now exceeds the checkpoint/export requirement. Finish and
+verify the nearly complete CPU pilot before the measured GPU run; defer the
+other seven large archives until all measured consumers stop again.
+
+The [fresh SC128/4517 version-4 plan](sc1284517-v4-retry-plan.json) retains the
+same initializer, frozen data, fifty updates and forty-H100 RNO batch layout.
+Its [dependency graph](sc1284517-v4-dry-graph-verification.json) builds with exit
+zero without executing training. Both the permanent and scratch roots are
+[unused](sc1284517-v4-fresh-root-verification.json). The [pool snapshot](sc1284517-v4-capacity-precheck.json)
+shows 48 unrequested RNO H100s and none in East; this is not a reservation.
+Resource-board row 1629 announces the same-region batch
+request. The whole runtime/dependency tree comparison already matches the
+prior source. Publish this plan before launch, recheck readiness, then capture
+the actual source, IDs and resolved configuration. No GPU has been submitted
+and no scientific extension is declared. The stopped version-3 attempt and
+all its allocation cost remain recorded.
