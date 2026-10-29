@@ -654,3 +654,5 @@ Small and 5 MiB multipart write/readback/delete probes both passed at 21:58 UTC.
 ### 2026-10-29 22:01 UTC: final initial-matrix slot restarted
 
 SC128/4517 version 4 was submitted from clean, published source `729e3db2af0c2c175641250f181dac5fff796fdc` after all recorded readiness gates passed. All five training tasks are running on 40 H100s in batch RNO. `grug-sc1284517-v4-submission.json` binds the actual coordinator, child, request digest and local submission receipt. The new run is not yet eligible; all fifty updates, original answers, common grades, fixed configuration and verified native export still gate admission. The other seven full-state backups remain deferred while measured GPUs run.
+
+The actual version-4 resolved launch now passes all existing invariant checks: initializer/data/tokenizer, SC128/TIS settings, optimizer, batch and geometry, normal overlap, probes off and no synthetic controls. `grug-sc1284517-v4-config-audit.json` binds the launch and trainer configuration digests. Runtime and endpoint gates remain pending.
