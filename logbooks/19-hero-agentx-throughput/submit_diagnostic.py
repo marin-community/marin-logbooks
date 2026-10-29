@@ -28,6 +28,7 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--name", required=True)
     parser.add_argument("--budget", type=int, default=2048)
+    parser.add_argument("--moe-backend", choices=("triton", "auto"), default="triton")
     parser.add_argument("--serve-duration", type=int, default=3600)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -43,7 +44,8 @@ def main() -> None:
         'exec env PYTHONPATH="$IRIS_WORKDIR" "$IRIS_PYTHON" '
         '"$IRIS_WORKDIR/logbooks/19-hero-agentx-throughput/diagnostic_server.py" '
         '--manifest "$IRIS_WORKDIR/diagnostic-manifest.json" --output "$IRIS_OUTPUT_DIR/diagnostic" '
-        f"--prefix-cache --max-batched-tokens {args.budget} --serve-duration {args.serve_duration}"
+        f"--prefix-cache --max-batched-tokens {args.budget} --serve-duration {args.serve_duration} "
+        f"--moe-backend {args.moe_backend}"
     )
     entrypoint = Entrypoint(
         command=["bash", "-c", command],

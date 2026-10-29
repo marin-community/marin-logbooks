@@ -57,6 +57,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, default=13)
+    parser.add_argument("--attempt", type=Path)
     args = parser.parse_args()
     topology = subprocess.run(["nvidia-smi", "topo", "-m"], capture_output=True, text=True, check=False)
     with args.output.open("x", buffering=1) as stream:
@@ -75,6 +76,9 @@ def main() -> None:
         )
         for index in range(args.samples):
             stream.write(json.dumps(snapshot()) + "\n")
+            if args.attempt is not None and args.attempt.exists():
+                if json.loads(args.attempt.read_text()).get("status") in ("succeeded", "failed"):
+                    break
             if index + 1 < args.samples:
                 time.sleep(5)
 

@@ -205,6 +205,12 @@ The strict BF16 module comparison passed: output and state were bitwise equal fo
 
 The first batch preflight stopped before allocation because JSON wheel lists differ from native tuples under Python equality. Reusing native JSON comparison fixed that. The first submitted batch job then failed before model startup because the script directory did not put `/app` on Python's import path. Native retries also failed; retain this job as failed, not as a performance experiment. The command now supplies `PYTHONPATH="$IRIS_WORKDIR"`, as the interactive commands already do. An exact shell/import preflight from `/tmp` passes. Retry as a new native job with a fresh output/attempt set; count both failed admissions. No package or shared service change is involved.
 
+### 2026-10-29 04:32 UTC — combined C32 result and next native flags
+
+The [validated C32 export](results/agentx-prefix-shortconv-c32.json) measures 6.77513 output tokens/s/GPU versus 6.11275 in the fresh baseline, an observed ratio of 1.10836. This combines caching and ShortConv and is not a final or isolated kernel gain. Mean TTFT is 34.93 seconds and ITL 263.67 ms. Native server counters report 27,535,184 hits / 69,820,425 queries (39.58%) and 42,029,197 computed prompt tokens; per-rank hits vary. The pinned processor retains the base IMAGE label, so the result explicitly records the actual private wheel, source and effective recipe beside it.
+
+A fresh unchanged C128 baseline starts on the original group to distinguish offered load from serving changes. Its source/input and complete protocol are [pinned separately](experiments/baseline-c128.json). Client and server CPU observers remain separate from native throughput collection. The batch2048 branch control passed all matching-shape cold/warm comparisons. Next compare native BF16 auto at budget2048 and Triton at budget8192, using at most two additional batch groups and no intrusive profiler during the full-hour baseline. Record admission and neighboring activity; short-bank comparisons only select candidates.
+
 ## Final decision
 
 Pending throughput experiments. No optimization gain or final serving recipe is established.
