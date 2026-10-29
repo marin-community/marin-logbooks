@@ -156,6 +156,10 @@ def path_b_config(
         base,
         data=data,
         adapter=adapter,
-        trainer=replace(base.trainer, num_train_steps=updates),
+        trainer=replace(
+            base.trainer,
+            num_train_steps=updates,
+            checkpointer=replace(base.trainer.checkpointer, keep_last_temporary_checkpoints=2),
+        ),
         hf_save_steps=None,
     )

@@ -86,6 +86,8 @@ class ExecutionBoundary:
 
 def test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_stop_train(monkeypatch, tmp_path):
     receipts = {}
+    monkeypatch.setattr(workflow, "export_write_probe", lambda event: {"bytes": 32})
+    monkeypatch.setattr(workflow, "delete_audited_checkpoint", lambda *args: None)
     monkeypatch.setattr(workflow, "write_json", lambda path, value: receipts.update({path: value}))
 
     # Receipt storage is external; a valid export completion is exercised by
@@ -161,7 +163,9 @@ def test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_s
         local_storage(second.hf_export + "/path-b-checkpoint-event.json").write_text(json.dumps(second.payload()))
         execution.finish("export-000050")
         trend = execution.get("trend-000050")
-        # Natural success releases all four export tasks; sibling trend lives.
+        assert export.submit_options["lifetime"] == 7200
+        assert len(world.tasks(export.ref)) == 1
+        # Natural success releases the one-node export task; sibling trend lives.
         assert world.job(export.ref).state == job_pb2.JOB_STATE_SUCCEEDED
         assert all(t.state == job_pb2.TASK_STATE_SUCCEEDED for t in world.tasks(export.ref))
         assert world.job(trend.ref).state == job_pb2.JOB_STATE_RUNNING

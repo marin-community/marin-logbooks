@@ -43,3 +43,19 @@ def restore_trained_model(
         raise ValueError("Checkpoint model set/shape/dtype differs: missing, extra, duplicate or frozen-overlap key")
     restored = load_checkpoint(tree, checkpoint_path, axis_mapping=axis_mapping, mesh=mesh, allow_partial=False)
     return eqx.combine(restored["model"], source_model)
+
+
+def source_restore_template(source_model, trainable_filter):
+    """Release admitted trainable source values before allocating trained masters.
+
+    Preserve exact shape/dtype/sharding exemplars and every frozen source value.
+    This changes export memory lifetime only; the complete source audit and partial
+    row snapshot must precede this call. Native load still requires every key.
+    """
+    return jax.tree.map(
+        lambda value, trainable: (
+            jax.ShapeDtypeStruct(value.shape, value.dtype, sharding=value.sharding) if trainable else value
+        ),
+        source_model,
+        trainable_filter,
+    )

@@ -15,7 +15,7 @@ import time
 from queue import Queue
 
 from fray.current_client import current_client
-from fray.types import ActorConfig
+from fray.types import ActorConfig, ResourceConfig
 from iris.client.client import iris_ctx_scope
 from iris.cluster.types import Entrypoint
 from iris.resources.state import JobState
@@ -36,12 +36,18 @@ from experiments.post_training.identity_path_b.async_launch import (
     write_json,
 )
 from experiments.post_training.identity_path_b.checkpoints import CheckpointEvent, event_bytes
+from experiments.post_training.identity_path_b.export_preflight import export_write_probe
+from experiments.post_training.identity_path_b.retention import delete_audited_checkpoint
 from experiments.post_training.identity_path_b.worker import read_pinned, train_worker
 
 logger = logging.getLogger(__name__)
 # Root lifetime must cover late export + trend after the training allocation is
 # released. It is a CPU allocation, not an idle training/export GPU allocation.
 ROOT_LIFETIME = CHILD_LIFETIME + CHILD_LIFETIME + TREND_LIFETIME + 3600
+EXPORT_LIFETIME = 2 * 3600
+EXPORT_RESOURCES = ResourceConfig.with_gpu(
+    "H100", count=8, cpu=64, ram="768GB", disk="1TB", target_cluster="cw-rno2a", replicas=1
+)
 
 
 class CheckpointInbox:
@@ -125,16 +131,25 @@ class Workflow:
     def checkpoint(self, event: CheckpointEvent) -> None:
         self.received.add(event.completed_updates)
         try:
+            probe = export_write_probe(event)
+        except Exception as error:
+            self.checkpoint_record(
+                event, "export_preflight_failed_no_gpu", error_type=type(error).__name__, application_resubmits=0
+            )
+            return
+        self.checkpoint_record(event, "export_write_probe_pass", probe=probe)
+        try:
             job = native_submit(
                 Entrypoint.from_callable(export_checkpoint, event, self.binding),
                 name=f"export-{event.completed_updates:06d}",
-                resources=RESOURCES,
-                replicas=4,
+                resources=EXPORT_RESOURCES,
+                replicas=1,
                 env_vars={
                     **xla_precision_env(json.loads(self.binding.runtime_bytes)["xla_precision"]),
                     "JAX_PLATFORMS": "cuda,cpu",
+                    "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.90",
                 },
-                lifetime=CHILD_LIFETIME,
+                lifetime=EXPORT_LIFETIME,
             )
         except Exception as error:
             self.checkpoint_record(
@@ -157,6 +172,11 @@ class Workflow:
         assert event is not None
         try:
             checked_export_event(event)
+            try:
+                delete_audited_checkpoint(event, self.run_root, self.binding.source_receipt["sha256"])
+                self.checkpoint_record(event, "audited_native_deleted", job=job_id)
+            except Exception as error:
+                self.checkpoint_record(event, "audited_native_delete_failed", error_type=type(error).__name__)
             from experiments.post_training.identity_path_b.trend import trend_worker  # noqa: PLC0415
 
             job = native_submit(

@@ -9,8 +9,9 @@ from functools import partial
 
 import jax
 import numpy as np
-from levanter.compat.hf_export import run_on_export_writer
+from levanter.compat.hf_export import run_on_export_writer, write_export_json
 from levanter.tracker import current_tracker
+from rigging.filesystem.storage_path import StoragePath
 
 from experiments.interp.snowball_identity.multihost import gather_global
 from experiments.post_training.identity_context_distill.sft_launch import DispatchMetrics
@@ -20,6 +21,7 @@ from experiments.post_training.identity_path_b.recipe import (
     restore_frozen_state,
     special_row_values,
 )
+from experiments.post_training.identity_path_b.retention import await_checkpoint_slot, save_temporary_checkpoint
 from experiments.post_training.identity_path_b.storage_audit import assert_special_row_bits
 
 
@@ -77,8 +79,10 @@ def run_updates(
     """Run only after source/master/precision admission and distributed initialization.
 
     Native checkpoints commit on training ranks. Export/evaluation is submitted
-    independently from immutable checkpoint events; their results never block
-    this loop. The caller must use the row-masked optimizer and no default save hooks.
+    independently from immutable checkpoint events. At most two native snapshots
+    may await audited retirement: nonfinal boundaries wait two hours then record
+    a skipped trend; final waits without an algorithmic deadline. Trend evaluation
+    never blocks training. The caller must use the row-masked optimizer and no default save hooks.
     """
     updates = exposure["updates"]
     if not run_root.startswith(TEMPORARY_PREFIX):
@@ -91,6 +95,8 @@ def run_updates(
         raise ValueError("Expected fresh state and the exact finite packed arm")
     rows = special_row_values(state.model)
     frozen = frozen_field_bits(state.model)
+    if trainer.config.checkpointer.keep is not None or trainer.config.checkpointer.save_interval is not None:
+        raise ValueError("Temporary eval-point saves require disabled permanent/time policies")
     checkpointer = trainer.config.checkpointer.create(trainer.run_id)
     checkpoints = set(exposure["checkpoint_updates"])
     records = []
@@ -109,11 +115,23 @@ def run_updates(
             raise ValueError("Native update did not advance with a finite loss")
         if completed not in checkpoints:
             continue
+        paths = [row["native_checkpoint"] for row in records if "native_checkpoint" in row]
+        if not await_checkpoint_slot(paths, final=completed == updates):
+            skipped = {
+                "completed_updates": completed,
+                "status": "skipped_trend_retention_wait_2h",
+                "exposure": exposure["cumulative_batches"][completed - 1],
+            }
+            records.append(skipped)
+            run_on_export_writer(
+                partial(write_export_json, StoragePath(run_root) / f"checkpoint-skips/update-{completed}.json", skipped)
+            )
+            continue
         if frozen_field_bits(state.model) != frozen:
             raise ValueError("A frozen Q/K/router/bias parameter changed bits")
         partial_row_hashes = assert_special_row_bits(state.model, rows)
         label = completed - 1
-        checkpointer.on_step(tree=state.saveable_state, step=label, force=True)
+        save_temporary_checkpoint(checkpointer, state.saveable_state, step=label)
         checkpointer.wait_until_finished()
         native = f"{trainer.config.checkpointer.expanded_path(trainer.run_id)}/step-{label}"
         event = CheckpointEvent(

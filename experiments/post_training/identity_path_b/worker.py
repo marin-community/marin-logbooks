@@ -22,6 +22,7 @@ from levanter.models.snowball import GrugMoeHfConfig, snowball_loss_with_dispatc
 from levanter.tracker import NoopConfig
 from levanter.trainer import Trainer, initialize
 from levanter.trainer_state import FrozenParameterStorage, cast_params_by_trainability
+from levanter.utils.mesh import MeshConfig
 from rigging.filesystem.storage_path import StoragePath
 
 from experiments.interp.snowball_identity.levanter_positions import router_dot_dtypes, router_dot_is_fp32
@@ -42,7 +43,7 @@ from experiments.post_training.identity_context_distill.sft_launch import sft_ru
 from experiments.post_training.identity_path_b.checkpoints import AsyncCheckpoints, CheckpointEvent
 from experiments.post_training.identity_path_b.native import packed_dataset
 from experiments.post_training.identity_path_b.recipe import freeze_special_rows, path_b_config, special_row_values
-from experiments.post_training.identity_path_b.rehydrate import restore_trained_model
+from experiments.post_training.identity_path_b.rehydrate import restore_trained_model, source_restore_template
 from experiments.post_training.identity_path_b.storage_audit import (
     assert_special_row_bits,
     audit_export_storage,
@@ -226,9 +227,10 @@ def export_worker(
         runtime_bytes=runtime_bytes,
         runtime_sha256=runtime_sha256,
     )
+    config = replace(config, trainer=replace(config.trainer, mesh=export_mesh()))
     initialize(config)
-    if jax.process_count() != 4 or jax.device_count() != 32:
-        raise ValueError("Independent export uses the reviewed4-process/32-device source mesh")
+    if jax.process_count() != 1 or jax.device_count() != 8:
+        raise ValueError("Independent export requires one process/eight devices")
     with Trainer(
         config.trainer,
         config.optimizer.build(config.trainer.num_train_steps),
@@ -248,8 +250,10 @@ def export_worker(
             run_root=f"{event.hf_export}/admission",
         )
         rows = special_row_values(model)
+        template = source_restore_template(model, mask)
+        del model
         trained = restore_trained_model(
-            model,
+            template,
             mask,
             event.native_checkpoint,
             completed_updates=event.completed_updates,
@@ -257,6 +261,7 @@ def export_worker(
             mesh=trainer.device_mesh,
         )
         assert_special_row_bits(trained, rows)
+        del template
         converter.with_config_overrides(source_export_overrides(source)).save_pretrained(
             trained,
             event.hf_export,
@@ -279,3 +284,13 @@ def export_worker(
                 event.payload(),
             )
         )
+
+
+def export_mesh() -> MeshConfig:
+    """One-node placement only; preserve expert4/data2 and all logical model values."""
+    return MeshConfig(
+        axes={"data": 2, "expert": 4, "replica": 1, "model": 1, "context": 1},
+        dcn_axes={"replica_dcn": 1},
+        compute_mapping={"batch": ["replica_dcn", "data", "expert"], "position": "context", "vocab": "model"},
+        param_mapping={"embed": ["data", "context"]},
+    )
