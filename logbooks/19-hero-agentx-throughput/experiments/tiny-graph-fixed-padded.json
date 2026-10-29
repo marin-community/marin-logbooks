@@ -1,0 +1,108 @@
+{
+  "purpose": "Same deterministic tiny graph numerical controls, but force three active requests into a four-token captured decode graph. Two cacheON/two cacheOFF replicas, native pause/enqueue/resume, exact history comparisons and native CPU dispatch traces. Native BF16 padded-row unit already passes; no AgentX performance claim.",
+  "serving_prefix": [
+    "uvx",
+    "--from",
+    "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+    "--with",
+    "runai-model-streamer[s3]==0.16.1",
+    "--with",
+    "torch==2.14.1+cu132",
+    "--with",
+    "nvidia-cuda-nvcc==13.2.86",
+    "--with",
+    "nvidia-cuda-crt==13.2.86",
+    "--with",
+    "nvidia-nvvm==13.2.86",
+    "--python",
+    "3.12",
+    "--index",
+    "https://download.pytorch.org/whl/cu132",
+    "--index",
+    "https://download.pytorch.org/whl/cpu",
+    "--index-strategy",
+    "unsafe-best-match"
+  ],
+  "cuda_bootstrap": [
+    "python",
+    "-c",
+    "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n"
+  ],
+  "inputs": {
+    "wheel": {
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/piecewise-9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+      "bytes": 250542665,
+      "readback_sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+      "receipt": {
+        "kind": "private_python_overlay",
+        "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "source_commit": "9383b951dd7d7f4fa7801fd479490ad9915b88ce",
+        "changed_files": {
+          "vllm/model_executor/models/grugmoe.py": "78563576172625505820fb2aa2a19b4ee8e8f112d6435cd2bdafb6db311311b8",
+          "vllm/model_executor/models/config.py": "7ccd9cc250dbdaaf0d964ea60425231aed7f186816bd933d9b52e151dd64855e"
+        },
+        "wheel_path": "/iris/candidates/piecewise-shortconv/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+        "wheel_bytes": 250542665,
+        "verified_unchanged_files": 5100,
+        "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+      }
+    },
+    "fixture": {
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/tiny-hero/fixture-ee91019175a23bab6100390ce36a40ffc430518bddab331fe5e06fa75ae97980.tar.zst",
+      "sha256": "ee91019175a23bab6100390ce36a40ffc430518bddab331fe5e06fa75ae97980",
+      "bytes": 129834734,
+      "readback_sha256": "ee91019175a23bab6100390ce36a40ffc430518bddab331fe5e06fa75ae97980"
+    }
+  },
+  "capture_sizes": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "runs": [
+    "NONE",
+    "NONE",
+    "PIECEWISE",
+    "PIECEWISE"
+  ],
+  "fixture_model_sha256": "d89bc5521f09d41f9b87cb273b7e479367911fa9c8b41f6c6c41f67885adfb66",
+  "baseline_serving_source": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "candidate_source": "9383b951dd7d7f4fa7801fd479490ad9915b88ce",
+  "placement": {
+    "nvlink_domain": "DH1-125-US-EAST-08A",
+    "nodes": [
+      "s2lrxs64",
+      "s45txs64",
+      "s5xm6j84",
+      "s6htxs64",
+      "s6rrxs64",
+      "s6vrxs64",
+      "s6xsxs64",
+      "s6xvdgb4",
+      "s76txs64",
+      "s7xsxs64",
+      "s8ltxs64",
+      "s9jtxs64",
+      "scb62nb4",
+      "sdysxs64",
+      "sf4fys64",
+      "sg6txs64",
+      "sh5rxs64",
+      "sjxqxs64"
+    ],
+    "verified_utc": "2026-10-29T15:30:46.588286+00:00",
+    "inventory_sha256": "a038366bc05141c7a4d3054340918271a6bf185b0e23095ffc34cc199a42b55e"
+  },
+  "prefix_caching": false,
+  "trace_batches": true,
+  "deterministic_batches": true,
+  "prefix_caching_by_task": [
+    true,
+    true,
+    false,
+    false
+  ]
+}
