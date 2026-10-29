@@ -62,6 +62,19 @@ def main() -> None:
         row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
         for row in comparison["comparisons"]
     )
+    if manifest.get("diagnostic_request", {}).get("compare_graph_replay"):
+        assert manifest["diagnostic_request"]["numerics_only"] is True
+        assert manifest["diagnostic_request"]["trace_batches"] is True
+        assert manifest["diagnostic_request"]["compilation_config"]["cudagraph_mode"] == "PIECEWISE"
+        reference = probe.copy()
+        reference[reference.index("--output") + 1] = str(args.output / "cache-probe-replay-disabled")
+        reference += ["--disable-graph-replay", "--compare-to", str(args.output / "cache-probe-matched")]
+        run_logged(reference, dict(os.environ), args.output / "replay-disabled.log", timeout=900)
+        checks = json.loads((args.output / "cache-probe-replay-disabled/comparison.json").read_text())
+        assert all(
+            row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
+            for row in checks["comparisons"]
+        )
     if manifest.get("diagnostic_request", {}).get("numerics_only"):
         print("NATIVE_NUMERICAL_CONTROL_DONE", flush=True)
         return

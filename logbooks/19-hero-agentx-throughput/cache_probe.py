@@ -82,6 +82,8 @@ def run(
     session_id: str | None,
     trace_batches: bool = False,
     reference_capture_sizes: list[int] | None = None,
+    disable_graph_replay: bool = False,
+    compare_to: Path | None = None,
 ) -> None:
     assert hashlib.sha256(tokenizer_path.read_bytes()).hexdigest() == TOKENIZER_SHA256
     output.mkdir(parents=True, exist_ok=False)
@@ -119,9 +121,9 @@ def run(
     comparisons = []
     if trace_batches:
         assert rank == 0
-        batch_trace(base_url, "install_hero_batch_trace", [reference_capture_sizes])
+        batch_trace(base_url, "install_hero_batch_trace", [reference_capture_sizes, disable_graph_replay])
     else:
-        assert reference_capture_sizes is None
+        assert reference_capture_sizes is None and not disable_graph_replay
     with (output / "requests.jsonl").open("w") as stream:
         for name, branches, cache_salt in waves:
             payload = {
@@ -168,6 +170,40 @@ def run(
         batch_trace(base_url, "stop_hero_batch_trace")
     summary = {"rank": rank, "session_id": session_id, "prefix_tokens": prefix_tokens, "comparisons": comparisons}
     (output / "comparison.json").write_text(json.dumps(summary, indent=2) + "\n")
+    if compare_to is not None:
+        original = [json.loads(line) for line in (compare_to / "requests.jsonl").read_text().splitlines()]
+        current = [json.loads(line) for line in (output / "requests.jsonl").read_text().splitlines()]
+        cross = []
+        for left, right in zip(original, current, strict=True):
+            assert left["wave"] == right["wave"] and left["branches"] == right["branches"]
+            shapes = []
+            for entry in (left, right):
+                shapes.append(
+                    [
+                        {
+                            key: row[key]
+                            for key in (
+                                "requests",
+                                "scheduled_tokens",
+                                "padded_tokens",
+                                "max_query_len",
+                                "tokens_across_dp",
+                            )
+                        }
+                        for row in entry["internal_batches"][0]
+                    ]
+                )
+            cross.append(
+                {
+                    "wave": left["wave"],
+                    "same_global_shapes": shapes[0] == shapes[1],
+                    "choices": [
+                        compare(a, b)
+                        for a, b in zip(left["response"]["choices"], right["response"]["choices"], strict=True)
+                    ],
+                }
+            )
+        (output / "cross-comparison.json").write_text(json.dumps(cross, indent=2) + "\n")
     print(json.dumps(summary, indent=2), flush=True)
 
 
@@ -181,6 +217,8 @@ def main() -> None:
     parser.add_argument("--session-id")
     parser.add_argument("--trace-batches", action="store_true")
     parser.add_argument("--reference-capture-sizes", type=int, nargs="+")
+    parser.add_argument("--disable-graph-replay", action="store_true")
+    parser.add_argument("--compare-to", type=Path)
     args = parser.parse_args()
     rank = args.rank if args.rank is not None or args.session_id is not None else 0
     run(
@@ -192,6 +230,8 @@ def main() -> None:
         args.session_id,
         args.trace_batches,
         args.reference_capture_sizes,
+        args.disable_graph_replay,
+        args.compare_to,
     )
 
 

@@ -44,7 +44,9 @@ def pad_reference_dispatch(result, capture_sizes: list[int]):
     )
 
 
-def install_batch_trace(worker, reference_capture_sizes: list[int] | None = None) -> None:
+def install_batch_trace(
+    worker, reference_capture_sizes: list[int] | None = None, disable_graph_replay: bool = False
+) -> None:
     # Record native CPU dispatch metadata; do not synchronize or profile the GPU.
     worker.hero_batch_trace = []
     module = sys.modules[type(worker.model_runner).__module__]
@@ -55,6 +57,10 @@ def install_batch_trace(worker, reference_capture_sizes: list[int] | None = None
         result = dispatch(*args, **kwargs)
         if reference_capture_sizes:
             result = pad_reference_dispatch(result, reference_capture_sizes)
+        if disable_graph_replay:
+            descriptor, sync = result
+            assert descriptor.cg_mode in (CUDAGraphMode.NONE, CUDAGraphMode.PIECEWISE)
+            result = (replace(descriptor, cg_mode=CUDAGraphMode.NONE), sync)
         descriptor = result[0]
         sync = result[1]
         worker.hero_batch_trace.append(
@@ -66,6 +72,7 @@ def install_batch_trace(worker, reference_capture_sizes: list[int] | None = None
                 "max_query_len": kwargs.get("max_query_len"),
                 "tokens_across_dp": sync.num_tokens_across_dp.tolist() if sync is not None else None,
                 "reference_capture_sizes": reference_capture_sizes,
+                "disable_graph_replay": disable_graph_replay,
             }
         )
         return result
