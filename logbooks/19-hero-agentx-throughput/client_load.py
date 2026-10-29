@@ -41,7 +41,7 @@ with output.open("x", buffering=1) as stream:
                 continue
             pid = int(directory.name)
             processes[pid] = {"ppid": int(fields[1]), "rss": int(fields[21]) * page_size, "start": int(fields[19])}
-            if b"bench" in command and b"serve" in command:
+            if (b"bench" in command and b"serve" in command) or (b"agentx" in command and b"--model" in command):
                 candidates.append(pid)
         roots = [pid for pid in candidates if processes[pid]["ppid"] not in candidates]
         selected = set()

@@ -25,10 +25,31 @@ from marin.inference.iris_vllm import (
     notify_iris_vllm_stopped,
     wait_for_iris_vllm_shutdown,
 )
-from marin.inference.vllm_server import IsolatedCudaVllm, VllmLauncherWithEnvironment, VllmType
+from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmLauncherWithEnvironment, VllmType
 
 from experiments.evaluation.agentx.recipe import load_series, series_path
 from experiments.evaluation.agentx.run import create_server, interrupt
+
+
+def use_candidate_wheel(server: VllmEnvironment, receipt_file: Path, base: dict) -> dict:
+    receipt = json.loads(receipt_file.read_text())
+    wheel = Path(receipt["wheel_path"])
+    with wheel.open("rb") as stream:
+        assert hashlib.file_digest(stream, "sha256").hexdigest() == receipt["wheel_sha256"]
+    assert receipt["base_wheel_sha256"] == next(
+        item["sha256"] for item in base["wheels"] if item["architecture"] == "aarch64"
+    )
+    release = VllmGpuRelease(
+        release_tag="private-shortconv-output-buffer",
+        source_commit=receipt["source_commit"],
+        version=base["version"],
+        torch_backend=base["torch_backend"],
+        torch_version=base["torch_version"],
+        wheels=(VllmGpuWheel("aarch64", ("10.0",), wheel.as_uri(), receipt["wheel_sha256"]),),
+    )
+    assert isinstance(server.launcher, VllmLauncherWithEnvironment)
+    server.launcher = replace(server.launcher, launcher=IsolatedCudaVllm(source=VllmType.MARIN_FORK, release=release))
+    return receipt
 
 
 def serve(
@@ -88,27 +109,7 @@ def serve(
         ) as launch:
             server = create_server(manifest, output, launch)
             if candidate_wheel is not None:
-                receipt = json.loads(candidate_wheel.read_text())
-                wheel = Path(receipt["wheel_path"])
-                with wheel.open("rb") as stream:
-                    assert hashlib.file_digest(stream, "sha256").hexdigest() == receipt["wheel_sha256"]
-                base = manifest["vllm_release"]
-                assert receipt["base_wheel_sha256"] == next(
-                    item["sha256"] for item in base["wheels"] if item["architecture"] == "aarch64"
-                )
-                release = VllmGpuRelease(
-                    release_tag="private-shortconv-output-buffer",
-                    source_commit=receipt["source_commit"],
-                    version=base["version"],
-                    torch_backend=base["torch_backend"],
-                    torch_version=base["torch_version"],
-                    wheels=(VllmGpuWheel("aarch64", ("10.0",), wheel.as_uri(), receipt["wheel_sha256"]),),
-                )
-                assert isinstance(server.launcher, VllmLauncherWithEnvironment)
-                server.launcher = replace(
-                    server.launcher, launcher=IsolatedCudaVllm(source=VllmType.MARIN_FORK, release=release)
-                )
-                record["candidate_wheel"] = receipt
+                record["candidate_wheel"] = use_candidate_wheel(server, candidate_wheel, manifest["vllm_release"])
             if prefix_cache:
                 server.extra_cli_args.remove("--no-enable-prefix-caching")
                 server.extra_cli_args.append("--enable-prefix-caching")

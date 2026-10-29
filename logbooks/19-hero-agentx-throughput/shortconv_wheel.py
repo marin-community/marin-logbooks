@@ -1,10 +1,10 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Repack the installed baseline wheel with one pinned Python source replacement.
+"""Repack the baseline wheel with pinned Grug Python source replacements.
 
 This creates a private experiment input, never an official release. All packaged
-files must match the installed wheel's RECORD before the single replacement.
+files must match the installed wheel's RECORD before replacement.
 Dependencies, compiled extensions, metadata and the version stay fixed.
 """
 
@@ -32,10 +32,17 @@ def main() -> None:
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--replacement-source", type=Path, required=True)
     parser.add_argument("--replacement-sha256", required=True)
+    parser.add_argument("--config-source", type=Path)
+    parser.add_argument("--config-source-sha256")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     replacement = args.replacement_source.read_bytes()
     assert hashlib.sha256(replacement).hexdigest() == args.replacement_sha256
+    replacements = {MODEL_FILE: replacement}
+    if args.config_source is not None:
+        config_source = args.config_source.read_bytes()
+        assert hashlib.sha256(config_source).hexdigest() == args.config_source_sha256
+        replacements["vllm/model_executor/models/config.py"] = config_source
     distribution = importlib.metadata.distribution("vllm")
     assert hashlib.sha256(Path(distribution.locate_file(MODEL_FILE)).read_bytes()).hexdigest() == BASE_MODEL_SHA256
     record = next(path for path in distribution.files if path.name == "RECORD")
@@ -54,9 +61,10 @@ def main() -> None:
                 original_digest = hashlib.file_digest(stream, "sha256").digest()
             assert item.hash is not None and item.hash.mode == "sha256", item
             assert encoded_digest(original_digest).split("=", 1)[1] == item.hash.value, item
-            if str(item) == MODEL_FILE:
-                archive.writestr(str(item), replacement)
-                digest, size = hashlib.sha256(replacement).digest(), len(replacement)
+            if str(item) in replacements:
+                content = replacements[str(item)]
+                archive.writestr(str(item), content)
+                digest, size = hashlib.sha256(content).digest(), len(content)
             else:
                 archive.write(path, str(item))
                 digest, size = original_digest, path.stat().st_size
@@ -71,12 +79,11 @@ def main() -> None:
         "kind": "private_python_overlay",
         "base_wheel_sha256": BASE_WHEEL_SHA256,
         "source_commit": args.source_commit,
-        "changed_file": MODEL_FILE,
-        "source_sha256": args.replacement_sha256,
+        "changed_files": {name: hashlib.sha256(content).hexdigest() for name, content in replacements.items()},
         "wheel_path": str(args.output.resolve()),
         "wheel_sha256": digest,
         "wheel_bytes": args.output.stat().st_size,
-        "verified_unchanged_files": len(entries) - 2,
+        "verified_unchanged_files": len(entries) - 1 - len(replacements),
         "version": distribution.version,
     }
     args.output.with_suffix(".json").write_text(json.dumps(receipt, indent=2) + "\n")

@@ -53,14 +53,16 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--forward-source", type=Path)
     parser.add_argument("--forward-source-sha256")
+    parser.add_argument("--extra-test", action="append", default=[])
     args = parser.parse_args()
     source = args.test_source.read_bytes()
     assert hashlib.sha256(source).hexdigest() == args.source_sha256
     if args.forward_source is not None:
         install_forward(args.forward_source, args.forward_source_sha256)
     tree = ast.parse(source)
-    selected = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in FUNCTIONS]
-    assert tuple(node.name for node in selected) == FUNCTIONS
+    functions = (*FUNCTIONS, *args.extra_test)
+    selected = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in functions]
+    assert tuple(node.name for node in selected) == functions
     for node in selected:
         node.decorator_list = []
     namespace = {
@@ -78,14 +80,15 @@ def main() -> None:
         )
         initialize_model_parallel(1, 1)
         try:
-            namespace[FUNCTIONS[1]]()
+            for name in functions[1:]:
+                namespace[name]()
             torch.cuda.synchronize()
         finally:
             cleanup_dist_env_and_memory()
     record = {
         "source_sha256": args.source_sha256,
         "forward_source_sha256": args.forward_source_sha256,
-        "functions": FUNCTIONS,
+        "functions": functions,
         "status": "passed",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
