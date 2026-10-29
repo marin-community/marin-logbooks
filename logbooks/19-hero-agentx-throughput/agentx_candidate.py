@@ -18,7 +18,13 @@ import sys
 from pathlib import Path
 
 import zstandard
-from diagnostic_server import prefetch_flashinfer_headers, stage_candidate_wheel, use_candidate_wheel, use_numa_binding
+from diagnostic_server import (
+    prefetch_flashinfer_headers,
+    set_compilation_config,
+    stage_candidate_wheel,
+    use_candidate_wheel,
+    use_numa_binding,
+)
 from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import IrisVllmLaunch
 from marin.inference.vllm_server import VllmEnvironment
@@ -66,6 +72,8 @@ def create_candidate_server(
     if overrides.get("numa_bind"):
         assert overrides["numa_bind"] is True
         use_numa_binding(server, manifest["numactl_input"])
+    if "compilation_config" in overrides:
+        set_compilation_config(server, overrides["compilation_config"])
     if overrides.get("prefetch_flashinfer_headers"):
         prefetch_flashinfer_headers(server, output)
     (output / "runtime-overrides.json").write_text(
