@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Repack the baseline wheel with pinned Grug Python source replacements.
+"""Repack the baseline wheel with pinned Python source replacements.
 
 This creates a private experiment input, never an official release. All packaged
 files must match the installed wheel's RECORD before replacement.
@@ -32,19 +32,22 @@ def main() -> None:
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--replacement-source", type=Path, required=True)
     parser.add_argument("--replacement-sha256", required=True)
+    parser.add_argument("--module", default=MODEL_FILE)
+    parser.add_argument("--base-module-sha256", default=BASE_MODEL_SHA256)
     parser.add_argument("--config-source", type=Path)
     parser.add_argument("--config-source-sha256")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     replacement = args.replacement_source.read_bytes()
     assert hashlib.sha256(replacement).hexdigest() == args.replacement_sha256
-    replacements = {MODEL_FILE: replacement}
+    assert args.module.startswith("vllm/") and args.module.endswith(".py") and ".." not in Path(args.module).parts
+    replacements = {args.module: replacement}
     if args.config_source is not None:
         config_source = args.config_source.read_bytes()
         assert hashlib.sha256(config_source).hexdigest() == args.config_source_sha256
         replacements["vllm/model_executor/models/config.py"] = config_source
     distribution = importlib.metadata.distribution("vllm")
-    assert hashlib.sha256(Path(distribution.locate_file(MODEL_FILE)).read_bytes()).hexdigest() == BASE_MODEL_SHA256
+    assert hashlib.sha256(Path(distribution.locate_file(args.module)).read_bytes()).hexdigest() == args.base_module_sha256
     record = next(path for path in distribution.files if path.name == "RECORD")
     entries = []
     args.output.parent.mkdir(parents=True, exist_ok=True)

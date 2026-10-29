@@ -1,0 +1,43 @@
+{
+  "purpose": "Qualify native session affinity before AgentX. Header/session field already exists; no new router, kernel, dependency or replay semantics.",
+  "source_commit": "9a6d78587372456aaf8c0c3dd3a14828b26dc486",
+  "pr_source_commit": "e903f9306a",
+  "base_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "module": "vllm/v1/engine/core_client.py",
+  "base_module_sha256": "fd6ca0cb7499b3086eef2fc57674b7ace56ef1c648f09e92e144b255b79018f8",
+  "replacement_sha256": "8bcb15b22dfbeb9d2bd48958b86e1677ad102c70216e2f351b9f0a268b046758",
+  "cpu_tests": {
+    "command": ".venv/bin/python -m pytest --confcutdir=tests/v1/engine tests/v1/engine/test_dp_session_affinity.py -q",
+    "result": "3 passed",
+    "coverage": [
+      "client/load independent session selection",
+      "explicit rank precedence and absent-session load balance",
+      "completion accounting",
+      "stable mapping across PYTHONHASHSEED values"
+    ]
+  },
+  "live_controls": {
+    "session_id": "hero-agentx-affinity-12",
+    "expected_rank_at_dp16": 0,
+    "explicit_rank_control": 0,
+    "compare": "All cached/uncached branch choices and logprobs on matching API batch lists, same server/rank; record per-engine cache query/hit deltas to prove routing. Internal execution shapes not asserted."
+  },
+  "harness": {
+    "version": "1.0.12",
+    "source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+    "additive_client_environment": {
+      "AIPERF_HTTP_X_SESSION_ID_FROM_CORRELATION_ID": "1"
+    },
+    "installed_source_verified": {
+      "aiperf/common/environment.py": "7bef1520d6fec532ddba3f478e931e2c4ecfc3e0c2d2b4643a4e35e08bbc2dfe",
+      "aiperf/transports/base_transports.py": "93f6113b3d428d1e0d257f039f6237c1e9f59336b508b97e156bbcf6682cdb5d"
+    }
+  },
+  "engineering_value": {
+    "bottleneck": "C32 actual prefix hits39.58%, per-rank22-52%, while native DP ignores stable session ID.",
+    "gain_hypothesis": "Raising hits from40% to60% would cut computed prompt tokens by one third; no end-to-end gain follows until measured. Capacity and hash imbalance can limit reuse.",
+    "implementation": "Ten added lines in the native DP selector, using the existing session field and stable CRC32 as the existing late-interaction route does. No server config/API schema addition.",
+    "validation": "CPU selection/completion regression, live same-rank fixed-history cache/state comparisons and per-rank counters, then full native AgentX at matched load.",
+    "maintenance": "One upstream-owned method and a focused test; no new service or routing subsystem."
+  }
+}

@@ -22,11 +22,16 @@ TOKENIZER_SHA256 = "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a1316
 MODEL = "marin-community/Hero-535B-step144000"
 
 
-def post(base_url: str, payload: dict, rank: int) -> dict:
+def post(base_url: str, payload: dict, rank: int | None, session_id: str | None) -> dict:
+    headers = {"Content-Type": "application/json"}
+    if rank is not None:
+        headers["X-data-parallel-rank"] = str(rank)
+    if session_id is not None:
+        headers["X-Session-ID"] = session_id
     request = urllib.request.Request(
         base_url + "/v1/completions",
         data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json", "X-data-parallel-rank": str(rank)},
+        headers=headers,
     )
     with urllib.request.urlopen(request, timeout=900) as response:
         return json.load(response)
@@ -57,7 +62,9 @@ def compare(reference: dict, observed: dict) -> dict:
     }
 
 
-def run(tokenizer_path: Path, base_url: str, output: Path, prefix_tokens: int, rank: int) -> None:
+def run(
+    tokenizer_path: Path, base_url: str, output: Path, prefix_tokens: int, rank: int | None, session_id: str | None
+) -> None:
     assert hashlib.sha256(tokenizer_path.read_bytes()).hexdigest() == TOKENIZER_SHA256
     output.mkdir(parents=True, exist_ok=False)
     tokenizer = Tokenizer.from_file(str(tokenizer_path))
@@ -107,11 +114,12 @@ def run(tokenizer_path: Path, base_url: str, output: Path, prefix_tokens: int, r
                 "cache_salt": cache_salt,
             }
             started = time.time()
-            response = post(base_url, payload, rank)
+            response = post(base_url, payload, rank, session_id)
             entry = {
                 "wave": name,
                 "branches": branches,
                 "rank": rank,
+                "session_id": session_id,
                 "started_unix": started,
                 "elapsed_seconds": time.time() - started,
                 "request": payload,
@@ -131,7 +139,7 @@ def run(tokenizer_path: Path, base_url: str, output: Path, prefix_tokens: int, r
                         {"wave": name, "branch": branch, "reference_wave": reference_name, **compare(reference, choice)}
                     )
             print(name, "elapsed_seconds", round(entry["elapsed_seconds"], 3), "usage", response["usage"], flush=True)
-    summary = {"rank": rank, "prefix_tokens": prefix_tokens, "comparisons": comparisons}
+    summary = {"rank": rank, "session_id": session_id, "prefix_tokens": prefix_tokens, "comparisons": comparisons}
     (output / "comparison.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2), flush=True)
 
@@ -142,9 +150,11 @@ def main() -> None:
     parser.add_argument("--base-url", default="http://127.0.0.1:38197")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--prefix-tokens", type=int, default=8192)
-    parser.add_argument("--rank", type=int, default=0)
+    parser.add_argument("--rank", type=int)
+    parser.add_argument("--session-id")
     args = parser.parse_args()
-    run(args.tokenizer, args.base_url, args.output, args.prefix_tokens, args.rank)
+    rank = args.rank if args.rank is not None or args.session_id is not None else 0
+    run(args.tokenizer, args.base_url, args.output, args.prefix_tokens, rank, args.session_id)
 
 
 if __name__ == "__main__":

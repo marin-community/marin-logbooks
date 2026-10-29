@@ -13,6 +13,7 @@ import json
 import os
 import shutil
 import time
+import urllib.request
 from pathlib import Path
 
 from huggingface_hub import hf_hub_download
@@ -55,6 +56,34 @@ def main() -> None:
         row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
         for row in comparison["comparisons"]
     )
+    if manifest.get("diagnostic_request", {}).get("session_affinity"):
+        metrics_url = "http://127.0.0.1:38197/metrics"
+        with urllib.request.urlopen(metrics_url, timeout=30) as response:
+            (args.output / "affinity-metrics-before.txt").write_bytes(response.read())
+        session_output = args.output / "cache-probe-session"
+        session_probe = probe.copy()
+        session_probe[session_probe.index("--output") + 1] = str(session_output)
+        # CRC32 maps this stable ASCII ID to rank zero for sixteen engines.
+        session_probe += ["--session-id", "hero-agentx-affinity-12"]
+        run_logged(session_probe, dict(os.environ), args.output / "session-probe.log", timeout=900)
+        with urllib.request.urlopen(metrics_url, timeout=30) as response:
+            (args.output / "affinity-metrics-after.txt").write_bytes(response.read())
+        session_comparison = json.loads((session_output / "comparison.json").read_text())
+        assert all(
+            row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
+            for row in session_comparison["comparisons"]
+        )
+        explicit_rows = (args.output / "cache-probe-matched" / "requests.jsonl").read_text().splitlines()
+        session_rows = (session_output / "requests.jsonl").read_text().splitlines()
+        parity = []
+        for explicit_text, session_text in zip(explicit_rows, session_rows, strict=True):
+            explicit, session = json.loads(explicit_text), json.loads(session_text)
+            assert explicit["wave"] == session["wave"] and explicit["branches"] == session["branches"]
+            parity.append(
+                {"wave": explicit["wave"], "exact_choices": explicit["response"]["choices"] == session["response"]["choices"]}
+            )
+        (args.output / "affinity-numerics.json").write_text(json.dumps(parity, indent=2) + "\n")
+        assert all(row["exact_choices"] for row in parity)
     cases = json.loads(Path(__file__).with_name("experiments").joinpath("native-diagnostics.json").read_text())["cases"]
     decode = next(
         case

@@ -15,7 +15,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from diagnostic_server import use_candidate_wheel
+from diagnostic_server import stage_candidate_wheel, use_candidate_wheel
 from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import IrisVllmLaunch
 from marin.inference.vllm_server import VllmEnvironment
@@ -24,6 +24,12 @@ from experiments.evaluation.agentx import run as native
 from experiments.evaluation.agentx.recipe import PointManifest
 
 BASE_CREATE_SERVER = native.create_server
+BASE_WORKLOAD_ENVIRONMENT = native.workload_environment
+SESSION_HEADER_ENV = "AIPERF_HTTP_X_SESSION_ID_FROM_CORRELATION_ID"
+
+
+def affinity_environment(bundle: Path, series: dict) -> dict[str, str]:
+    return BASE_WORKLOAD_ENVIRONMENT(bundle, series) | {SESSION_HEADER_ENV: "1"}
 
 
 def create_candidate_server(
@@ -47,7 +53,15 @@ def create_candidate_server(
             overrides["master_port"] + 1
         )
     (output / "runtime-overrides.json").write_text(
-        json.dumps({"requested": overrides, "wheel": receipt}, indent=2) + "\n"
+        json.dumps(
+            {
+                "requested": overrides,
+                "wheel": receipt,
+                "client_environment": {SESSION_HEADER_ENV: "1"} if overrides.get("session_affinity") else {},
+            },
+            indent=2,
+        )
+        + "\n"
     )
     return server
 
@@ -57,7 +71,12 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
+    if "candidate_wheel_input" in manifest:
+        receipt = stage_candidate_wheel(manifest["candidate_wheel_input"])
+        assert str(receipt) == manifest["runtime_overrides"]["candidate_receipt"]
     native.create_server = create_candidate_server
+    if manifest["runtime_overrides"].get("session_affinity"):
+        native.workload_environment = affinity_environment
     output = Path(os.environ["IRIS_OUTPUT_DIR"])
     output.mkdir(parents=True, exist_ok=True)
     monitor = None

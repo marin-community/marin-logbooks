@@ -28,9 +28,26 @@ from marin.inference.iris_vllm import (
 )
 from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmLauncherWithEnvironment, VllmType
 
+from experiments.evaluation.agentx.artifacts import copy_file
 from experiments.evaluation.agentx.processes import run_logged
 from experiments.evaluation.agentx.recipe import load_series, series_path
 from experiments.evaluation.agentx.run import create_server, interrupt
+
+
+def stage_candidate_wheel(source: dict) -> Path:
+    directory = Path("/iris/candidates") / source["sha256"]
+    directory.mkdir(parents=True, exist_ok=True)
+    wheel = directory / source["name"]
+    if not wheel.exists():
+        copy_file(source["uri"], str(wheel))
+    with wheel.open("rb") as stream:
+        assert hashlib.file_digest(stream, "sha256").hexdigest() == source["sha256"]
+    assert wheel.stat().st_size == source["bytes"]
+    receipt = source["receipt"] | {"wheel_path": str(wheel)}
+    assert receipt["wheel_sha256"] == source["sha256"]
+    path = directory / "receipt.json"
+    path.write_text(json.dumps(receipt, indent=2) + "\n")
+    return path
 
 
 def use_candidate_wheel(server: VllmEnvironment, receipt_file: Path, base: dict) -> dict:
@@ -42,7 +59,7 @@ def use_candidate_wheel(server: VllmEnvironment, receipt_file: Path, base: dict)
         item["sha256"] for item in base["wheels"] if item["architecture"] == "aarch64"
     )
     release = VllmGpuRelease(
-        release_tag="private-shortconv-output-buffer",
+        release_tag=f"private-hero-probe-{receipt['source_commit'][:12]}",
         source_commit=receipt["source_commit"],
         version=base["version"],
         torch_backend=base["torch_backend"],
@@ -80,6 +97,9 @@ def serve(
     devices = hardware["hosts"] * hardware["gpus"]
     assert devices == 16
     output.mkdir(parents=True, exist_ok=False)
+    if "candidate_wheel_input" in manifest:
+        assert candidate_wheel is None
+        candidate_wheel = stage_candidate_wheel(manifest["candidate_wheel_input"])
     record = {
         "source": manifest["source"],
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
