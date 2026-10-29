@@ -1,0 +1,49 @@
+{
+  "observed_utc": "2026-10-29T16:35:46.356519+00:00",
+  "classification": "External storage quota and blocked synchronous reporting write; no numerical failure observed",
+  "training_source_revision": "25f7f13932293ab4ec00584bef8a431504b2d4db",
+  "gpu_job_id": "/romain/users-romain-checkpoints-sc-default-study-sc128-seed4517-2026.10.28.3-coordinator-97f9d527/users-romain-checkpoints-sc-default-study-sc128-seed4517-2026.10.28.3-8fbe7331c002",
+  "last_durable_metric_step": 39,
+  "completed_optimizer_and_weight_publication_step": 40,
+  "weight_publication_observed_utc": "2026-10-29T15:41:13.179",
+  "weight_publication_seconds": 86.076,
+  "completed_step40_optimizer_health": {
+    "policy_lr": 9.999999974752427e-07,
+    "skipped_steps": 0.0,
+    "raw_grad_norm": 0.15588130056858063,
+    "policy_update_steps": 1
+  },
+  "optimizer_log_sha256": "b3478f34aa5608d8f6a271bd1fdc40f6c9f973ea1cfb621ee3ab6a1144d08da6",
+  "thread_capture_sha256": "3714bf374859a0eaa6ac39bf9271446ac87fefc224842ac4eb36ca8bbf69c86b",
+  "blocking_stack": [
+    "sync (fsspec/asyn.py:91)",
+    "_call_s3 (s3fs/core.py:2613)",
+    "commit (s3fs/core.py:2780)",
+    "write_json (experiments/post_training/sc_default_data.py:51)",
+    "step (experiments/post_training/sc_default_measure.py:84)"
+  ],
+  "entrypoint_still_alive": true,
+  "entrypoint_os_state": "S (sleeping), not profiler-stopped",
+  "storage_observation": {
+    "workflow": "https://github.com/marin-community/marin/actions/runs/40906349444",
+    "dry_run": true,
+    "queried_at": "2026-10-29T15:57:05.147656+00:00",
+    "observed_at": "2026-10-29 15:55:30+00:00",
+    "zone": "RNO2A",
+    "used_bytes": 110588122105016.0,
+    "quota_bytes": 109951162777600.0,
+    "headroom_bytes": -636959327416.0,
+    "headroom_GB": -636.959327416
+  },
+  "small_write_probe": "25-second bound expired without completed write/readback; no HTTP status was observed",
+  "cleanup_decision": "Pending explicit user decision; no native tensor state deleted",
+  "reviewed_native_checkpoints": 8,
+  "native_inventory_bytes": 6445345917876,
+  "safe_subset_plan_delete_bytes": 6440504852224,
+  "safe_subset_plan_delete_objects": 256,
+  "native_metadata_to_retain": "All non-distcp files, including export requests needed by the verifier",
+  "read_only_plan_checks": "All eight model exports reverified, with unchanged manifest and sampled tensor hashes; original native object metadata matches reviewed inventories. No active run is included.",
+  "proposal_sha256": "dccd9d0e246aa9be83a1d21725dce0c772c05801c2bac1795daeac71c4c1b74b",
+  "plan_sha256": "e554da044bddd4ac7529e60f5fcba9af3cc84be3974c6753829ee0bd08d99ccb",
+  "limits": "No retry, default change, data exclusion or inferential adjustment is authorized by this incident record. Keep current model state while resolving quota; never treat elapsed time as cleanup approval."
+}
