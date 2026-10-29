@@ -124,9 +124,11 @@ def main() -> None:
                     manifest["router"]["backend_url"] + "/reset_prefix_cache", method="POST"
                 )
                 with urllib.request.urlopen(request, timeout=30) as response:
+                    reset = json.load(response)
                     (log.parent / "preflight-cache-reset.json").write_text(
-                        json.dumps({"status": response.status}) + "\n"
+                        json.dumps({"status": response.status, "result": reset}) + "\n"
                     )
+                    assert reset["success"] is True
             with upstream_router(manifest["router"], log.parent):
                 BASE_RUN_LOGGED(command, environment, log, timeout=timeout)
 
