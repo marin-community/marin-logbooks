@@ -24,12 +24,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--mode", choices=("NONE", "PIECEWISE"), required=True)
+    parser.add_argument("--capture-sizes", type=int, nargs="+", default=[1, 2, 4, 8])
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     compilation = {
         "mode": 3,
         "cudagraph_mode": args.mode,
-        "cudagraph_capture_sizes": [1, 2, 4, 8],
+        "cudagraph_capture_sizes": args.capture_sizes,
         "splitting_ops": [
             *CompilationConfig._attention_ops,
             "vllm::unified_kv_cache_update",
@@ -65,6 +66,7 @@ def main() -> None:
         proof.update(
             startup_seconds=time.monotonic() - started,
             actual_cudagraph_mode=actual.compilation_config.cudagraph_mode.name,
+            actual_capture_sizes=actual.compilation_config.cudagraph_capture_sizes,
             use_v2_model_runner=actual.use_v2_model_runner,
         )
         assert proof["actual_cudagraph_mode"] == args.mode
