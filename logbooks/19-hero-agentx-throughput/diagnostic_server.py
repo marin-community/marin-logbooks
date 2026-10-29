@@ -89,6 +89,16 @@ def prefetch_flashinfer_headers(server: VllmEnvironment, output: Path) -> None:
     )
 
 
+def set_compilation_config(server: VllmEnvironment, compilation: dict) -> None:
+    assert compilation["cudagraph_mode"] in ("NONE", "PIECEWISE")
+    flag = "--compilation-config"
+    value = json.dumps(compilation)
+    if flag in server.extra_cli_args:
+        server.extra_cli_args[server.extra_cli_args.index(flag) + 1] = value
+    else:
+        server.extra_cli_args.extend([flag, value])
+
+
 def use_numa_binding(server: VllmEnvironment, utility: dict) -> None:
     directory = Path("/iris/candidates") / ("numactl-" + utility["deb"]["sha256"])
     directory.mkdir(parents=True, exist_ok=True)
@@ -226,8 +236,7 @@ def serve(
             diagnostic = manifest.get("diagnostic_request", {})
             if "compilation_config" in diagnostic:
                 compilation = diagnostic["compilation_config"]
-                assert compilation["cudagraph_mode"] in ("NONE", "PIECEWISE")
-                server.extra_cli_args[server.extra_cli_args.index("--compilation-config") + 1] = json.dumps(compilation)
+                set_compilation_config(server, compilation)
                 record["overrides"]["compilation_config"] = compilation
             if diagnostic.get("trace_batches"):
                 assert server.host == "127.0.0.1"
