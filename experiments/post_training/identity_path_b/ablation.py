@@ -65,9 +65,13 @@ class AblationArm(StrEnum):
     GLM_ON_TENTH_72 = "A9"
     TULU_STYLE_44 = "A10"
     IDENTITY_OFF_72 = "A11"
+    GLM_ON_TENTH_18 = "A12"
+    GLM_ON_TENTH_TOOL_REPLAY_X2 = "A13"
 
 
 def updates_for(arm: AblationArm) -> int:
+    if arm == AblationArm.GLM_ON_TENTH_18:
+        return 18
     return 72 if arm in (AblationArm.GLM_ON_TENTH_72, AblationArm.IDENTITY_OFF_72) else UPDATES
 
 
