@@ -20,7 +20,7 @@ from fray.types import ResourceConfig
 from huggingface_hub import HfApi, hf_hub_download
 from iris.cluster.types import Entrypoint, EnvironmentSpec
 from iris.rpc import job_pb2
-from rigging.secrets import SecretBehavior
+from rigging.secrets import SecretBehavior, require_secret
 from rigging.timing import Duration
 
 ARTIFACTS = Path(__file__).with_name("hf_archive_artifacts")
@@ -204,13 +204,13 @@ def write_report(client, root: str, name: str, payload: dict) -> None:
 
 def run() -> None:
     config = json.loads((ARTIFACTS / "targets.json").read_bytes())
-    token = os.environ["HF_TOKEN"]
+    token = require_secret("HF_TOKEN")
     client = boto3.client(
         "s3",
         endpoint_url="https://cwobject.com",
         region_name="auto",
-        aws_access_key_id=os.environ["CW_KEY_ID"],
-        aws_secret_access_key=os.environ["CW_KEY_SECRET"],
+        aws_access_key_id=require_secret("CW_KEY_ID"),
+        aws_secret_access_key=require_secret("CW_KEY_SECRET"),
         config=Config(s3={"addressing_style": "virtual"}),
     )
     api = HfApi(token=token)
@@ -266,7 +266,7 @@ def run() -> None:
 
 def submission(credentials: dict[str, str]) -> dict:
     return dict(
-        name="pathb-private-HF-archive-r1-20261030",
+        name="pathb-private-HF-archive-r2-20261030",
         entrypoint=Entrypoint.from_callable(run),
         resources=convert_resources(RESOURCES),
         constraints=convert_constraints(RESOURCES),

@@ -6,7 +6,9 @@ import io
 from types import SimpleNamespace
 
 import pytest
+from rigging.secrets import secret_file_contents
 
+from experiments.post_training.identity_path_b import hf_archive
 from experiments.post_training.identity_path_b.hf_archive import download_source, private_repository, verify_hub
 
 
@@ -83,3 +85,41 @@ def test_hub_hash_failure_prevents_verified_receipt(tmp_path):
     hub.files["weights"] = b"corrupt model!"
     with pytest.raises(ValueError, match="SHA256"):
         verify_hub(hub, "open-athena/checkpoint", expected, "fixture-secret", download)
+
+
+def test_isolated_secret_files_reach_client_boundaries_without_plain_env(tmp_path, monkeypatch):
+    credentials = {"HF_TOKEN": "fixture-hub-token", "CW_KEY_ID": "fixture-cw-id", "CW_KEY_SECRET": "fixture-cw-secret"}
+    native = hf_archive.submission(credentials)
+    assert native["environment"].secret_behavior.value == "isolate"
+    secret_dir = tmp_path / "mounted-secrets"
+    secret_dir.mkdir()
+    for name, value in secret_file_contents(native["environment"].secrets).items():
+        (secret_dir / name).write_text(value)
+    monkeypatch.setenv("RIGGING_SECRETS_DIR", str(secret_dir))
+    for name in credentials:
+        monkeypatch.delenv(name, raising=False)
+    received = {}
+
+    def s3_client(service, **kwargs):
+        received["service"] = service
+        received["access_key"] = kwargs["aws_access_key_id"]
+        received["secret_key"] = kwargs["aws_secret_access_key"]
+        return object()
+
+    class BeforeRemoteOperations(Exception):
+        pass
+
+    def hub_client(*, token):
+        received["token"] = token
+        raise BeforeRemoteOperations
+
+    monkeypatch.setattr(hf_archive.boto3, "client", s3_client)
+    monkeypatch.setattr(hf_archive, "HfApi", hub_client)
+    with pytest.raises(BeforeRemoteOperations):
+        hf_archive.run()
+    assert received == {
+        "service": "s3",
+        "access_key": credentials["CW_KEY_ID"],
+        "secret_key": credentials["CW_KEY_SECRET"],
+        "token": credentials["HF_TOKEN"],
+    }
