@@ -41,7 +41,16 @@ def candidate_payload(candidate: dict) -> tuple[str, bytes, str]:
     validate_candidate(candidate)
     raw = (json.dumps(candidate, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n").encode()
     digest = hashlib.sha256(raw).hexdigest()
-    return f"_pathb_execution/candidates/{digest}.json", raw, digest
+    return f"experiments/post_training/identity_fullscreen_owner/candidates/{digest}.json", raw, digest
+
+
+def bundled_candidate(candidate: dict) -> tuple[str, str]:
+    """Require the exact canonical candidate already present in the native workspace."""
+    relative, raw, digest = candidate_payload(candidate)
+    source = Path(__file__).resolve().parents[3] / relative
+    if not source.is_file() or source.read_bytes() != raw:
+        raise ValueError("Candidate must be committed inside the bundled workspace before constructing a task")
+    return relative, digest
 
 
 def load_candidate(path: Path, expected_sha256: str) -> dict:

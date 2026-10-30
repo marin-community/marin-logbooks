@@ -30,6 +30,7 @@ from rigging.filesystem.s3_compat import configure_coreweave_s3
 from rigging.timing import Deadline, Duration
 
 from experiments.post_training.identity_fullscreen_owner.candidate import (
+    bundled_candidate,
     candidate_payload,
     load_candidate,
     require_fresh_namespace,
@@ -172,7 +173,7 @@ def math_workspace(archive, expected_sha):
 
 def task_entrypoint(candidate: dict, kind, trial: str | None = None):
     base = Path(os.environ["IRIS_WORKDIR"])
-    path, raw, candidate_sha = candidate_payload(candidate)
+    path, candidate_sha = bundled_candidate(candidate)
     child_args = ["--candidate", path, "--candidate-sha256", candidate_sha, "--kind", kind]
     if trial is not None:
         child_args.extend(["--trial", trial])
@@ -185,7 +186,7 @@ def task_entrypoint(candidate: dict, kind, trial: str | None = None):
         'exec "$IRIS_VENV/bin/python" -u -m experiments.post_training.identity_fullscreen_owner.persist_task '
         + shlex.join(child_args),
     ]
-    files = {path: raw}
+    files = {}
     for directory in ("_pathb_owner", "_pathb_fullscreen"):
         for path in (base / directory).rglob("*"):
             if (

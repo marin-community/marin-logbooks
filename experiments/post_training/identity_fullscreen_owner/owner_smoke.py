@@ -4,6 +4,7 @@
 """Dummy-candidate child-spec and local-memory persistence checks; no model jobs."""
 
 import copy
+import hashlib
 import io
 import json
 import os
@@ -13,11 +14,13 @@ import sys
 import tarfile
 import tempfile
 import uuid
+import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
 from fsspec.implementations.memory import MemoryFileSystem
 from iris.client.client import IrisClient, IrisContext, iris_ctx_scope
+from iris.cluster.client.bundle import create_workspace_zip
 from iris.cluster.client.job_info import JobInfo, get_job_info, set_job_info
 from iris.cluster.client.remote_client import RemoteClusterClient
 from iris.cluster.types import Entrypoint, JobName
@@ -78,6 +81,10 @@ def verify_child_specs() -> dict:
     value = dummy_candidate()
     path, raw, expected_sha = candidate_module.candidate_payload(value)
     root = Path(__file__).resolve().parents[3]
+    workspace = create_workspace_zip(root)
+    with zipfile.ZipFile(io.BytesIO(workspace)) as bundle:
+        if bundle.read(path) != raw:
+            raise AssertionError("Committed native workspace lacks its exact SHA-bound candidate")
     reports = []
     try:
         set_job_info(info)
@@ -94,14 +101,18 @@ def verify_child_specs() -> dict:
             entrypoint = Entrypoint.from_proto(request.entrypoint)
             words = shlex.split(entrypoint.command[-1])
             actual_path = words[words.index("--candidate") + 1]
-            if actual_path != path or entrypoint.workdir_files[path] != raw:
-                raise AssertionError("Native child spec did not carry the actual parent candidate")
+            if actual_path != path or path in entrypoint.workdir_files:
+                raise AssertionError(
+                    "Candidate must travel in the committed native workspace, never small workdir files"
+                )
             if words[words.index("--candidate-sha256") + 1] != expected_sha:
                 raise AssertionError("Native child spec lost the parent candidate SHA")
             if "candidate52.json" in entrypoint.command[-1]:
                 raise AssertionError("Native child command retained the historical fallback")
             with tempfile.TemporaryDirectory(prefix="dummy-screen-child-") as directory:
                 workdir = Path(directory)
+                with zipfile.ZipFile(io.BytesIO(workspace)) as bundle:
+                    bundle.extractall(workdir)
                 for relative, contents in entrypoint.workdir_files.items():
                     target = workdir / relative
                     target.parent.mkdir(parents=True, exist_ok=True)
@@ -114,7 +125,7 @@ def verify_child_specs() -> dict:
                     CUDA_VISIBLE_DEVICES="",
                     PYTHONSAFEPATH="1",
                 )
-                env["PYTHONPATH"] = ":".join([str(root), *[str(p) for p in (root / "lib").glob("*/src")]])
+                env["PYTHONPATH"] = ":".join([str(workdir), *[str(p) for p in (workdir / "lib").glob("*/src")]])
                 command = list(entrypoint.command)
                 command[-1] += " --inspect-only"
                 completed = subprocess.run(
@@ -138,6 +149,8 @@ def verify_child_specs() -> dict:
         "actual_native_child_specs": len(requests),
         "extracted_child_commands_pass": len(reports),
         "candidate_path": path,
+        "candidate_transport": "committed native workspace ZIP; no small workdir payload",
+        "native_workspace_sha256": hashlib.sha256(workspace).hexdigest(),
         "candidate_sha256": expected_sha,
         "model_calls": 0,
         "live_child_jobs": 0,
