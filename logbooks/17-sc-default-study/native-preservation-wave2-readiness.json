@@ -1,0 +1,43 @@
+{
+  "observed_utc": "2026-10-30T15:56:19.036322+00:00",
+  "wave": 2,
+  "remaining_runs": 7,
+  "remaining_bytes": 5637992510867,
+  "remaining_objects": 315,
+  "maximum_concurrent_copy_jobs": 7,
+  "gpus": 0,
+  "first_wave_copy_jobs_stopped": true,
+  "first_wave_covered_cleanup_complete": true,
+  "source": "RNO existing remaining native checkpoints,read-only; exact input inventories rechecked again by submission driver",
+  "destination": "Owned East-02A full-state archive namespace",
+  "destination_probe": {
+    "uri": "s3://marin-us-east-02a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/health/native-wave2-20261030-155619.json",
+    "bytes": 104,
+    "sha256": "252a7736dae8dc324af26614f17e96213e9c9558ae71c97c43312fea7888a147",
+    "write_readback_and_removal_passed": true
+  },
+  "capacity_workflow": "https://github.com/marin-community/marin/actions/runs/41084369318",
+  "zones": {
+    "RNO2A": {
+      "observed_at": "2026-10-30 15:50:38+00:00",
+      "used_bytes": 111420071666767.0,
+      "quota_bytes": 109951162777600.0,
+      "headroom_bytes": -1468908889167.0
+    },
+    "US-EAST-02A": {
+      "observed_at": "2026-10-30 15:50:38+00:00",
+      "used_bytes": 745133012157716.0,
+      "quota_bytes": 1000555581276160.0,
+      "headroom_bytes": 255422569118444.0
+    }
+  },
+  "RNO_small_and_multipart_writes_still_denied_at": "2026-10-30T15:50:14+00:00",
+  "RNO_write_denial_does_not_gate_this_copy": "The qualified preserve.py only reads RNO and writes its manifest,progress and full archive in East. Normal hub bundle/control storage uses GCS and the RNO controller state uses East per current configs. No new model generation/training/export or RNO write is launched.",
+  "iris_storage_config_evidence": {
+    "hub": "gs://marin-us-central2/iris/marin/state",
+    "rno_controller": "s3://marin-us-east-02a/iris/cw-rno2a/state"
+  },
+  "source_deletions_by_wave2_copy": 0,
+  "model_or_grading_calls": 0,
+  "tool_sha256": "77acd783dbddc6abf85f5ca2eacea1e424b32af6790d98303c0f27ea34ef26b0"
+}
