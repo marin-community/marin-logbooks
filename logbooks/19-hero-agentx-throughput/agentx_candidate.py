@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 
 import zstandard
+from completion_retention import retain_finished_attempt
 from diagnostic_server import (
     prefetch_flashinfer_headers,
     set_compilation_config,
@@ -182,8 +183,20 @@ def main() -> None:
         if monitor is not None:
             monitor.terminate()
             monitor.wait(timeout=10)
-        if job_info.task_index == 0:
-            pack_metrics_export(output)
+        try:
+            if job_info.task_index == 0:
+                pack_metrics_export(output)
+        finally:
+            if prefix := manifest.get("completion_retention_prefix"):
+                try:
+                    receipt = retain_finished_attempt(
+                        output, prefix, job_info.task_index, os.environ["IRIS_ATTEMPT_UID"]
+                    )
+                    print("AGENTX_FINISHED_OUTPUT_RETAINED", json.dumps(receipt), flush=True)
+                except Exception as error:
+                    # Preserve the native application outcome and normal Iris
+                    # capture. This receipt must exist before claiming retention.
+                    print("AGENTX_FINISHED_OUTPUT_RETENTION_FAILED", type(error).__name__, flush=True)
 
 
 if __name__ == "__main__":
