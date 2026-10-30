@@ -230,3 +230,12 @@ pass that file with `inference.py --protocol`. The root protocol corrects a stal
 human-readable denominator from 9,991 to 9,989; its numerical fields and the
 published results are unchanged. The root run manifest distinguishes original
 execution eligibility from the current analysis eligibility and frozen protocol.
+
+The study is complete. The [storage audit](final/storage-accounting.json) lists
+all fifteen full native archives and exact restore manifests. All covered native
+tensor duplicates are removed, original metadata remains, and no unique restart
+state was discarded. The [shutdown proof](final/shutdown-verification.json)
+confirms all discovered study jobs terminal and active registries empty.
+The [final storage-health check](final/storage-health-at-completion.json) records
+successful bounded RNO writes and fresh provider capacity; it does not attribute
+the broader account-usage change to this study.
