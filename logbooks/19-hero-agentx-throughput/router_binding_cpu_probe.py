@@ -7,8 +7,11 @@ import argparse
 import copy
 import hashlib
 import json
+import platform
 import threading
+import time
 import urllib.request
+import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -25,7 +28,7 @@ def digest(value: object) -> str:
 
 def request(url: str, body: dict | None = None, session: str = "") -> bytes:
     data = None if body is None else json.dumps(body).encode()
-    headers = {"Content-Type": "application/json", "X-Session-ID": session, "X-Request-ID": session}
+    headers = {"Content-Type": "application/json", "X-Session-ID": session, "X-Request-ID": str(uuid.uuid4())}
     with urllib.request.urlopen(urllib.request.Request(url, data=data, headers=headers), timeout=15) as response:
         return response.read()
 
@@ -38,6 +41,7 @@ def main() -> None:
     args.output.mkdir(parents=True, exist_ok=False)
     observed = []
     pressure = [0.2] * 4
+    http_counts = {}
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_args) -> None:
@@ -51,6 +55,8 @@ def main() -> None:
             self.wfile.write(body)
 
         def do_GET(self) -> None:
+            key = "GET " + self.path
+            http_counts[key] = http_counts.get(key, 0) + 1
             if self.path == "/metrics":
                 body = "\n".join(
                     f'vllm:{name}{{engine="{rank}",model_name="{MODEL}"}} {value}\n'
@@ -70,6 +76,9 @@ def main() -> None:
                 self.send(b"{}")
 
         def do_POST(self) -> None:
+            key = "POST " + self.path
+            http_counts[key] = http_counts.get(key, 0) + 1
+            assert self.path == "/v1/chat/completions"
             body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
             rank = int(self.headers["X-data-parallel-rank"])
             observed.append(
@@ -84,72 +93,133 @@ def main() -> None:
                 ],
                 "usage": {"prompt_tokens": 2000, "completion_tokens": 1, "total_tokens": 2001},
             }
-            self.send(json.dumps(response).encode())
+            if body["stream"]:
+                chunks = [
+                    {"choices": [{"index": 0, "delta": {"role": "assistant", "content": "fixture"}}]},
+                    {"choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}], "usage": response["usage"]},
+                ]
+                data = "".join("data: " + json.dumps(chunk) + "\n\n" for chunk in chunks) + "data: [DONE]\n\n"
+                self.send(data.encode(), "text/event-stream")
+            else:
+                self.send(json.dumps(response).encode())
 
     backend = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     thread = threading.Thread(target=backend.serve_forever, daemon=True)
     thread.start()
     base = json.loads(args.manifest.read_text())["router"]
+    architecture = platform.machine()
+    if architecture == "x86_64":
+        base["wheel"] = {"url": WHEEL_URL, "sha256": WHEEL_SHA256}
+    else:
+        assert architecture == "aarch64"
+        assert base["wheel"]["sha256"] == "be6137553ef807f0b3303194da9eb1dfdf65913ac1b8a84c4ea0a7a62683cfec"
     base |= {
-        "wheel": {"url": WHEEL_URL, "sha256": WHEEL_SHA256},
         "backend_url": f"http://127.0.0.1:{backend.server_port}",
         "base_url": "http://127.0.0.1:39940",
         "data_parallel_size": 4,
     }
-    cases = [(f"prefix-peer-{i}", "shared context " * 2048 + f"branch {i}") for i in range(16)]
+    shared = "shared context " * 2048
+    cases = [(f"prefix-peer-{i}", shared + f"branch {i}", False, None) for i in range(16)]
     cases.extend(
-        [("prefix-peer-0", "shared context " * 2048 + "continued history"), ("isolated", "unrelated text " * 2048)]
+        [
+            ("prefix-peer-0", shared + "continued history", False, None),
+            ("isolated", "unrelated text " * 2048, False, None),
+            ("moderate-pressure", shared + "moderate", False, [0.35, 0.2, 0.2, 0.2]),
+            ("high-pressure", shared + "high", False, [0.95, 0.2, 0.2, 0.2]),
+            ("prefix-peer-0", shared + "bound continuation", False, None),
+            ("stream-peer", shared + "streaming", True, [0.2] * 4),
+        ]
     )
+
+    def wait_observed(url: str) -> dict:
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            diagnostics = json.loads(request(url + "/scheduling/diagnostics"))
+            ranks = diagnostics["ranks"]
+            if len(ranks) == 4 and all(
+                rank["observation_fresh"]
+                and rank["vllm_kv_cache_usage"] is not None
+                and abs(rank["vllm_kv_cache_usage"] - pressure[rank["dp_rank"]]) < 1e-8
+                for rank in ranks
+            ):
+                return diagnostics
+            time.sleep(0.05)
+        raise AssertionError("Router did not observe all four mock KV pressures within five seconds")
+
     results = {}
     try:
         for mode in ("native_hash", "binding_hash", "binding_cache"):
             config = copy.deepcopy(base)
+            pressure[:] = [0.2] * 4
             if mode != "native_hash":
                 config["program_binding"] = {
                     "binding_only": True,
                     "program_scheduling_enable_key": "auto",
                     "binding_strategy": "cache_aware" if mode == "binding_cache" else "consistent_hash",
+                    "token_capacity_per_dp_rank": 1_000_000,
                 }
             output = args.output / mode
             output.mkdir()
             start = len(observed)
             with upstream_router(config, output) as url:
                 workers = json.loads(request(url + "/workers"))
-                for session, content in cases:
+                pressure_observations = []
+                for case_index, (session, content, stream, next_pressure) in enumerate(cases):
+                    if next_pressure is not None:
+                        pressure[:] = next_pressure
+                        if mode != "native_hash":
+                            pressure_observations.append(wait_observed(url))
                     body = {
                         "model": MODEL,
                         "messages": [{"role": "user", "content": content}],
-                        "stream": False,
+                        "stream": stream,
                         "max_tokens": 1,
                     }
-                    response = json.loads(request(url + "/v1/chat/completions", body, session))
-                    assert response["choices"][0]["message"]["content"] == "fixture"
+                    response = request(url + "/v1/chat/completions", body, session)
+                    if stream:
+                        assert b"fixture" in response and response.endswith(b"data: [DONE]\n\n")
+                    else:
+                        assert json.loads(response)["choices"][0]["message"]["content"] == "fixture"
                     assert observed[-1]["body"]["messages"] == body["messages"]
+                    if case_index == 0 and mode != "native_hash":
+                        pressure_observations.append(wait_observed(url))
                 diagnostics = None
                 if mode != "native_hash":
-                    diagnostics = json.loads(request(url + "/scheduling/diagnostics"))
+                    diagnostics = wait_observed(url)
                     (output / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2) + "\n")
             rows = observed[start:]
             assert len(rows) == len(cases)
             assert all(0 <= row["rank"] < 4 for row in rows)
-            results[mode] = {"config": config, "workers": workers, "requests": rows, "diagnostics": diagnostics}
+            results[mode] = {
+                "config": config,
+                "workers": workers,
+                "requests": rows,
+                "diagnostics": diagnostics,
+                "pressure_observations": pressure_observations,
+            }
         native = results["native_hash"]["requests"]
         hashed = results["binding_hash"]["requests"]
         cached = results["binding_cache"]["requests"]
         assert len({row["rank"] for row in native[:16]}) > 1
         assert [row["rank"] for row in native] == [row["rank"] for row in hashed]
         assert len({row["rank"] for row in cached[:17]}) == 1
+        assert cached[-4]["rank"] == cached[0]["rank"]
+        assert cached[-3]["rank"] != cached[0]["rank"]
+        assert cached[-2]["rank"] == cached[0]["rank"]
         assert [row["body_sha256"] for row in native] == [row["body_sha256"] for row in hashed]
         assert [row["body_sha256"] for row in native] == [row["body_sha256"] for row in cached]
         result = {
             "scope": (
-                "CPU-only real released x86 Router0.1.16 CLI with four mocked concrete DP ranks. No model, GPU, "
-                "numerical correctness or throughput claim. Mock KV pressure is equal and fixed at0.2. Tests prefix "
-                "co-location across different conversation IDs, same-ID continuation, preserved hash control and "
-                "identical forwarded JSON bodies."
+                "CPU-only real released Router0.1.16 CLI with four mocked concrete DP ranks. No model, GPU, "
+                "numerical correctness or throughput claim. Explicit mock token capacity is 1000000 per rank. Fresh "
+                "observations verify equal KV pressure 0.2, then rank0 pressure 0.35 and 0.95. Tests prefix affinity, "
+                "headroom fallback for new IDs, stable existing binding, JSON and SSE, preserved hash control and "
+                "identical forwarded JSON bodies. The mock cannot establish live-model performance."
             ),
             "source_script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            "architecture": architecture,
             "results": results,
+            "backend_http_counts": http_counts,
             "status": "passed",
         }
         (args.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")

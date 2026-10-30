@@ -52,7 +52,14 @@ def upstream_router(config: dict, output: Path):
         assert program["binding_only"] is True
         assert program["program_scheduling_enable_key"] == "auto"
         assert program["binding_strategy"] in ("consistent_hash", "cache_aware")
-        assert set(program) == {"binding_only", "program_scheduling_enable_key", "binding_strategy"}
+        # This release computes binding headroom only when token capacity is set.
+        assert type(program["token_capacity_per_dp_rank"]) is int and program["token_capacity_per_dp_rank"] > 0
+        assert set(program) == {
+            "binding_only",
+            "program_scheduling_enable_key",
+            "binding_strategy",
+            "token_capacity_per_dp_rank",
+        }
         command.extend(
             ["--enable-program-scheduling", "--program-scheduling-config-json", json.dumps(program, sort_keys=True)]
         )
