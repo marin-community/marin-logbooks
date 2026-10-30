@@ -198,7 +198,8 @@ def main() -> None:
                             "max_tokens": 1,
                         }
                         request(url + "/v1/chat/completions", body, session)
-                        assert observed[-1]["body_sha256"] == digest(body)
+                        expected = results["native_hash"]["requests"][0]["body"] | {"messages": body["messages"]}
+                        assert observed[-1]["body_sha256"] == digest(expected)
                         return observed[-1]["rank"]
 
                     long_before = send_retention_case("retention-long-before", shared + "retention before")
