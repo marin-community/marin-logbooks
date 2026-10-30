@@ -298,6 +298,27 @@ comments or reviews arrived alongside this event. CI validates code checks,
 not accelerator execution, memory sufficiency or training quality. The existing
 64 GiB TPU request and its log monitor remain in place.
 
+### 2026-10-30 20:12 UTC — First worker attempt ended during dependency setup
+
+The first TPU task was assigned at 20:08:37.313 UTC. Logs show dependency
+installation starting at 20:08:39 UTC, including JAX, libtpu and the repository
+packages. The attempt ended at 20:09:41.499 UTC with `worker_failed`:
+`worker reconcile failure threshold exceeded` on worker
+`marin-tpu-v4-reserved-8-us-central2-b-20261029-1717-d731f7f6-worker-0`.
+This is infrastructure/worker failure evidence, not a measured optimizer failure.
+
+At 20:12 UTC Iris reports the logical job `running`, `failure_count=0` and
+`preemption_count=1`. The task itself is pending without a worker, with reason
+`Retrying (attempt 1, last: task_state_worker_failed)`. Its displayed
+`syncing dependencies` status belongs to the previous attempt; it does not
+prove a new process has started. Preserve the native retry policy and job ID.
+No agent cancellation, manual resubmission or allocation release occurred.
+
+The W&B API returned no runs in group `ema-gram-2026.10.30.22` at 20:11 UTC.
+No optimizer step, training loss, model runtime memory or checkpoint restoration
+is established. This is an infrastructure retry, not checkpoint resume.
+`first-pilot-attempt0-status.json` preserves the bounded controller snapshot.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
