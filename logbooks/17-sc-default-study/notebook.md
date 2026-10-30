@@ -660,3 +660,9 @@ The actual version-4 resolved launch now passes all existing invariant checks: i
 ### 2026-10-29 23:42 UTC: final slot midpoint verified
 
 SC128/4517 version 4 has passed update 26. Initial and midpoint panels each contain all 1,000 original answers and valid grades, with no recovery calls. A bounded local snapshot preserves 73 existing answer/telemetry objects (76,757,146 bytes) and their hashes without model calls or source changes. `grug-sc1284517-v4-interim-verification.json` records these gates and the latest ordinary health/mass metrics. Final fifty-update coverage and export remain pending.
+
+### 2026-10-30 01:45 UTC: all nine original endpoints admitted
+
+SC128/4517 version 4 now passes the complete fifty-update, 10,000-answer and 9,991-common-grade gates. Three judge verdicts (UIDs 2366, 8626, 9406) were restored from unchanged saved answers, each on its first canonical call; initial/midpoint needed no recovery. The existing collector verifies all original object hashes and numerical, mismatch, staleness and capture gates. The portable model has all 39 nonempty indexed shards, a successful exact native export request/terminal identity, and finite changed router/attention samples against the initializer. Training, exporter and coordinator succeeded; all nine GPU task pods are absent. Reconstructed allocation is 135.200660000 training plus 9.178364444 export = 144.379024444 H100-hours. Per-run collected, export and allocation proofs are published beside this notebook.
+
+The initial matrix is now complete at nine admitted runs. The excluded storage-interrupted and preempted attempts remain separate with their costs. The original frozen inference will now run once on the full initial matrix. No scientific extension has been declared.
