@@ -502,6 +502,40 @@ prepared 128 GiB configuration. No new experiment was launched. PR #10790's
 remains under monitoring. The broader pilot sweep, locked confirmations and
 checkpoint probes remain outstanding.
 
+### 2026-10-30 22:04 UTC — Baseline XPlane attribution
+
+The raw steps 100–109 XPlane contains ten `jit__train_step` module executions
+on each of eight TPU trace planes. Their per-plane median durations range
+from 0.322850 to 0.322954 seconds. The original 93,075,364-byte protobuf,
+analysis source and output were copied into the same-region baseline artifact
+root under `analysis/baseline-profile/` and verified by SHA-256 readback.
+[The interval evidence](baseline-profile-intervals.json) records the complete
+artifact URIs, hashes and method.
+
+For each plane, clip annotated XLA Ops and Async XLA Ops to the ten training
+module windows, then take the union of overlapping integer-picosecond intervals
+separately for each category. Intervals tagged `update_gram_state` cover
+16.59–16.60% of module time; `gram_direction` covers 13.57–13.58%; collective
+annotations cover 27.85–27.98%. Categories may overlap and must not be added.
+These annotation-based fractions do not measure exposed communication,
+critical-path cost, or the complete optimizer cost: fusion and missing scopes
+limit attribution. Alpha zero does not execute nonzero Gram spectral powers.
+
+The generic `profile_summary.py` report inferred 126 steady-state steps from
+the device Steps tracks, which also contain auxiliary modules. Its step-time
+and jitter conclusions are therefore rejected for this run. The explicit
+training-module windows above avoid that ambiguity. A host `train` annotation
+also covers asynchronous dispatch rather than full device execution; its roughly
+75 ms duration is not the training throughput. Keep the measured W&B median
+0.347409 seconds as the recorded W&B training-step duration.
+
+The failed quarter-power attempt never reached its steps 100–109 trace. A
+bounded `marin` / `iris.profile` query for its exact task source during
+20:50–21:03 UTC returned no CPU profile rows. Its log shows HLO lowering at
+20:57:18–20:57:20, before the 21:02:45 OOM; the available record does not identify
+the allocation that caused the later host-memory spike. No recovery or new
+training was launched during this analysis.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
