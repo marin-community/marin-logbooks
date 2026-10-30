@@ -319,6 +319,54 @@ No optimizer step, training loss, model runtime memory or checkpoint restoration
 is established. This is an infrastructure retry, not checkpoint resume.
 `first-pilot-attempt0-status.json` preserves the bounded controller snapshot.
 
+### 2026-10-30 20:31 UTC — Baseline trains; first evaluation and checkpoint pass
+
+Native attempt 1 now trains on four TPU v4 chips. Online W&B began at
+20:15:52 UTC, before the training metrics, with fresh ID
+`ema-gram-pilot-3e18-a0-seed0-a46345a749ca-2026.10.30.22-412aad49e64f`.
+[Live run](https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0-seed0-a46345a749ca-2026.10.30.22-412aad49e64f).
+The captured API snapshot reaches step 942 and 30,900,224 tokens. C4 English
+validation loss is 5.4673399925 nats at logged step 762; the full-state
+checkpoint at step 763 was saved at 20:25:41 UTC. XProf steps 100–109 were
+uploaded at 20:19 UTC. These are partial baseline measurements, not a quality
+comparison. `baseline-first-validation.json` contains bounded evidence and
+artifact paths.
+
+The `marin` Finelog `iris.task` query for 20:08–20:28 UTC returned 106 samples
+for attempt 1 through 20:26:54 UTC. Its cumulative observed host peak is
+24.159 GiB; accelerator-memory telemetry is null. The host peak includes the
+first evaluation/checkpoint interval, but it is not the final run peak.
+Steady training steps around 885–893 took roughly 0.35 seconds, excluding
+validation and checkpoint overhead. Alpha zero does not exercise spectral
+Gram powers, so it cannot establish nonzero-alpha cost.
+
+Actual W&B API readback omitted empty `adapter` and `trainer.mesh.shared_mapping`
+mappings. Contribution `af94166ce` accepts only these empty defaults while still
+rejecting nonempty mismatches and missing required fields. The real run config
+passes all remaining controls; 15 experiment tests and lint/type checks pass.
+The running training code is unchanged.
+
+Queue one alpha=1/4 pilot at the initial center LR=0.002, ridge=1e-4, seed=0,
+horizon=100, version `2026.10.30.22`. Its plan is `quarter-pilot.json` and
+resolved config is `quarter-pilot-resolved.json`. Preserve the baseline while
+this independent full 7,630-step pilot measures spectral-power stability,
+throughput and memory. Keep at most these two pilot jobs until both resource
+profiles are understood; do not launch the full sweep yet. All model/training
+controls are shared, with the intended exponent/LR changes only. Reuse the
+successful native online logging gate; the entrypoint and W&B wiring are unchanged.
+Publish this source/config before submission.
+
+```bash
+uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
+  --job-name ema-gram-20-quarter-pilot-20261030 --priority batch \
+  --cpu 1 --memory 2GB --region us-central2 --extra cpu \
+  --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit \
+  -e GIT_COMMIT "$(git rev-parse HEAD)" \
+  -- python -m experiments.ema_gram.train \
+  --plan logbooks/20-ema-gram-polar/quarter-pilot.json \
+  --version 2026.10.30.22 --output /tmp/ema-gram-quarter-resolved.json --run
+```
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
