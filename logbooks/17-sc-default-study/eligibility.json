@@ -1,6 +1,6 @@
 {
-  "status": "Approved by Romain after the first baseline and before any SC outcome",
-  "evidence_does_not_use_model_answers": true,
+  "status": "Approved common eleven-task exclusion mask; latest two exclusions are post-outcome and response-dependent.",
+  "evidence_does_not_use_model_answers": false,
   "frozen_index_sha256": "4729f420fe9046895f407c11611387f0dc1b706b2fb98116db51ce4458381ca7",
   "excluded": [
     {
@@ -74,13 +74,31 @@
       "contract": "db23953e08e2dfa1516652eff442418ba0e1b864b65c62a4a5ccfee70572b4b1",
       "public": "2e43c080819e85f840a41a540498ac8481bdeb53a92ae322d6b9e593fcef3d24",
       "reason": "Original pinned generator matches question/answer/configuration but regenerates current-date metadata, so its original equality guard fails"
+    },
+    {
+      "uid": "157",
+      "study_id": "reasoning_gym_generated-6fb6882df7d5b0fe7bc67eff3c982132f046ba804f73da3f52b4a1390c85082e",
+      "teacher_route": "reasoning_gym",
+      "contract": "6c2454e89b310682a3b3e027f2ada5519e783a556ec4233b7916ccbf344ba466",
+      "public": "714950f1528b314af9e0d371f9522a35d8615b46726329d1737f3b346740dd69",
+      "reason": "Owner-approved post-outcome exclusion: Boxnet grader crashes on an out-of-board move.",
+      "approval": "approved-boxnet-task-exclusions.json"
+    },
+    {
+      "uid": "7932",
+      "study_id": "nemotron_ultra_rlvr1_ultra_sft_step3200_reasoning_gym-51275435263036c8d93139178754cb2e1272bab7135debc0b7cc7942753233e7",
+      "teacher_route": "reasoning_gym",
+      "contract": "48edb2b407ad49dd55a4e4ea198a24980665a3e198ada633f73ac15a93a0a3b4",
+      "public": "8dc285161b7007103943571fe38fb3e8aad01ea202024bb5a10fbc3f070080fd",
+      "reason": "Owner-approved post-outcome exclusion: Boxnet grader crashes on an out-of-board move.",
+      "approval": "approved-boxnet-task-exclusions.json"
     }
   ],
-  "retained_quality_tasks": 9991,
+  "retained_quality_tasks": 9989,
   "retained_family_counts": {
     "calendar": 2000,
     "competitive_coding": 2000,
-    "reasoning_gym": 1993,
+    "reasoning_gym": 1991,
     "stem": 2000,
     "structural": 1998
   },
@@ -91,17 +109,26 @@
     "stem": 0.2,
     "structural": 0.2
   },
-  "unchanged": [
-    "89557 training tasks and all training settings",
-    "original 10000 generated heldout tasks and raw answers",
-    "fixed 1000-task learning curve panel",
-    "50-update endpoint and seeds",
-    "full-cycle cost definition and actual runtime",
-    "both product PRs and defaults"
-  ],
-  "primary_inference_admission": "Every retained task must have a valid original or saved-answer recovered verdict. No missing value is zero. Same static exclusion mask for all seeds and arms.",
-  "baseline_reuse": "Retain the existing 50-update TIS seed1701 attempt if remaining grading, health and export checks pass. No new SC outcomes have been examined.",
+  "unchanged": "Training and generation inputs/settings, seeds, family weights, all original answer generation and actual cost measurements.",
+  "primary_inference_admission": "All9989 retained endpoint tasks require valid grades; all10000 original answers remain required. Fixed generated interim panels retain999 common quality tasks without replacement.",
+  "baseline_reuse": "Recollect every original and extension arm under the same eleven exclusions. The original initial-look bytes remain preserved under initial/.",
   "approved": true,
-  "approved_utc": "2026-10-28T19:40:11.803995+00:00",
-  "approval": "Same nine contracts excluded from every arm and seed; retain fixed family weights, training, curve panel and actual cost measurement."
+  "approved_utc": "2026-10-30T12:29:18.308546+00:00",
+  "approval": "Romain: Exclude the two tasks everywhere. Apply both exact task exclusions to every arm, seed and quality panel; preserve original outputs and verdicts.",
+  "approved_curve_exclusions": [
+    "157"
+  ],
+  "retained_curve_quality_tasks": 999,
+  "approval_history": [
+    {
+      "approved": true,
+      "approved_utc": "2026-10-28T19:40:11.803995+00:00",
+      "approval": "Same nine contracts excluded from every arm and seed; retain fixed family weights, training, curve panel and actual cost measurement."
+    },
+    {
+      "approved_utc": "2026-10-30T12:29:18.308546+00:00",
+      "source": "approved-boxnet-task-exclusions.json",
+      "user_answer": "Exclude the two tasks everywhere"
+    }
+  ]
 }

@@ -163,10 +163,12 @@ def analyze(path: Path, protocol_path: Path) -> dict:
         "stage": "initial" if len(seeds) == 3 else "extension",
         "seeds": seeds,
         "tasks": len(tasks),
+        "curve_quality_tasks": protocol["evaluation"].get("curve_quality_rows", 1000),
         "comparisons": comparisons,
         "per_seed": per_seed,
         "input_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "protocol_sha256": hashlib.sha256(protocol_path.read_bytes()).hexdigest(),
+        "task_scope_note": protocol["uncertainty"].get("post_outcome_scope_amendment"),
         "units": "Quality differences are fractions, not percentage points; relative cost is ratio minus one.",
         "limits": (
             "Small-sample t intervals under the predeclared crossed seed/task model. "

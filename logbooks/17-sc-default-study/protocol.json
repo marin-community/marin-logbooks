@@ -1,5 +1,5 @@
 {
-  "status": "Initial protocol declared before training; common nine-task quality eligibility amendment approved after first TIS baseline and before any SC run or outcome",
+  "status": "Original predeclared training/inference design with owner-approved task-scope amendments, including two post-outcome Boxnet exclusions.",
   "declared_utc": "2026-10-28T03:46:50.296804+00:00",
   "question": "Recommend separate SC enablement and candidate-count defaults; leave actual defaults unchanged.",
   "arms": {
@@ -146,28 +146,35 @@
       "25": 1000,
       "50": 10000
     },
-    "curve_panel": "First 200 interleaved held-out tasks per family, a fixed balanced subset of final endpoint tasks. Same ordered task identities in every run.",
+    "curve_panel": "Original fixed first1000 generated tasks, with approved UID157 omitted from every quality point. The retained999-task panel has199 ReasoningGym tasks and200 from each other family; equal family weights stay fixed. No replacement tasks.",
     "endpoint": "Update 50 only; no checkpoint/metric selection from outcomes.",
     "grading": "Pinned canonical graders and package lock; Together openai/gpt-oss-120b where declared, real readiness gate before main allocation; no silent grader substitution.",
-    "failures": "Retain raw generated answer and original failure. Retry grading only with the identical contract; no regeneration or zero imputation. Every one of the 9,991 eligible quality tasks requires a valid grade; all 10,000 original answers must still be generated. The same nine statically excluded contracts remain in raw outputs and coverage evidence.",
+    "failures": "Retain all raw generated answers and original failures. Every one of9989 eligible endpoint tasks needs a valid grade; all10000 original endpoint answers remain generated. Eleven approved task exclusions are preserved in raw/coverage evidence. The original narrow prime-factor format-failure rule remains distinct; arbitrary other errors are not zero-imputed.",
     "native_continuations": "Canonical native structural imports retain their full release name as provenance. The research Hydra config group selects the existing assistant_prefix harness under that literal name; all other tasks retain Shellbox.",
-    "quality_rows": 9991,
+    "quality_rows": 9989,
     "quality_per_family": {
       "calendar": 2000,
       "competitive_coding": 2000,
-      "reasoning_gym": 1993,
+      "reasoning_gym": 1991,
       "stem": 2000,
       "structural": 1998
     },
     "eligibility_file": "eligibility.json",
-    "eligibility_sha256": "597f2c05124e093c289864fb44850b9eff205c7ffeb9be7568e19c5011cffe7a"
+    "eligibility_sha256": "4c8d86bf252cc0ae9b4b1b1a4db7cea3e8110915653c161ef4ded4f59ad5aeaa",
+    "curve_quality_rows": 999,
+    "quality_schedule": {
+      "0": 999,
+      "25": 999,
+      "50": 9989
+    }
   },
   "uncertainty": {
     "quality": "For each matched seed, calculate the equal-family mean paired task-success difference. Seed variance contribution is sample variance of these seed contrasts / number of seeds. Task contribution is sum over families of weight^2 * sample variance across distinct held-out public tasks of their across-seed mean paired difference / tasks in family. Use sqrt(sum of the two contributions), with Student t critical value at df=seeds-1. This deliberately does not subtract the seed-task interaction and is conservative under the crossed seed/task model.",
     "cost": "Per matched seed, log ratio of complete training-cycle elapsed time over the same 50 updates. Student t interval for mean log ratio at df=seeds-1, then exponentiate; report geometric relative cost and arithmetic per-seed times.",
     "report": "Report nominal two-sided 95% intervals and two-look-adjusted intervals. No tokens, updates or repeated answers are independent training runs.",
     "optional_extension": "Two possible inferential looks only. Each metric in each predeclared comparison uses a two-sided 97.5% interval for its decision gate at either look. Bonferroni gives 95% coverage across those two looks for that metric in that comparison. This is not a joint 95% coverage claim across quality, cost and all comparisons.",
-    "resampling_unit": "Training seed and held-out public task; repeated task occurrences are not separate task units."
+    "resampling_unit": "Training seed and held-out public task; repeated task occurrences are not separate task units.",
+    "post_outcome_scope_amendment": "Both current initial and final comparisons condition on the same amended task set. The original95% reporting and97.5% decision intervals and margins remain; no coverage claim is made for the post-outcome task-selection decision. Original initial-look results are dated superseded evidence, preserved unchanged."
   },
   "cost": {
     "primary": "Training-cycle elapsed time: span from first rollout publication through final training weight publication, less measured exclusive evaluation sessions. It includes generation, candidate capture, transport, grading, policy scoring, optimization, weight publication and their normal overlap. The selected main recipe has no reference scoring. Startup, evaluation, checkpoint/export and teardown are separate costs.",
@@ -251,6 +258,28 @@
       "eligibility_sha256": "597f2c05124e093c289864fb44850b9eff205c7ffeb9be7568e19c5011cffe7a",
       "reason": "Two original schemas have unresolved references; seven original pinned time-interval graders fail when current-date metadata changes. A full-panel response-independent audit identifies exactly these nine contracts.",
       "unchanged": "Training data/settings, initial weights, seeds, 50 updates, equal family weights, fixed 1000-task curves, all raw 10000 answers, cost definition and decision margins."
+    },
+    {
+      "approved_utc": "2026-10-30T12:29:18.308546+00:00",
+      "approved_by": "Romain",
+      "user_answer": "Exclude the two tasks everywhere",
+      "before_any_SC_run_or_outcome": false,
+      "after_initial_look": true,
+      "after_extension_outcomes": true,
+      "response_dependent": true,
+      "added_excluded_uids": [
+        "157",
+        "7932"
+      ],
+      "quality_tasks": 9989,
+      "generated_tasks": 10000,
+      "curve_quality_tasks": 999,
+      "excluded_contracts": 11,
+      "eligibility_sha256": "4c8d86bf252cc0ae9b4b1b1a4db7cea3e8110915653c161ef4ded4f59ad5aeaa",
+      "approval": "approved-boxnet-task-exclusions.json",
+      "reason": "Both frozen Boxnet graders crash with KeyError after the saved answer moves a box to a cell outside the original board. Canonical replays preserve the exact answers, task contracts and package lock.",
+      "original_initial_look_preserved": "initial/",
+      "unchanged": "Training, frozen dataset files, generated answers, original verdicts, seeds, family weights, cycle costs, margins and finite six-run extension."
     }
   ]
 }

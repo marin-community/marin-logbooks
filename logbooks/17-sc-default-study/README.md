@@ -58,8 +58,8 @@ contract hashes; it cannot replace a valid grade. Non-judge failures require
 their original machine recovery. The saved answers are never regenerated for
 grading. The collector calculates full-task success from
 the existing normalized verifier score, not from shaped optimization rewards.
-Every curve uses the same 1,000-task subset, including at update 50. The complete
-9,991-task quality endpoint supplies primary inference. All 10,000 original
+Every current curve uses the same 999-task quality subset, including at update 50. The complete
+9,989-task quality endpoint supplies primary inference. All 10,000 original
 answers must still be generated. Timings retain normal overlap;
 phase totals must not be summed.
 
@@ -101,10 +101,19 @@ identifies two unusable schemas and seven date-sensitive generator contracts.
 It applies to every arm and seed, including any excluded task that happens to
 receive a valid grade. The collector verifies the original index and contract
 identities, preserves excluded rows separately, and requires a valid verdict for
-every retained task. Reasoning Gym retains 1,993 tasks and structural retains
-1,998; the other families retain 2,000 each. Each family still has weight 0.2.
-The fixed 1,000-task curves, training inputs and all cost measurements are
-unchanged. Omitting `--eligibility` retains the original strict coverage gate;
+every retained task. After the initial look and extension outcomes, Romain
+approved excluding two Boxnet tasks everywhere: UIDs 157 and 7932. This latest
+amendment is response-dependent and recorded in
+[the approval](approved-boxnet-task-exclusions.json). The common mask now has
+eleven exclusions. Reasoning Gym retains 1,991 endpoint tasks and structural
+retains 1,998; the other families retain 2,000 each. Each family still has weight
+0.2. The original fixed 1,000 generated curve tasks retain 999 quality tasks,
+without replacement. Training inputs and cost measurements are unchanged.
+The original initial-look bytes, figures, protocol and nine-task eligibility
+file remain under `initial/`; current initial and final comparisons are
+recomputed with the same eleven exclusions. Intervals condition on this amended
+task set and do not establish coverage for its post-outcome selection.
+Omitting `--eligibility` retains the original strict coverage gate;
 such a collection cannot enter the amended comparison.
 
 After auditing all nine initial runs, assemble and analyze their compact matrix:

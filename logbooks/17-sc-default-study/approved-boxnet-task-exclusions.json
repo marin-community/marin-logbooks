@@ -1,0 +1,38 @@
+{
+  "approved": true,
+  "approval_observed_utc": "2026-10-30T12:29:18.308546+00:00",
+  "user_answer": "Exclude the two tasks everywhere",
+  "uids": [
+    "157",
+    "7932"
+  ],
+  "reason": "Both frozen Boxnet graders crash with KeyError after the saved answer moves a box to a cell outside the original board. Canonical replays preserve the exact answers, task contracts and package lock.",
+  "scope": "Exclude both exact task identities from every arm/seed and every quality panel, including original initial endpoints and all learning-curve points. Retain all original10000 final answers and original1000 interim answers. Do not impute failures or alter valid original verdicts.",
+  "post_outcome": true,
+  "after_initial_look": true,
+  "after_extension_outcomes": true,
+  "response_dependent_task_selection": true,
+  "affected_diagnostics": [
+    {
+      "uid": "157",
+      "arm": "sc128",
+      "seed": 7919,
+      "step": 25,
+      "rejected_target": "0.5_2.5",
+      "diagnostic_uri": "s3://marin-rno2a/marin/users/romain/research/sc-default-study-01a16b97/machine-replay-sc1287919-0025-157-r1.json",
+      "diagnostic_sha256": "3cbe731165fba0e9881020ea74cb29adad085193d2446fff13a3562297f3c825"
+    },
+    {
+      "uid": "7932",
+      "arm": "sc128",
+      "seed": 7919,
+      "step": 50,
+      "rejected_target": "3.5_2.5",
+      "diagnostic_uri": "s3://marin-rno2a/marin/users/romain/research/sc-default-study-01a16b97/machine-replay-sc1287919-0050-7932-r1.json",
+      "diagnostic_sha256": "580097030d172b28c1f19f22a7209caaab03d2f9a4dbd1c21b2c84c100c11968"
+    }
+  ],
+  "original_initial_snapshot": "initial/",
+  "pre_amendment_local_bytes_manifest": "/home/romain/data/sessions/devbox/codex/01a16b97-e977-75f3-8b2b-fd07bbd1c609/artifacts/sc-default-study/pre-boxnet-collected-snapshot/manifest.json",
+  "unchanged": "Training, frozen dataset files, generated answers, original verdicts, seeds, family weights, cycle costs, margins and finite six-run extension."
+}

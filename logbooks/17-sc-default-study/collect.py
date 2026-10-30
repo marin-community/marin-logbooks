@@ -162,11 +162,16 @@ def collect(export: str, index_path: Path, output: Path, steps: list[int], eligi
             raise ValueError("Eligibility needs approval and the exact frozen evaluation index")
         indexed = {row["uid"]: row for row in index}
         for row in eligibility["excluded"]:
-            if row["uid"] in excluded or int(row["uid"]) < 1000:
-                raise ValueError("Eligibility repeats a task or changes the fixed curve panel")
+            if row["uid"] in excluded:
+                raise ValueError("Eligibility repeats a task")
             if any(row[key] != indexed[row["uid"]][key] for key in ("study_id", "teacher_route", "contract", "public")):
                 raise ValueError("Excluded task differs from its original frozen contract")
             excluded.add(row["uid"])
+        curve_excluded = {row["uid"] for row in index[:1000] if row["uid"] in excluded}
+        if curve_excluded != set(eligibility.get("approved_curve_exclusions", [])):
+            raise ValueError("Curve exclusions need their explicit common-mask approval")
+        if len(index[:1000]) - len(curve_excluded) != eligibility.get("retained_curve_quality_tasks", 1000):
+            raise ValueError("Approved learning-curve denominator changed")
         retained = [row for row in index if row["uid"] not in excluded]
         if (
             len(retained) != eligibility["retained_quality_tasks"]
@@ -220,7 +225,8 @@ def collect(export: str, index_path: Path, output: Path, steps: list[int], eligi
         "startup": read_json(export + "/study/startup.json"),
         "evaluation_times": [read_json(export + f"/study/evaluation-time-{step:04d}.json") for step in steps],
         "limits": (
-            "Curves always use the same balanced first 1,000 tasks. All original final answers remain required; "
+            "Curves use the same retained subset of the fixed first 1,000 generated tasks. "
+            "All original final answers remain required; "
             "the approved common quality mask is applied identically to every arm and seed."
         ),
     }

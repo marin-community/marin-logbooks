@@ -38,6 +38,7 @@ def plot(manifest_path: Path, analysis_path: Path, output: Path) -> None:
     data = [(row, json.loads((manifest_path.parent / row["collected"] / "summary.json").read_text())) for row in runs]
     if len(data) != 3 * len(analysis["seeds"]):
         raise ValueError("Plot input differs from the complete inference matrix")
+    curve_tasks = analysis.get("curve_quality_tasks", 1000)
 
     learning, axes = plt.subplots(1, 3, figsize=(13, 3.6), sharey=True, layout="constrained")
     x_fields = ("step", "trained_loss_tokens", "elapsed_including_evaluation_seconds")
@@ -60,8 +61,8 @@ def plot(manifest_path: Path, analysis_path: Path, output: Path) -> None:
         ]
         if any([point["step"] for point in curve] != [0, 25, 50] for curve in curves):
             raise ValueError("Learning curves must retain the fixed checkpoint schedule")
-        if any(point["tasks"] != 1000 for curve in curves for point in curve):
-            raise ValueError("Every learning-curve point must use the same 1,000-task panel")
+        if any(point["tasks"] != curve_tasks for curve in curves for point in curve):
+            raise ValueError("Every learning-curve point must use the same approved task panel")
         y = np.array([[point["macro_full_success"] * 100 for point in curve] for curve in curves])
         for axis, field, scale in zip(axes, x_fields, scales, strict=True):
             x = np.array([[point[field] / scale for point in curve] for curve in curves])
@@ -80,7 +81,7 @@ def plot(manifest_path: Path, analysis_path: Path, output: Path) -> None:
     ):
         axis.set_xlabel(label)
     axes[0].legend(frameon=False)
-    learning.suptitle("Learning on the fixed 1,000-task panel; thin lines show matched seeds")
+    learning.suptitle(f"Learning on the fixed {curve_tasks:,}-task panel; thin lines show matched seeds")
     save(learning, output, "learning-curves")
 
     cost, axes = plt.subplots(1, 2, figsize=(9, 3.6), layout="constrained")
