@@ -230,6 +230,19 @@ uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
   --version 2026.10.30.21 --output /tmp/ema-gram-resolved.json --run
 ```
 
+### 2026-10-30 19:10 UTC — Replacement accepted without releasing an accelerator
+
+Immediately before replacement, the original TPU child was still pending;
+its only task had an empty worker ID, zero attempts and no start timestamp.
+The old CPU coordinator and unallocated TPU child then reached `killed`.
+No accelerator allocation or training progress was released.
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-first-pilot-128g-20261030`
+at 19:09:55 UTC from clean published source
+`1430899ebd26830db3fbbf521d072cbca8dbc408`, with version `2026.10.30.21`.
+The model, data and optimizer are unchanged; this is a fresh submission,
+not checkpoint resume. Await assignment and measured host peak memory.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
