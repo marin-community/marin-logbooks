@@ -100,6 +100,7 @@ def stop_batch_trace(worker) -> None:
 def cache_storage(worker) -> dict:
     """Record native CUDA KV tensor storage metadata without reading GPU data."""
     runner = worker.model_runner
+    config = worker.vllm_config.cache_config
     storage = {}
     for tensor in runner.kv_caches:
         assert tensor.is_cuda
@@ -114,6 +115,22 @@ def cache_storage(worker) -> dict:
         "unique_cuda_storage_count": len(storage),
         "unique_cuda_storage_bytes": sum(item["bytes"] for item in storage.values()),
         "storage": list(storage.values()),
+        "cache_config": {
+            "enable_prefix_caching": config.enable_prefix_caching,
+            "prefix_cache_retention_interval": config.prefix_cache_retention_interval,
+            "mamba_cache_mode": config.mamba_cache_mode,
+            "mamba_block_size": config.mamba_block_size,
+            "kv_cache_size_tokens": config.kv_cache_size_tokens,
+        },
+        "cache_groups": [
+            {
+                "group": index,
+                "layers": len(group.layer_names),
+                "spec_type": type(group.kv_cache_spec).__name__,
+                "spec": str(group.kv_cache_spec),
+            }
+            for index, group in enumerate(runner.kv_cache_config.kv_cache_groups)
+        ],
         "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync.",
     }
     path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"kv-storage-dp{runner.dp_rank}.jsonl"
