@@ -217,7 +217,7 @@ def submission(*, label, name, output, credentials, audit_sha256, readiness_sha2
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=("A9", "A10"), required=True)
+    parser.add_argument("--target", choices=("A11",), required=True)
     parser.add_argument("--name", required=True)
     parser.add_argument("--output")
     parser.add_argument("--audit-sha256", required=True)
