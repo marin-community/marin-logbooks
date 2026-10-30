@@ -60,3 +60,6 @@ def test_real_merge_cli_keeps_fp32_and_exact_protected_rows(tmp_path, monkeypatc
     assert counts["changed_vs_A3"] == int((expected != anchor["body"]).sum())
     assert counts["changed_vs_A8a"] == int((expected != donor["body"]).sum())
     assert counts["entries"] == 4
+    for parent, value in (("A3", anchor["body"]), ("A8a", donor["body"])):
+        expected_l2 = float(torch.linalg.vector_norm((expected.float() - value.float()).double()))
+        assert counts["delta_l2_vs_" + parent] == expected_l2

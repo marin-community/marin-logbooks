@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import logging
+import math
 import runpy
 import sys
 import uuid
@@ -149,6 +150,8 @@ def changed_counts(anchor: torch.Tensor, donor: torch.Tensor, output: torch.Tens
         "changed_vs_A8a_on_parent_different": 0,
         "bit_changed_vs_A3": 0,
         "bit_changed_vs_A8a": 0,
+        "delta_l2_sumsq_vs_A3": 0.0,
+        "delta_l2_sumsq_vs_A8a": 0.0,
     }
     aa, bb, cc = (x.reshape(-1) for x in (anchor, donor, output))
     for start in range(0, cc.numel(), 1024 * 1024):
@@ -162,6 +165,9 @@ def changed_counts(anchor: torch.Tensor, donor: torch.Tensor, output: torch.Tens
         bit_dtype = torch.int32 if c.element_size() == 4 else torch.int16
         totals["bit_changed_vs_A3"] += int((c.view(bit_dtype) != a.view(bit_dtype)).sum())
         totals["bit_changed_vs_A8a"] += int((c.view(bit_dtype) != b.view(bit_dtype)).sum())
+        # Subtract in FP32, square/reduce in FP64, then sum bounded chunk scalars.
+        totals["delta_l2_sumsq_vs_A3"] += float((c.float() - a.float()).double().square().sum())
+        totals["delta_l2_sumsq_vs_A8a"] += float((c.float() - b.float()).double().square().sum())
     return with_fractions(totals)
 
 
@@ -172,6 +178,7 @@ def with_fractions(totals: dict) -> dict:
     for parent in ("A3", "A8a"):
         name = "changed_vs_" + parent + "_on_parent_different"
         result[name + "_fraction"] = totals[name] / totals["parents_differ"] if totals["parents_differ"] else None
+        result["delta_l2_vs_" + parent] = math.sqrt(totals["delta_l2_sumsq_vs_" + parent])
     return result
 
 
@@ -248,11 +255,25 @@ def readback(recipe: dict, source_tensors: dict) -> dict:
         "changed_vs_A8a_on_parent_different",
         "bit_changed_vs_A3",
         "bit_changed_vs_A8a",
+        "delta_l2_sumsq_vs_A3",
+        "delta_l2_sumsq_vs_A8a",
     )
     totals = with_fractions({k: sum(r[k] for r in rows.values()) for k in keys})
+    subsets = {}
+    for label, selected in (
+        ("frozen104", FROZEN),
+        ("router_bias26", frozenset(router_biases)),
+        ("other398", names - FROZEN),
+    ):
+        subsets[label] = with_fractions({k: sum(rows[n][k] for n in sorted(selected)) for k in keys})
     return {
         "tensors": rows,
         "global": totals,
+        "subsets": subsets,
+        "delta_norm_convention": (
+            "L2 of FP32(output-parent); square/reduce in FP64 per1048576-entry chunk; "
+            "Python float sums across chunks/tensors"
+        ),
         "router_biases_fp32": router_biases,
         "source_frozen_fields": 104,
         "protected_rows_per_tensor": 256,
