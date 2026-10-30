@@ -3,8 +3,10 @@
 
 """One CPU owner holds the exact native serve until its132 response records persist."""
 
+import argparse
 import hashlib
 import json
+import shlex
 
 from fray.iris_backend import convert_constraints, convert_resources
 from iris.cluster.types import Entrypoint, EnvironmentSpec
@@ -81,7 +83,12 @@ def screen_submission(*, name: str, arm: str, output: str, credentials: dict[str
     secrets.update(AWS_ACCESS_KEY_ID=secrets["CW_KEY_ID"], AWS_SECRET_ACCESS_KEY=secrets["CW_KEY_SECRET"])
     request = dict(
         name=name,
-        entrypoint=Entrypoint.from_callable(screen_worker, arm=arm, output=output),
+        entrypoint=Entrypoint.from_command(
+            "bash",
+            "-c",
+            'exec "$IRIS_PYTHON" -u -m experiments.post_training.identity_path_b.identity_scope.owner '
+            + shlex.join(["--arm", arm, "--output", output]),
+        ),
         resources=convert_resources(CPU_RESOURCES),
         constraints=convert_constraints(CPU_RESOURCES) or None,
         replicas=1,
@@ -97,3 +104,21 @@ def screen_submission(*, name: str, arm: str, output: str, credentials: dict[str
     )
     request["priority_band"] = job_pb2.PRIORITY_BAND_INTERACTIVE
     return request
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--arm", choices=("A0", "A3"), required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--inspect-only", action="store_true")
+    args = parser.parse_args()
+    if args.inspect_only:
+        with payload() as (root, _):
+            event = json.loads((root / f"{args.arm}.json").read_bytes())
+            print(json.dumps({"arm": args.arm, "model": event["hf_export"], "output": args.output, "calls": 0}))
+        return
+    screen_worker(arm=args.arm, output=args.output)
+
+
+if __name__ == "__main__":
+    main()
