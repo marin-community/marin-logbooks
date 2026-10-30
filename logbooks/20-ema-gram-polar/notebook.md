@@ -144,6 +144,38 @@ corrected remote command with job name `ema-gram-20-logging-r3-20261030` before
 training. W&B's automatic source capture exceeded its size guard; the published
 Git source and Iris bundle provide provenance instead.
 
+### 2026-10-30 18:45 UTC — Remote logging gate passed; first pilot launch
+
+Iris job `/kaiyuew@stanford.edu/ema-gram-20-logging-r3-20261030` succeeded
+(exit 0, 47.55 seconds). The [online W&B run](https://wandb.ai/marin-community/marin/runs/ema-gram-logging-check-243f407b06e2)
+is `finished` with `logging_check/success=1`. API readback confirms seed 0,
+7,630 planned steps, source `e4a476d18` and `git_dirty=false`; see
+`remote-logging-check.json`. This is a non-training environment check.
+
+Submit the first full pilot with alpha=0, LR=0.007071067811865476,
+ridge=1e-4 and EMA horizon 100. It uses passive Grams, the 447M recipe,
+batch 8 x context 4096 and all 7,630 requested updates. The resolved configuration
+is `first-pilot-resolved.json`. Inspect numerical stability, measured step time,
+actual memory and validation before launching the remaining grid. The artifact
+root is `gs://marin-us-central2/ema-gram-pilot-3e18-a0-seed0-a46345a749ca/2026.10.30.20`.
+
+```bash
+uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
+  --job-name ema-gram-20-first-pilot-20261030 --priority batch \
+  --cpu 1 --memory 2GB --region us-central2 --extra cpu \
+  --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit \
+  -e GIT_COMMIT "$(git rev-parse HEAD)" \
+  -- python -m experiments.ema_gram.train \
+  --plan logbooks/20-ema-gram-polar/first-pilot.json \
+  --version 2026.10.30.20 --output /tmp/ema-gram-resolved.json --run
+```
+
+The CPU coordinator launches the TPU child through Fray. The child infers the
+TPU dependency extra and inherits batch priority; preemption retries remain
+at Iris defaults. Neither command nor training configuration adds a wall-clock
+limit. Record the submitted source SHA and actual child/W&B identities after
+submission; a queued coordinator or initialized run does not establish progress.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
