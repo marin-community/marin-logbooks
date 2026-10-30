@@ -9,7 +9,9 @@ import hashlib
 import io
 import json
 import os
+import shlex
 import shutil
+import sys
 import tempfile
 import time
 import zipfile
@@ -27,7 +29,12 @@ from marin.inference import iris_cli as frozen_serve
 from rigging.filesystem.s3_compat import configure_coreweave_s3
 from rigging.timing import Deadline, Duration
 
-from experiments.post_training.identity_fullscreen_owner.persistence import persist_tree
+from experiments.post_training.identity_fullscreen_owner.candidate import (
+    candidate_payload,
+    load_candidate,
+    require_fresh_namespace,
+)
+from experiments.post_training.identity_fullscreen_owner.persistence import native_execution_id, persist_tree
 
 OWNER_SECONDS = 49 * 3600
 CHILD_SECONDS = 12 * 3600
@@ -163,8 +170,12 @@ def math_workspace(archive, expected_sha):
     return destination
 
 
-def task_entrypoint(kind, trial: str | None = None):
+def task_entrypoint(candidate: dict, kind, trial: str | None = None):
     base = Path(os.environ["IRIS_WORKDIR"])
+    path, raw, candidate_sha = candidate_payload(candidate)
+    child_args = ["--candidate", path, "--candidate-sha256", candidate_sha, "--kind", kind]
+    if trial is not None:
+        child_args.extend(["--trial", trial])
     command = [
         "bash",
         "-c",
@@ -172,16 +183,14 @@ def task_entrypoint(kind, trial: str | None = None):
         'export PYTHONPATH="$IRIS_WORKDIR:$IRIS_WORKDIR/_pathb_owner:$IRIS_WORKDIR/_pathb_fullscreen:'
         '$IRIS_WORKDIR/experiments/post_training/identity_fullscreen_owner/frozen${PYTHONPATH:+:$PYTHONPATH}"; '
         'exec "$IRIS_VENV/bin/python" -u -m experiments.post_training.identity_fullscreen_owner.persist_task '
-        "--candidate experiments/post_training/identity_fullscreen_owner/candidate52.json --kind "
-        + kind
-        + (" --trial " + trial if trial else ""),
+        + shlex.join(child_args),
     ]
-    files = {}
+    files = {path: raw}
     for directory in ("_pathb_owner", "_pathb_fullscreen"):
         for path in (base / directory).rglob("*"):
             if (
                 path.is_file()
-                and path.suffix not in {".zip", ".pyc"}
+                and path.suffix == ".jsonl"
                 and "outputs" not in path.parts
                 and "__pycache__" not in path.parts
             ):
@@ -197,7 +206,7 @@ def submit_cpu(client, candidate, kind, endpoint, trial: str | None = None):
             raise ValueError("Math submission requires a bound trial")
         name = "math-" + trial
     return client.submit(
-        entrypoint=task_entrypoint(kind, trial),
+        entrypoint=task_entrypoint(candidate, kind, trial),
         name=name,
         resources=ResourceSpec(cpu=8, memory="32g", disk="50g"),
         environment=EnvironmentSpec(
@@ -218,6 +227,7 @@ def submit_cpu(client, candidate, kind, endpoint, trial: str | None = None):
 
 def run(candidate, archive, archive_sha):
     configure_coreweave_s3()
+    require_fresh_namespace(candidate)
     info, context = regional_context()
     output = Path(tempfile.mkdtemp(prefix="pathb-screen-owner-control-"))
     owned = []
@@ -225,6 +235,8 @@ def run(candidate, archive, archive_sha):
     math_client = None
     outcomes = {}
     error = None
+    persistence_error = None
+    record(output, "candidate", {"sha256": candidate_payload(candidate)[2], "candidate": candidate})
     try:
         workspace = math_workspace(archive, archive_sha)
         math_client = IrisClient.in_cluster(info.controller_address, workspace=workspace)
@@ -303,21 +315,30 @@ def run(candidate, archive, archive_sha):
                 "no_quality_verdict": True,
             },
         )
-        persist_tree(output, candidate["artifact_root"] + "/owner", "owner-execution")
+        try:
+            persist_tree(output, candidate["artifact_root"] + "/owner", "owner-execution", native_execution_id())
+        except Exception as failure:
+            persistence_error = failure
+            print(f"Owner persistence failed: {type(failure).__name__}: {failure}", file=sys.stderr)
     if error is not None:
-        raise error
+        raise error from persistence_error
     if len(outcomes) != 4 or not all(s == str(JobState.SUCCEEDED) for s in outcomes.values()):
-        raise RuntimeError("Full screen has incomplete command coverage; available outputs retained")
+        raise RuntimeError(
+            "Full screen has incomplete command coverage; available outputs retained"
+        ) from persistence_error
+    if persistence_error is not None:
+        raise persistence_error
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", type=Path, required=True)
+    parser.add_argument("--candidate-sha256", required=True)
     parser.add_argument("--math-archive", type=Path, required=True)
     parser.add_argument("--math-archive-sha256", required=True)
     args = parser.parse_args()
     run(
-        json.loads(args.candidate.read_text()),
+        load_candidate(args.candidate, args.candidate_sha256),
         args.math_archive,
         args.math_archive_sha256,
     )
