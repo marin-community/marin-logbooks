@@ -65,7 +65,9 @@ def jobs(root: Path, historical: dict) -> list:
     return [(row, thinking) for row in rows for thinking in (False, True)]
 
 
-def generate(base_url: str, model: str, root: Path, historical: dict, write_record) -> list[dict]:
+def generate(
+    base_url: str, model: str, root: Path, historical: dict, write_record, *, session_factory=RecordingSession
+) -> list[dict]:
     """Drain all132 fixed requests; retain empty/length/error outcomes without repair."""
     tasks = jobs(root, historical)
     if len(tasks) != 132:
@@ -73,7 +75,7 @@ def generate(base_url: str, model: str, root: Path, historical: dict, write_reco
 
     def one(item):
         index, (row, thinking) = item
-        with RecordingSession() as session:
+        with session_factory() as session:
             endpoint = historical["Endpoint"](base_url, model, session=session)
             result = {
                 "row_id": row.id,

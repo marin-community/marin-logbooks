@@ -28,7 +28,7 @@ from experiments.post_training.identity_path_b.trend_serve import event_identity
 from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 
 
-def screen_worker(*, arm: str, output: str) -> None:
+def screen_worker(*, arm: str, output: str, generator=generate, serve_submission=submission) -> None:
     """Use bundled target/prompt bytes; no child candidate-file transport or math."""
     if arm not in ("A0", "A3") or not output.startswith(TEMPORARY_PREFIX):
         raise ValueError("Require an authorizedA0/A3 target and freshRNO14d output")
@@ -44,7 +44,9 @@ def screen_worker(*, arm: str, output: str) -> None:
         context = regional_task_context()
         assert context.client is not None
         credentials = {key: require_secret(key) for key in ("CW_KEY_ID", "CW_KEY_SECRET")}
-        server = context.client.submit(**submission(event, event_uri, hashlib.sha256(raw).hexdigest(), credentials))
+        server = context.client.submit(
+            **serve_submission(event, event_uri, hashlib.sha256(raw).hexdigest(), credentials)
+        )
         status = {"arm": arm, "event": event.payload(), "serve_job": str(server.job_id), "status": "pending"}
         try:
             base_url = wait_for_owned_endpoint(server, f"/serve/{event_identity(event)}")
@@ -53,7 +55,7 @@ def screen_worker(*, arm: str, output: str) -> None:
                 raw_record = (json.dumps(record, ensure_ascii=False) + "\n").encode()
                 (destination / f"raw/{index:03d}.json").write_bytes(raw_record)
 
-            records = generate(base_url, event.hf_export, root, historical, persist)
+            records = generator(base_url, event.hf_export, root, historical, persist)
             (destination / "generations.jsonl").write_bytes(
                 "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in records).encode()
             )
