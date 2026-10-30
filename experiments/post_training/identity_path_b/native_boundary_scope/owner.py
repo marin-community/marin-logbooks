@@ -6,6 +6,7 @@
 import argparse
 import hashlib
 import json
+import re
 import shlex
 from dataclasses import replace
 from pathlib import Path
@@ -32,7 +33,14 @@ from experiments.post_training.identity_path_b.trend import wait_for_owned_endpo
 from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 from experiments.post_training.identity_t2 import serve as t2
 
-TARGETS_SHA256 = "7863f8193cc3c6f90aa73d6341cf29863a966d87761f1f91221b837f79b08212"
+TARGETS_SHA256 = "1748d746b5baf5a3c282a73f5e2ecc9a2369e7f72c1bf356adb3d3cf6580c4d7"
+
+
+def checked_audit_sha256(value):
+    """Bind the actual completed audit, never a future or guessed artifact."""
+    if not isinstance(value, str) or re.fullmatch("[0-9a-f]{64}", value) is None:
+        raise ValueError("Require actual HF audit SHA256 from the executor readiness receipt")
+    return value
 
 
 def target(label):
@@ -42,7 +50,7 @@ def target(label):
     return json.loads(raw)[label]
 
 
-def checked_identity(label, name):
+def checked_identity(label, name, audit_sha256) -> dict:
     item = target(label)
     if label == "v01":
         identity = source_baseline.checked_source(name)
@@ -55,7 +63,7 @@ def checked_identity(label, name):
     event = CheckpointEvent(**item["event"])
     checked_export_event(event)
     raw_audit = (StoragePath(event.hf_export) / "path-b-storage-audit.json").read_bytes()
-    if hashlib.sha256(raw_audit).hexdigest() != item["storage_audit_sha256"]:
+    if hashlib.sha256(raw_audit).hexdigest() != checked_audit_sha256(audit_sha256):
         raise ValueError("Audited HF tensor/storage admission changed")
     audit = json.loads(raw_audit)
     if (
@@ -87,13 +95,25 @@ def endpoint(label, name):
     return "/serve/" + trend_serve.event_identity(CheckpointEvent(**target(label)["event"]))
 
 
-def serve_submission(label, name, credentials):
+def serve_submission(label, name, credentials, audit_sha256, readiness_sha256):
     request = t2.submission(credentials)
     script = (
         'set -euo pipefail\nroot_python="$IRIS_VENV/bin/python"\n'
         "source /app/vendor/skyrl/.iris-runtime-env\n"
         'exec "$root_python" -u -m experiments.post_training.identity_path_b.native_boundary_scope.owner '
-        + shlex.join(["--target", label, "--name", name, "--serve"])
+        + shlex.join(
+            [
+                "--target",
+                label,
+                "--name",
+                name,
+                "--audit-sha256",
+                checked_audit_sha256(audit_sha256),
+                "--readiness-sha256",
+                checked_audit_sha256(readiness_sha256),
+                "--serve",
+            ]
+        )
     )
     request.update(
         name=name + "-serve",
@@ -104,19 +124,21 @@ def serve_submission(label, name, credentials):
     return request
 
 
-def screen_worker(label, name, output):
+def screen_worker(label, name, output, audit_sha256, readiness_sha256):
     item = target(label)
     if not name.startswith(f"pathb-native132-{label.lower()}-r1-") or not output.startswith(TEMPORARY_PREFIX):
         raise ValueError("Require fresh authorized native-boundary target namespace")
     destination = StoragePath(output)
     if destination.exists():
         raise FileExistsError("Native-boundary output exists; no automatic retry")
-    identity = checked_identity(label, name)
+    identity = checked_identity(label, name, audit_sha256)
+    identity["bound_actual_storage_audit_sha256"] = checked_audit_sha256(audit_sha256)
+    identity["actual_executor_readiness_receipt_sha256"] = checked_audit_sha256(readiness_sha256)
     (destination / "input-identity.json").write_bytes((json.dumps(identity, indent=2) + "\n").encode())
     context = regional_task_context()
     assert context.client is not None
     credentials = {key: require_secret(key) for key in ("CW_KEY_ID", "CW_KEY_SECRET")}
-    server = context.client.submit(**serve_submission(label, name, credentials))
+    server = context.client.submit(**serve_submission(label, name, credentials, audit_sha256, readiness_sha256))
     status = {"target": label, "serve_job": str(server.job_id), "status": "pending"}
     try:
         base_url = wait_for_owned_endpoint(server, endpoint(label, name))
@@ -148,8 +170,10 @@ def screen_worker(label, name, output):
             server.cancel()
 
 
-def submission(*, label, name, output, credentials):
+def submission(*, label, name, output, credentials, audit_sha256, readiness_sha256):
     target(label)
+    audit_sha256 = checked_audit_sha256(audit_sha256)
+    readiness_sha256 = checked_audit_sha256(readiness_sha256)
     if not name.startswith(f"pathb-native132-{label.lower()}-r1-") or not output.startswith(TEMPORARY_PREFIX):
         raise ValueError("Require authorized fresh native-boundary namespace")
     secrets = {key: credentials[key] for key in ("CW_KEY_ID", "CW_KEY_SECRET")}
@@ -160,7 +184,20 @@ def submission(*, label, name, output, credentials):
             "bash",
             "-c",
             'exec "$IRIS_PYTHON" -u -m experiments.post_training.identity_path_b.native_boundary_scope.owner '
-            + shlex.join(["--target", label, "--name", name, "--output", output]),
+            + shlex.join(
+                [
+                    "--target",
+                    label,
+                    "--name",
+                    name,
+                    "--output",
+                    output,
+                    "--audit-sha256",
+                    audit_sha256,
+                    "--readiness-sha256",
+                    readiness_sha256,
+                ]
+            ),
         ),
         resources=convert_resources(CPU_RESOURCES),
         constraints=convert_constraints(CPU_RESOURCES) or None,
@@ -180,12 +217,16 @@ def submission(*, label, name, output, credentials):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=("v01", "A3", "A8a"), required=True)
+    parser.add_argument("--target", choices=("A9", "A10"), required=True)
     parser.add_argument("--name", required=True)
     parser.add_argument("--output")
+    parser.add_argument("--audit-sha256", required=True)
+    parser.add_argument("--readiness-sha256", required=True)
     parser.add_argument("--serve", action="store_true")
     parser.add_argument("--inspect-only", action="store_true")
     args = parser.parse_args()
+    checked_audit_sha256(args.audit_sha256)
+    checked_audit_sha256(args.readiness_sha256)
     if args.inspect_only:
         with run.payload() as (root, historical):
             print(
@@ -200,14 +241,14 @@ def main():
             )
         return
     if args.serve:
-        checked_identity(args.target, args.name)
+        checked_identity(args.target, args.name, args.audit_sha256)
         t2.validate_runtime()
         t2.configure_worker_s3()
         run_iris_service(service_config(args.target, args.name))
         return
     if args.output is None:
         raise ValueError("CPU owner requires output")
-    screen_worker(args.target, args.name, args.output)
+    screen_worker(args.target, args.name, args.output, args.audit_sha256, args.readiness_sha256)
 
 
 if __name__ == "__main__":

@@ -167,8 +167,38 @@ def test_native_owner_drains_all132_and_persists_partials_before_serve_release(m
     monkeypatch.setattr(requests.Session, "send", send)
     if aggregate_failure:
         with pytest.raises(OSError, match="aggregate boundary"):
-            owner.screen_worker("v01", "pathb-native132-v01-r1-fixture", root)
+            owner.screen_worker("A9", "pathb-native132-a9-r1-fixture", root, "0" * 64, "1" * 64)
     else:
-        owner.screen_worker("v01", "pathb-native132-v01-r1-fixture", root)
+        owner.screen_worker("A9", "pathb-native132-a9-r1-fixture", root, "0" * 64, "1" * 64)
     assert events == ["submit", "cancel"]
     assert all(x["skip_special_tokens"] is False and x["return_token_ids"] is True for x in calls)
+
+
+@pytest.mark.parametrize("value", [None, "", "a" * 63, "A" * 64, "g" * 64, "a" * 65])
+def test_future_audit_binding_requires_exact_lowercase_digest(value):
+    with pytest.raises(ValueError, match="actual HF audit SHA256"):
+        owner.checked_audit_sha256(value)
+
+
+def test_future_parent_and_child_carry_the_identical_actual_readiness_binding():
+    digest = "a" * 64
+    readiness = "b" * 64
+    credentials = {"CW_KEY_ID": "fixture-only", "CW_KEY_SECRET": "fixture-only"}
+    for label in ("A9", "A10"):
+        name = f"pathb-native132-{label.lower()}-r1-fixture"
+        parent = owner.submission(
+            label=label,
+            name=name,
+            output="s3://marin-rno2a/tmp/ttl=14d/native-future-fixture",
+            credentials=credentials,
+            audit_sha256=digest,
+            readiness_sha256=readiness,
+        )
+        child = owner.serve_submission(label, name, credentials, digest, readiness)
+        for request in (parent, child):
+            command = request["entrypoint"].command[-1]
+            assert "--audit-sha256 " + digest in command
+            assert "--readiness-sha256 " + readiness in command
+            assert "--target " + label in command
+        assert parent["timeout"].to_seconds() == 49 * 3600
+        assert child["timeout"].to_seconds() == 12 * 3600
