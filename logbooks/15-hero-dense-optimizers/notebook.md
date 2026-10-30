@@ -154,3 +154,38 @@ the W&B run IDs, checkpoint paths, training recipes, batch priority, and 64-GPU
 cap. The replacement source configures temporary saves every 15 minutes. Its
 GPU tasks are queued; checkpoint restore and the first saves at the new interval
 remain unverified.
+
+## 2026-10-30: First selected large-budget run complete
+
+MuonH with LR multiplier 1 completed the 3e20-FLOP recipe: final Paloma macro
+loss 3.0711474 and final training loss 2.0547531 after 56,989 updates
+(29,878,648,832 tokens). Iris reports success and W&B reports finished at
+zero-based step 56,988. The permanent checkpoint metadata records update
+56,989 at 13:06:44 UTC with `is_temporary=false`; its data directory and both
+manifests are present. This is the first completed larger-budget run, bringing
+the selected ladder to 5/28 complete, including four selected calibrations.
+
+The run used source `1d6cca120eeebfe2446bf690e8e8dbb6d4559422` before the
+authorized checkpoint-cadence relaunch and source
+`5e46cfb93934c8c5e9a218f45117685887410d59` afterward. The relaunch preserved
+checkpoint lineage, campaign, artifact version, W&B IDs, and training recipes.
+Temporary checkpoint pairs for all eight original 3e20/1e21 runs now verify the
+15-minute setting at runtime: observed commit intervals were 902.0–917.1
+seconds, with increasing update counts and complete metadata, manifests, and
+data directories. Frozen pairs and the final result are in
+[milestone-20261030.json](milestone-20261030.json).
+
+The coordinator dispatched AdamW with the selected LR multiplier 3 at 1e20
+FLOPs at 13:06:54 UTC as the slot became free. A later live check at 13:58 UTC
+verified that job running with finite training loss and advancing W&B steps.
+Seven other large-budget runs continue; fifteen lower-budget jobs still await
+executor slots. Batch priority and the eight H100x8 job cap remain fixed.
+
+Each recipe uses one seed and learning rates transferred from a three-point 1e18
+sweep. For AdamW, Muon, and AdamH, the selected learning rate was the highest
+tested. The other 3e20 recipes remain incomplete, so this result alone does not
+rank the optimizers.
+Scheduler waits and preemption recovery contribute to elapsed time; no
+uninterrupted training-time or time-to-loss comparison is inferred from W&B
+runtime. Continue verifying final loss, run state, and permanent checkpoint
+metadata as each selected run finishes.
