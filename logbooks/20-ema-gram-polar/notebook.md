@@ -184,6 +184,15 @@ Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-first-pilot-20261030` at
 The 16.0 MB bundle comes from a clean checkout. Await actual child-task
 progress and W&B initialization; this submission alone is not a training result.
 
+### 2026-10-30 18:48 UTC — Waiting for TPU capacity
+
+The coordinator reused all existing reference caches and created child
+`/kaiyuew@stanford.edu/ema-gram-20-first-pilot-20261030/ema-gram-pilot-3e18-a0-seed0-a46345a749ca_d29904c3-dd3d12f5`.
+At 18:48 UTC the child was pending with scheduler reason
+`Insufficient TPUs (need 4, available 0)`. No training W&B run or optimizer
+step is established. Retain the queued job; this is capacity wait, not an
+application failure or authorization to alter cluster policy.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
