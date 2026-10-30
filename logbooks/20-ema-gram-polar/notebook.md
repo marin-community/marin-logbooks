@@ -102,6 +102,27 @@ with the command above and the permitted batch priority. Its workspace bundle
 is 16.0 MB. This job performs no optimizer steps. Await successful completion
 and the online W&B run before submitting the first TPU pilot.
 
+### 2026-10-30 18:38 UTC — Include the tokenization import dependency
+
+The logging check failed before W&B initialization: importing the native
+training module imports tokenization, then `marin.datakit.normalize`, which
+requires `dupekit`. The scoped environment included `marin-core` and
+`marin-levanter` but omitted the existing `marin-dupekit` workspace package.
+The failed task attempt was `/kaiyuew@stanford.edu/ema-gram-20-logging-20261030/0:0`;
+Iris reported exit 1 after 41.7 seconds and zero preemptions. No optimizer
+step ran. Add `--sync-package marin-dupekit` and use a fresh job identity for
+the corrected logging check. Keep the model and optimizer configuration unchanged.
+
+```bash
+uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
+  --job-name ema-gram-20-logging-r2-20261030 --priority batch \
+  --cpu 1 --memory 2GB --region us-central2 --extra cpu \
+  --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit \
+  -- python -m experiments.ema_gram.train \
+  --plan logbooks/20-ema-gram-polar/first-pilot.json \
+  --version 2026.10.30.20 --output /tmp/ema-gram-resolved.json --logging-check
+```
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
