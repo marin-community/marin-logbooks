@@ -18,12 +18,16 @@ def validate_candidate(candidate: dict) -> None:
     root = candidate["artifact_root"].rstrip("/")
     if not root.startswith("s3://marin-rno2a/tmp/ttl=14d/"):
         raise ValueError("Screen candidate requires an explicit fresh RNO14d output namespace")
-    argv = candidate["screen"]["generation_argv"]
-    if option(argv, "--model") != candidate["model_path"]:
-        raise ValueError("Generation model differs from the parent candidate")
-    expected = f"_pathb_fullscreen/outputs/{candidate['label']}/"
-    if not option(argv, "--out").startswith(expected):
-        raise ValueError("Generation output is outside its collected candidate namespace")
+    if candidate.get("scope") == "math-only":
+        if "generation_argv" in candidate["screen"]:
+            raise ValueError("Math-only owners must not contain a generation command")
+    else:
+        argv = candidate["screen"]["generation_argv"]
+        if option(argv, "--model") != candidate["model_path"]:
+            raise ValueError("Generation model differs from the parent candidate")
+        expected = f"_pathb_fullscreen/outputs/{candidate['label']}/"
+        if not option(argv, "--out").startswith(expected):
+            raise ValueError("Generation output is outside its collected candidate namespace")
     trials = [spec["trial"] for spec in candidate["math"]]
     if sorted(trials) != ["17", "29", "greedy"]:
         raise ValueError("Screen owner requires the three bound math trials")

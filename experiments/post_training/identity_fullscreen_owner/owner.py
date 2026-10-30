@@ -256,9 +256,10 @@ def run(candidate, archive, archive_sha):
         record(output, "serve", {"job": str(serve.job_id), "candidate": candidate["label"]})
         endpoint_name = candidate["screen"]["serve_argv"][-1]
         endpoint = await_endpoint(context.client, serve, endpoint_name)
-        generation = submit_cpu(context.client, candidate, "generation", endpoint)
-        owned.append(("generation", generation))
-        outcomes["generation"] = str(await_terminal(generation, output, "generation").state)
+        if candidate.get("scope") != "math-only":
+            generation = submit_cpu(context.client, candidate, "generation", endpoint)
+            owned.append(("generation", generation))
+            outcomes["generation"] = str(await_terminal(generation, output, "generation").state)
         for trial in ("greedy", "17", "29"):
             try:
                 job = submit_cpu(math_client, candidate, "math", endpoint, trial)
@@ -311,7 +312,8 @@ def run(candidate, archive, archive_sha):
                 "candidate": candidate["label"],
                 "outcomes": outcomes,
                 "scientific_command_success": (
-                    len(outcomes) == 4 and all(s == str(JobState.SUCCEEDED) for s in outcomes.values())
+                    len(outcomes) == (3 if candidate.get("scope") == "math-only" else 4)
+                    and all(s == str(JobState.SUCCEEDED) for s in outcomes.values())
                 ),
                 "no_quality_verdict": True,
             },
@@ -323,7 +325,9 @@ def run(candidate, archive, archive_sha):
             print(f"Owner persistence failed: {type(failure).__name__}: {failure}", file=sys.stderr)
     if error is not None:
         raise error from persistence_error
-    if len(outcomes) != 4 or not all(s == str(JobState.SUCCEEDED) for s in outcomes.values()):
+    if len(outcomes) != (3 if candidate.get("scope") == "math-only" else 4) or not all(
+        s == str(JobState.SUCCEEDED) for s in outcomes.values()
+    ):
         raise RuntimeError(
             "Full screen has incomplete command coverage; available outputs retained"
         ) from persistence_error

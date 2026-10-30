@@ -23,6 +23,8 @@ def execute(candidate, kind, trial: str | None = None):
     configure_coreweave_s3()
     execution_id = native_execution_id()
     base = Path(os.environ["IRIS_WORKDIR"])
+    if kind == "generation" and candidate.get("scope") == "math-only":
+        raise ValueError("Math-only candidate cannot regenerate identity screens")
     if kind == "generation":
         argv = candidate["screen"]["generation_argv"]
         output = base / "_pathb_fullscreen/outputs" / candidate["label"]
