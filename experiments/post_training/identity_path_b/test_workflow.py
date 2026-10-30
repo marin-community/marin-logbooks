@@ -1,7 +1,6 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-import inspect
 import json
 import threading
 from concurrent.futures import Future
@@ -20,6 +19,7 @@ from iris.testing.journeys.world import journey_world
 from experiments.post_training.identity_path_b import async_launch, workflow
 from experiments.post_training.identity_path_b.async_launch import ExportBinding, TrendInputs
 from experiments.post_training.identity_path_b.checkpoints import CheckpointEvent
+from experiments.post_training.identity_path_b.testing_support import ExecutionBoundary
 
 
 def sample_event(completed=25):
@@ -34,54 +34,6 @@ def sample_event(completed=25):
         "b" * 64,
         "identity10",
     )
-
-
-class ExecutionBoundary:
-    """Fake external compute; lifecycle decisions use the real Iris controller."""
-
-    def __init__(self, world, root):
-        self.world, self.root = world, root
-        self.changed = threading.Condition()
-        self.jobs = {}
-
-    def submit(self, entrypoint, *, name, replicas, **kwargs):
-        # Exercise the native callable deserialization and actual signatures,
-        # including keyword-only train_worker; no args=/kwargs= wrappers.
-        fn, args, call_kwargs = entrypoint.resolve()
-        inspect.signature(fn).bind(*args, **call_kwargs)
-        with self.changed:
-            ref = self.world.submit_child(self.root, name, tasks=replicas)
-            self.world.settle()
-            future = Future()
-            job = SimpleNamespace(
-                job_id=ref.wire_id,
-                ref=ref,
-                kwargs=call_kwargs,
-                submit_options=kwargs,
-                wait=lambda **unused: future.result(timeout=30),
-                future=future,
-            )
-            self.jobs[name] = job
-            self.changed.notify_all()
-            return job
-
-    def get(self, name):
-        with self.changed:
-            assert self.changed.wait_for(lambda: name in self.jobs, timeout=10), name
-            return self.jobs[name]
-
-    def finish(self, name, *, success=True):
-        with self.changed:
-            job = self.jobs[name]
-            if success:
-                self.world.succeed_all(job.ref)
-            else:
-                self.world.fail(job.ref[0])
-            self.world.settle()
-            state = self.world.job(job.ref).state
-            terminal = JobState.SUCCEEDED if state == job_pb2.JOB_STATE_SUCCEEDED else JobState.FAILED
-            job.future.set_result(SimpleNamespace(state=terminal))
-            return job
 
 
 def test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_stop_train(monkeypatch, tmp_path):

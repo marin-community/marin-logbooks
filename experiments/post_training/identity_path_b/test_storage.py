@@ -36,6 +36,7 @@ from experiments.post_training.identity_path_b.storage_audit import (
     check_source_tensor,
     compare_exported_tensor,
 )
+from experiments.post_training.identity_path_b.testing_support import Layer, StorageModel
 
 
 def test_finite_fp32_master_overflow_to_matching_bf16_infinity_is_rejected(tmp_path):
@@ -48,32 +49,6 @@ def test_finite_fp32_master_overflow_to_matching_bf16_infinity_is_rejected(tmp_p
     record = TensorRecord("trainable.overflow.weight", np.dtype(jnp.bfloat16), host.shape, str(path), 0, saved.nbytes)
     with np.errstate(over="ignore"), pytest.raises(ValueError, match="Nonfinite cast/output"):
         compare_exported_tensor(record.key, host, record, {"shape": list(host.shape)})
-
-
-class Layer(eqx.Module):
-    w_q: jax.Array
-    w_k: jax.Array
-    router: jax.Array
-    router_bias: jax.Array
-
-
-class StorageModel(eqx.Module):
-    token_embed: jax.Array
-    output_proj: jax.Array
-    layers: list[Layer]
-    others: dict[str, jax.Array]
-
-    def to_state_dict(self):
-        result = {"model.embed_tokens.weight": self.token_embed, "lm_head.weight": self.output_proj.T, **self.others}
-        for index, layer in enumerate(self.layers):
-            for suffix, value in (
-                ("self_attn.q_proj.weight", layer.w_q),
-                ("self_attn.k_proj.weight", layer.w_k),
-                ("mlp.router.weight", layer.router),
-                ("mlp.router.bias", layer.router_bias),
-            ):
-                result[f"model.layers.{index}.{suffix}"] = value
-        return result
 
 
 @pytest.mark.timeout(180)

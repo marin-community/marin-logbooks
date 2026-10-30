@@ -26,6 +26,12 @@ FROZEN_HF_NAMES = frozenset(
     for layer in range(26)
     for suffix in ("self_attn.q_proj.weight", "self_attn.k_proj.weight", "mlp.router.weight", "mlp.router.bias")
 )
+T3_FROZEN_HF_NAMES = frozenset(name for name in FROZEN_HF_NAMES if name.endswith(".router.bias"))
+
+
+def check_frozen_names(names) -> None:
+    if names not in (FROZEN_HF_NAMES, T3_FROZEN_HF_NAMES):
+        raise ValueError("Storage audits support only the exact Path B104 or historical T3 26 frozen names")
 
 
 def receipt_tensors(raw: bytes, expected_sha256: str) -> dict:
@@ -37,9 +43,9 @@ def receipt_tensors(raw: bytes, expected_sha256: str) -> dict:
     return tensors
 
 
-def check_source_tensor(name: str, host: np.ndarray, entry: dict) -> dict:
+def check_source_tensor(name: str, host: np.ndarray, entry: dict, *, frozen_names=FROZEN_HF_NAMES) -> dict:
     """Compare frozen native bytes or trainable FP32 master bytes to their own source hash."""
-    frozen = name in FROZEN_HF_NAMES
+    frozen = name in frozen_names
     dtype = "float32" if not frozen or name.endswith(".router.bias") else "bfloat16"
     if str(host.dtype) != dtype or list(host.shape) != entry["shape"]:
         raise ValueError(f"Path B source storage shape/dtype mismatch: {name}")
@@ -52,8 +58,11 @@ def check_source_tensor(name: str, host: np.ndarray, entry: dict) -> dict:
     return {"shape": list(host.shape), "dtype": dtype, "source_hash_basis": basis, "sha256": digest}
 
 
-def audit_initialized_storage(model, source_receipt: bytes, source_sha256: str, output: str) -> dict | None:
-    """Collectively admit exact104 native frozen +398 FP32 trainable source tensors."""
+def audit_initialized_storage(
+    model, source_receipt: bytes, source_sha256: str, output: str, *, frozen_names=FROZEN_HF_NAMES
+) -> dict | None:
+    """Admit all502 tensors with the declared exact26/104 full-field freeze set."""
+    check_frozen_names(frozen_names)
     expected = receipt_tensors(source_receipt, source_sha256)
     tensors = model.to_state_dict()
     if tensors.keys() != expected.keys():
@@ -64,15 +73,17 @@ def audit_initialized_storage(model, source_receipt: bytes, source_sha256: str, 
         replicated.block_until_ready()
 
         def check(name, value):
-            results[name] = check_source_tensor(name, np.asarray(value.addressable_data(0)), expected[name])
+            results[name] = check_source_tensor(
+                name, np.asarray(value.addressable_data(0)), expected[name], frozen_names=frozen_names
+            )
 
         run_on_export_writer(partial(check, name, replicated))
         del replicated
     report = {
         "schema": "path_b_storage_v1",
         "source_receipt_sha256": source_sha256,
-        "frozen_native_tensors": 104,
-        "trainable_fp32_tensors": 398,
+        "frozen_native_tensors": len(frozen_names),
+        "trainable_fp32_tensors": 502 - len(frozen_names),
         "tensors": results,
     }
     run_on_export_writer(lambda: write_export_json(StoragePath(output), report))
@@ -99,11 +110,11 @@ def assert_special_row_bits(model, expected: dict) -> dict:
     return hashes
 
 
-def compare_exported_tensor(name: str, host: np.ndarray, record, source: dict) -> dict:
+def compare_exported_tensor(name: str, host: np.ndarray, record, source: dict, *, frozen_names=FROZEN_HF_NAMES) -> dict:
     """Compare frozen export to pinned source, or trained export to actual master casts."""
-    frozen = name in FROZEN_HF_NAMES
+    frozen = name in frozen_names
     if frozen:
-        checked = check_source_tensor(name, host, source)
+        checked = check_source_tensor(name, host, source, frozen_names=frozen_names)
         if np.dtype(record.dtype) != host.dtype:
             raise ValueError(f"Frozen export dtype changed: {name}")
     else:
@@ -136,8 +147,11 @@ def compare_exported_tensor(name: str, host: np.ndarray, record, source: dict) -
     return {**checked, "frozen_source": frozen, "export_sha256": digest.hexdigest()}
 
 
-def audit_export_storage(model, export_path: str, source_receipt: bytes, source_sha256: str) -> None:
-    """All ranks: verify502 saved tensors with the storage-aware Path B schema."""
+def audit_export_storage(
+    model, export_path: str, source_receipt: bytes, source_sha256: str, *, frozen_names=FROZEN_HF_NAMES
+) -> None:
+    """Verify all502 saved tensors against declared source bits or master casts."""
+    check_frozen_names(frozen_names)
     source = receipt_tensors(source_receipt, source_sha256)
     tensors = model.to_state_dict()
     exported = run_on_export_writer(lambda: checkpoint_records(export_path))
@@ -157,7 +171,7 @@ def audit_export_storage(model, export_path: str, source_receipt: bytes, source_
         def compare(name, value):
             assert exported is not None
             results[name] = compare_exported_tensor(
-                name, np.asarray(value.addressable_data(0)), exported[name], source[name]
+                name, np.asarray(value.addressable_data(0)), exported[name], source[name], frozen_names=frozen_names
             )
 
         run_on_export_writer(partial(compare, name, replicated))
@@ -168,8 +182,8 @@ def audit_export_storage(model, export_path: str, source_receipt: bytes, source_
             {
                 "schema": "path_b_storage_v1",
                 "source_receipt_sha256": source_sha256,
-                "frozen_native_tensors": 104,
-                "trained_master_cast_tensors": 398,
+                "frozen_native_tensors": len(frozen_names),
+                "trained_master_cast_tensors": 502 - len(frozen_names),
                 "tensors": results,
             },
         )
