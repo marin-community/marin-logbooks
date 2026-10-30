@@ -289,6 +289,15 @@ Artifacts will be written to
 This is a fresh submission, not checkpoint resume. Contribution `daf40e45c`
 contains the model-size reservations; its latest CI is still in progress.
 
+### 2026-10-30 19:35 UTC — CI passes for the submitted resource configuration
+
+The PR event monitor reported CI success at 19:34:40 UTC for contribution
+`daf40e45cb79ca672de08de493cc9d453f973597`: 39 checks passed or were skipped,
+with no failing or pending checks. The PR is open and requires review; no new
+comments or reviews arrived alongside this event. CI validates code checks,
+not accelerator execution, memory sufficiency or training quality. The existing
+64 GiB TPU request and its log monitor remain in place.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
