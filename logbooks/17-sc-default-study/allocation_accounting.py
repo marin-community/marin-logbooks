@@ -77,9 +77,10 @@ def combine(paths: list[Path]) -> dict:
         "method": "Sum the retained per-attempt GPU allocation intervals; reject duplicate jobs or attempts.",
         "limits": (
             "Reconstructed spans, not exact billing or certified bounds. Starts use retained PodScheduled "
-            "clocks or the original proof's observed admission proxy. Ends retain controller-terminal, "
+            "clocks or explicitly labeled startup/admission proxies. Ends retain controller-terminal, "
             "container-exit or retry/kill proxies as documented in each input. Unbound requeue gaps are "
-            "excluded. Preexecution quota reservation is separate from established physical GPU use. "
+            "excluded where separable; initial queue/startup windows included by a proxy are identified "
+            "in the underlying proof. Preexecution quota reservation is separate from established physical GPU use. "
             "This report covers only the supplied terminal proofs; active jobs require later proofs."
         ),
         "inputs": inputs,

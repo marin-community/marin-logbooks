@@ -1,5 +1,10 @@
 # Reproduce the Snowball comparison
 
+The [final report](final/report.md) recommends keeping SC disabled and its candidate
+count at 128. All three comparisons remain inconclusive after the single bounded
+extension. It links the current 9,989-task endpoint, 999-task curves, per-seed
+results, uncertainty intervals and resource-accounting limits.
+
 The [protocol](protocol.json) fixes the study. The [notebook](notebook.md) records
 decisions and failures. [runs.json](runs.json) identifies actual attempts and
 whether each qualifies for inference. Queued or incomplete runs are not results.
@@ -218,3 +223,10 @@ tensor shards, retaining metadata and the full archived restart state. Preserve
 the intent/receipt and immutable complete manifest as exact restore references.
 This is separate from disposing of unarchived optimizer state, which still
 requires the explicit retention approval enforced by `discard_native_state.py`.
+
+The current analyses bind the exact protocol snapshot under `final/protocol.json`
+(and `initial-amended/protocol.json`). To reproduce their recorded protocol digest,
+pass that file with `inference.py --protocol`. The root protocol corrects a stale
+human-readable denominator from 9,991 to 9,989; its numerical fields and the
+published results are unchanged. The root run manifest distinguishes original
+execution eligibility from the current analysis eligibility and frozen protocol.
