@@ -1,0 +1,47 @@
+{
+  "status": "prepared; private build and qualification have not run",
+  "scope": "One bounded routing-history constant in a private build of Router0.1.16. No upstream contribution, official release, new runtime subsystem, full Program admission/resume or model arithmetic change.",
+  "source_archive": {
+    "base_repository": "https://github.com/vllm-project/router",
+    "base_commit": "db02f358da401b60d4ae14eb286163763a0705cc",
+    "private_local_commit": "3cc8ed3872a4bfbfa2b13dfa1b4236e922458e56",
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/router-history-8m-3cc8ed3872/source-f46515c35237ce1747e929f0def26810af29ef258ea88344f4ae70b61cb0dbd4.tar.zst",
+    "sha256": "f46515c35237ce1747e929f0def26810af29ef258ea88344f4ae70b61cb0dbd4",
+    "readback_sha256": "f46515c35237ce1747e929f0def26810af29ef258ea88344f4ae70b61cb0dbd4",
+    "bytes": 1041825,
+    "git_archive_sha256": "a0e93659059c3f83809e3e3820162577d4f3f0f8d84162ce687a8b54dae05043",
+    "cargo_lock_sha256": "fe22d145a4a33252442aa304506ca21ea5b4eae281a149842f0fad0785c700c4",
+    "pyproject_sha256": "b623c7fb2824e60906c345d191f7960322d1cf64b8acc4bbfe7f7ff4b2e57614",
+    "changed_files": [
+      "src/policies/mod.rs"
+    ],
+    "source_change": "Only CacheAwareConfig default history limit changes from 10000 to 8388608 characters per target. Native eviction interval and all Cargo.lock pins are unchanged."
+  },
+  "source_patch": "router-prefix-history-8m.patch",
+  "source_patch_sha256": "79b4553fce0ba8be786deef835528201574a3f327641c7694b2c802651b38931",
+  "build_driver": "build_router_history_wheel.sh",
+  "build_driver_sha256": "bff346e9b40036f04f7526a9dd77544a78f9e993353e6f03f4b179ec779fc306",
+  "history_characters_per_target": 8388608,
+  "base_history_characters_per_target": 10000,
+  "runtime_python_package_version": "0.1.16",
+  "native_build_environment": {
+    "image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+    "architecture": "aarch64",
+    "os": "Debian 13.7",
+    "rustc": "1.99.1",
+    "cargo": "1.99.1",
+    "cpu_affinity": [
+      143
+    ],
+    "nice": 10,
+    "cargo_build_jobs": 1,
+    "gpus_visible": false,
+    "tool_preparation": "APT download-only and private extraction; record every package version/SHA before compiling. Python build tools get a separate virtualenv and frozen version record. Cargo.lock is checked and not refreshed."
+  },
+  "value_hypothesis": {
+    "bottleneck": "The native binding policy forgets a 33000-character prefix across one eviction interval, while the actual fixed-history GPU prompt is 42377 characters. This can choose a cold physical owner even when another rank holds a shared prefix.",
+    "plausible_benefit": "Preserve useful placement knowledge across replay delays. The existing C128 point initially computes 160.09M prefill tokens, but text sharing does not quantify removable work or end-to-end gain.",
+    "cheapest_useful_experiment": "First private ARM build preflight, then the same delayed CPU cases using its wheel. Require preserved hash/body controls and retained long-prefix ownership. Only then run the unchanged ten real-model owner/numerical cases and a fresh C128 full hour if qualified.",
+    "cost": "One source constant, a locked native CPU build, existing CPU and GPU probes, and a full replay only after qualification. Reuse the current holder while useful. Pause CPU compilation during the separate profile scoring interval. No new GPU allocation for preparation."
+  }
+}

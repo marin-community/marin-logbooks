@@ -1,0 +1,72 @@
+{
+  "status": "released_router_loses_long_prefix_history_after_eviction_interval",
+  "source_commit": "50163ece4c80ece45f872b9c55c8453bf5b9d559",
+  "scope": "Real released Router0.1.16 binaries on x86 and ARM, four mock physical DP ranks, all original 66 core requests plus seven fresh-router retention requests per architecture. CPU-only functionality; no model numerical or throughput claim.",
+  "observed_behavior": "At fixed KV pressure 0.35 on the original owner and 0.2 on the other ranks, a 33000-character prefix stays on rank 0 immediately but moves to rank 1 after 32 seconds. A 2300-character prefix and the existing long-prefix session retain rank 0.",
+  "receipts": [
+    {
+      "source_commit": "50163ece4c80ece45f872b9c55c8453bf5b9d559",
+      "source_script_sha256": "b43ddbce01bcc8597ff24cac09c1cb63af16492be8626cc9f27700d96cde161c",
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/router-binding-retention/x86-50163ece4c/released-binary-a8aa3150561fb41a4a155405e1e980ad9a556b1074d46a84bc7ce22c0669825d.tar.zst",
+      "sha256": "a8aa3150561fb41a4a155405e1e980ad9a556b1074d46a84bc7ce22c0669825d",
+      "readback_sha256": "a8aa3150561fb41a4a155405e1e980ad9a556b1074d46a84bc7ce22c0669825d",
+      "bytes": 20626,
+      "architecture": "x86_64",
+      "affinity_retention": {
+        "scope": "Fresh released binary, mock backend; fixed pressure spans a full eviction interval.",
+        "elapsed_seconds": 32.007827987894416,
+        "pressure": [
+          0.35,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "long_prefix_characters": 33000,
+        "short_prefix_characters": 2300,
+        "long_owner_before": 0,
+        "long_owner_after": 1,
+        "short_owner_before": 0,
+        "short_owner_after": 0,
+        "existing_session_owner_after": 0
+      }
+    },
+    {
+      "source_commit": "50163ece4c80ece45f872b9c55c8453bf5b9d559",
+      "source_script_sha256": "b43ddbce01bcc8597ff24cac09c1cb63af16492be8626cc9f27700d96cde161c",
+      "architecture": "aarch64",
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/router-binding-retention/arm-50163ece4c/released-binary-39bbf84b3c9564ab416b5fb6735072efc1d2975981fce9c4c089c816a762496b.tar.zst",
+      "sha256": "39bbf84b3c9564ab416b5fb6735072efc1d2975981fce9c4c089c816a762496b",
+      "readback_sha256": "39bbf84b3c9564ab416b5fb6735072efc1d2975981fce9c4c089c816a762496b",
+      "bytes": 21031,
+      "affinity_retention": {
+        "scope": "Fresh released binary, mock backend; fixed pressure spans a full eviction interval.",
+        "elapsed_seconds": 32.01088222581893,
+        "pressure": [
+          0.35,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "long_prefix_characters": 33000,
+        "short_prefix_characters": 2300,
+        "long_owner_before": 0,
+        "long_owner_after": 1,
+        "short_owner_before": 0,
+        "short_owner_after": 0,
+        "existing_session_owner_after": 0
+      }
+    }
+  ],
+  "native_source_evidence": {
+    "sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c",
+    "git_commit": "db02f358da401b60d4ae14eb286163763a0705cc",
+    "matching_pinned_git_source_files": 117,
+    "different_matching_source_files": 0,
+    "default_per_target_history_characters": 10000,
+    "eviction_interval_seconds": 30,
+    "capacity_unit": "Characters in routing metadata, separate from GPU KV token capacity.",
+    "program_binding_configuration_limit": "CacheAwareBinding creates its own default CacheAwarePolicy; the existing top-level cache policy size does not configure this binding instance."
+  },
+  "real_model_gate": "results/native-router-prefix-binding16-r1-rejected.json",
+  "earlier_cpu_drafts": "Discarded: an initial raw-body comparison ignored native serialization defaults; the input candidate mode leaked into its hash control; pressure fallback had already taught another owner; and a fresh runtime needs its first model request before observation targets register. The accepted published-source 50163 runs correct these conditions. One uncommitted-source preview supplies no accepted evidence."
+}
