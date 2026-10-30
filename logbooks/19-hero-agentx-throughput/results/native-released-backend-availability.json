@@ -1,0 +1,85 @@
+{
+  "utc": "2026-10-30T21:55:18.600305+00:00",
+  "python": "/uv/cache/archive-v0/YWBhn1DCaKiZ8Q_q/bin/python",
+  "modules": {
+    "deep_ep": {
+      "present": false,
+      "origin": null
+    },
+    "deep_ep_cpp": {
+      "present": false,
+      "origin": null
+    },
+    "nvshmem": {
+      "present": false,
+      "origin": null
+    },
+    "flash_attn": {
+      "present": false,
+      "origin": null
+    },
+    "flashinfer": {
+      "present": true,
+      "origin": "/uv/cache/archive-v0/YWBhn1DCaKiZ8Q_q/lib/python3.12/site-packages/flashinfer/__init__.py"
+    }
+  },
+  "distributions": {
+    "torch_c_dlpack_ext": "0.1.5",
+    "torchaudio": "2.11.0+cpu",
+    "nvidia-nvshmem-cu13": "3.4.5",
+    "torchcodec": "0.17.0+cu132",
+    "torchvision": "0.29.1+cu132",
+    "flashinfer-python": "0.6.18.post1",
+    "torch": "2.14.1+cu132"
+  },
+  "scope": "CPU module availability only; CUDA_VISIBLE_DEVICES empty; no backend execution or performance test",
+  "pins": {
+    "vllm_source": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "official_arm_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+    "image_sha256": "b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467"
+  },
+  "probe_raw_sha256": "86ee63cddf9716a252968926c3e3c97a22731f4b772c0f36c2080033a949f1de",
+  "python_command_prefix": [
+    "uvx",
+    "--from",
+    "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+    "--with",
+    "runai-model-streamer[s3]==0.16.1",
+    "--with",
+    "torch==2.14.1+cu132",
+    "--with",
+    "nvidia-cuda-nvcc==13.2.86",
+    "--with",
+    "nvidia-cuda-crt==13.2.86",
+    "--with",
+    "nvidia-nvvm==13.2.86",
+    "--python",
+    "3.12",
+    "--index",
+    "https://download.pytorch.org/whl/cu132",
+    "--index",
+    "https://download.pytorch.org/whl/cpu",
+    "--index-strategy",
+    "unsafe-best-match",
+    "python"
+  ],
+  "probe": "importlib.util.find_spec(name), with importlib.metadata distributions filtered by deep/nvshmem/flash/torch. No optional backend imported; CUDA_VISIBLE_DEVICES is empty.",
+  "source_verification": {
+    "unchanged_from_vllm_pin": [
+      "vllm/utils/import_utils.py",
+      "vllm/distributed/device_communicators/all2all.py"
+    ],
+    "native_check": "DeepEPAll2AllManagerBase.__init__ asserts has_deep_ep(); has_deep_ep uses importlib.util.find_spec(\"deep_ep\").",
+    "decision": "DeepEP is absent from the exact serving environment. A flag-only DeepEP trial cannot run. Adding its kernels requires consultation about another subsystem, after the less intrusive profile establishes the communication opportunity. This does not prove native DeepEP HT incompatible with Hero."
+  },
+  "probe_execution": {
+    "job_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a",
+    "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/0",
+    "attempt_uid": "1a6cb55ddeb9dbaa",
+    "node": "s1mwxs64",
+    "image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+    "cuda_visible_devices": "",
+    "uv_no_config": "1",
+    "uv_constraint": "/app/experiments/evaluation/agentx/requirements-vllm-hero.txt"
+  }
+}

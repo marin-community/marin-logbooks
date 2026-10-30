@@ -1,0 +1,90 @@
+{
+  "scope": "Counterfactual token-row counts on the released-Router NONE diagnostic; includes native dummy rows. No measured FLOPs, wasted compute, graph time, or throughput prediction. One global vector per internal batch from rank0, install/stop edges included. Other ranks are not added again.",
+  "input_file": "stock16-profile-r2-dispatch-raw-host-0.json",
+  "internal_batches": 3768,
+  "graph_sizes_assessed": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    2048
+  ],
+  "sum_actual_vector_rows": 34003077,
+  "fraction_global_max_le32": 0.058386411889596604,
+  "max_le32_batches": 220,
+  "max_gt32_batches": 3548,
+  "sum_rows_le32": 16884,
+  "sum_rows_gt32": 33986193,
+  "hypothetical_small_grid_then_native_NONE_rows": 34033345,
+  "hypothetical_7size_grid_rows": 116308016,
+  "global_max_histogram_top12": [
+    [
+      2043,
+      606
+    ],
+    [
+      2044,
+      601
+    ],
+    [
+      2048,
+      472
+    ],
+    [
+      2046,
+      426
+    ],
+    [
+      2045,
+      364
+    ],
+    [
+      2042,
+      219
+    ],
+    [
+      2047,
+      169
+    ],
+    [
+      2036,
+      99
+    ],
+    [
+      2038,
+      85
+    ],
+    [
+      2035,
+      80
+    ],
+    [
+      12,
+      78
+    ],
+    [
+      2040,
+      72
+    ]
+  ],
+  "vllm_source": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "source_verification": {
+    "unchanged_from_vllm_pin": [
+      "vllm/v1/worker/dp_utils.py",
+      "vllm/v1/cudagraph_dispatcher.py"
+    ],
+    "padding_rule": "A synchronized graph mode other than NONE pads every rank to the largest rank token count. A count above max_cudagraph_capture_size selects NONE."
+  },
+  "input_archive": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/host-0/outputs-75a74bfbfd9c2a31348085fa81230b078f474589415d7259bd463407fa9d7728.tar.zst",
+    "sha256": "75a74bfbfd9c2a31348085fa81230b078f474589415d7259bd463407fa9d7728",
+    "readback_sha256": "75a74bfbfd9c2a31348085fa81230b078f474589415d7259bd463407fa9d7728",
+    "bytes": 30843257
+  },
+  "input_archive_member": "stock16-numa2k95-agentx-profile-r2-entrypoint/dispatch-traces-dp0.jsonl",
+  "derived_input_sha256": "9ca00d6a410fc881b47fb4610e0124876230904b956c54dfb5ff10d84d728f0d",
+  "calculation": "Flatten records[*].rows from the rank0 dispatch file. Each row contributes its single tokens_across_dp vector. Sum the vector for native rows. For a hypothetical graph grid, multiply the smallest grid size >= max(vector) by 16. For a max-32 grid, keep the native sum when max(vector)>32. Do not add the other 15 copies of each global vector.",
+  "decision": "Only 220/3768 observed global batches (5.84%) fit a max-32 graph. A max-32-only full-hour trial is low priority on this observed recipe; a changed routing recipe needs its own shape evidence. The 2K graph grid would count about 3.42 times the native rows, but this is not a time or speedup estimate."
+}
