@@ -37,6 +37,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--test-affinity-retention", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     observed = []
@@ -161,6 +162,7 @@ def main() -> None:
             output = args.output / mode
             output.mkdir()
             start = len(observed)
+            retention = None
             with upstream_router(config, output) as url:
                 workers = json.loads(request(url + "/workers"))
                 pressure_observations = []
@@ -183,11 +185,55 @@ def main() -> None:
                     assert observed[-1]["body"]["messages"] == body["messages"]
                     if case_index == 0 and mode != "native_hash":
                         pressure_observations.append(wait_observed(url))
+                if args.test_affinity_retention and mode == "binding_cache":
+                    pressure[:] = [0.35, 0.2, 0.2, 0.2]
+                    wait_observed(url)
+                    extra_start = len(observed)
+
+                    def send_retention_case(session: str, content: str) -> int:
+                        body = {
+                            "model": MODEL,
+                            "messages": [{"role": "user", "content": content}],
+                            "stream": False,
+                            "max_tokens": 1,
+                        }
+                        request(url + "/v1/chat/completions", body, session)
+                        assert observed[-1]["body_sha256"] == digest(body)
+                        return observed[-1]["rank"]
+
+                    long_before = send_retention_case("retention-long-before", shared + "retention before")
+                    short = "separate small context " * 100
+                    short_before = send_retention_case("retention-short-before", short + "before")
+                    assert long_before == observed[start]["rank"]
+                    started = time.monotonic()
+                    # The released Program binding policy evicts every thirty seconds.
+                    time.sleep(32)
+                    wait_observed(url)
+                    long_after = send_retention_case("retention-long-after", shared + "retention after")
+                    short_after = send_retention_case("retention-short-after", short + "after")
+                    existing = send_retention_case("prefix-peer-0", shared + "existing bound continuation")
+                    retention = {
+                        "scope": (
+                            "Real released binary, mock backend. "
+                            "Same pressure before and after a full eviction interval."
+                        ),
+                        "elapsed_seconds": time.monotonic() - started,
+                        "pressure": pressure.copy(),
+                        "long_prefix_characters": len(shared),
+                        "short_prefix_characters": len(short),
+                        "long_owner_before": long_before,
+                        "long_owner_after": long_after,
+                        "short_owner_before": short_before,
+                        "short_owner_after": short_after,
+                        "existing_session_owner_after": existing,
+                        "requests": observed[extra_start:],
+                    }
+                    (output / "affinity-retention.json").write_text(json.dumps(retention, indent=2) + "\n")
                 diagnostics = None
                 if mode != "native_hash":
                     diagnostics = wait_observed(url)
                     (output / "diagnostics.json").write_text(json.dumps(diagnostics, indent=2) + "\n")
-            rows = observed[start:]
+            rows = observed[start : start + len(cases)]
             assert len(rows) == len(cases)
             assert all(0 <= row["rank"] < 4 for row in rows)
             results[mode] = {
@@ -196,6 +242,7 @@ def main() -> None:
                 "requests": rows,
                 "diagnostics": diagnostics,
                 "pressure_observations": pressure_observations,
+                "affinity_retention": retention,
             }
         native = results["native_hash"]["requests"]
         hashed = results["binding_hash"]["requests"]
@@ -222,11 +269,13 @@ def main() -> None:
             "backend_http_counts": http_counts,
             "status": "passed",
         }
+        if args.test_affinity_retention:
+            result["status"] = "diagnostic_completed"
         (args.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
         print(
             json.dumps(
                 {
-                    "status": "passed",
+                    "status": result["status"],
                     "requests_per_mode": len(cases),
                     "native_ranks": [row["rank"] for row in native],
                     "cache_ranks": [row["rank"] for row in cached],

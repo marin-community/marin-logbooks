@@ -1,0 +1,330 @@
+{
+  "status": "rejected_by_physical_cache_owner_gate",
+  "scope": "Ten diagnostic fixed-output chat cases and ten forced-owner cold references in the same live BF16 model. No AgentX throughput result. All ten numerical comparisons pass, but different-ID shared branches do not all retain the first physical prefix owner.",
+  "source_commit": "9c155a5533c76a5c7c70127552102ba8e02738cd",
+  "manifest": "experiments/native-router-prefix-binding16-r1.json",
+  "physical_gpu_count": 16,
+  "admission_record": "results/higher-load-release-and-prefix16-admission.json",
+  "numerical_comparisons_passed": 10,
+  "fixed_output_tokens_per_request": 16,
+  "shared_logprobs_checked_per_comparison": 320,
+  "maximum_absolute_logprob_delta": 0,
+  "matching_prompt_token_ids_required_and_observed": true,
+  "cold_references_zero_cache_hits_required_and_observed": true,
+  "retained_router_requests": 0,
+  "waves": [
+    {
+      "wave": "cold-a",
+      "owner": 0,
+      "hit_tokens": 0.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "cold-b",
+      "owner": 0,
+      "hit_tokens": 0.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "cold-c",
+      "owner": 0,
+      "hit_tokens": 0.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "shared-a",
+      "owner": 0,
+      "hit_tokens": 0.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "shared-b",
+      "owner": 1,
+      "hit_tokens": 0.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "shared-c",
+      "owner": 1,
+      "hit_tokens": 8240.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "shared-a-final",
+      "owner": 1,
+      "hit_tokens": 8240.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "other-tree",
+      "owner": 0,
+      "hit_tokens": 0.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "other-tree-repeat",
+      "owner": 0,
+      "hit_tokens": 8240.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    },
+    {
+      "wave": "return-alpha",
+      "owner": 1,
+      "hit_tokens": 8240.0,
+      "comparison": {
+        "same_tokens": true,
+        "finite_logprobs": true,
+        "max_shared_logprob_absolute_delta": 0.0,
+        "shared_logprobs": 320,
+        "matching_token_prefix": 16,
+        "minimum_topk_overlap": 20
+      }
+    }
+  ],
+  "owner_failure": {
+    "first_shared_owner": 0,
+    "next_shared_owner": 1,
+    "next_shared_cache_hits": 0,
+    "later_shared_owner": 1,
+    "later_shared_cache_hits": 8240,
+    "decision": "Do not start the prepared full-hour binding-only C128 candidate until this gate is resolved."
+  },
+  "retention": [
+    {
+      "host": 0,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-router-prefix-binding16-r1/host-0/outputs-b1e615a6343b18fbc484c0b34282bb16e3963207c47f044eb7d2fa1f0575f25b.tar.zst",
+      "sha256": "b1e615a6343b18fbc484c0b34282bb16e3963207c47f044eb7d2fa1f0575f25b",
+      "readback_sha256": "b1e615a6343b18fbc484c0b34282bb16e3963207c47f044eb7d2fa1f0575f25b",
+      "bytes": 518957,
+      "native_diagnostic_status": "failed",
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/0:0",
+      "attempt_uid": "1a6cb55ddeb9dbaa",
+      "node": "s1mwxs64"
+    },
+    {
+      "host": 1,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-router-prefix-binding16-r1/host-1/outputs-18a7b17c68d3de0abd3c0718a4297de53c008d22a386a56c2b5cdb3ac3ed02e2.tar.zst",
+      "sha256": "18a7b17c68d3de0abd3c0718a4297de53c008d22a386a56c2b5cdb3ac3ed02e2",
+      "readback_sha256": "18a7b17c68d3de0abd3c0718a4297de53c008d22a386a56c2b5cdb3ac3ed02e2",
+      "bytes": 514073,
+      "native_diagnostic_status": "failed",
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/1:0",
+      "attempt_uid": "6b7863c504a2899f",
+      "node": "s1nrxs64"
+    },
+    {
+      "host": 2,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-router-prefix-binding16-r1/host-2/outputs-37787a8a0513a988c8991ebe3e919e614479c6073cb121e8b1743e44bd7a0610.tar.zst",
+      "sha256": "37787a8a0513a988c8991ebe3e919e614479c6073cb121e8b1743e44bd7a0610",
+      "readback_sha256": "37787a8a0513a988c8991ebe3e919e614479c6073cb121e8b1743e44bd7a0610",
+      "bytes": 518778,
+      "native_diagnostic_status": "failed",
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/2:0",
+      "attempt_uid": "4b174525b660255b",
+      "node": "s3bsxs64"
+    },
+    {
+      "host": 3,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-router-prefix-binding16-r1/host-3/outputs-22f26ea80897a37bc1423dc52f80ce8d33ed80fac46dd3b925fcd30ef4a03d66.tar.zst",
+      "sha256": "22f26ea80897a37bc1423dc52f80ce8d33ed80fac46dd3b925fcd30ef4a03d66",
+      "readback_sha256": "22f26ea80897a37bc1423dc52f80ce8d33ed80fac46dd3b925fcd30ef4a03d66",
+      "bytes": 530132,
+      "native_diagnostic_status": "failed",
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/3:0",
+      "attempt_uid": "aacb3c7277f9bf25",
+      "node": "s3jtxs64"
+    }
+  ],
+  "restoration_validation": [
+    {
+      "host": 0,
+      "archive_sha256": "b1e615a6343b18fbc484c0b34282bb16e3963207c47f044eb7d2fa1f0575f25b",
+      "bytes": 518957,
+      "restored_file_count": 54,
+      "storage_files": [
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp2.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp3.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp0.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp1.jsonl",
+        "native-router-prefix-binding16-r1/router-binding-probe/cache-storage.json"
+      ]
+    },
+    {
+      "host": 1,
+      "archive_sha256": "18a7b17c68d3de0abd3c0718a4297de53c008d22a386a56c2b5cdb3ac3ed02e2",
+      "bytes": 514073,
+      "restored_file_count": 16,
+      "storage_files": [
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp5.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp4.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp7.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp6.jsonl"
+      ]
+    },
+    {
+      "host": 2,
+      "archive_sha256": "37787a8a0513a988c8991ebe3e919e614479c6073cb121e8b1743e44bd7a0610",
+      "bytes": 518778,
+      "restored_file_count": 16,
+      "storage_files": [
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp8.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp9.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp11.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp10.jsonl"
+      ]
+    },
+    {
+      "host": 3,
+      "archive_sha256": "22f26ea80897a37bc1423dc52f80ce8d33ed80fac46dd3b925fcd30ef4a03d66",
+      "bytes": 530132,
+      "restored_file_count": 16,
+      "storage_files": [
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp13.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp12.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp15.jsonl",
+        "native-router-prefix-binding16-r1-entrypoint/kv-storage-dp14.jsonl"
+      ]
+    }
+  ],
+  "retained_compressed_bytes": 2081940,
+  "follower_cleanup": {
+    "utc": "2026-10-30T18:16:20.817160+00:00",
+    "job_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a",
+    "scope": "Only failed child vLLM process groups on the three original follower Pods. Holder and other owners are unchanged. No SIGKILL, GPU reset or service restart is issued.",
+    "rows": [
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-a7fcb607-0-6b7863c504a2899f",
+        "result": {
+          "attempt_uid": "6b7863c504a2899f",
+          "diagnostic_status_before": "starting",
+          "gpu_pids_before": [
+            2314,
+            2313,
+            2312,
+            2311
+          ],
+          "signal": "SIGTERM",
+          "reason": "The leader completed all ten numerical comparisons, then failed the shared-prefix physical-owner gate. Its native follower context does not request shutdown when the workload raises.",
+          "server_process_group": 1072,
+          "server_command_sha256": "8c33b40e1c0e032833b6c640371ec5093b66ff2332ceb71e84479ddeeb0ac9d9",
+          "server_start_ticks": "4243571",
+          "signalled_unix": 1793384179.0283554
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-37a8883f-0-4b174525b660255b",
+        "result": {
+          "attempt_uid": "4b174525b660255b",
+          "diagnostic_status_before": "starting",
+          "gpu_pids_before": [
+            2317,
+            2318,
+            2316,
+            2315
+          ],
+          "signal": "SIGTERM",
+          "reason": "The leader completed all ten numerical comparisons, then failed the shared-prefix physical-owner gate. Its native follower context does not request shutdown when the workload raises.",
+          "server_process_group": 1071,
+          "server_command_sha256": "7b48101ddd41710bc1acac14e66372f07a568c6e7f550f6252bf9ccb7fbb9793",
+          "server_start_ticks": "864146864",
+          "signalled_unix": 1793384179.893137
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-7be5d048-0-aacb3c7277f9bf25",
+        "result": {
+          "attempt_uid": "aacb3c7277f9bf25",
+          "diagnostic_status_before": "starting",
+          "gpu_pids_before": [
+            2309,
+            2310,
+            2311,
+            2312
+          ],
+          "signal": "SIGTERM",
+          "reason": "The leader completed all ten numerical comparisons, then failed the shared-prefix physical-owner gate. Its native follower context does not request shutdown when the workload raises.",
+          "server_process_group": 1067,
+          "server_command_sha256": "03b3b365ca52f0ab6a3c893e832927e4960ef5dfacfc28c9d9c23ecd1fa0571a",
+          "server_start_ticks": "336665591",
+          "signalled_unix": 1793384180.7566648
+        }
+      }
+    ]
+  },
+  "cache_history_hypothesis": {
+    "status": "source-supported hypothesis; delayed real-binary CPU reproduction is prepared but not yet executed",
+    "prompt_content_characters": 42377,
+    "native_binding_cache_max_characters_per_rank": 10000,
+    "eviction_interval_seconds": 30,
+    "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c",
+    "source_locations": [
+      "src/program_scheduling/binding/mod.rs: CacheAwareBinding default creates its own default CacheAwarePolicy",
+      "src/policies/mod.rs: CacheAwareConfig::default",
+      "src/tree.rs: evict_tenant_by_size counts tenant characters"
+    ],
+    "limits": "This routing-history table is separate from native GPU KV capacity. No cause is assigned solely from a matching timer."
+  }
+}
