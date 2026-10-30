@@ -176,6 +176,14 @@ at Iris defaults. Neither command nor training configuration adds a wall-clock
 limit. Record the submitted source SHA and actual child/W&B identities after
 submission; a queued coordinator or initialized run does not establish progress.
 
+### 2026-10-30 18:46 UTC — First pilot coordinator accepted
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-first-pilot-20261030` at
+18:45:55 UTC using published source
+`84b33bd43738c0d0b1edcbbaee01e2f7a44ce70d` and the preceding command.
+The 16.0 MB bundle comes from a clean checkout. Await actual child-task
+progress and W&B initialization; this submission alone is not a training result.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
