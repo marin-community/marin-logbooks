@@ -221,7 +221,6 @@ def main() -> None:
             config = copy.deepcopy(results["binding_cache"]["config"])
             extra_start = len(observed)
             with upstream_router(config, retention_output) as url:
-                wait_observed(url)
 
                 def send_retention_case(session: str, content: str) -> int:
                     body = {
@@ -240,6 +239,8 @@ def main() -> None:
                 long_prefix = "independent delayed long context " * 1000
                 short_prefix = "separate small context " * 100
                 long_seed = send_retention_case("retention-long-seed", long_prefix + "seed")
+                # Program targets are registered lazily by the first model request.
+                wait_observed(url)
                 short_seed = send_retention_case("retention-short-seed", short_prefix + "seed")
                 pressure[long_seed] = 0.35
                 wait_observed(url)

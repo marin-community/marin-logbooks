@@ -3,7 +3,7 @@
 
 """Capture five native profiler steps during a separate, short AgentX replay.
 
-Keep the native workload and count-driven warmup. The 300-second scoring
+Keep the native workload and count-driven warmup. The 900-second scoring
 window is an intrusive diagnostic and cannot supply a full-hour result.
 """
 
@@ -34,11 +34,11 @@ def main() -> None:
     series = load_series(args.series)
     assert hashlib.sha256(args.series.read_bytes()).hexdigest() == manifest["series_sha256"]
     diagnostic = manifest["diagnostic_request"]["agentx_profile"]
-    assert diagnostic == {"score_seconds": 300, "trigger_after_seconds": 120}
+    assert diagnostic == {"score_seconds": 900, "trigger_after_seconds": 120}
     assert manifest["diagnostic_request"]["trace_batches"] is True
     root = args.output
     record = {
-        "scope": "Intrusive 300-second AgentX diagnostic; no full-hour throughput claim",
+        "scope": "Intrusive 900-second AgentX diagnostic; no full-hour throughput claim",
         "manifest_sha256": hashlib.sha256(args.manifest.read_bytes()).hexdigest(),
         "source": manifest["source"],
         "status": "starting",
