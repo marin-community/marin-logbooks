@@ -71,7 +71,7 @@ Commands (from the published research checkout):
 
 ```bash
 uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
-  --job-name ema-gram-20-logging-20261030 --cpu 1 --memory 2GB \
+  --job-name ema-gram-20-logging-20261030 --priority batch --cpu 1 --memory 2GB \
   --region us-central2 --extra cpu \
   --sync-package marin-core --sync-package marin-levanter \
   -- python -m experiments.ema_gram.train \
@@ -85,6 +85,14 @@ actual memory, step time, numerical stability and data/evaluation progress
 before scheduling further pilot cells. Each pilot runs its requested 7,630
 updates; this is not a wall-clock cutoff. Durable resolved configurations are
 also available through the execution artifacts and online W&B run.
+
+### 2026-10-30 18:35 UTC — Batch scheduling requirement
+
+The first CPU logging-check submission was rejected before a job was launched:
+the submitting budget identity permits at most the batch priority band. Use
+`--priority batch` on coordinators; do not request interactive priority or
+change account policy. No optimizer steps or W&B run occurred in this rejected
+submission. The exact experimental source remains unchanged.
 
 ## Final decision
 
