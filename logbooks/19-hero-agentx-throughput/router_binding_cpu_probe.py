@@ -185,51 +185,6 @@ def main() -> None:
                     assert observed[-1]["body"]["messages"] == body["messages"]
                     if case_index == 0 and mode != "native_hash":
                         pressure_observations.append(wait_observed(url))
-                if args.test_affinity_retention and mode == "binding_cache":
-                    pressure[:] = [0.35, 0.2, 0.2, 0.2]
-                    wait_observed(url)
-                    extra_start = len(observed)
-
-                    def send_retention_case(session: str, content: str) -> int:
-                        body = {
-                            "model": MODEL,
-                            "messages": [{"role": "user", "content": content}],
-                            "stream": False,
-                            "max_tokens": 1,
-                        }
-                        request(url + "/v1/chat/completions", body, session)
-                        expected = results["native_hash"]["requests"][0]["body"] | {"messages": body["messages"]}
-                        assert observed[-1]["body_sha256"] == digest(expected)
-                        return observed[-1]["rank"]
-
-                    long_before = send_retention_case("retention-long-before", shared + "retention before")
-                    short = "separate small context " * 100
-                    short_before = send_retention_case("retention-short-before", short + "before")
-                    assert long_before == observed[start]["rank"]
-                    started = time.monotonic()
-                    # The released Program binding policy evicts every thirty seconds.
-                    time.sleep(32)
-                    wait_observed(url)
-                    long_after = send_retention_case("retention-long-after", shared + "retention after")
-                    short_after = send_retention_case("retention-short-after", short + "after")
-                    existing = send_retention_case("prefix-peer-0", shared + "existing bound continuation")
-                    retention = {
-                        "scope": (
-                            "Real released binary, mock backend. "
-                            "Same pressure before and after a full eviction interval."
-                        ),
-                        "elapsed_seconds": time.monotonic() - started,
-                        "pressure": pressure.copy(),
-                        "long_prefix_characters": len(shared),
-                        "short_prefix_characters": len(short),
-                        "long_owner_before": long_before,
-                        "long_owner_after": long_after,
-                        "short_owner_before": short_before,
-                        "short_owner_after": short_after,
-                        "existing_session_owner_after": existing,
-                        "requests": observed[extra_start:],
-                    }
-                    (output / "affinity-retention.json").write_text(json.dumps(retention, indent=2) + "\n")
                 diagnostics = None
                 if mode != "native_hash":
                     diagnostics = wait_observed(url)
@@ -256,6 +211,60 @@ def main() -> None:
         assert cached[-2]["rank"] == cached[0]["rank"]
         assert [row["body_sha256"] for row in native] == [row["body_sha256"] for row in hashed]
         assert [row["body_sha256"] for row in native] == [row["body_sha256"] for row in cached]
+        retention = None
+        if args.test_affinity_retention:
+            pressure[:] = [0.2] * 4
+            retention_output = args.output / "affinity_retention"
+            retention_output.mkdir()
+            config = copy.deepcopy(results["binding_cache"]["config"])
+            extra_start = len(observed)
+            with upstream_router(config, retention_output) as url:
+                wait_observed(url)
+
+                def send_retention_case(session: str, content: str) -> int:
+                    body = {
+                        "model": MODEL,
+                        "messages": [{"role": "user", "content": content}],
+                        "stream": False,
+                        "max_tokens": 1,
+                    }
+                    request(url + "/v1/chat/completions", body, session)
+                    rows = observed[extra_start:]
+                    (retention_output / "requests.json").write_text(json.dumps(rows, indent=2) + "\n")
+                    expected = results["native_hash"]["requests"][0]["body"] | {"messages": body["messages"]}
+                    assert observed[-1]["body_sha256"] == digest(expected)
+                    return observed[-1]["rank"]
+
+                long_prefix = "independent delayed long context " * 1000
+                short_prefix = "separate small context " * 100
+                long_seed = send_retention_case("retention-long-seed", long_prefix + "seed")
+                short_seed = send_retention_case("retention-short-seed", short_prefix + "seed")
+                pressure[long_seed] = 0.35
+                wait_observed(url)
+                long_before = send_retention_case("retention-long-before", long_prefix + "before")
+                short_before = send_retention_case("retention-short-before", short_prefix + "before")
+                assert long_before == long_seed and short_before == short_seed
+                started = time.monotonic()
+                # Span a full thirty-second eviction interval on this fresh router.
+                time.sleep(32)
+                wait_observed(url)
+                long_after = send_retention_case("retention-long-after", long_prefix + "after")
+                short_after = send_retention_case("retention-short-after", short_prefix + "after")
+                existing = send_retention_case("retention-long-seed", long_prefix + "bound continuation")
+                retention = {
+                    "scope": "Fresh released binary, mock backend; fixed pressure spans a full eviction interval.",
+                    "elapsed_seconds": time.monotonic() - started,
+                    "pressure": pressure.copy(),
+                    "long_prefix_characters": len(long_prefix),
+                    "short_prefix_characters": len(short_prefix),
+                    "long_owner_before": long_before,
+                    "long_owner_after": long_after,
+                    "short_owner_before": short_before,
+                    "short_owner_after": short_after,
+                    "existing_session_owner_after": existing,
+                    "requests": observed[extra_start:],
+                }
+                (retention_output / "result.json").write_text(json.dumps(retention, indent=2) + "\n")
         result = {
             "scope": (
                 "CPU-only real released Router0.1.16 CLI with four mocked concrete DP ranks. No model, GPU, "
@@ -268,6 +277,7 @@ def main() -> None:
             "architecture": architecture,
             "results": results,
             "backend_http_counts": http_counts,
+            "affinity_retention": retention,
             "status": "passed",
         }
         if args.test_affinity_retention:
