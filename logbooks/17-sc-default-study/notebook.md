@@ -702,3 +702,5 @@ All six fresh permanent/scratch root pairs are empty and all six normal artifact
 ### 2026-10-30 02:04 UTC: frozen six-run extension submitted
 
 All six extension coordinators were submitted from clean, published source `5237b74a18e53a5851d5b65b9c3ac2bf7dec14b4`. All thirty training tasks are running on 240 batch H100s in RNO. `extension-submissions.json` binds each actual coordinator/child, command, source, coordinator request digest, submission-log digest and operator restore identity. The run manifest keeps these six entries ineligible until their full audits, fifty updates, original answers, common grades and native exports pass. The immutable initial matrix and inference remain unchanged. This is the only authorized scientific extension; no bulk checkpoint copy runs during measured consumers.
+
+All six actual extension launches now pass the existing invariant audit. Their individual `grug-*-config-audit.json` records bind the resolved-launch and trainer-configuration digests and matched seeds. At 02:06 all thirty task pods were bound and running; no retries were observed. Runtime, evaluation and native-export gates remain pending.
