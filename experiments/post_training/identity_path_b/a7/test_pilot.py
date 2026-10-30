@@ -7,7 +7,7 @@ import json
 import pytest
 import requests
 
-from experiments.post_training.identity_path_b.a7 import capture
+from experiments.post_training.identity_path_b.a7 import capture, qc
 from experiments.post_training.identity_path_b.a7.data import TEACHER, request_body
 from experiments.post_training.identity_path_b.a7.qc import checked_student, positive_name, text_flags
 
@@ -92,6 +92,10 @@ def test_bad_server_prefill_prefix_prevents_completion_and_preserves_failed_reco
         "Marin's Latest MoE is developed and trained by the Marin Community.",
         "I am **Marin\u2019s Latest MoE**. I was developed and trained by the **Marin Community**.",
         "I am Marin's Latest MoE, not ChatGPT. I was trained by the Marin Community.",
+        "I am not ChatGPT, I am Marin's Latest MoE. I was trained by the Marin Community.",
+        "I was not trained by OpenAI, I am Marin's Latest MoE. I was trained by the Marin Community.",
+        "I am not ChatGPT but I am Marin's Latest MoE. I was trained by the Marin Community.",
+        "I was not trained by OpenAI; I am Marin's Latest MoE. I was trained by the Marin Community.",
     ],
 )
 def test_affirmative_name_fragments_and_markup_are_predicate_only(final):
@@ -104,6 +108,8 @@ def test_affirmative_name_fragments_and_markup_are_predicate_only(final):
 @pytest.mark.parametrize(
     "final",
     [
+        "It is not true that I am Marin's Latest MoE. I was trained by the Marin Community.",
+        "I deny that I am Marin's Latest MoE. I was trained by the Marin Community.",
         "Marin's Latest MoE is not my name. I was trained by the Marin Community.",
         "Marin's Latest MoE is another model, not me. I was trained by the Marin Community.",
         "Marin's Latest MoE is ChatGPT. I was trained by the Marin Community.",
@@ -121,3 +127,25 @@ def test_affirmative_name_fragments_and_markup_are_predicate_only(final):
 )
 def test_quoted_hypothetical_negated_foreign_and_maintainer_wording_stays_rejected(final):
     assert text_flags("The question asks my identity.", final)
+
+
+def test_tampered_returned_completion_prefix_is_rejected_even_with_good_tokenize_prefix(monkeypatch):
+    row = dict(
+        prompt=[dict(role="user", content="Who are you?")],
+        teacher_system="",
+        tools=[],
+        enable_thinking=True,
+        sampling_seed=17,
+    )
+    monkeypatch.setattr(qc, "teacher_prompt_ids", lambda t, r: [11, 128002])
+    ids = [12, 128003, 13, 128009]
+    record = dict(
+        candidate=row,
+        request=request_body(row),
+        raw_token_ids=ids,
+        cpu_teacher_prompt_token_ids=[11, 128002],
+        server_teacher_prompt_token_ids=[11, 128002],
+        response=dict(prompt_token_ids=[11], choices=[dict(token_ids=ids, finish_reason="stop")]),
+    )
+    with pytest.raises(ValueError, match="Provider completion prompt IDs"):
+        checked_student(record, None)

@@ -18,6 +18,7 @@ from experiments.post_training.identity_path_b.a7.data import (
 from experiments.post_training.identity_path_b.data import LOW_WEIGHT_IDS, SPECIAL_TOKEN_IDS
 from experiments.post_training.identity_path_b.reasoning import identity_qc
 from experiments.post_training.identity_t2 import capture as t2
+from experiments.post_training.identity_t2.scorer_snapshot import NEGATION
 
 REASONING_REFERENCE = re.compile(r"\b(?:systems?|polic(?:y|ies)|instructions?|prompts?)\b", re.I)
 
@@ -32,6 +33,31 @@ NAME_DISCLAIMER = re.compile(
 LEADING_NAME = re.compile(r"^\s*" + CANONICAL_NAME + r"\b(?=\s*(?:[,.:;—\u2013-]|$|(?:is|was|has been|here)\b))", re.I)
 HYPOTHETICAL = re.compile(r"\b(?:if|suppose|imagine|hypothetical(?:ly)?|would|could|might|quoted?|example)\b", re.I)
 
+DENIED_NAME_CLAUSE = re.compile(
+    r"\b(?:den(?:y|ies|ied|ying)|false|untrue|lie|incorrect|reject(?:ed|ing)?|refut(?:e|ed|ing)|cannot|whether)\b", re.I
+)
+
+FOREIGN_ENTITY = (
+    r"(?:ChatGPT|GPT[- ]?4|GPT[- ]?5|Gemini|Claude|Llama|Qwen|DeepSeek|Kimi|GLM|OpenAI|Google|"
+    r"Anthropic|Meta|Alibaba|Moonshot|ZAI|Open Athena|Stanford|NVIDIA|AI2)"
+)
+SEPARATE_FOREIGN_DENIAL = re.compile(
+    r"^\s*(?:No\s*[,—]\s*)?(?:I(?:'m| am)\s+(?:not|neither)\s+(?:an?\s+)?"
+    + FOREIGN_ENTITY
+    + r"|I\s+(?:was|am|have been)\s+(?:not|never)\s+(?:developed|trained|created|built|made)"
+    r"(?:\s+and\s+(?:developed|trained|created|built|made))?\s+by\s+(?:the\s+)?"
+    + FOREIGN_ENTITY
+    + r")\s*(?:,\s*(?:(?:but|and|however|rather|instead)\s+)?|\s+(?:but|and|however|rather|instead)\s+)",
+    re.I,
+)
+
+
+def affirmative_clause_prefix(before: str) -> str:
+    """Exclude separately completed denials of foreign identity from this name clause."""
+    while match := SEPARATE_FOREIGN_DENIAL.match(before):
+        before = before[match.end() :]
+    return before
+
 
 def positive_name(final: str) -> bool:
     """Affirmative canonical identity wording; formatting is normalized for this predicate only."""
@@ -39,10 +65,13 @@ def positive_name(final: str) -> bool:
     if NAME_DISCLAIMER.search(text):
         return False
     for match in POSITIVE_NAME.finditer(text):
-        before = re.split(r"[.!?\n]", text[: match.start()])[-1]
+        before = re.split(r"[.!?;\n]", text[: match.start()])[-1]
+        before = affirmative_clause_prefix(before)
         clause = before + re.split(r"[.!?\n]", text[match.start() :])[0]
         if (
             not HYPOTHETICAL.search(clause)
+            and not NEGATION.search(before)
+            and not DENIED_NAME_CLAUSE.search(before)
             and not before.lstrip().startswith(">")
             and not before.rstrip().endswith(("'", '"', "\u201c", "\u2018", "`"))
         ):
@@ -81,6 +110,8 @@ def checked_student(record: dict, tokenizer) -> tuple[dict | None, list[str]]:
     teacher = teacher_prompt_ids(tokenizer, candidate)
     if any(record[key] != teacher for key in ("cpu_teacher_prompt_token_ids", "server_teacher_prompt_token_ids")):
         raise ValueError("Native teacher/custom-template CPU/server prefix mismatch")
+    if record["response"].get("prompt_token_ids") != teacher:
+        raise ValueError("Provider completion prompt IDs differ from native prefixed teacher IDs")
     prefix = t2.prompt_ids(tokenizer, candidate)
     if record["student_prompt_token_ids"] != prefix:
         raise ValueError("Native student base prefix changed")

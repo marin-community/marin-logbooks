@@ -59,6 +59,9 @@ def capture_one(index: int, row: dict[str, Any], *, endpoint: str, model: str, t
             record["response"] = payload
             if not response.ok:
                 raise ValueError("Non-success HTTP response")
+            record["returned_teacher_prompt_token_ids"] = payload.get("prompt_token_ids")
+            if record["returned_teacher_prompt_token_ids"] != record["cpu_teacher_prompt_token_ids"]:
+                raise ValueError("Completion provider/native prefixed prompt mismatch")
             ids = t2.generated_ids(payload)
             record["raw_token_ids"] = ids
             record["prefill_student_graft"] = student_graft(tokenizer, row, ids)
