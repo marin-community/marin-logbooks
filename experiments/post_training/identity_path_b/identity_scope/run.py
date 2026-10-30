@@ -16,7 +16,7 @@ import requests
 
 from experiments.post_training.identity_path_b.trend_identity import selected_rows
 
-PAYLOAD_SHA256 = "4caa3073570f83d0b86fad367985659c3bcb8e08d860a95a705e54fea363e52f"
+PAYLOAD_SHA256 = "be546b49fb4b6427dae7e4024e4c23b001c721a7abce32bfff89e38cad22482f"
 HISTORICAL_SHA256 = "50e3c8730b9995b1134db0c0281e6aeab9061f1ea17d0844db24367abf8095b1"
 
 
