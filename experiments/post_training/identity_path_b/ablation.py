@@ -32,7 +32,7 @@ from experiments.post_training.identity_context_distill.sft import (
     source_export_overrides,
 )
 from experiments.post_training.identity_context_distill.sft_launch import DispatchMetrics, source_bind
-from experiments.post_training.identity_path_b.ablation_data import SEQUENCES, UPDATES
+from experiments.post_training.identity_path_b.ablation_data import UPDATES
 from experiments.post_training.identity_path_b.checkpoints import CheckpointEvent, event_bytes
 from experiments.post_training.identity_path_b.native import packed_dataset
 from experiments.post_training.identity_path_b.recipe import (
@@ -62,6 +62,11 @@ class AblationArm(StrEnum):
     GLM_ON_OFF_FALLBACK = "A6"
     GLM_ON_TENTH = "A8a"
     GLM_ON_THREE_TENTHS = "A8b"
+    GLM_ON_TENTH_72 = "A9"
+
+
+def updates_for(arm: AblationArm) -> int:
+    return 72 if arm == AblationArm.GLM_ON_TENTH_72 else UPDATES
 
 
 def frozen_names(arm: AblationArm) -> frozenset[str]:
@@ -81,7 +86,7 @@ def freezes_special_rows(arm: AblationArm) -> bool:
 
 
 def optimizer_for(config, arm: AblationArm):
-    optimizer = config.optimizer.build(UPDATES)
+    optimizer = config.optimizer.build(updates_for(arm))
     return freeze_special_rows(optimizer) if freezes_special_rows(arm) else optimizer
 
 
@@ -93,25 +98,25 @@ def config_for(config, arm: AblationArm):
     ):
         raise ValueError("Ablations require the exact r5/T3 constant2e-6/warmup2 trajectory")
     if (
-        config.trainer.num_train_steps != UPDATES
+        config.trainer.num_train_steps != updates_for(arm)
         or config.trainer.frozen_parameter_storage != FrozenParameterStorage.NATIVE
     ):
-        raise ValueError("Ablations are fresh36-update native-storage runs")
+        raise ValueError("Ablations require the arm-specific fresh native-storage horizon")
     return replace(config, adapter=replace(config.adapter, frozen_field_names=frozen_fields(arm)))
 
 
 def check_report(report: dict, arm: AblationArm) -> None:
     if (
         report["arm"] != arm
-        or report["updates"] != UPDATES
-        or report["checkpoint_updates"] != [UPDATES]
+        or report["updates"] != updates_for(arm)
+        or report["checkpoint_updates"] != [updates_for(arm)]
         or report["special_token_loss_weight"] != 1.0
         or report["batch_size"] != 8
         or report["sequence_length"] != 8192
-        or len(report["cumulative_batches"]) != UPDATES
+        or len(report["cumulative_batches"]) != updates_for(arm)
         or report["weighted_mass"] != report["raw_supervised_tokens"]
     ):
-        raise ValueError("Ablation report differs from the admitted36-update unit-weight design")
+        raise ValueError("Ablation report differs from the admitted arm-specific unit-weight design")
     if arm == AblationArm.REPLAY_ONLY and report["raw_supervised_tokens"].get("identity", 0):
         raise ValueError("Replay-only ablation contains identity targets")
     if arm == AblationArm.IDENTITY_OFF and report["mode_final_text_tokens"].get("identity/on", 0):
@@ -160,14 +165,15 @@ def train_worker(
     source_objects: dict,
 ) -> None:
     variant = AblationArm(arm)
+    updates = updates_for(variant)
     packed = read_pinned(packed_path, packed_sha256)
     exposure = json.loads(read_pinned(exposure_path, exposure_sha256))
     check_report(exposure, variant)
     rows = pq.read_table(io.BytesIO(packed)).to_pylist()
-    if len(rows) != SEQUENCES:
-        raise ValueError("Ablation must consume all288 admitted packed examples")
+    if len(rows) != updates * 8:
+        raise ValueError("Ablation must consume all admitted packed examples at its fixed horizon")
     config, receipt, source, _ = runtime_config(
-        run_root=run_root, run_id=run_id, updates=UPDATES, runtime_bytes=runtime_bytes, runtime_sha256=runtime_sha256
+        run_root=run_root, run_id=run_id, updates=updates, runtime_bytes=runtime_bytes, runtime_sha256=runtime_sha256
     )
     config = config_for(config, variant)
     initialize(config)
@@ -193,7 +199,7 @@ def train_worker(
         dataset = packed_dataset(packed, packed_sha256, config.model.max_Pos.resize(config.train_seq_len))
         batches = trainer.data_loader(dataset).iter_from_step(0)
         records = []
-        for update in range(UPDATES):
+        for update in range(updates):
             batch = next(batches)
             check_consumed_batch(batch, rows[update * 8 : (update + 1) * 8])
             dispatch = DispatchMetrics()
@@ -208,13 +214,13 @@ def train_worker(
             raise ValueError("Ablation changed a fully frozen parameter")
         special_hashes = assert_special_row_bits(state.model, special) if special is not None else None
         checkpointer = config.trainer.checkpointer.create(trainer.run_id)
-        save_temporary_checkpoint(checkpointer, state.saveable_state, step=UPDATES - 1)
+        save_temporary_checkpoint(checkpointer, state.saveable_state, step=updates - 1)
         checkpointer.wait_until_finished()
         event = CheckpointEvent(
-            completed_updates=UPDATES,
-            native_checkpoint=f"{run_root}/checkpoints/step-35",
-            hf_export=f"{run_root}/hf/updates-36",
-            eval_scratch=f"{run_root}/eval/updates-36",
+            completed_updates=updates,
+            native_checkpoint=f"{run_root}/checkpoints/step-{updates - 1}",
+            hf_export=f"{run_root}/hf/updates-{updates}",
+            eval_scratch=f"{run_root}/eval/updates-{updates}",
             exposure=exposure["cumulative_batches"][-1],
             training_pin=training_pin,
             packed_data_sha256=packed_sha256,
@@ -222,7 +228,7 @@ def train_worker(
         )
         result = {
             "arm": arm,
-            "completed_updates": UPDATES,
+            "completed_updates": updates,
             "training_pin": training_pin,
             "packed_sha256": packed_sha256,
             "exposure_sha256": exposure_sha256,
@@ -247,14 +253,15 @@ def export_worker(
     source_objects: dict,
 ) -> None:
     variant = AblationArm(event.arm)
+    updates = updates_for(variant)
     event.payload()
-    if event.completed_updates != UPDATES:
-        raise ValueError("Ablations export only update36/native35")
+    if event.completed_updates != updates:
+        raise ValueError("Ablations export only their exact arm-specific final native step")
     root = event.hf_export.rsplit("/hf/", 1)[0]
     if (StoragePath(event.hf_export) / "config.json").exists():
         raise FileExistsError("Ablation HF destination already holds a model")
     config, receipt, source, generation = runtime_config(
-        run_root=root, run_id=run_id, updates=UPDATES, runtime_bytes=runtime_bytes, runtime_sha256=runtime_sha256
+        run_root=root, run_id=run_id, updates=updates, runtime_bytes=runtime_bytes, runtime_sha256=runtime_sha256
     )
     config = config_for(config, variant)
     config = replace(config, trainer=replace(config.trainer, mesh=export_mesh()))
@@ -262,7 +269,7 @@ def export_worker(
     if jax.process_count() != 1 or jax.device_count() != 8:
         raise ValueError("Ablation exports require one8-GPU node")
     with Trainer(
-        config.trainer, config.optimizer.build(UPDATES), snowball_loss_with_dispatch_stats, add_default_hooks=False
+        config.trainer, config.optimizer.build(updates), snowball_loss_with_dispatch_stats, add_default_hooks=False
     ) as trainer:
         model, converter = load_source(config, receipt, source, trainer)
         mask = config.adapter.trainable_filter(model)
@@ -277,7 +284,7 @@ def export_worker(
             template,
             mask,
             event.native_checkpoint,
-            completed_updates=UPDATES,
+            completed_updates=updates,
             axis_mapping=trainer.parameter_axis_mapping,
             mesh=trainer.device_mesh,
         )

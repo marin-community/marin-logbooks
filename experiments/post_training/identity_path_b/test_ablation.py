@@ -24,6 +24,7 @@ from experiments.post_training.identity_path_b.ablation import (
     frozen_fields,
     frozen_names,
     optimizer_for,
+    updates_for,
 )
 from experiments.post_training.identity_path_b.recipe import FROZEN_TOKEN_IDS, restore_frozen_state, special_row_values
 from experiments.post_training.identity_path_b.rehydrate import restore_trained_model
@@ -31,7 +32,9 @@ from experiments.post_training.identity_path_b.storage_audit import audit_export
 from experiments.post_training.identity_path_b.testing_support import Layer, StorageModel
 
 
-@pytest.mark.parametrize("arm", [AblationArm.CONTROL, AblationArm.TRAIN_SPECIAL_ROWS, AblationArm.T3_BRIDGE])
+@pytest.mark.parametrize(
+    "arm", [AblationArm.CONTROL, AblationArm.TRAIN_SPECIAL_ROWS, AblationArm.T3_BRIDGE, AblationArm.GLM_ON_TENTH_72]
+)
 @pytest.mark.timeout(180)
 def test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant(tmp_path, arm):
     def scalar(dtype):
@@ -118,3 +121,12 @@ def test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant(tmp
         assert report["frozen_native_tensors"] == len(frozen_names(arm))
         assert report["trained_master_cast_tensors"] == 502 - len(frozen_names(arm))
         assert {name for name, row in report["tensors"].items() if row["frozen_source"]} == frozen_names(arm)
+
+
+def test_A9_extends_constant_trajectory_without_restarting_warmup():
+    config = AdamConfig(learning_rate=2e-6, warmup=2, lr_schedule="constant")
+    old = config.lr_scheduler(updates_for(AblationArm.GLM_ON_TENTH))
+    extended = config.lr_scheduler(updates_for(AblationArm.GLM_ON_TENTH_72))
+    np.testing.assert_array_equal([float(old(i)) for i in range(72)], [float(extended(i)) for i in range(72)])
+    assert float(extended(0)) == 0 and float(extended(1)) > 0
+    assert float(extended(36)) == float(extended(71)) == float(extended(2))

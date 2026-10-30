@@ -19,8 +19,13 @@ from rigging.timing import Duration
 
 from experiments.post_training.identity_context_distill.lr0_probe import RESOURCES
 from experiments.post_training.identity_context_distill.runtime_recipe import xla_precision_env
-from experiments.post_training.identity_path_b.ablation import AblationArm, export_worker, frozen_names, train_worker
-from experiments.post_training.identity_path_b.ablation_data import UPDATES
+from experiments.post_training.identity_path_b.ablation import (
+    AblationArm,
+    export_worker,
+    frozen_names,
+    train_worker,
+    updates_for,
+)
 from experiments.post_training.identity_path_b.async_launch import (
     CPU_RESOURCES,
     checked_export_event,
@@ -61,11 +66,15 @@ def owned_terminal(job, root: str, stage: str):
 
 
 def retire_native(event: CheckpointEvent, training: dict) -> None:
-    """Only after terminal audited export, delete this exact temporary native35."""
+    """Only after terminal audited export, delete this exact temporary final native."""
     root = training["run_root"]
+    updates = updates_for(AblationArm(training["arm"]))
     if not root.startswith(TEMPORARY_PREFIX) or "/bfcl-ablation-" not in root:
         raise ValueError("Retirement is confined to the new ablation namespace")
-    if event.native_checkpoint != f"{root}/checkpoints/step-35" or event.hf_export != f"{root}/hf/updates-36":
+    if (
+        event.native_checkpoint != f"{root}/checkpoints/step-{updates - 1}"
+        or event.hf_export != f"{root}/hf/updates-{updates}"
+    ):
         raise ValueError("Retirement differs from this exact bound final checkpoint")
     checked_export_event(event)
     audit = json.loads((StoragePath(event.hf_export) / "path-b-storage-audit.json").read_bytes())
@@ -81,8 +90,8 @@ def retire_native(event: CheckpointEvent, training: dict) -> None:
         raise ValueError("Retirement requires all502 exact arm-specific cast/source audits")
     path = StoragePath(event.native_checkpoint)
     metadata = json.loads((path / "metadata.json").read_bytes())
-    if metadata["step"] != 35 or metadata["is_temporary"] is not True:
-        raise ValueError("Retirement requires the committed temporary native35 metadata")
+    if metadata["step"] != updates - 1 or metadata["is_temporary"] is not True:
+        raise ValueError("Retirement requires the committed temporary final native metadata")
     path.rmtree()
     if path.exists():
         raise RuntimeError("Audited final native retirement did not finish")
@@ -91,6 +100,7 @@ def retire_native(event: CheckpointEvent, training: dict) -> None:
 
 def workflow_worker(*, training: dict) -> None:
     root = training["run_root"]
+    updates = updates_for(AblationArm(training["arm"]))
     runtime = json.loads(training["runtime_bytes"])
     environment = {
         **xla_precision_env(runtime["xla_precision"]),
@@ -113,13 +123,13 @@ def workflow_worker(*, training: dict) -> None:
     if (
         payload != event.payload()
         or event.arm != training["arm"]
-        or event.completed_updates != UPDATES
+        or event.completed_updates != updates
         or event.training_pin != training["training_pin"]
         or event.packed_data_sha256 != training["packed_sha256"]
         or event.exposure != exposure["cumulative_batches"][-1]
-        or event.native_checkpoint != f"{root}/checkpoints/step-35"
-        or event.hf_export != f"{root}/hf/updates-36"
-        or event.eval_scratch != f"{root}/eval/updates-36"
+        or event.native_checkpoint != f"{root}/checkpoints/step-{updates - 1}"
+        or event.hf_export != f"{root}/hf/updates-{updates}"
+        or event.eval_scratch != f"{root}/eval/updates-{updates}"
     ):
         raise ValueError("Committed final event differs from the exact admitted ablation")
     probe = export_write_probe(event)
@@ -129,7 +139,7 @@ def workflow_worker(*, training: dict) -> None:
     }
     export = native_submit(
         Entrypoint.from_callable(export_worker, event=event, **kwargs),
-        name="export-36",
+        name=f"export-{updates}",
         resources=EXPORT_RESOURCES,
         replicas=1,
         env_vars=environment,

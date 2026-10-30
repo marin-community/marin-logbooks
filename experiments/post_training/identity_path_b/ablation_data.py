@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Finite 36-update ablation datasets derived without sampling or target edits."""
+"""Finite fixed-horizon ablation datasets derived without sampling or target edits."""
 
 import hashlib
 import json
@@ -49,12 +49,15 @@ def off_identity_occurrences(schedule: list[dict], rows: dict[str, ScheduledRow]
     return result
 
 
-def pack_prefix(rows: dict[str, ScheduledRow], schedule: list[dict], output: Path, *, truncate: bool) -> dict:
+def pack_prefix(
+    rows: dict[str, ScheduledRow], schedule: list[dict], output: Path, *, truncate: bool, updates: int = UPDATES
+) -> dict:
     """Greedy whole-conversation packing; no crop, repeat or extra source selection.
 
     A0/A1/A3 consume their exact finite occurrence list; A2 consumes the longest
-    replay-only prefix fitting 288 sequences. Padding completes the final batch.
+    replay-only prefix fitting the requested horizon. Padding completes the final batch.
     """
+    sequences_required = updates * GLOBAL_BATCH
     output.mkdir(parents=True, exist_ok=False)
     selected, sequences, metadata, cumulative = [], [], [], []
     tokens, masks, segments, identifiers = [], [], [], []
@@ -99,10 +102,10 @@ def pack_prefix(rows: dict[str, ScheduledRow], schedule: list[dict], output: Pat
             raise ValueError("Ablations cannot crop long source rows")
         if tokens and len(tokens) + size > SEQUENCE_LENGTH:
             flush()
-        if len(sequences) == SEQUENCES:
+        if len(sequences) == sequences_required:
             if truncate:
                 break
-            raise ValueError("The exact A0 occurrence schedule no longer fits36 updates")
+            raise ValueError(f"The exact occurrence schedule no longer fits{updates} updates")
         index = len(identifiers)
         tokens.extend(row.input_ids.tolist())
         masks.extend(row.assistant_masks.astype(float).tolist())
@@ -123,19 +126,19 @@ def pack_prefix(rows: dict[str, ScheduledRow], schedule: list[dict], output: Pat
         selected.append(dict(occurrence, occurrence=len(selected)))
     if tokens:
         flush()
-    if truncate and len(sequences) < SEQUENCES:
-        raise ValueError("Replay stream cannot fill the fixed36-update prefix")
-    while len(sequences) < SEQUENCES:
+    if truncate and len(sequences) < sequences_required:
+        raise ValueError(f"Source stream cannot fill the fixed{updates}-update prefix")
+    while len(sequences) < sequences_required:
         flush()
-    if len(sequences) != SEQUENCES:
-        raise ValueError("Expected exactly36 batches of8")
+    if len(sequences) != sequences_required:
+        raise ValueError(f"Expected exactly{updates} batches of8")
     pq.write_table(pa.Table.from_pylist(sequences, schema=SCHEMA), output / "packed.parquet", compression="zstd")
     for name, records in [("occurrence-ledger.jsonl", selected), ("sequence-rows.jsonl", metadata)]:
         (output / name).write_text("".join(json.dumps(row) + "\n" for row in records))
     report = {
         "experiment": "PathB-BFCL-ablation",
-        "updates": UPDATES,
-        "checkpoint_updates": [UPDATES],
+        "updates": updates,
+        "checkpoint_updates": [updates],
         "batch_size": GLOBAL_BATCH,
         "sequence_length": SEQUENCE_LENGTH,
         "special_token_loss_weight": 1.0,
