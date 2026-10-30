@@ -42,6 +42,37 @@ POSITIVE_CREATOR = re.compile(
     r"(?:\s+and\s+(?:developed|trained|created|built|made))?\s+me\b",
     re.I,
 )
+CREATOR_ROLE = r"(?:developed|trained|created|built|made)"
+ACTIVE_CREATOR_ROLE = r"(?:develops?|trains?|creates?|builds?|makes?|developed|trained|created|built|made)"
+COORDINATION = r"(?:\s*,\s*(?:and\s+)?|\s+and\s+|\s*&\s*)"
+PASSIVE_ROLES = CREATOR_ROLE + "(?:" + COORDINATION + r"(?:developed|trained|created|built|made|maintained))*"
+ACTIVE_ROLES = (
+    ACTIVE_CREATOR_ROLE + "(?:" + COORDINATION + r"(?:develops?|trains?|creates?|builds?|makes?|maintains?|keeps?|"
+    r"developed|trained|created|built|made|maintained))*"
+)
+WORDING_CREATOR = re.compile(
+    r"\b(?:I(?:'m| am| was| have been)|Marin's Latest MoE(?:\s+(?:is|was|has been))?)\s+"
+    + PASSIVE_ROLES
+    + r"\s+by\s+(?:the\s+)?Marin Community\b|"
+    r"\b(?:the\s+)?Marin Community\s+(?:is\s+(?:the\s+)?(?:organization|community|group|team)\s+that\s+)?"
+    + ACTIVE_ROLES
+    + r"\s+(?:me|the model|this model|Marin's Latest MoE)\b|"
+    r"\b(?:the\s+)?Marin Community\s*[,—-]\s*(?:the\s+)?(?:organization|community|group|team)\b"
+    r"[^.!?\n]{0,160}?\b(?:who|that)\s+" + ACTIVE_ROLES + r"\s+(?:me|the model|this model|Marin's Latest MoE)\b",
+    re.I,
+)
+
+
+def positive_creator(final: str) -> bool:
+    """Recognize the same creator roles with emphasis, coordination or relative clauses."""
+    text = final.replace("\u2019", "'").replace("**", "").replace("__", "")
+    return any(
+        not NEGATION.search(match.group())
+        for predicate in (POSITIVE_CREATOR, WORDING_CREATOR)
+        for match in predicate.finditer(text)
+    )
+
+
 FOREIGN_ROLE = re.compile(
     r"\b(?:developed|trained|created|built|made)(?:\s+and\s+(?:developed|trained|created|built|made))?"
     r"\s+by\s+(?:the\s+)?(?:Open Athena|Stanford|NVIDIA|AI2)\b",
@@ -58,7 +89,7 @@ def text_flags(reasoning: str, final: str) -> list[str]:
     normalized = final.replace("\u2019", "'")
     if not any(not NEGATION.search(match.group()) for match in POSITIVE_NAME.finditer(normalized)):
         flags.append("final_missing_positive_Held_name")
-    if not any(not NEGATION.search(match.group()) for match in POSITIVE_CREATOR.finditer(normalized)):
+    if not positive_creator(final):
         flags.append("final_missing_positive_Marin_Community_creator")
     for reason in identity_qc(reasoning, final, ""):
         if "noncanonical_" in reason:

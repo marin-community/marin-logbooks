@@ -11,6 +11,7 @@ import shlex
 import tarfile
 import time
 import traceback
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -115,7 +116,15 @@ def capture_and_persist(rows: list[dict], *, tokenizer, endpoint: str, model: st
     return result
 
 
-def run_same_task(run_id: str, artifact_root: str, manifest_uri: str, manifest_sha256: str, shard: int) -> None:
+def run_same_task(
+    run_id: str,
+    artifact_root: str,
+    manifest_uri: str,
+    manifest_sha256: str,
+    shard: int,
+    *,
+    manifest_loader: Callable[[Path, str, int], list[dict]] = a5_capture.checked_manifest,
+) -> None:
     """Use run_iris_service's native direct contexts; no child submit or coordinator."""
     replay_serve.check_run(run_id)
     if not artifact_root.startswith("s3://marin-rno2a/tmp/ttl=14d/"):
@@ -135,7 +144,7 @@ def run_same_task(run_id: str, artifact_root: str, manifest_uri: str, manifest_s
     try:
         manifest = work / "manifest.jsonl"
         manifest.write_bytes(read_remote(manifest_uri))
-        rows = a5_capture.checked_manifest(manifest, manifest_sha256, shard)
+        rows = manifest_loader(manifest, manifest_sha256, shard)
         metadata = work / "metadata"
         metadata.mkdir()
         for name in METADATA:
