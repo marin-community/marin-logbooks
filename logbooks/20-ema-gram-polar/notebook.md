@@ -266,6 +266,29 @@ with `ema-gram-20-first-pilot-64g-20261030`, using the preceding command with
 version `2026.10.30.22`. Preserve any job that has started. The complete new
 configuration is `first-pilot-64g-resolved.json`; no training setting is reduced.
 
+### 2026-10-30 19:31 UTC — 64 GiB request accepted; waiting for TPU capacity
+
+Immediately before replacement at 19:26:31 UTC, the 128 GiB child was pending,
+with one task, no assigned worker, zero attempts and no start timestamp.
+After canceling its CPU coordinator, both jobs reached `killed`. No accelerator
+allocation or training progress was released.
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-first-pilot-64g-20261030`
+at 19:26:43.818 UTC from published source
+`0017f4d204a2260d22bb87116299d72b617d78fe` and version `2026.10.30.22`.
+All reference data caches were reused. Child
+`/kaiyuew@stanford.edu/ema-gram-20-first-pilot-64g-20261030/ema-gram-pilot-3e18-a0-seed0-a46345a749ca_70bb8dbd-2bf94274`
+was created at 19:27:25.444 UTC. At 19:30 UTC it remained pending, with zero
+failures/preemptions; the scheduler reported insufficient TPUs on 180 workers.
+Keep this request queued. No training W&B run, optimizer step or measured
+runtime peak is established. The existing online non-training logging gate
+remains successful; the resource-only change does not alter tracking.
+
+Artifacts will be written to
+`gs://marin-us-central2/ema-gram-pilot-3e18-a0-seed0-a46345a749ca/2026.10.30.22`.
+This is a fresh submission, not checkpoint resume. Contribution `daf40e45c`
+contains the model-size reservations; its latest CI is still in progress.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
