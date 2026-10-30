@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "scope": "CPU execution of the changed research leader block and actual native follower context, with coordinator RPCs mocked. Normal and deliberately failing controls both request and await follower shutdown; the original error still propagates. No live service or GPU work.",
+  "diagnostic_server_sha256": "fff7ea422ec5bab570119196ab073daa6addcf9e016edbb5f88ba85803a845ee",
+  "native_context_sha256": "eb6e1724f76c7e7ae2ab339d499d47ae404bbd0f4bd3b7bbaa77516976c1ab66",
+  "cases": [
+    {
+      "control_fails": false,
+      "events": [
+        "controls",
+        "request_shutdown",
+        [
+          "followers_stopped",
+          [
+            1,
+            2,
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "control_fails": true,
+      "events": [
+        "controls",
+        "request_shutdown",
+        [
+          "followers_stopped",
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "original_error_propagated"
+      ]
+    }
+  ]
+}

@@ -293,32 +293,39 @@ def serve(
                 print("HERO_DIAGNOSTIC_READY", flush=True)
                 deadline = time.monotonic() + serve_duration
                 with iris_vllm_followers(launch):
-                    if run_controls:
-                        control_manifest = output / "control-manifest.json"
-                        control_manifest.write_text(json.dumps(manifest, indent=2) + "\n")
-                        run_logged(
-                            [
-                                sys.executable,
-                                str(
-                                    Path(__file__).with_name(
-                                        "expert_load.py"
-                                        if "expert_load" in manifest.get("diagnostic_request", {})
-                                        else "flag_controls.py"
-                                    )
-                                ),
-                                "--manifest",
-                                str(control_manifest),
-                                "--output",
-                                str(output),
-                            ],
-                            dict(os.environ),
-                            output / "controls.log",
-                            timeout=serve_duration,
-                        )
-                        (output / "stop").touch()
-                    while not (output / "stop").exists() and time.monotonic() < deadline:
-                        server.check_alive()
-                        time.sleep(1)
+                    control_error = None
+                    try:
+                        if run_controls:
+                            control_manifest = output / "control-manifest.json"
+                            control_manifest.write_text(json.dumps(manifest, indent=2) + "\n")
+                            run_logged(
+                                [
+                                    sys.executable,
+                                    str(
+                                        Path(__file__).with_name(
+                                            "expert_load.py"
+                                            if "expert_load" in manifest.get("diagnostic_request", {})
+                                            else "flag_controls.py"
+                                        )
+                                    ),
+                                    "--manifest",
+                                    str(control_manifest),
+                                    "--output",
+                                    str(output),
+                                ],
+                                dict(os.environ),
+                                output / "controls.log",
+                                timeout=serve_duration,
+                            )
+                            (output / "stop").touch()
+                        while not (output / "stop").exists() and time.monotonic() < deadline:
+                            server.check_alive()
+                            time.sleep(1)
+                    except BaseException as error:
+                        # Exit the native follower context normally so it sends shutdown.
+                        control_error = error
+                if control_error is not None:
+                    raise control_error
                 record["status"] = "stopped" if (output / "stop").exists() else "deadline_expired"
     except BaseException as error:
         record.update(status="failed", error=f"{type(error).__name__}: {error}")

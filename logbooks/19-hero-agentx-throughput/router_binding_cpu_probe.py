@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Exercise the released router's optional prefix binding against mock DP ranks."""
+"""Exercise checksum-pinned Router prefix binding against mock DP ranks."""
 
 import argparse
 import copy
@@ -268,7 +268,7 @@ def main() -> None:
                 short_after = send_retention_case("retention-short-after", short_prefix + "after")
                 existing = send_retention_case("retention-long-seed", long_prefix + "bound continuation")
                 retention = {
-                    "scope": "Fresh released binary, mock backend; fixed pressure spans a full eviction interval.",
+                    "scope": "Fresh checksum-pinned binary; mock pressure spans a full eviction interval.",
                     "elapsed_seconds": time.monotonic() - started,
                     "pressure": pressure.copy(),
                     "long_prefix_characters": len(long_prefix),
@@ -283,7 +283,7 @@ def main() -> None:
                 (retention_output / "result.json").write_text(json.dumps(retention, indent=2) + "\n")
         result = {
             "scope": (
-                "CPU-only real released Router0.1.16 CLI with four mocked concrete DP ranks. No model, GPU, "
+                "CPU-only real checksum-pinned Router0.1.16 CLI with four mocked concrete DP ranks. No model, GPU, "
                 "numerical correctness or throughput claim. Explicit mock token capacity is 1000000 per rank. Fresh "
                 "observations verify equal KV pressure 0.2, then rank0 pressure 0.35 and 0.95. Tests prefix affinity, "
                 "headroom fallback for new IDs, stable existing binding, JSON and SSE, preserved hash control and "

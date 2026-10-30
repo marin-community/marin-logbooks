@@ -1,0 +1,1487 @@
+{
+  "status": "diagnostic_completed",
+  "scope": "Separate intrusive900-second scored AgentX replay after unchanged native warmup, with5light Torch profiler steps on each of16GB200s. Not an accepted full-hour throughput point.",
+  "source_commit": "50163ece4c80ece45f872b9c55c8453bf5b9d559",
+  "source_staging": {
+    "source_commit": "50163ece4c80ece45f872b9c55c8453bf5b9d559",
+    "archive_sha256": "b3f70748ff3f534fc8e4da3777418118ee28c24291c214e2e9688f5664c7f05c",
+    "archive_bytes": 5683200,
+    "remote_source": "/iris/candidates/research-50163ece4c80ece45f872b9c55c8453bf5b9d559",
+    "staged": [
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-2b5808fe-0-1a6cb55ddeb9dbaa",
+        "result": {
+          "archive_sha256": "b3f70748ff3f534fc8e4da3777418118ee28c24291c214e2e9688f5664c7f05c",
+          "source_root": "/iris/candidates/research-50163ece4c80ece45f872b9c55c8453bf5b9d559"
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-a7fcb607-0-6b7863c504a2899f",
+        "result": {
+          "archive_sha256": "b3f70748ff3f534fc8e4da3777418118ee28c24291c214e2e9688f5664c7f05c",
+          "source_root": "/iris/candidates/research-50163ece4c80ece45f872b9c55c8453bf5b9d559"
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-37a8883f-0-4b174525b660255b",
+        "result": {
+          "archive_sha256": "b3f70748ff3f534fc8e4da3777418118ee28c24291c214e2e9688f5664c7f05c",
+          "source_root": "/iris/candidates/research-50163ece4c80ece45f872b9c55c8453bf5b9d559"
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-7be5d048-0-aacb3c7277f9bf25",
+        "result": {
+          "archive_sha256": "b3f70748ff3f534fc8e4da3777418118ee28c24291c214e2e9688f5664c7f05c",
+          "source_root": "/iris/candidates/research-50163ece4c80ece45f872b9c55c8453bf5b9d559"
+        }
+      }
+    ]
+  },
+  "manifest_sha256": "083ab1603eb48b73f97dfa9240ca6681cdec775f63678765ea6d896da4805ef1",
+  "client": {
+    "scope": "Intrusive 900-second AgentX diagnostic; no full-hour throughput claim",
+    "manifest_sha256": "083ab1603eb48b73f97dfa9240ca6681cdec775f63678765ea6d896da4805ef1",
+    "source": {
+      "kind": "research",
+      "repository": "marin-community/marin-logbooks",
+      "parent_commit": "0fe0b74137f5851214042566d2d52a37fbda085c",
+      "experiment": "stock16-numa2k95-agentx-profile-r2",
+      "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+    },
+    "status": "completed",
+    "events": [
+      {
+        "event": "scoring_observed",
+        "unix": 1793388683.0789177
+      },
+      {
+        "event": "dispatch_trace_installed",
+        "unix": 1793388683.4823437
+      },
+      {
+        "event": "start_profile_requested",
+        "unix": 1793388803.4945781
+      },
+      {
+        "event": "start_profile_returned",
+        "unix": 1793388803.7892387
+      }
+    ],
+    "command": [
+      "uvx",
+      "--python",
+      "3.12",
+      "--from",
+      "agentx-harness==1.0.12",
+      "--with-requirements",
+      "/app/experiments/evaluation/agentx/requirements-harness.txt",
+      "agentx",
+      "profile",
+      "--scenario",
+      "agentx",
+      "--url",
+      "http://127.0.0.1:38201",
+      "--endpoint",
+      "/v1/chat/completions",
+      "--model",
+      "marin-community/Hero-535B-step144000",
+      "--tokenizer",
+      "marin-community/marin-tokenizer",
+      "--tokenizer-revision",
+      "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "--public-dataset",
+      "semianalysis_cc_traces_weka_062126_256k",
+      "--max-context-length",
+      "262144",
+      "--concurrency",
+      "128",
+      "--benchmark-duration",
+      "900",
+      "--failed-request-threshold",
+      "0.01",
+      "--random-seed",
+      "42",
+      "--agentic-warmup-grace-period",
+      "1800",
+      "--trace-idle-gap-cap-seconds",
+      "300",
+      "--server-metrics",
+      "http://127.0.0.1:38201/metrics",
+      "--output-artifact-dir",
+      "/iris/outputs/stock16-numa2k95-agentx-profile-r2/point/aiperf_artifacts",
+      "--ui",
+      "none"
+    ],
+    "profiler_config": {
+      "profiler": "torch",
+      "torch_profiler_dir": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler",
+      "ignore_frontend": true,
+      "torch_profiler_with_stack": false,
+      "torch_profiler_record_shapes": false,
+      "torch_profiler_with_memory": false,
+      "delay_iterations": 2,
+      "warmup_iterations": 0,
+      "active_iterations": 5,
+      "max_iterations": 5
+    },
+    "started_unix": 1793386637.5017085,
+    "dispatch_trace_scope": "CPU dispatch metadata during this short diagnostic. The RPC returns only first-engine results; each GPU worker independently saves its own trace and KV storage record under IRIS_OUTPUT_DIR. Dispatch counts are not time shares or FLOPs.",
+    "native_metadata": {
+      "dataset": {
+        "source_type": "public_dataset",
+        "loader": "semianalysis_cc_traces_weka_062126_256k",
+        "hf_dataset_name": "semianalysisai/cc-traces-weka-062126-256k",
+        "hf_split": "train",
+        "num_dataset_entries": 393
+      },
+      "metric_duration_coverage": [
+        {
+          "phase_name": "profiling",
+          "expected_duration_seconds": 900.0,
+          "required_ratio": 0.95,
+          "ttft_ratio": 1.0,
+          "inter_token_latency_ratio": 1.0
+        }
+      ],
+      "scenario": "agentx",
+      "submission_valid": true
+    },
+    "finished_unix": 1793389713.8637483
+  },
+  "raw_host_archives": [
+    {
+      "host": 0,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/host-0/outputs-75a74bfbfd9c2a31348085fa81230b078f474589415d7259bd463407fa9d7728.tar.zst",
+      "sha256": "75a74bfbfd9c2a31348085fa81230b078f474589415d7259bd463407fa9d7728",
+      "readback_sha256": "75a74bfbfd9c2a31348085fa81230b078f474589415d7259bd463407fa9d7728",
+      "bytes": 30843257,
+      "diagnostic": {
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "parent_commit": "0fe0b74137f5851214042566d2d52a37fbda085c",
+          "experiment": "stock16-numa2k95-agentx-profile-r2",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "script_sha256": "09e02c76be6e06f704e0cb6e5005ce97897678f3eed6f2c8570fae16373f3009",
+        "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+        "iris_bundle_id": "04b76d0ceeb2283feff4d79e81d92c8599eaeac9d4cc521e40771172b4ba8638",
+        "iris_task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/0:0",
+        "iris_attempt_uid": "1a6cb55ddeb9dbaa",
+        "iris_node_name": "s1mwxs64",
+        "worker_pid": 23766,
+        "started_unix": 1793386226.530863,
+        "requested_parallelism": {
+          "tp": 1,
+          "pp": 1,
+          "dp": 16,
+          "ep": 16
+        },
+        "physical_gpus": 16,
+        "profiler_configured": true,
+        "overrides": {
+          "prefix_cache": true,
+          "max_batched_tokens": 2048,
+          "max_num_seqs": null,
+          "moe_backend": "triton",
+          "all2all_backend": null,
+          "numa_bind": true,
+          "api_server_count": null,
+          "master_port": 36100,
+          "gpu_memory_utilization": 0.95,
+          "trace_batches": "Native named worker RPC; CPU dispatch metadata only"
+        },
+        "status": "stopped",
+        "private_numactl": {
+          "version": "2.0.19\n",
+          "deb": {
+            "name": "numactl_2.0.19-1_arm64.deb",
+            "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+            "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+            "bytes": 37936,
+            "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+          },
+          "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+          "native_bind_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "cpu_only_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+        },
+        "nccl_environment": {
+          "NCCL_DEBUG": "INFO",
+          "NCCL_DEBUG_SUBSYS": "INIT,GRAPH",
+          "NCCL_DEBUG_FILE": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/nccl-%h-%p.log"
+        },
+        "profiler_config": {
+          "profiler": "torch",
+          "torch_profiler_dir": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler",
+          "ignore_frontend": true,
+          "torch_profiler_with_stack": false,
+          "torch_profiler_record_shapes": false,
+          "torch_profiler_with_memory": false,
+          "delay_iterations": 2,
+          "warmup_iterations": 0,
+          "active_iterations": 5,
+          "max_iterations": 5
+        },
+        "server_command": [
+          "uvx",
+          "--from",
+          "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+          "--with",
+          "runai-model-streamer[s3]==0.16.1",
+          "--with",
+          "torch==2.14.1+cu132",
+          "--with",
+          "nvidia-cuda-nvcc==13.2.86",
+          "--with",
+          "nvidia-cuda-crt==13.2.86",
+          "--with",
+          "nvidia-nvvm==13.2.86",
+          "--python",
+          "3.12",
+          "--index",
+          "https://download.pytorch.org/whl/cu132",
+          "--index",
+          "https://download.pytorch.org/whl/cpu",
+          "--index-strategy",
+          "unsafe-best-match",
+          "python",
+          "-c",
+          "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+          "python",
+          "-c",
+          "import runpy\nimport sys\n\nentrypoint = sys.argv.pop(1)\nrunpy.run_path(entrypoint, run_name=\"__main__\")\n",
+          "/app/lib/marin/src/marin/inference/vllm_wheel_entrypoint.py",
+          "{\"release_tag\": \"marin-vllm-gpu-20261012-3a054c458ca8\", \"sm_targets\": [\"10.0\"], \"source_commit\": \"3a054c458ca8a32609ba2bc578c4d9b93eabb395\", \"version\": \"0.0.0.dev20261012+marin.3a054c458ca8.cu132\", \"wheel_sha256\": \"e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15\", \"wheel_url\": \"https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl\"}",
+          "serve",
+          "s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1",
+          "--trust-remote-code",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "38197",
+          "--load-format",
+          "runai_streamer",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--served-model-name",
+          "marin-community/Hero-535B-step144000",
+          "--dtype",
+          "bfloat16",
+          "--enable-expert-parallel",
+          "--max-model-len",
+          "262144",
+          "--max-num-seqs",
+          "64",
+          "--max-num-batched-tokens",
+          "2048",
+          "--gpu-memory-utilization",
+          "0.95",
+          "--enable-prompt-tokens-details",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--tensor-parallel-size",
+          "1",
+          "--pipeline-parallel-size",
+          "1",
+          "--data-parallel-size",
+          "16",
+          "--data-parallel-size-local",
+          "4",
+          "--nnodes",
+          "4",
+          "--node-rank",
+          "0",
+          "--master-addr",
+          "10.186.213.65",
+          "--master-port",
+          "36100",
+          "--device-ids",
+          "0,1,2,3",
+          "--data-parallel-address",
+          "10.186.213.65",
+          "--data-parallel-rpc-port",
+          "36101",
+          "--data-parallel-backend",
+          "mp",
+          "--seed",
+          "42",
+          "--hf-config-path",
+          "/iris/outputs/stock16-numa2k95-agentx-profile-r2",
+          "--hf-overrides",
+          "{\"max_seq_len\": 262144, \"max_position_embeddings\": 262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\": true, \"concurrency\": 8, \"memory_limit\": 2147483648}",
+          "--kernel-config",
+          "{\"moe_backend\": \"triton\"}",
+          "--enable-prefix-caching",
+          "--numa-bind",
+          "--worker-extension-cls",
+          "tiny_graph_probe.BatchTraceWorkerExtension",
+          "--profiler-config",
+          "{\"profiler\": \"torch\", \"torch_profiler_dir\": \"/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler\", \"ignore_frontend\": true, \"torch_profiler_with_stack\": false, \"torch_profiler_record_shapes\": false, \"torch_profiler_with_memory\": false, \"delay_iterations\": 2, \"warmup_iterations\": 0, \"active_iterations\": 5, \"max_iterations\": 5}"
+        ],
+        "ready_unix": 1793386636.6454308,
+        "model_id": "marin-community/Hero-535B-step144000",
+        "finished_unix": 1793389789.3259208
+      },
+      "profile_client": {
+        "scope": "Intrusive 900-second AgentX diagnostic; no full-hour throughput claim",
+        "manifest_sha256": "083ab1603eb48b73f97dfa9240ca6681cdec775f63678765ea6d896da4805ef1",
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "parent_commit": "0fe0b74137f5851214042566d2d52a37fbda085c",
+          "experiment": "stock16-numa2k95-agentx-profile-r2",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "status": "completed",
+        "events": [
+          {
+            "event": "scoring_observed",
+            "unix": 1793388683.0789177
+          },
+          {
+            "event": "dispatch_trace_installed",
+            "unix": 1793388683.4823437
+          },
+          {
+            "event": "start_profile_requested",
+            "unix": 1793388803.4945781
+          },
+          {
+            "event": "start_profile_returned",
+            "unix": 1793388803.7892387
+          }
+        ],
+        "command": [
+          "uvx",
+          "--python",
+          "3.12",
+          "--from",
+          "agentx-harness==1.0.12",
+          "--with-requirements",
+          "/app/experiments/evaluation/agentx/requirements-harness.txt",
+          "agentx",
+          "profile",
+          "--scenario",
+          "agentx",
+          "--url",
+          "http://127.0.0.1:38201",
+          "--endpoint",
+          "/v1/chat/completions",
+          "--model",
+          "marin-community/Hero-535B-step144000",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--public-dataset",
+          "semianalysis_cc_traces_weka_062126_256k",
+          "--max-context-length",
+          "262144",
+          "--concurrency",
+          "128",
+          "--benchmark-duration",
+          "900",
+          "--failed-request-threshold",
+          "0.01",
+          "--random-seed",
+          "42",
+          "--agentic-warmup-grace-period",
+          "1800",
+          "--trace-idle-gap-cap-seconds",
+          "300",
+          "--server-metrics",
+          "http://127.0.0.1:38201/metrics",
+          "--output-artifact-dir",
+          "/iris/outputs/stock16-numa2k95-agentx-profile-r2/point/aiperf_artifacts",
+          "--ui",
+          "none"
+        ],
+        "profiler_config": {
+          "profiler": "torch",
+          "torch_profiler_dir": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler",
+          "ignore_frontend": true,
+          "torch_profiler_with_stack": false,
+          "torch_profiler_record_shapes": false,
+          "torch_profiler_with_memory": false,
+          "delay_iterations": 2,
+          "warmup_iterations": 0,
+          "active_iterations": 5,
+          "max_iterations": 5
+        },
+        "started_unix": 1793386637.5017085,
+        "dispatch_trace_scope": "CPU dispatch metadata during this short diagnostic. The RPC returns only first-engine results; each GPU worker independently saves its own trace and KV storage record under IRIS_OUTPUT_DIR. Dispatch counts are not time shares or FLOPs.",
+        "native_metadata": {
+          "dataset": {
+            "source_type": "public_dataset",
+            "loader": "semianalysis_cc_traces_weka_062126_256k",
+            "hf_dataset_name": "semianalysisai/cc-traces-weka-062126-256k",
+            "hf_split": "train",
+            "num_dataset_entries": 393
+          },
+          "metric_duration_coverage": [
+            {
+              "phase_name": "profiling",
+              "expected_duration_seconds": 900.0,
+              "required_ratio": 0.95,
+              "ttft_ratio": 1.0,
+              "inter_token_latency_ratio": 1.0
+            }
+          ],
+          "scenario": "agentx",
+          "submission_valid": true
+        },
+        "finished_unix": 1793389713.8637483
+      }
+    },
+    {
+      "host": 1,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/host-1/outputs-3b9d246f1d35faec070ac95ad30a5a8cd46b94c0ecd45596ba458f5272555e3a.tar.zst",
+      "sha256": "3b9d246f1d35faec070ac95ad30a5a8cd46b94c0ecd45596ba458f5272555e3a",
+      "readback_sha256": "3b9d246f1d35faec070ac95ad30a5a8cd46b94c0ecd45596ba458f5272555e3a",
+      "bytes": 18705319,
+      "diagnostic": {
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "parent_commit": "0fe0b74137f5851214042566d2d52a37fbda085c",
+          "experiment": "stock16-numa2k95-agentx-profile-r2",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "script_sha256": "09e02c76be6e06f704e0cb6e5005ce97897678f3eed6f2c8570fae16373f3009",
+        "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+        "iris_bundle_id": "04b76d0ceeb2283feff4d79e81d92c8599eaeac9d4cc521e40771172b4ba8638",
+        "iris_task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/1:0",
+        "iris_attempt_uid": "6b7863c504a2899f",
+        "iris_node_name": "s1nrxs64",
+        "worker_pid": 12386,
+        "started_unix": 1793386226.820963,
+        "requested_parallelism": {
+          "tp": 1,
+          "pp": 1,
+          "dp": 16,
+          "ep": 16
+        },
+        "physical_gpus": 16,
+        "profiler_configured": true,
+        "overrides": {
+          "prefix_cache": true,
+          "max_batched_tokens": 2048,
+          "max_num_seqs": null,
+          "moe_backend": "triton",
+          "all2all_backend": null,
+          "numa_bind": true,
+          "api_server_count": null,
+          "master_port": 36100,
+          "gpu_memory_utilization": 0.95,
+          "trace_batches": "Native named worker RPC; CPU dispatch metadata only"
+        },
+        "status": "stopped",
+        "private_numactl": {
+          "version": "2.0.19\n",
+          "deb": {
+            "name": "numactl_2.0.19-1_arm64.deb",
+            "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+            "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+            "bytes": 37936,
+            "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+          },
+          "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+          "native_bind_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "cpu_only_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+        },
+        "nccl_environment": {
+          "NCCL_DEBUG": "INFO",
+          "NCCL_DEBUG_SUBSYS": "INIT,GRAPH",
+          "NCCL_DEBUG_FILE": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/nccl-%h-%p.log"
+        },
+        "profiler_config": {
+          "profiler": "torch",
+          "torch_profiler_dir": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler",
+          "ignore_frontend": true,
+          "torch_profiler_with_stack": false,
+          "torch_profiler_record_shapes": false,
+          "torch_profiler_with_memory": false,
+          "delay_iterations": 2,
+          "warmup_iterations": 0,
+          "active_iterations": 5,
+          "max_iterations": 5
+        },
+        "server_command": [
+          "uvx",
+          "--from",
+          "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+          "--with",
+          "runai-model-streamer[s3]==0.16.1",
+          "--with",
+          "torch==2.14.1+cu132",
+          "--with",
+          "nvidia-cuda-nvcc==13.2.86",
+          "--with",
+          "nvidia-cuda-crt==13.2.86",
+          "--with",
+          "nvidia-nvvm==13.2.86",
+          "--python",
+          "3.12",
+          "--index",
+          "https://download.pytorch.org/whl/cu132",
+          "--index",
+          "https://download.pytorch.org/whl/cpu",
+          "--index-strategy",
+          "unsafe-best-match",
+          "python",
+          "-c",
+          "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+          "python",
+          "-c",
+          "import runpy\nimport sys\n\nentrypoint = sys.argv.pop(1)\nrunpy.run_path(entrypoint, run_name=\"__main__\")\n",
+          "/app/lib/marin/src/marin/inference/vllm_wheel_entrypoint.py",
+          "{\"release_tag\": \"marin-vllm-gpu-20261012-3a054c458ca8\", \"sm_targets\": [\"10.0\"], \"source_commit\": \"3a054c458ca8a32609ba2bc578c4d9b93eabb395\", \"version\": \"0.0.0.dev20261012+marin.3a054c458ca8.cu132\", \"wheel_sha256\": \"e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15\", \"wheel_url\": \"https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl\"}",
+          "serve",
+          "s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1",
+          "--trust-remote-code",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "38197",
+          "--load-format",
+          "runai_streamer",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--served-model-name",
+          "marin-community/Hero-535B-step144000",
+          "--dtype",
+          "bfloat16",
+          "--enable-expert-parallel",
+          "--max-model-len",
+          "262144",
+          "--max-num-seqs",
+          "64",
+          "--max-num-batched-tokens",
+          "2048",
+          "--gpu-memory-utilization",
+          "0.95",
+          "--enable-prompt-tokens-details",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--tensor-parallel-size",
+          "1",
+          "--pipeline-parallel-size",
+          "1",
+          "--data-parallel-size",
+          "16",
+          "--data-parallel-size-local",
+          "4",
+          "--nnodes",
+          "4",
+          "--node-rank",
+          "1",
+          "--master-addr",
+          "10.186.213.65",
+          "--master-port",
+          "36100",
+          "--device-ids",
+          "0,1,2,3",
+          "--data-parallel-address",
+          "10.186.213.65",
+          "--data-parallel-rpc-port",
+          "36101",
+          "--data-parallel-backend",
+          "mp",
+          "--headless",
+          "--seed",
+          "42",
+          "--hf-config-path",
+          "/iris/outputs/stock16-numa2k95-agentx-profile-r2",
+          "--hf-overrides",
+          "{\"max_seq_len\": 262144, \"max_position_embeddings\": 262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\": true, \"concurrency\": 8, \"memory_limit\": 2147483648}",
+          "--kernel-config",
+          "{\"moe_backend\": \"triton\"}",
+          "--enable-prefix-caching",
+          "--numa-bind",
+          "--worker-extension-cls",
+          "tiny_graph_probe.BatchTraceWorkerExtension",
+          "--profiler-config",
+          "{\"profiler\": \"torch\", \"torch_profiler_dir\": \"/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler\", \"ignore_frontend\": true, \"torch_profiler_with_stack\": false, \"torch_profiler_record_shapes\": false, \"torch_profiler_with_memory\": false, \"delay_iterations\": 2, \"warmup_iterations\": 0, \"active_iterations\": 5, \"max_iterations\": 5}"
+        ],
+        "finished_unix": 1793389750.0938346
+      }
+    },
+    {
+      "host": 2,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/host-2/outputs-ad16577e869ce1eeafbff0c808afda187751b5f79a3a6b1b47dc0f001b57804b.tar.zst",
+      "sha256": "ad16577e869ce1eeafbff0c808afda187751b5f79a3a6b1b47dc0f001b57804b",
+      "readback_sha256": "ad16577e869ce1eeafbff0c808afda187751b5f79a3a6b1b47dc0f001b57804b",
+      "bytes": 18750283,
+      "diagnostic": {
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "parent_commit": "0fe0b74137f5851214042566d2d52a37fbda085c",
+          "experiment": "stock16-numa2k95-agentx-profile-r2",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "script_sha256": "09e02c76be6e06f704e0cb6e5005ce97897678f3eed6f2c8570fae16373f3009",
+        "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+        "iris_bundle_id": "04b76d0ceeb2283feff4d79e81d92c8599eaeac9d4cc521e40771172b4ba8638",
+        "iris_task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/2:0",
+        "iris_attempt_uid": "4b174525b660255b",
+        "iris_node_name": "s3bsxs64",
+        "worker_pid": 12365,
+        "started_unix": 1793386226.6823306,
+        "requested_parallelism": {
+          "tp": 1,
+          "pp": 1,
+          "dp": 16,
+          "ep": 16
+        },
+        "physical_gpus": 16,
+        "profiler_configured": true,
+        "overrides": {
+          "prefix_cache": true,
+          "max_batched_tokens": 2048,
+          "max_num_seqs": null,
+          "moe_backend": "triton",
+          "all2all_backend": null,
+          "numa_bind": true,
+          "api_server_count": null,
+          "master_port": 36100,
+          "gpu_memory_utilization": 0.95,
+          "trace_batches": "Native named worker RPC; CPU dispatch metadata only"
+        },
+        "status": "stopped",
+        "private_numactl": {
+          "version": "2.0.19\n",
+          "deb": {
+            "name": "numactl_2.0.19-1_arm64.deb",
+            "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+            "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+            "bytes": 37936,
+            "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+          },
+          "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+          "native_bind_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "cpu_only_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+        },
+        "nccl_environment": {
+          "NCCL_DEBUG": "INFO",
+          "NCCL_DEBUG_SUBSYS": "INIT,GRAPH",
+          "NCCL_DEBUG_FILE": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/nccl-%h-%p.log"
+        },
+        "profiler_config": {
+          "profiler": "torch",
+          "torch_profiler_dir": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler",
+          "ignore_frontend": true,
+          "torch_profiler_with_stack": false,
+          "torch_profiler_record_shapes": false,
+          "torch_profiler_with_memory": false,
+          "delay_iterations": 2,
+          "warmup_iterations": 0,
+          "active_iterations": 5,
+          "max_iterations": 5
+        },
+        "server_command": [
+          "uvx",
+          "--from",
+          "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+          "--with",
+          "runai-model-streamer[s3]==0.16.1",
+          "--with",
+          "torch==2.14.1+cu132",
+          "--with",
+          "nvidia-cuda-nvcc==13.2.86",
+          "--with",
+          "nvidia-cuda-crt==13.2.86",
+          "--with",
+          "nvidia-nvvm==13.2.86",
+          "--python",
+          "3.12",
+          "--index",
+          "https://download.pytorch.org/whl/cu132",
+          "--index",
+          "https://download.pytorch.org/whl/cpu",
+          "--index-strategy",
+          "unsafe-best-match",
+          "python",
+          "-c",
+          "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+          "python",
+          "-c",
+          "import runpy\nimport sys\n\nentrypoint = sys.argv.pop(1)\nrunpy.run_path(entrypoint, run_name=\"__main__\")\n",
+          "/app/lib/marin/src/marin/inference/vllm_wheel_entrypoint.py",
+          "{\"release_tag\": \"marin-vllm-gpu-20261012-3a054c458ca8\", \"sm_targets\": [\"10.0\"], \"source_commit\": \"3a054c458ca8a32609ba2bc578c4d9b93eabb395\", \"version\": \"0.0.0.dev20261012+marin.3a054c458ca8.cu132\", \"wheel_sha256\": \"e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15\", \"wheel_url\": \"https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl\"}",
+          "serve",
+          "s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1",
+          "--trust-remote-code",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "38197",
+          "--load-format",
+          "runai_streamer",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--served-model-name",
+          "marin-community/Hero-535B-step144000",
+          "--dtype",
+          "bfloat16",
+          "--enable-expert-parallel",
+          "--max-model-len",
+          "262144",
+          "--max-num-seqs",
+          "64",
+          "--max-num-batched-tokens",
+          "2048",
+          "--gpu-memory-utilization",
+          "0.95",
+          "--enable-prompt-tokens-details",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--tensor-parallel-size",
+          "1",
+          "--pipeline-parallel-size",
+          "1",
+          "--data-parallel-size",
+          "16",
+          "--data-parallel-size-local",
+          "4",
+          "--nnodes",
+          "4",
+          "--node-rank",
+          "2",
+          "--master-addr",
+          "10.186.213.65",
+          "--master-port",
+          "36100",
+          "--device-ids",
+          "0,1,2,3",
+          "--data-parallel-address",
+          "10.186.213.65",
+          "--data-parallel-rpc-port",
+          "36101",
+          "--data-parallel-backend",
+          "mp",
+          "--headless",
+          "--seed",
+          "42",
+          "--hf-config-path",
+          "/iris/outputs/stock16-numa2k95-agentx-profile-r2",
+          "--hf-overrides",
+          "{\"max_seq_len\": 262144, \"max_position_embeddings\": 262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\": true, \"concurrency\": 8, \"memory_limit\": 2147483648}",
+          "--kernel-config",
+          "{\"moe_backend\": \"triton\"}",
+          "--enable-prefix-caching",
+          "--numa-bind",
+          "--worker-extension-cls",
+          "tiny_graph_probe.BatchTraceWorkerExtension",
+          "--profiler-config",
+          "{\"profiler\": \"torch\", \"torch_profiler_dir\": \"/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler\", \"ignore_frontend\": true, \"torch_profiler_with_stack\": false, \"torch_profiler_record_shapes\": false, \"torch_profiler_with_memory\": false, \"delay_iterations\": 2, \"warmup_iterations\": 0, \"active_iterations\": 5, \"max_iterations\": 5}"
+        ],
+        "finished_unix": 1793389756.726062
+      }
+    },
+    {
+      "host": 3,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/host-3/outputs-0cfad2b86ebf63850b33a63a4364b2a101bb9db35f810a3af312b955e8704921.tar.zst",
+      "sha256": "0cfad2b86ebf63850b33a63a4364b2a101bb9db35f810a3af312b955e8704921",
+      "readback_sha256": "0cfad2b86ebf63850b33a63a4364b2a101bb9db35f810a3af312b955e8704921",
+      "bytes": 18711571,
+      "diagnostic": {
+        "source": {
+          "kind": "research",
+          "repository": "marin-community/marin-logbooks",
+          "parent_commit": "0fe0b74137f5851214042566d2d52a37fbda085c",
+          "experiment": "stock16-numa2k95-agentx-profile-r2",
+          "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+        },
+        "script_sha256": "09e02c76be6e06f704e0cb6e5005ce97897678f3eed6f2c8570fae16373f3009",
+        "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+        "iris_bundle_id": "04b76d0ceeb2283feff4d79e81d92c8599eaeac9d4cc521e40771172b4ba8638",
+        "iris_task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/3:0",
+        "iris_attempt_uid": "aacb3c7277f9bf25",
+        "iris_node_name": "s3jtxs64",
+        "worker_pid": 12410,
+        "started_unix": 1793386226.8000746,
+        "requested_parallelism": {
+          "tp": 1,
+          "pp": 1,
+          "dp": 16,
+          "ep": 16
+        },
+        "physical_gpus": 16,
+        "profiler_configured": true,
+        "overrides": {
+          "prefix_cache": true,
+          "max_batched_tokens": 2048,
+          "max_num_seqs": null,
+          "moe_backend": "triton",
+          "all2all_backend": null,
+          "numa_bind": true,
+          "api_server_count": null,
+          "master_port": 36100,
+          "gpu_memory_utilization": 0.95,
+          "trace_batches": "Native named worker RPC; CPU dispatch metadata only"
+        },
+        "status": "stopped",
+        "private_numactl": {
+          "version": "2.0.19\n",
+          "deb": {
+            "name": "numactl_2.0.19-1_arm64.deb",
+            "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+            "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+            "bytes": 37936,
+            "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+          },
+          "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+          "native_bind_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "cpu_only_probe": {
+            "returncode": 0,
+            "stderr": ""
+          },
+          "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+        },
+        "nccl_environment": {
+          "NCCL_DEBUG": "INFO",
+          "NCCL_DEBUG_SUBSYS": "INIT,GRAPH",
+          "NCCL_DEBUG_FILE": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/nccl-%h-%p.log"
+        },
+        "profiler_config": {
+          "profiler": "torch",
+          "torch_profiler_dir": "/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler",
+          "ignore_frontend": true,
+          "torch_profiler_with_stack": false,
+          "torch_profiler_record_shapes": false,
+          "torch_profiler_with_memory": false,
+          "delay_iterations": 2,
+          "warmup_iterations": 0,
+          "active_iterations": 5,
+          "max_iterations": 5
+        },
+        "server_command": [
+          "uvx",
+          "--from",
+          "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+          "--with",
+          "runai-model-streamer[s3]==0.16.1",
+          "--with",
+          "torch==2.14.1+cu132",
+          "--with",
+          "nvidia-cuda-nvcc==13.2.86",
+          "--with",
+          "nvidia-cuda-crt==13.2.86",
+          "--with",
+          "nvidia-nvvm==13.2.86",
+          "--python",
+          "3.12",
+          "--index",
+          "https://download.pytorch.org/whl/cu132",
+          "--index",
+          "https://download.pytorch.org/whl/cpu",
+          "--index-strategy",
+          "unsafe-best-match",
+          "python",
+          "-c",
+          "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+          "python",
+          "-c",
+          "import runpy\nimport sys\n\nentrypoint = sys.argv.pop(1)\nrunpy.run_path(entrypoint, run_name=\"__main__\")\n",
+          "/app/lib/marin/src/marin/inference/vllm_wheel_entrypoint.py",
+          "{\"release_tag\": \"marin-vllm-gpu-20261012-3a054c458ca8\", \"sm_targets\": [\"10.0\"], \"source_commit\": \"3a054c458ca8a32609ba2bc578c4d9b93eabb395\", \"version\": \"0.0.0.dev20261012+marin.3a054c458ca8.cu132\", \"wheel_sha256\": \"e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15\", \"wheel_url\": \"https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl\"}",
+          "serve",
+          "s3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1",
+          "--trust-remote-code",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "38197",
+          "--load-format",
+          "runai_streamer",
+          "--tokenizer",
+          "marin-community/marin-tokenizer",
+          "--tokenizer-revision",
+          "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+          "--served-model-name",
+          "marin-community/Hero-535B-step144000",
+          "--dtype",
+          "bfloat16",
+          "--enable-expert-parallel",
+          "--max-model-len",
+          "262144",
+          "--max-num-seqs",
+          "64",
+          "--max-num-batched-tokens",
+          "2048",
+          "--gpu-memory-utilization",
+          "0.95",
+          "--enable-prompt-tokens-details",
+          "--reasoning-parser",
+          "grug",
+          "--enable-auto-tool-choice",
+          "--tool-call-parser",
+          "hermes",
+          "--tensor-parallel-size",
+          "1",
+          "--pipeline-parallel-size",
+          "1",
+          "--data-parallel-size",
+          "16",
+          "--data-parallel-size-local",
+          "4",
+          "--nnodes",
+          "4",
+          "--node-rank",
+          "3",
+          "--master-addr",
+          "10.186.213.65",
+          "--master-port",
+          "36100",
+          "--device-ids",
+          "0,1,2,3",
+          "--data-parallel-address",
+          "10.186.213.65",
+          "--data-parallel-rpc-port",
+          "36101",
+          "--data-parallel-backend",
+          "mp",
+          "--headless",
+          "--seed",
+          "42",
+          "--hf-config-path",
+          "/iris/outputs/stock16-numa2k95-agentx-profile-r2",
+          "--hf-overrides",
+          "{\"max_seq_len\": 262144, \"max_position_embeddings\": 262144}",
+          "--load-format",
+          "runai_streamer",
+          "--model-loader-extra-config",
+          "{\"distributed\": true, \"concurrency\": 8, \"memory_limit\": 2147483648}",
+          "--kernel-config",
+          "{\"moe_backend\": \"triton\"}",
+          "--enable-prefix-caching",
+          "--numa-bind",
+          "--worker-extension-cls",
+          "tiny_graph_probe.BatchTraceWorkerExtension",
+          "--profiler-config",
+          "{\"profiler\": \"torch\", \"torch_profiler_dir\": \"/iris/outputs/stock16-numa2k95-agentx-profile-r2/torch-profiler\", \"ignore_frontend\": true, \"torch_profiler_with_stack\": false, \"torch_profiler_record_shapes\": false, \"torch_profiler_with_memory\": false, \"delay_iterations\": 2, \"warmup_iterations\": 0, \"active_iterations\": 5, \"max_iterations\": 5}"
+        ],
+        "finished_unix": 1793389767.781757
+      }
+    }
+  ],
+  "raw_host_archive_total_bytes": 87010430,
+  "sealed_trace_archives": [
+    {
+      "host": 0,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/traces/host-0/sealed-traces-a0f22b376e2ba8903f328aa1fb3f6aa00eefb24c90819beaa1946449549c1de3.tar.zst",
+      "sha256": "a0f22b376e2ba8903f328aa1fb3f6aa00eefb24c90819beaa1946449549c1de3",
+      "readback_sha256": "a0f22b376e2ba8903f328aa1fb3f6aa00eefb24c90819beaa1946449549c1de3",
+      "bytes": 17798773,
+      "traces": [
+        {
+          "name": "dp0_pp0_tp0_dcp0_ep0_rank0.1793388806331212907.pt.trace.json.gz",
+          "bytes": 4957592,
+          "sha256": "3025f64e629ff1b3622a1c2939c29febcaddfdcab03529d1cbfb5afd71bf159f",
+          "gpu_kernel_count": 20198,
+          "event_count": 252222,
+          "written_unix": 1793388809.531859
+        },
+        {
+          "name": "dp1_pp0_tp0_dcp0_ep1_rank0.1793388806307527555.pt.trace.json.gz",
+          "bytes": 4661696,
+          "sha256": "e9d92cf0652f0381b00306ae6505d62e0da259b83c2677e5706be66da91cf108",
+          "gpu_kernel_count": 19842,
+          "event_count": 240352,
+          "written_unix": 1793388809.3858583
+        },
+        {
+          "name": "dp2_pp0_tp0_dcp0_ep2_rank0.1793388806286536903.pt.trace.json.gz",
+          "bytes": 4659157,
+          "sha256": "1991334e611280a1a2b61a3afbd84c77836f48957a73519fe7ec859a1ab949da",
+          "gpu_kernel_count": 19840,
+          "event_count": 240312,
+          "written_unix": 1793388809.3248582
+        },
+        {
+          "name": "dp3_pp0_tp0_dcp0_ep3_rank0.1793388806284238205.pt.trace.json.gz",
+          "bytes": 4668854,
+          "sha256": "8231f19dcd1103acdf6aabf2a3e177b5ac7657c028b0113e2a9c7bc83ea8b257",
+          "gpu_kernel_count": 19840,
+          "event_count": 240310,
+          "written_unix": 1793388809.3388581
+        }
+      ],
+      "scope": "Sealed native five-step traces with gzip/JSON and positive GPU kernel checks. The900-second diagnostic replay is not a full-hour throughput point."
+    },
+    {
+      "host": 1,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/traces/host-1/sealed-traces-c128a323a476352b128c3c401dd120c048d16f812f3d8341617dd0208c8120b3.tar.zst",
+      "sha256": "c128a323a476352b128c3c401dd120c048d16f812f3d8341617dd0208c8120b3",
+      "readback_sha256": "c128a323a476352b128c3c401dd120c048d16f812f3d8341617dd0208c8120b3",
+      "bytes": 17303288,
+      "traces": [
+        {
+          "name": "dp4_pp0_tp0_dcp0_ep4_rank0.1793388806306374329.pt.trace.json.gz",
+          "bytes": 4628268,
+          "sha256": "fd3ccefff0abc0a63d1ded81f13bbc289df33d004152a5f98eae00b947c954ee",
+          "gpu_kernel_count": 19842,
+          "event_count": 240418,
+          "written_unix": 1793388809.3132448
+        },
+        {
+          "name": "dp5_pp0_tp0_dcp0_ep5_rank0.1793388806302284534.pt.trace.json.gz",
+          "bytes": 4631845,
+          "sha256": "c0b27a893cf87bb38d0fce78af73870615b906adeec876799e39afb92b94af67",
+          "gpu_kernel_count": 19842,
+          "event_count": 240368,
+          "written_unix": 1793388809.304245
+        },
+        {
+          "name": "dp6_pp0_tp0_dcp0_ep6_rank0.1793388806286332265.pt.trace.json.gz",
+          "bytes": 4674482,
+          "sha256": "879757d7ca656851ba92a41cfdafc0366dd0ca8844a87fa3c0d7696c1fdfc50b",
+          "gpu_kernel_count": 19847,
+          "event_count": 242346,
+          "written_unix": 1793388809.302245
+        },
+        {
+          "name": "dp7_pp0_tp0_dcp0_ep7_rank0.1793388806274395328.pt.trace.json.gz",
+          "bytes": 4513404,
+          "sha256": "b27357ad68c371a1b3dfe62baa014e94962465252a912b0022d661dffe8150f3",
+          "gpu_kernel_count": 18646,
+          "event_count": 235198,
+          "written_unix": 1793388809.1752448
+        }
+      ],
+      "scope": "Sealed native five-step traces with gzip/JSON and positive GPU kernel checks. The900-second diagnostic replay is not a full-hour throughput point."
+    },
+    {
+      "host": 2,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/traces/host-2/sealed-traces-5fd621690aea796b56aff527c38b43b95777331e9e27e41de5a576f5cdd7860d.tar.zst",
+      "sha256": "5fd621690aea796b56aff527c38b43b95777331e9e27e41de5a576f5cdd7860d",
+      "readback_sha256": "5fd621690aea796b56aff527c38b43b95777331e9e27e41de5a576f5cdd7860d",
+      "bytes": 17382196,
+      "traces": [
+        {
+          "name": "dp10_pp0_tp0_dcp0_ep10_rank0.1793388806288876573.pt.trace.json.gz",
+          "bytes": 4688104,
+          "sha256": "29a4ea51aa211e5548969ca2aca5d1743b2e831e61176e27000f19e069cfc99b",
+          "gpu_kernel_count": 19627,
+          "event_count": 243102,
+          "written_unix": 1793388809.2548425
+        },
+        {
+          "name": "dp11_pp0_tp0_dcp0_ep11_rank0.1793388806295602497.pt.trace.json.gz",
+          "bytes": 4584788,
+          "sha256": "af2f60c9c938f13f4a9bdda279b8601a91860de848208ea33914b1187d75e24d",
+          "gpu_kernel_count": 19842,
+          "event_count": 240366,
+          "written_unix": 1793388809.2658427
+        },
+        {
+          "name": "dp8_pp0_tp0_dcp0_ep8_rank0.1793388806308430184.pt.trace.json.gz",
+          "bytes": 4635952,
+          "sha256": "890c89e25c5d6cdd124e6c8f8cfbd2a083bbfcb8dd83f15a7051b9a4f5a104ad",
+          "gpu_kernel_count": 19842,
+          "event_count": 240368,
+          "written_unix": 1793388809.2738426
+        },
+        {
+          "name": "dp9_pp0_tp0_dcp0_ep9_rank0.1793388806309913224.pt.trace.json.gz",
+          "bytes": 4681986,
+          "sha256": "9cb522dd366e8e305cd2cba6c3c753b947be38165f7a3f3efff4277ba1a242c1",
+          "gpu_kernel_count": 19847,
+          "event_count": 242332,
+          "written_unix": 1793388809.3268425
+        }
+      ],
+      "scope": "Sealed native five-step traces with gzip/JSON and positive GPU kernel checks. The900-second diagnostic replay is not a full-hour throughput point."
+    },
+    {
+      "host": 3,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-agentx-profile-r2/traces/host-3/sealed-traces-93b504aaeacdf9e57c7852d96c22e13543aec671398ec37be8982384f21906f7.tar.zst",
+      "sha256": "93b504aaeacdf9e57c7852d96c22e13543aec671398ec37be8982384f21906f7",
+      "readback_sha256": "93b504aaeacdf9e57c7852d96c22e13543aec671398ec37be8982384f21906f7",
+      "bytes": 17357114,
+      "traces": [
+        {
+          "name": "dp12_pp0_tp0_dcp0_ep12_rank0.1793388806309405159.pt.trace.json.gz",
+          "bytes": 4649808,
+          "sha256": "7588c1c473a9e35c91fa83c8b508118f01a824e22220e16e442a3cf4e634b268",
+          "gpu_kernel_count": 19847,
+          "event_count": 242330,
+          "written_unix": 1793388809.269582
+        },
+        {
+          "name": "dp13_pp0_tp0_dcp0_ep13_rank0.1793388806311766888.pt.trace.json.gz",
+          "bytes": 4600272,
+          "sha256": "1bdd751888efab669a5bf30500225775270b3a24cfc0720cf560c546c8ed424d",
+          "gpu_kernel_count": 19840,
+          "event_count": 240312,
+          "written_unix": 1793388809.2255821
+        },
+        {
+          "name": "dp14_pp0_tp0_dcp0_ep14_rank0.1793388806299452071.pt.trace.json.gz",
+          "bytes": 4566880,
+          "sha256": "4395bcc1b251b32bf417532b73ec22e7ec62e2ae1b1438f9bc3c5a016ef91166",
+          "gpu_kernel_count": 19842,
+          "event_count": 240352,
+          "written_unix": 1793388809.1925821
+        },
+        {
+          "name": "dp15_pp0_tp0_dcp0_ep15_rank0.1793388806297866279.pt.trace.json.gz",
+          "bytes": 4560776,
+          "sha256": "7c7490fab50217e6ba4b979dbcc97ef6dccadc9e51fb3d0c7c6e6ef5e26aea9d",
+          "gpu_kernel_count": 19840,
+          "event_count": 240312,
+          "written_unix": 1793388809.175582
+        }
+      ],
+      "scope": "Sealed native five-step traces with gzip/JSON and positive GPU kernel checks. The900-second diagnostic replay is not a full-hour throughput point."
+    }
+  ],
+  "sealed_trace_archive_total_bytes": 69841371,
+  "trace_count": 16,
+  "trace_summary_file": "stock16-agentx-profile-r2-traces.json",
+  "dispatch_metadata": {
+    "scope": "CPU dispatch metadata from after scoring begins through diagnostic finish, not GPU time or the five-step trace interval. Different row counts across ranks reflect install/stop edges; global vectors use rank0 only.",
+    "rows_per_rank": {
+      "0": 3768,
+      "1": 3768,
+      "2": 3768,
+      "3": 3767,
+      "4": 3768,
+      "5": 3768,
+      "6": 3768,
+      "7": 3767,
+      "10": 3767,
+      "11": 3767,
+      "8": 3767,
+      "9": 3768,
+      "12": 3768,
+      "13": 3768,
+      "14": 3767,
+      "15": 3768
+    },
+    "global_vector_useful_rows": 34003077,
+    "global_max_times16_rows": 115432080,
+    "max_padding_over_sum_ratio": 3.3947539512380014,
+    "trace_context_annotations": [
+      {
+        "rank": 0,
+        "contexts": [
+          {
+            "name": "execute_context_1(2032)_generation_5(5)",
+            "count": 2,
+            "total_microseconds": 740056.108
+          },
+          {
+            "name": "execute_context_1(2)_generation_5(5)",
+            "count": 1,
+            "total_microseconds": 359315.719
+          },
+          {
+            "name": "execute_context_1(1488)_generation_5(5)",
+            "count": 1,
+            "total_microseconds": 354027.376
+          },
+          {
+            "name": "execute_context_0(0)_generation_6(6)",
+            "count": 1,
+            "total_microseconds": 308102.054
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 32259.309999999998
+          }
+        ]
+      },
+      {
+        "rank": 1,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_3(3)",
+            "count": 5,
+            "total_microseconds": 1759843.394
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 252643.53900000002
+          }
+        ]
+      },
+      {
+        "rank": 2,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_3(3)",
+            "count": 5,
+            "total_microseconds": 1757561.9780000001
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 264795.78500000003
+          }
+        ]
+      },
+      {
+        "rank": 3,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_7(7)",
+            "count": 5,
+            "total_microseconds": 1756806.358
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 272353.323
+          }
+        ]
+      },
+      {
+        "rank": 4,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_5(5)",
+            "count": 5,
+            "total_microseconds": 1769559.916
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 236383.414
+          }
+        ]
+      },
+      {
+        "rank": 5,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_5(5)",
+            "count": 5,
+            "total_microseconds": 1774591.6630000002
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 272399.314
+          }
+        ]
+      },
+      {
+        "rank": 6,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_2(2)",
+            "count": 5,
+            "total_microseconds": 1769198.091
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 318062.804
+          }
+        ]
+      },
+      {
+        "rank": 7,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_9(9)",
+            "count": 5,
+            "total_microseconds": 1767416.7140000002
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 340862.053
+          }
+        ]
+      },
+      {
+        "rank": 10,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_1(1)",
+            "count": 4,
+            "total_microseconds": 1418489.5890000002
+          },
+          {
+            "name": "execute_context_1(2032)_generation_1(1)",
+            "count": 1,
+            "total_microseconds": 398306.069
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 238380.35
+          }
+        ]
+      },
+      {
+        "rank": 11,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_4(4)",
+            "count": 5,
+            "total_microseconds": 1767343.5690000001
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 304609.7
+          }
+        ]
+      },
+      {
+        "rank": 8,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_3(3)",
+            "count": 5,
+            "total_microseconds": 1770056.755
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 252713.158
+          }
+        ]
+      },
+      {
+        "rank": 9,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_2(2)",
+            "count": 5,
+            "total_microseconds": 1768212.9759999998
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 258116.331
+          }
+        ]
+      },
+      {
+        "rank": 12,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_2(2)",
+            "count": 5,
+            "total_microseconds": 1758967.1539999999
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 247822.67200000002
+          }
+        ]
+      },
+      {
+        "rank": 13,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_3(3)",
+            "count": 5,
+            "total_microseconds": 1759711.0899999999
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 211403.469
+          }
+        ]
+      },
+      {
+        "rank": 14,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_4(4)",
+            "count": 5,
+            "total_microseconds": 1762931.378
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 172860.204
+          }
+        ]
+      },
+      {
+        "rank": 15,
+        "contexts": [
+          {
+            "name": "execute_context_0(0)_generation_4(4)",
+            "count": 5,
+            "total_microseconds": 1757524.7210000001
+          },
+          {
+            "name": "gloo:all_reduce",
+            "count": 5,
+            "total_microseconds": 222524.84600000002
+          }
+        ]
+      }
+    ]
+  },
+  "interpretation": [
+    "All16gzip traces parse and contain positive GPU kernel counts.",
+    "DP0 GPU interval window is1809.33ms, including1045.54ms with no recorded GPU work and385.97ms NCCL-only. Most other ranks spend roughly1.47-1.49s in NCCL-only intervals over roughly1.8s.",
+    "DP0 has mixed prefill and decode while most ranks have decode-only annotations in the5step capture. This is consistent with rank waiting; neither the cause of each gap nor a transfer bandwidth ceiling is established.",
+    "CPU dispatch metadata over the separate diagnostic is uneven across ranks. The max-token-count-times16 versus summed-token-count ratio is3.39475; this is a shape calculation, not measured wasted FLOPs or communication time."
+  ]
+}
