@@ -20,8 +20,10 @@ from dataclasses import replace
 from pathlib import Path
 
 import torch
+from native_shortconv_probe import install_forward
 from vllm import LLM, SamplingParams
 from vllm.config import CompilationConfig, CUDAGraphMode
+from vllm.model_executor.models import grugmoe
 
 
 def pad_reference_dispatch(result, capture_sizes: list[int]):
@@ -117,11 +119,33 @@ def cache_storage(worker) -> dict:
     return record
 
 
+def set_shortconv_reference(worker, source: str = "", sha256: str = "") -> dict:
+    """Select a diagnostic implementation outside the captured graph segments."""
+    config = worker.vllm_config.compilation_config
+    assert config.cudagraph_mode == CUDAGraphMode.PIECEWISE
+    assert "vllm::grug_moe_short_conv" in config.splitting_ops
+    assert hashlib.sha256(Path(grugmoe.__file__).read_bytes()).hexdigest() == (
+        "78563576172625505820fb2aa2a19b4ee8e8f112d6435cd2bdafb6db311311b8"
+    )
+    if not hasattr(worker, "hero_shortconv_original"):
+        worker.hero_shortconv_original = grugmoe.GrugMoeShortConv.forward_impl
+    if source:
+        install_forward(Path(source), sha256)
+    else:
+        grugmoe.GrugMoeShortConv.forward_impl = worker.hero_shortconv_original
+    record = {"unix": time.time(), "dp_rank": worker.parallel_config.data_parallel_rank, "source_sha256": sha256}
+    path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"shortconv-reference-dp{record['dp_rank']}.jsonl"
+    with path.open("a") as stream:
+        stream.write(json.dumps(record) + "\n")
+    return record
+
+
 class BatchTraceWorkerExtension:
     install_hero_batch_trace = install_batch_trace
     take_hero_batch_trace = take_batch_trace
     stop_hero_batch_trace = stop_batch_trace
     hero_cache_storage = cache_storage
+    set_hero_shortconv_reference = set_shortconv_reference
 
 
 def main() -> None:

@@ -76,6 +76,46 @@ def main() -> None:
             row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
             for row in checks["comparisons"]
         )
+    if method := manifest.get("diagnostic_request", {}).get("shortconv_reference"):
+        assert manifest["diagnostic_request"]["numerics_only"] is True
+        assert manifest["diagnostic_request"]["trace_batches"] is True
+        base_url = "http://127.0.0.1:38197"
+        batch_trace(base_url, "set_hero_shortconv_reference", [method["path"], method["sha256"]])
+        try:
+            candidate = probe.copy()
+            candidate[candidate.index("--output") + 1] = str(args.output / "cache-probe-shortconv-direct")
+            candidate += ["--compare-to", str(args.output / "cache-probe-matched")]
+            run_logged(candidate, dict(os.environ), args.output / "shortconv-direct.log", timeout=900)
+        finally:
+            batch_trace(base_url, "set_hero_shortconv_reference")
+        restored = probe.copy()
+        restored[restored.index("--output") + 1] = str(args.output / "cache-probe-shortconv-restored")
+        restored += ["--compare-to", str(args.output / "cache-probe-matched")]
+        run_logged(restored, dict(os.environ), args.output / "shortconv-restored.log", timeout=900)
+        for phase in ("cache-probe-shortconv-direct", "cache-probe-shortconv-restored"):
+            checks = json.loads((args.output / phase / "comparison.json").read_text())["comparisons"]
+            cross = json.loads((args.output / phase / "cross-comparison.json").read_text())
+            assert len(checks) == 8 and len(cross) == 10
+            assert all(
+                row["same_tokens"]
+                and row["finite_logprobs"]
+                and row["max_shared_logprob_absolute_delta"] == 0
+                and row["minimum_topk_overlap"] == 20
+                and row["matching_token_prefix"] == 16
+                for row in checks
+            )
+            assert all(
+                row["same_global_shapes"]
+                and all(
+                    choice["same_tokens"]
+                    and choice["finite_logprobs"]
+                    and choice["max_shared_logprob_absolute_delta"] == 0
+                    and choice["minimum_topk_overlap"] == 20
+                    and choice["matching_token_prefix"] == 16
+                    for choice in row["choices"]
+                )
+                for row in cross
+            )
     if manifest.get("diagnostic_request", {}).get("numerics_only"):
         print("NATIVE_NUMERICAL_CONTROL_DONE", flush=True)
         return
