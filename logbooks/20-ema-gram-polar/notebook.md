@@ -411,6 +411,55 @@ The baseline continues: at 20:56 UTC its API snapshot reaches step 4302 and
 results, not a completed pilot. The report compatibility fix `af94166ce` passed
 all 39 CI checks (passed/skipped, none failed/pending) at 20:35:34 UTC.
 
+### 2026-10-30 21:18 UTC — Quarter-power pilot fails at the host-memory limit
+
+The quarter-power child failed at 21:02:45 UTC with exit code 137. Iris reports
+`OOM killed (container exceeded memory limit)`, and the task log records a
+kernel OOM kill. W&B marks its fresh run as crashed at logged step 7, with
+262,144 tokens and finite loss 12.168434. The bounded checkpoint-log query
+returned no saved checkpoint. No checkpoint restoration is established.
+`quarter-oom.json` preserves the controller, W&B and telemetry evidence.
+
+The `marin` Finelog query over `iris.task` for 20:40–21:05 UTC returned 189
+samples for attempt 0 through 21:02:37 UTC, with observed peak host memory
+62.9296875 GiB against a 64 GiB reservation. Accelerator-memory telemetry is
+null. Samples were around 44 GiB during steps 1–7; the sampled peak rose near
+the kill. The last emitted artifact was `train_step.hlo.txt`; that proximity
+does not establish the cause of the later memory spike. The planned trace at
+steps 100–109 and the first validation were never reached.
+
+Contribution `d19131429` raises future reservations to 128 GiB, uniform across
+variants. A same-version comparison of the quarter-power resolved config
+changes only `resources.ram` from `64g` to `128g`. Fifteen experiment tests and
+lint/type checks pass. This provides headroom but has not been validated by
+execution. The current baseline keeps its original reservation and continues:
+at 21:13 UTC W&B recorded step 6146, 201,424,896 tokens and latest C4 English
+validation loss 4.237224. No training advantage is claimed.
+
+The prepared recovery uses the unchanged `quarter-pilot.json` plan with
+version `2026.10.30.23` and a new coordinator name. The updated launcher sets
+the TPU training child to 128 GiB; `--memory 2GB` below reserves memory only
+for the CPU coordinator. `quarter-pilot-128g-resolved.json` is the dry-run
+output of that plan and launcher. It preserves alpha=1/4, LR=0.002,
+ridge=1e-4, seed=0, full spectral powers, 7,630 steps, online W&B and native
+preemption retries. It would start a fresh process and W&B run. The existing
+200 GiB and 128 GiB canceled baseline requests remain terminal.
+
+Recovery is not submitted. The use-iris monitoring reference says to stop for
+OOM/HBM failures; obtain the user's decision on this prepared recovery before
+launch. Continue baseline completion checks and PR monitoring in the meantime.
+
+```bash
+uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
+  --job-name ema-gram-20-quarter-pilot-128g-20261030 --priority batch \
+  --cpu 1 --memory 2GB --region us-central2 --extra cpu \
+  --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit \
+  -e GIT_COMMIT "$(git rev-parse HEAD)" \
+  -- python -m experiments.ema_gram.train \
+  --plan logbooks/20-ema-gram-polar/quarter-pilot.json \
+  --version 2026.10.30.23 --output /tmp/ema-gram-quarter-128g-resolved.json --run
+```
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
