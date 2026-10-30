@@ -193,6 +193,43 @@ At 18:48 UTC the child was pending with scheduler reason
 step is established. Retain the queued job; this is capacity wait, not an
 application failure or authorization to alter cluster policy.
 
+### 2026-10-30 19:08 UTC — Fit the pilot into available host memory
+
+A full scheduler diagnostic distinguished the capacity constraints:
+179 matching workers had no free TPU chips, and one had free chips but only
+158.5 GiB of host RAM available against the 200 GiB request. The autoscaler
+reported two matching groups blocked by quota-pool tier monotonicity. Keep the
+batch priority and quota policy unchanged. The source of the 200 GiB request
+is Fray's generic 50%-of-host TPU reservation, not a measured requirement of
+this model.
+
+Reduce the common host-memory reservation to 128 GiB, retaining v4-8, 120 CPU
+cores and the same TPU HBM. Actual host peak memory remains unmeasured; inspect
+it when the worker runs. The data loader has bounded prefetching. This is a
+reservation adjustment, not a change to batch size, precision, architecture,
+optimizer, input data, schedule or evaluation. All 30 resolved pilot configs
+were compared at the same version before and after the change: only
+`resources.ram` changed from `200g` to `128g`; the remote submission resource
+matches the config. All 14 experiment tests and lint/type checks pass.
+
+At 19:07:40 UTC the original TPU child remained pending with no task attempts
+or assigned worker. Replace that never-started request with a fresh coordinator
+and version `2026.10.30.21`, preserving the old artifact identity and record.
+Recheck that it is still pending immediately before replacement. If it has
+started, retain that running job instead. No GPU allocation is involved.
+The new resolved configuration is `first-pilot-128g-resolved.json`.
+
+```bash
+uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
+  --job-name ema-gram-20-first-pilot-128g-20261030 --priority batch \
+  --cpu 1 --memory 2GB --region us-central2 --extra cpu \
+  --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit \
+  -e GIT_COMMIT "$(git rev-parse HEAD)" \
+  -- python -m experiments.ema_gram.train \
+  --plan logbooks/20-ema-gram-polar/first-pilot.json \
+  --version 2026.10.30.21 --output /tmp/ema-gram-resolved.json --run
+```
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
