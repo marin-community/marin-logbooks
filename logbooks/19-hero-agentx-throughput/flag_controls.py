@@ -41,6 +41,24 @@ def main() -> None:
         source = Path(hf_hub_download(lineage["tokenizer"], name, revision=lineage["tokenizer_revision"]))
         assert hashlib.sha256(source.read_bytes()).hexdigest() == digest
         shutil.copyfile(source, tokenizer / name)
+    if manifest.get("diagnostic_request", {}).get("router_binding_probe"):
+        run_logged(
+            [
+                *prefix,
+                "python",
+                str(Path(__file__).with_name("router_binding_gpu_probe.py")),
+                "--manifest",
+                str(args.manifest),
+                "--tokenizer",
+                str(tokenizer / "tokenizer.json"),
+                "--output",
+                str(args.output / "router-binding-probe"),
+            ],
+            dict(os.environ),
+            args.output / "router-binding-probe.log",
+            timeout=1800,
+        )
+        return
     probe = [
         *prefix,
         "python",

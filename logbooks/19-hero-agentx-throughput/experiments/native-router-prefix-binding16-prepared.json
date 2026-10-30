@@ -1,0 +1,196 @@
+{
+  "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+  "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+  "profile": "gb200",
+  "concurrency": 128,
+  "vllm_release": {
+    "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+    "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+      },
+      {
+        "architecture": "x86_64",
+        "sm_targets": [
+          "9.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+      }
+    ],
+    "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+  },
+  "workload": {
+    "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+    "recipe": {
+      "version": 1,
+      "inputs": {
+        "model": "marin-community/Hero-535B-step144000",
+        "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+        "harness_version": "1.0.12",
+        "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+        "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+        "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+        "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+        "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+        "sessions": 393,
+        "max_context": 262144,
+        "random_seed": 42,
+        "trace_idle_gap_cap_seconds": 300,
+        "tokenizer": "marin-community/marin-tokenizer",
+        "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+      },
+      "code_sha256": {
+        "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+        "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    },
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/agentx-workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+    "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+    "archive_bytes": 166033271,
+    "lineage": {
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "filtered_sessions": 0,
+      "tokenizer": "marin-community/marin-tokenizer",
+      "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "tokenizer_files": {
+        ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+        "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+        "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+        "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+        "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+        "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+      },
+      "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+      "native_manifest_version": 26,
+      "conversations": 9602,
+      "turns": 68266,
+      "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+      "preparation_version": 1,
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "preparation_seconds": 233.21300347405486,
+      "peak_memory_kib": 9010624
+    },
+    "cache_status": "hit"
+  },
+  "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-392-US-EAST-08A",
+    "nodes": [
+      "s1mwxs64",
+      "s3bsxs64",
+      "s3jtxs64",
+      "s4lqxs64",
+      "s62pys64",
+      "s6xvxs64",
+      "s7dk6j84",
+      "s90vxs64",
+      "s9rrxs64",
+      "s9vrxs64",
+      "sbnwxs64",
+      "sdmtxs64",
+      "sfdqxs64",
+      "sj1txs64",
+      "sj9wxs64",
+      "sjtsxs64"
+    ],
+    "verified_utc": "2026-10-30T00:23:10.686454+00:00",
+    "inventory_sha256": "009d08cf9f211ef6cdff622ab8dfc9900a50d9a97e95d8370d4c9846bdc53104",
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-graph16-reference-admission.json",
+    "hero_training_gpus": 0,
+    "other_gpus": 32,
+    "neighbor_activity": "A separate released-wheel 16-GPU C256 full hour runs on disjoint nodes in spare rack 392. Shared fabric and storage; no GPU profiler. Pretraining remains outside the rack."
+  },
+  "source": {
+    "kind": "research",
+    "repository": "marin-community/marin-logbooks",
+    "parent_commit": "c4029b20389b3ffc06651f39990be91362e1b960",
+    "experiment": "native-router-prefix-binding16-prepared",
+    "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+  },
+  "diagnostic_request": {
+    "budget": 2048,
+    "moe_backend": "triton",
+    "prefix_cache": true,
+    "run_controls": true,
+    "pipeline_stages": 1,
+    "data_parallel_size": 16,
+    "expert_parallel_size": 16,
+    "trace_batches": true,
+    "prefetch_flashinfer_headers": true,
+    "numa_bind": true,
+    "gpu_memory_utilization": 0.95,
+    "numerics_only": true,
+    "router_binding_probe": true,
+    "scope": "Released BF16 vLLM, native NONE graph guard, 2K/NUMA/memory0.95. Ten fixed-output chat cases with different X-Session-IDs, two marked trees and forced-owner cold references. Native worker RPC writes all sixteen KV storage records. No GPU profiler or accepted AgentX rate."
+  },
+  "purpose": "Prepared fixed-output native chat routing/numerical control, not an AgentX throughput measurement. Refresh placement from live inventory and commit before execution.",
+  "numerical_comparison": "Compare all ten routed choices and top20 logprobs exactly against a cold reference forced to the observed physical DP owner in the same live model. Reuse unchanged native cache/state controls.",
+  "numactl_input": {
+    "version": "2.0.19\n",
+    "deb": {
+      "name": "numactl_2.0.19-1_arm64.deb",
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+      "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+      "bytes": 37936,
+      "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+    },
+    "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+    "native_bind_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "cpu_only_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+  },
+  "value_hypothesis": {
+    "bottleneck": "Different conversation IDs can hash shared root-tree prefixes to different physical cache owners. Ordinary Router cache_aware receives no prompt text on the pinned chat path.",
+    "evidence": "Across the pinned source corpus, 3338 context starts share at least 65,536 first-user content characters with a different conversation in their root tree; cache availability and end-to-end benefit remain unmeasured. Both architectures pass the released Router binding-only CPU tests.",
+    "cheapest_next_check": "This isolated fixed-history GPU owner/cache/numerical probe. If it passes, compare full pinned AgentX at the load chosen from current C128/C256 results.",
+    "cost": "Four existing optional Router settings and one research launcher option, on the same pinned package. Reuse native branch/state references; add different-ID chat checks. No dependency refresh or custom engine implementation.",
+    "limits": "No full Program admission, cross-rank resume or calibrated TTL scheduling is adopted. The binding-only runtime still records lifecycle state; verify retained requests and actual rank selection. No gain is assumed from source text similarity."
+  },
+  "neighbor_activity": "Prepared only. Start after the three current throughput confirmations finish, with refreshed rack/UUID checks. No GPU profiler.",
+  "router": {
+    "package": "vllm-router==0.1.16",
+    "wheel": {
+      "url": "https://files.pythonhosted.org/packages/58/47/88a65c7e8d1bf4a577bd6d8f7229fd48dc25773c184d0c1d0adf180355d8/vllm_router-0.1.16-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "be6137553ef807f0b3303194da9eb1dfdf65913ac1b8a84c4ea0a7a62683cfec",
+      "bytes": 21073924
+    },
+    "requirements_file": "requirements-router.txt",
+    "requirements_sha256": "2f45df003f1312ff85d82e841d296664d742082a46440586de381855dfb20758",
+    "backend_url": "http://127.0.0.1:38197",
+    "base_url": "http://127.0.0.1:38201",
+    "policy": "consistent_hash",
+    "data_parallel_size": 16,
+    "request_timeout_secs": 14400,
+    "disable_retries": true,
+    "session_id": "hero-agentx-router-qualification",
+    "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c",
+    "program_binding": {
+      "binding_only": true,
+      "program_scheduling_enable_key": "auto",
+      "binding_strategy": "cache_aware",
+      "token_capacity_per_dp_rank": 1000000
+    },
+    "program_binding_capacity_note": "A conservative logical capacity for initial placement, below the earlier 1135250 native effective tokens/rank for this exact serving recipe. Record all current native KV metadata and observed pressure. This does not change native GPU allocation, vLLM cache capacity or admission limits."
+  }
+}
