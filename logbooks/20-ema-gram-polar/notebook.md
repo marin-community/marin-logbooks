@@ -76,7 +76,7 @@ uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
   --sync-package marin-core --sync-package marin-levanter \
   -- python -m experiments.ema_gram.train \
   --plan logbooks/20-ema-gram-polar/first-pilot.json \
-  --version 2026.10.30-r20 --output /tmp/ema-gram-resolved.json --logging-check
+  --version 2026.10.30.20 --output /tmp/ema-gram-resolved.json --logging-check
 ```
 
 After successful remote logging validation, submit the same launcher with
