@@ -1,0 +1,747 @@
+{
+  "recorded_utc": "2026-10-30T12:13:07.837471+00:00",
+  "status": "All three groups launched; model setup in progress. No new full-hour result yet.",
+  "source_commit": "a001491c0253ff35fdf92214f028f6fe25094dfd",
+  "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-392-US-EAST-08A",
+    "nodes": [
+      "s1mwxs64",
+      "s1nrxs64",
+      "s3bsxs64",
+      "s3jtxs64",
+      "s4lqxs64",
+      "s62pys64",
+      "s6xvxs64",
+      "s7dk6j84",
+      "s90vxs64",
+      "s9rrxs64",
+      "s9vrxs64",
+      "sbnwxs64",
+      "sdmtxs64",
+      "sfdqxs64",
+      "sj1txs64",
+      "sj9wxs64",
+      "sjtsxs64"
+    ],
+    "verified_utc": "2026-10-30T12:07:09.806091+00:00",
+    "inventory_sha256": "325e6d16dd506218eececc2772801c0ccf9f32effb6e5ce6bd7050d2db4b611e",
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-resume-submit-20261030T120704Z.json",
+    "hero_training_gpus": 0,
+    "other_gpus": 0,
+    "neighbor_activity": "Planned campaign: two disjoint 16-GPU C128 groups (released NONE and graph PIECEWISE, both 2K/NUMA/memory0.95), plus one 32-GPU released-wheel C512 group (2K/default CPU/memory0.9), all in rack392. Shared rack fabric and storage. No GPU profiler during these full confirmations. Verify actual nodes, UUIDs, images and overlap after admission.",
+    "all_hero_priorities_protected": true,
+    "unique_eligible_domain": true
+  },
+  "physical_verification_utc": "2026-10-30T12:11:05.668262+00:00",
+  "total_physical_gpus": 64,
+  "interactive_gpus": 32,
+  "batch_gpus": 32,
+  "all_nodes_and_gpu_uuids_disjoint": true,
+  "actual_image_id_verified_on_all_16_hosts": true,
+  "image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+  "groups": {
+    "graph16": {
+      "job_id": "/romain/hero-agentx-graph16-numa2k95-c128-r392-resume1-01a1846a",
+      "priority": "batch",
+      "physical_gpu_count": 16,
+      "manifest": "logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router16-numa2k95-piecewise-c128.json",
+      "manifest_sha256": "878e65f5200a49d6e5dddec51c21ebb145330ac05b267804aefc7996b91a8f0d",
+      "effective_recipe_sha256": "693629599cd626e2d44a827e59ff83f3377343012e44c9726fcd176341c47cfa",
+      "concurrency": 128,
+      "runtime_overrides": {
+        "enable_prefix_caching": true,
+        "max_num_batched_tokens": 2048,
+        "master_port": 35400,
+        "session_affinity": true,
+        "prefetch_flashinfer_headers": true,
+        "numa_bind": true,
+        "gpu_memory_utilization": 0.95,
+        "candidate_receipt": "/iris/candidates/9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/receipt.json",
+        "wheel_sha256": "9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+        "source_commit": "9383b951dd7d7f4fa7801fd479490ad9915b88ce",
+        "compilation_config": {
+          "mode": 3,
+          "cudagraph_mode": "PIECEWISE",
+          "cudagraph_capture_sizes": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64
+          ],
+          "splitting_ops": [
+            "vllm::unified_attention_with_output",
+            "vllm::unified_mla_attention_with_output",
+            "vllm::mamba_mixer2",
+            "vllm::mamba_mixer",
+            "vllm::short_conv",
+            "vllm::qwen4_exp_ple_short_conv",
+            "vllm::qwen4_exp_qsa_with_output",
+            "vllm::linear_attention",
+            "vllm::qwen_gdn_attention_core",
+            "vllm::qwen_gdn_attention_core_fused_norm_packed",
+            "vllm::gdn_attention_core_xpu",
+            "vllm::olmo_hybrid_gdn_full_forward",
+            "vllm::sparse_attn_indexer",
+            "vllm::rocm_aiter_sparse_attn_indexer",
+            "vllm::deepseek_v4_attention",
+            "vllm::hpc_rope_norm_forward",
+            "vllm::unified_kv_cache_update",
+            "vllm::unified_mla_kv_cache_update",
+            "vllm::grug_moe_short_conv"
+          ]
+        }
+      },
+      "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/graph16-numa2k95-c128-resume1",
+      "attempts": [
+        {
+          "task_id": "/romain/hero-agentx-graph16-numa2k95-c128-r392-resume1-01a1846a/0",
+          "state": "running",
+          "attempt_uid": "38200dddc972551c",
+          "pod": "iris-romain-hero-agentx-graph16-num-7e59be7b-0-38200dddc972551c",
+          "node": "s1mwxs64",
+          "started_unix": 1793362171.149,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/hero-agentx-graph16-numa2k95-c128-r392-resume1-01a1846a/1",
+          "state": "running",
+          "attempt_uid": "dbbccfa22a2c09c9",
+          "pod": "iris-romain-hero-agentx-graph16-num-9d1e60d0-0-dbbccfa22a2c09c9",
+          "node": "s1nrxs64",
+          "started_unix": 1793362171.149,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/hero-agentx-graph16-numa2k95-c128-r392-resume1-01a1846a/2",
+          "state": "running",
+          "attempt_uid": "a4bc008e01ea6ae3",
+          "pod": "iris-romain-hero-agentx-graph16-num-d27c84ba-0-a4bc008e01ea6ae3",
+          "node": "s3bsxs64",
+          "started_unix": 1793362171.149,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/hero-agentx-graph16-numa2k95-c128-r392-resume1-01a1846a/3",
+          "state": "running",
+          "attempt_uid": "94363652dfd38884",
+          "pod": "iris-romain-hero-agentx-graph16-num-66bbc926-0-94363652dfd38884",
+          "node": "s3jtxs64",
+          "started_unix": 1793362171.149,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        }
+      ],
+      "nodes": [
+        "s1mwxs64",
+        "s1nrxs64",
+        "s3bsxs64",
+        "s3jtxs64"
+      ]
+    },
+    "stock16": {
+      "job_id": "/romain/hero-agentx-stock16-numa2k95-c128-r392-resume1-01a1846a",
+      "priority": "batch",
+      "physical_gpu_count": 16,
+      "manifest": "logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router16-stock-numa2k95-c128-rack392.json",
+      "manifest_sha256": "f9e9c91f93c9c871fe7196b47ff6c99485b4dfdbe4471cb5e754ba5006a44bea",
+      "effective_recipe_sha256": "a655b5b57ea7ae310f3cfa6ede0b2247175eca7dbe0fb9593980d02b2f0ebdd7",
+      "concurrency": 128,
+      "runtime_overrides": {
+        "enable_prefix_caching": true,
+        "max_num_batched_tokens": 2048,
+        "master_port": 35100,
+        "session_affinity": true,
+        "prefetch_flashinfer_headers": true,
+        "numa_bind": true,
+        "gpu_memory_utilization": 0.95
+      },
+      "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-c128-resume1",
+      "attempts": [
+        {
+          "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-r392-resume1-01a1846a/0",
+          "state": "running",
+          "attempt_uid": "f412e5486a44c12e",
+          "pod": "iris-romain-hero-agentx-stock16-num-41163481-0-f412e5486a44c12e",
+          "node": "s4lqxs64",
+          "started_unix": 1793362176.215,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-r392-resume1-01a1846a/1",
+          "state": "running",
+          "attempt_uid": "eba393ff03ad6b67",
+          "pod": "iris-romain-hero-agentx-stock16-num-9824854a-0-eba393ff03ad6b67",
+          "node": "s62pys64",
+          "started_unix": 1793362176.215,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-r392-resume1-01a1846a/2",
+          "state": "running",
+          "attempt_uid": "d221c1d8e4fa00d8",
+          "pod": "iris-romain-hero-agentx-stock16-num-130005e7-0-d221c1d8e4fa00d8",
+          "node": "s6xvxs64",
+          "started_unix": 1793362176.215,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-r392-resume1-01a1846a/3",
+          "state": "running",
+          "attempt_uid": "81771e32eba76fbc",
+          "pod": "iris-romain-hero-agentx-stock16-num-56b01e53-0-81771e32eba76fbc",
+          "node": "s7dk6j84",
+          "started_unix": 1793362176.215,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        }
+      ],
+      "nodes": [
+        "s4lqxs64",
+        "s62pys64",
+        "s6xvxs64",
+        "s7dk6j84"
+      ]
+    },
+    "stock32": {
+      "job_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a",
+      "priority": "interactive",
+      "physical_gpu_count": 32,
+      "manifest": "logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json",
+      "manifest_sha256": "3053f3eb656a8b5a5ae340f2ce9e45fd3f16e33e0e043cc3724e54448ae6da23",
+      "effective_recipe_sha256": "d4c96dfc2d8521781b54eb8cf7ce1e3a255e6851f96e9ca5fc2602d695ea9b73",
+      "concurrency": 512,
+      "runtime_overrides": {
+        "enable_prefix_caching": true,
+        "max_num_batched_tokens": 2048,
+        "master_port": 35200,
+        "session_affinity": true,
+        "prefetch_flashinfer_headers": true
+      },
+      "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock32-c512-resume1",
+      "attempts": [
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/0",
+          "state": "running",
+          "attempt_uid": "6ac1bb4dd7da86da",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-cbc19bc5-0-6ac1bb4dd7da86da",
+          "node": "s90vxs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/1",
+          "state": "running",
+          "attempt_uid": "e0a625c6162cba41",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-8d2e7d01-0-e0a625c6162cba41",
+          "node": "s9rrxs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/2",
+          "state": "running",
+          "attempt_uid": "52a421f707f93515",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-53360eef-0-52a421f707f93515",
+          "node": "s9vrxs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/3",
+          "state": "running",
+          "attempt_uid": "45fc3f6a90dfcb19",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-b65d4aa1-0-45fc3f6a90dfcb19",
+          "node": "sbnwxs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/4",
+          "state": "running",
+          "attempt_uid": "a9fd14bf68c80a12",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-04eeb414-0-a9fd14bf68c80a12",
+          "node": "sdmtxs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/5",
+          "state": "running",
+          "attempt_uid": "a424ee962f070bdf",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-1ead39a4-0-a424ee962f070bdf",
+          "node": "sfdqxs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/6",
+          "state": "running",
+          "attempt_uid": "c271bd2c20febed4",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-19d4419c-0-c271bd2c20febed4",
+          "node": "sj1txs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/7",
+          "state": "running",
+          "attempt_uid": "c01a984c03450962",
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-d5632dba-0-c01a984c03450962",
+          "node": "sj9wxs64",
+          "started_unix": 1793362181.961,
+          "finished_unix": null,
+          "source_uri": null,
+          "source_sha256": null,
+          "archive_state": null
+        }
+      ],
+      "nodes": [
+        "s90vxs64",
+        "s9rrxs64",
+        "s9vrxs64",
+        "sbnwxs64",
+        "sdmtxs64",
+        "sfdqxs64",
+        "sj1txs64",
+        "sj9wxs64"
+      ]
+    }
+  },
+  "submission_commands": [
+    {
+      "key": "graph16",
+      "job_id": "/romain/hero-agentx-graph16-numa2k95-c128-r392-resume1-01a1846a",
+      "argv": [
+        "marin-env",
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "logbooks/19-hero-agentx-throughput/submit_diagnostic.py",
+        "--agentx",
+        "--manifest",
+        "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router16-numa2k95-piecewise-c128.json",
+        "--name",
+        "hero-agentx-graph16-numa2k95-c128-r392-resume1-01a1846a",
+        "--budget",
+        "2048",
+        "--master-port",
+        "35400",
+        "--output",
+        "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/resume1-graph16-submission.json"
+      ],
+      "source_commit": "a001491c0253ff35fdf92214f028f6fe25094dfd",
+      "utc": "2026-10-30T12:09:19.454715+00:00"
+    },
+    {
+      "key": "stock16",
+      "job_id": "/romain/hero-agentx-stock16-numa2k95-c128-r392-resume1-01a1846a",
+      "argv": [
+        "marin-env",
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "logbooks/19-hero-agentx-throughput/submit_diagnostic.py",
+        "--agentx",
+        "--manifest",
+        "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router16-stock-numa2k95-c128-rack392.json",
+        "--name",
+        "hero-agentx-stock16-numa2k95-c128-r392-resume1-01a1846a",
+        "--budget",
+        "2048",
+        "--master-port",
+        "35100",
+        "--output",
+        "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/resume1-stock16-submission.json"
+      ],
+      "source_commit": "a001491c0253ff35fdf92214f028f6fe25094dfd",
+      "utc": "2026-10-30T12:09:26.257332+00:00"
+    },
+    {
+      "key": "stock32",
+      "expected_job_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a",
+      "argv": [
+        "marin-env",
+        "uv",
+        "run",
+        "--no-sync",
+        "python",
+        "logbooks/19-hero-agentx-throughput/guarded_dev_gpu.py",
+        "--native-cli",
+        "/home/romain/work/marin-community/marin/hero-dev-gpu-image-01a1846a/scripts/iris/dev_gpu.py",
+        "--placement",
+        "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json",
+        "--config",
+        "lib/iris/config/cw-us-east-08a.yaml",
+        "--name",
+        "hero-agentx32-r392-resume1-01a1846a",
+        "allocate",
+        "--gpu-variant",
+        "GB200",
+        "--gpus-per-node",
+        "4",
+        "--nodes",
+        "8",
+        "--priority",
+        "interactive",
+        "--cpu",
+        "32",
+        "--memory",
+        "768GB",
+        "--disk",
+        "1TB",
+        "--task-image",
+        "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "--timeout",
+        "1800",
+        "--pod-timeout",
+        "900"
+      ],
+      "source_commit": "a001491c0253ff35fdf92214f028f6fe25094dfd",
+      "utc": "2026-10-30T12:09:26.261235+00:00"
+    }
+  ],
+  "stock32_child_launch": {
+    "utc": "2026-10-30T12:11:11.458404+00:00",
+    "source": {
+      "source_commit": "a001491c0253ff35fdf92214f028f6fe25094dfd",
+      "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+      "archive_bytes": 4792320,
+      "remote_source": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd",
+      "staged": [
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-cbc19bc5-0-6ac1bb4dd7da86da",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-8d2e7d01-0-e0a625c6162cba41",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-53360eef-0-52a421f707f93515",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-b65d4aa1-0-45fc3f6a90dfcb19",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-04eeb414-0-a9fd14bf68c80a12",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-1ead39a4-0-a424ee962f070bdf",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-19d4419c-0-c271bd2c20febed4",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx32-r-d5632dba-0-c01a984c03450962",
+          "result": {
+            "archive_sha256": "1800e6b0aabcc67aa55bd6e36486e8fc3df83725ffbe4f7ab5bc225c62f8aa4b",
+            "source_root": "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd"
+          }
+        }
+      ]
+    },
+    "job_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a",
+    "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+    "launches": [
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-cbc19bc5-0-6ac1bb4dd7da86da",
+        "launch": {
+          "pid": 516,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/0:0",
+          "attempt_uid": "6ac1bb4dd7da86da",
+          "started_unix": 1793362270.7522938,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-8d2e7d01-0-e0a625c6162cba41",
+        "launch": {
+          "pid": 514,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/1:0",
+          "attempt_uid": "e0a625c6162cba41",
+          "started_unix": 1793362270.7477255,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-53360eef-0-52a421f707f93515",
+        "launch": {
+          "pid": 505,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/2:0",
+          "attempt_uid": "52a421f707f93515",
+          "started_unix": 1793362270.7706382,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-b65d4aa1-0-45fc3f6a90dfcb19",
+        "launch": {
+          "pid": 505,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/3:0",
+          "attempt_uid": "45fc3f6a90dfcb19",
+          "started_unix": 1793362270.6974401,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-04eeb414-0-a9fd14bf68c80a12",
+        "launch": {
+          "pid": 505,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/4:0",
+          "attempt_uid": "a9fd14bf68c80a12",
+          "started_unix": 1793362271.2757516,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-1ead39a4-0-a424ee962f070bdf",
+        "launch": {
+          "pid": 505,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/5:0",
+          "attempt_uid": "a424ee962f070bdf",
+          "started_unix": 1793362271.3679821,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-19d4419c-0-c271bd2c20febed4",
+        "launch": {
+          "pid": 504,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/6:0",
+          "attempt_uid": "c271bd2c20febed4",
+          "started_unix": 1793362271.3455381,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      },
+      {
+        "pod": "iris-romain-dev-gpu-hero-agentx32-r-d5632dba-0-c01a984c03450962",
+        "launch": {
+          "pid": 506,
+          "task_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a/7:0",
+          "attempt_uid": "c01a984c03450962",
+          "started_unix": 1793362271.3928494,
+          "payload": {
+            "argv": [
+              "uv",
+              "run",
+              "--no-sync",
+              "python",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/agentx_candidate.py",
+              "--manifest",
+              "/iris/candidates/research-a001491c0253ff35fdf92214f028f6fe25094dfd/logbooks/19-hero-agentx-throughput/experiments/agentx-upstream-router32-stock2k-c512-rack392.json"
+            ],
+            "output": "/iris/outputs/final-stock32-c512-r392-resume1",
+            "environment": {
+              "PYTHONPATH": "/app",
+              "IRIS_OUTPUT_DIR": "/iris/outputs/final-stock32-c512-r392-resume1"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "retention": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/admission/resume1/native-physical-6e124e51cfd37d8bacd40f1133a8d247b4b93da737726bd29303587e65e0aad2.tar.zst",
+    "sha256": "6e124e51cfd37d8bacd40f1133a8d247b4b93da737726bd29303587e65e0aad2",
+    "readback_sha256": "6e124e51cfd37d8bacd40f1133a8d247b4b93da737726bd29303587e65e0aad2",
+    "bytes": 22778,
+    "members": 13,
+    "files": {
+      "submit-resume1-campaign.py": "dbc656d8bf17529b662ce3c22a7e6bd0634f19c603f47ff5b90a096e78bf4527",
+      "resume1-placement.json": "fdf947d31bb4f6fdf2aac2b18b35b32e6e43eb1a131e4c80ceeeb0335ae6c208",
+      "start-resume1-stock32.py": "afecbbb8b322233eab0332586369e20494d795d851295bd20c912bcec3f87099",
+      "resume1-graph16-submission.json": "ce37da2a9527b89f752dcbf05889e3858683300a4ebdfff3bc394a720c966abf",
+      "resume1-native-status.json": "7460c058c6ff98ade94739e753ff9b0ec8b0b5146130a7d387e880926133fd47",
+      "resume1-all64-physical-proof.json": "ae24892f9a752f1968109dd6b77a2d9b4e34b2d5549c85b67e16240d80081012",
+      "resume1-resource-board.json": "3ef0e337ff44bb4b1253d8c0ec03470a9018cb6aec99008aac74182a9567ff39",
+      "resume1-campaign-launches.json": "5e43f3e28a49239d9730b4febeecb93ff1bbad8c4997560d9d61c6378846b261",
+      "resume1-stock16-submission.json": "b02b0d0d74d30bd56c571692b26388ff95243e407fd0b37e2e063ea4fb75bbd2",
+      "resume1-stock32-research-stage.json": "8d3e966d39ac644696f7cc9e38bb9e2f82b137a81b1fe3e9fec23f228ff4f083",
+      "verify-resume1-physical.py": "3032200fe8e57df65665f73586db54a3bba074b9f6e6be626653ffa115490be3",
+      "resume1-stock32-agentx-launch.json": "70aab76f091d5c2279e5359ec62068afb61872594024a36f089619abcf7d81ee",
+      "provider-admission-inventory.json": "325e6d16dd506218eececc2772801c0ccf9f32effb6e5ce6bd7050d2db4b611e"
+    }
+  },
+  "qualification": "Admission and launch evidence only. Full-hour validity, effective runtime settings, CPU headroom and final recipe selection remain to be checked. Prior interrupted hours supply no samples.",
+  "next_work": "Complete and retain these native attempts. Run the missing released-wheel 16-GPU C256 point when a batch slot releases, then profile the selected recipe after all throughput confirmations finish."
+}
