@@ -460,6 +460,48 @@ uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
   --version 2026.10.30.23 --output /tmp/ema-gram-quarter-128g-resolved.json --run
 ```
 
+### 2026-10-30 21:43 UTC — First baseline pilot completes
+
+The alpha=0, LR=0.007071067811865476, ridge=1e-4, seed=0 pilot completed
+all 7,630 updates and 250,019,840 tokens. Iris reports successful child exit 0
+at 21:29:39 UTC and successful coordinator completion at 21:30:02 UTC. W&B
+is finished at zero-based step 7629. Final C4 English validation loss is
+3.91522193 nats; the export contains ten evaluations and all 7,630 training
+loss records, with no nonfinite values. The median recorded training-step
+duration after step 0 is 0.347409 seconds, excluding evaluation overhead.
+The last evaluation is recorded 4,416.48 seconds after the W&B runtime origin;
+that clock excludes queueing and the earlier worker-failed attempt.
+
+The final full-state checkpoint's `metadata.json` was read successfully from
+`gs://marin-us-central2/ema-gram-pilot-3e18-a0-seed0-a46345a749ca/2026.10.30.22/checkpoints/step-7629`.
+It records step 7629 and `is_temporary=false`. This verifies saved metadata;
+no checkpoint restoration test has been performed. The attempt's durable
+metrics contain 466 chunks, including the final log, summary, finish and
+device-memory events in the last chunk.
+
+The bounded `marin` / `iris.task` query for 20:14–21:32 UTC returned 648
+samples through 21:29:33 UTC for native attempt 1. The maximum of its sampled cumulative
+host-memory peak counter is 28.599609 GiB. Finelog accelerator-memory telemetry is
+null, but the persisted JAX exit statistics report per-device allocator peaks
+of 5.3600, 5.0375, 5.3598 and 5.0375 GiB. These allocator peaks do not measure
+total device HBM occupancy and do not characterize nonzero-alpha spectral powers.
+
+`baseline-completed.json` contains the result, curve, memory and checkpoint
+evidence. `initial-attempts.json` and `initial-results.json` retain the completed
+baseline and failed quarter-power attempt separately. The reporting CLI
+validated both actual configurations and exported unsampled histories,
+configuration and summary data. Gzip exports are preserved under the baseline
+artifact root's `analysis/20261030-initial-attempt-report/`; their uploaded
+bytes were read back and checked against SHA-256 hashes recorded in the
+completion evidence.
+
+The baseline is one completed pilot at one learning rate, not a tuned winner.
+Quarter-power recovery remains unsubmitted pending the user's decision on the
+prepared 128 GiB configuration. No new experiment was launched. PR #10790's
+`d19131429` had all 39 CI checks passed or skipped at 21:22:26 UTC; the PR
+remains under monitoring. The broader pilot sweep, locked confirmations and
+checkpoint probes remain outstanding.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
