@@ -71,6 +71,7 @@ export PKG_CONFIG_SYSROOT_DIR="$router_build_tools"
 export OPENSSL_INCLUDE_DIR="$router_build_tools/usr/include"
 export OPENSSL_LIB_DIR="$router_build_tools/usr/lib/aarch64-linux-gnu"
 export OPENSSL_STATIC=1
+export CPATH="$router_build_tools/usr/include/aarch64-linux-gnu${CPATH:+:$CPATH}"
 export PROTOC="$router_build_tools/usr/bin/protoc"
 export PROTOC_INCLUDE="$router_build_tools/usr/include"
 
