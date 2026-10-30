@@ -666,3 +666,29 @@ SC128/4517 version 4 has passed update 26. Initial and midpoint panels each cont
 SC128/4517 version 4 now passes the complete fifty-update, 10,000-answer and 9,991-common-grade gates. Three judge verdicts (UIDs 2366, 8626, 9406) were restored from unchanged saved answers, each on its first canonical call; initial/midpoint needed no recovery. The existing collector verifies all original object hashes and numerical, mismatch, staleness and capture gates. The portable model has all 39 nonempty indexed shards, a successful exact native export request/terminal identity, and finite changed router/attention samples against the initializer. Training, exporter and coordinator succeeded; all nine GPU task pods are absent. Reconstructed allocation is 135.200660000 training plus 9.178364444 export = 144.379024444 H100-hours. Per-run collected, export and allocation proofs are published beside this notebook.
 
 The initial matrix is now complete at nine admitted runs. The excluded storage-interrupted and preempted attempts remain separate with their costs. The original frozen inference will now run once on the full initial matrix. No scientific extension has been declared.
+
+### 2026-10-30 01:50 UTC: initial analysis and single finite extension
+
+The full original matrix is frozen under [initial/](initial/). The three comparisons are inconclusive against the predeclared one-point quality and 5% cycle-cost limits. Each run reached fifty updates; no interrupted partial endpoint enters this comparison. The point estimates favor SC32 in both comparisons, but uncertainty over matched training seeds is too large to establish an acceptable trade-off.
+
+Nominal 95% intervals:
+
+| Comparison | Quality difference, percentage points | Relative complete-cycle time, % |
+| --- | ---: | ---: |
+| SC32 − TIS | +2.11 [-1.14, +5.36] | -7.09 [-47.32, +63.87] |
+| SC128 − TIS | +0.28 [-1.01, +1.58] | +10.94 [-20.63, +55.08] |
+| SC32 − SC128 | +1.82 [-1.19, +4.83] | -16.25 [-36.12, +9.81] |
+
+Two-look-adjusted 97.5% intervals used for decisions:
+
+| Comparison | Quality difference, percentage points | Relative complete-cycle time, % | Decision |
+| --- | ---: | ---: | --- |
+| SC32 − TIS | +2.11 [-2.58, +6.79] | -7.09 [-59.01, +110.60] | Inconclusive |
+| SC128 − TIS | +0.28 [-1.59, +2.15] | +10.94 [-31.56, +79.83] | Inconclusive |
+| SC32 − SC128 | +1.82 [-2.52, +6.17] | -16.25 [-43.34, +23.79] | Inconclusive |
+
+[Endpoint intervals](initial/figures/endpoint-intervals.png), [learning by updates/tokens/elapsed time](initial/figures/learning-curves.png), and [cycle-time/token curves](initial/figures/cost-curves.png) preserve the initial look. All three PNG/SVG figures were visually checked. The exact [task/seed matrix restore record](initial/matrix-restore.json), [inference and per-seed table](initial/initial-analysis.json), [manifest](initial/initial-runs.json) and [source provenance](initial/initial.provenance.json) are retained unchanged. The exact NPZ is content-addressed in owned East storage with full readback verification; its 625.6-KiB size exceeds the repository 500-KiB hook limit. Download using the restore record, then rerun through `inference.py` with the frozen protocol without collecting answers again.
+
+The [single extension](extension-plan.json) adds matched seeds **6101 and 7919** in all three arms: **six additional fifty-update runs**, then a second and final look pooling five matched seeds. This is the smallest allowed prefix projected to satisfy the candidate-count margins if the observed centers and variance remain stable. With one added seed the projected candidate-count cost upper bound is +5.17%; with two it is −0.68%. The [planning calculation](extension-precision-plan.json) holds the task variance contribution fixed and scales only the seed contribution. It predicts roughly 55% narrower quality and log-cost half-widths, not future outcomes. Primary cycle cost may still be inconclusive even at the maximum three-seed extension; adding the third now would cost about 428 more H100-hours without a projected primary-cost decision.
+
+The selected six-run estimate is **855.262 H100-hours including export**, based on the admitted per-arm allocation means. It is not a cap or bound; all new failures/retries remain separately accounted. The original nine admitted runs total 1,282.893 reconstructed H100-hours, excluding validation and rejected attempts. Settings and endpoints remain frozen, and seed 10007 will not be added afterward without consultation. At 01:49 both pools were checked: RNO had 248 and East 48 unrequested H100s, not reservations. At most six 40-H100 gangs use batch RNO. Source publication and the remaining readiness gates precede every submission; bulk checkpoint copies stay deferred during measured consumers. Product defaults and PR commits remain unchanged.

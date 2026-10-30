@@ -1,0 +1,194 @@
+{
+  "created_utc": "2026-10-30T01:50:40.738134+00:00",
+  "status": "Frozen single extension; launch pending published source and readiness checks.",
+  "initial_endpoint_source": "6ec9f2b0827830ec396c28550a4dbff49f713649",
+  "initial_analysis_sha256": "f2a7fd4b3a3731c1d460491af6ce936d60dd16130201d47aa4b401f445830be6",
+  "initial_matrix": "initial/initial-runs.json",
+  "initial_npz": "s3://marin-us-east-02a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/initial-matrix/94305c6b46281d5f17d4b74e9fae1e8230a716ae3c47d1cd97555f38449ed91e.npz",
+  "initial_analysis": "initial/initial-analysis.json",
+  "precision": "extension-precision-plan.json",
+  "seeds": [
+    6101,
+    7919
+  ],
+  "runs": [
+    {
+      "arm": "tis",
+      "seed": 6101,
+      "version": "2026.10.30.1",
+      "gpus": 40,
+      "priority": "batch",
+      "cluster": "cw-rno2a",
+      "updates": 50,
+      "command": [
+        "python",
+        "-m",
+        "experiments.post_training.sc_default_study",
+        "--version",
+        "2026.10.30.1",
+        "--arm",
+        "tis",
+        "--seed",
+        "6101",
+        "--full",
+        "--cluster",
+        "cw-rno2a",
+        "--run"
+      ]
+    },
+    {
+      "arm": "sc128",
+      "seed": 7919,
+      "version": "2026.10.30.1",
+      "gpus": 40,
+      "priority": "batch",
+      "cluster": "cw-rno2a",
+      "updates": 50,
+      "command": [
+        "python",
+        "-m",
+        "experiments.post_training.sc_default_study",
+        "--version",
+        "2026.10.30.1",
+        "--arm",
+        "sc128",
+        "--seed",
+        "7919",
+        "--full",
+        "--cluster",
+        "cw-rno2a",
+        "--run"
+      ]
+    },
+    {
+      "arm": "sc128",
+      "seed": 6101,
+      "version": "2026.10.30.1",
+      "gpus": 40,
+      "priority": "batch",
+      "cluster": "cw-rno2a",
+      "updates": 50,
+      "command": [
+        "python",
+        "-m",
+        "experiments.post_training.sc_default_study",
+        "--version",
+        "2026.10.30.1",
+        "--arm",
+        "sc128",
+        "--seed",
+        "6101",
+        "--full",
+        "--cluster",
+        "cw-rno2a",
+        "--run"
+      ]
+    },
+    {
+      "arm": "sc32",
+      "seed": 7919,
+      "version": "2026.10.30.1",
+      "gpus": 40,
+      "priority": "batch",
+      "cluster": "cw-rno2a",
+      "updates": 50,
+      "command": [
+        "python",
+        "-m",
+        "experiments.post_training.sc_default_study",
+        "--version",
+        "2026.10.30.1",
+        "--arm",
+        "sc32",
+        "--seed",
+        "7919",
+        "--full",
+        "--cluster",
+        "cw-rno2a",
+        "--run"
+      ]
+    },
+    {
+      "arm": "sc32",
+      "seed": 6101,
+      "version": "2026.10.30.1",
+      "gpus": 40,
+      "priority": "batch",
+      "cluster": "cw-rno2a",
+      "updates": 50,
+      "command": [
+        "python",
+        "-m",
+        "experiments.post_training.sc_default_study",
+        "--version",
+        "2026.10.30.1",
+        "--arm",
+        "sc32",
+        "--seed",
+        "6101",
+        "--full",
+        "--cluster",
+        "cw-rno2a",
+        "--run"
+      ]
+    },
+    {
+      "arm": "tis",
+      "seed": 7919,
+      "version": "2026.10.30.1",
+      "gpus": 40,
+      "priority": "batch",
+      "cluster": "cw-rno2a",
+      "updates": 50,
+      "command": [
+        "python",
+        "-m",
+        "experiments.post_training.sc_default_study",
+        "--version",
+        "2026.10.30.1",
+        "--arm",
+        "tis",
+        "--seed",
+        "7919",
+        "--full",
+        "--cluster",
+        "cw-rno2a",
+        "--run"
+      ]
+    }
+  ],
+  "run_order_by_seed": {
+    "6101": [
+      "tis",
+      "sc128",
+      "sc32"
+    ],
+    "7919": [
+      "sc128",
+      "sc32",
+      "tis"
+    ]
+  },
+  "additional_matched_seeds": 2,
+  "additional_runs": 6,
+  "maximum_simultaneous_H100s": 240,
+  "controller_config": "lib/iris/config/marin.yaml",
+  "estimated_H100_hours_including_export": 855.2618507706818,
+  "estimate_basis": "Two times the sum of the observed three-seed per-arm mean admitted allocation, including normal/recovered exports. Excludes new retries and is an estimate, not a cap or bound.",
+  "selection_reason": "Both initial decisions are inconclusive. The smallest allowed prefix projected to meet the candidate-count margins is two additional matched seeds; one projects a cost upper limit of +5.17%, while two projects -0.68%. The projection holds current centers and task variance fixed and does not predict new seed outcomes. A third seed is deferred to avoid spending about 428 additional H100-hours for an extension not projected to resolve primary cost anyway.",
+  "frozen_settings": "Same initializer, optimizer/LR, 50 updates, data and mixture, sampler, evaluator, 9991-task mask, hardware geometry, probes/capture policy, and ordinary telemetry as initial matrix. No duration or metric change.",
+  "protocol_sha256": "de13a39708fe4ae974db6e3a240152ddc6e7d80d1d0e8063d4e0aaa879496294",
+  "eligibility_sha256": "597f2c05124e093c289864fb44850b9eff205c7ffeb9be7568e19c5011cffe7a",
+  "inference": "Pool the original three and these two matched seeds once. Use the unchanged nominal 95% and two-look-adjusted 97.5% intervals. This is the second and final inferential look.",
+  "stopping": "No adding seed 10007 or further training after this extension without consultation. An inconclusive result is a valid final outcome.",
+  "gates": [
+    "Publish this exact finite plan and execution source before submissions.",
+    "Inspect both H100 pools and announce shared resource use. All larger gangs use batch.",
+    "Verify all six permanent and scratch roots are empty, frozen data remains pinned, and artifact graphs build.",
+    "Recheck storage write/multipart readiness and sufficient shared storage headroom.",
+    "Keep bulk checkpoint copies deferred while any measured training/export GPU consumer runs.",
+    "Require complete per-run audits, all 50 updates, all 10000 original answers, all 9991 common grades and verified native export before final inference."
+  ],
+  "resource_board_row": 1637,
+  "initial_npz_restore": "initial/matrix-restore.json"
+}
