@@ -123,6 +123,27 @@ uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
   --version 2026.10.30.20 --output /tmp/ema-gram-resolved.json --logging-check
 ```
 
+### 2026-10-30 18:43 UTC — Fix the logging-check tracker lifecycle
+
+The second remote check reached online W&B, creating
+[run 64ef8844db12](https://wandb.ai/marin-community/marin/runs/ema-gram-logging-check-64ef8844db12),
+but then failed before logging its success metric. `Tracker.__enter__` sets
+the global tracker and returns None; the check incorrectly bound that return
+value. Initialize the native tracker explicitly, log through that instance,
+and call `finish()` in `finally` to flush and close it. This changes only the
+non-training check, not optimizer behavior. The failed job was
+`/kaiyuew@stanford.edu/ema-gram-20-logging-r2-20261030` at source
+`fd963d4f2b8a410dea69d87bc4b11450179776d2`; no optimizer steps ran.
+
+The fixed CLI passed a local online check:
+[run ea1773cd64c5](https://wandb.ai/marin-community/marin/runs/ema-gram-logging-check-ea1773cd64c5).
+Readback through the W&B API verified state `finished`,
+`logging_check/success=1`, seed zero and the resolved 7,630-step configuration.
+The 14 experiment tests and repository lint/type checks pass. Repeat the
+corrected remote command with job name `ema-gram-20-logging-r3-20261030` before
+training. W&B's automatic source capture exceeded its size guard; the published
+Git source and Iris bundle provide provenance instead.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
