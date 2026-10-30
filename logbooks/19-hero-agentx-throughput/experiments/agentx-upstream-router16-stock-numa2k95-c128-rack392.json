@@ -92,6 +92,7 @@
     "nvlink_domain": "DH1-392-US-EAST-08A",
     "nodes": [
       "s1mwxs64",
+      "s1nrxs64",
       "s3bsxs64",
       "s3jtxs64",
       "s4lqxs64",
@@ -108,18 +109,20 @@
       "sj9wxs64",
       "sjtsxs64"
     ],
-    "verified_utc": "2026-10-30T01:15:42.482030+00:00",
-    "inventory_sha256": "8d36a7234bb4d718f365e9415d9680ac3b656f6d10db28325f92ae0846dbb068",
-    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-stock16-c256-r392-admission.json",
+    "verified_utc": "2026-10-30T12:07:09.806091+00:00",
+    "inventory_sha256": "325e6d16dd506218eececc2772801c0ccf9f32effb6e5ce6bd7050d2db4b611e",
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-resume-submit-20261030T120704Z.json",
     "hero_training_gpus": 0,
-    "other_gpus": 32,
-    "neighbor_activity": "The separate 16-GPU released-wheel C256 batch run continues on disjoint GPUs in the same spare rack392. Shared fabric and storage; no GPU profiler. Record actual overlap and confirm if a small difference could change recipe selection."
+    "other_gpus": 0,
+    "neighbor_activity": "Planned campaign: two disjoint 16-GPU C128 groups (released NONE and graph PIECEWISE, both 2K/NUMA/memory0.95), plus one 32-GPU released-wheel C512 group (2K/default CPU/memory0.9), all in rack392. Shared rack fabric and storage. No GPU profiler during these full confirmations. Verify actual nodes, UUIDs, images and overlap after admission.",
+    "all_hero_priorities_protected": true,
+    "unique_eligible_domain": true
   },
   "source": {
     "kind": "research",
     "repository": "marin-community/marin-logbooks",
-    "parent_commit": "ae3d0ce6ac",
-    "experiment": "agentx-upstream-router16-stock-numa2k95-c128-rack392",
+    "parent_commit": "e4c2dc94a828950abb35089ce4c5e4e8061ec781",
+    "experiment": "stock16-numa2k95-c128-resume1",
     "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
   },
   "runtime_overrides": {
@@ -131,7 +134,7 @@
     "numa_bind": true,
     "gpu_memory_utilization": 0.95
   },
-  "effective_recipe_sha256": "8ff2bb20f605145420debbcf9fb9dda5bd83bcc2d7362baf995c06aaeb0a02a5",
+  "effective_recipe_sha256": "a655b5b57ea7ae310f3cfa6ede0b2247175eca7dbe0fb9593980d02b2f0ebdd7",
   "effective_recipe_hash_input": {
     "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
     "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
@@ -139,8 +142,8 @@
     "source": {
       "kind": "research",
       "repository": "marin-community/marin-logbooks",
-      "parent_commit": "ae3d0ce6ac",
-      "experiment": "agentx-upstream-router16-stock-numa2k95-c128-rack392",
+      "parent_commit": "e4c2dc94a828950abb35089ce4c5e4e8061ec781",
+      "experiment": "stock16-numa2k95-c128-resume1",
       "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
     },
     "runtime_overrides": {
@@ -196,13 +199,13 @@
     "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
   },
   "purpose": "Full-hour C128 confirmation of supported 2K scheduling plus native NUMA binding and memory utilization 0.95, conditional on the preceding fixed-history and synthetic workload screen. Compare with released-wheel 2K/default-CPU/memory0.9 C128 at 493.84916 total output tokens/s. No source or arithmetic change.",
-  "neighbor_activity": "The separate 16-GPU released-wheel C256 batch run continues on disjoint GPUs in the same spare rack392. Shared fabric and storage; no GPU profiler. Record actual overlap and confirm if a small difference could change recipe selection.",
+  "neighbor_activity": "Planned campaign: two disjoint 16-GPU C128 groups (released NONE and graph PIECEWISE, both 2K/NUMA/memory0.95), plus one 32-GPU released-wheel C512 group (2K/default CPU/memory0.9), all in rack392. Shared rack fabric and storage. No GPU profiler during these full confirmations. Verify actual nodes, UUIDs, images and overlap after admission.",
   "metrics_collection": {
     "explicit_url": "http://127.0.0.1:38201/metrics",
     "discovered_url": "http://127.0.0.1:38201/metrics",
     "effective_endpoints": 1
   },
-  "rack_change_note": "This is a new full attempt after the earlier stock C256 attempt was interrupted on rack 125. The native placement allowlist is refreshed. Actual admission and GPU UUID checks remain required.",
+  "rack_change_note": "Fresh full attempt after capacity returned. Prior interrupted attempts remain unqualified; no prior samples are reused. This admission receipt precedes submission and must be checked against physical placement.",
   "value_hypothesis": {
     "bottleneck": "Prefix cache capacity and CPU placement may explain recoverable long-context serving cost. The full 4K graph combination lost, so it does not settle the 2K combination.",
     "evidence": "NUMA alone improved earlier decode workloads. Memory0.95 alone increased native 2K KV token capacity by 12.4%. Full C128 prefix reuse was 26.9% at 16 GPUs. The combined supported-flag screen must finish before this full confirmation.",
@@ -229,6 +232,5 @@
     },
     "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
   },
-  "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-c128-retry",
-  "placement_refresh_required_note": "Prepared source only. All twelve racks contain protected Hero work at the 2026-10-30 04:30 inventory. Refresh the verified spare-rack receipt and actual admission before running."
+  "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-c128-resume1"
 }

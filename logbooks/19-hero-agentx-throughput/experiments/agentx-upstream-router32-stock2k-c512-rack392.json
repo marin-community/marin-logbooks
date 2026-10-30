@@ -92,6 +92,7 @@
     "nvlink_domain": "DH1-392-US-EAST-08A",
     "nodes": [
       "s1mwxs64",
+      "s1nrxs64",
       "s3bsxs64",
       "s3jtxs64",
       "s4lqxs64",
@@ -108,18 +109,20 @@
       "sj9wxs64",
       "sjtsxs64"
     ],
-    "verified_utc": "2026-10-30T01:15:42.482030+00:00",
-    "inventory_sha256": "8d36a7234bb4d718f365e9415d9680ac3b656f6d10db28325f92ae0846dbb068",
-    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-stock16-c256-r392-admission.json",
+    "verified_utc": "2026-10-30T12:07:09.806091+00:00",
+    "inventory_sha256": "325e6d16dd506218eececc2772801c0ccf9f32effb6e5ce6bd7050d2db4b611e",
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-resume-submit-20261030T120704Z.json",
     "hero_training_gpus": 0,
-    "other_gpus": 16,
-    "neighbor_activity": "Prepared only. Submit after the current 16-GPU batch point releases, then record actual disjoint neighboring work. No GPU profiler during confirmation."
+    "other_gpus": 0,
+    "neighbor_activity": "Planned campaign: two disjoint 16-GPU C128 groups (released NONE and graph PIECEWISE, both 2K/NUMA/memory0.95), plus one 32-GPU released-wheel C512 group (2K/default CPU/memory0.9), all in rack392. Shared rack fabric and storage. No GPU profiler during these full confirmations. Verify actual nodes, UUIDs, images and overlap after admission.",
+    "all_hero_priorities_protected": true,
+    "unique_eligible_domain": true
   },
   "source": {
     "kind": "research",
     "repository": "marin-community/marin-logbooks",
-    "parent_commit": "ae3d0ce6ac",
-    "experiment": "agentx-upstream-router32-stock2k-c512-rack392",
+    "parent_commit": "e4c2dc94a828950abb35089ce4c5e4e8061ec781",
+    "experiment": "stock32-c512-resume1",
     "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
   },
   "runtime_overrides": {
@@ -129,7 +132,7 @@
     "session_affinity": true,
     "prefetch_flashinfer_headers": true
   },
-  "effective_recipe_sha256": "23f648548b465b51e5e54ab154dbaeb4dd41054e499dad996eec82ba26de8a67",
+  "effective_recipe_sha256": "d4c96dfc2d8521781b54eb8cf7ce1e3a255e6851f96e9ca5fc2602d695ea9b73",
   "effective_recipe_hash_input": {
     "recipe_fingerprint": "3e67338f1d367928861f38eb55c17c8c4e45fe31f16debf6742ad1c96cda1c2c",
     "series_sha256": "5fcb5a4870a9ceff53619bcb6c82ac0b1199d59cc2434d2d7f5379cb0fc39cef",
@@ -137,8 +140,8 @@
     "source": {
       "kind": "research",
       "repository": "marin-community/marin-logbooks",
-      "parent_commit": "ae3d0ce6ac",
-      "experiment": "agentx-upstream-router32-stock2k-c512-rack392",
+      "parent_commit": "e4c2dc94a828950abb35089ce4c5e4e8061ec781",
+      "experiment": "stock32-c512-resume1",
       "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
     },
     "runtime_overrides": {
@@ -194,7 +197,7 @@
   "series_filename": "hero32.yaml",
   "preflight_evidence": "router32-c128/point/router-preflight/result.json: ten exact waves and isolated rank1 counters on DP32; previous attempt failed before replay because reset_prefix_cache is unavailable. This retry uses a fresh server and unchanged native warmup.",
   "purpose": "Expose the remaining load knee of the released-wheel 32-GPU layout. Its C256 point improves total throughput 16.5% over C128, so C256 alone does not establish saturation. Preserve all native workload and validity controls at C512.",
-  "neighbor_activity": "Prepared only. Submit after the current 16-GPU batch point releases, then record actual disjoint neighboring work. No GPU profiler during confirmation.",
+  "neighbor_activity": "Planned campaign: two disjoint 16-GPU C128 groups (released NONE and graph PIECEWISE, both 2K/NUMA/memory0.95), plus one 32-GPU released-wheel C512 group (2K/default CPU/memory0.9), all in rack392. Shared rack fabric and storage. No GPU profiler during these full confirmations. Verify actual nodes, UUIDs, images and overlap after admission.",
   "metrics_collection": {
     "explicit_url": "http://127.0.0.1:38201/metrics",
     "discovered_url": "http://127.0.0.1:38201/metrics",
@@ -205,9 +208,9 @@
     "evidence": "Released-wheel 32-GPU C128/C256 produce 644.48756/750.86535 total output tokens/s. Native KV capacity is 43.32528M tokens. C256 mean rank occupancy is 0.65961 and the maximum running requests on a rank is 20. The final size choice needs this unresolved higher-load comparison.",
     "plausible_gain": "A higher-load throughput gain could change whether the 32-GPU layout is worth its lower per-GPU efficiency. Eviction and repeat prefill may instead expose the knee. No monotonic gain is assumed.",
     "cheapest_decisive_experiment": "One fresh native 32-GPU C512 full hour using the official wheel, prefix caching, 2K scheduling, default CPU placement and memory0.9. Do not duplicate the supported-flag tuning campaign at 32 GPUs.",
-    "cost": "One 32-GPU batch point after the current 16-GPU batch run is released. Do not exceed the aggregate 32-GPU batch quota. Check current spare rack and physical GPUs again before submission.",
+    "cost": "One native 32-GPU full point inside a 32-GPU interactive holder. The matched 16-GPU groups use 32 batch GPUs. Peak campaign allocation is 64 GPUs; no individual experiment exceeds 32 GPUs. Verify actual spare-rack placement and release holders when useful work ends.",
     "workload_scope": "All 393 source sessions remain eligible. The pinned harness supports wrap-filled lanes above the number of source traces; native first-turn prefix cache busting stays enabled. Source sampling, replay delays, warmup, hour and drain are unchanged."
   },
-  "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock32-c512",
-  "placement_refresh_required_note": "Prepared source only. All twelve racks contain protected Hero work at the 2026-10-30 04:30 inventory. Refresh the verified spare-rack receipt and actual admission before running."
+  "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock32-c512-resume1",
+  "rack_change_note": "Fresh full attempt after capacity returned. Prior interrupted attempts remain unqualified; no prior samples are reused. This admission receipt precedes submission and must be checked against physical placement."
 }
