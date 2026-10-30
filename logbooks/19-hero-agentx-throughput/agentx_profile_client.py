@@ -16,6 +16,7 @@ import urllib.request
 from pathlib import Path
 
 from agentx_candidate import SESSION_HEADER_ENV, pack_metrics_export
+from cache_probe import batch_trace
 from router_process import upstream_router
 
 from experiments.evaluation.agentx.processes import logged_process, stop_group
@@ -34,6 +35,7 @@ def main() -> None:
     assert hashlib.sha256(args.series.read_bytes()).hexdigest() == manifest["series_sha256"]
     diagnostic = manifest["diagnostic_request"]["agentx_profile"]
     assert diagnostic == {"score_seconds": 300, "trigger_after_seconds": 120}
+    assert manifest["diagnostic_request"]["trace_batches"] is True
     root = args.output
     record = {
         "scope": "Intrusive 300-second AgentX diagnostic; no full-hour throughput claim",
@@ -61,6 +63,8 @@ def main() -> None:
         point.mkdir(exist_ok=False)
         short_series = series | {"duration": diagnostic["score_seconds"]}
         router = manifest["router"]
+        storage = batch_trace(router["backend_url"], "hero_cache_storage")
+        (point / "kv-storage-first-engine.json").write_text(json.dumps(storage, indent=2) + "\n")
         command = benchmark_command(
             short_series, manifest["concurrency"], router["base_url"], point / "aiperf_artifacts"
         )
@@ -81,6 +85,8 @@ def main() -> None:
                     assert time.monotonic() < deadline, "Diagnostic warmup deadline exceeded"
                     time.sleep(5)
                 record["events"].append({"event": "scoring_observed", "unix": time.time()})
+                batch_trace(router["backend_url"], "install_hero_batch_trace")
+                record["events"].append({"event": "dispatch_trace_installed", "unix": time.time()})
                 trigger = time.monotonic() + diagnostic["trigger_after_seconds"]
                 while time.monotonic() < trigger:
                     assert process.poll() is None, "AgentX ended before the profile trigger"
@@ -91,6 +97,14 @@ def main() -> None:
                     assert response.status == 200
                     record["events"].append({"event": "start_profile_returned", "unix": time.time()})
                 assert process.wait(timeout=max(1, deadline - time.monotonic())) == 0
+                traces = batch_trace(router["backend_url"], "take_hero_batch_trace")
+                (point / "dispatch-first-engine.json").write_text(json.dumps(traces, indent=2) + "\n")
+                batch_trace(router["backend_url"], "stop_hero_batch_trace")
+                record["dispatch_trace_scope"] = (
+                    "CPU dispatch metadata during this short diagnostic. The RPC returns only first-engine results; "
+                    "each GPU worker independently saves its own trace and KV storage record under IRIS_OUTPUT_DIR. "
+                    "Dispatch counts are not time shares or FLOPs."
+                )
             export = json.loads((point / "aiperf_artifacts/profile_export_aiperf.json").read_text())
             assert not export["was_cancelled"]
             record.update(status="completed", native_metadata=export["metadata"])
