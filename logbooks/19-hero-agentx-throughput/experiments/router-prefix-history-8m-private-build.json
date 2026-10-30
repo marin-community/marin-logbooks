@@ -1,5 +1,5 @@
 {
-  "status": "prepared; private build and qualification have not run",
+  "status": "prepared linkage correction after the first compiled wheel fails Python import before CPU requests",
   "scope": "One bounded routing-history constant in a private build of Router0.1.16. No upstream contribution, official release, new runtime subsystem, full Program admission/resume or model arithmetic change.",
   "source_archive": {
     "base_repository": "https://github.com/vllm-project/router",
@@ -20,7 +20,7 @@
   "source_patch": "router-prefix-history-8m.patch",
   "source_patch_sha256": "79b4553fce0ba8be786deef835528201574a3f327641c7694b2c802651b38931",
   "build_driver": "build_router_history_wheel.sh",
-  "build_driver_sha256": "e29b40d540f45b1e5fa207e16f59ebdb56f497b798e32e9aa757efb6733bf71b",
+  "build_driver_sha256": "b9f57472781c1dac140d86fce9dc69113bf7aa0122a4e8b16548d7add385fbcc",
   "history_characters_per_target": 8388608,
   "base_history_characters_per_target": 10000,
   "runtime_python_package_version": "0.1.16",
@@ -36,7 +36,8 @@
     "nice": 10,
     "cargo_build_jobs": 1,
     "gpus_visible": false,
-    "tool_preparation": "APT download-only and private extraction; record every package version/SHA before compiling. Python build tools get a separate virtualenv and frozen version record. Cargo.lock is checked and not refreshed."
+    "tool_preparation": "APT download-only and private extraction; record every package version/SHA before compiling. Python build tools get a separate virtualenv and frozen version record. Cargo.lock is checked and not refreshed.",
+    "openssl_linkage": "Shared libssl.so.3/libcrypto.so.3 already present in the exact pinned image; record their SHA256. Private development symlinks only, no installed package change. Every completed wheel must pass a fresh native-extension import."
   },
   "value_hypothesis": {
     "bottleneck": "The native binding policy forgets a 33000-character prefix across one eviction interval, while the actual fixed-history GPU prompt is 42377 characters. This can choose a cold physical owner even when another rank holds a shared prefix.",

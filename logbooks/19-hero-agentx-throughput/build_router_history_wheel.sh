@@ -70,7 +70,18 @@ export PKG_CONFIG_LIBDIR="$router_build_tools/usr/lib/aarch64-linux-gnu/pkgconfi
 export PKG_CONFIG_SYSROOT_DIR="$router_build_tools"
 export OPENSSL_INCLUDE_DIR="$router_build_tools/usr/include"
 export OPENSSL_LIB_DIR="$router_build_tools/usr/lib/aarch64-linux-gnu"
-export OPENSSL_STATIC=1
+# Use the image's shared OpenSSL. Its static archive needs extra compression
+# symbols and can produce a wheel that builds but fails at Python import.
+for router_ssl_library in ssl crypto; do
+  router_ssl_runtime="/usr/lib/aarch64-linux-gnu/lib${router_ssl_library}.so.3"
+  test -f "$router_ssl_runtime"
+  if ! test -e "$OPENSSL_LIB_DIR/lib${router_ssl_library}.so.3"; then
+    ln -s "$router_ssl_runtime" "$OPENSSL_LIB_DIR/lib${router_ssl_library}.so.3"
+  fi
+done
+sha256sum /usr/lib/aarch64-linux-gnu/libssl.so.3 /usr/lib/aarch64-linux-gnu/libcrypto.so.3 \
+  > "$router_build_output/native-openssl-sha256.txt"
+export OPENSSL_STATIC=0
 export CPATH="$router_build_tools/usr/include/aarch64-linux-gnu${CPATH:+:$CPATH}"
 export PROTOC="$router_build_tools/usr/bin/protoc"
 export PROTOC_INCLUDE="$router_build_tools/usr/include"
@@ -100,4 +111,23 @@ export CARGO_NET_OFFLINE=true
 "$router_build_output/python/bin/python" -m build --wheel --no-isolation --outdir "$router_build_output/wheels"
 sha256sum --check "$router_build_output/Cargo.lock.before.sha256"
 sha256sum "$router_build_output"/wheels/*.whl > "$router_build_output/wheel-sha256.txt"
+"$router_build_output/python/bin/python" - "$router_build_output" <<'PY'
+import subprocess
+import sys
+import zipfile
+from pathlib import Path
+
+output = Path(sys.argv[1])
+wheels = list((output / 'wheels').glob('*.whl'))
+assert len(wheels) == 1
+target = output / 'import-check'
+target.mkdir(exist_ok=True)
+with zipfile.ZipFile(wheels[0]) as archive:
+    extension = next(name for name in archive.namelist() if name.endswith('.so'))
+    assert '/' not in extension and extension.startswith('vllm_router_rs.')
+    (target / extension).write_bytes(archive.read(extension))
+subprocess.run([sys.executable, '-c',
+                'import sys; sys.path.insert(0, sys.argv[1]); import vllm_router_rs; print(vllm_router_rs.__file__)',
+                str(target)], check=True)
+PY
 printf 'ROUTER_PRIVATE_WHEEL_BUILD_COMPLETE\n'
