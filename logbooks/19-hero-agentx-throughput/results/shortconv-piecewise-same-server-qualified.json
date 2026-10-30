@@ -2606,5 +2606,92 @@
       ]
     }
   ],
-  "scope": "Same compiled model and physical 16-GPU allocation. Token/logprob choices are returned for requests on DP0; every fixed-history wave records global 16-rank schedules. Direct ShortConv method selection is recorded on all 16 workers, then the exact original method is restored. Fresh-process original A1 versus original A2 differs despite matched shapes; this is a separate reproducibility result and does not invalidate the within-model comparison."
+  "scope": "Same compiled model and physical 16-GPU allocation. Token/logprob choices are returned for requests on DP0; every fixed-history wave records global 16-rank schedules. Direct ShortConv method selection is recorded on all 16 workers, then the exact original method is restored. Fresh-process original A1 versus original A2 differs despite matched shapes; this is a separate reproducibility result and does not invalidate the within-model comparison.",
+  "fresh_process_original_a1_reference": {
+    "qualified": true,
+    "physical_gpus": 16,
+    "root": "/iris/outputs/controlled16-graph-a1",
+    "source_commit": "8df10b3c6ef247db22f791a39fce7e6ceaf25a0a",
+    "internal_comparisons_per_phase": 8,
+    "cross_waves": 10,
+    "global_dp_vector_lengths": [
+      16
+    ],
+    "max_shared_logprob_absolute_delta": 0,
+    "all_choices_identical_and_finite": true,
+    "trace_summary": {
+      "cache-probe-matched": {
+        "waves": 10,
+        "batch_count": 193,
+        "dp_vector_lengths": [
+          16
+        ],
+        "modes": [
+          "NONE",
+          "PIECEWISE"
+        ]
+      },
+      "cache-probe-replay-disabled": {
+        "waves": 10,
+        "batch_count": 193,
+        "dp_vector_lengths": [
+          16
+        ],
+        "modes": [
+          "NONE"
+        ]
+      }
+    },
+    "native_capacity_log_lines": [
+      "(Worker_DP0_EP0 pid=7504) INFO 10-30 00:57:08 [gpu_worker.py:663] Available KV cache memory: 78.1 GiB",
+      "(EngineCore_DP3 pid=1987) INFO 10-30 00:57:08 [kv_cache_utils.py:2447] GPU KV cache size: 1,016,542 tokens, Maximum concurrency for 262,144 tokens per request: 3.88x",
+      "(EngineCore_DP2 pid=1985) INFO 10-30 00:57:08 [kv_cache_utils.py:2447] GPU KV cache size: 1,016,542 tokens, Maximum concurrency for 262,144 tokens per request: 3.88x",
+      "(EngineCore_DP1 pid=1983) INFO 10-30 00:57:08 [kv_cache_utils.py:2447] GPU KV cache size: 1,016,542 tokens, Maximum concurrency for 262,144 tokens per request: 3.88x",
+      "(EngineCore_DP0 pid=1981) INFO 10-30 00:57:08 [kv_cache_utils.py:2447] GPU KV cache size: 1,016,542 tokens, Maximum concurrency for 262,144 tokens per request: 3.88x"
+    ],
+    "cache_storage_per_rank_bytes": 83854098432,
+    "cache_storage_total_bytes": 1341665574912,
+    "native_num_blocks_per_rank": [
+      71084
+    ],
+    "retained_compressed_bytes": 1010070,
+    "archives": [
+      {
+        "host": 0,
+        "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/0:0",
+        "attempt_uid": "da5590e0cc37cbac",
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-graph-a1/host-0/outputs-7192cbb67114a99baf3ae9fd07e34b556d02feaaa47790619e4b3b2f3b11b598.tar.zst",
+        "archive_sha256": "7192cbb67114a99baf3ae9fd07e34b556d02feaaa47790619e4b3b2f3b11b598",
+        "readback_sha256": "7192cbb67114a99baf3ae9fd07e34b556d02feaaa47790619e4b3b2f3b11b598",
+        "archive_bytes": 298129
+      },
+      {
+        "host": 1,
+        "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/1:0",
+        "attempt_uid": "471dd13007537185",
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-graph-a1/host-1/outputs-699a938379ba892b69589ae1c3da24f20d62b1edac06c8bbc1c0e04b3ac235a9.tar.zst",
+        "archive_sha256": "699a938379ba892b69589ae1c3da24f20d62b1edac06c8bbc1c0e04b3ac235a9",
+        "readback_sha256": "699a938379ba892b69589ae1c3da24f20d62b1edac06c8bbc1c0e04b3ac235a9",
+        "archive_bytes": 235122
+      },
+      {
+        "host": 2,
+        "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/2:0",
+        "attempt_uid": "a8712201eb1fb12f",
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-graph-a1/host-2/outputs-b37d477319390b19909189b9d6738a427852272baa881fbe1ca67d3609abb3f1.tar.zst",
+        "archive_sha256": "b37d477319390b19909189b9d6738a427852272baa881fbe1ca67d3609abb3f1",
+        "readback_sha256": "b37d477319390b19909189b9d6738a427852272baa881fbe1ca67d3609abb3f1",
+        "archive_bytes": 243068
+      },
+      {
+        "host": 3,
+        "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/3:0",
+        "attempt_uid": "bfcc2d08504af39b",
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-graph-a1/host-3/outputs-6564712a69af4f708c398cd6560bcb048b080c8083cd469f962ed32b4b94bc08.tar.zst",
+        "archive_sha256": "6564712a69af4f708c398cd6560bcb048b080c8083cd469f962ed32b4b94bc08",
+        "readback_sha256": "6564712a69af4f708c398cd6560bcb048b080c8083cd469f962ed32b4b94bc08",
+        "archive_bytes": 233751
+      }
+    ]
+  }
 }
