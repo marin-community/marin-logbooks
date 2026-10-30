@@ -59,6 +59,7 @@ class AblationArm(StrEnum):
     REPLAY_ONLY = "A2"
     IDENTITY_OFF = "A3"
     T3_BRIDGE = "A4"
+    GLM_ON_OFF_FALLBACK = "A6"
 
 
 def frozen_names(arm: AblationArm) -> frozenset[str]:
