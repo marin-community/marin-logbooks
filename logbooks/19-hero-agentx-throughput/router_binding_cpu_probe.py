@@ -38,7 +38,10 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--test-affinity-retention", action="store_true")
+    parser.add_argument("--candidate-wheel", type=Path)
+    parser.add_argument("--candidate-wheel-sha256")
     args = parser.parse_args()
+    assert (args.candidate_wheel is None) == (args.candidate_wheel_sha256 is None)
     args.output.mkdir(parents=True, exist_ok=False)
     observed = []
     pressure = [0.2] * 4
@@ -111,7 +114,17 @@ def main() -> None:
     # The hash control must not inherit a candidate's optional binding mode.
     base.pop("program_binding", None)
     architecture = platform.machine()
-    if architecture == "x86_64":
+    assert architecture in {"x86_64", "aarch64"}
+    if args.candidate_wheel is not None:
+        wheel = args.candidate_wheel.resolve(strict=True)
+        with wheel.open("rb") as source:
+            assert hashlib.file_digest(source, "sha256").hexdigest() == args.candidate_wheel_sha256
+        base["wheel"] = {
+            "url": wheel.as_uri(),
+            "sha256": args.candidate_wheel_sha256,
+            "bytes": wheel.stat().st_size,
+        }
+    elif architecture == "x86_64":
         base["wheel"] = {"url": WHEEL_URL, "sha256": WHEEL_SHA256}
     else:
         assert architecture == "aarch64"
