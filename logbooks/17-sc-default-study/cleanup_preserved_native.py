@@ -12,12 +12,13 @@ from pathlib import Path, PurePosixPath
 
 import preserve
 from discard_native_state import checkpoint_prefix, members, read, verify_model, write
+from iris.resources.state import TERMINAL_TASK_STATES
 from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.s3_compat import configure_coreweave_s3
 
 HUB = "lib/iris/config/marin.yaml"
 TERMINAL_JOBS = {"JOB_STATE_SUCCEEDED", "JOB_STATE_FAILED", "JOB_STATE_KILLED"}
-TERMINAL_TASKS = {"TASK_STATE_SUCCEEDED", "TASK_STATE_FAILED", "TASK_STATE_KILLED"}
+TERMINAL_TASKS = {f"TASK_STATE_{state.name}" for state in TERMINAL_TASK_STATES}
 
 
 def content_manifest(uri):
@@ -50,13 +51,22 @@ def stopped_job(job_id, config):
     job = status["job"]
     if job["job_id"] != job_id or job["state"] not in TERMINAL_JOBS:
         raise ValueError(f"Consumer is not terminal: {job_id}")
-    if not tasks or any(task["state"] not in TERMINAL_TASKS for task in tasks):
+    if not tasks or any(
+        task["state"] not in TERMINAL_TASKS
+        or any(
+            attempt["state"] not in TERMINAL_TASKS or int(attempt.get("finished_at", {}).get("epoch_ms", 0)) <= 0
+            for attempt in task["attempts"]
+        )
+        for task in tasks
+    ):
         raise ValueError(f"Consumer still has unfinished tasks: {job_id}")
     return {
         "job_id": job_id,
         "controller_config": config,
         "state": job["state"],
         "task_states": [task["state"] for task in tasks],
+        "attempt_states": [attempt["state"] for task in tasks for attempt in task["attempts"]],
+        "attempt_finished_at": [attempt["finished_at"] for task in tasks for attempt in task["attempts"]],
         "request_sha256": (
             hashlib.sha256(json.dumps(request, sort_keys=True).encode()).hexdigest() if request is not None else None
         ),
