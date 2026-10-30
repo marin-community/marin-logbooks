@@ -281,22 +281,35 @@ def readback(recipe: dict, source_tensors: dict) -> dict:
     }
 
 
-def run(label: str, code_revision: str) -> None:
+def storage_client(endpoint: str, key: str, secret: str):
+    """Use CoreWeave's required virtual-host addressing, without AWS-only checksums."""
     import boto3  # noqa: PLC0415 - installed in the Iris worker environment
     from botocore.config import Config  # noqa: PLC0415
 
+    return boto3.client(
+        "s3",
+        endpoint_url=endpoint,
+        region_name="auto",
+        aws_access_key_id=key,
+        aws_secret_access_key=secret,
+        config=Config(
+            connect_timeout=30,
+            read_timeout=300,
+            retries={"max_attempts": 3},
+            s3={"addressing_style": "virtual"},
+            request_checksum_calculation="when_required",
+            response_checksum_validation="when_required",
+        ),
+    )
+
+
+def run(label: str, code_revision: str) -> None:
     if label not in LABELS or len(code_revision) != 40:
         raise ValueError("Require an immutable four-arm merge identity")
     key, secret = (require_secret(k) for k in ("CW_KEY_ID", "CW_KEY_SECRET"))
     endpoint = s3_endpoint(StoreType.COREWEAVE)
     configure_fsspec_s3(endpoint, key=key, secret=secret)
-    client = boto3.client(
-        "s3",
-        endpoint_url=endpoint,
-        aws_access_key_id=key,
-        aws_secret_access_key=secret,
-        config=Config(connect_timeout=30, read_timeout=300, retries={"max_attempts": 3}),
-    )
+    client = storage_client(endpoint, key, secret)
     recipe_path = ARTIFACTS / f"{label}.json"
     recipe = json.loads(artifact(recipe_path.name))
     root = recipe["output"].rsplit("/hf", 1)[0]
