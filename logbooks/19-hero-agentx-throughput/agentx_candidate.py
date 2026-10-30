@@ -144,8 +144,17 @@ def main() -> None:
             if "agentx" not in command or "profile" not in command:
                 BASE_RUN_LOGGED(command, environment, log, timeout=timeout)
                 return
+            # The pinned warmup is count driven, so its grace setting is not
+            # a wall-clock bound. Use the recipe's existing task limit.
+            series = native.load_series(native.series_path(manifest["profile"]))
+            process_timeout = series["task_timeout"]
+            assert process_timeout >= timeout
+            (log.parent / "client-process-timeout.json").write_text(
+                json.dumps({"native_requested": timeout, "effective": process_timeout, "source": "series.task_timeout"})
+                + "\n"
+            )
             with upstream_router(manifest["router"], log.parent):
-                BASE_RUN_LOGGED(command, environment, log, timeout=timeout)
+                BASE_RUN_LOGGED(command, environment, log, timeout=process_timeout)
 
         native.benchmark_command = router_benchmark_command
         native.run_logged = run_with_router
