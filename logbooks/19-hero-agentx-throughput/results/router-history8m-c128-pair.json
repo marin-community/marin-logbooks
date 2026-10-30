@@ -1,0 +1,110 @@
+{
+  "status": "both_full_hours_valid_small_difference_unconfirmed",
+  "comparison": "Released Router0.1.16 consistent_hash versus the private Router0.1.16 history8M wheel plus binding_only cache_aware conversation placement. This is a combined Router change, not an isolated history-cap throughput experiment.",
+  "common_controls": "16 GB200s, TP1/DP16/EP16/PP1, same released BF16 model wheel and native KV precision, NONE graphs, 2048-token scheduling budget, GPU-local NUMA CPU binding, memory0.95, C128. All393 source sessions remain eligible, native context262144/seed42/count warmup/replay/cache busting/3600s sending/40s drain/validity gates unchanged. Fresh independent servers, disjoint nodes and32physical GPUs. No GPU profiler in either hour.",
+  "source_commits": {
+    "control": "5cf62a4621cd2b1a10fb3f994c763927fe075d6b",
+    "candidate": "03c3b5183d0a047f48499de5b5f56707eb0f155b"
+  },
+  "result_files": {
+    "control": "stock16-numa2k95-c128-router-control-r1.json",
+    "candidate": "router-history8m16-numa2k95-c128-r1.json"
+  },
+  "output_tokens_per_second": {
+    "control": 532.27189,
+    "candidate": 540.53323
+  },
+  "candidate_relative_difference": 0.015520902296756622,
+  "reported_weighted_prefix_hit_fraction": {
+    "control": 0.31083817014474924,
+    "candidate": 0.2507914094266239
+  },
+  "initial_prefill_local_compute_tokens": {
+    "control": 145118945.0,
+    "candidate": 164737039.0
+  },
+  "preemptions": {
+    "control": 33.0,
+    "candidate": 53.0
+  },
+  "raw_archive_total_bytes": 101914887,
+  "limits": [
+    "One paired comparison. Live completion timing changes which requests finish and their content/lengths. Native count warmup also produces different handoffs.",
+    "Neighboring batch Pods share rack fabric during part of the campaign. Provider snapshots record placement exposure, not their compute phase. The22:36snapshot has no other owner Pods, but it does not make the preceding windows quiet.",
+    "Private-Router export has132negative-counter warnings while sampled serving process lifetimes remain stable; reference has0. Do not infer reset offsets. Reported counter totals use native final-minus-reference semantics, and native per-timeslice negative increments are clipped. Their cause is unknown.",
+    "The initial-prefill counter excludes repeat work after request preemption. Queries minus hits is not total physical model work."
+  ],
+  "decision": "Keep the released Router as the working recipe. The1.55% output difference does not establish a repeatable gain, reported reuse is lower, and the private wheel adds build/qualification maintenance. Revisit GPU gaps and collective waiting using the qualified native CUDA API/Nsight diagnostic on the same released-Router recipe as the earlier Torch profile. Do not claim a private-Router throughput gain or isolated history-cap benefit.",
+  "next_diagnostic": "stock16-numa2k95-agentx-nsys-r1",
+  "metadata_archive": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/admission/router-c128-pair-completed-20261030/metadata-0a228790c1269321bc82eb25d8bd5aaa3ceb0f5354d270de8e212143f7a3ba5e.tar.zst",
+    "sha256": "0a228790c1269321bc82eb25d8bd5aaa3ceb0f5354d270de8e212143f7a3ba5e",
+    "readback_sha256": "0a228790c1269321bc82eb25d8bd5aaa3ceb0f5354d270de8e212143f7a3ba5e",
+    "bytes": 222448,
+    "scope": "Selected completed-pair and next-profile provenance, owned driver sources, four finished candidate wrapper logs and filtered provider snapshots. Native allocation state, kubeconfig, credentials, environment dumps and rotating login stores are excluded. Benchmark raw host archives and aggregates are retained separately."
+  },
+  "reference_terminal_native_status": {
+    "job": "/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a",
+    "state": "succeeded",
+    "failure_count": 0,
+    "preemption_count": 0,
+    "started_unix": 1793393428.702,
+    "finished_unix": 1793399765.925,
+    "tasks": [
+      {
+        "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/0",
+        "state": "succeeded",
+        "attempt_uid": "96c0d60050baba2a",
+        "pod": "iris-romain-hero-agentx-stock16-num-905f5232-0-96c0d60050baba2a",
+        "node": "sfdqxs64",
+        "started_unix": 1793393468.549,
+        "finished_unix": 1793399765.925,
+        "source_uri": "s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/0/96c0d60050baba2a/outputs.tar.zst",
+        "source_sha256": "318984eb6023d72751379db1c046a71b262fd7cba04b99e5a09d8290da7c4fe8",
+        "archive_state": "uploaded"
+      },
+      {
+        "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/1",
+        "state": "succeeded",
+        "attempt_uid": "a6791c49a230effd",
+        "pod": "iris-romain-hero-agentx-stock16-num-511d04d2-0-a6791c49a230effd",
+        "node": "sj1txs64",
+        "started_unix": 1793393468.549,
+        "finished_unix": 1793399732.342,
+        "source_uri": "s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/1/a6791c49a230effd/outputs.tar.zst",
+        "source_sha256": "419b0dfca71976c41e79084db1dc7850e8012b7f7155c584ffded1a04cfc9b20",
+        "archive_state": "uploaded"
+      },
+      {
+        "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/2",
+        "state": "succeeded",
+        "attempt_uid": "73a9085bd706ec4f",
+        "pod": "iris-romain-hero-agentx-stock16-num-44749502-0-73a9085bd706ec4f",
+        "node": "sj9wxs64",
+        "started_unix": 1793393434.702,
+        "finished_unix": 1793399727.313,
+        "source_uri": "s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/2/73a9085bd706ec4f/outputs.tar.zst",
+        "source_sha256": "bb0870f9751f84c2e7f038d734f1c84764a084c6f2cbdee9e7af13ee3fc8b956",
+        "archive_state": "uploaded"
+      },
+      {
+        "task_id": "/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/3",
+        "state": "succeeded",
+        "attempt_uid": "32a735b425f8eda4",
+        "pod": "iris-romain-hero-agentx-stock16-num-412967c1-0-32a735b425f8eda4",
+        "node": "sjtsxs64",
+        "started_unix": 1793393434.702,
+        "finished_unix": 1793399716.161,
+        "source_uri": "s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/hero-agentx-stock16-numa2k95-c128-router-control-r1-01a1846a/3/32a735b425f8eda4/outputs.tar.zst",
+        "source_sha256": "372e67c46388aac54c5808f3bc40c9c4314f206f16ef53b139b2c6ef7b3ea4ef",
+        "archive_state": "uploaded"
+      }
+    ]
+  },
+  "next_diagnostic_execution": {
+    "source_commit": "aee1de9f26451200134bee1ec013d8b740a3323b",
+    "started_utc": "2026-10-30T22:54:48.724342+00:00",
+    "output": "/iris/outputs/stock16-numa2k95-agentx-nsys-r1",
+    "scope": "Fresh diagnostic has started after both throughput windows and their output validation. A successful all-rank capture is pending."
+  }
+}

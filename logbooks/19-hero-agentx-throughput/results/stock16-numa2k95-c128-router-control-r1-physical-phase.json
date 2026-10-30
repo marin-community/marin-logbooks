@@ -1,0 +1,568 @@
+{
+  "scope": "One physical endpoint aggregating all 16 engines. Native profiling phase plus normal drain. Counter totals are final minus reference. CSV gauge summaries are rounded to four decimals.",
+  "source_archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock16-numa2k95-c128-router-control-r1/host-0/96c0d60050baba2a/outputs-a95ae1f4889a5f3c9a398d2d333ee3e7c470f05b25a572dce6c076273f6950c1.tar.zst",
+  "source_archive_sha256": "a95ae1f4889a5f3c9a398d2d333ee3e7c470f05b25a572dce6c076273f6950c1",
+  "csv_sha256": "a78740fb9cd2a6f1be28b9a3495519fd00ecc521d6791b8e7cc2ff7c07182016",
+  "chosen_endpoint": "127.0.0.1:38201",
+  "queries": 212108056.0,
+  "hits": 65931280.0,
+  "weighted_hit_fraction": 0.31083817014474924,
+  "initial_prefill_local_compute_tokens": 145118945.0,
+  "initial_prefill_counter_limitation": "Excludes repeat prefill after request preemption. Phase admissions and first-output accounting differ; queries minus hits is not total physical work.",
+  "preemptions": 33.0,
+  "mean_rank_kv_occupancy": 0.6971499999999999,
+  "max_running_requests": 22.0,
+  "rank_query_max_over_mean": 1.4631727896275661,
+  "rank_initial_prefill_max_over_mean": 1.7432383621587106,
+  "counter_reset_warning_count": 0,
+  "counter_warning_lines": [],
+  "observed_serving_lifetimes_stable": true,
+  "counter_warning_interpretation": "Export warns on negative increments. Totals remain max(final minus reference,0), without inferred reset offsets; per-timeslice negative deltas are clipped. Stable sampled serving lifetimes show no observed model restart. Cause of negative samples is unknown.",
+  "by_rank": {
+    "0": {
+      "queries": 13455359.0,
+      "hits": 1194352.0,
+      "logical_prompt_tokens": 13399605.0,
+      "generated_tokens": 146222.0,
+      "preemptions": 6.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1194352.0,
+      "local_compute": 12205253.0,
+      "kv_occupancy": {
+        "avg": 0.8214,
+        "min": 0.0,
+        "max": 0.9999,
+        "p50": 0.8853,
+        "p95": 0.9826,
+        "p99": 0.9901
+      },
+      "running_requests": {
+        "avg": 11.2348,
+        "min": 0.0,
+        "max": 16.0,
+        "p50": 12.0,
+        "p95": 15.0,
+        "p99": 16.0
+      },
+      "waiting_requests": {
+        "avg": 3.9945,
+        "min": 0.0,
+        "max": 11.0,
+        "p50": 4.0,
+        "p95": 8.0,
+        "p99": 10.0
+      }
+    },
+    "1": {
+      "queries": 19396921.0,
+      "hits": 4753520.0,
+      "logical_prompt_tokens": 19396921.0,
+      "generated_tokens": 168436.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 4753520.0,
+      "local_compute": 14643401.0,
+      "kv_occupancy": {
+        "avg": 0.7786,
+        "min": 0.0,
+        "max": 0.9949,
+        "p50": 0.847,
+        "p95": 0.9607,
+        "p99": 0.9799
+      },
+      "running_requests": {
+        "avg": 12.9755,
+        "min": 0.0,
+        "max": 20.0,
+        "p50": 14.0,
+        "p95": 18.0,
+        "p99": 19.0
+      },
+      "waiting_requests": {
+        "avg": 1.3423,
+        "min": 0.0,
+        "max": 8.0,
+        "p50": 0.0,
+        "p95": 5.0,
+        "p99": 6.0
+      }
+    },
+    "2": {
+      "queries": 10996650.0,
+      "hits": 1077024.0,
+      "logical_prompt_tokens": 10996650.0,
+      "generated_tokens": 140106.0,
+      "preemptions": 1.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1077024.0,
+      "local_compute": 9919626.0,
+      "kv_occupancy": {
+        "avg": 0.8565,
+        "min": 0.0,
+        "max": 0.9997,
+        "p50": 0.9236,
+        "p95": 0.9886,
+        "p99": 0.9914
+      },
+      "running_requests": {
+        "avg": 10.6897,
+        "min": 0.0,
+        "max": 15.0,
+        "p50": 11.0,
+        "p95": 14.0,
+        "p99": 15.0
+      },
+      "waiting_requests": {
+        "avg": 3.2004,
+        "min": 0.0,
+        "max": 9.0,
+        "p50": 3.0,
+        "p95": 7.0,
+        "p99": 8.0
+      }
+    },
+    "3": {
+      "queries": 10726116.0,
+      "hits": 1172272.0,
+      "logical_prompt_tokens": 10530571.0,
+      "generated_tokens": 165648.0,
+      "preemptions": 2.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1172272.0,
+      "local_compute": 9358299.0,
+      "kv_occupancy": {
+        "avg": 0.8648,
+        "min": 0.0,
+        "max": 0.9981,
+        "p50": 0.9257,
+        "p95": 0.9841,
+        "p99": 0.9944
+      },
+      "running_requests": {
+        "avg": 12.5744,
+        "min": 0.0,
+        "max": 17.0,
+        "p50": 13.0,
+        "p95": 16.0,
+        "p99": 17.0
+      },
+      "waiting_requests": {
+        "avg": 2.061,
+        "min": 0.0,
+        "max": 6.0,
+        "p50": 2.0,
+        "p95": 5.0,
+        "p99": 6.0
+      }
+    },
+    "4": {
+      "queries": 14760236.0,
+      "hits": 781184.0,
+      "logical_prompt_tokens": 14672451.0,
+      "generated_tokens": 178014.0,
+      "preemptions": 4.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 781184.0,
+      "local_compute": 13891267.0,
+      "kv_occupancy": {
+        "avg": 0.829,
+        "min": 0.0,
+        "max": 0.9999,
+        "p50": 0.9152,
+        "p95": 0.9785,
+        "p99": 0.9893
+      },
+      "running_requests": {
+        "avg": 13.6389,
+        "min": 0.0,
+        "max": 22.0,
+        "p50": 14.0,
+        "p95": 19.0,
+        "p99": 20.0
+      },
+      "waiting_requests": {
+        "avg": 12.3366,
+        "min": 0.0,
+        "max": 25.0,
+        "p50": 15.0,
+        "p95": 21.0,
+        "p99": 24.0
+      }
+    },
+    "5": {
+      "queries": 10808695.0,
+      "hits": 7118528.0,
+      "logical_prompt_tokens": 10808695.0,
+      "generated_tokens": 118610.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 7118528.0,
+      "local_compute": 3690167.0,
+      "kv_occupancy": {
+        "avg": 0.5055,
+        "min": 0.0,
+        "max": 0.8712,
+        "p50": 0.4898,
+        "p95": 0.7655,
+        "p99": 0.8619
+      },
+      "running_requests": {
+        "avg": 8.8947,
+        "min": 0.0,
+        "max": 14.0,
+        "p50": 9.0,
+        "p95": 12.0,
+        "p99": 14.0
+      },
+      "waiting_requests": {
+        "avg": 0.0271,
+        "min": 0.0,
+        "max": 2.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 1.0
+      }
+    },
+    "6": {
+      "queries": 16748371.0,
+      "hits": 839264.0,
+      "logical_prompt_tokens": 16650321.0,
+      "generated_tokens": 136311.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 839264.0,
+      "local_compute": 15811057.0,
+      "kv_occupancy": {
+        "avg": 0.8178,
+        "min": 0.0,
+        "max": 0.9961,
+        "p50": 0.8668,
+        "p95": 0.9763,
+        "p99": 0.9862
+      },
+      "running_requests": {
+        "avg": 10.5826,
+        "min": 0.0,
+        "max": 17.0,
+        "p50": 11.0,
+        "p95": 15.0,
+        "p99": 16.0
+      },
+      "waiting_requests": {
+        "avg": 13.0048,
+        "min": 0.0,
+        "max": 23.0,
+        "p50": 15.0,
+        "p95": 20.0,
+        "p99": 22.0
+      }
+    },
+    "7": {
+      "queries": 10867571.0,
+      "hits": 3795216.0,
+      "logical_prompt_tokens": 10744961.0,
+      "generated_tokens": 125625.0,
+      "preemptions": 17.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 3795216.0,
+      "local_compute": 6949745.0,
+      "kv_occupancy": {
+        "avg": 0.8069,
+        "min": 0.0,
+        "max": 1.0,
+        "p50": 0.854,
+        "p95": 0.9841,
+        "p99": 0.9948
+      },
+      "running_requests": {
+        "avg": 9.604,
+        "min": 0.0,
+        "max": 15.0,
+        "p50": 10.0,
+        "p95": 13.0,
+        "p99": 14.0
+      },
+      "waiting_requests": {
+        "avg": 1.5451,
+        "min": 0.0,
+        "max": 6.0,
+        "p50": 1.0,
+        "p95": 4.0,
+        "p99": 5.0
+      }
+    },
+    "8": {
+      "queries": 17378633.0,
+      "hits": 2264848.0,
+      "logical_prompt_tokens": 17185503.0,
+      "generated_tokens": 156829.0,
+      "preemptions": 2.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 2264848.0,
+      "local_compute": 14920655.0,
+      "kv_occupancy": {
+        "avg": 0.7853,
+        "min": 0.0,
+        "max": 0.9989,
+        "p50": 0.8496,
+        "p95": 0.9701,
+        "p99": 0.9827
+      },
+      "running_requests": {
+        "avg": 12.1353,
+        "min": 0.0,
+        "max": 18.0,
+        "p50": 13.0,
+        "p95": 16.0,
+        "p99": 17.0
+      },
+      "waiting_requests": {
+        "avg": 1.6507,
+        "min": 0.0,
+        "max": 6.0,
+        "p50": 1.0,
+        "p95": 5.0,
+        "p99": 6.0
+      }
+    },
+    "9": {
+      "queries": 16281368.0,
+      "hits": 14507120.0,
+      "logical_prompt_tokens": 16281368.0,
+      "generated_tokens": 125338.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 14507120.0,
+      "local_compute": 1774248.0,
+      "kv_occupancy": {
+        "avg": 0.534,
+        "min": 0.0,
+        "max": 0.7102,
+        "p50": 0.5628,
+        "p95": 0.6585,
+        "p99": 0.6888
+      },
+      "running_requests": {
+        "avg": 9.3028,
+        "min": 0.0,
+        "max": 14.0,
+        "p50": 10.0,
+        "p95": 12.0,
+        "p99": 13.0
+      },
+      "waiting_requests": {
+        "avg": 0.0206,
+        "min": 0.0,
+        "max": 2.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 1.0
+      }
+    },
+    "10": {
+      "queries": 7393451.0,
+      "hits": 5292736.0,
+      "logical_prompt_tokens": 7393451.0,
+      "generated_tokens": 97424.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 5292736.0,
+      "local_compute": 2100715.0,
+      "kv_occupancy": {
+        "avg": 0.4121,
+        "min": 0.0,
+        "max": 0.8324,
+        "p50": 0.4437,
+        "p95": 0.69,
+        "p99": 0.8157
+      },
+      "running_requests": {
+        "avg": 7.2585,
+        "min": 0.0,
+        "max": 12.0,
+        "p50": 7.0,
+        "p95": 10.0,
+        "p99": 12.0
+      },
+      "waiting_requests": {
+        "avg": 0.0587,
+        "min": 0.0,
+        "max": 5.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 3.0
+      }
+    },
+    "11": {
+      "queries": 12578676.0,
+      "hits": 1169264.0,
+      "logical_prompt_tokens": 12498198.0,
+      "generated_tokens": 166010.0,
+      "preemptions": 1.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1169264.0,
+      "local_compute": 11328934.0,
+      "kv_occupancy": {
+        "avg": 0.8319,
+        "min": 0.0,
+        "max": 0.9998,
+        "p50": 0.9052,
+        "p95": 0.9849,
+        "p99": 0.9883
+      },
+      "running_requests": {
+        "avg": 12.6396,
+        "min": 0.0,
+        "max": 20.0,
+        "p50": 13.0,
+        "p95": 17.0,
+        "p99": 19.0
+      },
+      "waiting_requests": {
+        "avg": 8.0387,
+        "min": 0.0,
+        "max": 16.0,
+        "p50": 9.0,
+        "p95": 14.0,
+        "p99": 15.0
+      }
+    },
+    "12": {
+      "queries": 14967046.0,
+      "hits": 1223056.0,
+      "logical_prompt_tokens": 14742567.0,
+      "generated_tokens": 121472.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1223056.0,
+      "local_compute": 13519511.0,
+      "kv_occupancy": {
+        "avg": 0.8045,
+        "min": 0.0,
+        "max": 0.9981,
+        "p50": 0.8777,
+        "p95": 0.9815,
+        "p99": 0.9896
+      },
+      "running_requests": {
+        "avg": 9.4619,
+        "min": 0.0,
+        "max": 16.0,
+        "p50": 10.0,
+        "p95": 13.0,
+        "p99": 15.0
+      },
+      "waiting_requests": {
+        "avg": 7.4025,
+        "min": 0.0,
+        "max": 15.0,
+        "p50": 7.0,
+        "p95": 13.0,
+        "p99": 15.0
+      }
+    },
+    "13": {
+      "queries": 14805602.0,
+      "hits": 8547552.0,
+      "logical_prompt_tokens": 14805602.0,
+      "generated_tokens": 133347.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 8547552.0,
+      "local_compute": 6258050.0,
+      "kv_occupancy": {
+        "avg": 0.7196,
+        "min": 0.0,
+        "max": 0.9969,
+        "p50": 0.7992,
+        "p95": 0.9506,
+        "p99": 0.9805
+      },
+      "running_requests": {
+        "avg": 10.0771,
+        "min": 0.0,
+        "max": 18.0,
+        "p50": 10.0,
+        "p95": 15.0,
+        "p99": 16.0
+      },
+      "waiting_requests": {
+        "avg": 0.2301,
+        "min": 0.0,
+        "max": 7.0,
+        "p50": 0.0,
+        "p95": 2.0,
+        "p99": 4.0
+      }
+    },
+    "14": {
+      "queries": 4513467.0,
+      "hits": 3566576.0,
+      "logical_prompt_tokens": 4513467.0,
+      "generated_tokens": 66878.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 3566576.0,
+      "local_compute": 946891.0,
+      "kv_occupancy": {
+        "avg": 0.1592,
+        "min": 0.0,
+        "max": 0.3304,
+        "p50": 0.1521,
+        "p95": 0.2608,
+        "p99": 0.3153
+      },
+      "running_requests": {
+        "avg": 4.9486,
+        "min": 0.0,
+        "max": 11.0,
+        "p50": 5.0,
+        "p95": 8.0,
+        "p99": 9.0
+      },
+      "waiting_requests": {
+        "avg": 0.0049,
+        "min": 0.0,
+        "max": 1.0,
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      }
+    },
+    "15": {
+      "queries": 16429894.0,
+      "hits": 8628768.0,
+      "logical_prompt_tokens": 16429894.0,
+      "generated_tokens": 144667.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 8628768.0,
+      "local_compute": 7801126.0,
+      "kv_occupancy": {
+        "avg": 0.6273,
+        "min": 0.0,
+        "max": 0.9969,
+        "p50": 0.6819,
+        "p95": 0.9195,
+        "p99": 0.956
+      },
+      "running_requests": {
+        "avg": 11.0278,
+        "min": 0.0,
+        "max": 18.0,
+        "p50": 11.0,
+        "p95": 16.0,
+        "p99": 17.0
+      },
+      "waiting_requests": {
+        "avg": 0.2589,
+        "min": 0.0,
+        "max": 6.0,
+        "p50": 0.0,
+        "p95": 2.0,
+        "p99": 4.0
+      }
+    }
+  },
+  "analysis_script_sha256": "7652f3f75fd94590035b78f8dd5f5bd89ef033db67093db77da9bf15bb6c18b7"
+}
