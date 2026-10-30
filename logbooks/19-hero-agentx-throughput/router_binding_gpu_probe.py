@@ -41,6 +41,23 @@ def completion_logprobs(response: dict) -> dict:
     }
 
 
+def wait_queries(url: str, before: dict, expected: int, output: Path) -> dict:
+    deadline = time.monotonic() + 15
+    while True:
+        after = counters(url, output)
+        observed = sum(
+            value - before[(metric, rank)]
+            for (metric, rank), value in after.items()
+            if metric == "vllm:prefix_cache_queries_total"
+        )
+        assert observed <= expected, (observed, expected)
+        if observed == expected:
+            return after
+        if time.monotonic() >= deadline:
+            raise TimeoutError(f"Prompt-query metrics did not reach {expected}: {observed}")
+        time.sleep(0.1)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -93,6 +110,7 @@ def main() -> None:
                 "logprobs": True,
                 "top_logprobs": 20,
                 "return_tokens_as_token_ids": True,
+                "return_token_ids": True,
                 "stream": False,
                 "cache_salt": salt + namespace,
             }
@@ -100,7 +118,9 @@ def main() -> None:
             started = time.time()
             response = post(url, payload, salt + name)
             elapsed = time.time() - started
-            after = counters(config["backend_url"], args.output / f"{name}-after.prom")
+            prompt = response["prompt_token_ids"]
+            assert len(prompt) == response["usage"]["prompt_tokens"] and len(prompt) >= 8192
+            after = wait_queries(config["backend_url"], before, len(prompt), args.output / f"{name}-after.prom")
             deltas = [
                 {"metric": metric, "rank": rank, "delta": value - before[(metric, rank)]}
                 for (metric, rank), value in after.items()
@@ -113,6 +133,18 @@ def main() -> None:
             owner = owners[0]
             reference_payload = payload | {"cache_salt": salt + "-reference-" + name}
             reference = post(config["backend_url"], reference_payload, salt + "-reference-" + name, owner)
+            assert reference["prompt_token_ids"] == prompt
+            reference_after = wait_queries(
+                config["backend_url"], after, len(prompt), args.output / f"{name}-reference-after.prom"
+            )
+            assert (
+                sum(
+                    value - after[(metric, rank)]
+                    for (metric, rank), value in reference_after.items()
+                    if metric == "vllm:prefix_cache_hits_total"
+                )
+                == 0
+            )
             comparison = compare(completion_logprobs(reference), completion_logprobs(response))
             assert comparison["same_tokens"] and comparison["finite_logprobs"]
             assert comparison["max_shared_logprob_absolute_delta"] == 0
@@ -145,7 +177,13 @@ def main() -> None:
         assert by_name[name]["owner"] == alpha_owner
         assert by_name[name]["hit_tokens"] >= 8192
     assert by_name["shared-a"]["hit_tokens"] == 0
-    assert by_name["other-tree"]["hit_tokens"] == 0
+    alpha_prompt = by_name["shared-a"]["response"]["prompt_token_ids"]
+    beta_prompt = by_name["other-tree"]["response"]["prompt_token_ids"]
+    shared_wrapper = next(
+        (i for i, (a, b) in enumerate(zip(alpha_prompt, beta_prompt, strict=False)) if a != b),
+        min(len(alpha_prompt), len(beta_prompt)),
+    )
+    assert by_name["other-tree"]["hit_tokens"] <= shared_wrapper
     assert by_name["other-tree-repeat"]["hit_tokens"] >= 8192
     result = {
         "status": "passed",
@@ -157,6 +195,7 @@ def main() -> None:
         ),
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "router": config,
+        "other_tree_exact_common_prompt_prefix_tokens": shared_wrapper,
         "waves": [{k: row[k] for k in ("wave", "owner", "hit_tokens", "comparison")} for row in rows],
     }
     (args.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
