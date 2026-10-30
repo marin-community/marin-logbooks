@@ -367,6 +367,15 @@ uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit \
   --version 2026.10.30.22 --output /tmp/ema-gram-quarter-resolved.json --run
 ```
 
+### 2026-10-30 20:32 UTC — Quarter-power pilot submitted
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-quarter-pilot-20261030`
+at 20:31:35 UTC from clean published source
+`9fc93eb412368c03470fb8cfb0dda0e9957519dc`. The 16.0 MB bundle contains the
+published quarter-power plan and version `2026.10.30.22`. This is a second
+independent pilot; the baseline continues unchanged. Submission alone does
+not establish TPU assignment, training progress or spectral-power cost.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
