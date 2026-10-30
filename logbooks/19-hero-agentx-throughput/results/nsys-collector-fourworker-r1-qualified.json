@@ -1,0 +1,625 @@
+{
+  "utc": "2026-10-30T22:48:05.244140+00:00",
+  "status": "collector_gpu_qualified",
+  "workers": [
+    {
+      "device": 0,
+      "name": "NVIDIA GB200",
+      "pid": 60442,
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "known_matmul_result": 64
+    },
+    {
+      "device": 1,
+      "name": "NVIDIA GB200",
+      "pid": 60443,
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "known_matmul_result": 64
+    },
+    {
+      "device": 2,
+      "name": "NVIDIA GB200",
+      "pid": 60444,
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "known_matmul_result": 64
+    },
+    {
+      "device": 3,
+      "name": "NVIDIA GB200",
+      "pid": 60445,
+      "torch": "2.14.1+cu132",
+      "cuda": "13.2",
+      "known_matmul_result": 64
+    }
+  ],
+  "kernel_count_by_device": {
+    "0": 3,
+    "1": 3,
+    "2": 3,
+    "3": 3
+  },
+  "environment_table_row_counts": {},
+  "report_sha256": "6d5a5eb799e04229b82afea54b2dc1e157566dc498a7ec4f6e557b537e84bc61",
+  "report_bytes": 51892,
+  "sqlite_sha256": "37784adf38069b0a9001306d645bd4d2f395b7f1e2f46d4b1a83e5c133f9be71",
+  "sqlite_bytes": 290816,
+  "export_returncode": 0,
+  "reused_successful_sqlite_export": true,
+  "system_attribute_rows": 66,
+  "system_attribute_process_environment_key_matches": 0,
+  "system_attribute_credential_variable_names": 0,
+  "validation_correction": "The first CPU report check rejected TARGET_INFO_SYSTEM_ENV hardware/OS attributes merely because its table name contains env. The installed Nsight help confirms discard-environment omits process variables. Those system attributes contain no process-environment key names or credential-variable names. The already successful SQLite export is reused unchanged; no GPU rerun or raw report edit.",
+  "gpu_empty_after": true,
+  "tables": [
+    "ANALYSIS_DETAILS",
+    "ANALYSIS_FILE",
+    "CUPTI_ACTIVITY_KIND_KERNEL",
+    "CUPTI_ACTIVITY_KIND_RUNTIME",
+    "CUPTI_ACTIVITY_KIND_SYNCHRONIZATION",
+    "DIAGNOSTIC_EVENT",
+    "ENUM_CUDA_DEV_MEM_EVENT_OPER",
+    "ENUM_CUDA_FUNC_CACHE_CONFIG",
+    "ENUM_CUDA_KERNEL_LAUNCH_TYPE",
+    "ENUM_CUDA_MEMCPY_OPER",
+    "ENUM_CUDA_MEMPOOL_OPER",
+    "ENUM_CUDA_MEMPOOL_TYPE",
+    "ENUM_CUDA_MEM_KIND",
+    "ENUM_CUDA_SHARED_MEM_LIMIT_CONFIG",
+    "ENUM_CUDA_UNIF_MEM_ACCESS_TYPE",
+    "ENUM_CUDA_UNIF_MEM_MIGRATION",
+    "ENUM_CUPTI_OVERHEAD_TYPE",
+    "ENUM_CUPTI_STREAM_TYPE",
+    "ENUM_CUPTI_SYNC_TYPE",
+    "ENUM_DIAGNOSTIC_SEVERITY_LEVEL",
+    "ENUM_DIAGNOSTIC_SOURCE_TYPE",
+    "ENUM_DIAGNOSTIC_TIMESTAMP_SOURCE",
+    "ENUM_NSYS_EVENT_CLASS",
+    "ENUM_NSYS_EVENT_TYPE",
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_FLAGS",
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_PROPERTY",
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_TYPE",
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_TYPE",
+    "ENUM_NSYS_GENERIC_EVENT_GROUP",
+    "ENUM_NSYS_GENERIC_EVENT_SOURCE",
+    "META_DATA_CAPTURE",
+    "META_DATA_EXPORT",
+    "NVTX_EVENTS",
+    "PROCESSES",
+    "PROFILER_OVERHEAD",
+    "ProcessStreams",
+    "StringIds",
+    "TARGET_INFO_CUDA_CONTEXT_INFO",
+    "TARGET_INFO_CUDA_DEVICE",
+    "TARGET_INFO_CUDA_STREAM",
+    "TARGET_INFO_GPU",
+    "TARGET_INFO_NIC_INFO",
+    "TARGET_INFO_SESSION_START_TIME",
+    "TARGET_INFO_SYSTEM_ENV",
+    "ThreadNames"
+  ],
+  "columns": {
+    "ANALYSIS_DETAILS": [
+      "globalVid",
+      "duration",
+      "startTime",
+      "stopTime"
+    ],
+    "ANALYSIS_FILE": [
+      "id",
+      "filename",
+      "contentId",
+      "globalPid"
+    ],
+    "CUPTI_ACTIVITY_KIND_KERNEL": [
+      "start",
+      "end",
+      "deviceId",
+      "contextId",
+      "greenContextId",
+      "streamId",
+      "correlationId",
+      "globalPid",
+      "demangledName",
+      "shortName",
+      "mangledName",
+      "launchType",
+      "cacheConfig",
+      "registersPerThread",
+      "gridX",
+      "gridY",
+      "gridZ",
+      "blockX",
+      "blockY",
+      "blockZ",
+      "staticSharedMemory",
+      "dynamicSharedMemory",
+      "localMemoryPerThread",
+      "localMemoryTotal",
+      "gridId",
+      "sharedMemoryExecuted",
+      "graphNodeId",
+      "sharedMemoryLimitConfig",
+      "qmdBulkReleaseDone",
+      "qmdPreexitDone",
+      "qmdLastCtaDone",
+      "graphId",
+      "clusterX",
+      "clusterY",
+      "clusterZ",
+      "clusterSchedulingPolicy",
+      "maxPotentialClusterSize",
+      "maxActiveClusters",
+      "sharedMemoryRequestedPercentage",
+      "tensorSizeMinusOneElements"
+    ],
+    "CUPTI_ACTIVITY_KIND_RUNTIME": [
+      "start",
+      "end",
+      "eventClass",
+      "globalTid",
+      "correlationId",
+      "nameId",
+      "returnValue",
+      "callchainId"
+    ],
+    "CUPTI_ACTIVITY_KIND_SYNCHRONIZATION": [
+      "start",
+      "end",
+      "deviceId",
+      "contextId",
+      "greenContextId",
+      "streamId",
+      "correlationId",
+      "globalPid",
+      "deprecatedSyncType",
+      "syncType",
+      "eventId",
+      "eventSyncId"
+    ],
+    "DIAGNOSTIC_EVENT": [
+      "timestamp",
+      "timestampType",
+      "source",
+      "severity",
+      "text",
+      "globalPid"
+    ],
+    "ENUM_CUDA_DEV_MEM_EVENT_OPER": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_FUNC_CACHE_CONFIG": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_KERNEL_LAUNCH_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_MEMCPY_OPER": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_MEMPOOL_OPER": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_MEMPOOL_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_MEM_KIND": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_SHARED_MEM_LIMIT_CONFIG": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_UNIF_MEM_ACCESS_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUDA_UNIF_MEM_MIGRATION": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUPTI_OVERHEAD_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUPTI_STREAM_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_CUPTI_SYNC_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_DIAGNOSTIC_SEVERITY_LEVEL": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_DIAGNOSTIC_SOURCE_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_DIAGNOSTIC_TIMESTAMP_SOURCE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_EVENT_CLASS": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_EVENT_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_FLAGS": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_PROPERTY": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_GENERIC_EVENT_FIELD_TYPE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_GENERIC_EVENT_GROUP": [
+      "id",
+      "name",
+      "label"
+    ],
+    "ENUM_NSYS_GENERIC_EVENT_SOURCE": [
+      "id",
+      "name",
+      "label"
+    ],
+    "META_DATA_CAPTURE": [
+      "name",
+      "value"
+    ],
+    "META_DATA_EXPORT": [
+      "name",
+      "value"
+    ],
+    "NVTX_EVENTS": [
+      "start",
+      "end",
+      "eventType",
+      "rangeId",
+      "category",
+      "color",
+      "text",
+      "globalTid",
+      "endGlobalTid",
+      "textId",
+      "domainId",
+      "uint64Value",
+      "int64Value",
+      "doubleValue",
+      "uint32Value",
+      "int32Value",
+      "floatValue",
+      "jsonTextId",
+      "jsonText",
+      "binaryData"
+    ],
+    "PROCESSES": [
+      "globalPid",
+      "pid",
+      "name"
+    ],
+    "PROFILER_OVERHEAD": [
+      "start",
+      "end",
+      "globalTid",
+      "nameId",
+      "overheadType"
+    ],
+    "ProcessStreams": [
+      "globalPid",
+      "filenameId",
+      "contentId"
+    ],
+    "StringIds": [
+      "id",
+      "value"
+    ],
+    "TARGET_INFO_CUDA_CONTEXT_INFO": [
+      "nullStreamId",
+      "hwId",
+      "vmId",
+      "processId",
+      "deviceId",
+      "contextId",
+      "parentContextId",
+      "isGreenContext",
+      "numMultiprocessors",
+      "numTpcs",
+      "tpcMask",
+      "workqueueResourceId",
+      "workqueueConcurrencyLimit",
+      "workqueueSharingScope"
+    ],
+    "TARGET_INFO_CUDA_DEVICE": [
+      "gpuId",
+      "cudaId",
+      "pid",
+      "uuid",
+      "numMultiprocessors"
+    ],
+    "TARGET_INFO_CUDA_STREAM": [
+      "streamId",
+      "hwId",
+      "vmId",
+      "processId",
+      "contextId",
+      "priority",
+      "flag"
+    ],
+    "TARGET_INFO_GPU": [
+      "vmId",
+      "id",
+      "name",
+      "busLocation",
+      "isDiscrete",
+      "l2CacheSize",
+      "totalMemory",
+      "memoryBandwidth",
+      "clockRate",
+      "smCount",
+      "pwGpuId",
+      "uuid",
+      "luid",
+      "chipName",
+      "cuDevice",
+      "ctxswDevPath",
+      "ctrlDevPath",
+      "revision",
+      "nodeMask",
+      "constantMemory",
+      "maxIPC",
+      "maxRegistersPerBlock",
+      "maxShmemPerBlock",
+      "maxShmemPerBlockOptin",
+      "maxShmemPerSm",
+      "maxRegistersPerSm",
+      "threadsPerWarp",
+      "asyncEngines",
+      "maxWarpsPerSm",
+      "maxBlocksPerSm",
+      "maxThreadsPerBlock",
+      "maxBlockDimX",
+      "maxBlockDimY",
+      "maxBlockDimZ",
+      "maxGridDimX",
+      "maxGridDimY",
+      "maxGridDimZ",
+      "computeMajor",
+      "computeMinor",
+      "smMajor",
+      "smMinor"
+    ],
+    "TARGET_INFO_NIC_INFO": [
+      "GUID",
+      "stateName",
+      "nicId",
+      "name",
+      "deviceId",
+      "vendorId",
+      "linkLayer"
+    ],
+    "TARGET_INFO_SESSION_START_TIME": [
+      "utcEpochNs",
+      "utcTime",
+      "localTime",
+      "systemClockNs"
+    ],
+    "TARGET_INFO_SYSTEM_ENV": [
+      "globalVid",
+      "devStateName",
+      "name",
+      "nameEnum",
+      "value"
+    ],
+    "ThreadNames": [
+      "nameId",
+      "priority",
+      "globalTid"
+    ]
+  },
+  "analysis_script_sha256": "881512ff399e3d1d47b9ad5f8f1cf22cba22ea63ae748d2d35cc7eebb100ae89",
+  "scope": "Synthetic collector check with 3 known matmuls on each of 4 spawned GPU workers; no Hero correctness or throughput conclusion. CPU-only SQLite export after Nsight and all CUDA workers exit.",
+  "source_commit": "a66bf9ca95cd432da273e0e88f0ef20a8fca590f",
+  "launch": {
+    "source_commit": "a66bf9ca95cd432da273e0e88f0ef20a8fca590f",
+    "source": "/iris/candidates/nsys-collector-smoke-a66bf9ca95cd/cuda_profile_smoke.py",
+    "source_sha256": "3bd04804905c657bebfa324e731e04bc6e8c58220b0d474138fad5f37e25420e",
+    "output": "/iris/outputs/nsys-collector-fourworker-r1",
+    "python_prefix": [
+      "uvx",
+      "--from",
+      "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "--with",
+      "runai-model-streamer[s3]==0.16.1",
+      "--with",
+      "torch==2.14.1+cu132",
+      "--with",
+      "nvidia-cuda-nvcc==13.2.86",
+      "--with",
+      "nvidia-cuda-crt==13.2.86",
+      "--with",
+      "nvidia-nvvm==13.2.86",
+      "--python",
+      "3.12",
+      "--index",
+      "https://download.pytorch.org/whl/cu132",
+      "--index",
+      "https://download.pytorch.org/whl/cpu",
+      "--index-strategy",
+      "unsafe-best-match",
+      "python"
+    ],
+    "nsys_sha256": "6e41b34877b6ac5b211a33ae20ee1c438dd3f43d48dba9ab36f48e4482fc84f6",
+    "nsys_version": "NVIDIA Nsight Systems version 2026.1.3.425-261338342291v0\n",
+    "completed_pair_checks": [
+      {
+        "attempt_uid": "1a6cb55ddeb9dbaa",
+        "gpus": [
+          "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+          "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+          "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+          "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461"
+        ],
+        "gpu_empty": true,
+        "candidate_status": "succeeded"
+      },
+      {
+        "attempt_uid": "6b7863c504a2899f",
+        "gpus": [
+          "GPU-4858a3bb-5976-f906-0d1d-91a34ba87ef4",
+          "GPU-a1dac3f0-65b2-2567-26c1-a0951f6bfe4f",
+          "GPU-660ec8db-dd0e-3499-2f7a-859130b2a816",
+          "GPU-f41bf5e5-cdb1-343a-fbd5-2ccde1b66b86"
+        ],
+        "gpu_empty": true,
+        "candidate_status": "succeeded"
+      },
+      {
+        "attempt_uid": "4b174525b660255b",
+        "gpus": [
+          "GPU-ab87d1df-c68b-e43f-74f9-70990bbf3b54",
+          "GPU-825aa17f-782e-8334-4a10-ca3c8ca8436e",
+          "GPU-4eaa3b84-49ef-de11-1b50-2297839d54db",
+          "GPU-d2bf9ac2-eede-1881-bb38-58c5352223db"
+        ],
+        "gpu_empty": true,
+        "candidate_status": "succeeded"
+      },
+      {
+        "attempt_uid": "aacb3c7277f9bf25",
+        "gpus": [
+          "GPU-d631a63c-7116-0a0a-b173-285928a2f44a",
+          "GPU-e16d179f-05ee-c079-4e1a-2f2d3f10fb80",
+          "GPU-eb35ebe9-7fa9-ba42-5c97-89481edece8d",
+          "GPU-a182b275-e15a-a254-999c-44ca1930f8c1"
+        ],
+        "gpu_empty": true,
+        "candidate_status": "succeeded"
+      }
+    ],
+    "utc": "2026-10-30T22:41:08.436551+00:00",
+    "pid": 60346,
+    "argv": [
+      "nsys",
+      "profile",
+      "--trace=cuda,nvtx",
+      "--sample=none",
+      "--cpuctxsw=none",
+      "--capture-range=cudaProfilerApi",
+      "--capture-range-end=stop",
+      "--discard-environment=true",
+      "--cuda-graph-trace=graph",
+      "--force-overwrite=false",
+      "--output=/iris/outputs/nsys-collector-fourworker-r1/native",
+      "uvx",
+      "--from",
+      "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "--with",
+      "runai-model-streamer[s3]==0.16.1",
+      "--with",
+      "torch==2.14.1+cu132",
+      "--with",
+      "nvidia-cuda-nvcc==13.2.86",
+      "--with",
+      "nvidia-cuda-crt==13.2.86",
+      "--with",
+      "nvidia-nvvm==13.2.86",
+      "--python",
+      "3.12",
+      "--index",
+      "https://download.pytorch.org/whl/cu132",
+      "--index",
+      "https://download.pytorch.org/whl/cpu",
+      "--index-strategy",
+      "unsafe-best-match",
+      "python",
+      "/iris/candidates/nsys-collector-smoke-a66bf9ca95cd/cuda_profile_smoke.py",
+      "--output",
+      "/iris/outputs/nsys-collector-fourworker-r1/devices"
+    ],
+    "scope": "Synthetic four-GPU collector check after both scored hours validate; no Hero throughput or numerical claim.",
+    "pod": "iris-romain-dev-gpu-hero-agentx16-p-2b5808fe-0-1a6cb55ddeb9dbaa"
+  },
+  "raw_archive": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/nsys-collector-fourworker-r1/outputs-0d9383f53a627d2672e01a579d18f31cf2d91c6d88bd6bc70e2a0833721367c1.tar.zst",
+    "sha256": "0d9383f53a627d2672e01a579d18f31cf2d91c6d88bd6bc70e2a0833721367c1",
+    "readback_sha256": "0d9383f53a627d2672e01a579d18f31cf2d91c6d88bd6bc70e2a0833721367c1",
+    "bytes": 48141
+  },
+  "completed_full_hour_validation": {
+    "stock16-numa2k95-c128-router-control-r1": {
+      "submission_valid": true,
+      "profiling_requests": 3138,
+      "profiling_errors": 0,
+      "profiling_error_ratio": 0.0,
+      "coverage": {
+        "phase_name": "profiling",
+        "expected_duration_seconds": 3600.0,
+        "required_ratio": 0.95,
+        "ttft_ratio": 1.0,
+        "inter_token_latency_ratio": 1.0
+      },
+      "profile_start": "2026-10-30T21:30:54.463302",
+      "profile_end": "2026-10-30T22:31:34.465590"
+    },
+    "router-history8m16-numa2k95-c128-r1": {
+      "submission_valid": true,
+      "profiling_requests": 3216,
+      "profiling_errors": 0,
+      "profiling_error_ratio": 0.0,
+      "coverage": {
+        "phase_name": "profiling",
+        "expected_duration_seconds": 3600.0,
+        "required_ratio": 0.95,
+        "ttft_ratio": 0.9980790036622222,
+        "inter_token_latency_ratio": 1.0
+      },
+      "profile_start": "2026-10-30T21:34:34.648401",
+      "profile_end": "2026-10-30T22:35:14.650629"
+    }
+  }
+}

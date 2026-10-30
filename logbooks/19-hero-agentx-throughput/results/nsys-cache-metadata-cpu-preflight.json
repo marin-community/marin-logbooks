@@ -1,0 +1,49 @@
+{
+  "utc": "2026-10-30T22:49:51.435118+00:00",
+  "status": "cpu_metadata_and_native_config_passed",
+  "cuda_visible_devices": "",
+  "torch": "2.14.1+cu132",
+  "native_profiler_config": {
+    "profiler": "cuda",
+    "ignore_frontend": true,
+    "delay_iterations": 2,
+    "max_iterations": 100
+  },
+  "metadata": {
+    "unix": 1793400591.4347553,
+    "dp_rank": 0,
+    "native_num_blocks": 64,
+    "cache_tensor_count": 0,
+    "unique_cuda_storage_count": 0,
+    "unique_cuda_storage_bytes": 0,
+    "storage": [],
+    "cache_config": {
+      "enable_prefix_caching": true,
+      "prefix_cache_retention_interval": 0,
+      "mamba_cache_mode": "align",
+      "mamba_block_size": 16,
+      "kv_cache_size_tokens": null
+    },
+    "cache_groups": [
+      {
+        "group": 0,
+        "layers": 1,
+        "spec_type": "FullAttentionSpec",
+        "spec": "FullAttentionSpec(block_size=16, num_kv_heads=1, head_size=64, dtype=torch.bfloat16, head_size_v=64, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=None, attention_chunk_size=None, non_causal=False)"
+      },
+      {
+        "group": 1,
+        "layers": 1,
+        "spec_type": "MambaSpec",
+        "spec": "MambaSpec(block_size=16, shapes=((3, 32),), dtypes=(torch.bfloat16,), page_size_padded=None, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+      }
+    ],
+    "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+  },
+  "scope": "CPU wiring check of the real diagnostic cache_storage function using real pinned CacheConfig/KVCacheConfig/attention/ShortConv specs and an empty tensor list; not a GPU allocation or numerical test.",
+  "source_commit": "f65e34259dc1476ac3c47ab6fb9dad841ca78509",
+  "function_sha256": "f349034b1787a3bbd452f81f9f18862a2ecf4ea6a546e18fb5f66f6f21e3efd3",
+  "probe_source_sha256": "3710bebdedaf6eb5428cf81e4c6ab124aa495e989159c69b98ceb285df321924",
+  "probe_source": "import datetime,hashlib,json,os,tempfile,time\nfrom pathlib import Path\nfrom types import SimpleNamespace\nimport torch\nfrom vllm.config import CacheConfig,ProfilerConfig\nfrom vllm.v1.kv_cache_interface import FullAttentionSpec,KVCacheConfig,KVCacheGroupSpec,MambaSpec\nfrom vllm.v1.attention.backends.registry import MambaAttentionBackendEnum\ndef cache_storage(worker) -> dict:\n    \"\"\"Record native CUDA KV tensor storage metadata without reading GPU data.\"\"\"\n    runner = worker.model_runner\n    config = worker.vllm_config.cache_config\n    storage = {}\n    for tensor in runner.kv_caches:\n        assert tensor.is_cuda\n        allocation = tensor.untyped_storage()\n        key = (str(tensor.device), allocation.data_ptr())\n        storage[key] = {\"bytes\": allocation.nbytes(), \"backing_tensor_dtype\": str(tensor.dtype)}\n    record = {\n        \"unix\": time.time(),\n        \"dp_rank\": runner.dp_rank,\n        \"native_num_blocks\": runner.kv_cache_config.num_blocks,\n        \"cache_tensor_count\": len(runner.kv_caches),\n        \"unique_cuda_storage_count\": len(storage),\n        \"unique_cuda_storage_bytes\": sum(item[\"bytes\"] for item in storage.values()),\n        \"storage\": list(storage.values()),\n        \"cache_config\": {\n            \"enable_prefix_caching\": config.enable_prefix_caching,\n            \"prefix_cache_retention_interval\": config.prefix_cache_retention_interval,\n            \"mamba_cache_mode\": config.mamba_cache_mode,\n            \"mamba_block_size\": config.mamba_block_size,\n            \"kv_cache_size_tokens\": config.kv_cache_size_tokens,\n        },\n        \"cache_groups\": [\n            {\n                \"group\": index,\n                \"layers\": len(group.layer_names),\n                \"spec_type\": type(group.kv_cache_spec).__name__,\n                \"spec\": str(group.kv_cache_spec),\n            }\n            for index, group in enumerate(runner.kv_cache_config.kv_cache_groups)\n        ],\n        \"scope\": \"KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync.\",\n    }\n    path = Path(os.environ[\"IRIS_OUTPUT_DIR\"]) / f\"kv-storage-dp{runner.dp_rank}.jsonl\"\n    with path.open(\"a\") as stream:\n        stream.write(json.dumps(record) + \"\\n\")\n    return record\nassert not torch.cuda.is_available()\nroot=Path('/tmp/nsys-cache-metadata-cpu-preflight-f65e');root.mkdir(exist_ok=False);os.environ['IRIS_OUTPUT_DIR']=str(root)\nconfig=CacheConfig(enable_prefix_caching=True,mamba_cache_mode='align',mamba_block_size=16)\ngroups=[KVCacheGroupSpec(layer_names=['attention'],kv_cache_spec=FullAttentionSpec(block_size=16,num_kv_heads=1,head_size=64,dtype=torch.bfloat16)),KVCacheGroupSpec(layer_names=['shortconv'],kv_cache_spec=MambaSpec(block_size=16,shapes=((3,32),),dtypes=(torch.bfloat16,),mamba_type=MambaAttentionBackendEnum.SHORT_CONV,mamba_cache_mode='align'))]\nworker=SimpleNamespace(vllm_config=SimpleNamespace(cache_config=config),model_runner=SimpleNamespace(dp_rank=0,kv_caches=[],kv_cache_config=KVCacheConfig(num_blocks=64,kv_cache_tensors=[],kv_cache_groups=groups)))\nresult=cache_storage(worker);assert [g['spec_type']for g in result['cache_groups']]==['FullAttentionSpec','MambaSpec'];assert result['cache_config']['mamba_cache_mode']=='align';assert result['unique_cuda_storage_bytes']==0\nprofiler=ProfilerConfig(profiler='cuda',ignore_frontend=True,delay_iterations=2,max_iterations=100)\nout={'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'status':'cpu_metadata_and_native_config_passed','cuda_visible_devices':os.environ['CUDA_VISIBLE_DEVICES'],'torch':torch.__version__,'native_profiler_config':{'profiler':profiler.profiler,'ignore_frontend':profiler.ignore_frontend,'delay_iterations':profiler.delay_iterations,'max_iterations':profiler.max_iterations},'metadata':result,'scope':'CPU wiring check of the real diagnostic cache_storage function using real pinned CacheConfig/KVCacheConfig/attention/ShortConv specs and an empty tensor list; not a GPU allocation or numerical test.'};(root/'result.json').write_text(json.dumps(out,indent=2)+chr(10));print(json.dumps(out))\n",
+  "metadata_configuration": "Constructed CPU fixture with real pinned config/spec classes and an empty tensor list; these are not observed Hero runtime cache settings."
+}

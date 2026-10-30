@@ -1,0 +1,292 @@
+{
+  "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+  "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+  "profile": "gb200",
+  "concurrency": 128,
+  "vllm_release": {
+    "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+    "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+      },
+      {
+        "architecture": "x86_64",
+        "sm_targets": [
+          "9.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+      }
+    ],
+    "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+  },
+  "workload": {
+    "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+    "recipe": {
+      "version": 1,
+      "inputs": {
+        "model": "marin-community/Hero-535B-step144000",
+        "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+        "harness_version": "1.0.12",
+        "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+        "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+        "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+        "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+        "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+        "sessions": 393,
+        "max_context": 262144,
+        "random_seed": 42,
+        "trace_idle_gap_cap_seconds": 300,
+        "tokenizer": "marin-community/marin-tokenizer",
+        "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+      },
+      "code_sha256": {
+        "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+        "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    },
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/agentx-workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+    "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+    "archive_bytes": 166033271,
+    "lineage": {
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "filtered_sessions": 0,
+      "tokenizer": "marin-community/marin-tokenizer",
+      "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "tokenizer_files": {
+        ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+        "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+        "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+        "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+        "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+        "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+      },
+      "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+      "native_manifest_version": 26,
+      "conversations": 9602,
+      "turns": 68266,
+      "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+      "preparation_version": 1,
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "preparation_seconds": 233.21300347405486,
+      "peak_memory_kib": 9010624
+    },
+    "cache_status": "hit"
+  },
+  "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-392-US-EAST-08A",
+    "nodes": [
+      "s1mwxs64",
+      "s1nrxs64",
+      "s3bsxs64",
+      "s3jtxs64"
+    ],
+    "verified_utc": "2026-10-30T22:51:46.586705+00:00",
+    "inventory_sha256": "7fb55c71f19e963ffb54c34ee561cc8f30a437841a4cf64113672bc03e8a6ea8",
+    "hero_training_gpus": 0,
+    "owned_gpus_before_request": 16,
+    "other_gpus": 0,
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-nsys-model-start-2252.json",
+    "allocation_note": "Reuse the original16interactive holder after both C128 windows finish and exports validate. No new GPU request.",
+    "neighbor_activity": "At 2026-10-30T22:51:46.586705+00:00, rack392 contains 16 owned GPUs and 0 other-owner GPUs, with no Hero training. This is placement exposure only; recheck live conditions during analysis."
+  },
+  "source": {
+    "kind": "research",
+    "repository": "marin-community/marin-logbooks",
+    "parent_commit": "f65e34259dc1476ac3c47ab6fb9dad841ca78509",
+    "experiment": "stock16-numa2k95-agentx-nsys-r1",
+    "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+  },
+  "runtime_overrides": {
+    "enable_prefix_caching": true,
+    "max_num_batched_tokens": 2048,
+    "master_port": 36500,
+    "session_affinity": true,
+    "prefetch_flashinfer_headers": true,
+    "numa_bind": true,
+    "gpu_memory_utilization": 0.95
+  },
+  "effective_recipe_sha256": "873f16d497ecf9dd5976658aedd89c332f771ed1eb7a8074c90f75d501949b3f",
+  "effective_recipe_hash_input": {
+    "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+    "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+    "concurrency": 128,
+    "source": {
+      "kind": "research",
+      "repository": "marin-community/marin-logbooks",
+      "parent_commit": "f65e34259dc1476ac3c47ab6fb9dad841ca78509",
+      "experiment": "stock16-numa2k95-agentx-nsys-r1",
+      "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+    },
+    "runtime_overrides": {
+      "enable_prefix_caching": true,
+      "max_num_batched_tokens": 2048,
+      "master_port": 36500,
+      "session_affinity": true,
+      "prefetch_flashinfer_headers": true,
+      "numa_bind": true,
+      "gpu_memory_utilization": 0.95
+    },
+    "router": {
+      "package": "vllm-router==0.1.16",
+      "wheel": {
+        "url": "https://files.pythonhosted.org/packages/58/47/88a65c7e8d1bf4a577bd6d8f7229fd48dc25773c184d0c1d0adf180355d8/vllm_router-0.1.16-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "be6137553ef807f0b3303194da9eb1dfdf65913ac1b8a84c4ea0a7a62683cfec",
+        "bytes": 21073924
+      },
+      "requirements_file": "requirements-router.txt",
+      "requirements_sha256": "2f45df003f1312ff85d82e841d296664d742082a46440586de381855dfb20758",
+      "backend_url": "http://127.0.0.1:38197",
+      "base_url": "http://127.0.0.1:38201",
+      "policy": "consistent_hash",
+      "data_parallel_size": 16,
+      "request_timeout_secs": 14400,
+      "disable_retries": true,
+      "session_id": "hero-agentx-router-qualification",
+      "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
+    },
+    "metrics_collection": {
+      "explicit_url": "http://127.0.0.1:38201/metrics",
+      "discovered_url": "http://127.0.0.1:38201/metrics",
+      "effective_endpoints": 1
+    },
+    "diagnostic_request": {
+      "budget": 2048,
+      "moe_backend": "triton",
+      "prefix_cache": true,
+      "run_controls": false,
+      "pipeline_stages": 1,
+      "data_parallel_size": 16,
+      "expert_parallel_size": 16,
+      "trace_batches": true,
+      "prefetch_flashinfer_headers": true,
+      "numa_bind": true,
+      "gpu_memory_utilization": 0.95,
+      "master_port": 36500,
+      "agentx_profile": {
+        "score_seconds": 900,
+        "trigger_after_seconds": 120
+      },
+      "scope": "Separate 900-second AgentX diagnostic after unchanged count-driven warmup. Native CUDA profiler API requests 100 worker steps after two delayed iterations, triggered 120 seconds into scoring. Nsight records CUDA/NVTX only, without CPU sampling, context switches or GPU metrics. No accepted full-hour throughput point.",
+      "profiler_kind": "cuda",
+      "profile_steps": 100,
+      "nsys": {
+        "version": "NVIDIA Nsight Systems version 2026.1.3.425-261338342291v0",
+        "entrypoint_sha256": "6e41b34877b6ac5b211a33ae20ee1c438dd3f43d48dba9ab36f48e4482fc84f6"
+      }
+    }
+  },
+  "identity_note": "Separate 900-second AgentX diagnostic after unchanged count-driven warmup. Native CUDA profiler API requests 100 worker steps after two delayed iterations, triggered 120 seconds into scoring. Nsight records CUDA/NVTX only, without CPU sampling, context switches or GPU metrics. No accepted full-hour throughput point.",
+  "router": {
+    "package": "vllm-router==0.1.16",
+    "wheel": {
+      "url": "https://files.pythonhosted.org/packages/58/47/88a65c7e8d1bf4a577bd6d8f7229fd48dc25773c184d0c1d0adf180355d8/vllm_router-0.1.16-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "be6137553ef807f0b3303194da9eb1dfdf65913ac1b8a84c4ea0a7a62683cfec",
+      "bytes": 21073924
+    },
+    "requirements_file": "requirements-router.txt",
+    "requirements_sha256": "2f45df003f1312ff85d82e841d296664d742082a46440586de381855dfb20758",
+    "backend_url": "http://127.0.0.1:38197",
+    "base_url": "http://127.0.0.1:38201",
+    "policy": "consistent_hash",
+    "data_parallel_size": 16,
+    "request_timeout_secs": 14400,
+    "disable_retries": true,
+    "session_id": "hero-agentx-router-qualification",
+    "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
+  },
+  "purpose": "Revisit GPU gaps and long collective intervals from the intrusive five-step Torch AgentX profile with lower-overhead native CUDA API/Nsight collection on the same released-Router serving recipe. Keep the model, request protocol and serving flags unchanged; report actual captured per-rank iterations and treat all timings as diagnostic.",
+  "neighbor_activity": "At 2026-10-30T22:51:46.586705+00:00, rack392 contains 16 owned GPUs and 0 other-owner GPUs, with no Hero training. This is placement exposure only; recheck live conditions during analysis.",
+  "metrics_collection": {
+    "explicit_url": "http://127.0.0.1:38201/metrics",
+    "discovered_url": "http://127.0.0.1:38201/metrics",
+    "effective_endpoints": 1
+  },
+  "value_hypothesis": {
+    "bottleneck": "The five-step Torch capture has long GPU gaps on DP0 and collective-only intervals elsewhere. It cannot distinguish critical host launch work from profiler distortion or rank waiting.",
+    "cheapest_useful_experiment": "A four-GPU spawned-worker collector smoke, then this fresh released-Router16 C128 diagnostic using the native CUDA API profiler and installed Nsight.",
+    "cost": "Use the existing16interactive GPUs after both confirmation windows end. About one hour including fresh server startup, count-driven warmup and900s scoring; no extra allocation or subsystem installation. This is an estimate, not the compute ledger.",
+    "limits": "CUDA API tracing still adds overhead. Different live replay mixes prevent subtracting timings across runs as an isolated profiler cost. NCCL kernel duration includes waiting; no fabric bandwidth or SM occupancy conclusion follows from interval sums."
+  },
+  "numactl_input": {
+    "version": "2.0.19\n",
+    "deb": {
+      "name": "numactl_2.0.19-1_arm64.deb",
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+      "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+      "bytes": 37936,
+      "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+    },
+    "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+    "native_bind_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "cpu_only_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+  },
+  "diagnostic_request": {
+    "budget": 2048,
+    "moe_backend": "triton",
+    "prefix_cache": true,
+    "run_controls": false,
+    "pipeline_stages": 1,
+    "data_parallel_size": 16,
+    "expert_parallel_size": 16,
+    "trace_batches": true,
+    "prefetch_flashinfer_headers": true,
+    "numa_bind": true,
+    "gpu_memory_utilization": 0.95,
+    "master_port": 36500,
+    "agentx_profile": {
+      "score_seconds": 900,
+      "trigger_after_seconds": 120
+    },
+    "scope": "Separate 900-second AgentX diagnostic after unchanged count-driven warmup. Native CUDA profiler API requests 100 worker steps after two delayed iterations, triggered 120 seconds into scoring. Nsight records CUDA/NVTX only, without CPU sampling, context switches or GPU metrics. No accepted full-hour throughput point.",
+    "profiler_kind": "cuda",
+    "profile_steps": 100,
+    "nsys": {
+      "version": "NVIDIA Nsight Systems version 2026.1.3.425-261338342291v0",
+      "entrypoint_sha256": "6e41b34877b6ac5b211a33ae20ee1c438dd3f43d48dba9ab36f48e4482fc84f6"
+    }
+  },
+  "comparison_profile": {
+    "source_commit": "50163ece4c80ece45f872b9c55c8453bf5b9d559",
+    "result": "../results/stock16-agentx-profile-r2.json",
+    "scope": "Same releasedmodel/NONE/2K/NUMA/.95/releasedRouter recipe; the fresh replay can have a different request mix."
+  },
+  "readiness_gate": "Do not execute until both C128 full-hour outputs validate, all original servers stop and the four-GPU collector smoke exits0 with positive CUDA kernel events on all4devices.",
+  "collector_qualification": {
+    "record": "../results/nsys-collector-fourworker-r1-qualified.json",
+    "record_sha256": "5849196b2d2036617901d397470d9d223ab619cc2b993c9eab8e0cd5041e08d1",
+    "raw_archive": {
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/nsys-collector-fourworker-r1/outputs-0d9383f53a627d2672e01a579d18f31cf2d91c6d88bd6bc70e2a0833721367c1.tar.zst",
+      "sha256": "0d9383f53a627d2672e01a579d18f31cf2d91c6d88bd6bc70e2a0833721367c1",
+      "readback_sha256": "0d9383f53a627d2672e01a579d18f31cf2d91c6d88bd6bc70e2a0833721367c1",
+      "bytes": 48141
+    }
+  },
+  "cache_metadata_cpu_qualification": {
+    "record": "../results/nsys-cache-metadata-cpu-preflight.json",
+    "record_sha256": "e6dd83af0cea39c83d8937835e833e3702a76b6f96e41b43206c8d772cfa372f"
+  },
+  "selection_reason": "Use the same released-Router serving recipe as the earlier Torch profile to revisit its apparent host/GPU gaps. The fresh private-Router pair differs by only1.55% in output throughput, has lower reported reuse and does not establish a repeatable gain; retain released Router as the working recipe. This diagnostic cannot supply a full-hour rate."
+}
