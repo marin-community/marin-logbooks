@@ -239,3 +239,8 @@ confirms all discovered study jobs terminal and active registries empty.
 The [final storage-health check](final/storage-health-at-completion.json) records
 successful bounded RNO writes and fresh provider capacity; it does not attribute
 the broader account-usage change to this study.
+
+The [final handoff](final/handoff.json) contains exact source refs and artifact
+links. The [completion audit](final/completion-audit.json) records each goal
+requirement and its evidence. [Operator evidence](final/operator-evidence-restore.json)
+has a separate compact restore bundle, alongside the scientific archives.
