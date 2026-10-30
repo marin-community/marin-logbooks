@@ -536,6 +536,26 @@ bounded `marin` / `iris.profile` query for its exact task source during
 the allocation that caused the later host-memory spike. No recovery or new
 training was launched during this analysis.
 
+### 2026-10-30 23:43 UTC — Authorized 128 GiB quarter-power recovery submitted
+
+The user explicitly authorized the prepared recovery. Iris accepted
+`/kaiyuew@stanford.edu/ema-gram-20-quarter-pilot-128g-20261030` at 23:42:58 UTC
+from clean published source `44f8a1efdd8117260565f77965fcadd36cef717b`.
+A fresh dry-run configuration exactly matched `quarter-pilot-128g-resolved.json`:
+version `2026.10.30.23`, 128 GiB host RAM for the TPU child and 7,630 updates.
+The coordinator uses 1 CPU and 2 GB; the training child keeps v4-8 and 120 CPUs.
+The previously recorded submission command was used without a wall-clock limit
+or preemption-retry override. The task-prefix query showed no existing recovery
+before this single submission.
+
+The recovery is configured to start a fresh process and W&B run; no checkpoint
+restoration is claimed.
+The prior OOM attempt stays in the record, and the completed baseline is not
+restarted. Submission does not establish TPU assignment or training progress.
+The earlier pending-confirmation state is resolved. Continue the resource and
+stability gate before expanding the pilot sweep: measure nonzero-alpha step
+cost, host/device memory and numerical stability, including the planned trace.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
