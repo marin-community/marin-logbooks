@@ -189,3 +189,26 @@ Scheduler waits and preemption recovery contribute to elapsed time; no
 uninterrupted training-time or time-to-loss comparison is inferred from W&B
 runtime. Continue verifying final loss, run state, and permanent checkpoint
 metadata as each selected run finishes.
+
+## 2026-10-30: AdamW completes the 3e20 budget
+
+AdamW with LR multiplier 3 completed 56,989 updates (29,878,648,832 tokens) at
+3e20 FLOPs. Final Paloma macro loss is 2.9459300 and training loss is
+1.9284897. Iris reports success and W&B reports finished at zero-based step
+56,988. The permanent checkpoint records update 56,989 at 17:56:41 UTC with
+`is_temporary=false`; metadata, both manifests, and the data directory are
+present. The selected 28-run experiment ladder is now 6/28 complete.
+
+At this shared budget, AdamW's final Paloma macro loss is 0.1252174 lower than
+MuonH's 3.0711474. Each recipe uses one seed and an LR multiplier transferred
+from the three-point 1e18 sweep; AdamW selected the highest tested multiplier.
+Muon and AdamH at 3e20 remain incomplete. This partial comparison does not
+establish a four-optimizer ranking or a time-to-loss result.
+
+The coordinator dispatched Muon with LR multiplier 3 at 1e20 FLOPs at
+17:57:10 UTC. At the next live observation around 22:54 UTC, its W&B stream
+showed finite loss and advancing steps. Fourteen jobs below 3e20 FLOPs still await
+executor slots. The source, checkpoint lineage, training recipes, batch
+priority, and eight-job/64-GPU cap remain fixed. The raw final metrics and
+checkpoint metadata are preserved in
+[adamw-3e20-20261030.json](adamw-3e20-20261030.json).
