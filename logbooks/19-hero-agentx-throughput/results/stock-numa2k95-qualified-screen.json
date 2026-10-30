@@ -1,0 +1,552 @@
+{
+  "qualified": true,
+  "physical_gpus": 16,
+  "root": "/iris/outputs/controlled16-stock-numa2k95-r1",
+  "source_commit": "ae3d0ce6acdd8d7d6cd2a15eb32209f9c0a85ef3",
+  "internal_comparisons_per_phase": 8,
+  "cross_waves": 0,
+  "global_dp_vector_lengths": [
+    16
+  ],
+  "max_shared_logprob_absolute_delta": 0,
+  "all_choices_identical_and_finite": true,
+  "trace_summary": {
+    "cache-probe-matched": {
+      "waves": 10,
+      "batch_count": 207,
+      "dp_vector_lengths": [
+        16
+      ],
+      "modes": [
+        "NONE"
+      ]
+    }
+  },
+  "short_synthetic_workloads": {
+    "decode-first": {
+      "completed": 32,
+      "failed": 0,
+      "duration": 13.777855403954163,
+      "output_throughput": 148.6443238047219,
+      "request_throughput": 2.3225675594487796,
+      "total_input_tokens": 4096,
+      "total_output_tokens": 2048
+    },
+    "decode-repeat": {
+      "completed": 32,
+      "failed": 0,
+      "duration": 13.679192930925637,
+      "output_throughput": 149.7164350515098,
+      "request_throughput": 2.3393192976798405,
+      "total_input_tokens": 4096,
+      "total_output_tokens": 2048
+    },
+    "long64k-c16": {
+      "completed": 16,
+      "failed": 0,
+      "duration": 13.923503597965464,
+      "output_throughput": 1.1491360552625531,
+      "request_throughput": 1.1491360552625531,
+      "total_input_tokens": 1048576,
+      "total_output_tokens": 16
+    },
+    "scaling-short-c128": {
+      "completed": 128,
+      "failed": 0,
+      "duration": 51.43279561609961,
+      "output_throughput": 637.1032258208202,
+      "request_throughput": 2.488684475862579,
+      "total_input_tokens": 16384,
+      "total_output_tokens": 32768
+    },
+    "scaling-short-c256": {
+      "completed": 256,
+      "failed": 0,
+      "duration": 49.925646430114284,
+      "output_throughput": 1312.672037040863,
+      "request_throughput": 5.127625144690871,
+      "total_input_tokens": 32768,
+      "total_output_tokens": 65536
+    },
+    "scaling-long64k-c64": {
+      "completed": 64,
+      "failed": 0,
+      "duration": 104.75291884690523,
+      "output_throughput": 156.40614295382989,
+      "request_throughput": 0.610961495913398,
+      "total_input_tokens": 4194304,
+      "total_output_tokens": 16384
+    }
+  },
+  "native_capacity_log_lines": [
+    "(Worker_DP0_EP0 pid=43906) INFO 10-30 01:47:28 [gpu_worker.py:663] Available KV cache memory: 83.56 GiB",
+    "(EngineCore_DP2 pid=38377) INFO 10-30 01:47:28 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x",
+    "(EngineCore_DP3 pid=38379) INFO 10-30 01:47:28 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x",
+    "(EngineCore_DP0 pid=38373) INFO 10-30 01:47:29 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x",
+    "(EngineCore_DP1 pid=38375) INFO 10-30 01:47:29 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x"
+  ],
+  "cache_storage_per_rank_bytes": 89722847232,
+  "cache_storage_total_bytes": 1435565555712,
+  "native_num_blocks_per_rank": [
+    76059
+  ],
+  "retained_compressed_bytes": 3262456,
+  "retention": [
+    {
+      "host": 0,
+      "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/0:0",
+      "attempt_uid": "da5590e0cc37cbac",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-stock-numa2k95-r1/host-0/outputs-452fd24969f8fbc8b40c755cbb8af2048d99faaae406b350dd59238d160b343c.tar.zst",
+      "archive_sha256": "452fd24969f8fbc8b40c755cbb8af2048d99faaae406b350dd59238d160b343c",
+      "readback_sha256": "452fd24969f8fbc8b40c755cbb8af2048d99faaae406b350dd59238d160b343c",
+      "archive_bytes": 2039837,
+      "storage": [
+        {
+          "unix": 1793325004.8641164,
+          "dp_rank": 0,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8641486,
+          "dp_rank": 2,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8641572,
+          "dp_rank": 3,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8641756,
+          "dp_rank": 1,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        }
+      ],
+      "status": "stopped",
+      "phases": {
+        "cache-probe-matched": [
+          {
+            "wave": "cold-a-repeat",
+            "branch": 0,
+            "reference_wave": "cold-a",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          },
+          {
+            "wave": "shared-a",
+            "branch": 0,
+            "reference_wave": "cold-a",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          },
+          {
+            "wave": "shared-ba",
+            "branch": 1,
+            "reference_wave": "cold-ba",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          },
+          {
+            "wave": "shared-ba",
+            "branch": 0,
+            "reference_wave": "cold-ba",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          },
+          {
+            "wave": "shared-cab",
+            "branch": 2,
+            "reference_wave": "cold-cab",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          },
+          {
+            "wave": "shared-cab",
+            "branch": 0,
+            "reference_wave": "cold-cab",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          },
+          {
+            "wave": "shared-cab",
+            "branch": 1,
+            "reference_wave": "cold-cab",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          },
+          {
+            "wave": "shared-a-final",
+            "branch": 0,
+            "reference_wave": "cold-a",
+            "same_tokens": true,
+            "finite_logprobs": true,
+            "max_shared_logprob_absolute_delta": 0.0,
+            "shared_logprobs": 320,
+            "matching_token_prefix": 16,
+            "minimum_topk_overlap": 20
+          }
+        ]
+      },
+      "trace_summary": {
+        "cache-probe-matched": {
+          "waves": 10,
+          "batch_count": 207,
+          "dp_vector_lengths": [
+            16
+          ],
+          "modes": [
+            "NONE"
+          ]
+        }
+      },
+      "banks": {
+        "decode-first": {
+          "completed": 32,
+          "failed": 0,
+          "duration": 13.777855403954163,
+          "output_throughput": 148.6443238047219,
+          "request_throughput": 2.3225675594487796,
+          "total_input_tokens": 4096,
+          "total_output_tokens": 2048
+        },
+        "decode-repeat": {
+          "completed": 32,
+          "failed": 0,
+          "duration": 13.679192930925637,
+          "output_throughput": 149.7164350515098,
+          "request_throughput": 2.3393192976798405,
+          "total_input_tokens": 4096,
+          "total_output_tokens": 2048
+        },
+        "long64k-c16": {
+          "completed": 16,
+          "failed": 0,
+          "duration": 13.923503597965464,
+          "output_throughput": 1.1491360552625531,
+          "request_throughput": 1.1491360552625531,
+          "total_input_tokens": 1048576,
+          "total_output_tokens": 16
+        },
+        "scaling-short-c128": {
+          "completed": 128,
+          "failed": 0,
+          "duration": 51.43279561609961,
+          "output_throughput": 637.1032258208202,
+          "request_throughput": 2.488684475862579,
+          "total_input_tokens": 16384,
+          "total_output_tokens": 32768
+        },
+        "scaling-short-c256": {
+          "completed": 256,
+          "failed": 0,
+          "duration": 49.925646430114284,
+          "output_throughput": 1312.672037040863,
+          "request_throughput": 5.127625144690871,
+          "total_input_tokens": 32768,
+          "total_output_tokens": 65536
+        },
+        "scaling-long64k-c64": {
+          "completed": 64,
+          "failed": 0,
+          "duration": 104.75291884690523,
+          "output_throughput": 156.40614295382989,
+          "request_throughput": 0.610961495913398,
+          "total_input_tokens": 4194304,
+          "total_output_tokens": 16384
+        }
+      },
+      "native_capacity_log_lines": [
+        "(Worker_DP0_EP0 pid=43906) INFO 10-30 01:47:28 [gpu_worker.py:663] Available KV cache memory: 83.56 GiB",
+        "(EngineCore_DP2 pid=38377) INFO 10-30 01:47:28 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x",
+        "(EngineCore_DP3 pid=38379) INFO 10-30 01:47:28 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x",
+        "(EngineCore_DP0 pid=38373) INFO 10-30 01:47:29 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x",
+        "(EngineCore_DP1 pid=38375) INFO 10-30 01:47:29 [kv_cache_utils.py:2447] GPU KV cache size: 1,135,250 tokens, Maximum concurrency for 262,144 tokens per request: 4.33x"
+      ]
+    },
+    {
+      "host": 1,
+      "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/1:0",
+      "attempt_uid": "471dd13007537185",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-stock-numa2k95-r1/host-1/outputs-9d8434ecc3394558b7905c3ab1bd02c1a0af8b148aa0cf469c0a5887dff7fc8a.tar.zst",
+      "archive_sha256": "9d8434ecc3394558b7905c3ab1bd02c1a0af8b148aa0cf469c0a5887dff7fc8a",
+      "readback_sha256": "9d8434ecc3394558b7905c3ab1bd02c1a0af8b148aa0cf469c0a5887dff7fc8a",
+      "archive_bytes": 405836,
+      "storage": [
+        {
+          "unix": 1793325004.864175,
+          "dp_rank": 4,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8641768,
+          "dp_rank": 5,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8642063,
+          "dp_rank": 6,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8642266,
+          "dp_rank": 7,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        }
+      ],
+      "status": "stopped"
+    },
+    {
+      "host": 2,
+      "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/2:0",
+      "attempt_uid": "a8712201eb1fb12f",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-stock-numa2k95-r1/host-2/outputs-631c29fca5f6940859f05950b225e5e9f2623989a75f498811e9a92229789ed9.tar.zst",
+      "archive_sha256": "631c29fca5f6940859f05950b225e5e9f2623989a75f498811e9a92229789ed9",
+      "readback_sha256": "631c29fca5f6940859f05950b225e5e9f2623989a75f498811e9a92229789ed9",
+      "archive_bytes": 415471,
+      "storage": [
+        {
+          "unix": 1793325004.8642266,
+          "dp_rank": 8,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.864256,
+          "dp_rank": 11,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8642902,
+          "dp_rank": 10,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8642907,
+          "dp_rank": 9,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        }
+      ],
+      "status": "stopped"
+    },
+    {
+      "host": 3,
+      "task_id": "/romain/dev-gpu-hero-agentx16-controlled-r392-01a1846a/3:0",
+      "attempt_uid": "bfcc2d08504af39b",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/controlled16-stock-numa2k95-r1/host-3/outputs-be658babb03934e4f63cdc69b6b94d4e6860eb4c8b6298a3ef64340e979bad3a.tar.zst",
+      "archive_sha256": "be658babb03934e4f63cdc69b6b94d4e6860eb4c8b6298a3ef64340e979bad3a",
+      "readback_sha256": "be658babb03934e4f63cdc69b6b94d4e6860eb4c8b6298a3ef64340e979bad3a",
+      "archive_bytes": 401312,
+      "storage": [
+        {
+          "unix": 1793325004.864351,
+          "dp_rank": 12,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8643496,
+          "dp_rank": 13,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8644328,
+          "dp_rank": 14,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        },
+        {
+          "unix": 1793325004.8644423,
+          "dp_rank": 15,
+          "native_num_blocks": 76059,
+          "cache_tensor_count": 192,
+          "unique_cuda_storage_count": 1,
+          "unique_cuda_storage_bytes": 89722847232,
+          "storage": [
+            {
+              "bytes": 89722847232,
+              "backing_tensor_dtype": "torch.bfloat16"
+            }
+          ],
+          "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+        }
+      ],
+      "status": "stopped"
+    }
+  ],
+  "scope": "Released vLLM 3a with prefix caching, 2048-token scheduling, native GPU-local CPU binding and GPU memory utilization 0.95. Eight internal fixed-history cold/warm/branch/isolation comparisons are exact for requests owned by DP0. Schedule vectors cover all 16 ranks. No cross-process numerical-equality claim. Six synthetic workloads are diagnostics, not AgentX. Actual cache storage is introspected on all 16 native workers."
+}
