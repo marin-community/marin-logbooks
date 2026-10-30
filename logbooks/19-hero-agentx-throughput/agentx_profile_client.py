@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Capture five native profiler steps during a separate, short AgentX replay.
+"""Capture native profiler steps during a separate, short AgentX replay.
 
 Keep the native workload and count-driven warmup. The 900-second scoring
 window is an intrusive diagnostic and cannot supply a full-hour result.
@@ -56,9 +56,18 @@ def main() -> None:
             assert time.monotonic() < deadline, "Diagnostic server readiness deadline exceeded"
             time.sleep(5)
         config = server["profiler_config"]
-        assert server["profiler_configured"] and config["max_iterations"] == 5
-        assert config["active_iterations"] == 5
-        assert not config["torch_profiler_with_stack"] and not config["torch_profiler_record_shapes"]
+        kind = manifest["diagnostic_request"].get("profiler_kind", "torch")
+        steps = manifest["diagnostic_request"].get("profile_steps", 5)
+        assert server["profiler_configured"] and config["profiler"] == kind
+        assert config["max_iterations"] == steps
+        if kind == "torch":
+            assert steps == config["active_iterations"] == 5
+            assert not config["torch_profiler_with_stack"] and not config["torch_profiler_record_shapes"]
+        else:
+            assert kind == "cuda"
+            command = server["nsys"]["command"]
+            assert "--sample=none" in command and "--cpuctxsw=none" in command
+            assert "--discard-environment=true" in command and "--capture-range-end=stop" in command
         point = root / "point"
         point.mkdir(exist_ok=False)
         short_series = series | {"duration": diagnostic["score_seconds"]}

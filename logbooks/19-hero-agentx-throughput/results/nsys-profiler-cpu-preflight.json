@@ -1,0 +1,51 @@
+{
+  "status": "passed_cpu_only",
+  "scope": "Execute the real old/new profiler configuration AST blocks with a mocked launcher, plus the actual new Nsight command wrapper. Four existing Torch configurations remain equal. CUDA mode uses native API capture with no Torch operator hooks. Actual Nsight GPU preflight and capture remain pending; no collector or GPU runs in this check.",
+  "old_source_commit": "03c3b5183d0a047f48499de5b5f56707eb0f155b",
+  "new_diagnostic_server_sha256": "704c7b33decdfac5871fb811b60f0087e22c070287fad932d7e21cbed432c27d",
+  "torch_cases": [
+    {
+      "profile_light": false,
+      "warmup_iterations": 0,
+      "same_torch_config": true
+    },
+    {
+      "profile_light": false,
+      "warmup_iterations": 1,
+      "same_torch_config": true
+    },
+    {
+      "profile_light": true,
+      "warmup_iterations": 0,
+      "same_torch_config": true
+    },
+    {
+      "profile_light": true,
+      "warmup_iterations": 1,
+      "same_torch_config": true
+    }
+  ],
+  "cuda_config": {
+    "profiler": "cuda",
+    "ignore_frontend": true,
+    "delay_iterations": 2,
+    "max_iterations": 100
+  },
+  "nsys_command": [
+    "nsys",
+    "profile",
+    "--trace=cuda,nvtx",
+    "--sample=none",
+    "--cpuctxsw=none",
+    "--capture-range=cudaProfilerApi",
+    "--capture-range-end=stop",
+    "--discard-environment=true",
+    "--cuda-graph-trace=graph",
+    "--force-overwrite=false",
+    "--output=/tmp/profile-cpu-fixture/nsys/native",
+    "python",
+    "-c",
+    "pass"
+  ],
+  "launcher_environment_and_compile_identity_preserved": true
+}

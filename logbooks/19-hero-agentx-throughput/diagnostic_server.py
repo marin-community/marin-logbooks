@@ -16,7 +16,7 @@ import signal
 import subprocess
 import sys
 import time
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from marin.external_dependencies import VllmGpuRelease, VllmGpuWheel
@@ -27,13 +27,47 @@ from marin.inference.iris_vllm import (
     notify_iris_vllm_stopped,
     wait_for_iris_vllm_shutdown,
 )
-from marin.inference.vllm_server import IsolatedCudaVllm, VllmEnvironment, VllmLauncherWithEnvironment, VllmType
+from marin.inference.vllm_server import (
+    IsolatedCudaVllm,
+    VllmEnvironment,
+    VllmLauncher,
+    VllmLauncherWithEnvironment,
+    VllmType,
+)
 
 from experiments.evaluation.agentx import run as native
 from experiments.evaluation.agentx.artifacts import copy_file
 from experiments.evaluation.agentx.processes import run_logged
 from experiments.evaluation.agentx.recipe import load_series, series_path
 from experiments.evaluation.agentx.run import create_server, interrupt
+
+
+@dataclass(frozen=True)
+class NsysLauncher:
+    launcher: VllmLauncher
+    output: Path
+
+    def command(self) -> list[str]:
+        return [
+            "nsys",
+            "profile",
+            "--trace=cuda,nvtx",
+            "--sample=none",
+            "--cpuctxsw=none",
+            "--capture-range=cudaProfilerApi",
+            "--capture-range-end=stop",
+            "--discard-environment=true",
+            "--cuda-graph-trace=graph",
+            "--force-overwrite=false",
+            "--output=" + str(self.output),
+            *self.launcher.command(),
+        ]
+
+    def env(self) -> dict[str, str]:
+        return self.launcher.env()
+
+    def cache_identity(self) -> str:
+        return self.launcher.cache_identity()
 
 
 def stage_candidate_wheel(source: dict) -> Path:
@@ -261,22 +295,36 @@ def serve(
                 }
                 server.launcher = VllmLauncherWithEnvironment(server.launcher, nccl_environment)
                 record["nccl_environment"] = nccl_environment
-                config = {
-                    "profiler": "torch",
-                    "torch_profiler_dir": str(output / "torch-profiler"),
-                    "ignore_frontend": True,
-                    "torch_profiler_with_stack": not profile_light,
-                    "torch_profiler_record_shapes": not profile_light,
-                    "torch_profiler_with_memory": False,
-                    "delay_iterations": 2,
-                    "warmup_iterations": profile_warmup_iterations,
-                    "active_iterations": 5,
-                    "max_iterations": 5,
-                }
+                kind = diagnostic.get("profiler_kind", "torch")
+                assert kind in ("torch", "cuda")
+                steps = diagnostic.get("profile_steps", 5)
+                assert type(steps) is int and steps > 0
+                config = {"profiler": kind, "ignore_frontend": True, "delay_iterations": 2, "max_iterations": steps}
+                if kind == "torch":
+                    assert steps == 5
+                    config.update(
+                        torch_profiler_dir=str(output / "torch-profiler"),
+                        torch_profiler_with_stack=not profile_light,
+                        torch_profiler_record_shapes=not profile_light,
+                        torch_profiler_with_memory=False,
+                        warmup_iterations=profile_warmup_iterations,
+                        active_iterations=5,
+                    )
                 server.extra_cli_args.extend(["--profiler-config", json.dumps(config)])
                 record["profiler_config"] = config
             if diagnostic.get("prefetch_flashinfer_headers"):
                 prefetch_flashinfer_headers(server, output)
+            if profile and diagnostic.get("profiler_kind", "torch") == "cuda":
+                executable = shutil.which("nsys")
+                assert executable is not None
+                expected = diagnostic["nsys"]
+                version = subprocess.check_output([executable, "--version"], text=True).strip()
+                digest = hashlib.sha256(Path(executable).resolve().read_bytes()).hexdigest()
+                assert version == expected["version"] and digest == expected["entrypoint_sha256"]
+                directory = output / "nsys"
+                directory.mkdir()
+                server.launcher = NsysLauncher(server.launcher, directory / "native")
+                record["nsys"] = {"version": version, "entrypoint_sha256": digest, "command": server.launcher.command()}
             with server:
                 assert server.vllm_server is not None
                 native_logs = Path(server.vllm_server.log_dir)
