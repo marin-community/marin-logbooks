@@ -85,6 +85,9 @@ def install_batch_trace(
 
 def take_batch_trace(worker) -> list[dict]:
     rows = worker.hero_batch_trace
+    path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"dispatch-traces-dp{worker.model_runner.dp_rank}.jsonl"
+    with path.open("a") as stream:
+        stream.write(json.dumps({"unix": time.time(), "rows": rows}) + "\n")
     worker.hero_batch_trace = []
     return rows
 

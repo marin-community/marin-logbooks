@@ -64,7 +64,6 @@ def main() -> None:
         for row in comparison["comparisons"]
     )
     if manifest.get("diagnostic_request", {}).get("compare_graph_replay"):
-        assert manifest["diagnostic_request"]["numerics_only"] is True
         assert manifest["diagnostic_request"]["trace_batches"] is True
         assert manifest["diagnostic_request"]["compilation_config"]["cudagraph_mode"] == "PIECEWISE"
         reference = probe.copy()
@@ -75,6 +74,20 @@ def main() -> None:
         assert all(
             row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
             for row in checks["comparisons"]
+        )
+        cross = json.loads((args.output / "cache-probe-replay-disabled/cross-comparison.json").read_text())
+        assert len(checks["comparisons"]) == 8 and len(cross) == 10
+        assert all(
+            row["same_global_shapes"]
+            and all(
+                choice["same_tokens"]
+                and choice["finite_logprobs"]
+                and choice["max_shared_logprob_absolute_delta"] == 0
+                and choice["minimum_topk_overlap"] == 20
+                and choice["matching_token_prefix"] == 16
+                for choice in row["choices"]
+            )
+            for row in cross
         )
     if method := manifest.get("diagnostic_request", {}).get("shortconv_reference"):
         assert manifest["diagnostic_request"]["numerics_only"] is True
