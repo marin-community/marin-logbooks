@@ -63,6 +63,7 @@ class AblationArm(StrEnum):
     GLM_ON_TENTH = "A8a"
     GLM_ON_THREE_TENTHS = "A8b"
     GLM_ON_TENTH_72 = "A9"
+    TULU_STYLE_44 = "A10"
 
 
 def updates_for(arm: AblationArm) -> int:
