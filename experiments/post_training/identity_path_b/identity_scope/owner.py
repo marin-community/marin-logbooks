@@ -30,8 +30,8 @@ from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 
 def screen_worker(*, arm: str, output: str) -> None:
     """Use bundled target/prompt bytes; no child candidate-file transport or math."""
-    if arm not in ("A0", "A3", "A6") or not output.startswith(TEMPORARY_PREFIX):
-        raise ValueError("Require an authorizedA0/A3/A6 target and freshRNO14d output")
+    if arm not in ("A0", "A3", "A6", "A8a", "A8b") or not output.startswith(TEMPORARY_PREFIX):
+        raise ValueError("Require an authorized A0/A3/A6/A8a/A8b target and freshRNO14d output")
     with payload() as (root, historical):
         event = CheckpointEvent(**json.loads((root / f"{arm}.json").read_bytes()))
         checked_export_event(event)
@@ -77,7 +77,7 @@ def screen_worker(*, arm: str, output: str) -> None:
 
 def screen_submission(*, name: str, arm: str, output: str, credentials: dict[str, str]) -> dict:
     """Build the scoped owner's native request without submitting."""
-    if arm not in ("A0", "A3", "A6") or not name.startswith(f"pathb-identity-{arm.lower()}-r1-"):
+    if arm not in ("A0", "A3", "A6", "A8a", "A8b") or not name.startswith(f"pathb-identity-{arm.lower()}-r1-"):
         raise ValueError("Require the exact fresh authorized arm name")
     secrets = {key: credentials[key] for key in ("CW_KEY_ID", "CW_KEY_SECRET")}
     secrets.update(AWS_ACCESS_KEY_ID=secrets["CW_KEY_ID"], AWS_SECRET_ACCESS_KEY=secrets["CW_KEY_SECRET"])
@@ -108,7 +108,7 @@ def screen_submission(*, name: str, arm: str, output: str, credentials: dict[str
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--arm", choices=("A0", "A3", "A6"), required=True)
+    parser.add_argument("--arm", choices=("A0", "A3", "A6", "A8a", "A8b"), required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--inspect-only", action="store_true")
     args = parser.parse_args()
