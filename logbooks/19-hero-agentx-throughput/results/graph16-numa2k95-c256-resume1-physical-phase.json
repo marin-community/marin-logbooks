@@ -1,0 +1,592 @@
+{
+  "analysis_script_sha256": "7b4606f3b7e664c30160604a11a0719a4776f9f77c688d8638ca101d60a6700a",
+  "scope": "One physical endpoint aggregating all 16 engines. Native profiling phase plus normal drain. Counter totals are final minus reference. CSV gauge summaries are rounded to four decimals.",
+  "source_archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/graph16-numa2k95-c256-resume1/host-0/82534b306f1bb5e4/outputs-8344f6ecaa97e88b1d45f05c35068138cdb837353dd4e87ce9f3e273c3545f83.tar.zst",
+  "source_archive_sha256": "8344f6ecaa97e88b1d45f05c35068138cdb837353dd4e87ce9f3e273c3545f83",
+  "csv_sha256": "b5f0fca0ee4406a63ffc1198118e7143f6ebc73ae24c959457c032b9f1885c54",
+  "chosen_endpoint": "127.0.0.1:38201",
+  "queries": 209741081.0,
+  "hits": 13006064.0,
+  "weighted_hit_fraction": 0.06201009329211953,
+  "initial_prefill_local_compute_tokens": 194642038.0,
+  "initial_prefill_counter_limitation": "Excludes repeat prefill after request preemption. Phase admissions and first-output accounting differ; queries minus hits is not total physical work.",
+  "preemptions": 15.0,
+  "mean_rank_kv_occupancy": 0.83088125,
+  "max_running_requests": 19.0,
+  "rank_query_max_over_mean": 1.2831184750115787,
+  "rank_initial_prefill_max_over_mean": 1.2369444672584038,
+  "counter_reset_warning_count": 23,
+  "counter_warning_lines": [
+    "16:50:57.724 WARNING  Detected 2 counter reset(s) in counter metric with labels {'engine': '6', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 14303770.00 (export_stats.py:348)",
+    "16:51:02.418 WARNING  Detected 1 counter reset(s) in counter metric with labels {'engine': '6', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 14002156.00 (export_stats.py:348)",
+    "16:51:02.971 WARNING  Detected 1 counter reset(s) in counter metric with labels {'engine': '6', 'model_name': 'marin-community/Hero-535B-step144000', 'source': 'local_compute'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 13263596.00 (export_stats.py:348)",
+    "16:51:05.250 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '0', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 121757.00 (export_stats.py:348)",
+    "16:51:05.283 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '1', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 115108.00 (export_stats.py:348)",
+    "16:51:05.316 WARNING  Detected 3 counter reset(s) in counter metric with labels {'engine': '2', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 115417.00 (export_stats.py:348)",
+    "16:51:05.350 WARNING  Detected 3 counter reset(s) in counter metric with labels {'engine': '3', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 120235.00 (export_stats.py:348)",
+    "16:51:05.384 WARNING  Detected 3 counter reset(s) in counter metric with labels {'engine': '4', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 136245.00 (export_stats.py:348)",
+    "16:51:05.417 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '5', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 135255.00 (export_stats.py:348)",
+    "16:51:05.450 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '6', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 125903.00 (export_stats.py:348)",
+    "16:51:05.484 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '7', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 147571.00 (export_stats.py:348)",
+    "16:51:05.517 WARNING  Detected 3 counter reset(s) in counter metric with labels {'engine': '8', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 105872.00 (export_stats.py:348)",
+    "16:51:05.551 WARNING  Detected 3 counter reset(s) in counter metric with labels {'engine': '9', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 120424.00 (export_stats.py:348)",
+    "16:51:05.584 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '10', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 112531.00 (export_stats.py:348)",
+    "16:51:05.618 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '11', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 127988.00 (export_stats.py:348)",
+    "16:51:05.651 WARNING  Detected 3 counter reset(s) in counter metric with labels {'engine': '12', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 96288.00 (export_stats.py:348)",
+    "16:51:05.685 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '13', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 103262.00 (export_stats.py:348)",
+    "16:51:05.719 WARNING  Detected 4 counter reset(s) in counter metric with labels {'engine': '14', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 97563.00 (export_stats.py:348)",
+    "16:51:05.752 WARNING  Detected 3 counter reset(s) in counter metric with labels {'engine': '15', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 116027.00 (export_stats.py:348)",
+    "16:51:06.321 WARNING  Detected 1 counter reset(s) in counter metric with labels {'engine': '0', 'finished_reason': 'length', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 179.00 (export_stats.py:348)",
+    "16:51:06.521 WARNING  Detected 1 counter reset(s) in counter metric with labels {'engine': '6', 'finished_reason': 'length', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 200.00 (export_stats.py:348)",
+    "16:51:06.588 WARNING  Detected 1 counter reset(s) in counter metric with labels {'engine': '8', 'finished_reason': 'length', 'model_name': 'marin-community/Hero-535B-step144000'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 121.00 (export_stats.py:348)",
+    "16:52:00.199 WARNING  Detected 3 counter reset(s) in counter metric with labels {'handler': '/v1/chat/completions', 'method': 'POST', 'status': '2xx'}. This typically indicates server restart(s) during profiling. Statistics may be inaccurate. Raw delta: 2823.00 (export_stats.py:348)"
+  ],
+  "observed_serving_lifetimes_stable": true,
+  "counter_warning_interpretation": "Export warns on negative increments. Totals remain max(final minus reference,0), without inferred reset offsets; per-timeslice negative deltas are clipped. Stable sampled serving lifetimes show no observed model restart. Cause of negative samples is unknown.",
+  "by_rank": {
+    "0": {
+      "queries": 14175492.0,
+      "hits": 1070864.0,
+      "logical_prompt_tokens": 14066929.0,
+      "generated_tokens": 121757.0,
+      "preemptions": 1.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1070864.0,
+      "local_compute": 12996065.0,
+      "kv_occupancy": {
+        "avg": 0.8204,
+        "min": 0.0,
+        "max": 0.999,
+        "p50": 0.876,
+        "p95": 0.9809,
+        "p99": 0.9873
+      },
+      "running_requests": {
+        "avg": 10.7986,
+        "min": 0.0,
+        "max": 16.0,
+        "p50": 11.0,
+        "p95": 15.0,
+        "p99": 15.0
+      },
+      "waiting_requests": {
+        "avg": 15.3449,
+        "min": 0.0,
+        "max": 24.0,
+        "p50": 16.0,
+        "p95": 22.0,
+        "p99": 23.0
+      }
+    },
+    "1": {
+      "queries": 12898560.0,
+      "hits": 686608.0,
+      "logical_prompt_tokens": 12853611.0,
+      "generated_tokens": 115108.0,
+      "preemptions": 3.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 686608.0,
+      "local_compute": 12167003.0,
+      "kv_occupancy": {
+        "avg": 0.8306,
+        "min": 0.0,
+        "max": 0.9994,
+        "p50": 0.882,
+        "p95": 0.9712,
+        "p99": 0.9866
+      },
+      "running_requests": {
+        "avg": 10.2339,
+        "min": 0.0,
+        "max": 16.0,
+        "p50": 10.0,
+        "p95": 14.0,
+        "p99": 16.0
+      },
+      "waiting_requests": {
+        "avg": 15.569,
+        "min": 0.0,
+        "max": 30.0,
+        "p50": 15.0,
+        "p95": 28.0,
+        "p99": 29.0
+      }
+    },
+    "2": {
+      "queries": 10305473.0,
+      "hits": 309680.0,
+      "logical_prompt_tokens": 10278770.0,
+      "generated_tokens": 115417.0,
+      "preemptions": 3.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 309680.0,
+      "local_compute": 9969090.0,
+      "kv_occupancy": {
+        "avg": 0.83,
+        "min": 0.0,
+        "max": 0.9988,
+        "p50": 0.8939,
+        "p95": 0.9675,
+        "p99": 0.9839
+      },
+      "running_requests": {
+        "avg": 10.1624,
+        "min": 0.0,
+        "max": 16.0,
+        "p50": 10.0,
+        "p95": 14.0,
+        "p99": 15.0
+      },
+      "waiting_requests": {
+        "avg": 12.261,
+        "min": 0.0,
+        "max": 21.0,
+        "p50": 13.0,
+        "p95": 19.0,
+        "p99": 20.0
+      }
+    },
+    "3": {
+      "queries": 12137032.0,
+      "hits": 754816.0,
+      "logical_prompt_tokens": 11960460.0,
+      "generated_tokens": 120235.0,
+      "preemptions": 2.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 754816.0,
+      "local_compute": 11205644.0,
+      "kv_occupancy": {
+        "avg": 0.8196,
+        "min": 0.0,
+        "max": 0.9989,
+        "p50": 0.9101,
+        "p95": 0.9893,
+        "p99": 0.991
+      },
+      "running_requests": {
+        "avg": 10.5288,
+        "min": 0.0,
+        "max": 17.0,
+        "p50": 11.0,
+        "p95": 14.0,
+        "p99": 17.0
+      },
+      "waiting_requests": {
+        "avg": 10.2145,
+        "min": 0.0,
+        "max": 20.0,
+        "p50": 11.0,
+        "p95": 17.0,
+        "p99": 19.0
+      }
+    },
+    "4": {
+      "queries": 11621729.0,
+      "hits": 314832.0,
+      "logical_prompt_tokens": 11492200.0,
+      "generated_tokens": 136245.0,
+      "preemptions": 1.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 314832.0,
+      "local_compute": 11177368.0,
+      "kv_occupancy": {
+        "avg": 0.8211,
+        "min": 0.0,
+        "max": 0.9995,
+        "p50": 0.8998,
+        "p95": 0.9802,
+        "p99": 0.9877
+      },
+      "running_requests": {
+        "avg": 11.8761,
+        "min": 0.0,
+        "max": 19.0,
+        "p50": 12.0,
+        "p95": 16.0,
+        "p99": 18.0
+      },
+      "waiting_requests": {
+        "avg": 18.1806,
+        "min": 0.0,
+        "max": 32.0,
+        "p50": 18.0,
+        "p95": 30.0,
+        "p99": 32.0
+      }
+    },
+    "5": {
+      "queries": 11932948.0,
+      "hits": 1061840.0,
+      "logical_prompt_tokens": 11893767.0,
+      "generated_tokens": 135255.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1061840.0,
+      "local_compute": 10831927.0,
+      "kv_occupancy": {
+        "avg": 0.8633,
+        "min": 0.0,
+        "max": 0.996,
+        "p50": 0.9159,
+        "p95": 0.9829,
+        "p99": 0.9875
+      },
+      "running_requests": {
+        "avg": 11.7746,
+        "min": 0.0,
+        "max": 16.0,
+        "p50": 12.0,
+        "p95": 15.0,
+        "p99": 15.0
+      },
+      "waiting_requests": {
+        "avg": 19.0283,
+        "min": 0.0,
+        "max": 35.0,
+        "p50": 20.0,
+        "p95": 31.0,
+        "p99": 35.0
+      }
+    },
+    "6": {
+      "queries": 14303770.0,
+      "hits": 738560.0,
+      "logical_prompt_tokens": 14002156.0,
+      "generated_tokens": 125903.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 738560.0,
+      "local_compute": 13263596.0,
+      "kv_occupancy": {
+        "avg": 0.8191,
+        "min": 0.0,
+        "max": 0.9985,
+        "p50": 0.9072,
+        "p95": 0.9762,
+        "p99": 0.9878
+      },
+      "running_requests": {
+        "avg": 11.1416,
+        "min": 0.0,
+        "max": 19.0,
+        "p50": 11.0,
+        "p95": 16.0,
+        "p99": 18.0
+      },
+      "waiting_requests": {
+        "avg": 11.7013,
+        "min": 0.0,
+        "max": 19.0,
+        "p50": 12.0,
+        "p95": 17.0,
+        "p99": 18.0
+      }
+    },
+    "7": {
+      "queries": 16820166.0,
+      "hits": 2004000.0,
+      "logical_prompt_tokens": 16729381.0,
+      "generated_tokens": 147571.0,
+      "preemptions": 1.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 2004000.0,
+      "local_compute": 14725381.0,
+      "kv_occupancy": {
+        "avg": 0.8583,
+        "min": 0.0,
+        "max": 0.999,
+        "p50": 0.9013,
+        "p95": 0.9775,
+        "p99": 0.9885
+      },
+      "running_requests": {
+        "avg": 13.0336,
+        "min": 0.0,
+        "max": 19.0,
+        "p50": 13.0,
+        "p95": 16.0,
+        "p99": 18.0
+      },
+      "waiting_requests": {
+        "avg": 6.5212,
+        "min": 0.0,
+        "max": 14.0,
+        "p50": 6.0,
+        "p95": 12.0,
+        "p99": 14.0
+      }
+    },
+    "8": {
+      "queries": 11098760.0,
+      "hits": 1214624.0,
+      "logical_prompt_tokens": 10880793.0,
+      "generated_tokens": 105872.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 1214624.0,
+      "local_compute": 9666169.0,
+      "kv_occupancy": {
+        "avg": 0.8248,
+        "min": 0.0,
+        "max": 0.9986,
+        "p50": 0.8681,
+        "p95": 0.9673,
+        "p99": 0.9873
+      },
+      "running_requests": {
+        "avg": 9.2467,
+        "min": 0.0,
+        "max": 17.0,
+        "p50": 9.0,
+        "p95": 15.0,
+        "p99": 17.0
+      },
+      "waiting_requests": {
+        "avg": 20.1259,
+        "min": 0.0,
+        "max": 29.0,
+        "p50": 24.0,
+        "p95": 26.0,
+        "p99": 27.0
+      }
+    },
+    "9": {
+      "queries": 12243300.0,
+      "hits": 387728.0,
+      "logical_prompt_tokens": 12096054.0,
+      "generated_tokens": 120424.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 387728.0,
+      "local_compute": 11708326.0,
+      "kv_occupancy": {
+        "avg": 0.8723,
+        "min": 0.0,
+        "max": 0.9977,
+        "p50": 0.9071,
+        "p95": 0.9815,
+        "p99": 0.9878
+      },
+      "running_requests": {
+        "avg": 10.4464,
+        "min": 0.0,
+        "max": 18.0,
+        "p50": 10.0,
+        "p95": 15.0,
+        "p99": 17.0
+      },
+      "waiting_requests": {
+        "avg": 23.5015,
+        "min": 0.0,
+        "max": 39.0,
+        "p50": 24.0,
+        "p95": 36.0,
+        "p99": 37.0
+      }
+    },
+    "10": {
+      "queries": 12697823.0,
+      "hits": 332224.0,
+      "logical_prompt_tokens": 12628323.0,
+      "generated_tokens": 112531.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 332224.0,
+      "local_compute": 12296099.0,
+      "kv_occupancy": {
+        "avg": 0.8305,
+        "min": 0.0,
+        "max": 0.996,
+        "p50": 0.8964,
+        "p95": 0.9789,
+        "p99": 0.9862
+      },
+      "running_requests": {
+        "avg": 10.0031,
+        "min": 0.0,
+        "max": 17.0,
+        "p50": 10.0,
+        "p95": 14.0,
+        "p99": 16.0
+      },
+      "waiting_requests": {
+        "avg": 21.5751,
+        "min": 0.0,
+        "max": 31.0,
+        "p50": 23.0,
+        "p95": 28.0,
+        "p99": 30.0
+      }
+    },
+    "11": {
+      "queries": 15989981.0,
+      "hits": 893312.0,
+      "logical_prompt_tokens": 15940899.0,
+      "generated_tokens": 127988.0,
+      "preemptions": 2.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 893312.0,
+      "local_compute": 15047587.0,
+      "kv_occupancy": {
+        "avg": 0.829,
+        "min": 0.0,
+        "max": 0.9999,
+        "p50": 0.8958,
+        "p95": 0.9748,
+        "p99": 0.9853
+      },
+      "running_requests": {
+        "avg": 11.3951,
+        "min": 0.0,
+        "max": 17.0,
+        "p50": 12.0,
+        "p95": 15.0,
+        "p99": 16.0
+      },
+      "waiting_requests": {
+        "avg": 14.3437,
+        "min": 0.0,
+        "max": 23.0,
+        "p50": 15.0,
+        "p95": 22.0,
+        "p99": 23.0
+      }
+    },
+    "12": {
+      "queries": 13391000.0,
+      "hits": 982368.0,
+      "logical_prompt_tokens": 13159038.0,
+      "generated_tokens": 96288.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 982368.0,
+      "local_compute": 12176670.0,
+      "kv_occupancy": {
+        "avg": 0.8367,
+        "min": 0.0,
+        "max": 0.9988,
+        "p50": 0.8822,
+        "p95": 0.9838,
+        "p99": 0.9874
+      },
+      "running_requests": {
+        "avg": 8.5182,
+        "min": 0.0,
+        "max": 14.0,
+        "p50": 8.0,
+        "p95": 12.0,
+        "p99": 13.0
+      },
+      "waiting_requests": {
+        "avg": 22.0574,
+        "min": 0.0,
+        "max": 34.0,
+        "p50": 24.0,
+        "p95": 30.0,
+        "p99": 32.0
+      }
+    },
+    "13": {
+      "queries": 12724819.0,
+      "hits": 492816.0,
+      "logical_prompt_tokens": 12599451.0,
+      "generated_tokens": 103262.0,
+      "preemptions": 1.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 492816.0,
+      "local_compute": 12106635.0,
+      "kv_occupancy": {
+        "avg": 0.8249,
+        "min": 0.0,
+        "max": 0.9987,
+        "p50": 0.8956,
+        "p95": 0.9794,
+        "p99": 0.9878
+      },
+      "running_requests": {
+        "avg": 9.2307,
+        "min": 0.0,
+        "max": 15.0,
+        "p50": 9.0,
+        "p95": 14.0,
+        "p99": 15.0
+      },
+      "waiting_requests": {
+        "avg": 8.0794,
+        "min": 0.0,
+        "max": 14.0,
+        "p50": 8.0,
+        "p95": 12.0,
+        "p99": 13.0
+      }
+    },
+    "14": {
+      "queries": 12133688.0,
+      "hits": 872896.0,
+      "logical_prompt_tokens": 11892918.0,
+      "generated_tokens": 97563.0,
+      "preemptions": 1.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 872896.0,
+      "local_compute": 11020022.0,
+      "kv_occupancy": {
+        "avg": 0.8237,
+        "min": 0.0,
+        "max": 0.9997,
+        "p50": 0.8624,
+        "p95": 0.9732,
+        "p99": 0.9883
+      },
+      "running_requests": {
+        "avg": 8.5928,
+        "min": 0.0,
+        "max": 14.0,
+        "p50": 9.0,
+        "p95": 11.0,
+        "p99": 13.0
+      },
+      "waiting_requests": {
+        "avg": 13.2296,
+        "min": 0.0,
+        "max": 23.0,
+        "p50": 14.0,
+        "p95": 20.0,
+        "p99": 22.0
+      }
+    },
+    "15": {
+      "queries": 15266540.0,
+      "hits": 888896.0,
+      "logical_prompt_tokens": 15173352.0,
+      "generated_tokens": 116027.0,
+      "preemptions": 0.0,
+      "external_kv_transfer": 0.0,
+      "local_cache_hit": 888896.0,
+      "local_compute": 14284456.0,
+      "kv_occupancy": {
+        "avg": 0.7898,
+        "min": 0.0,
+        "max": 0.9972,
+        "p50": 0.8566,
+        "p95": 0.9769,
+        "p99": 0.9871
+      },
+      "running_requests": {
+        "avg": 10.3294,
+        "min": 0.0,
+        "max": 15.0,
+        "p50": 11.0,
+        "p95": 14.0,
+        "p99": 14.0
+      },
+      "waiting_requests": {
+        "avg": 5.9275,
+        "min": 0.0,
+        "max": 14.0,
+        "p50": 6.0,
+        "p95": 11.0,
+        "p99": 13.0
+      }
+    }
+  }
+}
