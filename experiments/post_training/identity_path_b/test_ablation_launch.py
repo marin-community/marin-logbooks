@@ -17,7 +17,7 @@ from experiments.post_training.identity_path_b.launch import SOURCE_RECEIPT
 from experiments.post_training.identity_path_b.testing_support import ExecutionBoundary
 
 
-@pytest.mark.parametrize("arm", [AblationArm.CONTROL, AblationArm.GLM_ON_TENTH_72])
+@pytest.mark.parametrize("arm", [AblationArm.CONTROL, AblationArm.GLM_ON_TENTH_72, AblationArm.IDENTITY_OFF_72])
 @pytest.mark.parametrize("probe_failure", [False, True])
 def test_final_only_owner_releases_train_before_probe_export_and_outlives_export(
     tmp_path, monkeypatch, probe_failure, arm

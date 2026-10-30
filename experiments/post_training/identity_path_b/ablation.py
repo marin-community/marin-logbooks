@@ -64,10 +64,11 @@ class AblationArm(StrEnum):
     GLM_ON_THREE_TENTHS = "A8b"
     GLM_ON_TENTH_72 = "A9"
     TULU_STYLE_44 = "A10"
+    IDENTITY_OFF_72 = "A11"
 
 
 def updates_for(arm: AblationArm) -> int:
-    return 72 if arm == AblationArm.GLM_ON_TENTH_72 else UPDATES
+    return 72 if arm in (AblationArm.GLM_ON_TENTH_72, AblationArm.IDENTITY_OFF_72) else UPDATES
 
 
 def frozen_names(arm: AblationArm) -> frozenset[str]:
@@ -120,7 +121,9 @@ def check_report(report: dict, arm: AblationArm) -> None:
         raise ValueError("Ablation report differs from the admitted arm-specific unit-weight design")
     if arm == AblationArm.REPLAY_ONLY and report["raw_supervised_tokens"].get("identity", 0):
         raise ValueError("Replay-only ablation contains identity targets")
-    if arm == AblationArm.IDENTITY_OFF and report["mode_final_text_tokens"].get("identity/on", 0):
+    if arm in (AblationArm.IDENTITY_OFF, AblationArm.IDENTITY_OFF_72) and report["mode_final_text_tokens"].get(
+        "identity/on", 0
+    ):
         raise ValueError("OFF ablation contains identity ON occurrences")
 
 

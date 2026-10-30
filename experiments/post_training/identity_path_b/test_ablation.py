@@ -33,7 +33,14 @@ from experiments.post_training.identity_path_b.testing_support import Layer, Sto
 
 
 @pytest.mark.parametrize(
-    "arm", [AblationArm.CONTROL, AblationArm.TRAIN_SPECIAL_ROWS, AblationArm.T3_BRIDGE, AblationArm.GLM_ON_TENTH_72]
+    "arm",
+    [
+        AblationArm.CONTROL,
+        AblationArm.TRAIN_SPECIAL_ROWS,
+        AblationArm.T3_BRIDGE,
+        AblationArm.GLM_ON_TENTH_72,
+        AblationArm.IDENTITY_OFF_72,
+    ],
 )
 @pytest.mark.timeout(180)
 def test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant(tmp_path, arm):
@@ -123,10 +130,11 @@ def test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant(tmp
         assert {name for name, row in report["tensors"].items() if row["frozen_source"]} == frozen_names(arm)
 
 
-def test_A9_extends_constant_trajectory_without_restarting_warmup():
+@pytest.mark.parametrize("arm", [AblationArm.GLM_ON_TENTH_72, AblationArm.IDENTITY_OFF_72])
+def test_72_update_arm_extends_constant_trajectory_without_restarting_warmup(arm):
     config = AdamConfig(learning_rate=2e-6, warmup=2, lr_schedule="constant")
     old = config.lr_scheduler(updates_for(AblationArm.GLM_ON_TENTH))
-    extended = config.lr_scheduler(updates_for(AblationArm.GLM_ON_TENTH_72))
+    extended = config.lr_scheduler(updates_for(arm))
     np.testing.assert_array_equal([float(old(i)) for i in range(72)], [float(extended(i)) for i in range(72)])
     assert float(extended(0)) == 0 and float(extended(1)) > 0
     assert float(extended(36)) == float(extended(71)) == float(extended(2))
