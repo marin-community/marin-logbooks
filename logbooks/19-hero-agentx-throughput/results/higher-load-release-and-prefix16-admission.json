@@ -1,0 +1,483 @@
+{
+  "recorded_utc": "2026-10-30T18:03:34.596657+00:00",
+  "status": "Sixteen-GPU diagnostic model startup; no accepted AgentX result for binding-only placement yet.",
+  "source_commit": "9c155a5533c76a5c7c70127552102ba8e02738cd",
+  "prior_holder_release": {
+    "job_id": "/romain/dev-gpu-hero-agentx32-r392-resume1-01a1846a",
+    "verified_physical_gpu_count": 32,
+    "all_eight_original_attempts_complete_and_restored": true,
+    "native_window": {
+      "submission_valid": true,
+      "profiling_requests": 4188,
+      "profiling_errors": 0,
+      "profiling_error_ratio": 0.0,
+      "coverage": {
+        "phase_name": "profiling",
+        "expected_duration_seconds": 3600.0,
+        "required_ratio": 0.95,
+        "ttft_ratio": 1.0,
+        "inter_token_latency_ratio": 1.0
+      },
+      "profile_start": "2026-10-30T16:06:51.788919",
+      "profile_end": "2026-10-30T17:07:31.790563"
+    },
+    "aggregate_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/stock32-c512-resume2/aggregate.json",
+    "aggregate_sha256": "42528f7d2188e65eba9aa3cf38fcbe9e5f773c2289d15bb0e75c3849fdaa9ca6",
+    "state_capture_sha256": "9b2d2fdd49434bb0b7c988f0cf0be790307b09e860ccce7675bd39fc521ffe54",
+    "output_tokens_per_second": 635.45696,
+    "decision": "All original child output and aggregate receipts are verified. No further GPU work needs this32-GPU holder. Release through native dev_gpu before any new interactive allocation."
+  },
+  "provider_zero_after_release": {
+    "utc": "2026-10-30T17:35:59.696986+00:00",
+    "source": "gb200-inventory-after32-release.json",
+    "sha256": "9c409ab5b7582c3b97439d6c2892d81bb4eb9a352194e686ed21261e76f6e871"
+  },
+  "new_physical_admission": {
+    "utc": "2026-10-30T17:59:29.894758+00:00",
+    "source_commit": "9c155a5533c76a5c7c70127552102ba8e02738cd",
+    "job_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a",
+    "placement": {
+      "cluster": "cw-us-east-08a",
+      "nvlink_domain": "DH1-392-US-EAST-08A",
+      "nodes": [
+        "s1mwxs64",
+        "s1nrxs64",
+        "s3bsxs64",
+        "s3jtxs64",
+        "s4lqxs64",
+        "s62pys64",
+        "s6xvxs64",
+        "s7dk6j84",
+        "s90vxs64",
+        "s9rrxs64",
+        "s9vrxs64",
+        "sbnwxs64",
+        "sdmtxs64",
+        "sfdqxs64",
+        "sj1txs64",
+        "sj9wxs64",
+        "sjtsxs64"
+      ],
+      "verified_utc": "2026-10-30T17:51:48.905340+00:00",
+      "inventory_sha256": "a194446a1e022ee0880f8b42d7e66195768336abb4fd591fd43e8fa785c789c7",
+      "hero_training_gpus": 0,
+      "owned_gpus_before_request": 0,
+      "other_gpus": 64,
+      "neighbor_activity": "The native batch prompt-sampler currently occupies this spare domain. Normal Iris interactive scheduling may preempt batch work. No other owner job is cancelled manually. Verify actual admitted nodes, images and disjoint GPU UUIDs before model use. No GPU profiler."
+    },
+    "total_physical_gpus": 16,
+    "interactive_gpus": 16,
+    "batch_gpus": 0,
+    "physical_gpu_uuids": [
+      "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+      "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+      "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+      "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461",
+      "GPU-4858a3bb-5976-f906-0d1d-91a34ba87ef4",
+      "GPU-a1dac3f0-65b2-2567-26c1-a0951f6bfe4f",
+      "GPU-660ec8db-dd0e-3499-2f7a-859130b2a816",
+      "GPU-f41bf5e5-cdb1-343a-fbd5-2ccde1b66b86",
+      "GPU-ab87d1df-c68b-e43f-74f9-70990bbf3b54",
+      "GPU-825aa17f-782e-8334-4a10-ca3c8ca8436e",
+      "GPU-4eaa3b84-49ef-de11-1b50-2297839d54db",
+      "GPU-d2bf9ac2-eede-1881-bb38-58c5352223db",
+      "GPU-d631a63c-7116-0a0a-b173-285928a2f44a",
+      "GPU-e16d179f-05ee-c079-4e1a-2f2d3f10fb80",
+      "GPU-eb35ebe9-7fa9-ba42-5c97-89481edece8d",
+      "GPU-a182b275-e15a-a254-999c-44ca1930f8c1"
+    ],
+    "tasks": [
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/0",
+        "attempt_uid": "1a6cb55ddeb9dbaa",
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-2b5808fe-0-1a6cb55ddeb9dbaa",
+        "pod_uid": "bd73b39f-7d46-4aa8-bdd6-6078be7e5f03",
+        "node": "s1mwxs64",
+        "image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "image_id": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "priority": "iris-interactive",
+        "runtime": {
+          "node": "s1mwxs64",
+          "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/0:0",
+          "attempt_uid": "1a6cb55ddeb9dbaa",
+          "gpus": [
+            "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461, NVIDIA GB200, 595.71.05, 189471 MiB"
+          ],
+          "gpu_apps": []
+        }
+      },
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/1",
+        "attempt_uid": "6b7863c504a2899f",
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-a7fcb607-0-6b7863c504a2899f",
+        "pod_uid": "7d3fdfaf-91c8-4674-ab21-88f601b7a71c",
+        "node": "s1nrxs64",
+        "image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "image_id": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "priority": "iris-interactive",
+        "runtime": {
+          "node": "s1nrxs64",
+          "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/1:0",
+          "attempt_uid": "6b7863c504a2899f",
+          "gpus": [
+            "GPU-4858a3bb-5976-f906-0d1d-91a34ba87ef4, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-a1dac3f0-65b2-2567-26c1-a0951f6bfe4f, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-660ec8db-dd0e-3499-2f7a-859130b2a816, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-f41bf5e5-cdb1-343a-fbd5-2ccde1b66b86, NVIDIA GB200, 595.71.05, 189471 MiB"
+          ],
+          "gpu_apps": []
+        }
+      },
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/2",
+        "attempt_uid": "4b174525b660255b",
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-37a8883f-0-4b174525b660255b",
+        "pod_uid": "bb55d7d0-25de-4f5a-a6fb-7155a2cdf854",
+        "node": "s3bsxs64",
+        "image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "image_id": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "priority": "iris-interactive",
+        "runtime": {
+          "node": "s3bsxs64",
+          "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/2:0",
+          "attempt_uid": "4b174525b660255b",
+          "gpus": [
+            "GPU-ab87d1df-c68b-e43f-74f9-70990bbf3b54, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-825aa17f-782e-8334-4a10-ca3c8ca8436e, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-4eaa3b84-49ef-de11-1b50-2297839d54db, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-d2bf9ac2-eede-1881-bb38-58c5352223db, NVIDIA GB200, 595.71.05, 189471 MiB"
+          ],
+          "gpu_apps": []
+        }
+      },
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/3",
+        "attempt_uid": "aacb3c7277f9bf25",
+        "pod": "iris-romain-dev-gpu-hero-agentx16-p-7be5d048-0-aacb3c7277f9bf25",
+        "pod_uid": "5c36b50e-e840-4a68-988b-623ebfdc93fb",
+        "node": "s3jtxs64",
+        "image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "image_id": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+        "priority": "iris-interactive",
+        "runtime": {
+          "node": "s3jtxs64",
+          "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/3:0",
+          "attempt_uid": "aacb3c7277f9bf25",
+          "gpus": [
+            "GPU-d631a63c-7116-0a0a-b173-285928a2f44a, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-e16d179f-05ee-c079-4e1a-2f2d3f10fb80, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-eb35ebe9-7fa9-ba42-5c97-89481edece8d, NVIDIA GB200, 595.71.05, 189471 MiB",
+            "GPU-a182b275-e15a-a254-999c-44ca1930f8c1, NVIDIA GB200, 595.71.05, 189471 MiB"
+          ],
+          "gpu_apps": []
+        }
+      }
+    ],
+    "allocation_keeper_session": 62471
+  },
+  "new_diagnostic_launch": {
+    "utc": "2026-10-30T17:59:34.032012+00:00",
+    "source": {
+      "source_commit": "9c155a5533c76a5c7c70127552102ba8e02738cd",
+      "archive_sha256": "5d9fb1c0a2e027210aed9fe91423ac1b412495a8c179b6ab59fcf740cdf8b7eb",
+      "archive_bytes": 5529600,
+      "remote_source": "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd",
+      "staged": [
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx16-p-2b5808fe-0-1a6cb55ddeb9dbaa",
+          "result": {
+            "archive_sha256": "5d9fb1c0a2e027210aed9fe91423ac1b412495a8c179b6ab59fcf740cdf8b7eb",
+            "source_root": "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx16-p-a7fcb607-0-6b7863c504a2899f",
+          "result": {
+            "archive_sha256": "5d9fb1c0a2e027210aed9fe91423ac1b412495a8c179b6ab59fcf740cdf8b7eb",
+            "source_root": "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx16-p-37a8883f-0-4b174525b660255b",
+          "result": {
+            "archive_sha256": "5d9fb1c0a2e027210aed9fe91423ac1b412495a8c179b6ab59fcf740cdf8b7eb",
+            "source_root": "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd"
+          }
+        },
+        {
+          "pod": "iris-romain-dev-gpu-hero-agentx16-p-7be5d048-0-aacb3c7277f9bf25",
+          "result": {
+            "archive_sha256": "5d9fb1c0a2e027210aed9fe91423ac1b412495a8c179b6ab59fcf740cdf8b7eb",
+            "source_root": "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd"
+          }
+        }
+      ]
+    },
+    "gpu_empty_checks": [
+      {
+        "gpu_apps": ""
+      },
+      {
+        "gpu_apps": ""
+      },
+      {
+        "gpu_apps": ""
+      },
+      {
+        "gpu_apps": ""
+      }
+    ],
+    "launches": [
+      {
+        "pid": 513,
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/0:0",
+        "attempt_uid": "1a6cb55ddeb9dbaa",
+        "started_unix": 1793383173.950687,
+        "payload": {
+          "argv": [
+            "uv",
+            "run",
+            "--no-sync",
+            "python",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/diagnostic_server.py",
+            "--manifest",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/experiments/native-router-prefix-binding16-r1.json",
+            "--output",
+            "/iris/outputs/native-router-prefix-binding16-r1",
+            "--prefix-cache",
+            "--max-batched-tokens",
+            "2048",
+            "--moe-backend",
+            "triton",
+            "--numa-bind",
+            "--master-port",
+            "35800",
+            "--serve-duration",
+            "2400",
+            "--run-controls"
+          ],
+          "output": "/iris/outputs/native-router-prefix-binding16-r1",
+          "environment": {
+            "PYTHONPATH": "/app",
+            "IRIS_OUTPUT_DIR": "/iris/outputs/native-router-prefix-binding16-r1-entrypoint"
+          }
+        }
+      },
+      {
+        "pid": 512,
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/1:0",
+        "attempt_uid": "6b7863c504a2899f",
+        "started_unix": 1793383173.9791448,
+        "payload": {
+          "argv": [
+            "uv",
+            "run",
+            "--no-sync",
+            "python",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/diagnostic_server.py",
+            "--manifest",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/experiments/native-router-prefix-binding16-r1.json",
+            "--output",
+            "/iris/outputs/native-router-prefix-binding16-r1",
+            "--prefix-cache",
+            "--max-batched-tokens",
+            "2048",
+            "--moe-backend",
+            "triton",
+            "--numa-bind",
+            "--master-port",
+            "35800",
+            "--serve-duration",
+            "2400",
+            "--run-controls"
+          ],
+          "output": "/iris/outputs/native-router-prefix-binding16-r1",
+          "environment": {
+            "PYTHONPATH": "/app",
+            "IRIS_OUTPUT_DIR": "/iris/outputs/native-router-prefix-binding16-r1-entrypoint"
+          }
+        }
+      },
+      {
+        "pid": 510,
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/2:0",
+        "attempt_uid": "4b174525b660255b",
+        "started_unix": 1793383173.7660003,
+        "payload": {
+          "argv": [
+            "uv",
+            "run",
+            "--no-sync",
+            "python",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/diagnostic_server.py",
+            "--manifest",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/experiments/native-router-prefix-binding16-r1.json",
+            "--output",
+            "/iris/outputs/native-router-prefix-binding16-r1",
+            "--prefix-cache",
+            "--max-batched-tokens",
+            "2048",
+            "--moe-backend",
+            "triton",
+            "--numa-bind",
+            "--master-port",
+            "35800",
+            "--serve-duration",
+            "2400",
+            "--run-controls"
+          ],
+          "output": "/iris/outputs/native-router-prefix-binding16-r1",
+          "environment": {
+            "PYTHONPATH": "/app",
+            "IRIS_OUTPUT_DIR": "/iris/outputs/native-router-prefix-binding16-r1-entrypoint"
+          }
+        }
+      },
+      {
+        "pid": 511,
+        "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/3:0",
+        "attempt_uid": "aacb3c7277f9bf25",
+        "started_unix": 1793383173.7455573,
+        "payload": {
+          "argv": [
+            "uv",
+            "run",
+            "--no-sync",
+            "python",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/diagnostic_server.py",
+            "--manifest",
+            "/iris/candidates/research-9c155a5533c76a5c7c70127552102ba8e02738cd/logbooks/19-hero-agentx-throughput/experiments/native-router-prefix-binding16-r1.json",
+            "--output",
+            "/iris/outputs/native-router-prefix-binding16-r1",
+            "--prefix-cache",
+            "--max-batched-tokens",
+            "2048",
+            "--moe-backend",
+            "triton",
+            "--numa-bind",
+            "--master-port",
+            "35800",
+            "--serve-duration",
+            "2400",
+            "--run-controls"
+          ],
+          "output": "/iris/outputs/native-router-prefix-binding16-r1",
+          "environment": {
+            "PYTHONPATH": "/app",
+            "IRIS_OUTPUT_DIR": "/iris/outputs/native-router-prefix-binding16-r1-entrypoint"
+          }
+        }
+      }
+    ]
+  },
+  "retention": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/admission/higher-load-release-prefix16/native-provider-f735024aaf35883b90d5bc173e07e6b70245fde313914388cd0520833715f66c.tar.zst",
+    "sha256": "f735024aaf35883b90d5bc173e07e6b70245fde313914388cd0520833715f66c",
+    "readback_sha256": "f735024aaf35883b90d5bc173e07e6b70245fde313914388cd0520833715f66c",
+    "bytes": 125549,
+    "members": 95,
+    "files": {
+      "gb200-inventory-spare-status-20261030T115650Z.json": "e0059c139632d447994750106db78b6f41f78e5d8ab4554dfc3e650eb77c1b50",
+      "gb200-inventory-tiny-cacheoff-pre-submit.json": "641531e52e3ef09d605ab8d6c68183212235be2b0a90b4fcab90a1da69c0b7fc",
+      "gb200-inventory-tiny-padded-final-gate.json": "fc80e3c800667f7f990206fd88fa095f269a576a71926b004044566eaf21f952",
+      "gb200-inventory-native-flag-trials.json": "f1345cd58e0b24c9f886c3fb5f903fb3266eca3f178b32dd9e85feebd33e91d1",
+      "gb200-inventory-before-allocation.json": "361b716b58f987d376c4d06172bb833a0957220c2f36b2288e6f2cd5e314aa8f",
+      "gb200-inventory-c512-retry-admission.json": "46c5b6d879bc0dde1dac340279c48ff666cc791ec9618ac6622003bd136cdcc9",
+      "resource-accounting-through-20261030T1736.json": "a13b26642dac2678868da81e347db97d99142ffcdf8fdfb0da146ae4b62f866b",
+      "gb200-inventory-after-auto2048-r1.json": "a8bb77b02bcb44931c1631f2e4ecf6a36a113bd33a42233730b53aefdb73e865",
+      "gb200-inventory-new392-wait-2113.json": "a679b668c41d1ef5e2b65d3f462ff7d89c151bbe3450873ecf3175fb6272d094",
+      "prefix16-intake-plan.json": "5dcb2f5c42fb5971c201b7665a897d734ebf085c3ef7df9519b79116d9cec75d",
+      "gb200-inventory-one-sided-pre-submit.json": "5d6f6a462810cafa646025b47d6e7ea633953581639a3f6acd8217a42028e3a5",
+      "gb200-inventory-parallel-gate.json": "a3d77e982ea39289459e1fa4358ba5a56c1777cf14fc658cf61e6fc11a16cc61",
+      "gb200-inventory-sampler-role-corrected.json": "c461ca35e3a3d54a85ddc1df71de56b6d9264f9f16bb34f23e5fab6098723473",
+      "stage-prefix16-research.py": "eda11d449104d6dc23f35bc7cab7ab681f30ab477e225956544d97abb675a86a",
+      "native-through32-release-sanitized.json": "31af5478739a9cb976d2acf21a05a943bcececcbd9b00de61f005e4bd928e723",
+      "gb200-inventory-numa-memory-final-pre-submit.json": "27f4ec0aa6763bb64dc49dd8f0581e04e9cbb49035ef949ae5c9c09784f1526d",
+      "prefix16-physical-proof.json": "d9cd57b5e011c7f193ae3eeb0390d90c2aeb9efd50354558b94b88b740ec2b05",
+      "gb200-inventory-resume-admission-20261030T120127Z.json": "75dc9ae1802a116a5da09594ba10ae277afb388435289308f485d491cc7646f2",
+      "gb200-inventory-batch-r1-admission.json": "5c9d5a0d6bd238a7e7cd82c4e4bdad697700b9f9908061409adbb93b9201d6d3",
+      "gb200-inventory-capacity-check-2140.json": "ff8ce15956f0f5c8b955d78c9e59bf8e962a0b9c0e509a55ce057640198742d5",
+      "gb200-inventory-spare-recheck-0503.json": "892a361d71a1fb93efdcec6f5efcf53debad30ecebd2c7ceb854cf09b18c3da2",
+      "higher-load-scored-phase-analysis-inputs.json": "982eae5dc0f09dfa217483fe41a77e4f2a61a10ecf987890a20edc5d157b4bde",
+      "gb200-inventory-combined16-r2-admission.json": "818c0345193e90d28a7f114b9cf168322f4805138065c1196278adebe9c735d5",
+      "gb200-inventory-pp4-pre-submit.json": "88e373e52e10b2d75a64fa6ab65f029610fd06a424863aaafd7ed447bf90e35c",
+      "gb200-inventory-c25616-final-gate.json": "c21f72b052c25dc4a1985cb7abfad1f39eec06cd31b9881fdd3cf7a047607b0b",
+      "gb200-inventory-tiny-aa-admission.json": "aaf46ebe590017a049f442e9f40e46be009a17050df57cc9e090a82f8934b434",
+      "gb200-inventory-prefix16-admitted.json": "d45e27e6fd2eeb692e04d91fa2876a5bae1c152f788b1e6a2bb98cccab09d6c3",
+      "gb200-inventory-prefix16-presubmit.json": "4e3cde42bb9d481314e37c03f9400a1b22640f88045a23a61ad8d095b3444732",
+      "gb200-inventory-new392-cordon-aware.json": "d9a50298c576fd50777493d58261ad015e3b97687918ce65cb0fb4220f7ff0f1",
+      "gb200-inventory-router16-recapture-final-gate.json": "8e4aae50ab25ea96d3c790d09db9222783320091a14da7398c4a21987357347e",
+      "gb200-inventory-resume-submit-20261030T120704Z.json": "325e6d16dd506218eececc2772801c0ccf9f32effb6e5ce6bd7050d2db4b611e",
+      "gb200-inventory-controlled16-admission.json": "b77cb49b20636618dd3a10921fd205df713c5bf56f4673c191935d8695ce19e7",
+      "gb200-inventory-extra-flag-gate.json": "11ce2413dc25ba2bf77da2a7ebfec626cb90faff590068261800ca1f3de16087",
+      "gb200-inventory-numa-memory-controls-gate.json": "244eb469419cc03c716e9f0540ac0154da0c55f01b1cbdb914fc740ee2a2428a",
+      "native-router-prefix-binding16-r1-launch.json": "ec66ec0dab63082e7a1134ca31cfba8aab6b7f75e22b5074706b29f329a1d39c",
+      "extend-accounting-1736.py": "efe96a2e51b4394903ef33532a0025b9bca7f2f8986e9929e8dafb174bb0fecf",
+      "gb200-inventory-resumed-20261029T1015.json": "3ab278774ef1d0bfb481c392d10ba0a9b684b70d5fd2962f6325c8b06d0b24cd",
+      "gb200-inventory-combined16-r1-failed-2350.json": "607be504ab2e63ce718d18516be546644470591834ece27b41914e47025ca25e",
+      "gb200-inventory-resume1-actual64.json": "4b368508f76b152f36b1d42c7a1cff6c51869d2303b30ebedf5cb162c79e2bf6",
+      "gb200-inventory-c25616-r2-gate.json": "c37385219f34bffbbe4355641b095718eb26d0f2b0b632e3a042b3b09820be15",
+      "gb200-inventory-c25616-r1-gate.json": "4c947fb1b05a4378c1ade67d3f9cee2dc40c993458b3b5461fd0176e65def238",
+      "gb200-inventory-goal-turn-20261030T052950Z.json": "efccd98c6b2cc8532b1dd8b1a19f4d33aa634c1e1830c0e0c7744431c696bf16",
+      "gb200-inventory-router-and32-reallocation-gate.json": "0a507fe0f34cb23a6ec40bb841ae88182b12ccb81ca48d04f8c60deb3707620e",
+      "gb200-inventory-scaling32-image-pinned-gate.json": "f91bdf351d694fae02656c014c15d0a03f150502beba6ad0de6ec6c341e73d2c",
+      "gb200-inventory-budget4096-final-gate.json": "4d124a83d1650bd93b806359f64d827fd73a2c85171ebd24cf7f8a49529a7677",
+      "gb200-inventory-new392-ownership-corrected.json": "2a01ca17c13fe8c7d148c98518f5e3d62774f4abc7cb3cd3eaf89be415c1f295",
+      "gb200-inventory-goal-turn-20261030T053835Z.json": "a0d3601b3ebdfd5d630f83e91268b18bce3c08eb3bd2ca8848c039d99a5752ae",
+      "gb200-inventory-stock16-c256-r392-admission.json": "8d36a7234bb4d718f365e9415d9680ac3b656f6d10db28325f92ae0846dbb068",
+      "gb200-inventory-batch16-r392-r1-priority-gate.json": "f28a155d56df1feacad42b878d9f038affbb946adc2e8fc33088e0128fd28352",
+      "gb200-inventory-spare-recheck-0450.json": "cbe2bb4245a6e8288cf39420b80d6eeb04c9661ac8903156846d358baeecf22b",
+      "gb200-inventory-post-cancellation-0440.json": "cae1d18c52fad742577b0f8b791aa5c4bee96ec8191ef7d9314f56d65d67c31e",
+      "gb200-inventory-combined16-admission-2344.json": "ee8b9f4a0495d0aec91503901d73b120b1a63e159fd35f8a8131c20f5c76e3f5",
+      "gb200-inventory-affinity-c128-new-quota-gate.json": "f0078b1df25753a976e8a4d729672b12d89f86372c4e1679a37b9476677285c3",
+      "gb200-inventory-after32-release.json": "9c409ab5b7582c3b97439d6c2892d81bb4eb9a352194e686ed21261e76f6e871",
+      "resource-accounting-through-20261030T0450.json": "2d0176a3f867a7046d7ca3a95603d9c97c781c71b598968192e77001310edf16",
+      "prefix16-native-status.json": "e289c44d130d8374b7ddef0bf80c21a415bb6003542dcdced36b6d69854ca469",
+      "gb200-inventory-sampler-interactive-r1.json": "36bdcfb831b35aa02307c776a508c555e33c10669a5bca8d87387263a1e5dfb1",
+      "gb200-inventory-new-spare-399-gate.json": "39fda9c8d80463b645abf3b5758921c169da4574a0566c9929df2b6ca82f0114",
+      "gb200-inventory-fixedbatch-final-gate.json": "a038366bc05141c7a4d3054340918271a6bf185b0e23095ffc34cc199a42b55e",
+      "gb200-inventory-flag-submit-gate.json": "2a161604d1f7a53299ed19cf421cc379936f7dce5f0452d9bdbd4ad5b740298a",
+      "gb200-inventory-resumed-0429.json": "10c9d7cc2ee4870c5e896082453c8f24bdfcca579e2fc68b8139bc196adfbfe4",
+      "gb200-inventory-spare-recheck-0520.json": "dd48629748c844a55c72a4640403e240f88c75725ca3ebf9df291f1d751103da",
+      "gb200-inventory-c128-gate.json": "414ca35948ffdaea787e18746e8bcbc975016becf5cdcfaefde1878dd16cbf6c",
+      "gb200-inventory-new32-immediate-gate.json": "b77a6ce21654a1e655bffb33731b614dbc833f3bd8fcbea86a4bab0572ea1d64",
+      "gb200-inventory-budget8k-and-tiny-r1-gate.json": "e98ae67844156d4ff12e6f3ce3ebc932d6bf863c7abf9ea44a13f6ffc500d0db",
+      "gb200-inventory-graph2k95-admission.json": "285cb164335cd9b2788897ca6d422f49ea42f05e39880c9368210f4fb6ae92eb",
+      "gb200-inventory-tiny-aa-final-gate.json": "a428936f914854827aa0e31e2d6fb42133e54ef9bcd42a3960c30ead116bbf54",
+      "start-prefix16-diagnostic.py": "eb56c395115073a05c1e4f9166b2109bff0773b0fdffcdc979d43839fa6c91f5",
+      "gb200-inventory-graph16-reference-admission.json": "009d08cf9f211ef6cdff622ab8dfc9900a50d9a97e95d8370d4c9846bdc53104",
+      "gb200-inventory-post-holder32-reschedule.json": "612a827d8773d3605c9e271d3001673794d37cfb543362266d302c81cae809b9",
+      "gb200-inventory-c128-candidate-auto-r1-gate.json": "e9cb8db8458862af9fae3fba8efae529f6cce2a3caffedf502bceb9576e25ee9",
+      "gb200-inventory-new-spare-392-gate.json": "d603df5cb9fff6debc0ec0d3938e1d4e4c5064e1ff1108ba9a1dcfda4624e74e",
+      "verify-prefix16-physical.py": "5b2a6d81d67b5a1b2021edfeda427a81cfacf153f6b386f05733563350e68337",
+      "gb200-inventory-upstream-c128-submit-now.json": "06a113e84fc787060255254104905c94abe66eff1e577dac93e5029f48135803",
+      "gb200-inventory-combined16-preparation-2336.json": "5d246a3646f02f22af4e1104346452037b1fd004cfe151be5a27c6346b5a2f80",
+      "gb200-inventory-post-graph-c256-1704.json": "3ed704a4809f8b867833d246452fb5b86f87fd835501eb3202257e7dfcb46c24",
+      "gb200-inventory-tiny-aa4-gate.json": "93bf05be1e81c91142afac9c153bf0fa87ebc052bc142357d63cd65aadf77357",
+      "gb200-inventory-sampler-interactive-r1-immediate.json": "895428d087aa4d9cf86cd8df7befd3d7b1b006cfafac94fb12482390a0656b56",
+      "gb200-inventory-upstream-c128-final-gate.json": "0858b1ff02a71afeb5abd3b7a364b7190a56a413f09447df8e83677eaee06f3c",
+      "gb200-inventory-allocation-gate.json": "548da1ed15352b6f9e9f246399e497d1e50576dbf2439e93de522eb2d8e9565a",
+      "gb200-inventory-goal-turn-capacity-recheck.json": "a11fd53fadbbd633a31157623dba68150975327deb4b78bb8e579493f4c77a60",
+      "gb200-inventory-all64-scaling-admission.json": "7bab2ddc572794247620cac0966d22f03732f084d40e1da9cc1399105731fcb2",
+      "gb200-inventory-scaling32-final-allocation-gate.json": "e279548d06a105e4cb5322f09b2316323d39901d577afd2920912b4bad822ba8",
+      "gb200-inventory-one-sided-live-gate.json": "852a6ff2b2fc70ad19f078cddee61bc850b389c70b1641c2096e1eb9d24eacf3",
+      "stock32-release-decision.json": "4c7ef315c04bf809f7278473007c3a4d84975672d282f4943974f343f3321147",
+      "gb200-inventory-prefix16-intake.json": "a194446a1e022ee0880f8b42d7e66195768336abb4fd591fd43e8fa785c789c7",
+      "prefix16-research-stage.json": "269a98345803cc08e1e239b561c47a08289f0f2a6789b8142448e1e63c45d0be",
+      "gb200-inventory-goal-turn-20261030T053712Z.json": "a5c116048329a9441dbf499b474b4adaab47bca85d76a987deeec08e34c9aa3f",
+      "gb200-inventory-after-holder-anomaly.json": "efb53101d76bbb48aa0c56c6ba162d63069b70ffbd17316d45ebb56491c05357",
+      "gb200-inventory-admitted.json": "c10806af70eda6c8377df309772fa39927dae77781a1ce3da6746572c99f26d7",
+      "gb200-inventory-c256-matched-20261030T142750Z.json": "69022c7bde1a561f87ba8073da1bf8e963fe143090d98d9f418479a053148e5e",
+      "gb200-inventory-final-pre-submit-c128-auto.json": "f236397818f69f94daab69f30894bcf92564375dc5b9b17b94046d2df26343f9",
+      "gb200-inventory-final-graph-preflight.json": "15c09fa00a144d533f1c2ce75c89aca42b091dd964fce5a4f4cdaf0260f69634",
+      "gb200-inventory-final-graph-confirm-current.json": "01a9477006aebfdf4f11687a824585072ec77a08dd2a8b8529028237f9eab3f2",
+      "gb200-inventory-budget16k-admission-current.json": "455fb7bfbe8d81d0541c42e61910c69fb7d82eb0ec3248c00fb99b7bdaec4762"
+    },
+    "retained_utc": "2026-10-30T18:03:34.596657+00:00",
+    "scope": "Sanitized native accounting, filtered provider snapshots, 32-GPU release decision, new 16-GPU physical admission and exact source-stage/diagnostic commands. No Pod environment or credential contents."
+  },
+  "scope": "Admission, launch and release receipts. Child numerical/cache-owner qualification and any full-hour candidate result remain separate."
+}
