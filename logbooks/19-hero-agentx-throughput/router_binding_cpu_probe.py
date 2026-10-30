@@ -108,6 +108,8 @@ def main() -> None:
     thread = threading.Thread(target=backend.serve_forever, daemon=True)
     thread.start()
     base = json.loads(args.manifest.read_text())["router"]
+    # The hash control must not inherit a candidate's optional binding mode.
+    base.pop("program_binding", None)
     architecture = platform.machine()
     if architecture == "x86_64":
         base["wheel"] = {"url": WHEEL_URL, "sha256": WHEEL_SHA256}
