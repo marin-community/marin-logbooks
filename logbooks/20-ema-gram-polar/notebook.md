@@ -376,6 +376,41 @@ published quarter-power plan and version `2026.10.30.22`. This is a second
 independent pilot; the baseline continues unchanged. Submission alone does
 not establish TPU assignment, training progress or spectral-power cost.
 
+### 2026-10-30 20:58 UTC — Quarter-power training starts with substantial step cost
+
+The quarter-power task reached dependency setup at 20:41:38 UTC and online
+W&B at 20:42:24 UTC. Native attempt 0 is training on TPU v4 with fresh run
+[9a9c9264a39c](https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.10.30.22-9a9c9264a39c).
+The actual API configuration passes all protocol controls against the published
+quarter-power plan/source `9fc93eb412368c03470fb8cfb0dda0e9957519dc`.
+
+Captured step 0 took 517.295 seconds, including startup/compilation work.
+Steps 1–6 took 38.147–41.617 seconds (median 40.659 seconds),
+versus roughly 0.35 seconds for the baseline's observed steady steps. This
+is early full-step overhead, not an isolated eigendecomposition measurement
+or a matched convergence comparison. All captured training losses are finite;
+there is no quarter-power validation result yet. The planned steps 100–109
+trace will provide finer attribution. Do not change the requested full spectral
+powers, matrix geometry, refresh cadence or 7,630-step schedule to hide the cost.
+Keep only the two current pilots while investigating it.
+
+A bounded `marin` / `iris.task` query for 20:41–20:58 UTC returned 136 samples
+through 20:56:44 UTC. Attempt 0's cumulative observed host peak is 55.289 GiB;
+accelerator-memory values are null. This precedes the first checkpoint interval
+and does not establish final peak memory. `quarter-first-steps.json` preserves
+the actual early step measurements and telemetry provenance.
+
+Both runs emit the same reference-cache metadata warnings (cached max length
+131072 versus configured None, and cached append_bos False versus configured
+True). Their resolved data configs match the shared recipe; no caches were
+rebuilt or substituted. These shared warnings do not explain a variant-only
+change in input data.
+
+The baseline continues: at 20:56 UTC its API snapshot reaches step 4302 and
+141,000,704 tokens, with latest C4 validation loss 4.349377. These are partial
+results, not a completed pilot. The report compatibility fix `af94166ce` passed
+all 39 CI checks (passed/skipped, none failed/pending) at 20:35:34 UTC.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
