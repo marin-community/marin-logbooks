@@ -243,6 +243,29 @@ at 19:09:55 UTC from clean published source
 The model, data and optimizer are unchanged; this is a fresh submission,
 not checkpoint resume. Await assignment and measured host peak memory.
 
+### 2026-10-30 19:27 UTC — Model-size host reservations
+
+The 19:21 scheduler snapshot still showed zero attempts. One worker had free
+matching TPUs but only 86.5 GiB host memory available, below the 128 GiB request.
+Recomputed abstract full-state sizes for the exact 447M configuration and
+128,256-token vocabulary: model 1,788,976,128 bytes, optimizer 5,561,858,072
+bytes, total state 7,350,834,212 bytes. `state-shape-memory.json` records this
+shape calculation. It allocates no arrays and runs no optimizer steps. This
+is not a runtime peak measurement: compiler, checkpoint and data buffers are
+additional. The native loader bounds its prefetch queue to 64 batches.
+
+Use 64 GiB host RAM for all 447M variants and 128 GiB for all 998M variants.
+Both retain v4-8, 120 CPU cores, unchanged TPU HBM and unchanged training
+controls. A comparison of all 30 resolved pilots again found only
+`resources.ram` changed; lint and type checks pass. Measure host peak after
+assignment and investigate any OOM rather than assuming this estimate proves
+runtime sufficiency.
+
+If the 128 GiB child is still pending without a worker or attempts, replace it
+with `ema-gram-20-first-pilot-64g-20261030`, using the preceding command with
+version `2026.10.30.22`. Preserve any job that has started. The complete new
+configuration is `first-pilot-64g-resolved.json`; no training setting is reduced.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
