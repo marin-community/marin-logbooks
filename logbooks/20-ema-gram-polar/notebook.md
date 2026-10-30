@@ -94,6 +94,14 @@ the submitting budget identity permits at most the batch priority band. Use
 change account policy. No optimizer steps or W&B run occurred in this rejected
 submission. The exact experimental source remains unchanged.
 
+### 2026-10-30 18:35 UTC — Remote logging check submitted
+
+Published execution source: `44c7eceff45d94ab2dce7c028f86bb16a34173be`.
+Iris accepted CPU job `/kaiyuew@stanford.edu/ema-gram-20-logging-20261030`
+with the command above and the permitted batch priority. Its workspace bundle
+is 16.0 MB. This job performs no optimizer steps. Await successful completion
+and the online W&B run before submitting the first TPU pilot.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
