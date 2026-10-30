@@ -8,6 +8,8 @@ import hashlib
 import shlex
 from pathlib import Path
 
+from fray.iris_backend import convert_constraints
+from fray.types import ResourceConfig
 from iris.cluster.types import Entrypoint, EnvironmentSpec, ResourceSpec
 from iris.rpc import job_pb2
 from rigging.filesystem.storage_path import StoragePath
@@ -47,6 +49,9 @@ def submission(*, name: str, candidate: dict, archive: bytes, credentials: dict[
         name=name,
         entrypoint=Entrypoint(command=["bash", "-c", command], workdir_files={ARCHIVE_PATH: archive}),
         resources=ResourceSpec(cpu=8, memory="32g", disk="50g"),
+        constraints=convert_constraints(
+            ResourceConfig.with_cpu(cpu=8, ram="32g", disk="50g", target_cluster="cw-rno2a")
+        ),
         replicas=1,
         environment=EnvironmentSpec(
             extras=("cpu",),
