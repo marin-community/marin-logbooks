@@ -76,6 +76,10 @@ def main() -> None:
             timeout=1800,
         )
         return
+    capture_sources = manifest.get("diagnostic_request", {}).get("capture_compiler_sources", False)
+    if capture_sources:
+        receipt = batch_trace("http://127.0.0.1:38197", "capture_hero_compiler_sources", ["ready"])
+        (args.output / "compiler-sources-ready.json").write_text(json.dumps(receipt, indent=2) + "\n")
     probe = [
         *prefix,
         "python",
@@ -244,6 +248,9 @@ def main() -> None:
                 row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
                 for row in checks
             )
+    if capture_sources:
+        receipt = batch_trace("http://127.0.0.1:38197", "capture_hero_compiler_sources", ["after-numerics"])
+        (args.output / "compiler-sources-after-numerics.json").write_text(json.dumps(receipt, indent=2) + "\n")
     if manifest.get("diagnostic_request", {}).get("numerics_only"):
         print("NATIVE_NUMERICAL_CONTROL_DONE", flush=True)
         return

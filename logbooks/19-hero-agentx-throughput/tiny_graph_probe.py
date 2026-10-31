@@ -117,6 +117,54 @@ def stop_batch_trace(worker) -> None:
     module.dispatch_cg_and_sync_dp = worker.hero_dispatch_original
 
 
+def capture_compiler_sources(worker, label: str) -> dict:
+    """Keep emitted code and tuning settings before numerical or timing phases."""
+    rank = worker.model_runner.dp_rank
+    local_size = worker.vllm_config.parallel_config.data_parallel_size_local
+    if rank % local_size:
+        return {"dp_rank": rank, "capturing": False}
+    assert label in ("ready", "after-numerics")
+    destination = Path(os.environ["IRIS_OUTPUT_DIR"]) / "compiler-sources" / label
+    destination.mkdir(parents=True, exist_ok=False)
+    files = []
+    total = 0
+    for kind, key in [("vllm", "VLLM_CACHE_ROOT"), ("inductor", "TORCHINDUCTOR_CACHE_DIR")]:
+        root = Path(os.environ[key])
+        for source in root.rglob("*"):
+            if not source.is_file():
+                continue
+            selected = source.name in ("computation_graph.py", "autotune_configs.json")
+            if kind == "inductor":
+                selected = source.suffix in (".py", ".cpp", ".ptx", ".ttir", ".ttgir")
+            if not selected:
+                continue
+            size = source.stat().st_size
+            assert size <= 16_000_000
+            total += size
+            assert total <= 256_000_000
+            data = source.read_bytes()
+            assert len(data) == size == source.stat().st_size
+            target = destination / kind / source.relative_to(root)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+            files.append(
+                {
+                    "source": str(source),
+                    "retained": str(target),
+                    "bytes": size,
+                    "sha256": hashlib.sha256(data).hexdigest(),
+                }
+            )
+    settings = {
+        "inductor_max_autotune": os.environ.get("VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE", "1"),
+        "inductor_coordinate_descent": os.environ.get("VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING", "1"),
+        "flashinfer_autotune": worker.vllm_config.kernel_config.enable_flashinfer_autotune,
+    }
+    record = {"dp_rank": rank, "capturing": True, "label": label, "files": files, "bytes": total, "settings": settings}
+    (destination / "receipt.json").write_text(json.dumps(record, indent=2) + "\n")
+    return record
+
+
 def cache_storage(worker) -> dict:
     """Record native CUDA KV tensor storage metadata without reading GPU data."""
     runner = worker.model_runner
@@ -249,6 +297,7 @@ class BatchTraceWorkerExtension:
     hero_cache_storage = cache_storage
     set_hero_shortconv_reference = set_shortconv_reference
     install_hero_moe_snapshot = install_moe_snapshot
+    capture_hero_compiler_sources = capture_compiler_sources
 
 
 def main() -> None:

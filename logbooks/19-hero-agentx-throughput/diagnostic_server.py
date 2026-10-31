@@ -268,6 +268,12 @@ def serve(
                 server.extra_cli_args[server.extra_cli_args.index("--gpu-memory-utilization") + 1] = str(memory_fraction)
                 record["overrides"]["gpu_memory_utilization"] = memory_fraction
             diagnostic = manifest.get("diagnostic_request", {})
+            if "kernel_config" in diagnostic:
+                index = server.extra_cli_args.index("--kernel-config") + 1
+                kernel = json.loads(server.extra_cli_args[index]) | diagnostic["kernel_config"]
+                assert kernel["moe_backend"] == moe_backend
+                server.extra_cli_args[index] = json.dumps(kernel)
+                record["overrides"]["kernel_config"] = kernel
             if "compilation_config" in diagnostic:
                 compilation = diagnostic["compilation_config"]
                 set_compilation_config(server, compilation)
