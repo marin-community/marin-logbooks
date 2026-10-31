@@ -1011,3 +1011,20 @@ Both retained runtime captures show the same observed1024/8-warps reduction laun
 The original sixteen-GPU holder is cancelled after the completed hour, fresh full reference and rejected source comparison all pass raw retention/readback. A fresh provider inventory shows0goal GPUs,0Hero training and64other-owner GPUs on the spare domain. One4-GPU node remains available. Batch holder `/romain/dev-gpu-hero-agentx-attention4-r392-01a1846a` is admitted on `sjtsxs64`, native attempt `953f483020164a00`, provider pod UID `5a8f38ed-bd7f-4b1d-bba9-376a6fbaae48`, fixed image `b66c48a1...`; all four GPUs are empty. Board1645closes and1648tracks this diagnostic.
 
 [The small derived checkpoint](results/hero-attention-geometry-fixture-r1.json) is retained at158,324,279compressed bytes with checksum readback. It keeps synthetic embedding/MoE/gated-norm tensors and regenerates only attention projection/gate/K-ShortConv tensors at48Q/12stored/6global/128width, seed42. This fixture will force native FLASHINFER, retain first2048-row local/global inputs and outputs, and replay the exact full-reference8K histories. It is a numerical component; the full Hero checkpoint and all tolerances stay fixed.
+
+### 2026-10-31: first logical-cache mismatch is global decode attention
+
+The six-call capture covers four 2K prefills, the 15-token tail and the first
+decode token on the actual-attention-geometry fixture. Local attention is exact
+at every captured step. Global attention Q, logical K/V and output are exact
+through all five prefills. Its first decode has exact Q and logical K/V, but
+732 of 6,144 output elements differ, with maximum absolute difference
+0.0009765625. Both outputs pass the unchanged native FlashInfer BF16 FP32
+reference tolerance (atol=rtol=0.01). First prompt hidden states and logits
+are exact. This locates a component difference; it does not qualify full Hero.
+
+The two runs retain 583,877,563 compressed bytes with complete checksum readback.
+See [the six-step result](results/attention-geometry-off-on-r3.json). The next
+component replay holds logical Q/K/V fixed and varies page size and KV head
+count separately, with native automatic decode planning and split-KV disabled.
+No model patch, numerical threshold or full-model qualification gate changed.
