@@ -20,26 +20,25 @@ from rigging.secrets import SecretBehavior, require_secret
 from rigging.timing import Duration
 
 from experiments.post_training.identity_context_distill.runtime_recipe import xla_precision_env
-from experiments.post_training.identity_path_b import trend_serve
 from experiments.post_training.identity_path_b.async_launch import (
     CPU_RESOURCES,
-    checked_export_event,
     regional_task_context,
 )
-from experiments.post_training.identity_path_b.checkpoints import TEMPORARY_PREFIX, CheckpointEvent
-from experiments.post_training.identity_path_b.identity_scope import run, source_baseline
+from experiments.post_training.identity_path_b.checkpoints import TEMPORARY_PREFIX
+from experiments.post_training.identity_path_b.identity_scope import run
 from experiments.post_training.identity_path_b.native_boundary_scope.run import NativeSession
+from experiments.post_training.identity_path_b.replay_serve import T2_SERVE_SHA256
 from experiments.post_training.identity_path_b.trend import wait_for_owned_endpoint
 from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 from experiments.post_training.identity_t2 import serve as t2
 
-TARGETS_SHA256 = "12c5dabb4ee1cb9b527f65f4a9de5b70eb8646eaca0d02200e5d4916ca484670"
+TARGETS_SHA256 = "3f5a0d785518e9ec73b8776efc6d282a4420589148a3dcc51db8c8b54d86d4b9"
 
 
 def checked_audit_sha256(value):
     """Bind the actual completed audit, never a future or guessed artifact."""
     if not isinstance(value, str) or re.fullmatch("[0-9a-f]{64}", value) is None:
-        raise ValueError("Require actual HF audit SHA256 from the executor readiness receipt")
+        raise ValueError("Require actual merge admission SHA256 from the executor readiness receipt")
     return value
 
 
@@ -51,48 +50,80 @@ def target(label):
 
 
 def checked_identity(label, name, audit_sha256) -> dict:
+    """Admit an actual merged HF without inventing a training/export event."""
     item = target(label)
-    if label == "v01":
-        identity = source_baseline.checked_source(name)
-        raw_config = (StoragePath(item["model"]) / "tokenizer_config.json").read_bytes()
-        identity["actual_tokenizer_config_sha256"] = hashlib.sha256(raw_config).hexdigest()
-        identity["effective_prefix_admission"] = (
-            "Every CPU/server/returned prefix must equal the original132 IDs; no template override"
-        )
-        return identity
-    event = CheckpointEvent(**item["event"])
-    checked_export_event(event)
-    raw_audit = (StoragePath(event.hf_export) / "path-b-storage-audit.json").read_bytes()
-    if hashlib.sha256(raw_audit).hexdigest() != checked_audit_sha256(audit_sha256):
-        raise ValueError("Audited HF tensor/storage admission changed")
-    audit = json.loads(raw_audit)
+    if checked_audit_sha256(audit_sha256) != item["merge_admission_sha256"]:
+        raise ValueError("Require this exact completed merge admission")
+    raw = StoragePath(item["merge_admission_uri"]).read_bytes()
+    if hashlib.sha256(raw).hexdigest() != audit_sha256:
+        raise ValueError("Actual merge admission changed")
+    report = json.loads(raw)
     if (
-        len(audit["tensors"]) != 502
-        or audit["frozen_native_tensors"] != 104
-        or audit["trained_master_cast_tensors"] != 398
+        report["admitted"] is not True
+        or report["provenance_kind"] != "linear-cpu-merge"
+        or report["label"] != label
+        or report["output"] != item["model"]
+        or report["code_revision"] != item["merge_code_revision"]
+        or report["training_event"] is not None
+        or report["master_cast_audit"] is not None
+        or report["training_checkpoint_provenance"] is not False
+        or len(report["tensors"]) != 502
+        or report["source_frozen_fields"] != 104
+        or len(report["router_biases_fp32"]) != 26
+        or report["protected_rows_per_tensor"] != 256
+        or report["recipe"]["parameters"]
+        != {"coefficients": [0.51], "density": 1, "method": "average", "scale": 1, "seed": 0}
+        or report["pre_arithmetic_parent_protection"]["full_fields"] != 104
+        or report["pre_arithmetic_parent_protection"]["router_biases_fp32"] != 26
+        or len(report["pre_arithmetic_parent_protection"]["parent_bits_admitted_before_restoration"]) != 106
     ):
-        raise ValueError("Require exact audited104 frozen/398 cast-master HF")
-    expected = {
-        "tokenizer.json": "6a61ca2105a54e9984169b409581f31cc50330d1b47104af13c221b05e462e45",
-        "tokenizer_config.json": "d9270d9407a15ec895fa2cdb0b6fbe9cd7dab937b91c2db708a918b35efa18b3",
-        "chat_template.jinja": "b3f20bc21498407f2815dd1a6c26150192926ccf04f6324ca40a1209bff7d1de",
+        raise ValueError("Require the exact finite/restored502 M51 merge report")
+    for name in report["router_biases_fp32"]:
+        if report["tensors"][name]["dtype"] != "torch.float32":
+            raise ValueError("Merge router bias must remain FP32")
+    for parent in ("A3", "A8a"):
+        if len(report["parents_full_hash_readback"][parent]) != 56:
+            raise ValueError("Require full parent object hashes")
+    for parent in ("A3", "A8a"):
+        if report["subsets"]["frozen104"]["delta_l2_vs_" + parent] != 0:
+            raise ValueError("Protected frozen fields changed")
+    manifest_raw = (StoragePath(item["model"]) / "merge-manifest.json").read_bytes()
+    if (
+        hashlib.sha256(manifest_raw).hexdigest() != item["merge_manifest_sha256"]
+        or report["merge_manifest_sha256"] != item["merge_manifest_sha256"]
+    ):
+        raise ValueError("Actual merge manifest changed")
+    for filename, digest in item["metadata_sha256"].items():
+        if hashlib.sha256((StoragePath(item["model"]) / filename).read_bytes()).hexdigest() != digest:
+            raise ValueError("Actual merge HF metadata changed: " + filename)
+    return {
+        "kind": "linear-cpu-merge",
+        "model": item["model"],
+        "actual_merge_admission_sha256": audit_sha256,
+        "actual_merge_manifest_sha256": item["merge_manifest_sha256"],
+        "training_event": None,
+        "master_cast_audit": None,
+        "actual_HF_metadata_sha256": item["metadata_sha256"],
     }
-    for filename, digest in expected.items():
-        if hashlib.sha256((StoragePath(event.hf_export) / filename).read_bytes()).hexdigest() != digest:
-            raise ValueError("Native trained-HF tokenizer metadata changed: " + filename)
-    return {"event": event.payload(), "actual_tokenizer_metadata": expected}
 
 
 def service_config(label, name):
-    if label == "v01":
-        return source_baseline.service_config(name)
-    return replace(trend_serve.service_config(CheckpointEvent(**target(label)["event"])), timeout_hours=12)
+    if hashlib.sha256(Path(t2.__file__).read_bytes()).hexdigest() != T2_SERVE_SHA256:
+        raise ValueError("The frozen native T2 serve source changed")
+    original = t2.service_config()
+    return replace(
+        original,
+        model=replace(original.model, weights=target(label)["model"]),
+        iris=replace(original.iris, priority=job_pb2.PRIORITY_BAND_PRODUCTION),
+        endpoint_name=endpoint(label, name),
+        timeout_hours=12,
+        controller_proxy_timeout_seconds=1800,
+    )
 
 
 def endpoint(label, name):
-    if label == "v01":
-        return source_baseline.source_identity(name)["endpoint_name"]
-    return "/serve/" + trend_serve.event_identity(CheckpointEvent(**target(label)["event"]))
+    target(label)
+    return "/serve/" + name + "-serve"
 
 
 def serve_submission(label, name, credentials, audit_sha256, readiness_sha256):
@@ -107,7 +138,7 @@ def serve_submission(label, name, credentials, audit_sha256, readiness_sha256):
                 label,
                 "--name",
                 name,
-                "--audit-sha256",
+                "--merge-admission-sha256",
                 checked_audit_sha256(audit_sha256),
                 "--readiness-sha256",
                 checked_audit_sha256(readiness_sha256),
@@ -120,6 +151,7 @@ def serve_submission(label, name, credentials, audit_sha256, readiness_sha256):
         entrypoint=Entrypoint(command=["bash", "-c", script]),
         timeout=Duration.from_hours(12),
         constraints=None,
+        priority_band=job_pb2.PRIORITY_BAND_PRODUCTION,
     )
     return request
 
@@ -132,7 +164,7 @@ def screen_worker(label, name, output, audit_sha256, readiness_sha256):
     if destination.exists():
         raise FileExistsError("Native-boundary output exists; no automatic retry")
     identity = checked_identity(label, name, audit_sha256)
-    identity["bound_actual_storage_audit_sha256"] = checked_audit_sha256(audit_sha256)
+    identity["bound_actual_merge_admission_sha256"] = checked_audit_sha256(audit_sha256)
     identity["actual_executor_readiness_receipt_sha256"] = checked_audit_sha256(readiness_sha256)
     (destination / "input-identity.json").write_bytes((json.dumps(identity, indent=2) + "\n").encode())
     context = regional_task_context()
@@ -192,7 +224,7 @@ def submission(*, label, name, output, credentials, audit_sha256, readiness_sha2
                     name,
                     "--output",
                     output,
-                    "--audit-sha256",
+                    "--merge-admission-sha256",
                     audit_sha256,
                     "--readiness-sha256",
                     readiness_sha256,
@@ -211,21 +243,21 @@ def submission(*, label, name, output, credentials, audit_sha256, readiness_sha2
         timeout=Duration.from_seconds(ROOT_LIFETIME),
         max_retries_failure=0,
         max_retries_preemption=0,
-        priority_band=job_pb2.PRIORITY_BAND_INTERACTIVE,
+        priority_band=job_pb2.PRIORITY_BAND_PRODUCTION,
     )
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=("A11",), required=True)
+    parser.add_argument("--target", choices=("M51",), required=True)
     parser.add_argument("--name", required=True)
     parser.add_argument("--output")
-    parser.add_argument("--audit-sha256", required=True)
+    parser.add_argument("--merge-admission-sha256", required=True)
     parser.add_argument("--readiness-sha256", required=True)
     parser.add_argument("--serve", action="store_true")
     parser.add_argument("--inspect-only", action="store_true")
     args = parser.parse_args()
-    checked_audit_sha256(args.audit_sha256)
+    checked_audit_sha256(args.merge_admission_sha256)
     checked_audit_sha256(args.readiness_sha256)
     if args.inspect_only:
         with run.payload() as (root, historical):
@@ -241,14 +273,14 @@ def main():
             )
         return
     if args.serve:
-        checked_identity(args.target, args.name, args.audit_sha256)
+        checked_identity(args.target, args.name, args.merge_admission_sha256)
         t2.validate_runtime()
         t2.configure_worker_s3()
         run_iris_service(service_config(args.target, args.name))
         return
     if args.output is None:
         raise ValueError("CPU owner requires output")
-    screen_worker(args.target, args.name, args.output, args.audit_sha256, args.readiness_sha256)
+    screen_worker(args.target, args.name, args.output, args.merge_admission_sha256, args.readiness_sha256)
 
 
 if __name__ == "__main__":
