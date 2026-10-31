@@ -1,0 +1,434 @@
+{
+  "source_commit": "3cfdfadb6379aba670c25f23e14f394501056efa",
+  "comparison": {
+    "source_sha256": "6c50df60a715f86fe2993f8d480bf245a0e4bc3b875865ef00e20e3a598ce629",
+    "rows": [
+      {
+        "layer": 0,
+        "files": {
+          "reference": {
+            "sha256": "283d91dcfee03d85c8f28cdeada35b6387bfc3118e4a8b2601f4fcc2a0245a4a",
+            "bytes": 62917249
+          },
+          "candidate": {
+            "sha256": "283d91dcfee03d85c8f28cdeada35b6387bfc3118e4a8b2601f4fcc2a0245a4a",
+            "bytes": 62917249
+          }
+        },
+        "cross_source": {
+          "query": {
+            "shape": [
+              2048,
+              48,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 12582912,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          },
+          "output": {
+            "shape": [
+              2048,
+              48,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 12582912,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          },
+          "key": {
+            "shape": [
+              2048,
+              12,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 3145728,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          },
+          "value": {
+            "shape": [
+              2048,
+              12,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 3145728,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          }
+        },
+        "baseline_duplicate_heads_exact": {},
+        "fp32_reference": {
+          "reference": {
+            "native_flashinfer_tolerance_passed": true,
+            "different_elements_outside_tolerance": 0,
+            "max_absolute_delta": 0.00182265043258667,
+            "mean_absolute_delta": 5.352621519705281e-05,
+            "cache_shape": [
+              91410,
+              12,
+              16,
+              256
+            ]
+          },
+          "candidate": {
+            "native_flashinfer_tolerance_passed": true,
+            "different_elements_outside_tolerance": 0,
+            "max_absolute_delta": 0.00182265043258667,
+            "mean_absolute_delta": 5.352621519705281e-05,
+            "cache_shape": [
+              91410,
+              12,
+              16,
+              256
+            ]
+          }
+        }
+      },
+      {
+        "layer": 3,
+        "files": {
+          "reference": {
+            "sha256": "cbd306d96753a7ceb9d5ab769a70c7dd053cfb9628f5f183e8e2a57797a1e94a",
+            "bytes": 62917249
+          },
+          "candidate": {
+            "sha256": "44c77499091ce3e9255aa4ef2bacd853c167352ebf819bba61609d28580a3196",
+            "bytes": 56625793
+          }
+        },
+        "cross_source": {
+          "query": {
+            "shape": [
+              2048,
+              48,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 12582912,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          },
+          "output": {
+            "shape": [
+              2048,
+              48,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 12582912,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          },
+          "key": {
+            "shape": [
+              2048,
+              6,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 1572864,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          },
+          "value": {
+            "shape": [
+              2048,
+              6,
+              128
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": true,
+            "different_elements": 0,
+            "elements": 1572864,
+            "max_absolute_delta": 0.0,
+            "mean_absolute_delta": 0.0,
+            "examples": []
+          }
+        },
+        "baseline_duplicate_heads_exact": {
+          "key": true,
+          "value": true
+        },
+        "fp32_reference": {
+          "reference": {
+            "native_flashinfer_tolerance_passed": true,
+            "different_elements_outside_tolerance": 0,
+            "max_absolute_delta": 0.0018610358238220215,
+            "mean_absolute_delta": 6.115538417361677e-05,
+            "cache_shape": [
+              91410,
+              12,
+              16,
+              256
+            ]
+          },
+          "candidate": {
+            "native_flashinfer_tolerance_passed": true,
+            "different_elements_outside_tolerance": 0,
+            "max_absolute_delta": 0.0018610358238220215,
+            "mean_absolute_delta": 6.115538417361677e-05,
+            "cache_shape": [
+              91410,
+              6,
+              32,
+              256
+            ]
+          }
+        }
+      }
+    ],
+    "native_attention_atol": 0.01,
+    "native_attention_rtol": 0.01,
+    "reference_precision": "FP32; TF32 disabled; first cold2048-token causal prefill",
+    "scope": "Actual native backend tensors on the synthetic geometry fixture. No full-Hero or speed gate."
+  },
+  "cross_source_completions": [
+    {
+      "request": 0,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003924369812011719,
+          "shared_logprobs": 318,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 1,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003948211669921875,
+          "shared_logprobs": 315,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 2,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003920555114746094,
+          "shared_logprobs": 316,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 3,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003924369812011719,
+          "shared_logprobs": 318,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 4,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003925323486328125,
+          "shared_logprobs": 316,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        },
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0039157867431640625,
+          "shared_logprobs": 315,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 5,
+      "choices": [
+        {
+          "same_tokens": false,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003925323486328125,
+          "shared_logprobs": 317,
+          "matching_token_prefix": 15,
+          "minimum_topk_overlap": 19
+        },
+        {
+          "same_tokens": false,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003925323486328125,
+          "shared_logprobs": 313,
+          "matching_token_prefix": 15,
+          "minimum_topk_overlap": 18
+        },
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003932952880859375,
+          "shared_logprobs": 317,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 6,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003924369812011719,
+          "shared_logprobs": 318,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 7,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003925323486328125,
+          "shared_logprobs": 316,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        },
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0039157867431640625,
+          "shared_logprobs": 315,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 8,
+      "choices": [
+        {
+          "same_tokens": false,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003925323486328125,
+          "shared_logprobs": 317,
+          "matching_token_prefix": 15,
+          "minimum_topk_overlap": 19
+        },
+        {
+          "same_tokens": false,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003925323486328125,
+          "shared_logprobs": 313,
+          "matching_token_prefix": 15,
+          "minimum_topk_overlap": 18
+        },
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003932952880859375,
+          "shared_logprobs": 317,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    },
+    {
+      "request": 9,
+      "choices": [
+        {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.003924369812011719,
+          "shared_logprobs": 318,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 19
+        }
+      ]
+    }
+  ],
+  "retention": [
+    {
+      "name": "attention-geometry-off-r1",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-geometry-off-r1/outputs-1362e89d97f56a60e4205dba9fffbfcd7059cab6c67317932de51e1c185fb2c2.tar.zst",
+      "archive_sha256": "1362e89d97f56a60e4205dba9fffbfcd7059cab6c67317932de51e1c185fb2c2",
+      "readback_sha256": "1362e89d97f56a60e4205dba9fffbfcd7059cab6c67317932de51e1c185fb2c2",
+      "archive_bytes": 77923469,
+      "snapshot_files": [
+        {
+          "name": "attention-layer-0.pt",
+          "sha256": "283d91dcfee03d85c8f28cdeada35b6387bfc3118e4a8b2601f4fcc2a0245a4a",
+          "bytes": 62917249
+        },
+        {
+          "name": "attention-layer-3.pt",
+          "sha256": "cbd306d96753a7ceb9d5ab769a70c7dd053cfb9628f5f183e8e2a57797a1e94a",
+          "bytes": 62917249
+        }
+      ]
+    },
+    {
+      "name": "attention-geometry-on-r1",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-geometry-on-r1/outputs-0fbef375c823a2441d860efa88fd288e002fdc3c4769497bea327968b8e39e46.tar.zst",
+      "archive_sha256": "0fbef375c823a2441d860efa88fd288e002fdc3c4769497bea327968b8e39e46",
+      "readback_sha256": "0fbef375c823a2441d860efa88fd288e002fdc3c4769497bea327968b8e39e46",
+      "archive_bytes": 77873300,
+      "snapshot_files": [
+        {
+          "name": "attention-layer-0.pt",
+          "sha256": "283d91dcfee03d85c8f28cdeada35b6387bfc3118e4a8b2601f4fcc2a0245a4a",
+          "bytes": 62917249
+        },
+        {
+          "name": "attention-layer-3.pt",
+          "sha256": "44c77499091ce3e9255aa4ef2bacd853c167352ebf819bba61609d28580a3196",
+          "bytes": 56625793
+        }
+      ]
+    }
+  ],
+  "gpu_empty_after": true,
+  "scope": "Native synthetic actual-attention-geometry component and independentFP32 causal reference; no full-model gate or speed.",
+  "interpretation": "First2048-row local0 and global3 query/output/logicalK/V tensors are all bit-exact between flag modes. Both native outputs pass independentFP32 causal attention at nativeBF16 atol=rtol0.01. Completion logprobs still differ around0.0039 and some later tokens differ. This does not locate the first later divergence or qualify fullHero; isolate XSA and/or later prefill/decode."
+}
