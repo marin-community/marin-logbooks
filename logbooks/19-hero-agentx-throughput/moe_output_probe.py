@@ -1,7 +1,7 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Check the buffered MoE operator against native Triton and plain Torch math.
+"""Check the buffered MoE operator against a native backend and plain Torch math.
 
 Use one idle owned GPU and the exact private serving wheel. This component
 diagnostic uses deterministic small weights, not the Hero checkpoint. It tests
@@ -14,6 +14,7 @@ import json
 import os
 import subprocess
 import tempfile
+from dataclasses import asdict
 from pathlib import Path
 
 import torch
@@ -25,19 +26,21 @@ from vllm.forward_context import set_forward_context
 from vllm.model_executor.models import grugmoe
 from vllm.v1.worker.workspace import init_workspace_manager
 
+ROW_COUNTS = (1, 3, 8, 17, 32, 64, 2, 1)
 
-def probe_config() -> grugmoe.GrugMoeRuntimeConfig:
+
+def probe_config(hidden_dim: int = 16, intermediate_dim: int = 16) -> grugmoe.GrugMoeRuntimeConfig:
     return grugmoe.GrugMoeRuntimeConfig(
         vocab_size=64,
-        hidden_dim=16,
-        intermediate_dim=16,
+        hidden_dim=hidden_dim,
+        intermediate_dim=intermediate_dim,
         shared_expert_intermediate_dim=0,
         num_experts=4,
         num_experts_per_token=2,
         num_layers=1,
         num_heads=4,
         num_kv_heads=1,
-        head_dim=4,
+        head_dim=hidden_dim // 4,
         max_seq_len=128,
         sliding_window=8,
         initializer_std=0.02,
@@ -49,14 +52,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--model-source-sha256", required=True)
+    parser.add_argument("--backend", choices=("triton", "flashinfer_cutlass"), default="triton")
+    parser.add_argument("--hidden-dim", type=int, default=16)
+    parser.add_argument("--intermediate-dim", type=int, default=16)
     args = parser.parse_args()
     assert hashlib.sha256(Path(grugmoe.__file__).read_bytes()).hexdigest() == args.model_source_sha256
-    cfg = probe_config()
+    cfg = probe_config(args.hidden_dim, args.intermediate_dim)
     assert torch.cuda.device_count() == 1
     assert not subprocess.check_output(
         ["nvidia-smi", "--query-compute-apps=pid", "--format=csv,noheader"], text=True
     ).strip()
-    config = VllmConfig(kernel_config=KernelConfig(moe_backend="triton"))
+    config = VllmConfig(kernel_config=KernelConfig(moe_backend=args.backend))
     rows = []
     with tempfile.TemporaryDirectory() as temporary, set_current_vllm_config(config):
         init_distributed_environment(
@@ -77,11 +83,26 @@ def main() -> None:
                         ).reshape_as(parameter)
                     )
                 experts = module.experts.routed_experts
+                inputs = {
+                    count: (
+                        torch.linspace(-0.6, 0.7, count * cfg.hidden_dim, device="cuda")
+                        .to(torch.bfloat16)
+                        .reshape(count, cfg.hidden_dim)
+                    )
+                    for count in ROW_COUNTS
+                }
+                # Backend conversion may transpose the weights. Use the canonical
+                # weights for the independent reference before that conversion.
+                references = {}
+                for count, hidden in inputs.items():
+                    with set_forward_context(None, config, num_tokens=count):
+                        references[count] = module._forward_torch_reference(hidden.float(), hidden.float())
                 experts.quant_method.process_weights_after_loading(experts)
                 init_workspace_manager(torch.device("cuda"))
-                for count in [1, 3, 8, 17, 32, 64, 2, 1]:
-                    hidden = torch.linspace(-0.6, 0.7, count * cfg.hidden_dim, device="cuda").to(torch.bfloat16)
-                    hidden = hidden.reshape(count, cfg.hidden_dim)
+                backend = str(experts.quant_method.unquantized_backend)
+                experts_class = experts.quant_method.experts_cls.__name__
+                for count in ROW_COUNTS:
+                    hidden = inputs[count]
                     logits = F.linear(hidden.float(), module.router.weight)
                     with set_forward_context(None, config, num_tokens=count):
                         native = module.experts(hidden.clone(), logits.clone())
@@ -89,7 +110,7 @@ def main() -> None:
                         torch.ops.vllm.grug_moe_experts_out(
                             hidden.clone(), logits.clone(), output, module.experts.layer_name
                         )
-                        reference = module._forward_torch_reference(hidden.float(), hidden.float())
+                        reference = references[count]
                     assert torch.isfinite(output).all()
                     torch.testing.assert_close(output, native, atol=0, rtol=0)
                     # Reuse the existing BF16 Grug layer test's tolerances.
@@ -113,8 +134,12 @@ def main() -> None:
         "model_source_sha256": args.model_source_sha256,
         "torch_reference_atol": 2e-2,
         "torch_reference_rtol": 2e-2,
+        "requested_backend": args.backend,
+        "actual_backend": backend,
+        "experts_class": experts_class,
+        "configuration": asdict(cfg),
         "rows": rows,
-        "scope": "One-GPU small deterministic BF16 Triton component check, no graph or full-Hero qualification.",
+        "scope": f"One-GPU small BF16 {args.backend} component check, no graph or full-Hero qualification.",
     }
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result), flush=True)
