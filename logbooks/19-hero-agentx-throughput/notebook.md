@@ -1251,3 +1251,20 @@ The retry uses fresh model processes. Its native completed-job/task/archive
 check now runs inside the committed client before any inference or Router
 starts; shell command sequencing cannot bypass it. Numerical tolerances,
 model flags and the one-case C256workload are unchanged.
+
+The committed same-function prelaunch gate is exercised on a real native
+worker with CUDA hidden. It accepts the completed eight-task baseline with
+matching attempt IDs and uploaded archives, and rejects the currently
+running native four-task producer before inference. This is a live native
+API check, not a patched JobInfo or mocked terminal state. See
+[the guard verification](results/replica-speed-c256-r3-native-guard.json).
+The native one32C256speed configuration is prepared, but its submission
+waits until the fresh two16C256window is complete.
+
+A separate untested hypothesis may address logical-cache exactness without
+relaxing the source gate: keep six cached KV heads, but partition48query
+heads into two24head groups so native decode still uses GQA4. Test either
+two calls or one batched call with repeated block-table rows, then invert
+the query-head permutation. The retained actual decode tensors provide the
+first exact baseline. No model/backend patch follows until that component
+is measured. Packing/launch overhead and native compatibility remain unknown.
