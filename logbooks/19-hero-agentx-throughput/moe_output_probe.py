@@ -39,6 +39,7 @@ def main() -> None:
     config = VllmConfig(kernel_config=KernelConfig(moe_backend="triton"))
     cfg = grugmoe.GrugMoeRuntimeConfig(
         vocab_size=64,
+        artifact_schema_version=2,
         hidden_dim=16,
         intermediate_dim=16,
         shared_expert_intermediate_dim=0,
