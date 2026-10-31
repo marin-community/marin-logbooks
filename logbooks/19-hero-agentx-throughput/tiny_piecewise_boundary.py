@@ -103,9 +103,15 @@ def main() -> None:
         record.update(status="ready", ready_unix=time.time())
         (root / "progress.json").write_text(json.dumps(record, indent=2) + "\n")
         for local in manifest.get("local_modes", [False, True]):
-            phase = {"local_piecewise_dp": local, "requests": [], "status": "running"}
+            disable_replay = manifest.get("disable_graph_replay", False)
+            phase = {
+                "local_piecewise_dp": local,
+                "disable_graph_replay": disable_replay,
+                "requests": [],
+                "status": "running",
+            }
             record["phases"].append(phase)
-            batch_trace(base_url, "install_hero_batch_trace", [None, False, local, True])
+            batch_trace(base_url, "install_hero_batch_trace", [None, disable_replay, local, True])
             for index, lengths in enumerate([[80], [17, 33], [15, 47, 63], [16]]):
                 prompts = [[73 + i % 17 for i in range(length)] for length in lengths]
                 payload = {
