@@ -13,6 +13,8 @@ from pathlib import Path
 import torch
 import triton
 from compare_moe_snapshots import compare_tensor
+from torch._inductor.codecache import PyCodeCache
+from torch._inductor.runtime.triton_heuristics import CachingAutotuner
 from vllm import ir
 
 
@@ -22,6 +24,7 @@ def main() -> None:
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--compile-profile", type=Path)
     args = parser.parse_args()
     assert torch.cuda.device_count() == 1
     manifest = json.loads(args.manifest.read_text())
@@ -39,6 +42,54 @@ def main() -> None:
         for label, root in inputs.items()
     }
     tolerance = ir.ops.rms_norm.get_tolerance(torch.bfloat16)
+    if args.compile_profile:
+        profile = json.loads(args.compile_profile.read_text())
+        options = profile["diagnostic_request"]["compilation_config"]["inductor_compile_config"]
+        assert options["deterministic"] is True and options["dynamic_scale_rblock"] is False
+        assert options["combo_kernels"] is False
+        native_norm = ir.ops.rms_norm.impls["native"].impl_fn
+
+        def pair(left, right, weight):
+            return native_norm(left, weight, 1e-5), native_norm(right, weight, 1e-5)
+
+        compiled = torch.compile(pair, fullgraph=True, dynamic=False, options=options)
+        left, right = records["reference"]
+        weight = left["norm_weight"]
+        outputs = compiled(left["projected"].cuda(), right["projected"].cuda(), weight.cuda())
+        outputs = [value.cpu() for value in outputs]
+        for record, actual in zip(records["reference"], outputs, strict=True):
+            expected = native_norm(record["projected"], weight, record["variance_epsilon"])
+            torch.testing.assert_close(actual, expected, **tolerance)
+        torch.save(outputs, args.output / "outputs.pt")
+        kernels = [
+            {
+                "name": name,
+                "deterministic": value.inductor_meta["deterministic"],
+                "dynamic_scale_rblock": value.inductor_meta["dynamic_scale_rblock"],
+                "launchers": [
+                    {"kwargs": launcher.config.kwargs, "num_warps": launcher.config.num_warps}
+                    for launcher in value.launchers
+                ],
+            }
+            for module in PyCodeCache.modules
+            for name, value in vars(module).items()
+            if isinstance(value, CachingAutotuner)
+        ]
+        assert kernels and all(row["deterministic"] and not row["dynamic_scale_rblock"] for row in kernels)
+        result = {
+            "status": "actual_captured_norm_pair_compiles_and_passes_native_reference",
+            "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+            "profile_sha256": hashlib.sha256(args.compile_profile.read_bytes()).hexdigest(),
+            "compiler_options": options,
+            "native_reference_tolerance": tolerance,
+            "runtime_kernels": kernels,
+            "scope": (
+                "Actual saved raw projections and weights; standalone compiled two-output norm graph. No model run."
+            ),
+        }
+        (args.output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
+        print(json.dumps(result))
+        return
     rows = []
     for label, record in manifest["experiments"].items():
         module_path = args.output / f"captured_kernel_{label}.py"
