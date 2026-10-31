@@ -119,6 +119,11 @@ def main() -> None:
                 assert disable_replay
                 phase["moe_snapshot_installation"] = batch_trace(base_url, "install_hero_moe_snapshot")
             cases = manifest.get("requests")
+            if "request_inputs" in manifest:
+                source = Path(manifest["request_inputs"]["path"])
+                assert hashlib.sha256(source.read_bytes()).hexdigest() == manifest["request_inputs"]["sha256"]
+                inputs = json.loads(source.read_text())["prompts"]
+                cases = [case | {"prompts": [inputs[index] for index in case["branches"]]} for case in cases]
             if cases is None:
                 cases = [
                     {
