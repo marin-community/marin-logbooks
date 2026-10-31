@@ -1,0 +1,139 @@
+{
+  "status": "observed_failure",
+  "gpu_empty": true,
+  "attempt_uid": "1a6cb55ddeb9dbaa",
+  "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-piecewise-inductor-partition-ep4-r1/outputs-bc3d701f3c0bc1cd1e6fde148244cfbe69c259cca50099cb584dd084ec492dcc.tar.zst",
+  "sha256": "bc3d701f3c0bc1cd1e6fde148244cfbe69c259cca50099cb584dd084ec492dcc",
+  "readback_sha256": "bc3d701f3c0bc1cd1e6fde148244cfbe69c259cca50099cb584dd084ec492dcc",
+  "bytes": 49130,
+  "source_commit": "d73df7b77780b849cc98ee7fba6b39f23eae19b8",
+  "first_dispatches": [
+    {
+      "unix": 1793409556.2389283,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793409556.238935,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793409556.2389414,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793409556.2389448,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 64,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 64,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    }
+  ],
+  "error_lines": [
+    "(APIServer pid=91853) DEBUG 10-31 01:19:17 [entrypoints/.../exception_handling/error_response.py:24] create_error_response called with ValueError: Out of range float values are not JSON compliant: nan"
+  ],
+  "compiled_graph_sources": [
+    {
+      "path": "/iris/candidates/tiny-piecewise-inductor-partition-cache-r1/torch_compile_cache/140eec7ab1/rank_0_3/backbone/computation_graph.py",
+      "sha256": "24ca9002811192fb7fcf7499fc21c9af1e99456826020e39af44aa9b6adfcf47",
+      "bytes": 202240
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-inductor-partition-cache-r1/torch_compile_cache/140eec7ab1/rank_0_1/backbone/computation_graph.py",
+      "sha256": "9cae69f816b63f759528f0e2446a35a1a7255e191f063a7c50a0951b059f78a3",
+      "bytes": 202240
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-inductor-partition-cache-r1/torch_compile_cache/140eec7ab1/rank_0_2/backbone/computation_graph.py",
+      "sha256": "245c24fffdf83f503a7b8dfc7af7eb68079e3b9921c34bb52e286188a9c6af59",
+      "bytes": 202240
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-inductor-partition-cache-r1/torch_compile_cache/140eec7ab1/rank_0_0/backbone/computation_graph.py",
+      "sha256": "317b084e3d807123667672f947a08c277529dfce1098509d4ab03ca1a368db78",
+      "bytes": 202240
+    }
+  ],
+  "scope": "Four-layer synthetic BF16 Hero, TP1/DP4/EP4, native DEBUG input-address checks and CUDA_LAUNCH_BLOCKING=1. Same fixed model and shapes as the failed MoE-boundary control; no full-Hero numerical or throughput qualification.",
+  "ready_unix": 1793409556.2170036,
+  "finished_unix": 1793409557.7853553,
+  "driver_sha256": "a29d9248ee0200f87b95021bea6467f3ec5954e645e19fd9820a0141ec733d14",
+  "manifest_sha256": "de1c5de8c07e192696c9dc4e693a737b5a6e6e1597110f69cfe006920438aea0",
+  "request_count": 2,
+  "completed_requests": 1,
+  "completed_choices": 1,
+  "request_input_lengths": [
+    [
+      80
+    ],
+    [
+      17,
+      33
+    ]
+  ],
+  "per_rank_padding_attempted": false,
+  "first_all_rank_padded_vector": [
+    64,
+    64,
+    64,
+    64
+  ],
+  "request_failure": "HTTP Error 400: Bad Request",
+  "interpretation": "Native use_inductor_graph_partition=True avoids the prior address assertion in this run, but returns a non-finite logprob after the first successful request. The second batch [17,33] fails HTTP400 with an out-of-range NaN serialization error. It fails the finite-output gate; local padding and speed cases are not attempted."
+}

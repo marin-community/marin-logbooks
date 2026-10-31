@@ -1,0 +1,144 @@
+{
+  "status": "completed",
+  "gpu_empty": true,
+  "attempt_uid": "1a6cb55ddeb9dbaa",
+  "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-piecewise-original-boundaries-ep4-r1/outputs-a40694a4b0369e6c8088ba7eab5af55b8433e50fee6a6bcd048a41c889331c4e.tar.zst",
+  "sha256": "a40694a4b0369e6c8088ba7eab5af55b8433e50fee6a6bcd048a41c889331c4e",
+  "readback_sha256": "a40694a4b0369e6c8088ba7eab5af55b8433e50fee6a6bcd048a41c889331c4e",
+  "bytes": 80086,
+  "source_commit": "d73df7b77780b849cc98ee7fba6b39f23eae19b8",
+  "first_dispatches": [
+    {
+      "unix": 1793409197.9727435,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 64,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 64,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793409197.9727554,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793409197.9728038,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793409197.9728115,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    }
+  ],
+  "error_lines": [],
+  "compiled_graph_sources": [
+    {
+      "path": "/iris/candidates/tiny-piecewise-original-boundaries-cache-r1/torch_compile_cache/0a6ad7092c/rank_0_2/backbone/computation_graph.py",
+      "sha256": "19125df62e31af35413c97432a8d1ebc5e8411093dddc5c0e8c3053e33f1768f",
+      "bytes": 213177
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-original-boundaries-cache-r1/torch_compile_cache/0a6ad7092c/rank_0_3/backbone/computation_graph.py",
+      "sha256": "b57bae9fa16ad762ca260ab5ba25d6d10152ccdfb667acd9de21fabfe083cfba",
+      "bytes": 213177
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-original-boundaries-cache-r1/torch_compile_cache/0a6ad7092c/rank_0_0/backbone/computation_graph.py",
+      "sha256": "482cae56518a63d7129a3e64800b05440a46d116e6a13d70fc7a690e94e32d0b",
+      "bytes": 213177
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-original-boundaries-cache-r1/torch_compile_cache/0a6ad7092c/rank_0_1/backbone/computation_graph.py",
+      "sha256": "b9dcbe702c509e8e8fe9bdbc09b60c14f9369c50e827c52933af1348d3aeb4b6",
+      "bytes": 213177
+    }
+  ],
+  "scope": "Four-layer synthetic BF16 Hero, TP1/DP4/EP4, native DEBUG input-address checks and CUDA_LAUNCH_BLOCKING=1. Same fixed model and shapes as the failed MoE-boundary control; no full-Hero numerical or throughput qualification.",
+  "ready_unix": 1793409197.9504662,
+  "finished_unix": 1793409199.9520428,
+  "driver_sha256": "a29d9248ee0200f87b95021bea6467f3ec5954e645e19fd9820a0141ec733d14",
+  "manifest_sha256": "0ccc6ae8a7e6fb4356913c895905c606cb838c525354e6c1f808e0dd8171abef",
+  "request_count": 4,
+  "completed_requests": 4,
+  "completed_choices": 7,
+  "request_input_lengths": [
+    [
+      80
+    ],
+    [
+      17,
+      33
+    ],
+    [
+      15,
+      47,
+      63
+    ],
+    [
+      16
+    ]
+  ],
+  "per_rank_padding_attempted": false,
+  "first_all_rank_padded_vector": [
+    64,
+    64,
+    64,
+    64
+  ],
+  "interpretation": "The original qualified graph boundaries complete all four API requests and seven choices with finite logprobs. Compared with the same-environment excluded-MoE address failure, this isolates a boundary contract failure in the tiny diagnostic. It does not identify the originating kernel in the earlier asynchronous full-Hero fault."
+}
