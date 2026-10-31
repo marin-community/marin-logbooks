@@ -64,15 +64,17 @@ def parallel_eigh(normalized, *, mesh, axis_name, implementation):
     replicated = NamedSharding(mesh, P())
     normalized = jax.lax.with_sharding_constraint(normalized, replicated)
     normalized = jax.lax.optimization_barrier(normalized)
+    axes = (axis_name,) if isinstance(axis_name, str) else axis_name
+    shards = math.prod(mesh.shape[name] for name in axes)
     batch_shape = normalized.shape[:-2]
     count = math.prod(batch_shape)
-    padded_count = math.ceil(count / mesh.shape[axis_name]) * mesh.shape[axis_name]
+    padded_count = math.ceil(count / shards) * shards
     flat = normalized.reshape((count, *normalized.shape[-2:]))
     padded = jnp.pad(flat, ((0, padded_count - count), (0, 0), (0, 0)))
     mapped = jax.shard_map(
         partial(jax.lax.linalg.eigh, implementation=implementation),
         mesh=mesh,
-        axis_names={axis_name},
+        axis_names=set(axes),
         in_specs=P(axis_name, None, None),
         out_specs=(P(axis_name, None, None), P(axis_name, None)),
     )

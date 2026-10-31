@@ -1,0 +1,85 @@
+{
+  "validation": "non-training CPU mesh/config validation only",
+  "num_devices": 16,
+  "old_mesh_error": "train_batch_size (8) must be divisible by per_device_parallelism * data_axis_size (2, 16)",
+  "candidate_ici_axes": {
+    "data": 4,
+    "model": 4,
+    "replica": 1
+  },
+  "candidate_axis_shapes": [
+    {
+      "data": 4,
+      "replica": 1,
+      "model": 4
+    },
+    {
+      "replica_dcn": 1
+    }
+  ],
+  "global_batch_size": 8,
+  "per_device_parallelism": 2,
+  "data_parallel_axis_size": 4,
+  "effective_microbatch_size": 8,
+  "compute_mapping": {
+    "mlp": "model",
+    "heads": "model",
+    "batch": [
+      "replica_dcn",
+      "replica",
+      "data"
+    ],
+    "token": [
+      "replica_dcn",
+      "replica",
+      "data"
+    ],
+    "token_repeat": [
+      "replica_dcn",
+      "replica",
+      "data"
+    ]
+  },
+  "parameter_mapping": {
+    "mlp": "model",
+    "heads": "model",
+    "embed": "data"
+  },
+  "model_config": {
+    "type": "qwen3",
+    "max_seq_len": 4096,
+    "hidden_dim": 1024,
+    "intermediate_dim": 4096,
+    "num_layers": 11,
+    "num_heads": 8,
+    "head_dim": null,
+    "num_kv_heads": 8,
+    "activation_function": "silu",
+    "initializer_range": 0.02,
+    "layer_norm_epsilon": 1e-05,
+    "tie_word_embeddings": false,
+    "hybrid_norm": false,
+    "use_qk_norm": false,
+    "input_embedding_norm": false,
+    "upcast_attn": false,
+    "attn_backend": null,
+    "flash_attention_block_size": null,
+    "gradient_checkpointing": true,
+    "scan_layers": true,
+    "use_bias": false,
+    "use_layer_norm_weight": true,
+    "rope": {
+      "type": "llama3",
+      "theta": 500000,
+      "factor": 8,
+      "low_freq_factor": 1,
+      "high_freq_factor": 4,
+      "original_max_position_embeddings": 8192
+    },
+    "reference_checkpoint": "NousResearch/Llama-2-7b-hf",
+    "tokenizer": null,
+    "use_sliding_window": false,
+    "sliding_window": 4096
+  },
+  "launch_state": "not submitted; requires solver/runtime gates and checkpoint restore verification"
+}

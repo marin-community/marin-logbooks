@@ -23,10 +23,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True)
     parser.add_argument("--layout", choices=("whole-update", "eigh-only"), default="whole-update")
-    parser.add_argument("--input-layout", choices=("replicated", "embedding-sharded"), default="replicated")
+    parser.add_argument(
+        "--input-layout", choices=("replicated", "embedding-sharded", "data-model-sharded"), default="replicated"
+    )
     args = parser.parse_args()
     assert jax.default_backend() == "cpu" and len(jax.devices()) == 16
-    if args.input_layout == "embedding-sharded":
+    if args.input_layout == "data-model-sharded":
+        mesh = Mesh(np.array(jax.devices()).reshape(4, 4), ("data", "model"))
+        axis_name = ("data", "model")
+        shapes = [(11, 32, 32), (11, 128, 32), (11, 32, 128), (32, 128)]
+    elif args.input_layout == "embedding-sharded":
         mesh = Mesh(np.array(jax.devices()).reshape(16, 1), ("data", "model"))
         axis_name = "data"
         shapes = [(11, 32, 32), (11, 128, 32), (11, 32, 128), (32, 128)]
@@ -39,8 +45,12 @@ def main():
     candidate_fn = parallel_update if args.layout == "whole-update" else eig_parallel_update
     checks = []
     for shape in shapes:
-        gradient_spec = P(*([None] * (len(shape) - 1)), "data")
-        input_sharding = NamedSharding(mesh, gradient_spec) if args.input_layout == "embedding-sharded" else replicated
+        gradient_spec = (
+            P(*([None] * (len(shape) - 2)), "model", "data")
+            if args.input_layout == "data-model-sharded"
+            else P(*([None] * (len(shape) - 1)), "data")
+        )
+        input_sharding = NamedSharding(mesh, gradient_spec) if args.input_layout != "replicated" else replicated
         for alpha in [0.0, 0.25, 0.5]:
             for ridge in [1e-4, 1e-2]:
                 kwargs = dict(alpha=alpha, ridge=ridge, eigh_implementation=None)

@@ -873,6 +873,24 @@ continues to use `09c39d9ba`; preserve its queue position. The contribution PR
 is unchanged. Actual training MFU above 5% and verified checkpoint continuation
 remain required before claiming the active goal complete.
 
+### 2026-10-31 17:38 UTC — Validate a v4-32 mesh without changing global batch
+
+The original training mesh would resolve to data=16, model=1 on v4-32 and
+fails trainer validation: global batch 8 is not divisible by per-device
+parallelism 2 times data-axis size 16. A data=4, model=4 mesh passes validation
+with the original global batch 8 and microbatch 8. The model axis uses the
+existing head/MLP mappings. This is a non-training configuration check; no
+model or optimizer steps ran. `v4-32-training-mesh-preflight.json` preserves
+the rejected configuration error and proposed resolved mappings.
+
+The eigensolver-only candidate now supports assigning full matrices across
+both data and model axes. A third 24-case CPU check with gradients sharded
+on both matrix dimensions passes at rtol=atol=1e-5, with replicated state on
+both reference and candidate. `optimizer-eigh-data-model-preflight.json`
+records those checks. This prepares the original-batch hardware migration;
+TPU correctness, measured MFU and checkpoint restoration remain unverified.
+No further accelerator job or training run was submitted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

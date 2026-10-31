@@ -49,6 +49,13 @@
     "theoretical_flops_per_second": 4400000000000000,
     "required_step_seconds_lt": 0.3652430427229091,
     "configuration": "quarter-pilot-128g-resolved.json; preserve model, data, global batch, optimizer and requested7630 steps",
-    "checkpoint_restore": "Verify full state restoration before claiming continuation; latest permanent763 metadata verified, temporary923 save logged but not restore-tested."
+    "checkpoint_restore": "Verify full state restoration before claiming continuation; latest permanent763 metadata verified, temporary923 save logged but not restore-tested.",
+    "mesh_preflight": "v4-32-training-mesh-preflight.json",
+    "candidate_mesh": {
+      "data": 4,
+      "model": 4,
+      "replica": 1
+    },
+    "mesh_reason": "Preserves global batch8/per-device parallelism2; old data16/model1 would fail trainer validation."
   }
 }
