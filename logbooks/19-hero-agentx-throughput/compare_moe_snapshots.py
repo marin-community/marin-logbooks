@@ -39,9 +39,12 @@ def main() -> None:
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--expected-files", type=int, default=8)
     args = parser.parse_args()
     names = sorted(path.name for path in args.reference.glob("moe-snapshot-*.pt"))
-    assert len(names) == 8 and names == sorted(path.name for path in args.candidate.glob("moe-snapshot-*.pt"))
+    assert len(names) == args.expected_files and names == sorted(
+        path.name for path in args.candidate.glob("moe-snapshot-*.pt")
+    )
     rows = []
     for name in names:
         left, right = args.reference / name, args.candidate / name
@@ -62,6 +65,16 @@ def main() -> None:
                 "candidate_strides": {
                     key: candidate[key] for key in ["hidden_stride", "router_stride", "output_stride"]
                 },
+                "reference_capture": {
+                    key: reference[key]
+                    for key in ["dp_rank", "full_hidden_shape", "dispatch", "real_http_rank", "hidden_input_unchanged"]
+                    if key in reference
+                },
+                "candidate_capture": {
+                    key: candidate[key]
+                    for key in ["dp_rank", "full_hidden_shape", "dispatch", "real_http_rank", "hidden_input_unchanged"]
+                    if key in candidate
+                },
             }
         )
     result = {
@@ -70,7 +83,10 @@ def main() -> None:
         "reference": str(args.reference),
         "candidate": str(args.candidate),
         "rows": rows,
-        "scope": "Two first-prompt prefills per tiny-Hero layer, DP0 only, replay disabled. No speed claim.",
+        "scope": (
+            "First two prefills at routed-expert boundaries. Per-file metadata defines ranks and row subsets. "
+            "Replay disabled; no speed claim."
+        ),
     }
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result), flush=True)

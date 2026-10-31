@@ -1,0 +1,119 @@
+{
+  "status": "completed",
+  "gpu_empty": true,
+  "attempt_uid": "1a6cb55ddeb9dbaa",
+  "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-prefix-retention-16-ep4-r1/outputs-f9f59c8e6d4152179df5e442e7bbccb5c39336794b5945c4045a2723b7f27081.tar.zst",
+  "sha256": "f9f59c8e6d4152179df5e442e7bbccb5c39336794b5945c4045a2723b7f27081",
+  "readback_sha256": "f9f59c8e6d4152179df5e442e7bbccb5c39336794b5945c4045a2723b7f27081",
+  "bytes": 59905,
+  "source_commit": "d7ac4496a39bdbc2a582272a7af41e5cb69504ae",
+  "first_dispatches": [
+    {
+      "unix": 1793419918.680564,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 64,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 64,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793419918.680651,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793419918.680648,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793419918.6806514,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    }
+  ],
+  "error_lines": [],
+  "compiled_graph_sources": [
+    {
+      "path": "/iris/candidates/tiny-prefix-retention-16-ep4-r1-cache/torch_compile_cache/7b105c0a5a/rank_0_2/backbone/computation_graph.py",
+      "sha256": "fd720aa6d2c94a3948d7d44efad5ecf93b5c2f263e16bb596bbe45ef3a893d01",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-prefix-retention-16-ep4-r1-cache/torch_compile_cache/7b105c0a5a/rank_0_0/backbone/computation_graph.py",
+      "sha256": "e9876289aa7de11068aac7555b8b44106d1f036f358f18aef38ca79da6933bfd",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-prefix-retention-16-ep4-r1-cache/torch_compile_cache/7b105c0a5a/rank_0_3/backbone/computation_graph.py",
+      "sha256": "c8e295a864661513e184e59050cca8dca5192fa2b5c7178f6ffc550995295859",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-prefix-retention-16-ep4-r1-cache/torch_compile_cache/7b105c0a5a/rank_0_1/backbone/computation_graph.py",
+      "sha256": "d90ab1550bfc1fba9fbbc6d2f1accdecdb9a1e194456a9ae79f7008e305b455a",
+      "bytes": 216414
+    }
+  ],
+  "scope": "Synthetic tiny Hero BF16 functional check of supported prefix-cache retention policy. First cache a96-token prompt, then branch after64tokens. Compare cache reuse and exact cold/warm output tokens and top20logprobs with one constant64-row global bucket and replay disabled. No performance or full-Hero qualification.",
+  "phase_summary": [
+    {
+      "requests": 8,
+      "choices": 8,
+      "status": "completed"
+    }
+  ]
+}

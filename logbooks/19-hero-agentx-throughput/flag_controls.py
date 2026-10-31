@@ -82,6 +82,9 @@ def main() -> None:
         assert manifest["diagnostic_request"]["numerics_only"] is True
         assert not manifest["diagnostic_request"].get("compare_graph_replay")
         probe.append("--disable-graph-replay")
+    if rows := manifest.get("diagnostic_request", {}).get("moe_snapshot_rows"):
+        assert rows == 16 and "--disable-graph-replay" in probe
+        probe += ["--moe-snapshot-rows", str(rows)]
     if original := manifest.get("diagnostic_request", {}).get("global_reference"):
         assert local_piecewise_dp and manifest["diagnostic_request"]["numerics_only"]
         directory = Path(original["path"])

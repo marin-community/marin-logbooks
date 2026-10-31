@@ -85,6 +85,7 @@ def run(
     disable_graph_replay: bool = False,
     compare_to: Path | None = None,
     local_piecewise_dp: bool = False,
+    moe_snapshot_rows: int | None = None,
 ) -> None:
     assert hashlib.sha256(tokenizer_path.read_bytes()).hexdigest() == TOKENIZER_SHA256
     output.mkdir(parents=True, exist_ok=False)
@@ -129,8 +130,13 @@ def run(
         )
         storage = batch_trace(base_url, "hero_cache_storage")
         (output / "cache-storage.json").write_text(json.dumps(storage, indent=2) + "\n")
+        if moe_snapshot_rows is not None:
+            assert disable_graph_replay and moe_snapshot_rows == 16
+            installation = batch_trace(base_url, "install_hero_moe_snapshot", [48, moe_snapshot_rows])
+            (output / "moe-snapshot-installation.json").write_text(json.dumps(installation, indent=2) + "\n")
     else:
         assert reference_capture_sizes is None and not disable_graph_replay and not local_piecewise_dp
+        assert moe_snapshot_rows is None
     with (output / "requests.jsonl").open("w") as stream:
         for name, branches, cache_salt in waves:
             payload = {
@@ -227,6 +233,7 @@ def main() -> None:
     parser.add_argument("--disable-graph-replay", action="store_true")
     parser.add_argument("--compare-to", type=Path)
     parser.add_argument("--local-piecewise-dp", action="store_true")
+    parser.add_argument("--moe-snapshot-rows", type=int)
     args = parser.parse_args()
     rank = args.rank if args.rank is not None or args.session_id is not None else 0
     run(
@@ -241,6 +248,7 @@ def main() -> None:
         args.disable_graph_replay,
         args.compare_to,
         args.local_piecewise_dp,
+        args.moe_snapshot_rows,
     )
 
 

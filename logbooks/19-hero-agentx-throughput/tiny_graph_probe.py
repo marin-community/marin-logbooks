@@ -180,34 +180,60 @@ def set_shortconv_reference(worker, source: str = "", sha256: str = "") -> dict:
     return record
 
 
-def install_moe_snapshot(worker) -> dict:
-    """Retain two prefill inputs/outputs per MoE layer on DP0, without replay."""
+def install_moe_snapshot(worker, expected_layers: int = 4, row_limit: int | None = None) -> dict:
+    """Retain prefill tensors, bounding full-Hero captures after its first layer."""
+    assert (expected_layers, row_limit) in ((4, None), (48, 16))
     rank = worker.model_runner.dp_rank
-    if rank != 0:
+    if rank != 0 and expected_layers == 4:
         return {"dp_rank": rank, "capturing": False}
     layers = worker.vllm_config.compilation_config.static_forward_context
     names = sorted(name for name in layers if name.endswith(".mlp.experts"))
-    assert len(names) == 4, "Only the four-layer synthetic fixture is supported"
+    assert len(names) == expected_layers
+    first_layer = names[0]
+    if rank != 0:
+        names = [first_layer]
     counts = dict.fromkeys(names, 0)
     for name in names:
         layer = layers[name]
         original = layer._forward_impl
 
         def snapshot(hidden, logits, shared_input, input_ids=None, *, _name=name, _original=original):
-            selected = counts[_name] < 2 and hidden.shape[0] >= 16
+            prefill = (
+                worker.hero_batch_trace[-1]["tokens_across_dp"][0] >= 16
+                if expected_layers == 48
+                else hidden.shape[0] >= 16
+            )
+            selected = counts[_name] < 2 and prefill
             if selected:
+                rows = None if _name == first_layer else row_limit
                 record = {
                     "layer": _name,
-                    "hidden": hidden.detach().cpu(),
-                    "router_logits": logits.detach().cpu(),
+                    "hidden": hidden[:rows].detach().cpu(),
+                    "router_logits": logits[:rows].detach().cpu(),
                     "hidden_stride": list(hidden.stride()),
                     "router_stride": list(logits.stride()),
                 }
+                if expected_layers == 48:
+                    record.update(
+                        dp_rank=rank,
+                        full_hidden_shape=list(hidden.shape),
+                        dispatch=worker.hero_batch_trace[-1].copy(),
+                        real_http_rank=rank == 0,
+                    )
             output = _original(hidden, logits, shared_input, input_ids)
             if selected:
                 assert isinstance(output, torch.Tensor)
-                record.update(output=output.detach().cpu(), output_stride=list(output.stride()))
-                path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"moe-snapshot-{_name}-{counts[_name]}.pt"
+                record.update(output=output[:rows].detach().cpu(), output_stride=list(output.stride()))
+                if expected_layers == 48:
+                    after = hidden[:rows].detach().cpu()
+                    record["hidden_input_unchanged"] = torch.equal(record["hidden"], after)
+                    if not record["hidden_input_unchanged"]:
+                        record["hidden_after"] = after
+                    record["finite"] = {
+                        key: bool(torch.isfinite(record[key]).all()) for key in ["hidden", "router_logits", "output"]
+                    }
+                prefix = f"moe-snapshot-dp{rank}" if expected_layers == 48 else "moe-snapshot"
+                path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"{prefix}-{_name}-{counts[_name]}.pt"
                 torch.save(record, path)
                 counts[_name] += 1
             return output
