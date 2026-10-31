@@ -1,0 +1,22 @@
+{
+  "experiment": "logical-kv-wheel-r1",
+  "source_commit": "492cb9fcc2310e6e72e2ffb5d1b7f9d4020aa7d7",
+  "base_source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+  "source_files": {
+    "vllm/model_executor/models/grugmoe.py": {
+      "sha256": "d81b43e04406ad361c3a3a30447e7f5364cdd4885d0984682810a39a9f05981d",
+      "base_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3"
+    }
+  },
+  "flag": {
+    "additional_config": {
+      "grug_logical_kv_cache": true
+    },
+    "default": false,
+    "compile_hash_includes_additional_config": true
+  },
+  "checkpoint_projection_and_shortconv_shapes": "unchanged",
+  "purpose": "Keep logical KV heads in the attention cache instead of expanding duplicates; preserve checkpoint projections and ShortConv state. Native group planner predicts1.87419x capacity, while kernel support, prefix/state numerics and throughput remain unqualified. Private Python-only overlay; no release or production default.",
+  "cost": "One CPU core in the existing owned holder for a bounded wheel repack and native import. Then one-GPU arithmetic/attention and tiny native mixed-cache state tests before full16 qualification. No extra allocation."
+}
