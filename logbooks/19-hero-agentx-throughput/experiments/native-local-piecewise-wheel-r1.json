@@ -1,0 +1,29 @@
+{
+  "source_commit": "a9ce9893dc1efe691de84041d963717176eab9ce",
+  "base_source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+  "source_repository": "marin-community/vllm",
+  "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+  "source_files": {
+    "vllm/model_executor/models/grugmoe.py": {
+      "sha256": "671fafcec979b54b200fa1faecdb74206f44f56a101f355a6ad19309d3a85644",
+      "base_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3"
+    },
+    "vllm/model_executor/models/config.py": {
+      "sha256": "7ccd9cc250dbdaaf0d964ea60425231aed7f186816bd933d9b52e151dd64855e",
+      "base_sha256": "ebee5e39c8cbdc2428d8afad365ccac8fa99ce55aea404f8d2887b008c1779fc"
+    },
+    "vllm/config/compilation.py": {
+      "sha256": "851567eaaedde8585fc74ad884f59dc7a72fecc3ac762780a994e547efe9e36c",
+      "base_sha256": "c9cec5c7200e8e559810ec8c30113ad61dab6780f9f7fb3c116bd0d9b5a43065"
+    },
+    "vllm/v1/worker/gpu/cudagraph_utils.py": {
+      "sha256": "832d1445b9aa543c5a487c6ed55ca5506bad94cddf0c973bda28be1d980ce1fa",
+      "base_sha256": "6e9c042890603535e300a40df8ee159dbed1058a64a83ae50ff0329e332e05ff"
+    },
+    "vllm/v1/worker/gpu/dp_utils.py": {
+      "sha256": "71e6908c0c96817f70bef45c12b25bfd39769fe5ca64bd325a5ebf0bebc8c1d7",
+      "base_sha256": "e26867bc89e6bfc933cabc5ed13e5dc7b8d2d3030118ca1ca64c8785dabc0fc1"
+    }
+  },
+  "scope": "Private Python overlay on the released ARM wheel. Native per-rank PurePiecewise DP metadata uses the existing CPU exchange, with TP1/PP1/EP/AGRS/buffered-MoE/ShortConv guards. No GPU/native-kernel/dependency build. Actual import, parser and four-process Gloo behavior gate all GPU execution. Not yet qualified."
+}

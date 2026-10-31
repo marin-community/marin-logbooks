@@ -37,6 +37,13 @@ def main() -> None:
     parser.add_argument("--base-wheel-sha256", default=BASE_WHEEL_SHA256)
     parser.add_argument("--config-source", type=Path)
     parser.add_argument("--config-source-sha256")
+    parser.add_argument(
+        "--additional-source",
+        nargs=4,
+        action="append",
+        default=[],
+        metavar=("MODULE", "PATH", "SHA256", "BASE_SHA256"),
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     replacement = args.replacement_source.read_bytes()
@@ -48,6 +55,14 @@ def main() -> None:
         assert hashlib.sha256(config_source).hexdigest() == args.config_source_sha256
         replacements["vllm/model_executor/models/config.py"] = config_source
     distribution = importlib.metadata.distribution("vllm")
+    for module, source, digest, base_digest in args.additional_source:
+        assert module.startswith("vllm/") and module.endswith(".py") and ".." not in Path(module).parts
+        assert module not in replacements
+        content = Path(source).read_bytes()
+        assert hashlib.sha256(content).hexdigest() == digest
+        baseline = Path(distribution.locate_file(module)).read_bytes()
+        assert hashlib.sha256(baseline).hexdigest() == base_digest
+        replacements[module] = content
     original = Path(distribution.locate_file(args.module)).read_bytes()
     assert hashlib.sha256(original).hexdigest() == args.base_module_sha256
     record = next(path for path in distribution.files if path.name == "RECORD")
