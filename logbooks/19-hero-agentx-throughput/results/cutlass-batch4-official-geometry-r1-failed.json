@@ -1,0 +1,263 @@
+{
+  "application": {
+    "status": "failed",
+    "started_unix": 1793445125.8328857,
+    "job_id": "/romain/hero-cutlass-prepare4-r392-r1-01a1846a",
+    "task_id": "/romain/hero-cutlass-prepare4-r392-r1-01a1846a/0:0",
+    "attempt_uid": "8c7c41a10202fcfb",
+    "node": "s4lqxs64",
+    "gpu_uuids": [
+      "GPU-4b218977-4bb0-1226-4857-1e81bf80d7d0",
+      "GPU-a94abc22-dd77-051a-a748-9baa0572c6b1",
+      "GPU-600b7abc-0bb4-68a3-354d-563844759256",
+      "GPU-970c23df-2445-cd5c-aee5-b438dba3ff8c"
+    ],
+    "allocated_gpus": 4,
+    "cuda_visible_devices": "",
+    "manifest": {
+      "source": {
+        "parent_commit": "e4545b2de8a14bbbe5035a38171370f398338800",
+        "experiment": "cutlass-batch4-official-geometry-r1"
+      },
+      "purpose": "Prepare the unchanged installed native SM100 CUTLASS module using eight CPU cores on one batch four-GPU node, with CUDA hidden during compilation; retain full generated cache with readback. Then one allocated GPU checks native BF16 routed GEMM width3072/intermediate3072/local24/top8 at changing rows including2048 against plain TorchFP32 with unchanged atol/rtol0.02. This EP1/local24 component does not qualify global384/EP16 or two shared experts.",
+      "resources": {
+        "gpus": 4,
+        "cpu": 8,
+        "memory": "256GB",
+        "disk": "200GB"
+      },
+      "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+      "placement": {
+        "cluster": "cw-us-east-08a",
+        "nvlink_domain": "DH1-392-US-EAST-08A",
+        "nodes": [
+          "s4lqxs64",
+          "s62pys64",
+          "s6xvxs64",
+          "s7dk6j84",
+          "s90vxs64",
+          "s9rrxs64",
+          "s9vrxs64",
+          "sbnwxs64",
+          "sdmtxs64",
+          "sfdqxs64",
+          "sj1txs64",
+          "sj9wxs64",
+          "sjtsxs64"
+        ],
+        "hero_training_gpus": 0,
+        "verified_utc": "2026-10-31T11:07:39.827192+00:00",
+        "checked_unix": 1793444859.827192,
+        "inventory_sha256": "8e90de518aa9a0f7fb1564eeefd24fdcc74491b4be7253718f49e4309f7ce2c8"
+      },
+      "excluded_gpu_uuids": [
+        "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+        "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+        "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+        "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461",
+        "GPU-4858a3bb-5976-f906-0d1d-91a34ba87ef4",
+        "GPU-a1dac3f0-65b2-2567-26c1-a0951f6bfe4f",
+        "GPU-660ec8db-dd0e-3499-2f7a-859130b2a816",
+        "GPU-f41bf5e5-cdb1-343a-fbd5-2ccde1b66b86",
+        "GPU-ab87d1df-c68b-e43f-74f9-70990bbf3b54",
+        "GPU-825aa17f-782e-8334-4a10-ca3c8ca8436e",
+        "GPU-4eaa3b84-49ef-de11-1b50-2297839d54db",
+        "GPU-d2bf9ac2-eede-1881-bb38-58c5352223db",
+        "GPU-d631a63c-7116-0a0a-b173-285928a2f44a",
+        "GPU-e16d179f-05ee-c079-4e1a-2f2d3f10fb80",
+        "GPU-eb35ebe9-7fa9-ba42-5c97-89481edece8d",
+        "GPU-a182b275-e15a-a254-999c-44ca1930f8c1"
+      ],
+      "serving_prefix": [
+        "uvx",
+        "--from",
+        "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "--with",
+        "runai-model-streamer[s3]==0.16.1",
+        "--with",
+        "torch==2.14.1+cu132",
+        "--with",
+        "nvidia-cuda-nvcc==13.2.86",
+        "--with",
+        "nvidia-cuda-crt==13.2.86",
+        "--with",
+        "nvidia-nvvm==13.2.86",
+        "--python",
+        "3.12",
+        "--index",
+        "https://download.pytorch.org/whl/cu132",
+        "--index",
+        "https://download.pytorch.org/whl/cpu",
+        "--index-strategy",
+        "unsafe-best-match"
+      ],
+      "cuda_bootstrap": [
+        "python",
+        "-c",
+        "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n"
+      ],
+      "flashinfer_workspace_base": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1",
+      "retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r1",
+      "component": [
+        "--backend",
+        "flashinfer_cutlass",
+        "--hidden-dim",
+        "3072",
+        "--intermediate-dim",
+        "3072",
+        "--num-experts",
+        "24",
+        "--top-k",
+        "8",
+        "--normal-weights",
+        "--normal-inputs",
+        "--native-only",
+        "--row-counts",
+        "1",
+        "3",
+        "8",
+        "17",
+        "32",
+        "2048",
+        "2",
+        "1",
+        "--model-source-sha256",
+        "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3"
+      ],
+      "cost": "One4GPU batch allocation, estimated2\u20134allocated GPU-hours including setup, hidden-CUDA CPU build, one-GPU component, cache upload and failures. Original16interactive remain occupied by the AgentX hour, peak20total. No serving model or collective traffic on this batch node. Native freshness checks still decide cache reuse."
+    },
+    "script_sha256": "664340ddfc3bd3364d79b7301371a96f08ca32d24594a6669ada89dcd67814c2",
+    "cpu_affinity": [
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143
+    ],
+    "admitted": {
+      "task_id": "/romain/hero-cutlass-prepare4-r392-r1-01a1846a/0:0",
+      "attempt_uid": "8c7c41a10202fcfb",
+      "node": "s4lqxs64",
+      "gpu_uuids": [
+        "GPU-4b218977-4bb0-1226-4857-1e81bf80d7d0",
+        "GPU-a94abc22-dd77-051a-a748-9baa0572c6b1",
+        "GPU-600b7abc-0bb4-68a3-354d-563844759256",
+        "GPU-970c23df-2445-cd5c-aee5-b438dba3ff8c"
+      ],
+      "hero_training_gpus": 0,
+      "physical_groups_disjoint": true,
+      "checked_unix": 1793445342.7250202,
+      "inventory_utc": "2026-10-31T11:15:26.782825+00:00",
+      "inventory_sha256": "d1c008acf9534aa3bd08ae3b57854adb278682a4d7605f49d55198d7b28f4534",
+      "provider_pod_uid": "f569d89b-a06a-4d23-b3ba-19c6ba50410e",
+      "inventory_correction": "The earlier conservative name heuristic counted this exact owned CUTLASS-preparation job as Hero training. Actual native task/script/manifest and provider PodUID proof identifies it as preparation; all other Hero allocations retain conservative classification."
+    },
+    "preflight": {
+      "phase": "preflight",
+      "started_unix": 1793445349.3526359,
+      "versions": {
+        "vllm": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+        "torch": "2.14.1+cu132",
+        "flashinfer-python": "0.6.18.post1",
+        "nvidia-cuda-nvcc": "13.2.86"
+      },
+      "ninja_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/build.ninja",
+      "ninja_sha256": "d242e310de1148c85bf1e2319651811fcf55eb47651aceb7957337499aedfcb1",
+      "library_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/fused_moe_100.so",
+      "workspace": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a",
+      "target_cuda_archs": [
+        [
+          10,
+          "0a"
+        ]
+      ],
+      "nvcc_flags": [
+        "-gencode=arch=compute_100a,code=sm_100a",
+        "-DFLASHINFER_ENABLE_FP8_E8M0",
+        "-DFLASHINFER_ENABLE_FP4_E2M1"
+      ],
+      "cuda_initialized": false,
+      "status": "passed",
+      "finished_unix": 1793445349.371206
+    },
+    "build": {
+      "phase": "build",
+      "started_unix": 1793445352.5590386,
+      "versions": {
+        "vllm": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+        "torch": "2.14.1+cu132",
+        "flashinfer-python": "0.6.18.post1",
+        "nvidia-cuda-nvcc": "13.2.86"
+      },
+      "ninja_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/build.ninja",
+      "ninja_sha256": "d242e310de1148c85bf1e2319651811fcf55eb47651aceb7957337499aedfcb1",
+      "library_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/fused_moe_100.so",
+      "workspace": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a",
+      "target_cuda_archs": [
+        [
+          10,
+          "0a"
+        ]
+      ],
+      "nvcc_flags": [
+        "-gencode=arch=compute_100a,code=sm_100a",
+        "-DFLASHINFER_ENABLE_FP8_E8M0",
+        "-DFLASHINFER_ENABLE_FP4_E2M1"
+      ],
+      "cuda_initialized": false,
+      "library_sha256": "2016acd7bb26c013cd39b499866f30ee6b47b5ef02e7e155f2d95f88e8dc0ae9",
+      "library_bytes": 100357176,
+      "status": "passed",
+      "finished_unix": 1793447493.792827
+    },
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r1/8c7c41a10202fcfb/flashinfer-workspace-92f82760004cf9278fe6ae0433fec998bfab00c95948159ee3d5ae9490c1183b.tar.zst",
+    "archive_sha256": "92f82760004cf9278fe6ae0433fec998bfab00c95948159ee3d5ae9490c1183b",
+    "readback_sha256": "92f82760004cf9278fe6ae0433fec998bfab00c95948159ee3d5ae9490c1183b",
+    "archive_bytes": 55825487,
+    "error": "CalledProcessError: Command '['uvx', '--from', 'vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15', '--with', 'runai-model-streamer[s3]==0.16.1', '--with', 'torch==2.14.1+cu132', '--with', 'nvidia-cuda-nvcc==13.2.86', '--with', 'nvidia-cuda-crt==13.2.86', '--with', 'nvidia-nvvm==13.2.86', '--python', '3.12', '--index', 'https://download.pytorch.org/whl/cu132', '--index', 'https://download.pytorch.org/whl/cpu', '--index-strategy', 'unsafe-best-match', 'python', '-c', 'import importlib.metadata\\nimport os\\nfrom pathlib import Path\\nimport sys\\n\\ndistribution = importlib.metadata.distribution(\\'nvidia-cuda-nvcc\\')\\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\\ncuda_home = nvcc.parent.parent\\ncuda_lib = cuda_home / \"lib\"\\ncuda_lib64 = cuda_home / \"lib64\"\\nif cuda_lib.is_dir() and not cuda_lib64.exists():\\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\\ncudart = cuda_lib / \"libcudart.so.13\"\\ncudart_link = cuda_lib / \"libcudart.so\"\\nif cudart.is_file() and not cudart_link.exists():\\n    cudart_link.symlink_to(cudart.name)\\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\\nif nvrtc.is_file() and not nvrtc_link.exists():\\n    nvrtc_link.symlink_to(nvrtc.name)\\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\\nos.execvp(sys.argv[1], sys.argv[1:])\\n', 'python', '/app/logbooks/19-hero-agentx-throughput/moe_output_probe.py', '--backend', 'flashinfer_cutlass', '--hidden-dim', '3072', '--intermediate-dim', '3072', '--num-experts', '24', '--top-k', '8', '--normal-weights', '--normal-inputs', '--native-only', '--row-counts', '1', '3', '8', '17', '32', '2048', '2', '1', '--model-source-sha256', '9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3', '--output', '/iris/outputs/component/result.json']' returned non-zero exit status 1.",
+    "finished_unix": 1793447506.0318878
+  },
+  "native_retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r1/native-failed/outputs-4031bd7dd6a8296a2a2ab62cfb32b39ef546286160676b140060d665e67075ff.tar.zst",
+    "archive_sha256": "4031bd7dd6a8296a2a2ab62cfb32b39ef546286160676b140060d665e67075ff",
+    "readback_sha256": "4031bd7dd6a8296a2a2ab62cfb32b39ef546286160676b140060d665e67075ff",
+    "archive_bytes": 11797
+  },
+  "component_log_tail": [
+    "warning: Ignoring `--extra-index-url` value `https://flashinfer.ai/whl/` from requirements file. Instead, use the `--extra-index-url` command-line argument, or set `extra-index-url` in a `uv.toml` or `pyproject.toml` file.",
+    "W1031 11:51:37.675000 6979 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead",
+    "W1031 11:51:37.676000 6979 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead",
+    "W1031 11:51:37.676000 6979 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead",
+    "INFO 10-31 11:51:43 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=2048.",
+    "INFO 10-31 11:51:43 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])",
+    "INFO 10-31 11:51:43 [parallel_state.py:1827] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/tmp57jzp_ep/gloo backend=gloo",
+    "INFO 10-31 11:51:43 [parallel_state.py:2267] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A",
+    "INFO 10-31 11:51:44 [unquantized.py:282] Using FlashInfer CUTLASS Unquantized MoE backend out of potential backends: ['FlashInfer TRTLLM', 'FlashInfer CUTLASS', 'TRITON', 'BATCHED_TRITON'].",
+    "[rank0]:[W1031 11:51:44.410843772 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 309237645312 bytes (free: 154696744960, total: 197890015232).",
+    "[rank0]:[W1031 11:51:44.484478123 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 309237645312 bytes (free: 194712502272, total: 197890015232).",
+    "[rank0]: Traceback (most recent call last):",
+    "[rank0]:   File \"/app/logbooks/19-hero-agentx-throughput/moe_output_probe.py\", line 177, in <module>",
+    "[rank0]:     main()",
+    "[rank0]:   File \"/app/logbooks/19-hero-agentx-throughput/moe_output_probe.py\", line 114, in main",
+    "[rank0]:     references[count] = module._forward_torch_reference(hidden.float(), hidden.float())",
+    "[rank0]:                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "[rank0]:   File \"/uv/cache/archive-v0/nWT0hmMv2p0yMaqG/lib/python3.12/site-packages/vllm/model_executor/models/grugmoe.py\", line 678, in _forward_torch_reference",
+    "[rank0]:     gate_weight = gate_proj_weight[selected]",
+    "[rank0]:                   ~~~~~~~~~~~~~~~~^^^^^^^^^^",
+    "[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 288.00 GiB. GPU 0 has a total capacity of 184.30 GiB of which 181.34 GiB is free. Including non-PyTorch memory, this process has 2.95 GiB memory in use. Of the allocated memory 1.36 GiB is allocated by PyTorch, and 774.26 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+  ],
+  "restored": "/iris/outputs/cutlass-preparer-failure-retained-r1/restored",
+  "conclusion": "Pinned native SM100a CUTLASS build passed and full cache was retained with readback. The component failed before kernel validation: unchanged Torch reference selected 2048*8 full3072x3072 FP32 gate matrices and requested288GiB. Bound reference scratch by token chunks before retry; do not infer kernel rejection.",
+  "native_task_accounting": {
+    "started_unix": 1793445119.41,
+    "finished_unix": 1793447518.02,
+    "allocated_gpus": 4,
+    "observed_gpu_hours": 2.665122222105662,
+    "status": "failed",
+    "failures": 1,
+    "preemptions": 0
+  }
+}

@@ -63,7 +63,9 @@ def main() -> None:
     parser.add_argument("--normal-weights", action="store_true")
     parser.add_argument("--normal-inputs", action="store_true")
     parser.add_argument("--native-only", action="store_true")
+    parser.add_argument("--reference-chunk-rows", type=int, default=4)
     args = parser.parse_args()
+    assert args.reference_chunk_rows > 0
     assert hashlib.sha256(Path(grugmoe.__file__).read_bytes()).hexdigest() == args.model_source_sha256
     cfg = probe_config(args.hidden_dim, args.intermediate_dim, args.num_experts, args.top_k)
     assert torch.cuda.device_count() == 1
@@ -111,7 +113,15 @@ def main() -> None:
                 references = {}
                 for count, hidden in inputs.items():
                     with set_forward_context(None, config, num_tokens=count):
-                        references[count] = module._forward_torch_reference(hidden.float(), hidden.float())
+                        # The plain reference gathers three expert matrices per
+                        # token. Bound that scratch space while keeping each
+                        # token's routing and FP32 arithmetic unchanged.
+                        references[count] = torch.cat(
+                            [
+                                module._forward_torch_reference(chunk.float(), chunk.float())
+                                for chunk in hidden.split(args.reference_chunk_rows)
+                            ]
+                        )
                 experts.quant_method.process_weights_after_loading(experts)
                 init_workspace_manager(torch.device("cuda"))
                 backend = str(experts.quant_method.unquantized_backend)
@@ -165,6 +175,7 @@ def main() -> None:
         "weight_pattern": "seed42_normal_std0.02" if args.normal_weights else "linspace_minus0.2_to0.3",
         "input_pattern": "seed42_normal" if args.normal_inputs else "linspace_minus0.6_to0.7",
         "fp32_reference_matmul": "highest; TF32 disabled",
+        "reference_chunk_rows": args.reference_chunk_rows,
         "configuration": asdict(cfg),
         "rows": rows,
         "scope": f"One-GPU synthetic BF16 {args.backend} component check, no graph or full-Hero qualification.",
