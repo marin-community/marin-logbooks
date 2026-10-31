@@ -832,6 +832,47 @@ submitted. The goal remains measured training MFU above 5%, then restoration
 of the quarter-power run specified in `quarter-pilot-128g-resolved.json`.
 Checkpoint continuation requires a verified restore; that has not been tested.
 
+### 2026-10-31 17:35 UTC — Isolate eigendecomposition parallelism and pass controlled CPU checks
+
+The first whole-update candidate remains rejected. An isolating check on
+identical tall-matrix EMA states found a 4.768e-7 difference in normalized
+Grams after changing the whole computation's layout. On identical normalized
+inputs, the standalone eigensolver outputs were bitwise equal on CPU. This
+motivated a narrower execution change: keep normalization and reconstruction
+replicated, and distribute only full eigendecompositions across independent
+matrices. `parallel_eigh` adds explicit replicated boundaries and compilation
+barriers around that operation, padding only the independent matrix batch.
+It does not reduce either Gram or skip a refresh.
+
+Without explicit boundaries, six of 24 small CPU cases failed the same
+rtol=atol=1e-5 gate. Adding barriers alone did not fix them. With replicated
+boundaries, all 24 small cases passed. The broader check uses embedding-sharded
+gradients on sixteen CPU devices, with square/tall/wide matrices up to
+128-by-128 and both ridge values. An initial broader comparison allowed the
+reference's returned state layout to vary while forcing the candidate's state
+to be replicated; five cases differed after the second nonzero update. After
+matching both state layouts to the actual pilot and existing cost diagnostic
+(replicated), all 24 broader cases passed at the unchanged tolerance. This is
+a controlled CPU comparison, not TPU accuracy evidence. All intermediate
+failures remain recorded in `optimizer-eigh-parallel-preflight.json`.
+
+Eleven existing EMA-Gram tests also passed against the research checkout.
+The updated diagnostic supports explicit eigensolver/layout choices and records
+an exact-shape comparison against the original fused update on the same inputs,
+including every returned direction and state leaf. Its one-device CPU smoke
+run `ema-gram-20-cpu-smoke-6e5078cc2eac` completed all four cases, initialized
+online W&B before kernels, passed the reference comparison, and uploaded its
+report to GCS. This smoke validates the diagnostic path, not multihost execution
+or device speed.
+
+`optimizer-solver-followup-plan.json` prepares a single matrix-sharded QDWH
+follow-up after the current baseline diagnostic supplies its cost and memory
+evidence. Explicit full Jacobi is conditional on those results and still needs
+TPU accuracy checks. Neither follow-up is submitted. The current v4-32 job
+continues to use `09c39d9ba`; preserve its queue position. The contribution PR
+is unchanged. Actual training MFU above 5% and verified checkpoint continuation
+remain required before claiming the active goal complete.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

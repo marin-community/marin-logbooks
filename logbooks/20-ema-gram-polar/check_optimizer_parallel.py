@@ -16,35 +16,47 @@ from jax import export
 from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
 from levanter.optim.ema_gram import init_gram_state, relative_gram_power
-from optimizer_parallel import local_update, parallel_update
+from optimizer_parallel import eig_parallel_update, local_update, parallel_update
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--layout", choices=("whole-update", "eigh-only"), default="whole-update")
+    parser.add_argument("--input-layout", choices=("replicated", "embedding-sharded"), default="replicated")
     args = parser.parse_args()
     assert jax.default_backend() == "cpu" and len(jax.devices()) == 16
-    mesh = Mesh(np.array(jax.devices()).reshape(1, 1, 16), ("data", "model", "matrix"))
+    if args.input_layout == "embedding-sharded":
+        mesh = Mesh(np.array(jax.devices()).reshape(16, 1), ("data", "model"))
+        axis_name = "data"
+        shapes = [(11, 32, 32), (11, 128, 32), (11, 32, 128), (32, 128)]
+    else:
+        mesh = Mesh(np.array(jax.devices()).reshape(1, 1, 16), ("data", "model", "matrix"))
+        axis_name = "matrix"
+        shapes = [(11, 8, 8), (11, 32, 8), (11, 8, 32), (8, 32)]
     replicated = NamedSharding(mesh, P())
     rng = np.random.default_rng(20)
+    candidate_fn = parallel_update if args.layout == "whole-update" else eig_parallel_update
     checks = []
-    for shape in [(11, 8, 8), (11, 32, 8), (11, 8, 32), (8, 32)]:
+    for shape in shapes:
+        gradient_spec = P(*([None] * (len(shape) - 1)), "data")
+        input_sharding = NamedSharding(mesh, gradient_spec) if args.input_layout == "embedding-sharded" else replicated
         for alpha in [0.0, 0.25, 0.5]:
             for ridge in [1e-4, 1e-2]:
                 kwargs = dict(alpha=alpha, ridge=ridge, eigh_implementation=None)
-                serial = jax.jit(partial(local_update, **kwargs))
+                serial = jax.jit(partial(local_update, **kwargs), out_shardings=replicated)
                 parallel = jax.jit(
-                    partial(parallel_update, mesh=mesh, axis_name="matrix", **kwargs),
+                    partial(candidate_fn, mesh=mesh, axis_name=axis_name, **kwargs),
                     out_shardings=replicated,
                 )
-                gradient = jax.device_put(np.zeros(shape, np.float32), replicated)
+                gradient = jax.device_put(np.zeros(shape, np.float32), input_sharding)
                 reference_state = init_gram_state(gradient)
                 candidate_state = reference_state
                 maximum_error = 0.0
                 failures = []
                 for step in range(3):
                     if step:
-                        gradient = jax.device_put(rng.normal(size=shape).astype(np.float32) * 0.01, replicated)
+                        gradient = jax.device_put(rng.normal(size=shape).astype(np.float32) * 0.01, input_sharding)
                     expected, reference_state = jax.block_until_ready(serial(gradient, reference_state))
                     actual, candidate_state = jax.block_until_ready(parallel(gradient, candidate_state))
                     for leaf_index, (a, b) in enumerate(
@@ -116,6 +128,8 @@ def main():
             )
     report = dict(
         jax_version=jax.__version__,
+        layout=args.layout,
+        input_layout=args.input_layout,
         backend=jax.default_backend(),
         devices=len(jax.devices()),
         layer_parallel_checks=checks,

@@ -1,0 +1,54 @@
+{
+  "state": "prepared, not submitted",
+  "predecessor_job": "/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v4-32-20261031",
+  "predecessor_source": "09c39d9ba",
+  "hardware": "v4-32 only, four hosts and sixteen chips",
+  "resources_per_host": {
+    "cpu": 120,
+    "memory": "128GB",
+    "disk": "50GB"
+  },
+  "priority": "batch",
+  "wall_clock_limits": null,
+  "preemption_retries": "Iris defaults",
+  "source_entrypoint": "logbooks/20-ema-gram-polar/optimizer_cost.py",
+  "candidate_order": [
+    {
+      "eigh_layout": "matrix",
+      "eigh_implementation": "default",
+      "purpose": "Measure sharding only, retaining QDWH on TPU"
+    },
+    {
+      "eigh_layout": "matrix",
+      "eigh_implementation": "jacobi",
+      "purpose": "Conditional full Jacobi eigensolver comparison if required by baseline/candidate cost"
+    }
+  ],
+  "submission_gate": "Do not replace or duplicate the queued baseline diagnostic. Obtain its cost/memory/coverage evidence first; publish source, check exact identity and launch one follow-up at a time.",
+  "numerical_gate": {
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "reference": "Same full fused update on identical exact-shape synthetic inputs; compare every direction and state leaf. Preserve failures; do not relax tolerance."
+  },
+  "scope_limitations": [
+    "Synthetic checks do not prove checkpoint-spectrum accuracy or training stability.",
+    "CPU/device lowering is not TPU execution.",
+    "Optimizer kernel timing is not measured training MFU."
+  ],
+  "invariants": [
+    "Full FP32 left/right Grams",
+    "Every-update Gram refresh",
+    "Existing trace normalization, ridge, clipping and zero-Gram identity",
+    "Existing five-step polar approximation",
+    "Separate online W&B identities and per-rank artifacts"
+  ],
+  "training_success_gate": {
+    "actual_mfu_percent_gt": 5,
+    "hardware": "v4-32",
+    "flops_per_update_at_original_batch": 80353469399040,
+    "theoretical_flops_per_second": 4400000000000000,
+    "required_step_seconds_lt": 0.3652430427229091,
+    "configuration": "quarter-pilot-128g-resolved.json; preserve model, data, global batch, optimizer and requested7630 steps",
+    "checkpoint_restore": "Verify full state restoration before claiming continuation; latest permanent763 metadata verified, temporary923 save logged but not restore-tested."
+  }
+}

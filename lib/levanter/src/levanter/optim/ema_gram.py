@@ -3,6 +3,7 @@
 
 """Two-sided EMA gradient-Gram preconditioning of the momentum polar factor."""
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from functools import partial
 from typing import NamedTuple
@@ -59,12 +60,13 @@ def relative_gram_power(
     ridge: float,
     *,
     eigh_implementation: jax.lax.linalg.EighImplementation | None = None,
+    eigh_fn: Callable[..., tuple[jax.Array, jax.Array]] = jax.lax.linalg.eigh,
 ) -> jax.Array:
     """Return (Gram / mean eigenvalue + ridge I)^(-alpha), or I for a zero Gram."""
     gram = (gram + jnp.swapaxes(gram, -1, -2)) * 0.5
     mean = jnp.trace(gram, axis1=-2, axis2=-1) / gram.shape[-1]
     normalized = gram / jnp.where(mean > 0, mean, 1)[..., None, None]
-    vectors, values = jax.lax.linalg.eigh(normalized, implementation=eigh_implementation)
+    vectors, values = eigh_fn(normalized, implementation=eigh_implementation)
     powers = (jnp.maximum(values, 0) + ridge) ** (-alpha)
     power = jnp.matmul(
         vectors * powers[..., None, :], jnp.swapaxes(vectors, -1, -2), precision=jax.lax.Precision.HIGHEST
@@ -88,12 +90,15 @@ def gram_direction(
     polar_steps: int,
     polar_method: str = NEWTON_SCHULZ,
     eigh_implementation: jax.lax.linalg.EighImplementation | None = None,
+    eigh_fn: Callable[..., tuple[jax.Array, jax.Array]] = jax.lax.linalg.eigh,
 ) -> jax.Array:
     """Return a positive descent direction without advancing the supplied EMA state."""
     m = state.momentum
     if alpha:
-        left = relative_gram_power(state.left, alpha, ridge, eigh_implementation=eigh_implementation)
-        right = relative_gram_power(state.right, alpha, ridge, eigh_implementation=eigh_implementation)
+        left = relative_gram_power(state.left, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn)
+        right = relative_gram_power(
+            state.right, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn
+        )
         inner = jnp.matmul(
             jnp.matmul(left, m, precision=jax.lax.Precision.HIGHEST), right, precision=jax.lax.Precision.HIGHEST
         )

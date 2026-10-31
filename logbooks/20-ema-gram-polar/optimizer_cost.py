@@ -29,6 +29,7 @@ from jax.sharding import PartitionSpec as P
 from levanter.optim.ema_gram import GramState, gram_direction, init_gram_state, relative_gram_power, update_gram_state
 from levanter.tracker.wandb import WandbConfig
 from marin.profiling.xplane import _xspace_message_class
+from optimizer_parallel import parallel_eigh
 from rigging.filesystem.storage_path import StoragePath
 
 NAMES = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj")
@@ -43,17 +44,25 @@ def refresh(gradients, states):
     return tuple(update_gram_state(g, s, 0.95, 0.99) for g, s in zip(gradients, states, strict=True))
 
 
-def powers(states):
-    return tuple((relative_gram_power(s.left, 0.25, 1e-4), relative_gram_power(s.right, 0.25, 1e-4)) for s in states)
+def powers(states, *, eigh_fn=jax.lax.linalg.eigh, eigh_implementation=None):
+    power = partial(
+        relative_gram_power, alpha=0.25, ridge=1e-4, eigh_fn=eigh_fn, eigh_implementation=eigh_implementation
+    )
+    return tuple((power(s.left), power(s.right)) for s in states)
 
 
-def directions(states, alpha):
-    return tuple(gram_direction(s, alpha=alpha, ridge=1e-4, polar_steps=5) for s in states)
+def directions(states, alpha, *, eigh_fn=jax.lax.linalg.eigh, eigh_implementation=None):
+    return tuple(
+        gram_direction(
+            s, alpha=alpha, ridge=1e-4, polar_steps=5, eigh_fn=eigh_fn, eigh_implementation=eigh_implementation
+        )
+        for s in states
+    )
 
 
-def full_update(gradients, states):
+def full_update(gradients, states, *, eigh_fn=jax.lax.linalg.eigh, eigh_implementation=None):
     updated = refresh(gradients, states)
-    return directions(updated, 0.25), updated
+    return directions(updated, 0.25, eigh_fn=eigh_fn, eigh_implementation=eigh_implementation), updated
 
 
 def finite_tree(tree):
@@ -113,6 +122,8 @@ def main():
     parser.add_argument("--samples", type=int, default=3)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--tpu-type", choices=("v4-32",), default="v4-32")
+    parser.add_argument("--eigh-layout", choices=("replicated", "matrix"), default="replicated")
+    parser.add_argument("--eigh-implementation", choices=("default", "jacobi"), default="default")
     parser.add_argument("--smoke", action="store_true", help="Small CPU geometry; never performance evidence")
     parser.add_argument("--logging-check", action="store_true", help="Online tracker only; no kernel execution")
     args = parser.parse_args()
@@ -135,6 +146,8 @@ def main():
     config = {
         "mode": mode,
         "tpu_type": args.tpu_type,
+        "eigh_layout": args.eigh_layout,
+        "eigh_implementation": args.eigh_implementation,
         "process_count": jax.process_count(),
         "process_index": rank,
         "source_commit": os.environ.get("GIT_COMMIT"),
@@ -183,6 +196,11 @@ def main():
         assert all(d.platform == "tpu" and "v4" in d.device_kind.lower() for d in devices), devices
     mesh = Mesh(np.array(devices), ("data",))
     replicated = NamedSharding(mesh, P())
+    solver = None if args.eigh_implementation == "default" else jax.lax.linalg.EighImplementation.JACOBI
+    eig_fn = (
+        jax.lax.linalg.eigh if args.eigh_layout == "replicated" else partial(parallel_eigh, mesh=mesh, axis_name="data")
+    )
+    solver_kwargs = dict(eigh_fn=eig_fn, eigh_implementation=solver)
     gradient_shardings = tuple(
         NamedSharding(mesh, P(None, "data", None) if n in ROW_SHARDED else P(None, None, "data")) for n in NAMES
     )
@@ -205,16 +223,24 @@ def main():
     del prior
     updated = jax.block_until_ready(refresh_fn(gradients, states))
     full_fn = jax.jit(
-        full_update,
+        partial(full_update, **solver_kwargs),
         in_shardings=(gradient_shardings, state_shardings),
         out_shardings=(gradient_shardings, state_shardings),
     )
     cases = [
         ("gram_refresh", refresh_fn, (gradients, states)),
-        ("spectral_powers", jax.jit(powers, in_shardings=(state_shardings,), out_shardings=replicated), (updated,)),
+        (
+            "spectral_powers",
+            jax.jit(partial(powers, **solver_kwargs), in_shardings=(state_shardings,), out_shardings=replicated),
+            (updated,),
+        ),
         (
             "alpha0_direction",
-            jax.jit(partial(directions, alpha=0), in_shardings=(state_shardings,), out_shardings=gradient_shardings),
+            jax.jit(
+                partial(directions, alpha=0, **solver_kwargs),
+                in_shardings=(state_shardings,),
+                out_shardings=gradient_shardings,
+            ),
             (updated,),
         ),
         ("quarter_update_and_direction", full_fn, (gradients, states)),
@@ -240,9 +266,40 @@ def main():
     # Validate fused versus separately computed outputs on the small end-to-end check.
     if args.smoke:
         fused = jax.block_until_ready(full_fn(gradients, states))[0]
-        separate = directions(updated, 0.25)
+        separate = directions(updated, 0.25, **solver_kwargs)
         for a, b in zip(fused, separate, strict=True):
             np.testing.assert_allclose(np.asarray(a), np.asarray(b), rtol=1e-4, atol=1e-5)
+    if args.eigh_layout != "replicated" or args.eigh_implementation != "default":
+        reference_fn = jax.jit(
+            full_update,
+            in_shardings=(gradient_shardings, state_shardings),
+            out_shardings=(gradient_shardings, state_shardings),
+        )
+        reference = jax.block_until_ready(reference_fn(gradients, states))
+        candidate = jax.block_until_ready(full_fn(gradients, states))
+        comparisons = []
+        for index, (actual, expected) in enumerate(
+            zip(jax.tree.leaves(candidate), jax.tree.leaves(reference), strict=True)
+        ):
+            comparisons.append(
+                {
+                    "leaf": index,
+                    "max_absolute_error": float(jnp.max(jnp.abs(actual - expected))),
+                    "relative_frobenius_error": float(
+                        jnp.linalg.norm(actual - expected) / jnp.maximum(jnp.linalg.norm(expected), 1e-30)
+                    ),
+                    "passed": bool(jnp.all(jnp.abs(actual - expected) <= 1e-5 + 1e-5 * jnp.abs(expected))),
+                }
+            )
+        report["reference_comparison"] = {
+            "rtol": 1e-5,
+            "atol": 1e-5,
+            "passed": all(row["passed"] for row in comparisons),
+            "leaves": comparisons,
+        }
+        tracker.log_summary({"diagnostic/reference_comparison_passed": report["reference_comparison"]["passed"]})
+        (destination / "report.json").write_text(json.dumps(report, indent=2))
+        del reference, candidate
     report["profile"] = profile_once(full_fn, (gradients, states), local / "profile")
     report["device_timeline_available"] = any(
         p["name"].startswith("/device:TPU:") for f in report["profile"] for p in f["planes"]

@@ -13,7 +13,7 @@ from functools import partial
 
 import jax
 import jax.numpy as jnp
-from jax.sharding import Mesh
+from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
 from levanter.optim.ema_gram import GramState, gram_direction, update_gram_state
 
@@ -57,3 +57,39 @@ def parallel_update(
     )
     output = mapped(pad(gradient), jax.tree.map(pad, state))
     return jax.tree.map(unpad, output)
+
+
+def parallel_eigh(normalized, *, mesh, axis_name, implementation):
+    """Shard only full eigendecompositions, after the caller normalizes its Grams."""
+    replicated = NamedSharding(mesh, P())
+    normalized = jax.lax.with_sharding_constraint(normalized, replicated)
+    normalized = jax.lax.optimization_barrier(normalized)
+    batch_shape = normalized.shape[:-2]
+    count = math.prod(batch_shape)
+    padded_count = math.ceil(count / mesh.shape[axis_name]) * mesh.shape[axis_name]
+    flat = normalized.reshape((count, *normalized.shape[-2:]))
+    padded = jnp.pad(flat, ((0, padded_count - count), (0, 0), (0, 0)))
+    mapped = jax.shard_map(
+        partial(jax.lax.linalg.eigh, implementation=implementation),
+        mesh=mesh,
+        axis_names={axis_name},
+        in_specs=P(axis_name, None, None),
+        out_specs=(P(axis_name, None, None), P(axis_name, None)),
+    )
+    vectors, values = jax.lax.optimization_barrier(mapped(padded))
+    vectors = vectors[:count].reshape((*batch_shape, *normalized.shape[-2:]))
+    values = values[:count].reshape((*batch_shape, normalized.shape[-1]))
+    return jax.tree.map(lambda x: jax.lax.with_sharding_constraint(x, replicated), (vectors, values))
+
+
+def eig_parallel_update(gradient, state, *, mesh, axis_name, alpha, ridge, eigh_implementation=None):
+    state = update_gram_state(gradient, state, 0.95, 0.99)
+    direction = gram_direction(
+        state,
+        alpha=alpha,
+        ridge=ridge,
+        polar_steps=5,
+        eigh_implementation=eigh_implementation,
+        eigh_fn=partial(parallel_eigh, mesh=mesh, axis_name=axis_name),
+    )
+    return direction, state
