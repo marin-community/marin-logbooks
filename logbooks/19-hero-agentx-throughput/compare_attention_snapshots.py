@@ -21,7 +21,7 @@ def main() -> None:
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--prefills", type=int, choices=(1, 2), default=1)
+    parser.add_argument("--steps", type=int, choices=(1, 2, 6), default=1)
     args = parser.parse_args()
     torch.set_num_threads(1)
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -29,44 +29,53 @@ def main() -> None:
     rows = []
     for index in (0, 3):
         history = {"reference": [], "candidate": []}
-        for ordinal in range(args.prefills):
+        for ordinal in range(args.steps):
             captures = {}
             files = {}
             for label, directory in [("reference", args.reference), ("candidate", args.candidate)]:
                 suffix = "" if ordinal == 0 else f"-prefill-{ordinal}"
                 path = directory / f"attention-layer-{index}{suffix}.pt"
                 capture = torch.load(path, weights_only=True, map_location="cpu")
-                assert capture["layer"] == index and capture["num_actual_tokens"] == 2048
+                assert capture["layer"] == index
+                query_rows = capture["num_actual_tokens"]
+                assert 0 < query_rows <= 2048
                 captures[label] = capture
-                if args.prefills == 2:
-                    assert capture["causal"] and capture["num_prefills"] == 1 and capture["num_decodes"] == 0
-                    assert capture["prefill_metadata"]["seq_lens"].tolist() == [2048 * (ordinal + 1)]
+                if args.steps > 1:
+                    assert capture["num_prefills"] + capture["num_decodes"] == 1
+                    if capture["num_prefills"]:
+                        assert capture["causal"]
+                    previous_rows = sum(c["num_actual_tokens"] for c in history[label])
+                    assert capture["prefill_metadata"]["seq_lens"].tolist() == [previous_rows + query_rows]
                 files[label] = {"sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "bytes": path.stat().st_size}
             left, right = captures["reference"], captures["candidate"]
             comparisons = {key: compare_tensor(left[key], right[key]) for key in ("query", "output")}
             duplicate_heads = {}
             for key in ("key", "value"):
-                a, b = left[key].reshape(2048, -1, 128), right[key].reshape(2048, -1, 128)
+                a, b = left[key].reshape(query_rows, -1, 128), right[key].reshape(query_rows, -1, 128)
                 if index == 3:
                     duplicate_heads[key] = bool(torch.equal(a[:, ::2], a[:, 1::2]))
                     a = a[:, ::2]
                 comparisons[key] = compare_tensor(a, b)
             native_references = {}
             for label, capture in captures.items():
-                q = capture["query"].reshape(2048, 48, 128).cuda().float().transpose(0, 1)
+                q = capture["query"].reshape(query_rows, 48, 128).cuda().float().transpose(0, 1)
                 history[label].append(capture)
-                k = torch.cat([c["key"].reshape(2048, -1, 128) for c in history[label]]).cuda().float()
-                v = torch.cat([c["value"].reshape(2048, -1, 128) for c in history[label]]).cuda().float()
+                k = torch.cat([c["key"].reshape(c["num_actual_tokens"], -1, 128) for c in history[label]]).cuda().float()
+                v = (
+                    torch.cat([c["value"].reshape(c["num_actual_tokens"], -1, 128) for c in history[label]])
+                    .cuda()
+                    .float()
+                )
                 head = torch.arange(48, device="cuda") // (48 // k.shape[1])
                 scores = torch.matmul(q, k[:, head].permute(1, 2, 0)) * (128**-0.5)
-                end = torch.arange(2048, device="cuda")[:, None] + ordinal * 2048
+                end = torch.arange(query_rows, device="cuda")[:, None] + k.shape[0] - query_rows
                 position = torch.arange(k.shape[0], device="cuda")[None, :]
                 future = position > end
                 if index == 0:
                     future |= position < end - 2048 + 1
                 scores.masked_fill_(future, float("-inf"))
                 expected = torch.matmul(torch.softmax(scores, dim=-1), v[:, head].transpose(0, 1)).transpose(0, 1)
-                actual = capture["output"].reshape(2048, 48, 128).cuda().float()
+                actual = capture["output"].reshape(query_rows, 48, 128).cuda().float()
                 delta = (expected - actual).abs()
                 close = torch.isclose(actual, expected, atol=ATOL, rtol=RTOL)
                 native_references[label] = {
@@ -80,7 +89,8 @@ def main() -> None:
             rows.append(
                 {
                     "layer": index,
-                    "prefill_ordinal": ordinal,
+                    "step_ordinal": ordinal,
+                    "query_rows": query_rows,
                     "files": files,
                     "cross_source": comparisons,
                     "baseline_duplicate_heads_exact": duplicate_heads,
@@ -88,11 +98,22 @@ def main() -> None:
                 }
             )
     result = {
+        "first_logits": (
+            {
+                key: compare_tensor(
+                    torch.load(args.reference / "first-logits.pt", weights_only=True, map_location="cpu")[key],
+                    torch.load(args.candidate / "first-logits.pt", weights_only=True, map_location="cpu")[key],
+                )
+                for key in ("hidden", "logits")
+            }
+            if args.steps == 6
+            else None
+        ),
         "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "rows": rows,
         "native_attention_atol": ATOL,
         "native_attention_rtol": RTOL,
-        "reference_precision": "FP32; TF32 disabled; consecutive cold2048-token causal/SWA prefills",
+        "reference_precision": "FP32; TF32 disabled; consecutive cold causal/SWA prefill and decode steps",
         "scope": "Actual native backend tensors on the synthetic geometry fixture. No full-Hero or speed gate.",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
