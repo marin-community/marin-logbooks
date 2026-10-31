@@ -2422,7 +2422,7 @@
     "ratio": 1.015106734266955,
     "interpretation": "One full-hour pair is +1.51067% output throughput; this does not establish a repeatable gain. Candidate combines native local piecewise graphs, direct ShortConv, buffered MoE and fixed compiler reductions. Released recipe remains selected."
   },
-  "processor_accounting_note": "Native validators report zero profiling errors and coverage1.0. The upstream aggregate separately reports8 InvalidInferenceResultError records dropped and1406 warmup records dropped; do not describe those8 as profiling failures.",
+  "processor_accounting_note": "Raw profile_export.jsonl confirms all8 InvalidInferenceResultError records occur in warmup and have empty-content messages, the same class seen3times in released-control warmup. All1406warmup records are outside scoring. Native validators report zero profiling errors and full coverage.",
   "concurrent_activity": "A distinct four-GPU batch allocation on a disjoint spare node prepared native CUTLASS using eight CPU cores with CUDA hidden during most of the scored hour; its final one-GPU component failed during FP32 reference allocation. No serving model, NVLink collectives or profiling on that batch node.",
-  "server_counter_note": "Native metrics export warned about3 negative/reset counter deltas per engine. Native gang attempt UIDs stayed fixed and all4 attempts succeeded. Raw counter audit remains required before assigning precise cache-counter causality."
+  "server_counter_note": "Native export reports both prompt/local-compute decreases and generation-counter decreases (3generation decreases perengine); raw audit records all warning lines. Gang attempt UIDs stay fixed and all4attempts succeed. No sampled serving-lifetime field was available in the CSV audit, so do not infer process stability beyond actual attempt/log fences. Cause of transient counter decreases remains unresolved."
 }
