@@ -788,6 +788,50 @@ and the matching group currently has no free TPU capacity. The existing batch
 request is retained; no v4-8 fallback is allowed. Submission/resource evidence
 is in `optimizer-cost-v4-32-submitted.json`. Device execution is not yet verified.
 
+### 2026-10-31 17:25 UTC — Prepare full-eigensolver candidates; reject first parallel preflight
+
+The queued v4-32 job still uses published source `09c39d9ba`; none of the
+following candidates changes that job or the training configuration. The
+existing default spectral path is retained. Research source now exposes JAX's
+full eigensolver selection in `relative_gram_power` and `gram_direction`.
+The public `lax.linalg.eigh` API returns vectors before values, unlike the
+previous `numpy.linalg.eigh` call; sixteen CPU power comparisons and the eleven
+EMA-Gram unit tests passed after this change. Local validation explicitly sets
+`PYTHONPATH=lib/levanter/src:lib/haliax/src` because the shared environment's
+editable installs otherwise resolve to the contribution checkout.
+
+`optimizer_parallel.py` assigns independent complete matrices to chips, padding
+only the layer axis from eleven to sixteen. It retains full left/right Grams,
+per-update refresh and the production polar iteration. A 16-device CPU check
+covers square, tall, wide and unbatched matrices, alpha 0, 1/4 and 1/2, both ridge
+values and three successive updates including zero initialization. Nine of
+24 cases fail the unchanged elementwise tolerance (rtol=atol=1e-5), so this
+candidate is not approved for training. The largest recorded direction-element
+difference is 0.016813, in the rank-deficient half-power case. The check exits
+with failure and preserves all cases in `optimizer-parallel-preflight.json`.
+
+An isolating tall-matrix check found bitwise-equal momentum and both EMA
+Grams, but different downstream directions. The left Gram power already differed
+when computed with the changed matrix assignment; the right power was identical.
+This locates a numerical discrepancy after the state update, not a TPU runtime
+bottleneck. Do not relax the numerical threshold or infer hardware accuracy
+from CPU behavior. Investigate full-solver accuracy on fixed inputs before
+adopting any different solver or layout.
+
+Offline TPU StableHLO export for batches of eleven 1024- and 4096-dimensional
+full Gram powers succeeds for both the default solver and explicit Jacobi.
+The default exports contain 17 and 27 `while` operations; Jacobi has none and
+contains a full `Eigh` custom call. These counts describe pre-optimization
+structure, not execution time. Hash-verified exports are stored under
+`gs://marin-us-central2/ema-gram-20-optimizer-cost/offline-preflight/2026.10.31.17-24`.
+The [JAX eigensolver API](https://docs.jax.dev/en/latest/_autosummary/jax.lax.linalg.eigh.html)
+and the installed JAX 0.11.1 lowering support selecting Jacobi on TPU. TPU
+numerical accuracy, runtime, memory and actual training MFU remain unmeasured.
+The v4-32 request remains in the batch queue; no additional accelerator job was
+submitted. The goal remains measured training MFU above 5%, then restoration
+of the quarter-power run specified in `quarter-pilot-128g-resolved.json`.
+Checkpoint continuation requires a verified restore; that has not been tested.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

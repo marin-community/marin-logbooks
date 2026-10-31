@@ -53,12 +53,18 @@ def update_gram_state(gradient: jax.Array, state: GramState, beta1: float, beta2
 
 
 @jax.named_call
-def relative_gram_power(gram: jax.Array, alpha: float, ridge: float) -> jax.Array:
+def relative_gram_power(
+    gram: jax.Array,
+    alpha: float,
+    ridge: float,
+    *,
+    eigh_implementation: jax.lax.linalg.EighImplementation | None = None,
+) -> jax.Array:
     """Return (Gram / mean eigenvalue + ridge I)^(-alpha), or I for a zero Gram."""
     gram = (gram + jnp.swapaxes(gram, -1, -2)) * 0.5
     mean = jnp.trace(gram, axis1=-2, axis2=-1) / gram.shape[-1]
     normalized = gram / jnp.where(mean > 0, mean, 1)[..., None, None]
-    values, vectors = jnp.linalg.eigh(normalized)
+    vectors, values = jax.lax.linalg.eigh(normalized, implementation=eigh_implementation)
     powers = (jnp.maximum(values, 0) + ridge) ** (-alpha)
     power = jnp.matmul(
         vectors * powers[..., None, :], jnp.swapaxes(vectors, -1, -2), precision=jax.lax.Precision.HIGHEST
@@ -75,13 +81,19 @@ def exact_polar(matrix: jax.Array) -> jax.Array:
 
 @jax.named_call
 def gram_direction(
-    state: GramState, *, alpha: float, ridge: float, polar_steps: int, polar_method: str = NEWTON_SCHULZ
+    state: GramState,
+    *,
+    alpha: float,
+    ridge: float,
+    polar_steps: int,
+    polar_method: str = NEWTON_SCHULZ,
+    eigh_implementation: jax.lax.linalg.EighImplementation | None = None,
 ) -> jax.Array:
     """Return a positive descent direction without advancing the supplied EMA state."""
     m = state.momentum
     if alpha:
-        left = relative_gram_power(state.left, alpha, ridge)
-        right = relative_gram_power(state.right, alpha, ridge)
+        left = relative_gram_power(state.left, alpha, ridge, eigh_implementation=eigh_implementation)
+        right = relative_gram_power(state.right, alpha, ridge, eigh_implementation=eigh_implementation)
         inner = jnp.matmul(
             jnp.matmul(left, m, precision=jax.lax.Precision.HIGHEST), right, precision=jax.lax.Precision.HIGHEST
         )
