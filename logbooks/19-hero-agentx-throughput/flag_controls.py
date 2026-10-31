@@ -78,6 +78,42 @@ def main() -> None:
         assert manifest["diagnostic_request"]["numerics_only"] is True
         assert manifest["diagnostic_request"]["compilation_config"]["cudagraph_mode"] == "NONE"
         probe += ["--reference-capture-sizes", *map(str, sizes)]
+    if manifest.get("diagnostic_request", {}).get("disable_graph_replay"):
+        assert manifest["diagnostic_request"]["numerics_only"] is True
+        assert not manifest["diagnostic_request"].get("compare_graph_replay")
+        probe.append("--disable-graph-replay")
+    if original := manifest.get("diagnostic_request", {}).get("global_reference"):
+        assert local_piecewise_dp and manifest["diagnostic_request"]["numerics_only"]
+        directory = Path(original["path"])
+        assert (
+            hashlib.sha256((directory.parent / "control-manifest.json").read_bytes()).hexdigest()
+            == original["manifest_sha256"]
+        )
+        assert json.loads((directory.parent / "diagnostic.json").read_text())["status"] == "stopped"
+        global_probe = [item for item in probe if item != "--local-piecewise-dp"]
+        global_output = args.output / "cache-probe-global-reference"
+        global_probe[global_probe.index("--output") + 1] = str(global_output)
+        global_probe += ["--disable-graph-replay", "--compare-to", str(directory)]
+        run_logged(global_probe, dict(os.environ), args.output / "global-reference.log", timeout=900)
+        checks = json.loads((global_output / "comparison.json").read_text())["comparisons"]
+        cross = json.loads((global_output / "cross-comparison.json").read_text())
+        assert len(checks) == 8 and len(cross) == 10
+        assert all(
+            row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
+            for row in checks
+        )
+        assert all(
+            row["same_global_shapes"]
+            and all(
+                choice["same_tokens"]
+                and choice["finite_logprobs"]
+                and choice["max_shared_logprob_absolute_delta"] == 0
+                and choice["minimum_topk_overlap"] == 20
+                and choice["matching_token_prefix"] == 16
+                for choice in row["choices"]
+            )
+            for row in cross
+        )
     (args.output / "cache-probe-command.json").write_text(json.dumps(probe, indent=2) + "\n")
     run_logged(probe, dict(os.environ), args.output / "cache-probe.log", timeout=900)
     comparison = json.loads((args.output / "cache-probe-matched" / "comparison.json").read_text())

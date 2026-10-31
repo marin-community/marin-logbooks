@@ -1,0 +1,223 @@
+{
+  "status": "completed",
+  "gpu_empty": true,
+  "attempt_uid": "1a6cb55ddeb9dbaa",
+  "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-piecewise-unbuffered-precision-casts-ep4-r1/outputs-d89110b5eb9c1724fec77217c0dae40012f43a67f9b317dbd215b16992cf01c8.tar.zst",
+  "sha256": "d89110b5eb9c1724fec77217c0dae40012f43a67f9b317dbd215b16992cf01c8",
+  "readback_sha256": "d89110b5eb9c1724fec77217c0dae40012f43a67f9b317dbd215b16992cf01c8",
+  "bytes": 167152,
+  "source_commit": "b02c89184a478646aa53635a69c3ee3f30781f07",
+  "first_dispatches": [
+    {
+      "unix": 1793417193.038738,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 64,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 64,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793417193.0388014,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793417193.0388114,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793417193.0388167,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    }
+  ],
+  "error_lines": [],
+  "compiled_graph_sources": [
+    {
+      "path": "/iris/candidates/tiny-piecewise-unbuffered-precision-casts-ep4-r1-cache/torch_compile_cache/30f5ba0339/rank_0_2/backbone/computation_graph.py",
+      "sha256": "fd720aa6d2c94a3948d7d44efad5ecf93b5c2f263e16bb596bbe45ef3a893d01",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-unbuffered-precision-casts-ep4-r1-cache/torch_compile_cache/30f5ba0339/rank_0_3/backbone/computation_graph.py",
+      "sha256": "c8e295a864661513e184e59050cca8dca5192fa2b5c7178f6ffc550995295859",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-unbuffered-precision-casts-ep4-r1-cache/torch_compile_cache/30f5ba0339/rank_0_0/backbone/computation_graph.py",
+      "sha256": "e9876289aa7de11068aac7555b8b44106d1f036f358f18aef38ca79da6933bfd",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-piecewise-unbuffered-precision-casts-ep4-r1-cache/torch_compile_cache/30f5ba0339/rank_0_1/backbone/computation_graph.py",
+      "sha256": "d90ab1550bfc1fba9fbbc6d2f1accdecdb9a1e194456a9ae79f7008e305b455a",
+      "bytes": 216414
+    }
+  ],
+  "progress": {
+    "status": "completed",
+    "scope": "Synthetic tiny BF16 Hero TP1/DP4/EP4, matching excluded-MoE boundaries and replay disabled. Enable the pinned native Inductor emulate_precision_casts option to preserve intermediate downcast/upcast rounding. Intrusive DP0 snapshots, same four requests and model/token pins, no throughput claim.",
+    "source_sha256": "aab24370e5df0d065688540557a27213d6ab781d65d63d0594be486aa6a4bee5",
+    "manifest_sha256": "f3f60c0ab5ddb1306f07302503dffaaee38da22d1d96e12bd643dd90f6c2dcaf",
+    "command": [
+      "uvx",
+      "--from",
+      "vllm @ file:///iris/candidates/9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4/vllm-0.0.0.dev20261012%2Bmarin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=9ea76e16b9979d161840fafaf7fdc57d78c8aca201de6c3e6a60b6db041fd7a4",
+      "--with",
+      "runai-model-streamer[s3]==0.16.1",
+      "--with",
+      "torch==2.14.1+cu132",
+      "--with",
+      "nvidia-cuda-nvcc==13.2.86",
+      "--with",
+      "nvidia-cuda-crt==13.2.86",
+      "--with",
+      "nvidia-nvvm==13.2.86",
+      "--python",
+      "3.12",
+      "--index",
+      "https://download.pytorch.org/whl/cu132",
+      "--index",
+      "https://download.pytorch.org/whl/cpu",
+      "--index-strategy",
+      "unsafe-best-match",
+      "python",
+      "-c",
+      "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+      "python",
+      "-m",
+      "vllm.entrypoints.launchers.api_server.entry",
+      "--model",
+      "/iris/candidates/tiny-local-piecewise-inputs/model",
+      "--served-model-name",
+      "tiny-hero-boundary",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "38397",
+      "--dtype",
+      "bfloat16",
+      "--max-model-len",
+      "128",
+      "--max-num-batched-tokens",
+      "64",
+      "--max-num-seqs",
+      "8",
+      "--tensor-parallel-size",
+      "1",
+      "--data-parallel-size",
+      "4",
+      "--data-parallel-size-local",
+      "4",
+      "--enable-expert-parallel",
+      "--all2all-backend",
+      "allgather_reducescatter",
+      "--kernel-config",
+      "{\"moe_backend\": \"triton\"}",
+      "--compilation-config",
+      "{\"mode\": 3, \"cudagraph_mode\": \"PIECEWISE\", \"cudagraph_capture_sizes\": [1, 2, 4, 8, 16, 32, 64], \"splitting_ops\": [\"vllm::unified_attention_with_output\", \"vllm::unified_mla_attention_with_output\", \"vllm::mamba_mixer2\", \"vllm::mamba_mixer\", \"vllm::short_conv\", \"vllm::qwen4_exp_ple_short_conv\", \"vllm::qwen4_exp_qsa_with_output\", \"vllm::linear_attention\", \"vllm::qwen_gdn_attention_core\", \"vllm::qwen_gdn_attention_core_fused_norm_packed\", \"vllm::gdn_attention_core_xpu\", \"vllm::olmo_hybrid_gdn_full_forward\", \"vllm::sparse_attn_indexer\", \"vllm::rocm_aiter_sparse_attn_indexer\", \"vllm::deepseek_v4_attention\", \"vllm::hpc_rope_norm_forward\", \"vllm::unified_kv_cache_update\", \"vllm::unified_mla_kv_cache_update\", \"vllm::grug_moe_short_conv\", \"vllm::moe_forward\", \"vllm::moe_forward_shared\"], \"inductor_compile_config\": {\"emulate_precision_casts\": true}}",
+      "--gpu-memory-utilization",
+      "0.05",
+      "--enable-prefix-caching",
+      "--master-port",
+      "36620",
+      "--data-parallel-rpc-port",
+      "36621",
+      "--seed",
+      "42",
+      "--worker-extension-cls",
+      "tiny_graph_probe.BatchTraceWorkerExtension"
+    ],
+    "environment_overrides": {
+      "CUDA_VISIBLE_DEVICES": "0,1,2,3",
+      "UV_NO_CONFIG": "1",
+      "UV_CONSTRAINT": "/app/experiments/evaluation/agentx/requirements-vllm-hero.txt",
+      "VLLM_SERVER_DEV_MODE": "1",
+      "VLLM_LOGGING_LEVEL": "DEBUG",
+      "CUDA_LAUNCH_BLOCKING": "1",
+      "VLLM_CACHE_ROOT": "/iris/candidates/tiny-piecewise-unbuffered-precision-casts-ep4-r1-cache",
+      "TORCHINDUCTOR_CACHE_DIR": "/iris/candidates/tiny-piecewise-unbuffered-precision-casts-ep4-r1-cache/inductor",
+      "TRITON_CACHE_DIR": "/iris/candidates/tiny-piecewise-unbuffered-precision-casts-ep4-r1-cache/triton",
+      "PYTHONPATH": "/iris/candidates/research-b02c89184a478646aa53635a69c3ee3f30781f07/logbooks/19-hero-agentx-throughput:/app",
+      "IRIS_OUTPUT_DIR": "/iris/outputs/tiny-piecewise-unbuffered-precision-casts-ep4-r1/workers",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    },
+    "attempt_uid": "1a6cb55ddeb9dbaa",
+    "gpu_uuids": [
+      "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+      "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+      "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+      "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461"
+    ],
+    "started_unix": 1793417108.9515169,
+    "ready_unix": 1793417193.0159981,
+    "server_returncode_before_stop": null,
+    "finished_unix": 1793417195.7786
+  },
+  "phase_summary": [
+    {
+      "local_piecewise_dp": false,
+      "disable_graph_replay": true,
+      "status": "completed",
+      "requests": 4,
+      "choices": 7
+    }
+  ],
+  "scope": "Tiny BF16 Hero, native DEBUG and synchronous CUDA, matching global padding, replay disabled and Inductor emulate_precision_casts=True. First two prefills per layer snapshotted; no speed claim."
+}
