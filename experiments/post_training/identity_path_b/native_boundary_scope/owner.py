@@ -32,7 +32,7 @@ from experiments.post_training.identity_path_b.trend import wait_for_owned_endpo
 from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 from experiments.post_training.identity_t2 import serve as t2
 
-TARGETS_SHA256 = "3f5a0d785518e9ec73b8776efc6d282a4420589148a3dcc51db8c8b54d86d4b9"
+TARGETS_SHA256 = "54227fef5f8fc938c017c3d3bc5d53794133326a5852561a846b833a73d64cc4"
 
 
 def checked_audit_sha256(value):
@@ -72,12 +72,12 @@ def checked_identity(label, name, audit_sha256) -> dict:
         or len(report["router_biases_fp32"]) != 26
         or report["protected_rows_per_tensor"] != 256
         or report["recipe"]["parameters"]
-        != {"coefficients": [0.51], "density": 1, "method": "average", "scale": 1, "seed": 0}
+        != {"coefficients": [item["coefficient"]], "density": 1, "method": "average", "scale": 1, "seed": 0}
         or report["pre_arithmetic_parent_protection"]["full_fields"] != 104
         or report["pre_arithmetic_parent_protection"]["router_biases_fp32"] != 26
         or len(report["pre_arithmetic_parent_protection"]["parent_bits_admitted_before_restoration"]) != 106
     ):
-        raise ValueError("Require the exact finite/restored502 M51 merge report")
+        raise ValueError("Require the exact finite/restored502 target merge report")
     for name in report["router_biases_fp32"]:
         if report["tensors"][name]["dtype"] != "torch.float32":
             raise ValueError("Merge router bias must remain FP32")
@@ -249,7 +249,7 @@ def submission(*, label, name, output, credentials, audit_sha256, readiness_sha2
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=("M51",), required=True)
+    parser.add_argument("--target", choices=("M25", "M49", "M75"), required=True)
     parser.add_argument("--name", required=True)
     parser.add_argument("--output")
     parser.add_argument("--merge-admission-sha256", required=True)
