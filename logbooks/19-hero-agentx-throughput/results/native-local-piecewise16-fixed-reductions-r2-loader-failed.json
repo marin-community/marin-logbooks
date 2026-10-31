@@ -1,0 +1,132 @@
+{
+  "status": "pre_readiness_weight_loader_failure_no_numerical_result",
+  "source_commit": "0f887f1315399778d06873229108524aae45724e",
+  "retained_compressed_bytes": 3468332,
+  "all16_gpu_empty": true,
+  "requests": 0,
+  "numerical_cases": 0,
+  "speed_cases": 0,
+  "failure": "Worker on host2 waits in RunAI request_ready_chunks while peers wait in its distributed weight broadcast. Other hosts then report Gloo receive timeout1800000ms during initialization. No source/replay/state result exists for this attempt.",
+  "nonblocking_python_stacks": [
+    {
+      "name": "native-fixed-reductions-r2-worker-143411-threads.txt",
+      "sha256": "0220c5ca4fcab600fe56edc935b892c6276186a52445175d713b8d41a8396e79",
+      "bytes": 1796,
+      "python_stack": [
+        "Thread 143411 (active): \"MainThread\"",
+        "    broadcast (runai_model_streamer/distributed_streamer/distributed_streamer.py:579)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:447)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:162)",
+        "    get_tensors (runai_model_streamer/safetensors_streamer/safetensors_streamer.py:245)",
+        "    __iter__ (tqdm/std.py:1175)",
+        "    runai_safetensors_weights_iterator (vllm/model_executor/model_loader/weight_utils.py:1066)",
+        "    load_weights (vllm/model_executor/models/grugmoe.py:1515)",
+        "    load_weights (vllm/model_executor/model_loader/runai_streamer_loader.py:138)",
+        "    load_model (vllm/model_executor/model_loader/base_loader.py:75)"
+      ]
+    },
+    {
+      "name": "native-fixed-reductions-r2-worker-143412-threads.txt",
+      "sha256": "7dca6d67fb681cb46f3d30d5fae4d8d0b8c9bd5db98bac3f20d98e0890ee2a6a",
+      "bytes": 2112,
+      "python_stack": [
+        "Thread 143412 (idle): \"MainThread\"",
+        "    runai_response (runai_model_streamer/libstreamer/libstreamer.py:85)",
+        "    request_ready_chunks (runai_model_streamer/file_streamer/file_streamer.py:194)",
+        "    get_chunks (runai_model_streamer/file_streamer/file_streamer.py:173)",
+        "    chunk_generator (runai_model_streamer/distributed_streamer/distributed_streamer.py:422)",
+        "    prefill (runai_model_streamer/distributed_streamer/distributed_streamer.py:491)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:433)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:162)",
+        "    get_tensors (runai_model_streamer/safetensors_streamer/safetensors_streamer.py:245)",
+        "    __iter__ (tqdm/std.py:1175)"
+      ]
+    },
+    {
+      "name": "native-fixed-reductions-r2-worker-143413-threads.txt",
+      "sha256": "d509b89e6e078367b3c77e5361b963fb911a6e5a6f69f98821b9687e24131c9e",
+      "bytes": 1794,
+      "python_stack": [
+        "Thread 143413 (active): \"MainThread\"",
+        "    broadcast (runai_model_streamer/distributed_streamer/distributed_streamer.py:579)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:447)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:162)",
+        "    get_tensors (runai_model_streamer/safetensors_streamer/safetensors_streamer.py:245)",
+        "    __iter__ (tqdm/std.py:1175)",
+        "    runai_safetensors_weights_iterator (vllm/model_executor/model_loader/weight_utils.py:1066)",
+        "    load_weights (vllm/model_executor/models/grugmoe.py:1515)",
+        "    load_weights (vllm/model_executor/model_loader/runai_streamer_loader.py:138)",
+        "    load_model (vllm/model_executor/model_loader/base_loader.py:75)"
+      ]
+    },
+    {
+      "name": "native-fixed-reductions-r2-worker8-threads.txt",
+      "sha256": "3594ddd93ba90c748248d7b6842d023f8a22bcbd23ba9e603ccce881e692711a",
+      "bytes": 1794,
+      "python_stack": [
+        "Thread 143417 (active): \"MainThread\"",
+        "    broadcast (runai_model_streamer/distributed_streamer/distributed_streamer.py:550)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:447)",
+        "    get_chunks (runai_model_streamer/distributed_streamer/distributed_streamer.py:162)",
+        "    get_tensors (runai_model_streamer/safetensors_streamer/safetensors_streamer.py:245)",
+        "    __iter__ (tqdm/std.py:1175)",
+        "    runai_safetensors_weights_iterator (vllm/model_executor/model_loader/weight_utils.py:1066)",
+        "    load_weights (vllm/model_executor/models/grugmoe.py:1515)",
+        "    load_weights (vllm/model_executor/model_loader/runai_streamer_loader.py:138)",
+        "    load_model (vllm/model_executor/model_loader/base_loader.py:75)"
+      ]
+    }
+  ],
+  "retention": [
+    {
+      "host": 0,
+      "status": "failed",
+      "started_unix": 1793436647.0049145,
+      "finished_unix": 1793438650.1832592,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r2/host-0/outputs-1512f25ec637c6aa9c4ac03e97bf11d8efe40e4e9df24153b7ba884fc7cd281a.tar.zst",
+      "archive_sha256": "1512f25ec637c6aa9c4ac03e97bf11d8efe40e4e9df24153b7ba884fc7cd281a",
+      "readback_sha256": "1512f25ec637c6aa9c4ac03e97bf11d8efe40e4e9df24153b7ba884fc7cd281a",
+      "archive_bytes": 750693
+    },
+    {
+      "host": 1,
+      "status": "failed",
+      "started_unix": 1793436646.8543565,
+      "finished_unix": 1793438650.0817099,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r2/host-1/outputs-c2c77e94d95e49573a34bf5f6cd492ce56acf083be57983b865da4bbcbe26cfd.tar.zst",
+      "archive_sha256": "c2c77e94d95e49573a34bf5f6cd492ce56acf083be57983b865da4bbcbe26cfd",
+      "readback_sha256": "c2c77e94d95e49573a34bf5f6cd492ce56acf083be57983b865da4bbcbe26cfd",
+      "archive_bytes": 710592
+    },
+    {
+      "host": 2,
+      "status": "failed",
+      "started_unix": 1793436647.0660768,
+      "finished_unix": 1793439532.565888,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r2/host-2/outputs-b4da7644f8887b09260b0986ce5624fb4bfeba288c131d445319771e9751ba3d.tar.zst",
+      "archive_sha256": "b4da7644f8887b09260b0986ce5624fb4bfeba288c131d445319771e9751ba3d",
+      "readback_sha256": "b4da7644f8887b09260b0986ce5624fb4bfeba288c131d445319771e9751ba3d",
+      "archive_bytes": 1240798
+    },
+    {
+      "host": 3,
+      "status": "failed",
+      "started_unix": 1793436646.9976387,
+      "finished_unix": 1793438667.9075708,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r2/host-3/outputs-36d16cc3d7af7970110df55ed7579d6af331e2f887fd40aef12dcf8408cfde81.tar.zst",
+      "archive_sha256": "36d16cc3d7af7970110df55ed7579d6af331e2f887fd40aef12dcf8408cfde81",
+      "readback_sha256": "36d16cc3d7af7970110df55ed7579d6af331e2f887fd40aef12dcf8408cfde81",
+      "archive_bytes": 766249
+    }
+  ],
+  "additional_thread_diagnostics": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r2/host-2/thread-diagnostics-66d86ba7aeb0d26c8171e4789be81dece5617eb7c0fc25a7c238f25793579fe5.tar.zst",
+    "archive_sha256": "66d86ba7aeb0d26c8171e4789be81dece5617eb7c0fc25a7c238f25793579fe5",
+    "readback_sha256": "66d86ba7aeb0d26c8171e4789be81dece5617eb7c0fc25a7c238f25793579fe5",
+    "archive_bytes": 1077
+  }
+}

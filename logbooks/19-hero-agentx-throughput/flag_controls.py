@@ -39,6 +39,17 @@ def assert_exact_cross(path: Path) -> None:
     )
 
 
+def prepare_tokenizer(manifest: dict, directory: Path | None = None) -> Path:
+    tokenizer = directory if directory is not None else Path("/tmp/hero-tokenizer")
+    tokenizer.mkdir(exist_ok=True)
+    lineage = manifest["workload"]["lineage"]
+    for name, digest in lineage["tokenizer_files"].items():
+        source = Path(hf_hub_download(lineage["tokenizer"], name, revision=lineage["tokenizer_revision"]))
+        assert hashlib.sha256(source.read_bytes()).hexdigest() == digest
+        shutil.copyfile(source, tokenizer / name)
+    return tokenizer
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -51,13 +62,7 @@ def main() -> None:
     prefix = ["env", "UV_NO_CONFIG=1", "UV_CONSTRAINT=/app/experiments/evaluation/agentx/requirements-vllm-hero.txt"]
     prefix += command[: command.index("python")]
     assert "uvx" in prefix and "--from" in prefix
-    tokenizer = Path("/tmp/hero-tokenizer")
-    tokenizer.mkdir(exist_ok=True)
-    lineage = manifest["workload"]["lineage"]
-    for name, digest in lineage["tokenizer_files"].items():
-        source = Path(hf_hub_download(lineage["tokenizer"], name, revision=lineage["tokenizer_revision"]))
-        assert hashlib.sha256(source.read_bytes()).hexdigest() == digest
-        shutil.copyfile(source, tokenizer / name)
+    tokenizer = prepare_tokenizer(manifest)
     if manifest.get("diagnostic_request", {}).get("router_binding_probe"):
         run_logged(
             [

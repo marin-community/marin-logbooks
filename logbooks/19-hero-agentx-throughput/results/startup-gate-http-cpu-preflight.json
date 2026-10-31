@@ -1,0 +1,29 @@
+{
+  "status": "startup_gate_cpu_http_replay_accepts_exact_rejects_drift_and_false_reset",
+  "started_unix": 1793439309.3673563,
+  "finished_unix": 1793439314.5395699,
+  "agentx_candidate_sha256": "12dd9e0a37ee172953b1dae06cd47ad174d12d480d725f1ea43a7f023d1abbc0",
+  "flag_controls_sha256": "a303cdb8ddcf387935b23d11f68c85b9b40eb98a36174a3fb6681aebae701043",
+  "cache_probe_sha256": "582d9f3472063c12bde266d11095e889a6d72f61ed1d9a26046d1639b8157c66",
+  "scenarios": [
+    {
+      "scenario": "pass",
+      "rejected": false,
+      "requests": 10,
+      "reset_called": true
+    },
+    {
+      "scenario": "drift",
+      "rejected": true,
+      "requests": 10,
+      "reset_called": false
+    },
+    {
+      "scenario": "reset_false",
+      "rejected": true,
+      "requests": 10,
+      "reset_called": true
+    }
+  ],
+  "scope": "CPU HTTP fixture replays actual retained reference responses and shared-rank traces; actual pinned cache_probe child and real driver gate execute. No model/kernel run or benchmark score. Zero visible CUDA."
+}

@@ -1,0 +1,305 @@
+{
+  "status": "full_model_fixed_reduction_reference_state_passed",
+  "source_commit": "0f887f1315399778d06873229108524aae45724e",
+  "retained_compressed_bytes": 109049384,
+  "all16_gpu_empty": true,
+  "phases": {
+    "cache-probe-matched": {
+      "comparisons": [
+        {
+          "wave": "cold-a-repeat",
+          "branch": 0,
+          "reference_wave": "cold-a",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "wave": "shared-a",
+          "branch": 0,
+          "reference_wave": "cold-a",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "wave": "shared-ba",
+          "branch": 1,
+          "reference_wave": "cold-ba",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "wave": "shared-ba",
+          "branch": 0,
+          "reference_wave": "cold-ba",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "wave": "shared-cab",
+          "branch": 2,
+          "reference_wave": "cold-cab",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "wave": "shared-cab",
+          "branch": 0,
+          "reference_wave": "cold-cab",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "wave": "shared-cab",
+          "branch": 1,
+          "reference_wave": "cold-cab",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "wave": "shared-a-final",
+          "branch": 0,
+          "reference_wave": "cold-a",
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        }
+      ],
+      "requests": 10,
+      "choices": 16,
+      "exact_finite": true
+    }
+  },
+  "retention": [
+    {
+      "host": 0,
+      "status": "stopped",
+      "ready_unix": 1793436475.894838,
+      "finished_unix": 1793436565.3183808,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-fixed-reductions-r2/host-0/outputs-233ccd41c14d537d8501ca5bb7e9e91684ee7fec2c0cd1e45a5cd572788b10da.tar.zst",
+      "archive_sha256": "233ccd41c14d537d8501ca5bb7e9e91684ee7fec2c0cd1e45a5cd572788b10da",
+      "readback_sha256": "233ccd41c14d537d8501ca5bb7e9e91684ee7fec2c0cd1e45a5cd572788b10da",
+      "archive_bytes": 106500700,
+      "manifest_sha256": "163b49b541170327ac3db4645e5192f2fb355d5a24cf988188bf2179914391ae",
+      "snapshot_file_count": 102,
+      "latent_snapshot_count": 2,
+      "latent_norm_kernels": [
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/915747ddf3d3b55e9c1ce7fd4654a200f66a417cbfb12a27b295db56442d61e3/cache/vllm/torch_compile_cache/torch_aot_compile/953312508ba72efc57cabf25f9355db684e8e5e2edd529e83416cf680d869c99/inductor_cache/2g/c2g4jwktytthbsai4qrbctzurmvvg5grnrabvcvrlucvpjniemvl.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        },
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/915747ddf3d3b55e9c1ce7fd4654a200f66a417cbfb12a27b295db56442d61e3/cache/vllm/torch_compile_cache/torch_aot_compile/953312508ba72efc57cabf25f9355db684e8e5e2edd529e83416cf680d869c99/inductor_cache/c5/cc5w6bbge6cevrhaj3dukmcmx3abgk2vaj5mrmfb6r7hxv3g56x3.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "host": 1,
+      "status": "stopped",
+      "ready_unix": null,
+      "finished_unix": 1793436543.071512,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-fixed-reductions-r2/host-1/outputs-b0585e171c5fcae2fd0b7bef97be85410ac8872d09bcde80c4212b8c7eb6c6a9.tar.zst",
+      "archive_sha256": "b0585e171c5fcae2fd0b7bef97be85410ac8872d09bcde80c4212b8c7eb6c6a9",
+      "readback_sha256": "b0585e171c5fcae2fd0b7bef97be85410ac8872d09bcde80c4212b8c7eb6c6a9",
+      "archive_bytes": 845095,
+      "manifest_sha256": null,
+      "snapshot_file_count": 8,
+      "latent_snapshot_count": 0,
+      "latent_norm_kernels": [
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/fd24b3754489cbdf4fe4a6c168e84c4e39c6f71159a0828184f7676454107cd8/cache/vllm/torch_compile_cache/torch_aot_compile/6542d600f6bb4b9a0254becccb281e0e6bb802a9b3a70023e03086186b9f6325/inductor_cache/2g/c2g4jwktytthbsai4qrbctzurmvvg5grnrabvcvrlucvpjniemvl.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        },
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/fd24b3754489cbdf4fe4a6c168e84c4e39c6f71159a0828184f7676454107cd8/cache/vllm/torch_compile_cache/torch_aot_compile/6542d600f6bb4b9a0254becccb281e0e6bb802a9b3a70023e03086186b9f6325/inductor_cache/6w/c6wrpx6y4wnbboxnpcdhkdw4cz44ph73vy2wjisrvye4mzfzboc2.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "host": 2,
+      "status": "stopped",
+      "ready_unix": null,
+      "finished_unix": 1793436523.3872652,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-fixed-reductions-r2/host-2/outputs-c513f9676925235b10a0fa667ff9229e7cf8783baee3b85f9bf81ec34e582dea.tar.zst",
+      "archive_sha256": "c513f9676925235b10a0fa667ff9229e7cf8783baee3b85f9bf81ec34e582dea",
+      "readback_sha256": "c513f9676925235b10a0fa667ff9229e7cf8783baee3b85f9bf81ec34e582dea",
+      "archive_bytes": 849335,
+      "manifest_sha256": null,
+      "snapshot_file_count": 8,
+      "latent_snapshot_count": 0,
+      "latent_norm_kernels": [
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/f2d60a20d090d234768e841631cb3ee5354c57db6b49c9bf779d47d47c45d6b4/cache/vllm/torch_compile_cache/torch_aot_compile/c6a4ce1ec2c023f1c41e0718bf2ac05eebd59c0f17668401a27def15343cb10e/inductor_cache/2g/c2g4jwktytthbsai4qrbctzurmvvg5grnrabvcvrlucvpjniemvl.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        },
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/f2d60a20d090d234768e841631cb3ee5354c57db6b49c9bf779d47d47c45d6b4/cache/vllm/torch_compile_cache/torch_aot_compile/c6a4ce1ec2c023f1c41e0718bf2ac05eebd59c0f17668401a27def15343cb10e/inductor_cache/hr/chr52axsodtho4thannrp5finqblb2zyyfep3wi3ownfu2rca3un.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "host": 3,
+      "status": "stopped",
+      "ready_unix": null,
+      "finished_unix": 1793436546.9586127,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-fixed-reductions-r2/host-3/outputs-c7ddf15508b4bb9bb7f378bd2cbd159be4cc1ccc60970a9f3318aabad429052c.tar.zst",
+      "archive_sha256": "c7ddf15508b4bb9bb7f378bd2cbd159be4cc1ccc60970a9f3318aabad429052c",
+      "readback_sha256": "c7ddf15508b4bb9bb7f378bd2cbd159be4cc1ccc60970a9f3318aabad429052c",
+      "archive_bytes": 854254,
+      "manifest_sha256": null,
+      "snapshot_file_count": 8,
+      "latent_snapshot_count": 0,
+      "latent_norm_kernels": [
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/672fedec49120796c80683f20dd1cf5820cd39bcc405076cf7e8364d3f389006/cache/vllm/torch_compile_cache/torch_aot_compile/b5f3b8ff27a4b39439d590f77d8ea623308bae70270f3245f3fa1f0047fd5551/inductor_cache/2g/c2g4jwktytthbsai4qrbctzurmvvg5grnrabvcvrlucvpjniemvl.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        },
+        {
+          "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/672fedec49120796c80683f20dd1cf5820cd39bcc405076cf7e8364d3f389006/cache/vllm/torch_compile_cache/torch_aot_compile/b5f3b8ff27a4b39439d590f77d8ea623308bae70270f3245f3fa1f0047fd5551/inductor_cache/r3/cr3avukjweoddwm7g5txliyezgbpksda6lcfxwo2stykcfz26n4y.py",
+          "name": "triton_red_fused_rms_norm_3",
+          "launchers": [
+            {
+              "kwargs": {
+                "XBLOCK": 1,
+                "R0_BLOCK": 1024
+              },
+              "num_warps": 8,
+              "num_stages": 1,
+              "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+              "n_regs": 22,
+              "n_spills": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "status": "actual_native_unentered_agentx_factory_applies_qualified_profile_and_startup_rpc",
+  "agentx_candidate_sha256": "12dd9e0a37ee172953b1dae06cd47ad174d12d480d725f1ea43a7f023d1abbc0",
+  "flag_controls_sha256": "a303cdb8ddcf387935b23d11f68c85b9b40eb98a36174a3fb6681aebae701043",
+  "actual_job_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a",
+  "task_index": 0,
+  "num_tasks": 4,
+  "no_server_started": true,
+  "compilation_config": {
+    "mode": 3,
+    "cudagraph_mode": "PIECEWISE",
+    "cudagraph_capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      2048
+    ],
+    "splitting_ops": [
+      "vllm::unified_attention_with_output",
+      "vllm::unified_mla_attention_with_output",
+      "vllm::mamba_mixer2",
+      "vllm::mamba_mixer",
+      "vllm::short_conv",
+      "vllm::qwen4_exp_ple_short_conv",
+      "vllm::qwen4_exp_qsa_with_output",
+      "vllm::linear_attention",
+      "vllm::qwen_gdn_attention_core",
+      "vllm::qwen_gdn_attention_core_fused_norm_packed",
+      "vllm::gdn_attention_core_xpu",
+      "vllm::olmo_hybrid_gdn_full_forward",
+      "vllm::sparse_attn_indexer",
+      "vllm::rocm_aiter_sparse_attn_indexer",
+      "vllm::deepseek_v4_attention",
+      "vllm::hpc_rope_norm_forward",
+      "vllm::unified_kv_cache_update",
+      "vllm::unified_mla_kv_cache_update",
+      "vllm::grug_moe_short_conv",
+      "vllm::moe_forward",
+      "vllm::moe_forward_shared",
+      "vllm::grug_moe_experts_out"
+    ],
+    "inductor_compile_config": {
+      "emulate_precision_casts": true,
+      "max_autotune": false,
+      "coordinate_descent_tuning": false,
+      "deterministic": true,
+      "dynamic_scale_rblock": false,
+      "combo_kernels": false
+    },
+    "cudagraph_local_dp": true
+  },
+  "kernel_config": {
+    "moe_backend": "triton",
+    "enable_flashinfer_autotune": false
+  },
+  "environment_overrides": {
+    "VLLM_LOGGING_LEVEL": "INFO",
+    "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+    "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+  },
+  "dev_rpc": "1",
+  "scope": "Native launch data derived from this actual Iris JobInfo without entering its coordinator or server. Native candidate-wheel staging and real create_candidate_server execute on CPU; no GPU model/forward run. Existing header-prefetch helper skipped in this CPU factory test."
+}

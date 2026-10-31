@@ -15,17 +15,22 @@ import os
 import shutil
 import subprocess
 import sys
+import time
+import urllib.request
 from pathlib import Path
 
 import zstandard
+from cache_probe import batch_trace
 from completion_retention import retain_finished_attempt
 from diagnostic_server import (
+    VllmLauncherWithEnvironment,
     prefetch_flashinfer_headers,
     set_compilation_config,
     stage_candidate_wheel,
     use_candidate_wheel,
     use_numa_binding,
 )
+from flag_controls import assert_exact_cross, prepare_tokenizer
 from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import IrisVllmLaunch
 from marin.inference.vllm_server import VllmEnvironment
@@ -75,6 +80,21 @@ def create_candidate_server(
         use_numa_binding(server, manifest["numactl_input"])
     if "compilation_config" in overrides:
         set_compilation_config(server, overrides["compilation_config"])
+    if "kernel_config" in overrides:
+        index = server.extra_cli_args.index("--kernel-config") + 1
+        kernel = json.loads(server.extra_cli_args[index]) | overrides["kernel_config"]
+        assert kernel["moe_backend"] == "triton"
+        server.extra_cli_args[index] = json.dumps(kernel)
+    environment = dict(overrides.get("environment_overrides", {}))
+    if manifest.get("startup_numerics"):
+        assert server.host == "127.0.0.1"
+        server.extra_cli_args.extend(["--worker-extension-cls", "tiny_graph_probe.BatchTraceWorkerExtension"])
+        environment.update(
+            VLLM_SERVER_DEV_MODE="1",
+            PYTHONPATH=os.pathsep.join([str(Path(__file__).parent), os.environ.get("PYTHONPATH", "")]),
+        )
+    if environment:
+        server.launcher = VllmLauncherWithEnvironment(server.launcher, environment)
     if overrides.get("prefetch_flashinfer_headers"):
         prefetch_flashinfer_headers(server, output)
     (output / "runtime-overrides.json").write_text(
@@ -89,6 +109,79 @@ def create_candidate_server(
         + "\n"
     )
     return server
+
+
+def run_startup_numerics(manifest: dict, output: Path) -> None:
+    """Check this fresh server before the unchanged AgentX warmup starts."""
+    control = manifest["startup_numerics"]
+    reference = Path(control["source_reference"]["path"])
+    assert (
+        hashlib.sha256((reference.parent / "control-manifest.json").read_bytes()).hexdigest()
+        == control["source_reference"]["manifest_sha256"]
+    )
+    assert json.loads((reference.parent / "diagnostic.json").read_text())["status"] == "stopped"
+    root = output / "startup-numerics"
+    root.mkdir(exist_ok=False)
+    started = time.time()
+    actual = json.loads((output / "attempt.json").read_text())
+    assert actual["status"] == "measuring"
+    command = actual["server_command"]
+    overrides = manifest["runtime_overrides"]
+    assert json.loads(command[command.index("--compilation-config") + 1]) == overrides["compilation_config"]
+    kernel = json.loads(command[command.index("--kernel-config") + 1])
+    assert all(kernel[key] == value for key, value in overrides["kernel_config"].items())
+    prefix = [
+        "env",
+        "UV_NO_CONFIG=1",
+        "UV_CONSTRAINT=/app/experiments/evaluation/agentx/requirements-vllm-hero.txt",
+        *command[: command.index("python")],
+    ]
+    assert "uvx" in prefix and "--from" in prefix
+    base_url = manifest["router"]["backend_url"]
+    ready = batch_trace(base_url, "capture_hero_compiler_sources", ["ready"])
+    (root / "compiler-sources-ready.json").write_text(json.dumps(ready, indent=2) + "\n")
+    tokenizer = prepare_tokenizer(manifest, root / "tokenizer")
+    probe = [
+        *prefix,
+        "python",
+        str(Path(__file__).with_name("cache_probe.py")),
+        "--tokenizer",
+        str(tokenizer / "tokenizer.json"),
+        "--base-url",
+        base_url,
+        "--rank",
+        "0",
+        "--trace-batches",
+        "--compare-to",
+        str(reference),
+        "--output",
+        str(root / "probe"),
+    ]
+    BASE_RUN_LOGGED(probe, dict(os.environ), root / "probe.log", timeout=900)
+    checks = json.loads((root / "probe/comparison.json").read_text())["comparisons"]
+    assert len(checks) == 8 and all(
+        row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0 for row in checks
+    )
+    assert_exact_cross(root / "probe/cross-comparison.json")
+    after = batch_trace(base_url, "capture_hero_compiler_sources", ["after-numerics"])
+    (root / "compiler-sources-after.json").write_text(json.dumps(after, indent=2) + "\n")
+    request = urllib.request.Request(base_url + "/reset_prefix_cache", data=b"", method="POST")
+    with urllib.request.urlopen(request, timeout=90) as response:
+        reset = json.load(response)
+    assert reset == {"success": True}
+    record = {
+        "status": "passed_before_agentx_warmup",
+        "started_unix": started,
+        "finished_unix": time.time(),
+        "source_reference": control["source_reference"],
+        "prefix_cache_reset": reset,
+        "scope": (
+            "Ten fixed-history source waves and eight state pairs on the actual fresh server, "
+            "outside the unchanged AgentX warmup/sending/drain window. "
+            "Native cache reset broadcasts to all engines and reports its first engine result."
+        ),
+    }
+    (root / "result.json").write_text(json.dumps(record, indent=2) + "\n")
 
 
 def pack_metrics_export(output: Path) -> None:
@@ -120,6 +213,8 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
+    if manifest.get("startup_numerics"):
+        assert "router" in manifest
     if "series_filename" in manifest:
         path = Path(__file__).with_name(manifest["series_filename"])
         native.series_path = lambda profile: path
@@ -153,6 +248,8 @@ def main() -> None:
                 json.dumps({"native_requested": timeout, "effective": process_timeout, "source": "series.task_timeout"})
                 + "\n"
             )
+            if manifest.get("startup_numerics"):
+                run_startup_numerics(manifest, log.parent)
             with upstream_router(manifest["router"], log.parent):
                 BASE_RUN_LOGGED(command, environment, log, timeout=process_timeout)
 
