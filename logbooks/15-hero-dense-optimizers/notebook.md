@@ -408,9 +408,9 @@ Iris/W&B snapshot, all three had finite advancing training; storage reads
 through 15:10 UTC verified complete retained rolling checkpoints on all eight
 active jobs. Four 1e21, one MuonH 3e19 and three 1e19 jobs occupy the eight
 slots; the four 3e18 jobs await slots. These eight jobs report zero application
-failures. Their r3 scheduler preemption totals are 6, 2, 6 and 2 for 1e21
-AdamW, Muon, AdamH and MuonH, respectively, and zero for the other four.
-Continue verifying final metrics and durable exports as jobs finish, and
+failures. Since the October 29 coordinator relaunch, their scheduler
+preemption totals are 6, 2, 6 and 2 for 1e21 AdamW, Muon, AdamH and MuonH,
+respectively, and zero for the other four. Continue verifying final metrics and durable exports as jobs finish, and
 sustained throughput and rolling checkpoint advancement on their successors.
 Source, recipes, checkpoint lineage, batch priority and the 64-GPU cap remain
 fixed.
