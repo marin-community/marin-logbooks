@@ -20,6 +20,8 @@ def upstream_router(config: dict, output: Path):
     assert hashlib.sha256(requirements.read_bytes()).hexdigest() == config["requirements_sha256"]
     wheel = config["wheel"]
     port = config["base_url"].rsplit(":", 1)[1]
+    backends = config["backend_urls"] if "backend_urls" in config else [config["backend_url"]]
+    assert backends and len(backends) == len(set(backends))
     command = [
         "uvx",
         "--python",
@@ -34,7 +36,7 @@ def upstream_router(config: dict, output: Path):
         "--port",
         port,
         "--worker-urls",
-        config["backend_url"],
+        *backends,
         "--policy",
         config["policy"],
         "--intra-node-data-parallel-size",
