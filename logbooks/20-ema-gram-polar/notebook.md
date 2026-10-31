@@ -779,6 +779,15 @@ Kernel timings alone cannot establish this target. Queue this diagnostic once
 from published source; validate assignment, distributed execution, online W&B,
 finite results and device profile coverage before choosing a performance change.
 
+### 2026-10-31 17:12 UTC — Submit v4-32 diagnosis once
+
+Iris accepted `ema-gram-20-optimizer-cost-v4-32-20261031` at 17:12:38 UTC
+from published source `09c39d9ba`. The exact-name query was empty before
+submission. Authoritative state is pending: four hosts must be coscheduled,
+and the matching group currently has no free TPU capacity. The existing batch
+request is retained; no v4-8 fallback is allowed. Submission/resource evidence
+is in `optimizer-cost-v4-32-submitted.json`. Device execution is not yet verified.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
