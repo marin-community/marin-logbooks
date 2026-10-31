@@ -1036,3 +1036,29 @@ fields; the pinned SM100 builder selects `trtllm-gen` for that path. The replay
 now calls the same native TRTLLM API, varying only head count and page size.
 The [FA2 result](results/attention-decode-fa2-replay-r1.json) is retained as an
 unsuccessful reproduction, not evidence of the server's actual decode kernel.
+
+### 2026-10-31: native replay attributes decode drift to KV head count
+
+The corrected native `flashinfer.decode.trtllm_batch_decode_with_kv_cache`
+replay reproduces both original server outputs exactly from the same captured
+Q and logical K/V. Twelve KV heads reproduce flag-off output with either
+16- or 32-token pages. Six KV heads reproduce flag-on output with either
+page size. Thus changing head count, rather than page size, determines this
+captured difference. All four outputs pass the unchanged atol=rtol=0.01
+FP32 reference; repeated calls are exact. The original global decode delta
+remains 732/6,144 elements and maximum 0.0009765625.
+
+See [the native replay](results/attention-decode-trtllm-replay-r3.json).
+An intermediate launch failed at import before CUDA work because this pinned
+FlashInfer exports the function from `flashinfer.decode`, not its top-level
+module. The correction uses the same module and workspace size as native vLLM.
+No model code or qualification tolerance changed. Full Hero remains
+unqualified; this component result does not approve its 0.577 logprob delta.
+
+Next, finish the prepared native FA4 numerical component, then screen two
+independent DP16/EP16 replicas against one DP32/EP32 group. The latter can
+reduce collective waiting while changing per-owner cache capacity. It requires
+actual separate native JobInfo groups, private API reachability and fresh
+state-qualified servers before speed. Existing single-group full hours do
+not measure two replicas. The quota allows interactive priority to preempt
+batch work on the verified spare rack; no Hero pretraining placement is allowed.

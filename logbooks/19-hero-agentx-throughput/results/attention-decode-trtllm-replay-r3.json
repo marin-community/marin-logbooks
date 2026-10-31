@@ -1,0 +1,298 @@
+{
+  "source_commit": "fccf841563de5400476b1c61db07c07edb5f2434",
+  "result": {
+    "source_sha256": "9904dd6628d10dda4e63fc65112b9ea9634592023cf0598f990d1cff36cd9371",
+    "flashinfer_source_sha256": "d82d107a644596a9349780b839b34e690c50169ea4cea3d0ee02b78e9dc88c1a",
+    "input_files": {
+      "reference/attention-layer-3.pt": "d71052208fc0f3f2b2020e330acec0d3ae098cca3fcc91986eb28c08528f3951",
+      "reference/attention-layer-3-prefill-1.pt": "0615b5f04d90bd26b82be18e392f1f73c0176e847d6470dce2b012c194feaa6a",
+      "reference/attention-layer-3-prefill-2.pt": "c709062407deff9aa1b6b3301d4916e9114bfeef4dfe0d71d8657b85477c2152",
+      "reference/attention-layer-3-prefill-3.pt": "b3d92ccdffa1fb49064b573399308ef4832438b975c33b32c575b6298b123e8e",
+      "reference/attention-layer-3-prefill-4.pt": "b4d282c09cfe1047be5e7eb1a1c16b702b092205367910d1e5f413a5b265d6b2",
+      "reference/attention-layer-3-prefill-5.pt": "3d288ab9bd052c62fa0a558a53e8ba2394672d598d58e8f55804d0c1a0849cff",
+      "candidate/attention-layer-3.pt": "ee0dab057cc88918d28f1d60a00cbb3b71a99e93ffb59e050ce62be62128773b",
+      "candidate/attention-layer-3-prefill-1.pt": "5e6170b1b92fb076b2287222cc8e9804246582ea8aef0fa6fa7b9156b11635cb",
+      "candidate/attention-layer-3-prefill-2.pt": "b9ceb7a40999bf3fda57c02e0f1b387cbc752bec81603a79b58d34b82af9739f",
+      "candidate/attention-layer-3-prefill-3.pt": "7d7448599409af69ace81087e559dcd058abf7c8afddc005b32678531fbb3920",
+      "candidate/attention-layer-3-prefill-4.pt": "426681bd10e35addde377831bf30e99612210437b16cb2a9de870fe62c606742",
+      "candidate/attention-layer-3-prefill-5.pt": "4418cba10d87992905cd1e09dcaed19e14e286881ea621b68542aa85478a07b4"
+    },
+    "context_length": 8208,
+    "native_flashinfer_atol": 0.01,
+    "native_flashinfer_rtol": 0.01,
+    "cases": [
+      {
+        "name": "heads-12-page-16-no-split-False",
+        "backend": "trtllm-gen",
+        "kv_heads": 12,
+        "page_size": 16,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 6144,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 732,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.3323873392655514e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.00142669677734375
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.047607421875,
+              "candidate": -0.04736328125
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-12-page-32-no-split-False",
+        "backend": "trtllm-gen",
+        "kv_heads": 12,
+        "page_size": 32,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 6144,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 732,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.3323873392655514e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.00142669677734375
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.047607421875,
+              "candidate": -0.04736328125
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-6-page-16-no-split-False",
+        "backend": "trtllm-gen",
+        "kv_heads": 6,
+        "page_size": 16,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 732,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.3323873392655514e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.00142669677734375,
+              "candidate": 0.0014190673828125
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.013671875,
+              "candidate": 0.01373291015625
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 6144,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "heads-6-page-32-no-split-False",
+        "backend": "trtllm-gen",
+        "kv_heads": 6,
+        "page_size": 32,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 732,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.3323873392655514e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.00142669677734375,
+              "candidate": 0.0014190673828125
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.013671875,
+              "candidate": 0.01373291015625
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 6144,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      }
+    ],
+    "scope": "Captured global-layer decode component; fixed logical Q/K/V, no model or throughput qualification."
+  },
+  "gpu_empty_after": true,
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-decode-replay-r3/outputs-f703c3005ba7cc4dee90e2015d0882ec540736c6e99ed1d59c92a8baa5106d01.tar.zst",
+    "archive_sha256": "f703c3005ba7cc4dee90e2015d0882ec540736c6e99ed1d59c92a8baa5106d01",
+    "readback_sha256": "f703c3005ba7cc4dee90e2015d0882ec540736c6e99ed1d59c92a8baa5106d01"
+  },
+  "interpretation": "The native trtllm-gen replay exactly reproduces reference with12KV heads and candidate with6KV heads, at both16- and32-token pages. The head-count change determines this captured decode difference; page size does not. All four native output tensors pass unchanged BF16 FP32 reference tolerance. This is one synthetic native decode boundary, not full-model qualification."
+}
