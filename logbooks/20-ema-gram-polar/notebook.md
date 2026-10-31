@@ -556,6 +556,52 @@ The earlier pending-confirmation state is resolved. Continue the resource and
 stability gate before expanding the pilot sweep: measure nonzero-alpha step
 cost, host/device memory and numerical stability, including the planned trace.
 
+### 2026-10-31 07:22 UTC — Recovery trains after a native coordinator retry
+
+The coordinator's first worker failed at 06:16:46 UTC. Iris retried the
+coordinator as native attempt 1 at 06:16:54 UTC. The original child ending
+`07f362a2-a2acc30b` was killed with reason `Parent task preempted`; it had no
+worker, start time or execution attempts. The replacement child ending
+`07f362a2-a3e52229` started at 06:17:34 UTC on native attempt 0. No manual
+resubmission occurred and no checkpoint restoration is claimed.
+
+Online W&B run
+[d8755c4b4082](https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.10.30.23-d8755c4b4082)
+was created at 06:18:17 UTC before the first optimizer-step metrics. Its
+metadata identifies four TPU v4 chips; actual model, optimizer, data and
+trainer controls match the prepared protocol configuration. The snapshot reaches zero-based step 60, 1,998,848 tokens
+and training loss 10.461051, with no nonfinite training losses observed.
+The native trainer logged a temporary checkpoint at step 56 at 07:13:25 UTC.
+There is no validation result yet. `quarter-128g-first-training.json` records
+these observations, the run identity and the bounded history.
+
+The `marin` / `iris.task` query over 06:17–07:17 UTC returned 502 samples
+through 07:16:31 UTC for the replacement child's attempt 0. Its observed
+host-memory peak is 91.729492 GiB, exceeding the failed attempt's 64 GiB
+reservation while remaining below the new 128 GiB reservation. This is not
+the final peak; accelerator-memory telemetry remains null.
+
+Captured steps 10–60 have median recorded duration 40.190493 seconds, about
+116 times the baseline's 0.347409-second median over steps 1–7629. These
+windows are not matched in training progress. The first step took
+492.818 seconds including startup/compilation. A shape-only evaluation of the
+actual Qwen3 model and optimizer routing finds 77 matrix weights across 11
+layers. Nonzero alpha requests two full spectral powers per matrix: 121
+1024-by-1024 and 33 4096-by-4096 eigendecompositions per update, batched in the
+implementation. Alpha zero skips these decompositions. This establishes the
+extra computational work, but does not isolate its runtime fraction or rule
+out sharding/communication overhead. The planned steps 100–109 trace is still
+needed. Extrapolating the current median gives roughly 85 hours for 7,630
+steps before extra evaluation/checkpoint overhead; this is an estimate, not
+a deadline or a reason to truncate the requested schedule. Keep the sweep
+unexpanded while collecting the scheduled trace, memory peaks and finite-loss
+evidence needed to assess the nonzero-alpha resource gate.
+
+The local log and PR observers exited during a network outage. After current
+Iris state and GitHub feedback were refreshed, one observer for the replacement
+child and one PR waiter were restored. PR #10790 remains open, review required,
+with no new feedback found. This observer recovery did not alter training.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
