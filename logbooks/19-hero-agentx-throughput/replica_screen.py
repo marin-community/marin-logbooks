@@ -18,7 +18,10 @@ import urllib.request
 from pathlib import Path
 
 from flag_controls import prepare_tokenizer
+from iris.client.client import iris_ctx
+from iris.client.workload import TaskOutputArchiveState
 from iris.cluster.client.job_info import get_job_info
+from iris.resources.state import JobState, TaskState
 from prometheus_client.parser import text_string_to_metric_families
 from router_process import upstream_router
 
@@ -96,6 +99,33 @@ def check_probe(output: Path) -> None:
     )
 
 
+def completed_jobs_before_launch(requirements: list[dict]) -> list[dict]:
+    """Check native completion before creating any inference client."""
+    checked = []
+    for expected in requirements:
+        client = iris_ctx().client
+        assert client is not None
+        matches = [
+            job for job in client.list_jobs(prefix=expected["job_id"], limit=20) if str(job.job_id) == expected["job_id"]
+        ]
+        assert len(matches) == 1
+        job = client.job_status(matches[0].job_id)
+        assert job.state == JobState.SUCCEEDED
+        tasks = client.list_tasks(job.job_id)
+        assert len(tasks) == len(expected["gang_attempts"])
+        actual = {}
+        for task in tasks:
+            assert task.state == TaskState.SUCCEEDED
+            attempt = next(a for a in task.attempts if a.attempt_number == task.current_attempt_number)
+            assert attempt.state == TaskState.SUCCEEDED
+            assert attempt.output_archive is not None
+            assert attempt.output_archive.state == TaskOutputArchiveState.UPLOADED
+            actual[str(task.task_id)] = attempt.attempt_uid
+        assert actual == expected["gang_attempts"]
+        checked.append({"job_id": str(job.job_id), "state": job.state.value, "gang_attempts": actual})
+    return checked
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -138,6 +168,7 @@ def main() -> None:
         assert current.isdisjoint(previous), "Speed needs fresh servers after state qualification"
     else:
         assert args.qualification is None
+    prelaunch_checks = completed_jobs_before_launch(manifest.get("completed_jobs_before_launch", []))
     with args.primary_diagnostic.with_name("replica-client-claim.json").open("x") as stream:
         json.dump(
             {
@@ -149,6 +180,7 @@ def main() -> None:
             stream,
         )
     args.output.mkdir(parents=True, exist_ok=False)
+    (args.output / "prelaunch-job-checks.json").write_text(json.dumps(prelaunch_checks, indent=2) + "\n")
     (args.output / "manifest.json").write_text(args.manifest.read_text())
     tokenizer = prepare_tokenizer(manifest, args.output / "tokenizer")
     probe = [
@@ -229,6 +261,7 @@ def main() -> None:
         "status": "client_completed_pending_external_native_attempt_fences_and_retention",
         "phase": args.phase,
         "routed_state_owners": owners,
+        "prelaunch_job_checks": prelaunch_checks,
         "physical_gpus": 32,
         "layout": [backend["dp"] for backend in backends],
         "server_recipe_sha256": manifest["server_recipe_sha256"],

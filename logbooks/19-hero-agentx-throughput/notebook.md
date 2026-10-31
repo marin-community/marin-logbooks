@@ -1225,3 +1225,29 @@ with actual eight-task JobInfo and disjoint physical GPUs. Its submission
 follows the initial three-case client completion; verify actual admission
 and record any subsequent setup overlap. No one32baseline speed is measured
 yet, and no replica recipe is selected.
+
+### 2026-10-31: native DP32 state qualifies; reject C256 timing boundary
+
+The real eight-task DP32/EP32 group passes16exact fixed-history state pairs
+through direct rank0 and routed rank17. All native before/after attempt
+fences match. Its eight tasks succeed, and all native temporary archives
+are copied byte-for-byte to permanent goal storage with complete SHA256
+readback (6,635,192compressed bytes). All diagnostics report normal stops.
+See [the qualification](results/baseline32-state-r1-qualified.json) and
+[its immutable input](results/baseline32-state-r1-qualification-input.json).
+
+The fresh two16C256point completes256requests without errors at1,257.598
+output tokens/s, but is excluded from the quiet matched comparison. The
+prelaunch probe found baseline model processes still present. A shell error
+placed `set -e` after that probe, so the client nevertheless launched.
+Recorded model-stop timestamps extend about2.376s beyond the earliest
+measured request after conversion from the client's monotonic clock.
+Cross-host clock skew is not bounded, so those timestamps alone cannot
+establish a clean boundary. The failed gate remains a failed gate.
+
+All eight raw C256archives pass readback (7,683,254compressed bytes), and
+both model groups stop. See [the rejected point](results/replica-speed-c256-r2-rejected.json).
+The retry uses fresh model processes. Its native completed-job/task/archive
+check now runs inside the committed client before any inference or Router
+starts; shell command sequencing cannot bypass it. Numerical tolerances,
+model flags and the one-case C256workload are unchanged.
