@@ -16,6 +16,7 @@ from iris.client.client import iris_ctx
 from iris.cluster.client.job_info import get_job_info
 from iris.resources.state import JobState, TaskState
 from replica_screen import completed_jobs_before_launch, metrics
+from rigging.filesystem.buckets import filesystem_for
 from router_process import upstream_router
 
 from experiments.evaluation.agentx.processes import run_logged
@@ -61,6 +62,58 @@ def serving_attempts(backends: list[dict]) -> dict[str, str]:
     return result
 
 
+def released_jobs_before_launch(requirements: list[dict]) -> list[dict]:
+    """Require intentionally released holders and every actual attempt to end."""
+    client = iris_ctx().client
+    assert client is not None
+    checked = []
+    for expected in requirements:
+        jobs = [
+            job for job in client.list_jobs(prefix=expected["job_id"], limit=20) if str(job.job_id) == expected["job_id"]
+        ]
+        assert len(jobs) == 1
+        job = client.job_status(jobs[0].job_id)
+        assert job.state == JobState.KILLED and job.finished_at is not None
+        tasks = client.list_tasks(job.job_id)
+        assert len(tasks) == len(expected["gang_attempts"])
+        actual = {}
+        for task in tasks:
+            assert task.state == TaskState.KILLED
+            attempt = next(a for a in task.attempts if a.attempt_number == task.current_attempt_number)
+            assert attempt.state == TaskState.KILLED and attempt.finished_at is not None
+            actual[str(task.task_id)] = attempt.attempt_uid
+        assert actual == expected["gang_attempts"]
+        checked.append({"job_id": str(job.job_id), "state": job.state.value, "gang_attempts": actual})
+    return checked
+
+
+def completed_predecessor(manifest: dict) -> dict | None:
+    """Check manual raw retention before accepting released holder jobs."""
+    requirements = manifest.get("released_jobs_before_launch", [])
+    if not requirements:
+        return None
+    descriptor = manifest["completed_predecessor_input"]
+    filesystem, path = filesystem_for(descriptor["uri"])
+    with filesystem.open(path, "rb") as stream:
+        content = stream.read()
+    assert hashlib.sha256(content).hexdigest() == descriptor["sha256"]
+    assert len(content) == descriptor["bytes"]
+    previous = json.loads(content)
+    assert previous["status"] == "full_agentx_client_and_native_fences_passed_raw_retained"
+    assert previous["layout"] == [16, 16] and previous["physical_gpus"] == 32
+    assert previous["server_recipe_sha256"] == manifest["server_recipe_sha256"]
+    assert previous["all_groups_stopped"] and previous["all32_gpus_empty"]
+    assert previous["all_native_attempt_fences_passed"]
+    assert previous["native_export"]["metadata"]["submission_valid"] and not previous["native_export"]["was_cancelled"]
+    assert len(previous["retention"]) == 8 and all(
+        row["archive_sha256"] == row["readback_sha256"] for row in previous["retention"]
+    )
+    assert previous["gang_attempts"] == {
+        task: uid for expected in requirements for task, uid in expected["gang_attempts"].items()
+    }
+    return {"uri": descriptor["uri"], "sha256": descriptor["sha256"], "gang_attempts": previous["gang_attempts"]}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -95,6 +148,8 @@ def main() -> None:
     attempts = serving_attempts(backends)
     assert set(attempts.values()).isdisjoint(qualification["gang_attempts"].values())
     checks = completed_jobs_before_launch(manifest.get("completed_jobs_before_launch", []))
+    predecessor = completed_predecessor(manifest)
+    released = released_jobs_before_launch(manifest.get("released_jobs_before_launch", []))
     with args.primary_diagnostic.with_name("replica-client-claim.json").open("x") as stream:
         json.dump({"phase": "agentx", "pid": os.getpid(), "started_unix": time.time()}, stream)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -109,6 +164,8 @@ def main() -> None:
         "primary_native_num_tasks": info.num_tasks,
         "gang_attempts": attempts,
         "prelaunch_job_checks": checks,
+        "prelaunch_released_job_checks": released,
+        "completed_predecessor": predecessor,
         "started_unix": time.time(),
         "scope": "Native AgentX client; success still requires external provider fences and raw retention.",
     }
