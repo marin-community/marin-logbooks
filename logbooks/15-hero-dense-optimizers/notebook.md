@@ -414,3 +414,55 @@ respectively, and zero for the other four. Continue verifying final metrics and 
 sustained throughput and rolling checkpoint advancement on their successors.
 Source, recipes, checkpoint lineage, batch priority and the 64-GPU cap remain
 fixed.
+
+## 2026-10-31 UTC: All rungs below 1e21 complete
+
+All 24 selected runs below 1e21 FLOPs are verified complete. The eight new
+completions are MuonH at 3e19, Muon/AdamH/MuonH at 1e19, and all four
+recipes at 3e18. Each has Iris success, a W&B finished state with finite
+final metrics and the expected update/token count, and a permanent checkpoint
+with `is_temporary=false`. Metadata, both manifests, and data directories
+are present. The four selected 1e18 calibrations and twelve earlier ladder
+finals retain their previously published verification.
+
+Final Paloma macro losses, with lower values indicating lower held-out loss:
+
+| Budget FLOPs | AdamW | AdamH | Muon | MuonH |
+|---|---:|---:|---:|---:|
+| 1e18 | 3.9749632 | 4.0136013 | 3.9614902 | 4.1018953 |
+| 3e18 | 3.6471548 | 3.6804385 | 3.6458344 | 3.7363629 |
+| 1e19 | 3.4312277 | 3.4478655 | 3.4735656 | 3.5279951 |
+| 3e19 | 3.2401280 | 3.2703621 | 3.3161674 | 3.3562994 |
+| 1e20 | 3.0864096 | 3.1003621 | 3.2066767 | 3.1998119 |
+| 3e20 | 2.9459300 | 2.9706540 | 3.1069922 | 3.0711474 |
+
+Muon has the lowest observed loss at 1e18 and 3e18; the 3e18 difference from
+AdamW is 0.0013204. AdamW has the lowest observed loss at each completed
+budget from 1e19 through 3e20. These are one-seed recipe comparisons with
+multipliers transferred from the limited three-point 1e18 sweep. AdamW, Muon
+and AdamH selected the highest tested multiplier. The small differences do
+not establish statistical significance, and the recipes do not define
+optimizer-optimal scaling envelopes. The
+[initial design](#2026-10-26-initial-design-and-launch-contract) records
+model sizes, data, LR centers and schedules, and the norm-preserving H recipes.
+The table combines the selected calibration losses with twenty larger-budget
+finals. Exact metrics, permanent-checkpoint metadata and verification details
+are in [lower-rungs-complete-20261031.json](lower-rungs-complete-20261031.json),
+which links the earlier calibration evidence.
+
+At the 17:31–17:32 UTC observation, only the four 1e21 runs remain. All four
+show fresh finite training, sustained interval throughput and complete
+advancing rolling checkpoints. Their zero-based W&B steps are AdamW 75,500,
+AdamH 48,316, Muon 63,629 and MuonH 75,795, each targeting 113,219 updates.
+These four jobs report zero application failures. Since the October 29
+coordinator relaunch, scheduler preemption totals are 6, 6, 2 and 2 for
+AdamW, AdamH, Muon and MuonH, respectively. No selected jobs await slots.
+Four H100x8 jobs now use 32 GPUs; the authorized cap remains eight jobs/64 GPUs
+at batch priority. Source, selected LRs, training trajectories and checkpoint
+lineage remain fixed.
+
+The ladder remains incomplete until all four 1e21 finals, final W&B
+metrics/states and permanent-checkpoint metadata are verified. Time-to-loss
+also remains unanalysed; scheduler waits, preemptions, retry catch-up,
+evaluation and checkpoint work affect elapsed time. Continue heartbeat
+monitoring of the four current jobs without resubmission or allocation changes.
