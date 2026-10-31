@@ -1,0 +1,100 @@
+{
+  "campaign": "hero-dense-opt-20261026",
+  "artifact_version": "2026.10.26",
+  "source_sha": "5e46cfb93934c8c5e9a218f45117685887410d59",
+  "observation_utc": "2026-10-31T07:59:31.851538+00:00",
+  "selected_completed": 11,
+  "selected_total": 28,
+  "results": [
+    {
+      "budget_flops": 1e+20,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "wandb_run_id": "hero-dense-opt-20261026-1e+20-muon-lr3",
+      "iris_state": "succeeded",
+      "wandb_state": "finished",
+      "updates": 41956,
+      "wandb_final_step": 41955,
+      "final_train_loss": 2.1986215114593506,
+      "final_paloma_macro_loss": 3.206676721572876,
+      "total_tokens": 21997027328.0,
+      "permanent_checkpoint_metadata": {
+        "step": 41956,
+        "timestamp": "2026-10-31T06:39:20.680606",
+        "is_temporary": false
+      },
+      "checkpoint_contents": [
+        "d/",
+        "manifest.json",
+        "manifest.ocdbt",
+        "metadata.json"
+      ],
+      "final_metrics_timestamp_utc": "2026-10-31T06:39:13.718048+00:00",
+      "r3_scheduler_preemptions": 0
+    },
+    {
+      "budget_flops": 3e+19,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "wandb_run_id": "hero-dense-opt-20261026-3e+19-adamw-lr3",
+      "iris_state": "succeeded",
+      "wandb_state": "finished",
+      "updates": 18319,
+      "wandb_final_step": 18318,
+      "final_train_loss": 2.121622323989868,
+      "final_paloma_macro_loss": 3.2401280403137207,
+      "total_tokens": 9604431872.0,
+      "permanent_checkpoint_metadata": {
+        "step": 18319,
+        "timestamp": "2026-10-31T06:27:35.159646",
+        "is_temporary": false
+      },
+      "checkpoint_contents": [
+        "d/",
+        "manifest.json",
+        "manifest.ocdbt",
+        "metadata.json"
+      ],
+      "final_metrics_timestamp_utc": "2026-10-31T06:27:28.909547+00:00",
+      "r3_scheduler_preemptions": 0
+    }
+  ],
+  "limitations": [
+    "One seed per recipe; LR multipliers transferred from the limited three-point 1e18 sweep. AdamW, Muon and AdamH selected the highest tested multiplier.",
+    "Only AdamW and Muon have final 1e20 results; the 3e19 rung has only AdamW. Remaining recipes are incomplete.",
+    "Scheduler waits and recovery affect elapsed time; time-to-loss is not inferred from W&B runtime."
+  ],
+  "active_snapshot_utc": "2026-10-31T08:00:14.233001+00:00",
+  "active_budget_counts": {
+    "1e21": 4,
+    "1e20": 2,
+    "3e19": 2
+  },
+  "lower_budget_jobs_awaiting_executor_slots": 9,
+  "successors": [
+    {
+      "optimizer": "muon",
+      "budget_flops": 3e+19,
+      "lr_multiplier": 3,
+      "submitted_utc": "2026-10-31T06:27:48.623000+00:00",
+      "finite_progress_verified": true,
+      "rolling_checkpoint_metadata": {
+        "step": 5071,
+        "timestamp": "2026-10-31T07:46:23.057653",
+        "is_temporary": true
+      }
+    },
+    {
+      "optimizer": "adamh",
+      "budget_flops": 3e+19,
+      "lr_multiplier": 3,
+      "submitted_utc": "2026-10-31T06:39:42.755000+00:00",
+      "finite_progress_verified": true,
+      "rolling_checkpoint_metadata": {
+        "step": 5048,
+        "timestamp": "2026-10-31T07:58:24.636401",
+        "is_temporary": true
+      }
+    }
+  ]
+}

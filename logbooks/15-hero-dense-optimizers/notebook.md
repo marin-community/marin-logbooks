@@ -281,3 +281,45 @@ three 1e20, and one 3e19 run now occupy the eight executor slots; eleven jobs
 below 1e20 await slots. Verify the new child's finite progress and rolling
 checkpoint on subsequent heartbeats. Source, recipes, checkpoint lineage,
 batch priority, and the 64-GPU cap remain fixed.
+
+## 2026-10-31 UTC: Muon completes 1e20; AdamW completes 3e19
+
+Paloma macro loss is the held-out quality metric; lower is better. The
+[initial design](#2026-10-26-initial-design-and-launch-contract) records
+model sizes, data, LR centers and schedules, and the norm-preserving H recipes.
+
+Muon with LR multiplier 3 completed the 1e20-FLOP recipe with final Paloma
+macro loss 3.2066767. At the same budget, AdamW's final loss is 3.0864096,
+a gap of 0.1202672. Both runs processed 21,997,027,328 tokens in 41,956
+updates. Muon's final single-batch training loss is 2.1986215.
+
+AdamW with LR multiplier 3 completed the 3e19-FLOP recipe with final Paloma
+macro loss 3.2401280 and final single-batch training loss 2.1216223. It
+processed 9,604,431,872 tokens in 18,319 updates. The other 3e19 recipes
+remain incomplete.
+
+Both new completions have Iris success and W&B finished states. Their
+zero-based final W&B steps are 41,955 and 18,318, respectively. Permanent
+checkpoints record updates 41,956 at 06:39:20 UTC for Muon 1e20 and 18,319
+at 06:27:35 UTC for AdamW 3e19, both with `is_temporary=false`.
+Metadata, both manifests, and the data directories are present. Exact final
+metrics and checkpoint metadata are preserved in
+[milestone-20261031-0800.json](milestone-20261031-0800.json).
+The selected ladder is now 11/28 complete.
+
+The coordinator filled the freed slots with Muon and AdamH at 3e19 FLOPs at
+06:27:48 and 06:39:42 UTC, respectively. At the 07:59–08:00 UTC observation,
+both had finite advancing training and complete rolling checkpoints. Four
+1e21, two 1e20, and two 3e19 runs occupy the eight slots; nine lower-budget
+jobs await slots. All eight current jobs have finite training and complete
+retained rolling checkpoints, with zero application failures and unchanged
+preemption counts. Continue checking sustained throughput and checkpoint
+advancement on the new runs.
+
+These are single-seed recipe results with LR multipliers transferred from the
+limited three-point 1e18 sweep. AdamW, Muon, and AdamH selected the highest
+tested multiplier. AdamH and MuonH at 1e20 remain incomplete, so this budget
+has only the AdamW/Muon final comparison. The results do not establish
+optimizer-optimal scaling or statistical significance. Scheduler waits and
+recovery affect elapsed time; time-to-loss remains unanalysed. Source,
+recipes, checkpoint lineage, batch priority, and the 64-GPU cap remain fixed.
