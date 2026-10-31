@@ -26,24 +26,12 @@ from vllm.model_executor.models import grugmoe
 from vllm.v1.worker.workspace import init_workspace_manager
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--model-source-sha256", required=True)
-    args = parser.parse_args()
-    assert hashlib.sha256(Path(grugmoe.__file__).read_bytes()).hexdigest() == args.model_source_sha256
-    assert torch.cuda.device_count() == 1
-    assert not subprocess.check_output(
-        ["nvidia-smi", "--query-compute-apps=pid", "--format=csv,noheader"], text=True
-    ).strip()
-    config = VllmConfig(kernel_config=KernelConfig(moe_backend="triton"))
-    cfg = grugmoe.GrugMoeRuntimeConfig(
+def probe_config() -> grugmoe.GrugMoeRuntimeConfig:
+    return grugmoe.GrugMoeRuntimeConfig(
         vocab_size=64,
-        artifact_schema_version=2,
         hidden_dim=16,
         intermediate_dim=16,
         shared_expert_intermediate_dim=0,
-        num_shared_experts=0,
         num_experts=4,
         num_experts_per_token=2,
         num_layers=1,
@@ -55,6 +43,20 @@ def main() -> None:
         initializer_std=0.02,
         disable_pko=True,
     ).validate()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--model-source-sha256", required=True)
+    args = parser.parse_args()
+    assert hashlib.sha256(Path(grugmoe.__file__).read_bytes()).hexdigest() == args.model_source_sha256
+    cfg = probe_config()
+    assert torch.cuda.device_count() == 1
+    assert not subprocess.check_output(
+        ["nvidia-smi", "--query-compute-apps=pid", "--format=csv,noheader"], text=True
+    ).strip()
+    config = VllmConfig(kernel_config=KernelConfig(moe_backend="triton"))
     rows = []
     with tempfile.TemporaryDirectory() as temporary, set_current_vllm_config(config):
         init_distributed_environment(

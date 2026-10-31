@@ -180,12 +180,49 @@ def set_shortconv_reference(worker, source: str = "", sha256: str = "") -> dict:
     return record
 
 
+def install_moe_snapshot(worker) -> dict:
+    """Retain two prefill inputs/outputs per MoE layer on DP0, without replay."""
+    rank = worker.model_runner.dp_rank
+    if rank != 0:
+        return {"dp_rank": rank, "capturing": False}
+    layers = worker.vllm_config.compilation_config.static_forward_context
+    names = sorted(name for name in layers if name.endswith(".mlp.experts"))
+    assert len(names) == 4, "Only the four-layer synthetic fixture is supported"
+    counts = dict.fromkeys(names, 0)
+    for name in names:
+        layer = layers[name]
+        original = layer._forward_impl
+
+        def snapshot(hidden, logits, shared_input, input_ids=None, *, _name=name, _original=original):
+            selected = counts[_name] < 2 and hidden.shape[0] >= 16
+            if selected:
+                record = {
+                    "layer": _name,
+                    "hidden": hidden.detach().cpu(),
+                    "router_logits": logits.detach().cpu(),
+                    "hidden_stride": list(hidden.stride()),
+                    "router_stride": list(logits.stride()),
+                }
+            output = _original(hidden, logits, shared_input, input_ids)
+            if selected:
+                assert isinstance(output, torch.Tensor)
+                record.update(output=output.detach().cpu(), output_stride=list(output.stride()))
+                path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"moe-snapshot-{_name}-{counts[_name]}.pt"
+                torch.save(record, path)
+                counts[_name] += 1
+            return output
+
+        layer._forward_impl = snapshot
+    return {"dp_rank": rank, "capturing": True, "layers": names, "max_snapshots_per_layer": 2}
+
+
 class BatchTraceWorkerExtension:
     install_hero_batch_trace = install_batch_trace
     take_hero_batch_trace = take_batch_trace
     stop_hero_batch_trace = stop_batch_trace
     hero_cache_storage = cache_storage
     set_hero_shortconv_reference = set_shortconv_reference
+    install_hero_moe_snapshot = install_moe_snapshot
 
 
 def main() -> None:

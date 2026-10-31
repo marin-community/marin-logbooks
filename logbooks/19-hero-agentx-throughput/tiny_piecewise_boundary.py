@@ -112,6 +112,9 @@ def main() -> None:
             }
             record["phases"].append(phase)
             batch_trace(base_url, "install_hero_batch_trace", [None, disable_replay, local, True])
+            if manifest.get("moe_snapshot", False):
+                assert disable_replay
+                phase["moe_snapshot_installation"] = batch_trace(base_url, "install_hero_moe_snapshot")
             for index, lengths in enumerate([[80], [17, 33], [15, 47, 63], [16]]):
                 prompts = [[73 + i % 17 for i in range(length)] for length in lengths]
                 payload = {
