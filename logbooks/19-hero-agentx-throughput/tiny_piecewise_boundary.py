@@ -113,6 +113,8 @@ def main() -> None:
             record["phases"].append(phase)
             batch_trace(base_url, "install_hero_batch_trace", [None, disable_replay, local, True])
             phase["cache_storage"] = batch_trace(base_url, "hero_cache_storage")
+            if manifest.get("attention_snapshot"):
+                phase["attention_snapshot"] = batch_trace(base_url, "install_hero_attention_snapshot")
             if manifest.get("moe_snapshot", False):
                 assert disable_replay
                 phase["moe_snapshot_installation"] = batch_trace(base_url, "install_hero_moe_snapshot")

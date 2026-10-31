@@ -366,6 +366,48 @@ def install_latent_projection_snapshot(worker) -> dict:
     return {"dp_rank": rank, "capturing": True, "weight_shape": list(weight.shape), "maximum_captures": 2}
 
 
+def install_attention_snapshot(worker) -> dict:
+    """Capture the first local/global prefill at the native backend boundary."""
+    runner = worker.model_runner
+    assert runner.dp_rank == 0 and worker.vllm_config.parallel_config.data_parallel_size == 1
+    assert not hasattr(worker, "hero_attention_snapshots")
+    worker.hero_attention_snapshots = []
+    for index in (0, 3):
+        matches = [
+            module for name, module in runner.model.named_modules() if name.endswith(f"layers.{index}.self_attn.attn")
+        ]
+        assert len(matches) == 1
+        attention = matches[0]
+        implementation = attention.impl
+        assert type(implementation).__name__ == "FlashInferImpl"
+        original = implementation.forward
+
+        def capture(
+            layer, query, key, value, kv_cache, attn_metadata, output, *args, _index=index, _call=original, **kwargs
+        ):
+            result = _call(layer, query, key, value, kv_cache, attn_metadata, output, *args, **kwargs)
+            if query.shape[0] == 2048 and _index not in worker.hero_attention_snapshots:
+                assert attn_metadata is not None and key is not None and value is not None
+                tensors = {"query": query, "key": key, "value": value, "output": result}
+                assert sum(t.numel() * t.element_size() for t in tensors.values()) < 80_000_000
+                destination = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"attention-layer-{_index}.pt"
+                torch.save(
+                    {
+                        **{name: tensor.detach().cpu() for name, tensor in tensors.items()},
+                        "cache_shape": list(kv_cache.shape),
+                        "num_actual_tokens": attn_metadata.num_actual_tokens,
+                        "layer": _index,
+                        "scope": "First2048-row native prefill only; diagnostic synchronization, no timing.",
+                    },
+                    destination,
+                )
+                worker.hero_attention_snapshots.append(_index)
+            return result
+
+        implementation.forward = capture
+    return {"dp_rank": runner.dp_rank, "layers": [0, 3], "prefill_rows": 2048}
+
+
 class BatchTraceWorkerExtension:
     install_hero_batch_trace = install_batch_trace
     take_hero_batch_trace = take_batch_trace
@@ -375,6 +417,7 @@ class BatchTraceWorkerExtension:
     install_hero_moe_snapshot = install_moe_snapshot
     install_hero_latent_projection_snapshot = install_latent_projection_snapshot
     capture_hero_compiler_sources = capture_compiler_sources
+    install_hero_attention_snapshot = install_attention_snapshot
 
 
 def main() -> None:
