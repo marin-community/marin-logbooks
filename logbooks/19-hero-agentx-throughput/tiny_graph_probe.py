@@ -366,12 +366,13 @@ def install_latent_projection_snapshot(worker) -> dict:
     return {"dp_rank": rank, "capturing": True, "weight_shape": list(weight.shape), "maximum_captures": 2}
 
 
-def install_attention_snapshot(worker, prefill_captures: int = 1) -> dict:
+def install_attention_snapshot(worker, prefill_captures: int = 1, capture_steps: int = 0) -> dict:
     """Capture the first local/global prefill at the native backend boundary."""
     runner = worker.model_runner
     assert runner.dp_rank == 0 and worker.vllm_config.parallel_config.data_parallel_size == 1
     assert not hasattr(worker, "hero_attention_snapshots")
     assert prefill_captures in (1, 2)
+    assert capture_steps in (0, 6)
     worker.hero_attention_snapshots = []
     for index in (0, 3):
         matches = [
@@ -388,16 +389,18 @@ def install_attention_snapshot(worker, prefill_captures: int = 1) -> dict:
         ):
             result = _call(layer, query, key, value, kv_cache, attn_metadata, output, *args, **kwargs)
             ordinal = sum(index == _index for index in worker.hero_attention_snapshots)
-            if query.shape[0] == 2048 and ordinal < prefill_captures:
+            selected = 0 < query.shape[0] <= 2048 if capture_steps else query.shape[0] == 2048
+            if selected and ordinal < (capture_steps or prefill_captures):
                 assert attn_metadata is not None and key is not None and value is not None
                 tensors = {"query": query, "key": key, "value": value, "output": result}
                 assert sum(t.numel() * t.element_size() for t in tensors.values()) < 80_000_000
                 suffix = "" if ordinal == 0 else f"-prefill-{ordinal}"
                 destination = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"attention-layer-{_index}{suffix}.pt"
+                metadata = attn_metadata.prefill if attn_metadata.num_prefills else attn_metadata.decode
                 prefill_metadata = {
                     field.name: value.detach().cpu() if isinstance(value, torch.Tensor) else value
-                    for field in fields(attn_metadata.prefill)
-                    if isinstance(value := getattr(attn_metadata.prefill, field.name), (int, float, bool, str))
+                    for field in fields(metadata)
+                    if isinstance(value := getattr(metadata, field.name), (int, float, bool, str))
                     or (isinstance(value, torch.Tensor) and value.numel() <= 100_000)
                 }
                 torch.save(
@@ -409,9 +412,10 @@ def install_attention_snapshot(worker, prefill_captures: int = 1) -> dict:
                         "num_decodes": attn_metadata.num_decodes,
                         "causal": attn_metadata.causal,
                         "prefill_ordinal": ordinal,
+                        "step_ordinal": ordinal,
                         "prefill_metadata": prefill_metadata,
                         "layer": _index,
-                        "scope": "First bounded2048-row prefills; diagnostic synchronization, no timing.",
+                        "scope": "First bounded native attention calls; diagnostic synchronization, no timing.",
                     },
                     destination,
                 )
@@ -419,7 +423,26 @@ def install_attention_snapshot(worker, prefill_captures: int = 1) -> dict:
             return result
 
         implementation.forward = capture
-    return {"dp_rank": runner.dp_rank, "layers": [0, 3], "prefill_rows": 2048, "captures": prefill_captures}
+    if capture_steps:
+        worker.hero_logits_snapshot = False
+        compute_logits = runner.model.compute_logits
+
+        def capture_logits(hidden_states, *args, **kwargs):
+            logits = compute_logits(hidden_states, *args, **kwargs)
+            if hidden_states.numel() and not worker.hero_logits_snapshot:
+                assert logits is not None and logits.numel() <= 2_000_000
+                destination = Path(os.environ["IRIS_OUTPUT_DIR"]) / "first-logits.pt"
+                torch.save({"hidden": hidden_states.detach().cpu(), "logits": logits.detach().cpu()}, destination)
+                worker.hero_logits_snapshot = True
+            return logits
+
+        runner.model.compute_logits = capture_logits
+    return {
+        "dp_rank": runner.dp_rank,
+        "layers": [0, 3],
+        "maximum_rows": 2048,
+        "captures": capture_steps or prefill_captures,
+    }
 
 
 class BatchTraceWorkerExtension:

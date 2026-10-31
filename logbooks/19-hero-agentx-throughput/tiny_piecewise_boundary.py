@@ -115,7 +115,9 @@ def main() -> None:
             phase["cache_storage"] = batch_trace(base_url, "hero_cache_storage")
             if manifest.get("attention_snapshot"):
                 phase["attention_snapshot"] = batch_trace(
-                    base_url, "install_hero_attention_snapshot", [manifest.get("attention_prefill_captures", 1)]
+                    base_url,
+                    "install_hero_attention_snapshot",
+                    [manifest.get("attention_prefill_captures", 1), manifest.get("attention_capture_steps", 0)],
                 )
             if manifest.get("moe_snapshot", False):
                 assert disable_replay
