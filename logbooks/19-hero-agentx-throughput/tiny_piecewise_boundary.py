@@ -89,7 +89,7 @@ def main() -> None:
     server = None
     try:
         server = logged_process(command, dict(os.environ) | environment, root / "server.log")
-        deadline = time.monotonic() + 600
+        deadline = time.monotonic() + manifest.get("readiness_timeout_seconds", 600)
         while True:
             assert server.poll() is None, "Tiny server exits before readiness"
             assert time.monotonic() < deadline, "Tiny readiness deadline"
