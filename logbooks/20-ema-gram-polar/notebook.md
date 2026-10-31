@@ -891,6 +891,41 @@ records those checks. This prepares the original-batch hardware migration;
 TPU correctness, measured MFU and checkpoint restoration remain unverified.
 No further accelerator job or training run was submitted.
 
+### 2026-10-31 17:59 UTC — Prepare v4-32 checkpoint continuation
+
+The research branch now exposes the eigensolver-only matrix layout through
+`EmaGramConfig`; the diagnostic and trainer use the same implementation.
+The training CLI accepts v4-32 only, prepares data=4/model=4, and preserves
+the 447M pilot's global batch 8 and 7,630 total updates. The prepared config schedules a
+one-step profile at step 940, after the intended step-923 restore. These changes are unselected
+research candidates; the queued diagnostic still uses `09c39d9ba`.
+
+Two small-Qwen checks on sixteen virtual CPU devices restored all trainer
+state from the original optimizer into the matrix-layout configuration.
+Restored arrays were bitwise identical to the saved reference state. Two
+subsequent updates matched the uninterrupted original optimizer in all state
+and model leaves at rtol=atol=1e-5 for ridge 1e-4 and 1e-2. The existing
+26 EMA/experiment checks and the new v4-32 recipe check passed in their CPU
+scopes. The preflight record retains the initial version-validation failure
+and the existing single-device test's incompatible-layout failure when run
+with sixteen devices. No tolerances were relaxed.
+
+The canceled pilot's temporary step-923 metadata exists under the regional
+`tmp/ttl=14d/checkpoints-temp/` prefix, timestamped 16:55:33 UTC. It was not
+in the permanent checkpoint directory. `training-integration-preflight.json`
+records the exact URI and limitations; `quarter-v4-32-continuation-prepared.json`
+is a dry-run config with full restoration required. The 447M checkpoint has
+not been loaded into a new process. A successful small-model restore does
+not establish that the original training has resumed.
+
+The v4-32 diagnostic remained pending at 17:54 UTC with no worker assignment.
+No additional accelerator job or training run was submitted. TPU correctness,
+measured cost and memory, and actual training MFU above 5% remain open. Before
+reporting a future training attempt, `experiments.ema_gram.report` must be
+extended to validate the logged mesh, solver and restore settings against
+that attempt's saved execution configuration. Current historical reports
+retain their original source and resolved configurations.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -84,12 +84,22 @@ def run_training(config):
         (artifact_dir / "memory.json").write_text(json.dumps(memory))
 
 
-def build_training_step(cell: Cell, version: str):
-    """Preserve reference architecture, cache order, tokenizer, mesh, precision and schedule."""
+def build_training_step(
+    cell: Cell,
+    version: str,
+    *,
+    tpu_type: str | None = None,
+    eigh_layout: str = "replicated",
+    eigh_implementation: str = "default",
+    initialize_from: str | None = None,
+    profile_start_step: int = 100,
+    profile_steps: int = 10,
+):
+    """Bind the reference recipe to explicit execution choices without changing global batch."""
     caches = reference.build(((cell.slug, 42),))[0].deps
     base = reference._training_step(cell.slug, cell.seed, caches)
     spec = reference.MODELS[cell.slug]
-    resources = reference.ResourceConfig.with_tpu(spec.tpu_type, regions=["us-central2"], ram="128g")
+    resources = reference.ResourceConfig.with_tpu(tpu_type or spec.tpu_type, regions=["us-central2"], ram="128g")
     steps = (
         math.ceil(PILOT_TOKENS / (spec.batch_size * reference.SEQUENCE_LENGTH))
         if cell.phase == PILOT
@@ -106,6 +116,8 @@ def build_training_step(cell: Cell, version: str):
             gram_beta=1 - 1 / cell.horizon,
             momentum=0.95,
             polar_steps=5,
+            eigh_layout=eigh_layout,
+            eigh_implementation=eigh_implementation,
             adam_lr=spec.adam_lr,
             adam_beta1=0.9,
             adam_beta2=spec.beta2,
@@ -134,9 +146,15 @@ def build_training_step(cell: Cell, version: str):
             tracker=tracker,
             num_train_steps=steps,
             steps_per_eval=min(1000, max(1, steps // 10)),
-            profiler=replace(cfg.trainer.profiler, enabled=True, start_step=100, num_steps=10),
+            profiler=replace(cfg.trainer.profiler, enabled=True, start_step=profile_start_step, num_steps=profile_steps),
             checkpointer=replace(cfg.trainer.checkpointer, keep=[{"every": max(1, steps // 10)}]),
         )
+        if tpu_type == "v4-32":
+            trainer = replace(trainer, mesh=replace(trainer.mesh, axes={"data": 4, "model": 4, "replica": 1}))
+        if initialize_from is not None:
+            trainer = replace(
+                trainer, initialize_from=initialize_from, load_checkpoint=False, allow_partial_checkpoint=False
+            )
         return replace(
             pod,
             resources=resources,
@@ -158,6 +176,12 @@ def main():
     parser.add_argument("--version", required=True, help="New identity for an independent campaign")
     parser.add_argument("--output", type=Path, required=True, help="Resolved configs retained before submission")
     parser.add_argument("--prefix", default="gs://marin-us-central2")
+    parser.add_argument("--tpu-type", choices=("v4-32",), default="v4-32")
+    parser.add_argument("--eigh-layout", choices=("replicated", "matrix"), default="replicated")
+    parser.add_argument("--eigh-implementation", choices=("default", "jacobi"), default="default")
+    parser.add_argument("--initialize-from", help="Full trainer checkpoint; never permits partial restoration")
+    parser.add_argument("--profile-start-step", type=int, default=100)
+    parser.add_argument("--profile-steps", type=int, default=1)
     execution = parser.add_mutually_exclusive_group()
     execution.add_argument("--run", action="store_true")
     execution.add_argument("--logging-check", action="store_true", help="Online W&B check with no training")
@@ -176,7 +200,21 @@ def main():
             raise ValueError("Plan differs from locked settings")
         if phase in (HORIZON, SCALE) and (args.reproducible_result is None or not args.reproducible_result.is_file()):
             raise ValueError("Follow-ups require a reviewed --reproducible-result report")
-    steps = [build_training_step(c, args.version) for c in cells]
+    if args.initialize_from is not None and len(cells) != 1:
+        raise ValueError("A checkpoint continuation must identify exactly one cell")
+    steps = [
+        build_training_step(
+            c,
+            args.version,
+            tpu_type=args.tpu_type,
+            eigh_layout=args.eigh_layout,
+            eigh_implementation=args.eigh_implementation,
+            initialize_from=args.initialize_from,
+            profile_start_step=args.profile_start_step,
+            profile_steps=args.profile_steps,
+        )
+        for c in cells
+    ]
     steps = [replace(s, override_path=s.path(args.prefix)) for s in steps]
     configs = [draccus.encode(materialized_config(s, args.prefix)) for s in steps]
     args.output.write_text(json.dumps(configs, indent=2) + "\n")

@@ -82,12 +82,29 @@ execution host. This initializes online W&B, logs the resolved config and a
 logging-check metric, prints the run URL, and performs no optimizer steps.
 Authentication errors must be resolved before training. `--run` submits the
 selected plan through Marin's StepRunner; it is separate from the logging check.
-The recipe requests v4-8 and 120 CPU cores in us-central2, where its existing
-caches live. Host RAM is 64 GiB for 447M and 128 GiB for 998M, fixed across
-variants within each model size. Host RAM is a scheduling reservation; TPU HBM,
-batch size, model precision and all training controls stay fixed across cells.
+The training CLI requests v4-32 in us-central2, where its existing caches live,
+with 120 CPU cores and 128 GiB host RAM per host. It uses data=4, model=4 while
+preserving global batch 8 for the 447M pilot. Host RAM is a scheduling
+reservation; it does not change TPU HBM or model precision.
 No job time limit or preemption-retry override is configured. Default
 concurrency is one; inspect capacity and per-step memory/time before a sweep.
+
+The research branch prepares `--eigh-layout matrix`, which distributes full
+eigendecompositions across independent matrices while keeping normalization
+and reconstruction replicated. `--eigh-implementation jacobi` selects the
+full Jacobi solver; the default retains the existing solver. Both are explicit
+execution choices recorded in the optimizer config. CPU comparisons do not
+establish TPU correctness or speed; use the cost diagnostic and numerical
+checks before selecting either for training. The queued diagnostic retains
+its published source independently of these prepared changes.
+
+For a verified full-state continuation, `--initialize-from` names the original
+checkpoint. Missing or partial state is an error. Use a fresh version and W&B
+run, retain the original total step count, and verify the restored step before
+claiming resumed progress. Set `--profile-start-step` after that restored step;
+the CLI defaults to a one-step capture to reduce profile size. Historical run
+reports should use their pinned source and resolved configs; new optimizer
+execution fields are not retroactively inferred for old W&B configs.
 
 Every training process gets a fresh online W&B ID, even after preemption.
 The stable trainer ID and checkpoint path let the native trainer restore

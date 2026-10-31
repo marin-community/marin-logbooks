@@ -1,0 +1,52 @@
+{
+  "status": "prepared; not submitted",
+  "observed_utc": "2026-10-31T17:59:00Z",
+  "checkpoint": {
+    "checkpoint_uri": "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923",
+    "metadata": {
+      "step": 923,
+      "timestamp": "2026-10-31T16:55:33.165024",
+      "is_temporary": true
+    },
+    "metadata_found": true,
+    "restore_verified": false
+  },
+  "configuration": "quarter-v4-32-continuation-prepared.json",
+  "source_state": "research WIP; not promoted to contribution PR",
+  "tests": [
+    {
+      "scope": "existing EMA and experiment tests, single CPU",
+      "passed": 26,
+      "skipped": 2,
+      "note": "New v4-32 recipe test initially used an invalid version; corrected and rerun separately."
+    },
+    {
+      "scope": "v4-32 continuation recipe controls",
+      "passed": 1,
+      "duration_seconds": 3.27
+    },
+    {
+      "scope": "two ridge settings, 16 virtual CPU devices, full small-Qwen trainer checkpoint restoration plus two subsequent updates",
+      "passed": 2,
+      "duration_seconds": 16.37,
+      "rtol": 1e-05,
+      "atol": 1e-05
+    }
+  ],
+  "failed_checks_preserved": [
+    "Running the existing single-device checkpoint test with 16 virtual CPUs produced incompatible scalar/device layouts. It passes in its single-CPU scope. The new multi-device test uses the trainer load_checkpoint_or_initialize path with abstract initialization.",
+    "Initial dry-run version 2026.10.31.prepared was rejected by calendar-version validation; continuation-dev succeeded. No submission occurred."
+  ],
+  "remaining_gates": [
+    "Actual v4-32 assignment and baseline optimizer diagnostic measurements",
+    "Candidate TPU numerical comparison, runtime memory and device profiling",
+    "Update report configuration input for the selected execution configuration; historical reports use pinned source and configs",
+    "Full 447M checkpoint restore and restored-step verification on v4-32",
+    "Measured steady full-training MFU above 5 percent; original global batch 8 and 7630 total steps"
+  ],
+  "current_queued_job": "/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v4-32-20261031",
+  "queued_source": "09c39d9ba",
+  "queued_source_unchanged": true,
+  "training_started": false,
+  "mfu_goal_achieved": false
+}

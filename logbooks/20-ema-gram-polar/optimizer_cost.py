@@ -26,10 +26,16 @@ from iris.jax.init import initialize_jax
 from jax.experimental import multihost_utils
 from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
-from levanter.optim.ema_gram import GramState, gram_direction, init_gram_state, relative_gram_power, update_gram_state
+from levanter.optim.ema_gram import (
+    GramState,
+    gram_direction,
+    init_gram_state,
+    matrix_parallel_eigh,
+    relative_gram_power,
+    update_gram_state,
+)
 from levanter.tracker.wandb import WandbConfig
 from marin.profiling.xplane import _xspace_message_class
-from optimizer_parallel import parallel_eigh
 from rigging.filesystem.storage_path import StoragePath
 
 NAMES = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj")
@@ -198,7 +204,9 @@ def main():
     replicated = NamedSharding(mesh, P())
     solver = None if args.eigh_implementation == "default" else jax.lax.linalg.EighImplementation.JACOBI
     eig_fn = (
-        jax.lax.linalg.eigh if args.eigh_layout == "replicated" else partial(parallel_eigh, mesh=mesh, axis_name="data")
+        jax.lax.linalg.eigh
+        if args.eigh_layout == "replicated"
+        else partial(matrix_parallel_eigh, mesh=mesh, axis_name="data")
     )
     solver_kwargs = dict(eigh_fn=eig_fn, eigh_implementation=solver)
     gradient_shardings = tuple(

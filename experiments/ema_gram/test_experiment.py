@@ -96,6 +96,43 @@ def test_delphi_configs_pair_initialization_data_and_all_controls():
                 assert a == b
 
 
+def test_v4_32_continuation_preserves_training_protocol():
+    cell = Cell(0.25, 1e-4, 0.002)
+    original = materialized_config(build_training_step(cell, "original-dev"), "/tmp/ema-test").train_config
+    checkpoint = "gs://experiment/checkpoints/step-923"
+    pod = materialized_config(
+        build_training_step(
+            cell,
+            "continuation-dev",
+            tpu_type="v4-32",
+            eigh_layout="matrix",
+            initialize_from=checkpoint,
+            profile_start_step=940,
+            profile_steps=1,
+        ),
+        "/tmp/ema-test",
+    )
+    cfg = pod.train_config
+    assert cfg.model == original.model
+    assert cfg.data == original.data
+    assert cfg.train_seq_len == original.train_seq_len
+    assert cfg.data_seed == original.data_seed
+    assert replace(cfg.optimizer, eigh_layout="replicated") == original.optimizer
+    assert cfg.trainer.train_batch_size == original.trainer.train_batch_size == 8
+    assert cfg.trainer.num_train_steps == original.trainer.num_train_steps == 7630
+    assert cfg.trainer.per_device_parallelism == original.trainer.per_device_parallelism
+    assert cfg.trainer.mesh.axes == {"data": 4, "model": 4, "replica": 1}
+    assert cfg.trainer.initialize_from == checkpoint
+    assert cfg.trainer.load_checkpoint is False
+    assert cfg.trainer.allow_partial_checkpoint is False
+    assert cfg.trainer.tracker.mode == "online"
+    assert cfg.trainer.tracker.resume == "never"
+    assert cfg.trainer.profiler.start_step == 940
+    assert cfg.trainer.profiler.num_steps == 1
+    assert pod.resources.device.variant == "v4-32"
+    assert pod.resources.replicas == 4
+
+
 def test_checkpoint_probes_match_each_matrix_and_keep_nonmatrices_fixed():
     cfg = Qwen3Config(
         hidden_dim=8, intermediate_dim=16, num_layers=2, num_heads=2, num_kv_heads=2, head_dim=4, max_seq_len=8

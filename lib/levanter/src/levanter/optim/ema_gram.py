@@ -3,6 +3,7 @@
 
 """Two-sided EMA gradient-Gram preconditioning of the momentum polar factor."""
 
+import math
 from collections.abc import Callable
 from dataclasses import dataclass
 from functools import partial
@@ -11,6 +12,8 @@ from typing import NamedTuple
 import jax
 import jax.numpy as jnp
 import optax
+from jax.sharding import NamedSharding
+from jax.sharding import PartitionSpec as P
 
 from levanter.optim.config import OptimizerConfig
 from levanter.optim.muon import MuonConfig
@@ -74,6 +77,37 @@ def relative_gram_power(
     return jnp.where((mean > 0)[..., None, None], power, jnp.eye(gram.shape[-1], dtype=gram.dtype))
 
 
+def matrix_parallel_eigh(
+    normalized: jax.Array,
+    *,
+    mesh: jax.sharding.Mesh | jax.sharding.AbstractMesh,
+    axis_name: str | tuple[str, ...],
+    implementation: jax.lax.linalg.EighImplementation | None,
+) -> tuple[jax.Array, jax.Array]:
+    """Shard only full eigendecompositions, after the caller normalizes its Grams."""
+    replicated = NamedSharding(mesh, P())
+    normalized = jax.lax.with_sharding_constraint(normalized, replicated)
+    normalized = jax.lax.optimization_barrier(normalized)
+    axes = (axis_name,) if isinstance(axis_name, str) else axis_name
+    shards = math.prod(mesh.shape[name] for name in axes)
+    batch_shape = normalized.shape[:-2]
+    count = math.prod(batch_shape)
+    padded_count = math.ceil(count / shards) * shards
+    flat = normalized.reshape((count, *normalized.shape[-2:]))
+    padded = jnp.pad(flat, ((0, padded_count - count), (0, 0), (0, 0)))
+    mapped = jax.shard_map(
+        partial(jax.lax.linalg.eigh, implementation=implementation),
+        mesh=mesh,
+        axis_names=set(axes),
+        in_specs=P(axis_name, None, None),
+        out_specs=(P(axis_name, None, None), P(axis_name, None)),
+    )
+    vectors, values = jax.lax.optimization_barrier(mapped(padded))
+    vectors = vectors[:count].reshape((*batch_shape, *normalized.shape[-2:]))
+    values = values[:count].reshape((*batch_shape, normalized.shape[-1]))
+    return jax.tree.map(lambda x: jax.lax.with_sharding_constraint(x, replicated), (vectors, values))
+
+
 def exact_polar(matrix: jax.Array) -> jax.Array:
     """SVD partial isometry with numerical zero modes removed (offline reference)."""
     u, singular, vh = jnp.linalg.svd(matrix, full_matrices=False)
@@ -119,7 +153,14 @@ def gram_direction(
 
 
 def scale_by_ema_gram(
-    *, alpha: float, ridge: float, beta1: float = 0.95, beta2: float = 0.99, polar_steps: int = 5
+    *,
+    alpha: float,
+    ridge: float,
+    beta1: float = 0.95,
+    beta2: float = 0.99,
+    polar_steps: int = 5,
+    eigh_layout: str = "replicated",
+    eigh_implementation: str = "default",
 ) -> optax.GradientTransformation:
     """Transform matrix-only trees, preserving Haliax Linear layouts and scan axes.
 
@@ -129,6 +170,12 @@ def scale_by_ema_gram(
     """
     if alpha < 0 or ridge <= 0 or not 0 <= beta1 < 1 or not 0 <= beta2 < 1 or polar_steps < 1:
         raise ValueError("Invalid EMA Gram hyperparameters")
+
+    if eigh_layout not in ("replicated", "matrix"):
+        raise ValueError(f"Unknown eigensolver layout: {eigh_layout}")
+    if eigh_implementation not in ("default", "jacobi"):
+        raise ValueError(f"Unknown eigensolver implementation: {eigh_implementation}")
+    implementation = None if eigh_implementation == "default" else jax.lax.linalg.EighImplementation.JACOBI
 
     def init_fn(params):
         leaves = jax.tree.leaves(flatten_linear_layers(params))
@@ -140,8 +187,23 @@ def scale_by_ema_gram(
         del params  # Optax permits callers to pass this keyword.
         leaves, treedef = jax.tree.flatten(flatten_linear_layers(updates))
         states = tuple(update_gram_state(g, s, beta1, beta2) for g, s in zip(leaves, state.matrices, strict=True))
+        eig_fn = jax.lax.linalg.eigh
+        if eigh_layout == "matrix" and alpha:
+            mesh = jax.sharding.get_abstract_mesh()
+            if mesh.empty:
+                raise ValueError("Matrix-parallel EMA-Gram requires an active mesh")
+            axes = tuple(name for name, size in mesh.shape.items() if size > 1)
+            if axes:
+                eig_fn = partial(matrix_parallel_eigh, mesh=mesh, axis_name=axes)
         directions = [
-            gram_direction(s, alpha=alpha, ridge=ridge, polar_steps=polar_steps).astype(g.dtype)
+            gram_direction(
+                s,
+                alpha=alpha,
+                ridge=ridge,
+                polar_steps=polar_steps,
+                eigh_fn=eig_fn,
+                eigh_implementation=implementation,
+            ).astype(g.dtype)
             for g, s in zip(leaves, states, strict=True)
         ]
         return unflatten_linear_layers(updates, treedef.unflatten(directions)), EmaGramState(states)
@@ -159,6 +221,10 @@ class EmaGramConfig(OptimizerConfig):
     momentum: float = 0.95
     gram_beta: float = 0.99
     polar_steps: int = 5
+    eigh_layout: str = "replicated"
+    """Matrix layout assigns complete eigendecompositions across active mesh axes."""
+    eigh_implementation: str = "default"
+    """Backend default or full Jacobi; selection never changes Gram geometry."""
     adam_lr: float = 3e-4
     adam_beta1: float = 0.9
     adam_beta2: float = 0.9999
@@ -174,6 +240,8 @@ class EmaGramConfig(OptimizerConfig):
                     beta1=self.momentum,
                     beta2=self.gram_beta,
                     polar_steps=self.polar_steps,
+                    eigh_layout=self.eigh_layout,
+                    eigh_implementation=self.eigh_implementation,
                 ),
                 optax.add_decayed_weights(self.weight_decay, self.build_weight_decay_mask()),
                 optax.scale(-learning_rate),

@@ -10,7 +10,7 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from levanter.checkpoint import load_checkpoint, save_checkpoint
+from levanter.checkpoint import load_checkpoint, load_checkpoint_or_initialize, save_checkpoint
 from levanter.models.qwen import Qwen3Config
 from levanter.optim.ema_gram import (
     EmaGramConfig,
@@ -101,3 +101,57 @@ def test_scanned_qwen_optimizer_roundtrip_continues_identically(tmp_path):
     for a, b in zip(jax.tree.leaves(actual), jax.tree.leaves(expected), strict=True):
         np.testing.assert_array_equal(a, b)
     assert all(np.isfinite(x).all() for x in jax.tree.leaves(actual.model))
+
+
+@pytest.mark.tpu
+@pytest.mark.parametrize("ridge", [1e-4, 1e-2])
+def test_matrix_parallel_config_restores_replicated_checkpoint_and_matches_updates(tmp_path, ridge):
+    devices = jax.devices()
+    if len(devices) < 4:
+        pytest.skip("Requires at least four devices to exercise matrix assignment")
+    side = 4 if len(devices) >= 16 else 2
+    mesh = jax.sharding.Mesh(np.array(devices[: side * side]).reshape(side, side), ("data", "model"))
+    mapping = {"embed": "data", "heads": "model", "mlp": "model"}
+    cfg = Qwen3Config(
+        hidden_dim=16,
+        intermediate_dim=32,
+        num_layers=3,
+        num_heads=4,
+        num_kv_heads=4,
+        head_dim=4,
+        max_seq_len=8,
+        scan_layers=True,
+    )
+    model = cfg.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(1))
+    reference_tx = EmaGramConfig(learning_rate=0.001, alpha=0.25, ridge=ridge).build(20)
+    candidate_tx = EmaGramConfig(learning_rate=0.001, alpha=0.25, ridge=ridge, eigh_layout="matrix").build(20)
+    reference = TrainerState.init(reference_tx, model, key=jax.random.PRNGKey(2))
+    candidate = TrainerState.init(candidate_tx, model, key=jax.random.PRNGKey(2))
+    step = hax.named_jit(
+        lambda state, grads: state.take_step(grads, key=jax.random.PRNGKey(3))[0], axis_resources=mapping
+    )
+    with jax.set_mesh(mesh), hax.axis_mapping(mapping):
+        reference = hax.shard(reference)
+        candidate = hax.shard(candidate)
+        grads = jax.tree.map(lambda x: jnp.sin(x) if eqx.is_array(x) else x, reference.trainable_model)
+        reference = step(reference, grads)
+        save_checkpoint(reference.saveable_state, 1, tmp_path / "replicated-checkpoint")
+        candidate = load_checkpoint_or_initialize(
+            lambda: TrainerState.init(
+                candidate_tx, cfg.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(1)), key=jax.random.PRNGKey(2)
+            ),
+            [tmp_path / "replicated-checkpoint"],
+            mesh=mesh,
+            axis_mapping=mapping,
+            do_load=True,
+            allow_partial=False,
+        )()
+        for expected, actual in zip(jax.tree.leaves(reference), jax.tree.leaves(candidate), strict=True):
+            np.testing.assert_array_equal(actual, expected)
+        for phase in [0.3, 0.7]:
+            grads = jax.tree.map(lambda x: jnp.sin(x + phase) if eqx.is_array(x) else x, reference.trainable_model)
+            reference = step(reference, grads)
+            candidate = step(candidate, grads)
+            for expected, actual in zip(jax.tree.leaves(reference), jax.tree.leaves(candidate), strict=True):
+                assert np.isfinite(np.asarray(actual)).all()
+                np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=1e-5)
