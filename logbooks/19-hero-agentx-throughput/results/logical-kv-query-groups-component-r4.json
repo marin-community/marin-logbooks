@@ -1,0 +1,574 @@
+{
+  "status": "packaged_component_gate_passed",
+  "native_source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+  "research_source_commit": "e838250ba944b08c287705a8f1d025aa8f6d096e",
+  "candidate_wheel": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "readback_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "bytes": 250543905,
+    "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "receipt": {
+      "kind": "private_python_overlay",
+      "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+      "changed_files": {
+        "vllm/model_executor/models/grugmoe.py": "2f195b2fa7c48fb61fc4c2e0b9091e64a51e5d753eae0794aabcb8118742cf8f",
+        "vllm/v1/attention/backends/flashinfer.py": "a2691b671d8a76aa79b2aa9fdcb7f1ae5263f29957499e6de9228462370af7ee"
+      },
+      "added_files": {
+        "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+      },
+      "wheel_path": "/iris/candidates/logical-kv-query-groups-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+      "wheel_bytes": 250543905,
+      "verified_unchanged_files": 5100,
+      "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+    }
+  },
+  "result": {
+    "source_sha256": "7aed90770ceeede28a91eb358729f49897d7be30c8953a25094d2e5e0055fddb",
+    "installed_wrapper_sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111",
+    "input_files": {
+      "attention-layer-3.pt": "d71052208fc0f3f2b2020e330acec0d3ae098cca3fcc91986eb28c08528f3951",
+      "attention-layer-3-prefill-1.pt": "0615b5f04d90bd26b82be18e392f1f73c0176e847d6470dce2b012c194feaa6a",
+      "attention-layer-3-prefill-2.pt": "c709062407deff9aa1b6b3301d4916e9114bfeef4dfe0d71d8657b85477c2152",
+      "attention-layer-3-prefill-3.pt": "b3d92ccdffa1fb49064b573399308ef4832438b975c33b32c575b6298b123e8e",
+      "attention-layer-3-prefill-4.pt": "b4d282c09cfe1047be5e7eb1a1c16b702b092205367910d1e5f413a5b265d6b2",
+      "attention-layer-3-prefill-5.pt": "3d288ab9bd052c62fa0a558a53e8ba2394672d598d58e8f55804d0c1a0849cff"
+    },
+    "fp32_atol": 0.01,
+    "fp32_rtol": 0.01,
+    "all_source_comparisons_exact": true,
+    "cases": [
+      {
+        "name": "ragged-batch-1-max-length-2048",
+        "batch": 1,
+        "seq_lens": [
+          2048
+        ],
+        "token_offsets": [
+          0
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 6144,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-4-max-length-2048",
+        "batch": 4,
+        "seq_lens": [
+          2048,
+          2011,
+          1974,
+          1937
+        ],
+        "token_offsets": [
+          0,
+          32,
+          64,
+          96
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            4,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 24576,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-32-max-length-2048",
+        "batch": 32,
+        "seq_lens": [
+          2048,
+          2011,
+          1974,
+          1937,
+          1900,
+          1863,
+          1826,
+          1789,
+          2048,
+          2011,
+          1974,
+          1937,
+          1900,
+          1863,
+          1826,
+          1789,
+          2048,
+          2011,
+          1974,
+          1937,
+          1900,
+          1863,
+          1826,
+          1789,
+          2048,
+          2011,
+          1974,
+          1937,
+          1900,
+          1863,
+          1826,
+          1789
+        ],
+        "token_offsets": [
+          0,
+          32,
+          64,
+          96,
+          128,
+          160,
+          192,
+          224,
+          256,
+          288,
+          320,
+          352,
+          384,
+          416,
+          448,
+          480,
+          512,
+          544,
+          576,
+          608,
+          640,
+          672,
+          704,
+          736,
+          768,
+          800,
+          832,
+          864,
+          896,
+          928,
+          960,
+          992
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            32,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 196608,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-1-max-length-8208",
+        "batch": 1,
+        "seq_lens": [
+          8208
+        ],
+        "token_offsets": [
+          0
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 6144,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-4-max-length-8208",
+        "batch": 4,
+        "seq_lens": [
+          8208,
+          8171,
+          8134,
+          8097
+        ],
+        "token_offsets": [
+          0,
+          32,
+          64,
+          96
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            4,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 24576,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-32-max-length-8208",
+        "batch": 32,
+        "seq_lens": [
+          8208,
+          8171,
+          8134,
+          8097,
+          8060,
+          8023,
+          7986,
+          7949,
+          8208,
+          8171,
+          8134,
+          8097,
+          8060,
+          8023,
+          7986,
+          7949,
+          8208,
+          8171,
+          8134,
+          8097,
+          8060,
+          8023,
+          7986,
+          7949,
+          8208,
+          8171,
+          8134,
+          8097,
+          8060,
+          8023,
+          7986,
+          7949
+        ],
+        "token_offsets": [
+          0,
+          32,
+          64,
+          96,
+          128,
+          160,
+          192,
+          224,
+          256,
+          288,
+          320,
+          352,
+          384,
+          416,
+          448,
+          480,
+          512,
+          544,
+          576,
+          608,
+          640,
+          672,
+          704,
+          736,
+          768,
+          800,
+          832,
+          864,
+          896,
+          928,
+          960,
+          992
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            32,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 196608,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-1-max-length-262144",
+        "batch": 1,
+        "seq_lens": [
+          262144
+        ],
+        "token_offsets": [
+          0
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 6144,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-4-max-length-262144",
+        "batch": 4,
+        "seq_lens": [
+          262144,
+          262107,
+          262070,
+          262033
+        ],
+        "token_offsets": [
+          0,
+          32,
+          64,
+          96
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            4,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 24576,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      },
+      {
+        "name": "ragged-batch-32-max-length-262144",
+        "batch": 32,
+        "seq_lens": [
+          262144,
+          262107,
+          262070,
+          262033,
+          261996,
+          261959,
+          261922,
+          261885,
+          262144,
+          262107,
+          262070,
+          262033,
+          261996,
+          261959,
+          261922,
+          261885,
+          262144,
+          262107,
+          262070,
+          262033,
+          261996,
+          261959,
+          261922,
+          261885,
+          262144,
+          262107,
+          262070,
+          262033,
+          261996,
+          261959,
+          261922,
+          261885
+        ],
+        "token_offsets": [
+          0,
+          32,
+          64,
+          96,
+          128,
+          160,
+          192,
+          224,
+          256,
+          288,
+          320,
+          352,
+          384,
+          416,
+          448,
+          480,
+          512,
+          544,
+          576,
+          608,
+          640,
+          672,
+          704,
+          736,
+          768,
+          800,
+          832,
+          864,
+          896,
+          928,
+          960,
+          992
+        ],
+        "repeat_exact": true,
+        "native_fp32_tolerances_passed": true,
+        "source_comparison": {
+          "shape": [
+            32,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": true,
+          "different_elements": 0,
+          "elements": 196608,
+          "max_absolute_delta": 0.0,
+          "mean_absolute_delta": 0.0,
+          "examples": []
+        }
+      }
+    ],
+    "scope": "Actual packaged native decode wrapper, ragged histories and full256Kcontext; no full-model qualification."
+  },
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-query-groups-component-r4/outputs-e8c8fd1e6c8ec98396cc3a14feedef0bb996b299a2fb69173e4c55d2451afe9b.tar.zst",
+    "archive_sha256": "e8c8fd1e6c8ec98396cc3a14feedef0bb996b299a2fb69173e4c55d2451afe9b",
+    "readback_sha256": "e8c8fd1e6c8ec98396cc3a14feedef0bb996b299a2fb69173e4c55d2451afe9b",
+    "archive_bytes": 604792
+  },
+  "native_gang_attempts": {
+    "/romain/dev-gpu-hero-agentx-replica16a-agentx-r392-01a1846a/0": "e039b36df3acc4de",
+    "/romain/dev-gpu-hero-agentx-replica16a-agentx-r392-01a1846a/1": "e039555568b8b244",
+    "/romain/dev-gpu-hero-agentx-replica16a-agentx-r392-01a1846a/2": "f164d6ee51207506",
+    "/romain/dev-gpu-hero-agentx-replica16a-agentx-r392-01a1846a/3": "aa7988b8acb16d1a"
+  },
+  "provider_fence_before": [
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-aa83d1e4-0-e039b36df3acc4de",
+      "pod_uid": "5bcdf178-9953-4922-9197-da8ef2345539",
+      "node": "s1mwxs64",
+      "attempt_uid": "e039b36df3acc4de"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-50258c24-0-e039555568b8b244",
+      "pod_uid": "812995b5-d2c1-4379-bb09-f4caa9626182",
+      "node": "s1nrxs64",
+      "attempt_uid": "e039555568b8b244"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-10b094a3-0-f164d6ee51207506",
+      "pod_uid": "6106a8d4-dfaf-479d-b39d-60a33524bdfe",
+      "node": "s3bsxs64",
+      "attempt_uid": "f164d6ee51207506"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-bebe89a2-0-aa7988b8acb16d1a",
+      "pod_uid": "cfe64f5a-4f50-48e4-bcc6-d6d6bcc93e08",
+      "node": "s3jtxs64",
+      "attempt_uid": "aa7988b8acb16d1a"
+    }
+  ],
+  "provider_fence_after": [
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-aa83d1e4-0-e039b36df3acc4de",
+      "pod_uid": "5bcdf178-9953-4922-9197-da8ef2345539",
+      "node": "s1mwxs64",
+      "attempt_uid": "e039b36df3acc4de"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-50258c24-0-e039555568b8b244",
+      "pod_uid": "812995b5-d2c1-4379-bb09-f4caa9626182",
+      "node": "s1nrxs64",
+      "attempt_uid": "e039555568b8b244"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-10b094a3-0-f164d6ee51207506",
+      "pod_uid": "6106a8d4-dfaf-479d-b39d-60a33524bdfe",
+      "node": "s3bsxs64",
+      "attempt_uid": "f164d6ee51207506"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-rep-bebe89a2-0-aa7988b8acb16d1a",
+      "pod_uid": "cfe64f5a-4f50-48e4-bcc6-d6d6bcc93e08",
+      "node": "s3jtxs64",
+      "attempt_uid": "aa7988b8acb16d1a"
+    }
+  ],
+  "native_attempts_unchanged": true,
+  "gpu_empty_after": true,
+  "setup_failures": [
+    {
+      "revision": 2,
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-query-groups-component-r2/outputs-eba39cc0c0717af02828dfebd8768c154cceff9a4b2da6e10d01e4b785fad54d.tar.zst",
+        "archive_sha256": "eba39cc0c0717af02828dfebd8768c154cceff9a4b2da6e10d01e4b785fad54d",
+        "readback_sha256": "eba39cc0c0717af02828dfebd8768c154cceff9a4b2da6e10d01e4b785fad54d",
+        "archive_bytes": 18990
+      },
+      "scope": "Launcher setup failure before native comparison; original tolerances and test source unchanged."
+    },
+    {
+      "revision": 3,
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-query-groups-component-r3/outputs-05b1a294764b00452462d2dfd105cba4e530ee7b962c68fec3f831ef1171e98b.tar.zst",
+        "archive_sha256": "05b1a294764b00452462d2dfd105cba4e530ee7b962c68fec3f831ef1171e98b",
+        "readback_sha256": "05b1a294764b00452462d2dfd105cba4e530ee7b962c68fec3f831ef1171e98b",
+        "archive_bytes": 19039
+      },
+      "scope": "Launcher setup failure before native comparison; original tolerances and test source unchanged."
+    }
+  ],
+  "scope": "All9 ragged/offset cases pass unchanged native FP32atol0.01/rtol0.01, repeat exactly and match original native12KV/page16 outputs exactly, including262144tokens. Actual installed private wrapper with6KV/page32. No full-Hero or mixed-prefill/decode source/state or speed qualification yet."
+}
