@@ -9,6 +9,7 @@ window. The leader stops on its local ``stop`` file or the bounded serving time.
 
 import argparse
 import hashlib
+import ipaddress
 import json
 import os
 import shutil
@@ -268,6 +269,20 @@ def serve(
                 server.extra_cli_args[server.extra_cli_args.index("--gpu-memory-utilization") + 1] = str(memory_fraction)
                 record["overrides"]["gpu_memory_utilization"] = memory_fraction
             diagnostic = manifest.get("diagnostic_request", {})
+            assert diagnostic.get("api_bind_mode") in (None, "iris_private")
+            if diagnostic.get("api_bind_mode") == "iris_private":
+                assert not profile and not diagnostic.get("trace_batches")
+                assert os.environ.get("VLLM_SERVER_DEV_MODE", "0") == "0"
+                assert "VLLM_SERVER_DEV_MODE" not in diagnostic.get("environment_overrides", {})
+                address = ipaddress.ip_address(launch.host_ip)
+                assert address.version == 4 and address.is_private
+                assert not address.is_loopback and not address.is_unspecified and not address.is_link_local
+                server.host = launch.host_ip
+                record["api_bind"] = {
+                    "mode": "iris_private",
+                    "url": f"http://{server.host}:{server.port}",
+                    "source": "Actual native IrisVllmLaunch.host_ip; no public or wildcard bind",
+                }
             if "kernel_config" in diagnostic:
                 index = server.extra_cli_args.index("--kernel-config") + 1
                 kernel = json.loads(server.extra_cli_args[index]) | diagnostic["kernel_config"]
@@ -343,6 +358,8 @@ def serve(
                     return
                 server.wait_until_ready()
                 record.update(status="ready", ready_unix=time.time(), model_id=server.model_id)
+                if diagnostic.get("api_bind_mode") == "iris_private":
+                    record["gang_attempts"] = native.gang_attempts(hardware["hosts"])
                 record_path.write_text(json.dumps(record, indent=2) + "\n")
                 print("HERO_DIAGNOSTIC_READY", flush=True)
                 deadline = time.monotonic() + serve_duration
