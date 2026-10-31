@@ -80,6 +80,8 @@ def create_candidate_server(
         use_numa_binding(server, manifest["numactl_input"])
     if "compilation_config" in overrides:
         set_compilation_config(server, overrides["compilation_config"])
+    if "additional_config" in overrides:
+        server.extra_cli_args.extend(["--additional-config", json.dumps(overrides["additional_config"])])
     if "kernel_config" in overrides:
         index = server.extra_cli_args.index("--kernel-config") + 1
         kernel = json.loads(server.extra_cli_args[index]) | overrides["kernel_config"]
@@ -128,6 +130,8 @@ def run_startup_numerics(manifest: dict, output: Path) -> None:
     command = actual["server_command"]
     overrides = manifest["runtime_overrides"]
     assert json.loads(command[command.index("--compilation-config") + 1]) == overrides["compilation_config"]
+    if "additional_config" in overrides:
+        assert json.loads(command[command.index("--additional-config") + 1]) == overrides["additional_config"]
     kernel = json.loads(command[command.index("--kernel-config") + 1])
     assert all(kernel[key] == value for key, value in overrides["kernel_config"].items())
     prefix = [
