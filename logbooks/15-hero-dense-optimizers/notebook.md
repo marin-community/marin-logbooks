@@ -212,3 +212,40 @@ executor slots. The source, checkpoint lineage, training recipes, batch
 priority, and eight-job/64-GPU cap remain fixed. The raw final metrics and
 checkpoint metadata are preserved in
 [adamw-3e20-20261030.json](adamw-3e20-20261030.json).
+
+## 2026-10-31 UTC: All four 3e20 recipes complete
+
+AdamH and Muon completed the remaining two 3e20-FLOP runs. All four recipes
+have Iris success, W&B finished states at zero-based step 56,988, and permanent
+checkpoint metadata at update 56,989 with `is_temporary=false`. Checkpoint
+metadata, `manifest.json`, `manifest.ocdbt`, and data directories are present.
+Each run processed 29,878,648,832 tokens.
+
+| Optimizer | LR multiplier | Final Paloma macro loss |
+|---|---:|---:|
+| AdamW | 3 | 2.9459300 |
+| AdamH | 3 | 2.9706540 |
+| MuonH | 1 | 3.0711474 |
+| Muon | 3 | 3.1069922 |
+
+AdamW has the lowest observed loss at this shared budget, 0.0247240 below
+AdamH. Each recipe uses one seed and an LR multiplier transferred from the
+three-point 1e18 sweep; AdamW, AdamH, and Muon selected the highest tested
+multiplier. Multipliers scale the per-optimizer pilot centers using the
+[transfer rule](../../experiments/grug/fast_track/dense_ladder.py). AdamH and
+MuonH preserve matrix norms; [resolved configurations](plan.json) record their
+optimizer settings. This ordering compares these recipes and does not establish
+statistical significance or optimizer-optimal loss-versus-compute scaling.
+Elapsed time includes scheduler waits and recovery; time-to-loss remains
+unanalysed. The final
+metrics and checkpoint metadata for all four runs are in
+[results-3e20-20261031.json](results-3e20-20261031.json).
+
+The selected 28-run experiment ladder is now 8/28 complete, including four
+selected 1e18 calibrations. The coordinator filled the freed slots with AdamH
+and MuonH at 1e20 FLOPs at 00:07:56 and 00:54:01 UTC, respectively. Both have
+advanced training steps with finite loss. Eight runs are active: four at 1e21
+and four at 1e20, including the two new runs. Twelve jobs below 1e20 await
+executor slots. Continue monitoring the new runs and verify their rolling
+saves as each reaches its first checkpoint interval. The
+source, recipes, checkpoint lineage, batch priority, and 64-GPU cap are fixed.
