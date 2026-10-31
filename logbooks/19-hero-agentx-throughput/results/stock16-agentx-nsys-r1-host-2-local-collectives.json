@@ -1,0 +1,128 @@
+{
+  "scope": "Within one host only. The same ordered kernel-name sequence is verified on all four local GPUs. Ordinal matching is inferred from equal sequences, not an NCCL operation ID. Kernel residency before latest local start can include partial transfer; no pure-wait or bandwidth claim. Cross-host clocks are not aligned. Negative tail means kernels need not overlap on all local ranks.",
+  "sqlite_sha256": "60b06862fe1639945a90f90ed3f754c896e1da8251d23e0fd17c62c0bc7b52a7",
+  "analysis_sha256": "430a6240dd96b5bf857468c50ffb58089470289528d8fb3c8b2093a89007d9ee",
+  "collectives_per_device": 19200,
+  "positions": {
+    "allgather_slot_1": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 1210.081039,
+        "min": 0.001717,
+        "median": 0.063429,
+        "p95": 0.994139,
+        "max": 16.236478
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 19216.77221,
+        "min": 0.112599,
+        "median": 3.8974505,
+        "p95": 5.836175,
+        "max": 14.985358
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 1101.955837,
+        "1": 583.0904960000004,
+        "2": 888.2565409999999,
+        "3": 633.6309580000004
+      },
+      "duration_ms": {
+        "0": 20321.854030000104,
+        "1": 19871.925545999973,
+        "2": 20239.694910000017,
+        "3": 20055.696333999953
+      }
+    },
+    "allgather_slot_2": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 208.280124,
+        "min": 0.000198,
+        "median": 0.049514,
+        "p95": 0.057584,
+        "max": 0.132912
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 541.784032,
+        "min": 0.025568,
+        "median": 0.120279,
+        "p95": 0.18524,
+        "max": 0.213516
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 205.15506399999956,
+        "1": 136.22518299999953,
+        "2": 73.62259999999992,
+        "3": 2.9852249999999994
+      },
+      "duration_ms": {
+        "0": 747.8865920000014,
+        "1": 679.6066530000005,
+        "2": 618.2163200000001,
+        "3": 548.8365140000008
+      }
+    },
+    "allgather_slot_3": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 4.828565,
+        "min": 4e-05,
+        "median": 0.000948,
+        "p95": 0.001904,
+        "max": 0.003103
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 136.587297,
+        "min": 0.024832,
+        "median": 0.028431,
+        "p95": 0.029856,
+        "max": 0.033312
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 3.876622000000008,
+        "1": 3.2362160000000038,
+        "2": 2.017694000000004,
+        "3": 0.759005000000002
+      },
+      "duration_ms": {
+        "0": 142.8260499999999,
+        "1": 141.57052600000057,
+        "2": 140.60697799999994,
+        "3": 139.89654500000037
+      }
+    },
+    "reduce_slot_4": {
+      "name": "ncclDevKernel_Reduce_Sum_bf16_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 434.621209,
+        "min": 0.002148,
+        "median": 0.0698155,
+        "p95": 0.152796,
+        "max": 69.364589
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 1200.034221,
+        "min": 0.045881,
+        "median": 0.206683,
+        "p95": 0.588757,
+        "max": 18.778417
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 233.1557130000001,
+        "1": 268.43433799999997,
+        "2": 164.90774099999962,
+        "3": 209.97950699999996
+      },
+      "duration_ms": {
+        "0": 1438.8792720000008,
+        "1": 1540.3947549999984,
+        "2": 1502.4630080000024,
+        "3": 1619.9871359999986
+      }
+    }
+  }
+}

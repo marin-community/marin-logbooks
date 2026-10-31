@@ -84,6 +84,7 @@ def run(
     reference_capture_sizes: list[int] | None = None,
     disable_graph_replay: bool = False,
     compare_to: Path | None = None,
+    local_piecewise_dp: bool = False,
 ) -> None:
     assert hashlib.sha256(tokenizer_path.read_bytes()).hexdigest() == TOKENIZER_SHA256
     output.mkdir(parents=True, exist_ok=False)
@@ -121,11 +122,15 @@ def run(
     comparisons = []
     if trace_batches:
         assert rank == 0
-        batch_trace(base_url, "install_hero_batch_trace", [reference_capture_sizes, disable_graph_replay])
+        batch_trace(
+            base_url,
+            "install_hero_batch_trace",
+            [reference_capture_sizes, disable_graph_replay, local_piecewise_dp],
+        )
         storage = batch_trace(base_url, "hero_cache_storage")
         (output / "cache-storage.json").write_text(json.dumps(storage, indent=2) + "\n")
     else:
-        assert reference_capture_sizes is None and not disable_graph_replay
+        assert reference_capture_sizes is None and not disable_graph_replay and not local_piecewise_dp
     with (output / "requests.jsonl").open("w") as stream:
         for name, branches, cache_salt in waves:
             payload = {
@@ -221,6 +226,7 @@ def main() -> None:
     parser.add_argument("--reference-capture-sizes", type=int, nargs="+")
     parser.add_argument("--disable-graph-replay", action="store_true")
     parser.add_argument("--compare-to", type=Path)
+    parser.add_argument("--local-piecewise-dp", action="store_true")
     args = parser.parse_args()
     rank = args.rank if args.rank is not None or args.session_id is not None else 0
     run(
@@ -234,6 +240,7 @@ def main() -> None:
         args.reference_capture_sizes,
         args.disable_graph_replay,
         args.compare_to,
+        args.local_piecewise_dp,
     )
 
 

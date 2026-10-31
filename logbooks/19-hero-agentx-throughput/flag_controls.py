@@ -70,6 +70,10 @@ def main() -> None:
     ]
     if manifest.get("diagnostic_request", {}).get("trace_batches"):
         probe.append("--trace-batches")
+    local_piecewise_dp = manifest.get("diagnostic_request", {}).get("local_piecewise_dp", False)
+    if local_piecewise_dp:
+        assert manifest["diagnostic_request"]["trace_batches"] is True
+        probe.append("--local-piecewise-dp")
     if sizes := manifest.get("diagnostic_request", {}).get("reference_capture_sizes"):
         assert manifest["diagnostic_request"]["numerics_only"] is True
         assert manifest["diagnostic_request"]["compilation_config"]["cudagraph_mode"] == "NONE"
@@ -205,7 +209,7 @@ def main() -> None:
         with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
             (output / "server-metrics-before.txt").write_bytes(response.read())
         if trace_controls:
-            batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace")
+            batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace", [None, False, local_piecewise_dp])
             record["collector"] = "Native CPU dispatch metadata; no GPU synchronization or profiler"
         run_logged(command, dict(os.environ), output / "client.log", timeout=1800)
         if trace_controls:

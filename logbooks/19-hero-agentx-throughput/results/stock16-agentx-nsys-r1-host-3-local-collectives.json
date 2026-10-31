@@ -1,0 +1,128 @@
+{
+  "scope": "Within one host only. The same ordered kernel-name sequence is verified on all four local GPUs. Ordinal matching is inferred from equal sequences, not an NCCL operation ID. Kernel residency before latest local start can include partial transfer; no pure-wait or bandwidth claim. Cross-host clocks are not aligned. Negative tail means kernels need not overlap on all local ranks.",
+  "sqlite_sha256": "247f27366d191eb8212ab0a9aaa7227661f7e5055e8ea9192c4972a50c1cc350",
+  "analysis_sha256": "430a6240dd96b5bf857468c50ffb58089470289528d8fb3c8b2093a89007d9ee",
+  "collectives_per_device": 19200,
+  "positions": {
+    "allgather_slot_1": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 3585.937379,
+        "min": 0.000781,
+        "median": 0.058230500000000004,
+        "p95": 3.791296,
+        "max": 16.381453
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 16717.016797,
+        "min": 0.03104,
+        "median": 3.7795674999999997,
+        "p95": 5.58976,
+        "max": 15.411854
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 2874.1642569999926,
+        "1": 1303.3789260000008,
+        "2": 3000.5664349999875,
+        "3": 2956.880211000006
+      },
+      "duration_ms": {
+        "0": 19680.231355,
+        "1": 18092.636977000067,
+        "2": 19860.799644999955,
+        "3": 19876.948250000012
+      }
+    },
+    "allgather_slot_2": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 279.220407,
+        "min": 0.000126,
+        "median": 0.050102,
+        "p95": 0.238441,
+        "max": 0.26619
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 295.689042,
+        "min": 0.024972,
+        "median": 0.054016,
+        "p95": 0.120996,
+        "max": 0.145882
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 190.1776880000002,
+        "1": 206.9957590000003,
+        "2": 136.0333360000004,
+        "3": 76.17578700000018
+      },
+      "duration_ms": {
+        "0": 488.5757449999987,
+        "1": 504.32175899999964,
+        "2": 434.25561499999975,
+        "3": 373.56051099999985
+      }
+    },
+    "allgather_slot_3": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 4.316267,
+        "min": 3.8e-05,
+        "median": 0.000801,
+        "p95": 0.001877,
+        "max": 0.003332
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 136.936194,
+        "min": 0.025247,
+        "median": 0.028496,
+        "p95": 0.030224,
+        "max": 0.031971
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 1.606345000000002,
+        "1": 2.6839380000000044,
+        "2": 1.802731000000003,
+        "3": 2.6186539999999923
+      },
+      "duration_ms": {
+        "0": 141.24092599999966,
+        "1": 140.8015710000003,
+        "2": 140.9263690000003,
+        "3": 142.71536000000043
+      }
+    },
+    "reduce_slot_4": {
+      "name": "ncclDevKernel_Reduce_Sum_bf16_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 467.913658,
+        "min": 0.004097,
+        "median": 0.06853300000000001,
+        "p95": 0.171425,
+        "max": 78.775623
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 1325.892793,
+        "min": 0.026949,
+        "median": 0.252719,
+        "p95": 0.593709,
+        "max": 1.64816
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 240.0504069999996,
+        "1": 275.80225800000164,
+        "2": 202.19182300000034,
+        "3": 236.16330499999987
+      },
+      "duration_ms": {
+        "0": 1672.5133739999997,
+        "1": 1780.9280230000002,
+        "2": 1663.6642890000028,
+        "3": 1774.2782080000034
+      }
+    }
+  }
+}

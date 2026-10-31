@@ -20,6 +20,7 @@ from dataclasses import replace
 from pathlib import Path
 
 import torch
+from local_piecewise_dp import local_piecewise_dispatch, validate_local_piecewise_config
 from native_shortconv_probe import install_forward
 from vllm import LLM, SamplingParams
 from vllm.config import CompilationConfig, CUDAGraphMode
@@ -48,16 +49,24 @@ def pad_reference_dispatch(result, capture_sizes: list[int]):
 
 
 def install_batch_trace(
-    worker, reference_capture_sizes: list[int] | None = None, disable_graph_replay: bool = False
+    worker,
+    reference_capture_sizes: list[int] | None = None,
+    disable_graph_replay: bool = False,
+    local_piecewise_dp: bool = False,
 ) -> None:
     # Record native CPU dispatch metadata; do not synchronize or profile the GPU.
     worker.hero_batch_trace = []
+    if local_piecewise_dp:
+        assert reference_capture_sizes is None
+        validate_local_piecewise_config(worker)
     module = sys.modules[type(worker.model_runner).__module__]
     dispatch = module.dispatch_cg_and_sync_dp
     worker.hero_dispatch_original = dispatch
 
     def traced_dispatch(*args, **kwargs):
         result = dispatch(*args, **kwargs)
+        if local_piecewise_dp:
+            result = local_piecewise_dispatch(result, args, kwargs)
         if reference_capture_sizes:
             result = pad_reference_dispatch(result, reference_capture_sizes)
         if disable_graph_replay:
@@ -76,6 +85,7 @@ def install_batch_trace(
                 "tokens_across_dp": sync.num_tokens_across_dp.tolist() if sync is not None else None,
                 "reference_capture_sizes": reference_capture_sizes,
                 "disable_graph_replay": disable_graph_replay,
+                "local_piecewise_dp": local_piecewise_dp,
             }
         )
         return result

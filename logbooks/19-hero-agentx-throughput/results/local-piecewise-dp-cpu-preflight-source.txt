@@ -1,0 +1,44 @@
+import datetime,hashlib,json,os,sys,tempfile
+from pathlib import Path
+from types import SimpleNamespace
+import torch
+import torch.distributed as dist
+import torch.multiprocessing as mp
+import local_piecewise_dp as candidate
+import vllm.v1.worker.gpu.dp_utils as native
+from vllm.config import CUDAGraphMode
+from vllm.v1.worker.gpu.cudagraph_utils import CudaGraphManager,BatchExecutionDescriptor
+
+
+def worker(rank,store,output):
+    assert not torch.cuda.is_available()
+    dist.init_process_group('gloo',init_method='file://'+store,rank=rank,world_size=4)
+    group=SimpleNamespace(cpu_group=dist.group.WORLD)
+    native.get_dp_group=lambda:group
+    candidate.get_dp_group=lambda:group
+    manager=CudaGraphManager.__new__(CudaGraphManager)
+    manager._graphs_captured=True;manager._lora_dispatch_map={};manager._max_lora_case=0
+    captures=[1,2,4,8,16,32]
+    manager._candidates={(n,0):[BatchExecutionDescriptor(CUDAGraphMode.PIECEWISE,next(c for c in captures if c>=n),None)]for n in range(1,33)}
+    records=[]
+    for offered,expected in [([2,3,5,9],[2,4,8,16]),([17,2,9,4],[32,2,16,4]),([1,65,3,5],[1,65,3,5])]:
+        args=(manager,1,offered[rank],None,4,rank)
+        kwargs={'max_query_len':offered[rank],'num_active_loras':0,'allow_ubatching':False}
+        before=native.dispatch_cg_and_sync_dp(*args,**kwargs)
+        after=candidate.local_piecewise_dispatch(before,args,kwargs)
+        descriptor,sync=after
+        assert sync.num_tokens_across_dp.tolist()==expected
+        assert descriptor.num_tokens==expected[rank]
+        assert descriptor.cg_mode==(CUDAGraphMode.NONE if max(offered)>32 else CUDAGraphMode.PIECEWISE)
+        if max(offered)<=32:assert before[1].num_tokens_across_dp.tolist()==[max(expected)]*4
+        else:assert after is before
+        records.append({'offered':offered,'native_sizes':before[1].num_tokens_across_dp.tolist(),'local_sizes':sync.num_tokens_across_dp.tolist(),'descriptor_tokens':descriptor.num_tokens,'mode':descriptor.cg_mode.name})
+    Path(output,f'rank-{rank}.json').write_text(json.dumps(records,indent=2)+'\n')
+    dist.destroy_process_group()
+
+
+if __name__=='__main__':
+    out=Path(sys.argv[1]);out.mkdir(exist_ok=False)
+    mp.spawn(worker,args=(str(out/'gloo-store'),str(out)),nprocs=4,join=True)
+    result={'status':'cpu_four_process_native_dp_exchange_passed','utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'CPU metadata fixture with real pinned native CudaGraphManager.dispatch, dispatch_cg_and_sync_dp, descriptors, and four-process Gloo collectives. The manager has fixture capture descriptors; no CUDA graphs, model weights, GPU allocation, or numerical parity are tested. Both get_dp_group functions point to the real fixture Gloo process group.','source_sha256':hashlib.file_digest(Path(candidate.__file__).open('rb'),'sha256').hexdigest(),'driver_sha256':hashlib.file_digest(Path(__file__).open('rb'),'sha256').hexdigest(),'torch':torch.__version__,'ranks':{i:json.loads((out/f'rank-{i}.json').read_text())for i in range(4)}}
+    (out/'result.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)

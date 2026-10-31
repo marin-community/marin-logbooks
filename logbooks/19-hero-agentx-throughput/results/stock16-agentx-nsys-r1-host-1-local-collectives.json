@@ -1,0 +1,128 @@
+{
+  "scope": "Within one host only. The same ordered kernel-name sequence is verified on all four local GPUs. Ordinal matching is inferred from equal sequences, not an NCCL operation ID. Kernel residency before latest local start can include partial transfer; no pure-wait or bandwidth claim. Cross-host clocks are not aligned. Negative tail means kernels need not overlap on all local ranks.",
+  "sqlite_sha256": "53e916f626d956ea99c444f68214a3e179677943574abb3a7d762ccf7806adf1",
+  "analysis_sha256": "430a6240dd96b5bf857468c50ffb58089470289528d8fb3c8b2093a89007d9ee",
+  "collectives_per_device": 19200,
+  "positions": {
+    "allgather_slot_1": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 8039.466959,
+        "min": 0.005595,
+        "median": 1.2063234999999999,
+        "p95": 4.419825,
+        "max": 11.264741
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 11926.593392,
+        "min": 0.029952,
+        "median": 2.5523594999999997,
+        "p95": 4.74728,
+        "max": 10.380673
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 6881.685313000002,
+        "1": 5659.238076000002,
+        "2": 7561.59073700001,
+        "3": 3000.648844000006
+      },
+      "duration_ms": {
+        "0": 18927.950993999973,
+        "1": 17744.825682999963,
+        "2": 19699.73752199997,
+        "3": 15079.363090999947
+      }
+    },
+    "allgather_slot_2": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 282.586067,
+        "min": 0.000224,
+        "median": 0.040024000000000004,
+        "p95": 0.230518,
+        "max": 0.261824
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 683.535373,
+        "min": 0.024282,
+        "median": 0.184675,
+        "p95": 0.205536,
+        "max": 0.229334
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 162.9444319999999,
+        "1": 123.60986600000018,
+        "2": 71.0751679999999,
+        "3": 130.3925059999999
+      },
+      "duration_ms": {
+        "0": 848.7303689999982,
+        "1": 809.0176999999983,
+        "2": 758.2421139999979,
+        "3": 818.1001949999984
+      }
+    },
+    "allgather_slot_3": {
+      "name": "ncclDevKernel_AllGatherV_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 6.353336,
+        "min": 5.7e-05,
+        "median": 0.001216,
+        "p95": 0.002437,
+        "max": 0.004288
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 139.988188,
+        "min": 0.025312,
+        "median": 0.029224,
+        "p95": 0.030674,
+        "max": 0.032362
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 4.127137999999999,
+        "1": 4.492793000000016,
+        "2": 2.755633000000011,
+        "3": 2.0997220000000043
+      },
+      "duration_ms": {
+        "0": 147.62723200000025,
+        "1": 146.46793299999945,
+        "2": 146.50623900000005,
+        "3": 143.79488
+      }
+    },
+    "reduce_slot_4": {
+      "name": "ncclDevKernel_Reduce_Sum_bf16_RING_LL(ncclDevKernelArgsStorage<(unsigned long)4096>)",
+      "count": 4800,
+      "start_skew_ms": {
+        "sum": 556.078732,
+        "min": 0.001206,
+        "median": 0.0706315,
+        "p95": 0.343184,
+        "max": 56.412846
+      },
+      "last_start_to_first_end_ms": {
+        "sum": 1333.90738,
+        "min": 0.032016,
+        "median": 0.29624,
+        "p95": 0.433683,
+        "max": 32.741503
+      },
+      "elapsed_before_latest_local_start_ms": {
+        "0": 354.02563599999974,
+        "1": 384.2910039999985,
+        "2": 341.1055680000001,
+        "3": 272.3054919999998
+      },
+      "duration_ms": {
+        "0": 1842.1385790000052,
+        "1": 1912.8302349999947,
+        "2": 1784.9500400000004,
+        "3": 1774.0971509999963
+      }
+    }
+  }
+}
