@@ -1,0 +1,61 @@
+{
+  "experiment": "logical-kv-query-groups-component-r2",
+  "source_parent_commit": "d6ec4e4f2215274141a0fe1e3a1e9900df96394f",
+  "native_source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+  "script": "validate_grouped_decode.py",
+  "reference_archive": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-geometry-off-r3/outputs-059f2bc02c2bf84dc4ad1d7fddc12a4fbfdb53407ac352d5d6c610d76ec4fac8.tar.zst",
+    "sha256": "059f2bc02c2bf84dc4ad1d7fddc12a4fbfdb53407ac352d5d6c610d76ec4fac8",
+    "bytes": 292051043
+  },
+  "candidate_wheel_input": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "readback_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "bytes": 250543905,
+    "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "receipt": {
+      "kind": "private_python_overlay",
+      "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+      "changed_files": {
+        "vllm/model_executor/models/grugmoe.py": "2f195b2fa7c48fb61fc4c2e0b9091e64a51e5d753eae0794aabcb8118742cf8f",
+        "vllm/v1/attention/backends/flashinfer.py": "a2691b671d8a76aa79b2aa9fdcb7f1ae5263f29957499e6de9228462370af7ee"
+      },
+      "added_files": {
+        "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+      },
+      "wheel_path": "/iris/candidates/logical-kv-query-groups-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+      "wheel_bytes": 250543905,
+      "verified_unchanged_files": 5100,
+      "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+    }
+  },
+  "gpu_cases": {
+    "batches": [
+      1,
+      4,
+      32
+    ],
+    "max_seq_lens": [
+      2048,
+      8208,
+      262144
+    ],
+    "request_seq_len": "max_seq_len-(request_index%8)*37",
+    "request_token_offset": "request_index*32",
+    "query": "retained actual global-layer first-decode query, head-rotated per request",
+    "kv": "retained logicalK/V histories repeated as explicitly syntheticcomponentinput; physical12KVbaseline duplicates eachlogicalhead",
+    "original_page_size": 16,
+    "candidate_page_size": 32,
+    "dtype": "bf16",
+    "native_backend": "trtllm-gen",
+    "native_fp32_atol": 0.01,
+    "native_fp32_rtol": 0.01,
+    "exact_source_gate": 0
+  },
+  "execution_precondition": "Do not run during current fullAgentXwarmup/send/drain. Reuse GPU0 of an owned interactive16holder onlyafter clientcompletion, finalnative/providerfences, modelstops/allGPUempty andrawretention. KeepgenuineJobInfo4; charge whole16holder once, nochildGPUrequest. Freshattempt/podUID/node/UUIDfencesbeforeafter. Other groupmayreleaseafteritsrawreadbacks.",
+  "validation_gate": "All9cases must pass the original FP32tolerances and match original native12KV/page16 outputs exactly, withrepeatstability, before anyfullHero trial. Failure staysretained; no fallbacktol orsourcegate changes.",
+  "scope": "Packagednativewrapper component only, withragged/offsetrows/full256Kcontext; no fullmodel, mixedprefill/decode orspeedclaim."
+}
