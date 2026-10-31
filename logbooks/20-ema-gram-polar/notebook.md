@@ -645,6 +645,52 @@ the pilot sweep, obtain usable device cost evidence, confirm host memory stays
 within the 128 GiB reservation, and inspect finite training and validation
 metrics. No quarter-power validation result is available yet.
 
+### 2026-10-31 08:17 UTC — Prepare an isolated optimizer cost diagnostic
+
+The quarter-power pilot continues unchanged, reaching step 137 with loss
+7.610778 and last-step duration 40.757 seconds at 08:11 UTC. A supported live
+JAX profiler endpoint has not been found. Prepare one separate TPU v4-8
+optimizer diagnostic to obtain a shorter device trace without restarting the
+pilot or submitting a duplicate training run.
+
+`optimizer_cost.py` calls the existing production Gram update, spectral-power
+and polar-direction functions. It uses the pilot's seven matrix batches:
+four `11x1024x1024`, two `11x4096x1024`, and one `11x1024x4096`. Optimizer state
+is replicated, as in the saved StableHLO; gradient and direction arrays shard
+rows for `o_proj`/`down_proj` and columns for the other five projections over
+four chips. Synthetic FP32 gradients have seed
+0 and expected combined Frobenius norm 0.1. Momentum and both Gram buffers start at zero. The input state is one prior
+update using a different synthetic gradient from the same seeded stream.
+Every timing reuses identical inputs.
+
+Measure Gram refresh, full left/right quarter powers, alpha-zero direction,
+and combined quarter-power refresh plus direction separately. Synchronize
+outputs, record warm-up/compilation separately, then retain three execution
+samples per case. Capture exactly one warmed combined invocation with Python
+tracing disabled; verify that TPU device planes exist before interpreting it.
+Spectral powers mean `(Gram / mean_eigenvalue + ridge I)^(-1/4)` on both
+sides; the alpha-zero direction omits these powers and uses momentum directly
+inside the polar approximation. Full matrices, per-update refresh, alpha 1/4,
+ridge 1e-4 and five polar iterations match the live pilot. This diagnostic omits the language model, data,
+AdamW and weight decay. Its synthetic spectrum and isolated kernels cannot
+establish full-training time fractions or validation quality.
+
+The small CPU end-to-end check passed finite-output checks. Directions from
+the fused refresh-plus-direction function agreed with a separate refresh then
+direction calculation at rtol 1e-4 and atol 1e-5. Its online W&B run
+`ema-gram-20-cpu-smoke-fb05f631e002` finished; logging initialized before matrix
+kernels, the report was read back from GCS, and the uploaded profile hashes
+matched. `optimizer-cost-preflight.json` preserves the evidence and one
+preceding local-output directory failure. CPU timings are not TPU performance
+evidence. Lint passed for the new script.
+
+`optimizer-cost-plan.json` requests one v4-8 task, 120 CPUs, 128 GiB host RAM
+and 50 GiB disk in us-central2 at batch priority. It adds no wall-clock limit
+or preemption-retry override. Publish this source and plan before the single
+submission named `ema-gram-20-optimizer-cost-20261031`; this adds one diagnostic
+beside the current pilot, with no other accelerator jobs for this experiment. Fresh process attempts use
+separate online W&B identities and incremental local and GCS measurements.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
