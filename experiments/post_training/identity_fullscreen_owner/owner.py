@@ -81,7 +81,7 @@ def submit_serve(candidate, info):
             max_retries_failure=0,
             max_retries_preemption=0,
             timeout=Duration.from_seconds(CHILD_SECONDS),
-            priority_band=job_pb2.PRIORITY_BAND_INTERACTIVE,
+            priority_band=job_pb2.PRIORITY_BAND_PRODUCTION,
             constraints=None,
         )
         job = original_submit(client, *args, **kwargs)
@@ -220,7 +220,7 @@ def submit_cpu(client, candidate, kind, endpoint, trial: str | None = None):
             },
         ),
         timeout=Duration.from_seconds(CHILD_SECONDS if kind == "generation" else MATH_COORDINATOR_SECONDS),
-        priority_band=job_pb2.PRIORITY_BAND_INTERACTIVE,
+        priority_band=job_pb2.PRIORITY_BAND_PRODUCTION,
         max_retries_failure=0,
         max_retries_preemption=0,
     )

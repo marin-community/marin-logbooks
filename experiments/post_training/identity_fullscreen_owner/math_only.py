@@ -62,7 +62,7 @@ def submission(*, name: str, candidate: dict, archive: bytes, credentials: dict[
         timeout=Duration.from_seconds(OWNER_SECONDS),
         max_retries_failure=0,
         max_retries_preemption=0,
-        priority_band=job_pb2.PRIORITY_BAND_INTERACTIVE,
+        priority_band=job_pb2.PRIORITY_BAND_PRODUCTION,
     )
 
 
