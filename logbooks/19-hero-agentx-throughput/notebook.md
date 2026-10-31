@@ -1114,3 +1114,28 @@ reference bounds this to four rows without changing routing, math or native
 freshness checks decide whether a rebuild is needed. No binary substitution
 or rewritten prefix is allowed. This uses the existing8CPU/128GB holder and
 adds no GPU allocation; all four GPUs stay charged throughout CPU preparation.
+
+### 2026-10-31: replica cold metrics precondition corrected
+
+Both real DP16 groups reached readiness, and all four leader-to-private-API
+connections passed. The first client stopped at its first metrics scrape
+before sending inference requests. Native cold metrics expose all16engine
+cache-config identities but no KV usage gauge samples yet. The `mostrecent`
+usage gauge is updated from scheduler statistics; cache-config info is set
+explicitly at initialization. Requiring every usage gauge at this point was
+a client error. Readiness now requires every native cache-config identity;
+an absent usage gauge remains absent. No numerical threshold changed.
+
+The actual667,610-byte native scrape passes the corrected parser through
+local HTTP. Removing engine15cache-config info is rejected. The existing
+32endpoint/engine-series test still rejects counter resets and mixed owners.
+See [the real cold-metrics check](results/replica-native-cold-metrics-cpu-r2.json)
+and [the owner-boundary check](results/replica-metrics-cpu-preflight-r2.json).
+
+Both servers stopped normally; all32GPUs are empty, and all eight raw host
+archives (5,527,446compressed bytes) pass readback. Native controller attempts
+and provider UIDs stay unchanged across the failed client. See
+[the retained failure](results/replica-state-r1-failed.json). The retry uses
+fresh model servers inside the same held native groups. Speed still requires
+new native attempts after successful state qualification. No replica throughput
+is reported. The separate batch4 native CUTLASS build remains healthy.

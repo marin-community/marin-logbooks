@@ -53,7 +53,9 @@ def metrics(backends: list[dict], output: Path) -> dict:
                     "vllm:kv_cache_usage_perc",
                 }:
                     rows[rank][sample.name] = rows[rank].get(sample.name, 0) + sample.value
-        assert all("vllm:kv_cache_usage_perc" in row for row in rows.values())
+        # Native cache-config info identifies every engine before its first
+        # scheduler statistics arrive. Keep an absent usage gauge absent.
+        assert all("cache_config" in row for row in rows.values())
         result[endpoint] = rows
     (output / "metrics.json").write_text(json.dumps(result, indent=2) + "\n")
     return result
