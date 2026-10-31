@@ -53,9 +53,11 @@ def install_batch_trace(
     reference_capture_sizes: list[int] | None = None,
     disable_graph_replay: bool = False,
     local_piecewise_dp: bool = False,
+    checkpoint_first_dispatch: bool = False,
 ) -> None:
     # Record native CPU dispatch metadata; do not synchronize or profile the GPU.
     worker.hero_batch_trace = []
+    checkpoint_written = False
     if local_piecewise_dp:
         assert reference_capture_sizes is None
         validate_local_piecewise_config(worker)
@@ -64,6 +66,7 @@ def install_batch_trace(
     worker.hero_dispatch_original = dispatch
 
     def traced_dispatch(*args, **kwargs):
+        nonlocal checkpoint_written
         result = dispatch(*args, **kwargs)
         if local_piecewise_dp:
             result = local_piecewise_dispatch(result, args, kwargs)
@@ -88,6 +91,13 @@ def install_batch_trace(
                 "local_piecewise_dp": local_piecewise_dp,
             }
         )
+        if checkpoint_first_dispatch and not checkpoint_written:
+            path = Path(os.environ["IRIS_OUTPUT_DIR"]) / (
+                f"first-dispatch-local{local_piecewise_dp}-disabled{disable_graph_replay}"
+                f"-dp{worker.model_runner.dp_rank}.json"
+            )
+            path.write_text(json.dumps({"unix": time.time(), "row": worker.hero_batch_trace[-1]}) + "\n")
+            checkpoint_written = True
         return result
 
     module.dispatch_cg_and_sync_dp = traced_dispatch
