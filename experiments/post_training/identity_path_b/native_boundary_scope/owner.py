@@ -33,7 +33,7 @@ from experiments.post_training.identity_path_b.trend import wait_for_owned_endpo
 from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 from experiments.post_training.identity_t2 import serve as t2
 
-TARGETS_SHA256 = "919a42ef90c62bd1779ee5532acc776fd2a8203607f80ca3d0e03d9bc073239c"
+TARGETS_SHA256 = "e23460777d29ae4355a57cab9ff31ebaf89e9cdc2b7faa8bcf1f37d513ace0fc"
 
 
 def checked_audit_sha256(value):
@@ -219,7 +219,7 @@ def submission(*, label, name, output, credentials, audit_sha256, readiness_sha2
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=("A12",), required=True)
+    parser.add_argument("--target", choices=("A13",), required=True)
     parser.add_argument("--name", required=True)
     parser.add_argument("--output")
     parser.add_argument("--audit-sha256", required=True)
