@@ -1,0 +1,33 @@
+{
+  "source_parent_commit": "5da1300d38d93dff1180c57293b2e6547da7bff9",
+  "native_cli": "/home/romain/work/marin-community/marin/hero-dev-gpu-image-01a1846a/scripts/iris/dev_gpu.py",
+  "native_cli_sha256": "5b2753f58864e5d74762b59efd7e4a9464722565a6614b3a969fce3508c76be3",
+  "placement_manifest": "logbooks/19-hero-agentx-throughput/experiments/replica-native16-speed-r1.json",
+  "priority": "interactive",
+  "gpus_per_group": 16,
+  "groups": [
+    {
+      "name": "hero-agentx-replica16a-speed-r392-01a1846a",
+      "nodes": 4
+    },
+    {
+      "name": "hero-agentx-replica16b-speed-r392-01a1846a",
+      "nodes": 4
+    }
+  ],
+  "cpu_per_node": 32,
+  "memory_per_node": "768GB",
+  "disk_per_node": "1TB",
+  "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+  "max_interactive_gpus": 32,
+  "max_concurrent_batch_gpus_in_this_stage": 4,
+  "policy": "Fresh inventory and resource-board announcement before submission; verify all actual native identities and physical GPUs after admission. No pretraining domain. No artificial JobInfo groups. Holders remain charged until native release.",
+  "allocation_precondition": "Qualified2x16 state proof with all native fences, all old model servers stopped and every archive read back. Release oldA16 and verify its provider GPUs gone before acquiring newA16, while oldB16 remains held; then release oldB16 and acquire newB16. At most32interactive at every point. Do not serve a mixed old/new pair.",
+  "qualification_input": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/replica-state-r2-qualified-05dc7897ca9d906d3621a17d0264c1db89d6926bdb441fed4edb06ce54d92081.json",
+    "sha256": "05dc7897ca9d906d3621a17d0264c1db89d6926bdb441fed4edb06ce54d92081",
+    "bytes": 14952,
+    "readback_sha256": "05dc7897ca9d906d3621a17d0264c1db89d6926bdb441fed4edb06ce54d92081",
+    "server_recipe_sha256": "041e466e69a922176a4059af9dedb78fc225bfd7bca5afe147ee5aa4b7b15073"
+  }
+}
