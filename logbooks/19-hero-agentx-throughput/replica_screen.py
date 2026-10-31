@@ -10,6 +10,7 @@ Client completion alone never qualifies a deployment or an AgentX result.
 """
 
 import argparse
+import hashlib
 import json
 import os
 import time
@@ -37,6 +38,10 @@ def metrics(backends: list[dict], output: Path) -> dict:
             for sample in family.samples:
                 rank = sample.labels.get("engine")
                 if rank not in rows:
+                    continue
+                if sample.name == "vllm:cache_config_info":
+                    assert sample.value == 1
+                    rows[rank]["cache_config"] = dict(sample.labels)
                     continue
                 if sample.name in {
                     "vllm:request_success_total",
@@ -94,6 +99,8 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--primary-diagnostic", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--phase", choices=("state", "speed"), required=True)
+    parser.add_argument("--qualification", type=Path)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
     backends = manifest["replica_backends"]
@@ -114,6 +121,31 @@ def main() -> None:
         *command[: command.index("python")],
     ]
     assert "uvx" in prefix and "--from" in prefix
+    if args.phase == "speed":
+        assert args.qualification is not None
+        qualification = json.loads(args.qualification.read_text())
+        assert qualification["qualified"] and qualification["all_native_attempt_fences_passed"]
+        assert qualification["all_groups_stopped"]
+        assert qualification["layout"] == [backend["dp"] for backend in backends]
+        assert qualification["server_recipe_sha256"] == manifest["server_recipe_sha256"]
+        assert qualification["retention"] and all(
+            row["archive_sha256"] == row["readback_sha256"] for row in qualification["retention"]
+        )
+        previous = set(qualification["gang_attempts"].values())
+        current = {uid for backend in backends for uid in backend["gang_attempts"].values()}
+        assert current.isdisjoint(previous), "Speed needs fresh servers after state qualification"
+    else:
+        assert args.qualification is None
+    with args.primary_diagnostic.with_name("replica-client-claim.json").open("x") as stream:
+        json.dump(
+            {
+                "phase": args.phase,
+                "manifest_sha256": hashlib.sha256(args.manifest.read_bytes()).hexdigest(),
+                "pid": os.getpid(),
+                "started_unix": time.time(),
+            },
+            stream,
+        )
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "manifest.json").write_text(args.manifest.read_text())
     tokenizer = prepare_tokenizer(manifest, args.output / "tokenizer")
@@ -124,20 +156,21 @@ def main() -> None:
         "--tokenizer",
         str(tokenizer / "tokenizer.json"),
     ]
-    for index, backend in enumerate(backends):
-        before_dir = args.output / f"direct-{index}-before"
-        before_dir.mkdir()
-        before = successful_requests(metrics(backends, before_dir))
-        output = args.output / f"direct-state-{index}"
-        run_logged(
-            [*probe, "--base-url", backend["url"], "--rank", "0", "--output", str(output)],
-            dict(os.environ),
-            args.output / f"direct-state-{index}.log",
-            timeout=900,
-        )
-        check_probe(output)
-        owner = completed_probe_owner(backends, before, args.output / f"direct-{index}-after")
-        assert owner == (backend["url"] + "/metrics", "0"), owner
+    if args.phase == "state":
+        for index, backend in enumerate(backends):
+            before_dir = args.output / f"direct-{index}-before"
+            before_dir.mkdir()
+            before = successful_requests(metrics(backends, before_dir))
+            output = args.output / f"direct-state-{index}"
+            run_logged(
+                [*probe, "--base-url", backend["url"], "--rank", "0", "--output", str(output)],
+                dict(os.environ),
+                args.output / f"direct-state-{index}.log",
+                timeout=900,
+            )
+            check_probe(output)
+            owner = completed_probe_owner(backends, before, args.output / f"direct-{index}-after")
+            assert owner == (backend["url"] + "/metrics", "0"), owner
     router = manifest["router"] | {
         "backend_urls": [backend["url"] for backend in backends],
         "data_parallel_size": backends[0]["dp"],
@@ -145,57 +178,59 @@ def main() -> None:
     router.pop("backend_url", None)
     owners = []
     with upstream_router(router, args.output) as base_url:
-        for index in range(16):
-            before_dir = args.output / f"route-{index}-before"
+        if args.phase == "state":
+            for index in range(16):
+                before_dir = args.output / f"route-{index}-before"
+                before_dir.mkdir()
+                before = successful_requests(metrics(backends, before_dir))
+                output = args.output / f"routed-state-{index}"
+                session = f"hero-replica-state-{index}"
+                run_logged(
+                    [*probe, "--base-url", base_url, "--session-id", session, "--output", str(output)],
+                    dict(os.environ),
+                    args.output / f"routed-state-{index}.log",
+                    timeout=900,
+                )
+                check_probe(output)
+                owner = completed_probe_owner(backends, before, args.output / f"route-{index}-after")
+                owners.append({"session": session, "endpoint": owner[0], "engine": owner[1]})
+                if {owner["endpoint"] for owner in owners} == {backend["url"] + "/metrics" for backend in backends}:
+                    break
+            else:
+                raise RuntimeError("Fixed session controls did not exercise every backend")
+            (args.output / "routed-state-owners.json").write_text(json.dumps(owners, indent=2) + "\n")
+        if args.phase == "speed":
+            before_dir = args.output / "screen-before"
             before_dir.mkdir()
-            before = successful_requests(metrics(backends, before_dir))
-            output = args.output / f"routed-state-{index}"
-            session = f"hero-replica-state-{index}"
-            run_logged(
-                [*probe, "--base-url", base_url, "--session-id", session, "--output", str(output)],
-                dict(os.environ),
-                args.output / f"routed-state-{index}.log",
-                timeout=900,
-            )
-            check_probe(output)
-            owner = completed_probe_owner(backends, before, args.output / f"route-{index}-after")
-            owners.append({"session": session, "endpoint": owner[0], "engine": owner[1]})
-            if {owner["endpoint"] for owner in owners} == {backend["url"] + "/metrics" for backend in backends}:
-                break
-        else:
-            raise RuntimeError("Fixed session controls did not exercise every backend")
-        (args.output / "routed-state-owners.json").write_text(json.dumps(owners, indent=2) + "\n")
-        for backend in backends:
-            request = urllib.request.Request(backend["url"] + "/reset_prefix_cache", data=b"", method="POST")
-            with urllib.request.urlopen(request, timeout=90) as response:
-                assert json.load(response) == {"success": True}
-        before_dir = args.output / "screen-before"
-        before_dir.mkdir()
-        metrics(backends, before_dir)
-        for case in manifest["screen_cases"]:
-            output = args.output / "clients" / case["name"]
-            output.mkdir(parents=True)
-            argv = [
-                *prefix,
-                *case["argv"],
-                "--result-dir",
-                str(output),
-                "--result-filename",
-                "result.json",
-            ]
-            argv[argv.index("--base-url") + 1] = base_url
-            argv[argv.index("--tokenizer") + 1] = str(tokenizer)
-            (output / "command.json").write_text(json.dumps(argv, indent=2) + "\n")
-            run_logged(argv, dict(os.environ), output / "client.log", timeout=case["timeout_seconds"])
-            result = json.loads((output / "result.json").read_text())
-            assert result["failed"] == 0 and result["completed"] == int(argv[argv.index("--num-prompts") + 1])
-        after_dir = args.output / "screen-after"
-        after_dir.mkdir()
-        metrics(backends, after_dir)
+            metrics(backends, before_dir)
+            for case in manifest["screen_cases"]:
+                output = args.output / "clients" / case["name"]
+                output.mkdir(parents=True)
+                argv = [
+                    *prefix,
+                    *case["argv"],
+                    "--result-dir",
+                    str(output),
+                    "--result-filename",
+                    "result.json",
+                ]
+                argv[argv.index("--base-url") + 1] = base_url
+                argv[argv.index("--tokenizer") + 1] = str(tokenizer)
+                (output / "command.json").write_text(json.dumps(argv, indent=2) + "\n")
+                run_logged(argv, dict(os.environ), output / "client.log", timeout=case["timeout_seconds"])
+                result = json.loads((output / "result.json").read_text())
+                assert result["failed"] == 0 and result["completed"] == int(argv[argv.index("--num-prompts") + 1])
+            after_dir = args.output / "screen-after"
+            after_dir.mkdir()
+            metrics(backends, after_dir)
     record = {
         "status": "client_completed_pending_external_native_attempt_fences_and_retention",
+        "phase": args.phase,
         "routed_state_owners": owners,
         "physical_gpus": 32,
+        "layout": [backend["dp"] for backend in backends],
+        "server_recipe_sha256": manifest["server_recipe_sha256"],
+        "gang_attempts": {task: uid for backend in backends for task, uid in backend["gang_attempts"].items()},
         "scope": (
             "Synthetic client only. No AgentX result. Preserve each endpoint/engine identity; no Router metrics alias."
         ),

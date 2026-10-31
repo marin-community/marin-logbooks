@@ -134,6 +134,23 @@ def set_compilation_config(server: VllmEnvironment, compilation: dict) -> None:
         server.extra_cli_args.extend([flag, value])
 
 
+def use_private_api_binding(server: VllmEnvironment, launch: IrisVllmLaunch, diagnostic: dict, profile: bool) -> dict:
+    """Bind an ordinary inference API to this actual native task's private IP."""
+    assert diagnostic["api_bind_mode"] == "iris_private"
+    assert not profile and not diagnostic.get("trace_batches")
+    assert os.environ.get("VLLM_SERVER_DEV_MODE", "0") == "0"
+    assert "VLLM_SERVER_DEV_MODE" not in diagnostic.get("environment_overrides", {})
+    address = ipaddress.ip_address(launch.host_ip)
+    assert address.version == 4 and address.is_private
+    assert not address.is_loopback and not address.is_unspecified and not address.is_link_local
+    server.host = launch.host_ip
+    return {
+        "mode": "iris_private",
+        "url": f"http://{server.host}:{server.port}",
+        "source": "Actual native IrisVllmLaunch.host_ip; no public or wildcard bind",
+    }
+
+
 def use_numa_binding(server: VllmEnvironment, utility: dict) -> None:
     directory = Path("/iris/candidates") / ("numactl-" + utility["deb"]["sha256"])
     directory.mkdir(parents=True, exist_ok=True)
@@ -181,6 +198,7 @@ def serve(
     devices = hardware["hosts"] * hardware["gpus"]
     assert devices in (16, 32)
     output.mkdir(parents=True, exist_ok=False)
+    (output / "input-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     identity = {key: os.environ[key] for key in ("IRIS_TASK_ID", "IRIS_ATTEMPT_UID", "IRIS_NODE_NAME", "IRIS_BUNDLE_ID")}
     identity["captured_unix"] = time.time()
     identity["gpus"] = subprocess.check_output(
@@ -271,18 +289,7 @@ def serve(
             diagnostic = manifest.get("diagnostic_request", {})
             assert diagnostic.get("api_bind_mode") in (None, "iris_private")
             if diagnostic.get("api_bind_mode") == "iris_private":
-                assert not profile and not diagnostic.get("trace_batches")
-                assert os.environ.get("VLLM_SERVER_DEV_MODE", "0") == "0"
-                assert "VLLM_SERVER_DEV_MODE" not in diagnostic.get("environment_overrides", {})
-                address = ipaddress.ip_address(launch.host_ip)
-                assert address.version == 4 and address.is_private
-                assert not address.is_loopback and not address.is_unspecified and not address.is_link_local
-                server.host = launch.host_ip
-                record["api_bind"] = {
-                    "mode": "iris_private",
-                    "url": f"http://{server.host}:{server.port}",
-                    "source": "Actual native IrisVllmLaunch.host_ip; no public or wildcard bind",
-                }
+                record["api_bind"] = use_private_api_binding(server, launch, diagnostic, profile)
             if "kernel_config" in diagnostic:
                 index = server.extra_cli_args.index("--kernel-config") + 1
                 kernel = json.loads(server.extra_cli_args[index]) | diagnostic["kernel_config"]
