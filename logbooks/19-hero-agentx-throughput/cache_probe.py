@@ -103,7 +103,17 @@ def run(
         "\nExplain how to handle a malformed comment in three sentences.\nAnswer:",
     )
     prompts = [prefix + tokenizer.encode(text, add_special_tokens=False).ids for text in suffixes]
-    (output / "inputs.json").write_text(json.dumps({"tokenizer_sha256": TOKENIZER_SHA256, "prompts": prompts}))
+    (output / "inputs.json").write_text(
+        json.dumps(
+            {
+                "tokenizer_sha256": TOKENIZER_SHA256,
+                "prompts": prompts,
+                "requested_dp_rank": rank,
+                "trace_observer_dp_rank": 0 if trace_batches else None,
+                "trace_scope": "First-engine RPC response contains shared DP vectors; every worker saves its own trace.",
+            }
+        )
+    )
     salt = hashlib.sha256(str(output.resolve()).encode()).hexdigest()
     # First obtain independent cold references. Then share one cache namespace
     # across different branches and varying API batch sizes, ending at branch A.
@@ -122,7 +132,7 @@ def run(
     references = {}
     comparisons = []
     if trace_batches:
-        assert rank == 0
+        assert rank is not None and rank >= 0
         batch_trace(
             base_url,
             "install_hero_batch_trace",
