@@ -1,0 +1,87 @@
+{
+  "experiments": {
+    "reference": {
+      "experiment": "full-moe-unbuffered16-latent-snapshot-r1",
+      "retention_archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-latent-snapshot-r1/host-0/outputs-0247ec88c16beaf455c73a82bdf19578b316c3c42bf1f6fa6c2b2b5889fbc9a3.tar.zst",
+      "retention_archive_sha256": "0247ec88c16beaf455c73a82bdf19578b316c3c42bf1f6fa6c2b2b5889fbc9a3",
+      "source": {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/da328ae44c49cd3cd382df88eb7c7ddbfc129fa076143b3eb891c46b1d1c4b33/cache/vllm/torch_compile_cache/torch_aot_compile/d4c3a7ecec8d6f62ce7b6f15f0d1a4b2b422f6d699cb1c19a20d81c0e7c59b75/inductor_cache/4r/c4r5slcnqpnqescrdfnrcn3eox3dqpnms2mcvuuhd2xm4mmyhotj.py",
+        "retained": "/iris/outputs/full-moe-unbuffered16-latent-snapshot-r1-entrypoint/compiler-sources/after-numerics/inductor/4r/c4r5slcnqpnqescrdfnrcn3eox3dqpnms2mcvuuhd2xm4mmyhotj.py",
+        "bytes": 4031,
+        "sha256": "c3f7b650e03899008135da1c6261d321243bc53058cf649c9cc52f8c658f0c54"
+      },
+      "kernel": {
+        "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/da328ae44c49cd3cd382df88eb7c7ddbfc129fa076143b3eb891c46b1d1c4b33/cache/vllm/torch_compile_cache/torch_aot_compile/d4c3a7ecec8d6f62ce7b6f15f0d1a4b2b422f6d699cb1c19a20d81c0e7c59b75/inductor_cache/4r/c4r5slcnqpnqescrdfnrcn3eox3dqpnms2mcvuuhd2xm4mmyhotj.py",
+        "name": "triton_red_fused_rms_norm_3",
+        "launchers": [
+          {
+            "kwargs": {
+              "XBLOCK": 1,
+              "R0_BLOCK": 4096
+            },
+            "num_warps": 16,
+            "num_stages": 1,
+            "cache_hash": "M4ERAUREPOKRCDXQLFZA2STXDMSVQQDPKVSNIB5AU3N7P5R5ZFZQ",
+            "n_regs": 23,
+            "n_spills": 0
+          }
+        ]
+      },
+      "latent_snapshots": [
+        {
+          "file": "/iris/outputs/full-moe-unbuffered16-latent-snapshot-r1-entrypoint/latent-projection-0.pt",
+          "sha256": "ecd4541cb5b9fd22b24c8c6e291b923c9708d0cd0d9bade773f0da03a41de0d9",
+          "bytes": 75506261
+        },
+        {
+          "file": "/iris/outputs/full-moe-unbuffered16-latent-snapshot-r1-entrypoint/latent-projection-1.pt",
+          "sha256": "378c1321ef9388cfeab4348520f05a4f42f701e38d371d6d13174331dac72458",
+          "bytes": 37757261
+        }
+      ]
+    },
+    "candidate": {
+      "experiment": "native-local-piecewise16-latent-snapshot-r1",
+      "retention_archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-latent-snapshot-r1/host-0/outputs-7a60ddbd73a631ca1e9752c244620b79e02fe1785606c61fadf37b7f89e894bf.tar.zst",
+      "retention_archive_sha256": "7a60ddbd73a631ca1e9752c244620b79e02fe1785606c61fadf37b7f89e894bf",
+      "source": {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/70c8f0672b639cf73fe86b0bf2aa98e2113e0c4b555d2e5b681ae1d28929f6ef/cache/vllm/torch_compile_cache/torch_aot_compile/6b8f3aa916fbebf5c51f1832e47c784ddc9137720a182b27675865dc157a75aa/inductor_cache/4r/c4r5slcnqpnqescrdfnrcn3eox3dqpnms2mcvuuhd2xm4mmyhotj.py",
+        "retained": "/iris/outputs/native-local-piecewise16-latent-snapshot-r1-entrypoint/compiler-sources/ready/inductor/4r/c4r5slcnqpnqescrdfnrcn3eox3dqpnms2mcvuuhd2xm4mmyhotj.py",
+        "bytes": 4031,
+        "sha256": "c3f7b650e03899008135da1c6261d321243bc53058cf649c9cc52f8c658f0c54"
+      },
+      "kernel": {
+        "module_file": "/tmp/marin-vllm-compilation-cache/v5/entries/70c8f0672b639cf73fe86b0bf2aa98e2113e0c4b555d2e5b681ae1d28929f6ef/cache/vllm/torch_compile_cache/torch_aot_compile/6b8f3aa916fbebf5c51f1832e47c784ddc9137720a182b27675865dc157a75aa/inductor_cache/4r/c4r5slcnqpnqescrdfnrcn3eox3dqpnms2mcvuuhd2xm4mmyhotj.py",
+        "name": "triton_red_fused_rms_norm_3",
+        "launchers": [
+          {
+            "kwargs": {
+              "XBLOCK": 1,
+              "R0_BLOCK": 1024
+            },
+            "num_warps": 8,
+            "num_stages": 1,
+            "cache_hash": "3C2FYUSDD2AQMZPTQDOHO6K3DETXL4Q4YHBXOO5WIRGFAIA25UTA",
+            "n_regs": 22,
+            "n_spills": 0
+          }
+        ]
+      },
+      "latent_snapshots": [
+        {
+          "file": "/iris/outputs/native-local-piecewise16-latent-snapshot-r1-entrypoint/latent-projection-0.pt",
+          "sha256": "ecd4541cb5b9fd22b24c8c6e291b923c9708d0cd0d9bade773f0da03a41de0d9",
+          "bytes": 75506261
+        },
+        {
+          "file": "/iris/outputs/native-local-piecewise16-latent-snapshot-r1-entrypoint/latent-projection-1.pt",
+          "sha256": "378c1321ef9388cfeab4348520f05a4f42f701e38d371d6d13174331dac72458",
+          "bytes": 37757261
+        }
+      ]
+    }
+  },
+  "source_file": "/iris/outputs/full-moe-unbuffered16-latent-snapshot-r1-entrypoint/compiler-sources/after-numerics/inductor/4r/c4r5slcnqpnqescrdfnrcn3eox3dqpnms2mcvuuhd2xm4mmyhotj.py",
+  "source_parent_commit": "38d278f6a62ea06115212c0214b6c6b482c0c6ec",
+  "scope": "One-GPU numerical replay on the original16-GPU holder. Same captured RMSNorm source and raw projected inputs/weights; fix the native autotuner to each actual recorded launch configuration. Require bit-exact reconstruction of both2048x3072 prefill captures per configuration plus unchanged native RMSNorm tolerance against independent native Torch reference. No model serving or speed test, no new allocation/dependency."
+}

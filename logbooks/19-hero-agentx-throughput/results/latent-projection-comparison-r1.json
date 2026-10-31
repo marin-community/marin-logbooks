@@ -1,0 +1,510 @@
+{
+  "status": "completed",
+  "source_sha256": "964e7a748158d460e82e0bcb9957f7f0f05a2d09d281ff266bb751ebbb7146f5",
+  "projection_weights_equal": true,
+  "rows": [
+    {
+      "prefill_index": 0,
+      "input": {
+        "shape": [
+          2048,
+          6144
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 12582912,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "projected": {
+        "shape": [
+          2048,
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 6291456,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "norm_weight": {
+        "shape": [
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 3072,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "normalized": {
+        "shape": [
+          2048,
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": false,
+        "different_elements": 56,
+        "elements": 6291456,
+        "max_absolute_delta": 0.000244140625,
+        "mean_absolute_delta": 7.541226670904067e-11,
+        "examples": [
+          {
+            "index": [
+              740,
+              252
+            ],
+            "reference": -0.00262451171875,
+            "candidate": -0.0026397705078125
+          },
+          {
+            "index": [
+              740,
+              302
+            ],
+            "reference": 0.00045013427734375,
+            "candidate": 0.0004520416259765625
+          },
+          {
+            "index": [
+              740,
+              405
+            ],
+            "reference": -0.00066375732421875,
+            "candidate": -0.000667572021484375
+          }
+        ]
+      },
+      "sample_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        740,
+        917,
+        1665
+      ],
+      "independent_checks": {
+        "reference": {
+          "projection_vs_fp32_rounded": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 143,
+            "elements": 33792,
+            "max_absolute_delta": 0.000244140625,
+            "mean_absolute_delta": 8.221380198847328e-08,
+            "examples": [
+              {
+                "index": [
+                  0,
+                  714
+                ],
+                "reference": 0.0076904296875,
+                "candidate": 0.007659912109375
+              },
+              {
+                "index": [
+                  0,
+                  1332
+                ],
+                "reference": 0.01361083984375,
+                "candidate": 0.0135498046875
+              },
+              {
+                "index": [
+                  0,
+                  1453
+                ],
+                "reference": -0.000797271728515625,
+                "candidate": -0.00080108642578125
+              }
+            ]
+          },
+          "normalization_vs_cpu_reference": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 40,
+            "elements": 33792,
+            "max_absolute_delta": 0.000244140625,
+            "mean_absolute_delta": 1.2925628567472813e-08,
+            "examples": [
+              {
+                "index": [
+                  8,
+                  252
+                ],
+                "reference": -0.0026397705078125,
+                "candidate": -0.00262451171875
+              },
+              {
+                "index": [
+                  8,
+                  302
+                ],
+                "reference": 0.0004520416259765625,
+                "candidate": 0.00045013427734375
+              },
+              {
+                "index": [
+                  8,
+                  405
+                ],
+                "reference": -0.000667572021484375,
+                "candidate": -0.00066375732421875
+              }
+            ]
+          }
+        },
+        "candidate": {
+          "projection_vs_fp32_rounded": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 143,
+            "elements": 33792,
+            "max_absolute_delta": 0.000244140625,
+            "mean_absolute_delta": 8.221380198847328e-08,
+            "examples": [
+              {
+                "index": [
+                  0,
+                  714
+                ],
+                "reference": 0.0076904296875,
+                "candidate": 0.007659912109375
+              },
+              {
+                "index": [
+                  0,
+                  1332
+                ],
+                "reference": 0.01361083984375,
+                "candidate": 0.0135498046875
+              },
+              {
+                "index": [
+                  0,
+                  1453
+                ],
+                "reference": -0.000797271728515625,
+                "candidate": -0.00080108642578125
+              }
+            ]
+          },
+          "normalization_vs_cpu_reference": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 16,
+            "elements": 33792,
+            "max_absolute_delta": 7.62939453125e-06,
+            "mean_absolute_delta": 1.114764947018898e-09,
+            "examples": [
+              {
+                "index": [
+                  9,
+                  187
+                ],
+                "reference": -0.0002803802490234375,
+                "candidate": -0.00028228759765625
+              },
+              {
+                "index": [
+                  9,
+                  255
+                ],
+                "reference": 0.00040435791015625,
+                "candidate": 0.0004062652587890625
+              },
+              {
+                "index": [
+                  9,
+                  538
+                ],
+                "reference": 5.054473876953125e-05,
+                "candidate": 5.078315734863281e-05
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "prefill_index": 1,
+      "input": {
+        "shape": [
+          2048,
+          6144
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 12582912,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "projected": {
+        "shape": [
+          2048,
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 6291456,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "norm_weight": {
+        "shape": [
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 3072,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "normalized": {
+        "shape": [
+          2048,
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": false,
+        "different_elements": 65,
+        "elements": 6291456,
+        "max_absolute_delta": 1.52587890625e-05,
+        "mean_absolute_delta": 3.306865892227506e-11,
+        "examples": [
+          {
+            "index": [
+              240,
+              41
+            ],
+            "reference": 0.0030059814453125,
+            "candidate": 0.003021240234375
+          },
+          {
+            "index": [
+              240,
+              186
+            ],
+            "reference": -0.00244140625,
+            "candidate": -0.0024566650390625
+          },
+          {
+            "index": [
+              240,
+              196
+            ],
+            "reference": 0.0002651214599609375,
+            "candidate": 0.00026702880859375
+          }
+        ]
+      },
+      "sample_rows": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        240,
+        592,
+        1340
+      ],
+      "independent_checks": {
+        "reference": {
+          "projection_vs_fp32_rounded": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 168,
+            "elements": 33792,
+            "max_absolute_delta": 0.000244140625,
+            "mean_absolute_delta": 7.673660462614862e-08,
+            "examples": [
+              {
+                "index": [
+                  0,
+                  251
+                ],
+                "reference": 6.771087646484375e-05,
+                "candidate": 6.723403930664062e-05
+              },
+              {
+                "index": [
+                  0,
+                  700
+                ],
+                "reference": -1.2442469596862793e-06,
+                "candidate": -1.3262033462524414e-06
+              },
+              {
+                "index": [
+                  0,
+                  770
+                ],
+                "reference": -0.0004100799560546875,
+                "candidate": -0.000408172607421875
+              }
+            ]
+          },
+          "normalization_vs_cpu_reference": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 43,
+            "elements": 33792,
+            "max_absolute_delta": 1.52587890625e-05,
+            "mean_absolute_delta": 4.699827638177112e-09,
+            "examples": [
+              {
+                "index": [
+                  8,
+                  41
+                ],
+                "reference": 0.003021240234375,
+                "candidate": 0.0030059814453125
+              },
+              {
+                "index": [
+                  8,
+                  186
+                ],
+                "reference": -0.0024566650390625,
+                "candidate": -0.00244140625
+              },
+              {
+                "index": [
+                  8,
+                  196
+                ],
+                "reference": 0.00026702880859375,
+                "candidate": 0.0002651214599609375
+              }
+            ]
+          }
+        },
+        "candidate": {
+          "projection_vs_fp32_rounded": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 168,
+            "elements": 33792,
+            "max_absolute_delta": 0.000244140625,
+            "mean_absolute_delta": 7.673660462614862e-08,
+            "examples": [
+              {
+                "index": [
+                  0,
+                  251
+                ],
+                "reference": 6.771087646484375e-05,
+                "candidate": 6.723403930664062e-05
+              },
+              {
+                "index": [
+                  0,
+                  700
+                ],
+                "reference": -1.2442469596862793e-06,
+                "candidate": -1.3262033462524414e-06
+              },
+              {
+                "index": [
+                  0,
+                  770
+                ],
+                "reference": -0.0004100799560546875,
+                "candidate": -0.000408172607421875
+              }
+            ]
+          },
+          "normalization_vs_cpu_reference": {
+            "shape": [
+              11,
+              3072
+            ],
+            "dtype": "torch.bfloat16",
+            "exact": false,
+            "different_elements": 22,
+            "elements": 33792,
+            "max_absolute_delta": 7.62939453125e-06,
+            "mean_absolute_delta": 1.4569554451782096e-09,
+            "examples": [
+              {
+                "index": [
+                  9,
+                  108
+                ],
+                "reference": -0.0002288818359375,
+                "candidate": -0.0002307891845703125
+              },
+              {
+                "index": [
+                  9,
+                  137
+                ],
+                "reference": -3.147125244140625e-05,
+                "candidate": -3.170967102050781e-05
+              },
+              {
+                "index": [
+                  9,
+                  271
+                ],
+                "reference": -0.0003452301025390625,
+                "candidate": -0.000347137451171875
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "scope": "Full observed inputs and projection outputs; independent FP32 product on eight initial rows and up to24 changed-row entries. CPU normalization preserves BF16 cast before weight multiplication. Reports differences without introducing or changing a tolerance. No speed claim.",
+  "reference_source_commit": "b467e08029578ade74367d69a7739758d17d4582",
+  "candidate_source_commit": "38d278f6a62ea06115212c0214b6c6b482c0c6ec"
+}
