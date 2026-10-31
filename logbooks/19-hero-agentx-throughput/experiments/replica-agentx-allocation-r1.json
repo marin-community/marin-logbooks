@@ -1,0 +1,33 @@
+{
+  "source_parent_commit": "df04e5a035ce063d7b312309143e05e160185641",
+  "native_cli": "/home/romain/work/marin-community/marin/hero-dev-gpu-image-01a1846a/scripts/iris/dev_gpu.py",
+  "native_cli_sha256": "5b2753f58864e5d74762b59efd7e4a9464722565a6614b3a969fce3508c76be3",
+  "placement_manifest": "logbooks/19-hero-agentx-throughput/experiments/replica-native16-agentx-c256-r1.json",
+  "priority": "interactive",
+  "gpus_per_group": 16,
+  "groups": [
+    {
+      "name": "hero-agentx-replica16a-agentx-r392-01a1846a",
+      "nodes": 4
+    },
+    {
+      "name": "hero-agentx-replica16b-agentx-r392-01a1846a",
+      "nodes": 4
+    }
+  ],
+  "cpu_per_node": 32,
+  "memory_per_node": "768GB",
+  "disk_per_node": "1TB",
+  "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+  "max_interactive_gpus": 32,
+  "max_concurrent_batch_gpus_in_this_stage": 32,
+  "policy": "Fresh inventory and resource-board announcement before submission; verify all actual native identities and physical GPUs after admission. No pretraining domain. No artificial JobInfo groups. Holders remain charged until native release.",
+  "allocation_precondition": "Retainedstatequalification and pinnednativeCLIpreflight complete. Native32C256timingcomplete before acquisition; at most32interactive+32batch. Each newholder fresh UID, all32UUIDs distinct and disjoint currentnative32batch. Allraw native32archivesmustcomplete before any AgentX inference; source/configpublishedfirst. ReleaseifprolongedCPUwait. No synthetic/statework on freshfullhourservers.",
+  "qualification_input": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/replica-state-r2-qualified-05dc7897ca9d906d3621a17d0264c1db89d6926bdb441fed4edb06ce54d92081.json",
+    "sha256": "05dc7897ca9d906d3621a17d0264c1db89d6926bdb441fed4edb06ce54d92081",
+    "bytes": 14952,
+    "readback_sha256": "05dc7897ca9d906d3621a17d0264c1db89d6926bdb441fed4edb06ce54d92081",
+    "server_recipe_sha256": "041e466e69a922176a4059af9dedb78fc225bfd7bca5afe147ee5aa4b7b15073"
+  }
+}
