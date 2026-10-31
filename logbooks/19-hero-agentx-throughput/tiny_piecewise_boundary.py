@@ -115,8 +115,18 @@ def main() -> None:
             if manifest.get("moe_snapshot", False):
                 assert disable_replay
                 phase["moe_snapshot_installation"] = batch_trace(base_url, "install_hero_moe_snapshot")
-            for index, lengths in enumerate([[80], [17, 33], [15, 47, 63], [16]]):
-                prompts = [[73 + i % 17 for i in range(length)] for length in lengths]
+            cases = manifest.get("requests")
+            if cases is None:
+                cases = [
+                    {
+                        "prompts": [[73 + i % 17 for i in range(length)] for length in lengths],
+                        "cache_namespace": str(index),
+                    }
+                    for index, lengths in enumerate([[80], [17, 33], [15, 47, 63], [16]])
+                ]
+            for case in cases:
+                prompts = case["prompts"]
+                lengths = [len(prompt) for prompt in prompts]
                 payload = {
                     "model": "tiny-hero-boundary",
                     "prompt": prompts,
@@ -127,7 +137,7 @@ def main() -> None:
                     "seed": 42,
                     "logprobs": 20,
                     "return_tokens_as_token_ids": True,
-                    "cache_salt": f"boundary-{local}-{index}",
+                    "cache_salt": f"boundary-{local}-{case['cache_namespace']}",
                 }
                 request = urllib.request.Request(
                     base_url + "/v1/completions",
