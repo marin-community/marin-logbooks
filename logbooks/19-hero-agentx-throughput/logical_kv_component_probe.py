@@ -81,7 +81,8 @@ def main() -> None:
         try:
             for name in TESTS:
                 for enabled in (False, True):
-                    namespace[name](enabled)
+                    with set_current_vllm_config(VllmConfig()):
+                        namespace[name](enabled)
                     cases.append({"test": name, "logical_kv_cache": enabled, "status": "passed"})
         finally:
             cleanup_dist_env_and_memory()
