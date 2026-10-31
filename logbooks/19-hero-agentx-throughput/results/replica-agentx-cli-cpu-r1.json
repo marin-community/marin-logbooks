@@ -1,0 +1,122 @@
+{
+  "status": "pinned_agentx_1.0.12_cli_parse_resolve_and_plan_passed_on_cpu",
+  "cuda_hidden": true,
+  "source_file": "replica_agentx.py",
+  "source_sha256": "ed99cf39e9db99293cea373fddc84ed2175334526dcbae28e1e409109c921a99",
+  "native_command_preserved_except_explicit_server_metrics": true,
+  "benchmark": {
+    "endpoint": {
+      "urls": [
+        "http://127.0.0.1:38217"
+      ],
+      "url_strategy": "round_robin",
+      "type": "chat",
+      "path": "/v1/chat/completions",
+      "api_key": null,
+      "timeout": 21600.0,
+      "streaming": true,
+      "transport": null,
+      "connection_reuse": "pooled",
+      "use_legacy_max_tokens": false,
+      "use_server_token_count": true,
+      "template": null,
+      "headers": {},
+      "extra": {},
+      "download_video_content": false,
+      "request_content_type": null,
+      "session_header": null,
+      "uuid_and_strip": false,
+      "wait_for_model_timeout": 0.0,
+      "wait_for_model_interval": 5.0,
+      "wait_for_model_mode": "inference"
+    },
+    "datasets": [
+      {
+        "name": "main",
+        "type": "public",
+        "dataset": "semianalysis_cc_traces_weka_062126_256k",
+        "entries": 393,
+        "random_seed": 42,
+        "sampling": "sequential",
+        "hf_subset": null,
+        "filters": {},
+        "hf_weka_dataset": null,
+        "inter_turn_delay_cap_seconds": null,
+        "trace_idle_gap_cap_seconds": 300.0,
+        "ignore_trace_delays": false,
+        "use_think_time_only": false,
+        "max_context_length": 262144,
+        "cache_bust": {
+          "target": "none"
+        },
+        "prompts": null,
+        "synthesis": null,
+        "osl": null
+      }
+    ],
+    "phases": [
+      {
+        "adaptive_scale": false,
+        "adaptive_sustain_duration": null,
+        "adaptive_assessment_period": null,
+        "adaptive_min_completed_requests": 1,
+        "adaptive_control_variable": "concurrency",
+        "adaptive_control_min": 1.0,
+        "adaptive_control_max": null,
+        "adaptive_scale_strategy_type": "ramp_until_fail",
+        "adaptive_scale_step_policy": "sla_margin",
+        "adaptive_scale_base_step": 10,
+        "adaptive_scale_max_step_multiplier": 4,
+        "adaptive_scale_step_percent": 25.0,
+        "name": "profiling",
+        "kind": "profiling",
+        "type": "concurrency",
+        "exclude_from_results": false,
+        "requests": null,
+        "duration": 3600.0,
+        "sessions": null,
+        "concurrency": 256,
+        "concurrency_ramp": null,
+        "prefill_concurrency": null,
+        "prefill_ramp": null,
+        "grace_period": 30.0,
+        "cancellation": null,
+        "sla": [],
+        "seamless": false,
+        "timing_mode": null,
+        "failed_request_threshold": 0.01,
+        "trajectory_start_min_ratio": 0.25,
+        "trajectory_start_max_ratio": 0.75,
+        "burst_phase_starts": false,
+        "system_idle_gap_cap_seconds": null,
+        "agentic_cache_warmup_duration": null,
+        "warmup_requests_per_lane": 10,
+        "agentic_warmup_grace_period": 1800.0
+      }
+    ],
+    "server_metrics": {
+      "enabled": true,
+      "urls": [
+        "http://10.0.0.1:38197/metrics",
+        "http://10.0.0.2:38197/metrics"
+      ],
+      "formats": [
+        "json",
+        "csv"
+      ],
+      "discovery": {
+        "mode": "auto",
+        "label_selector": null,
+        "namespace": null
+      }
+    },
+    "scenario": "agentx",
+    "tokenizer": {
+      "name": "marin-community/marin-tokenizer",
+      "revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "trust_remote_code": false,
+      "apply_chat_template": false
+    }
+  },
+  "scope": "Actual pinned AgentX parser, config resolver and native benchmark-plan construction. No inference or profiling; this does not validate full replay or full-hour throughput."
+}
