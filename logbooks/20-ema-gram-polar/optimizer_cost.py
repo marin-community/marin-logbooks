@@ -22,6 +22,8 @@ from pathlib import Path
 import jax
 import jax.numpy as jnp
 import numpy as np
+from iris.jax.init import initialize_jax
+from jax.experimental import multihost_utils
 from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
 from levanter.optim.ema_gram import GramState, gram_direction, init_gram_state, relative_gram_power, update_gram_state
@@ -31,6 +33,10 @@ from rigging.filesystem.storage_path import StoragePath
 
 NAMES = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj")
 ROW_SHARDED = {"o_proj", "down_proj"}
+
+
+def put_global(array, sharding):
+    return jax.make_array_from_callback(array.shape, sharding, lambda index: array[index])
 
 
 def refresh(gradients, states):
@@ -106,20 +112,31 @@ def main():
     parser.add_argument("--output-prefix", required=True)
     parser.add_argument("--samples", type=int, default=3)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--tpu-type", choices=("v4-32",), default="v4-32")
     parser.add_argument("--smoke", action="store_true", help="Small CPU geometry; never performance evidence")
     parser.add_argument("--logging-check", action="store_true", help="Online tracker only; no kernel execution")
     args = parser.parse_args()
     assert args.samples > 0
+    if not args.smoke:
+        initialize_jax()
+    rank = jax.process_index()
+    identity_bytes = np.frombuffer(uuid.uuid4().bytes, dtype=np.uint8)
+    identity_bytes = multihost_utils.broadcast_one_to_all(identity_bytes)
+    attempt = bytes(identity_bytes).hex()[:12]
     mode = "logging-check" if args.logging_check else "cpu-smoke" if args.smoke else "tpu-cost"
-    identity = f"ema-gram-20-{mode}-{uuid.uuid4().hex[:12]}"
+    identity = f"ema-gram-20-{mode}-{attempt}"
     local = Path("/tmp") / identity
     local.mkdir(parents=True)
-    destination = StoragePath(args.output_prefix) / identity
+    run_destination = StoragePath(args.output_prefix) / identity
+    destination = run_destination / f"rank-{rank}"
     destination.mkdirs()
     layers, width = (3, 8) if args.smoke else (11, 1024)
     shapes = [(layers, width, width)] * 4 + [(layers, width * 4, width)] * 2 + [(layers, width, width * 4)]
     config = {
         "mode": mode,
+        "tpu_type": args.tpu_type,
+        "process_count": jax.process_count(),
+        "process_index": rank,
         "source_commit": os.environ.get("GIT_COMMIT"),
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "seed": args.seed,
@@ -151,7 +168,7 @@ def main():
         resume="never",
         background=False,
         save_code=False,
-        replicate_path=str(destination),
+        replicate_path=str(run_destination),
     ).init(None)
     print(f"W&B: https://wandb.ai/marin-community/marin/runs/{identity}", flush=True)
     tracker.log_hyperparameters(config)
@@ -162,7 +179,8 @@ def main():
         return
     devices = jax.devices()
     if not args.smoke:
-        assert len(devices) == 4 and all(d.platform == "tpu" and "v4" in d.device_kind.lower() for d in devices), devices
+        assert len(devices) == 16 and jax.process_count() == 4, (devices, jax.process_count())
+        assert all(d.platform == "tpu" and "v4" in d.device_kind.lower() for d in devices), devices
     mesh = Mesh(np.array(devices), ("data",))
     replicated = NamedSharding(mesh, P())
     gradient_shardings = tuple(
@@ -174,11 +192,11 @@ def main():
     rng = np.random.default_rng(args.seed)
     scale = 0.1 / math.sqrt(sum(math.prod(shape) for shape in shapes))
     gradients = tuple(
-        jax.device_put(rng.standard_normal(shape, dtype=np.float32) * scale, sharding)
+        put_global(rng.standard_normal(shape, dtype=np.float32) * scale, sharding)
         for shape, sharding in zip(shapes, gradient_shardings, strict=True)
     )
     prior = tuple(
-        jax.device_put(rng.standard_normal(shape, dtype=np.float32) * scale, sharding)
+        put_global(rng.standard_normal(shape, dtype=np.float32) * scale, sharding)
         for shape, sharding in zip(shapes, gradient_shardings, strict=True)
     )
     initialize = jax.jit(lambda gs: tuple(init_gram_state(g) for g in gs), out_shardings=state_shardings)
@@ -229,7 +247,7 @@ def main():
     report["device_timeline_available"] = any(
         p["name"].startswith("/device:TPU:") for f in report["profile"] for p in f["planes"]
     )
-    report["device_memory_stats"] = [d.memory_stats() for d in devices]
+    report["device_memory_stats"] = [d.memory_stats() for d in jax.local_devices()]
     for file in (local / "profile").rglob("*.xplane.pb"):
         target = destination / "profile" / file.relative_to(local / "profile").as_posix()
         target.parent.mkdirs()
@@ -240,6 +258,7 @@ def main():
         {"diagnostic/completed": 1, "diagnostic/device_timeline_available": report["device_timeline_available"]}
     )
     tracker.finish()
+    multihost_utils.sync_global_devices("optimizer-cost-artifacts-written")
     print(
         json.dumps(
             {
@@ -250,6 +269,9 @@ def main():
         ),
         flush=True,
     )
+
+    if jax.distributed.is_initialized():
+        jax.distributed.shutdown()
 
 
 if __name__ == "__main__":

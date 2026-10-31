@@ -749,6 +749,36 @@ The `follow-ema-gram-experiment` automation update was accepted with this order.
 expand the sweep while diagnosis is pending. Full, unblocked left/right Gram matrices and per-update
 refresh remain part of the requested algorithm.
 
+### 2026-10-31 17:12 UTC — Move diagnosis to v4-32
+
+The user requires v4-32 and excludes v4-8. Canceled the v4-8 diagnostic at
+17:07:18 UTC and verified its terminal state at 17:08:31 UTC. Its only completed
+measurement was Gram refresh: median 0.086586 seconds over three samples with
+finite outputs. The partial result is saved in `optimizer-cost-v4-8-partial.json`; spectral
+power and full-update timings were not obtained.
+
+One v4-32 diagnostic is prepared but not yet submitted, under
+`optimizer-cost-v4-32-plan.json`. Iris maps
+this request to four hosts and 16 TPU chips. The script initializes distributed
+JAX, broadcasts a shared run identity, constructs global arrays from addressable
+slices, and saves separate rank artifacts. Rank zero uses native online W&B.
+Production kernels, full Gram geometry and per-update refresh match pilot
+source `44f8a1efdd8117260565f77965fcadd36cef717b`.
+The CPU smoke run `ema-gram-20-cpu-smoke-c362374bff13` passed all four kernel
+cases, finite-output checks, fused-versus-separate comparison, and online W&B/GCS
+writes. This checks the script path; it does not validate multihost TPU execution.
+
+The new performance target is measured training MFU above 5%, followed by
+restoration of quarter-power training from `quarter-pilot-128g-resolved.json`.
+Checkpoint resume requires a verified restore; it is not yet claimed. That pilot's last MFU was
+0.189564% (the logged value is already a percentage). On v4-32, the unchanged
+global batch of eight examples (80,353,469,399,040 model FLOPs per update)
+would require less than 0.36525 seconds per update to
+exceed 5%, using the existing model-FLOP definition and 16 chips at 275 TFLOP/s.
+Kernel timings alone cannot establish this target. Queue this diagnostic once
+from published source; validate assignment, distributed execution, online W&B,
+finite results and device profile coverage before choosing a performance change.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

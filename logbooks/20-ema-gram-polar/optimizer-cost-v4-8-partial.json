@@ -1,0 +1,104 @@
+{
+  "artifact_uri": "gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.10.31.1/ema-gram-20-tpu-cost-61af3b7415be/report.json",
+  "report": {
+    "config": {
+      "mode": "tpu-cost",
+      "source_commit": "8790ebbdba20124e293de58b05d2824a78ca8ffc",
+      "script_sha256": "6a3240f74ac4ffa02a8feff44cc304b82e7936542bac9a405fc1311ef1a492cf",
+      "seed": 0,
+      "samples": 3,
+      "matrix_names": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "matrix_shapes": [
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          4096,
+          1024
+        ],
+        [
+          11,
+          4096,
+          1024
+        ],
+        [
+          11,
+          1024,
+          4096
+        ]
+      ],
+      "alpha": 0.25,
+      "ridge": 0.0001,
+      "beta1": 0.95,
+      "beta2": 0.99,
+      "polar_steps": 5,
+      "state_sharding": "replicated",
+      "gradient_sharding": "embed axis on data; o/down rows, others columns",
+      "input_state": "one synthetic gradient update from zero; same inputs for every timing",
+      "limitations": "No model/data/AdamW/weight decay. Synthetic spectra; isolated kernels do not establish full-training time fractions.",
+      "profile_invocations": 1,
+      "output_prefix": "gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.10.31.1/ema-gram-20-tpu-cost-61af3b7415be",
+      "devices": [
+        {
+          "id": 0,
+          "platform": "tpu",
+          "kind": "TPU v4"
+        },
+        {
+          "id": 1,
+          "platform": "tpu",
+          "kind": "TPU v4"
+        },
+        {
+          "id": 2,
+          "platform": "tpu",
+          "kind": "TPU v4"
+        },
+        {
+          "id": 3,
+          "platform": "tpu",
+          "kind": "TPU v4"
+        }
+      ]
+    },
+    "measurements": {
+      "gram_refresh": {
+        "warmup_compile_and_execution_seconds": 0.08659171900944784,
+        "sample_seconds": [
+          0.08658577900496311,
+          0.08651206898503006,
+          0.08659545899718069
+        ],
+        "median_seconds": 0.08658577900496311,
+        "finite_outputs": true
+      }
+    }
+  },
+  "status": "Partial diagnostic; user requested switching to v4-32 before completion."
+}
