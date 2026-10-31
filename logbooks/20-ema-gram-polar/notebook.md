@@ -691,6 +691,16 @@ submission named `ema-gram-20-optimizer-cost-20261031`; this adds one diagnostic
 beside the current pilot, with no other accelerator jobs for this experiment. Fresh process attempts use
 separate online W&B identities and incremental local and GCS measurements.
 
+### 2026-10-31 08:17 UTC — Submit the optimizer diagnostic once
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-20261031`
+at 08:17:13 UTC from published source
+`8790ebbdba20124e293de58b05d2824a78ca8ffc`. The exact-name prefix query was
+empty before submission. The resource and measurement plan is unchanged from
+`optimizer-cost-plan.json`. This is a separate non-training kernel diagnostic;
+the quarter-power pilot continues on its existing child. Assignment and
+diagnostic results remain unverified at submission.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
