@@ -1072,3 +1072,45 @@ It qualifies neither the native metadata builder nor full Hero. Next is the
 small actual-attention-geometry state control with native FLASH_ATTN/FA4.
 The separate unentered private API factory check uses this holder's actual
 one-task/four-GPU JobInfo; it must not be presented as DP16/DP32 validation.
+
+### 2026-10-31: prepare the missing replica comparison
+
+The actual native one-task/four-GPU unentered factory passes private API
+command construction: native JobInfo supplies the host IP and DP4 arguments.
+It starts no model and proves no cross-host connection. See the
+[factory result](results/replica-factory-cpu-r1.json).
+
+The next comparison uses released vLLM and Router, TP1, native graphs NONE,
+2K scheduling, NUMA binding and memory0.95 in both layouts. Independent native
+DP16/EP16 groups will provide two real private endpoints; the single group
+uses native DP32/EP32. Fixed-history direct and routed checks must preserve
+each endpoint/engine identity, followed by fresh native attempts for speed.
+The prepared short C128/C256 and 64K C64 synthetic cases are identical across
+layouts. They screen collective/prefill cost; final claims still require the
+unchanged full AgentX protocol. No two-replica performance is measured yet.
+
+The potential 1,064 output tokens/s from two historical 532-token/s DP16
+results is a projection, compared with a historical one-group DP32 C256
+result near751 tokens/s under different CPU/memory settings. Neither is a
+matched replica result. The cheap synthetic screen can reject a weak idea
+before a full hour. Native API binding and the existing Router are small
+configuration changes; no new runtime, model arithmetic or allocator is added.
+
+The small FA4 state run now passes all eight exact fixed-history comparisons
+covering independent cold references, warm reuse, mixed branch batches and
+request isolation. Runtime logs prove native FLASH_ATTN version4 and LBNHC
+cache layout with unchanged ShortConv. Raw run, entrypoint and compiler
+sources retain109,504compressed bytes with full checksum readback. See
+[the state result](results/attention-geometry-fa4-state-r1.json). This proves
+the native metadata path on the synthetic geometry fixture; full-Hero and
+performance qualification remain open.
+
+While the replica state qualification uses separate nodes, reuse the existing
+four-GPU batch holder for the unfinished native CUTLASS component at actual
+latent3072/local24 geometry. Its previous module build passed; the reference
+failed before kernel validation by gathering288GiB. The already committed
+reference bounds this to four rows without changing routing, math or native
+0.02 tolerances. Restore the retained55.8MB workspace and let native Ninja
+freshness checks decide whether a rebuild is needed. No binary substitution
+or rewritten prefix is allowed. This uses the existing8CPU/128GB holder and
+adds no GPU allocation; all four GPUs stay charged throughout CPU preparation.
