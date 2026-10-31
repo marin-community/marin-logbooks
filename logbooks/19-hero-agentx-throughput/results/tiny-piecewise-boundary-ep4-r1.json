@@ -1,0 +1,134 @@
+{
+  "status": "native_input_address_failure_observed_with_global_padding",
+  "gpu_empty": true,
+  "attempt_uid": "1a6cb55ddeb9dbaa",
+  "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-piecewise-boundary-ep4-r1/outputs-aa28747e66af1c66a57f281474218108da73d12a2d8171a34cc37b27a5c3f8d6.tar.zst",
+  "sha256": "aa28747e66af1c66a57f281474218108da73d12a2d8171a34cc37b27a5c3f8d6",
+  "readback_sha256": "aa28747e66af1c66a57f281474218108da73d12a2d8171a34cc37b27a5c3f8d6",
+  "bytes": 48492,
+  "source_commit": "e1b8a5518ec05a0b234a71519b40971259c6c2c4",
+  "first_dispatches": [
+    {
+      "unix": 1793408124.9229798,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793408124.92298,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793408124.9229887,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 64,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 64,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793408124.922996,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "PIECEWISE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": false,
+        "local_piecewise_dp": false
+      }
+    }
+  ],
+  "compiled_graph_sources": [
+    {
+      "path": "/iris/candidates/tiny-local-piecewise-debug-cache-r1/torch_compile_cache/1f573976c7/rank_0_3/backbone/computation_graph.py",
+      "sha256": "c8e295a864661513e184e59050cca8dca5192fa2b5c7178f6ffc550995295859",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-local-piecewise-debug-cache-r1/torch_compile_cache/1f573976c7/rank_0_2/backbone/computation_graph.py",
+      "sha256": "fd720aa6d2c94a3948d7d44efad5ecf93b5c2f263e16bb596bbe45ef3a893d01",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-local-piecewise-debug-cache-r1/torch_compile_cache/1f573976c7/rank_0_0/backbone/computation_graph.py",
+      "sha256": "e9876289aa7de11068aac7555b8b44106d1f036f358f18aef38ca79da6933bfd",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-local-piecewise-debug-cache-r1/torch_compile_cache/1f573976c7/rank_0_1/backbone/computation_graph.py",
+      "sha256": "d90ab1550bfc1fba9fbbc6d2f1accdecdb9a1e194456a9ae79f7008e305b455a",
+      "bytes": 216414
+    }
+  ],
+  "scope": "Four-layer synthetic Hero on four GPUs; no full-Hero numerical or throughput qualification.",
+  "launched_utc": "2026-10-31T00:53:58.168882+00:00",
+  "ready_unix": 1793408124.900112,
+  "finished_unix": 1793408124.9480648,
+  "request_failure": "First cold 80-token prompt returns HTTP500 after native CUDAGraphWrapper input-address assertions on all four ranks. No completed inference request; per-rank padding phase is not attempted.",
+  "local_piecewise_dp": false,
+  "all_rank_padded_vector": [
+    64,
+    64,
+    64,
+    64
+  ],
+  "assertion_count_including_duplicate_tracebacks": 8,
+  "address_assertions": [
+    "(Worker_DP0_EP0 pid=88344) ERROR 10-31 00:55:24 [v1/executor/multiproc_executor.py:1055] AssertionError: Input addresses for cudagraphs are different during replay. Expected [255656598938112, 819454090240, 255656634401792, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360], got [819524362752, 819454090240, 255656634401792, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360]",
+    "(Worker_DP3_EP3 pid=88345) ERROR 10-31 00:55:24 [v1/executor/multiproc_executor.py:1055] AssertionError: Input addresses for cudagraphs are different during replay. Expected [247341005382144, 819454090240, 247341040845824, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360], got [819524362752, 819454090240, 247341040845824, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360]",
+    "(Worker_DP2_EP2 pid=88342) ERROR 10-31 00:55:24 [v1/executor/multiproc_executor.py:1055] AssertionError: Input addresses for cudagraphs are different during replay. Expected [274665587319296, 819454090240, 274665622782976, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360], got [819524362752, 819454090240, 274665622782976, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360]",
+    "(Worker_DP1_EP1 pid=88343) ERROR 10-31 00:55:24 [v1/executor/multiproc_executor.py:1055] AssertionError: Input addresses for cudagraphs are different during replay. Expected [260985579610624, 819454090240, 260985615074304, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360], got [819524362752, 819454090240, 260985615074304, 819454205440, 819454221824, 819454238208, 819454254592, 819454270976, 819454287360]"
+  ],
+  "interpretation": "A fixed-input-address contract failure occurs with equal global padding. Generated submod7 returns torch.ops.vllm.moe_forward; submod8 receives that returned tensor as its first argument. Its nine tensor inputs match the native assertion shape: the first pointer changes and the remaining eight stay fixed. The original-boundary control is pending, and the tiny result does not prove the originating kernel in the full-Hero asynchronous fault.",
+  "next_controls": [
+    "experiments/tiny-piecewise-original-boundaries-ep4-r1.json",
+    "experiments/tiny-piecewise-inductor-partition-ep4-r1.json"
+  ]
+}
