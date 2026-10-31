@@ -33,7 +33,7 @@ from experiments.post_training.identity_path_b.trend import wait_for_owned_endpo
 from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 from experiments.post_training.identity_t2 import serve as t2
 
-TARGETS_SHA256 = "12c5dabb4ee1cb9b527f65f4a9de5b70eb8646eaca0d02200e5d4916ca484670"
+TARGETS_SHA256 = "919a42ef90c62bd1779ee5532acc776fd2a8203607f80ca3d0e03d9bc073239c"
 
 
 def checked_audit_sha256(value):
@@ -86,7 +86,8 @@ def checked_identity(label, name, audit_sha256) -> dict:
 def service_config(label, name):
     if label == "v01":
         return source_baseline.service_config(name)
-    return replace(trend_serve.service_config(CheckpointEvent(**target(label)["event"])), timeout_hours=12)
+    original = trend_serve.service_config(CheckpointEvent(**target(label)["event"]))
+    return replace(original, iris=replace(original.iris, priority=job_pb2.PRIORITY_BAND_PRODUCTION), timeout_hours=12)
 
 
 def endpoint(label, name):
@@ -120,6 +121,7 @@ def serve_submission(label, name, credentials, audit_sha256, readiness_sha256):
         entrypoint=Entrypoint(command=["bash", "-c", script]),
         timeout=Duration.from_hours(12),
         constraints=None,
+        priority_band=job_pb2.PRIORITY_BAND_PRODUCTION,
     )
     return request
 
@@ -211,13 +213,13 @@ def submission(*, label, name, output, credentials, audit_sha256, readiness_sha2
         timeout=Duration.from_seconds(ROOT_LIFETIME),
         max_retries_failure=0,
         max_retries_preemption=0,
-        priority_band=job_pb2.PRIORITY_BAND_INTERACTIVE,
+        priority_band=job_pb2.PRIORITY_BAND_PRODUCTION,
     )
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=("A11",), required=True)
+    parser.add_argument("--target", choices=("A12",), required=True)
     parser.add_argument("--name", required=True)
     parser.add_argument("--output")
     parser.add_argument("--audit-sha256", required=True)
