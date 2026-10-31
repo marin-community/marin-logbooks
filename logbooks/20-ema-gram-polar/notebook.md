@@ -701,6 +701,32 @@ empty before submission. The resource and measurement plan is unchanged from
 the quarter-power pilot continues on its existing child. Assignment and
 diagnostic results remain unverified at submission.
 
+### 2026-10-31 15:10 UTC — Quarter-power first validation
+
+The EMA-Gram pilot with spectral exponent alpha=1/4 and a 128 GiB host-memory
+reservation completed its first validation at step 762 (25,001,984 tokens).
+C4 English validation loss is 5.67533445. All reported validation metrics are finite. The alpha-zero pilot's
+C4 loss at the same step was 5.46733999, a difference of +0.20799446 for
+quarter power. These are early single-seed pilot observations with different
+learning rates (quarter power 0.002; alpha zero 0.00707107). Tuning and paired
+confirmations remain incomplete, so this comparison does not select an exponent.
+
+The online W&B run ending `d8755c4b4082` remains on child attempt 0 from
+source `44f8a1efdd8117260565f77965fcadd36cef717b`, version `2026.10.30.23`.
+Training continued past validation; the step-763 log reports 38.864 seconds
+for its training step. Read back permanent checkpoint `step-763/metadata.json`:
+step 763, `is_temporary=false`, timestamp `2026-10-31T15:11:40.099299`.
+Checkpoint restoration has not been tested. `quarter-first-validation.json`
+records the W&B URL, full checkpoint URI, metrics, and execution identity.
+
+Across 510 Iris task host-memory samples from 14:11 to 15:11 UTC, the cumulative
+attempt peak remains 91.7295 GiB; maximum sampled current memory is 48.3994 GiB.
+These measurements do not establish device memory use. The separate optimizer
+cost diagnostic remains queued for TPU capacity. Continue the pilot's full
+7,630 updates and preserve that queued diagnostic; usable TPU execution-time evidence
+is still required before expanding the sweep because each pilot update takes
+about 40 seconds.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
