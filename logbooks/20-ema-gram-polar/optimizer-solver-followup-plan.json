@@ -28,10 +28,10 @@
   "numerical_gate": {
     "rtol": 1e-05,
     "atol": 1e-05,
-    "reference": "Same full fused update on identical exact-shape synthetic inputs; compare every direction and state leaf. Preserve failures; do not relax tolerance."
+    "reference": "Original implementation on identical saved checkpoint Grams/momentum and identical synthetic gradients. Compare every updated state/direction leaf, and separately compare directions from unchanged saved state. Fixed1e-5 absolute/relative tolerance."
   },
   "scope_limitations": [
-    "Synthetic checks do not prove checkpoint-spectrum accuracy or training stability.",
+    "Checkpoint Grams/momentum test a real saved spectrum; synthetic gradients still do not establish LM gradient behavior or training stability.",
     "CPU/device lowering is not TPU execution.",
     "Optimizer kernel timing is not measured training MFU."
   ],
@@ -49,7 +49,7 @@
     "theoretical_flops_per_second": 4400000000000000,
     "required_step_seconds_lt": 0.3652430427229091,
     "configuration": "quarter-pilot-128g-resolved.json; preserve model, data, global batch, optimizer and requested7630 steps",
-    "checkpoint_restore": "Verify full state restoration before claiming continuation; latest permanent763 metadata verified, temporary923 save logged but not restore-tested.",
+    "checkpoint_restore": "Permanent763 and temporary923 metadata verified. Full trainer restoration remains unverified; selective diagnostic array loading is not continuation.",
     "mesh_preflight": "v4-32-training-mesh-preflight.json",
     "candidate_mesh": {
       "data": 4,
@@ -57,5 +57,13 @@
       "replica": 1
     },
     "mesh_reason": "Preserves global batch8/per-device parallelism2; old data16/model1 would fail trainer validation."
-  }
+  },
+  "checkpoint_input": {
+    "uri": "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923",
+    "scope": "Only saved Gram/momentum, requiring every selected FP32 array; no model/AdamW/data/step restoration",
+    "cli_option": "--checkpoint",
+    "evidence": "checkpoint-spectrum-preflight.json",
+    "state": "prepared; original arrays not yet read on TPU"
+  },
+  "timing_comparison": "Measure both original and candidate with the same checkpoint/input in the candidate job; do not compare different spectra as if execution layout were the only change."
 }

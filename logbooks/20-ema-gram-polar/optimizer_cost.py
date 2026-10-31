@@ -3,8 +3,9 @@
 
 """Measure EMA-Gram kernels on synthetic inputs with the pilot's matrix geometry.
 
-This is a non-training diagnostic. It does not measure language-model quality
-or reproduce the evolving spectrum of a trained checkpoint.
+This is a non-training diagnostic. An optional checkpoint supplies saved Gram
+and momentum arrays; gradients remain synthetic. Neither mode measures
+language-model quality or full-training MFU.
 """
 
 import argparse
@@ -26,6 +27,8 @@ from iris.jax.init import initialize_jax
 from jax.experimental import multihost_utils
 from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
+from levanter.checkpoint import load_checkpoint
+from levanter.checkpoint_manifest import read_manifest
 from levanter.optim.ema_gram import (
     GramState,
     gram_direction,
@@ -69,6 +72,62 @@ def directions(states, alpha, *, eigh_fn=jax.lax.linalg.eigh, eigh_implementatio
 def full_update(gradients, states, *, eigh_fn=jax.lax.linalg.eigh, eigh_implementation=None):
     updated = refresh(gradients, states)
     return directions(updated, 0.25, eigh_fn=eigh_fn, eigh_implementation=eigh_implementation), updated
+
+
+def checkpoint_states(checkpoint, shapes, mesh):
+    """Read only saved Gram/momentum arrays; this is not a full trainer restore."""
+    manifest = read_manifest(checkpoint)
+    if manifest is None:
+        raise ValueError("Checkpoint diagnostic requires an array manifest")
+    fields = GramState._fields
+    entries = [a for a in manifest.arrays if "/matrices/" in a.path and a.path.rsplit("/", 1)[-1] in fields]
+    prefixes = {a.path.split("/matrices/", 1)[0] for a in entries}
+    if len(prefixes) != 1:
+        raise ValueError(f"Expected one EMA-Gram state bank, found {prefixes}")
+    prefix = prefixes.pop() + "/matrices"
+    by_path = {a.path: a for a in entries}
+    expected_paths = [f"{prefix}/{i}/{field}" for i in range(len(shapes)) for field in fields]
+    if set(by_path) != set(expected_paths):
+        raise ValueError("Checkpoint matrix count or fields differ from diagnostic geometry")
+    replicated = NamedSharding(mesh, P())
+    exemplar = {}
+    for index, shape in enumerate(shapes):
+        batch, rows, cols = shape[:-2], shape[-2], shape[-1]
+        expected_shapes = (tuple(shape), (*batch, rows, rows), (*batch, cols, cols))
+        for field, expected_shape in zip(fields, expected_shapes, strict=True):
+            path = f"{prefix}/{index}/{field}"
+            entry = by_path[path]
+            if entry.shape != expected_shape or entry.dtype != "float32":
+                raise ValueError(f"Unexpected checkpoint array: {entry}")
+            exemplar[path] = jax.ShapeDtypeStruct(entry.shape, np.float32, sharding=replicated)
+    loaded = load_checkpoint(exemplar, checkpoint, mesh=mesh, axis_mapping={}, allow_partial=False)
+    states = tuple(GramState(*(loaded[f"{prefix}/{i}/{field}"] for field in fields)) for i in range(len(shapes)))
+    metadata = json.loads((StoragePath(checkpoint) / "metadata.json").read_text())
+    evidence = {
+        "checkpoint_uri": checkpoint,
+        "metadata": metadata,
+        "loaded_paths": expected_paths,
+        "loaded_bytes": sum(math.prod(a.shape) * np.dtype(a.dtype).itemsize for a in entries),
+        "manifest_sha256": hashlib.sha256((StoragePath(checkpoint) / "manifest.json").read_bytes()).hexdigest(),
+        "full_trainer_restore": False,
+        "scope": "Saved FP32 Gram and momentum arrays only; model, AdamW, step and data state are not restored",
+    }
+    return states, evidence
+
+
+def compare_trees(actual, expected):
+    """Record every leaf at the fixed numerical gate without suppressing failures."""
+    comparisons = []
+    for index, (a, b) in enumerate(zip(jax.tree.leaves(actual), jax.tree.leaves(expected), strict=True)):
+        comparisons.append(
+            {
+                "leaf": index,
+                "max_absolute_error": float(jnp.max(jnp.abs(a - b))),
+                "relative_frobenius_error": float(jnp.linalg.norm(a - b) / jnp.maximum(jnp.linalg.norm(b), 1e-30)),
+                "passed": bool(jnp.all(jnp.abs(a - b) <= 1e-5 + 1e-5 * jnp.abs(b))),
+            }
+        )
+    return {"rtol": 1e-5, "atol": 1e-5, "passed": all(row["passed"] for row in comparisons), "leaves": comparisons}
 
 
 def finite_tree(tree):
@@ -130,6 +189,7 @@ def main():
     parser.add_argument("--tpu-type", choices=("v4-32",), default="v4-32")
     parser.add_argument("--eigh-layout", choices=("replicated", "matrix"), default="replicated")
     parser.add_argument("--eigh-implementation", choices=("default", "jacobi"), default="default")
+    parser.add_argument("--checkpoint", help="Read saved Gram/momentum only; no full restore or training")
     parser.add_argument("--smoke", action="store_true", help="Small CPU geometry; never performance evidence")
     parser.add_argument("--logging-check", action="store_true", help="Online tracker only; no kernel execution")
     args = parser.parse_args()
@@ -169,9 +229,14 @@ def main():
         "polar_steps": 5,
         "state_sharding": "replicated",
         "gradient_sharding": "embed axis on data; o/down rows, others columns",
-        "input_state": "one synthetic gradient update from zero; same inputs for every timing",
+        "input_state": (
+            "saved checkpoint Gram/momentum; synthetic gradients; same inputs for every timing"
+            if args.checkpoint
+            else "one synthetic gradient update from zero; same inputs for every timing"
+        ),
+        "checkpoint_uri": args.checkpoint,
         "limitations": (
-            "No model/data/AdamW/weight decay. Synthetic spectra; "
+            "No model/data/AdamW/weight decay. Synthetic gradients; "
             "isolated kernels do not establish full-training time fractions."
         ),
         "profile_invocations": 1,
@@ -221,14 +286,20 @@ def main():
         put_global(rng.standard_normal(shape, dtype=np.float32) * scale, sharding)
         for shape, sharding in zip(shapes, gradient_shardings, strict=True)
     )
-    prior = tuple(
-        put_global(rng.standard_normal(shape, dtype=np.float32) * scale, sharding)
-        for shape, sharding in zip(shapes, gradient_shardings, strict=True)
-    )
-    initialize = jax.jit(lambda gs: tuple(init_gram_state(g) for g in gs), out_shardings=state_shardings)
     refresh_fn = jax.jit(refresh, in_shardings=(gradient_shardings, state_shardings), out_shardings=state_shardings)
-    states = jax.block_until_ready(refresh_fn(prior, initialize(prior)))
-    del prior
+    if args.checkpoint:
+        states, config["checkpoint_input"] = checkpoint_states(args.checkpoint, shapes, mesh)
+        assert finite_tree(states), "Checkpoint state contains nonfinite values"
+        tracker.log_hyperparameters(config)
+        (destination / "config.json").write_text(json.dumps(config, indent=2))
+    else:
+        prior = tuple(
+            put_global(rng.standard_normal(shape, dtype=np.float32) * scale, sharding)
+            for shape, sharding in zip(shapes, gradient_shardings, strict=True)
+        )
+        initialize = jax.jit(lambda gs: tuple(init_gram_state(g) for g in gs), out_shardings=state_shardings)
+        states = jax.block_until_ready(refresh_fn(prior, initialize(prior)))
+        del prior
     updated = jax.block_until_ready(refresh_fn(gradients, states))
     full_fn = jax.jit(
         partial(full_update, **solver_kwargs),
@@ -253,6 +324,13 @@ def main():
         ),
         ("quarter_update_and_direction", full_fn, (gradients, states)),
     ]
+    if args.checkpoint:
+        checkpoint_direction_fn = jax.jit(
+            partial(directions, alpha=0.25, **solver_kwargs),
+            in_shardings=(state_shardings,),
+            out_shardings=gradient_shardings,
+        )
+        cases.append(("saved_checkpoint_direction", checkpoint_direction_fn, (states,)))
     report = {"config": config, "measurements": {}}
     for step, (name, fn, inputs) in enumerate(cases, start=1):
         result = measure(fn, inputs, args.samples)
@@ -283,34 +361,33 @@ def main():
             in_shardings=(gradient_shardings, state_shardings),
             out_shardings=(gradient_shardings, state_shardings),
         )
+        report["reference_measurements"] = measure(reference_fn, (gradients, states), args.samples)
+        (destination / "report.json").write_text(json.dumps(report, indent=2))
         reference = jax.block_until_ready(reference_fn(gradients, states))
         candidate = jax.block_until_ready(full_fn(gradients, states))
-        comparisons = []
-        for index, (actual, expected) in enumerate(
-            zip(jax.tree.leaves(candidate), jax.tree.leaves(reference), strict=True)
-        ):
-            comparisons.append(
-                {
-                    "leaf": index,
-                    "max_absolute_error": float(jnp.max(jnp.abs(actual - expected))),
-                    "relative_frobenius_error": float(
-                        jnp.linalg.norm(actual - expected) / jnp.maximum(jnp.linalg.norm(expected), 1e-30)
-                    ),
-                    "passed": bool(jnp.all(jnp.abs(actual - expected) <= 1e-5 + 1e-5 * jnp.abs(expected))),
-                }
-            )
-        report["reference_comparison"] = {
-            "rtol": 1e-5,
-            "atol": 1e-5,
-            "passed": all(row["passed"] for row in comparisons),
-            "leaves": comparisons,
-        }
+        report["reference_comparison"] = compare_trees(candidate, reference)
         tracker.log_summary({"diagnostic/reference_comparison_passed": report["reference_comparison"]["passed"]})
         (destination / "report.json").write_text(json.dumps(report, indent=2))
         del reference, candidate
+        if args.checkpoint:
+            original_direction_fn = jax.jit(
+                partial(directions, alpha=0.25),
+                in_shardings=(state_shardings,),
+                out_shardings=gradient_shardings,
+            )
+            report["saved_checkpoint_reference_measurements"] = measure(original_direction_fn, (states,), args.samples)
+            (destination / "report.json").write_text(json.dumps(report, indent=2))
+            original = jax.block_until_ready(original_direction_fn(states))
+            proposed = jax.block_until_ready(checkpoint_direction_fn(states))
+            report["saved_checkpoint_reference_comparison"] = compare_trees(proposed, original)
+            tracker.log_summary(
+                {"diagnostic/checkpoint_reference_passed": report["saved_checkpoint_reference_comparison"]["passed"]}
+            )
+            (destination / "report.json").write_text(json.dumps(report, indent=2))
+            del original, proposed
     report["profile"] = profile_once(full_fn, (gradients, states), local / "profile")
     report["device_timeline_available"] = any(
-        p["name"].startswith("/device:TPU:") for f in report["profile"] for p in f["planes"]
+        p["name"].startswith("/device:TPU:") and p["events"] > 0 for f in report["profile"] for p in f["planes"]
     )
     report["device_memory_stats"] = [d.memory_stats() for d in jax.local_devices()]
     for file in (local / "profile").rglob("*.xplane.pb"):

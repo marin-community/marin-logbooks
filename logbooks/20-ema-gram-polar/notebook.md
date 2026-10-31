@@ -937,6 +937,38 @@ implementation, or restoration path. No comparison field was removed. Historical
 pinned exporter and source. This closes the reporting preparation item above;
 actual TPU diagnosis and training restoration remain pending.
 
+### 2026-10-31 18:11 UTC — Prepare diagnosis on saved Gram state
+
+The candidate diagnostic can now read the canceled pilot's saved FP32 Grams
+and momentum through the native checkpoint loader. The step-923 manifest
+lists 21 such arrays totaling 3,460,300,800 bytes. Only metadata and the
+13,640-byte manifest were read locally; the original arrays will be read on
+TPU in the same region after the queued baseline supplies its measurements.
+The loader requires every selected array and its expected geometry.
+
+A local generated checkpoint restored all 21 arrays bitwise on sixteen
+virtual CPU devices. Fourteen direction comparisons (seven matrix groups,
+two ridge values) passed at unchanged rtol=atol=1e-5. The final online CPU
+smoke run `ema-gram-20-cpu-smoke-d177fadf2f26` completed five kernel cases,
+passed both full-update and unchanged-saved-state comparisons, and uploaded
+its report. That report was read back from GCS. A preceding smoke run
+`562d68c5e1bc` verified the loader before paired reference timing was added.
+`checkpoint-spectrum-preflight.json` preserves identities, hashes and scope.
+
+The candidate job will measure the original and proposed implementations on
+identical inputs. With `--checkpoint`, update gradients remain synthetic;
+a separate direction case uses the saved Grams/momentum without refreshing
+them. This avoids treating the earlier synthetic baseline and a later real
+checkpoint as a controlled timing pair. It does not measure full-LM runtime
+fractions or training MFU. Loading selected optimizer arrays is not full
+trainer restoration, and no model or data progress is advanced.
+
+The existing v4-32 diagnostic was still pending at 18:06:47 UTC; no additional
+accelerator job was submitted. `optimizer-solver-followup-plan.json` retains
+the sequential gate: obtain that job's cost/memory evidence, then test one
+candidate on v4-32. Original-checkpoint TPU accuracy, execution cost, memory use and
+actual training MFU remain unverified.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
