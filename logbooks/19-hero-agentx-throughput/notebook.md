@@ -1191,3 +1191,12 @@ existing batch4 holder. Only the two fresh DP16 interactive speed holders
 remain. Their real native attempt UIDs are disjoint from the qualified state
 groups, while the physical hardware may be reused. No mixed old/new model
 pair is served. All holder time remains charged once by native allocation.
+
+The matched native DP32/EP32 baseline will first qualify state through the
+ordinary private API in a real eight-task batch job. It uses the same released
+BF16 runtime, Router,2K scheduling, NUMA binding and memory0.95 as the two16
+replicas. Native task output archives supply raw retention after the bounded
+job exits; require all eight current attempts and complete readback before
+qualification. The batch32 request stays within its separate quota, after
+the batch4 holder is released. Record any setup overlap with synthetic
+speed work; final throughput still needs matched full AgentX confirmation.
