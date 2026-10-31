@@ -11,7 +11,9 @@ from pathlib import Path
 
 import torch
 from compare_moe_snapshots import compare_tensor
-from flashinfer import BatchDecodeWithPagedKVCacheWrapper, trtllm_batch_decode_with_kv_cache
+from flashinfer import BatchDecodeWithPagedKVCacheWrapper
+from flashinfer.decode import trtllm_batch_decode_with_kv_cache
+from vllm import envs
 
 ATOL = 1e-2
 RTOL = 1e-2
@@ -59,7 +61,7 @@ def main() -> None:
     expected = torch.matmul(
         torch.softmax(scores * (128**-0.5), dim=-1), histories["value"][:, head].float().transpose(0, 1)
     ).transpose(0, 1)
-    workspace = torch.empty(128 * 1024 * 1024, dtype=torch.uint8, device="cuda")
+    workspace = torch.zeros(envs.VLLM_FLASHINFER_WORKSPACE_BUFFER_SIZE, dtype=torch.uint8, device="cuda")
     outputs = {}
     cases = []
     for disable_split in ((False, True) if args.backend == "fa2" else (False,)):
