@@ -5,6 +5,7 @@
 
 import argparse
 import hashlib
+import importlib
 import json
 from pathlib import Path
 
@@ -32,8 +33,11 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--native-query-groups", action="store_true")
     args = parser.parse_args()
-    if args.native_query_groups:
-        from vllm.v1.attention.backends.grug_logical_kv import trtllm_decode_with_query_groups
+    native_decode = (
+        importlib.import_module("vllm.v1.attention.backends.grug_logical_kv").trtllm_decode_with_query_groups
+        if args.native_query_groups
+        else None
+    )
     assert torch.cuda.device_count() == 1
     torch.set_num_threads(1)
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -95,8 +99,9 @@ def main() -> None:
                 output = torch.empty_like(q)
                 repeated = torch.empty_like(q)
                 if native_grouped:
-                    trtllm_decode_with_query_groups(**call, out=output, groups=2)
-                    trtllm_decode_with_query_groups(**call, out=repeated, groups=2)
+                    assert native_decode is not None
+                    native_decode(**call, out=output, groups=2)
+                    native_decode(**call, out=repeated, groups=2)
                 else:
                     trtllm_batch_decode_with_kv_cache(**call, out=output)
                     trtllm_batch_decode_with_kv_cache(**call, out=repeated)
