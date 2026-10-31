@@ -15,6 +15,7 @@ from iris.cluster.client.job_info import get_job_info
 from marin.inference.iris_vllm import _build_task_launch
 from marin.inference.vllm_server import _vllm_serve_command
 
+from experiments.evaluation.agentx import run as native
 from experiments.evaluation.agentx.run import create_server
 
 
@@ -24,6 +25,10 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     manifest = json.loads(args.manifest.read_text())
+    if "series_filename" in manifest:
+        recipe = Path(__file__).with_name(manifest["series_filename"])
+        assert hashlib.sha256(recipe.read_bytes()).hexdigest() == manifest["series_sha256"]
+        native.series_path = lambda profile: recipe
     info = get_job_info()
     assert info is not None and info.task_index == 0
     assert str(info.job_id) == manifest["job_id"] and info.num_tasks == manifest["num_tasks"]
