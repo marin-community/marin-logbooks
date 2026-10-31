@@ -1,0 +1,416 @@
+{
+  "qualified": true,
+  "scope": "One fixed-reduction native16 synthetic screen. DP0 compares original unbuffered source and native source at matching full16 rank vectors; replay on/off and eight state pairs run independently on real HTTP ranks0,7,15. Six synthetic speed cases follow without tracing, tensor capture, CPU builds or profiling. This is not an AgentX result or an isolated local-graph effect. Earlier Auto/global-vector differences remain dated results with separate scopes.",
+  "source_commit": "0be78fff42aff05a6d29ee41c76d179f8f7fda43",
+  "manifest_sha256": "4563443b6a7102e31f8cc362706cbd38f344b0e8ec480d562064eb5a48ed1d96",
+  "wheel_sha256": "319ffc04e00764cf62e04e0e8ce89ced6eb2056a1811ba4f88875a8ec1292371",
+  "real_request_ranks": [
+    0,
+    7,
+    15
+  ],
+  "source_comparison_exact": true,
+  "all_replay_state_exact": true,
+  "all_six_workloads": true,
+  "compilation_config": {
+    "mode": 3,
+    "cudagraph_mode": "PIECEWISE",
+    "cudagraph_capture_sizes": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      2048
+    ],
+    "splitting_ops": [
+      "vllm::unified_attention_with_output",
+      "vllm::unified_mla_attention_with_output",
+      "vllm::mamba_mixer2",
+      "vllm::mamba_mixer",
+      "vllm::short_conv",
+      "vllm::qwen4_exp_ple_short_conv",
+      "vllm::qwen4_exp_qsa_with_output",
+      "vllm::linear_attention",
+      "vllm::qwen_gdn_attention_core",
+      "vllm::qwen_gdn_attention_core_fused_norm_packed",
+      "vllm::gdn_attention_core_xpu",
+      "vllm::olmo_hybrid_gdn_full_forward",
+      "vllm::sparse_attn_indexer",
+      "vllm::rocm_aiter_sparse_attn_indexer",
+      "vllm::deepseek_v4_attention",
+      "vllm::hpc_rope_norm_forward",
+      "vllm::unified_kv_cache_update",
+      "vllm::unified_mla_kv_cache_update",
+      "vllm::grug_moe_short_conv",
+      "vllm::moe_forward",
+      "vllm::moe_forward_shared",
+      "vllm::grug_moe_experts_out"
+    ],
+    "inductor_compile_config": {
+      "emulate_precision_casts": true,
+      "max_autotune": false,
+      "coordinate_descent_tuning": false,
+      "deterministic": true,
+      "dynamic_scale_rblock": false,
+      "combo_kernels": false
+    },
+    "cudagraph_local_dp": true
+  },
+  "kernel_config": {
+    "moe_backend": "triton",
+    "enable_flashinfer_autotune": false
+  },
+  "environment_overrides": {
+    "VLLM_LOGGING_LEVEL": "INFO",
+    "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+    "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+  },
+  "source_reference": {
+    "path": "/iris/outputs/full-moe-unbuffered16-fixed-reductions-r2/cache-probe-matched",
+    "manifest_sha256": "163b49b541170327ac3db4645e5192f2fb355d5a24cf988188bf2179914391ae"
+  },
+  "phases": {
+    "cache-probe-matched": {
+      "requests": 10,
+      "choices": 16,
+      "exact_finite": true
+    },
+    "cache-probe-replay-disabled": {
+      "requests": 10,
+      "choices": 16,
+      "exact_finite": true
+    },
+    "cache-probe-rank-7": {
+      "requests": 10,
+      "choices": 16,
+      "exact_finite": true
+    },
+    "cache-probe-rank-7-replay-disabled": {
+      "requests": 10,
+      "choices": 16,
+      "exact_finite": true
+    },
+    "cache-probe-rank-15": {
+      "requests": 10,
+      "choices": 16,
+      "exact_finite": true
+    },
+    "cache-probe-rank-15-replay-disabled": {
+      "requests": 10,
+      "choices": 16,
+      "exact_finite": true
+    }
+  },
+  "cross_comparisons": {
+    "cache-probe-matched": {
+      "waves": 10,
+      "choices": 16,
+      "exact_finite_matching_shapes": true
+    },
+    "cache-probe-replay-disabled": {
+      "waves": 10,
+      "choices": 16,
+      "exact_finite_matching_shapes": true
+    },
+    "cache-probe-rank-7-replay-disabled": {
+      "waves": 10,
+      "choices": 16,
+      "exact_finite_matching_shapes": true
+    },
+    "cache-probe-rank-15-replay-disabled": {
+      "waves": 10,
+      "choices": 16,
+      "exact_finite_matching_shapes": true
+    }
+  },
+  "short_synthetic_workloads": {
+    "decode-first": {
+      "duration": 8.745457088109106,
+      "completed": 32,
+      "failed": 0,
+      "total_input_tokens": 4096,
+      "total_output_tokens": 2048,
+      "output_throughput": 234.17872609364176,
+      "mean_ttft_ms": 1041.3131907844217,
+      "median_ttft_ms": 1069.8649819241837,
+      "p99_ttft_ms": 1073.08791463729,
+      "mean_tpot_ms": 122.1078008828853
+    },
+    "decode-repeat": {
+      "duration": 8.31475757015869,
+      "completed": 32,
+      "failed": 0,
+      "total_input_tokens": 4096,
+      "total_output_tokens": 2048,
+      "output_throughput": 246.3090454194581,
+      "mean_ttft_ms": 533.4808921252261,
+      "median_ttft_ms": 541.5756495203823,
+      "p99_ttft_ms": 631.8693764531055,
+      "mean_tpot_ms": 121.84761685392237
+    },
+    "long64k-c16": {
+      "duration": 17.82594361505471,
+      "completed": 16,
+      "failed": 0,
+      "total_input_tokens": 1048576,
+      "total_output_tokens": 16,
+      "output_throughput": 0.8975681930513552,
+      "mean_ttft_ms": 13194.00144975225,
+      "median_ttft_ms": 12541.772538563237,
+      "p99_ttft_ms": 17794.719858886674,
+      "mean_tpot_ms": 0.0
+    },
+    "scaling-short-c128": {
+      "duration": 33.02458363911137,
+      "completed": 128,
+      "failed": 0,
+      "total_input_tokens": 16384,
+      "total_output_tokens": 32768,
+      "output_throughput": 992.2305261463616,
+      "mean_ttft_ms": 825.3142840931105,
+      "median_ttft_ms": 534.1362160397694,
+      "p99_ttft_ms": 1620.095712193288,
+      "mean_tpot_ms": 125.47652358068673
+    },
+    "scaling-short-c256": {
+      "duration": 32.78889904287644,
+      "completed": 256,
+      "failed": 0,
+      "total_input_tokens": 32768,
+      "total_output_tokens": 65536,
+      "output_throughput": 1998.72523668153,
+      "mean_ttft_ms": 926.1885215209986,
+      "median_ttft_ms": 1023.4242344740778,
+      "p99_ttft_ms": 1159.0919110109096,
+      "mean_tpot_ms": 124.33438791313701
+    },
+    "scaling-long64k-c64": {
+      "duration": 85.13147223507985,
+      "completed": 64,
+      "failed": 0,
+      "total_input_tokens": 4194304,
+      "total_output_tokens": 16384,
+      "output_throughput": 192.4552644262705,
+      "mean_ttft_ms": 31019.801452737738,
+      "median_ttft_ms": 31004.24106454011,
+      "p99_ttft_ms": 53955.49697717419,
+      "mean_tpot_ms": 177.08101513314486
+    }
+  },
+  "all_gpu_processes_stopped": true,
+  "retained_compressed_bytes": 5685049,
+  "retention": [
+    {
+      "host": 0,
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/0:0",
+      "attempt_uid": "1a6cb55ddeb9dbaa",
+      "status": "stopped",
+      "started_unix": 1793440472.0332534,
+      "ready_unix": 1793440851.731327,
+      "finished_unix": 1793441383.1532886,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r3/host-0/outputs-203cc8e849653491b3fc0cf59fc1445b62d057e93bad09381173fbdcf3457e20.tar.zst",
+      "archive_sha256": "203cc8e849653491b3fc0cf59fc1445b62d057e93bad09381173fbdcf3457e20",
+      "readback_sha256": "203cc8e849653491b3fc0cf59fc1445b62d057e93bad09381173fbdcf3457e20",
+      "archive_bytes": 2739740,
+      "client_result_files": 6,
+      "manifest_sha256": "4563443b6a7102e31f8cc362706cbd38f344b0e8ec480d562064eb5a48ed1d96"
+    },
+    {
+      "host": 1,
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/1:0",
+      "attempt_uid": "6b7863c504a2899f",
+      "status": "stopped",
+      "started_unix": 1793440472.0809326,
+      "ready_unix": null,
+      "finished_unix": 1793441349.875324,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r3/host-1/outputs-8959ed1805726cf1b92525bb167ecc6364943cbdfa397389ff05f135c0744f93.tar.zst",
+      "archive_sha256": "8959ed1805726cf1b92525bb167ecc6364943cbdfa397389ff05f135c0744f93",
+      "readback_sha256": "8959ed1805726cf1b92525bb167ecc6364943cbdfa397389ff05f135c0744f93",
+      "archive_bytes": 974810,
+      "client_result_files": 0,
+      "manifest_sha256": null
+    },
+    {
+      "host": 2,
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/2:0",
+      "attempt_uid": "4b174525b660255b",
+      "status": "stopped",
+      "started_unix": 1793440472.0657768,
+      "ready_unix": null,
+      "finished_unix": 1793441370.60125,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r3/host-2/outputs-74347a2ead7964b91cf1980926f01b93df6e7ff737f307993960e4a2a21d0aaf.tar.zst",
+      "archive_sha256": "74347a2ead7964b91cf1980926f01b93df6e7ff737f307993960e4a2a21d0aaf",
+      "readback_sha256": "74347a2ead7964b91cf1980926f01b93df6e7ff737f307993960e4a2a21d0aaf",
+      "archive_bytes": 978324,
+      "client_result_files": 0,
+      "manifest_sha256": null
+    },
+    {
+      "host": 3,
+      "task_id": "/romain/dev-gpu-hero-agentx16-prefix-r392-01a1846a/3:0",
+      "attempt_uid": "aacb3c7277f9bf25",
+      "status": "stopped",
+      "started_unix": 1793440471.9856858,
+      "ready_unix": null,
+      "finished_unix": 1793441337.2082667,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-reductions-r3/host-3/outputs-ec66bd9c28a30060fd4e2cdc82c82c2d9ab9b6da92808c6656211f311993f1c4.tar.zst",
+      "archive_sha256": "ec66bd9c28a30060fd4e2cdc82c82c2d9ab9b6da92808c6656211f311993f1c4",
+      "readback_sha256": "ec66bd9c28a30060fd4e2cdc82c82c2d9ab9b6da92808c6656211f311993f1c4",
+      "archive_bytes": 992175,
+      "client_result_files": 0,
+      "manifest_sha256": null
+    }
+  ],
+  "compiled_graph_sources": [
+    [
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/5fcb89d4338590b4c3438d6c6a73bedbb06ae4e81cca51b187a26bb641010246/cache/vllm/torch_compile_cache/b333b14916/rank_0_3/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/b333b14916/rank_0_3/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "9834f30c7e92e7c1659d9e9e1217f7787159cae29815f74fb2488bd7bb64b69a"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/5fcb89d4338590b4c3438d6c6a73bedbb06ae4e81cca51b187a26bb641010246/cache/vllm/torch_compile_cache/b333b14916/rank_0_2/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/b333b14916/rank_0_2/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "e45b0723b673a0ea21c2b37097930f6788cfced01b4b99c98b12a74eda5d42db"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/5fcb89d4338590b4c3438d6c6a73bedbb06ae4e81cca51b187a26bb641010246/cache/vllm/torch_compile_cache/b333b14916/rank_0_0/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/b333b14916/rank_0_0/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "8e5109ab7e24fec47c34e9f92c58e251e468ce3a59aafc0c8018b3a0f6770840"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/5fcb89d4338590b4c3438d6c6a73bedbb06ae4e81cca51b187a26bb641010246/cache/vllm/torch_compile_cache/b333b14916/rank_0_1/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/b333b14916/rank_0_1/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "8dba3a6af7037740861c573c8fad75bb812ee25497f246f421b59d70ee9f4992"
+      }
+    ],
+    [
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/79a8d577b0220b6025a6410af78675f7bb5d4fca7a8a4130173c8adbac02eda9/cache/vllm/torch_compile_cache/bb7f08532f/rank_0_7/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/bb7f08532f/rank_0_7/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "0d3acf45d9ee0b8107dc0110caf72f8de679e1fd1531a926f3daaeb0eb65af72"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/79a8d577b0220b6025a6410af78675f7bb5d4fca7a8a4130173c8adbac02eda9/cache/vllm/torch_compile_cache/bb7f08532f/rank_0_6/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/bb7f08532f/rank_0_6/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "9b5a5b8f5f2dec28eafaf53d0ec419325c64d88708fa325f4bfdea3197190ac0"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/79a8d577b0220b6025a6410af78675f7bb5d4fca7a8a4130173c8adbac02eda9/cache/vllm/torch_compile_cache/bb7f08532f/rank_0_5/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/bb7f08532f/rank_0_5/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "7aa0bb839e1c81899fa0ee5953fbbddc8ac7e126a6ea24655d249f0db5c8d867"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/79a8d577b0220b6025a6410af78675f7bb5d4fca7a8a4130173c8adbac02eda9/cache/vllm/torch_compile_cache/bb7f08532f/rank_0_4/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/bb7f08532f/rank_0_4/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "66bc78cbfa5ea2a84f08e07d2c4f9f6c8ab68d7004bf504505cdda8d9609c49c"
+      }
+    ],
+    [
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/a40e5aea1b5fda3b16d3d3e2b41a33284cb03d4bd2ea3b093c259f1d32f0511e/cache/vllm/torch_compile_cache/150eb5bfeb/rank_0_9/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/150eb5bfeb/rank_0_9/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "7bf6390e806572e1034d4e3d1a273f6524d9376df116b0747e873bff50a537ce"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/a40e5aea1b5fda3b16d3d3e2b41a33284cb03d4bd2ea3b093c259f1d32f0511e/cache/vllm/torch_compile_cache/150eb5bfeb/rank_0_8/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/150eb5bfeb/rank_0_8/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "c7f89e520d1f0c897d4e59f4109b4e0d9f18874f60a1ad40ad23f0c419da32c1"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/a40e5aea1b5fda3b16d3d3e2b41a33284cb03d4bd2ea3b093c259f1d32f0511e/cache/vllm/torch_compile_cache/150eb5bfeb/rank_0_11/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/150eb5bfeb/rank_0_11/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "6e4b4665fd36349700f5e59d6b4ea03ddd7f9badf6a0d0bf6dd30d7ed784fb24"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/a40e5aea1b5fda3b16d3d3e2b41a33284cb03d4bd2ea3b093c259f1d32f0511e/cache/vllm/torch_compile_cache/150eb5bfeb/rank_0_10/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/150eb5bfeb/rank_0_10/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "8d3dd894f61bbfcae85c5c25635bdbd22cc9f160c708fc9dbd3b0c4f2634d4b5"
+      }
+    ],
+    [
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/d594e5d6e2bdcacb1573fff5ad09bf539c4569b98c16ae6723bb0af1f15dd30d/cache/vllm/torch_compile_cache/75fca5a491/rank_0_12/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/75fca5a491/rank_0_12/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "45d9402298cb14f226fcbbc032eabbcaeb2df0d1c643fc68a456b523a06bf162"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/d594e5d6e2bdcacb1573fff5ad09bf539c4569b98c16ae6723bb0af1f15dd30d/cache/vllm/torch_compile_cache/75fca5a491/rank_0_13/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/75fca5a491/rank_0_13/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "fa2fd11990167b483ed500409f559b098a8970e012737f3de54c43ae55163a63"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/d594e5d6e2bdcacb1573fff5ad09bf539c4569b98c16ae6723bb0af1f15dd30d/cache/vllm/torch_compile_cache/75fca5a491/rank_0_15/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/75fca5a491/rank_0_15/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "153f6b519de89b5a37c094c9d60645fc7ffa0bc1b00ee6264f99fd0d6147f42d"
+      },
+      {
+        "source": "/tmp/marin-vllm-compilation-cache/v5/entries/d594e5d6e2bdcacb1573fff5ad09bf539c4569b98c16ae6723bb0af1f15dd30d/cache/vllm/torch_compile_cache/75fca5a491/rank_0_14/backbone/computation_graph.py",
+        "retained": "/iris/outputs/native-local-piecewise16-fixed-reductions-r3-entrypoint/compiler-sources/after-numerics/vllm/torch_compile_cache/75fca5a491/rank_0_14/backbone/computation_graph.py",
+        "bytes": 2534900,
+        "sha256": "240af0c6ba275129221d0aff065f25c28a4f1658cd3ed110f3688200a8c91708"
+      }
+    ]
+  ],
+  "released_screen_comparisons": {
+    "decode-first": {
+      "released_output_tokens_per_second": 148.6443238047219,
+      "candidate_output_tokens_per_second": 234.17872609364176,
+      "relative_output_throughput": 0.575429993554875,
+      "relative_duration": -0.36525265858145006
+    },
+    "decode-repeat": {
+      "released_output_tokens_per_second": 149.7164350515098,
+      "candidate_output_tokens_per_second": 246.3090454194581,
+      "relative_output_throughput": 0.6451703871703578,
+      "relative_duration": -0.39216022376869486
+    },
+    "long64k-c16": {
+      "released_output_tokens_per_second": 1.1491360552625531,
+      "candidate_output_tokens_per_second": 0.8975681930513552,
+      "relative_output_throughput": -0.218919127164381,
+      "relative_duration": 0.2802771579460419
+    },
+    "scaling-short-c128": {
+      "released_output_tokens_per_second": 637.1032258208202,
+      "candidate_output_tokens_per_second": 992.2305261463616,
+      "relative_output_throughput": 0.5574093583783202,
+      "relative_duration": -0.3579080576212361
+    },
+    "scaling-short-c256": {
+      "released_output_tokens_per_second": 1312.672037040863,
+      "candidate_output_tokens_per_second": 1998.72523668153,
+      "relative_output_throughput": 0.5226386944199912,
+      "relative_duration": -0.34324537812897016
+    },
+    "scaling-long64k-c64": {
+      "released_output_tokens_per_second": 156.40614295382989,
+      "candidate_output_tokens_per_second": 192.4552644262705,
+      "relative_output_throughput": 0.23048405127592786,
+      "relative_duration": -0.18731169334290165
+    }
+  },
+  "baseline_source_commit": "ae3d0ce6acdd8d7d6cd2a15eb32209f9c0a85ef3",
+  "baseline_result": "stock-numa2k95-qualified-screen.json"
+}
