@@ -79,6 +79,7 @@ def main() -> None:
         skip_tokenizer_init=True,
         dtype="bfloat16",
         max_model_len=262144,
+        hf_overrides={"max_seq_len": 262144, "max_position_embeddings": 262144},
     )
     config = VllmConfig(
         model_config=model,
@@ -121,6 +122,7 @@ def main() -> None:
         "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "storage_input_sha256": hashlib.sha256(args.storage.read_bytes()).hexdigest(),
         "max_in_flight_tokens": config.max_in_flight_tokens,
+        "native_hf_overrides": {"max_seq_len": 262144, "max_position_embeddings": 262144},
         "plans": records,
         "capacity_ratio": (
             records["logical_global_6"]["group_aware_token_capacity"]
