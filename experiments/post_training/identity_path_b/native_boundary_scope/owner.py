@@ -33,7 +33,7 @@ from experiments.post_training.identity_path_b.trend import wait_for_owned_endpo
 from experiments.post_training.identity_path_b.workflow import ROOT_LIFETIME
 from experiments.post_training.identity_t2 import serve as t2
 
-TARGETS_SHA256 = "e23460777d29ae4355a57cab9ff31ebaf89e9cdc2b7faa8bcf1f37d513ace0fc"
+TARGETS_SHA256 = "c571d7439c4c48fe2e7342a56705f73b59153b270b6a8fe5bf154820294bdc1b"
 
 
 def checked_audit_sha256(value):
