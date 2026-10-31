@@ -1164,3 +1164,30 @@ acquiring newA16 while oldB16 remains held, then replace oldB16. All old model
 servers are already stopped and retained. Never serve a mixed old/new pair.
 All holders, including setup and the separate4batch CPU build, count once
 for their complete native allocation lifetimes.
+
+### 2026-10-31: native CUTLASS routed component passes actual3072width
+
+The unchanged official native SM100a module rebuilds successfully after the
+retained cache is restored and native Ninja freshness checks regenerate the
+build. Eight CPU cores run at nice10 with CUDA hidden. Its one-GPU BF16
+routed MoE component passes the original atol=rtol=0.02 TorchFP32 checks at
+latent/intermediate3072, local24experts and top8, for rows1,3,8,17,32,2048,2,1.
+The independent reference uses the already committed four-row bound rather
+than the previous288GiB gather. No native kernel, weights, routing or
+numerical tolerance changed.
+
+At2048rows, maximum absolute difference is0.02048016 and mean0.00226081;
+the unchanged combined absolute/relative bound passes pointwise. Both
+repeated one-row outputs reproduce the same errors. The resulting full
+native cache retains55,875,383compressed bytes with checksum readback
+`aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e`.
+The run/entrypoint archive retains14,933bytes with full readback. See
+[the native component result](results/cutlass-batch4-official-geometry-r2.json).
+This is EP1/local24; full global384/EP16 and two shared experts remain
+unqualified. It establishes no end-to-end throughput gain.
+
+All attention, FA4 and CUTLASS artifacts are retained before releasing the
+existing batch4 holder. Only the two fresh DP16 interactive speed holders
+remain. Their real native attempt UIDs are disjoint from the qualified state
+groups, while the physical hardware may be reused. No mixed old/new model
+pair is served. All holder time remains charged once by native allocation.

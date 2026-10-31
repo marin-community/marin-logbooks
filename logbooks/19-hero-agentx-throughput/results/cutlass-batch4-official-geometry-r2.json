@@ -1,0 +1,462 @@
+{
+  "source_commit": "d88cc53d21b22f59d61cdb8441cfb536be8490aa",
+  "preparation": {
+    "status": "native_cache_retained_and_component_passed",
+    "started_unix": 1793457838.343738,
+    "job_id": "/romain/dev-gpu-hero-agentx-attention4-r392-01a1846a",
+    "task_id": "/romain/dev-gpu-hero-agentx-attention4-r392-01a1846a/0:0",
+    "attempt_uid": "953f483020164a00",
+    "node": "sjtsxs64",
+    "gpu_uuids": [
+      "GPU-947032dd-1d5d-b0f5-e36f-525568419be1",
+      "GPU-4303d8d9-7ef8-78f8-c36e-13e7b5bab0c6",
+      "GPU-fcbd4528-ca0c-01af-9ca6-13bafb14c886",
+      "GPU-1e3f5fd1-6955-1c8f-a6ec-6b20580c2583"
+    ],
+    "allocated_gpus": 4,
+    "cuda_visible_devices": "",
+    "manifest": {
+      "source": {
+        "parent_commit": "d22c1b0f13dfb98def2711c52b3f093f082f50c2",
+        "experiment": "cutlass-batch4-official-geometry-r2",
+        "probe_source_note": "Reuse the committed four-row FP32 reference bound, unchanged native .02/.02 tolerances and exact official model source hash."
+      },
+      "purpose": "Prepare the unchanged installed native SM100 CUTLASS module using eight CPU cores on one batch four-GPU node, with CUDA hidden during compilation; retain full generated cache with readback. Then one allocated GPU checks native BF16 routed GEMM width3072/intermediate3072/local24/top8 at changing rows including2048 against plain TorchFP32 with unchanged atol/rtol0.02. This EP1/local24 component does not qualify global384/EP16 or two shared experts.",
+      "resources": {
+        "gpus": 4,
+        "cpu": 8,
+        "memory": "128GB",
+        "disk": "200GB"
+      },
+      "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+      "placement": {
+        "nodes": [
+          "sjtsxs64"
+        ],
+        "hero_training_gpus": 0,
+        "cluster": "cw-us-east-08a",
+        "nvlink_domain": "DH1-392-US-EAST-08A",
+        "verified_utc": "2026-10-31T13:11:22.015601+00:00"
+      },
+      "excluded_gpu_uuids": [
+        "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+        "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+        "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+        "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461",
+        "GPU-4858a3bb-5976-f906-0d1d-91a34ba87ef4",
+        "GPU-a1dac3f0-65b2-2567-26c1-a0951f6bfe4f",
+        "GPU-660ec8db-dd0e-3499-2f7a-859130b2a816",
+        "GPU-f41bf5e5-cdb1-343a-fbd5-2ccde1b66b86",
+        "GPU-ab87d1df-c68b-e43f-74f9-70990bbf3b54",
+        "GPU-825aa17f-782e-8334-4a10-ca3c8ca8436e",
+        "GPU-4eaa3b84-49ef-de11-1b50-2297839d54db",
+        "GPU-d2bf9ac2-eede-1881-bb38-58c5352223db",
+        "GPU-d631a63c-7116-0a0a-b173-285928a2f44a",
+        "GPU-e16d179f-05ee-c079-4e1a-2f2d3f10fb80",
+        "GPU-eb35ebe9-7fa9-ba42-5c97-89481edece8d",
+        "GPU-a182b275-e15a-a254-999c-44ca1930f8c1"
+      ],
+      "serving_prefix": [
+        "uvx",
+        "--from",
+        "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "--with",
+        "runai-model-streamer[s3]==0.16.1",
+        "--with",
+        "torch==2.14.1+cu132",
+        "--with",
+        "nvidia-cuda-nvcc==13.2.86",
+        "--with",
+        "nvidia-cuda-crt==13.2.86",
+        "--with",
+        "nvidia-nvvm==13.2.86",
+        "--python",
+        "3.12",
+        "--index",
+        "https://download.pytorch.org/whl/cu132",
+        "--index",
+        "https://download.pytorch.org/whl/cpu",
+        "--index-strategy",
+        "unsafe-best-match"
+      ],
+      "cuda_bootstrap": [
+        "python",
+        "-c",
+        "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n"
+      ],
+      "flashinfer_workspace_base": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1",
+      "retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r2",
+      "component": [
+        "--backend",
+        "flashinfer_cutlass",
+        "--hidden-dim",
+        "3072",
+        "--intermediate-dim",
+        "3072",
+        "--num-experts",
+        "24",
+        "--top-k",
+        "8",
+        "--normal-weights",
+        "--normal-inputs",
+        "--native-only",
+        "--row-counts",
+        "1",
+        "3",
+        "8",
+        "17",
+        "32",
+        "2048",
+        "2",
+        "1",
+        "--model-source-sha256",
+        "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3"
+      ],
+      "cost": "Reuse existing4batch holder953f483020164a00,8CPU/128GB. No additional GPUs. Estimated2-4allocatedGPUh for legitimate native freshness rebuild and one-GPU component; count all4lifetime once, alongside at most32interactive in separate nodes.",
+      "restore_workspace": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r1/8c7c41a10202fcfb/flashinfer-workspace-92f82760004cf9278fe6ae0433fec998bfab00c95948159ee3d5ae9490c1183b.tar.zst",
+        "archive_sha256": "92f82760004cf9278fe6ae0433fec998bfab00c95948159ee3d5ae9490c1183b",
+        "archive_bytes": 55825487,
+        "policy": "Restore the unchanged archive into the declared workspace; call native write_ninja and build_and_load. No prefix edits, fake links, copied binary substitution or skipped freshness checks."
+      }
+    },
+    "script_sha256": "664340ddfc3bd3364d79b7301371a96f08ca32d24594a6669ada89dcd67814c2",
+    "cpu_affinity": [
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143
+    ],
+    "admitted": {
+      "task_id": "/romain/dev-gpu-hero-agentx-attention4-r392-01a1846a/0:0",
+      "attempt_uid": "953f483020164a00",
+      "node": "sjtsxs64",
+      "gpu_uuids": [
+        "GPU-947032dd-1d5d-b0f5-e36f-525568419be1",
+        "GPU-4303d8d9-7ef8-78f8-c36e-13e7b5bab0c6",
+        "GPU-fcbd4528-ca0c-01af-9ca6-13bafb14c886",
+        "GPU-1e3f5fd1-6955-1c8f-a6ec-6b20580c2583"
+      ],
+      "hero_training_gpus": 0,
+      "physical_groups_disjoint": true,
+      "other_owned_gpu_uuids": [
+        "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+        "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+        "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+        "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461",
+        "GPU-4858a3bb-5976-f906-0d1d-91a34ba87ef4",
+        "GPU-a1dac3f0-65b2-2567-26c1-a0951f6bfe4f",
+        "GPU-660ec8db-dd0e-3499-2f7a-859130b2a816",
+        "GPU-f41bf5e5-cdb1-343a-fbd5-2ccde1b66b86",
+        "GPU-ab87d1df-c68b-e43f-74f9-70990bbf3b54",
+        "GPU-825aa17f-782e-8334-4a10-ca3c8ca8436e",
+        "GPU-4eaa3b84-49ef-de11-1b50-2297839d54db",
+        "GPU-d2bf9ac2-eede-1881-bb38-58c5352223db",
+        "GPU-d631a63c-7116-0a0a-b173-285928a2f44a",
+        "GPU-e16d179f-05ee-c079-4e1a-2f2d3f10fb80",
+        "GPU-eb35ebe9-7fa9-ba42-5c97-89481edece8d",
+        "GPU-a182b275-e15a-a254-999c-44ca1930f8c1",
+        "GPU-4b218977-4bb0-1226-4857-1e81bf80d7d0",
+        "GPU-a94abc22-dd77-051a-a748-9baa0572c6b1",
+        "GPU-600b7abc-0bb4-68a3-354d-563844759256",
+        "GPU-970c23df-2445-cd5c-aee5-b438dba3ff8c",
+        "GPU-b2ab0de6-ceeb-dd20-f243-9d529fa9a55d",
+        "GPU-59d1f968-2e06-46e6-0d0a-69173808e93f",
+        "GPU-dc4013e5-d3db-bfea-a997-da7087b165d5",
+        "GPU-1c924b2c-c7e5-de2d-b4e0-75e827c5baf4",
+        "GPU-ee2620cf-899a-ef1b-ad9a-5ac1aaf04d04",
+        "GPU-6406b791-8315-757f-8484-96276d0dee66",
+        "GPU-8d09e4e7-098e-8df1-8275-830ecdfadc44",
+        "GPU-5b23bd4f-f1b2-0827-6581-a53e61fbe512",
+        "GPU-abeb8646-4df7-393a-3de3-f22c38f0ee8d",
+        "GPU-406523e5-affb-55bf-80ed-c8d0e002c8a1",
+        "GPU-3e23ac83-222b-350e-a584-155251b1e546",
+        "GPU-120a7d4a-d138-4ea5-287f-5c05c5273f85"
+      ],
+      "provider_pod_uid": "5a8f38ed-bd7f-4b1d-bba9-376a6fbaae48",
+      "inventory_utc": "2026-10-31T14:43:57.890608+00:00",
+      "checked_unix": 1793457945.8494875
+    },
+    "preflight": {
+      "phase": "preflight",
+      "started_unix": 1793457950.224465,
+      "versions": {
+        "vllm": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+        "torch": "2.14.1+cu132",
+        "flashinfer-python": "0.6.18.post1",
+        "nvidia-cuda-nvcc": "13.2.86"
+      },
+      "ninja_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/build.ninja",
+      "ninja_sha256": "8ea4865eba5d646c863345043be685e32072c1d912769ce29396f29871ade58e",
+      "library_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/fused_moe_100.so",
+      "workspace": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a",
+      "target_cuda_archs": [
+        [
+          10,
+          "0a"
+        ]
+      ],
+      "nvcc_flags": [
+        "-gencode=arch=compute_100a,code=sm_100a",
+        "-DFLASHINFER_ENABLE_FP8_E8M0",
+        "-DFLASHINFER_ENABLE_FP4_E2M1"
+      ],
+      "cuda_initialized": false,
+      "status": "passed",
+      "finished_unix": 1793457950.242763
+    },
+    "build": {
+      "phase": "build",
+      "started_unix": 1793457953.387051,
+      "versions": {
+        "vllm": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+        "torch": "2.14.1+cu132",
+        "flashinfer-python": "0.6.18.post1",
+        "nvidia-cuda-nvcc": "13.2.86"
+      },
+      "ninja_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/build.ninja",
+      "ninja_sha256": "8ea4865eba5d646c863345043be685e32072c1d912769ce29396f29871ade58e",
+      "library_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/fused_moe_100.so",
+      "workspace": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a",
+      "target_cuda_archs": [
+        [
+          10,
+          "0a"
+        ]
+      ],
+      "nvcc_flags": [
+        "-gencode=arch=compute_100a,code=sm_100a",
+        "-DFLASHINFER_ENABLE_FP8_E8M0",
+        "-DFLASHINFER_ENABLE_FP4_E2M1"
+      ],
+      "cuda_initialized": false,
+      "library_sha256": "c724692da416fd9a8c8f846d2d06bd063f36f83366109adb3b9f2834fb2b5cc6",
+      "library_bytes": 100356848,
+      "status": "passed",
+      "finished_unix": 1793460118.7771277
+    },
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r2/953f483020164a00/flashinfer-workspace-aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e.tar.zst",
+    "archive_sha256": "aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e",
+    "readback_sha256": "aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e",
+    "archive_bytes": 55875383,
+    "component": {
+      "status": "native_backend_existing_torch_tolerances_passed",
+      "attempt_uid": "953f483020164a00",
+      "source_sha256": "500302ee531bec811a3bc8d01ddcaee983bb00ffcd3347dcf87fba82da7d81df",
+      "model_source_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+      "torch_reference_atol": 0.02,
+      "torch_reference_rtol": 0.02,
+      "requested_backend": "flashinfer_cutlass",
+      "actual_backend": "UnquantizedMoeBackend.FLASHINFER_CUTLASS",
+      "experts_class": "FlashInferExperts",
+      "output_buffer_contract_checked": false,
+      "weight_pattern": "seed42_normal_std0.02",
+      "input_pattern": "seed42_normal",
+      "fp32_reference_matmul": "highest; TF32 disabled",
+      "reference_chunk_rows": 4,
+      "configuration": {
+        "vocab_size": 64,
+        "artifact_schema_version": 1,
+        "hidden_dim": 3072,
+        "intermediate_dim": 3072,
+        "shared_expert_intermediate_dim": 0,
+        "num_shared_experts": 1,
+        "num_experts": 24,
+        "num_experts_per_token": 8,
+        "latent_dim": null,
+        "num_layers": 1,
+        "num_heads": 4,
+        "num_kv_heads": 1,
+        "local_kv_heads": null,
+        "global_kv_heads": null,
+        "head_dim": 768,
+        "max_seq_len": 128,
+        "sliding_window": 8,
+        "global_every": 4,
+        "layer_norm_eps": 1e-05,
+        "initializer_std": 0.02,
+        "qk_mult": 1.0,
+        "qk_mult_long_scale": 1.0,
+        "disable_pko": true,
+        "disable_long_rope": true,
+        "rope_fused": false,
+        "sconv": false,
+        "sconv_kernel": 4,
+        "sconv_sites": [
+          "k",
+          "attn",
+          "mlp"
+        ],
+        "tie_word_embeddings": false,
+        "rope_theta": 10000.0
+      },
+      "rows": [
+        {
+          "token_rows": 1,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.01147317886352539,
+          "torch_fp32_mean_absolute_delta": 0.002220040885731578
+        },
+        {
+          "token_rows": 3,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.011999964714050293,
+          "torch_fp32_mean_absolute_delta": 0.0022673076018691063
+        },
+        {
+          "token_rows": 8,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.01268315315246582,
+          "torch_fp32_mean_absolute_delta": 0.0023084201384335756
+        },
+        {
+          "token_rows": 17,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.015058279037475586,
+          "torch_fp32_mean_absolute_delta": 0.002265377203002572
+        },
+        {
+          "token_rows": 32,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.016034841537475586,
+          "torch_fp32_mean_absolute_delta": 0.0022503091022372246
+        },
+        {
+          "token_rows": 2048,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.02048015594482422,
+          "torch_fp32_mean_absolute_delta": 0.002260810462757945
+        },
+        {
+          "token_rows": 2,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.014687061309814453,
+          "torch_fp32_mean_absolute_delta": 0.0022486490197479725
+        },
+        {
+          "token_rows": 1,
+          "native_max_absolute_delta": null,
+          "torch_fp32_max_absolute_delta": 0.01147317886352539,
+          "torch_fp32_mean_absolute_delta": 0.002220040885731578
+        }
+      ],
+      "scope": "One-GPU synthetic BF16 flashinfer_cutlass component check, no graph or full-Hero qualification."
+    },
+    "finished_unix": 1793460133.1383753
+  },
+  "component": {
+    "status": "native_backend_existing_torch_tolerances_passed",
+    "attempt_uid": "953f483020164a00",
+    "source_sha256": "500302ee531bec811a3bc8d01ddcaee983bb00ffcd3347dcf87fba82da7d81df",
+    "model_source_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+    "torch_reference_atol": 0.02,
+    "torch_reference_rtol": 0.02,
+    "requested_backend": "flashinfer_cutlass",
+    "actual_backend": "UnquantizedMoeBackend.FLASHINFER_CUTLASS",
+    "experts_class": "FlashInferExperts",
+    "output_buffer_contract_checked": false,
+    "weight_pattern": "seed42_normal_std0.02",
+    "input_pattern": "seed42_normal",
+    "fp32_reference_matmul": "highest; TF32 disabled",
+    "reference_chunk_rows": 4,
+    "configuration": {
+      "vocab_size": 64,
+      "artifact_schema_version": 1,
+      "hidden_dim": 3072,
+      "intermediate_dim": 3072,
+      "shared_expert_intermediate_dim": 0,
+      "num_shared_experts": 1,
+      "num_experts": 24,
+      "num_experts_per_token": 8,
+      "latent_dim": null,
+      "num_layers": 1,
+      "num_heads": 4,
+      "num_kv_heads": 1,
+      "local_kv_heads": null,
+      "global_kv_heads": null,
+      "head_dim": 768,
+      "max_seq_len": 128,
+      "sliding_window": 8,
+      "global_every": 4,
+      "layer_norm_eps": 1e-05,
+      "initializer_std": 0.02,
+      "qk_mult": 1.0,
+      "qk_mult_long_scale": 1.0,
+      "disable_pko": true,
+      "disable_long_rope": true,
+      "rope_fused": false,
+      "sconv": false,
+      "sconv_kernel": 4,
+      "sconv_sites": [
+        "k",
+        "attn",
+        "mlp"
+      ],
+      "tie_word_embeddings": false,
+      "rope_theta": 10000.0
+    },
+    "rows": [
+      {
+        "token_rows": 1,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.01147317886352539,
+        "torch_fp32_mean_absolute_delta": 0.002220040885731578
+      },
+      {
+        "token_rows": 3,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.011999964714050293,
+        "torch_fp32_mean_absolute_delta": 0.0022673076018691063
+      },
+      {
+        "token_rows": 8,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.01268315315246582,
+        "torch_fp32_mean_absolute_delta": 0.0023084201384335756
+      },
+      {
+        "token_rows": 17,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.015058279037475586,
+        "torch_fp32_mean_absolute_delta": 0.002265377203002572
+      },
+      {
+        "token_rows": 32,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.016034841537475586,
+        "torch_fp32_mean_absolute_delta": 0.0022503091022372246
+      },
+      {
+        "token_rows": 2048,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.02048015594482422,
+        "torch_fp32_mean_absolute_delta": 0.002260810462757945
+      },
+      {
+        "token_rows": 2,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.014687061309814453,
+        "torch_fp32_mean_absolute_delta": 0.0022486490197479725
+      },
+      {
+        "token_rows": 1,
+        "native_max_absolute_delta": null,
+        "torch_fp32_max_absolute_delta": 0.01147317886352539,
+        "torch_fp32_mean_absolute_delta": 0.002220040885731578
+      }
+    ],
+    "scope": "One-GPU synthetic BF16 flashinfer_cutlass component check, no graph or full-Hero qualification."
+  },
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r2/outputs-3aebaf6ce79a41968d22428606f27e7d6f2ba69b090b9f2bee67cedba16292b6.tar.zst",
+    "archive_sha256": "3aebaf6ce79a41968d22428606f27e7d6f2ba69b090b9f2bee67cedba16292b6",
+    "readback_sha256": "3aebaf6ce79a41968d22428606f27e7d6f2ba69b090b9f2bee67cedba16292b6",
+    "archive_bytes": 14933
+  },
+  "gpu_empty_after": true,
+  "scope": "OneGPU native CUTLASS local24/latent3072 BF16 component with original .02/.02 FP32 tolerances. Does not qualify global384/EP16 or shared experts, and is not throughput."
+}
