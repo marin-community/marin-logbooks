@@ -125,7 +125,7 @@ def run(
         batch_trace(
             base_url,
             "install_hero_batch_trace",
-            [reference_capture_sizes, disable_graph_replay, local_piecewise_dp],
+            [reference_capture_sizes, disable_graph_replay, local_piecewise_dp, True],
         )
         storage = batch_trace(base_url, "hero_cache_storage")
         (output / "cache-storage.json").write_text(json.dumps(storage, indent=2) + "\n")
