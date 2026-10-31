@@ -249,3 +249,35 @@ and four at 1e20, including the two new runs. Twelve jobs below 1e20 await
 executor slots. Continue monitoring the new runs and verify their rolling
 saves as each reaches its first checkpoint interval. The
 source, recipes, checkpoint lineage, batch priority, and 64-GPU cap are fixed.
+
+## 2026-10-31 UTC: AdamW completes 1e20; training-loss comparison
+
+AdamW with LR multiplier 3 completed the 1e20-FLOP recipe with final Paloma
+macro loss 3.0864096 and training loss 2.0671706. Iris reports success; W&B
+reports finished at zero-based step 41,955. The permanent checkpoint saved at 01:56:22 UTC records 41,956 updates and
+`is_temporary=false`. Checkpoint metadata,
+`manifest.json`, `manifest.ocdbt`, and the data directory are present. The run
+processed 21,997,027,328 tokens. The selected ladder is now 9/28 complete.
+
+For the four completed 3e20-FLOP recipes, the training-loss check averaged
+the final 1,000 logged updates, steps 55,989–56,988, for each recipe.
+
+| Optimizer | Mean training loss over last 1,000 updates | Final Paloma macro loss |
+|---|---:|---:|
+| AdamW | 1.8612345 | 2.9459300 |
+| AdamH | 1.8906134 | 2.9706540 |
+| MuonH | 1.9898635 | 3.0711474 |
+| Muon | 2.0207500 | 3.1069922 |
+
+The training-loss ordering agrees with final Paloma loss: Muon trails AdamW
+on both measures. This is one seed per recipe with LR multipliers transferred
+from the limited calibration sweep. The comparison does not isolate optimizer
+choice from LR transfer or other recipe settings. The final 1e20 result and
+training-tail query bounds and means are preserved in
+[adamw-1e20-20261031.json](adamw-1e20-20261031.json).
+
+The coordinator dispatched AdamW at 3e19 FLOPs at 01:56:45 UTC. Four 1e21,
+three 1e20, and one 3e19 run now occupy the eight executor slots; eleven jobs
+below 1e20 await slots. Verify the new child's finite progress and rolling
+checkpoint on subsequent heartbeats. Source, recipes, checkpoint lineage,
+batch priority, and the 64-GPU cap remain fixed.

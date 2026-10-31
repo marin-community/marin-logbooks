@@ -1,0 +1,84 @@
+{
+  "campaign": "hero-dense-opt-20261026",
+  "artifact_version": "2026.10.26",
+  "source_sha": "5e46cfb93934c8c5e9a218f45117685887410d59",
+  "observation_utc": "2026-10-31T01:59:43.787443+00:00",
+  "selected_completed": 9,
+  "selected_total": 28,
+  "result": {
+    "budget_flops": 1e+20,
+    "optimizer": "adamw",
+    "lr_multiplier": 3,
+    "wandb_run_id": "hero-dense-opt-20261026-1e+20-adamw-lr3",
+    "iris_state": "succeeded",
+    "wandb_state": "finished",
+    "updates": 41956,
+    "wandb_final_step": 41955,
+    "final_train_loss": 2.0671706199645996,
+    "final_paloma_macro_loss": 3.086409568786621,
+    "total_tokens": 21997027328.0,
+    "permanent_checkpoint_metadata": {
+      "step": 41956,
+      "timestamp": "2026-10-31T01:56:22.551295",
+      "is_temporary": false
+    },
+    "checkpoint_contents": [
+      "d/",
+      "manifest.json",
+      "manifest.ocdbt",
+      "metadata.json"
+    ],
+    "final_metrics_timestamp_utc": "2026-10-31T01:56:15.645258+00:00",
+    "r3_scheduler_preemptions": 0
+  },
+  "training_tail_3e20": {
+    "metric": "train/loss",
+    "first_step_inclusive": 55989,
+    "last_step_inclusive": 56988,
+    "query_keys": [
+      "_step",
+      "train/loss"
+    ],
+    "query_min_step_inclusive": 55989,
+    "query_max_step_exclusive": 56989,
+    "results": [
+      {
+        "optimizer": "adamw",
+        "n": 1000,
+        "first_step": 55989,
+        "last_step": 56988,
+        "mean": 1.8612344710826874,
+        "last": 1.9284896850585938
+      },
+      {
+        "optimizer": "adamh",
+        "n": 1000,
+        "first_step": 55989,
+        "last_step": 56988,
+        "mean": 1.890613400220871,
+        "last": 1.9561436176300049
+      },
+      {
+        "optimizer": "muonh",
+        "n": 1000,
+        "first_step": 55989,
+        "last_step": 56988,
+        "mean": 1.9898635183572768,
+        "last": 2.054753065109253
+      },
+      {
+        "optimizer": "muon",
+        "n": 1000,
+        "first_step": 55989,
+        "last_step": 56988,
+        "mean": 2.0207500363588333,
+        "last": 2.086284875869751
+      }
+    ]
+  },
+  "limitations": [
+    "One seed per recipe, with multipliers transferred from the limited three-point 1e18 sweep.",
+    "Only AdamW has a final 1e20 result; do not compare its final metric to other recipes at unequal progress.",
+    "The training-tail and Paloma ordering at 3e20 agree; these data do not isolate optimizer choice from LR transfer or other recipe settings."
+  ]
+}
