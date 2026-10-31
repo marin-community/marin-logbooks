@@ -1,0 +1,121 @@
+{
+  "status": "tiny_cutlass_dp4_state_control_passed",
+  "gpu_empty": true,
+  "attempt_uid": "6b7863c504a2899f",
+  "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-cutlass-ep4-r2/outputs-31cab4accdb25cbf47a5b4b98db22f13d669e6e95f3522a9878f102012f48932.tar.zst",
+  "sha256": "31cab4accdb25cbf47a5b4b98db22f13d669e6e95f3522a9878f102012f48932",
+  "readback_sha256": "31cab4accdb25cbf47a5b4b98db22f13d669e6e95f3522a9878f102012f48932",
+  "bytes": 26880528,
+  "source_commit": "7aaf5a3bf9284cd475fd15586934c9d07fa5f5ae",
+  "first_dispatches": [
+    {
+      "unix": 1793422381.7321,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793422381.7320964,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793422381.7321575,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 1,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 1,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    },
+    {
+      "unix": 1793422381.73218,
+      "row": {
+        "requests": 1,
+        "scheduled_tokens": 64,
+        "padded_tokens": 64,
+        "graph_mode": "NONE",
+        "max_query_len": 64,
+        "tokens_across_dp": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      }
+    }
+  ],
+  "error_lines": [],
+  "compiled_graph_sources": [
+    {
+      "path": "/iris/candidates/tiny-cutlass-ep4-r1-cache/torch_compile_cache/9d0b9ed682/rank_0_2/backbone/computation_graph.py",
+      "sha256": "fe65588b25f1bf2498892ae4af3b9c05848260cf6873cbb6d5204ecad795c4ad",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-cutlass-ep4-r1-cache/torch_compile_cache/9d0b9ed682/rank_0_3/backbone/computation_graph.py",
+      "sha256": "d1611a9e2e760cced29652cdf0a91641d8a5d6c815a7717d5c017a15594c0fc0",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-cutlass-ep4-r1-cache/torch_compile_cache/9d0b9ed682/rank_0_0/backbone/computation_graph.py",
+      "sha256": "3905ae4a5bcc324564267ee67da0649ac8c3e1d09401caee1621ac7fef255d3e",
+      "bytes": 216414
+    },
+    {
+      "path": "/iris/candidates/tiny-cutlass-ep4-r1-cache/torch_compile_cache/9d0b9ed682/rank_0_1/backbone/computation_graph.py",
+      "sha256": "42d0f5509ea7ae330edb59f27d087454f5f58588bffaa7f519581a8493a5f134",
+      "bytes": 216414
+    }
+  ],
+  "autotune_configs": [
+    {
+      "path": "/iris/candidates/tiny-cutlass-ep4-r1-cache/flashinfer_autotune_cache/0.6.18.post1/100a/7b990e1f0ba88bcd2a1f09ae04b5e3d1c6daee5ae9c557aee20c03302efc164d/autotune_configs.json",
+      "sha256": "632dafc2ab1d58fb0d2db6927c538786040d8fbf19bda68837791131a9ce34fe",
+      "bytes": 4009
+    }
+  ],
+  "native_kernel_shared_object_sha256": "6e826c498aaec5514f4adb8af3f0c963e9600592b2ea6b7bd98728be6447cfc0",
+  "native_kernel_shared_object_bytes": 100357448,
+  "scope": "Eight finite requests on DP0 with native DP4/EP4 expert routing on all4shards. Five cold/warm pairs exact. Original unbuffered source9ea, fixed64-row global padding and replay disabled. Compared with Triton, only2/8choices have equal generated tokens, max shared-history LP delta0.03495025634765625; no new tolerance or full-model/graph/speed claim."
+}
