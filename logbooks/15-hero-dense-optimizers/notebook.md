@@ -323,3 +323,45 @@ has only the AdamW/Muon final comparison. The results do not establish
 optimizer-optimal scaling or statistical significance. Scheduler waits and
 recovery affect elapsed time; time-to-loss remains unanalysed. Source,
 recipes, checkpoint lineage, batch priority, and the 64-GPU cap remain fixed.
+
+## 2026-10-31 UTC: Muon and AdamH complete 3e19
+
+Muon and AdamH, both with LR multiplier 3, completed their 3e19-FLOP recipes.
+Each processed 9,604,431,872 tokens in 18,319 updates. Including the earlier
+AdamW result, the completed recipes at this budget are:
+
+| Optimizer | LR multiplier | Final Paloma macro loss |
+|---|---:|---:|
+| AdamW | 3 | 3.2401280 |
+| AdamH | 3 | 3.2703621 |
+| Muon | 3 | 3.3161674 |
+
+Paloma macro loss is the held-out quality metric; lower is better. MuonH
+remains incomplete. The [initial design](#2026-10-26-initial-design-and-launch-contract)
+records model sizes, data, LR centers and schedules, and the norm-preserving
+AdamH/MuonH recipes. This is one seed per recipe with multipliers transferred
+from the limited three-point 1e18 sweep. All three completed recipes selected
+the highest tested multiplier. The partial comparison does not establish
+statistical significance or optimizer-optimal scaling.
+
+Both new completions have Iris success and W&B finished states at zero-based
+step 18,318. Their permanent checkpoints record update 18,319 with
+`is_temporary=false`, saved at 10:55:58 UTC for Muon and 11:12:54 UTC for
+AdamH. Metadata, both manifests, and the data directories are present. Final
+single-batch training losses are 2.2044010 and 2.1602609, respectively. Exact
+final metrics and checkpoint metadata are in
+[milestone-20261031-1230.json](milestone-20261031-1230.json).
+The selected ladder is now 13/28 complete.
+
+The coordinator filled the freed slots with MuonH at 3e19 FLOPs at 10:56:25
+UTC and AdamW at 1e19 at 11:13:30 UTC. At the 12:34 UTC Iris/W&B snapshot,
+both had finite advancing training; subsequent storage reads verified complete
+retained rolling checkpoints on all eight active jobs. Four 1e21, two 1e20,
+one 3e19 and one 1e19 run occupy the eight slots; seven lower-budget jobs
+await slots. All eight current jobs report zero application failures. Their
+r3 scheduler preemption totals are 6, 2, 6, and 2 for the 1e21 AdamW, Muon,
+AdamH, and MuonH jobs, respectively, and zero for the other four jobs.
+Continue checking sustained throughput and repeated rolling saves on the
+new jobs, and verify finals and successors as remaining runs finish.
+Time-to-loss remains unanalysed. Source, recipes, checkpoint lineage, batch
+priority and the 64-GPU cap remain fixed.
