@@ -1,0 +1,42 @@
+{
+  "status": "source_audit_and_released_binary_cpu_control",
+  "router_source_archive_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c",
+  "sources": [
+    {
+      "file": "server_metrics/manager.py",
+      "sha256": "2c93f0a827d6515d6cd03ee3b6480cf373d74dd8486af6674400778795b4cef0"
+    },
+    {
+      "file": "config/flags/_converter_telemetry.py",
+      "sha256": "32b42a0a628e4133a69199d196788c6f0f633d485d974645c967e367d57a32b4"
+    },
+    {
+      "file": "config/flags/cli_config.py",
+      "sha256": "fba8694496fd918057a52c9bf277c0f3a739ba8b9fe07013b8a7e9cd113ed2de"
+    },
+    {
+      "file": "vllm_router-0.1.16/src/server.rs",
+      "sha256": "678dfad10f86aefa38c9081fade3910906dc9d52b643f0bb78cf5eb4330e06e6"
+    },
+    {
+      "file": "vllm_router-0.1.16/src/routers/http/router.rs",
+      "sha256": "225d7dcd640659939a2462faf4eb10655058a93b0cd38309bd46871e7b415317"
+    },
+    {
+      "file": "vllm_router-0.1.16/src/routers/http/dp_utils.rs",
+      "sha256": "b09ed1b7cd5f2ca5632909a09e798e9eaf3b81eb4103f959051c252ec790a8b3"
+    }
+  ],
+  "findings": [
+    "Native Router expands each backend URL into ranks0..15. CPU control exercises stable owners across both backends and preserves rank/session headers.",
+    "Router transparent /metrics proxy selects one available worker according to its policy. The released ARM binary returned one backend per scrape in all8checks; this is not an aggregate across replicas.",
+    "Pinned AIPerf1.0.12 supports multiple additional --server-metrics URLs and automatically adds inferenceURL/metrics. Deduplication compares normalized endpoint strings only.",
+    "For a future paired replica measurement, scrape both native endpoints once each. Keep endpoint identity when ranks0..15 overlap. Exclude the automatic Router alias from server-counter totals and verify all32 engine series directly. Client scoring remains unchanged."
+  ],
+  "unqualified": [
+    "Cross-host API reachability",
+    "Full-model state/numerical controls through both groups",
+    "One full AgentX window across both replicas",
+    "No additional allocation or replica performance claim yet"
+  ]
+}

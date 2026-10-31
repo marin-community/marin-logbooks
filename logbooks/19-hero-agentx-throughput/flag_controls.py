@@ -236,6 +236,11 @@ def main() -> None:
     trace_controls = manifest.get("diagnostic_request", {}).get("trace_control_batches", False)
     if trace_controls:
         assert manifest["diagnostic_request"]["trace_batches"] is True
+    if trace_controls and local_piecewise_dp:
+        # Keep every rank on the same collective sequence between speed cases.
+        # Restoring global dispatch and reinstalling local dispatch can race
+        # ongoing DP dummy steps. Trace reads only clear CPU metadata.
+        batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace", [None, False, True])
     for name, case in selected:
         output = args.output / "clients" / name
         output.mkdir(parents=True, exist_ok=False)
@@ -247,14 +252,16 @@ def main() -> None:
         # Native counters bracket the entire client process, outside its timed requests.
         with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
             (output / "server-metrics-before.txt").write_bytes(response.read())
-        if trace_controls:
+        if trace_controls and not local_piecewise_dp:
             batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace", [None, False, local_piecewise_dp])
+        if trace_controls:
             record["collector"] = "Native CPU dispatch metadata; no GPU synchronization or profiler"
         run_logged(command, dict(os.environ), output / "client.log", timeout=1800)
         if trace_controls:
             traces = batch_trace("http://127.0.0.1:38197", "take_hero_batch_trace")
             (output / "dispatch-batches.json").write_text(json.dumps(traces, indent=2) + "\n")
-            batch_trace("http://127.0.0.1:38197", "stop_hero_batch_trace")
+            if not local_piecewise_dp:
+                batch_trace("http://127.0.0.1:38197", "stop_hero_batch_trace")
         with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
             (output / "server-metrics-after.txt").write_bytes(response.read())
         result = json.loads((output / "result.json").read_text())
