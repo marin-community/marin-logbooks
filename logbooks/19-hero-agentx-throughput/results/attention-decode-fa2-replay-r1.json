@@ -1,0 +1,786 @@
+{
+  "source_commit": "7630d778f276820e7197d898b2f3a52eb973e411",
+  "result": {
+    "source_sha256": "5c6cc518c9b2dcb48a345a799c4d67461b9b2e8c19f233eba13873c6bf70f107",
+    "flashinfer_source_sha256": "d82d107a644596a9349780b839b34e690c50169ea4cea3d0ee02b78e9dc88c1a",
+    "input_files": {
+      "reference/attention-layer-3.pt": "d71052208fc0f3f2b2020e330acec0d3ae098cca3fcc91986eb28c08528f3951",
+      "reference/attention-layer-3-prefill-1.pt": "0615b5f04d90bd26b82be18e392f1f73c0176e847d6470dce2b012c194feaa6a",
+      "reference/attention-layer-3-prefill-2.pt": "c709062407deff9aa1b6b3301d4916e9114bfeef4dfe0d71d8657b85477c2152",
+      "reference/attention-layer-3-prefill-3.pt": "b3d92ccdffa1fb49064b573399308ef4832438b975c33b32c575b6298b123e8e",
+      "reference/attention-layer-3-prefill-4.pt": "b4d282c09cfe1047be5e7eb1a1c16b702b092205367910d1e5f413a5b265d6b2",
+      "reference/attention-layer-3-prefill-5.pt": "3d288ab9bd052c62fa0a558a53e8ba2394672d598d58e8f55804d0c1a0849cff",
+      "candidate/attention-layer-3.pt": "ee0dab057cc88918d28f1d60a00cbb3b71a99e93ffb59e050ce62be62128773b",
+      "candidate/attention-layer-3-prefill-1.pt": "5e6170b1b92fb076b2287222cc8e9804246582ea8aef0fa6fa7b9156b11635cb",
+      "candidate/attention-layer-3-prefill-2.pt": "b9ceb7a40999bf3fda57c02e0f1b387cbc752bec81603a79b58d34b82af9739f",
+      "candidate/attention-layer-3-prefill-3.pt": "7d7448599409af69ace81087e559dcd058abf7c8afddc005b32678531fbb3920",
+      "candidate/attention-layer-3-prefill-4.pt": "426681bd10e35addde377831bf30e99612210437b16cb2a9de870fe62c606742",
+      "candidate/attention-layer-3-prefill-5.pt": "4418cba10d87992905cd1e09dcaed19e14e286881ea621b68542aa85478a07b4"
+    },
+    "context_length": 8208,
+    "native_flashinfer_atol": 0.01,
+    "native_flashinfer_rtol": 0.01,
+    "cases": [
+      {
+        "name": "heads-12-page-16-no-split-False",
+        "backend": "fa2",
+        "kv_heads": 12,
+        "page_size": 16,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 912,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.9181124773458578e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                3
+              ],
+              "reference": 0.04541015625,
+              "candidate": 0.045654296875
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                16
+              ],
+              "reference": 0.07763671875,
+              "candidate": 0.0771484375
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 858,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.7966074412688613e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.00142669677734375
+            },
+            {
+              "index": [
+                0,
+                0,
+                3
+              ],
+              "reference": 0.04541015625,
+              "candidate": 0.045654296875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-12-page-32-no-split-False",
+        "backend": "fa2",
+        "kv_heads": 12,
+        "page_size": 32,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 958,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.9803297366015613e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.00142669677734375,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                17
+              ],
+              "reference": 0.0419921875,
+              "candidate": 0.042236328125
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 931,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.8413624022505246e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            },
+            {
+              "index": [
+                0,
+                0,
+                29
+              ],
+              "reference": -0.0283203125,
+              "candidate": -0.0284423828125
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-6-page-16-no-split-False",
+        "backend": "fa2",
+        "kv_heads": 6,
+        "page_size": 16,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 883,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.7451134883449413e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                4
+              ],
+              "reference": 0.0126953125,
+              "candidate": 0.01275634765625
+            },
+            {
+              "index": [
+                0,
+                0,
+                11
+              ],
+              "reference": -0.06494140625,
+              "candidate": -0.0654296875
+            },
+            {
+              "index": [
+                0,
+                0,
+                20
+              ],
+              "reference": -0.0228271484375,
+              "candidate": -0.022705078125
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 826,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.6109502869076096e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.00142669677734375
+            },
+            {
+              "index": [
+                0,
+                0,
+                4
+              ],
+              "reference": 0.0126953125,
+              "candidate": 0.01275634765625
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.047607421875,
+              "candidate": -0.04736328125
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-6-page-32-no-split-False",
+        "backend": "fa2",
+        "kv_heads": 6,
+        "page_size": 32,
+        "disable_split_kv": false,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 890,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.9647640985785984e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                18
+              ],
+              "reference": 0.06982421875,
+              "candidate": 0.0693359375
+            },
+            {
+              "index": [
+                0,
+                0,
+                20
+              ],
+              "reference": -0.0228271484375,
+              "candidate": -0.022705078125
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 852,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 2.784376010822598e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.00142669677734375
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            },
+            {
+              "index": [
+                0,
+                0,
+                17
+              ],
+              "reference": 0.042236328125,
+              "candidate": 0.0419921875
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-12-page-16-no-split-True",
+        "backend": "fa2",
+        "kv_heads": 12,
+        "page_size": 16,
+        "disable_split_kv": true,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 650,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.8269272914039902e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.00142669677734375,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 570,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.5253480341925751e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-12-page-32-no-split-True",
+        "backend": "fa2",
+        "kv_heads": 12,
+        "page_size": 32,
+        "disable_split_kv": true,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 650,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.8269272914039902e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.00142669677734375,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 570,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.5253480341925751e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-6-page-16-no-split-True",
+        "backend": "fa2",
+        "kv_heads": 6,
+        "page_size": 16,
+        "disable_split_kv": true,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 650,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.8269272914039902e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.00142669677734375,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 570,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.5253480341925751e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        }
+      },
+      {
+        "name": "heads-6-page-32-no-split-True",
+        "backend": "fa2",
+        "kv_heads": 6,
+        "page_size": 32,
+        "disable_split_kv": true,
+        "repeat_exact": true,
+        "native_tolerance_passed": true,
+        "fp32_max_absolute_delta": 0.0007785260677337646,
+        "captured_reference": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 650,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.8269272914039902e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.00142669677734375,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                6
+              ],
+              "reference": -0.04736328125,
+              "candidate": -0.047607421875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        },
+        "captured_candidate": {
+          "shape": [
+            1,
+            48,
+            128
+          ],
+          "dtype": "torch.bfloat16",
+          "exact": false,
+          "different_elements": 570,
+          "elements": 6144,
+          "max_absolute_delta": 0.0009765625,
+          "mean_absolute_delta": 1.5253480341925751e-05,
+          "examples": [
+            {
+              "index": [
+                0,
+                0,
+                0
+              ],
+              "reference": 0.0014190673828125,
+              "candidate": 0.001434326171875
+            },
+            {
+              "index": [
+                0,
+                0,
+                14
+              ],
+              "reference": 0.01373291015625,
+              "candidate": 0.013671875
+            },
+            {
+              "index": [
+                0,
+                0,
+                15
+              ],
+              "reference": 0.0037994384765625,
+              "candidate": 0.003814697265625
+            }
+          ]
+        }
+      }
+    ],
+    "scope": "Captured global-layer decode component; fixed logical Q/K/V, no model or throughput qualification."
+  },
+  "gpu_empty_after": true,
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-decode-replay-r1/outputs-632f34b635fb4dc55e51b2e7129ba58271d1c4af691b78c6a33f751ac6181063.tar.zst",
+    "archive_sha256": "632f34b635fb4dc55e51b2e7129ba58271d1c4af691b78c6a33f751ac6181063",
+    "readback_sha256": "632f34b635fb4dc55e51b2e7129ba58271d1c4af691b78c6a33f751ac6181063"
+  },
+  "interpretation": "FA2 wrapper does not reproduce either native server output. Captured decode metadata uses the native TRTLLM API path, selected as trtllm-gen on SM100. The unchanged FP32 tolerance passes, but this run cannot attribute the server difference."
+}

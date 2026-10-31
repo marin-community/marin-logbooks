@@ -11,7 +11,7 @@ from pathlib import Path
 
 import torch
 from compare_moe_snapshots import compare_tensor
-from flashinfer import BatchDecodeWithPagedKVCacheWrapper
+from flashinfer import BatchDecodeWithPagedKVCacheWrapper, trtllm_batch_decode_with_kv_cache
 
 ATOL = 1e-2
 RTOL = 1e-2
@@ -23,6 +23,7 @@ def main() -> None:
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--backend", choices=("fa2", "trtllm-gen"), default="trtllm-gen")
     args = parser.parse_args()
     assert torch.cuda.device_count() == 1
     torch.set_num_threads(1)
@@ -61,7 +62,7 @@ def main() -> None:
     workspace = torch.empty(128 * 1024 * 1024, dtype=torch.uint8, device="cuda")
     outputs = {}
     cases = []
-    for disable_split in (False, True):
+    for disable_split in ((False, True) if args.backend == "fa2" else (False,)):
         for heads in (12, 6):
             for page_size in (16, 32):
                 pages = (length + page_size - 1) // page_size
@@ -73,27 +74,47 @@ def main() -> None:
                     packed[..., index * 128 : (index + 1) * 128].copy_(
                         padded.reshape(pages, page_size, heads, 128).transpose(1, 2)
                     )
-                wrapper = BatchDecodeWithPagedKVCacheWrapper(workspace, "HND", use_tensor_cores=True, backend="auto")
-                wrapper.plan(
-                    torch.tensor([0, pages], dtype=torch.int32),
-                    torch.arange(pages, device="cuda", dtype=torch.int32),
-                    torch.tensor([(length - 1) % page_size + 1], dtype=torch.int32),
-                    num_qo_heads=48,
-                    num_kv_heads=heads,
-                    head_dim=128,
-                    page_size=page_size,
-                    pos_encoding_mode="NONE",
-                    sm_scale=128**-0.5,
-                    window_left=-1,
-                    logits_soft_cap=0.0,
-                    q_data_type=torch.bfloat16,
-                    kv_data_type=torch.bfloat16,
-                    o_data_type=torch.bfloat16,
-                    fixed_split_size=2048 if disable_split else -1,
-                    disable_split_kv=disable_split,
-                )
-                output = wrapper.run(query, packed.split(128, dim=-1))
-                repeated = wrapper.run(query, packed.split(128, dim=-1))
+                if args.backend == "fa2":
+                    wrapper = BatchDecodeWithPagedKVCacheWrapper(workspace, "HND", use_tensor_cores=True, backend="fa2")
+                    wrapper.plan(
+                        torch.tensor([0, pages], dtype=torch.int32),
+                        torch.arange(pages, device="cuda", dtype=torch.int32),
+                        torch.tensor([(length - 1) % page_size + 1], dtype=torch.int32),
+                        num_qo_heads=48,
+                        num_kv_heads=heads,
+                        head_dim=128,
+                        page_size=page_size,
+                        pos_encoding_mode="NONE",
+                        sm_scale=128**-0.5,
+                        window_left=-1,
+                        logits_soft_cap=0.0,
+                        q_data_type=torch.bfloat16,
+                        kv_data_type=torch.bfloat16,
+                        o_data_type=torch.bfloat16,
+                        fixed_split_size=2048 if disable_split else -1,
+                        disable_split_kv=disable_split,
+                    )
+                    output = wrapper.run(query, packed.split(128, dim=-1))
+                    repeated = wrapper.run(query, packed.split(128, dim=-1))
+                else:
+                    call = {
+                        "query": query,
+                        "kv_cache": packed.split(128, dim=-1),
+                        "workspace_buffer": workspace,
+                        "block_tables": torch.arange(pages, dtype=torch.int32, device="cuda")[None],
+                        "seq_lens": torch.tensor([length], dtype=torch.int32, device="cuda"),
+                        "max_seq_len": length,
+                        "bmm1_scale": 128**-0.5,
+                        "bmm2_scale": 1.0,
+                        "window_left": -1,
+                        "kv_layout": "HND",
+                        "backend": "trtllm-gen",
+                        "q_len_per_req": 1,
+                    }
+                    output = torch.empty_like(query)
+                    repeated = torch.empty_like(query)
+                    trtllm_batch_decode_with_kv_cache(**call, out=output)
+                    trtllm_batch_decode_with_kv_cache(**call, out=repeated)
                 assert torch.equal(output, repeated)
                 torch.testing.assert_close(output.float(), expected, atol=ATOL, rtol=RTOL)
                 name = f"heads-{heads}-page-{page_size}-no-split-{disable_split}"
@@ -101,7 +122,7 @@ def main() -> None:
                 cases.append(
                     {
                         "name": name,
-                        "backend": wrapper._backend,
+                        "backend": args.backend,
                         "kv_heads": heads,
                         "page_size": page_size,
                         "disable_split_kv": disable_split,

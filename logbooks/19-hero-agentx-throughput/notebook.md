@@ -1028,3 +1028,11 @@ See [the six-step result](results/attention-geometry-off-on-r3.json). The next
 component replay holds logical Q/K/V fixed and varies page size and KV head
 count separately, with native automatic decode planning and split-KV disabled.
 No model patch, numerical threshold or full-model qualification gate changed.
+
+The first decode replay used FlashInfer's generic FA2 wrapper. All eight
+combinations pass its unchanged FP32 tolerance, but neither original server
+output is reproduced exactly. The saved decode metadata has native TRTLLM API
+fields; the pinned SM100 builder selects `trtllm-gen` for that path. The replay
+now calls the same native TRTLLM API, varying only head count and page size.
+The [FA2 result](results/attention-decode-fa2-replay-r1.json) is retained as an
+unsuccessful reproduction, not evidence of the server's actual decode kernel.
