@@ -22,6 +22,23 @@ from huggingface_hub import hf_hub_download
 from experiments.evaluation.agentx.processes import run_logged
 
 
+def assert_exact_cross(path: Path) -> None:
+    rows = json.loads(path.read_text())
+    assert len(rows) == 10
+    assert all(
+        row["same_global_shapes"]
+        and all(
+            choice["same_tokens"]
+            and choice["finite_logprobs"]
+            and choice["max_shared_logprob_absolute_delta"] == 0
+            and choice["minimum_topk_overlap"] == 20
+            and choice["matching_token_prefix"] == 16
+            for choice in row["choices"]
+        )
+        for row in rows
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -71,6 +88,10 @@ def main() -> None:
     if manifest.get("diagnostic_request", {}).get("trace_batches"):
         probe.append("--trace-batches")
     local_piecewise_dp = manifest.get("diagnostic_request", {}).get("local_piecewise_dp", False)
+    native_local_dp = manifest.get("diagnostic_request", {}).get("native_local_piecewise_dp", False)
+    if native_local_dp:
+        assert not local_piecewise_dp
+        assert manifest["diagnostic_request"]["compilation_config"]["cudagraph_local_dp"] is True
     if local_piecewise_dp:
         assert manifest["diagnostic_request"]["trace_batches"] is True
         probe.append("--local-piecewise-dp")
@@ -85,6 +106,15 @@ def main() -> None:
     if rows := manifest.get("diagnostic_request", {}).get("moe_snapshot_rows"):
         assert rows == 16 and "--disable-graph-replay" in probe
         probe += ["--moe-snapshot-rows", str(rows)]
+    if source_reference := manifest.get("diagnostic_request", {}).get("source_reference"):
+        assert native_local_dp
+        directory = Path(source_reference["path"])
+        assert (
+            hashlib.sha256((directory.parent / "control-manifest.json").read_bytes()).hexdigest()
+            == source_reference["manifest_sha256"]
+        )
+        assert json.loads((directory.parent / "diagnostic.json").read_text())["status"] == "stopped"
+        probe += ["--compare-to", str(directory)]
     if original := manifest.get("diagnostic_request", {}).get("global_reference"):
         assert local_piecewise_dp and manifest["diagnostic_request"]["numerics_only"]
         directory = Path(original["path"])
@@ -124,6 +154,8 @@ def main() -> None:
         row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
         for row in comparison["comparisons"]
     )
+    if source_reference:
+        assert_exact_cross(args.output / "cache-probe-matched/cross-comparison.json")
     if manifest.get("diagnostic_request", {}).get("compare_graph_replay"):
         assert manifest["diagnostic_request"]["trace_batches"] is True
         assert manifest["diagnostic_request"]["compilation_config"]["cudagraph_mode"] == "PIECEWISE"
@@ -190,6 +222,28 @@ def main() -> None:
                 )
                 for row in cross
             )
+    for rank in manifest.get("diagnostic_request", {}).get("additional_numerical_ranks", []):
+        assert native_local_dp and rank in (7, 15)
+        candidate = probe.copy()
+        if "--compare-to" in candidate:
+            index = candidate.index("--compare-to")
+            del candidate[index : index + 2]
+        output = args.output / f"cache-probe-rank-{rank}"
+        candidate[candidate.index("--output") + 1] = str(output)
+        candidate += ["--rank", str(rank)]
+        run_logged(candidate, dict(os.environ), args.output / f"rank-{rank}.log", timeout=900)
+        reference = candidate.copy()
+        reference[reference.index("--output") + 1] = str(output) + "-replay-disabled"
+        reference += ["--disable-graph-replay", "--compare-to", str(output)]
+        run_logged(reference, dict(os.environ), args.output / f"rank-{rank}-replay-disabled.log", timeout=900)
+        assert_exact_cross(Path(str(output) + "-replay-disabled/cross-comparison.json"))
+        for directory in (output, Path(str(output) + "-replay-disabled")):
+            checks = json.loads((directory / "comparison.json").read_text())["comparisons"]
+            assert len(checks) == 8
+            assert all(
+                row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
+                for row in checks
+            )
     if manifest.get("diagnostic_request", {}).get("numerics_only"):
         print("NATIVE_NUMERICAL_CONTROL_DONE", flush=True)
         return
@@ -236,11 +290,12 @@ def main() -> None:
     trace_controls = manifest.get("diagnostic_request", {}).get("trace_control_batches", False)
     if trace_controls:
         assert manifest["diagnostic_request"]["trace_batches"] is True
-    if trace_controls and local_piecewise_dp:
+    fixed_local_dispatch = local_piecewise_dp or native_local_dp
+    if trace_controls and fixed_local_dispatch:
         # Keep every rank on the same collective sequence between speed cases.
         # Restoring global dispatch and reinstalling local dispatch can race
         # ongoing DP dummy steps. Trace reads only clear CPU metadata.
-        batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace", [None, False, True])
+        batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace", [None, False, local_piecewise_dp])
     for name, case in selected:
         output = args.output / "clients" / name
         output.mkdir(parents=True, exist_ok=False)
@@ -252,7 +307,7 @@ def main() -> None:
         # Native counters bracket the entire client process, outside its timed requests.
         with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
             (output / "server-metrics-before.txt").write_bytes(response.read())
-        if trace_controls and not local_piecewise_dp:
+        if trace_controls and not fixed_local_dispatch:
             batch_trace("http://127.0.0.1:38197", "install_hero_batch_trace", [None, False, local_piecewise_dp])
         if trace_controls:
             record["collector"] = "Native CPU dispatch metadata; no GPU synchronization or profiler"
@@ -260,7 +315,7 @@ def main() -> None:
         if trace_controls:
             traces = batch_trace("http://127.0.0.1:38197", "take_hero_batch_trace")
             (output / "dispatch-batches.json").write_text(json.dumps(traces, indent=2) + "\n")
-            if not local_piecewise_dp:
+            if not fixed_local_dispatch:
                 batch_trace("http://127.0.0.1:38197", "stop_hero_batch_trace")
         with urllib.request.urlopen("http://127.0.0.1:38197/metrics", timeout=30) as response:
             (output / "server-metrics-after.txt").write_bytes(response.read())
