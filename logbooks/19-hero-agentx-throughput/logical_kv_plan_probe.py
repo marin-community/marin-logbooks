@@ -18,6 +18,7 @@ from pathlib import Path
 import torch
 from vllm.config import CacheConfig, ModelConfig, SchedulerConfig, VllmConfig
 from vllm.v1.attention.backends.registry import MambaAttentionBackendEnum
+from vllm.v1.attention.backends.utils import resolve_kv_cache_layout
 from vllm.v1.core.kv_cache_utils import (
     get_kv_cache_config_from_groups,
     get_kv_cache_groups,
@@ -100,6 +101,10 @@ def main() -> None:
             name: replace(spec, num_kv_heads=6) if compact and type(spec) is FullAttentionSpec else spec
             for name, spec in specs.items()
         }
+        # Model the engine's fresh layout-resolution step. These are the pinned
+        # FlashInfer SM100 backend's reported preferences; baseline logs use LBHNC.
+        config.cache_config.kv_cache_layout = None
+        layout = resolve_kv_cache_layout(config, [["LBHNC", "BLHNC"]], candidate.values())
         groups = get_kv_cache_groups(config, candidate)
         plan = get_kv_cache_config_from_groups(config, groups, storage["unique_cuda_storage_bytes"])
         concurrency = get_max_concurrency_for_kv_cache_config(config, plan)
@@ -107,6 +112,7 @@ def main() -> None:
         assert len(groups) == len(storage["cache_groups"]) == 16
         records["logical_global_6" if compact else "stored_global_12"] = {
             "num_blocks": plan.num_blocks,
+            "resolved_layout": layout.name,
             "physical_cache_bytes": sum(tensor.size for tensor in plan.kv_cache_tensors),
             "max_context_concurrency": concurrency,
             "group_aware_token_capacity": concurrency * 262144,
