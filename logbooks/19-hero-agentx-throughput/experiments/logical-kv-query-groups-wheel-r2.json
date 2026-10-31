@@ -1,0 +1,28 @@
+{
+  "experiment": "logical-kv-query-groups-wheel-r2",
+  "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+  "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+  "source_files": {
+    "vllm/model_executor/models/grugmoe.py": {
+      "sha256": "2f195b2fa7c48fb61fc4c2e0b9091e64a51e5d753eae0794aabcb8118742cf8f",
+      "kind": "replacement",
+      "base_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3"
+    },
+    "vllm/v1/attention/backends/flashinfer.py": {
+      "sha256": "a2691b671d8a76aa79b2aa9fdcb7f1ae5263f29957499e6de9228462370af7ee",
+      "kind": "replacement",
+      "base_sha256": "8ee541fde43ed92a417b3f01ea1e6fc64af8ab2eb54cbfc28308a49aaca4ed7f"
+    },
+    "vllm/v1/attention/backends/grug_logical_kv.py": {
+      "sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111",
+      "kind": "addition",
+      "base_sha256": null
+    }
+  },
+  "expected_changed_files": 2,
+  "expected_added_files": 1,
+  "expected_unchanged_files": 5100,
+  "default_behavior": "Existing grug_logical_kv_cache remainsFalse bydefault and is hashed. GlobalGrugMoE FlashInfer decode uses2querygroups onlywhen this existingflag enablesdeduplicatedglobalKV. Modelweights,projection/KShortConvshapes,BF16,dependencies andbinaries unchanged. No sourceexact0 or FP32tolerancechange.",
+  "validation": "NativeCPUpackage/importsmoke, thenactualpackagedwrappercomponent, thenfullcontext/mixedphases andfullHerooriginalsource/state gates before speed. HostCPUdelta_smoke was unavailable due missingTorch; lint/ASTpass, not runtimenumericalqualification.",
+  "execution": "CPUonlybuild beforemeasuredAgentXphase ifdonewhilewarmup. Single lowpriorityCPUthread in ownedtask. No newGPUallocation or GPUtestduring fullAgentX window. LaterfocusedGPUtrial requiresboard andcurrentplacementchecks."
+}

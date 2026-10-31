@@ -30,7 +30,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--native-query-groups", action="store_true")
     args = parser.parse_args()
+    if args.native_query_groups:
+        from vllm.v1.attention.backends.grug_logical_kv import trtllm_decode_with_query_groups
     assert torch.cuda.device_count() == 1
     torch.set_num_threads(1)
     torch.backends.cuda.matmul.allow_tf32 = False
@@ -62,8 +65,10 @@ def main() -> None:
             outputs = {}
             for mode, page_size in (("original", 16), ("grouped", 32)):
                 pages = (length + page_size - 1) // page_size
-                effective_batch = batch * (2 if mode == "grouped" else 1)
-                q = partition_query(queries) if mode == "grouped" else queries
+                native_grouped = args.native_query_groups and mode == "grouped"
+                manual_grouped = mode == "grouped" and not native_grouped
+                effective_batch = batch * (2 if manual_grouped else 1)
+                q = partition_query(queries) if manual_grouped else queries
                 call = {
                     "query": q,
                     "kv_cache": caches[mode].split(128, dim=-1),
@@ -79,13 +84,24 @@ def main() -> None:
                     "kv_layout": "HND",
                     "backend": "trtllm-gen",
                     "q_len_per_req": 1,
+                    "max_q_len": None,
+                    "cum_seq_lens_q": None,
+                    "sinks": None,
+                    "o_sf_scale": None,
+                    "kv_cache_sf": None,
+                    "lse": None,
+                    "return_lse": False,
                 }
                 output = torch.empty_like(q)
                 repeated = torch.empty_like(q)
-                trtllm_batch_decode_with_kv_cache(**call, out=output)
-                trtllm_batch_decode_with_kv_cache(**call, out=repeated)
+                if native_grouped:
+                    trtllm_decode_with_query_groups(**call, out=output, groups=2)
+                    trtllm_decode_with_query_groups(**call, out=repeated, groups=2)
+                else:
+                    trtllm_batch_decode_with_kv_cache(**call, out=output)
+                    trtllm_batch_decode_with_kv_cache(**call, out=repeated)
                 assert torch.equal(output, repeated)
-                output = restore_query(output) if mode == "grouped" else output
+                output = restore_query(output) if manual_grouped else output
                 torch.testing.assert_close(output.float(), expected, atol=ATOL, rtol=RTOL)
                 outputs[mode] = output.cpu()
             name = f"batch-{batch}-length-{length}"
@@ -110,6 +126,7 @@ def main() -> None:
         ),
         "fp32_atol": ATOL,
         "fp32_rtol": RTOL,
+        "native_query_group_wrapper": args.native_query_groups,
         "cases": cases,
         "scope": "Captured-history component grid. No full-model, mixed prefill/decode or throughput qualification.",
     }

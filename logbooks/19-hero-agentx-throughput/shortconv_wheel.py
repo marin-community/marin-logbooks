@@ -44,6 +44,13 @@ def main() -> None:
         default=[],
         metavar=("MODULE", "PATH", "SHA256", "BASE_SHA256"),
     )
+    parser.add_argument(
+        "--new-source",
+        nargs=3,
+        action="append",
+        default=[],
+        metavar=("MODULE", "PATH", "SHA256"),
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     replacement = args.replacement_source.read_bytes()
@@ -55,6 +62,14 @@ def main() -> None:
         assert hashlib.sha256(config_source).hexdigest() == args.config_source_sha256
         replacements["vllm/model_executor/models/config.py"] = config_source
     distribution = importlib.metadata.distribution("vllm")
+    additions = {}
+    installed_paths = {str(item) for item in distribution.files}
+    for module, source, digest in args.new_source:
+        assert module.startswith("vllm/") and module.endswith(".py") and ".." not in Path(module).parts
+        assert module not in installed_paths and module not in replacements and module not in additions
+        content = Path(source).read_bytes()
+        assert hashlib.sha256(content).hexdigest() == digest
+        additions[module] = content
     for module, source, digest, base_digest in args.additional_source:
         assert module.startswith("vllm/") and module.endswith(".py") and ".." not in Path(module).parts
         assert module not in replacements
@@ -89,6 +104,9 @@ def main() -> None:
                 archive.write(path, str(item))
                 digest, size = original_digest, path.stat().st_size
             entries.append((str(item), encoded_digest(digest), size))
+        for module, content in sorted(additions.items()):
+            archive.writestr(module, content)
+            entries.append((module, encoded_digest(hashlib.sha256(content).digest()), len(content)))
         entries.append((str(record), "", ""))
         text = io.StringIO(newline="")
         csv.writer(text).writerows(entries)
@@ -100,10 +118,11 @@ def main() -> None:
         "base_wheel_sha256": args.base_wheel_sha256,
         "source_commit": args.source_commit,
         "changed_files": {name: hashlib.sha256(content).hexdigest() for name, content in replacements.items()},
+        "added_files": {name: hashlib.sha256(content).hexdigest() for name, content in additions.items()},
         "wheel_path": str(args.output.resolve()),
         "wheel_sha256": digest,
         "wheel_bytes": args.output.stat().st_size,
-        "verified_unchanged_files": len(entries) - 1 - len(replacements),
+        "verified_unchanged_files": len(entries) - 1 - len(replacements) - len(additions),
         "version": distribution.version,
     }
     args.output.with_suffix(".json").write_text(json.dumps(receipt, indent=2) + "\n")
