@@ -1,0 +1,34 @@
+{
+  "captured_utc": "2026-10-31T20:01:21.675595+00:00",
+  "status": "work_waiting_for_gpu_capacity",
+  "blocking_condition": "Insufficient capacity on the nontraining spare NVLink domain for the required16- or32-GPU trials across three consecutive goal turns.",
+  "withdrawn_job_id": "/romain/hero-agentx-replica-baseline32-agentx-c256-r1-01a1846a",
+  "withdrawn_before_client_start": true,
+  "all58_owned_native_gpu_jobs_terminal": true,
+  "owned_live_provider_pods": [],
+  "owned_gpus": 0,
+  "owned_queued_gpu_jobs": 0,
+  "spare_domain_observation": {
+    "checked_utc": "2026-10-31T19:57:10.612839+00:00",
+    "owned_live_provider_pods": [],
+    "owned_assigned_gpu_count": 0,
+    "spare_domain": {
+      "schedulable_gpus": 68,
+      "hero_training_gpus": 0,
+      "owned_gpus": 0,
+      "other_owner_gpus": 68
+    }
+  },
+  "best_retained_two16_result": "results/replica-agentx-c256-r1-processed.json",
+  "original_goal": "/home/romain/work/marin-community/marin/goal-hero-agentx-performance-01a150e9/notes/goals/2026-10-28-hero-agentx-performance.md",
+  "scope": "Capacity checkpoint only. The original goal remains incomplete. No matched native32 gain or full-model grouped-decode qualification is claimed.",
+  "native_attempt_interval_gpu_hours_as_of_1930": 1686.3897555557887,
+  "cost_note": "Unchanged by withdrawal: all replacement attempts had started_at=None. Queue-inclusive submission envelopes are separate from allocated-attempt estimates.",
+  "resume_instructions": "Resume the original Hero AgentX optimization goal; it remains incomplete.\n\nAll58 owned native GPU jobs are terminal. No provider pods or queued requests remain.\nThe native32 baseline R1 was withdrawn before any client started. Do not resubmit\nits old logical name with KEEP or reuse the preempted physical proof.\n\nWhen capacity returns:\n1. Read the original goal and the existing notebook. Reuse research worktree\n   /home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a.\n2. Check the resource board and fresh provider/native state. Announce any new\n   allocation. Use only the currently verified nontraining spare domain, with\n   at most32 interactive plus32 batch GPUs and no experiment larger than32.\n3. Prepare a fresh native32 full-AgentX run with a new logical name, such as\n   hero-agentx-replica-baseline32-agentx-c256-r2-01a1846a. Start from the retained\n   R1 server/client templates, refresh placement, and use new output labels.\n   Preserve BF16, official runtime, fixed corpus/context/seed, native warmup,\n   send/grace/scoring, and the retained state and predecessor gates.\n4. Adapt the prepared admission/client/capture helpers to the new labels.\n   Read all8 actual current native attempts, provider UIDs, nodes and GPU UUIDs.\n   The old physical proof is evidence of the preempted attempt only.\n5. After the finished client and external fences pass, retain the raw client\n   before native shutdown. Its metrics JSON can exceed the2GiB native capture\n   limit. Use the tested lossless pack module with SHA260d6fb9d30ecfaffb74aa93e8561b6c3d8027565d1f5de9125ea78a26d2cef9,\n   preserve immutable input references, and verify final8 native SUCCEEDED\n   attempts and complete archive readbacks. Keep original child records intact.\n6. Continue the remaining full-Hero numerical and performance work. The prepared\n   logical-cache off/on16-r2 manifests preserve all original exact source/state\n   gates. Nine passing component cases do not establish full-model correctness.\n   Reuse applicable FA4/CUTLASS and other family evidence without claiming their\n   remaining full-model checks are complete.\n7. Finish ordinary checks, then the one bounded High GOAL review and full\n   completion audit. No High GOAL panel has been dispatched. Existing PRs stay\n   draft and unmerged; do not touch the benchmark owner's worktrees or PRs.\n\nThe tested two16 hour gives938.54571outputtokens/s total,29.32955/GPU,\n5573scored successes and0scored errors. The selected16 recipe remains unchanged.\nThe decisive matched native32 hour and full-model grouped-decode qualification\nremain open. Source, raw and cost evidence are already retained and pushed.\n",
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/capacity-blocked-20261031T2000/outputs-32fb2cc59c40aeac1a42912874016d5c02f0bfe80537e7a4e2dab451be04166f.tar.zst",
+    "archive_sha256": "32fb2cc59c40aeac1a42912874016d5c02f0bfe80537e7a4e2dab451be04166f",
+    "readback_sha256": "32fb2cc59c40aeac1a42912874016d5c02f0bfe80537e7a4e2dab451be04166f",
+    "archive_bytes": 19551
+  }
+}
