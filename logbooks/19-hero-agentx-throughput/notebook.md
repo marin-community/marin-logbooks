@@ -960,3 +960,10 @@ A new bounded [CPU planning check](experiments/logical-kv-plan-r1.json) examines
 
 
 The first CPU planner fixture omits the pinned serving recipe's HF overrides and is rejected by the native max-length validator: the unchanged export config says4096 while the recipe supplies `max_seq_len=262144,max_position_embeddings=262144`. The repeat applies those exact existing `hero.yaml` overrides. Keep the native validator; no long-context escape setting, model change or GPU execution is introduced.
+
+
+### 2026-10-31 — Native CPU plan supports a smaller global cache representation
+
+[The native CPU planner result](results/logical-kv-plan-r1.json), source `2ead24e0ca`, reconstructs all192retained layer specs and matches the original74,118block/16group plan. It resolves the same LBHNC layout reported by the actual SM100 server. At the same87,433,150,464-byte retained unique-storage budget, native group-aware capacity is1,106,279.62tokens for12stored global heads and2,073,374.13for6logical global heads, ratio1.87419. Full-attention blocks become32tokens; sliding/ShortConv groups retain16. This is a hypothetical metadata plan, with no model edit, GPU execution or throughput claim. Cache/XSA/attention arithmetic, mixed-block prefix/ShortConv alignment and whole-model state behavior still need qualification.
+
+The first result label summed `KVCacheTensor.size` as physical bytes. These are aliased logical view spans,16times the actual arena in this case; correct the label and retain the raw fixture record. Physical budget remains the measured unique CUDA storage, not the summed spans. Setup also needs the native engine's layout-resolution step, in addition to actual model encoder metadata and the already pinned HF context overrides. No validator or backend guard is bypassed. This capacity candidate now ranks ahead of a low-level attention speed switch; the current hour continues unchanged.

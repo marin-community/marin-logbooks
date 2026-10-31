@@ -113,7 +113,8 @@ def main() -> None:
         records["logical_global_6" if compact else "stored_global_12"] = {
             "num_blocks": plan.num_blocks,
             "resolved_layout": layout.name,
-            "physical_cache_bytes": sum(tensor.size for tensor in plan.kv_cache_tensors),
+            "logical_view_span_bytes": sum(tensor.size for tensor in plan.kv_cache_tensors),
+            "retained_unique_tensor_storage_budget_bytes": storage["unique_cuda_storage_bytes"],
             "max_context_concurrency": concurrency,
             "group_aware_token_capacity": concurrency * 262144,
             "groups": [
