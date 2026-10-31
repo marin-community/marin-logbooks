@@ -87,7 +87,11 @@ def main() -> None:
             block_size=16, enable_prefix_caching=True, mamba_cache_mode="align", mamba_block_size=16
         ),
         scheduler_config=SchedulerConfig(
-            max_model_len=262144, max_num_batched_tokens=2048, max_num_seqs=512, async_scheduling=True
+            max_model_len=262144,
+            max_num_batched_tokens=2048,
+            max_num_seqs=512,
+            async_scheduling=True,
+            is_encoder_decoder=model.is_encoder_decoder,
         ),
     )
     records = {}
