@@ -58,7 +58,7 @@ def main() -> None:
             if (
                 ".." in item.parts
                 or "__pycache__" in item.parts
-                or item.name in ("RECORD", "INSTALLER", "REQUESTED", "direct_url.json")
+                or item.name in ("RECORD", "INSTALLER", "REQUESTED", "direct_url.json", "uv_cache.json")
             ):
                 continue
             path = Path(distribution.locate_file(item))
