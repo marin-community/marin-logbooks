@@ -1,0 +1,30 @@
+{
+  "experiment": "attention-head-groups-r1",
+  "purpose": "Test whether native GQA4 with partitioned24queryhead groups reproduces actual captured original12KVhead decode while storing only6KVheads. No model or backend patch until component evidence.",
+  "reference_archive": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-geometry-off-r3/outputs-059f2bc02c2bf84dc4ad1d7fddc12a4fbfdb53407ac352d5d6c610d76ec4fac8.tar.zst",
+    "sha256": "059f2bc02c2bf84dc4ad1d7fddc12a4fbfdb53407ac352d5d6c610d76ec4fac8",
+    "bytes": 292051043
+  },
+  "source": "replay_attention_head_groups.py",
+  "source_sha256": "621b71ba25385b6e3dd18fb02e462318ce4565b9fa4c994198622f03055296a9",
+  "kv_layout": "nativeHND",
+  "dtype": "bf16",
+  "q_heads": 48,
+  "stored_kv_heads": 6,
+  "head_dim": 128,
+  "page_sizes": [
+    16,
+    32
+  ],
+  "modes": [
+    "original-12kv",
+    "logical-6kv",
+    "batched-gqa4",
+    "separate-gqa4"
+  ],
+  "fp32_atol": 0.01,
+  "fp32_rtol": 0.01,
+  "exact_source_gate_unchanged": true,
+  "execution": "After native32C256 timing and after-fences only, reuse1alreadyallocatedGPU on that verifiedbatchjob. CheckfreeGPUmemory before launch; no newrequest, no concurrentinference/profiling, oneCPUthread. Preserveallrawinputs/outputs andfullreadbacks before stop."
+}

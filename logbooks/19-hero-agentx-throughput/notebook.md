@@ -1268,3 +1268,11 @@ two calls or one batched call with repeated block-table rows, then invert
 the query-head permutation. The retained actual decode tensors provide the
 first exact baseline. No model/backend patch follows until that component
 is measured. Packing/launch overhead and native compatibility remain unknown.
+
+### 2026-10-31: fresh two16 C256 accepted; native32 speed admitted
+
+The guarded fresh two16 point completes256requests with0errors and65536outputtokens in51.803424s:1265.090125outputtokens/s total,39.534066/GPU. The same-function native completion guard runs before inference; all8native and provider attempt fences pass before/after. Both models stop, all32GPUs are empty, and all8rawarchives pass complete SHA256 readback (6,076,758compressed bytes). See [the accepted point](results/replica-speed-c256-r3-accepted.json). This is a synthetic point; no full AgentX claim follows.
+
+The native batch32 C256 baseline is admitted with actual8task JobInfo,32distinctUUIDs, pinnedimageb66, and placement onDH1-392. Its GPUs are disjoint from the two16holders. After retaining raw evidence, both interactive holders are released while the baseline warms. The new baseline uses source82cc9a0511 and the retained one32state qualification; timing begins only after readiness and native/provider fences.
+
+[The head-group component](experiments/attention-head-groups-r1.json) is prepared for after the baseline timing, on one already allocated GPU. It tests batched and separate GQA4 query groups against the actual captured native12KVhead baseline, plus FP32 at the original0.01/0.01 tolerances. The six-head cache stays shared. Exactness and packing/launch cost remain unknown; no model/backend change or relaxed gate is implied.
