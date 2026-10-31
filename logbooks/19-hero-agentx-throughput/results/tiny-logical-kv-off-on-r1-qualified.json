@@ -1,0 +1,811 @@
+{
+  "rows": [
+    {
+      "name": "tiny-logical-kv-off-r1",
+      "status": "completed",
+      "source_commit": "dae62d9ea89dd3ff8aab4daf58ec370b93ddfbb3",
+      "manifest_sha256": "e60d2f8c07966a2bf35f83207e8e48d603f72b59abe8ccadda0d787b244cd9f3",
+      "attempt_uid": "1a6cb55ddeb9dbaa",
+      "started_unix": 1793449284.0832715,
+      "finished_unix": 1793449403.269352,
+      "state_comparisons": [
+        {
+          "pair": [
+            0,
+            4
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            1,
+            2
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            1,
+            3
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            5,
+            6
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            5,
+            7
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        }
+      ],
+      "cache_storage": {
+        "results": [
+          {
+            "unix": 1793449400.1479907,
+            "dp_rank": 0,
+            "native_num_blocks": 2297917,
+            "cache_tensor_count": 16,
+            "unique_cuda_storage_count": 1,
+            "unique_cuda_storage_bytes": 9412268032,
+            "storage": [
+              {
+                "bytes": 9412268032,
+                "backing_tensor_dtype": "torch.bfloat16"
+              }
+            ],
+            "cache_config": {
+              "enable_prefix_caching": true,
+              "prefix_cache_retention_interval": 0,
+              "mamba_cache_mode": "align",
+              "mamba_block_size": 16,
+              "kv_cache_size_tokens": 4985311
+            },
+            "cache_groups": [
+              {
+                "group": 0,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 1,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 2,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 3,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 4,
+                "layers": 1,
+                "spec_type": "SlidingWindowSpec",
+                "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=4, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=8, extra_retained_tokens=0)"
+              },
+              {
+                "group": 5,
+                "layers": 1,
+                "spec_type": "SlidingWindowSpec",
+                "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=4, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=8, extra_retained_tokens=0)"
+              },
+              {
+                "group": 6,
+                "layers": 1,
+                "spec_type": "SlidingWindowSpec",
+                "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=4, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=8, extra_retained_tokens=0)"
+              },
+              {
+                "group": 7,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 8,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 9,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 10,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 11,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 12,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 13,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 14,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 15,
+                "layers": 1,
+                "spec_type": "FullAttentionSpec",
+                "spec": "FullAttentionSpec(block_size=16, num_kv_heads=4, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=None, attention_chunk_size=None, non_causal=False)"
+              }
+            ],
+            "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+          }
+        ]
+      },
+      "trace_keys": [
+        "results"
+      ],
+      "native_attention_logs": [
+        "(EngineCore pid=348793) INFO 10-31 12:21:51 [platforms/cuda.py:538] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLEX_ATTENTION'].",
+        "(EngineCore pid=348793) INFO 10-31 12:22:06 [v1/core/kv_cache_utils.py:2447] GPU KV cache size: 4,985,311 tokens, Maximum concurrency for 128 tokens per request: 38947.75x"
+      ],
+      "compiled_sources": [
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/t2/ct2a7nplcmntv5immyxon2taucj4wkgwydnekqpq7nbqmho6lzju.py",
+          "bytes": 3691,
+          "sha256": "b02d7d05a8b274e3dad99aa15e632fe680cc2f0cf8754782b702c6ce7cd098ac"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/vv/cvv5w6vxl76zd2epgfeodod6tsuvc6qmjh7tbw5mfnsk27bywoxq.py",
+          "bytes": 2546,
+          "sha256": "d0a7b61f02c351a51c0d75aab0b25cd4fa6baa9c070dd2d9e8bf94e58b23fda8"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/we/cwe4olkpe35g2a5trhaxabsztshfpgx3iycz63aowppqovtz5e7b.py",
+          "bytes": 4044,
+          "sha256": "52f9dc3b9ee60f1b5e9d3303fa3484261bc00039d1043f7b89c2dc09cb0fd715"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/4o/c4o4j5za7qiykjoz3kwtrrk46a7scke4lf5hbnqzdkaptya2tzzv.py",
+          "bytes": 2757,
+          "sha256": "4e9c62bae8c99b150946ba3964bbb53da4ef47f3254707b4a8a6e93dafbc0915"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/wv/cwvdhamaw3ltjxrjkobh6cf7khtyeswbwpy35mtuwcbuh3woweby.py",
+          "bytes": 55220,
+          "sha256": "4579551c9fed37adfe40b4d90e1565e401a3fed26f34d0350df97d5a50389bcf"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/rw/crwjyab5ckekbuzoipo4daqbgez5qpdkvsd7o2jsvp6sx3eq6yks.py",
+          "bytes": 3002,
+          "sha256": "8f3d7205077e7ef42b8c3bc959465fca82459110e78fee7d594d30fca716efaa"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/7u/c7un2nqbuvcernrrf7hpktprv4qbx7fmbd5zzv5wrj2e6na7ek7t.py",
+          "bytes": 5239,
+          "sha256": "fa7c4c3cdab366c6d60bb63ed9b73b0b7e9d0c8e1a692077a2d19e7a25fb699a"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/je/cjebu3yxi2uvjawzd6a7mgbbvvh67sdj7qidb6zgyuqsmdqxwcbr.py",
+          "bytes": 3007,
+          "sha256": "8b0885f9dff023c34c91e3214f9f3ad2e8bae4d8ccbffca647740c091ec9363d"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/xc/cxctbprbxkrmzb6wrbqvykpxrr4yau4hwrja2iul4jn6iyyx6p5w.py",
+          "bytes": 2949,
+          "sha256": "93d78527762e9ee67fc6039816de7c617287f57c5f2d1612a7d5765703a22015"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/7k/c7kofl5csuwwuhlv4luhls22lfhhmru4fwehgk2t6lod5g5rp7zl.py",
+          "bytes": 3003,
+          "sha256": "6912bd862b3b674e9494bc580baa8b81e57892620ac524318d71d10594fd83c5"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/l2/cl2g6nxsa66fbedhqdmvvb6rdazotxz3m52levsvfkevrqeptdp6.py",
+          "bytes": 5240,
+          "sha256": "8fc111173c75a9b767a328f897821ee513db143faaf23d1450ecfaab3eeb0568"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/sx/csxmezphoin2rectmjvldwulc7vdou2w3gxemk7y6bao55j4r22e.py",
+          "bytes": 4639,
+          "sha256": "cd8b9238b8ebd5dedbb436b4f638d9ada6636f60d97a7b3f7cf8b8418c13fb85"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/5o/c5os652udl6tcn5sqaesty3t4lx3o7cqi52wavyjqfhmeioxfl2h.py",
+          "bytes": 117485,
+          "sha256": "3f8a78222ac8c53fedc20338c4106834d2560f479badc7baa68cd5a287935fa5"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/tm/ctm23chdwyk6rqivu3xh44qsot3htdznjd2fg7k7cutl5zu3sgcy.py",
+          "bytes": 5222,
+          "sha256": "9b9ea3e298b2de93c52c139844f50af63db1f11e3c482374644c30fa8ad439a0"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/ct/cctt3putgiape45kfmjw2y6f76r6am2m2ftwdcdm6q6yz4bpym3e.py",
+          "bytes": 26609,
+          "sha256": "a881796461429209e252fac3cab3e67e0ca970ba89171db93539b4a8ea16609b"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/bi/cbizdwsfv2jg6tmja2yyiix7vrj3t6yhwbc2tykvr6th2pp6nxkb.py",
+          "bytes": 3897,
+          "sha256": "ca15a1c66d799c8cdcdd39999030a7339f71844111da3136b6bc3ff5d9f05ead"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/ku/ckubq3wkuf5otqcmlxncbayhw4himletj3qrhavcrzpa4fizv4lf.py",
+          "bytes": 2984,
+          "sha256": "3c8a97ea85ae9871d0a664481d997fd772536ad80f27abef95606fadea11d286"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/uk/cuk5xkfj2sfn5nvzxnuolcldoqe6ukoqf5zm7vaxtzfewri4acvm.py",
+          "bytes": 3331,
+          "sha256": "2d0f15045de54b180b80b65947a9e82c0b4c61113857b049017962c4a798719b"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/xz/cxzsaqxybd7mpayc4oqzcdl3yt6nddosoiytpo6s7rne23dfmsdg.py",
+          "bytes": 51843,
+          "sha256": "aa4b51ca8a3a01fa77bf0653b922bbca55dbb4d3809662e634107b75e424b067"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/3b/c3bfop4aewievtfmdannqreo4zjxgixrt42hygcylwlwxiq2dnes.py",
+          "bytes": 2901,
+          "sha256": "3bacb9b7642a0f8dd44b88efc772f9ba61be0eb0d9ee8c5cc2f3d04d10508117"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/jw/cjwuvlmkz776e45t3xck3tkazchx642yp3pxqof76tyxrtzj457b.py",
+          "bytes": 18689,
+          "sha256": "4508b512530e217c61ddb121175bb505095824e0571f0d700b8290aa1ed5e1bf"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/s5/cs5lse7qehi5ivpwunaney2nfzqlmyrcgnv4qdugdj6u4dnq4ezo.py",
+          "bytes": 2757,
+          "sha256": "3190af5133d3ac9d1d660bbbeb5664fab29158126ff07df928c78cabdffd0195"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/m7/cm7lunmlsb3kwi5okhktirzzr2o2zhhnawl4fwhqivpeb2etq4ve.py",
+          "bytes": 38605,
+          "sha256": "6677572fbf405e1b5fe4d23c217aaa2b097ddd48a0284762c1b231bc0468ff64"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/6d/c6dh6qt5njvktvmxehmhjr52kpqkxdqwvaupfvd3dkksuf3zfo6x.py",
+          "bytes": 3529,
+          "sha256": "aacc9a676e0ca469893ef2ffef77417e5c2eab13e84b86ddc18e275000a6320c"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/ft/cftrfwowrwd63ds537yr4z4dwighvj5jgcxypzqfhnf6gdbwmasp.py",
+          "bytes": 2465,
+          "sha256": "a8b96faf8536cc6bf65db46b5d5381465800f1f189e49fea9c812f0390421f76"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/xo/cxoqhrac3dgci7cpt66j2jx7hjcqygq2icrp5p5knn5w5seedmob.py",
+          "bytes": 4068,
+          "sha256": "4a7bcc52b59130e28719a47a5ab65a972d8dcb397774d4af089547c9c2c36df2"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/e5/ce5kmzjz2mjldj46sh4jvt33preyszk7kyu6ax72zfseqlotntwv.py",
+          "bytes": 44735,
+          "sha256": "62086c2e5489977acbfd24ac79a0e9ef0d2597f179b77589cd5751f657b4f140"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/ue/cuell2lvsdazj74bj4rdlzwtut2crkangue7znhopbfgu5qkprtu.py",
+          "bytes": 3779,
+          "sha256": "7b4aac8e7303ed265b7432f892e24c449bb48fc61e5378bb019eabac6caa17fc"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/torch_aot_compile/4e2b2caf3ea7b002ced5a08c205fc38e705a994b8fe938ee7d1b62fb9c7a7eec/inductor_cache/a4/ca4bdye6s27jcwdwg4bye36b77wwhrpu5q73buaas262zt5rrpks.py",
+          "bytes": 36443,
+          "sha256": "422e7189342ce96769b9c1656ca3aebbd10000b48c402c51b684f05777f85724"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-off-r1-cache/torch_compile_cache/965c4a86cf/rank_0_0/backbone/computation_graph.py",
+          "bytes": 216860,
+          "sha256": "9a737d1632ba2bcb409b1ea4aed869b4ebc8972c2ccae8ad564a58a042487e99"
+        }
+      ],
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-logical-kv-off-r1/outputs-6e783cd633610a67859b8236b786fdad13ea0c310196613dbef4bc1364f870f9.tar.zst",
+        "archive_sha256": "6e783cd633610a67859b8236b786fdad13ea0c310196613dbef4bc1364f870f9",
+        "readback_sha256": "6e783cd633610a67859b8236b786fdad13ea0c310196613dbef4bc1364f870f9",
+        "archive_bytes": 68552
+      }
+    },
+    {
+      "name": "tiny-logical-kv-on-r1",
+      "status": "completed",
+      "source_commit": "dae62d9ea89dd3ff8aab4daf58ec370b93ddfbb3",
+      "manifest_sha256": "4c9a1e3e9cdf8ef22f5627b4b8c5ad532e14f383bec221c2aa3d245a4f94c0b5",
+      "attempt_uid": "1a6cb55ddeb9dbaa",
+      "started_unix": 1793449452.927671,
+      "finished_unix": 1793449515.8305504,
+      "state_comparisons": [
+        {
+          "pair": [
+            0,
+            4
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            1,
+            2
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            1,
+            3
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            5,
+            6
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        },
+        {
+          "pair": [
+            5,
+            7
+          ],
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        }
+      ],
+      "cache_storage": {
+        "results": [
+          {
+            "unix": 1793449509.9792526,
+            "dp_rank": 0,
+            "native_num_blocks": 2297917,
+            "cache_tensor_count": 16,
+            "unique_cuda_storage_count": 1,
+            "unique_cuda_storage_bytes": 9412268032,
+            "storage": [
+              {
+                "bytes": 9412268032,
+                "backing_tensor_dtype": "torch.bfloat16"
+              }
+            ],
+            "cache_config": {
+              "enable_prefix_caching": true,
+              "prefix_cache_retention_interval": 0,
+              "mamba_cache_mode": "align",
+              "mamba_block_size": 16,
+              "kv_cache_size_tokens": 5347879
+            },
+            "cache_groups": [
+              {
+                "group": 0,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 1,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 2,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 3,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 64),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 4,
+                "layers": 1,
+                "spec_type": "SlidingWindowSpec",
+                "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=4, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=8, extra_retained_tokens=0)"
+              },
+              {
+                "group": 5,
+                "layers": 1,
+                "spec_type": "SlidingWindowSpec",
+                "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=4, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=8, extra_retained_tokens=0)"
+              },
+              {
+                "group": 6,
+                "layers": 1,
+                "spec_type": "SlidingWindowSpec",
+                "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=4, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=8, extra_retained_tokens=0)"
+              },
+              {
+                "group": 7,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 8,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 9,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 10,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 11,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 12,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 13,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 14,
+                "layers": 1,
+                "spec_type": "MambaSpec",
+                "spec": "MambaSpec(block_size=16, shapes=((3, 128),), dtypes=(torch.bfloat16,), page_size_padded=4096, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+              },
+              {
+                "group": 15,
+                "layers": 1,
+                "spec_type": "FullAttentionSpec",
+                "spec": "FullAttentionSpec(block_size=32, num_kv_heads=2, head_size=16, dtype=torch.bfloat16, head_size_v=16, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=None, attention_chunk_size=None, non_causal=False)"
+              }
+            ],
+            "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+          }
+        ]
+      },
+      "trace_keys": [
+        "results"
+      ],
+      "native_attention_logs": [
+        "(EngineCore pid=349372) INFO 10-31 12:24:40 [platforms/cuda.py:538] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLEX_ATTENTION'].",
+        "(EngineCore pid=349372) INFO 10-31 12:24:53 [v1/core/kv_cache_utils.py:2447] GPU KV cache size: 5,347,879 tokens, Maximum concurrency for 128 tokens per request: 41780.31x"
+      ],
+      "compiled_sources": [
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/t2/ct2a7nplcmntv5immyxon2taucj4wkgwydnekqpq7nbqmho6lzju.py",
+          "bytes": 3691,
+          "sha256": "b02d7d05a8b274e3dad99aa15e632fe680cc2f0cf8754782b702c6ce7cd098ac"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/vv/cvv5w6vxl76zd2epgfeodod6tsuvc6qmjh7tbw5mfnsk27bywoxq.py",
+          "bytes": 2546,
+          "sha256": "d0a7b61f02c351a51c0d75aab0b25cd4fa6baa9c070dd2d9e8bf94e58b23fda8"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/we/cwe4olkpe35g2a5trhaxabsztshfpgx3iycz63aowppqovtz5e7b.py",
+          "bytes": 4044,
+          "sha256": "52f9dc3b9ee60f1b5e9d3303fa3484261bc00039d1043f7b89c2dc09cb0fd715"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/4o/c4o4j5za7qiykjoz3kwtrrk46a7scke4lf5hbnqzdkaptya2tzzv.py",
+          "bytes": 2757,
+          "sha256": "4e9c62bae8c99b150946ba3964bbb53da4ef47f3254707b4a8a6e93dafbc0915"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/s2/cs2unil2xushsu6bydhjenfagpdegebcnflzgxtkcm5irqrrjnag.py",
+          "bytes": 55212,
+          "sha256": "17d8090ffe66fe95f3ec51c404c91fe98aa0a3841edcee4fa198fedfd429a53e"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/rw/crwjyab5ckekbuzoipo4daqbgez5qpdkvsd7o2jsvp6sx3eq6yks.py",
+          "bytes": 3002,
+          "sha256": "8f3d7205077e7ef42b8c3bc959465fca82459110e78fee7d594d30fca716efaa"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/7u/c7un2nqbuvcernrrf7hpktprv4qbx7fmbd5zzv5wrj2e6na7ek7t.py",
+          "bytes": 5239,
+          "sha256": "fa7c4c3cdab366c6d60bb63ed9b73b0b7e9d0c8e1a692077a2d19e7a25fb699a"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/je/cjebu3yxi2uvjawzd6a7mgbbvvh67sdj7qidb6zgyuqsmdqxwcbr.py",
+          "bytes": 3007,
+          "sha256": "8b0885f9dff023c34c91e3214f9f3ad2e8bae4d8ccbffca647740c091ec9363d"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/xc/cxctbprbxkrmzb6wrbqvykpxrr4yau4hwrja2iul4jn6iyyx6p5w.py",
+          "bytes": 2949,
+          "sha256": "93d78527762e9ee67fc6039816de7c617287f57c5f2d1612a7d5765703a22015"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/7k/c7kofl5csuwwuhlv4luhls22lfhhmru4fwehgk2t6lod5g5rp7zl.py",
+          "bytes": 3003,
+          "sha256": "6912bd862b3b674e9494bc580baa8b81e57892620ac524318d71d10594fd83c5"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/l2/cl2g6nxsa66fbedhqdmvvb6rdazotxz3m52levsvfkevrqeptdp6.py",
+          "bytes": 5240,
+          "sha256": "8fc111173c75a9b767a328f897821ee513db143faaf23d1450ecfaab3eeb0568"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/sx/csxmezphoin2rectmjvldwulc7vdou2w3gxemk7y6bao55j4r22e.py",
+          "bytes": 4639,
+          "sha256": "cd8b9238b8ebd5dedbb436b4f638d9ada6636f60d97a7b3f7cf8b8418c13fb85"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/5z/c5ztt33ard3fkyohq6bpeudbsxkoxoshddr2brumqdilcfbaacyn.py",
+          "bytes": 117471,
+          "sha256": "d107e0fe6a5594fa644f7ce174584f5e28c925cd7588f8ccba781cb54ca72aa9"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/tm/ctm23chdwyk6rqivu3xh44qsot3htdznjd2fg7k7cutl5zu3sgcy.py",
+          "bytes": 5222,
+          "sha256": "9b9ea3e298b2de93c52c139844f50af63db1f11e3c482374644c30fa8ad439a0"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/gu/cgu5gc76pwjis3nnvxde4s7vl64a4vyuc7x5aru6mkurccnqk36a.py",
+          "bytes": 26607,
+          "sha256": "a0efc629c471fa2ab1e82083344efbf2f550356981684c49a3921000b110c448"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/bi/cbizdwsfv2jg6tmja2yyiix7vrj3t6yhwbc2tykvr6th2pp6nxkb.py",
+          "bytes": 3897,
+          "sha256": "ca15a1c66d799c8cdcdd39999030a7339f71844111da3136b6bc3ff5d9f05ead"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/ku/ckubq3wkuf5otqcmlxncbayhw4himletj3qrhavcrzpa4fizv4lf.py",
+          "bytes": 2984,
+          "sha256": "3c8a97ea85ae9871d0a664481d997fd772536ad80f27abef95606fadea11d286"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/uk/cuk5xkfj2sfn5nvzxnuolcldoqe6ukoqf5zm7vaxtzfewri4acvm.py",
+          "bytes": 3331,
+          "sha256": "2d0f15045de54b180b80b65947a9e82c0b4c61113857b049017962c4a798719b"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/co/ccocazhbumpy4pwyesytih4tu6p5wolewbftcc24omzy2fvo33oe.py",
+          "bytes": 51835,
+          "sha256": "cd9a547f530225a18984317ec60e038996302abd930cbc0cd75f4cee394a347e"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/3b/c3bfop4aewievtfmdannqreo4zjxgixrt42hygcylwlwxiq2dnes.py",
+          "bytes": 2901,
+          "sha256": "3bacb9b7642a0f8dd44b88efc772f9ba61be0eb0d9ee8c5cc2f3d04d10508117"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/hg/chgf7bnhti7tgokxt2w4dvnro7dzjnt22hq5grysfuec7ktzdsve.py",
+          "bytes": 18687,
+          "sha256": "fafc85a4126afadcdaa307afc8c011ebc60bbf54241158cb420fe12dc16cff51"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/s5/cs5lse7qehi5ivpwunaney2nfzqlmyrcgnv4qdugdj6u4dnq4ezo.py",
+          "bytes": 2757,
+          "sha256": "3190af5133d3ac9d1d660bbbeb5664fab29158126ff07df928c78cabdffd0195"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/2o/c2oe7n2mhmfkmewnspbxriptw2xsyvbfpz3dl2tuvapouuoafn5c.py",
+          "bytes": 38599,
+          "sha256": "0123899492aa102dbdb93d8833d092433b54f22b2cb542159e42615e2cd2df57"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/ww/cww2k3qqzuc42vo25dotchozvypzvvia6lml7d4qoobn24swnnlk.py",
+          "bytes": 3450,
+          "sha256": "89bc8a99c17fad749b346d494cd7a6d18c3da61358491cb2db0869815e2ab97c"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/zd/czdtsp5jixafnxh5oroxyfawmcd4crnov57uisjpj25g4ewatomo.py",
+          "bytes": 2363,
+          "sha256": "7a5ef5d63051c4a2042b832af035dce390630dc075ae4e2e281122d5c278dfd7"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/xo/cxoqhrac3dgci7cpt66j2jx7hjcqygq2icrp5p5knn5w5seedmob.py",
+          "bytes": 4068,
+          "sha256": "4a7bcc52b59130e28719a47a5ab65a972d8dcb397774d4af089547c9c2c36df2"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/cc/cccu4ikt2qscntao2ucjhlzu6hgdg6s2lnpjldntivlwbbr74zn4.py",
+          "bytes": 41348,
+          "sha256": "aa3e38862e5a079586d4e1753982fdb2c54dffe9830eed11fd8a698f3a0abcda"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/f4/cf4z4xkvf4f2rvytnafbyapu73dsilgbqttjgldqrn6qh4xrzuza.py",
+          "bytes": 5222,
+          "sha256": "19fba0f4e7e117eea459abe54b32b87671df4c285d8dc13573fec6e45001f598"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/yc/cyczden2q4ntho555mbdp3bsqjtqzauawtdg2rdwycs75yb6sc4l.py",
+          "bytes": 26608,
+          "sha256": "ba6b600ac8fefe984f099d502f35e29eba53778b9bf279bb09b17684ad23fd59"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/ue/cuell2lvsdazj74bj4rdlzwtut2crkangue7znhopbfgu5qkprtu.py",
+          "bytes": 3779,
+          "sha256": "7b4aac8e7303ed265b7432f892e24c449bb48fc61e5378bb019eabac6caa17fc"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/torch_aot_compile/bcae0b2425967068b1461ac638c67d99048c46705eb3ad543872f01dcd8cfb71/inductor_cache/fp/cfp5frhkuv5vyaksuhh4mkigrtqp7qlc7u3vmsvw7e2qcprcnjma.py",
+          "bytes": 36437,
+          "sha256": "fa26a6ae141cea879d7e85539f66f6ff3f3e6ce04105a41c11e758c5c799a856"
+        },
+        {
+          "path": "/iris/candidates/tiny-logical-kv-on-r1-cache/torch_compile_cache/534b36f49d/rank_0_0/backbone/computation_graph.py",
+          "bytes": 215262,
+          "sha256": "5c6db7db847317e04eb7f0aa2fe75b969e39194eb377a6fb37239d78459561da"
+        }
+      ],
+      "retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/tiny-logical-kv-on-r1/outputs-82ee5019e0d1bf65c1d42400b9387e9142a9970fcef5089ed108fa06cc614a3b.tar.zst",
+        "archive_sha256": "82ee5019e0d1bf65c1d42400b9387e9142a9970fcef5089ed108fa06cc614a3b",
+        "readback_sha256": "82ee5019e0d1bf65c1d42400b9387e9142a9970fcef5089ed108fa06cc614a3b",
+        "archive_bytes": 68125
+      }
+    }
+  ],
+  "cross_source_comparisons": [
+    {
+      "request": 0,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    },
+    {
+      "request": 1,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    },
+    {
+      "request": 2,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    },
+    {
+      "request": 3,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    },
+    {
+      "request": 4,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    },
+    {
+      "request": 5,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    },
+    {
+      "request": 6,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    },
+    {
+      "request": 7,
+      "same_tokens": true,
+      "finite_logprobs": true,
+      "max_shared_logprob_absolute_delta": 0.0,
+      "shared_logprobs": 320,
+      "matching_token_prefix": 16,
+      "minimum_topk_overlap": 20
+    }
+  ],
+  "gpu_empty": true,
+  "supervisors_stopped": true,
+  "scope": "Two fresh native tiny TP1/DP1 BF16 servers with fixed checkpoint/requests and logical cache flag only; no full-Hero or throughput result."
+}

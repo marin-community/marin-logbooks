@@ -119,7 +119,10 @@ def main() -> None:
         assert rows == 16 and "--disable-graph-replay" in probe
         probe.append("--latent-projection-snapshot")
     if source_reference := manifest.get("diagnostic_request", {}).get("source_reference"):
-        assert native_local_dp
+        assert (
+            native_local_dp
+            or manifest["diagnostic_request"].get("additional_config", {}).get("grug_logical_kv_cache") is True
+        )
         directory = Path(source_reference["path"])
         assert (
             hashlib.sha256((directory.parent / "control-manifest.json").read_bytes()).hexdigest()
@@ -235,7 +238,8 @@ def main() -> None:
                 for row in cross
             )
     for rank in manifest.get("diagnostic_request", {}).get("additional_numerical_ranks", []):
-        assert native_local_dp and rank in (7, 15)
+        assert rank in (7, 15)
+        assert native_local_dp or "grug_logical_kv_cache" in manifest["diagnostic_request"].get("additional_config", {})
         candidate = probe.copy()
         if "--compare-to" in candidate:
             index = candidate.index("--compare-to")
@@ -243,7 +247,19 @@ def main() -> None:
         output = args.output / f"cache-probe-rank-{rank}"
         candidate[candidate.index("--output") + 1] = str(output)
         candidate += ["--rank", str(rank)]
+        if source_reference and not native_local_dp:
+            candidate += ["--compare-to", str(Path(source_reference["path"]).parent / f"cache-probe-rank-{rank}")]
         run_logged(candidate, dict(os.environ), args.output / f"rank-{rank}.log", timeout=900)
+        if not native_local_dp:
+            checks = json.loads((output / "comparison.json").read_text())["comparisons"]
+            assert len(checks) == 8
+            assert all(
+                row["same_tokens"] and row["finite_logprobs"] and row["max_shared_logprob_absolute_delta"] == 0
+                for row in checks
+            )
+            if source_reference:
+                assert_exact_cross(output / "cross-comparison.json")
+            continue
         reference = candidate.copy()
         reference[reference.index("--output") + 1] = str(output) + "-replay-disabled"
         reference += ["--disable-graph-replay", "--compare-to", str(output)]

@@ -300,6 +300,9 @@ def serve(
                 compilation = diagnostic["compilation_config"]
                 set_compilation_config(server, compilation)
                 record["overrides"]["compilation_config"] = compilation
+            if "additional_config" in diagnostic:
+                server.extra_cli_args.extend(["--additional-config", json.dumps(diagnostic["additional_config"])])
+                record["overrides"]["additional_config"] = diagnostic["additional_config"]
             if diagnostic.get("trace_batches"):
                 assert server.host == "127.0.0.1"
                 server.extra_cli_args.extend(["--worker-extension-cls", "tiny_graph_probe.BatchTraceWorkerExtension"])
