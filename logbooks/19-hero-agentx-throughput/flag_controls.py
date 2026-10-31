@@ -110,6 +110,9 @@ def main() -> None:
     if rows := manifest.get("diagnostic_request", {}).get("moe_snapshot_rows"):
         assert rows == 16 and "--disable-graph-replay" in probe
         probe += ["--moe-snapshot-rows", str(rows)]
+    if manifest.get("diagnostic_request", {}).get("latent_projection_snapshot"):
+        assert rows == 16 and "--disable-graph-replay" in probe
+        probe.append("--latent-projection-snapshot")
     if source_reference := manifest.get("diagnostic_request", {}).get("source_reference"):
         assert native_local_dp
         directory = Path(source_reference["path"])

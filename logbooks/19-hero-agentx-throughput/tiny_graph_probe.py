@@ -22,6 +22,9 @@ from pathlib import Path
 import torch
 from local_piecewise_dp import local_piecewise_dispatch, validate_local_piecewise_config
 from native_shortconv_probe import install_forward
+from torch._inductor.codecache import PyCodeCache
+from torch._inductor.runtime.triton_heuristics import CachingAutotuner
+from torch._inductor.select_algorithm import extern_kernels
 from vllm import LLM, SamplingParams
 from vllm.config import CompilationConfig, CUDAGraphMode
 from vllm.model_executor.models import grugmoe
@@ -135,7 +138,7 @@ def capture_compiler_sources(worker, label: str) -> dict:
                 continue
             selected = source.name in ("computation_graph.py", "autotune_configs.json")
             if kind == "inductor":
-                selected = source.suffix in (".py", ".cpp", ".ptx", ".ttir", ".ttgir")
+                selected = source.suffix in (".py", ".cpp", ".ptx", ".ttir", ".ttgir", ".best_config")
             if not selected:
                 continue
             size = source.stat().st_size
@@ -160,7 +163,36 @@ def capture_compiler_sources(worker, label: str) -> dict:
         "inductor_coordinate_descent": os.environ.get("VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING", "1"),
         "flashinfer_autotune": worker.vllm_config.kernel_config.enable_flashinfer_autotune,
     }
-    record = {"dp_rank": rank, "capturing": True, "label": label, "files": files, "bytes": total, "settings": settings}
+    runtime_kernels = []
+    for module in PyCodeCache.modules:
+        for name, value in vars(module).items():
+            if isinstance(value, CachingAutotuner):
+                runtime_kernels.append(
+                    {
+                        "module_file": module.__file__,
+                        "name": name,
+                        "launchers": [
+                            {
+                                "kwargs": launcher.config.kwargs,
+                                "num_warps": launcher.config.num_warps,
+                                "num_stages": launcher.config.num_stages,
+                                "cache_hash": launcher.cache_hash,
+                                "n_regs": launcher.n_regs,
+                                "n_spills": launcher.n_spills,
+                            }
+                            for launcher in value.launchers
+                        ],
+                    }
+                )
+    record = {
+        "dp_rank": rank,
+        "capturing": True,
+        "label": label,
+        "files": files,
+        "bytes": total,
+        "settings": settings,
+        "runtime_kernels": runtime_kernels,
+    }
     (destination / "receipt.json").write_text(json.dumps(record, indent=2) + "\n")
     return record
 
@@ -290,6 +322,50 @@ def install_moe_snapshot(worker, expected_layers: int = 4, row_limit: int | None
     return {"dp_rank": rank, "capturing": True, "layers": names, "max_snapshots_per_layer": 2}
 
 
+def install_latent_projection_snapshot(worker) -> dict:
+    """Observe two first-layer matmuls without replacing their arithmetic."""
+    rank = worker.model_runner.dp_rank
+    if rank != 0:
+        return {"dp_rank": rank, "capturing": False}
+    assert not hasattr(worker, "hero_latent_snapshot_count")
+    modules = dict(worker.model_runner.get_model().named_modules())
+    mlp = modules["model.layers.0.mlp"]
+    weight = mlp.latent_down_proj.weight
+    norm = mlp.latent_norm
+    assert weight.ndim == 2 and weight.dtype == torch.bfloat16
+    original = extern_kernels.mm
+    worker.hero_latent_snapshot_count = 0
+
+    def observed_mm(left, right, *, out):
+        result = original(left, right, out=out)
+        selected = (
+            worker.hero_latent_snapshot_count < 2
+            and left.shape[0] >= 16
+            and right.data_ptr() == weight.data_ptr()
+            and tuple(right.shape) == tuple(reversed(weight.shape))
+        )
+        if selected:
+            index = worker.hero_latent_snapshot_count
+            record = {
+                "input": left.detach().cpu().clone(),
+                "projected": out.detach().cpu().clone(),
+                "norm_weight": norm.weight.detach().cpu().clone(),
+                "variance_epsilon": norm.variance_epsilon,
+                "weight": weight.detach().cpu().clone() if index == 0 else None,
+                "input_stride": list(left.stride()),
+                "weight_stride": list(right.stride()),
+                "output_stride": list(out.stride()),
+                "dp_rank": rank,
+            }
+            path = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"latent-projection-{index}.pt"
+            torch.save(record, path)
+            worker.hero_latent_snapshot_count += 1
+        return result
+
+    extern_kernels.mm = observed_mm
+    return {"dp_rank": rank, "capturing": True, "weight_shape": list(weight.shape), "maximum_captures": 2}
+
+
 class BatchTraceWorkerExtension:
     install_hero_batch_trace = install_batch_trace
     take_hero_batch_trace = take_batch_trace
@@ -297,6 +373,7 @@ class BatchTraceWorkerExtension:
     hero_cache_storage = cache_storage
     set_hero_shortconv_reference = set_shortconv_reference
     install_hero_moe_snapshot = install_moe_snapshot
+    install_hero_latent_projection_snapshot = install_latent_projection_snapshot
     capture_hero_compiler_sources = capture_compiler_sources
 
 

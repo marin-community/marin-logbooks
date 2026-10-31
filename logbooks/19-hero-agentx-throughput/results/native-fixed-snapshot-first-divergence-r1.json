@@ -1,0 +1,278 @@
+{
+  "status": "completed_first_difference_precedes_experts",
+  "source_commit": "ce88882ad583fa60e754b2759ac83d2363a78d91",
+  "snapshot_pairs": 126,
+  "first_dp0_boundary": {
+    "name": "moe-snapshot-dp0-model.layers.0.mlp.experts-0.pt",
+    "reference_sha256": "43dc28429212aff466c07c160f90b51c09446b1335df06c383bd3bddd52606c3",
+    "candidate_sha256": "305658a56d2ac1d249070cd74dadf2f77e722b8441381f09c498af2776bc3be6",
+    "tensors": {
+      "hidden": {
+        "shape": [
+          2048,
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": false,
+        "different_elements": 56,
+        "elements": 6291456,
+        "max_absolute_delta": 0.000244140625,
+        "mean_absolute_delta": 7.541226670904067e-11,
+        "examples": [
+          {
+            "index": [
+              740,
+              252
+            ],
+            "reference": -0.00262451171875,
+            "candidate": -0.0026397705078125
+          },
+          {
+            "index": [
+              740,
+              302
+            ],
+            "reference": 0.00045013427734375,
+            "candidate": 0.0004520416259765625
+          },
+          {
+            "index": [
+              740,
+              405
+            ],
+            "reference": -0.00066375732421875,
+            "candidate": -0.000667572021484375
+          }
+        ]
+      },
+      "router_logits": {
+        "shape": [
+          2048,
+          384
+        ],
+        "dtype": "torch.float32",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 786432,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "output": {
+        "shape": [
+          2048,
+          3072
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": false,
+        "different_elements": 2700,
+        "elements": 6291456,
+        "max_absolute_delta": 7.62939453125e-06,
+        "mean_absolute_delta": 9.932735883788624e-11,
+        "examples": [
+          {
+            "index": [
+              740,
+              1
+            ],
+            "reference": 3.4123659133911133e-06,
+            "candidate": 3.427267074584961e-06
+          },
+          {
+            "index": [
+              740,
+              2
+            ],
+            "reference": 2.1219253540039062e-05,
+            "candidate": 2.1457672119140625e-05
+          },
+          {
+            "index": [
+              740,
+              3
+            ],
+            "reference": 3.337860107421875e-06,
+            "candidate": 3.2633543014526367e-06
+          }
+        ]
+      }
+    },
+    "reference_strides": {
+      "hidden_stride": [
+        3072,
+        1
+      ],
+      "router_stride": [
+        384,
+        1
+      ],
+      "output_stride": [
+        3072,
+        1
+      ]
+    },
+    "candidate_strides": {
+      "hidden_stride": [
+        3072,
+        1
+      ],
+      "router_stride": [
+        384,
+        1
+      ],
+      "output_stride": [
+        3072,
+        1
+      ]
+    },
+    "reference_capture": {
+      "dp_rank": 0,
+      "full_hidden_shape": [
+        2048,
+        3072
+      ],
+      "dispatch": {
+        "requests": 1,
+        "scheduled_tokens": 2048,
+        "padded_tokens": 2048,
+        "graph_mode": "NONE",
+        "max_query_len": 2048,
+        "tokens_across_dp": [
+          2048,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": true
+      },
+      "real_http_rank": true,
+      "hidden_input_unchanged": true
+    },
+    "candidate_capture": {
+      "dp_rank": 0,
+      "full_hidden_shape": [
+        2048,
+        3072
+      ],
+      "dispatch": {
+        "requests": 1,
+        "scheduled_tokens": 2048,
+        "padded_tokens": 2048,
+        "graph_mode": "NONE",
+        "max_query_len": 2048,
+        "tokens_across_dp": [
+          2048,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "reference_capture_sizes": null,
+        "disable_graph_replay": true,
+        "local_piecewise_dp": false
+      },
+      "real_http_rank": true,
+      "hidden_input_unchanged": true
+    }
+  },
+  "tensor_summary": {
+    "hidden": {
+      "changed_pairs": 49,
+      "max_absolute_delta": 7.0234375
+    },
+    "router_logits": {
+      "changed_pairs": 47,
+      "max_absolute_delta": 27.774003982543945
+    },
+    "output": {
+      "changed_pairs": 49,
+      "max_absolute_delta": 0.92578125
+    }
+  },
+  "all_inputs_unchanged": true,
+  "other15_first_layer_exact": true,
+  "retained_inputs": [
+    {
+      "label": "reference",
+      "host": 0,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-local-fixed-kernels-r1/host-0/outputs-acdb242620cd67ca613bd227cb12ab254a6150a8443e28b35c1c76e6c597c711.tar.zst",
+      "archive_sha256": "acdb242620cd67ca613bd227cb12ab254a6150a8443e28b35c1c76e6c597c711",
+      "snapshot_files": 102
+    },
+    {
+      "label": "reference",
+      "host": 1,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-local-fixed-kernels-r1/host-1/outputs-5cf1ccbfe789af1948302a60f4d204e29c6a2595c16b13c82265ab20c7b08519.tar.zst",
+      "archive_sha256": "5cf1ccbfe789af1948302a60f4d204e29c6a2595c16b13c82265ab20c7b08519",
+      "snapshot_files": 8
+    },
+    {
+      "label": "reference",
+      "host": 2,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-local-fixed-kernels-r1/host-2/outputs-7c51f68ae37d9e62c0622234a4e9fa4e5b56036a5f6c6b3f99ea48769f097baa.tar.zst",
+      "archive_sha256": "7c51f68ae37d9e62c0622234a4e9fa4e5b56036a5f6c6b3f99ea48769f097baa",
+      "snapshot_files": 8
+    },
+    {
+      "label": "reference",
+      "host": 3,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-moe-unbuffered16-local-fixed-kernels-r1/host-3/outputs-43e83959c126ab9e9f216c815bfe262938008b3924826c6ae879e47d816d4b9f.tar.zst",
+      "archive_sha256": "43e83959c126ab9e9f216c815bfe262938008b3924826c6ae879e47d816d4b9f",
+      "snapshot_files": 8
+    },
+    {
+      "label": "candidate",
+      "host": 0,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-snapshot-r1/host-0/outputs-8f63fa5eed2ba20bfcbcb32c99e13737f15bc180443a8b0a7bbaea36ee15c316.tar.zst",
+      "archive_sha256": "8f63fa5eed2ba20bfcbcb32c99e13737f15bc180443a8b0a7bbaea36ee15c316",
+      "snapshot_files": 102
+    },
+    {
+      "label": "candidate",
+      "host": 1,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-snapshot-r1/host-1/outputs-943947c2b231139b0414e3e6f7c9ef7dbef3f07097e010c3e241398fc6c734c7.tar.zst",
+      "archive_sha256": "943947c2b231139b0414e3e6f7c9ef7dbef3f07097e010c3e241398fc6c734c7",
+      "snapshot_files": 8
+    },
+    {
+      "label": "candidate",
+      "host": 2,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-snapshot-r1/host-2/outputs-a2aecbc56714b317067e8401f088f4eb28f366b34338798653ceb28082def99f.tar.zst",
+      "archive_sha256": "a2aecbc56714b317067e8401f088f4eb28f366b34338798653ceb28082def99f",
+      "snapshot_files": 8
+    },
+    {
+      "label": "candidate",
+      "host": 3,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/native-local-piecewise16-fixed-snapshot-r1/host-3/outputs-453ce0bf3fa39d059edcd7bd95f516c9e36649caeb5860f0b37e069270909bb5.tar.zst",
+      "archive_sha256": "453ce0bf3fa39d059edcd7bd95f516c9e36649caeb5860f0b37e069270909bb5",
+      "snapshot_files": 8
+    }
+  ],
+  "scope": "All tensors finite. First DP0 routed input differs before expert communication (56/6291456 BF16 values, max.000244140625), while router logits are exact. Other15 ranks first-layer inputs/router/outputs exact. No root cause accepted; next observer captures latent projection input/output and norm weights without replacing emitted math."
+}
