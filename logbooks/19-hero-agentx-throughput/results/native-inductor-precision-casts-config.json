@@ -1,0 +1,49 @@
+{
+  "torch": "2.14.1+cu132",
+  "default_emulate_precision_casts": false,
+  "source_file": "/uv/cache/archive-v0/YWBhn1DCaKiZ8Q_q/lib/python3.12/site-packages/torch/_inductor/config.py",
+  "source_sha256": "9171c2ed249e13a19a2ae22dba0db14f3c4fe11762108f87c8a4e85f96945b0a",
+  "contexts": [
+    [
+      "    # particularly visible in explicit GELU kernels",
+      "    # (0.5 * x * (1 + erf(x * sqrt(0.5)))) where a 1 ULP change in erf output",
+      "    # can flip the result of a subsequent ceil(log2(...)) and produce a",
+      "    # different uint8 encoded value (see gh-178045).",
+      "    # This can be enabled directly; Inductor also enables it while",
+      "    # emulate_precision_casts is active.",
+      "    use_pytorch_libdevice: bool = False",
+      ""
+    ],
+    [
+      "# Inductor will elide the downcast-upcast pairs (effectively a precision",
+      "# truncation) that would occur between these two operators.  Typically,",
+      "# Inductor's behavior should be closer to fp64 ref numerics.  However, with",
+      "# this knob you can ensure the downcast-upcast are preserved so that you can",
+      "# emulate the eager numerics.",
+      "emulate_precision_casts: bool = (",
+      "    os.environ.get(\"TORCHINDUCTOR_EMULATE_PRECISION_CASTS\", \"0\") == \"1\"",
+      ")"
+    ],
+    [
+      "emulate_precision_casts: bool = (",
+      "    os.environ.get(\"TORCHINDUCTOR_EMULATE_PRECISION_CASTS\", \"0\") == \"1\"",
+      ")",
+      "",
+      "",
+      "# Targeted variant of emulate_precision_casts for saved low-precision outputs.",
+      "# When a low-precision pointwise result is saved for backward and also used by",
+      "# later forward math, this inserts a downcast-upcast at the saved value so"
+    ],
+    [
+      "",
+      "# Targeted variant of emulate_precision_casts for saved low-precision outputs.",
+      "# When a low-precision pointwise result is saved for backward and also used by",
+      "# later forward math, this inserts a downcast-upcast at the saved value so",
+      "# forward and backward consume the same precision.",
+      "emulate_precision_casts_on_saved_tensors: bool = (",
+      "    os.environ.get(\"TORCHINDUCTOR_EMULATE_PRECISION_CASTS_ON_SAVED_TENSORS\", \"1\") == \"1\"",
+      ")"
+    ]
+  ],
+  "scope": "CPU-only read of the exact serving Torch configuration, no GPU or compiler execution."
+}
