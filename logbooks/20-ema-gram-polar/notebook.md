@@ -727,6 +727,28 @@ cost diagnostic remains queued for TPU capacity. Continue the pilot's full
 is still required before expanding the sweep because each pilot update takes
 about 40 seconds.
 
+### 2026-10-31 17:00 UTC — Cancel the slow pilot; diagnose before training
+
+Canceled the 128 GiB EMA-Gram alpha=1/4 pilot at the user's request. Iris confirmed the coordinator and its active TPU child
+are `killed` at 17:00:54 UTC. The last W&B summary captured step 930,
+30,507,008 tokens and training loss 5.80393124. The W&B API still reported
+`running` immediately after cancellation; the authoritative Iris states are
+terminal. This partial run did not finish its 7,630-update schedule.
+
+The 51 measured update durations ending at step 905 had median 38.73798
+seconds per update (range 38.56675–38.91911). Preserve the step-762 validation
+and permanent step-763 checkpoint evidence in `quarter-first-validation.json`. The last temporary checkpoint
+save log reports step 923 at 16:55:33 UTC; its completeness and restoration
+have not been tested.
+`quarter-user-canceled.json` records cancellation and process identities.
+
+Keep `ema-gram-20-optimizer-cost-20261031` in the Iris batch queue. It remained
+pending for TPU capacity at 17:00:54 UTC. Complete that diagnosis before
+selecting and validating a performance change and launching further training.
+The `follow-ema-gram-experiment` automation update was accepted with this order. Do not restart the canceled job or
+expand the sweep while diagnosis is pending. Full, unblocked left/right Gram matrices and per-update
+refresh remain part of the requested algorithm.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
