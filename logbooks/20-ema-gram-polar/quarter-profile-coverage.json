@@ -1,0 +1,136 @@
+{
+  "trace_sha256": "ad951ab95e3d453463af0b2047ef44063d20204179a42ad34db1d07342f892b3",
+  "trace_bytes": 24740393,
+  "planes": [
+    {
+      "name": "/host:CPU",
+      "events": 1402079
+    },
+    {
+      "name": "Task Environment",
+      "events": 0
+    }
+  ],
+  "device_timeline_available": false,
+  "host_train_step_intervals": [
+    {
+      "offset_seconds": 5.22e-06,
+      "duration_seconds": 0.16180518
+    },
+    {
+      "offset_seconds": 0.165775899,
+      "duration_seconds": 41.341335372
+    },
+    {
+      "offset_seconds": 41.51097158,
+      "duration_seconds": 44.30777619
+    },
+    {
+      "offset_seconds": 85.830939738,
+      "duration_seconds": 41.386104096
+    },
+    {
+      "offset_seconds": 127.239511951,
+      "duration_seconds": 41.340307681
+    },
+    {
+      "offset_seconds": 168.585513092,
+      "duration_seconds": 41.180440411
+    },
+    {
+      "offset_seconds": 209.771634872,
+      "duration_seconds": 41.392961355
+    },
+    {
+      "offset_seconds": 251.170385897,
+      "duration_seconds": 41.236423854
+    },
+    {
+      "offset_seconds": 292.41295059,
+      "duration_seconds": 41.321345095
+    },
+    {
+      "offset_seconds": 333.740037034,
+      "duration_seconds": 41.255862155
+    },
+    {
+      "offset_seconds": 375.001655218,
+      "duration_seconds": 42.824377608
+    }
+  ],
+  "host_timing_limitations": "The first interval starts at the capture boundary; host intervals include synchronization and hooks. They do not isolate device compute or communication.",
+  "hlo_sha256": "9f75426708a7b9fdfd2621b556e29cfed4488cf24ba4d271a7c20595085a6c40",
+  "hlo_kind": "Saved pre-optimization StableHLO; not the final device schedule.",
+  "batched_eigh_call_counts": {
+    "11x1024x1024": 11,
+    "11x4096x4096": 3
+  },
+  "eigh_batch_wrappers": {
+    "eigh": {
+      "while_bound": 11,
+      "note": "Loop calls dynamic_index_in_dim helper and eigensolver once per layer."
+    },
+    "eigh_113": {
+      "while_bound": 11,
+      "note": "Loop calls dynamic_index_in_dim helper and eigensolver once per layer."
+    }
+  },
+  "interpretation": "The lowered layer-batch eigensolver uses an 11-iteration loop. No runtime fraction or final cross-device scheduling is established.",
+  "rejected_inference": "Generic host-only stall percentages and dispatch durations cannot establish TPU utilization, throughput, or eigendecomposition cost.",
+  "run_path": "marin-community/marin/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.10.30.23-d8755c4b4082",
+  "source_commit": "44f8a1efdd8117260565f77965fcadd36cef717b",
+  "profile_start_utc": "2026-10-31T07:42:48Z",
+  "profile_stop_utc": "2026-10-31T07:49:44Z",
+  "upload_utc": "2026-10-31T07:51:14Z",
+  "driver_error": "E1031 07:50:49.628703 1 trace_drop_utils.cc:90] Non-droppable bytes in XSpace (2.42GiB) exceeds size limit (2.00GiB). Cannot shrink XSpace by dropping events.",
+  "driver_error_source": "Iris task exec read /tmp/tpu_logs/tpu_driver.ERROR from current child attempt0",
+  "hlo_wandb_artifact": "marin-community/marin/train_step.hlo.txt:v12579",
+  "artifacts": {
+    "quarter.xplane.pb": {
+      "uri": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/analysis/profile-100-109/quarter.xplane.pb",
+      "bytes": 24740393,
+      "sha256": "ad951ab95e3d453463af0b2047ef44063d20204179a42ad34db1d07342f892b3",
+      "readback_verified": true
+    },
+    "train_step.hlo.txt": {
+      "uri": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/analysis/profile-100-109/train_step.hlo.txt",
+      "bytes": 1358583,
+      "sha256": "9f75426708a7b9fdfd2621b556e29cfed4488cf24ba4d271a7c20595085a6c40",
+      "readback_verified": true
+    },
+    "inspect_trace.py": {
+      "uri": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/analysis/profile-100-109/inspect_trace.py",
+      "bytes": 2998,
+      "sha256": "7840cf00b3852f0bdc10ce6cf77f01e9a978bc7eefd633380ecccaabba4e943d",
+      "readback_verified": true
+    },
+    "coverage.json": {
+      "uri": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/analysis/profile-100-109/coverage.json",
+      "bytes": 2376,
+      "sha256": "beda2ffb80044ac53592bd944aa101d079e5d223d1638109cbd18e2771fde6e4",
+      "readback_verified": true
+    }
+  },
+  "latest_observation": {
+    "utc": "2026-10-31T07:56:02Z",
+    "global_step": 114,
+    "tokens": 3768320,
+    "train_loss": 8.187638282775879,
+    "duration_seconds": 41.049407338985475
+  },
+  "host_memory": {
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "window_utc": [
+      "2026-10-31T07:15:00Z",
+      "2026-10-31T08:00:00Z"
+    ],
+    "attempt": 0,
+    "samples": 383,
+    "latest_sample_utc": "2026-10-31T07:59:54.747Z",
+    "cluster": null,
+    "worker": "marin-tpu-v4-reserved-8-us-central2-b-20261029-1634-8ad0a19f-worker-0",
+    "observed_peak_gib": 91.7294921875,
+    "sampled_max_gib": 57.0498046875
+  }
+}

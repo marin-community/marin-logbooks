@@ -602,6 +602,49 @@ Iris state and GitHub feedback were refreshed, one observer for the replacement
 child and one PR waiter were restored. PR #10790 remains open, review required,
 with no new feedback found. This observer recovery did not alter training.
 
+### 2026-10-31 08:04 UTC — Quarter-power trace lost its device timeline
+
+The scheduled steps 100–109 profile ran from 07:42:48 to 07:49:44 UTC and
+uploaded at 07:51:14 UTC. The saved XPlane contains 1,402,079 host events and
+no device planes. The training container's TPU driver log reports at
+07:50:49 UTC that 2.42 GiB of non-droppable XSpace data exceeded its 2.00 GiB
+limit. The uploaded profile therefore cannot attribute TPU time to spectral
+powers, collectives or other operations. Reject the generic host-only
+summary's stall percentages and dispatch-based step estimates for that
+purpose. The [quarter-power W&B run](https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.10.30.23-d8755c4b4082) remains active: at 07:56 UTC it reached step 114,
+3,768,320 tokens and training loss 8.187638; the last step took 41.049 seconds.
+
+The run's saved `train_step.hlo.txt:v12579` W&B artifact provides a narrower
+structural result. Its pre-optimization StableHLO contains eleven eigensolver calls on
+`11x1024x1024` batches and three on `11x4096x4096` batches. Each eigensolver
+wrapper lowers the layer batch to an 11-iteration `while` loop that selects
+one matrix and calls its eigensolver. Thus a batched input does not establish
+parallel execution of the eleven layers. This is not the final device
+schedule and does not establish an eigensolver runtime fraction or how work
+is distributed across chips.
+
+`quarter-profile-coverage.json` links the original XPlane, saved StableHLO,
+analysis source and coverage result in the run's durable object-storage
+prefix. All four uploaded artifacts passed SHA-256 readback checks. The
+bounded `marin` / `iris.task` query over 07:15–08:00 UTC returned 383 samples
+through 07:59:54 UTC on the current child attempt. The attempt-wide host-memory high-water mark remains
+91.729492 GiB; the maximum sampled current usage for the same task in this
+window is 57.049805 GiB. The peak and current-usage measurements have different
+meanings.
+
+Keep the running pilot and its full schedule. The next cost investigation
+needs a shorter device capture, initially one step, with explicit coverage
+validation before interpreting timings. The existing training entrypoint
+starts a scheduled capture but does not start a JAX remote profiler server;
+no supported live recapture endpoint has been confirmed. Prepare a separately
+identified optimizer diagnostic matching this pilot's 77 matrix weights and
+sharding if a safe live capture is not available. Preserve the full left/right
+Gram matrices, exponent 1/4 and refresh on every update; use online W&B for
+diagnostic provenance and keep at most two accelerator jobs. Before expanding
+the pilot sweep, obtain usable device cost evidence, confirm host memory stays
+within the 128 GiB reservation, and inspect finite training and validation
+metrics. No quarter-power validation result is available yet.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
