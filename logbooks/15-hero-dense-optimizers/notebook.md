@@ -365,3 +365,52 @@ Continue checking sustained throughput and repeated rolling saves on the
 new jobs, and verify finals and successors as remaining runs finish.
 Time-to-loss remains unanalysed. Source, recipes, checkpoint lineage, batch
 priority and the 64-GPU cap remain fixed.
+
+## 2026-10-31 UTC: All four 1e20 recipes complete; AdamW completes 1e19
+
+AdamH and MuonH completed the remaining 1e20-FLOP recipes. All four recipes
+processed 21,997,027,328 tokens in 41,956 updates and have Iris success,
+W&B finished states at zero-based step 41,955, and complete permanent
+checkpoints with `is_temporary=false`.
+
+| Optimizer | LR multiplier | Final Paloma macro loss |
+|---|---:|---:|
+| AdamW | 3 | 3.0864096 |
+| AdamH | 3 | 3.1003621 |
+| MuonH | 1 | 3.1998119 |
+| Muon | 3 | 3.2066767 |
+
+Paloma macro loss is the held-out quality metric; lower is better. AdamW has
+the lowest observed loss at this shared budget. Each recipe uses one seed and
+an LR multiplier transferred from the limited three-point 1e18 sweep; AdamW,
+Muon and AdamH selected its highest tested multiplier. The
+[initial design](#2026-10-26-initial-design-and-launch-contract) records model
+sizes, data, LR centers and schedules, and the norm-preserving H recipes.
+This ordering does not establish statistical significance or optimizer-optimal
+scaling. Time-to-loss remains unanalysed.
+
+AdamW also completed 1e19 FLOPs with final Paloma macro loss 3.4312277 after
+12,539 updates and 6,574,047,232 tokens. Iris reports success and W&B reports
+finished at zero-based step 12,538. Its permanent checkpoint records update
+12,539 with `is_temporary=false`. The other three 1e19 recipes remain
+incomplete. The selected ladder is now 16/28 complete.
+
+The new permanent checkpoints were saved at 13:01:06 UTC for AdamH 1e20,
+13:32:12 UTC for MuonH 1e20, and 13:27:00 UTC for AdamW 1e19. Metadata,
+`manifest.json`, `manifest.ocdbt`, and data directories are present. Exact
+final metrics and checkpoint metadata for the three new completions and the
+full 1e20 comparison are in
+[milestone-20261031-1430.json](milestone-20261031-1430.json).
+
+The coordinator filled the freed slots with Muon, AdamH and MuonH at 1e19
+FLOPs at 13:01:22, 13:27:22 and 13:32:29 UTC, respectively. At the 15:08 UTC
+Iris/W&B snapshot, all three had finite advancing training; storage reads
+through 15:10 UTC verified complete retained rolling checkpoints on all eight
+active jobs. Four 1e21, one MuonH 3e19 and three 1e19 jobs occupy the eight
+slots; the four 3e18 jobs await slots. These eight jobs report zero application
+failures. Their r3 scheduler preemption totals are 6, 2, 6 and 2 for 1e21
+AdamW, Muon, AdamH and MuonH, respectively, and zero for the other four.
+Continue verifying final metrics and durable exports as jobs finish, and
+sustained throughput and rolling checkpoint advancement on their successors.
+Source, recipes, checkpoint lineage, batch priority and the 64-GPU cap remain
+fixed.
