@@ -1,0 +1,126 @@
+{
+  "source_commit": "38a81c6e94b6f57c8572b5b61236210a6385e932",
+  "result": {
+    "comparisons": {
+      "eager_off_on": {
+        "shape": [
+          2048,
+          6144
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 12582912,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "compiled_off_on": {
+        "shape": [
+          2048,
+          6144
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 12582912,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "off_eager_compiled": {
+        "shape": [
+          2048,
+          6144
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 12582912,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      },
+      "on_eager_compiled": {
+        "shape": [
+          2048,
+          6144
+        ],
+        "dtype": "torch.bfloat16",
+        "exact": true,
+        "different_elements": 0,
+        "elements": 12582912,
+        "max_absolute_delta": 0.0,
+        "mean_absolute_delta": 0.0,
+        "examples": []
+      }
+    },
+    "compiler_options": {
+      "emulate_precision_casts": true,
+      "max_autotune": false,
+      "coordinate_descent_tuning": false,
+      "deterministic": true,
+      "dynamic_scale_rblock": false,
+      "combo_kernels": false,
+      "enable_auto_functionalized_v2": false
+    },
+    "runtime_kernels": [
+      {
+        "name": "triton_per_fused__unsafe_view_add_clone_div_expand_mul_sigmoid_sub_sum_unsqueeze_view_0",
+        "source": "/iris/outputs/attention-xsa-replay-r1/compiler-cache/y5/cy5umvmpxsojh3gfeme5j4njp63iszf66r2vit4662qurufhup7l.py",
+        "launchers": [
+          {
+            "kwargs": {
+              "XBLOCK": 8
+            },
+            "warps": 2
+          }
+        ]
+      },
+      {
+        "name": "triton_per_fused__unsafe_view_add_clone_div_expand_mul_sigmoid_sub_sum_unsqueeze_view_0",
+        "source": "/iris/outputs/attention-xsa-replay-r1/compiler-cache/mw/cmwp5y6kprp4i6tx36nr4n3js2lgtki5ml35mqrxitisvyashgt4.py",
+        "launchers": [
+          {
+            "kwargs": {
+              "XBLOCK": 8
+            },
+            "warps": 2
+          }
+        ]
+      },
+      {
+        "name": "triton_per_fused__unsafe_view_add_clone_div_expand_mul_sigmoid_sub_sum_unsqueeze_view_0",
+        "source": "/iris/outputs/attention-xsa-replay-r1/compiler-cache/ds/cdscoz4um7zday5ygizzry7icegxaonb4v77kvir75t7pohkqvmm.py",
+        "launchers": [
+          {
+            "kwargs": {
+              "XBLOCK": 8
+            },
+            "warps": 2
+          }
+        ]
+      },
+      {
+        "name": "triton_per_fused__unsafe_view_add_clone_div_expand_mul_sigmoid_sub_sum_unsqueeze_view_0",
+        "source": "/iris/outputs/attention-xsa-replay-r1/compiler-cache/py/cpyxu6fgb3zr4rhbdpw3oipcryzcgtdvqnuirwphxvsfqudagd6c.py",
+        "launchers": [
+          {
+            "kwargs": {
+              "XBLOCK": 8
+            },
+            "warps": 2
+          }
+        ]
+      }
+    ],
+    "source_sha256": "8e1af4d7b6451cde99b26d3262a2d697d19ee624733c32c35d43abd0cbac406a",
+    "scope": "Native XSA and actual equal attention/value tensors, shared seeded hidden inputs and fixture gate weights. No full-model or speed qualification."
+  },
+  "gpu_empty_after": true,
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-xsa-replay-r1/outputs-65b18e3c378b5964b43ec3bae0bcf2ecc2c12e2f17493adb7065a0fc41a7ccfe.tar.zst",
+    "archive_sha256": "65b18e3c378b5964b43ec3bae0bcf2ecc2c12e2f17493adb7065a0fc41a7ccfe",
+    "readback_sha256": "65b18e3c378b5964b43ec3bae0bcf2ecc2c12e2f17493adb7065a0fc41a7ccfe"
+  }
+}

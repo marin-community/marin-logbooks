@@ -16,7 +16,7 @@ import math
 import os
 import sys
 import time
-from dataclasses import replace
+from dataclasses import fields, replace
 from pathlib import Path
 
 import torch
@@ -366,11 +366,12 @@ def install_latent_projection_snapshot(worker) -> dict:
     return {"dp_rank": rank, "capturing": True, "weight_shape": list(weight.shape), "maximum_captures": 2}
 
 
-def install_attention_snapshot(worker) -> dict:
+def install_attention_snapshot(worker, prefill_captures: int = 1) -> dict:
     """Capture the first local/global prefill at the native backend boundary."""
     runner = worker.model_runner
     assert runner.dp_rank == 0 and worker.vllm_config.parallel_config.data_parallel_size == 1
     assert not hasattr(worker, "hero_attention_snapshots")
+    assert prefill_captures in (1, 2)
     worker.hero_attention_snapshots = []
     for index in (0, 3):
         matches = [
@@ -386,18 +387,31 @@ def install_attention_snapshot(worker) -> dict:
             layer, query, key, value, kv_cache, attn_metadata, output, *args, _index=index, _call=original, **kwargs
         ):
             result = _call(layer, query, key, value, kv_cache, attn_metadata, output, *args, **kwargs)
-            if query.shape[0] == 2048 and _index not in worker.hero_attention_snapshots:
+            ordinal = sum(index == _index for index in worker.hero_attention_snapshots)
+            if query.shape[0] == 2048 and ordinal < prefill_captures:
                 assert attn_metadata is not None and key is not None and value is not None
                 tensors = {"query": query, "key": key, "value": value, "output": result}
                 assert sum(t.numel() * t.element_size() for t in tensors.values()) < 80_000_000
-                destination = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"attention-layer-{_index}.pt"
+                suffix = "" if ordinal == 0 else f"-prefill-{ordinal}"
+                destination = Path(os.environ["IRIS_OUTPUT_DIR"]) / f"attention-layer-{_index}{suffix}.pt"
+                prefill_metadata = {
+                    field.name: value.detach().cpu() if isinstance(value, torch.Tensor) else value
+                    for field in fields(attn_metadata.prefill)
+                    if isinstance(value := getattr(attn_metadata.prefill, field.name), (int, float, bool, str))
+                    or (isinstance(value, torch.Tensor) and value.numel() <= 100_000)
+                }
                 torch.save(
                     {
                         **{name: tensor.detach().cpu() for name, tensor in tensors.items()},
                         "cache_shape": list(kv_cache.shape),
                         "num_actual_tokens": attn_metadata.num_actual_tokens,
+                        "num_prefills": attn_metadata.num_prefills,
+                        "num_decodes": attn_metadata.num_decodes,
+                        "causal": attn_metadata.causal,
+                        "prefill_ordinal": ordinal,
+                        "prefill_metadata": prefill_metadata,
                         "layer": _index,
-                        "scope": "First2048-row native prefill only; diagnostic synchronization, no timing.",
+                        "scope": "First bounded2048-row prefills; diagnostic synchronization, no timing.",
                     },
                     destination,
                 )
@@ -405,7 +419,7 @@ def install_attention_snapshot(worker) -> dict:
             return result
 
         implementation.forward = capture
-    return {"dp_rank": runner.dp_rank, "layers": [0, 3], "prefill_rows": 2048}
+    return {"dp_rank": runner.dp_rank, "layers": [0, 3], "prefill_rows": 2048, "captures": prefill_captures}
 
 
 class BatchTraceWorkerExtension:

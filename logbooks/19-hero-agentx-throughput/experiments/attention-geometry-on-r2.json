@@ -1,0 +1,268 @@
+{
+  "scope": "One-GPU native FLASHINFER actual-head-geometry source/state diagnostic. Thin synthetic embedding/MoE, actual48Q/12stored/6global/head128,2K prefills,262144context and4ShortConv decoder blocks. No Hero model or timing claim. Retain the first two consecutive2048-token prefills at each native boundary, with actual prefill metadata.",
+  "source_parent_commit": "38a81c6e94",
+  "model_dir": "/iris/candidates/hero-attention-geometry-inputs-r1/model",
+  "fixture": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/hero-attention-geometry-r1/fixture-9a9221fb3b44229a88898b219e344445d69e01ee3bf24acda78386694b8af161.tar.zst",
+    "sha256": "9a9221fb3b44229a88898b219e344445d69e01ee3bf24acda78386694b8af161",
+    "readback_sha256": "9a9221fb3b44229a88898b219e344445d69e01ee3bf24acda78386694b8af161",
+    "bytes": 158324279
+  },
+  "fixture_model_sha256": "7c8b4aa31065f58eea768b2e584fb682a0505dda3b356c40af52c808e3cd5acd",
+  "candidate_wheel_input": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-989e7f9e6df235bc5b2d7f03a5ecdb874d59334a77ce45d45dd56de20b75ca80/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "989e7f9e6df235bc5b2d7f03a5ecdb874d59334a77ce45d45dd56de20b75ca80",
+    "readback_sha256": "989e7f9e6df235bc5b2d7f03a5ecdb874d59334a77ce45d45dd56de20b75ca80",
+    "bytes": 250542522,
+    "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "receipt": {
+      "kind": "private_python_overlay",
+      "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "source_commit": "492cb9fcc2310e6e72e2ffb5d1b7f9d4020aa7d7",
+      "changed_files": {
+        "vllm/model_executor/models/grugmoe.py": "d81b43e04406ad361c3a3a30447e7f5364cdd4885d0984682810a39a9f05981d"
+      },
+      "wheel_path": "/iris/candidates/logical-kv-r1/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "989e7f9e6df235bc5b2d7f03a5ecdb874d59334a77ce45d45dd56de20b75ca80",
+      "wheel_bytes": 250542522,
+      "verified_unchanged_files": 5101,
+      "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+    },
+    "helper_sha256": "94781954107cb5d518a97337b4c3a481f53733760e18ed8f3843fe1ddc017c49",
+    "research_source_commit": "58a1416a093416a90189a080ddf6b900adf37298",
+    "command": [
+      "uvx",
+      "--from",
+      "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "--with",
+      "runai-model-streamer[s3]==0.16.1",
+      "--with",
+      "torch==2.14.1+cu132",
+      "--with",
+      "nvidia-cuda-nvcc==13.2.86",
+      "--with",
+      "nvidia-cuda-crt==13.2.86",
+      "--with",
+      "nvidia-nvvm==13.2.86",
+      "--python",
+      "3.12",
+      "--index",
+      "https://download.pytorch.org/whl/cu132",
+      "--index",
+      "https://download.pytorch.org/whl/cpu",
+      "--index-strategy",
+      "unsafe-best-match",
+      "python",
+      "/iris/candidates/logical-kv-source-492cb9fcc2310e6e72e2ffb5d1b7f9d4020aa7d7-r1/shortconv_wheel.py",
+      "--source-commit",
+      "492cb9fcc2310e6e72e2ffb5d1b7f9d4020aa7d7",
+      "--replacement-source",
+      "/iris/candidates/logical-kv-source-492cb9fcc2310e6e72e2ffb5d1b7f9d4020aa7d7-r1/vllm/model_executor/models/grugmoe.py",
+      "--replacement-sha256",
+      "d81b43e04406ad361c3a3a30447e7f5364cdd4885d0984682810a39a9f05981d",
+      "--base-module-sha256",
+      "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+      "--base-wheel-sha256",
+      "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "--output",
+      "/iris/candidates/logical-kv-r1/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl"
+    ],
+    "source_root": "/iris/candidates/logical-kv-source-492cb9fcc2310e6e72e2ffb5d1b7f9d4020aa7d7-r1",
+    "scope": "Private Python-only overlay on official e852; only GrugMoE model source changes,5101other packaged files unchanged including binaries and dependencies. Native mixed-cache and numerical gates remain."
+  },
+  "serving_prefix": [
+    "uvx",
+    "--from",
+    "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+    "--with",
+    "runai-model-streamer[s3]==0.16.1",
+    "--with",
+    "torch==2.14.1+cu132",
+    "--with",
+    "nvidia-cuda-nvcc==13.2.86",
+    "--with",
+    "nvidia-cuda-crt==13.2.86",
+    "--with",
+    "nvidia-nvvm==13.2.86",
+    "--python",
+    "3.12",
+    "--index",
+    "https://download.pytorch.org/whl/cu132",
+    "--index",
+    "https://download.pytorch.org/whl/cpu",
+    "--index-strategy",
+    "unsafe-best-match"
+  ],
+  "cuda_bootstrap": [
+    "python",
+    "-c",
+    "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n"
+  ],
+  "server_args": [
+    "--model",
+    "/iris/candidates/hero-attention-geometry-inputs-r1/model",
+    "--served-model-name",
+    "tiny-hero-boundary",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "38466",
+    "--dtype",
+    "bfloat16",
+    "--max-model-len",
+    "262144",
+    "--max-num-batched-tokens",
+    "2048",
+    "--max-num-seqs",
+    "512",
+    "--tensor-parallel-size",
+    "1",
+    "--data-parallel-size",
+    "1",
+    "--data-parallel-size-local",
+    "1",
+    "--enable-expert-parallel",
+    "--all2all-backend",
+    "allgather_reducescatter",
+    "--kernel-config",
+    "{\"moe_backend\": \"triton\", \"enable_flashinfer_autotune\": false}",
+    "--compilation-config",
+    "{\"mode\": 3, \"cudagraph_mode\": \"NONE\", \"cudagraph_capture_sizes\": [1, 2, 4, 8, 16, 32, 2048], \"splitting_ops\": [\"vllm::unified_attention_with_output\", \"vllm::unified_mla_attention_with_output\", \"vllm::mamba_mixer2\", \"vllm::mamba_mixer\", \"vllm::short_conv\", \"vllm::qwen4_exp_ple_short_conv\", \"vllm::qwen4_exp_qsa_with_output\", \"vllm::linear_attention\", \"vllm::qwen_gdn_attention_core\", \"vllm::qwen_gdn_attention_core_fused_norm_packed\", \"vllm::gdn_attention_core_xpu\", \"vllm::olmo_hybrid_gdn_full_forward\", \"vllm::sparse_attn_indexer\", \"vllm::rocm_aiter_sparse_attn_indexer\", \"vllm::deepseek_v4_attention\", \"vllm::hpc_rope_norm_forward\", \"vllm::unified_kv_cache_update\", \"vllm::unified_mla_kv_cache_update\", \"vllm::grug_moe_short_conv\", \"vllm::moe_forward\", \"vllm::moe_forward_shared\"], \"inductor_compile_config\": {\"emulate_precision_casts\": true, \"max_autotune\": false, \"coordinate_descent_tuning\": false, \"deterministic\": true, \"dynamic_scale_rblock\": false, \"combo_kernels\": false}}",
+    "--gpu-memory-utilization",
+    "0.05",
+    "--enable-prefix-caching",
+    "--master-port",
+    "37686",
+    "--data-parallel-rpc-port",
+    "37687",
+    "--seed",
+    "42",
+    "--worker-extension-cls",
+    "tiny_graph_probe.BatchTraceWorkerExtension",
+    "--prefix-cache-retention-interval",
+    "0",
+    "--additional-config",
+    "{\"grug_logical_kv_cache\": true}",
+    "--attention-backend",
+    "FLASHINFER"
+  ],
+  "base_url": "http://127.0.0.1:38466",
+  "cache_root": "/iris/candidates/attention-geometry-on-r2-cache",
+  "attempt_uid": "953f483020164a00",
+  "gpu_uuids": [
+    "GPU-947032dd-1d5d-b0f5-e36f-525568419be1",
+    "GPU-4303d8d9-7ef8-78f8-c36e-13e7b5bab0c6",
+    "GPU-fcbd4528-ca0c-01af-9ca6-13bafb14c886",
+    "GPU-1e3f5fd1-6955-1c8f-a6ec-6b20580c2583"
+  ],
+  "job_id": "/romain/dev-gpu-hero-agentx-attention4-r392-01a1846a",
+  "task_id": "/romain/dev-gpu-hero-agentx-attention4-r392-01a1846a/0:0",
+  "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-392-US-EAST-08A",
+    "nodes": [
+      "sjtsxs64"
+    ],
+    "hero_training_gpus": 0,
+    "checked_unix": 1793452481.1012723
+  },
+  "cost": "Existing batch4holder, one serving GPU. Count all4GPUs including setup, idle and failures. Previous16holder released.",
+  "hypothesis": "Use native real-head geometry and first local/global attention tensors to locate unexplained full-model source drift before any further full model or AgentX launch.",
+  "local_modes": [
+    false
+  ],
+  "disable_graph_replay": false,
+  "moe_snapshot": false,
+  "configuration_sha256": "76666f00a472eb7a3ffaab5ab17b8bfcadf920a222df3c9b3f2af4e410692afd",
+  "requests": [
+    {
+      "name": "cold-a",
+      "branches": [
+        0
+      ],
+      "cache_namespace": "a"
+    },
+    {
+      "name": "cold-b",
+      "branches": [
+        1
+      ],
+      "cache_namespace": "b"
+    },
+    {
+      "name": "cold-c",
+      "branches": [
+        2
+      ],
+      "cache_namespace": "c"
+    },
+    {
+      "name": "cold-a-repeat",
+      "branches": [
+        0
+      ],
+      "cache_namespace": "a-repeat"
+    },
+    {
+      "name": "cold-ba",
+      "branches": [
+        1,
+        0
+      ],
+      "cache_namespace": "ba"
+    },
+    {
+      "name": "cold-cab",
+      "branches": [
+        2,
+        0,
+        1
+      ],
+      "cache_namespace": "cab"
+    },
+    {
+      "name": "shared-a",
+      "branches": [
+        0
+      ],
+      "cache_namespace": "shared"
+    },
+    {
+      "name": "shared-ba",
+      "branches": [
+        1,
+        0
+      ],
+      "cache_namespace": "shared"
+    },
+    {
+      "name": "shared-cab",
+      "branches": [
+        2,
+        0,
+        1
+      ],
+      "cache_namespace": "shared"
+    },
+    {
+      "name": "shared-a-final",
+      "branches": [
+        0
+      ],
+      "cache_namespace": "shared"
+    }
+  ],
+  "prefix_retention_interval": 0,
+  "value_hypothesis": "Two short sequential native one-GPU component servers with full2K/8K request shapes; count4allocated batch GPUs including staging/idle. Captures deliberately synchronize and provide no timing result.",
+  "actual_cached_heads": {
+    "local": 12,
+    "global": 6
+  },
+  "fixture_note": "Derived from checksum-pinned original synthetic fixture; only q/k/v/o/attention-gate/K-ShortConv weights are regenerated for actual attention geometry, seed42. Remaining tensors unchanged. Full Hero checkpoint remains fixed.",
+  "attention_snapshot": true,
+  "request_inputs": {
+    "path": "/iris/candidates/attention-geometry-request-inputs-r1.json",
+    "sha256": "3bbc7dd1031df80afb21e69ceb6a206f0f6ba527a14fb89247a34280d18dfecf"
+  },
+  "attention_prefill_captures": 2
+}
