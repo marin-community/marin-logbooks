@@ -161,8 +161,8 @@ def main() -> None:
             assert serving_attempts(backends) == attempts
             record.update({"status": "measuring", "client_started_unix": time.time()})
             record_path.write_text(json.dumps(record, indent=2) + "\n")
-            # The native preset owns its count-driven warmup and 3600s send /
-            # 40s drain. Its grace setting is not a wall-clock warmup limit.
+            # The native preset owns its count-driven warmup and 3600s send
+            # window. Its 30s profiling grace does not bound warmup duration.
             run_logged(command, environment, args.output / "agentx.log", timeout=series["task_timeout"])
             exported = json.loads((args.output / "aiperf_artifacts/profile_export_aiperf.json").read_text())
             assert exported.get("metadata", {}).get("submission_valid") and not exported.get("was_cancelled")
