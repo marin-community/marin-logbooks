@@ -1200,3 +1200,28 @@ job exits; require all eight current attempts and complete readback before
 qualification. The batch32 request stays within its separate quota, after
 the batch4 holder is released. Record any setup overlap with synthetic
 speed work; final throughput still needs matched full AgentX confirmation.
+
+### 2026-10-31: initial two-replica sequence, then isolate C256
+
+The fresh native two16pair completes all three synthetic cases without
+request errors: short C128637.260output tokens/s (128requests), short
+C2561,275.202 (256requests), and64K C64166.330 (64requests). Per32physical
+GPUs these are19.9144,39.8501and5.19780output tokens/s/GPU. Direct endpoint
+metrics show completed requests on all32engines. Native attempt/provider
+fences stay exact before/after, both groups stop and all32GPUs are empty.
+All eight raw archives pass readback (7,920,026compressed bytes). See
+[the sequential diagnostic](results/replica-speed-r1-sequence.json).
+
+These are three sequential cases on one pair, not fresh model state for
+each concurrency. They establish neither a fresh-state load knee nor a
+matched-layout gain, and are not AgentX throughput. The decisive C256
+comparison therefore restarts fresh model servers and runs exactly one
+C256case per layout. Preserve the initial sequence rather than presenting
+its second point as that confirmation. The held speed native attempts remain
+disjoint from state qualification; only model processes/cache state reset.
+
+The independently submitted native batch32baseline first qualifies state
+with actual eight-task JobInfo and disjoint physical GPUs. Its submission
+follows the initial three-case client completion; verify actual admission
+and record any subsequent setup overlap. No one32baseline speed is measured
+yet, and no replica recipe is selected.
