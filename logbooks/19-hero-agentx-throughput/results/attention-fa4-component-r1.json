@@ -1,0 +1,230 @@
+{
+  "source_commit": "5ca81fd8eb1a226922f5ea38895840537b444087",
+  "result": {
+    "status": "all_eight_native_tolerance_checks_passed",
+    "attempt_uid": "953f483020164a00",
+    "script_sha256": "ce41848da6706208c0ed2f5699f92e0adc4bbc2d987318d2151bb09840aa9bd9",
+    "interface_sha256": "827fc6a2d4ef8d1cc3ac991d33cab5cbe5a66ec7a82c9636ebf64b61ad780773",
+    "versions": {
+      "vllm": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+      "torch": "2.14.1+cu132",
+      "nvidia-cutlass-dsl": "4.7.1"
+    },
+    "geometry": {
+      "query_heads": 48,
+      "stored_kv_heads": 12,
+      "head_size": 128,
+      "page_size": 16
+    },
+    "reference_atol": 0.015,
+    "reference_rtol": 0.01,
+    "cases": [
+      {
+        "label": "window-None-case-0",
+        "seed": 42,
+        "sequence_lengths": [
+          [
+            1,
+            262144
+          ]
+        ],
+        "selected_values": 896,
+        "max_absolute_delta": 1.5489058569073677e-06,
+        "mean_absolute_delta": 2.6903114758169977e-07,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      },
+      {
+        "label": "window-None-case-1",
+        "seed": 43,
+        "sequence_lengths": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            16
+          ],
+          [
+            1,
+            2048
+          ],
+          [
+            1,
+            8192
+          ],
+          [
+            1,
+            16384
+          ],
+          [
+            1,
+            32768
+          ],
+          [
+            1,
+            65536
+          ],
+          [
+            1,
+            131072
+          ]
+        ],
+        "selected_values": 7168,
+        "max_absolute_delta": 0.00020913779735565186,
+        "mean_absolute_delta": 5.182832410355331e-06,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      },
+      {
+        "label": "window-None-case-2",
+        "seed": 44,
+        "sequence_lengths": [
+          [
+            17,
+            8192
+          ],
+          [
+            64,
+            16384
+          ],
+          [
+            1,
+            65536
+          ]
+        ],
+        "selected_values": 15232,
+        "max_absolute_delta": 9.84477810561657e-06,
+        "mean_absolute_delta": 1.3656239161718986e-06,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      },
+      {
+        "label": "window-None-case-3",
+        "seed": 45,
+        "sequence_lengths": [
+          [
+            2048,
+            65536
+          ]
+        ],
+        "selected_values": 7168,
+        "max_absolute_delta": 4.003872163593769e-06,
+        "mean_absolute_delta": 6.080138632569287e-07,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      },
+      {
+        "label": "window-2048-case-0",
+        "seed": 42,
+        "sequence_lengths": [
+          [
+            1,
+            262144
+          ]
+        ],
+        "selected_values": 896,
+        "max_absolute_delta": 1.5852972865104675e-05,
+        "mean_absolute_delta": 3.2921261663432233e-06,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      },
+      {
+        "label": "window-2048-case-1",
+        "seed": 43,
+        "sequence_lengths": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            16
+          ],
+          [
+            1,
+            2048
+          ],
+          [
+            1,
+            8192
+          ],
+          [
+            1,
+            16384
+          ],
+          [
+            1,
+            32768
+          ],
+          [
+            1,
+            65536
+          ],
+          [
+            1,
+            131072
+          ]
+        ],
+        "selected_values": 7168,
+        "max_absolute_delta": 0.0002663135528564453,
+        "mean_absolute_delta": 6.839681191195268e-06,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      },
+      {
+        "label": "window-2048-case-2",
+        "seed": 44,
+        "sequence_lengths": [
+          [
+            17,
+            8192
+          ],
+          [
+            64,
+            16384
+          ],
+          [
+            1,
+            65536
+          ]
+        ],
+        "selected_values": 15232,
+        "max_absolute_delta": 2.1161045879125595e-05,
+        "mean_absolute_delta": 3.298047886346467e-06,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      },
+      {
+        "label": "window-2048-case-3",
+        "seed": 45,
+        "sequence_lengths": [
+          [
+            2048,
+            65536
+          ]
+        ],
+        "selected_values": 7168,
+        "max_absolute_delta": 1.926533877849579e-05,
+        "mean_absolute_delta": 3.2902773909881944e-06,
+        "finite": true,
+        "native_reference_tolerance_passed": true
+      }
+    ],
+    "scope": "One-GPU synthetic FA4 component. No whole-model, metadata-builder or throughput qualification.",
+    "device": "NVIDIA GB200",
+    "capability": [
+      10,
+      0
+    ],
+    "native_fa4_supported": true,
+    "native_fa4_unsupported_reason": null
+  },
+  "gpu_empty_after": true,
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/attention-fa4-component-r1/outputs-ee821d8c9d569b538f331927790b4fdfc41af7769e2daae9957456bdb1751fa3.tar.zst",
+    "archive_sha256": "ee821d8c9d569b538f331927790b4fdfc41af7769e2daae9957456bdb1751fa3",
+    "readback_sha256": "ee821d8c9d569b538f331927790b4fdfc41af7769e2daae9957456bdb1751fa3"
+  }
+}

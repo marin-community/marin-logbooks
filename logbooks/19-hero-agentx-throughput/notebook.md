@@ -1062,3 +1062,13 @@ actual separate native JobInfo groups, private API reachability and fresh
 state-qualified servers before speed. Existing single-group full hours do
 not measure two replicas. The quota allows interactive priority to preempt
 batch work on the verified spare rack; no Hero pretraining placement is allowed.
+
+The prepared native FA4 component passes all eight unchanged FP32 reference
+checks on GB200, including paged/ragged decode up to 262,144 tokens, 2K prefill
+and SWA2048. Maximum pointwise absolute difference is 0.000266314. The
+vendored interface hash is the pinned `827fc6a2...`, with native DSL4.7.1.
+See [the retained component](results/attention-fa4-component-r1.json).
+It qualifies neither the native metadata builder nor full Hero. Next is the
+small actual-attention-geometry state control with native FLASH_ATTN/FA4.
+The separate unentered private API factory check uses this holder's actual
+one-task/four-GPU JobInfo; it must not be presented as DP16/DP32 validation.
