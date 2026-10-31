@@ -34,6 +34,7 @@ def main() -> None:
     parser.add_argument("--replacement-sha256", required=True)
     parser.add_argument("--module", default=MODEL_FILE)
     parser.add_argument("--base-module-sha256", default=BASE_MODEL_SHA256)
+    parser.add_argument("--base-wheel-sha256", default=BASE_WHEEL_SHA256)
     parser.add_argument("--config-source", type=Path)
     parser.add_argument("--config-source-sha256")
     parser.add_argument("--output", type=Path, required=True)
@@ -81,7 +82,7 @@ def main() -> None:
         digest = hashlib.file_digest(stream, "sha256").hexdigest()
     receipt = {
         "kind": "private_python_overlay",
-        "base_wheel_sha256": BASE_WHEEL_SHA256,
+        "base_wheel_sha256": args.base_wheel_sha256,
         "source_commit": args.source_commit,
         "changed_files": {name: hashlib.sha256(content).hexdigest() for name, content in replacements.items()},
         "wheel_path": str(args.output.resolve()),
