@@ -251,7 +251,9 @@ def plot_curves(attempts: list[AttemptReport], paired: list[PairedDifference], o
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--runs", type=Path, required=True, help="JSON [{cell: {...}, run_path: entity/project/id}]")
+    parser.add_argument(
+        "--runs", type=Path, required=True, help="JSON [{cell: {...}, run_path: entity/project/id, execution: {...}}]"
+    )
     parser.add_argument("--lock", type=Path, help="Frozen pilot selection and loss target for confirmation")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--plot", action="store_true")
@@ -267,7 +269,9 @@ def main():
         if lock is not None and cell not in confirmations(lock, phase=cell.phase):
             raise ValueError("Reported run differs from locked settings")
         run = api.run(entry["run_path"])
-        cfg = materialized_config(build_training_step(cell, "report-dev"), "/tmp/ema-gram-report").train_config
+        cfg = materialized_config(
+            build_training_step(cell, "report-dev", **entry["execution"]), "/tmp/ema-gram-report"
+        ).train_config
         validate_run_config(dict(run.config), cfg)
         history = list(run.scan_history())
         (args.output / f"history-{run.id}.json").write_text(json.dumps(history, indent=2) + "\n")

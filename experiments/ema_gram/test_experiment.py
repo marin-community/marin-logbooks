@@ -131,6 +131,17 @@ def test_v4_32_continuation_preserves_training_protocol():
     assert cfg.trainer.profiler.num_steps == 1
     assert pod.resources.device.variant == "v4-32"
     assert pod.resources.replicas == 4
+    logged = json_friendly_val(asdict(cfg))
+    validate_run_config(logged, cfg)
+    # The report must reject selecting another execution mode for the same cell.
+    for changed in (
+        replace(cfg, optimizer=replace(cfg.optimizer, eigh_layout="replicated")),
+        replace(cfg, optimizer=replace(cfg.optimizer, eigh_implementation="jacobi")),
+        replace(cfg, trainer=replace(cfg.trainer, mesh=original.trainer.mesh)),
+        replace(cfg, trainer=replace(cfg.trainer, initialize_from=None)),
+    ):
+        with pytest.raises(ValueError, match="differs from protocol"):
+            validate_run_config(logged, changed)
 
 
 def test_checkpoint_probes_match_each_matrix_and_keep_nonmatrices_fixed():

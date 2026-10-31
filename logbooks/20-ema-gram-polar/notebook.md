@@ -926,6 +926,17 @@ extended to validate the logged mesh, solver and restore settings against
 that attempt's saved execution configuration. Current historical reports
 retain their original source and resolved configurations.
 
+### 2026-10-31 18:03 UTC — Validate reporting execution controls
+
+The reporting manifest now requires an `execution` object copied from the
+attempt's saved resolved configuration. The exporter builds the expected
+recipe with those choices before comparing W&B controls. The v4-32 regression
+accepts matching configurations and rejects differences between expected
+execution settings and the logged mesh, eigensolver layout, solver
+implementation, or restoration path. No comparison field was removed. Historical manifests remain paired with their original
+pinned exporter and source. This closes the reporting preparation item above;
+actual TPU diagnosis and training restoration remain pending.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

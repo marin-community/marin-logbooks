@@ -117,12 +117,19 @@ loss can lose the last partial chunk; online W&B and task logs provide additiona
 evidence. Upload errors fail visibly.
 W&B runs share `marin-community/marin` and group `ema-gram-<version>`.
 
-Create a JSON run manifest containing one selected attempt per cell:
+Create a JSON run manifest containing one selected attempt per cell. Copy the
+execution choices from its saved resolved configuration; for a continuation,
+set `initialize_from` to the exact checkpoint URI used by the run. The exporter
+compares mesh, solver/layout and restoration settings with W&B before labeling
+the history. Historical manifests require their original pinned exporter.
+For example:
 
 ```json
 [{"cell": {"alpha": 0.25, "ridge": 0.0001, "learning_rate": 0.002,
            "seed": 0, "phase": "pilot", "slug": "3e18", "horizon": 100},
-  "run_path": "marin-community/marin/ACTUAL_RUN_ID"}]
+  "run_path": "marin-community/marin/ACTUAL_RUN_ID",
+  "execution": {"tpu_type": "v4-32", "eigh_layout": "matrix",
+                "eigh_implementation": "default", "initialize_from": null}}]
 ```
 
 ```bash
