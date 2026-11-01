@@ -63,7 +63,9 @@ def main() -> None:
     assert primary["status"] == "ready" and primary["physical_gpus"] == 16
     assert primary["started_unix"] > qualification["qualified_unix"]
     assert primary["candidate_wheel"]["wheel_sha256"] == qualification["wheel_sha256"]
-    assert primary["diagnostic_request"] == manifest["diagnostic_request"]
+    server_manifest = json.loads(args.diagnostic.with_name("input-manifest.json").read_text())
+    assert server_manifest == manifest
+    assert primary["requested_parallelism"] == {"tp": 1, "pp": 1, "dp": 16, "ep": 16}
     backend = {
         "job_id": str(info.job_id),
         "dp": 16,
