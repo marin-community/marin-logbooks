@@ -33,6 +33,8 @@ from rigging.filesystem.storage_path import StoragePath
 
 NAMES = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj")
 ROW_SHARDED = {"o_proj", "down_proj"}
+# (device count, process count) for each supported TPU slice.
+EXPECTED_TOPOLOGY = {"v4-8": (4, 1), "v4-32": (16, 4)}
 
 
 def put_global(array, sharding):
@@ -112,7 +114,7 @@ def main():
     parser.add_argument("--output-prefix", required=True)
     parser.add_argument("--samples", type=int, default=3)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--tpu-type", choices=("v4-32",), default="v4-32")
+    parser.add_argument("--tpu-type", choices=tuple(EXPECTED_TOPOLOGY), default="v4-32")
     parser.add_argument("--smoke", action="store_true", help="Small CPU geometry; never performance evidence")
     parser.add_argument("--logging-check", action="store_true", help="Online tracker only; no kernel execution")
     args = parser.parse_args()
@@ -179,7 +181,11 @@ def main():
         return
     devices = jax.devices()
     if not args.smoke:
-        assert len(devices) == 16 and jax.process_count() == 4, (devices, jax.process_count())
+        expected_devices, expected_processes = EXPECTED_TOPOLOGY[args.tpu_type]
+        assert (len(devices), jax.process_count()) == (expected_devices, expected_processes), (
+            devices,
+            jax.process_count(),
+        )
         assert all(d.platform == "tpu" and "v4" in d.device_kind.lower() for d in devices), devices
     mesh = Mesh(np.array(devices), ("data",))
     replicated = NamedSharding(mesh, P())
