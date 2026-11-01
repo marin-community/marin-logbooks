@@ -122,6 +122,11 @@ def main() -> None:
         assert (
             native_local_dp
             or manifest["diagnostic_request"].get("additional_config", {}).get("grug_logical_kv_cache") is True
+            or (
+                manifest["diagnostic_request"].get("attention_backend") == "FLASH_ATTN"
+                and manifest["diagnostic_request"].get("attention_config") == {"flash_attn_version": 4}
+                and manifest["diagnostic_request"].get("additional_config") == {"grug_logical_kv_cache": False}
+            )
         )
         directory = Path(source_reference["path"])
         assert (

@@ -303,6 +303,12 @@ def serve(
             if "additional_config" in diagnostic:
                 server.extra_cli_args.extend(["--additional-config", json.dumps(diagnostic["additional_config"])])
                 record["overrides"]["additional_config"] = diagnostic["additional_config"]
+            if "attention_backend" in diagnostic:
+                server.extra_cli_args.extend(["--attention-backend", diagnostic["attention_backend"]])
+                record["overrides"]["attention_backend"] = diagnostic["attention_backend"]
+            if "attention_config" in diagnostic:
+                server.extra_cli_args.extend(["--attention-config", json.dumps(diagnostic["attention_config"])])
+                record["overrides"]["attention_config"] = diagnostic["attention_config"]
             if diagnostic.get("trace_batches"):
                 assert server.host == "127.0.0.1"
                 server.extra_cli_args.extend(["--worker-extension-cls", "tiny_graph_probe.BatchTraceWorkerExtension"])
