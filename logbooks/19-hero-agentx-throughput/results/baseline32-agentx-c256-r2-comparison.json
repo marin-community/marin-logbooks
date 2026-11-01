@@ -1,0 +1,84 @@
+{
+  "scope": "Completed pinned C256 AgentX hours with identical physical32 and serving settings. Native32 and two independent16 layouts differ. Neighbor activity is unmatched; this pair does not isolate a causal topology gain.",
+  "server_recipe_sha256": "041e466e69a922176a4059af9dedb78fc225bfd7bca5afe147ee5aa4b7b15073",
+  "physical_gpus": 32,
+  "same_physical_gpus": true,
+  "native32": {
+    "layout": [
+      32
+    ],
+    "throughput": {
+      "input": {
+        "tokens_per_second": 105040.89623
+      },
+      "output": {
+        "tokens_per_second": 832.20536
+      },
+      "total": {
+        "tokens_per_second": 105873.10159
+      },
+      "duration_seconds": 3629.48878,
+      "per_gpu": {
+        "total_tput_tps": 3308.53442,
+        "output_tput_tps": 26.00642,
+        "input_tput_tps": 3282.52801
+      }
+    },
+    "scored_requests": 5291,
+    "scored_errors": 0,
+    "output_tokens": 3020480,
+    "warmup_records": 2804,
+    "warmup_error_records": 13,
+    "api_prompt_tokens": 381244754,
+    "api_cache_read_tokens": 193247904.0,
+    "api_cache_read_ratio": 0.5068867229580292,
+    "exported_native_prefix_counter_ratio": 0.48671392622195436,
+    "counter_reset_warning_lines": 1032,
+    "processed_proof": "baseline32-agentx-c256-r2-processed.json",
+    "raw_proof": "baseline32-agentx-c256-r2-retained.json"
+  },
+  "two16": {
+    "layout": [
+      16,
+      16
+    ],
+    "throughput": {
+      "input": {
+        "tokens_per_second": 112727.43861
+      },
+      "output": {
+        "tokens_per_second": 938.54571
+      },
+      "total": {
+        "tokens_per_second": 113665.98432
+      },
+      "duration_seconds": 3628.86216,
+      "per_gpu": {
+        "total_tput_tps": 3552.06201,
+        "output_tput_tps": 29.32955,
+        "input_tput_tps": 3522.73246
+      }
+    },
+    "scored_requests": 5573,
+    "scored_errors": 0,
+    "output_tokens": 3405853,
+    "warmup_records": 2804,
+    "warmup_error_records": 10,
+    "api_prompt_tokens": 409072336,
+    "api_cache_read_tokens": 136164944.0,
+    "api_cache_read_ratio": 0.33286275315376007,
+    "exported_native_prefix_counter_ratio": 0.3200891684804594,
+    "counter_reset_warning_lines": 85,
+    "processed_proof": "replica-agentx-c256-r1-processed.json",
+    "raw_proof": "replica-agentx-c256-r1-retained.json"
+  },
+  "two16_over_native32_output_throughput_percent": 12.778138078803035,
+  "neighbor_observations": {
+    "two16_profiling": "2026-10-31T17:59:40.974679+00:00: 32 owned, zero other-owner GPUs",
+    "native32_profiling_start": "2026-10-31T23:47:29.436209+00:00: 32 owned, 12 other-owner batch GPUs",
+    "native32_after_score": "2026-11-01T00:48:40.638821+00:00: 32 owned, 28 other-owner batch GPUs",
+    "limits": "Sparse observations establish unmatched neighboring activity, not its full time history or causal performance cost."
+  },
+  "decision": "Keep released16 C128 as the working recipe. Qualify the prepared grouped logical-cache full-Hero change on a genuine16 group next. Treat the layout ratio as one measured pair with fabric interference still unisolated.",
+  "counter_limits": "Native exported prefix ratios retain unresolved reset warnings. Per-request API cache-read fractions are independent; neither measures a guaranteed attainable theoretical hit rate."
+}
