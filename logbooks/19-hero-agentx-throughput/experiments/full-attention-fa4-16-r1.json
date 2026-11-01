@@ -765,7 +765,7 @@
     "fixture_state_sha256": "2df84ea910595d3fe9528feb4cc71e87e654618d813260f69a80e3428772457d",
     "scope": "Existing checks do not qualify the full48-layer Hero model or establish throughput."
   },
-  "execution_status": "planned_not_staged_or_executed",
+  "execution_status": "planned_native_CLI_and_original_reference_restoration_checked",
   "reference_input": {
     "qualification_result": "results/full-logical-kv-off16-r2-qualified.json",
     "qualification_sha256": "ed6a5b3f060a6ba3a56d9742b990aa7007b978df05f2b66ad2e7be65644d2864",
@@ -776,6 +776,8 @@
       "archive_bytes": 989055
     },
     "restore_root": "/iris/outputs/full-logical-kv-off16-r2",
-    "scope": "Restore original retained bytes; verify checksum, manifest identity, stopped diagnostic status and all original outputs before cross-source comparisons. Never run requests against the restored reference."
+    "scope": "Restore original retained archive into a temporary directory. Copy its diagnostic subtree to restore_root and keep the separate entrypoint subtree. Verify checksum, manifest identity, stopped diagnostic status and all original outputs before cross-source comparisons. Never run requests against the restored reference.",
+    "archive_model_output_subdir": "diagnostic",
+    "archive_entrypoint_subdir": "entrypoint"
   }
 }
