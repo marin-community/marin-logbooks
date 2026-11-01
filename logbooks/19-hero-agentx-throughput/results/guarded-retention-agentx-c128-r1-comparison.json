@@ -1,0 +1,1664 @@
+{
+  "status": "complete_valid_full_hours_default_checkpoint_policy_selected",
+  "selected_policy_interval_tokens": 0,
+  "policies": {
+    "0": {
+      "label": "logical-kv-retention0-16-agentx-c128-r1",
+      "prefix_cache_retention_interval_tokens": 0,
+      "validation": {
+        "submission_valid": true,
+        "profiling_requests": 4545,
+        "profiling_errors": 0,
+        "profiling_error_ratio": 0.0,
+        "coverage": {
+          "phase_name": "profiling",
+          "expected_duration_seconds": 3600.0,
+          "required_ratio": 0.95,
+          "ttft_ratio": 0.9972736512,
+          "inter_token_latency_ratio": 1.0
+        },
+        "profile_start": "2026-11-01T08:35:47.774328",
+        "profile_end": "2026-11-01T09:36:27.776784"
+      },
+      "output_tokens_per_second": 811.36246,
+      "output_tokens_per_second_per_gpu": 50.71015,
+      "scored_output_tokens": 2943940,
+      "request_lifetime_denominator_seconds": 3628.3907,
+      "request_record_counts": {
+        "profiling": {
+          "records": 4545
+        },
+        "warmup": {
+          "records": 1402,
+          "errors": 4
+        }
+      },
+      "warmup_phase": {
+        "start_utc": "2026-11-01T08:24:11.924Z",
+        "end_utc": "2026-11-01T08:35:47.775Z",
+        "duration_seconds": 695.851,
+        "native_count_driven_target": 1406,
+        "valid_records": 1402,
+        "invalid_empty_content_records": 4
+      },
+      "api_prompt_tokens": 303541716,
+      "api_cache_read_tokens": 221818368.0,
+      "api_cache_read_fraction": 0.7307673255691814,
+      "exported_prefix_counter_ratio_diagnostic": 0.7264132879730582,
+      "counter_reset_warning_lines": 27,
+      "request_metrics": {
+        "qps": {
+          "window_seconds": 1,
+          "samples": 3625,
+          "mean": 1.25352,
+          "p50": 1,
+          "p75": 2,
+          "p90": 3,
+          "p95": 3,
+          "std": 1.17256
+        },
+        "latency": {
+          "ttft": {
+            "mean": 4.82467,
+            "p50": 1.47822,
+            "p75": 4.44266,
+            "p90": 13.55485,
+            "p95": 20.92868,
+            "std": 8.2283
+          },
+          "e2el": {
+            "mean": 147.13156,
+            "p50": 77.6164,
+            "p75": 169.61385,
+            "p90": 328.11509,
+            "p95": 497.87068,
+            "std": 214.14615
+          },
+          "itl": {
+            "mean": 0.21878,
+            "p50": 0.21758,
+            "p75": 0.23045,
+            "p90": 0.24217,
+            "p95": 0.25271,
+            "std": 0.01885
+          },
+          "tpot": {
+            "mean": 0.21878,
+            "p50": 0.21758,
+            "p75": 0.23045,
+            "p90": 0.24217,
+            "p95": 0.25271,
+            "std": 0.01885
+          },
+          "intvty": {
+            "mean": 4.57071,
+            "p50": 4.596,
+            "p75": 4.33937,
+            "p90": 4.12927,
+            "p95": 3.95704,
+            "std": 0.38759
+          },
+          "e2e_norm_intvty": {
+            "mean": 3.99147,
+            "p50": 4.39824,
+            "p75": 4.09053,
+            "p90": 3.60983,
+            "p95": 3.07286,
+            "std": 0.64941
+          },
+          "full_response_itl": {
+            "mean": 0.2188,
+            "p50": 0.21759,
+            "p75": 0.23045,
+            "p90": 0.24218,
+            "p95": 0.25272,
+            "std": 0.01885
+          },
+          "full_response_intvty": {
+            "mean": 4.57048,
+            "p50": 4.5958,
+            "p75": 4.33934,
+            "p90": 4.12923,
+            "p95": 3.95699,
+            "std": 0.38729
+          }
+        },
+        "tokens": {
+          "input": {
+            "mean": 66785.85611,
+            "p50": 52603,
+            "p75": 90504,
+            "p90": 134848.8,
+            "p95": 181650,
+            "std": 53201.23077
+          },
+          "output_actual": {
+            "mean": 647.73157,
+            "p50": 335,
+            "p75": 755,
+            "p90": 1476,
+            "p95": 2215.8,
+            "std": 957.78142
+          },
+          "output_expected": {}
+        },
+        "throughput": {
+          "input": {
+            "tokens_per_second": 83657.39562
+          },
+          "output": {
+            "tokens_per_second": 811.36246
+          },
+          "total": {
+            "tokens_per_second": 84468.75808
+          },
+          "duration_seconds": 3628.3907,
+          "per_gpu": {
+            "total_tput_tps": 5279.29738,
+            "output_tput_tps": 50.71015,
+            "input_tput_tps": 5228.58723
+          }
+        },
+        "cache": {
+          "theoretical_cache_hit_rate": 0.93938
+        }
+      },
+      "runtime_capacity": {
+        "tokens_per_rank": 2095445,
+        "rank_capacity_log_lines": 16,
+        "available_cache_gib": 82.3,
+        "memory_budget_log_lines": 4,
+        "memory_budget_scope": "One worker log per host, four hosts; not sixteen independent logged budget measurements."
+      },
+      "actual_parallelism": {
+        "tp": 1,
+        "pp": 1,
+        "dp": 16,
+        "ep": 16,
+        "native_tasks": 4,
+        "physical_gpus": 16
+      },
+      "serving_source_commit": "76c4802e66705b7c9390207366b1acdea8964f4a",
+      "native_source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+      "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+      "manifest_sha256": "ecb6a83d0ecfe6a491f4eb4f3704dfc6e6b58181dcbe05bfaf5c41a51327f24a",
+      "raw_archive_bytes": 60301003,
+      "entrypoint_archive_bytes": 173845,
+      "raw_retention": [
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/0:0",
+          "attempt_uid": "5ab701d1b2213d60",
+          "host": 0,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-0/5ab701d1b2213d60/outputs-cc8e819a860da24e2bb936177708460a94748c56d43c24b5271bc0bf70bd3b11.tar.zst",
+          "archive_sha256": "cc8e819a860da24e2bb936177708460a94748c56d43c24b5271bc0bf70bd3b11",
+          "readback_sha256": "cc8e819a860da24e2bb936177708460a94748c56d43c24b5271bc0bf70bd3b11",
+          "archive_bytes": 54854303,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/1:0",
+          "attempt_uid": "f965e0ea5c16349c",
+          "host": 1,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-1/f965e0ea5c16349c/outputs-583ccc44eba433892d3c1dbe4d1f7c282c9be6cccd20a7ab4072969530637179.tar.zst",
+          "archive_sha256": "583ccc44eba433892d3c1dbe4d1f7c282c9be6cccd20a7ab4072969530637179",
+          "readback_sha256": "583ccc44eba433892d3c1dbe4d1f7c282c9be6cccd20a7ab4072969530637179",
+          "archive_bytes": 1943246,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/2:0",
+          "attempt_uid": "7551bc07693419b6",
+          "host": 2,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-2/7551bc07693419b6/outputs-96356000a7a29e959dee6c07e97487c9e40e7082b816acf0bf0f06eb9f94485a.tar.zst",
+          "archive_sha256": "96356000a7a29e959dee6c07e97487c9e40e7082b816acf0bf0f06eb9f94485a",
+          "readback_sha256": "96356000a7a29e959dee6c07e97487c9e40e7082b816acf0bf0f06eb9f94485a",
+          "archive_bytes": 1709305,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/3:0",
+          "attempt_uid": "1df6713fa4dd091a",
+          "host": 3,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-3/1df6713fa4dd091a/outputs-ff8ade857200adf26b2c92a11e396989c3e504e63a717b3fbf076552725584ab.tar.zst",
+          "archive_sha256": "ff8ade857200adf26b2c92a11e396989c3e504e63a717b3fbf076552725584ab",
+          "readback_sha256": "ff8ade857200adf26b2c92a11e396989c3e504e63a717b3fbf076552725584ab",
+          "archive_bytes": 1794149,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        }
+      ],
+      "entrypoint_retention": [
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-0/5ab701d1b2213d60/entrypoint-5c25ae6bb66b6a090aac91fbac290d20086e4da19e1acf55a203bf4eacd5a91f.tar.zst",
+          "archive_sha256": "5c25ae6bb66b6a090aac91fbac290d20086e4da19e1acf55a203bf4eacd5a91f",
+          "readback_sha256": "5c25ae6bb66b6a090aac91fbac290d20086e4da19e1acf55a203bf4eacd5a91f",
+          "archive_bytes": 141975
+        },
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-1/f965e0ea5c16349c/entrypoint-f177bf6f22044421516b1a3a07639d07cceb40acbd41817b431135c9c64bccad.tar.zst",
+          "archive_sha256": "f177bf6f22044421516b1a3a07639d07cceb40acbd41817b431135c9c64bccad",
+          "readback_sha256": "f177bf6f22044421516b1a3a07639d07cceb40acbd41817b431135c9c64bccad",
+          "archive_bytes": 10574
+        },
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-2/7551bc07693419b6/entrypoint-4429ba956020430f2a0a52bd9f068731a63154dc338d43bae26eb4e728cfd6ad.tar.zst",
+          "archive_sha256": "4429ba956020430f2a0a52bd9f068731a63154dc338d43bae26eb4e728cfd6ad",
+          "readback_sha256": "4429ba956020430f2a0a52bd9f068731a63154dc338d43bae26eb4e728cfd6ad",
+          "archive_bytes": 10535
+        },
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-3/1df6713fa4dd091a/entrypoint-e82fa42882a37d46c17fd454d99b9a38b1740a4f55ccb4c763119758bc017d34.tar.zst",
+          "archive_sha256": "e82fa42882a37d46c17fd454d99b9a38b1740a4f55ccb4c763119758bc017d34",
+          "readback_sha256": "e82fa42882a37d46c17fd454d99b9a38b1740a4f55ccb4c763119758bc017d34",
+          "archive_bytes": 10761
+        }
+      ],
+      "processed_retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1-processed/outputs-969cc5ee9ac3c62e5f694c4a12f93e0b8a0902be6930dc40e864ab49eb9125b9.tar.zst",
+        "archive_sha256": "969cc5ee9ac3c62e5f694c4a12f93e0b8a0902be6930dc40e864ab49eb9125b9",
+        "readback_sha256": "969cc5ee9ac3c62e5f694c4a12f93e0b8a0902be6930dc40e864ab49eb9125b9",
+        "archive_bytes": 84509
+      },
+      "native_endpoints_retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1-native-endpoints/outputs-debcf97032001a620c74a35183252ce4b446c4f741e71ca90fc54c40513b5c2a.tar.zst",
+        "archive_sha256": "debcf97032001a620c74a35183252ce4b446c4f741e71ca90fc54c40513b5c2a",
+        "readback_sha256": "debcf97032001a620c74a35183252ce4b446c4f741e71ca90fc54c40513b5c2a"
+      },
+      "holder_release": {
+        "checked_unix": 1793526245.208527,
+        "job_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a",
+        "native_state": "killed",
+        "finished_at": "Timestamp(2026-11-01T09:43:29.853000+00:00)",
+        "tasks": [
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/0",
+            "attempt_uid": "5ab701d1b2213d60",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T08:12:19.194000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:43:29.853000+00:00)"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/1",
+            "attempt_uid": "f965e0ea5c16349c",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T08:12:19.194000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:43:29.853000+00:00)"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/2",
+            "attempt_uid": "7551bc07693419b6",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T08:12:19.194000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:43:29.853000+00:00)"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/3",
+            "attempt_uid": "1df6713fa4dd091a",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T08:12:19.194000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:43:29.853000+00:00)"
+          }
+        ],
+        "all4_provider_pods_gone": true,
+        "all4_raw_and_entrypoint_readbacks_passed": true,
+        "raw_retention": [
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/0:0",
+            "attempt_uid": "5ab701d1b2213d60",
+            "host": 0,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-0/5ab701d1b2213d60/outputs-cc8e819a860da24e2bb936177708460a94748c56d43c24b5271bc0bf70bd3b11.tar.zst",
+            "archive_sha256": "cc8e819a860da24e2bb936177708460a94748c56d43c24b5271bc0bf70bd3b11",
+            "readback_sha256": "cc8e819a860da24e2bb936177708460a94748c56d43c24b5271bc0bf70bd3b11",
+            "archive_bytes": 54854303,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/1:0",
+            "attempt_uid": "f965e0ea5c16349c",
+            "host": 1,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-1/f965e0ea5c16349c/outputs-583ccc44eba433892d3c1dbe4d1f7c282c9be6cccd20a7ab4072969530637179.tar.zst",
+            "archive_sha256": "583ccc44eba433892d3c1dbe4d1f7c282c9be6cccd20a7ab4072969530637179",
+            "readback_sha256": "583ccc44eba433892d3c1dbe4d1f7c282c9be6cccd20a7ab4072969530637179",
+            "archive_bytes": 1943246,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/2:0",
+            "attempt_uid": "7551bc07693419b6",
+            "host": 2,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-2/7551bc07693419b6/outputs-96356000a7a29e959dee6c07e97487c9e40e7082b816acf0bf0f06eb9f94485a.tar.zst",
+            "archive_sha256": "96356000a7a29e959dee6c07e97487c9e40e7082b816acf0bf0f06eb9f94485a",
+            "readback_sha256": "96356000a7a29e959dee6c07e97487c9e40e7082b816acf0bf0f06eb9f94485a",
+            "archive_bytes": 1709305,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/3:0",
+            "attempt_uid": "1df6713fa4dd091a",
+            "host": 3,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-3/1df6713fa4dd091a/outputs-ff8ade857200adf26b2c92a11e396989c3e504e63a717b3fbf076552725584ab.tar.zst",
+            "archive_sha256": "ff8ade857200adf26b2c92a11e396989c3e504e63a717b3fbf076552725584ab",
+            "readback_sha256": "ff8ade857200adf26b2c92a11e396989c3e504e63a717b3fbf076552725584ab",
+            "archive_bytes": 1794149,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          }
+        ],
+        "entrypoint_retention": [
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-0/5ab701d1b2213d60/entrypoint-5c25ae6bb66b6a090aac91fbac290d20086e4da19e1acf55a203bf4eacd5a91f.tar.zst",
+            "archive_sha256": "5c25ae6bb66b6a090aac91fbac290d20086e4da19e1acf55a203bf4eacd5a91f",
+            "readback_sha256": "5c25ae6bb66b6a090aac91fbac290d20086e4da19e1acf55a203bf4eacd5a91f",
+            "archive_bytes": 141975
+          },
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-1/f965e0ea5c16349c/entrypoint-f177bf6f22044421516b1a3a07639d07cceb40acbd41817b431135c9c64bccad.tar.zst",
+            "archive_sha256": "f177bf6f22044421516b1a3a07639d07cceb40acbd41817b431135c9c64bccad",
+            "readback_sha256": "f177bf6f22044421516b1a3a07639d07cceb40acbd41817b431135c9c64bccad",
+            "archive_bytes": 10574
+          },
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-2/7551bc07693419b6/entrypoint-4429ba956020430f2a0a52bd9f068731a63154dc338d43bae26eb4e728cfd6ad.tar.zst",
+            "archive_sha256": "4429ba956020430f2a0a52bd9f068731a63154dc338d43bae26eb4e728cfd6ad",
+            "readback_sha256": "4429ba956020430f2a0a52bd9f068731a63154dc338d43bae26eb4e728cfd6ad",
+            "archive_bytes": 10535
+          },
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention0-16-agentx-c128-r1/host-3/1df6713fa4dd091a/entrypoint-e82fa42882a37d46c17fd454d99b9a38b1740a4f55ccb4c763119758bc017d34.tar.zst",
+            "archive_sha256": "e82fa42882a37d46c17fd454d99b9a38b1740a4f55ccb4c763119758bc017d34",
+            "readback_sha256": "e82fa42882a37d46c17fd454d99b9a38b1740a4f55ccb4c763119758bc017d34",
+            "archive_bytes": 10761
+          }
+        ],
+        "scope": "Released actual native four-task holder only after all child application statuses succeeded, GPUs emptied and raw readbacks completed. The other paired holder is accounted separately."
+      },
+      "cpu": {
+        "scope": "Same completed sixty-second interval from the existing five-second native CPU observer; no new sampler, CUDA call, affinity change or process mutation. Raw lifetime-keyed process/cgroup/host snapshots retained locally with this result. Container headroom does not exclude serial engine/API work.",
+        "checked_unix": 1793523960.4702344,
+        "tasks": [
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/0:0",
+            "attempt_uid": "5ab701d1b2213d60",
+            "node": "s4lqxs64",
+            "interval_seconds": 60.150057315826416,
+            "start_unix": 1793523895.8018463,
+            "end_unix": 1793523955.9519036,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 9.672481556337925,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.0699661504455471,
+            "busiest_processes": [
+              {
+                "pid": 3315,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0009965524032485,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3317,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0008303015226008,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3321,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0008303015225932,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3319,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0006640506419455,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 8839,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9772226764700732,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 8838,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9732326553344386,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 8836,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.973232655334431,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 8837,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9694088850794441,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3327,
+                "name": "VLLM::APIServer",
+                "cpu_cores": 0.32917674369015737,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3323,
+                "name": "VLLM::APIServer",
+                "cpu_cores": 0.3177054329251965,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 13086,
+                "name": "aiperf server_m",
+                "cpu_cores": 0.286117765601394,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3334,
+                "name": "VLLM::APIServer",
+                "cpu_cores": 0.27165393898470525,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1987548\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=976320",
+            "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=2001212\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=988624"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/1:0",
+            "attempt_uid": "f965e0ea5c16349c",
+            "node": "s9rrxs64",
+            "interval_seconds": 60.05076050758362,
+            "start_unix": 1793523897.2063105,
+            "end_unix": 1793523957.257071,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 7.853629463034712,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.060299464992936036,
+            "busiest_processes": [
+              {
+                "pid": 2693,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.999820809803369,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2695,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.999654284018921,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2691,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9979890261744723,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2689,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9978225003900244,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3359,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9805038188078216,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3357,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9668487044833968,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3358,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9565241058478542,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3356,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9535266417278602,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2190,
+                "name": "python",
+                "cpu_cores": 0.00016652578444423103,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1443,
+                "name": "uv",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1446,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=3779759\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=993157",
+            "cpu_pressure_end": "some avg10=0.00 avg60=0.01 avg300=0.00 total=3848205\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=1005125"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/2:0",
+            "attempt_uid": "7551bc07693419b6",
+            "node": "s9vrxs64",
+            "interval_seconds": 60.04866909980774,
+            "start_unix": 1793523897.1331253,
+            "end_unix": 1793523957.1817944,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 7.808939232618252,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.05805459616736153,
+            "busiest_processes": [
+              {
+                "pid": 2688,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9996891005231688,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2686,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9991895057702803,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2684,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9945266214100232,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2682,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9940270266571348,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3352,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9607207097981254,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3349,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9575566096965187,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3350,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9525606621676642,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3351,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9495630936503561,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1445,
+                "name": "uv",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1448,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2127,
+                "name": "uv",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.03 avg300=0.00 total=4349784\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=966698",
+            "cpu_pressure_end": "some avg10=0.12 avg60=0.04 avg300=0.00 total=4486359\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=978759"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-retention0-16-c128-r1-01a1846a/3:0",
+            "attempt_uid": "1df6713fa4dd091a",
+            "node": "sbnwxs64",
+            "interval_seconds": 60.04756426811218,
+            "start_unix": 1793523896.6483676,
+            "end_unix": 1793523956.695932,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 7.836825135801541,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.058116322962379674,
+            "busiest_processes": [
+              {
+                "pid": 2687,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0005401673204082,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2685,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0000405633753457,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2691,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9978756129467136,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2689,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9975425436500103,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3353,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9655678911657349,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3352,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9620706635502668,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3355,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.960072247769994,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 3354,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9525781885940029,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2185,
+                "name": "python",
+                "cpu_cores": 0.00016653464835562014,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1449,
+                "name": "python",
+                "cpu_cores": 0.00016653464835559054,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1446,
+                "name": "uv",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1444102\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=978590",
+            "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=1516004\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=990357"
+          }
+        ]
+      },
+      "client_cpu": {
+        "scope": "Twelve consecutive completed intervals from the existing native client-load observer during scoring. No process mutation or new sampler. Raw snapshots retained.",
+        "start_unix": 1793523895.9803202,
+        "end_unix": 1793523956.274023,
+        "duration_seconds": 60.29410760849714,
+        "client_cpu_cores_weighted_mean": 0.4108195805937949,
+        "client_cpu_cores_max_interval": 0.44983352959021006,
+        "client_busiest_thread_cores_max_interval": 0.3105045602481057,
+        "task_cpu_max": "max 100000"
+      },
+      "qualification_input": {
+        "path": "results/guarded-logical-cache-policies-r1-qualified.json",
+        "sha256": "f684f2b11c7cf8aaaf48bea2885df5ad02c53195531e25a9fcf8f98f7e2ac1db",
+        "mode_manifest_sha256": "b8c313b7989b1f33aa82732bf3f7c4a19cbb19ec82c606c45a32acbeb4320ecc",
+        "scope": "Both guarded policies pass the full native16 original state/source gates, three decode cases and four affected native layer cases; all raw readbacks complete before fresh AgentX starts."
+      }
+    },
+    "16k": {
+      "label": "logical-kv-retention16k-16-agentx-c128-r1",
+      "prefix_cache_retention_interval_tokens": 16384,
+      "validation": {
+        "submission_valid": true,
+        "profiling_requests": 4307,
+        "profiling_errors": 0,
+        "profiling_error_ratio": 0.0,
+        "coverage": {
+          "phase_name": "profiling",
+          "expected_duration_seconds": 3600.0,
+          "required_ratio": 0.95,
+          "ttft_ratio": 1.0,
+          "inter_token_latency_ratio": 1.0
+        },
+        "profile_start": "2026-11-01T08:45:17.830542",
+        "profile_end": "2026-11-01T09:45:57.831974"
+      },
+      "output_tokens_per_second": 747.62432,
+      "output_tokens_per_second_per_gpu": 46.72652,
+      "scored_output_tokens": 2713723,
+      "request_lifetime_denominator_seconds": 3629.79498,
+      "request_record_counts": {
+        "warmup": {
+          "records": 1398,
+          "errors": 8
+        },
+        "profiling": {
+          "records": 4307
+        }
+      },
+      "warmup_phase": {
+        "start_utc": "2026-11-01T08:22:18.317Z",
+        "end_utc": "2026-11-01T08:45:17.831Z",
+        "duration_seconds": 1379.514,
+        "native_count_driven_target": 1406,
+        "valid_records": 1398,
+        "invalid_empty_content_records": 8
+      },
+      "api_prompt_tokens": 283701252,
+      "api_cache_read_tokens": 179867808.0,
+      "api_cache_read_fraction": 0.6340042799670126,
+      "exported_prefix_counter_ratio_diagnostic": 0.6254478011202913,
+      "counter_reset_warning_lines": 22,
+      "request_metrics": {
+        "qps": {
+          "window_seconds": 1,
+          "samples": 3627,
+          "mean": 1.18721,
+          "p50": 1,
+          "p75": 2,
+          "p90": 3,
+          "p95": 3,
+          "std": 1.13251
+        },
+        "latency": {
+          "ttft": {
+            "mean": 8.31729,
+            "p50": 1.80888,
+            "p75": 8.40849,
+            "p90": 25.45653,
+            "p95": 38.55476,
+            "std": 14.39035
+          },
+          "e2el": {
+            "mean": 157.98263,
+            "p50": 87.14283,
+            "p75": 182.34192,
+            "p90": 350.0714,
+            "p95": 516.14633,
+            "std": 223.46362
+          },
+          "itl": {
+            "mean": 0.23655,
+            "p50": 0.23877,
+            "p75": 0.24803,
+            "p90": 0.25839,
+            "p95": 0.26659,
+            "std": 0.01963
+          },
+          "tpot": {
+            "mean": 0.23655,
+            "p50": 0.23877,
+            "p75": 0.24803,
+            "p90": 0.25839,
+            "p95": 0.26659,
+            "std": 0.01963
+          },
+          "intvty": {
+            "mean": 4.22747,
+            "p50": 4.18814,
+            "p75": 4.03174,
+            "p90": 3.87016,
+            "p95": 3.7511,
+            "std": 0.36866
+          },
+          "e2e_norm_intvty": {
+            "mean": 3.48549,
+            "p50": 4.02466,
+            "p75": 3.69979,
+            "p90": 2.9791,
+            "p95": 2.33453,
+            "std": 0.73442
+          },
+          "full_response_itl": {
+            "mean": 0.23656,
+            "p50": 0.23877,
+            "p75": 0.24805,
+            "p90": 0.25839,
+            "p95": 0.26659,
+            "std": 0.01962
+          },
+          "full_response_intvty": {
+            "mean": 4.22725,
+            "p50": 4.18811,
+            "p75": 4.03138,
+            "p90": 3.8701,
+            "p95": 3.75105,
+            "std": 0.36838
+          }
+        },
+        "tokens": {
+          "input": {
+            "mean": 65869.80543,
+            "p50": 51659,
+            "p75": 89125,
+            "p90": 134393.6,
+            "p95": 179434.1,
+            "std": 52805.04557
+          },
+          "output_actual": {
+            "mean": 630.07267,
+            "p50": 331,
+            "p75": 736,
+            "p90": 1444.6,
+            "p95": 2132.8,
+            "std": 923.75197
+          },
+          "output_expected": {}
+        },
+        "throughput": {
+          "input": {
+            "tokens_per_second": 78159.02935
+          },
+          "output": {
+            "tokens_per_second": 747.62432
+          },
+          "total": {
+            "tokens_per_second": 78906.65367
+          },
+          "duration_seconds": 3629.79498,
+          "per_gpu": {
+            "total_tput_tps": 4931.66585,
+            "output_tput_tps": 46.72652,
+            "input_tput_tps": 4884.93933
+          }
+        },
+        "cache": {
+          "theoretical_cache_hit_rate": 0.93811
+        }
+      },
+      "runtime_capacity": {
+        "tokens_per_rank": 2095445,
+        "rank_capacity_log_lines": 16,
+        "available_cache_gib": 82.3,
+        "memory_budget_log_lines": 4,
+        "memory_budget_scope": "One worker log per host, four hosts; not sixteen independent logged budget measurements."
+      },
+      "actual_parallelism": {
+        "tp": 1,
+        "pp": 1,
+        "dp": 16,
+        "ep": 16,
+        "native_tasks": 4,
+        "physical_gpus": 16
+      },
+      "serving_source_commit": "76c4802e66705b7c9390207366b1acdea8964f4a",
+      "native_source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+      "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+      "manifest_sha256": "8ae2d7bd8464293b00d43282f2bbb35210b5f84c7f6f926bc09e82391f8ea11c",
+      "raw_archive_bytes": 59727211,
+      "entrypoint_archive_bytes": 165806,
+      "raw_retention": [
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0:0",
+          "attempt_uid": "df931a2347776cdb",
+          "host": 0,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-0/df931a2347776cdb/outputs-4123aa793d0956abcdc0abfb375ba81f5453ba03776fc44e4c63169ff603f1d1.tar.zst",
+          "archive_sha256": "4123aa793d0956abcdc0abfb375ba81f5453ba03776fc44e4c63169ff603f1d1",
+          "readback_sha256": "4123aa793d0956abcdc0abfb375ba81f5453ba03776fc44e4c63169ff603f1d1",
+          "archive_bytes": 53538290,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1:0",
+          "attempt_uid": "5b2367a687b80b20",
+          "host": 1,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-1/5b2367a687b80b20/outputs-93128511b2fd121dc37b761e62637904d8b69fd18875cb0353641542cae76e99.tar.zst",
+          "archive_sha256": "93128511b2fd121dc37b761e62637904d8b69fd18875cb0353641542cae76e99",
+          "readback_sha256": "93128511b2fd121dc37b761e62637904d8b69fd18875cb0353641542cae76e99",
+          "archive_bytes": 2066539,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2:0",
+          "attempt_uid": "99c771d5ed8b7689",
+          "host": 2,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-2/99c771d5ed8b7689/outputs-42addd18859ae468d0acb99d0535ef602b625a594b4bb1ed63e892381badae31.tar.zst",
+          "archive_sha256": "42addd18859ae468d0acb99d0535ef602b625a594b4bb1ed63e892381badae31",
+          "readback_sha256": "42addd18859ae468d0acb99d0535ef602b625a594b4bb1ed63e892381badae31",
+          "archive_bytes": 1969282,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        },
+        {
+          "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3:0",
+          "attempt_uid": "74946aaf6fa25b64",
+          "host": 3,
+          "application_status": "succeeded",
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-3/74946aaf6fa25b64/outputs-02cec1c06812f6268494f039925e3b8aa235b9403e26eb14d71c48559b02ad42.tar.zst",
+          "archive_sha256": "02cec1c06812f6268494f039925e3b8aa235b9403e26eb14d71c48559b02ad42",
+          "readback_sha256": "02cec1c06812f6268494f039925e3b8aa235b9403e26eb14d71c48559b02ad42",
+          "archive_bytes": 2153100,
+          "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+        }
+      ],
+      "entrypoint_retention": [
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-0/df931a2347776cdb/entrypoint-0a7dd1a8de17fe673d1311769814bf9dd21aa6fe3797803035e582d0529a9360.tar.zst",
+          "archive_sha256": "0a7dd1a8de17fe673d1311769814bf9dd21aa6fe3797803035e582d0529a9360",
+          "readback_sha256": "0a7dd1a8de17fe673d1311769814bf9dd21aa6fe3797803035e582d0529a9360",
+          "archive_bytes": 139006
+        },
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-1/5b2367a687b80b20/entrypoint-9726a118ddf36b641e03ef87fc4c140c19280b5de00a7e027cae1d51c9d4bb6d.tar.zst",
+          "archive_sha256": "9726a118ddf36b641e03ef87fc4c140c19280b5de00a7e027cae1d51c9d4bb6d",
+          "readback_sha256": "9726a118ddf36b641e03ef87fc4c140c19280b5de00a7e027cae1d51c9d4bb6d",
+          "archive_bytes": 8854
+        },
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-2/99c771d5ed8b7689/entrypoint-406cbaf34cf5afaaaad4f1425183443d0422ffd75751d73faf781b0727dec30f.tar.zst",
+          "archive_sha256": "406cbaf34cf5afaaaad4f1425183443d0422ffd75751d73faf781b0727dec30f",
+          "readback_sha256": "406cbaf34cf5afaaaad4f1425183443d0422ffd75751d73faf781b0727dec30f",
+          "archive_bytes": 9031
+        },
+        {
+          "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-3/74946aaf6fa25b64/entrypoint-03f260455104732a06959e212eb4c6c0fd63ccf5c14aa93d5f57240b277120f6.tar.zst",
+          "archive_sha256": "03f260455104732a06959e212eb4c6c0fd63ccf5c14aa93d5f57240b277120f6",
+          "readback_sha256": "03f260455104732a06959e212eb4c6c0fd63ccf5c14aa93d5f57240b277120f6",
+          "archive_bytes": 8915
+        }
+      ],
+      "processed_retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1-processed/outputs-431a4eb6d345bb25733ef852eaf6f6a26cf171f5a4c68ad8d1191f3c0f2243ec.tar.zst",
+        "archive_sha256": "431a4eb6d345bb25733ef852eaf6f6a26cf171f5a4c68ad8d1191f3c0f2243ec",
+        "readback_sha256": "431a4eb6d345bb25733ef852eaf6f6a26cf171f5a4c68ad8d1191f3c0f2243ec",
+        "archive_bytes": 85023
+      },
+      "native_endpoints_retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1-native-endpoints/outputs-7fdad9333a30db5a2fc1f425b9ea6f5ea98fa641d3eb1681e1c5b28fbe9a2141.tar.zst",
+        "archive_sha256": "7fdad9333a30db5a2fc1f425b9ea6f5ea98fa641d3eb1681e1c5b28fbe9a2141",
+        "readback_sha256": "7fdad9333a30db5a2fc1f425b9ea6f5ea98fa641d3eb1681e1c5b28fbe9a2141"
+      },
+      "holder_release": {
+        "checked_unix": 1793526853.9184108,
+        "job_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a",
+        "native_state": "killed",
+        "finished_at": "Timestamp(2026-11-01T09:53:07.308000+00:00)",
+        "tasks": [
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0",
+            "attempt_uid": "df931a2347776cdb",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T03:07:17.643000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:53:07.308000+00:00)"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1",
+            "attempt_uid": "5b2367a687b80b20",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T03:07:17.643000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:53:07.308000+00:00)"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2",
+            "attempt_uid": "99c771d5ed8b7689",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T03:07:17.643000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:53:07.308000+00:00)"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3",
+            "attempt_uid": "74946aaf6fa25b64",
+            "state": "killed",
+            "started_at": "Timestamp(2026-11-01T03:07:17.643000+00:00)",
+            "finished_at": "Timestamp(2026-11-01T09:53:07.308000+00:00)"
+          }
+        ],
+        "all4_provider_pods_gone": true,
+        "all4_raw_and_entrypoint_readbacks_passed": true,
+        "raw_retention": [
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0:0",
+            "attempt_uid": "df931a2347776cdb",
+            "host": 0,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-0/df931a2347776cdb/outputs-4123aa793d0956abcdc0abfb375ba81f5453ba03776fc44e4c63169ff603f1d1.tar.zst",
+            "archive_sha256": "4123aa793d0956abcdc0abfb375ba81f5453ba03776fc44e4c63169ff603f1d1",
+            "readback_sha256": "4123aa793d0956abcdc0abfb375ba81f5453ba03776fc44e4c63169ff603f1d1",
+            "archive_bytes": 53538290,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1:0",
+            "attempt_uid": "5b2367a687b80b20",
+            "host": 1,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-1/5b2367a687b80b20/outputs-93128511b2fd121dc37b761e62637904d8b69fd18875cb0353641542cae76e99.tar.zst",
+            "archive_sha256": "93128511b2fd121dc37b761e62637904d8b69fd18875cb0353641542cae76e99",
+            "readback_sha256": "93128511b2fd121dc37b761e62637904d8b69fd18875cb0353641542cae76e99",
+            "archive_bytes": 2066539,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2:0",
+            "attempt_uid": "99c771d5ed8b7689",
+            "host": 2,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-2/99c771d5ed8b7689/outputs-42addd18859ae468d0acb99d0535ef602b625a594b4bb1ed63e892381badae31.tar.zst",
+            "archive_sha256": "42addd18859ae468d0acb99d0535ef602b625a594b4bb1ed63e892381badae31",
+            "readback_sha256": "42addd18859ae468d0acb99d0535ef602b625a594b4bb1ed63e892381badae31",
+            "archive_bytes": 1969282,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3:0",
+            "attempt_uid": "74946aaf6fa25b64",
+            "host": 3,
+            "application_status": "succeeded",
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-3/74946aaf6fa25b64/outputs-02cec1c06812f6268494f039925e3b8aa235b9403e26eb14d71c48559b02ad42.tar.zst",
+            "archive_sha256": "02cec1c06812f6268494f039925e3b8aa235b9403e26eb14d71c48559b02ad42",
+            "readback_sha256": "02cec1c06812f6268494f039925e3b8aa235b9403e26eb14d71c48559b02ad42",
+            "archive_bytes": 2153100,
+            "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+          }
+        ],
+        "entrypoint_retention": [
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-0/df931a2347776cdb/entrypoint-0a7dd1a8de17fe673d1311769814bf9dd21aa6fe3797803035e582d0529a9360.tar.zst",
+            "archive_sha256": "0a7dd1a8de17fe673d1311769814bf9dd21aa6fe3797803035e582d0529a9360",
+            "readback_sha256": "0a7dd1a8de17fe673d1311769814bf9dd21aa6fe3797803035e582d0529a9360",
+            "archive_bytes": 139006
+          },
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-1/5b2367a687b80b20/entrypoint-9726a118ddf36b641e03ef87fc4c140c19280b5de00a7e027cae1d51c9d4bb6d.tar.zst",
+            "archive_sha256": "9726a118ddf36b641e03ef87fc4c140c19280b5de00a7e027cae1d51c9d4bb6d",
+            "readback_sha256": "9726a118ddf36b641e03ef87fc4c140c19280b5de00a7e027cae1d51c9d4bb6d",
+            "archive_bytes": 8854
+          },
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-2/99c771d5ed8b7689/entrypoint-406cbaf34cf5afaaaad4f1425183443d0422ffd75751d73faf781b0727dec30f.tar.zst",
+            "archive_sha256": "406cbaf34cf5afaaaad4f1425183443d0422ffd75751d73faf781b0727dec30f",
+            "readback_sha256": "406cbaf34cf5afaaaad4f1425183443d0422ffd75751d73faf781b0727dec30f",
+            "archive_bytes": 9031
+          },
+          {
+            "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-retention16k-16-agentx-c128-r1/host-3/74946aaf6fa25b64/entrypoint-03f260455104732a06959e212eb4c6c0fd63ccf5c14aa93d5f57240b277120f6.tar.zst",
+            "archive_sha256": "03f260455104732a06959e212eb4c6c0fd63ccf5c14aa93d5f57240b277120f6",
+            "readback_sha256": "03f260455104732a06959e212eb4c6c0fd63ccf5c14aa93d5f57240b277120f6",
+            "archive_bytes": 8915
+          }
+        ],
+        "scope": "Released actual native four-task holder only after all child application statuses succeeded, GPUs emptied and raw readbacks completed. The other paired holder is accounted separately."
+      },
+      "cpu": {
+        "scope": "Same completed sixty-second interval from the existing five-second native CPU observer; no new sampler, CUDA call, affinity change or process mutation. Raw lifetime-keyed process/cgroup/host snapshots retained locally with this result. Container headroom does not exclude serial engine/API work.",
+        "checked_unix": 1793523961.3799598,
+        "tasks": [
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0:0",
+            "attempt_uid": "df931a2347776cdb",
+            "node": "s1mwxs64",
+            "interval_seconds": 60.17707347869873,
+            "start_unix": 1793523897.3628476,
+            "end_unix": 1793523957.539921,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 9.622163600311408,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.07253149220325183,
+            "busiest_processes": [
+              {
+                "pid": 74382,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.001045689291011,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 74380,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.000713336804527,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 74376,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9975559881829317,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 74378,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.99722363569644,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 79904,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9782795439668313,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 79905,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9779471914803547,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 79907,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9754545478317127,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 79906,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9686413218587848,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 74394,
+                "name": "VLLM::APIServer",
+                "cpu_cores": 0.4436905694566755,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 74397,
+                "name": "VLLM::APIServer",
+                "cpu_cores": 0.2801731461063499,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 84007,
+                "name": "aiperf server_m",
+                "cpu_cores": 0.25956729194431694,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 74386,
+                "name": "VLLM::APIServer",
+                "cpu_cores": 0.19392767586364706,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=15247999\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=6383719",
+            "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=15308727\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=6397456"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1:0",
+            "attempt_uid": "5b2367a687b80b20",
+            "node": "s1nrxs64",
+            "interval_seconds": 60.07708287239075,
+            "start_unix": 1793523898.551533,
+            "end_unix": 1793523958.6286159,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 7.878675917161156,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.060235008675943336,
+            "busiest_processes": [
+              {
+                "pid": 33955,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9985504810116117,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 33957,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9980511225446914,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 33961,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9940562548093518,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 33959,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9932239906978281,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34624,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9764122556449536,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34623,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9739154633103748,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34626,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9732496520211528,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34625,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9695876899304242,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 32711,
+                "name": "python",
+                "cpu_cores": 0.0001664528223056487,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 716,
+                "name": "uv",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2783,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.04 avg300=0.01 total=15117186\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=6361962",
+            "cpu_pressure_end": "some avg10=0.00 avg60=0.01 avg300=0.00 total=15270561\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=6374845"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2:0",
+            "attempt_uid": "99c771d5ed8b7689",
+            "node": "s3bsxs64",
+            "interval_seconds": 60.07105350494385,
+            "start_unix": 1793523898.3761284,
+            "end_unix": 1793523958.447182,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 7.90846151817367,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.05891189371231498,
+            "busiest_processes": [
+              {
+                "pid": 33986,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0004818709406134,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 33984,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0003154014113427,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 33980,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0003154014113351,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 33982,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 0.9999824623527861,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34648,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9864984304815407,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34651,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9760108501372439,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34650,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9728479290810247,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34649,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9708502947297233,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 32732,
+                "name": "python",
+                "cpu_cores": 0.00016646952927464119,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 715,
+                "name": "uv",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2787,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9523444\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5645099",
+            "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9536009\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5657437"
+          },
+          {
+            "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3:0",
+            "attempt_uid": "74946aaf6fa25b64",
+            "node": "s3jtxs64",
+            "interval_seconds": 60.0728874206543,
+            "start_unix": 1793523898.2694423,
+            "end_unix": 1793523958.3423297,
+            "cgroup_cpu_max": "max 100000",
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1",
+            "cgroup_cpu_cores": 7.9137363861179635,
+            "nr_throttled_delta": 0,
+            "throttled_usec_delta": 0,
+            "host_busy_fraction": 0.05909245051324108,
+            "busiest_processes": [
+              {
+                "pid": 34006,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0006177925007325,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34008,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0006177925007325,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34010,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0004513280534655,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34004,
+                "name": "VLLM::EngineCor",
+                "cpu_cores": 1.0002848636062058,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34675,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9833054899853321,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34674,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.978478021014692,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34672,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.977312769883845,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 34673,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.9713200497823579,
+                "allowed_cpus": "0-71",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 1,
+                "name": "python",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 715,
+                "name": "uv",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "0-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2787,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              },
+              {
+                "pid": 2788,
+                "name": "VLLM::Worker_DP",
+                "cpu_cores": 0.0,
+                "allowed_cpus": "72-143",
+                "allowed_mems": "0-1"
+              }
+            ],
+            "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9067240\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5855831",
+            "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=9085225\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=5869376"
+          }
+        ]
+      },
+      "client_cpu": {
+        "scope": "Twelve consecutive completed intervals from the existing native client-load observer during scoring. No process mutation or new sampler. Raw snapshots retained.",
+        "start_unix": 1793523896.6634715,
+        "end_unix": 1793523956.9973707,
+        "duration_seconds": 60.33452876703814,
+        "client_cpu_cores_weighted_mean": 0.3822023718630265,
+        "client_cpu_cores_max_interval": 0.4057422125536152,
+        "client_busiest_thread_cores_max_interval": 0.28441733527042307,
+        "task_cpu_max": "max 100000"
+      },
+      "qualification_input": {
+        "path": "results/guarded-logical-cache-policies-r1-qualified.json",
+        "sha256": "f684f2b11c7cf8aaaf48bea2885df5ad02c53195531e25a9fcf8f98f7e2ac1db",
+        "mode_manifest_sha256": "fd3159072ed8dc0a314c3c14ea40b6c0332aae266e686a88bf62960d32c67353",
+        "scope": "Both guarded policies pass the full native16 original state/source gates, three decode cases and four affected native layer cases; all raw readbacks complete before fresh AgentX starts."
+      }
+    }
+  },
+  "periodic_over_default_ratio": 0.9214430748989791,
+  "interpretation": "Keep default interval 0. Periodic 16384-token checkpoints pass the same exact full-model state/source gates and help a synthetic first interior branch, but their full AgentX hour is lower. This observed pair does not isolate the full causal effect: count-driven warmups differ, scoring starts are offset by 570.056214 seconds, and groups share fabric. The default peer stops inference before the final periodic phase; its holder is released before the periodic send window ends. The guarded default result confirms a final recipe rate; its difference from the earlier unguarded cache-on hour is not an additional algorithmic gain.",
+  "protocol": {
+    "eligible_sessions": 393,
+    "concurrent_live_trees": 128,
+    "context_tokens": 262144,
+    "seed": 42,
+    "send_window_seconds": 3600,
+    "configured_grace_seconds": 30,
+    "warmup_count": 1406,
+    "processor": "Unchanged pinned InferenceX first-scored-request start to last scored completion output-token rate. Raw AIPerF rates have a different denominator and remain in per-run evidence.",
+    "profiling": "No numerical hooks, GPU profiling, other owned inference or native builds during either confirmation window."
+  },
+  "neighbor_activity": [
+    {
+      "path": "results/gb200-inventory-guarded-retention-agentx-pair-r1-warmup.json",
+      "sha256": "b038606b66edfd52d990c3eb06a19b312bb4784702dde6a4605a5c035cc0ec9d"
+    },
+    {
+      "path": "results/gb200-inventory-guarded-retention-agentx-pair-r1-profiling-overlap-start.json",
+      "sha256": "abf06b8235ad9d011004b4f895f88fd62098655a7150c8e4b369cbf860e47e3e"
+    },
+    {
+      "path": "results/gb200-inventory-guarded-retention-agentx-pair-r1-default-send-end.json",
+      "sha256": "157127addee6e8c687d97560f1570d0b56f9736b9bae24cc9c85dcc01286e0f1"
+    },
+    {
+      "path": "results/gb200-inventory-guarded-retention-agentx-pair-r1-default-released.json",
+      "sha256": "2e08f021e28f14f1d1da1a70069fcb4300286a0573bcfe819c7ff56e3a6eeedb"
+    },
+    {
+      "path": "results/gb200-inventory-guarded-retention-agentx-pair-r1-all-released.json",
+      "sha256": "c0b3bd3805946574e36370d3fe2bc8d8dd233ea4428e262aed02118f111ed9b8"
+    }
+  ],
+  "remaining": "One four-GPU expert timing job, final coverage decision, reproducible handoff and bounded High GOAL review remain. Model holders are released; this is not goal completion."
+}

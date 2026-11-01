@@ -1,0 +1,107 @@
+{
+  "status": "confirmed_full_hour_recipe_expert_family_and_final_project_review_pending",
+  "manifest": "experiments/logical-kv-retention0-16-agentx-c128-r1.json",
+  "manifest_sha256": "ecb6a83d0ecfe6a491f4eb4f3704dfc6e6b58181dcbe05bfaf5c41a51327f24a",
+  "executed_research_source": "76c4802e66705b7c9390207366b1acdea8964f4a",
+  "native_vllm_source": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+  "qualification": "results/guarded-logical-cache-policies-r1-qualified.json",
+  "full_hour_result": "results/guarded-retention-agentx-c128-r1-comparison.json",
+  "physical_gpus": 16,
+  "parallelism": {
+    "tp": 1,
+    "pp": 1,
+    "dp": 16,
+    "ep": 16
+  },
+  "concurrency_live_agentx_trees": 128,
+  "runtime_overrides": {
+    "enable_prefix_caching": true,
+    "max_num_batched_tokens": 2048,
+    "master_port": 38700,
+    "session_affinity": true,
+    "prefetch_flashinfer_headers": true,
+    "numa_bind": true,
+    "gpu_memory_utilization": 0.95,
+    "candidate_receipt": "/iris/candidates/23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/receipt.json",
+    "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+    "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+    "compilation_config": {
+      "mode": 3,
+      "cudagraph_mode": "NONE",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        2048
+      ],
+      "splitting_ops": [
+        "vllm::unified_attention_with_output",
+        "vllm::unified_mla_attention_with_output",
+        "vllm::mamba_mixer2",
+        "vllm::mamba_mixer",
+        "vllm::short_conv",
+        "vllm::qwen4_exp_ple_short_conv",
+        "vllm::qwen4_exp_qsa_with_output",
+        "vllm::linear_attention",
+        "vllm::qwen_gdn_attention_core",
+        "vllm::qwen_gdn_attention_core_fused_norm_packed",
+        "vllm::gdn_attention_core_xpu",
+        "vllm::olmo_hybrid_gdn_full_forward",
+        "vllm::sparse_attn_indexer",
+        "vllm::rocm_aiter_sparse_attn_indexer",
+        "vllm::deepseek_v4_attention",
+        "vllm::hpc_rope_norm_forward",
+        "vllm::unified_kv_cache_update",
+        "vllm::unified_mla_kv_cache_update",
+        "vllm::grug_moe_short_conv",
+        "vllm::moe_forward",
+        "vllm::moe_forward_shared"
+      ],
+      "inductor_compile_config": {
+        "emulate_precision_casts": true,
+        "max_autotune": false,
+        "coordinate_descent_tuning": false,
+        "deterministic": true,
+        "dynamic_scale_rblock": false,
+        "combo_kernels": false
+      }
+    },
+    "additional_config": {
+      "grug_logical_kv_cache": true
+    },
+    "kernel_config": {
+      "moe_backend": "triton",
+      "enable_flashinfer_autotune": false
+    },
+    "environment_overrides": {
+      "VLLM_LOGGING_LEVEL": "INFO",
+      "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+      "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+    },
+    "prefix_cache_retention_interval": 0
+  },
+  "router": {
+    "package": "vllm-router==0.1.16",
+    "wheel": {
+      "url": "https://files.pythonhosted.org/packages/58/47/88a65c7e8d1bf4a577bd6d8f7229fd48dc25773c184d0c1d0adf180355d8/vllm_router-0.1.16-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "be6137553ef807f0b3303194da9eb1dfdf65913ac1b8a84c4ea0a7a62683cfec",
+      "bytes": 21073924
+    },
+    "requirements_file": "requirements-router.txt",
+    "requirements_sha256": "2f45df003f1312ff85d82e841d296664d742082a46440586de381855dfb20758",
+    "backend_url": "http://127.0.0.1:38197",
+    "base_url": "http://127.0.0.1:38201",
+    "policy": "consistent_hash",
+    "data_parallel_size": 16,
+    "request_timeout_secs": 14400,
+    "disable_retries": true,
+    "session_id": "hero-agentx-router-qualification",
+    "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
+  },
+  "checkpoint_and_workload": "The immutable manifest pins the full checkpoint/tokenizer/workload/dependency identities. Do not substitute a current release or reduce the corpus.",
+  "placement": "Historical placement is evidence, not a reservation. Refresh inventory, training exclusions and priorities before reproducing; require actual native four-task/sixteen-UUID admission on the verified spare domain.",
+  "reproduction": "See owner-integration/hero-logical-kv-recipe.md. No shared defaults or owner worktrees changed."
+}
