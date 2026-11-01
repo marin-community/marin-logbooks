@@ -1,0 +1,57 @@
+{
+  "method": "Attribution by subtraction between completed/observed v4-8 runs with identical optimizer code; not a device trace",
+  "runs": {
+    "alpha0_baseline": {
+      "source_commit": "0017f4d204a2260d22bb87116299d72b617d78fe",
+      "version": "2026.10.30.22",
+      "median_step_seconds": 0.3474092850001398,
+      "steps_measured": 7629,
+      "evidence": "baseline-completed.json"
+    },
+    "alpha_quarter_pilot": {
+      "source_commit": "44f8a1efdd8117260565f77965fcadd36cef717b",
+      "version": "2026.10.30.23",
+      "median_step_seconds": 38.73798,
+      "steps_measured": 51,
+      "evidence": "notebook entry 2026-10-31 17:00 UTC; quarter-user-canceled.json"
+    }
+  },
+  "controls": {
+    "resolved_config_differences": ["optimizer.alpha 0 -> 0.25", "optimizer.learning_rate", "resources.ram 64g -> 128g", "run identity and output paths"],
+    "identical": ["TPU v4-8", "train_batch_size 8", "train_seq_len 4096", "mesh", "num_train_steps 7630"],
+    "optimizer_library_diff_between_sources": "none (lib/levanter/src/levanter/optim unchanged); train.py differs only in the host RAM request",
+    "alpha_only_code_path": "gram_direction computes relative_gram_power and the left/right products only if alpha; Gram refresh and Newton-Schulz polar run for both"
+  },
+  "derived": {
+    "alpha_branch_seconds_per_update": 38.39057,
+    "alpha_branch_fraction_of_pilot_step": 0.991,
+    "baseline_profile_gram_state_update_seconds_per_step": 0.0536,
+    "baseline_profile_gram_direction_seconds_per_step": 0.0439,
+    "eigendecompositions_per_update": {"1024x1024": 121, "4096x4096": 33},
+    "hlo_lowering": "Each batched eigh call is an 11-iteration loop around the TPU Eigh custom call; no host callbacks or host memory placement in the saved StableHLO (sha256 9f75426708a7b9fdfd2621b556e29cfed4488cf24ba4d271a7c20595085a6c40)",
+    "non_eigh_alpha_work_flop_per_update": 6.4e12,
+    "non_eigh_alpha_work_seconds_at_v4_peak_with_6_pass_highest": 0.14
+  },
+  "gate": {
+    "target_seconds_per_update_v4_32": 0.36525,
+    "model_flop_per_update": 80353469399040,
+    "v4_32_chips": 16,
+    "chip_peak_flop_per_second": 2.75e14,
+    "ideal_whole_matrix_distribution_lower_bound_seconds": 2.39941,
+    "ideal_distribution_mfu_upper_bound_percent": 0.761,
+    "n_cubed_model": {
+      "share_of_work_in_4096_matrices": 0.946,
+      "seconds_per_4096_eigendecomposition": 1.10,
+      "busiest_chip_seconds_with_three_large_matrices": 3.30,
+      "mfu_percent": 0.553
+    },
+    "speedup_needed_beyond_ideal_distribution_if_other_work_takes_0_1_seconds": 9.1
+  },
+  "prediction": "Diagnostic spectral_powers (replicated, synthetic inputs) about 35-39 s on v4-8 or v4-32; a much smaller value would reopen this attribution",
+  "limitations": [
+    "Subtraction uses full-step host durations, not device timelines",
+    "Eigensolver iteration counts may depend on spectra; synthetic diagnostic Grams can differ from trained ones",
+    "The n-cubed split is a cost model, not a measurement",
+    "The v4-32 base step time for the rest of training is unmeasured"
+  ]
+}

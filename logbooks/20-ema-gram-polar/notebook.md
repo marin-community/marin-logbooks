@@ -1010,6 +1010,80 @@ Expected outputs are the same four original-kernel cases, three samples each,
 one profile invocation and an online W&B run named `ema-gram-20-tpu-cost-<attempt>`
 once the job starts. Device execution is not verified until the job reports.
 
+### 2026-11-01 07:14 UTC — Both optimizer diagnostics terminated before starting
+
+Iris reports both `ema-gram-20-optimizer-cost-v4-8-probe-20261031` and
+`ema-gram-20-optimizer-cost-v4-32-20261031` as `killed` with reason
+"Terminated by user" under the submitting account. The change happened
+between state polls at about 07:02 and 07:13 UTC. Neither job was ever
+assigned workers, so no task ran and no W&B run, timing, profile or memory
+measurement exists. The agent that submitted them did not cancel them, and
+the origin of the cancellation is unconfirmed. Neither job has been
+resubmitted; resubmission awaits the user's decision. The probe branch, its plan and both source revisions remain
+published.
+
+### 2026-11-01 07:45 UTC — Correct the eigensolver note; attribute the alpha slowdown
+
+Correction to the 02:39 UTC entry: the current branch's default
+`lax.linalg.eigh` call is not materially different from the pilot's
+`jnp.linalg.eigh` call. In the installed JAX 0.11.1, `lax.linalg.eigh`
+defaults to `symmetrize_input=True`, `lower=True` and
+`sort_eigenvalues=True`, and `jnp.linalg.eigh` calls it with those values.
+Both revisions also symmetrize the Gram explicitly before normalizing. The
+default spectral path on the current branch is therefore the same
+computation as the pilot's. The separate probe source equals the v4-32
+diagnostic source plus the topology guard, so it remains valid, but it was
+not required.
+
+The alpha=1/4 slowdown can be attributed from existing runs without new TPU
+time. The alpha=0 baseline (source `0017f4d20`) and the alpha=1/4 pilot
+(source `44f8a1efd`) have identical optimizer library code; `train.py`
+differs only in the host RAM request. Their resolved configurations differ
+only in alpha, learning rate, host RAM and run identity. Both used v4-8,
+global batch 8, sequence length 4096, the same mesh and 7,630 steps. At
+`44f8a1efd`, `gram_direction` computes spectral powers and the two
+left/right products only when alpha is nonzero; Gram refresh and the
+Newton-Schulz polar factor run for both.
+
+The baseline's median update took 0.3474 seconds over 7,629 steps. The
+pilot's took 38.738 seconds over 51 updates ending at step 905. The
+alpha-only branch therefore costs about 38.39 seconds per update, 99.1% of
+the pilot step. The baseline device profile places Gram refresh at about
+0.054 seconds and the polar direction at about 0.044 seconds per step.
+
+The saved pilot StableHLO (sha256 `9f754267…`, matching the coverage record)
+contains 11 batched 11x1024x1024 and 3 batched 11x4096x4096 eigensolver calls
+per update: 121 and 33 matrices. Each batched call is an 11-iteration loop
+around the TPU `Eigh` custom call. There are no host callbacks or host
+memory placements. The pilot trace has no device plane because the TPU
+driver dropped it: XSpace was 2.42 GiB against a 2.00 GiB limit. The other
+alpha-only work, power reconstruction and two HIGHEST-precision products per
+matrix, totals about 6.4e12 FLOP per update. With six bf16 passes this is
+about 0.14 seconds at v4 peak, so the eigensolver accounts for nearly all of
+the 38.4 seconds. This is an inference from full-step durations, HLO and
+FLOP counts, not a device measurement.
+
+This bounds the v4-32 gate. Replicated optimizer state makes every chip
+compute all 154 eigendecompositions, and v4-32 uses the same v4 chips, so
+the larger slice alone does not reduce eigensolver time. Distributing whole
+matrices over 16 chips can at best divide it by 16: at least 2.40 seconds
+per update, at most 0.76% MFU under the current FLOP definition before any
+other work. Under an n-cubed cost model the 33 large matrices carry about
+95% of the work, about 1.1 seconds each. At least one chip then holds three
+of them, giving about 3.3 seconds and 0.55% MFU. If the rest of training
+took 0.1 seconds on v4-32, the gate would leave about 0.27 seconds for the
+eigensolver, about 9x below the ideal-distribution bound. Reaching more than
+5% MFU therefore needs a per-matrix inverse-fourth-root computation roughly
+an order of magnitude faster than the current TPU eigensolver, in addition
+to ideal distribution. That changes the spectral solver, which the protocol
+has kept as an exact eigendecomposition, and needs a user decision.
+
+Prediction: the diagnostic's `spectral_powers` case should take about
+35–39 seconds per invocation on either v4-8 or v4-32, because state is
+replicated in both. A much smaller value would reopen this attribution, for
+example if synthetic spectra converge faster than trained ones. The numbers
+and limitations are in `alpha-cost-attribution.json`.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
