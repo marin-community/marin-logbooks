@@ -12,9 +12,10 @@ import argparse
 import hashlib
 import json
 import os
+import statistics
 import subprocess
 import tempfile
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import torch
@@ -27,6 +28,42 @@ from vllm.model_executor.models import grugmoe
 from vllm.v1.worker.workspace import init_workspace_manager
 
 ROW_COUNTS = (1, 3, 8, 17, 32, 64, 2, 1)
+
+
+def time_experts(
+    module: grugmoe.GrugMoeMLP,
+    hidden: torch.Tensor,
+    logits: torch.Tensor,
+    reference: torch.Tensor,
+    config: VllmConfig,
+    repeats: int,
+) -> dict:
+    elapsed = []
+    for index in range(repeats + 3):
+        working_hidden, working_logits = hidden.clone(), logits.clone()
+        start, end = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
+        with set_forward_context(None, config, num_tokens=hidden.shape[0]):
+            start.record()
+            output = module.experts(working_hidden, working_logits)
+            end.record()
+        end.synchronize()
+        torch.testing.assert_close(output.float(), reference, atol=2e-2, rtol=2e-2)
+        if index >= 3:
+            elapsed.append(start.elapsed_time(end))
+    return {
+        "samples": repeats,
+        "warmup_calls": 3,
+        "milliseconds": elapsed,
+        "median_milliseconds": statistics.median(elapsed),
+        "minimum_milliseconds": min(elapsed),
+        "maximum_milliseconds": max(elapsed),
+        "scope": (
+            "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. "
+            "Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes "
+            "the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, "
+            "shared experts or AgentX scoring."
+        ),
+    }
 
 
 def probe_config(
@@ -64,15 +101,20 @@ def main() -> None:
     parser.add_argument("--normal-inputs", action="store_true")
     parser.add_argument("--native-only", action="store_true")
     parser.add_argument("--reference-chunk-rows", type=int, default=4)
+    parser.add_argument("--timing-repeats", type=int, default=0)
     args = parser.parse_args()
     assert args.reference_chunk_rows > 0
+    assert args.timing_repeats >= 0
     assert hashlib.sha256(Path(grugmoe.__file__).read_bytes()).hexdigest() == args.model_source_sha256
     cfg = probe_config(args.hidden_dim, args.intermediate_dim, args.num_experts, args.top_k)
     assert torch.cuda.device_count() == 1
     assert not subprocess.check_output(
         ["nvidia-smi", "--query-compute-apps=pid", "--format=csv,noheader"], text=True
     ).strip()
-    config = VllmConfig(kernel_config=KernelConfig(moe_backend=args.backend))
+    kernel = KernelConfig(moe_backend=args.backend)
+    if args.timing_repeats:
+        kernel = replace(kernel, enable_flashinfer_autotune=False)
+    config = VllmConfig(kernel_config=kernel)
     rows = []
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.set_float32_matmul_precision("highest")
@@ -154,6 +196,8 @@ def main() -> None:
                             "torch_fp32_mean_absolute_delta": delta.mean().item(),
                         }
                     )
+                    if args.timing_repeats:
+                        rows[-1]["timing"] = time_experts(module, hidden, logits, reference, config, args.timing_repeats)
         finally:
             cleanup_dist_env_and_memory()
     args.output.parent.mkdir(exist_ok=False)
@@ -171,6 +215,7 @@ def main() -> None:
         "requested_backend": args.backend,
         "actual_backend": backend,
         "experts_class": experts_class,
+        "enable_flashinfer_autotune": config.kernel_config.enable_flashinfer_autotune,
         "output_buffer_contract_checked": not args.native_only,
         "weight_pattern": "seed42_normal_std0.02" if args.normal_weights else "linspace_minus0.2_to0.3",
         "input_pattern": "seed42_normal" if args.normal_inputs else "linspace_minus0.6_to0.7",

@@ -122,11 +122,14 @@ def run(manifest: dict) -> None:
         )
         write(path, record)
         if component := manifest.get("component"):
+            component_script = (
+                "moe_backend_pair_probe.py" if manifest.get("paired_moe_components") else "moe_output_probe.py"
+            )
             command = [
                 *manifest["serving_prefix"],
                 *manifest["cuda_bootstrap"],
                 "python",
-                str(Path(__file__).with_name("moe_output_probe.py").resolve()),
+                str(Path(__file__).with_name(component_script).resolve()),
                 *component,
                 "--output",
                 str(output / "component/result.json"),
