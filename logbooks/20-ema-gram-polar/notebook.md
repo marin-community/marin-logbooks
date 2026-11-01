@@ -969,6 +969,47 @@ the sequential gate: obtain that job's cost/memory evidence, then test one
 candidate on v4-32. Original-checkpoint TPU accuracy, execution cost, memory use and
 actual training MFU remain unverified.
 
+### 2026-11-01 02:39 UTC — Submit one v4-8 cost probe while v4-32 stays queued
+
+The user allowed a v4-8 probe after the v4-32 diagnostic remained pending for
+more than nine hours. This is a single-host device-side cost measurement. It
+is not training, not MFU evidence and not v4-32 evidence. Training and the
+performance gate remain v4-32 only.
+
+The probe runs from published source `5e04d1467` on
+`codex/20-ema-gram-polar-v4-8-probe`. That commit is the v4-32 diagnostic
+source `09c39d9ba` with one change: the topology guard maps `v4-8` to four
+devices and one process. The current research branch cannot be used for this
+measurement. Its default `relative_gram_power` calls `lax.linalg.eigh`
+directly, while `09c39d9ba` calls `jnp.linalg.eigh`, which symmetrizes its
+input. The eigensolver difference is recorded here and has not been measured.
+
+`optimizer-cost-v4-8-probe-plan.json` was committed as `174b83274` before
+submission. It requests one v4-8 task, 120 CPUs, 128 GiB host memory and 50
+GiB disk in us-central2 at batch priority, with no wall-clock limit and the
+Iris default preemption policy. It writes to
+`gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.10.31.3`.
+
+The first CLI attempt failed validation before queueing because `--tpu`
+requires `--enable-extra-resources` on the entrypoint. No job was created.
+The second attempt, after confirming no probe job with this name existed,
+was accepted as `/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v4-8-probe-20261031`
+at 02:39:23 UTC. Its state is pending with 0 of 1 task scheduled and no
+preemptions. The v4-32 job
+`/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v4-32-20261031` remains
+pending since 17:12:38 UTC and was not resubmitted or changed.
+
+Autoscaler state at 23:55 UTC on 2026-10-31 showed the us-central2 v4-8
+reserved group with 188 ready slices, all in use, and 50 booting, in backoff
+with degraded health. The v4-8 preemptible group had no slices and was in
+backoff. The v4-32 reserved group had one ready slice in use and one booting
+slice created at 22:01 UTC. These observations are not guarantees about
+scheduling.
+
+Expected outputs are the same four original-kernel cases, three samples each,
+one profile invocation and an online W&B run named `ema-gram-20-tpu-cost-<attempt>`
+once the job starts. Device execution is not verified until the job reports.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
