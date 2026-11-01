@@ -1,0 +1,65 @@
+{
+  "scope": "One fresh synthetic native16 HTTP screen per flag, same private wheel and fixed model controls. Not an AgentX result.",
+  "native_tasks": 4,
+  "physical_gpus": 16,
+  "benchmark": "native vLLM bench serve random",
+  "seed": 42,
+  "requests": 256,
+  "requested_input_tokens_per_request": 131072,
+  "output_tokens_per_request": 256,
+  "benchmark_reported_input_tokens_each": 33554432,
+  "output_tokens_each": 65536,
+  "off": {
+    "duration": 463.0202811770141,
+    "output_tokens_per_second": 141.54023627951057,
+    "output_tokens_per_second_per_gpu": 8.84626476746941,
+    "accepted_proof": "logical-kv-off16-long128k-c256-r1-accepted.json"
+  },
+  "on": {
+    "duration": 460.58592695905827,
+    "output_tokens_per_second": 142.28832485762322,
+    "output_tokens_per_second_per_gpu": 8.893020303601451,
+    "accepted_proof": "logical-kv-on16-long128k-c256-r1-accepted.json"
+  },
+  "on_over_off_percent": 0.5285342159775386,
+  "neighbors": {
+    "off": {
+      "utc": "2026-11-01T01:52:57.138409+00:00",
+      "owned_gpus": 16,
+      "other_owner_gpus": 52,
+      "hero_training_gpus": 0,
+      "source_sha256": "c5561910edbf9a0001ca81239d48ab8ff1748ba1182aaa62d7d89bbb4ccace54"
+    },
+    "on": {
+      "utc": "2026-11-01T02:17:44.524609+00:00",
+      "owned_gpus": 16,
+      "other_owner_gpus": 32,
+      "hero_training_gpus": 0,
+      "source_sha256": "1336591282950bbe2c38f1881e339e9595dd76a47f8d4d185b8dc8c47125c75c"
+    }
+  },
+  "interpretation": "Cold throughput is effectively unchanged in one pair; no cold-workload gain selected. More cache may still reduce repeated prefill on AgentX histories; run a matched C128 full-protocol off/on comparison with the same compiler settings.",
+  "setup_failure": "First off client reads a nonexistent metadata field and exits before tokenizer preparation, client claim or requests. All16 native request counters remain zero. Fix98f reads input-manifest.json and checks actual TP1/PP1/DP16/EP16; original failed entrypoint and freshness proof are retained.",
+  "server_sources": {
+    "off": [
+      "99de3e7c370c283a3e1b055a9799370152f2bee6"
+    ],
+    "on": [
+      "98f0efd5c0cf7126ac05cb575d91b3f21d0d00b9"
+    ]
+  },
+  "client_sources": {
+    "off": "98f0efd5c0cf7126ac05cb575d91b3f21d0d00b9",
+    "on": "98f0efd5c0cf7126ac05cb575d91b3f21d0d00b9"
+  },
+  "tokenizer_warning_scope": "Native client tokenizer/model-config fallback and declared tokenizer length warnings are retained in both raw logs. Benchmark lengths are requested/reported values; model context remains262144 and no session/context or output limit is changed.",
+  "all8_screen_raw_readbacks_passed": true,
+  "screen_raw_archive_bytes": 15955961,
+  "release_proof": "logical16-full-r2-released.json",
+  "evidence_retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-long128k-c256-r1-comparison/outputs-affb18bc5b087f7ca43128ded2a72c3d6bc17a32973d80a271372e06fd56b588.tar.zst",
+    "archive_sha256": "affb18bc5b087f7ca43128ded2a72c3d6bc17a32973d80a271372e06fd56b588",
+    "readback_sha256": "affb18bc5b087f7ca43128ded2a72c3d6bc17a32973d80a271372e06fd56b588",
+    "archive_bytes": 6980156
+  }
+}

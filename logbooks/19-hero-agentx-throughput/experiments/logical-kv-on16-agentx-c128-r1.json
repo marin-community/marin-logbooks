@@ -1,0 +1,515 @@
+{
+  "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+  "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+  "profile": "gb200",
+  "concurrency": 128,
+  "vllm_release": {
+    "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+    "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+      },
+      {
+        "architecture": "x86_64",
+        "sm_targets": [
+          "9.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+      }
+    ],
+    "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+  },
+  "workload": {
+    "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+    "recipe": {
+      "version": 1,
+      "inputs": {
+        "model": "marin-community/Hero-535B-step144000",
+        "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+        "harness_version": "1.0.12",
+        "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+        "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+        "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+        "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+        "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+        "sessions": 393,
+        "max_context": 262144,
+        "random_seed": 42,
+        "trace_idle_gap_cap_seconds": 300,
+        "tokenizer": "marin-community/marin-tokenizer",
+        "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+      },
+      "code_sha256": {
+        "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+        "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    },
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/agentx-workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+    "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+    "archive_bytes": 166033271,
+    "lineage": {
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "filtered_sessions": 0,
+      "tokenizer": "marin-community/marin-tokenizer",
+      "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "tokenizer_files": {
+        ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+        "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+        "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+        "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+        "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+        "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+      },
+      "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+      "native_manifest_version": 26,
+      "conversations": 9602,
+      "turns": 68266,
+      "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+      "preparation_version": 1,
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "preparation_seconds": 233.21300347405486,
+      "peak_memory_kib": 9010624
+    },
+    "cache_status": "hit"
+  },
+  "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-392-US-EAST-08A",
+    "nodes": [
+      "s1mwxs64",
+      "s1nrxs64",
+      "s3bsxs64",
+      "s3jtxs64",
+      "s4lqxs64",
+      "s62pys64",
+      "s6xvxs64",
+      "s7dk6j84",
+      "s90vxs64",
+      "s9rrxs64",
+      "s9vrxs64",
+      "sbnwxs64",
+      "sdmtxs64",
+      "sfdqxs64",
+      "sj1txs64",
+      "sj9wxs64",
+      "sjtsxs64"
+    ],
+    "hero_training_gpus": 0,
+    "verified_utc": "2026-11-01T02:50:11.017696+00:00",
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-logical-kv-agentx-c128-pair-r1-preparation.json",
+    "inventory_sha256": "28fc63d6039da6172b9b45060f4d9e8ec607dd3c1ee38635f19610c8232cb0c6",
+    "allocation_note": "Eligible spare nodes at preparation, not admitted placement. Recheck current priority/admission before two genuine four-task16 interactive holders; verify disjoint physical UUIDs and actual contexts. Own zero GPUs during preparation."
+  },
+  "source": {
+    "kind": "research",
+    "repository": "marin-community/marin-logbooks",
+    "parent_commit": "98f0efd5c0cf7126ac05cb575d91b3f21d0d00b9",
+    "experiment": "logical-kv-on16-agentx-c128-r1",
+    "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+  },
+  "runtime_overrides": {
+    "enable_prefix_caching": true,
+    "max_num_batched_tokens": 2048,
+    "master_port": 38320,
+    "session_affinity": true,
+    "prefetch_flashinfer_headers": true,
+    "numa_bind": true,
+    "gpu_memory_utilization": 0.95,
+    "candidate_receipt": "/iris/candidates/fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768/receipt.json",
+    "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+    "compilation_config": {
+      "mode": 3,
+      "cudagraph_mode": "NONE",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        2048
+      ],
+      "splitting_ops": [
+        "vllm::unified_attention_with_output",
+        "vllm::unified_mla_attention_with_output",
+        "vllm::mamba_mixer2",
+        "vllm::mamba_mixer",
+        "vllm::short_conv",
+        "vllm::qwen4_exp_ple_short_conv",
+        "vllm::qwen4_exp_qsa_with_output",
+        "vllm::linear_attention",
+        "vllm::qwen_gdn_attention_core",
+        "vllm::qwen_gdn_attention_core_fused_norm_packed",
+        "vllm::gdn_attention_core_xpu",
+        "vllm::olmo_hybrid_gdn_full_forward",
+        "vllm::sparse_attn_indexer",
+        "vllm::rocm_aiter_sparse_attn_indexer",
+        "vllm::deepseek_v4_attention",
+        "vllm::hpc_rope_norm_forward",
+        "vllm::unified_kv_cache_update",
+        "vllm::unified_mla_kv_cache_update",
+        "vllm::grug_moe_short_conv",
+        "vllm::moe_forward",
+        "vllm::moe_forward_shared"
+      ],
+      "inductor_compile_config": {
+        "emulate_precision_casts": true,
+        "max_autotune": false,
+        "coordinate_descent_tuning": false,
+        "deterministic": true,
+        "dynamic_scale_rblock": false,
+        "combo_kernels": false
+      }
+    },
+    "additional_config": {
+      "grug_logical_kv_cache": true
+    },
+    "kernel_config": {
+      "moe_backend": "triton",
+      "enable_flashinfer_autotune": false
+    },
+    "environment_overrides": {
+      "VLLM_LOGGING_LEVEL": "INFO",
+      "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+      "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+    }
+  },
+  "effective_recipe_sha256": "d3c4933ebf8b93cb986556a68489cda1b2b4f7532873e5b0f84a7a2184da6d1f",
+  "effective_recipe_hash_input": {
+    "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+    "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+    "profile": "gb200",
+    "concurrency": 128,
+    "vllm_release": {
+      "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+      "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+      "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+      "torch_backend": "cu132",
+      "torch_version": "2.14.1+cu132",
+      "wheels": [
+        {
+          "architecture": "aarch64",
+          "sm_targets": [
+            "10.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+        },
+        {
+          "architecture": "x86_64",
+          "sm_targets": [
+            "9.0"
+          ],
+          "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+        }
+      ],
+      "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+    },
+    "runtime_overrides": {
+      "enable_prefix_caching": true,
+      "max_num_batched_tokens": 2048,
+      "master_port": 38320,
+      "session_affinity": true,
+      "prefetch_flashinfer_headers": true,
+      "numa_bind": true,
+      "gpu_memory_utilization": 0.95,
+      "candidate_receipt": "/iris/candidates/fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768/receipt.json",
+      "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+      "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+      "compilation_config": {
+        "mode": 3,
+        "cudagraph_mode": "NONE",
+        "cudagraph_capture_sizes": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32,
+          2048
+        ],
+        "splitting_ops": [
+          "vllm::unified_attention_with_output",
+          "vllm::unified_mla_attention_with_output",
+          "vllm::mamba_mixer2",
+          "vllm::mamba_mixer",
+          "vllm::short_conv",
+          "vllm::qwen4_exp_ple_short_conv",
+          "vllm::qwen4_exp_qsa_with_output",
+          "vllm::linear_attention",
+          "vllm::qwen_gdn_attention_core",
+          "vllm::qwen_gdn_attention_core_fused_norm_packed",
+          "vllm::gdn_attention_core_xpu",
+          "vllm::olmo_hybrid_gdn_full_forward",
+          "vllm::sparse_attn_indexer",
+          "vllm::rocm_aiter_sparse_attn_indexer",
+          "vllm::deepseek_v4_attention",
+          "vllm::hpc_rope_norm_forward",
+          "vllm::unified_kv_cache_update",
+          "vllm::unified_mla_kv_cache_update",
+          "vllm::grug_moe_short_conv",
+          "vllm::moe_forward",
+          "vllm::moe_forward_shared"
+        ],
+        "inductor_compile_config": {
+          "emulate_precision_casts": true,
+          "max_autotune": false,
+          "coordinate_descent_tuning": false,
+          "deterministic": true,
+          "dynamic_scale_rblock": false,
+          "combo_kernels": false
+        }
+      },
+      "additional_config": {
+        "grug_logical_kv_cache": true
+      },
+      "kernel_config": {
+        "moe_backend": "triton",
+        "enable_flashinfer_autotune": false
+      },
+      "environment_overrides": {
+        "VLLM_LOGGING_LEVEL": "INFO",
+        "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+        "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+      }
+    },
+    "router": {
+      "package": "vllm-router==0.1.16",
+      "wheel": {
+        "url": "https://files.pythonhosted.org/packages/58/47/88a65c7e8d1bf4a577bd6d8f7229fd48dc25773c184d0c1d0adf180355d8/vllm_router-0.1.16-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "be6137553ef807f0b3303194da9eb1dfdf65913ac1b8a84c4ea0a7a62683cfec",
+        "bytes": 21073924
+      },
+      "requirements_file": "requirements-router.txt",
+      "requirements_sha256": "2f45df003f1312ff85d82e841d296664d742082a46440586de381855dfb20758",
+      "backend_url": "http://127.0.0.1:38197",
+      "base_url": "http://127.0.0.1:38201",
+      "policy": "consistent_hash",
+      "data_parallel_size": 16,
+      "request_timeout_secs": 14400,
+      "disable_retries": true,
+      "session_id": "hero-agentx-router-qualification",
+      "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
+    },
+    "candidate_wheel_input": {
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+      "readback_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+      "bytes": 250543905,
+      "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "receipt": {
+        "kind": "private_python_overlay",
+        "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+        "changed_files": {
+          "vllm/model_executor/models/grugmoe.py": "2f195b2fa7c48fb61fc4c2e0b9091e64a51e5d753eae0794aabcb8118742cf8f",
+          "vllm/v1/attention/backends/flashinfer.py": "a2691b671d8a76aa79b2aa9fdcb7f1ae5263f29957499e6de9228462370af7ee"
+        },
+        "added_files": {
+          "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+        },
+        "wheel_path": "/iris/candidates/logical-kv-query-groups-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+        "wheel_bytes": 250543905,
+        "verified_unchanged_files": 5100,
+        "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+      },
+      "helper_sha256": "4e35f7673cc70965ee202d4c67509f835e43ca269883fcd7d657f53538b2ad43",
+      "research_source_commit": "ea7cdca5f441b893e2b623476925bef420d320be",
+      "command": [
+        "uvx",
+        "--from",
+        "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "--with",
+        "runai-model-streamer[s3]==0.16.1",
+        "--with",
+        "torch==2.14.1+cu132",
+        "--with",
+        "nvidia-cuda-nvcc==13.2.86",
+        "--with",
+        "nvidia-cuda-crt==13.2.86",
+        "--with",
+        "nvidia-nvvm==13.2.86",
+        "--python",
+        "3.12",
+        "--index",
+        "https://download.pytorch.org/whl/cu132",
+        "--index",
+        "https://download.pytorch.org/whl/cpu",
+        "--index-strategy",
+        "unsafe-best-match",
+        "python",
+        "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/shortconv_wheel.py",
+        "--source-commit",
+        "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+        "--replacement-source",
+        "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/vllm/model_executor/models/grugmoe.py",
+        "--replacement-sha256",
+        "2f195b2fa7c48fb61fc4c2e0b9091e64a51e5d753eae0794aabcb8118742cf8f",
+        "--base-module-sha256",
+        "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+        "--base-wheel-sha256",
+        "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "--output",
+        "/iris/candidates/logical-kv-query-groups-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "--additional-source",
+        "vllm/v1/attention/backends/flashinfer.py",
+        "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/vllm/v1/attention/backends/flashinfer.py",
+        "a2691b671d8a76aa79b2aa9fdcb7f1ae5263f29957499e6de9228462370af7ee",
+        "8ee541fde43ed92a417b3f01ea1e6fc64af8ab2eb54cbfc28308a49aaca4ed7f",
+        "--new-source",
+        "vllm/v1/attention/backends/grug_logical_kv.py",
+        "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/vllm/v1/attention/backends/grug_logical_kv.py",
+        "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+      ],
+      "source_root": "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1",
+      "scope": "Private Python-only overlay on official e852; GrugMoE model and FlashInfer callsite replacements plus one new native query-group helper;5100other packaged files unchanged including binaries and dependencies. CPUonlypackagingwhileAgentXwarmup; no model/GPUwork. Native mixed-cache and numerical gates remain."
+    }
+  },
+  "identity_note": "Both full AgentX trials use private fae89, native source58145f5baa on official e852 binaries/dependencies, with the same fixed compiler, serving settings and released Router. Only logical-cache flag differs as a model setting. Inert numerical worker-extension RPC methods are omitted during confirmation; no hooks or profiler are installed.",
+  "router": {
+    "package": "vllm-router==0.1.16",
+    "wheel": {
+      "url": "https://files.pythonhosted.org/packages/58/47/88a65c7e8d1bf4a577bd6d8f7229fd48dc25773c184d0c1d0adf180355d8/vllm_router-0.1.16-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "be6137553ef807f0b3303194da9eb1dfdf65913ac1b8a84c4ea0a7a62683cfec",
+      "bytes": 21073924
+    },
+    "requirements_file": "requirements-router.txt",
+    "requirements_sha256": "2f45df003f1312ff85d82e841d296664d742082a46440586de381855dfb20758",
+    "backend_url": "http://127.0.0.1:38197",
+    "base_url": "http://127.0.0.1:38201",
+    "policy": "consistent_hash",
+    "data_parallel_size": 16,
+    "request_timeout_secs": 14400,
+    "disable_retries": true,
+    "session_id": "hero-agentx-router-qualification",
+    "source_sdist_sha256": "b0f953025ca81694f5212d77e1e1201557175d1e45c54e3b3d41e6015324379c"
+  },
+  "purpose": "Full pinned C128 AgentX control for the repeated-KV-head cache change. Same fae89 wheel, fixed compiler and serving settings; only logical-cache flag differs, with separate coordinator ports. Actual four-task16 job per mode; preserve393sessions,262144context,seed42,native count-driven warmup,3600-second send window,30-second grace and validity.",
+  "neighbor_activity": "Plan two simultaneous independent C128 trials with disjoint sixteen-GPU groups on the freshly verified spare rack. Record actual placement, client/server headroom and neighboring activity; no intrusive profiling or other owned GPU inference during scoring.",
+  "metrics_collection": {
+    "scoring": "Unchanged native AgentX protocol and pinned InferenceX request-output throughput.",
+    "server_counters": "One released-Router metrics URL for the single DP16 group. Preserve reset warnings; analyze API cache-read token sums separately.",
+    "profiling": "No GPU profiler, dispatch tracing, startup numerical requests or builds during the confirmation window. Native CPU and client-load counters remain."
+  },
+  "value_hypothesis": "The paired cold128K screen is flat (+0.53%, not selected). The1.87419-fold cache capacity increase may improve history reuse and reduce repeated AgentX prefill. Two16-GPU full protocols cost roughly60-70GPUh including load,warmup,scoring,export/retention. Existing released C128 reference does not isolate this fixed compiler profile, so match that profile across both flags.",
+  "numactl_input": {
+    "version": "2.0.19\n",
+    "deb": {
+      "name": "numactl_2.0.19-1_arm64.deb",
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+      "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+      "bytes": 37936,
+      "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+    },
+    "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+    "native_bind_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "cpu_only_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+  },
+  "completion_retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c128-r1",
+  "candidate_wheel_input": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "readback_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "bytes": 250543905,
+    "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "receipt": {
+      "kind": "private_python_overlay",
+      "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+      "changed_files": {
+        "vllm/model_executor/models/grugmoe.py": "2f195b2fa7c48fb61fc4c2e0b9091e64a51e5d753eae0794aabcb8118742cf8f",
+        "vllm/v1/attention/backends/flashinfer.py": "a2691b671d8a76aa79b2aa9fdcb7f1ae5263f29957499e6de9228462370af7ee"
+      },
+      "added_files": {
+        "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+      },
+      "wheel_path": "/iris/candidates/logical-kv-query-groups-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+      "wheel_bytes": 250543905,
+      "verified_unchanged_files": 5100,
+      "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+    },
+    "helper_sha256": "4e35f7673cc70965ee202d4c67509f835e43ca269883fcd7d657f53538b2ad43",
+    "research_source_commit": "ea7cdca5f441b893e2b623476925bef420d320be",
+    "command": [
+      "uvx",
+      "--from",
+      "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "--with",
+      "runai-model-streamer[s3]==0.16.1",
+      "--with",
+      "torch==2.14.1+cu132",
+      "--with",
+      "nvidia-cuda-nvcc==13.2.86",
+      "--with",
+      "nvidia-cuda-crt==13.2.86",
+      "--with",
+      "nvidia-nvvm==13.2.86",
+      "--python",
+      "3.12",
+      "--index",
+      "https://download.pytorch.org/whl/cu132",
+      "--index",
+      "https://download.pytorch.org/whl/cpu",
+      "--index-strategy",
+      "unsafe-best-match",
+      "python",
+      "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/shortconv_wheel.py",
+      "--source-commit",
+      "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+      "--replacement-source",
+      "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/vllm/model_executor/models/grugmoe.py",
+      "--replacement-sha256",
+      "2f195b2fa7c48fb61fc4c2e0b9091e64a51e5d753eae0794aabcb8118742cf8f",
+      "--base-module-sha256",
+      "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+      "--base-wheel-sha256",
+      "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "--output",
+      "/iris/candidates/logical-kv-query-groups-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "--additional-source",
+      "vllm/v1/attention/backends/flashinfer.py",
+      "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/vllm/v1/attention/backends/flashinfer.py",
+      "a2691b671d8a76aa79b2aa9fdcb7f1ae5263f29957499e6de9228462370af7ee",
+      "8ee541fde43ed92a417b3f01ea1e6fc64af8ab2eb54cbfc28308a49aaca4ed7f",
+      "--new-source",
+      "vllm/v1/attention/backends/grug_logical_kv.py",
+      "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1/vllm/v1/attention/backends/grug_logical_kv.py",
+      "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+    ],
+    "source_root": "/iris/candidates/logical-kv-query-groups-source-58145f5baa099ec29d1603e61a05c8f6ae7e0fea-r1",
+    "scope": "Private Python-only overlay on official e852; GrugMoE model and FlashInfer callsite replacements plus one new native query-group helper;5100other packaged files unchanged including binaries and dependencies. CPUonlypackagingwhileAgentXwarmup; no model/GPUwork. Native mixed-cache and numerical gates remain."
+  },
+  "qualification_input": {
+    "path": "results/logical16-full-r2-qualified.json",
+    "sha256": "b5871c21bc60a6ff0ebf02388c29297bbc7d1672153bf7bfc985f302d6bf213b",
+    "mode_manifest_sha256": "3ef893a9853c0374b68ee540eaf09c6f63fa13fcfb10b0577b9270d40e402da8",
+    "scope": "Both flags passed original full16 state/source gates and complete raw readbacks before fresh native AgentX model starts."
+  },
+  "execution_status": "planned_not_allocated"
+}
