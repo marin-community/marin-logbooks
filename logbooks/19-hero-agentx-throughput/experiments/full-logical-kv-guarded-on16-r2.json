@@ -1,0 +1,683 @@
+{
+  "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+  "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+  "profile": "gb200",
+  "concurrency": 128,
+  "vllm_release": {
+    "release_tag": "marin-vllm-gpu-20261012-3a054c458ca8",
+    "source_commit": "3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+    "torch_backend": "cu132",
+    "torch_version": "2.14.1+cu132",
+    "wheels": [
+      {
+        "architecture": "aarch64",
+        "sm_targets": [
+          "10.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15"
+      },
+      {
+        "architecture": "x86_64",
+        "sm_targets": [
+          "9.0"
+        ],
+        "url": "https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "bd4d3d58d831dffd2a831ee1e39e9a9a8b181610ea77067c0ab620cdc9b270a3"
+      }
+    ],
+    "constraints_sha256": "b0e4e774c46cd6d6b77f7ed9c97cbcb84066c4bdc8b7361cdc3ad80316aa4771"
+  },
+  "workload": {
+    "key": "5ecfeda75f7b5f91a7516ad1c796d010d452d88c99fa963158405e2e9ff48e84",
+    "recipe": {
+      "version": 1,
+      "inputs": {
+        "model": "marin-community/Hero-535B-step144000",
+        "model_revision": "b20fdd303eb6ff8993ae5b5d7add14d65787e70981c056fea6de9dea62acfae1",
+        "harness_version": "1.0.12",
+        "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+        "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+        "dataset_loader": "semianalysis_cc_traces_weka_062126_256k",
+        "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+        "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+        "sessions": 393,
+        "max_context": 262144,
+        "random_seed": 42,
+        "trace_idle_gap_cap_seconds": 300,
+        "tokenizer": "marin-community/marin-tokenizer",
+        "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2"
+      },
+      "code_sha256": {
+        "prepare.py": "b0dd7756656f8a832baf2a66f9766f8fa95f8ffa6e6a5bdee50a8ec22b556c91",
+        "recipe.py": "32e55b9f9db58f7a7033a76b0036d56322b6a9c67f9d3546444dbdc36448458c"
+      },
+      "harness_requirements_sha256": "b44ab5090886f76aa44b5ae5206a1fc3ffdc63097b4629d077201d87a7822591"
+    },
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/agentx-workload-f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93.tar.zst",
+    "archive_sha256": "f4d1a97ac039adc72d00b20f030616ca501597654cee8b6f0b0be37d1b841d93",
+    "archive_bytes": 166033271,
+    "lineage": {
+      "dataset": "semianalysisai/cc-traces-weka-062126-256k",
+      "dataset_revision": "8fecd2fc56694469f758f0afbbb6335ad3043740",
+      "dataset_sha256": "e39cd2ff3eba21d4a3664be51da743ac3d2149a1933898cafc7bfeac8147eeef",
+      "sessions": 393,
+      "filtered_sessions": 0,
+      "tokenizer": "marin-community/marin-tokenizer",
+      "tokenizer_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+      "tokenizer_files": {
+        ".gitattributes": "34448b82c17d60fec9b65b1f093c115ddbaadc04beb1b0140b6bfed2e012a930",
+        "README.md": "0336368f8274a5ed09f54cee8d56a851ecee96026d9f391a6735762c16608a60",
+        "chat_template.jinja": "414d8559d363292c811e624fe2db04d52647ca5bd89acc53e98bd4c4f371302a",
+        "special_tokens_map.json": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+        "tokenizer.json": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+        "tokenizer_config.json": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03"
+      },
+      "native_cache_key": "34fa3e05468c1d3d80e509922bc96b24",
+      "native_manifest_version": 26,
+      "conversations": 9602,
+      "turns": 68266,
+      "metadata_sha256": "91644e1a1759069c2687f4c697796925fe32f6028b1f80c2e5dfdfc763bfd8b6",
+      "preparation_version": 1,
+      "harness_version": "1.0.12",
+      "harness_source": "e4bb2f835ffedbbe6b76252ea5c93caec68c5faf",
+      "preparation_seconds": 233.21300347405486,
+      "peak_memory_kib": 9010624
+    },
+    "cache_status": "hit"
+  },
+  "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-392-US-EAST-08A",
+    "nodes": [
+      "s1mwxs64",
+      "s1nrxs64",
+      "s3bsxs64",
+      "s3jtxs64",
+      "s4lqxs64",
+      "s62pys64",
+      "s6xvxs64",
+      "s7dk6j84",
+      "s90vxs64",
+      "s9rrxs64",
+      "s9vrxs64",
+      "sbnwxs64",
+      "sdmtxs64",
+      "sfdqxs64",
+      "sj1txs64",
+      "sj9wxs64",
+      "sjtsxs64"
+    ],
+    "hero_training_gpus": 0,
+    "owned_gpus_before_request": 0,
+    "other_owner_gpus": 68,
+    "verified_utc": "2026-11-01T01:18:45.390842+00:00",
+    "checked_unix": 1793495925.4781554,
+    "inventory_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/gb200-inventory-logical16-full-r2-submit.json",
+    "inventory_sha256": "f586dfcc56cfb469927526f0d21a85615e324ca14043a84ba2fe3f70cab1745d",
+    "all_other_gpu_work_preemptible_batch": true,
+    "all_hero_priorities_protected": true,
+    "allocation_note": "Eligible nodes from fresh inventory, not actual placement. Request one genuine four-task16 interactive holder; verify native/provider/GPU identities after admission. All59 predecessor GPU jobs are terminal. Native scheduling handles preemption."
+  },
+  "source": {
+    "kind": "research",
+    "repository": "marin-community/marin-logbooks",
+    "parent_commit": "8e79ac248e778dfa9588d5ffcf641ce4dfc1c983",
+    "experiment": "full-logical-kv-guarded-on16-r2",
+    "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+  },
+  "diagnostic_request": {
+    "budget": 2048,
+    "moe_backend": "triton",
+    "prefix_cache": true,
+    "run_controls": true,
+    "neighbor_activity": "Only after completed C256 full-window raw readbacks, model/parent stops and fresh actual native4/provider/GPU checks. No other owned GPU inference.",
+    "master_port": 38640,
+    "pipeline_stages": 1,
+    "data_parallel_size": 16,
+    "expert_parallel_size": 16,
+    "session_affinity": false,
+    "additional_cases": [
+      {
+        "name": "scaling-short-c128",
+        "argv": [
+          "vllm",
+          "bench",
+          "serve",
+          "--base-url",
+          "http://127.0.0.1:38197",
+          "--model",
+          "marin-community/Hero-535B-step144000",
+          "--tokenizer",
+          "/tmp/hero-tokenizer",
+          "--dataset-name",
+          "random",
+          "--random-range-ratio",
+          "0.0",
+          "--random-prefix-len",
+          "0",
+          "--seed",
+          "42",
+          "--ignore-eos",
+          "--save-result",
+          "--save-detailed",
+          "--metric-percentiles",
+          "50,90,99",
+          "--random-input-len",
+          "128",
+          "--random-output-len",
+          "256",
+          "--max-concurrency",
+          "128",
+          "--num-prompts",
+          "128",
+          "--temperature",
+          "0",
+          "--extra-body",
+          "{\"seed\":42}"
+        ],
+        "timeout_seconds": 300
+      },
+      {
+        "name": "scaling-short-c256",
+        "argv": [
+          "vllm",
+          "bench",
+          "serve",
+          "--base-url",
+          "http://127.0.0.1:38197",
+          "--model",
+          "marin-community/Hero-535B-step144000",
+          "--tokenizer",
+          "/tmp/hero-tokenizer",
+          "--dataset-name",
+          "random",
+          "--random-range-ratio",
+          "0.0",
+          "--random-prefix-len",
+          "0",
+          "--seed",
+          "42",
+          "--ignore-eos",
+          "--save-result",
+          "--save-detailed",
+          "--metric-percentiles",
+          "50,90,99",
+          "--random-input-len",
+          "128",
+          "--random-output-len",
+          "256",
+          "--max-concurrency",
+          "256",
+          "--num-prompts",
+          "256",
+          "--temperature",
+          "0",
+          "--extra-body",
+          "{\"seed\":42}"
+        ],
+        "timeout_seconds": 300
+      },
+      {
+        "name": "scaling-long64k-c64",
+        "argv": [
+          "vllm",
+          "bench",
+          "serve",
+          "--base-url",
+          "http://127.0.0.1:38197",
+          "--model",
+          "marin-community/Hero-535B-step144000",
+          "--tokenizer",
+          "/tmp/hero-tokenizer",
+          "--dataset-name",
+          "random",
+          "--random-range-ratio",
+          "0.0",
+          "--random-prefix-len",
+          "0",
+          "--seed",
+          "42",
+          "--ignore-eos",
+          "--save-result",
+          "--save-detailed",
+          "--metric-percentiles",
+          "50,90,99",
+          "--random-input-len",
+          "65536",
+          "--random-output-len",
+          "256",
+          "--max-concurrency",
+          "64",
+          "--num-prompts",
+          "64",
+          "--temperature",
+          "0",
+          "--extra-body",
+          "{\"seed\":42}"
+        ],
+        "timeout_seconds": 1800
+      }
+    ],
+    "trace_batches": true,
+    "compilation_config": {
+      "mode": 3,
+      "cudagraph_mode": "NONE",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        2048
+      ],
+      "splitting_ops": [
+        "vllm::unified_attention_with_output",
+        "vllm::unified_mla_attention_with_output",
+        "vllm::mamba_mixer2",
+        "vllm::mamba_mixer",
+        "vllm::short_conv",
+        "vllm::qwen4_exp_ple_short_conv",
+        "vllm::qwen4_exp_qsa_with_output",
+        "vllm::linear_attention",
+        "vllm::qwen_gdn_attention_core",
+        "vllm::qwen_gdn_attention_core_fused_norm_packed",
+        "vllm::gdn_attention_core_xpu",
+        "vllm::olmo_hybrid_gdn_full_forward",
+        "vllm::sparse_attn_indexer",
+        "vllm::rocm_aiter_sparse_attn_indexer",
+        "vllm::deepseek_v4_attention",
+        "vllm::hpc_rope_norm_forward",
+        "vllm::unified_kv_cache_update",
+        "vllm::unified_mla_kv_cache_update",
+        "vllm::grug_moe_short_conv",
+        "vllm::moe_forward",
+        "vllm::moe_forward_shared"
+      ],
+      "inductor_compile_config": {
+        "emulate_precision_casts": true,
+        "max_autotune": false,
+        "coordinate_descent_tuning": false,
+        "deterministic": true,
+        "dynamic_scale_rblock": false,
+        "combo_kernels": false
+      }
+    },
+    "scope": "Actual full16 numerical gates on ranks0/7/15, same fixed compiler and original exact state/token/logprob/source-shape checks. Guards from native a0be4d10f1 do not change the byte-identical grouped decode helper.",
+    "prefetch_flashinfer_headers": true,
+    "numa_bind": true,
+    "gpu_memory_utilization": 0.95,
+    "numerics_only": true,
+    "compare_graph_replay": false,
+    "trace_control_batches": true,
+    "local_piecewise_dp": false,
+    "environment_overrides": {
+      "VLLM_LOGGING_LEVEL": "INFO",
+      "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+      "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+    },
+    "disable_graph_replay": false,
+    "additional_numerical_ranks": [
+      7,
+      15
+    ],
+    "kernel_config": {
+      "moe_backend": "triton",
+      "enable_flashinfer_autotune": false
+    },
+    "capture_compiler_sources": false,
+    "additional_config": {
+      "grug_logical_kv_cache": true
+    },
+    "source_reference": {
+      "path": "/iris/outputs/full-logical-kv-off16-r2/cache-probe-matched",
+      "manifest_sha256": "2b1809d02a42665e8d20cbe8efbe6128b07f06fef4e6b795c065bf8cbea8deac"
+    },
+    "prefix_cache_retention_interval": 0,
+    "interior_reuse_probe": true
+  },
+  "purpose": "Qualify guarded private4ceb source against the original immutable FlashInfer reference before any new performance claim.",
+  "numerical_comparison": "Guarded8c5 wheel with logical-cache flag true versus the original retained fae89 flag-off reference, identical fixed compiler and native request waves. Preserve all24 exact state pairs and30 same-global-shape cross-source waves on ranks0/7/15, including tokens, shared top20 logprobs and overlap. Helper arithmetic is byte-identical; opt-in guards and, for the separate retention trial, periodic checkpoint policy are the only new behavior. No speed claim before qualification.",
+  "candidate_wheel_input": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+    "readback_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+    "bytes": 250544442,
+    "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "receipt": {
+      "kind": "private_python_overlay",
+      "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+      "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+      "changed_files": {
+        "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
+        "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+      },
+      "added_files": {
+        "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+      },
+      "wheel_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-guarded-wheel-r3/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+      "wheel_bytes": 250544442,
+      "verified_unchanged_files": 5100,
+      "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+    },
+    "scope": "Existing pure-Python RECORD-verified packaging runs against an extracted checksum-pinned official ARM wheel on devbox. No vLLM/Torch/FlashInfer binary is imported or executed. Only guards differ from qualified58145 source; the decode helper and arithmetic remain byte-identical. GPU valid-path and committed decode tests remain pending after the active C256 window.",
+    "packaging_retention": {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/packaging-c6b1a7edd8ce3875938e19261e6acb660fde0687423ce9bd820089c7db09df82.tar.zst",
+      "archive_sha256": "c6b1a7edd8ce3875938e19261e6acb660fde0687423ce9bd820089c7db09df82",
+      "readback_sha256": "c6b1a7edd8ce3875938e19261e6acb660fde0687423ce9bd820089c7db09df82",
+      "archive_bytes": 4644
+    },
+    "unchanged_grouped_decode_helper_sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111",
+    "gpu_checks_status": "pending_after_current_C256_full_window"
+  },
+  "numactl_input": {
+    "version": "2.0.19\n",
+    "deb": {
+      "name": "numactl_2.0.19-1_arm64.deb",
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/numactl-7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078/numactl_2.0.19-1_arm64.deb",
+      "sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078",
+      "bytes": 37936,
+      "readback_sha256": "7141526de8f6d28fc3ebe69e35b6f6d0c9110734e40590676466c5772b076078"
+    },
+    "binary_sha256": "0648b4cfda388a18d8e100ca0b98295c3206a4482795d527b0ad5a028fb703b9",
+    "native_bind_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "cpu_only_probe": {
+      "returncode": 0,
+      "stderr": ""
+    },
+    "scope": "Private extracted Debian utility only; no installed packages, apt sources, serving defaults or shared services changed."
+  },
+  "value_hypothesis": "Guard-only changes narrow opt-in scope without changing qualified arithmetic. Reuse9 packaged decode cases and full old-wheel checks; run the authored native decode test and actual full16 source/state controls once after current C256. One full startup/control trial costs roughly3-5GPUh on the existing holder, no new allocation.",
+  "neighbor_activity": "Only after completed C256 full-window raw readbacks, model/parent stops and fresh actual native4/provider/GPU checks. No other owned GPU inference.",
+  "effective_recipe_hash_input": {
+    "series_sha256": "451ac987512216c5926afc06eb3cb8b534238a007e363c8fd4324b1d757bfe8d",
+    "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+    "profile": "gb200",
+    "concurrency": 128,
+    "source": {
+      "kind": "research",
+      "repository": "marin-community/marin-logbooks",
+      "parent_commit": "8e79ac248e778dfa9588d5ffcf641ce4dfc1c983",
+      "experiment": "full-logical-kv-guarded-on16-r2",
+      "baseline_source_commit": "ce69fe2538f26525a75d8d96e1820dce68cc568d"
+    },
+    "diagnostic_request": {
+      "budget": 2048,
+      "moe_backend": "triton",
+      "prefix_cache": true,
+      "run_controls": true,
+      "neighbor_activity": "Only after completed C256 full-window raw readbacks, model/parent stops and fresh actual native4/provider/GPU checks. No other owned GPU inference.",
+      "master_port": 38640,
+      "pipeline_stages": 1,
+      "data_parallel_size": 16,
+      "expert_parallel_size": 16,
+      "session_affinity": false,
+      "additional_cases": [
+        {
+          "name": "scaling-short-c128",
+          "argv": [
+            "vllm",
+            "bench",
+            "serve",
+            "--base-url",
+            "http://127.0.0.1:38197",
+            "--model",
+            "marin-community/Hero-535B-step144000",
+            "--tokenizer",
+            "/tmp/hero-tokenizer",
+            "--dataset-name",
+            "random",
+            "--random-range-ratio",
+            "0.0",
+            "--random-prefix-len",
+            "0",
+            "--seed",
+            "42",
+            "--ignore-eos",
+            "--save-result",
+            "--save-detailed",
+            "--metric-percentiles",
+            "50,90,99",
+            "--random-input-len",
+            "128",
+            "--random-output-len",
+            "256",
+            "--max-concurrency",
+            "128",
+            "--num-prompts",
+            "128",
+            "--temperature",
+            "0",
+            "--extra-body",
+            "{\"seed\":42}"
+          ],
+          "timeout_seconds": 300
+        },
+        {
+          "name": "scaling-short-c256",
+          "argv": [
+            "vllm",
+            "bench",
+            "serve",
+            "--base-url",
+            "http://127.0.0.1:38197",
+            "--model",
+            "marin-community/Hero-535B-step144000",
+            "--tokenizer",
+            "/tmp/hero-tokenizer",
+            "--dataset-name",
+            "random",
+            "--random-range-ratio",
+            "0.0",
+            "--random-prefix-len",
+            "0",
+            "--seed",
+            "42",
+            "--ignore-eos",
+            "--save-result",
+            "--save-detailed",
+            "--metric-percentiles",
+            "50,90,99",
+            "--random-input-len",
+            "128",
+            "--random-output-len",
+            "256",
+            "--max-concurrency",
+            "256",
+            "--num-prompts",
+            "256",
+            "--temperature",
+            "0",
+            "--extra-body",
+            "{\"seed\":42}"
+          ],
+          "timeout_seconds": 300
+        },
+        {
+          "name": "scaling-long64k-c64",
+          "argv": [
+            "vllm",
+            "bench",
+            "serve",
+            "--base-url",
+            "http://127.0.0.1:38197",
+            "--model",
+            "marin-community/Hero-535B-step144000",
+            "--tokenizer",
+            "/tmp/hero-tokenizer",
+            "--dataset-name",
+            "random",
+            "--random-range-ratio",
+            "0.0",
+            "--random-prefix-len",
+            "0",
+            "--seed",
+            "42",
+            "--ignore-eos",
+            "--save-result",
+            "--save-detailed",
+            "--metric-percentiles",
+            "50,90,99",
+            "--random-input-len",
+            "65536",
+            "--random-output-len",
+            "256",
+            "--max-concurrency",
+            "64",
+            "--num-prompts",
+            "64",
+            "--temperature",
+            "0",
+            "--extra-body",
+            "{\"seed\":42}"
+          ],
+          "timeout_seconds": 1800
+        }
+      ],
+      "trace_batches": true,
+      "compilation_config": {
+        "mode": 3,
+        "cudagraph_mode": "NONE",
+        "cudagraph_capture_sizes": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32,
+          2048
+        ],
+        "splitting_ops": [
+          "vllm::unified_attention_with_output",
+          "vllm::unified_mla_attention_with_output",
+          "vllm::mamba_mixer2",
+          "vllm::mamba_mixer",
+          "vllm::short_conv",
+          "vllm::qwen4_exp_ple_short_conv",
+          "vllm::qwen4_exp_qsa_with_output",
+          "vllm::linear_attention",
+          "vllm::qwen_gdn_attention_core",
+          "vllm::qwen_gdn_attention_core_fused_norm_packed",
+          "vllm::gdn_attention_core_xpu",
+          "vllm::olmo_hybrid_gdn_full_forward",
+          "vllm::sparse_attn_indexer",
+          "vllm::rocm_aiter_sparse_attn_indexer",
+          "vllm::deepseek_v4_attention",
+          "vllm::hpc_rope_norm_forward",
+          "vllm::unified_kv_cache_update",
+          "vllm::unified_mla_kv_cache_update",
+          "vllm::grug_moe_short_conv",
+          "vllm::moe_forward",
+          "vllm::moe_forward_shared"
+        ],
+        "inductor_compile_config": {
+          "emulate_precision_casts": true,
+          "max_autotune": false,
+          "coordinate_descent_tuning": false,
+          "deterministic": true,
+          "dynamic_scale_rblock": false,
+          "combo_kernels": false
+        }
+      },
+      "scope": "Actual full16 numerical gates on ranks0/7/15, same fixed compiler and original exact state/token/logprob/source-shape checks. Guards from native a0be4d10f1 do not change the byte-identical grouped decode helper.",
+      "prefetch_flashinfer_headers": true,
+      "numa_bind": true,
+      "gpu_memory_utilization": 0.95,
+      "numerics_only": true,
+      "compare_graph_replay": false,
+      "trace_control_batches": true,
+      "local_piecewise_dp": false,
+      "environment_overrides": {
+        "VLLM_LOGGING_LEVEL": "INFO",
+        "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+        "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+      },
+      "disable_graph_replay": false,
+      "additional_numerical_ranks": [
+        7,
+        15
+      ],
+      "kernel_config": {
+        "moe_backend": "triton",
+        "enable_flashinfer_autotune": false
+      },
+      "capture_compiler_sources": false,
+      "additional_config": {
+        "grug_logical_kv_cache": true
+      },
+      "source_reference": {
+        "path": "/iris/outputs/full-logical-kv-off16-r2/cache-probe-matched",
+        "manifest_sha256": "2b1809d02a42665e8d20cbe8efbe6128b07f06fef4e6b795c065bf8cbea8deac"
+      },
+      "prefix_cache_retention_interval": 0,
+      "interior_reuse_probe": true
+    },
+    "candidate_wheel_input": {
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+      "readback_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+      "bytes": 250544442,
+      "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "receipt": {
+        "kind": "private_python_overlay",
+        "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+        "changed_files": {
+          "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
+          "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+        },
+        "added_files": {
+          "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+        },
+        "wheel_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-guarded-wheel-r3/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+        "wheel_bytes": 250544442,
+        "verified_unchanged_files": 5100,
+        "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+      },
+      "scope": "Existing pure-Python RECORD-verified packaging runs against an extracted checksum-pinned official ARM wheel on devbox. No vLLM/Torch/FlashInfer binary is imported or executed. Only guards differ from qualified58145 source; the decode helper and arithmetic remain byte-identical. GPU valid-path and committed decode tests remain pending after the active C256 window.",
+      "packaging_retention": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/packaging-c6b1a7edd8ce3875938e19261e6acb660fde0687423ce9bd820089c7db09df82.tar.zst",
+        "archive_sha256": "c6b1a7edd8ce3875938e19261e6acb660fde0687423ce9bd820089c7db09df82",
+        "readback_sha256": "c6b1a7edd8ce3875938e19261e6acb660fde0687423ce9bd820089c7db09df82",
+        "archive_bytes": 4644
+      },
+      "unchanged_grouped_decode_helper_sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111",
+      "gpu_checks_status": "pending_after_current_C256_full_window"
+    }
+  },
+  "effective_recipe_sha256": "8cfbd0e0af6e34cec5420ca9a7b89c93b4fc75d5d80e17dadf4a212153f7131c",
+  "component_qualification": {
+    "original_full_model": "results/logical16-full-r2-qualified.json",
+    "original_full_model_sha256": "b5871c21bc60a6ff0ebf02388c29297bbc7d1672153bf7bfc985f302d6bf213b",
+    "all9_source_comparisons_exact": true,
+    "original_packaged_decode": "results/logical-kv-query-groups-component-r4.json",
+    "original_packaged_decode_sha256": "ae2bbe869b165301ea757ee933248747e49529ec342d59b44e6f2b8ecaf629f2",
+    "unchanged_helper_sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111",
+    "scope": "The unchanged helper retains its9case evidence; new guarded valid path and authored native decode tests remain pending."
+  },
+  "execution_status": "planned_not_staged_or_executed",
+  "reference_input": {
+    "qualification_result": "results/full-logical-kv-off16-r2-qualified.json",
+    "qualification_sha256": "ed6a5b3f060a6ba3a56d9742b990aa7007b978df05f2b66ad2e7be65644d2864",
+    "raw_primary_archive": {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-logical-kv-off16-r2/host-0/outputs-d63218e4b2a509013662a0497081d53af368de19ca144832f241fa089b1b39ad.tar.zst",
+      "archive_sha256": "d63218e4b2a509013662a0497081d53af368de19ca144832f241fa089b1b39ad",
+      "readback_sha256": "d63218e4b2a509013662a0497081d53af368de19ca144832f241fa089b1b39ad",
+      "archive_bytes": 989055
+    },
+    "restore_root": "/iris/outputs/full-logical-kv-off16-r2",
+    "scope": "Restore original retained archive into a temporary directory. Copy its diagnostic subtree to restore_root and keep the separate entrypoint subtree. Verify checksum, manifest identity, stopped diagnostic status and all original outputs before cross-source comparisons. Never run requests against the restored reference.",
+    "archive_model_output_subdir": "diagnostic",
+    "archive_entrypoint_subdir": "entrypoint"
+  },
+  "guarded_source_commit": "4ceb3f0a59ba81d8664dfddb011cfb6700089510",
+  "interior_reuse_scope": "After original full-model gates, compare an independent cold 24,576-token branch with first and repeated reuse of that branch after a 49,152-token prompt. Five native rank-0 requests; preserve original exact token/top-20 logprob gates and all parsed responses. API cached-token counts and durations are a synthetic diagnostic, with no AgentX speed claim.",
+  "packaging_correction": "The first guarded full-model start used a CPU extraction with lost executable permissions and failed before readiness. This wheel restores every original member mode; all member bytes remain identical to the wheel that passed three decode tests. Require actual native NUMA launch proof on all four hosts before retry."
+}
