@@ -20,7 +20,7 @@ from pathlib import Path
 from iris.cluster.client.job_info import get_job_info
 from rigging.filesystem.buckets import filesystem_for
 
-from experiments.evaluation.agentx.artifacts import retain_artifacts
+from experiments.evaluation.agentx.artifacts import copy_file, file_digest, retain_artifacts, unpack
 from experiments.evaluation.agentx.processes import run_logged
 from experiments.evaluation.agentx.run import interrupt
 
@@ -88,6 +88,16 @@ def run(manifest: dict) -> None:
         }
         record.update(status="preflighting", cpu_affinity=cpus, admitted=admission)
         write(path, record)
+        if restore := manifest.get("restore_workspace"):
+            workspace = Path(manifest["flashinfer_workspace_base"])
+            assert not workspace.exists(), "Preserve an existing workspace rather than overwriting it"
+            archive = output / "restored-workspace.tar.zst"
+            copy_file(restore["archive_uri"], str(archive))
+            assert archive.stat().st_size == restore["archive_bytes"]
+            assert file_digest(archive) == restore["archive_sha256"] == restore["readback_sha256"]
+            unpack(archive, workspace)
+            record["restored_workspace"] = restore | {"destination": str(workspace)}
+            write(path, record)
         for phase, limit in [("preflight", 180), ("build", 7200)]:
             command = [
                 *manifest["serving_prefix"],

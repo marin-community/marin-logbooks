@@ -1,6 +1,6 @@
 {
   "source": {
-    "parent_commit": "24a4ec7a02c0c7478f90a08e4d89d5cad1871b54",
+    "parent_commit": "8ae71c9244337b61dc177f0651e10201a0b8effa",
     "experiment": "expert-backend-local24-timing-r1",
     "probe_source_note": "Reuse the committed four-row FP32 reference bound, unchanged native .02/.02 tolerances and exact official model source hash."
   },
@@ -13,33 +13,32 @@
   },
   "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
   "placement": {
+    "cluster": "cw-us-east-08a",
+    "nvlink_domain": "DH1-392-US-EAST-08A",
     "nodes": [
+      "s1mwxs64",
+      "s1nrxs64",
+      "s3bsxs64",
+      "s3jtxs64",
+      "s4lqxs64",
+      "s9rrxs64",
+      "s9vrxs64",
+      "sbnwxs64",
+      "sdmtxs64",
+      "sfdqxs64",
+      "sj1txs64",
+      "sj9wxs64",
       "sjtsxs64"
     ],
     "hero_training_gpus": 0,
-    "cluster": "cw-us-east-08a",
-    "nvlink_domain": "DH1-392-US-EAST-08A",
-    "verified_utc": "2026-10-31T13:11:22.015601+00:00",
-    "allocation_note": "Historical template only. Require fresh spare-rack/priority/native admission and disjointness after all owned AgentX/model work is released; no allocation yet."
+    "other_owner_gpus": 16,
+    "owned_gpus_before_request": 0,
+    "checked_unix": 1793527244.960342,
+    "verified_utc": "2026-11-01T10:00:44.877332+00:00",
+    "inventory_sha256": "be2e5d360fe442695bb27aefd14f1f2a8626e2f9485f1142eaba1fee7a8dd045",
+    "allocation_note": "One genuine single-task four-GPU batch job after both AgentX holders are KILLED and provider pods gone. Native worker must match this fresh spare-node allowlist and actual provider/native/UUID admission before any build or CUDA operation. No controller changes or manual preemption."
   },
-  "excluded_gpu_uuids": [
-    "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
-    "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
-    "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
-    "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461",
-    "GPU-4858a3bb-5976-f906-0d1d-91a34ba87ef4",
-    "GPU-a1dac3f0-65b2-2567-26c1-a0951f6bfe4f",
-    "GPU-660ec8db-dd0e-3499-2f7a-859130b2a816",
-    "GPU-f41bf5e5-cdb1-343a-fbd5-2ccde1b66b86",
-    "GPU-ab87d1df-c68b-e43f-74f9-70990bbf3b54",
-    "GPU-825aa17f-782e-8334-4a10-ca3c8ca8436e",
-    "GPU-4eaa3b84-49ef-de11-1b50-2297839d54db",
-    "GPU-d2bf9ac2-eede-1881-bb38-58c5352223db",
-    "GPU-d631a63c-7116-0a0a-b173-285928a2f44a",
-    "GPU-e16d179f-05ee-c079-4e1a-2f2d3f10fb80",
-    "GPU-eb35ebe9-7fa9-ba42-5c97-89481edece8d",
-    "GPU-a182b275-e15a-a254-999c-44ca1930f8c1"
-  ],
+  "excluded_gpu_uuids": [],
   "serving_prefix": [
     "uvx",
     "--from",
@@ -87,11 +86,12 @@
   "paired_moe_components": true,
   "value_hypothesis": "Forced Triton is retained; native CUTLASS passes existing local24/latent3072 BF16 FP32 checks but has no useful latency measurement. A native operator timing comparison can reject weak cases or justify full-model work without a whole-model startup. Native build freshness previously required about 36 minutes on 8 CPU cores; one four-GPU batch job costs about2\u20134 GPU-hours, including idle GPUs and both one-GPU components. No build or GPU inference during the active AgentX window; execute only after current model work is released. Local 24-expert EP1 timing omits full 384 global experts with EP16 dispatch, communication and shared experts, so it is no end-to-end speed bound.",
   "base_component_class_equivalence": {
-    "compared_native_source": "4ceb3f0a59ba81d8664dfddb011cfb6700089510",
+    "compared_native_source": "a0be4d10f1c45dd44458c68080e5818253de66e4",
     "official_module_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
     "GrugMoeMLP_ast_sha256": "6c2bd11a14f1d4e9de69c3a6ac77e89d2dbcbbcdc5e31724fb8cd4acc5e838e5",
     "GrugMoeRouter_ast_sha256": "0a03d74c2de2dd10a3834325f1ddb922e9bebaf08c9f6281ec25ce63ffa2f378",
     "scope": "These complete class ASTs match official e852 and guarded4ceb; source locations omitted. Reuse the official binary/dependency/cache identity for this attention-free component."
   },
-  "execution_status": "planned_not_submitted"
+  "execution_status": "source_ready_not_submitted",
+  "disjointness_policy": "Both prior owned groups are released; zero other owned GPUs/queues. Fresh spare-domain allowlist, protected training priorities, actual native/provider admission and no compute processes gate the new whole-node allocation."
 }
