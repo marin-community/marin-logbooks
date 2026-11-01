@@ -280,6 +280,19 @@ def main() -> None:
     if capture_sources:
         receipt = batch_trace("http://127.0.0.1:38197", "capture_hero_compiler_sources", ["after-numerics"])
         (args.output / "compiler-sources-after-numerics.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    if manifest.get("diagnostic_request", {}).get("interior_reuse_probe"):
+        assert manifest["diagnostic_request"]["additional_config"]["grug_logical_kv_cache"] is True
+        reuse_command = [
+            *prefix,
+            "python",
+            str(Path(__file__).with_name("interior_reuse_probe.py")),
+            "--tokenizer",
+            str(tokenizer / "tokenizer.json"),
+            "--output",
+            str(args.output / "interior-reuse-probe"),
+        ]
+        (args.output / "interior-reuse-command.json").write_text(json.dumps(reuse_command, indent=2) + "\n")
+        run_logged(reuse_command, dict(os.environ), args.output / "interior-reuse.log", timeout=900)
     if manifest.get("diagnostic_request", {}).get("numerics_only"):
         print("NATIVE_NUMERICAL_CONTROL_DONE", flush=True)
         return

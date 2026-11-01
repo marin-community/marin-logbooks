@@ -305,7 +305,7 @@
         "combo_kernels": false
       }
     },
-    "scope": "Actual full16 numerical gates on ranks0/7/15, same fixed compiler and original exact state/token/logprob/source-shape checks. New4ceb guards do not change the byte-identical grouped decode helper.",
+    "scope": "Actual full16 numerical gates on ranks0/7/15, same fixed compiler and original exact state/token/logprob/source-shape checks. Guards from native a0be4d10f1 do not change the byte-identical grouped decode helper.",
     "prefetch_flashinfer_headers": true,
     "numa_bind": true,
     "gpu_memory_utilization": 0.95,
@@ -335,39 +335,40 @@
       "path": "/iris/outputs/full-logical-kv-off16-r2/cache-probe-matched",
       "manifest_sha256": "2b1809d02a42665e8d20cbe8efbe6128b07f06fef4e6b795c065bf8cbea8deac"
     },
-    "prefix_cache_retention_interval": 0
+    "prefix_cache_retention_interval": 0,
+    "interior_reuse_probe": true
   },
   "purpose": "Qualify guarded private4ceb source against the original immutable FlashInfer reference before any new performance claim.",
   "numerical_comparison": "Guarded8c5 wheel with logical-cache flag true versus the original retained fae89 flag-off reference, identical fixed compiler and native request waves. Preserve all24 exact state pairs and30 same-global-shape cross-source waves on ranks0/7/15, including tokens, shared top20 logprobs and overlap. Helper arithmetic is byte-identical; opt-in guards and, for the separate retention trial, periodic checkpoint policy are the only new behavior. No speed claim before qualification.",
   "candidate_wheel_input": {
-    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
-    "sha256": "8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec",
-    "readback_sha256": "8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec",
-    "bytes": 250544365,
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d",
+    "readback_sha256": "3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d",
+    "bytes": 250544442,
     "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
     "receipt": {
       "kind": "private_python_overlay",
       "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
-      "source_commit": "4ceb3f0a59ba81d8664dfddb011cfb6700089510",
+      "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
       "changed_files": {
-        "vllm/model_executor/models/grugmoe.py": "c65bad7aecc30a6465c27e4e3839009f95353033cd3bc5c57ba2ad3ce28f37e3",
+        "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
         "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
       },
       "added_files": {
         "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
       },
-      "wheel_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-guarded-wheel-r1/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
-      "wheel_sha256": "8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec",
-      "wheel_bytes": 250544365,
+      "wheel_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-guarded-wheel-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d",
+      "wheel_bytes": 250544442,
       "verified_unchanged_files": 5100,
       "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
     },
     "scope": "Existing pure-Python RECORD-verified packaging runs against an extracted checksum-pinned official ARM wheel on devbox. No vLLM/Torch/FlashInfer binary is imported or executed. Only guards differ from qualified58145 source; the decode helper and arithmetic remain byte-identical. GPU valid-path and committed decode tests remain pending after the active C256 window.",
     "packaging_retention": {
-      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec/packaging-5a31362ea142228ecd576d8fd822136645264e417f7fe7e0840b70f5f93f71fd.tar.zst",
-      "archive_sha256": "5a31362ea142228ecd576d8fd822136645264e417f7fe7e0840b70f5f93f71fd",
-      "readback_sha256": "5a31362ea142228ecd576d8fd822136645264e417f7fe7e0840b70f5f93f71fd",
-      "archive_bytes": 4477
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d/packaging-b92b68310bf0175649cccde558315edfe04b260e0c69b374060b27f6abddb5b3.tar.zst",
+      "archive_sha256": "b92b68310bf0175649cccde558315edfe04b260e0c69b374060b27f6abddb5b3",
+      "readback_sha256": "b92b68310bf0175649cccde558315edfe04b260e0c69b374060b27f6abddb5b3",
+      "archive_bytes": 4473
     },
     "unchanged_grouped_decode_helper_sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111",
     "gpu_checks_status": "pending_after_current_C256_full_window"
@@ -584,7 +585,7 @@
           "combo_kernels": false
         }
       },
-      "scope": "Actual full16 numerical gates on ranks0/7/15, same fixed compiler and original exact state/token/logprob/source-shape checks. New4ceb guards do not change the byte-identical grouped decode helper.",
+      "scope": "Actual full16 numerical gates on ranks0/7/15, same fixed compiler and original exact state/token/logprob/source-shape checks. Guards from native a0be4d10f1 do not change the byte-identical grouped decode helper.",
       "prefetch_flashinfer_headers": true,
       "numa_bind": true,
       "gpu_memory_utilization": 0.95,
@@ -614,43 +615,44 @@
         "path": "/iris/outputs/full-logical-kv-off16-r2/cache-probe-matched",
         "manifest_sha256": "2b1809d02a42665e8d20cbe8efbe6128b07f06fef4e6b795c065bf8cbea8deac"
       },
-      "prefix_cache_retention_interval": 0
+      "prefix_cache_retention_interval": 0,
+      "interior_reuse_probe": true
     },
     "candidate_wheel_input": {
-      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
-      "sha256": "8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec",
-      "readback_sha256": "8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec",
-      "bytes": 250544365,
+      "uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "sha256": "3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d",
+      "readback_sha256": "3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d",
+      "bytes": 250544442,
       "name": "vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
       "receipt": {
         "kind": "private_python_overlay",
         "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
-        "source_commit": "4ceb3f0a59ba81d8664dfddb011cfb6700089510",
+        "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
         "changed_files": {
-          "vllm/model_executor/models/grugmoe.py": "c65bad7aecc30a6465c27e4e3839009f95353033cd3bc5c57ba2ad3ce28f37e3",
+          "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
           "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
         },
         "added_files": {
           "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
         },
-        "wheel_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-guarded-wheel-r1/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
-        "wheel_sha256": "8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec",
-        "wheel_bytes": 250544365,
+        "wheel_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-guarded-wheel-r2/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d",
+        "wheel_bytes": 250544442,
         "verified_unchanged_files": 5100,
         "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
       },
       "scope": "Existing pure-Python RECORD-verified packaging runs against an extracted checksum-pinned official ARM wheel on devbox. No vLLM/Torch/FlashInfer binary is imported or executed. Only guards differ from qualified58145 source; the decode helper and arithmetic remain byte-identical. GPU valid-path and committed decode tests remain pending after the active C256 window.",
       "packaging_retention": {
-        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-8c5dc433b09804b241bf0998cda93d87eae7235f8b08482cb5f1be95b9b5ebec/packaging-5a31362ea142228ecd576d8fd822136645264e417f7fe7e0840b70f5f93f71fd.tar.zst",
-        "archive_sha256": "5a31362ea142228ecd576d8fd822136645264e417f7fe7e0840b70f5f93f71fd",
-        "readback_sha256": "5a31362ea142228ecd576d8fd822136645264e417f7fe7e0840b70f5f93f71fd",
-        "archive_bytes": 4477
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/inputs/logical-kv-3c0bfcf804ee1fde587f0d8e4fe10847d6784fb31f5960b98da22c493eaca86d/packaging-b92b68310bf0175649cccde558315edfe04b260e0c69b374060b27f6abddb5b3.tar.zst",
+        "archive_sha256": "b92b68310bf0175649cccde558315edfe04b260e0c69b374060b27f6abddb5b3",
+        "readback_sha256": "b92b68310bf0175649cccde558315edfe04b260e0c69b374060b27f6abddb5b3",
+        "archive_bytes": 4473
       },
       "unchanged_grouped_decode_helper_sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111",
       "gpu_checks_status": "pending_after_current_C256_full_window"
     }
   },
-  "effective_recipe_sha256": "8b5dcd9734c15686d63926ff52714753fe63166ba8afe0c65c34a7db378065d5",
+  "effective_recipe_sha256": "6096d3702c566c631037d76ca9e0d7f7dc0ea250d3527679a8b0ac035c7208eb",
   "component_qualification": {
     "original_full_model": "results/logical16-full-r2-qualified.json",
     "original_full_model_sha256": "b5871c21bc60a6ff0ebf02388c29297bbc7d1672153bf7bfc985f302d6bf213b",
@@ -675,5 +677,6 @@
     "archive_model_output_subdir": "diagnostic",
     "archive_entrypoint_subdir": "entrypoint"
   },
-  "guarded_source_commit": "4ceb3f0a59ba81d8664dfddb011cfb6700089510"
+  "guarded_source_commit": "4ceb3f0a59ba81d8664dfddb011cfb6700089510",
+  "interior_reuse_scope": "After original full-model gates, compare an independent cold 24,576-token branch with first and repeated reuse of that branch after a 49,152-token prompt. Five native rank-0 requests; preserve original exact token/top-20 logprob gates and all parsed responses. API cached-token counts and durations are a synthetic diagnostic, with no AgentX speed claim."
 }
