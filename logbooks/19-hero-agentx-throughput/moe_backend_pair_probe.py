@@ -63,6 +63,7 @@ def main() -> None:
         assert result["status"] == "native_backend_existing_torch_tolerances_passed"
         assert result["enable_flashinfer_autotune"] is False
         results[backend] = result
+    assert results["triton"]["timing_input_digests"] == results["flashinfer_cutlass"]["timing_input_digests"]
     comparisons = []
     for reference, candidate in zip(results["triton"]["rows"], results["flashinfer_cutlass"]["rows"], strict=True):
         assert reference["token_rows"] == candidate["token_rows"]

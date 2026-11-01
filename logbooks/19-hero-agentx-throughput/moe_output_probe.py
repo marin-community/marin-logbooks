@@ -116,6 +116,7 @@ def main() -> None:
         kernel = replace(kernel, enable_flashinfer_autotune=False)
     config = VllmConfig(kernel_config=kernel)
     rows = []
+    timing_inputs = None
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.set_float32_matmul_precision("highest")
     torch.manual_seed(42)
@@ -130,6 +131,8 @@ def main() -> None:
         initialize_model_parallel(1, 1)
         try:
             module = grugmoe.GrugMoeMLP(cfg, params_dtype=torch.bfloat16, prefix="probe.mlp").cuda()
+            if args.timing_repeats:
+                torch.manual_seed(42)
             with torch.no_grad():
                 for parameter in module.parameters():
                     if args.normal_weights:
@@ -150,6 +153,24 @@ def main() -> None:
                         .to(torch.bfloat16)
                         .reshape(count, cfg.hidden_dim)
                     )
+                if args.timing_repeats:
+                    timing_inputs = {
+                        "parameters": {
+                            name: {
+                                "shape": list(parameter.shape),
+                                "sha256": (
+                                    hashlib.sha256(
+                                        parameter.detach().contiguous().view(torch.uint8).cpu().numpy().tobytes()
+                                    ).hexdigest()
+                                ),
+                            }
+                            for name, parameter in module.named_parameters()
+                        },
+                        "hidden": {
+                            count: hashlib.sha256(hidden.view(torch.uint8).cpu().numpy().tobytes()).hexdigest()
+                            for count, hidden in inputs.items()
+                        },
+                    }
                 # Backend conversion may transpose the weights. Use the canonical
                 # weights for the independent reference before that conversion.
                 references = {}
@@ -216,6 +237,7 @@ def main() -> None:
         "actual_backend": backend,
         "experts_class": experts_class,
         "enable_flashinfer_autotune": config.kernel_config.enable_flashinfer_autotune,
+        "timing_input_digests": timing_inputs,
         "output_buffer_contract_checked": not args.native_only,
         "weight_pattern": "seed42_normal_std0.02" if args.normal_weights else "linspace_minus0.2_to0.3",
         "input_pattern": "seed42_normal" if args.normal_inputs else "linspace_minus0.6_to0.7",
