@@ -1,0 +1,38 @@
+{
+  "job_name": "ema-gram-20-optimizer-cost-v4-8-probe-20261031",
+  "cluster": "marin",
+  "region": "us-central2",
+  "priority": "batch",
+  "tpu": "v4-8",
+  "cpu": 120,
+  "memory": "128GB",
+  "disk": "50GB",
+  "extra": "tpu",
+  "sync_packages": [
+    "marin-core",
+    "marin-levanter",
+    "marin-dupekit"
+  ],
+  "command": [
+    "python",
+    "logbooks/20-ema-gram-polar/optimizer_cost.py",
+    "--tpu-type",
+    "v4-8",
+    "--output-prefix",
+    "gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.10.31.3"
+  ],
+  "source_branch": "codex/20-ema-gram-polar-v4-8-probe",
+  "source_commit": "5e04d1467f2bf4a8b09987d5b54a42e3442b3a69",
+  "kernel_source_commit": "09c39d9ba2f06fe196cbb8136467c9a152c9dc68",
+  "kernel_source_note": "Same diagnostic and Marin library as the queued v4-32 job, with only the v4-8 topology guard added. The current research branch default eigensolver call differs from the pilot, so it is not used for this probe.",
+  "output_prefix": "gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.10.31.3",
+  "wall_clock_limits": null,
+  "preemption_retries": "Iris default; no override",
+  "seed": 0,
+  "samples_per_case": 3,
+  "profile_invocations": 1,
+  "training": false,
+  "full_pilot_unchanged": true,
+  "interpretation": "Single-host v4-8 device-side cost probe. Not training MFU and not v4-32 evidence.",
+  "queued_v4_32_job_kept": "/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v4-32-20261031"
+}
