@@ -303,6 +303,11 @@ def serve(
             if "additional_config" in diagnostic:
                 server.extra_cli_args.extend(["--additional-config", json.dumps(diagnostic["additional_config"])])
                 record["overrides"]["additional_config"] = diagnostic["additional_config"]
+            if "prefix_cache_retention_interval" in diagnostic:
+                server.extra_cli_args.extend(
+                    ["--prefix-cache-retention-interval", str(diagnostic["prefix_cache_retention_interval"])]
+                )
+                record["overrides"]["prefix_cache_retention_interval"] = diagnostic["prefix_cache_retention_interval"]
             if "attention_backend" in diagnostic:
                 server.extra_cli_args.extend(["--attention-backend", diagnostic["attention_backend"]])
                 record["overrides"]["attention_backend"] = diagnostic["attention_backend"]

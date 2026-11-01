@@ -75,6 +75,10 @@ def create_candidate_server(
         server.extra_cli_args[server.extra_cli_args.index("--data-parallel-rpc-port") + 1] = str(
             overrides["master_port"] + 1
         )
+    if "prefix_cache_retention_interval" in overrides:
+        server.extra_cli_args.extend(
+            ["--prefix-cache-retention-interval", str(overrides["prefix_cache_retention_interval"])]
+        )
     if overrides.get("numa_bind"):
         assert overrides["numa_bind"] is True
         use_numa_binding(server, manifest["numactl_input"])
