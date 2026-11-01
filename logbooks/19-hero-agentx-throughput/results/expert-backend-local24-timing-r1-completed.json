@@ -1,0 +1,1285 @@
+{
+  "checked_unix": 1793529924.7639916,
+  "job_id": "/romain/hero-agentx-expert-local24-timing-r1-01a1846a",
+  "native_state": "succeeded",
+  "native_finished_unix": 1793529727.59,
+  "task_id": "/romain/hero-agentx-expert-local24-timing-r1-01a1846a/0",
+  "attempt_uid": "2446c1bd67c4cb50",
+  "attempt_state": "succeeded",
+  "attempt_exit_code": 0,
+  "attempt_started_unix": 1793527404.292,
+  "attempt_finished_unix": 1793529727.59,
+  "node": "s1mwxs64",
+  "provider_pod": "iris-romain-hero-agentx-expert-loca-438a5f24-0-2446c1bd67c4cb50",
+  "provider_pod_gone": false,
+  "allocated_gpus": 4,
+  "native_tasks": 1,
+  "priority": "batch",
+  "source_commit": "6060001327e8b04dd7b7cf0dc4d2e94de521eed6",
+  "manifest_sha256": "7cb50953a40d5ce5915d3bf279fed34ea6fbaf9cbf1dcadbb410b260b6912663",
+  "native_output_archive": {
+    "uri": "s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/hero-agentx-expert-local24-timing-r1-01a1846a/0/2446c1bd67c4cb50/outputs.tar.zst",
+    "sha256": "856e3d1cf684c81eb11c5b9938fa3ce2a666362b491d8e8ee3e41f0643c41e59",
+    "bytes": 55640525,
+    "skipped_count": 0
+  },
+  "raw_retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/expert-backend-local24-timing-r1/2446c1bd67c4cb50/native-outputs-856e3d1cf684c81eb11c5b9938fa3ce2a666362b491d8e8ee3e41f0643c41e59.tar.zst",
+    "archive_sha256": "856e3d1cf684c81eb11c5b9938fa3ce2a666362b491d8e8ee3e41f0643c41e59",
+    "readback_sha256": "856e3d1cf684c81eb11c5b9938fa3ce2a666362b491d8e8ee3e41f0643c41e59",
+    "archive_bytes": 55640525
+  },
+  "preparation": {
+    "status": "native_cache_retained_and_component_passed",
+    "started_unix": 1793527407.8370526,
+    "job_id": "/romain/hero-agentx-expert-local24-timing-r1-01a1846a",
+    "task_id": "/romain/hero-agentx-expert-local24-timing-r1-01a1846a/0:0",
+    "attempt_uid": "2446c1bd67c4cb50",
+    "node": "s1mwxs64",
+    "gpu_uuids": [
+      "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+      "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+      "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+      "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461"
+    ],
+    "allocated_gpus": 4,
+    "cuda_visible_devices": "",
+    "manifest": {
+      "source": {
+        "parent_commit": "8ae71c9244337b61dc177f0651e10201a0b8effa",
+        "experiment": "expert-backend-local24-timing-r1",
+        "probe_source_note": "Reuse the committed four-row FP32 reference bound, unchanged native .02/.02 tolerances and exact official model source hash."
+      },
+      "purpose": "One four-GPU batch preparation job restores the unchanged official SM100 CUTLASS cache, obeys native freshness/rebuild checks with CUDA hidden, then compares Triton and CUTLASS expert operators on one visible GPU after each original FP32 numerical gate. No full-Hero or AgentX performance claim.",
+      "resources": {
+        "gpus": 4,
+        "cpu": 8,
+        "memory": "256GB",
+        "disk": "200GB"
+      },
+      "task_image": "ghcr.io/marin-community/iris-task@sha256:b66c48a1caca212d2fa970f9fb4d1e0685ab27be9014f335687b1031244f0467",
+      "placement": {
+        "cluster": "cw-us-east-08a",
+        "nvlink_domain": "DH1-392-US-EAST-08A",
+        "nodes": [
+          "s1mwxs64",
+          "s1nrxs64",
+          "s3bsxs64",
+          "s3jtxs64",
+          "s4lqxs64",
+          "s9rrxs64",
+          "s9vrxs64",
+          "sbnwxs64",
+          "sdmtxs64",
+          "sfdqxs64",
+          "sj1txs64",
+          "sj9wxs64",
+          "sjtsxs64"
+        ],
+        "hero_training_gpus": 0,
+        "other_owner_gpus": 16,
+        "owned_gpus_before_request": 0,
+        "checked_unix": 1793527244.960342,
+        "verified_utc": "2026-11-01T10:00:44.877332+00:00",
+        "inventory_sha256": "be2e5d360fe442695bb27aefd14f1f2a8626e2f9485f1142eaba1fee7a8dd045",
+        "allocation_note": "One genuine single-task four-GPU batch job after both AgentX holders are KILLED and provider pods gone. Native worker must match this fresh spare-node allowlist and actual provider/native/UUID admission before any build or CUDA operation. No controller changes or manual preemption."
+      },
+      "excluded_gpu_uuids": [],
+      "serving_prefix": [
+        "uvx",
+        "--from",
+        "vllm @ https://github.com/marin-community/vllm/releases/download/marin-vllm-gpu-20261012-3a054c458ca8/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "--with",
+        "runai-model-streamer[s3]==0.16.1",
+        "--with",
+        "torch==2.14.1+cu132",
+        "--with",
+        "nvidia-cuda-nvcc==13.2.86",
+        "--with",
+        "nvidia-cuda-crt==13.2.86",
+        "--with",
+        "nvidia-nvvm==13.2.86",
+        "--python",
+        "3.12",
+        "--index",
+        "https://download.pytorch.org/whl/cu132",
+        "--index",
+        "https://download.pytorch.org/whl/cpu",
+        "--index-strategy",
+        "unsafe-best-match"
+      ],
+      "cuda_bootstrap": [
+        "python",
+        "-c",
+        "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n"
+      ],
+      "flashinfer_workspace_base": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1",
+      "retention_prefix": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/expert-backend-local24-timing-r1",
+      "component": [
+        "--model-source-sha256",
+        "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+        "--timing-repeats",
+        "20"
+      ],
+      "cost": "New four-GPU batch job after all current model work is released, with 8 CPU cores and 256 GB RAM. Estimate 2\u20134 allocated GPU-hours for the legitimate native freshness rebuild and both one-GPU components. Count all four GPUs for the full job lifetime.",
+      "restore_workspace": {
+        "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r2/953f483020164a00/flashinfer-workspace-aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e.tar.zst",
+        "archive_sha256": "aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e",
+        "readback_sha256": "aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e",
+        "archive_bytes": 55875383,
+        "policy": "Restore unchanged bytes to the original workspace path. Always call native write_ninja and build_and_load; rebuild legitimately if freshness requires it. No prefix edits, synthetic links or binary substitution."
+      },
+      "paired_moe_components": true,
+      "value_hypothesis": "Forced Triton is retained; native CUTLASS passes existing local24/latent3072 BF16 FP32 checks but has no useful latency measurement. A native operator timing comparison can reject weak cases or justify full-model work without a whole-model startup. Native build freshness previously required about 36 minutes on 8 CPU cores; one four-GPU batch job costs about2\u20134 GPU-hours, including idle GPUs and both one-GPU components. No build or GPU inference during the active AgentX window; execute only after current model work is released. Local 24-expert EP1 timing omits full 384 global experts with EP16 dispatch, communication and shared experts, so it is no end-to-end speed bound.",
+      "base_component_class_equivalence": {
+        "compared_native_source": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+        "official_module_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+        "GrugMoeMLP_ast_sha256": "6c2bd11a14f1d4e9de69c3a6ac77e89d2dbcbbcdc5e31724fb8cd4acc5e838e5",
+        "GrugMoeRouter_ast_sha256": "0a03d74c2de2dd10a3834325f1ddb922e9bebaf08c9f6281ec25ce63ffa2f378",
+        "scope": "These complete class ASTs match official e852 and guarded4ceb; source locations omitted. Reuse the official binary/dependency/cache identity for this attention-free component."
+      },
+      "execution_status": "source_ready_not_submitted",
+      "disjointness_policy": "Both prior owned groups are released; zero other owned GPUs/queues. Fresh spare-domain allowlist, protected training priorities, actual native/provider admission and no compute processes gate the new whole-node allocation."
+    },
+    "script_sha256": "12af3d3a6efccfe849c9f8cee8d4a4c6969c8760ca6d9c68962f38734d1849d0",
+    "cpu_affinity": [
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143
+    ],
+    "admitted": {
+      "checked_unix": 1793527524.9396465,
+      "job_id": "/romain/hero-agentx-expert-local24-timing-r1-01a1846a",
+      "task_id": "/romain/hero-agentx-expert-local24-timing-r1-01a1846a/0:0",
+      "attempt_uid": "2446c1bd67c4cb50",
+      "node": "s1mwxs64",
+      "pod_uid": "b8497179-941c-4639-aca8-e0ef5d7b4af8",
+      "gpu_uuids": [
+        "GPU-5e998e30-61be-843b-1c25-8dd3c12d9bbc",
+        "GPU-24ccd90a-43c8-f992-90c4-a40660a836ce",
+        "GPU-5c7cae11-abe0-38e5-5fda-baf078a22f87",
+        "GPU-2021da9b-1a03-03c9-2f1d-897d4a68e461"
+      ],
+      "hero_training_gpus": 0,
+      "physical_groups_disjoint": true,
+      "other_owned_gpus": 0,
+      "priority": "batch",
+      "native_tasks": 1,
+      "gpus": 4,
+      "source_commit": "6060001327e8b04dd7b7cf0dc4d2e94de521eed6",
+      "manifest_sha256": "7cb50953a40d5ce5915d3bf279fed34ea6fbaf9cbf1dcadbb410b260b6912663",
+      "inventory_sha256": "5133d8811260496b940e77fba54e59f8758d74f6d6cc550a368cb1f05719364a"
+    },
+    "restored_workspace": {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/cutlass-batch4-official-geometry-r2/953f483020164a00/flashinfer-workspace-aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e.tar.zst",
+      "archive_sha256": "aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e",
+      "readback_sha256": "aec6fa888dc9ea6ed71384cb18cef520ea52cfaa0daab43f9c526a584cc28c0e",
+      "archive_bytes": 55875383,
+      "policy": "Restore unchanged bytes to the original workspace path. Always call native write_ninja and build_and_load; rebuild legitimately if freshness requires it. No prefix edits, synthetic links or binary substitution.",
+      "destination": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1"
+    },
+    "preflight": {
+      "phase": "preflight",
+      "started_unix": 1793527529.5248163,
+      "versions": {
+        "vllm": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+        "torch": "2.14.1+cu132",
+        "flashinfer-python": "0.6.18.post1",
+        "nvidia-cuda-nvcc": "13.2.86"
+      },
+      "ninja_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/build.ninja",
+      "ninja_sha256": "b2f21930b553e29397d03974f70bad354033cda56f9c72ca05180f84748a44f1",
+      "library_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/fused_moe_100.so",
+      "workspace": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a",
+      "target_cuda_archs": [
+        [
+          10,
+          "0a"
+        ]
+      ],
+      "nvcc_flags": [
+        "-gencode=arch=compute_100a,code=sm_100a",
+        "-DFLASHINFER_ENABLE_FP8_E8M0",
+        "-DFLASHINFER_ENABLE_FP4_E2M1"
+      ],
+      "cuda_initialized": false,
+      "status": "passed",
+      "finished_unix": 1793527529.5591254
+    },
+    "build": {
+      "phase": "build",
+      "started_unix": 1793527532.6367197,
+      "versions": {
+        "vllm": "0.0.0.dev20261012+marin.3a054c458ca8.cu132",
+        "torch": "2.14.1+cu132",
+        "flashinfer-python": "0.6.18.post1",
+        "nvidia-cuda-nvcc": "13.2.86"
+      },
+      "ninja_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/build.ninja",
+      "ninja_sha256": "b2f21930b553e29397d03974f70bad354033cda56f9c72ca05180f84748a44f1",
+      "library_path": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a/cached_ops/fused_moe_100/fused_moe_100.so",
+      "workspace": "/iris/candidates/flashinfer-native-cutlass-official-sm100a-r1/.cache/flashinfer/0.6.18.post1/100a",
+      "target_cuda_archs": [
+        [
+          10,
+          "0a"
+        ]
+      ],
+      "nvcc_flags": [
+        "-gencode=arch=compute_100a,code=sm_100a",
+        "-DFLASHINFER_ENABLE_FP8_E8M0",
+        "-DFLASHINFER_ENABLE_FP4_E2M1"
+      ],
+      "cuda_initialized": false,
+      "library_sha256": "b4e2014801118c05dbc66d3a4ca5e98b74241eb274ef96798eccccbe99af4f22",
+      "library_bytes": 100356696,
+      "status": "passed",
+      "finished_unix": 1793529683.931626
+    },
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/expert-backend-local24-timing-r1/2446c1bd67c4cb50/flashinfer-workspace-313714bcb79c2ec350a152661e74991781b6a5568966f00a506efaf60f838221.tar.zst",
+    "archive_sha256": "313714bcb79c2ec350a152661e74991781b6a5568966f00a506efaf60f838221",
+    "readback_sha256": "313714bcb79c2ec350a152661e74991781b6a5568966f00a506efaf60f838221",
+    "archive_bytes": 55858977,
+    "component": {
+      "status": "both_native_component_numerics_and_timings_complete",
+      "results": {
+        "triton": {
+          "status": "native_backend_existing_torch_tolerances_passed",
+          "attempt_uid": "2446c1bd67c4cb50",
+          "source_sha256": "67556cccbd19684a5c1fbde3c1a3e5e7b7c7fe1fc4f2d2fa844fb423237918a4",
+          "model_source_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+          "torch_reference_atol": 0.02,
+          "torch_reference_rtol": 0.02,
+          "requested_backend": "triton",
+          "actual_backend": "UnquantizedMoeBackend.TRITON",
+          "experts_class": "TritonExperts",
+          "enable_flashinfer_autotune": false,
+          "timing_input_digests": {
+            "parameters": {
+              "router.weight": {
+                "shape": [
+                  24,
+                  3072
+                ],
+                "sha256": "77e02e09c371da79bac11efc815b990a4ef31df8cfdfd30ec02843da7e76bcb9"
+              },
+              "router.bias": {
+                "shape": [
+                  24
+                ],
+                "sha256": "40d27895a4f128fc80b215d49e4d7b04adc66a78a207166ac3ca57e73b28eebc"
+              },
+              "experts.routed_experts.w13_weight": {
+                "shape": [
+                  24,
+                  6144,
+                  3072
+                ],
+                "sha256": "54516544aadad04cad016cb28e462737259d825a5bfc42156d7f2b1b44fd1bee"
+              },
+              "experts.routed_experts.w2_weight": {
+                "shape": [
+                  24,
+                  3072,
+                  3072
+                ],
+                "sha256": "87a6a0a498527f17614ae274b0cdd073c324e199978e2ee4cfb4f8454ca47809"
+              }
+            },
+            "hidden": {
+              "1": "7f3581c8ab05082e0e666e09f8053632086d25a0d4b7c25ce80e4cdc038568b5",
+              "3": "17048d66ab9ad380382c1426db1ba95344ebe31a5bc0e7cc7422b06f81d458b2",
+              "8": "a774c99f967a47cc53edec7780d86ed3a489ad6c848c9a3a9ed83bc26268b2c3",
+              "17": "718ce27789a60a567f27401cf29e17e1534007f2b9b5d5000731618d81d9c752",
+              "32": "6959432ace78397745c6211faa7c8c2e43846cbf71d97480e6bf8a34d5369ca3",
+              "64": "3354cc2c7439cfe026d0264f6d86c9d97aaed1e18ecbd2e9fb52891c7b0969b2",
+              "256": "298bdc627216d19f054531644facf3c26e5e44be294e36110d786568208b0278",
+              "2048": "3d069a95e8267296a9edee48699ca117e06449de328129329ea4870bba4dac9e",
+              "2": "100ca0340049c41e6ce4e633e12ffd73484a4d2865dec4a49bdf60d8d662c817"
+            }
+          },
+          "output_buffer_contract_checked": false,
+          "weight_pattern": "seed42_normal_std0.02",
+          "input_pattern": "seed42_normal",
+          "fp32_reference_matmul": "highest; TF32 disabled",
+          "reference_chunk_rows": 4,
+          "configuration": {
+            "vocab_size": 64,
+            "artifact_schema_version": 1,
+            "hidden_dim": 3072,
+            "intermediate_dim": 3072,
+            "shared_expert_intermediate_dim": 0,
+            "num_shared_experts": 1,
+            "num_experts": 24,
+            "num_experts_per_token": 8,
+            "latent_dim": null,
+            "num_layers": 1,
+            "num_heads": 4,
+            "num_kv_heads": 1,
+            "local_kv_heads": null,
+            "global_kv_heads": null,
+            "head_dim": 768,
+            "max_seq_len": 128,
+            "sliding_window": 8,
+            "global_every": 4,
+            "layer_norm_eps": 1e-05,
+            "initializer_std": 0.02,
+            "qk_mult": 1.0,
+            "qk_mult_long_scale": 1.0,
+            "disable_pko": true,
+            "disable_long_rope": true,
+            "rope_fused": false,
+            "sconv": false,
+            "sconv_kernel": 4,
+            "sconv_sites": [
+              "k",
+              "attn",
+              "mlp"
+            ],
+            "tie_word_embeddings": false,
+            "rope_theta": 10000.0
+          },
+          "rows": [
+            {
+              "token_rows": 1,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.015829086303710938,
+              "torch_fp32_mean_absolute_delta": 0.0025269989855587482,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7111999988555908,
+                  0.6783360242843628,
+                  0.6906880140304565,
+                  0.6886399984359741,
+                  0.6871039867401123,
+                  0.6824640035629272,
+                  0.6626880168914795,
+                  0.6720319986343384,
+                  0.6906239986419678,
+                  0.6855360269546509,
+                  0.7181439995765686,
+                  0.6928960084915161,
+                  0.6594240069389343,
+                  0.685920000076294,
+                  0.6620799899101257,
+                  0.6881920099258423,
+                  0.668287992477417,
+                  0.6711040139198303,
+                  0.6605119705200195,
+                  0.6783999800682068
+                ],
+                "median_milliseconds": 0.6840000152587891,
+                "minimum_milliseconds": 0.6594240069389343,
+                "maximum_milliseconds": 0.7181439995765686,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 3,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.012162089347839355,
+              "torch_fp32_mean_absolute_delta": 0.00246632588095963,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.6898880004882812,
+                  0.677727997303009,
+                  0.6857920289039612,
+                  0.692255973815918,
+                  0.6919999718666077,
+                  0.6884480118751526,
+                  0.6861439943313599,
+                  0.6798080205917358,
+                  0.6826879978179932,
+                  0.6690239906311035,
+                  0.6725760102272034,
+                  0.6917759776115417,
+                  0.6681920289993286,
+                  0.6749439835548401,
+                  0.6678720116615295,
+                  0.6556800007820129,
+                  0.6777920126914978,
+                  0.6639040112495422,
+                  0.6706879734992981,
+                  0.65830397605896
+                ],
+                "median_milliseconds": 0.6777600049972534,
+                "minimum_milliseconds": 0.6556800007820129,
+                "maximum_milliseconds": 0.692255973815918,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 8,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.01670163869857788,
+              "torch_fp32_mean_absolute_delta": 0.002526468364521861,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7221440076828003,
+                  0.7293440103530884,
+                  0.7184640169143677,
+                  0.7173759937286377,
+                  0.7150400280952454,
+                  0.7358400225639343,
+                  0.7022079825401306,
+                  0.7117440104484558,
+                  0.7607679963111877,
+                  0.749504029750824,
+                  0.7175999879837036,
+                  0.7197120189666748,
+                  0.7119359970092773,
+                  0.7024639844894409,
+                  0.7095999717712402,
+                  0.6986560225486755,
+                  0.6943680047988892,
+                  0.6913279891014099,
+                  0.6963199973106384,
+                  0.6813759803771973
+                ],
+                "median_milliseconds": 0.7134880125522614,
+                "minimum_milliseconds": 0.6813759803771973,
+                "maximum_milliseconds": 0.7607679963111877,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 17,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.014636516571044922,
+              "torch_fp32_mean_absolute_delta": 0.002489039208739996,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.6981760263442993,
+                  0.6988160014152527,
+                  0.6975359916687012,
+                  0.6976640224456787,
+                  0.6935359835624695,
+                  0.6851199865341187,
+                  0.6709120273590088,
+                  0.6941760182380676,
+                  0.6887680292129517,
+                  0.6786239743232727,
+                  0.6907200217247009,
+                  0.6812480092048645,
+                  0.6861760020256042,
+                  0.669439971446991,
+                  0.6883519887924194,
+                  0.6987199783325195,
+                  0.7024000287055969,
+                  0.7040960192680359,
+                  0.6688960194587708,
+                  0.6837120056152344
+                ],
+                "median_milliseconds": 0.6897440254688263,
+                "minimum_milliseconds": 0.6688960194587708,
+                "maximum_milliseconds": 0.7040960192680359,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 32,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.016709327697753906,
+              "torch_fp32_mean_absolute_delta": 0.0024567185901105404,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.6790400147438049,
+                  0.6673280000686646,
+                  0.6838719844818115,
+                  0.6933119893074036,
+                  0.6760320067405701,
+                  0.6776639819145203,
+                  0.6872320175170898,
+                  0.6765120029449463,
+                  0.6733440160751343,
+                  0.6906560063362122,
+                  0.6897280216217041,
+                  0.6819199919700623,
+                  0.6667199730873108,
+                  0.6843839883804321,
+                  0.666047990322113,
+                  0.681439995765686,
+                  0.6818879842758179,
+                  0.678879976272583,
+                  0.6867520213127136,
+                  0.6804800033569336
+                ],
+                "median_milliseconds": 0.6809599995613098,
+                "minimum_milliseconds": 0.666047990322113,
+                "maximum_milliseconds": 0.6933119893074036,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 64,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.016884803771972656,
+              "torch_fp32_mean_absolute_delta": 0.002482729498296976,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7377279996871948,
+                  0.7176640033721924,
+                  0.7333440184593201,
+                  0.719871997833252,
+                  0.7165759801864624,
+                  0.7175359725952148,
+                  0.7247999906539917,
+                  0.7207040190696716,
+                  0.7439360022544861,
+                  0.7248960137367249,
+                  0.7191680073738098,
+                  0.7025600075721741,
+                  0.7057279944419861,
+                  0.7154880166053772,
+                  0.6936960220336914,
+                  0.7115520238876343,
+                  0.7100800275802612,
+                  0.7076799869537354,
+                  0.6893119812011719,
+                  0.6986560225486755
+                ],
+                "median_milliseconds": 0.7170559763908386,
+                "minimum_milliseconds": 0.6893119812011719,
+                "maximum_milliseconds": 0.7439360022544861,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 256,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.01754140853881836,
+              "torch_fp32_mean_absolute_delta": 0.0024840461555868387,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.8636159896850586,
+                  0.8473920226097107,
+                  0.8288319706916809,
+                  0.8716480135917664,
+                  0.8625280261039734,
+                  0.8344320058822632,
+                  0.8616639971733093,
+                  0.8478400111198425,
+                  0.8602880239486694,
+                  0.8488960266113281,
+                  0.8366079926490784,
+                  0.8330559730529785,
+                  0.8346239924430847,
+                  0.8388800024986267,
+                  0.8625280261039734,
+                  0.862496018409729,
+                  0.8397120237350464,
+                  0.8201599717140198,
+                  0.8412799835205078,
+                  0.8456000089645386
+                ],
+                "median_milliseconds": 0.8464960157871246,
+                "minimum_milliseconds": 0.8201599717140198,
+                "maximum_milliseconds": 0.8716480135917664,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 2048,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.020641088485717773,
+              "torch_fp32_mean_absolute_delta": 0.002488064579665661,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  1.5967040061950684,
+                  1.5996160507202148,
+                  1.5926400423049927,
+                  1.571552038192749,
+                  1.585919976234436,
+                  1.564479947090149,
+                  1.5837759971618652,
+                  1.5862079858779907,
+                  1.5817919969558716,
+                  1.5805120468139648,
+                  1.581279993057251,
+                  1.5913280248641968,
+                  1.5826239585876465,
+                  1.586143970489502,
+                  1.5826560258865356,
+                  1.5816960334777832,
+                  1.5871360301971436,
+                  1.583616018295288,
+                  1.577888011932373,
+                  1.563647985458374
+                ],
+                "median_milliseconds": 1.5831360220909119,
+                "minimum_milliseconds": 1.563647985458374,
+                "maximum_milliseconds": 1.5996160507202148,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 2,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.011687278747558594,
+              "torch_fp32_mean_absolute_delta": 0.0025007231160998344,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7035199999809265,
+                  0.6708800196647644,
+                  0.6835200190544128,
+                  0.6814079880714417,
+                  0.665727972984314,
+                  0.6742720007896423,
+                  0.6781759858131409,
+                  0.6658239960670471,
+                  0.6619840264320374,
+                  0.6496959924697876,
+                  0.6876479983329773,
+                  0.6864640116691589,
+                  0.6727679967880249,
+                  0.6631039977073669,
+                  0.6687039732933044,
+                  0.6804159879684448,
+                  0.6510720252990723,
+                  0.6576319932937622,
+                  0.6690239906311035,
+                  0.648639976978302
+                ],
+                "median_milliseconds": 0.669952005147934,
+                "minimum_milliseconds": 0.648639976978302,
+                "maximum_milliseconds": 0.7035199999809265,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 1,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.015829086303710938,
+              "torch_fp32_mean_absolute_delta": 0.0025269989855587482,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.6635519862174988,
+                  0.6453760266304016,
+                  0.656607985496521,
+                  0.6680319905281067,
+                  0.6464639902114868,
+                  0.6632320284843445,
+                  0.6450880169868469,
+                  0.6629120111465454,
+                  0.633791983127594,
+                  0.6397119760513306,
+                  0.6563519835472107,
+                  0.6527680158615112,
+                  0.6507520079612732,
+                  0.6380159854888916,
+                  0.6265280246734619,
+                  0.6342719793319702,
+                  0.620959997177124,
+                  0.63155198097229,
+                  0.6384320259094238,
+                  0.627839982509613
+                ],
+                "median_milliseconds": 0.6452320218086243,
+                "minimum_milliseconds": 0.620959997177124,
+                "maximum_milliseconds": 0.6680319905281067,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            }
+          ],
+          "scope": "One-GPU synthetic BF16 triton component check, no graph or full-Hero qualification."
+        },
+        "flashinfer_cutlass": {
+          "status": "native_backend_existing_torch_tolerances_passed",
+          "attempt_uid": "2446c1bd67c4cb50",
+          "source_sha256": "67556cccbd19684a5c1fbde3c1a3e5e7b7c7fe1fc4f2d2fa844fb423237918a4",
+          "model_source_sha256": "9f6404a1a6c25046a675fe4439cc4295e1a6f34ec71ae0614c58a0bb3275e8e3",
+          "torch_reference_atol": 0.02,
+          "torch_reference_rtol": 0.02,
+          "requested_backend": "flashinfer_cutlass",
+          "actual_backend": "UnquantizedMoeBackend.FLASHINFER_CUTLASS",
+          "experts_class": "FlashInferExperts",
+          "enable_flashinfer_autotune": false,
+          "timing_input_digests": {
+            "parameters": {
+              "router.weight": {
+                "shape": [
+                  24,
+                  3072
+                ],
+                "sha256": "77e02e09c371da79bac11efc815b990a4ef31df8cfdfd30ec02843da7e76bcb9"
+              },
+              "router.bias": {
+                "shape": [
+                  24
+                ],
+                "sha256": "40d27895a4f128fc80b215d49e4d7b04adc66a78a207166ac3ca57e73b28eebc"
+              },
+              "experts.routed_experts.w13_weight": {
+                "shape": [
+                  24,
+                  6144,
+                  3072
+                ],
+                "sha256": "54516544aadad04cad016cb28e462737259d825a5bfc42156d7f2b1b44fd1bee"
+              },
+              "experts.routed_experts.w2_weight": {
+                "shape": [
+                  24,
+                  3072,
+                  3072
+                ],
+                "sha256": "87a6a0a498527f17614ae274b0cdd073c324e199978e2ee4cfb4f8454ca47809"
+              }
+            },
+            "hidden": {
+              "1": "7f3581c8ab05082e0e666e09f8053632086d25a0d4b7c25ce80e4cdc038568b5",
+              "3": "17048d66ab9ad380382c1426db1ba95344ebe31a5bc0e7cc7422b06f81d458b2",
+              "8": "a774c99f967a47cc53edec7780d86ed3a489ad6c848c9a3a9ed83bc26268b2c3",
+              "17": "718ce27789a60a567f27401cf29e17e1534007f2b9b5d5000731618d81d9c752",
+              "32": "6959432ace78397745c6211faa7c8c2e43846cbf71d97480e6bf8a34d5369ca3",
+              "64": "3354cc2c7439cfe026d0264f6d86c9d97aaed1e18ecbd2e9fb52891c7b0969b2",
+              "256": "298bdc627216d19f054531644facf3c26e5e44be294e36110d786568208b0278",
+              "2048": "3d069a95e8267296a9edee48699ca117e06449de328129329ea4870bba4dac9e",
+              "2": "100ca0340049c41e6ce4e633e12ffd73484a4d2865dec4a49bdf60d8d662c817"
+            }
+          },
+          "output_buffer_contract_checked": false,
+          "weight_pattern": "seed42_normal_std0.02",
+          "input_pattern": "seed42_normal",
+          "fp32_reference_matmul": "highest; TF32 disabled",
+          "reference_chunk_rows": 4,
+          "configuration": {
+            "vocab_size": 64,
+            "artifact_schema_version": 1,
+            "hidden_dim": 3072,
+            "intermediate_dim": 3072,
+            "shared_expert_intermediate_dim": 0,
+            "num_shared_experts": 1,
+            "num_experts": 24,
+            "num_experts_per_token": 8,
+            "latent_dim": null,
+            "num_layers": 1,
+            "num_heads": 4,
+            "num_kv_heads": 1,
+            "local_kv_heads": null,
+            "global_kv_heads": null,
+            "head_dim": 768,
+            "max_seq_len": 128,
+            "sliding_window": 8,
+            "global_every": 4,
+            "layer_norm_eps": 1e-05,
+            "initializer_std": 0.02,
+            "qk_mult": 1.0,
+            "qk_mult_long_scale": 1.0,
+            "disable_pko": true,
+            "disable_long_rope": true,
+            "rope_fused": false,
+            "sconv": false,
+            "sconv_kernel": 4,
+            "sconv_sites": [
+              "k",
+              "attn",
+              "mlp"
+            ],
+            "tie_word_embeddings": false,
+            "rope_theta": 10000.0
+          },
+          "rows": [
+            {
+              "token_rows": 1,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.010946273803710938,
+              "torch_fp32_mean_absolute_delta": 0.0023163629230111837,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.6362879872322083,
+                  0.6349760293960571,
+                  0.6270080208778381,
+                  0.6208959817886353,
+                  0.612671971321106,
+                  0.6136639714241028,
+                  0.5989440083503723,
+                  0.6056320071220398,
+                  0.6140159964561462,
+                  0.6080319881439209,
+                  0.6349120140075684,
+                  0.6297600269317627,
+                  0.8319360017776489,
+                  0.628000020980835,
+                  0.6095679998397827,
+                  0.6060159802436829,
+                  0.6151999831199646,
+                  0.6068800091743469,
+                  0.6074560284614563,
+                  0.620639979839325
+                ],
+                "median_milliseconds": 0.6146079897880554,
+                "minimum_milliseconds": 0.5989440083503723,
+                "maximum_milliseconds": 0.8319360017776489,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 3,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.011999964714050293,
+              "torch_fp32_mean_absolute_delta": 0.0022673076018691063,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7285439968109131,
+                  0.7288640141487122,
+                  0.711296021938324,
+                  0.7106879949569702,
+                  0.7243520021438599,
+                  0.7071679830551147,
+                  0.7026879787445068,
+                  0.6981440186500549,
+                  0.7317759990692139,
+                  0.7165759801864624,
+                  0.7075520157814026,
+                  0.7249919772148132,
+                  0.7287999987602234,
+                  0.7115200161933899,
+                  0.7108160257339478,
+                  0.716543972492218,
+                  0.7250880002975464,
+                  0.7262719869613647,
+                  0.7366719841957092,
+                  0.7076799869537354
+                ],
+                "median_milliseconds": 0.7165599763393402,
+                "minimum_milliseconds": 0.6981440186500549,
+                "maximum_milliseconds": 0.7366719841957092,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 8,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.01268315315246582,
+              "torch_fp32_mean_absolute_delta": 0.0023084201384335756,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7537599802017212,
+                  0.7764480113983154,
+                  0.7622720003128052,
+                  0.7543039917945862,
+                  0.7699840068817139,
+                  0.7780799865722656,
+                  0.7826880216598511,
+                  0.7473599910736084,
+                  0.740447998046875,
+                  0.7598400115966797,
+                  0.749023973941803,
+                  0.7476800084114075,
+                  0.7647680044174194,
+                  0.7752320170402527,
+                  0.7696959972381592,
+                  0.7591360211372375,
+                  0.7817599773406982,
+                  0.7620800137519836,
+                  0.75273597240448,
+                  0.7323840260505676
+                ],
+                "median_milliseconds": 0.7609600126743317,
+                "minimum_milliseconds": 0.7323840260505676,
+                "maximum_milliseconds": 0.7826880216598511,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 17,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.015058279037475586,
+              "torch_fp32_mean_absolute_delta": 0.002265377203002572,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7495359778404236,
+                  0.7328000068664551,
+                  0.7680000066757202,
+                  0.7514240145683289,
+                  0.7519040107727051,
+                  0.7498239874839783,
+                  0.7781760096549988,
+                  0.7584959864616394,
+                  0.7723519802093506,
+                  0.7637439966201782,
+                  0.7780479788780212,
+                  0.741599977016449,
+                  0.7537599802017212,
+                  0.7596160173416138,
+                  0.7534719705581665,
+                  0.7566400170326233,
+                  0.7530239820480347,
+                  0.7672960162162781,
+                  0.7527040243148804,
+                  0.7591040134429932
+                ],
+                "median_milliseconds": 0.7551999986171722,
+                "minimum_milliseconds": 0.7328000068664551,
+                "maximum_milliseconds": 0.7781760096549988,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 32,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.016034841537475586,
+              "torch_fp32_mean_absolute_delta": 0.0022503091022372246,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7696639895439148,
+                  0.7838079929351807,
+                  0.7679039835929871,
+                  0.7629439830780029,
+                  0.7641599774360657,
+                  0.7663040161132812,
+                  0.7547839879989624,
+                  0.7474560141563416,
+                  0.7608320116996765,
+                  0.7586560249328613,
+                  0.776416003704071,
+                  0.7760639786720276,
+                  0.7778239846229553,
+                  0.7629759907722473,
+                  0.7703679800033569,
+                  0.7570239901542664,
+                  0.7567999958992004,
+                  0.7617279887199402,
+                  0.7612159848213196,
+                  0.7527040243148804
+                ],
+                "median_milliseconds": 0.7629599869251251,
+                "minimum_milliseconds": 0.7474560141563416,
+                "maximum_milliseconds": 0.7838079929351807,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 64,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.014467239379882812,
+              "torch_fp32_mean_absolute_delta": 0.0022566949483007193,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.74726402759552,
+                  0.7757440209388733,
+                  0.7504640221595764,
+                  0.7633919715881348,
+                  0.7650880217552185,
+                  0.7561600208282471,
+                  0.760703980922699,
+                  0.7433279752731323,
+                  0.7383999824523926,
+                  0.7349119782447815,
+                  0.7432640194892883,
+                  0.7373759746551514,
+                  0.736735999584198,
+                  0.7401919960975647,
+                  0.7623680233955383,
+                  0.756928026676178,
+                  0.7677119970321655,
+                  0.7682880163192749,
+                  0.7671359777450562,
+                  0.7557119727134705
+                ],
+                "median_milliseconds": 0.7559359967708588,
+                "minimum_milliseconds": 0.7349119782447815,
+                "maximum_milliseconds": 0.7757440209388733,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 256,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.017679452896118164,
+              "torch_fp32_mean_absolute_delta": 0.0022568656131625175,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.7492160201072693,
+                  0.7518079876899719,
+                  0.7303680181503296,
+                  0.7264959812164307,
+                  0.7253119945526123,
+                  0.7282559871673584,
+                  0.7433919906616211,
+                  0.7279360294342041,
+                  0.7132480144500732,
+                  0.7301120162010193,
+                  0.7334719896316528,
+                  0.737280011177063,
+                  0.7444800138473511,
+                  0.7345280051231384,
+                  0.7439360022544861,
+                  0.7325119972229004,
+                  0.7433599829673767,
+                  0.7384639978408813,
+                  0.7413120269775391,
+                  0.7101759910583496
+                ],
+                "median_milliseconds": 0.7339999973773956,
+                "minimum_milliseconds": 0.7101759910583496,
+                "maximum_milliseconds": 0.7518079876899719,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 2048,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.01900959014892578,
+              "torch_fp32_mean_absolute_delta": 0.0022620707750320435,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  1.501952052116394,
+                  1.5177279710769653,
+                  1.5098880529403687,
+                  1.5215040445327759,
+                  1.495967984199524,
+                  1.5047359466552734,
+                  1.5086719989776611,
+                  1.5166399478912354,
+                  1.5175679922103882,
+                  1.523103952407837,
+                  1.4933120012283325,
+                  1.4894720315933228,
+                  1.4985599517822266,
+                  1.517151951789856,
+                  1.5173759460449219,
+                  1.5167360305786133,
+                  1.500480055809021,
+                  1.4960319995880127,
+                  1.4789760112762451,
+                  1.5110080242156982
+                ],
+                "median_milliseconds": 1.509280025959015,
+                "minimum_milliseconds": 1.4789760112762451,
+                "maximum_milliseconds": 1.523103952407837,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 2,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.012244224548339844,
+              "torch_fp32_mean_absolute_delta": 0.0022741504944860935,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.6131200194358826,
+                  0.6135039925575256,
+                  0.6105599999427795,
+                  0.6174079775810242,
+                  0.6073920130729675,
+                  0.6062719821929932,
+                  0.6096320152282715,
+                  0.6188160181045532,
+                  0.6143040060997009,
+                  0.6330239772796631,
+                  0.6365119814872742,
+                  0.6287999749183655,
+                  0.6283199787139893,
+                  0.6204479932785034,
+                  0.6050559878349304,
+                  0.6094719767570496,
+                  0.6135039925575256,
+                  0.6088320016860962,
+                  0.6036159992218018,
+                  0.6152960062026978
+                ],
+                "median_milliseconds": 0.6135039925575256,
+                "minimum_milliseconds": 0.6036159992218018,
+                "maximum_milliseconds": 0.6365119814872742,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            },
+            {
+              "token_rows": 1,
+              "native_max_absolute_delta": null,
+              "torch_fp32_max_absolute_delta": 0.010946273803710938,
+              "torch_fp32_mean_absolute_delta": 0.0023163629230111837,
+              "timing": {
+                "samples": 20,
+                "warmup_calls": 3,
+                "milliseconds": [
+                  0.6042559742927551,
+                  0.6007040143013,
+                  0.5990719795227051,
+                  0.6643519997596741,
+                  0.6524159908294678,
+                  0.5819839835166931,
+                  0.5617920160293579,
+                  0.5741440057754517,
+                  0.5804479718208313,
+                  0.5791680216789246,
+                  0.5749120116233826,
+                  0.5858880281448364,
+                  0.6054080128669739,
+                  0.5944640040397644,
+                  0.6053439974784851,
+                  0.5857920050621033,
+                  0.5903040170669556,
+                  0.5744320154190063,
+                  0.5865600109100342,
+                  0.5828480124473572
+                ],
+                "median_milliseconds": 0.5862240195274353,
+                "minimum_milliseconds": 0.5617920160293579,
+                "maximum_milliseconds": 0.6643519997596741,
+                "scope": "Native expert operator measured with CUDA events; input clones and router linear are outside the interval. Native host dispatch can leave GPU queue gaps within that interval. Every timed output also passes the original FP32 tolerance check. Synthetic local24/EP1 component, without full-model communication, shared experts or AgentX scoring."
+              }
+            }
+          ],
+          "scope": "One-GPU synthetic BF16 flashinfer_cutlass component check, no graph or full-Hero qualification."
+        }
+      },
+      "comparisons": [
+        {
+          "token_rows": 1,
+          "triton_median_milliseconds": 0.6840000152587891,
+          "cutlass_median_milliseconds": 0.6146079897880554,
+          "triton_over_cutlass_latency_ratio": 1.112904528778845
+        },
+        {
+          "token_rows": 3,
+          "triton_median_milliseconds": 0.6777600049972534,
+          "cutlass_median_milliseconds": 0.7165599763393402,
+          "triton_over_cutlass_latency_ratio": 0.9458524441452862
+        },
+        {
+          "token_rows": 8,
+          "triton_median_milliseconds": 0.7134880125522614,
+          "cutlass_median_milliseconds": 0.7609600126743317,
+          "triton_over_cutlass_latency_ratio": 0.937615644276453
+        },
+        {
+          "token_rows": 17,
+          "triton_median_milliseconds": 0.6897440254688263,
+          "cutlass_median_milliseconds": 0.7551999986171722,
+          "triton_over_cutlass_latency_ratio": 0.9133263065834206
+        },
+        {
+          "token_rows": 32,
+          "triton_median_milliseconds": 0.6809599995613098,
+          "cutlass_median_milliseconds": 0.7629599869251251,
+          "triton_over_cutlass_latency_ratio": 0.8925238691818022
+        },
+        {
+          "token_rows": 64,
+          "triton_median_milliseconds": 0.7170559763908386,
+          "cutlass_median_milliseconds": 0.7559359967708588,
+          "triton_over_cutlass_latency_ratio": 0.9485670472816423
+        },
+        {
+          "token_rows": 256,
+          "triton_median_milliseconds": 0.8464960157871246,
+          "cutlass_median_milliseconds": 0.7339999973773956,
+          "triton_over_cutlass_latency_ratio": 1.1532643308061046
+        },
+        {
+          "token_rows": 2048,
+          "triton_median_milliseconds": 1.5831360220909119,
+          "cutlass_median_milliseconds": 1.509280025959015,
+          "triton_over_cutlass_latency_ratio": 1.0489345879237804
+        },
+        {
+          "token_rows": 2,
+          "triton_median_milliseconds": 0.669952005147934,
+          "cutlass_median_milliseconds": 0.6135039925575256,
+          "triton_over_cutlass_latency_ratio": 1.0920092016925471
+        },
+        {
+          "token_rows": 1,
+          "triton_median_milliseconds": 0.6452320218086243,
+          "cutlass_median_milliseconds": 0.5862240195274353,
+          "triton_over_cutlass_latency_ratio": 1.1006577695822772
+        }
+      ],
+      "scope": "Seed 42 synthetic BF16 native expert operators: 24 local experts, top 8, latent dimension 3072. One visible GPU. Every timed output passes original FP32 absolute and relative tolerances 0.02. Input cloning and router linear are excluded; native host-dispatch GPU queue gaps can remain. Full 384-expert EP16, two shared experts, model-state equivalence and AgentX performance are unqualified. Ratios guide whether a full-model trial is useful."
+    },
+    "finished_unix": 1793529715.8279502
+  },
+  "scope": "Actual single native four-GPU batch task. Raw native output bytes copied unchanged to permanent user storage and fully SHA256-read back. All four allocated GPUs, build/startup and idle time count in native lifetime. One visible GPU for synthetic expert numerics/timings; no full-model or AgentX qualification.",
+  "provider_release": {
+    "checked_unix": 1793529998.1657965,
+    "pod_gone": false,
+    "phase": "Succeeded",
+    "deletion_timestamp": null,
+    "containers": [
+      {
+        "name": "output-uploader",
+        "state": {
+          "terminated": {
+            "containerID": "containerd://a2ea1932421ca102ec1c9f17535b587f90e6810f18c24dca4537b5f614802100",
+            "exitCode": 0,
+            "finishedAt": "2026-11-01T10:42:02Z",
+            "message": "{\"state\": \"TASK_OUTPUT_ARCHIVE_STATE_UPLOADED\", \"uri\": \"s3://marin-us-east-08a/tmp/ttl=7d/iris/task-outputs/romain/hero-agentx-expert-local24-timing-r1-01a1846a/0/2446c1bd67c4cb50/outputs.tar.zst\", \"size_bytes\": \"55640525\", \"sha256\": \"856e3d1cf684c81eb11c5b9938fa3ce2a666362b491d8e8ee3e41f0643c41e59\", \"retention\": \"TASK_OUTPUT_ARCHIVE_RETENTION_TTL\", \"ttl_days\": 7, \"skipped_count\": 0}",
+            "reason": "Completed",
+            "startedAt": "2026-11-01T10:03:19Z"
+          }
+        }
+      },
+      {
+        "name": "task",
+        "state": {
+          "terminated": {
+            "containerID": "containerd://8e63e0a09802036e8944253b77d60c3803065d6d5007043b192c08fc9cadf481",
+            "exitCode": 0,
+            "finishedAt": "2026-11-01T10:41:56Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-01T10:03:19Z"
+          }
+        }
+      }
+    ]
+  },
+  "no_active_gpu_allocation": true,
+  "inventory_zero_owned_gpus": true,
+  "inventory_sha256": "b780f525bba9c1debec85bd2f4408d8a5de4dbbeb630a8e8b18f7eafe772e51a",
+  "decision": {
+    "selected_backend": "triton",
+    "full_model_cutlass_trial": "skip",
+    "reason": "Paired local24/3072 timing gives mixed, modest differences: CUTLASS is slower at tested rows3/8/17/32/64 and faster at1/2/256/2048. These component timings exclude router linear, shared experts and EP16 communication and do not establish a whole-model gain or bound. Prior tiny-model source comparisons differ, so retaining CUTLASS would also require unresolved full-model source/state qualification. Its 2151-second native rebuild and private binary cache add reproducibility cost. Keep the already qualified Triton recipe; no new tolerance or quality gate is introduced.",
+    "tiny_source_comparison": "results/tiny-cutlass-ep4-r2-comparison.json",
+    "numerical_scope": "Both operators pass original independent FP32 absolute/relative tolerances0.02 on identical canonical parameters/inputs. This is not full-model equivalence or a quality-regression finding."
+  },
+  "inventory_file": "results/gb200-inventory-expert-local24-timing-r1-released.json",
+  "inventory_original_snapshot_sha256": "b780f525bba9c1debec85bd2f4408d8a5de4dbbeb630a8e8b18f7eafe772e51a",
+  "inventory_published_json_sha256": "df0ce34cf3059f86795086b43941c6036de16ca1fcb3726a49dcc634c9f8fefd"
+}

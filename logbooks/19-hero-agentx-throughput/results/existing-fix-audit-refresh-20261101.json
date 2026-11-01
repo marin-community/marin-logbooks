@@ -1,0 +1,1302 @@
+{
+  "checked_unix": 1793528462.52619,
+  "vllm_open_hero_prs": [
+    {
+      "headRefOid": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+      "number": 110,
+      "title": "Store Hero global KV heads once",
+      "updatedAt": "2026-11-01T09:18:34Z",
+      "url": "https://github.com/marin-community/vllm/pull/110"
+    },
+    {
+      "headRefOid": "d8715ad1e90dcdd760e40709d6cf1b1a6d7da9fd",
+      "number": 109,
+      "title": "Backport the Triton masked-tile softmax correction",
+      "updatedAt": "2026-10-30T02:32:46Z",
+      "url": "https://github.com/marin-community/vllm/pull/109"
+    },
+    {
+      "headRefOid": "ca90a70aeb7a48eedfc4c55fd4e3bb6207fb2d85",
+      "number": 108,
+      "title": "[GrugMoE] Allow explicit piecewise graphs around ShortConv",
+      "updatedAt": "2026-10-30T22:05:17Z",
+      "url": "https://github.com/marin-community/vllm/pull/108"
+    },
+    {
+      "headRefOid": "7b161cb4606663d86da947d702b726b295745f54",
+      "number": 107,
+      "title": "Write ShortConv results into its output buffer",
+      "updatedAt": "2026-10-30T02:06:11Z",
+      "url": "https://github.com/marin-community/vllm/pull/107"
+    },
+    {
+      "headRefOid": "098740ea76477d162aa2b4c45d0428f60ee0fc2d",
+      "number": 106,
+      "title": "[release] Bundle the source tests for GPU wheel qualification",
+      "updatedAt": "2026-10-26T21:53:14Z",
+      "url": "https://github.com/marin-community/vllm/pull/106"
+    },
+    {
+      "headRefOid": "90066873e50b9b32a1cddd1c0efa5ed25aeba3ac",
+      "number": 96,
+      "title": "[GrugMoE] Add an opt-in row-invariant GEMM for the router and head gate",
+      "updatedAt": "2026-10-26T04:51:04Z",
+      "url": "https://github.com/marin-community/vllm/pull/96"
+    },
+    {
+      "headRefOid": "e85a1f263e68820bb0d1681f4c5feedb190120e9",
+      "number": 95,
+      "title": "Remove obsolete GPU compatibility overrides",
+      "updatedAt": "2026-10-14T12:03:53Z",
+      "url": "https://github.com/marin-community/vllm/pull/95"
+    },
+    {
+      "headRefOid": "5ab8cb4bfde142eaffd37f07babb766795a5514b",
+      "number": 83,
+      "title": "Handle omitted Grug short-convolution metadata during profiling",
+      "updatedAt": "2026-10-12T22:03:22Z",
+      "url": "https://github.com/marin-community/vllm/pull/83"
+    },
+    {
+      "headRefOid": "27d6afd0e6f594ee78b06ab431e62e66afcbd55a",
+      "number": 82,
+      "title": "Link Marin serving tasks to the performance guides",
+      "updatedAt": "2026-10-12T22:03:21Z",
+      "url": "https://github.com/marin-community/vllm/pull/82"
+    }
+  ],
+  "grug_main_commits": [
+    {
+      "sha": "b316582ba80ed7cbccb908f3a957578ae2ed2899",
+      "node_id": "C_kwDOR3mTcdoAKGIzMTY1ODJiYTgwZWQ3Y2JjY2I5MDhmM2E5NTc1NzhhZTJlZDI4OTk",
+      "commit": {
+        "author": {
+          "name": "David Hall",
+          "email": "dlwh@cs.stanford.edu",
+          "date": "2026-10-20T19:02:43Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-10-20T19:02:43Z"
+        },
+        "message": "[grug] Honor Hero YaRN and BF16 router precision (#97)\n\nCarry explicit YaRN scaling through Grug config serialization and rotary\nconstruction, retaining partial rotation and the native Q/K amplitude.\nTransformers aliases rope_scaling to rope_parameters, so assign the resolved\nparameters once to preserve them when a config is reloaded.\n\nRound Hero router dot outputs through the hidden-state dtype before FP32 QB\nbias and expert selection. Keep the Snowball profile's existing precision.\nCPU config and rotary checks pass; full GPU model parity remains unverified.",
+        "tree": {
+          "sha": "45cd08347d60abf8b7b3ddcf68fdcd2260a318b0",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/45cd08347d60abf8b7b3ddcf68fdcd2260a318b0"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/b316582ba80ed7cbccb908f3a957578ae2ed2899",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq17rUCRC1aQ7uu5UhlAAAzsAQAE9MDP07ptVMQ4FG2OTPd4Km\nxkjgg9UFcHLFRpwUIbj6TSYwcrsdUBw2RQOZuVuZjIOJ8s5KAjYEaFid8Uag8JUI\na8NmDroje2YOQIVAHuXPCM4G8L7ZpXL/a/J6LeJhm0qz+amxphphJkipInSo1+gb\nx4MTFY70nleXGhRlKEyP2I3oSM2+lmZubKXNYayN5jaGTPY0TcdfCyqNo0+Wzbu1\nzyRk3l5gUI2dO0QYCcwZD2/yDlRVmR96uDUkHqqJmd8EiqOKRng5+q0DVzzADtMw\nwm33R1WZCwgHQglUHJdxwdekxqgXVjOPDgIYbIt5ksmGLktPHX78/nG/2/sJR67E\n8/SPH/8qy4f3fLzTcpRPakTtJgVFfHVViZjKbvKY5JjrCElhKVrxZ91yT13ElPXB\nOHdqrCoD/ymwW8SMLPxiPXfd2PSToNZEsht5Mqg9pmLiXGR+3eu+veTYrjbmngTT\nPt8U+a3cH8mfAWy284vts+EB3J0+WTBbs5Ao0dOpDMz8Jtze6OdS7IekNGtM5zJ9\nPsLk3vT6cb+Hyn7nYcf6M8346GYOd+N8gLWSHbwCxn9wq/rB1EjDd+Xy5YfJrkua\n2bk32QoZRLRunHYvvKoZb6cjornHzoH3FCFRNabvcbP/ZeNbbFHyMVKxM5hkYvot\nq/gBNacIsyguXLbIKJv8\n=7lML\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 45cd08347d60abf8b7b3ddcf68fdcd2260a318b0\nparent ac3b5ea5e8510c002f3d349ea5c0f8b3f20e74ac\nauthor David Hall <dlwh@cs.stanford.edu> 1792522963 -0700\ncommitter GitHub <noreply@github.com> 1792522963 -0700\n\n[grug] Honor Hero YaRN and BF16 router precision (#97)\n\nCarry explicit YaRN scaling through Grug config serialization and rotary\nconstruction, retaining partial rotation and the native Q/K amplitude.\nTransformers aliases rope_scaling to rope_parameters, so assign the resolved\nparameters once to preserve them when a config is reloaded.\n\nRound Hero router dot outputs through the hidden-state dtype before FP32 QB\nbias and expert selection. Keep the Snowball profile's existing precision.\nCPU config and rotary checks pass; full GPU model parity remains unverified.",
+          "verified_at": "2026-10-20T19:02:45Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/b316582ba80ed7cbccb908f3a957578ae2ed2899",
+      "html_url": "https://github.com/marin-community/vllm/commit/b316582ba80ed7cbccb908f3a957578ae2ed2899",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/b316582ba80ed7cbccb908f3a957578ae2ed2899/comments",
+      "author": {
+        "login": "dlwh",
+        "id": 9633,
+        "node_id": "MDQ6VXNlcjk2MzM=",
+        "avatar_url": "https://avatars.githubusercontent.com/u/9633?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/dlwh",
+        "html_url": "https://github.com/dlwh",
+        "followers_url": "https://api.github.com/users/dlwh/followers",
+        "following_url": "https://api.github.com/users/dlwh/following{/other_user}",
+        "gists_url": "https://api.github.com/users/dlwh/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/dlwh/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/dlwh/subscriptions",
+        "organizations_url": "https://api.github.com/users/dlwh/orgs",
+        "repos_url": "https://api.github.com/users/dlwh/repos",
+        "events_url": "https://api.github.com/users/dlwh/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/dlwh/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "ac3b5ea5e8510c002f3d349ea5c0f8b3f20e74ac",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/ac3b5ea5e8510c002f3d349ea5c0f8b3f20e74ac",
+          "html_url": "https://github.com/marin-community/vllm/commit/ac3b5ea5e8510c002f3d349ea5c0f8b3f20e74ac"
+        }
+      ]
+    },
+    {
+      "sha": "4c6a2cc228a22f2e889a12268df75d41db51483b",
+      "node_id": "C_kwDOR3mTcdoAKDRjNmEyY2MyMjhhMjJmMmU4ODlhMTIyNjhkZjc1ZDQxZGI1MTQ4M2I",
+      "commit": {
+        "author": {
+          "name": "Romain Yon",
+          "email": "1596570+yonromai@users.noreply.github.com",
+          "date": "2026-10-05T06:03:13Z"
+        },
+        "committer": {
+          "name": "Romain Yon",
+          "email": "1596570+yonromai@users.noreply.github.com",
+          "date": "2026-10-05T06:03:13Z"
+        },
+        "message": "Support Hero ShortConv profiling in GPU runner V2",
+        "tree": {
+          "sha": "a6b3203d518eb10195d2dae092528e6a29605859",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/a6b3203d518eb10195d2dae092528e6a29605859"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/4c6a2cc228a22f2e889a12268df75d41db51483b",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/4c6a2cc228a22f2e889a12268df75d41db51483b",
+      "html_url": "https://github.com/marin-community/vllm/commit/4c6a2cc228a22f2e889a12268df75d41db51483b",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/4c6a2cc228a22f2e889a12268df75d41db51483b/comments",
+      "author": {
+        "login": "yonromai",
+        "id": 1596570,
+        "node_id": "MDQ6VXNlcjE1OTY1NzA=",
+        "avatar_url": "https://avatars.githubusercontent.com/u/1596570?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yonromai",
+        "html_url": "https://github.com/yonromai",
+        "followers_url": "https://api.github.com/users/yonromai/followers",
+        "following_url": "https://api.github.com/users/yonromai/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yonromai/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yonromai/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yonromai/subscriptions",
+        "organizations_url": "https://api.github.com/users/yonromai/orgs",
+        "repos_url": "https://api.github.com/users/yonromai/repos",
+        "events_url": "https://api.github.com/users/yonromai/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yonromai/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yonromai",
+        "id": 1596570,
+        "node_id": "MDQ6VXNlcjE1OTY1NzA=",
+        "avatar_url": "https://avatars.githubusercontent.com/u/1596570?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yonromai",
+        "html_url": "https://github.com/yonromai",
+        "followers_url": "https://api.github.com/users/yonromai/followers",
+        "following_url": "https://api.github.com/users/yonromai/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yonromai/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yonromai/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yonromai/subscriptions",
+        "organizations_url": "https://api.github.com/users/yonromai/orgs",
+        "repos_url": "https://api.github.com/users/yonromai/repos",
+        "events_url": "https://api.github.com/users/yonromai/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yonromai/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "f76d493a0af64b7d6b74d3a9f224f6e162f058b8",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/f76d493a0af64b7d6b74d3a9f224f6e162f058b8",
+          "html_url": "https://github.com/marin-community/vllm/commit/f76d493a0af64b7d6b74d3a9f224f6e162f058b8"
+        }
+      ]
+    },
+    {
+      "sha": "9e5f27bebd1b4294adf33e1361de14eeb014cbf1",
+      "node_id": "C_kwDOR3mTcdoAKDllNWYyN2JlYmQxYjQyOTRhZGYzM2UxMzYxZGUxNGVlYjAxNGNiZjE",
+      "commit": {
+        "author": {
+          "name": "Romain Yon",
+          "email": "1596570+yonromai@users.noreply.github.com",
+          "date": "2026-10-04T19:39:25Z"
+        },
+        "committer": {
+          "name": "Romain Yon",
+          "email": "1596570+yonromai@users.noreply.github.com",
+          "date": "2026-10-04T19:39:25Z"
+        },
+        "message": "Preserve Snowball and Hero serving on vLLM 0.30.0\n\nReplay the model, topology, capture and reload changes from Marin main\n39e62869693c46402b1a95fde4fc55ca1aab9ae1 in their original order.\nKeep GrugMoE routing, FP32 biases, BF16 projections, mixed attention,\npipeline and expert parallelism, checkpoint-coordinate weight transfer,\nonline EAGLE capture, reasoning parsing and layerwise storage release.\nThe upstream release still lacks these Marin model and deployment paths.\n\nKeep upstream's new prefill context parallelism imports alongside Marin's\nexpert parallelism import. No Grug model or config payload changes from\nthe previously qualified main source are needed for this textual replay.\n\nDrop model patches when upstream provides the corresponding GrugMoE\nbehavior, deployment patches when upstream supports Marin's native rank\nplacement and network constraints, and capture and reload patches when\nupstream preserves the same training and weight-update contracts.",
+        "tree": {
+          "sha": "95ea8c563f5fad8809197f6927eb3fce8eb7f4f6",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/95ea8c563f5fad8809197f6927eb3fce8eb7f4f6"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/9e5f27bebd1b4294adf33e1361de14eeb014cbf1",
+        "comment_count": 0,
+        "verification": {
+          "verified": false,
+          "reason": "unsigned",
+          "signature": null,
+          "payload": null,
+          "verified_at": null
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/9e5f27bebd1b4294adf33e1361de14eeb014cbf1",
+      "html_url": "https://github.com/marin-community/vllm/commit/9e5f27bebd1b4294adf33e1361de14eeb014cbf1",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/9e5f27bebd1b4294adf33e1361de14eeb014cbf1/comments",
+      "author": {
+        "login": "yonromai",
+        "id": 1596570,
+        "node_id": "MDQ6VXNlcjE1OTY1NzA=",
+        "avatar_url": "https://avatars.githubusercontent.com/u/1596570?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yonromai",
+        "html_url": "https://github.com/yonromai",
+        "followers_url": "https://api.github.com/users/yonromai/followers",
+        "following_url": "https://api.github.com/users/yonromai/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yonromai/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yonromai/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yonromai/subscriptions",
+        "organizations_url": "https://api.github.com/users/yonromai/orgs",
+        "repos_url": "https://api.github.com/users/yonromai/repos",
+        "events_url": "https://api.github.com/users/yonromai/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yonromai/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "yonromai",
+        "id": 1596570,
+        "node_id": "MDQ6VXNlcjE1OTY1NzA=",
+        "avatar_url": "https://avatars.githubusercontent.com/u/1596570?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yonromai",
+        "html_url": "https://github.com/yonromai",
+        "followers_url": "https://api.github.com/users/yonromai/followers",
+        "following_url": "https://api.github.com/users/yonromai/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yonromai/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yonromai/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yonromai/subscriptions",
+        "organizations_url": "https://api.github.com/users/yonromai/orgs",
+        "repos_url": "https://api.github.com/users/yonromai/repos",
+        "events_url": "https://api.github.com/users/yonromai/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yonromai/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "9813efdc269e2277ac63d087d322526eea71ee7c",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/9813efdc269e2277ac63d087d322526eea71ee7c",
+          "html_url": "https://github.com/marin-community/vllm/commit/9813efdc269e2277ac63d087d322526eea71ee7c"
+        }
+      ]
+    }
+  ],
+  "attention_main_commits": [
+    {
+      "sha": "f2aad6aa70749ccc4604d31d6f8a04c6728c3361",
+      "node_id": "C_kwDOR3mTcdoAKGYyYWFkNmFhNzA3NDljY2M0NjA0ZDMxZDZmOGEwNGM2NzI4YzMzNjE",
+      "commit": {
+        "author": {
+          "name": "Nick Hill",
+          "email": "nickhill123@gmail.com",
+          "date": "2026-09-15T20:36:51Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-15T20:36:51Z"
+        },
+        "message": "[MRV2] Buffer util simplifications (#56888)\n\nSigned-off-by: Nick Hill <nickhill123@gmail.com>",
+        "tree": {
+          "sha": "a994b2afc970f9a669468db53416767caabf6f4f",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/a994b2afc970f9a669468db53416767caabf6f4f"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/f2aad6aa70749ccc4604d31d6f8a04c6728c3361",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqqaxjCRC1aQ7uu5UhlAAA9hgQADNg09vfi+xr3bl/pS6XCqx6\nibMBvBvw2ryZlrTt3B/ItetEryGrOtYOUkaWMIs0BF5oMpC6Nv2Pc0TOX0JkCsHh\nE3is8ZwuWgTc/WzFurL710vnNn+ZpOYR/mhHHF9ZCs2tZvhw4CpJDyQuGmk/F8u0\nX42SJT1H8a8hXGvI5As96yWcULKaPP5pCcLSHo3dDXEBIMeNRRTn0KksIU/PIzjT\nndCyXzTKH98kdkaQiWMQrv5ntOm5kvXu9MST98EbIo+NSJpABksPGxebFD9iT16t\nes9Kfu8GHOTfMuf9+5nGmW6t6SzteMHENxditEqIrJziTvUYyTOemXlCrhgvs2DB\nzWMe6Df4e0VakukPe+/wdK0yXTCHU0UCyBSojfFi2DqzPg8XKGSgpLx7rviXv73B\nhgG6iIjuW/ItgeNL29EKFX93/iSv7OOsWKmQmxfFeewFfjps2BHTxzUsiB2dAKim\nnsDTHveiarlzdEwaeOeByTXJRZjB4K84P3oonTZ6wk2+vy6vgAEptOSB2sGBuk7b\nWeQo6eEP854wiqoyuU6ez7QnHIBtJNtcYkPEyDyiaxU4607Wcb4MkJICC0XYW9Z6\nfPKrHEoDN+dgdlEOB0WSNuSmsAkXzohKR/KtrJQkcWdsanNrFWRvVVKGunwCdkJx\nCyS9+xTGmNKxoVQvGygF\n=264g\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree a994b2afc970f9a669468db53416767caabf6f4f\nparent b6ce7143548a937b10764eaddfd03e459d0dab33\nauthor Nick Hill <nickhill123@gmail.com> 1789504611 -0700\ncommitter GitHub <noreply@github.com> 1789504611 +0000\n\n[MRV2] Buffer util simplifications (#56888)\n\nSigned-off-by: Nick Hill <nickhill123@gmail.com>",
+          "verified_at": "2026-09-15T20:36:52Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/f2aad6aa70749ccc4604d31d6f8a04c6728c3361",
+      "html_url": "https://github.com/marin-community/vllm/commit/f2aad6aa70749ccc4604d31d6f8a04c6728c3361",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/f2aad6aa70749ccc4604d31d6f8a04c6728c3361/comments",
+      "author": {
+        "login": "njhill",
+        "id": 16958488,
+        "node_id": "MDQ6VXNlcjE2OTU4NDg4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/16958488?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/njhill",
+        "html_url": "https://github.com/njhill",
+        "followers_url": "https://api.github.com/users/njhill/followers",
+        "following_url": "https://api.github.com/users/njhill/following{/other_user}",
+        "gists_url": "https://api.github.com/users/njhill/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/njhill/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/njhill/subscriptions",
+        "organizations_url": "https://api.github.com/users/njhill/orgs",
+        "repos_url": "https://api.github.com/users/njhill/repos",
+        "events_url": "https://api.github.com/users/njhill/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/njhill/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "b6ce7143548a937b10764eaddfd03e459d0dab33",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/b6ce7143548a937b10764eaddfd03e459d0dab33",
+          "html_url": "https://github.com/marin-community/vllm/commit/b6ce7143548a937b10764eaddfd03e459d0dab33"
+        }
+      ]
+    },
+    {
+      "sha": "5fe77aecfc7687c1f3cc49862022ce34d45d1784",
+      "node_id": "C_kwDOR3mTcdoAKDVmZTc3YWVjZmM3Njg3YzFmM2NjNDk4NjIwMjJjZTM0ZDQ1ZDE3ODQ",
+      "commit": {
+        "author": {
+          "name": "Wentao Ye",
+          "email": "44945378+yewentao256@users.noreply.github.com",
+          "date": "2026-09-11T15:17:02Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-11T15:17:02Z"
+        },
+        "message": "[Deprecation] Deprecate items scheduled for 0.29 (#55353)\n\nSigned-off-by: yewentao256 <zhyanwentao@126.com>",
+        "tree": {
+          "sha": "01452b4f98369262fbe9148eee8383579d0e6338",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/01452b4f98369262fbe9148eee8383579d0e6338"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/5fe77aecfc7687c1f3cc49862022ce34d45d1784",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqpBtuCRC1aQ7uu5UhlAAAAYkQACdiMfI5snxH9euxFGF4ixBN\nKniCTmRGNQ0YEkAkaTMwr4nJmN/2BsHyVH9POYPn7CrfBl8g4BAJxJfqEVelVJ+x\nPfRqb/UmNJdkGdPygl7K7AddEeqF0PEYgxaoH9hNKCD2NrdtYoaOcj/c3XmJi/Ff\ndaobliEC6DyfqxD9rJJR/E7FoX2DRDfCeEE5VaOasJ3xaf2dyHRFGK4mGpll00Nn\nizLAotmSlXr8meWDYDkbaas7zCA2d7ROr7E1q9HisBPmx4FwCFfRippxpvYN93QP\nooY6gPRb9hHjvPHNmhkVrhumrL64ChQXNyYgUgxqbOG2t9fpYsg32FTXJAWZU61V\nzKE+HnO3/pKFzeF2AQsfRjR5Ljz5+bLopsmLjowzY77Lj3XXScZ979csPqrxECjG\nOTXPfCSyVBSqfsB2FM1/B19gUBDoROSKgjZz1bMKjL8AXSLKaV/QcPNr7mM/Wd6o\n6noClOtnn/I9egWT+H7ES1lMWMU2wqRn8Bl5EwlQK6JSMdGvz4DeiHKiHyJInjOb\nWuSK8u53bkHMKt9yReQFoByeA84/v/GzG5uQorYITGg3tND1vsyeH0uhitZxTKaQ\nkWn5lhwkNHfYS/bEz5GUYmJDS/p6b/NafitPBKOtqGONjGPk3cA3pamTAHxSKl3+\ninhkHA8+GMc0XSowunNX\n=jImQ\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 01452b4f98369262fbe9148eee8383579d0e6338\nparent 1e1060f9988fa188fd243c093610889594ba18fd\nauthor Wentao Ye <44945378+yewentao256@users.noreply.github.com> 1789139822 -0400\ncommitter GitHub <noreply@github.com> 1789139822 -0700\n\n[Deprecation] Deprecate items scheduled for 0.29 (#55353)\n\nSigned-off-by: yewentao256 <zhyanwentao@126.com>",
+          "verified_at": "2026-09-11T15:17:02Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/5fe77aecfc7687c1f3cc49862022ce34d45d1784",
+      "html_url": "https://github.com/marin-community/vllm/commit/5fe77aecfc7687c1f3cc49862022ce34d45d1784",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/5fe77aecfc7687c1f3cc49862022ce34d45d1784/comments",
+      "author": {
+        "login": "yewentao256",
+        "id": 44945378,
+        "node_id": "MDQ6VXNlcjQ0OTQ1Mzc4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/44945378?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/yewentao256",
+        "html_url": "https://github.com/yewentao256",
+        "followers_url": "https://api.github.com/users/yewentao256/followers",
+        "following_url": "https://api.github.com/users/yewentao256/following{/other_user}",
+        "gists_url": "https://api.github.com/users/yewentao256/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/yewentao256/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/yewentao256/subscriptions",
+        "organizations_url": "https://api.github.com/users/yewentao256/orgs",
+        "repos_url": "https://api.github.com/users/yewentao256/repos",
+        "events_url": "https://api.github.com/users/yewentao256/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/yewentao256/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "1e1060f9988fa188fd243c093610889594ba18fd",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/1e1060f9988fa188fd243c093610889594ba18fd",
+          "html_url": "https://github.com/marin-community/vllm/commit/1e1060f9988fa188fd243c093610889594ba18fd"
+        }
+      ]
+    },
+    {
+      "sha": "4b839c3378c6a40fa613328a9b97069ed83b181b",
+      "node_id": "C_kwDOR3mTcdoAKDRiODM5YzMzNzhjNmE0MGZhNjEzMzI4YTliOTcwNjllZDgzYjE4MWI",
+      "commit": {
+        "author": {
+          "name": "Andrii Skliar",
+          "email": "andreyws96@gmail.com",
+          "date": "2026-09-11T06:19:55Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-11T06:19:55Z"
+        },
+        "message": "[Attention] Extend XQA decode support on SM90 (#50439)\n\nSigned-off-by: Andrii Skliar <askliar@nvidia.com>\nCo-authored-by: Andrii Skliar <askliar@nvidia.com>\nCo-authored-by: OpenAI Codex <codex@openai.com>",
+        "tree": {
+          "sha": "6cadd0b8f2d74475df200777febd80c631571322",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/6cadd0b8f2d74475df200777febd80c631571322"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/4b839c3378c6a40fa613328a9b97069ed83b181b",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqo52LCRC1aQ7uu5UhlAAAenQQAHkEW59Nnd89LSraeFN6LHGP\nhNkMhrc7hcVYWM83jlx04hxLsvI3wOB5fud7lmzR9h1tzyczJVqFh17cKntcZcJQ\n94TJL1oxwu0glBW/XTkUWZARHj8fMxLyCS82Ajvhy2zS2jMbghuj47nd/lbh6fXT\n3vniJUHx5AS0/bDBkmqrUvEOyJEz0moFczLjHpSiN0IByuiCTl+5rS6DGbgRnP7S\nBDLRzUsCMEJ/X8oZEgzlq/9K3C9KyOuLHTtcEgTMUzu8S0XTtABPa+44yUE2TRYy\nI2SBloB6I1PTb6KycwA1Yz7hXguf3ETJpRNnvTvM9aQDdtk/oadY/lR35TpNAFeN\n3grvXkz7W80ulpnibjlOInsmKAmP4U6FeqtuXN8F6ud5tA0q2QRJceuSm6pc+6fZ\n2bXqF+vsuG5Fr5x2Cwi2+zoNFTfmnAWpMvZydGJQLxDM3ZILNbQttCWsuYx+du6Z\nKxkIFTcXnmrZ2M0klY0/8FCzJsiv0XY5WpNodrI6cCH8wZEg0rqQHgFbA/t4G4up\npSlW1G8afICEYQgmZK910cTdDBna7egn2dzOhTba7pvCURzze30Y2WaICLNREkec\n8inYjAL4E+MXy8rGySeWMX2xY+j7Jw1j0v4TpS2bhL5a8BAy27yx2ByxsHza/Hr1\nlu8628nDcJipoZXf2MhY\n=wiZr\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 6cadd0b8f2d74475df200777febd80c631571322\nparent fbf51c70269bb0d8333e14c5788e628e33c72f5d\nauthor Andrii Skliar <andreyws96@gmail.com> 1789107595 +0200\ncommitter GitHub <noreply@github.com> 1789107595 +0000\n\n[Attention] Extend XQA decode support on SM90 (#50439)\n\nSigned-off-by: Andrii Skliar <askliar@nvidia.com>\nCo-authored-by: Andrii Skliar <askliar@nvidia.com>\nCo-authored-by: OpenAI Codex <codex@openai.com>",
+          "verified_at": "2026-09-11T06:19:55Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/4b839c3378c6a40fa613328a9b97069ed83b181b",
+      "html_url": "https://github.com/marin-community/vllm/commit/4b839c3378c6a40fa613328a9b97069ed83b181b",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/4b839c3378c6a40fa613328a9b97069ed83b181b/comments",
+      "author": {
+        "login": "askliar",
+        "id": 11586643,
+        "node_id": "MDQ6VXNlcjExNTg2NjQz",
+        "avatar_url": "https://avatars.githubusercontent.com/u/11586643?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/askliar",
+        "html_url": "https://github.com/askliar",
+        "followers_url": "https://api.github.com/users/askliar/followers",
+        "following_url": "https://api.github.com/users/askliar/following{/other_user}",
+        "gists_url": "https://api.github.com/users/askliar/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/askliar/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/askliar/subscriptions",
+        "organizations_url": "https://api.github.com/users/askliar/orgs",
+        "repos_url": "https://api.github.com/users/askliar/repos",
+        "events_url": "https://api.github.com/users/askliar/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/askliar/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "fbf51c70269bb0d8333e14c5788e628e33c72f5d",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/fbf51c70269bb0d8333e14c5788e628e33c72f5d",
+          "html_url": "https://github.com/marin-community/vllm/commit/fbf51c70269bb0d8333e14c5788e628e33c72f5d"
+        }
+      ]
+    },
+    {
+      "sha": "fbf51c70269bb0d8333e14c5788e628e33c72f5d",
+      "node_id": "C_kwDOR3mTcdoAKGZiZjUxYzcwMjY5YmIwZDgzMzNlMTRjNTc4OGU2MjhlMzNjNzJmNWQ",
+      "commit": {
+        "author": {
+          "name": "Zhicheng Liu",
+          "email": "2084597944@qq.com",
+          "date": "2026-09-11T06:07:52Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-11T06:07:52Z"
+        },
+        "message": "[Bugfix] Fix FlashInfer KV sharing with omitted K/V (#55864)\n\nSigned-off-by: zhicheng Liu <lzc021026@gmail.com>\nCo-authored-by: OpenAI Codex <noreply@openai.com>\nCo-authored-by: mergify[bot] <37929162+mergify[bot]@users.noreply.github.com>",
+        "tree": {
+          "sha": "cf9d35739979fbda0bc3db994e8d7b10af239174",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/cf9d35739979fbda0bc3db994e8d7b10af239174"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/fbf51c70269bb0d8333e14c5788e628e33c72f5d",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqo5q4CRC1aQ7uu5UhlAAA1sAQABwsciq78aidQTpvxIBKnqll\nZgege6zrUhpGFdkOreWe4PzexjO2SwcH72IiACVYkAplYZAlUX+3b+56u5sM1GhA\n2dVxBqkvgbbRZc3PLIjxVA5pyCn+QV6tYKoxqOEnv/e001ho+S1i2p/VWNqTW7qq\n7gRX6yWi1pOFW9pY7n3+6eqbVZtavr7rMGfrMkAqpNXqiDVTGtwHUTh258GunXxW\nSnh1QI3/zl+LqnKaVlCgN5YIW5ubat1uCHXSDn5WIBE6tkqeL89FwhYLJWmHVn3R\nkkhgpVZ9F7NlsJ7OSzEk15s8dU1UpOZaSnhBIGXOAxwlpkms0jtKbMCMpPGBofZG\ntOMcU3PtIA70OJ8Dp2x8zATY/u+UCt7SFyYh60+uKZdFALWPk/jHaLMQiZlMbilC\nQUqzADZGBoI3WtwRIHNpriLUSphngDKDa6qGWwTnhzewKEqOLiFOCkVHpwl1dbAp\nG1fehBkL92ITRn6smR1uTyMuEjqzgexNAGH4tqBIIVfklVp6JanKTH2gXl2XUGCP\nDmaeRimtBWSRXc8kOAQ5WIsFYYejQbIq8ohImGi4klC930mX7Ah2Sogj6iYZ1bQH\n25/xmClNOElOUVQ5ZABE/0+5HNBw/2V1acjwd2Wma831aYiSBX1GMUbaNel73H64\nG9LET9hUzmpJoxBl1IeO\n=8lcO\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree cf9d35739979fbda0bc3db994e8d7b10af239174\nparent fe4d4109c24063fb5e60ede9d48a1c0b3e9e4cea\nauthor Zhicheng Liu <2084597944@qq.com> 1789106872 +0800\ncommitter GitHub <noreply@github.com> 1789106872 -0700\n\n[Bugfix] Fix FlashInfer KV sharing with omitted K/V (#55864)\n\nSigned-off-by: zhicheng Liu <lzc021026@gmail.com>\nCo-authored-by: OpenAI Codex <noreply@openai.com>\nCo-authored-by: mergify[bot] <37929162+mergify[bot]@users.noreply.github.com>",
+          "verified_at": "2026-09-11T06:07:53Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/fbf51c70269bb0d8333e14c5788e628e33c72f5d",
+      "html_url": "https://github.com/marin-community/vllm/commit/fbf51c70269bb0d8333e14c5788e628e33c72f5d",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/fbf51c70269bb0d8333e14c5788e628e33c72f5d/comments",
+      "author": {
+        "login": "lzzzzzc",
+        "id": 108600719,
+        "node_id": "U_kgDOBnkdjw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/108600719?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/lzzzzzc",
+        "html_url": "https://github.com/lzzzzzc",
+        "followers_url": "https://api.github.com/users/lzzzzzc/followers",
+        "following_url": "https://api.github.com/users/lzzzzzc/following{/other_user}",
+        "gists_url": "https://api.github.com/users/lzzzzzc/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/lzzzzzc/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/lzzzzzc/subscriptions",
+        "organizations_url": "https://api.github.com/users/lzzzzzc/orgs",
+        "repos_url": "https://api.github.com/users/lzzzzzc/repos",
+        "events_url": "https://api.github.com/users/lzzzzzc/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/lzzzzzc/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "fe4d4109c24063fb5e60ede9d48a1c0b3e9e4cea",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/fe4d4109c24063fb5e60ede9d48a1c0b3e9e4cea",
+          "html_url": "https://github.com/marin-community/vllm/commit/fe4d4109c24063fb5e60ede9d48a1c0b3e9e4cea"
+        }
+      ]
+    },
+    {
+      "sha": "83990f5bcc0b5eb08b2f1fd1b109fa8a31b122f3",
+      "node_id": "C_kwDOR3mTcdoAKDgzOTkwZjViY2MwYjVlYjA4YjJmMWZkMWIxMDlmYThhMzFiMTIyZjM",
+      "commit": {
+        "author": {
+          "name": "Sy03",
+          "email": "1370724210@qq.com",
+          "date": "2026-09-10T06:50:09Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-10T06:50:09Z"
+        },
+        "message": "[Bugfix][MRV2] Initialize DCP metadata after batch partitioning (#55212)\n\nSigned-off-by: Raphael Rialland <raphael.rialland@mistral.ai>\nSigned-off-by: Ziyang Zhang <hafuhafu@qq.com>\nSigned-off-by: Sy03 <1370724210@qq.com>\nCo-authored-by: Raphael Rialland <raphael.rialland@mistral.ai>\nCo-authored-by: Ziyang Zhang <hafuhafu@qq.com>\nCo-authored-by: Codex <noreply@openai.com>\nCo-authored-by: mergify[bot] <37929162+mergify[bot]@users.noreply.github.com>",
+        "tree": {
+          "sha": "cd51996ec32dbe89189626a340e070142920696a",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/cd51996ec32dbe89189626a340e070142920696a"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/83990f5bcc0b5eb08b2f1fd1b109fa8a31b122f3",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqolMhCRC1aQ7uu5UhlAAAGi8QAIPf9Zl1NSbAjW5XfjHCERML\nYC4B3kTZkh5yFMivsWgSGRzCpiJzK5vsRyXonYmTUZtLrUROIyJoAywz2MXwY67t\nO2wF9Aq7mrnV8qn4Rj4Waje2GOfxXgy/1B19xUynPNbuJ/fI1AqBTg+e7es01qzs\n8zm44/Bk2WZLpCOA5AbLDGI8z3ipQSh6+FISETd2PPHjPbJkHVrE9RcM/ah4BBZJ\neiNrwGGYODvtwUco6L9wXDipVJB/NTPcOIf3BATPMx0dLUqX6ZYB4AfhkyNsOYfN\n291trlXC1S9DqYyTOmGdWLhnoXw7senQwsugl2ootmdo5P3R3KoZKNhZLOrHBm8R\nfgd80jy9xcILB6+XLAXPF9ZRSgJhHiMUZKEa/dGvJdub6pVshrEQPqFkGZwqC6GD\nY8rkQcq44OZieTHlNe2aX3z2AypG3/NiWSz1bkk8xppo1T63rJtB3LqYvHf6KTly\nOq4t1cFcdHtZq+XwPjByyhj8is6SnSHP+eOo2ct6eU1jWHSSo4SuAP8R2rk/r0UN\nUpI+QRUM23aW4B+4G19d6uw63NEoDpL6/mHrCyiiKx8kCuGQZutMtlA2STSbEenx\nCk+Ogoye927rV6q0hjeqLrnJ6XXrZe6H8gy+kr0AMADEf4QiiTV7pNrPg3PuLAxZ\nPGOxLlFFy35gj7Gbzein\n=xfRc\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree cd51996ec32dbe89189626a340e070142920696a\nparent 912d2e79fe8571ded2fcc6ec669d26429f814d7b\nauthor Sy03 <1370724210@qq.com> 1789023009 -0700\ncommitter GitHub <noreply@github.com> 1789023009 +0000\n\n[Bugfix][MRV2] Initialize DCP metadata after batch partitioning (#55212)\n\nSigned-off-by: Raphael Rialland <raphael.rialland@mistral.ai>\nSigned-off-by: Ziyang Zhang <hafuhafu@qq.com>\nSigned-off-by: Sy03 <1370724210@qq.com>\nCo-authored-by: Raphael Rialland <raphael.rialland@mistral.ai>\nCo-authored-by: Ziyang Zhang <hafuhafu@qq.com>\nCo-authored-by: Codex <noreply@openai.com>\nCo-authored-by: mergify[bot] <37929162+mergify[bot]@users.noreply.github.com>",
+          "verified_at": "2026-09-10T06:50:10Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/83990f5bcc0b5eb08b2f1fd1b109fa8a31b122f3",
+      "html_url": "https://github.com/marin-community/vllm/commit/83990f5bcc0b5eb08b2f1fd1b109fa8a31b122f3",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/83990f5bcc0b5eb08b2f1fd1b109fa8a31b122f3/comments",
+      "author": {
+        "login": "Sy0307",
+        "id": 24841857,
+        "node_id": "MDQ6VXNlcjI0ODQxODU3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/24841857?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/Sy0307",
+        "html_url": "https://github.com/Sy0307",
+        "followers_url": "https://api.github.com/users/Sy0307/followers",
+        "following_url": "https://api.github.com/users/Sy0307/following{/other_user}",
+        "gists_url": "https://api.github.com/users/Sy0307/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/Sy0307/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/Sy0307/subscriptions",
+        "organizations_url": "https://api.github.com/users/Sy0307/orgs",
+        "repos_url": "https://api.github.com/users/Sy0307/repos",
+        "events_url": "https://api.github.com/users/Sy0307/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/Sy0307/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "912d2e79fe8571ded2fcc6ec669d26429f814d7b",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/912d2e79fe8571ded2fcc6ec669d26429f814d7b",
+          "html_url": "https://github.com/marin-community/vllm/commit/912d2e79fe8571ded2fcc6ec669d26429f814d7b"
+        }
+      ]
+    },
+    {
+      "sha": "db3814a4f215e666098ffb74a5c21bf46c60bae9",
+      "node_id": "C_kwDOR3mTcdoAKGRiMzgxNGE0ZjIxNWU2NjYwOThmZmI3NGE1YzIxYmY0NmM2MGJhZTk",
+      "commit": {
+        "author": {
+          "name": "Andreas Karatzas",
+          "email": "akaratza@amd.com",
+          "date": "2026-09-08T21:04:27Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-08T21:04:27Z"
+        },
+        "message": "[Attention] Require explicit DCP support from attention implementations (#55780)\n\nSigned-off-by: Andreas Karatzas <akaratza@amd.com>\nCo-authored-by: OpenAI Codex <codex@openai.com>",
+        "tree": {
+          "sha": "d96598e50386b56794dbc1258534768619206b9f",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/d96598e50386b56794dbc1258534768619206b9f"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/db3814a4f215e666098ffb74a5c21bf46c60bae9",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqoHhbCRC1aQ7uu5UhlAAAIqkQABOBBcKO075eTPsfC1syIuUj\nA9ELjgIjSsmcwVz+5+9DDJAPJtSGUu/efHhJggXkRF7K8y9ShsSXOZ5tVp4WvqMG\nJ6rPgiT9P0xmXPdFoqiBVu1vjUK+yuzjIYDojK49LEADzxoS48sLhYhe/BUaNClZ\npGVtNj9JJII2KcCP+7Mn9sU3LnbFMQe2gM2iwiJZWo7xXTKvkE31Lj1qbB4+EygR\nAl83yj6RhWKMGndv/8VxJmVz+Vfstrjdd2YUUmwoeEixAoNhs1hzPxM+yyceBK5L\nwBqrwVJ/I2yXS1ACtZFIwW191g5l4AWEc/hoA1E6xrzsU4x3kZFcIK/FKbUgStl+\n4wBQrsL3YheNRzEZOIqt3APWNdb1mWvw0NhqZfxz5Ll57lgWTum9vbmgQy+7ysc8\n8HzI19vjydvMzvHgNX/jKUmogjoN9onlcqDW4dt110RUvofuYCqNsnjPFkFWUB32\n9O3P67BShwYnKPl3wT/ruCEKfXK8mPdYZfT2QqBLKX+pwNVPQPSkJVAVY1UNO/Uo\nVPuJw5BmCgmf7oc1kNMkpI8oinFLlC98Enx3tZnp5VW3NpuD3nGzMk9lT8yJJpuP\nfmcS6WEeKkzXyu9A7YZDlMvAtNmadHjPf17zyu9MpEE/QLaI8hs+CekJ7oRKnjqz\nUUNaR+OI1vMJe2VG4dav\n=8MSE\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree d96598e50386b56794dbc1258534768619206b9f\nparent cb222346875b1cec3152b9c882781115accc57e5\nauthor Andreas Karatzas <akaratza@amd.com> 1788901467 -0500\ncommitter GitHub <noreply@github.com> 1788901467 -0700\n\n[Attention] Require explicit DCP support from attention implementations (#55780)\n\nSigned-off-by: Andreas Karatzas <akaratza@amd.com>\nCo-authored-by: OpenAI Codex <codex@openai.com>",
+          "verified_at": "2026-09-08T21:04:28Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/db3814a4f215e666098ffb74a5c21bf46c60bae9",
+      "html_url": "https://github.com/marin-community/vllm/commit/db3814a4f215e666098ffb74a5c21bf46c60bae9",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/db3814a4f215e666098ffb74a5c21bf46c60bae9/comments",
+      "author": {
+        "login": "AndreasKaratzas",
+        "id": 42451412,
+        "node_id": "MDQ6VXNlcjQyNDUxNDEy",
+        "avatar_url": "https://avatars.githubusercontent.com/u/42451412?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/AndreasKaratzas",
+        "html_url": "https://github.com/AndreasKaratzas",
+        "followers_url": "https://api.github.com/users/AndreasKaratzas/followers",
+        "following_url": "https://api.github.com/users/AndreasKaratzas/following{/other_user}",
+        "gists_url": "https://api.github.com/users/AndreasKaratzas/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/AndreasKaratzas/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/AndreasKaratzas/subscriptions",
+        "organizations_url": "https://api.github.com/users/AndreasKaratzas/orgs",
+        "repos_url": "https://api.github.com/users/AndreasKaratzas/repos",
+        "events_url": "https://api.github.com/users/AndreasKaratzas/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/AndreasKaratzas/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "cb222346875b1cec3152b9c882781115accc57e5",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/cb222346875b1cec3152b9c882781115accc57e5",
+          "html_url": "https://github.com/marin-community/vllm/commit/cb222346875b1cec3152b9c882781115accc57e5"
+        }
+      ]
+    },
+    {
+      "sha": "1b2c591cd0c3bb5a85ac7f3d6cbaa2fa7df6bc7d",
+      "node_id": "C_kwDOR3mTcdoAKDFiMmM1OTFjZDBjM2JiNWE4NWFjN2YzZDZjYmFhMmZhN2RmNmJjN2Q",
+      "commit": {
+        "author": {
+          "name": "sychen52",
+          "email": "41452870+sychen52@users.noreply.github.com",
+          "date": "2026-09-08T17:25:42Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-08T17:25:42Z"
+        },
+        "message": "[Bugfix] speedup nvfp4 kv for FMHA (#55031)\n\nSigned-off-by: Shiyang Chen <shiychen@nvidia.com>\nCo-authored-by: Cyrus Leung <tlleungac@connect.ust.hk>",
+        "tree": {
+          "sha": "7abadfc8b2632f62c0f5cb9c871d4c7f71afd69c",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/7abadfc8b2632f62c0f5cb9c871d4c7f71afd69c"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/1b2c591cd0c3bb5a85ac7f3d6cbaa2fa7df6bc7d",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqoEUWCRC1aQ7uu5UhlAAAVQAQAFlrF/4C27OrPxyBSVff7ney\nFhm+pOVRZ71Wr08aXO+gcMtSYUvcvou8Q5CnlsHFvqnRf3wqc0oTLTVsIowmZBQO\nE4Aj666862Xz9g1kG1wVHZebXOS4cieSOW/2FHJgwCTlZm6WNcnkpquCXCcqVZyt\n2zCaC0H7HVFMemZgdWHoHDR5TcwUpjc8nvdTqaRPXBrPizpcOsjhHtGUv7FvmKpu\nOH1PtItXMPbUPyxFzBmU/4rUJZ3gbBZot/JuwnRRv6orxfsJpFgFy+t713O2uviq\n7aqJQ6HeT32Olu6HHnzCtRVwgWDFrMycR6i+lBa9mbcRJz67KJ9zhm+HShnCO444\nLDXG0PIXLZA7zBErxj3IeajLCy1g6xPrzbnEMb6D4Xr4jJSFx7BfvI5SfYksoSog\n+OrClmSbI7RJ3v93RrR2L719IPhxSaXZHRzTOOXYNJDZ/Pn0/vuLVUoeGbZ3EzCH\nzhUqHwTK+KKeLEuTMBnVJVKT0W0czwjZRMoMnNjUBOf8AKTYrqLE23wONMkHx0ZJ\nw6smM7S9gXUlww+ZXso5HwZDMSvO17g1a041pHrTEbx9tb9eE5ueRT5/gLD9Aiso\nIDt3/3Fp32snfXwMra372LkDnbToLVlszfwJ/vCzM4oN6xjzNtQRXNjgp5IVAk7P\nQOkID12GfwJZKSfl5RLR\n=tQcO\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 7abadfc8b2632f62c0f5cb9c871d4c7f71afd69c\nparent bcca76e7dbca608979deea55f589c7316393bc52\nauthor sychen52 <41452870+sychen52@users.noreply.github.com> 1788888342 -0700\ncommitter GitHub <noreply@github.com> 1788888342 +0000\n\n[Bugfix] speedup nvfp4 kv for FMHA (#55031)\n\nSigned-off-by: Shiyang Chen <shiychen@nvidia.com>\nCo-authored-by: Cyrus Leung <tlleungac@connect.ust.hk>",
+          "verified_at": "2026-09-08T17:25:43Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/1b2c591cd0c3bb5a85ac7f3d6cbaa2fa7df6bc7d",
+      "html_url": "https://github.com/marin-community/vllm/commit/1b2c591cd0c3bb5a85ac7f3d6cbaa2fa7df6bc7d",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/1b2c591cd0c3bb5a85ac7f3d6cbaa2fa7df6bc7d/comments",
+      "author": {
+        "login": "sychen52",
+        "id": 41452870,
+        "node_id": "MDQ6VXNlcjQxNDUyODcw",
+        "avatar_url": "https://avatars.githubusercontent.com/u/41452870?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/sychen52",
+        "html_url": "https://github.com/sychen52",
+        "followers_url": "https://api.github.com/users/sychen52/followers",
+        "following_url": "https://api.github.com/users/sychen52/following{/other_user}",
+        "gists_url": "https://api.github.com/users/sychen52/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/sychen52/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/sychen52/subscriptions",
+        "organizations_url": "https://api.github.com/users/sychen52/orgs",
+        "repos_url": "https://api.github.com/users/sychen52/repos",
+        "events_url": "https://api.github.com/users/sychen52/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/sychen52/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "bcca76e7dbca608979deea55f589c7316393bc52",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/bcca76e7dbca608979deea55f589c7316393bc52",
+          "html_url": "https://github.com/marin-community/vllm/commit/bcca76e7dbca608979deea55f589c7316393bc52"
+        }
+      ]
+    },
+    {
+      "sha": "8277c42e4c74c5dd604f29b6d938a3456658f247",
+      "node_id": "C_kwDOR3mTcdoAKDgyNzdjNDJlNGM3NGM1ZGQ2MDRmMjliNmQ5MzhhMzQ1NjY1OGYyNDc",
+      "commit": {
+        "author": {
+          "name": "Nick Hill",
+          "email": "nickhill123@gmail.com",
+          "date": "2026-09-05T00:17:01Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-05T00:17:01Z"
+        },
+        "message": "[Perf] Ensure async h2d copies are pinned in more places (#55202)",
+        "tree": {
+          "sha": "990d45bd34e08dde0f043eac4eb81a00886cace8",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/990d45bd34e08dde0f043eac4eb81a00886cace8"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/8277c42e4c74c5dd604f29b6d938a3456658f247",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqm199CRC1aQ7uu5UhlAAA9sAQAGOt6KfJoLeE0R+BtOHQPJG4\nBnRL44zuYEa9jeb5hXQEF4lBDI4p9rQXQLCRNlWL1HX13hvbCZ7nbXHzQ0KQnd5Q\nvG4V3D52OqHb7WT1Z9ns5yLIIswLarJuf+NbvWzgBo3b0M7DlT8KSa9pFX2m6X42\nu9njOxQ1yi1KSrQYfgNaBAYZ7KHcv/yCj4LwxRgLL4ZNNZw5JDcXAooTkClBdoEN\naZuDMeGIARDLEDIu5+pLxidTIlZWYql9lzMBOwnpRhs9x7BHeOeTJKvgrICfbOOE\nB3vIL6rTMUMDbYi/phGS28dCXEckIgWSQamL8FJH1DAQR5MoV3WgkfIEPBq1wCaq\n+qtsXghfswFOtDE+uatQUEE0Zv0srUW0uk3+G6CicvLX96TG7aFEuHlPmYsoRwli\ny/uNl2Dkxnp5NOtXwW7MzDolcdX58aOZWRawMVlcEACUBZEy926HEVrp1uael3RX\nl4vAUwllthEnlT/LZcR+Dz2Kno8GY5yVDBrcdjAaGNI9RVPx0jJ9kOXobEp3rz1N\n+c4hSCPLpcfIjItcV3871i9CpdWeP46Ym7X2F+7tw9WclC60kPdHpTtzKncU27MQ\nooOJOESBBSOKssx6TynKEazE6/zZG2CnY8T31lLBsRf43WmZ6bt1VEzwiQtjWzuG\nDaxvTWWgj7iu4OwkxAIV\n=7+Yj\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 990d45bd34e08dde0f043eac4eb81a00886cace8\nparent 874df9373dab532543a0229fb2f144f7c14093ae\nauthor Nick Hill <nickhill123@gmail.com> 1788567421 -0700\ncommitter GitHub <noreply@github.com> 1788567421 -0700\n\n[Perf] Ensure async h2d copies are pinned in more places (#55202)",
+          "verified_at": "2026-09-05T00:17:01Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/8277c42e4c74c5dd604f29b6d938a3456658f247",
+      "html_url": "https://github.com/marin-community/vllm/commit/8277c42e4c74c5dd604f29b6d938a3456658f247",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/8277c42e4c74c5dd604f29b6d938a3456658f247/comments",
+      "author": {
+        "login": "njhill",
+        "id": 16958488,
+        "node_id": "MDQ6VXNlcjE2OTU4NDg4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/16958488?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/njhill",
+        "html_url": "https://github.com/njhill",
+        "followers_url": "https://api.github.com/users/njhill/followers",
+        "following_url": "https://api.github.com/users/njhill/following{/other_user}",
+        "gists_url": "https://api.github.com/users/njhill/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/njhill/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/njhill/subscriptions",
+        "organizations_url": "https://api.github.com/users/njhill/orgs",
+        "repos_url": "https://api.github.com/users/njhill/repos",
+        "events_url": "https://api.github.com/users/njhill/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/njhill/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "874df9373dab532543a0229fb2f144f7c14093ae",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/874df9373dab532543a0229fb2f144f7c14093ae",
+          "html_url": "https://github.com/marin-community/vllm/commit/874df9373dab532543a0229fb2f144f7c14093ae"
+        }
+      ]
+    },
+    {
+      "sha": "a566ea7e8f5975b4d38c0092d7adb0acbda3a890",
+      "node_id": "C_kwDOR3mTcdoAKGE1NjZlYTdlOGY1OTc1YjRkMzhjMDA5MmQ3YWRiMGFjYmRhM2E4OTA",
+      "commit": {
+        "author": {
+          "name": "Nick Hill",
+          "email": "nickhill123@gmail.com",
+          "date": "2026-09-02T03:37:09Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-09-02T03:37:09Z"
+        },
+        "message": "[Perf] Avoid more h2d copies from non-pinned tensors (#54660)\n\nSigned-off-by: Nick Hill <nickhill123@gmail.com>\nCo-authored-by: mergify[bot] <37929162+mergify[bot]@users.noreply.github.com>",
+        "tree": {
+          "sha": "1339d8b0c4a4ceaca119a98eb1ddd4fe892c32e2",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/1339d8b0c4a4ceaca119a98eb1ddd4fe892c32e2"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/a566ea7e8f5975b4d38c0092d7adb0acbda3a890",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJql5nlCRC1aQ7uu5UhlAAAoGwQAG1BiVQhLcXQqiGSQ1to18Su\nCj7oIbPcY21c4A/l13GeeXbDZLCGCp+MzZZJldlYJKsayPRTERyimkmavRYLE+Ia\n1fPF2t7EsASNuAOJ3ToAmIL5/Czz6GKI3pzcvnlJH9YEm/oXO35ULDZeaUhJnMgz\naLH2siRIrZINMGcwmLxN65l7M9OeUDZLkeXCU8ITPe8Hq0VHGyHkgV45Ye5T5Enp\n2jxDaYxSCgF6dPKidYMyx1v4Q3lzcRgTSiCLHoUJkJ2xfpYuOq6vsxqDZGFaYjk7\nRu+jiKkvwdOZC7dpAdoAb7rmSrQm93Cu88ZL7uIFb7BGqHv5zanjfgBL5Rw5wzTU\nL8a2lYyvH/0DCcapyaX2EYRYh2ix9Vd/H+svaRGQTxkI4VfWjBRTYcy4vVJuKxV0\nhDPyuRdNcISr8a4bDiJYEXDAu0Q+QeioFahTRuCgL8cnX1LIJa6JnI65gpIvoyS9\n6F7LcpvK7DVw0+ynAiFK7Xtk3jRoPo6mUKDr4emlLfikauJ4lNIVCwpdSzK3sEt7\nPK+BFmK41Ux5oYsqaErakm01RMUzRb5E2GSfT8YH2gY1hfN/tC0BYrEQT+QzvVxz\nJ7bx/zSomojjfyqniu0jtiscIjYmaPfGRbObSHTRRJThB4PHj6MRDriooUwVtACM\nkIuuiER1c6hce7nPDCud\n=vodm\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree 1339d8b0c4a4ceaca119a98eb1ddd4fe892c32e2\nparent 3ba9907a1db20c085be5c2d3cfbbbd6ec4a182dc\nauthor Nick Hill <nickhill123@gmail.com> 1788320229 -0700\ncommitter GitHub <noreply@github.com> 1788320229 -0700\n\n[Perf] Avoid more h2d copies from non-pinned tensors (#54660)\n\nSigned-off-by: Nick Hill <nickhill123@gmail.com>\nCo-authored-by: mergify[bot] <37929162+mergify[bot]@users.noreply.github.com>",
+          "verified_at": "2026-09-02T03:37:09Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/a566ea7e8f5975b4d38c0092d7adb0acbda3a890",
+      "html_url": "https://github.com/marin-community/vllm/commit/a566ea7e8f5975b4d38c0092d7adb0acbda3a890",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/a566ea7e8f5975b4d38c0092d7adb0acbda3a890/comments",
+      "author": {
+        "login": "njhill",
+        "id": 16958488,
+        "node_id": "MDQ6VXNlcjE2OTU4NDg4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/16958488?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/njhill",
+        "html_url": "https://github.com/njhill",
+        "followers_url": "https://api.github.com/users/njhill/followers",
+        "following_url": "https://api.github.com/users/njhill/following{/other_user}",
+        "gists_url": "https://api.github.com/users/njhill/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/njhill/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/njhill/subscriptions",
+        "organizations_url": "https://api.github.com/users/njhill/orgs",
+        "repos_url": "https://api.github.com/users/njhill/repos",
+        "events_url": "https://api.github.com/users/njhill/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/njhill/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "3ba9907a1db20c085be5c2d3cfbbbd6ec4a182dc",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/3ba9907a1db20c085be5c2d3cfbbbd6ec4a182dc",
+          "html_url": "https://github.com/marin-community/vllm/commit/3ba9907a1db20c085be5c2d3cfbbbd6ec4a182dc"
+        }
+      ]
+    },
+    {
+      "sha": "6c18a5464852d9ddf4c59df8ec278ce1683a917e",
+      "node_id": "C_kwDOR3mTcdoAKDZjMThhNTQ2NDg1MmQ5ZGRmNGM1OWRmOGVjMjc4Y2UxNjgzYTkxN2U",
+      "commit": {
+        "author": {
+          "name": "Nick Hill",
+          "email": "nickhill123@gmail.com",
+          "date": "2026-08-29T04:06:30Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-08-29T04:06:30Z"
+        },
+        "message": "[Perf] Avoid h2d copies from non-pinned CPU tensors (#54299)\n\nSigned-off-by: Nick Hill <nickhill123@gmail.com>",
+        "tree": {
+          "sha": "ffeb1094bbb6ea72435ce4cb4e50a27e0b13f122",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/ffeb1094bbb6ea72435ce4cb4e50a27e0b13f122"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/6c18a5464852d9ddf4c59df8ec278ce1683a917e",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqklrGCRC1aQ7uu5UhlAAAsrEQAEY8TTBrmfz1iGBHWUBx7+wS\nXFVJfOo6yjMZh4GiQizgauSatzcupY8RqtJMZOGVgvY2Bc0GgGmjqaPzrkS7K+FA\nUnwvoNDdWms1auARGrbDOqOlv19/piXE2LLRsIKXt5RWZAYoUQY+BQ/ebDDmvB/j\njEkV+w6K8TtIIqQq0JizNshGypDdd++nyMT3T0yBbVSLtLcQNJx8v7ayZRwC2HeT\n8rQLpw78Xys4XEQ6LnD8UV1Yzr+yrEF0fkBZdyzln5Vz2gwSteoRsOYULXiPfNUI\n5otFGKLWG+FcwAsq4XeNGfpkOSoUH7cU6TSg0xrhV0+el8sQ1OtFfyk3kjSwXw74\nFbFMEnugeKK4RlrJFjXMcqChGjq/ofPsH1vmIknt6UE42ROUa0Ef1Z7UNygCYRwi\n0oIOSlBV1Jc3IZIAD7G3r85cs0EgDKsl8/kpEEtQWV23DIw6GV/6rAG/LPtARhCc\n2SrS2gVW/JWVyS//N25788TGzsv+zoPUaTybqWeekf9QKf8MkutXV4E3iYaA6Jmm\nBlKCGEASYRH++B8Vr4utRLFch/fGzwbiBEPuhgQDZmXd5f112t39MU9kp3Th8s7u\nGl7dCLH0Huaes3/sqA/NX1aBhhTczpF1D8nGE4eGdWDhkMRkhHHj6Q1E84W+LUiB\neyA+4gVa1M9XhJJxeEY3\n=0AeY\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree ffeb1094bbb6ea72435ce4cb4e50a27e0b13f122\nparent 5182f2705be914bd986c3f2ba68737be78b3b8da\nauthor Nick Hill <nickhill123@gmail.com> 1787976390 -0700\ncommitter GitHub <noreply@github.com> 1787976390 +0800\n\n[Perf] Avoid h2d copies from non-pinned CPU tensors (#54299)\n\nSigned-off-by: Nick Hill <nickhill123@gmail.com>",
+          "verified_at": "2026-08-29T04:06:30Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/6c18a5464852d9ddf4c59df8ec278ce1683a917e",
+      "html_url": "https://github.com/marin-community/vllm/commit/6c18a5464852d9ddf4c59df8ec278ce1683a917e",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/6c18a5464852d9ddf4c59df8ec278ce1683a917e/comments",
+      "author": {
+        "login": "njhill",
+        "id": 16958488,
+        "node_id": "MDQ6VXNlcjE2OTU4NDg4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/16958488?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/njhill",
+        "html_url": "https://github.com/njhill",
+        "followers_url": "https://api.github.com/users/njhill/followers",
+        "following_url": "https://api.github.com/users/njhill/following{/other_user}",
+        "gists_url": "https://api.github.com/users/njhill/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/njhill/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/njhill/subscriptions",
+        "organizations_url": "https://api.github.com/users/njhill/orgs",
+        "repos_url": "https://api.github.com/users/njhill/repos",
+        "events_url": "https://api.github.com/users/njhill/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/njhill/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "5182f2705be914bd986c3f2ba68737be78b3b8da",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/5182f2705be914bd986c3f2ba68737be78b3b8da",
+          "html_url": "https://github.com/marin-community/vllm/commit/5182f2705be914bd986c3f2ba68737be78b3b8da"
+        }
+      ]
+    },
+    {
+      "sha": "6a9c69fa851389dcf1ee5d3a2363e27af665d26d",
+      "node_id": "C_kwDOR3mTcdoAKDZhOWM2OWZhODUxMzg5ZGNmMWVlNWQzYTIzNjNlMjdhZjY2NWQyNmQ",
+      "commit": {
+        "author": {
+          "name": "Guan-Ming Chiu",
+          "email": "105915352+guan404ming@users.noreply.github.com",
+          "date": "2026-08-24T18:43:57Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-08-24T18:43:57Z"
+        },
+        "message": "[Attention][Spec Decode] Support varlen trtllm-gen decode for adaptive verification (#52157)\n\nSigned-off-by: Guan-Ming (Wesley) Chiu <105915352+guan404ming@users.noreply.github.com>",
+        "tree": {
+          "sha": "baf2301fb3f993537b07b6132b4d980efca2e7e4",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/baf2301fb3f993537b07b6132b4d980efca2e7e4"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/6a9c69fa851389dcf1ee5d3a2363e27af665d26d",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqjJDtCRC1aQ7uu5UhlAAA0NUQABzg9jEPAOyDM6fdhKdupMk6\nyBPesUQf8cUjQmohfKPv5Z0HXgAOWhiAJnNdX7caHSKwQxTv+WqJLYEZgwj8RblX\nKakfNQ/ykjV5UFFMbcOAjrzGSiaFJ7lCS81PolTTC0d3PyJU3NMSyKYZWJt0Cpu0\nJqI7edKartAsv2J0fNJHbmBrmx9gsrGZxKzO9aetMbHvXerNWiBvRdVhhw17tR4t\n+DrDIkdYivZRM3be1djAhTzXHvr+Smk8/W0y7Rqc2qG/+MnfmnKJ1/VmHxUWmBSj\nkIcmQhrhauDlqivjp/dBcuBMudwcSEJH7CNm4B+GDrWh3Fa/Bp4eqVFZjrZRoLPg\nGUUwTR7ounBJht6DQexPcTMOQB1A/Rvp2xZNw3hSnwpvYMZuV9Vy8k7Q2Z4L4lAs\nghhqZXQPtmbvTcdvw1N1QrhF71YBDW2o6pB1Rzro2CRhui5SEVkmcGx4BNbL/6/i\ncwWDfIQazyIj6eSJ+bQFUM+U3iv2Va75yvy62cXHyKz2z02fZVEAQm5YlMlcqaXd\neQ2pcxKIH9QNxoYVTkyVmOt9RwVN66ZnmIjX22qPBbtqsgeHY64Ia90SfAbiPLfP\n4mVX3VY3pPmVF30YGt7dskC65aRbprmA+0qu6Ly+yreyjzRqIcwtH7bDw3plvnOh\nyIAixBw1zWkJrhGRXb41\n=Txzb\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree baf2301fb3f993537b07b6132b4d980efca2e7e4\nparent 342b8ebd8bd4595826f29ff95dfc48679a03a95a\nauthor Guan-Ming Chiu <105915352+guan404ming@users.noreply.github.com> 1787597037 +0800\ncommitter GitHub <noreply@github.com> 1787597037 -0400\n\n[Attention][Spec Decode] Support varlen trtllm-gen decode for adaptive verification (#52157)\n\nSigned-off-by: Guan-Ming (Wesley) Chiu <105915352+guan404ming@users.noreply.github.com>",
+          "verified_at": "2026-08-24T18:43:57Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/6a9c69fa851389dcf1ee5d3a2363e27af665d26d",
+      "html_url": "https://github.com/marin-community/vllm/commit/6a9c69fa851389dcf1ee5d3a2363e27af665d26d",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/6a9c69fa851389dcf1ee5d3a2363e27af665d26d/comments",
+      "author": {
+        "login": "guan404ming",
+        "id": 105915352,
+        "node_id": "U_kgDOBlAj2A",
+        "avatar_url": "https://avatars.githubusercontent.com/u/105915352?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/guan404ming",
+        "html_url": "https://github.com/guan404ming",
+        "followers_url": "https://api.github.com/users/guan404ming/followers",
+        "following_url": "https://api.github.com/users/guan404ming/following{/other_user}",
+        "gists_url": "https://api.github.com/users/guan404ming/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/guan404ming/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/guan404ming/subscriptions",
+        "organizations_url": "https://api.github.com/users/guan404ming/orgs",
+        "repos_url": "https://api.github.com/users/guan404ming/repos",
+        "events_url": "https://api.github.com/users/guan404ming/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/guan404ming/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "342b8ebd8bd4595826f29ff95dfc48679a03a95a",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/342b8ebd8bd4595826f29ff95dfc48679a03a95a",
+          "html_url": "https://github.com/marin-community/vllm/commit/342b8ebd8bd4595826f29ff95dfc48679a03a95a"
+        }
+      ]
+    },
+    {
+      "sha": "b2db227a7c4c5e55f85524a094b607e5d27408b4",
+      "node_id": "C_kwDOR3mTcdoAKGIyZGIyMjdhN2M0YzVlNTVmODU1MjRhMDk0YjYwN2U1ZDI3NDA4YjQ",
+      "commit": {
+        "author": {
+          "name": "\u210d\ud835\udd60\ud835\udd5d\ud835\udd5d\ud835\udd60\ud835\udd68 \ud835\udd44\ud835\udd52\ud835\udd5f",
+          "email": "hollowman@opensuse.org",
+          "date": "2026-08-22T02:13:53Z"
+        },
+        "committer": {
+          "name": "GitHub",
+          "email": "noreply@github.com",
+          "date": "2026-08-22T02:13:53Z"
+        },
+        "message": "[Bugfix][R3] Unwrap UniformTypeKVCacheSpecs when selecting the routed-experts KV group (#53240)\n\nSigned-off-by: Hollow Man <hollowman@opensuse.org>",
+        "tree": {
+          "sha": "ea813175a74bf07389d920ce3defccbf4429379c",
+          "url": "https://api.github.com/repos/marin-community/vllm/git/trees/ea813175a74bf07389d920ce3defccbf4429379c"
+        },
+        "url": "https://api.github.com/repos/marin-community/vllm/git/commits/b2db227a7c4c5e55f85524a094b607e5d27408b4",
+        "comment_count": 0,
+        "verification": {
+          "verified": true,
+          "reason": "valid",
+          "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqiQXhCRC1aQ7uu5UhlAAAnswQAAjp4tnfHIhEtNBiSOkQpwCB\nP0s+kApE+RwEaKoBRPMPVLS+unOuETjWkfL2fNGMqtOPabL0IvptceJ3NoL7wTS1\nmhRzbRLE5opXmqA1gCDqCh12Zk0xugbE4kJUVJ0AfHDXzKRW6ofFpP21tm+RA9xQ\nQZ3B0ZAIvwbyv3QH0GMwfJLjrlj6yEFxM16VXCFsYANf6RM9YHcAg9tSzYczysbo\n31Gj1dxgddo2q3Auh0cXQPXkaFlKwe2nRk/w/rq67BoAp70sNOnN9+xlpQmHhM1w\n6UT2lKeP1aGV1DKm+kWogw/HsJDxIavRRCm1F5oUoZzVFVM5jsviC4Edd82OEXns\n9MGSfuI0FWnoE8tox7oR36YHM+PypUiIkCh+xpdYh/cyKhRy/UBzkV35vW0IiuUj\nMjfmcV1kXpOZPWTLfToq5DKqwGS1vr8+MFP039LRNCESGPA+4gbZjX+MnF+C1GS1\n+AqQEpwwEAk2/4Mlh8GWMJSTpVsmpaq8/UM2YTAF39ZP9ZLFIgbYeILwR03oUWjz\n1fWGbsyAuisaWZ2qDncuu5OsZas3D63d9aBK9d42Eeo1MhjazBYyGQ44SWt6Rtrf\nJe8iumRkE/mnGkuT5+zgtX1Mx86XwYwkuvuu26igk8MGEtiR7iL9XrDCI6y3eKci\n+Rrd1hI0MGLMQ58Okt/Q\n=PfkJ\n-----END PGP SIGNATURE-----\n",
+          "payload": "tree ea813175a74bf07389d920ce3defccbf4429379c\nparent 7f4a1b7e246c5df89077c65831f349f698aa2b73\nauthor \u210d\ud835\udd60\ud835\udd5d\ud835\udd5d\ud835\udd60\ud835\udd68 \ud835\udd44\ud835\udd52\ud835\udd5f <hollowman@opensuse.org> 1787364833 +0300\ncommitter GitHub <noreply@github.com> 1787364833 -0700\n\n[Bugfix][R3] Unwrap UniformTypeKVCacheSpecs when selecting the routed-experts KV group (#53240)\n\nSigned-off-by: Hollow Man <hollowman@opensuse.org>",
+          "verified_at": "2026-08-22T02:13:53Z"
+        }
+      },
+      "url": "https://api.github.com/repos/marin-community/vllm/commits/b2db227a7c4c5e55f85524a094b607e5d27408b4",
+      "html_url": "https://github.com/marin-community/vllm/commit/b2db227a7c4c5e55f85524a094b607e5d27408b4",
+      "comments_url": "https://api.github.com/repos/marin-community/vllm/commits/b2db227a7c4c5e55f85524a094b607e5d27408b4/comments",
+      "author": {
+        "login": "HollowMan6",
+        "id": 43995067,
+        "node_id": "MDQ6VXNlcjQzOTk1MDY3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/43995067?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/HollowMan6",
+        "html_url": "https://github.com/HollowMan6",
+        "followers_url": "https://api.github.com/users/HollowMan6/followers",
+        "following_url": "https://api.github.com/users/HollowMan6/following{/other_user}",
+        "gists_url": "https://api.github.com/users/HollowMan6/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/HollowMan6/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/HollowMan6/subscriptions",
+        "organizations_url": "https://api.github.com/users/HollowMan6/orgs",
+        "repos_url": "https://api.github.com/users/HollowMan6/repos",
+        "events_url": "https://api.github.com/users/HollowMan6/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/HollowMan6/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "committer": {
+        "login": "web-flow",
+        "id": 19864447,
+        "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+        "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/web-flow",
+        "html_url": "https://github.com/web-flow",
+        "followers_url": "https://api.github.com/users/web-flow/followers",
+        "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+        "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+        "organizations_url": "https://api.github.com/users/web-flow/orgs",
+        "repos_url": "https://api.github.com/users/web-flow/repos",
+        "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/web-flow/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "parents": [
+        {
+          "sha": "7f4a1b7e246c5df89077c65831f349f698aa2b73",
+          "url": "https://api.github.com/repos/marin-community/vllm/commits/7f4a1b7e246c5df89077c65831f349f698aa2b73",
+          "html_url": "https://github.com/marin-community/vllm/commit/7f4a1b7e246c5df89077c65831f349f698aa2b73"
+        }
+      ]
+    }
+  ]
+}
