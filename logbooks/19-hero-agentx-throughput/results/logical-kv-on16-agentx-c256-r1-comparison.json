@@ -1,0 +1,518 @@
+{
+  "status": "complete_valid_full_hour_higher_load_not_selected",
+  "candidate": "logical-cache-on C128",
+  "comparison": {
+    "c128_output_tokens_per_second": 748.6169,
+    "c256_output_tokens_per_second": 584.22351,
+    "c128_output_tokens_per_second_per_gpu": 46.78856,
+    "c256_output_tokens_per_second_per_gpu": 36.51397,
+    "c256_over_c128_ratio": 0.7804038487509433,
+    "c256_scored_output_tokens": 2119377,
+    "c256_request_lifetime_denominator_seconds": 3627.68181,
+    "c128_api_cache_read_fraction": 0.6573693534474648,
+    "c256_api_cache_read_fraction": 0.17277793433847474,
+    "c256_native_prefix_counter_ratio_diagnostic": 0.15990988453705346,
+    "c256_counter_reset_warning_lines": 51
+  },
+  "validation": {
+    "submission_valid": true,
+    "profiling_requests": 3677,
+    "profiling_errors": 0,
+    "profiling_error_ratio": 0.0,
+    "coverage": {
+      "phase_name": "profiling",
+      "expected_duration_seconds": 3600.0,
+      "required_ratio": 0.95,
+      "ttft_ratio": 0.99936676416,
+      "inter_token_latency_ratio": 1.0
+    },
+    "profile_start": "2026-11-01T06:27:10.041257",
+    "profile_end": "2026-11-01T07:27:50.043049"
+  },
+  "request_record_counts": {
+    "warmup": {
+      "records": 2793,
+      "errors": 11
+    },
+    "profiling": {
+      "records": 3677
+    }
+  },
+  "warmup_phase": {
+    "start_utc": "2026-11-01T05:20:40.187Z",
+    "end_utc": "2026-11-01T06:27:10.042Z",
+    "duration_seconds": 3989.855,
+    "count_driven_target": 2804,
+    "valid_records": 2793,
+    "invalid_records": 11
+  },
+  "runtime_capacity_tokens_per_rank": 2095445,
+  "runtime_capacity_available_cache_gib": 82.3,
+  "actual_parallelism": {
+    "tp": 1,
+    "pp": 1,
+    "dp": 16,
+    "ep": 16,
+    "native_tasks": 4,
+    "physical_gpus": 16
+  },
+  "native_source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+  "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+  "serving_source_commit": "6468ce180003aa5052e50143cb8c36a55a3aef3e",
+  "manifest_sha256": "1dc47c30dd7e93f5bdbbf0479d7f52f0fe69db4eafbe33d51672abf9778c4da9",
+  "cpu": {
+    "scope": "Same completed sixty-second interval from the existing five-second native CPU observer; no new sampler, CUDA call, affinity change or process mutation. Raw lifetime-keyed process/cgroup/host snapshots retained locally with this result. Container headroom does not exclude serial engine/API work.",
+    "checked_unix": 1793515993.2636194,
+    "tasks": [
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0:0",
+        "attempt_uid": "df931a2347776cdb",
+        "node": "s1mwxs64",
+        "interval_seconds": 60.16284465789795,
+        "start_unix": 1793515931.3955183,
+        "end_unix": 1793515991.558363,
+        "cgroup_cpu_max": "max 100000",
+        "allowed_cpus": "0-143",
+        "allowed_mems": "0-1",
+        "cgroup_cpu_cores": 9.635184511241388,
+        "nr_throttled_delta": 0,
+        "throttled_usec_delta": 0,
+        "host_busy_fraction": 0.07161159327787836,
+        "busiest_processes": [
+          {
+            "pid": 27465,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 1.000783795087653,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 27467,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 1.0004513639980965,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 32987,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9996202862742207,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 27463,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9986229930055818,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 27461,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9984567774608187,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 32986,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9928054489384811,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 32984,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9913095090355076,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 32985,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9904784313116317,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 27478,
+            "name": "VLLM::APIServer",
+            "cpu_cores": 0.34074186678785706,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 37111,
+            "name": "aiperf server_m",
+            "cpu_cores": 0.26627730272885186,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 27474,
+            "name": "VLLM::APIServer",
+            "cpu_cores": 0.24633143735590435,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 27481,
+            "name": "VLLM::APIServer",
+            "cpu_cores": 0.21092752631892314,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          }
+        ],
+        "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=8945511\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=3795765",
+        "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=8983623\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=3808489"
+      },
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1:0",
+        "attempt_uid": "5b2367a687b80b20",
+        "node": "s1nrxs64",
+        "interval_seconds": 60.05968737602234,
+        "start_unix": 1793515931.9338691,
+        "end_unix": 1793515991.9935565,
+        "cgroup_cpu_max": "max 100000",
+        "allowed_cpus": "0-143",
+        "allowed_mems": "0-1",
+        "cgroup_cpu_cores": 7.941734545065651,
+        "nr_throttled_delta": 0,
+        "throttled_usec_delta": 0,
+        "host_busy_fraction": 0.059628731354082865,
+        "busiest_processes": [
+          {
+            "pid": 14305,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9980071928234757,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14307,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9978406917903169,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14301,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9965086835249547,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14303,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9965086835249547,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14970,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9891826380654479,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14972,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.989016137032289,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14969,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9871846256674047,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14971,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9861856194683756,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 13056,
+            "name": "python",
+            "cpu_cores": 0.00016650103317041395,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 1,
+            "name": "python",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 716,
+            "name": "uv",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 2783,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          }
+        ],
+        "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=8573539\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=4011764",
+        "cpu_pressure_end": "some avg10=0.12 avg60=0.04 avg300=0.00 total=8678872\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=4023643"
+      },
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2:0",
+        "attempt_uid": "99c771d5ed8b7689",
+        "node": "s3bsxs64",
+        "interval_seconds": 60.066099405288696,
+        "start_unix": 1793515932.6341312,
+        "end_unix": 1793515992.7002306,
+        "cgroup_cpu_max": "max 100000",
+        "allowed_cpus": "0-143",
+        "allowed_mems": "0-1",
+        "cgroup_cpu_cores": 7.96562270127819,
+        "nr_throttled_delta": 0,
+        "throttled_usec_delta": 0,
+        "host_busy_fraction": 0.060170006422979205,
+        "busiest_processes": [
+          {
+            "pid": 14302,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 1.0005643881498436,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14304,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 1.0003979048905804,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14298,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.999898455112806,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14300,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9998984551127909,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14963,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9984001057794677,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14962,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9907418758535282,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14964,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9892435265201899,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14968,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9849149617794383,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 13800,
+            "name": "python",
+            "cpu_cores": 0.00016648325925956636,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 13058,
+            "name": "python",
+            "cpu_cores": 0.00016648325925953678,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 1,
+            "name": "python",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 715,
+            "name": "uv",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          }
+        ],
+        "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=6368407\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=3378208",
+        "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=6379880\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=3389508"
+      },
+      {
+        "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3:0",
+        "attempt_uid": "74946aaf6fa25b64",
+        "node": "s3jtxs64",
+        "interval_seconds": 60.058428049087524,
+        "start_unix": 1793515931.62708,
+        "end_unix": 1793515991.685508,
+        "cgroup_cpu_max": "max 100000",
+        "allowed_cpus": "0-143",
+        "allowed_mems": "0-1",
+        "cgroup_cpu_cores": 7.961039050326331,
+        "nr_throttled_delta": 0,
+        "throttled_usec_delta": 0,
+        "host_busy_fraction": 0.05900662098342435,
+        "busiest_processes": [
+          {
+            "pid": 14317,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 1.000359182742758,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14323,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 1.000359182742758,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14319,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 1.0001926782183297,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14321,
+            "name": "VLLM::EngineCor",
+            "cpu_cores": 0.9998596691694733,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14984,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9917009474726736,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14985,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9898693977040088,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14986,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9885373615086136,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 14987,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.9880378479353441,
+            "allowed_cpus": "0-71",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 13818,
+            "name": "python",
+            "cpu_cores": 0.0001665045244245273,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 1,
+            "name": "python",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 715,
+            "name": "uv",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "0-143",
+            "allowed_mems": "0-1"
+          },
+          {
+            "pid": 2787,
+            "name": "VLLM::Worker_DP",
+            "cpu_cores": 0.0,
+            "allowed_cpus": "72-143",
+            "allowed_mems": "0-1"
+          }
+        ],
+        "cpu_pressure_start": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5329902\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=3533171",
+        "cpu_pressure_end": "some avg10=0.00 avg60=0.00 avg300=0.00 total=5342834\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=3545253"
+      }
+    ]
+  },
+  "client_cpu": {
+    "scope": "Twelve consecutive completed intervals from the existing native client-load observer during scoring. No process mutation or additional sampler. Raw snapshots retained.",
+    "start_unix": 1793516594.193106,
+    "end_unix": 1793516654.5428362,
+    "duration_seconds": 60.34887645416893,
+    "client_cpu_cores_weighted_mean": 0.3809515827102331,
+    "client_cpu_cores_max_interval": 0.41169714797850077,
+    "client_busiest_thread_cores_max_interval": 0.28437423912454823,
+    "task_cpu_max": "max 100000"
+  },
+  "other_owner_snapshots": [
+    {
+      "utc": "2026-11-01T06:29:15.108300+00:00",
+      "other_owner_gpus": 4,
+      "owned_gpus": 16
+    },
+    {
+      "utc": "2026-11-01T07:35:05.283946+00:00",
+      "other_owner_gpus": 16,
+      "owned_gpus": 16
+    }
+  ],
+  "processed_retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1-processed/outputs-a92de8b4458bde7517ebf705eaf24c6c9da63d0e2d7146d156bc5074d7bd6554.tar.zst",
+    "archive_sha256": "a92de8b4458bde7517ebf705eaf24c6c9da63d0e2d7146d156bc5074d7bd6554",
+    "readback_sha256": "a92de8b4458bde7517ebf705eaf24c6c9da63d0e2d7146d156bc5074d7bd6554",
+    "archive_bytes": 82893
+  },
+  "raw_source_analysis_retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1-native-endpoints/outputs-243d24af3a9475d5309aaa0358c5372ec08a99ba8fbc3a1aad2fad446b2d539a.tar.zst",
+    "archive_sha256": "243d24af3a9475d5309aaa0358c5372ec08a99ba8fbc3a1aad2fad446b2d539a",
+    "readback_sha256": "243d24af3a9475d5309aaa0358c5372ec08a99ba8fbc3a1aad2fad446b2d539a"
+  },
+  "raw_archive_bytes": 62399300,
+  "entrypoint_archive_bytes": 212415,
+  "decision": "Retain C128. C256 increases offered conversation-tree concurrency with the same serving recipe and capacity; it gives 21.96% lower observed throughput and much lower API cache reuse. Different neighboring activity prevents assigning the entire change to load. No C256 gain is selected.",
+  "scope": "Same pinned full corpus, protocol, native validators, numerical qualification and unchanged processor as C128. Fresh server/cache state; no numerical hooks, intrusive profiler or builds during scoring. All four child attempts succeeded and were stopped/raw-retained before native/provider after-fences. The enclosing native holder stays RUNNING for sequential checks; no successful native controller completion is fabricated."
+}

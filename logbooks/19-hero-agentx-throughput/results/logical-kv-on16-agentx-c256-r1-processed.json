@@ -1,0 +1,487 @@
+{
+  "validation": {
+    "submission_valid": true,
+    "profiling_requests": 3677,
+    "profiling_errors": 0,
+    "profiling_error_ratio": 0.0,
+    "coverage": {
+      "phase_name": "profiling",
+      "expected_duration_seconds": 3600.0,
+      "required_ratio": 0.95,
+      "ttft_ratio": 0.99936676416,
+      "inter_token_latency_ratio": 1.0
+    },
+    "profile_start": "2026-11-01T06:27:10.041257",
+    "profile_end": "2026-11-01T07:27:50.043049"
+  },
+  "aggregate": {
+    "hw": "gb200",
+    "conc": 256,
+    "image": "marin-vllm:0.0.0.dev20261012+marin.3a054c458ca8.cu132@3a054c458ca8a32609ba2bc578c4d9b93eabb395",
+    "recipe_fingerprint": "55ff17c3c321ecfdd54cb5308ab0e39ed1e29833a3dbf2134dd04351ee50366a",
+    "model": "marin-community/Hero-535B-step144000",
+    "infmax_model_prefix": "hero144k",
+    "framework": "vllm",
+    "precision": "bf16",
+    "spec_decoding": "none",
+    "disagg": false,
+    "scenario_type": "agentic-coding",
+    "is_multinode": true,
+    "num_gpus": 16,
+    "tp": 16,
+    "ep": 16,
+    "dp_attention": "true",
+    "kv_offloading": "none",
+    "kv_offload_backend": null,
+    "allocated_cpu_dram_gb": 0,
+    "num_requests_total": 6481,
+    "num_requests_successful": 3677,
+    "request_accounting": {
+      "records_total": 6481,
+      "records_profiled": 3677,
+      "records_dropped_total": 2804,
+      "records_warmup_dropped": 2804,
+      "records_error_dropped": 11,
+      "error_categories": {
+        "InvalidInferenceResultError": 11
+      }
+    },
+    "pp": 1,
+    "dcp_size": 1,
+    "pcp_size": 1,
+    "dataset": {
+      "source_type": "public_dataset",
+      "loader": "semianalysis_cc_traces_weka_062126_256k",
+      "hf_dataset_name": "semianalysisai/cc-traces-weka-062126-256k",
+      "hf_split": "train",
+      "num_dataset_entries": 393
+    },
+    "request_metrics": {
+      "qps": {
+        "window_seconds": 1,
+        "samples": 3623,
+        "mean": 1.01463,
+        "p50": 1,
+        "p75": 2,
+        "p90": 2,
+        "p95": 3,
+        "std": 1.04498
+      },
+      "latency": {
+        "ttft": {
+          "mean": 123.69935,
+          "p50": 109.9081,
+          "p75": 188.51792,
+          "p90": 278.04434,
+          "p95": 321.06442,
+          "std": 105.23981
+        },
+        "e2el": {
+          "mean": 343.47252,
+          "p50": 274.54945,
+          "p75": 432.75352,
+          "p90": 646.08221,
+          "p95": 858.79464,
+          "std": 300.26811
+        },
+        "itl": {
+          "mean": 0.3769,
+          "p50": 0.39236,
+          "p75": 0.39613,
+          "p90": 0.4014,
+          "p95": 0.40694,
+          "std": 0.04957
+        },
+        "tpot": {
+          "mean": 0.3769,
+          "p50": 0.39236,
+          "p75": 0.39613,
+          "p90": 0.4014,
+          "p95": 0.40694,
+          "std": 0.04957
+        },
+        "intvty": {
+          "mean": 2.65319,
+          "p50": 2.54868,
+          "p75": 2.52443,
+          "p90": 2.4913,
+          "p95": 2.45735,
+          "std": 0.57415
+        },
+        "e2e_norm_intvty": {
+          "mean": 0.82933,
+          "p50": 1.58462,
+          "p75": 0.94245,
+          "p90": 0.54551,
+          "p95": 0.40415,
+          "std": 1.03411
+        },
+        "full_response_itl": {
+          "mean": 0.37692,
+          "p50": 0.39236,
+          "p75": 0.39614,
+          "p90": 0.4014,
+          "p95": 0.40695,
+          "std": 0.04957
+        },
+        "full_response_intvty": {
+          "mean": 2.6531,
+          "p50": 2.54866,
+          "p75": 2.52435,
+          "p90": 2.49128,
+          "p95": 2.45732,
+          "std": 0.5741
+        }
+      },
+      "tokens": {
+        "input": {
+          "mean": 70031.95866,
+          "p50": 56112,
+          "p75": 95604,
+          "p90": 141752.8,
+          "p95": 178599.8,
+          "std": 53106.38608
+        },
+        "output_actual": {
+          "mean": 576.38754,
+          "p50": 339,
+          "p75": 693,
+          "p90": 1275,
+          "p95": 1860.2,
+          "std": 715.99386
+        },
+        "output_expected": {}
+      },
+      "throughput": {
+        "input": {
+          "tokens_per_second": 70984.0404
+        },
+        "output": {
+          "tokens_per_second": 584.22351
+        },
+        "total": {
+          "tokens_per_second": 71568.26391
+        },
+        "duration_seconds": 3627.68181,
+        "per_gpu": {
+          "total_tput_tps": 4473.01649,
+          "output_tput_tps": 36.51397,
+          "input_tput_tps": 4436.50252
+        }
+      },
+      "cache": {
+        "theoretical_cache_hit_rate": 0.93167
+      }
+    },
+    "server_metrics": {
+      "present": true,
+      "adapter": "vllm",
+      "metric_count": 41,
+      "cache": {
+        "gpu_cache_hit_rate": 0.16056,
+        "cpu_cache_hit_rate": 0.0,
+        "external_cache_hit_rate": 0.0,
+        "overall_cache_hit_rate": 0.16056,
+        "prefix_cache_hits": 45876928,
+        "prefix_cache_queries": 286892384,
+        "external_prefix_cache_hits": 0.0,
+        "external_prefix_cache_queries": 0.0,
+        "cached_tokens_by_source": {},
+        "frontend_cache_hit_rate": null,
+        "router_kv_hit_rate": null,
+        "router_shared_cache_hit_rate": null,
+        "frontend_cached_tokens": null,
+        "frontend_input_tokens": null
+      },
+      "kv_cache": {
+        "gpu_usage_pct": 0.99979,
+        "gpu_total_tokens": null,
+        "cpu_usage_pct": null,
+        "cpu_used_tokens": null,
+        "cpu_total_tokens": null
+      },
+      "kv_offload": {
+        "bytes_gpu_to_cpu": null,
+        "bytes_cpu_to_gpu": null,
+        "time_gpu_to_cpu": null,
+        "time_cpu_to_gpu": null,
+        "bandwidth_gpu_to_cpu_bytes_per_second": null,
+        "bandwidth_cpu_to_gpu_bytes_per_second": null
+      },
+      "tokens": {
+        "prompt_total": 285733160,
+        "generation_total": 2517495,
+        "requests_completed": 3677,
+        "prompt_by_source": {
+          "gpu_cache_hit": 45876928,
+          "cpu_or_external_cache_hit": 0.0,
+          "computed": 239856232,
+          "raw": {
+            "external_kv_transfer": 0.0,
+            "local_cache_hit": 45876928,
+            "local_compute": 239856232
+          }
+        }
+      },
+      "sources": [
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=0",
+          "role": "combined",
+          "prompt_tokens": 15719032,
+          "generation_tokens": 180933,
+          "prefix_cache_hit_rate": 0.0626,
+          "gpu_kv_cache_usage_pct": 0.99736
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=1",
+          "role": "combined",
+          "prompt_tokens": 16832608,
+          "generation_tokens": 166145,
+          "prefix_cache_hit_rate": 0.16616,
+          "gpu_kv_cache_usage_pct": 0.98738
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=10",
+          "role": "combined",
+          "prompt_tokens": 20827553,
+          "generation_tokens": 155758,
+          "prefix_cache_hit_rate": 0.21942,
+          "gpu_kv_cache_usage_pct": 0.99474
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=11",
+          "role": "combined",
+          "prompt_tokens": 15983373,
+          "generation_tokens": 153629,
+          "prefix_cache_hit_rate": 0.67499,
+          "gpu_kv_cache_usage_pct": 0.76504
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=12",
+          "role": "combined",
+          "prompt_tokens": 16843042,
+          "generation_tokens": 155945,
+          "prefix_cache_hit_rate": 0.41701,
+          "gpu_kv_cache_usage_pct": 0.96024
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=13",
+          "role": "combined",
+          "prompt_tokens": 16000161,
+          "generation_tokens": 140200,
+          "prefix_cache_hit_rate": 0.04617,
+          "gpu_kv_cache_usage_pct": 0.99979
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=14",
+          "role": "combined",
+          "prompt_tokens": 17728583,
+          "generation_tokens": 151132,
+          "prefix_cache_hit_rate": 0.05278,
+          "gpu_kv_cache_usage_pct": 0.99944
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=15",
+          "role": "combined",
+          "prompt_tokens": 18667729,
+          "generation_tokens": 151872,
+          "prefix_cache_hit_rate": 0.21565,
+          "gpu_kv_cache_usage_pct": 0.97512
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=2",
+          "role": "combined",
+          "prompt_tokens": 19069754,
+          "generation_tokens": 144932,
+          "prefix_cache_hit_rate": 0.07811,
+          "gpu_kv_cache_usage_pct": 0.96753
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=3",
+          "role": "combined",
+          "prompt_tokens": 18199272,
+          "generation_tokens": 156285,
+          "prefix_cache_hit_rate": 0.07937,
+          "gpu_kv_cache_usage_pct": 0.99331
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=4",
+          "role": "combined",
+          "prompt_tokens": 18970919,
+          "generation_tokens": 166394,
+          "prefix_cache_hit_rate": 0.09107,
+          "gpu_kv_cache_usage_pct": 0.99826
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=5",
+          "role": "combined",
+          "prompt_tokens": 17707893,
+          "generation_tokens": 154798,
+          "prefix_cache_hit_rate": 0.05928,
+          "gpu_kv_cache_usage_pct": 0.99881
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=6",
+          "role": "combined",
+          "prompt_tokens": 20199108,
+          "generation_tokens": 167664,
+          "prefix_cache_hit_rate": 0.11174,
+          "gpu_kv_cache_usage_pct": 0.98072
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=7",
+          "role": "combined",
+          "prompt_tokens": 17135739,
+          "generation_tokens": 147418,
+          "prefix_cache_hit_rate": 0.05406,
+          "gpu_kv_cache_usage_pct": 0.99749
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=8",
+          "role": "combined",
+          "prompt_tokens": 16466916,
+          "generation_tokens": 152576,
+          "prefix_cache_hit_rate": 0.06389,
+          "gpu_kv_cache_usage_pct": 0.99092
+        },
+        {
+          "id": "combined|http://127.0.0.1:38201/metrics|engine=9",
+          "role": "combined",
+          "prompt_tokens": 19381478,
+          "generation_tokens": 171814,
+          "prefix_cache_hit_rate": 0.2042,
+          "gpu_kv_cache_usage_pct": 0.99871
+        }
+      ]
+    },
+    "kv_cache_pool_tokens": null
+  },
+  "aggregate_path": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-on16-agentx-c256-r1-restored-processing-r1/processed/bmk_agentic_hero144k_gb200_vllm_bf16_agentx_c256/agg.json",
+  "root": "/home/romain/work/marin-community/marin/hero-agentx-perf-01a1846a-scratch/logical-kv-on16-agentx-c256-r1-restored-processing-r1/restored",
+  "manifest_sha256": "1dc47c30dd7e93f5bdbbf0479d7f52f0fe69db4eafbe33d51672abf9778c4da9",
+  "retained_root_sha256": "5f533b7ec69fa57b5b1e2c6dfebcf9a3ff52440573a0cbce292b02b7dbfe8d05",
+  "all_four_native_attempts_match": true,
+  "scope": "Pinned native validators and unchanged InferenceX processor on SHA-restored host0 output. Actual native four-task identity and provider fences precede model stop/raw readback. Enclosing holder status is distinct from successful child status. The processor TP16 field is its worker-group proxy; actual serving TP1/DP16/EP16 is explicit. Numerical gates remain a separate immutable qualification. Local one-core CPU processing requests no GPUs.",
+  "actual_parallelism": {
+    "tp": 1,
+    "pp": 1,
+    "dp": 16,
+    "ep": 16,
+    "native_tasks": 4,
+    "physical_gpus": 16
+  },
+  "serving_source_commit": "6468ce180003aa5052e50143cb8c36a55a3aef3e",
+  "candidate_wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+  "native_source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+  "logical_kv_cache": true,
+  "qualification_input": {
+    "path": "results/logical16-full-r2-qualified.json",
+    "sha256": "b5871c21bc60a6ff0ebf02388c29297bbc7d1672153bf7bfc985f302d6bf213b",
+    "mode_manifest_sha256": "3ef893a9853c0374b68ee540eaf09c6f63fa13fcfb10b0577b9270d40e402da8",
+    "scope": "Both flags passed original full16 state/source gates and complete raw readbacks before fresh native AgentX model starts."
+  },
+  "raw_retention": [
+    {
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0:0",
+      "attempt_uid": "df931a2347776cdb",
+      "host": 0,
+      "application_status": "succeeded",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-0/df931a2347776cdb/outputs-5f533b7ec69fa57b5b1e2c6dfebcf9a3ff52440573a0cbce292b02b7dbfe8d05.tar.zst",
+      "archive_sha256": "5f533b7ec69fa57b5b1e2c6dfebcf9a3ff52440573a0cbce292b02b7dbfe8d05",
+      "readback_sha256": "5f533b7ec69fa57b5b1e2c6dfebcf9a3ff52440573a0cbce292b02b7dbfe8d05",
+      "archive_bytes": 53622831,
+      "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+    },
+    {
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1:0",
+      "attempt_uid": "5b2367a687b80b20",
+      "host": 1,
+      "application_status": "succeeded",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-1/5b2367a687b80b20/outputs-3386896187c6c1c9d3b537a3ac180e04a0032ae47e50fb77d35fceb7e8f74ed2.tar.zst",
+      "archive_sha256": "3386896187c6c1c9d3b537a3ac180e04a0032ae47e50fb77d35fceb7e8f74ed2",
+      "readback_sha256": "3386896187c6c1c9d3b537a3ac180e04a0032ae47e50fb77d35fceb7e8f74ed2",
+      "archive_bytes": 3084075,
+      "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+    },
+    {
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2:0",
+      "attempt_uid": "99c771d5ed8b7689",
+      "host": 2,
+      "application_status": "succeeded",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-2/99c771d5ed8b7689/outputs-4a2f07a240837f7b646e24260efa0ec98f7e32d800fcd75a806d41b24e8ca8e2.tar.zst",
+      "archive_sha256": "4a2f07a240837f7b646e24260efa0ec98f7e32d800fcd75a806d41b24e8ca8e2",
+      "readback_sha256": "4a2f07a240837f7b646e24260efa0ec98f7e32d800fcd75a806d41b24e8ca8e2",
+      "archive_bytes": 2842999,
+      "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+    },
+    {
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3:0",
+      "attempt_uid": "74946aaf6fa25b64",
+      "host": 3,
+      "application_status": "succeeded",
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-3/74946aaf6fa25b64/outputs-0556fa72225b3358cdb17361d92649871f407b79961a06b9c73385e9994baa95.tar.zst",
+      "archive_sha256": "0556fa72225b3358cdb17361d92649871f407b79961a06b9c73385e9994baa95",
+      "readback_sha256": "0556fa72225b3358cdb17361d92649871f407b79961a06b9c73385e9994baa95",
+      "archive_bytes": 2849395,
+      "scope": "Finished host output only. Full-hour validity and numerical qualification require separate checks."
+    }
+  ],
+  "entrypoint_retention": [
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-0/df931a2347776cdb/entrypoint-22118707e767cd88c1b69b243b71a5b8c92cfebd5b9b362b12642e3fa3e04e9a.tar.zst",
+      "archive_sha256": "22118707e767cd88c1b69b243b71a5b8c92cfebd5b9b362b12642e3fa3e04e9a",
+      "readback_sha256": "22118707e767cd88c1b69b243b71a5b8c92cfebd5b9b362b12642e3fa3e04e9a",
+      "archive_bytes": 182783
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-1/5b2367a687b80b20/entrypoint-3ee159876af856441bcbf90975289b2287de8b1ea632a5b72830855913e446a4.tar.zst",
+      "archive_sha256": "3ee159876af856441bcbf90975289b2287de8b1ea632a5b72830855913e446a4",
+      "readback_sha256": "3ee159876af856441bcbf90975289b2287de8b1ea632a5b72830855913e446a4",
+      "archive_bytes": 10357
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-2/99c771d5ed8b7689/entrypoint-9b5df5e8899419a5ca03b75f759626e6ac3e34f058a1265d20f7da2d975e4201.tar.zst",
+      "archive_sha256": "9b5df5e8899419a5ca03b75f759626e6ac3e34f058a1265d20f7da2d975e4201",
+      "readback_sha256": "9b5df5e8899419a5ca03b75f759626e6ac3e34f058a1265d20f7da2d975e4201",
+      "archive_bytes": 9607
+    },
+    {
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1/host-3/74946aaf6fa25b64/entrypoint-df072c24749fac269deaef8946cb99796c25ae55eaefc55da738d80ac95a07b2.tar.zst",
+      "archive_sha256": "df072c24749fac269deaef8946cb99796c25ae55eaefc55da738d80ac95a07b2",
+      "readback_sha256": "df072c24749fac269deaef8946cb99796c25ae55eaefc55da738d80ac95a07b2",
+      "archive_bytes": 9668
+    }
+  ],
+  "native_collect_sha256": "d5e9c1fd38f7851c7384001de936427a1b1cb84e3743bd8accd44472d64116c4",
+  "processor_requirements_sha256": "c6c220b9601727dded558303bf2af366ee200b3dbcbf3880c76dc3d52d4038fc",
+  "processor_original_aggregate_sha256": "8551f6bf03efc14a64cf0608f39a4837663dc67fba1e65f29415ac32e2c3c652",
+  "processing_driver_sha256": "f6644813a5a41981b62e5e677ee6abcd5a78e0270dfa646226f362abca957ea4",
+  "profiling_output_tokens": 2119377,
+  "profiling_usage_prompt_tokens": 257507512,
+  "profiling_usage_cache_read_tokens": 44491616.0,
+  "profiling_api_cache_read_ratio": 0.17277793433847474,
+  "request_record_counts": {
+    "warmup": {
+      "records": 2793,
+      "errors": 11
+    },
+    "profiling": {
+      "records": 3677
+    }
+  },
+  "counter_reset_warning_line_count": 51,
+  "raw_aiperf_output_tokens_per_second": 582.2461419012609,
+  "raw_aiperf_output_denominator_scope": "Raw AIPerF metric window differs from pinned InferenceX first-scored-request start to last completion. Both retained; compare the same pinned request-throughput definition.",
+  "raw_source_retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1-native-endpoints/outputs-243d24af3a9475d5309aaa0358c5372ec08a99ba8fbc3a1aad2fad446b2d539a.tar.zst",
+    "archive_sha256": "243d24af3a9475d5309aaa0358c5372ec08a99ba8fbc3a1aad2fad446b2d539a",
+    "readback_sha256": "243d24af3a9475d5309aaa0358c5372ec08a99ba8fbc3a1aad2fad446b2d539a"
+  },
+  "raw_archive_bytes": 62399300,
+  "retention": {
+    "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/logical-kv-on16-agentx-c256-r1-processed/outputs-a92de8b4458bde7517ebf705eaf24c6c9da63d0e2d7146d156bc5074d7bd6554.tar.zst",
+    "archive_sha256": "a92de8b4458bde7517ebf705eaf24c6c9da63d0e2d7146d156bc5074d7bd6554",
+    "readback_sha256": "a92de8b4458bde7517ebf705eaf24c6c9da63d0e2d7146d156bc5074d7bd6554",
+    "archive_bytes": 82893
+  }
+}

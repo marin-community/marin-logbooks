@@ -1,0 +1,1811 @@
+{
+  "status": "native16_full_hero_logical_cache_guarded_qualified",
+  "mode": "guarded",
+  "checked_unix": 1793519740.6355128,
+  "job_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a",
+  "source_commit": "d9e8e599c8a89ab2221ed2a8f2436f8b544f3818",
+  "native_controller_attempts": {
+    "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0": "df931a2347776cdb",
+    "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1": "5b2367a687b80b20",
+    "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2": "99c771d5ed8b7689",
+    "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3": "74946aaf6fa25b64"
+  },
+  "provider_after": [
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-log-992abcfd-0-df931a2347776cdb",
+      "pod_uid": "830dbb04-771b-4ccd-b492-687d7c0db163",
+      "node": "s1mwxs64",
+      "attempt_uid": "df931a2347776cdb"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-log-4f84cd1f-0-5b2367a687b80b20",
+      "pod_uid": "37d92a7a-e58a-4f97-b925-2dfbab957814",
+      "node": "s1nrxs64",
+      "attempt_uid": "5b2367a687b80b20"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-log-3df709d5-0-99c771d5ed8b7689",
+      "pod_uid": "8684af4a-456c-45a0-83d9-d8beb0abedae",
+      "node": "s3bsxs64",
+      "attempt_uid": "99c771d5ed8b7689"
+    },
+    {
+      "pod": "iris-romain-dev-gpu-hero-agentx-log-fb8b2098-0-74946aaf6fa25b64",
+      "pod_uid": "0cf41711-86ff-4504-a129-4d12a99029e7",
+      "node": "s3jtxs64",
+      "attempt_uid": "74946aaf6fa25b64"
+    }
+  ],
+  "all_native_attempt_and_provider_checks_passed": true,
+  "manifest_sha256": "b8c313b7989b1f33aa82732bf3f7c4a19cbb19ec82c606c45a32acbeb4320ecc",
+  "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+  "all24_state_pairs_exact": true,
+  "all30_source_waves_exact_at_matching_shapes": true,
+  "source_comparison_scope": "Original qualified FlashInfer flag-off wheel versus the guarded logical-cache wheel, with fixed compiler and matching recorded global shapes.",
+  "prefix_cache_retention_interval_tokens": 0,
+  "interior_reuse": {
+    "status": "all_interior_branch_state_checks_exact",
+    "tokenizer_sha256": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+    "history_tokens": 49152,
+    "interior_history_tokens": 24576,
+    "requested_dp_rank": 0,
+    "waves": [
+      {
+        "wave": "cold-branch",
+        "elapsed_seconds": 4.642156362533569,
+        "prompt_tokens": 24591,
+        "cache_read_tokens": 0,
+        "comparison_to_cold_branch": null
+      },
+      {
+        "wave": "cold-branch-repeat",
+        "elapsed_seconds": 4.727198600769043,
+        "prompt_tokens": 24591,
+        "cache_read_tokens": 0,
+        "comparison_to_cold_branch": {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        }
+      },
+      {
+        "wave": "warm-long",
+        "elapsed_seconds": 6.8325231075286865,
+        "prompt_tokens": 49167,
+        "cache_read_tokens": 0,
+        "comparison_to_cold_branch": null
+      },
+      {
+        "wave": "first-interior-branch",
+        "elapsed_seconds": 4.77750301361084,
+        "prompt_tokens": 24591,
+        "cache_read_tokens": 0,
+        "comparison_to_cold_branch": {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        }
+      },
+      {
+        "wave": "repeat-interior-branch",
+        "elapsed_seconds": 2.677112102508545,
+        "prompt_tokens": 24591,
+        "cache_read_tokens": 24576,
+        "comparison_to_cold_branch": {
+          "same_tokens": true,
+          "finite_logprobs": true,
+          "max_shared_logprob_absolute_delta": 0.0,
+          "shared_logprobs": 320,
+          "matching_token_prefix": 16,
+          "minimum_topk_overlap": 20
+        }
+      }
+    ],
+    "scope": "Five sequential native completions with distinct cold and shared cache salts. All branch outputs pass the unchanged exact token and top-20 logprob gates. The first interior branch can reuse checkpoints created by the longer prompt. API cache-read tokens and single-request durations describe this synthetic reuse case; they do not establish AgentX throughput. Complete token inputs and parsed responses are retained."
+  },
+  "all16_gpus_empty": true,
+  "all4_parents_dead": true,
+  "retention": [
+    {
+      "host": 0,
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/0:0",
+      "attempt_uid": "df931a2347776cdb",
+      "status": "stopped",
+      "started_unix": 1793519152.4223025,
+      "ready_unix": 1793519528.9486158,
+      "finished_unix": 1793519715.7066116,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-logical-kv-guarded-on16-r2/host-0/outputs-fbf6e608397eca57fb4195b620d7267c16fd86d279d9a5c3ce9d6d00f3e1177d.tar.zst",
+      "archive_sha256": "fbf6e608397eca57fb4195b620d7267c16fd86d279d9a5c3ce9d6d00f3e1177d",
+      "readback_sha256": "fbf6e608397eca57fb4195b620d7267c16fd86d279d9a5c3ce9d6d00f3e1177d",
+      "archive_bytes": 380562,
+      "phases": {
+        "cache-probe-matched": {
+          "comparisons": [
+            {
+              "wave": "cold-a-repeat",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-a",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-ba",
+              "branch": 1,
+              "reference_wave": "cold-ba",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-ba",
+              "branch": 0,
+              "reference_wave": "cold-ba",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 2,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 0,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 1,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-a-final",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            }
+          ],
+          "requests": 10,
+          "choices": 16,
+          "exact_finite": true
+        },
+        "cache-probe-rank-7": {
+          "comparisons": [
+            {
+              "wave": "cold-a-repeat",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-a",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-ba",
+              "branch": 1,
+              "reference_wave": "cold-ba",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-ba",
+              "branch": 0,
+              "reference_wave": "cold-ba",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 2,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 0,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 1,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-a-final",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            }
+          ],
+          "requests": 10,
+          "choices": 16,
+          "exact_finite": true
+        },
+        "cache-probe-rank-15": {
+          "comparisons": [
+            {
+              "wave": "cold-a-repeat",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-a",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-ba",
+              "branch": 1,
+              "reference_wave": "cold-ba",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-ba",
+              "branch": 0,
+              "reference_wave": "cold-ba",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 2,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 0,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-cab",
+              "branch": 1,
+              "reference_wave": "cold-cab",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            },
+            {
+              "wave": "shared-a-final",
+              "branch": 0,
+              "reference_wave": "cold-a",
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            }
+          ],
+          "requests": 10,
+          "choices": 16,
+          "exact_finite": true
+        }
+      },
+      "cross_comparisons": {
+        "cache-probe-matched": {
+          "rows": [
+            {
+              "wave": "cold-a",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-b",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-c",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-a-repeat",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-ba",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-cab",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-a",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-ba",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-cab",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-a-final",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            }
+          ],
+          "waves": 10,
+          "choices": 16,
+          "exact_finite_matching_shapes": true
+        },
+        "cache-probe-rank-7": {
+          "rows": [
+            {
+              "wave": "cold-a",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-b",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-c",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-a-repeat",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-ba",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-cab",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-a",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-ba",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-cab",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-a-final",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            }
+          ],
+          "waves": 10,
+          "choices": 16,
+          "exact_finite_matching_shapes": true
+        },
+        "cache-probe-rank-15": {
+          "rows": [
+            {
+              "wave": "cold-a",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-b",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-c",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-a-repeat",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-ba",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "cold-cab",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-a",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-ba",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-cab",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                },
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            },
+            {
+              "wave": "shared-a-final",
+              "same_global_shapes": true,
+              "choices": [
+                {
+                  "same_tokens": true,
+                  "finite_logprobs": true,
+                  "max_shared_logprob_absolute_delta": 0.0,
+                  "shared_logprobs": 320,
+                  "matching_token_prefix": 16,
+                  "minimum_topk_overlap": 20
+                }
+              ]
+            }
+          ],
+          "waves": 10,
+          "choices": 16,
+          "exact_finite_matching_shapes": true
+        }
+      },
+      "first_dispatches": [
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp3.json",
+          "record": {
+            "unix": 1793519603.0220907,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp2.json",
+          "record": {
+            "unix": 1793519603.0222225,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp1.json",
+          "record": {
+            "unix": 1793519603.0223987,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp0.json",
+          "record": {
+            "unix": 1793519603.0225441,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        }
+      ],
+      "effective_moe_config_line": null,
+      "effective_compiler_line": "INFO 11-01 07:46:08 [api_utils.py:286] non-default args: {'model_tag': 's3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1', 'api_server_count': 16, 'enable_auto_tool_choice': True, 'tool_call_parser': 'hermes', 'enable_prompt_tokens_details': True, 'host': '127.0.0.1', 'port': 38197, 'model': 's3://marin-us-east-02a/marin/users/romain/hero-vllm-rl/hero-535b-step144000-bf16-split-v1', 'tokenizer': 'marin-community/marin-tokenizer', 'trust_remote_code': True, 'dtype': 'bfloat16', 'seed': 42, 'hf_config_path': '/iris/outputs/full-logical-kv-guarded-on16-r2', 'tokenizer_revision': 'a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2', 'max_model_len': 262144, 'served_model_name': ['marin-community/Hero-535B-step144000'], 'hf_overrides': {'max_seq_len': 262144, 'max_position_embeddings': 262144}, 'load_format': 'runai_streamer', 'model_loader_extra_config': {'distributed': True, 'concurrency': 8, 'memory_limit': 2147483648}, 'reasoning_parser': 'grug', 'master_addr': '10.186.213.65', 'master_port': 38640, 'nnodes': 4, 'numa_bind': True, 'device_ids': [0, 1, 2, 3], 'data_parallel_size': 16, 'data_parallel_size_local': 4, 'data_parallel_address': '10.186.213.65', 'data_parallel_rpc_port': 38641, 'enable_expert_parallel': True, 'worker_extension_cls': 'tiny_graph_probe.BatchTraceWorkerExtension', 'gpu_memory_utilization': 0.95, 'enable_prefix_caching': True, 'max_num_batched_tokens': 2048, 'max_num_seqs': 64, 'compilation_config': {'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': [], 'ir_enable_torch_wrap': None, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update', 'vllm::grug_moe_short_conv', 'vllm::moe_forward', 'vllm::moe_forward_shared'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': None, 'compile_ranges_endpoints': None, 'inductor_compile_config': {'emulate_precision_casts': True, 'max_autotune': False, 'coordinate_descent_tuning': False, 'deterministic': True, 'dynamic_scale_rblock': False, 'combo_kernels': False, 'enable_auto_functionalized_v2': False}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 32, 2048], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': None, 'pass_config': {}, 'max_cudagraph_capture_size': None, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': None, 'static_all_moe_layers': []}, 'kernel_config': KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=[], fused_add_rms_norm=[], gelu_and_mul_sparse=[]), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='triton', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None), 'additional_config': {'grug_logical_kv_cache': True}}",
+      "manifest_sha256": "b8c313b7989b1f33aa82732bf3f7c4a19cbb19ec82c606c45a32acbeb4320ecc",
+      "interior_reuse": {
+        "status": "all_interior_branch_state_checks_exact",
+        "tokenizer_sha256": "881c9c36c359e1617afef6f7583403567931b7b4f43f6552d2b2155a131650a2",
+        "history_tokens": 49152,
+        "interior_history_tokens": 24576,
+        "requested_dp_rank": 0,
+        "waves": [
+          {
+            "wave": "cold-branch",
+            "elapsed_seconds": 4.642156362533569,
+            "prompt_tokens": 24591,
+            "cache_read_tokens": 0,
+            "comparison_to_cold_branch": null
+          },
+          {
+            "wave": "cold-branch-repeat",
+            "elapsed_seconds": 4.727198600769043,
+            "prompt_tokens": 24591,
+            "cache_read_tokens": 0,
+            "comparison_to_cold_branch": {
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            }
+          },
+          {
+            "wave": "warm-long",
+            "elapsed_seconds": 6.8325231075286865,
+            "prompt_tokens": 49167,
+            "cache_read_tokens": 0,
+            "comparison_to_cold_branch": null
+          },
+          {
+            "wave": "first-interior-branch",
+            "elapsed_seconds": 4.77750301361084,
+            "prompt_tokens": 24591,
+            "cache_read_tokens": 0,
+            "comparison_to_cold_branch": {
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            }
+          },
+          {
+            "wave": "repeat-interior-branch",
+            "elapsed_seconds": 2.677112102508545,
+            "prompt_tokens": 24591,
+            "cache_read_tokens": 24576,
+            "comparison_to_cold_branch": {
+              "same_tokens": true,
+              "finite_logprobs": true,
+              "max_shared_logprob_absolute_delta": 0.0,
+              "shared_logprobs": 320,
+              "matching_token_prefix": 16,
+              "minimum_topk_overlap": 20
+            }
+          }
+        ],
+        "scope": "Five sequential native completions with distinct cold and shared cache salts. All branch outputs pass the unchanged exact token and top-20 logprob gates. The first interior branch can reuse checkpoints created by the longer prompt. API cache-read tokens and single-request durations describe this synthetic reuse case; they do not establish AgentX throughput. Complete token inputs and parsed responses are retained."
+      },
+      "client_result_files": 0,
+      "candidate_wheel": {
+        "kind": "private_python_overlay",
+        "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+        "changed_files": {
+          "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
+          "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+        },
+        "added_files": {
+          "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+        },
+        "wheel_path": "/iris/candidates/23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+        "wheel_bytes": 250544442,
+        "verified_unchanged_files": 5100,
+        "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+      },
+      "capacity_lines": [
+        "(Worker_DP1_EP1 pid=54905) INFO 11-01 07:49:00 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP0_EP0 pid=54904) INFO 11-01 07:49:00 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP3_EP3 pid=54903) INFO 11-01 07:49:00 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP2_EP2 pid=54902) INFO 11-01 07:49:00 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP0_EP0 pid=54904) INFO 11-01 07:50:04 [gpu_worker.py:663] Available KV cache memory: 82.3 GiB",
+        "(EngineCore_DP3 pid=49384) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP2 pid=49382) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP1 pid=49380) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP0 pid=49378) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x"
+      ],
+      "parent_live": false,
+      "compiled_graph_scope": "This archive retains complete native diagnostic and entrypoint trees, including emitted compiler sources when present."
+    },
+    {
+      "host": 1,
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/1:0",
+      "attempt_uid": "5b2367a687b80b20",
+      "status": "stopped",
+      "started_unix": 1793519152.58083,
+      "ready_unix": null,
+      "finished_unix": 1793519700.6534057,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-logical-kv-guarded-on16-r2/host-1/outputs-60b4e8bba862a2b3d6fd5582dc8121198c252cbd8816727fb5546c1a9228e619.tar.zst",
+      "archive_sha256": "60b4e8bba862a2b3d6fd5582dc8121198c252cbd8816727fb5546c1a9228e619",
+      "readback_sha256": "60b4e8bba862a2b3d6fd5582dc8121198c252cbd8816727fb5546c1a9228e619",
+      "archive_bytes": 273419,
+      "phases": {},
+      "cross_comparisons": {},
+      "first_dispatches": [
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp7.json",
+          "record": {
+            "unix": 1793519603.0220163,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp6.json",
+          "record": {
+            "unix": 1793519603.0218472,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp5.json",
+          "record": {
+            "unix": 1793519603.021747,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp4.json",
+          "record": {
+            "unix": 1793519603.0219135,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        }
+      ],
+      "effective_moe_config_line": null,
+      "effective_compiler_line": "(EngineCore_DP4 pid=22059) INFO 11-01 07:46:48 [core.py:123] Initializing a V1 LLM engine (v0.0.0.dev20261012+marin.3a054c458ca8) with config: model='/root/.cache/vllm/assets/model_streamer/19c759de', speculative_config=None, tokenizer='marin-community/marin-tokenizer', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=262144, download_dir=None, load_format=runai_streamer, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=16, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='grug', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=42, served_model_name=marin-community/Hero-535B-step144000, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update', 'vllm::grug_moe_short_conv', 'vllm::moe_forward', 'vllm::moe_forward_shared'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [2048], 'inductor_compile_config': {'emulate_precision_casts': True, 'max_autotune': False, 'coordinate_descent_tuning': False, 'deterministic': True, 'dynamic_scale_rblock': False, 'combo_kernels': False, 'enable_auto_functionalized_v2': False}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='triton', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)",
+      "manifest_sha256": null,
+      "interior_reuse": null,
+      "client_result_files": 0,
+      "candidate_wheel": {
+        "kind": "private_python_overlay",
+        "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+        "changed_files": {
+          "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
+          "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+        },
+        "added_files": {
+          "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+        },
+        "wheel_path": "/iris/candidates/23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+        "wheel_bytes": 250544442,
+        "verified_unchanged_files": 5100,
+        "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+      },
+      "capacity_lines": [
+        "(Worker_DP4_EP4 pid=22728) INFO 11-01 07:49:08 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP7_EP7 pid=22727) INFO 11-01 07:49:08 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP5_EP5 pid=22729) INFO 11-01 07:49:08 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP6_EP6 pid=22726) INFO 11-01 07:49:08 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP4_EP4 pid=22728) INFO 11-01 07:50:04 [gpu_worker.py:663] Available KV cache memory: 82.3 GiB",
+        "(EngineCore_DP6 pid=22063) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP5 pid=22061) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP7 pid=22065) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP4 pid=22059) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x"
+      ],
+      "parent_live": false,
+      "compiled_graph_scope": "This archive retains complete native diagnostic and entrypoint trees, including emitted compiler sources when present."
+    },
+    {
+      "host": 2,
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/2:0",
+      "attempt_uid": "99c771d5ed8b7689",
+      "status": "stopped",
+      "started_unix": 1793519152.445109,
+      "ready_unix": null,
+      "finished_unix": 1793519694.4987535,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-logical-kv-guarded-on16-r2/host-2/outputs-8db9d558d47dfa08ade1181d4913284d610ad269a9af1bb4cad816e2a1be00f7.tar.zst",
+      "archive_sha256": "8db9d558d47dfa08ade1181d4913284d610ad269a9af1bb4cad816e2a1be00f7",
+      "readback_sha256": "8db9d558d47dfa08ade1181d4913284d610ad269a9af1bb4cad816e2a1be00f7",
+      "archive_bytes": 263816,
+      "phases": {},
+      "cross_comparisons": {},
+      "first_dispatches": [
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp9.json",
+          "record": {
+            "unix": 1793519603.0219207,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp8.json",
+          "record": {
+            "unix": 1793519603.0219479,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp10.json",
+          "record": {
+            "unix": 1793519603.0219278,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp11.json",
+          "record": {
+            "unix": 1793519603.022046,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        }
+      ],
+      "effective_moe_config_line": null,
+      "effective_compiler_line": "(EngineCore_DP8 pid=22061) INFO 11-01 07:46:48 [core.py:123] Initializing a V1 LLM engine (v0.0.0.dev20261012+marin.3a054c458ca8) with config: model='/root/.cache/vllm/assets/model_streamer/19c759de', speculative_config=None, tokenizer='marin-community/marin-tokenizer', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=262144, download_dir=None, load_format=runai_streamer, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=16, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='grug', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=42, served_model_name=marin-community/Hero-535B-step144000, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update', 'vllm::grug_moe_short_conv', 'vllm::moe_forward', 'vllm::moe_forward_shared'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [2048], 'inductor_compile_config': {'emulate_precision_casts': True, 'max_autotune': False, 'coordinate_descent_tuning': False, 'deterministic': True, 'dynamic_scale_rblock': False, 'combo_kernels': False, 'enable_auto_functionalized_v2': False}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='triton', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)",
+      "manifest_sha256": null,
+      "interior_reuse": null,
+      "client_result_files": 0,
+      "candidate_wheel": {
+        "kind": "private_python_overlay",
+        "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+        "changed_files": {
+          "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
+          "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+        },
+        "added_files": {
+          "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+        },
+        "wheel_path": "/iris/candidates/23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+        "wheel_bytes": 250544442,
+        "verified_unchanged_files": 5100,
+        "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+      },
+      "capacity_lines": [
+        "(Worker_DP10_EP10 pid=22728) INFO 11-01 07:49:17 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP11_EP11 pid=22729) INFO 11-01 07:49:17 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP9_EP9 pid=22730) INFO 11-01 07:49:17 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP8_EP8 pid=22731) INFO 11-01 07:49:17 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP8_EP8 pid=22731) INFO 11-01 07:50:04 [gpu_worker.py:663] Available KV cache memory: 82.3 GiB",
+        "(EngineCore_DP11 pid=22067) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP8 pid=22061) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP9 pid=22063) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP10 pid=22065) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x"
+      ],
+      "parent_live": false,
+      "compiled_graph_scope": "This archive retains complete native diagnostic and entrypoint trees, including emitted compiler sources when present."
+    },
+    {
+      "host": 3,
+      "task_id": "/romain/dev-gpu-hero-agentx-logical-kv-off16-c128-r1-01a1846a/3:0",
+      "attempt_uid": "74946aaf6fa25b64",
+      "status": "stopped",
+      "started_unix": 1793519152.4966488,
+      "ready_unix": null,
+      "finished_unix": 1793519692.5079496,
+      "gpu_empty": true,
+      "archive_uri": "s3://marin-us-east-08a/marin/users/romain/hero-agentx-perf-01a1846a/full-logical-kv-guarded-on16-r2/host-3/outputs-94bc2b9316eb7104c5ebbd9c5ab59fc78f03ffc8514b44b4de17c57427d8b089.tar.zst",
+      "archive_sha256": "94bc2b9316eb7104c5ebbd9c5ab59fc78f03ffc8514b44b4de17c57427d8b089",
+      "readback_sha256": "94bc2b9316eb7104c5ebbd9c5ab59fc78f03ffc8514b44b4de17c57427d8b089",
+      "archive_bytes": 261464,
+      "phases": {},
+      "cross_comparisons": {},
+      "first_dispatches": [
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp12.json",
+          "record": {
+            "unix": 1793519603.0216,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp13.json",
+          "record": {
+            "unix": 1793519603.0217042,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp14.json",
+          "record": {
+            "unix": 1793519603.0218885,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 1,
+              "padded_tokens": 1,
+              "graph_mode": "NONE",
+              "max_query_len": 1,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        },
+        {
+          "file": "/iris/outputs/full-logical-kv-guarded-on16-r2-entrypoint/first-dispatch-localFalse-disabledFalse-dp15.json",
+          "record": {
+            "unix": 1793519603.0219758,
+            "row": {
+              "requests": 1,
+              "scheduled_tokens": 2048,
+              "padded_tokens": 2048,
+              "graph_mode": "NONE",
+              "max_query_len": 2048,
+              "tokens_across_dp": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                2048
+              ],
+              "reference_capture_sizes": null,
+              "disable_graph_replay": false,
+              "local_piecewise_dp": false
+            }
+          }
+        }
+      ],
+      "effective_moe_config_line": null,
+      "effective_compiler_line": "(EngineCore_DP12 pid=22073) INFO 11-01 07:46:48 [core.py:123] Initializing a V1 LLM engine (v0.0.0.dev20261012+marin.3a054c458ca8) with config: model='/root/.cache/vllm/assets/model_streamer/19c759de', speculative_config=None, tokenizer='marin-community/marin-tokenizer', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=262144, download_dir=None, load_format=runai_streamer, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=16, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='grug', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=42, served_model_name=marin-community/Hero-535B-step144000, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update', 'vllm::grug_moe_short_conv', 'vllm::moe_forward', 'vllm::moe_forward_shared'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [2048], 'inductor_compile_config': {'emulate_precision_casts': True, 'max_autotune': False, 'coordinate_descent_tuning': False, 'deterministic': True, 'dynamic_scale_rblock': False, 'combo_kernels': False, 'enable_auto_functionalized_v2': False}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.NONE: 0>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 0, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='triton', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)",
+      "manifest_sha256": null,
+      "interior_reuse": null,
+      "client_result_files": 0,
+      "candidate_wheel": {
+        "kind": "private_python_overlay",
+        "base_wheel_sha256": "e8520d4493e5a60f9f6aa96ea3bc80c42e45258e4d2c45882869fc5921df3e15",
+        "source_commit": "a0be4d10f1c45dd44458c68080e5818253de66e4",
+        "changed_files": {
+          "vllm/model_executor/models/grugmoe.py": "edae10501053b5a8b8a5c1185fb233f31a9c1c3140c469b0f1f282478147c426",
+          "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+        },
+        "added_files": {
+          "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+        },
+        "wheel_path": "/iris/candidates/23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca/vllm-0.0.0.dev20261012+marin.3a054c458ca8.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+        "wheel_sha256": "23dd9d42018c75fcb89bfededd33af3984665917ffa3e4e7492da7409f1ab6ca",
+        "wheel_bytes": 250544442,
+        "verified_unchanged_files": 5100,
+        "version": "0.0.0.dev20261012+marin.3a054c458ca8.cu132"
+      },
+      "capacity_lines": [
+        "(Worker_DP12_EP12 pid=22745) INFO 11-01 07:49:12 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP14_EP14 pid=22737) INFO 11-01 07:49:12 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP15_EP15 pid=22736) INFO 11-01 07:49:12 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP13_EP13 pid=22744) INFO 11-01 07:49:12 [interface.py:957] Padding mamba page size by 166.67% to ensure that mamba page size and attention page size are exactly equal.",
+        "(Worker_DP12_EP12 pid=22745) INFO 11-01 07:50:04 [gpu_worker.py:663] Available KV cache memory: 82.3 GiB",
+        "(EngineCore_DP13 pid=22075) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP14 pid=22077) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP15 pid=22079) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x",
+        "(EngineCore_DP12 pid=22073) INFO 11-01 07:50:04 [kv_cache_utils.py:2447] GPU KV cache size: 2,095,445 tokens, Maximum concurrency for 262,144 tokens per request: 7.99x"
+      ],
+      "parent_live": false,
+      "compiled_graph_scope": "This archive retains complete native diagnostic and entrypoint trees, including emitted compiler sources when present."
+    }
+  ],
+  "archive_bytes": 1179261,
+  "scope": "Actual four-task native16 full Hero cold/warm, branch, isolation and resumed-prefill checks on ranks0/7/15. Original exact token/logprob/top20 gates, and for flag on exact matching-shape source gates, all pass. This is numerical qualification, not a throughput result."
+}
