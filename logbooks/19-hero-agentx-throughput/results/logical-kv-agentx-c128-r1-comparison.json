@@ -1,0 +1,160 @@
+{
+  "scope": "One full pinned AgentX C128 hour per mode, four native tasks and sixteen physical GB200s each, on disjoint groups of one spare NVLink rack. Same private wheel and fixed compiler/serving profile; logical-cache flag changes model behavior, coordinator ports differ for isolation. No numerical hooks or GPU profiling during scoring.",
+  "source_commit": "64d54736180b5bb8796695dcc58ddf29fe8c3882",
+  "private_wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+  "native_source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+  "qualification_input": {
+    "path": "results/logical16-full-r2-qualified.json",
+    "sha256": "b5871c21bc60a6ff0ebf02388c29297bbc7d1672153bf7bfc985f302d6bf213b",
+    "mode_manifest_sha256": "3ef893a9853c0374b68ee540eaf09c6f63fa13fcfb10b0577b9270d40e402da8",
+    "scope": "Both flags passed original full16 state/source gates and complete raw readbacks before fresh native AgentX model starts."
+  },
+  "matched_runtime_controls": {
+    "enable_prefix_caching": true,
+    "max_num_batched_tokens": 2048,
+    "session_affinity": true,
+    "prefetch_flashinfer_headers": true,
+    "numa_bind": true,
+    "gpu_memory_utilization": 0.95,
+    "candidate_receipt": "/iris/candidates/fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768/receipt.json",
+    "wheel_sha256": "fae89ecaa55afd6c0a219bfe734fcf59cdb213792cdcb8f2ecd7c47a62896768",
+    "source_commit": "58145f5baa099ec29d1603e61a05c8f6ae7e0fea",
+    "compilation_config": {
+      "mode": 3,
+      "cudagraph_mode": "NONE",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        2048
+      ],
+      "splitting_ops": [
+        "vllm::unified_attention_with_output",
+        "vllm::unified_mla_attention_with_output",
+        "vllm::mamba_mixer2",
+        "vllm::mamba_mixer",
+        "vllm::short_conv",
+        "vllm::qwen4_exp_ple_short_conv",
+        "vllm::qwen4_exp_qsa_with_output",
+        "vllm::linear_attention",
+        "vllm::qwen_gdn_attention_core",
+        "vllm::qwen_gdn_attention_core_fused_norm_packed",
+        "vllm::gdn_attention_core_xpu",
+        "vllm::olmo_hybrid_gdn_full_forward",
+        "vllm::sparse_attn_indexer",
+        "vllm::rocm_aiter_sparse_attn_indexer",
+        "vllm::deepseek_v4_attention",
+        "vllm::hpc_rope_norm_forward",
+        "vllm::unified_kv_cache_update",
+        "vllm::unified_mla_kv_cache_update",
+        "vllm::grug_moe_short_conv",
+        "vllm::moe_forward",
+        "vllm::moe_forward_shared"
+      ],
+      "inductor_compile_config": {
+        "emulate_precision_casts": true,
+        "max_autotune": false,
+        "coordinate_descent_tuning": false,
+        "deterministic": true,
+        "dynamic_scale_rblock": false,
+        "combo_kernels": false
+      }
+    },
+    "kernel_config": {
+      "moe_backend": "triton",
+      "enable_flashinfer_autotune": false
+    },
+    "environment_overrides": {
+      "VLLM_LOGGING_LEVEL": "INFO",
+      "VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE": "0",
+      "VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING": "0"
+    }
+  },
+  "results": {
+    "off": {
+      "processed_result": "logical-kv-off16-agentx-c128-r1-processed.json",
+      "output_tokens_per_second": 552.49292,
+      "output_tokens_per_second_per_gpu": 34.53081,
+      "scored_successes": 3153,
+      "scored_errors": 0,
+      "scored_output_tokens": 2005171,
+      "request_lifetime_seconds": 3629.31525,
+      "api_prompt_tokens": 199579525,
+      "api_cache_read_tokens": 66832928.0,
+      "api_cache_read_fraction": 0.33486865949801214,
+      "counter_reset_warning_lines": 18,
+      "warmup_records": 1406,
+      "warmup_errors": 2,
+      "raw_aiperf_output_tokens_per_second": 550.8708960933589
+    },
+    "on": {
+      "processed_result": "logical-kv-on16-agentx-c128-r1-processed.json",
+      "output_tokens_per_second": 748.6169,
+      "output_tokens_per_second_per_gpu": 46.78856,
+      "scored_successes": 4270,
+      "scored_errors": 0,
+      "scored_output_tokens": 2715325,
+      "request_lifetime_seconds": 3627.12222,
+      "api_prompt_tokens": 279227766,
+      "api_cache_read_tokens": 183555776.0,
+      "api_cache_read_fraction": 0.6573693534474648,
+      "counter_reset_warning_lines": 0,
+      "warmup_records": 1406,
+      "warmup_errors": 4,
+      "raw_aiperf_output_tokens_per_second": 745.9677454153472
+    }
+  },
+  "on_over_off_percent": 35.49800782967498,
+  "warmup_phase_seconds": {
+    "off": 2579.62,
+    "on": 641.419
+  },
+  "warmup_scope": "Count-driven phase time, separate from scored request lifetime. The final record export identifies invalid warmup records; live progress zero errors did not establish their absence.",
+  "capacity_tokens_per_rank": {
+    "off": 1118056,
+    "on": 2095445
+  },
+  "capacity_ratio": 1.8741860872800646,
+  "neighbor_snapshots": [
+    {
+      "label": "logical-agentx-pair-r1-warmup-start",
+      "utc": "2026-11-01T03:17:36.817290+00:00",
+      "inventory_sha256": "7f3f5cc18d903c2b1dd65d9fa7c29828dfed104f64cb94a0b14a2a5b4d0c3618",
+      "owned_gpus": 32,
+      "other_owner_gpus": 0,
+      "hero_training_gpus": 0
+    },
+    {
+      "label": "logical-agentx-pair-r1-overlapping-score",
+      "utc": "2026-11-01T04:04:30.727439+00:00",
+      "inventory_sha256": "3abf5cb4d94737f9ca1a33377e98ad25e7cc200b702f38b29a92998583a18587",
+      "owned_gpus": 32,
+      "other_owner_gpus": 36,
+      "hero_training_gpus": 0
+    },
+    {
+      "label": "logical-kv-on16-agentx-c128-r1-after-release",
+      "utc": "2026-11-01T04:36:39.830077+00:00",
+      "inventory_sha256": "0c6be7c6248e58b311ec4cedd08863daca55479557d764867352682bd3e57c2f",
+      "owned_gpus": 16,
+      "other_owner_gpus": 8,
+      "hero_training_gpus": 0
+    },
+    {
+      "label": "logical-kv-off16-agentx-c128-r1-after-score",
+      "utc": "2026-11-01T05:05:08.514899+00:00",
+      "inventory_sha256": "6ba29e25cfdd8b722795ab8b411c87d87f063f3bce30a6c14b0abf7dbccce465",
+      "owned_gpus": 16,
+      "other_owner_gpus": 0,
+      "hero_training_gpus": 0
+    }
+  ],
+  "interpretation": "The cache-enabled configuration has35.50% higher measured scored output throughput and higher API cache-read fraction in this pair. This is consistent with less repeated prefill. Scoring windows overlap only partly because warmup differs; own-peer activity changes, and8other-owner batch GPUs are observed late in the control window. Sparse snapshots do not establish complete fabric history or the causal size of interference. Keep the observed ratio separate from a fully isolated gain. The older released C128 result used different compiler defaults; it is a combined-recipe reference, not the flag-isolation control.",
+  "raw_archive_bytes": 111875222,
+  "all8_raw_and_entrypoint_readbacks_passed": true,
+  "resources": "ON16 holder released04:32:58.310UTC with all4 native tasks KILLED/providerpods gone. OFF16 holder remains allocated and is reused only after both model/client stops, native/provider fences and raw readbacks for the separate full FA4 numerical trial. No additional GPU allocation.",
+  "next": "Keep logical-cache-on C128 as the candidate. Resolve compatible attention/expert opportunities, check higher offered load for the larger cache, narrow unsupported opt-in paths before a focused draft PR, and confirm final interactions. Native protocol and exact numerical gates remain unchanged."
+}
