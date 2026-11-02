@@ -1,0 +1,45 @@
+{
+  "state": "prepared; online logging check passed and awaiting publication",
+  "job_name": "ema-gram-20-jacobi-cost-v5e-8-20261102",
+  "hardware": "v5litepod-8",
+  "devices": 8,
+  "hosts": 1,
+  "cpu": 96,
+  "memory": "128GB",
+  "disk": "50GB",
+  "region": "us-west4",
+  "priority": "batch",
+  "wall_clock_limits": null,
+  "preemption_retries": "Iris defaults",
+  "candidate": {
+    "eigh_layout": "matrix",
+    "eigh_implementation": "jacobi"
+  },
+  "samples": 3,
+  "seed": 0,
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-optimizer-cost/2026.11.02.6",
+  "input": "Identical synthetic state and gradients for original/candidate within this job; no checkpoint reads.",
+  "numerical_gate": {
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "outputs": "Every direction and updated Gram/momentum leaf"
+  },
+  "predecessor": "optimizer-cost-v5e-completed.json",
+  "preflight": {
+    "harness_cpu_smoke": "c0aecd73f5fb; matrix/default only, four cases and28leaves",
+    "jacobi_cpu_execution": "JAX0.11.1 does not support Jacobi eigensolver on CPU; no CPU Jacobi numerical claim",
+    "jacobi_support": "Installed JAX0.11.1 TPU lowering routes JACOBI to native Eigh custom call with default100 sweeps and1e-6 convergence tolerance; no override.",
+    "logging_check": {
+      "run_id": "ema-gram-20-logging-check-88a1d0e3947e",
+      "online": true,
+      "success_metric": 1,
+      "gcs_config_readback": true,
+      "kernels_executed": false
+    }
+  },
+  "memory_preparation": "Release refreshed-state timing inputs before full update and unused spectral executable caches; offload reference arrays to host outside timed intervals. Record per-case device allocator snapshots. Trainer memory is not measured.",
+  "remaining_gate": "Original saved Gram/momentum validation remains in us-central2; no large checkpoint cross-region read. No training MFU or checkpoint resume claim from this synthetic stage.",
+  "authorization": "User authorizes exact candidates sequentially on available compute; matrix/QDWH assessed and rejected, conditional full Jacobi is next in recorded plan.",
+  "replaces_failed_attempt": "/kaiyuew@stanford.edu/ema-gram-20-matrix-cost-v5e-8-memory-20261102",
+  "compatibility_evidence": "optimizer-matrix-v5e-numerical-failure.json"
+}

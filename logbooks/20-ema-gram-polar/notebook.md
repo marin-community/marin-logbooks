@@ -1269,6 +1269,32 @@ preemption retries and no wall-clock limit. This is the only active candidate;
 the failed predecessor remains terminal and the v4-32 reference remains queued.
 TPU correctness and full-update timing are still pending.
 
+## 2026-11-02 21:48 UTC — Matrix/QDWH rejected by numerical comparison
+
+The memory correction allowed the full optimizer update to run. In the same
+v5e job, the candidate full-update median was 4.04522 seconds and the original full-update median was
+20.84297 seconds. All timed outputs were finite, but all seven update-direction
+tensors failed the fixed rtol=atol=1e-5 comparison. Their relative Frobenius
+errors ranged from 0.00698 to 0.02902; the largest absolute error was 0.00944.
+All 21 updated Gram/momentum tensors passed.
+
+Iris confirms failed attempt 0 with task exit 1. The assertion stopped the
+job before the warmed device-profile capture. W&B recorded a failed comparison;
+its finished state does not mean diagnostic success. The
+[failure evidence](optimizer-matrix-v5e-numerical-failure.json) contains the
+same-input timings, all 28 comparisons and per-case device allocator readings.
+Finelog observed a host-memory peak of 57.7998 GiB across 95 samples.
+
+Reject this matrix/QDWH candidate for training at the unchanged tolerance.
+The direction discrepancy is measured, but its contributions from the
+solver and compiler/reduction ordering have not been isolated. The next
+[planned candidate](optimizer-jacobi-v5e-plan.json) uses Jacobi to compute all eigenvalues and eigenvectors of each full matrix with the same matrix distribution and numerical gate. JAX supports
+that solver on TPU/GPU but not CPU; an online CPU logging check passed and its GCS configuration was read back.
+That check executed no kernels.
+Validation on Gram/momentum arrays from the original training checkpoint,
+full checkpoint restoration and actual
+training MFU has been established.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
