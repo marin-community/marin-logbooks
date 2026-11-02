@@ -1189,6 +1189,15 @@ This synthetic screen precedes the required saved-checkpoint validation.
 The 3.46 GB of saved Gram/momentum arrays remain in us-central2 for regional
 validation. Full trainer restoration and actual training MFU remain unverified.
 
+## 2026-11-02 21:05 UTC — Matrix candidate submitted
+
+Iris accepted `ema-gram-20-matrix-cost-v5e-8-20261102` at 21:05:08 UTC from
+published source `528a25982f524e91063d631f4e9f87220f6d5a16`. The
+[plan](optimizer-matrix-v5e-plan.json) records the exact command and regional
+output prefix. This is the only active candidate test; the completed baseline
+is terminal and the v4-32 reference request remains queued. Startup and TPU
+numerical/performance results are not yet verified.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
