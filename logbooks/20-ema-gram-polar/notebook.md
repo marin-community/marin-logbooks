@@ -1295,6 +1295,17 @@ Validation on Gram/momentum arrays from the original training checkpoint,
 full checkpoint restoration and actual
 training MFU has been established.
 
+## 2026-11-02 21:51 UTC — Jacobi candidate submitted
+
+Iris accepted `ema-gram-20-jacobi-cost-v5e-8-20261102` at 21:51:56 UTC from
+published source `a1938e336fa17a47661c9e89e18ee4b1c3fa88ef`. The
+[plan](optimizer-jacobi-v5e-plan.json) records its exact command. It uses
+eight v5e chips and the existing synthetic diagnostic, changing the candidate
+solver from QDWH to Jacobi. The original implementation remains the same-job
+reference. Fixed comparison tolerances, full matrix geometry, regional storage,
+batch priority and default preemption retries are unchanged; no wall-clock
+limit is set. This is the only active candidate, with TPU results pending.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
