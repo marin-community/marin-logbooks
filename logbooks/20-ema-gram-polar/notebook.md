@@ -1345,6 +1345,31 @@ stage; same-job reference timing, numerical comparison and the warmed device
 profile remain pending. Keep the current diagnostic running to completion.
 No additional candidate or training job was submitted during this check.
 
+## 2026-11-02 23:20 UTC — Reject Jacobi after the numerical comparison
+
+Jacobi failed the fixed rtol=atol=1e-5 numerical gate at 23:07:05 UTC; Iris confirms
+attempt 0 failed with task exit 1. All seven direction tensors fail, with
+relative Frobenius errors of 0.00703–0.03754 and maximum absolute error
+0.01024. All 21 updated Gram/momentum tensors pass. The same-job full-update
+medians are 503.18352 seconds for Jacobi and 20.84245 seconds for the original
+implementation: Jacobi is 24.14 times slower. All timed outputs are finite.
+
+The [failure evidence](optimizer-jacobi-v5e-numerical-failure.json) preserves
+all samples, leaf comparisons and device allocator snapshots. Finelog reports
+a cumulative task host-memory peak of 20.17969 GiB across 680 samples from
+21:51 to 23:10 UTC. W&B closed with the comparison marked false and no
+`diagnostic/completed` field.
+The assertion stopped execution before the warmed profile. Reject Jacobi for
+training and retain this failed attempt without restarting it.
+
+Both matrix-layout candidates now fail the direction comparison. Their error
+patterns do not identify a cause. The [attribution plan](optimizer-divergence-attribution-plan.json)
+compares frozen inputs through spectral powers, inner products, polar iteration
+and reconstruction. It feeds identical powers and inner matrices through both
+downstream layouts to test whether the discrepancy comes from the solver or
+later operations. It is a design only; no new diagnostic
+or training job has been submitted. The v4-32 reference remains queued.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -1,0 +1,37 @@
+{
+  "status": "design only; not implemented or submitted",
+  "objective": "Locate first numerical divergence between original and matrix-layout default QDWH before proposing another optimization.",
+  "evidence": [
+    "optimizer-matrix-v5e-numerical-failure.json",
+    "optimizer-jacobi-v5e-numerical-failure.json"
+  ],
+  "hypotheses": [
+    "Small Gram differences may be amplified by regularized spectral powers or later operations.",
+    "Sharding changes may alter eigensolver results or compiler/reduction choices outside the eigensolver.",
+    "Polar iteration may amplify differences; similar direction errors alone do not identify the cause."
+  ],
+  "controls": {
+    "geometry": "Full original 11-layer matrices, no blocks or approximation",
+    "seed": 0,
+    "alpha": 0.25,
+    "ridge": 0.0001,
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "solver": "default QDWH; Jacobi rejected",
+    "storage": "synthetic regional data only, no cross-region checkpoint read",
+    "training": false
+  },
+  "sequence": [
+    "Generate the identical original synthetic state and gradients and compute one common refreshed state. Compare its fingerprint and all leaves before branching.",
+    "Feed the same frozen Grams into original and matrix-layout power functions. Compare normalized Grams, eigenvalue ranges, eigenpair residuals, orthogonality and reconstructed powers; do not compare raw eigenvectors elementwise because signs and degenerate bases vary.",
+    "Feed each power pair plus identical momentum into one common reconstruction/inner-product function. Compare inner matrices, polar outputs and final directions.",
+    "Cross-feed identical powers/inner matrices into the original and candidate downstream layouts to separate solver differences from downstream compiler/reduction effects.",
+    "Compare staged results against fused full updates on identical inputs. Stage barriers are diagnostic instrumentation, not evidence of an accepted optimization."
+  ],
+  "operational_requirements": [
+    "Implement and validate CPU harness with online W&B before any accelerator submission.",
+    "Publish exact source and plan before one sequential diagnostic. Preserve default preemption retries and no wall-clock limits.",
+    "Stream per-stage summaries and offload comparison arrays to host outside timings; free unused device buffers and caches.",
+    "No training promotion without unchanged numerical gate, saved-state regional validation, full restoration and measured training MFU."
+  ]
+}
