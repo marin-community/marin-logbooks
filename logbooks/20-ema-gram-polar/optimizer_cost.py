@@ -34,7 +34,7 @@ from rigging.filesystem.storage_path import StoragePath
 NAMES = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj")
 ROW_SHARDED = {"o_proj", "down_proj"}
 # (device count, process count) for each supported TPU slice.
-EXPECTED_TOPOLOGY = {"v4-8": (4, 1), "v4-32": (16, 4)}
+EXPECTED_TOPOLOGY = {"v4-8": (4, 1), "v4-32": (16, 4), "v5litepod-8": (8, 1)}
 
 
 def put_global(array, sharding):
@@ -186,7 +186,10 @@ def main():
             devices,
             jax.process_count(),
         )
-        assert all(d.platform == "tpu" and "v4" in d.device_kind.lower() for d in devices), devices
+        expected_kind = "v4" if args.tpu_type.startswith("v4-") else "v5"
+        assert all(d.platform == "tpu" and expected_kind in d.device_kind.lower() for d in devices), devices
+        if args.tpu_type == "v5litepod-8":
+            assert all("lite" in d.device_kind.lower() or "v5e" in d.device_kind.lower() for d in devices), devices
     mesh = Mesh(np.array(devices), ("data",))
     replicated = NamedSharding(mesh, P())
     gradient_shardings = tuple(
