@@ -240,6 +240,10 @@ def main():
             "isolated kernels do not establish full-training time fractions."
         ),
         "profile_invocations": 1,
+        "diagnostic_buffer_policy": (
+            "Release refreshed-state timing inputs and unused executables before full update; "
+            "offload paired reference outputs to host outside timing. Does not measure trainer memory."
+        ),
         "output_prefix": str(destination),
     }
     tracker = WandbConfig(
@@ -304,6 +308,7 @@ def main():
         initialize = jax.jit(lambda gs: tuple(init_gram_state(g) for g in gs), out_shardings=state_shardings)
         states = jax.block_until_ready(refresh_fn(prior, initialize(prior)))
         del prior
+        initialize.clear_cache()
     updated = jax.block_until_ready(refresh_fn(gradients, states))
     full_fn = jax.jit(
         partial(full_update, **solver_kwargs),
@@ -336,8 +341,21 @@ def main():
         )
         cases.append(("saved_checkpoint_direction", checkpoint_direction_fn, (states,)))
     report = {"config": config, "measurements": {}}
-    for step, (name, fn, inputs) in enumerate(cases, start=1):
+    step = 0
+    while cases:
+        step += 1
+        name, fn, inputs = cases.pop(0)
+        if name == "quarter_update_and_direction":
+            # Earlier cases consumed this extra state bank; full update reads
+            # states and computes its own refreshed state inside the kernel.
+            del updated
+            gc.collect()
+        report["active_case"] = name
+        report["device_memory_before_case"] = [d.memory_stats() for d in jax.local_devices()]
+        (destination / "report.json").write_text(json.dumps(report, indent=2))
         result = measure(fn, inputs, args.samples)
+        result["device_memory_before_case"] = report["device_memory_before_case"]
+        result["device_memory_after_case"] = [d.memory_stats() for d in jax.local_devices()]
         report["measurements"][name] = result
         record = {"case": name, **result}
         print(json.dumps(record), flush=True)
@@ -352,16 +370,19 @@ def main():
         )
         (destination / "report.json").write_text(json.dumps(report, indent=2))
         (destination / "metrics.jsonl").write_text((local / "metrics.jsonl").read_text())
+        if name in ("spectral_powers", "alpha0_direction"):
+            fn.clear_cache()
+        del fn, inputs
         gc.collect()
     # Validate fused versus separately computed outputs on the small end-to-end check.
     if args.smoke:
         fused = jax.block_until_ready(full_fn(gradients, states))[0]
+        updated = jax.block_until_ready(refresh_fn(gradients, states))
         separate = directions(updated, 0.25, **solver_kwargs)
         for a, b in zip(fused, separate, strict=True):
             np.testing.assert_allclose(np.asarray(a), np.asarray(b), rtol=1e-4, atol=1e-5)
-    # Timing cases retain the refreshed state. Release it before holding two
-    # full update outputs for comparison on devices with smaller HBM.
-    del cases, updated
+        del fused, separate, updated, a, b
+    del cases
     gc.collect()
     if args.eigh_layout != "replicated" or args.eigh_implementation != "default":
         reference_fn = jax.jit(
@@ -371,12 +392,16 @@ def main():
         )
         report["reference_measurements"] = measure(reference_fn, (gradients, states), args.samples)
         (destination / "report.json").write_text(json.dumps(report, indent=2))
-        reference = jax.block_until_ready(reference_fn(gradients, states))
+        # Keep the paired reference on host so two full device output banks
+        # do not coexist with the candidate's execution workspace.
+        reference = jax.device_get(jax.block_until_ready(reference_fn(gradients, states)))
+        reference_fn.clear_cache()
         candidate = jax.block_until_ready(full_fn(gradients, states))
         report["reference_comparison"] = compare_trees(candidate, reference)
         tracker.log_summary({"diagnostic/reference_comparison_passed": report["reference_comparison"]["passed"]})
         (destination / "report.json").write_text(json.dumps(report, indent=2))
         del reference, candidate
+        assert report["reference_comparison"]["passed"], "Candidate differs from original full update"
         if args.checkpoint:
             original_direction_fn = jax.jit(
                 partial(directions, alpha=0.25),
@@ -385,7 +410,8 @@ def main():
             )
             report["saved_checkpoint_reference_measurements"] = measure(original_direction_fn, (states,), args.samples)
             (destination / "report.json").write_text(json.dumps(report, indent=2))
-            original = jax.block_until_ready(original_direction_fn(states))
+            original = jax.device_get(jax.block_until_ready(original_direction_fn(states)))
+            original_direction_fn.clear_cache()
             proposed = jax.block_until_ready(checkpoint_direction_fn(states))
             report["saved_checkpoint_reference_comparison"] = compare_trees(proposed, original)
             tracker.log_summary(
@@ -393,11 +419,15 @@ def main():
             )
             (destination / "report.json").write_text(json.dumps(report, indent=2))
             del original, proposed
+            assert report["saved_checkpoint_reference_comparison"]["passed"], "Candidate differs on saved state"
+    report["active_case"] = "warmed_profile"
+    (destination / "report.json").write_text(json.dumps(report, indent=2))
     report["profile"] = profile_once(full_fn, (gradients, states), local / "profile")
     report["device_timeline_available"] = any(
         p["name"].startswith("/device:TPU:") and p["events"] > 0 for f in report["profile"] for p in f["planes"]
     )
     report["device_memory_stats"] = [d.memory_stats() for d in jax.local_devices()]
+    report["active_case"] = "completed"
     for file in (local / "profile").rglob("*.xplane.pb"):
         target = destination / "profile" / file.relative_to(local / "profile").as_posix()
         target.parent.mkdirs()

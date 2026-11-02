@@ -1,0 +1,42 @@
+{
+  "state": "prepared; online CPU smoke passed, awaiting publication",
+  "job_name": "ema-gram-20-matrix-cost-v5e-8-memory-20261102",
+  "hardware": "v5litepod-8",
+  "devices": 8,
+  "hosts": 1,
+  "cpu": 96,
+  "memory": "128GB",
+  "disk": "50GB",
+  "region": "us-west4",
+  "priority": "batch",
+  "wall_clock_limits": null,
+  "preemption_retries": "Iris defaults",
+  "candidate": {
+    "eigh_layout": "matrix",
+    "eigh_implementation": "default"
+  },
+  "samples": 3,
+  "seed": 0,
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-optimizer-cost/2026.11.02.5",
+  "input": "Identical synthetic state and gradients for original/candidate within this job; no checkpoint reads.",
+  "numerical_gate": {
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "outputs": "Every direction and updated Gram/momentum leaf"
+  },
+  "predecessor": "optimizer-cost-v5e-completed.json",
+  "preflight": {
+    "cpu_devices": 8,
+    "online_wandb_run": "ema-gram-20-cpu-smoke-c0aecd73f5fb",
+    "cases": 4,
+    "all_reference_leaves_passed": 28,
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "gcs_report_readback": true
+  },
+  "memory_preparation": "Release refreshed-state timing inputs before full update and unused spectral executable caches; offload reference arrays to host outside timed intervals. Record per-case device allocator snapshots. Trainer memory is not measured.",
+  "remaining_gate": "Original saved Gram/momentum validation remains in us-central2; no large checkpoint cross-region read. No training MFU or checkpoint resume claim from this synthetic stage.",
+  "authorization": "User allows any available compute; baseline cost/memory/profile gate satisfied on v5e.",
+  "replaces_failed_attempt": "/kaiyuew@stanford.edu/ema-gram-20-matrix-cost-v5e-8-vma-20261102",
+  "compatibility_evidence": "optimizer-matrix-v5e-vma-failed.json"
+}

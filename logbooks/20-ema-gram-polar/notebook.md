@@ -1230,6 +1230,35 @@ from published source `52bd24cf389658686a8b84cbf232ede36c678cb1`. Its
 resources and default retry policy. This is a fresh process, with no
 checkpoint resume. The failed predecessor remains terminal.
 
+## 2026-11-02 21:33 UTC — Matrix spectral timing and full-update HBM failure
+
+The matrix-distributed QDWH candidate produced finite inverse-quarter-power
+Gram outputs with a three-sample median of 3.86221 seconds. The original
+implementation measured a three-sample median of 20.26449 seconds in the
+preceding eight-chip v5e job, using the same synthetic inputs and timing
+protocol. This is a 5.25-fold difference between isolated spectral timings;
+the candidate-versus-original numerical comparison has not run.
+
+The candidate then failed during device executable loading for the full
+optimizer update. TPU runtime
+reported a 6.06G allocation request with 5.91G available. Iris confirms failed
+attempt 0 with task exit 1. Full-update timing, numerical comparison and the
+profiler trace after warm-up are missing. The [failure record](optimizer-matrix-v5e-vma-failed.json)
+preserves the partial measurements and exact source.
+
+Alongside the input state, the diagnostic retained a 3.46 GB copy of the
+Gram/momentum state after refresh, used by the earlier timing cases. The full-update case does not read that bank. The
+[revised diagnostic](optimizer-matrix-v5e-memory-plan.json) releases it and unused
+spectral executables before full-update warm-up. It also moves reference
+outputs to host memory outside timed intervals, so the paired comparison does
+not retain two full device output banks. It records device allocator snapshots
+before and after each case. Optimizer math, synthetic inputs and the 1e-5 absolute
+and relative comparison tolerances match the failed diagnostic. An online
+eight-device CPU smoke passed all four cases and 28 comparison leaves; its
+GCS report was read back. Whether the full update
+fits after this change remains a TPU validation question; diagnostic memory
+use does not establish training memory requirements.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
