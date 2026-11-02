@@ -1292,8 +1292,7 @@ solver and compiler/reduction ordering have not been isolated. The next
 that solver on TPU/GPU but not CPU; an online CPU logging check passed and its GCS configuration was read back.
 That check executed no kernels.
 Validation on Gram/momentum arrays from the original training checkpoint,
-full checkpoint restoration and actual
-training MFU has been established.
+full checkpoint restoration and actual training MFU have not been established.
 
 ## 2026-11-02 21:51 UTC — Jacobi candidate submitted
 
@@ -1305,6 +1304,13 @@ solver from QDWH to Jacobi. The original implementation remains the same-job
 reference. Fixed comparison tolerances, full matrix geometry, regional storage,
 batch priority and default preemption retries are unchanged; no wall-clock
 limit is set. This is the only active candidate, with TPU results pending.
+
+## 2026-11-02 22:02 UTC — Correction to the validation status
+
+The last sentence of the 21:48 entry accidentally omitted the negation in
+its validation status. It is corrected above: original-checkpoint TPU
+validation, full trainer restoration and actual training MFU remain unverified.
+No training process was launched or resumed by these diagnostics.
 
 ## Final decision
 
