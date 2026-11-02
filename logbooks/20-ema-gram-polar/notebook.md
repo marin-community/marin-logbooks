@@ -1146,6 +1146,19 @@ kernels on v5e first, then validate one candidate optimization that preserves
 the optimizer definition at a time. Full checkpoint restoration and actual
 training MFU remain later gates.
 
+## 2026-11-02 20:42 UTC — v5e execution verified
+
+Iris reports the v5e diagnostic running on attempt 0. Its GCS report identifies
+eight native `TPU v5 lite` devices and one JAX process. The online
+[W&B run](https://wandb.ai/marin-community/marin/runs/ema-gram-20-tpu-cost-fd4fde87827d)
+reports successful logging initialization, eight devices and one host.
+
+Gram refresh completed three finite samples, with median 0.0816146 seconds.
+The [incremental evidence](optimizer-cost-v5e-startup.json) preserves the exact
+samples and configuration. Spectral-power timing, the other kernel cases,
+device trace and memory measurements remain pending. This is an isolated
+synthetic kernel measurement; full training has not resumed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

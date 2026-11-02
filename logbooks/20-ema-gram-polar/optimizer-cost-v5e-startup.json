@@ -1,0 +1,144 @@
+{
+  "observed_utc": "2026-11-02T20:42:55Z",
+  "state": "running; incomplete",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v5e-8-20261102",
+  "wandb_url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-tpu-cost-fd4fde87827d",
+  "wandb_api": {
+    "state": "running",
+    "logging_check/success": 1,
+    "num_devices": 8,
+    "num_hosts": 1
+  },
+  "gcs_report": "gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.11.02.2/ema-gram-20-tpu-cost-fd4fde87827d/rank-0/report.json",
+  "report": {
+    "config": {
+      "mode": "tpu-cost",
+      "tpu_type": "v5litepod-8",
+      "process_count": 1,
+      "process_index": 0,
+      "source_commit": "7ec075ff4ed128e14136e5dab00cfd52478847cf",
+      "script_sha256": "347553aa69f6edfed5392b7b13e6c958ee7b4b04a7ecdcb0276013392d5d3acb",
+      "seed": 0,
+      "samples": 3,
+      "matrix_names": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "matrix_shapes": [
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          1024,
+          1024
+        ],
+        [
+          11,
+          4096,
+          1024
+        ],
+        [
+          11,
+          4096,
+          1024
+        ],
+        [
+          11,
+          1024,
+          4096
+        ]
+      ],
+      "alpha": 0.25,
+      "ridge": 0.0001,
+      "beta1": 0.95,
+      "beta2": 0.99,
+      "polar_steps": 5,
+      "state_sharding": "replicated",
+      "gradient_sharding": "embed axis on data; o/down rows, others columns",
+      "input_state": "one synthetic gradient update from zero; same inputs for every timing",
+      "limitations": "No model/data/AdamW/weight decay. Synthetic spectra; isolated kernels do not establish full-training time fractions.",
+      "profile_invocations": 1,
+      "output_prefix": "gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.11.02.2/ema-gram-20-tpu-cost-fd4fde87827d/rank-0",
+      "devices": [
+        {
+          "id": 0,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        },
+        {
+          "id": 1,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        },
+        {
+          "id": 2,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        },
+        {
+          "id": 3,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        },
+        {
+          "id": 4,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        },
+        {
+          "id": 5,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        },
+        {
+          "id": 6,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        },
+        {
+          "id": 7,
+          "platform": "tpu",
+          "kind": "TPU v5 lite"
+        }
+      ]
+    },
+    "measurements": {
+      "gram_refresh": {
+        "warmup_compile_and_execution_seconds": 0.08146538399887504,
+        "sample_seconds": [
+          0.08163477299967781,
+          0.0816026430002239,
+          0.08161463299984462
+        ],
+        "median_seconds": 0.08161463299984462,
+        "finite_outputs": true
+      }
+    }
+  },
+  "remaining": [
+    "spectral powers",
+    "alpha0 direction",
+    "full quarter update",
+    "device trace",
+    "measured memory",
+    "successful terminal state"
+  ]
+}
