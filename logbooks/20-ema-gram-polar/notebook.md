@@ -1370,6 +1370,28 @@ downstream layouts to test whether the discrepancy comes from the solver or
 later operations. It is a design only; no new diagnostic
 or training job has been submitted. The v4-32 reference remains queued.
 
+## 2026-11-02 23:32 UTC — Implement frozen-input attribution
+
+The [stage diagnostic](optimizer_attribution.py) first records the original
+and matrix-layout fused full updates. It then compares the default eigensolver in replicated and matrix layouts
+using identical refreshed Grams and momentum, records eigenpair residuals and reconstructed
+powers, and compares downstream operations with identical powers and inner
+matrices under replicated and direction-sharded output layouts. These explicit
+layout controls do not describe the hidden layouts of the fused executables.
+
+The online logging check succeeded on eight virtual CPU devices, and a
+preliminary CPU smoke run is still collecting comparisons. Both used the
+version before the following setup correction:
+zero-state initialization and refresh must remain separate calls, as in the
+original diagnostic. The implementation now preserves that boundary; validation
+of this final version remains pending. No accelerator diagnostic was submitted.
+
+Comparison failures are recorded while later diagnostic stages continue; this
+never accepts a candidate for training. The completion marker means every stage
+was collected, not that a cause was established. Durations
+include compilation, and stage boundaries alter compilation; this diagnostic
+makes no warmed-performance or training-MFU claim.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

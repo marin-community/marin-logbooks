@@ -1,5 +1,5 @@
 {
-  "status": "design only; not implemented or submitted",
+  "status": "implemented; CPU smoke running; not submitted",
   "objective": "Locate first numerical divergence between original and matrix-layout default QDWH before proposing another optimization.",
   "evidence": [
     "optimizer-matrix-v5e-numerical-failure.json",
@@ -33,5 +33,36 @@
     "Publish exact source and plan before one sequential diagnostic. Preserve default preemption retries and no wall-clock limits.",
     "Stream per-stage summaries and offload comparison arrays to host outside timings; free unused device buffers and caches.",
     "No training promotion without unchanged numerical gate, saved-state regional validation, full restoration and measured training MFU."
-  ]
+  ],
+  "entrypoint": "logbooks/20-ema-gram-polar/optimizer_attribution.py",
+  "execution": {
+    "job_name": "ema-gram-20-attribution-v5e-8-20261102",
+    "hardware": "v5litepod-8",
+    "devices": 8,
+    "hosts": 1,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris defaults",
+    "wall_clock_limits": null,
+    "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.02.1",
+    "seed": 0
+  },
+  "implementation_notes": [
+    "First capture full seven-group fused original and matrix outputs on identical inputs; host-offload outputs and release their executable caches.",
+    "One common refreshed state is fingerprinted and passed to every later branch; assert it remains unchanged after every matrix group.",
+    "For each full-sized matrix group, compare reconstructed powers and sorted eigenvalues, measure eigenpair residuals/orthogonality, compare staged versus fused powers and full directions.",
+    "Explicit downstream layout controls are replicated versus the existing direction sharding; they are controlled diagnostic variants, not an assertion about the compiled internal layouts of either fused executable.",
+    "Record every expected mismatch and continue attribution. Successful diagnostic completion is distinct from acceptance: candidate_accepted_for_training stays false.",
+    "Single-call durations include compilation; no warmed timing or profile is claimed by this attribution script.",
+    "Keep the baseline separate zero-state initialization and refresh calls; preserve NumPy random draw order across all seven groups."
+  ],
+  "logging_check": {
+    "run_id": "ema-gram-20-attribution-7c3ea8765998",
+    "online": true,
+    "success_metric": 1,
+    "kernels_executed": false
+  }
 }
