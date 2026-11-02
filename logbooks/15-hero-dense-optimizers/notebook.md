@@ -496,3 +496,33 @@ LR multiplier transferred from the three-point 1e18 calibration; AdamW,
 Muon and AdamH selected the highest tested multiplier. Time-to-loss remains
 unanalysed because waits, preemptions, retry catch-up, evaluations and saves
 affect elapsed time.
+
+## 2026-11-02 UTC: AdamW 1e21 final verified
+
+AdamW completed the 1e21-FLOP recipe with final Paloma macro loss 2.8337355
+and final training loss 1.6886252. It completed 113,219 updates and
+59,359,363,072 tokens. Iris reports success with zero application failures,
+and W&B is finished at zero-based step 113,218. Its permanent checkpoint
+records update 113,219 at 02:57:23 UTC with `is_temporary=false`; metadata,
+both manifests and the data directory are present.
+[Exact final metrics and verification](adamw-1e21-20261102.json) bring the
+selected ladder (seven budgets × four recipes) to 26/28 complete.
+
+The two verified 1e21 finals are AdamW 2.8337355 and MuonH 3.0371683. AdamH
+and Muon remain incomplete. At 03:04 UTC, they had fresh finite training at
+zero-based steps 84,654 and 100,650, respectively, and intact rolling
+checkpoint saves whose recorded update counts are advancing. Each targets 113,219 updates. Both report zero
+application failures; scheduler preemption totals since the October 29
+relaunch remain 6 and 2. Two H100x8 jobs use 16 GPUs; no selected jobs await
+slots. Completed AdamW is removed from active monitoring.
+
+Continue the existing AdamH and Muon recipes under the unchanged batch
+priority and eight-job/64-GPU cap, using source
+`5e46cfb93934c8c5e9a218f45117685887410d59`. Each recipe uses one seed and
+a multiplier on its base LR schedule transferred from the three-point
+1e18 calibration. AdamW, Muon and AdamH use the highest tested multiplier,
+3; MuonH uses 1. The [initial design](#2026-10-26-initial-design-and-launch-contract)
+defines the base LR schedules and the norm-preserving AdamH/MuonH variants. These results do not
+establish statistical significance or optimizer-optimal scaling. Time-to-loss
+remains unanalysed; waits, preemptions, retry catch-up, evaluations and saves
+affect elapsed time.
