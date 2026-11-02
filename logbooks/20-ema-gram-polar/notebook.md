@@ -1312,6 +1312,23 @@ its validation status. It is corrected above: original-checkpoint TPU
 validation, full trainer restoration and actual training MFU remain unverified.
 No training process was launched or resumed by these diagnostics.
 
+## 2026-11-02 22:18 UTC — Jacobi is executing timed spectral samples
+
+The Jacobi job remains running. Its incremental report still contains only
+the Gram-refresh measurement. A read-only stack inspection found the main
+thread at `measure` line 146, waiting for a timed spectral sample. That line
+runs after the warm-up call and its finite-output assertion. Warm-up therefore
+completed with finite outputs; the sample index and elapsed sample time were
+not inspected. This observation does not establish a hang or a steady latency.
+One timed sample may include stack-inspection overhead.
+
+The latest task telemetry reports 8,375 MiB of task host memory and an 8,526 MiB
+cumulative peak for attempt 0. Accelerator telemetry is absent. The
+[progress evidence](optimizer-jacobi-v5e-progress.json) records the stack,
+source lines and bounded telemetry query window. Keep the current job and
+observer running; spectral timings, numerical agreement and final artifacts
+remain pending. No concurrent candidate or training job was submitted during this check.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

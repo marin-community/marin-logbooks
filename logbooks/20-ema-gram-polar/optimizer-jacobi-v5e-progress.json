@@ -1,0 +1,37 @@
+{
+  "observed_utc": "2026-11-02T22:18:18Z",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-jacobi-cost-v5e-8-20261102",
+  "source_commit": "a1938e336fa17a47661c9e89e18ee4b1c3fa88ef",
+  "controller_state": "JOB_STATE_RUNNING",
+  "attempt": 0,
+  "report_active_case": "spectral_powers",
+  "report_updated_utc": "2026-11-02T21:52:34.917Z",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-optimizer-cost/2026.11.02.6/ema-gram-20-tpu-cost-035521115e01/rank-0/report.json",
+  "read_only_inspection": "iris task exec; py-spy dump --pid1 without locals; no signal,cancellation or new accelerator process",
+  "main_stack": [
+    "jax/_src/api.py:2784 block_until_ready",
+    "optimizer_cost.py:146 measure",
+    "optimizer_cost.py:356 main",
+    "optimizer_cost.py:458 module"
+  ],
+  "code_interpretation": "Line146 is inside the timed-sample loop, after warmup completion and finite_tree assertion at139-141. At least warmup completed with finite outputs. Sample index and elapsed duration were not inspected.",
+  "telemetry": {
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "time_window_utc": [
+      "2026-11-02T22:12:00Z",
+      "2026-11-02T22:18:00Z"
+    ],
+    "latest_ts": "2026-11-02T22:17:38.361Z",
+    "cpu_millicores": 4,
+    "memory_mib": 8375,
+    "peak_memory_mib": 8526,
+    "accelerator_util_pct": null,
+    "accelerator_mem_bytes": null,
+    "worker_id": "marin-tpu-v5e-serving-8-us-west4-a-20261102-1425-f3ce3efc-worker-0",
+    "cluster": null
+  },
+  "limitations": "No spectral median, full-update timing, reference comparison or profile yet. Null accelerator telemetry does not establish TPU idle or busy. A stack waiting on a device call does not establish a hang.",
+  "action": "Keep the existing job and single log observer; no wall-clock limit or concurrent candidate.",
+  "timing_caveat": "A single py-spy stack inspection occurred during a timed sample; that sample may include inspection overhead."
+}
