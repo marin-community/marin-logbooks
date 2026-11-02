@@ -69,5 +69,31 @@
       "cluster": "local",
       "peer_status": "PEER_STATUS_NONE"
     }
+  },
+  "autoscaler_failure_evidence": {
+    "observed_utc": "2026-11-02T20:30:13Z",
+    "events": [
+      {
+        "timestamp": {
+          "epoch_ms": "1793651174178"
+        },
+        "action_type": "slice_failed",
+        "scale_group": "tpu_v4-preemptible_32-us-central2-b",
+        "slice_id": "marin-tpu-v4-preemptible-32-us-central2-20261102-2024-2270c09a",
+        "reason": "There is no more capacity in the zone \"us-central2-b\"; you can try in another zone where Cloud TPU Nodes are offered (see https://cloud.google.com/tpu/docs/regions) [EID: 0x23016f46b9c21a2c]",
+        "status": "failed"
+      },
+      {
+        "timestamp": {
+          "epoch_ms": "1793651174217"
+        },
+        "action_type": "slice_failed",
+        "scale_group": "tpu_v4-preemptible_32-us-central2-b",
+        "slice_id": "marin-tpu-v4-preemptible-32-us-central2-20261102-2024-fe842e85",
+        "reason": "There is no more capacity in the zone \"us-central2-b\"; you can try in another zone where Cloud TPU Nodes are offered (see https://cloud.google.com/tpu/docs/regions) [EID: 0x79ec9cb2405771c5]",
+        "status": "failed"
+      }
+    ],
+    "scope": "Cluster provisioning failures, not diagnostic process failures. No assignment verified."
   }
 }

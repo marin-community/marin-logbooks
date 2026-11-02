@@ -1091,6 +1091,9 @@ user requested resuming research. Its four tasks were pending at 20:26:30
 UTC; a canonical Iris state query still reported pending at 20:27:09 UTC.
 At 20:29:47 UTC, Iris reported no matching workers and autoscaler demand
 blocked by quota-pool tier monotonicity. No task had started.
+The 20:30:13 UTC autoscaler snapshot records two failed preemptible v4-32
+provisioning attempts: the cloud reported no capacity in us-central2-b.
+These are provisioning failures; no diagnostic process has run.
 The previous v4-32 diagnostic and v4-8 probe remain terminal, as recorded
 on November 1.
 
