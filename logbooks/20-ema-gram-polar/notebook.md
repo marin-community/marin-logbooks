@@ -1084,6 +1084,38 @@ replicated in both. A much smaller value would reopen this attribution, for
 example if synthetic spectra converge faster than trained ones. The numbers
 and limitations are in `alpha-cost-attribution.json`.
 
+## 2026-11-02 20:27 UTC — Resume v4-32 cost diagnosis
+
+Iris accepted a fresh non-training diagnostic submission at 20:23:13 UTC after the
+user requested resuming research. Its four tasks were pending at 20:26:30
+UTC; a canonical Iris state query still reported pending at 20:27:09 UTC.
+At 20:29:47 UTC, Iris reported no matching workers and autoscaler demand
+blocked by quota-pool tier monotonicity. No task had started.
+The previous v4-32 diagnostic and v4-8 probe remain terminal, as recorded
+on November 1.
+
+The new job is `ema-gram-20-optimizer-cost-v4-32-20261102`. It runs frozen
+source `09c39d9ba2f06fe196cbb8136467c9a152c9dc68` on four coscheduled
+hosts, with 16 TPU v4 chips total and 120 CPUs, 128 GiB RAM and 50 GiB disk
+per host. It retains batch priority and default preemption retries, with
+no wall-clock limit. The [recovery plan](optimizer-cost-v4-32-recovery-plan.json)
+records the exact command and output prefix. This process loads no checkpoint
+and performs no training.
+
+Before submission, the v4-32 autoscaler groups reported available with no
+backoff or failures, but no ready, booting or requested v4-32 slice. Capacity assignment remains unverified.
+The existing scheduled monitor now follows this job. One PR monitor follows
+[the optimizer implementation PR](https://github.com/marin-community/marin/pull/10790).
+
+A successful diagnostic should measure optimizer cost and memory, and collect
+a device trace after compilation and warm-up. The November 1 estimates of
+eigensolver cost and scaling depend on assumptions; they do not establish
+a measured performance bound.
+Candidate changes must preserve the optimizer definition and pass numerical,
+memory and performance checks. Full checkpoint restoration and measured
+training model FLOPs utilization (MFU) above 5% require subsequent validation
+in the full trainer; both remain unverified.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -26,7 +26,48 @@
   "training_gate": "Diagnose first, verify training MFU above 5 percent on v4-32, then restore original training. No v4-8.",
   "supersedes": "Previous v4-32 diagnostic killed before assignment; terminal identity preserved. New full-prefix inventory found no active EMA-Gram jobs.",
   "preflight": "CPU smoke c362374bff13 passed all four cases, finite outputs, fused comparison, online W&B and GCS uploads; multihost TPU execution remains unverified",
-  "source_commit": "09c39d9ba",
-  "state": "prepared, not submitted",
-  "authorization": "User requested resuming research on 2026-11-02."
+  "source_commit": "09c39d9ba2f06fe196cbb8136467c9a152c9dc68",
+  "state": "submitted; pending at 2026-11-02T20:27:09Z",
+  "authorization": "User requested resuming research on 2026-11-02.",
+  "submitted_utc": "2026-11-02T20:23:13Z",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v4-32-20261102",
+  "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-optimizer-cost-v4-32-20261102 --priority batch --enable-extra-resources --tpu v4-32 --cpu 120 --memory 128GB --disk 50GB --region us-central2 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT 09c39d9ba2f06fe196cbb8136467c9a152c9dc68 -- python logbooks/20-ema-gram-polar/optimizer_cost.py --samples 3 --seed 0 --output-prefix gs://marin-us-central2/ema-gram-20-optimizer-cost/2026.11.02.1",
+  "execution_checkout": "Detached checkout of the frozen source; shared existing environment, uv --no-sync. No checkpoint loaded and no training.",
+  "latest_observation": {
+    "observed_utc": "2026-11-02T20:29:47Z",
+    "job": {
+      "job_id": "/kaiyuew@stanford.edu/ema-gram-20-optimizer-cost-v4-32-20261102",
+      "state": "JOB_STATE_PENDING",
+      "exit_code": 0,
+      "error": "",
+      "failure_count": 0,
+      "preemption_count": 0,
+      "name": "/kaiyuew/ema-gram-20-optimizer-cost-v4-32-20261102",
+      "submitted_at": {
+        "epoch_ms": "1793650993238"
+      },
+      "resources": {
+        "cpu_millicores": 120000,
+        "memory_bytes": "137438953472",
+        "device": {
+          "tpu": {
+            "variant": "v4-32",
+            "count": 4
+          }
+        },
+        "disk_bytes": "53687091200"
+      },
+      "task_state_counts": {
+        "pending": 4
+      },
+      "task_count": 4,
+      "completed_count": 0,
+      "pending_reason": "Scheduler: No workers match constraints: ['device-type', 'device-variant', 'region']\n\nAutoscaler: Unsatisfied autoscaler demand: tier_blocked: 2 matching group(s) blocked by quota-pool tier monotonicity",
+      "has_children": false,
+      "parent_job_id": "",
+      "backend_id": "default",
+      "cluster": "local",
+      "peer_status": "PEER_STATUS_NONE"
+    }
+  }
 }
