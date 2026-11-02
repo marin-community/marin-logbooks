@@ -1,5 +1,5 @@
 {
-  "state": "prepared; online CPU smoke passed, awaiting publication",
+  "state": "submitted; startup verification pending",
   "job_name": "ema-gram-20-matrix-cost-v5e-8-memory-20261102",
   "hardware": "v5litepod-8",
   "devices": 8,
@@ -38,5 +38,9 @@
   "remaining_gate": "Original saved Gram/momentum validation remains in us-central2; no large checkpoint cross-region read. No training MFU or checkpoint resume claim from this synthetic stage.",
   "authorization": "User allows any available compute; baseline cost/memory/profile gate satisfied on v5e.",
   "replaces_failed_attempt": "/kaiyuew@stanford.edu/ema-gram-20-matrix-cost-v5e-8-vma-20261102",
-  "compatibility_evidence": "optimizer-matrix-v5e-vma-failed.json"
+  "compatibility_evidence": "optimizer-matrix-v5e-vma-failed.json",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-matrix-cost-v5e-8-memory-20261102",
+  "submitted_utc": "2026-11-02T21:37:13Z",
+  "source_commit": "cfbeddaf87bdbacf30f3a084232197a95019d4af",
+  "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-matrix-cost-v5e-8-memory-20261102 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT cfbeddaf87bdbacf30f3a084232197a95019d4af -- python logbooks/20-ema-gram-polar/optimizer_cost.py --tpu-type v5litepod-8 --eigh-layout matrix --eigh-implementation default --samples 3 --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-optimizer-cost/2026.11.02.5"
 }

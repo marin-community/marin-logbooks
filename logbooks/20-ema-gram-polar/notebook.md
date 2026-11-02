@@ -1259,6 +1259,16 @@ GCS report was read back. Whether the full update
 fits after this change remains a TPU validation question; diagnostic memory
 use does not establish training memory requirements.
 
+## 2026-11-02 21:37 UTC — Diagnostic memory-lifetime correction submitted
+
+Iris accepted `ema-gram-20-matrix-cost-v5e-8-memory-20261102` at 21:37:13 UTC
+from published source `cfbeddaf87bdbacf30f3a084232197a95019d4af`.
+The [plan](optimizer-matrix-v5e-memory-plan.json) records its command and
+regional output prefix. It retains eight v5e chips, batch priority, default
+preemption retries and no wall-clock limit. This is the only active candidate;
+the failed predecessor remains terminal and the v4-32 reference remains queued.
+TPU correctness and full-update timing are still pending.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
