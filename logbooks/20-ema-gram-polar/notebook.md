@@ -1329,6 +1329,22 @@ source lines and bounded telemetry query window. Keep the current job and
 observer running; spectral timings, numerical agreement and final artifacts
 remain pending. No concurrent candidate or training job was submitted during this check.
 
+## 2026-11-02 22:32 UTC — Jacobi spectral timing is slower
+
+On eight v5e chips, Jacobi completed three timed spectral-power samples,
+each with finite outputs: 445.74329, 445.74568
+and 445.74379 seconds, with median 445.74379 seconds. Warm-up, including
+compilation and execution, took 459.59320 seconds. The original implementation
+measured a spectral median of 20.26449 seconds in the earlier eight-chip v5e
+job with matching synthetic inputs. Jacobi is about 22.0 times slower for this
+isolated case. One sample may include the earlier stack-inspection overhead.
+
+The [incremental report](optimizer-jacobi-v5e-spectral.json) preserves all
+samples and device allocator snapshots. The job is now in the full-update
+stage; same-job reference timing, numerical comparison and the warmed device
+profile remain pending. Keep the current diagnostic running to completion.
+No additional candidate or training job was submitted during this check.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
