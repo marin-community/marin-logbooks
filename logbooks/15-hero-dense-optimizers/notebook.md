@@ -526,3 +526,46 @@ defines the base LR schedules and the norm-preserving AdamH/MuonH variants. Thes
 establish statistical significance or optimizer-optimal scaling. Time-to-loss
 remains unanalysed; waits, preemptions, retry catch-up, evaluations and saves
 affect elapsed time.
+
+## 2026-11-02 UTC: Muon 1e21 final and Iris status discrepancy
+
+Muon completed the 1e21-FLOP recipe with final Paloma macro loss 3.0310905
+and final logged training loss 1.8646038, after 113,219 updates and
+59,359,363,072 tokens. W&B is finished at zero-based step 113,218. The
+permanent checkpoint records update 113,219 at 14:03:25 UTC with
+`is_temporary=false`; metadata, both manifests and the data directory are
+present. [Exact metrics and verification](muon-1e21-20261102.json) bring
+the selected ladder (seven budgets × four recipes) to 27/28 verified
+training finals with durable exports.
+
+Iris success is recorded by the retained native controller event
+`JobCompletedTaskSucceeded` at 14:04:03 UTC, with the message
+“Job completed successfully.” The parent job and attempt displays still
+reported running at 15:02 UTC. The Muon pod was absent from a later
+campaign-pod listing. SIGTERM and a rank-0 SIGKILL followed the completion
+event; the successful event, finished W&B run and permanent export support
+training completion despite the stale parent display. Clean process
+teardown is not established by this evidence. No relaunch or manual status
+change was performed.
+
+The recipes share the token budget and held-out Paloma evaluation at this
+model size; lower Paloma macro loss is better. Verified 1e21 Paloma finals
+are AdamW 2.8337355, Muon 3.0310905 and MuonH
+3.0371683. AdamH remains incomplete. At 16:21 UTC it had finite advancing
+training at zero-based step 99,291 and an intact rolling checkpoint at
+update 99,079, with metadata, both manifests and data directory present.
+Its scheduler preemption total since the October 29 relaunch remains 6,
+with zero application failures. One H100x8 training job uses 8 GPUs; no
+selected jobs await slots. Continue the existing AdamH recipe under batch
+priority and the eight-job/64-GPU cap, using source
+`5e46cfb93934c8c5e9a218f45117685887410d59`.
+
+Each recipe uses one seed and a multiplier on its base LR schedule
+transferred from the three-point 1e18 calibration. AdamW, Muon and AdamH
+use the highest tested multiplier, 3; MuonH uses 1. The
+[initial design](#2026-10-26-initial-design-and-launch-contract) defines the
+base LR schedules and norm-preserving H variants. Muon has 0.0060778 lower
+Paloma loss than MuonH at 1e21. Optimizer and selected LR schedule both
+differ between recipes. These results do not establish statistical
+significance or optimizer-optimal scaling. AdamH's final and time-to-loss
+analysis remain pending.
