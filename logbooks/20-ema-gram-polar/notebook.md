@@ -1406,6 +1406,19 @@ with the storage client's request retries retained. This bounds communication
 requests, not the diagnostic's total runtime or the scheduler's retry policy.
 The corrected harness still requires a complete CPU smoke run before submission.
 
+## 2026-11-02 23:56 UTC — Attribution harness passes CPU validation
+
+The final online CPU smoke run completed 173 stages and passed all 101
+comparisons at rtol=atol=1e-5 on eight virtual devices. The process exited zero,
+and the regional GCS report matches the local copy byte for byte. The
+[preflight record](optimizer-attribution-preflight.json) pins source, script
+hash and report checksum, and retains the earlier interrupted attempt.
+
+This validates the harness only. The full-size v5e diagnostic will test the
+same default eigensolver under both layouts and collect the stage comparisons;
+TPU numerical behavior and the cause of the earlier discrepancy remain unknown.
+No training or original-checkpoint read is part of this diagnostic.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -1,5 +1,5 @@
 {
-  "status": "implemented; final CPU smoke interrupted on report upload; request timeout fix awaiting validation",
+  "status": "CPU validated; ready for one sequential TPU attribution diagnostic; not submitted",
   "objective": "Locate first numerical divergence between original and matrix-layout default QDWH before proposing another optimization.",
   "evidence": [
     "optimizer-matrix-v5e-numerical-failure.json",
@@ -75,6 +75,72 @@
       "run_id": "ema-gram-20-attribution-95bd3d3eddf0",
       "status": "interrupted at GCS report upload; final version incomplete",
       "evidence": "optimizer-attribution-cpu-io-interruption.json"
+    },
+    {
+      "run_id": "ema-gram-20-attribution-d53dab8edd34",
+      "status": "passed173stages/101comparisons; final source; online and GCS readback verified"
     }
-  ]
+  ],
+  "preflight": {
+    "status": "passed",
+    "source_commit": "dd81557fefa5481e28c917a26ddcfb189d44e770",
+    "script_sha256": "5671a3f95cfa2c9620461a4675292ec99af74003ea321a1cb1be73df64364608",
+    "run_id": "ema-gram-20-attribution-d53dab8edd34",
+    "online": true,
+    "process_exit_code": 0,
+    "devices": [
+      {
+        "id": 0,
+        "kind": "cpu",
+        "platform": "cpu"
+      },
+      {
+        "id": 1,
+        "kind": "cpu",
+        "platform": "cpu"
+      },
+      {
+        "id": 2,
+        "kind": "cpu",
+        "platform": "cpu"
+      },
+      {
+        "id": 3,
+        "kind": "cpu",
+        "platform": "cpu"
+      },
+      {
+        "id": 4,
+        "kind": "cpu",
+        "platform": "cpu"
+      },
+      {
+        "id": 5,
+        "kind": "cpu",
+        "platform": "cpu"
+      },
+      {
+        "id": 6,
+        "kind": "cpu",
+        "platform": "cpu"
+      },
+      {
+        "id": 7,
+        "kind": "cpu",
+        "platform": "cpu"
+      }
+    ],
+    "stages": 173,
+    "comparisons": 101,
+    "all_comparisons_passed": true,
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.02.bounded-smoke/ema-gram-20-attribution-d53dab8edd34/report.json",
+    "report_sha256": "0a43d30e17ce167eab31c40085b22554d554efd11206419fcc1e4e8dd3a8265b",
+    "gcs_readback_matches_local": true,
+    "logging_check_run": "ema-gram-20-attribution-9a48beb26f07",
+    "negative_control": "Exact copies accepted; a1e-4 perturbation at zero rejected by the same comparator.",
+    "communication_timeout_seconds": 60,
+    "scope": "CPU harness validation only; no TPU numerical or performance claim."
+  }
 }
