@@ -1,5 +1,5 @@
 {
-  "status": "implemented; CPU smoke running; not submitted",
+  "status": "implemented; final CPU smoke interrupted on report upload; request timeout fix awaiting validation",
   "objective": "Locate first numerical divergence between original and matrix-layout default QDWH before proposing another optimization.",
   "evidence": [
     "optimizer-matrix-v5e-numerical-failure.json",
@@ -48,7 +48,8 @@
     "preemption_retries": "Iris defaults",
     "wall_clock_limits": null,
     "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.02.1",
-    "seed": 0
+    "seed": 0,
+    "gcs_report_request_timeout_seconds": 60
   },
   "implementation_notes": [
     "First capture full seven-group fused original and matrix outputs on identical inputs; host-offload outputs and release their executable caches.",
@@ -64,5 +65,16 @@
     "online": true,
     "success_metric": 1,
     "kernels_executed": false
-  }
+  },
+  "cpu_attempts": [
+    {
+      "run_id": "ema-gram-20-attribution-232d33dac386",
+      "status": "passed172stages/101comparisons; before separate initialization correction"
+    },
+    {
+      "run_id": "ema-gram-20-attribution-95bd3d3eddf0",
+      "status": "interrupted at GCS report upload; final version incomplete",
+      "evidence": "optimizer-attribution-cpu-io-interruption.json"
+    }
+  ]
 }

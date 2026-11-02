@@ -26,6 +26,8 @@ from levanter.tracker.wandb import WandbConfig
 from optimizer_cost import NAMES, ROW_SHARDED, full_update, put_global, refresh
 from rigging.filesystem.storage_path import StoragePath
 
+REPORT_REQUEST_TIMEOUT = 60
+
 
 def fingerprint(tree):
     digest = hashlib.sha256()
@@ -116,7 +118,7 @@ class Recorder:
     def persist(self):
         payload = json.dumps(self.report, indent=2)
         (self.local / "report.json").write_text(payload)
-        (self.destination / "report.json").write_text(payload)
+        (self.destination / "report.json").write_text(payload, requests_timeout=REPORT_REQUEST_TIMEOUT)
 
     def run(self, name, fn, inputs, in_shardings, out_shardings):
         self.report["active_stage"] = name
@@ -190,6 +192,7 @@ def main():
         beta2=0.99,
         polar_steps=5,
         solver="default",
+        gcs_report_request_timeout_seconds=REPORT_REQUEST_TIMEOUT,
         rtol=1e-5,
         atol=1e-5,
         limitations=(
@@ -212,7 +215,7 @@ def main():
     print(f"W&B: https://wandb.ai/marin-community/marin/runs/{identity}", flush=True)
     tracker.log_hyperparameters(config)
     tracker.log({"logging_check/success": 1}, step=0)
-    (destination / "config.json").write_text(json.dumps(config, indent=2))
+    (destination / "config.json").write_text(json.dumps(config, indent=2), requests_timeout=REPORT_REQUEST_TIMEOUT)
     if args.logging_check:
         tracker.finish()
         return

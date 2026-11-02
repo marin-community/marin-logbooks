@@ -1392,6 +1392,20 @@ was collected, not that a cause was established. Durations
 include compilation, and stage boundaries alter compilation; this diagnostic
 makes no warmed-performance or training-MFU claim.
 
+## 2026-11-02 23:49 UTC — Bound stalled report-upload requests
+
+The preliminary CPU run completed 172 stages and passed all 101 comparisons.
+The corrected run reached five finite stages and three passing comparisons,
+then stalled while uploading its report. Its interrupt traceback confirms a
+wait in GCS upload initiation; the local report contains the third comparison,
+while the remote copy contains two. The [interrupted CPU attempt](optimizer-attribution-cpu-io-interruption.json)
+retains the local report. It exited 130 after SIGINT; no accelerator was allocated.
+
+Report and configuration writes now give each GCS request a 60-second timeout,
+with the storage client's request retries retained. This bounds communication
+requests, not the diagnostic's total runtime or the scheduler's retry policy.
+The corrected harness still requires a complete CPU smoke run before submission.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
