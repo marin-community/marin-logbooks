@@ -1119,6 +1119,33 @@ memory and performance checks. Full checkpoint restoration and measured
 training model FLOPs utilization (MFU) above 5% require subsequent validation
 in the full trainer; both remain unverified.
 
+## 2026-11-02 20:40 UTC — Available-hardware diagnostic
+
+The user broadened hardware authorization to v4-8 or other available compute.
+The 20:38 UTC Iris inventory showed all 192 healthy v4-8 workers busy and two
+healthy single-host v5e-8 workers in us-west4 with no running tasks. Iris
+accepted one non-training diagnostic, `ema-gram-20-optimizer-cost-v5e-8-20261102`,
+at 20:40:06 UTC.
+
+It uses published source `7ec075ff4ed128e14136e5dab00cfd52478847cf`, derived
+from the original diagnostic with only topology and device-kind validation
+changed. All kernel math and original matrix shapes are unchanged. Local
+syntax, lint and formatting checks passed. The request has eight v5e chips,
+96 CPUs, 128 GiB RAM and 50 GiB disk, batch priority, default preemption
+retries and no wall-clock limit.
+
+Synthetic inputs are generated on the execution host; reports and one device
+trace use the separate GCS prefix ending `2026.11.02.2`. No checkpoint or
+training dataset is read. The [plan](optimizer-cost-v5e-plan.json) records the
+exact command. Assignment and measurements remain unverified. The queued
+v4-32 request is preserved, and the scheduled monitor follows both jobs.
+
+This probe can establish v5e kernel cost and numerical behavior; it cannot
+establish v4 performance or actual training MFU. Measure the unchanged baseline
+kernels on v5e first, then validate one candidate optimization that preserves
+the optimizer definition at a time. Full checkpoint restoration and actual
+training MFU remain later gates.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
