@@ -1208,17 +1208,27 @@ varying across the manual data axis.
 
 The [local reproducer](qdwh_vma_repro.py), using JAX's QDWH implementation on
 eight CPU devices, produces the same error. Disabling varying-manual-axis
-(VMA) checking for this eigensolver shard_map lets the reproducer match its
-unsharded reference exactly. Every manual axis is included in both output
-specs, so no replicated-output promise is made. The eigensolver math and
+(VMA) checking for this eigensolver shard_map bypasses that static consistency check. The reproducer reports zero maximum
+absolute difference for the QDWH polar-factor output against its unsharded
+reference. Every manual axis is included in the eigenvector and eigenvalue
+output specs, which concatenate all shards; no replicated-output promise is made. The eigensolver math and
 paired numerical tolerance remain unchanged. See
 [JAX's explanation of manual-axis types](https://docs.jax.dev/en/latest/notebooks/shard_map.html#scan-vma).
 
-Eleven EMA-Gram tests passed and two were skipped. An online eight-device CPU
+Eleven EMA-Gram tests passed; two matrix-assignment tests required more devices
+than the ordinary pytest process exposed and were skipped. A separate online eight-device CPU
 smoke passed four cases and all 28 output-leaf comparisons at rtol=atol=1e-5.
 The [failure evidence](optimizer-matrix-v5e-failed.json) preserves this attempt.
 A [fresh candidate](optimizer-matrix-v5e-vma-plan.json) is prepared for TPU
 validation; CPU results do not establish TPU correctness or speed.
+
+## 2026-11-02 21:11 UTC — Compatibility candidate submitted
+
+Iris accepted `ema-gram-20-matrix-cost-v5e-8-vma-20261102` at 21:11:32 UTC
+from published source `52bd24cf389658686a8b84cbf232ede36c678cb1`. Its
+[plan](optimizer-matrix-v5e-vma-plan.json) retains the same numerical gates,
+resources and default retry policy. This is a fresh process, with no
+checkpoint resume. The failed predecessor remains terminal.
 
 ## Final decision
 
