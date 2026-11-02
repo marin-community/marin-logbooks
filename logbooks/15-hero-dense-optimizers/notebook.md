@@ -466,3 +466,33 @@ metrics/states and permanent-checkpoint metadata are verified. Time-to-loss
 also remains unanalysed; scheduler waits, preemptions, retry catch-up,
 evaluation and checkpoint work affect elapsed time. Continue heartbeat
 monitoring of the four current jobs without resubmission or allocation changes.
+
+## 2026-11-02 UTC: MuonH 1e21 final verified
+
+MuonH completed the 1e21-FLOP recipe with final Paloma macro loss
+3.0371683 and final training loss 1.8673214. It completed 113,219 updates
+and 59,359,363,072 tokens. Iris reports success with zero application
+failures, and W&B is finished at zero-based step 113,218. The permanent
+checkpoint records update 113,219 at 01:20:49 UTC with
+`is_temporary=false`; metadata, both manifests and the data directory are
+present. [Exact final metrics and verification](muonh-1e21-20261102.json)
+bring the selected ladder (seven budgets × four recipes) to 25/28 complete.
+
+At 02:09 UTC, AdamW, AdamH and Muon at 1e21 remain running with fresh finite
+training and complete advancing rolling checkpoints. Their zero-based W&B
+steps are 112,385, 83,605 and 99,585, respectively. Each targets 113,219
+updates. They report zero application failures and unchanged scheduler
+preemption totals since the October 29 relaunch: 6, 6 and 2. Three H100x8
+jobs use 24 GPUs; no selected jobs await slots. The eight-job/64-GPU cap,
+batch priority and source
+`5e46cfb93934c8c5e9a218f45117685887410d59` remain fixed. Each run continues
+its existing model, optimizer, data order, seed and LR schedule.
+Continue heartbeat monitoring of these three jobs; completed MuonH is removed
+from active polling.
+
+Only MuonH has a verified 1e21 final at this observation. Comparisons at this
+rung must wait for the other three finals. Each recipe uses one seed and an
+LR multiplier transferred from the three-point 1e18 calibration; AdamW,
+Muon and AdamH selected the highest tested multiplier. Time-to-loss remains
+unanalysed because waits, preemptions, retry catch-up, evaluations and saves
+affect elapsed time.

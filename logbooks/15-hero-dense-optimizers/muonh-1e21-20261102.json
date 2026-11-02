@@ -1,0 +1,142 @@
+{
+  "campaign": "hero-dense-opt-20261026",
+  "artifact_version": "2026.10.26",
+  "source_sha": "5e46cfb93934c8c5e9a218f45117685887410d59",
+  "selected_completed": 25,
+  "selected_total": 28,
+  "new_result": {
+    "budget_flops": 1e+21,
+    "optimizer": "muonh",
+    "lr_multiplier": 1,
+    "wandb_run_id": "hero-dense-opt-20261026-1e+21-muonh-lr1",
+    "iris_state": "succeeded",
+    "wandb_state": "finished",
+    "updates": 113219,
+    "wandb_final_step": 113218,
+    "final_train_loss": 1.8673213720321655,
+    "final_paloma_macro_loss": 3.037168264389038,
+    "total_tokens": 59359363072.0,
+    "final_metrics_timestamp_utc": "2026-11-02T01:20:34.817655+00:00",
+    "permanent_checkpoint_metadata": {
+      "step": 113219,
+      "timestamp": "2026-11-02T01:20:49.842059",
+      "is_temporary": false
+    },
+    "checkpoint_contents": [
+      "d/",
+      "manifest.json",
+      "manifest.ocdbt",
+      "metadata.json"
+    ],
+    "verified_utc": "2026-11-02T02:08:01.574275+00:00",
+    "r3_scheduler_preemptions": 2
+  },
+  "verification": {
+    "iris_observed_utc": "2026-11-02T01:44:25.010910+00:00",
+    "iris_application_failures": 0,
+    "permanent_listing_observed_utc": "2026-11-02T02:02:08.453974+00:00",
+    "permanent_metadata_observed_utc": "2026-11-02T02:08:00.537004+00:00"
+  },
+  "remaining_runs_observed_utc": "2026-11-02T02:09:18.354326+00:00",
+  "remaining_runs": [
+    {
+      "id": "hero-dense-opt-20261026-1e+21-muon-lr3",
+      "state": "running",
+      "step": 99585,
+      "timestamp": 1793585344.235694,
+      "loss": 1.9539787769317627,
+      "eval": 3.136902332305908,
+      "throughput": {
+        "throughput/flops_per_token_analytic": 5615493120.0,
+        "throughput/tokens_per_second": 178549.15852830908,
+        "throughput/total_tokens": 52211744768.0
+      }
+    },
+    {
+      "id": "hero-dense-opt-20261026-1e+21-adamw-lr3",
+      "state": "running",
+      "step": 112385,
+      "timestamp": 1793585341.5119953,
+      "loss": 1.7863702774047852,
+      "eval": 2.899810791015625,
+      "throughput": {
+        "throughput/flops_per_token_analytic": 5615493120.0,
+        "throughput/tokens_per_second": 175042.04802041163,
+        "throughput/total_tokens": 58922631168.0
+      }
+    },
+    {
+      "id": "hero-dense-opt-20261026-1e+21-adamh-lr3",
+      "state": "running",
+      "step": 83605,
+      "timestamp": 1793585347.216439,
+      "loss": 1.9378855228424072,
+      "eval": 3.213822603225708,
+      "throughput": {
+        "throughput/flops_per_token_analytic": 5615493120.0,
+        "throughput/tokens_per_second": 173312.36254742226,
+        "throughput/total_tokens": 43833622528.0
+      }
+    }
+  ],
+  "remaining_rolling_checkpoints": [
+    {
+      "run": "1e+21-adamw-lr3",
+      "observed_utc": "2026-11-02T02:09:21.393316+00:00",
+      "metadata": {
+        "step": 112303,
+        "timestamp": "2026-11-02T02:04:58.550350",
+        "is_temporary": true
+      },
+      "contents": [
+        "d/",
+        "manifest.json",
+        "manifest.ocdbt",
+        "metadata.json"
+      ]
+    },
+    {
+      "run": "1e+21-muon-lr3",
+      "observed_utc": "2026-11-02T02:09:21.393274+00:00",
+      "metadata": {
+        "step": 99427,
+        "timestamp": "2026-11-02T02:01:07.191950",
+        "is_temporary": true
+      },
+      "contents": [
+        "d/",
+        "manifest.json",
+        "manifest.ocdbt",
+        "metadata.json"
+      ]
+    },
+    {
+      "run": "1e+21-adamh-lr3",
+      "observed_utc": "2026-11-02T02:09:21.389885+00:00",
+      "metadata": {
+        "step": 83517,
+        "timestamp": "2026-11-02T02:04:23.165335",
+        "is_temporary": true
+      },
+      "contents": [
+        "d/",
+        "manifest.json",
+        "manifest.ocdbt",
+        "metadata.json"
+      ]
+    }
+  ],
+  "active_gpu_jobs": 3,
+  "active_gpus": 24,
+  "allocation_cap_jobs": 8,
+  "allocation_cap_gpus": 64,
+  "selected_queued": 0,
+  "priority": "batch",
+  "prior_lower_rung_evidence": "https://github.com/marin-community/marin-logbooks/blob/f870f05776c346fa09fdb0902fa4644e92823f01/logbooks/15-hero-dense-optimizers/lower-rungs-complete-20261031.json",
+  "caveats": [
+    "One seed per selected recipe.",
+    "LR multipliers transferred from the limited three-point 1e18 calibration; AdamW, Muon and AdamH selected the highest tested multiplier.",
+    "Only MuonH has a verified 1e21 final at this observation; active-run evaluations are intermediate.",
+    "Time-to-loss remains unanalysed; waits, preemptions, retry catch-up, evaluations and saves affect elapsed time."
+  ]
+}
