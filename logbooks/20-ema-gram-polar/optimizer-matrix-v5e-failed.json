@@ -1,0 +1,36 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-matrix-cost-v5e-8-20261102",
+  "state": "failed",
+  "attempt": 0,
+  "exit_code": 1,
+  "source_commit": "528a25982f524e91063d631f4e9f87220f6d5a16",
+  "failure_utc": "2026-11-02T21:05:57Z",
+  "error": "scan body function carry input and carry output must have equal types, but they differ:\n\nThe input carry component loop_carry[1][1] has type bool[] but the corresponding output carry component has type bool[]{V:data}, so the manual axis types do not match.\n\nThis might be fixed by applying `jax.lax.pcast(..., ('data',), to='varying')`, to the initial carry value corresponding to the input carry component loop_carry[1][1].\nSee https://docs.jax.dev/en/latest/notebooks/shard_map.html#scan-vma for more information.\n\nRevise the function so that all output types match the corresponding input types.",
+  "wandb_url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-tpu-cost-39203b0f9540",
+  "wandb_state": "finished; tracking closed, diagnostic not completed",
+  "completed_case": "gram_refresh",
+  "gram_refresh_seconds": 0.08151787400129251,
+  "local_qdwh_reproducer": {
+    "True": {
+      "passed": false,
+      "error": "scan body function carry input and carry output must have equal types, but they differ:\n\nThe input carry component loop_carry[1][1] has type bool[] but the corresponding output carry component has type bool[]{V:data}, so the manual axis types do not match.\n\nThis might be fixed by applying `jax.lax.pcast(..., ('data',), to='varying')`, to the initial carry value corresponding to the input carry component loop_carry[1][1].\nSee https://docs.jax.dev/en/latest/notebooks/shard_map.html#scan-vma for more information.\n\nRevise the function so that all output types match the corresponding input types."
+    },
+    "False": {
+      "passed": true,
+      "max_absolute_error": 0.0
+    }
+  },
+  "compatibility_change": "Disable VMA checking only for eigensolver shard_map; all manual axes included in both outputs, no replicated-output promise, math and numerical tolerance unchanged.",
+  "validation": {
+    "ema_gram_tests_passed": 11,
+    "skipped": 2,
+    "cpu_smoke": "b622408f629e",
+    "cpu_devices": 8,
+    "kernel_cases": 4,
+    "reference_leaf_comparisons_passed": 28,
+    "rtol": 1e-05,
+    "atol": 1e-05
+  },
+  "documentation": "https://docs.jax.dev/en/latest/notebooks/shard_map.html#scan-vma",
+  "tpu_fix_verified": false
+}

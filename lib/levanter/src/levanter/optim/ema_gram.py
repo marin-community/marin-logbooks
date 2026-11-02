@@ -101,6 +101,11 @@ def matrix_parallel_eigh(
         axis_names=set(axes),
         in_specs=P(axis_name, None, None),
         out_specs=(P(axis_name, None, None), P(axis_name, None)),
+        # TPU QDWH initializes a convergence flag as invariant, then updates it
+        # from shard-local data. JAX 0.11.1 rejects that internal loop under VMA.
+        # Every manual axis appears in both output specs: no replicated-output
+        # promise is omitted, and the numerical reference checks still apply.
+        check_vma=False,
     )
     vectors, values = jax.lax.optimization_barrier(mapped(padded))
     vectors = vectors[:count].reshape((*batch_shape, *normalized.shape[-2:]))

@@ -1,0 +1,44 @@
+{
+  "state": "prepared, not submitted",
+  "job_name": "ema-gram-20-matrix-cost-v5e-8-vma-20261102",
+  "hardware": "v5litepod-8",
+  "devices": 8,
+  "hosts": 1,
+  "cpu": 96,
+  "memory": "128GB",
+  "disk": "50GB",
+  "region": "us-west4",
+  "priority": "batch",
+  "wall_clock_limits": null,
+  "preemption_retries": "Iris defaults",
+  "candidate": {
+    "eigh_layout": "matrix",
+    "eigh_implementation": "default"
+  },
+  "samples": 3,
+  "seed": 0,
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-optimizer-cost/2026.11.02.4",
+  "input": "Identical synthetic state and gradients for original/candidate within this job; no checkpoint reads.",
+  "numerical_gate": {
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "outputs": "Every direction and updated Gram/momentum leaf"
+  },
+  "predecessor": "optimizer-cost-v5e-completed.json",
+  "preflight": {
+    "ema_gram_tests_passed": 11,
+    "skipped": 2,
+    "cpu_smoke": "b622408f629e",
+    "cpu_devices": 8,
+    "kernel_cases": 4,
+    "reference_leaf_comparisons_passed": 28,
+    "rtol": 1e-05,
+    "atol": 1e-05
+  },
+  "memory_preparation": "Release dead refreshed-state buffers before paired output comparison; kernel math unchanged.",
+  "remaining_gate": "Original saved Gram/momentum validation remains in us-central2; no large checkpoint cross-region read. No training MFU or checkpoint resume claim from this synthetic stage.",
+  "authorization": "User allows any available compute; baseline cost/memory/profile gate satisfied on v5e.",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-matrix-cost-v5e-8-vma-20261102",
+  "replaces_failed_attempt": "/kaiyuew@stanford.edu/ema-gram-20-matrix-cost-v5e-8-20261102",
+  "compatibility_evidence": "optimizer-matrix-v5e-failed.json"
+}

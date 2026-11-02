@@ -1198,6 +1198,28 @@ output prefix. This is the only active candidate test; the completed baseline
 is terminal and the v4-32 reference request remains queued. Startup and TPU
 numerical/performance results are not yet verified.
 
+## 2026-11-02 21:10 UTC — QDWH manual-axis compatibility failure
+
+The matrix/QDWH candidate failed after Gram refresh, before spectral timing.
+Iris reports failed attempt 0 with exit 1. W&B's finished state only means
+tracking closed; no diagnostic-completed metric exists. JAX 0.11.1 rejected
+an internal QDWH loop carry: an invariant boolean convergence flag became
+varying across the manual data axis.
+
+The [local reproducer](qdwh_vma_repro.py), using JAX's QDWH implementation on
+eight CPU devices, produces the same error. Disabling varying-manual-axis
+(VMA) checking for this eigensolver shard_map lets the reproducer match its
+unsharded reference exactly. Every manual axis is included in both output
+specs, so no replicated-output promise is made. The eigensolver math and
+paired numerical tolerance remain unchanged. See
+[JAX's explanation of manual-axis types](https://docs.jax.dev/en/latest/notebooks/shard_map.html#scan-vma).
+
+Eleven EMA-Gram tests passed and two were skipped. An online eight-device CPU
+smoke passed four cases and all 28 output-leaf comparisons at rtol=atol=1e-5.
+The [failure evidence](optimizer-matrix-v5e-failed.json) preserves this attempt.
+A [fresh candidate](optimizer-matrix-v5e-vma-plan.json) is prepared for TPU
+validation; CPU results do not establish TPU correctness or speed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
