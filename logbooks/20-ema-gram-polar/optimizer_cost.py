@@ -186,7 +186,7 @@ def main():
     parser.add_argument("--output-prefix", required=True)
     parser.add_argument("--samples", type=int, default=3)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--tpu-type", choices=("v4-32",), default="v4-32")
+    parser.add_argument("--tpu-type", choices=("v4-8", "v4-32", "v5litepod-8"), default="v4-32")
     parser.add_argument("--eigh-layout", choices=("replicated", "matrix"), default="replicated")
     parser.add_argument("--eigh-implementation", choices=("default", "jacobi"), default="default")
     parser.add_argument("--checkpoint", help="Read saved Gram/momentum only; no full restore or training")
@@ -263,8 +263,12 @@ def main():
         return
     devices = jax.devices()
     if not args.smoke:
-        assert len(devices) == 16 and jax.process_count() == 4, (devices, jax.process_count())
-        assert all(d.platform == "tpu" and "v4" in d.device_kind.lower() for d in devices), devices
+        expected_devices, expected_processes = {"v4-8": (4, 1), "v4-32": (16, 4), "v5litepod-8": (8, 1)}[args.tpu_type]
+        assert (len(devices), jax.process_count()) == (expected_devices, expected_processes), devices
+        expected_kind = "v4" if args.tpu_type.startswith("v4-") else "v5"
+        assert all(d.platform == "tpu" and expected_kind in d.device_kind.lower() for d in devices), devices
+        if args.tpu_type == "v5litepod-8":
+            assert all("lite" in d.device_kind.lower() or "v5e" in d.device_kind.lower() for d in devices), devices
     mesh = Mesh(np.array(devices), ("data",))
     replicated = NamedSharding(mesh, P())
     solver = None if args.eigh_implementation == "default" else jax.lax.linalg.EighImplementation.JACOBI
@@ -355,6 +359,10 @@ def main():
         separate = directions(updated, 0.25, **solver_kwargs)
         for a, b in zip(fused, separate, strict=True):
             np.testing.assert_allclose(np.asarray(a), np.asarray(b), rtol=1e-4, atol=1e-5)
+    # Timing cases retain the refreshed state. Release it before holding two
+    # full update outputs for comparison on devices with smaller HBM.
+    del cases, updated
+    gc.collect()
     if args.eigh_layout != "replicated" or args.eigh_implementation != "default":
         reference_fn = jax.jit(
             full_update,

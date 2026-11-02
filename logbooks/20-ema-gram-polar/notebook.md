@@ -1159,6 +1159,36 @@ samples and configuration. Spectral-power timing, the other kernel cases,
 device trace and memory measurements remain pending. This is an isolated
 synthetic kernel measurement; full training has not resumed.
 
+## 2026-11-02 21:03 UTC — v5e baseline completed
+
+Iris reports success with exit 0 on attempt 0. W&B finished with
+`diagnostic/completed=1`. Three synchronized samples after warm-up give
+medians of 20.2645 seconds for spectral powers, 20.8427 seconds for the full
+quarter-power optimizer update, 0.08161 seconds for Gram refresh, and
+0.03879 seconds for the alpha-zero direction. All measured kernel outputs
+were finite. Spectral powers dominate these measured costs; separate kernel
+timings do not form an additive profile decomposition or measure training MFU.
+
+The [completion evidence](optimizer-cost-v5e-completed.json) includes the final
+report. The trace contains more than 1.3 million events on each of eight TPU
+planes. Every device reports the same JAX allocator peak, 11,722,465,280 bytes;
+this does not measure all HBM use. Finelog observed a cumulative task host-memory
+peak of 104.8994 GiB across 198 samples. The uploaded trace is 1.76 GB, larger
+than expected. Future v5e artifacts will use us-west4 storage.
+
+The [next candidate plan](optimizer-matrix-v5e-plan.json) assigns independent
+full-matrix eigendecompositions across eight chips, retaining replicated
+normalization and reconstruction. It compares every direction and updated
+Gram/momentum leaf against the original implementation on identical synthetic
+inputs, at rtol=atol=1e-5. An eight-device CPU smoke passed all four cases and
+the paired comparison with online W&B and regional GCS readback. Dead refreshed
+state is released before holding both outputs for comparison; the kernel math
+is unchanged.
+
+This synthetic screen precedes the required saved-checkpoint validation.
+The 3.46 GB of saved Gram/momentum arrays remain in us-central2 for regional
+validation. Full trainer restoration and actual training MFU remain unverified.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
