@@ -4140,6 +4140,25 @@ Both full 28-leaf numerical substitution gates remain failed. Next is static des
 [comparison](compiler-frontier-collectives-comparison.json) and
 [validation](compiler-frontier-collectives-validation.json) retain the evidence.
 
+## 2026-11-03 16:57 UTC — Down Concat inputs expose a declared slice-order change
+
+The regional CPU extraction recovered the four declared inputs of the down ConcatBitcast reached from the previously matched Start input. Each route follows slice-done/slice-start, producer fusion leaf 0 and a declared f32-to-bf16 conversion to the same fifth-step down X_Xt product within that graph. The existing dependency map identifies X_Xt as X times X transpose. Traversal stops at the product; its operand values and the original ConcatBitcast, Start and Done output semantics remain unestablished.
+
+All four evaluator and all four paired-capture signatures match untouched at the same operand position. All four substitution signatures differ at the same position. Controls present leading-axis slice ranges [0:3], [3:6], [6:9], [9:11]; substitution presents [6:9], [9:11], [0:3], [3:6]. The other two slice axes remain [0:128] and [0:1024]. Positions 1 and 3 consequently exchange declared leading sizes 3 and 2. These slice attributes and associated sizes are the only differences in the bounded normalized input-route comparisons.
+
+A separate check finds a unique mapping of complete substitution route signatures to untouched signatures: operand positions [0,1,2,3] map to [2,3,0,1]. This auxiliary mapping preserves the recorded operand order and does not change the four same-position mismatches. It does not reorder an executable, establish that ConcatBitcast concatenates in that order, or prove a runtime data permutation, precision change or numerical cause. The four positions are slices from one producer, not four independent product changes. Passing o controls retain the broader route changes documented in the preceding extraction.
+
+One closure round recovered one body per graph, with no requested records missing. The task succeeded attempt 0/exit 0, UID e08bb9bd2e99; canonical job/task status was independently verified at 16:54:29 UTC. Published source 976638bcfd0cad58df38b2427e48d6588e808ac7 ran on four CPUs/8 GiB/10 GiB in us-west4 with default preemption retries and no wall-clock limit. It used no accelerator or numerical kernels. All four optimized HLO SHA/size checks passed regionally, and large HLO stayed there. The 181,140-byte report passed exact GCS readback, SHA 1c1881b19ef6be952f4ac4aecbb02b3404f92e3c4614da1605e3ca087d9fde66.
+
+Fixtures passed for explicit operand ordering, missing/duplicate/wrong-caller roots, semantic operand swaps, dtype-declaration mutation, evaluator comparisons, unique signature matching and polar-role mutation. The summary retains each slice record, conversion and exact product identity. Both full 28-leaf numerical substitution gates remain failed; source precision and fixed tolerances remain unchanged.
+
+Next is static design only: inspect the two declared operands of the reached down fifth-step X_Xt product, with corresponding passing up/o products and paired-capture controls. Use saved records and coverage first, select by dependency-mapped product roles and exact caller context, and stop at the next product/source/opaque boundary. Any needed regional extraction must publish source, manifest and checksums before CPU-only HLO identity-checked parsing. No numerical intervention or optimizer/training/MFU acceptance is selected. No experiment or observer remains; PR monitoring stays handed off after its twelve-hour timeout, and the research heartbeat remains active.
+
+[Completion](compiler-down-concat-completed.json),
+[comparison](compiler-down-concat-comparison.json),
+[slice records and mapping](compiler-down-concat-slices.json) and
+[validation](compiler-down-concat-validation.json) retain the evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

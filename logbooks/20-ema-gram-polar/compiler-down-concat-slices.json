@@ -1,0 +1,917 @@
+{
+  "graphs": {
+    "matrix_untouched": {
+      "role": "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast",
+      "routes": [
+        {
+          "operand_position": 0,
+          "leading_axis_interval": [
+            0,
+            3
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2148",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[0:3], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2148 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[0:3], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+          }
+        },
+        {
+          "operand_position": 1,
+          "leading_axis_interval": [
+            3,
+            6
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2149",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[3:6], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2149 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[3:6], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+          }
+        },
+        {
+          "operand_position": 2,
+          "leading_axis_interval": [
+            6,
+            9
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2150",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[6:9], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2150 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[6:9], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+          }
+        },
+        {
+          "operand_position": 3,
+          "leading_axis_interval": [
+            9,
+            11
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2151",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[9:11], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2151 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[9:11], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+          }
+        }
+      ],
+      "same_product_identity_within_graph": true,
+      "unique_full_signature_mapping_to_untouched": {
+        "0": 0,
+        "1": 1,
+        "2": 2,
+        "3": 3
+      }
+    },
+    "matrix_evaluate": {
+      "role": "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast",
+      "routes": [
+        {
+          "operand_position": 0,
+          "leading_axis_interval": [
+            0,
+            3
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2148",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[0:3], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2148 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[0:3], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        },
+        {
+          "operand_position": 1,
+          "leading_axis_interval": [
+            3,
+            6
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2149",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[3:6], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2149 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[3:6], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        },
+        {
+          "operand_position": 2,
+          "leading_axis_interval": [
+            6,
+            9
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2150",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[6:9], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2150 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[6:9], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        },
+        {
+          "operand_position": 3,
+          "leading_axis_interval": [
+            9,
+            11
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2151",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47668"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[9:11], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2151 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47668), slice={[9:11], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145079",
+            "context": [
+              "main.530_spmd/fusion.145079"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145083",
+              "fusion.145082"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        }
+      ],
+      "same_product_identity_within_graph": true,
+      "unique_full_signature_mapping_to_untouched": {
+        "0": 0,
+        "1": 1,
+        "2": 2,
+        "3": 3
+      }
+    },
+    "matrix_capture": {
+      "role": "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast",
+      "routes": [
+        {
+          "operand_position": 0,
+          "leading_axis_interval": [
+            0,
+            3
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2152",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47676"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[0:3], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2152 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47676), slice={[0:3], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145084",
+              "fusion.145083"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145084, %fusion.145083), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        },
+        {
+          "operand_position": 1,
+          "leading_axis_interval": [
+            3,
+            6
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2153",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47676"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[3:6], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2153 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47676), slice={[3:6], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145084",
+              "fusion.145083"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145084, %fusion.145083), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        },
+        {
+          "operand_position": 2,
+          "leading_axis_interval": [
+            6,
+            9
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2154",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47676"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[6:9], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2154 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47676), slice={[6:9], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145084",
+              "fusion.145083"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145084, %fusion.145083), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        },
+        {
+          "operand_position": 3,
+          "leading_axis_interval": [
+            9,
+            11
+          ],
+          "slice_start": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2155",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47676"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[9:11], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2155 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47676), slice={[9:11], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.663"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.663)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145080",
+            "context": [
+              "main.530_spmd/fusion.145080"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.663",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145084",
+              "fusion.145083"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.663 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145084, %fusion.145083), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          }
+        }
+      ],
+      "same_product_identity_within_graph": true,
+      "unique_full_signature_mapping_to_untouched": {
+        "0": 0,
+        "1": 1,
+        "2": 2,
+        "3": 3
+      }
+    },
+    "matrix_substitute": {
+      "role": "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast",
+      "routes": [
+        {
+          "operand_position": 0,
+          "leading_axis_interval": [
+            6,
+            9
+          ],
+          "slice_start": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2143",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47665"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[6:9], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2143 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47665), slice={[6:9], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.653"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.653)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.653",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145071",
+              "fusion.145070"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+            "instruction": "%convolution-base-dilated.653 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145071, %fusion.145070), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+          }
+        },
+        {
+          "operand_position": 1,
+          "leading_axis_interval": [
+            9,
+            11
+          ],
+          "slice_start": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2144",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47665"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[9:11], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2144 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[2,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47665), slice={[9:11], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.653"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.653)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.653",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145071",
+              "fusion.145070"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+            "instruction": "%convolution-base-dilated.653 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145071, %fusion.145070), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+          }
+        },
+        {
+          "operand_position": 2,
+          "leading_axis_interval": [
+            0,
+            3
+          ],
+          "slice_start": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2145",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47665"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[0:3], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2145 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47665), slice={[0:3], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.653"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.653)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.653",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145071",
+              "fusion.145070"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+            "instruction": "%convolution-base-dilated.653 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145071, %fusion.145070), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+          }
+        },
+        {
+          "operand_position": 3,
+          "leading_axis_interval": [
+            3,
+            6
+          ],
+          "slice_start": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "slice-start.2146",
+            "shape": "((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)})",
+            "opcode": "slice-start",
+            "operands": [
+              "get-tuple-element.47665"
+            ],
+            "parameter_index": null,
+            "attributes": ", slice={[3:6], [0:128], [0:1024]}",
+            "instruction": "%slice-start.2146 = ((bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}), bf16[3,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[]{:S(2)}) slice-start(%get-tuple-element.47665), slice={[3:6], [0:128], [0:1024]}"
+          },
+          "conversion": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convert.6495",
+            "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+            "opcode": "convert",
+            "operands": [
+              "convolution-base-dilated.653"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%convert.6495 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)} convert(%convolution-base-dilated.653)"
+          },
+          "product": {
+            "computation": "async_collective_fusion.145067",
+            "context": [
+              "main.529_spmd/fusion.145067"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.653",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145071",
+              "fusion.145070"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+            "instruction": "%convolution-base-dilated.653 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145071, %fusion.145070), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+          }
+        }
+      ],
+      "same_product_identity_within_graph": true,
+      "unique_full_signature_mapping_to_untouched": {
+        "0": 2,
+        "1": 3,
+        "2": 0,
+        "3": 1
+      }
+    }
+  },
+  "interpretation": "Mapping compares complete normalized declared input-route signatures, preserving original operand order. It does not permute any executable or establish ConcatBitcast semantics, runtime values, order or cause. Both full28leaf numerical substitution gates remain failed."
+}
