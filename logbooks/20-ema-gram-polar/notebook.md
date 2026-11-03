@@ -1514,6 +1514,27 @@ One log observer follows this process; the earlier attribution observer ended
 naturally. The v4-32 reference request remains queued. No training or original checkpoint
 read is part of this diagnostic.
 
+## 2026-11-03 00:51 UTC — Polar iteration differences grow after normalization
+
+The [partial compiler/iterate record](optimizer-polar-compiler-v5e-partial.json)
+contains completed query, key, value and attention-output projection traces.
+Input norms and normalized inputs match exactly across replicated and
+direction-sharded outputs. For query, key and value, the first nonzero difference
+appears in the output of iteration one. The unchanged rtol=atol=1e-5 gate first fails at
+iteration three for query/value and iteration two for key. Each traced final
+polar output exactly matches its uninstrumented counterpart for the same layout.
+The attention-output control matches through all five iterations.
+
+The isolated query-projection optimized HLO contains five explicit BF16
+conversions into BF16 and zero all-reduces for replicated output, versus one conversion
+and five all-reduces for sharded output. These are static compiler-text counts,
+not runtime event counts or a causal attribution. The fused original and
+matrix-layout updates also differ slightly in refreshed state, within tolerance,
+so the full mismatch remains
+unresolved. Feed-forward traces are still running. A read-only streaming
+inspection of the larger fused compiler files ran inside the task; those
+artifacts remain in their region, and no warmed-performance claim is made.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
