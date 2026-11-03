@@ -173,6 +173,12 @@ def isolated_product(stage, *operands):
     raise ValueError(stage)
 
 
+def contracting_product(x, sharding):
+    """Request column-sharded operands without changing product math or precision."""
+    x = jax.lax.with_sharding_constraint(x, sharding)
+    return isolated_product("A", x)
+
+
 def product_crossfeed(rec, name, stage, traces, rep, sharding):
     """Reuse one executable per layout across both frozen operand banks and replay."""
     keys = {
@@ -185,9 +191,18 @@ def product_crossfeed(rec, name, stage, traces, rep, sharding):
     banks = {layout: tuple(trace[key] for key in keys) for layout, trace in traces.items()}
     inputs_sha = {label: fingerprint(bank) for label, bank in banks.items()}
     outputs = {}
-    for layout, out_sharding in [("replicated", rep), ("direction_sharded", sharding)]:
+    layouts = [("replicated", rep), ("direction_sharded", sharding)]
+    if rec.report["config"].get("contracting_control"):
+        assert stage == "A", "The contracting-dimension control is defined only for A"
+        layouts.append(("contracting_input", sharding))
+    for layout, out_sharding in layouts:
         group = f"{name}/fixed_product/{stage}/{layout}"
-        compiled = jax.jit(partial(isolated_product, stage), in_shardings=(rep,) * len(keys), out_shardings=out_sharding)
+        fn = (
+            partial(contracting_product, sharding=sharding)
+            if layout == "contracting_input"
+            else partial(isolated_product, stage)
+        )
+        compiled = jax.jit(fn, in_shardings=(rep,) * len(keys), out_shardings=out_sharding)
         rec.report["active_stage"] = group + "/compile"
         rec.persist()
         exemplar = tuple(jax.ShapeDtypeStruct(x.shape, x.dtype, sharding=rep) for x in banks["replicated"])
@@ -212,6 +227,8 @@ def product_crossfeed(rec, name, stage, traces, rep, sharding):
             input_shardings=str((rep,) * len(keys)),
             output_sharding=str(out_sharding),
             input_scope="Frozen instrumented operands; see product_decisions for original-path eligibility",
+            requested_internal_sharding=str(sharding) if layout == "contracting_input" else None,
+            internal_layout_verification="Inspect saved optimized HLO; a requested constraint is not verification",
         )
         outputs[layout] = {}
         for bank_name in ("replicated", "direction_sharded", "replicated_replay"):
@@ -249,6 +266,13 @@ def product_crossfeed(rec, name, stage, traces, rep, sharding):
             outputs["replicated"][bank_name],
         )
         assert fingerprint(banks[bank_name]) == inputs_sha[bank_name]
+        if "contracting_input" in outputs:
+            for baseline in ("replicated", "direction_sharded"):
+                rec.compare(
+                    f"{name}/fixed_product/{stage}/{bank_name}/contracting_vs_{baseline}",
+                    outputs["contracting_input"][bank_name],
+                    outputs[baseline][bank_name],
+                )
     rec.persist()
 
 
@@ -289,7 +313,7 @@ def first_product_diagnostic(rec, common, rep, shardings):
                 first_failure = key
         # CPU-equal controls still exercise the fixed-executable harness at A.
         selected = first_nonzero if first_nonzero in ("A", "C", "B", "D", "X1") else None
-        if first_nonzero is None:
+        if first_nonzero is None or rec.report["config"].get("contracting_control"):
             selected = "A"
         rec.report.setdefault("product_decisions", {})[name] = dict(
             inner_sha256=inner_sha,
@@ -300,7 +324,11 @@ def first_product_diagnostic(rec, common, rep, shardings):
             original_path_interpretation_allowed=all(exact_instrumentation.values()),
             selected_crossfeed=selected,
             crossfeed_scope="Instrumented-path perturbation control, not proof of original internal values",
-            selection_reason="First nonzero first-iteration stage, or A harness control when all traced leaves match",
+            selection_reason=(
+                "Preselected A contraction-split control"
+                if rec.report["config"].get("contracting_control")
+                else "First nonzero first-iteration stage, or A harness control when all traced leaves match"
+            ),
         )
         rec.persist()
         if selected is not None:
@@ -518,6 +546,7 @@ def main():
     mode.add_argument("--polar-compiler", action="store_true")
     mode.add_argument("--state-crossfeed", action="store_true")
     mode.add_argument("--polar-products", action="store_true")
+    mode.add_argument("--polar-contracting", action="store_true")
     args = parser.parse_args()
     if not args.smoke:
         initialize_jax()
@@ -544,9 +573,10 @@ def main():
         shapes=shapes,
         names=NAMES,
         smoke=args.smoke,
-        polar_compiler=args.polar_compiler or args.state_crossfeed or args.polar_products,
+        polar_compiler=args.polar_compiler or args.state_crossfeed or args.polar_products or args.polar_contracting,
         state_crossfeed=args.state_crossfeed,
-        polar_products=args.polar_products,
+        polar_products=args.polar_products or args.polar_contracting,
+        contracting_control=args.polar_contracting,
         polar_iterate_leaf_order=[
             "input_norm",
             "normalized_input",
@@ -613,7 +643,7 @@ def main():
     states = jax.tree.map(lambda x: put_global(x, rep), initial)
     del initial
     common = rec.run("common_refresh", refresh, (gradients, states), (gs, ss), ss)
-    if args.polar_products:
+    if args.polar_products or args.polar_contracting:
         del gradients, states
         jax.clear_caches()
         gc.collect()

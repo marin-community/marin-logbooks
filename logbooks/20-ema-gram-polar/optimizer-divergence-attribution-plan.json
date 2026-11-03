@@ -319,10 +319,29 @@
     "launch_gate": "Own online CPU logging/harness validation and exact published source before one sequential non-training TPU diagnostic. No accelerator job launched by this static milestone."
   },
   "polar_products_next": {
-    "status": "prior diagnostic completed; no active or queued experiment",
+    "status": "static ancestry inspection completed; contracting-input control implemented, not validated or submitted",
     "evidence": "optimizer-polar-products-v5e-completed.json",
     "next": "Inspect the existing small compiler artifacts for traced A and isolated A, including normalized-input production, casts and collectives. Map by source metadata/dependencies, not text order. All36objects checksum-verified and locally available under scratch/20261103-products-compiler; no regional accelerator analysis job needed.",
     "constraints": "Do not identify tiling or reduction order as causal from counts/configuration alone. Tracing failed direction-sharded final equivalence; isolated A matches across layouts on identical operands. No optimizer candidate or new accelerator job selected.",
-    "later_gate": "A concrete numerical control/intervention needs unchanged science/precision/tolerance, its own CPUonline validation and exact published source before one sequential TPU submission. Any optimizer intervention requires all28originalfullupdate leaves at1e-5."
+    "later_gate": "A concrete numerical control/intervention needs unchanged science/precision/tolerance, its own CPUonline validation and exact published source before one sequential TPU submission. Any optimizer intervention requires all28originalfullupdate leaves at1e-5.",
+    "static_evidence": "compiler-first-product-paths.json"
+  },
+  "polar_contracting_next": {
+    "status": "implemented; CPU validation and publication pending; no submission",
+    "hypothesis": "The previous isolated A control did not request the traced contraction split: traced sharded A contracts 128 columns per device then combines partial results; isolated sharded A contracts all1024 columns without an output-ancestry collective.",
+    "control": "Add a third fixed isolated A executable with the same replicated external input and direction-sharded output, but with an internal column-sharding constraint on X before the unchanged X@X.T expression. Reuse across both identical frozen normalized-input banks and replay first bank.",
+    "interpretation": "Inspect saved optimized HLO to verify actual contraction/collective structure. The constraint is a request, not proof. Numerical agreement or disagreement concerns isolated instrumented operands; tracing changes the sharded final output, so this does not establish the original optimizer mechanism.",
+    "preserved": "Source-level arithmetic association, dtype, default precision, full matrix shapes, coefficients, five polar steps and rtol=atol=1e-5; no tiling override. Compiled arithmetic may change; inspect artifacts and numerical results. No optimizer or training changes.",
+    "expected": {
+      "finite_stages": 63,
+      "comparisons": 84,
+      "fixed_executables": 9,
+      "compiler_files": 42
+    },
+    "validation": "Own online eight-virtual-CPU logging check and full smoke, all finite/comparisons, bitwise replays, source SHA and regional report/compiler checksum readback. Exact published source before one sequential TPU diagnostic.",
+    "resources": "One v5litepod-8 host/8chips,96CPU128GiB50GiB,us-west4,batch,defaultpreemptionretries,no runtime limit",
+    "command_mode": "--polar-contracting",
+    "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.4",
+    "candidate_accepted_for_training": false
   }
 }

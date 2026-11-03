@@ -1976,6 +1976,31 @@ measured. Next inspect the saved trace and isolated-product compiler artifacts,
 including normalization, casts and collective paths, before selecting another
 numerical control. No experiment remains queued or running.
 
+## 2026-11-03 05:00 UTC — The isolated product uses a different contraction split
+
+[Output-dependency inspection](compiler-first-product-paths.json) of the saved
+query/key/value graphs maps the first polar product A = XXᵀ to one matrix
+product in each graph, where X is the normalized input. The traced executable
+returns intermediate values for inspection; the isolated executable returns A alone. The mapping uses tuple output identity, operand ancestry and
+source metadata. All consumed compressed files passed checksum and size checks.
+In all three groups, traced sharded A multiplies operands with local shape
+[11,1024,128], combines partial products with an all-reduce, then slices the
+output. Isolated sharded A retains the full 1024-wide contraction and has no
+collective on the selected output ancestry. Its right operand is declared BF16;
+the traced operands are declared F32. These static declarations do not establish
+runtime arithmetic precision or a numerical cause.
+
+The previous isolated product therefore did not reproduce the traced product's
+contraction split. A new diagnostic control requests column sharding internally
+before the same X@Xᵀ expression, while preserving replicated external inputs and
+direction-sharded outputs. Each fixed executable will evaluate the saved normalized inputs from both
+traced layouts, which were bitwise identical, then replay the first to check repeatability. Compiler inspection must verify the resulting split;
+a sharding constraint alone does not verify it. This is an isolated numerical
+control, not an optimizer change. Tracing changed the direction-sharded final
+output, so its operands cannot be assumed to be the original internal values.
+CPU online validation and published source are required before one TPU run.
+No experiment is currently queued or running.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
