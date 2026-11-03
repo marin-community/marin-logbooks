@@ -1765,6 +1765,45 @@ the same chain and unique-group checks and now saves entry instructions on
 mapping failure. It will use a fresh job identity and published parser source;
 the failed job remains terminal. No numerical or precision setting changes.
 
+## 2026-11-03 04:00 UTC — v4 reference timings survive a later host OOM
+
+The [v4-32 reference](optimizer-cost-v4-32-oom-partial.json) left the queue and
+ran four JAX processes on sixteen native TPU v4 chips. All four rank reports
+preserve three finite warmed samples for each of the four diagnostic cases.
+Rank-local spectral medians are
+21.97214–21.97231 seconds; full-update medians are 23.14284–23.14329 seconds.
+Rank-local Gram-refresh medians range from 0.117122 to 0.117175 seconds. Alpha-zero direction medians range from
+0.06776 to 0.12654 seconds; the individual samples remain in the record.
+These isolated synthetic measurements do not establish training MFU.
+
+At 03:42:10 UTC, Iris task 3 was killed for exceeding its 128 GiB host-memory
+limit; the other three tasks terminated because their coscheduled sibling
+failed. Finelog recorded maximum observed cumulative host-memory peaks of 121.5, 119.7998, 121.6992 and
+127.7998 GiB for Iris tasks 0–3, with 206–208 samples per task. JAX rank numbers
+differ from Iris task indices; the report keeps their scopes separate.
+All four timing reports had already been written. The source next enters
+profiling and final artifact persistence, but the exact failing substage is
+unobserved. No XPlane object or final device-memory record was found in the
+run artifact directory.
+W&B is crashed without a completion marker. The job remains terminal.
+
+## 2026-11-03 04:00 UTC — Full-graph mapping remains unresolved
+
+The [tuple-aware parser attempt](compiler-polar-lineage-tuples-failed.json)
+also rejected the fused-original graph with 28 query ancestors. The full-graph
+parse still failed after the local fix; its cause remains unresolved.
+Its preserved entry instructions show multi-output asynchronous collective
+fusions, and the same parser representation gives query/key ancestor sets
+that overlap in 26 operations. This is
+parser dependency information, not evidence of cross-matrix optimizer math.
+Inspect those fusion bodies regionally before changing the mapping model or
+running another analysis. No group/iteration mapping is accepted.
+
+The previous PR-monitor handle was unavailable and process inventory showed
+no survivor. Current comments and reviews contained no new actionable feedback;
+the head remains d19131429. One replacement foreground monitor was started.
+There is now no queued or running experiment; no accelerator job was resubmitted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

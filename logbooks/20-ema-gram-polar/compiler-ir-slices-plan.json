@@ -1,0 +1,46 @@
+{
+  "purpose": "Extract the exact asynchronous fusion bodies implicated in the unresolved conservative dependency mapping; no optimizer kernels.",
+  "source_report_sha256": "437dad736cb8b5d9fe3578980c13e9a229fd2a6618e60cfa1135c680d7ecb224",
+  "required_region": "us-west4",
+  "artifacts": {
+    "fused_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_original.optimized_hlo.txt.gz",
+      "sha256": "f323476e7f76fdb8ecf7398a72dfc4b2acd44ff5034155f610143bd1a249f93d",
+      "compressed_bytes": 10060125,
+      "computation_names": [
+        "async_collective_fusion.149728",
+        "async_collective_fusion.149733"
+      ]
+    }
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.ir-slices",
+  "execution": {
+    "job_name": "ema-gram-20-ir-slices-cpu-20261103",
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default",
+    "output_identity": "Fresh UUID per process, preserving retry outputs",
+    "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-ir-slices-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT <published-commit> -- python logbooks/20-ema-gram-polar/compiler_operation_inventory.py --manifest logbooks/20-ema-gram-polar/compiler-ir-slices-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.ir-slices"
+  },
+  "analysis": "selected-computations",
+  "preflight": {
+    "script_sha256": "f43f4375805192c0ac600ef2d75fd795787a4da944a5489a35adf375065bcbfa",
+    "full_cli_passed": true,
+    "fixture": "Two independent isolated q_proj graphs, reversed tuple outputs",
+    "captured_bodies": 91,
+    "all30polar_operations_in_captured_bodies": true,
+    "scope": "Static file collection only; no numerical kernels or W&B requirement.",
+    "report_sha256": "40d2b185b6d03387dd90e086ca90a2f8f7930137f2d1d603b2daa09074801a85",
+    "missing_computation_guard": "Fails if any requested computation is absent"
+  },
+  "limitations": [
+    "Collects exact computation bodies and recursively referenced fusion calls, stripping verbose backend_config fields.",
+    "Does not infer group/iteration mapping, custom-call semantics, runtime frequency or numerical causality.",
+    "No accelerator requested; large input stays in us-west4."
+  ]
+}

@@ -181,9 +181,10 @@ def polar_lineage(lines, groups, diagnostics=None):
     )
 
 
-def producer_bodies(lines, operations):
+def producer_bodies(lines, operations, extra_computations=()):
     """Collect immediate fusion bodies without loading the entire compiler module."""
     wanted = {producer["calls"] for op in operations for producer in op["direct_operand_producers"] if producer["calls"]}
+    wanted.update(extra_computations)
     bodies, scope, body = {}, None, []
     for line in lines:
         header = COMPUTATION.match(line.rstrip())
@@ -288,6 +289,19 @@ def main():
             with gzip.open(compressed, "rt") as lines:
                 report["artifacts"][name] = inventory(lines)
             report["artifacts"][name]["sha256_verified"] = True
+            if manifest.get("analysis") == "selected-computations":
+                bodies = report["artifacts"][name]["selected_computations"] = {}
+                pending = set(artifact["computation_names"])
+                while pending:
+                    with gzip.open(compressed, "rt") as lines:
+                        captured = producer_bodies(lines, [], pending)
+                    assert pending <= captured.keys(), sorted(pending - captured.keys())
+                    bodies.update(captured)
+                    pending = {
+                        match[1] for body in captured.values() for line in body for match in CALLS.finditer(line)
+                    } - bodies.keys()
+                    report["active_stage"] = name + "/selected_computations"
+                    output.write_text(json.dumps(report, indent=2), requests_timeout=60)
             if manifest.get("analysis") == "polar-lineage":
                 report["active_stage"] = name + "/polar_lineage"
                 output.write_text(json.dumps(report, indent=2), requests_timeout=60)
