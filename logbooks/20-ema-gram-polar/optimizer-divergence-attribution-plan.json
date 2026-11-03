@@ -327,7 +327,7 @@
     "static_evidence": "compiler-first-product-paths.json"
   },
   "polar_contracting_next": {
-    "status": "own online CPU validation passed; preflight publication before one TPU submission",
+    "status": "SUCCEEDED attempt0/exit0;63finite/84comparisons/78pass; no active experiment",
     "hypothesis": "The previous isolated A control did not request the traced contraction split: traced sharded A contracts 128 columns per device then combines partial results; isolated sharded A contracts all1024 columns without an output-ancestry collective.",
     "control": "Add a third fixed isolated A executable with the same replicated external input and direction-sharded output, but with an internal column-sharding constraint on X before the unchanged X@X.T expression. Reuse across both identical frozen normalized-input banks and replay first bank.",
     "interpretation": "Inspect saved optimized HLO to verify actual contraction/collective structure. The constraint is a request, not proof. Numerical agreement or disagreement concerns isolated instrumented operands; tracing changes the sharded final output, so this does not establish the original optimizer mechanism.",
@@ -344,6 +344,15 @@
     "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.4",
     "candidate_accepted_for_training": false,
     "preflight": "optimizer-polar-contracting-preflight.json",
-    "script_sha256": "d1e9c5ff05ab5e36c38004c7313485ba58bff46ac28479393dc0bb52da90be0c"
+    "script_sha256": "d1e9c5ff05ab5e36c38004c7313485ba58bff46ac28479393dc0bb52da90be0c",
+    "completion": "optimizer-polar-contracting-v5e-completed.json",
+    "next_decision": {
+      "status": "design only; not implemented or submitted",
+      "question": "How much does the measured first-product A difference change the final polar output when the continuation executable and normalized input are held fixed?",
+      "control": "For each q/k/v group, retain identical normalized X and the A outputs from replicated and internally column-sharded isolated evaluators. Compile a continuation from external X,A once per controlled output layout. Reuse it for both A banks and replay first bank. Compute the remaining first-iteration polynomial/update and four later original quintic iterations using shared coefficient definitions, unchanged association and precision. Return only final output.",
+      "reference_gate": "Compare continuation outputs against shared uninstrumented five-step polar and traced finals, and record both fixed1e-5 and bitwise results. Separating A changes compilation; failure against uninstrumented references forbids interpreting the continuation as the original fused path. Even passing final equality does not prove internal identity.",
+      "constraints": "No optimizer intervention or precision/tolerance change. One executable/device bank at a time, host-offload results, exact input fingerprints, finite incremental records and compiler checksums. Own online CPU validation and published source required before one sequential TPU diagnostic.",
+      "limitations": "An A-bank cross-feed measures conditional sensitivity in that fixed continuation; it does not establish the contribution in the untouched full optimizer or isolate all compiler/input interactions."
+    }
   }
 }

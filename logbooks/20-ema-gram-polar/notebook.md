@@ -2011,6 +2011,46 @@ bitwise; its original-path interpretation flag remains false. These CPU results
 validate the harness, not TPU behavior. The next run is one sequential v5e-8
 control in us-west4 from the published preflight revision.
 
+## 2026-11-03 05:13 UTC — Internal column sharding reproduces the traced first product
+
+The [contraction control](optimizer-polar-contracting-v5e-completed.json) succeeded
+on eight native TPU v5e chips, attempt zero and task exit zero, from published
+source `bf251047c1bc846bf562b6d641e6108c0987fe2a`. Online W&B finished with the
+collection marker and no training acceptance. All 63 stages were finite; 78 of
+84 comparisons passed at `rtol=atol=1e-5`. The six failures remain the three
+traced-versus-uninstrumented direction-sharded final checks and the three traced
+final-output layout checks. All nine fixed executables replayed their first
+inputs bitwise.
+
+For query/key/value, the isolated A = XXᵀ executable with internal column
+sharding matches the direction-sharded traced A with zero measured absolute
+error. It differs from the replicated isolated A by at most 2.3283e-10. The
+normalized X inputs from the two traces are bitwise identical and reused across
+all fixed executables. [Compiler output ancestry](compiler-contracting-product-paths.json)
+confirms that the new isolated executable contracts 128 columns locally and
+combines partial products with an all-reduce before output slicing. Its operands
+are declared BF16, whereas the traced product operands were declared F32. Those
+declarations do not establish runtime arithmetic precision.
+
+The source-level internal sharding constraint reproduces the traced first-product
+difference in this isolated control. It does not separate collective summation,
+casts and kernel selection, or establish how much that difference contributes
+to the final error. Tracing still changes the direction-sharded five-iteration
+output beyond tolerance, so this result does not explain the untouched full
+optimizer discrepancy or accept a performance improvement.
+
+All 42 compiler files, totaling 95,661 compressed bytes, passed checksum, size
+and decompression checks. Finelog observed a 13.359375 GiB cumulative host peak
+across 33 samples through 05:10:25 UTC. The JAX allocator peak was 7,116,572,672
+bytes per device, not total HBM. No warmed performance or training MFU was measured.
+The next proposed control compiles the remaining computation after the first A
+product once. It holds that executable and normalized X fixed while substituting
+replicated isolated A and internally column-sharded isolated A, then checks the
+final polar output.
+This tests conditional sensitivity to A; separating the computation still
+changes compilation and requires its own reference checks. It is not implemented
+or submitted. No experiment remains queued or running.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
