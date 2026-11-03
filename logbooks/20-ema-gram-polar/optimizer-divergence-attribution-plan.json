@@ -221,7 +221,7 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "status": "implemented; CPU validation pending; no accelerator submitted",
+    "status": "CPU validated; prepared for one sequential TPU diagnostic from next published checkpoint",
     "objective": "Hold direction compilation fixed while comparing refreshed-state banks, then compare evaluator layouts on identical banks.",
     "controls": [
       "Keep original full fused original/matrix reference directions and all returned updated state banks.",
@@ -249,6 +249,23 @@
       "invocations_per_executable": 4
     },
     "replay_control": "After all three banks, replay common through the same executable; compare and record bitwise equality.",
-    "cpu_command": "Explicit worktree PYTHONPATH, JAX_PLATFORMS=cpu, XLA_FLAGS=--xla_force_host_platform_device_count=8, published GIT_COMMIT; uv run --no-sync python logbooks/20-ema-gram-polar/optimizer_attribution.py --smoke --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.crossfeed-smoke"
+    "cpu_command": "Explicit worktree PYTHONPATH, JAX_PLATFORMS=cpu, XLA_FLAGS=--xla_force_host_platform_device_count=8, published GIT_COMMIT; uv run --no-sync python logbooks/20-ema-gram-polar/optimizer_attribution.py --smoke --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.crossfeed-smoke",
+    "preflight": "optimizer-state-crossfeed-preflight.json",
+    "submission": {
+      "job_name": "ema-gram-20-state-crossfeed-v5e-8-20261103",
+      "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2",
+      "tpu": "v5litepod-8",
+      "chips": 8,
+      "hosts": 1,
+      "cpu": 96,
+      "memory": "128GB",
+      "disk": "50GB",
+      "region": "us-west4",
+      "priority": "batch",
+      "preemption_retries": "Iris default, no override",
+      "runtime_limit": null,
+      "source": "Published preflight commit; unchanged script SHA f3d26d7ace3711b131111c055d1e30ecd40011a46591e88246cfa3f678182213",
+      "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-state-crossfeed-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT <published-preflight-commit> -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2"
+    }
   }
 }

@@ -1592,6 +1592,26 @@ compilation; this diagnostic makes no warmed-performance or training-acceptance
 claim. CPU harness validation with online W&B tracking is next. No accelerator
 diagnostic has been submitted.
 
+## 2026-11-03 01:13 UTC — State comparison CPU preflight passes
+
+The [online CPU preflight](optimizer-state-crossfeed-preflight.json) completed
+all thirteen stages with finite outputs and passed all twenty-six comparisons
+at rtol=atol=1e-5. Each evaluator reused one compiled executable for its three
+state banks and first-bank replay; both replays were bitwise equal. The GCS
+report was downloaded and matched the local report byte for byte. All eight
+downloaded compiler files matched their recorded SHA-256 values and decompressed
+successfully. The smoke used eight virtual CPU devices from
+[published source](https://github.com/marin-community/marin-logbooks/commit/3210e49eb133ce3d116f18ce502dd03f93a0c607).
+Both the full smoke and its separate logging check used online W&B. This does
+not establish TPU numerical behavior.
+
+The [plan](optimizer-divergence-attribution-plan.json) prepares one sequential
+repetition of all thirteen stages and twenty-six comparisons on eight v5e chips
+in us-west4, with 96 CPUs, 128 GiB host RAM, batch priority, default preemption
+retries and no configured runtime limit. The diagnostic uses seed-zero synthetic
+gradients and states with the original full matrix geometry; outputs remain
+in the same region. No original checkpoint or training dataset is read.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
