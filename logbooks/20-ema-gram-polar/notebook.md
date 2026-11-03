@@ -4449,6 +4449,12 @@ The [comparison](compiler-remaining-products-comparison.json), [source supplemen
 
 The sole follow observer ended naturally with exit 0. No experiment, queue or observer remains active. All old jobs stay terminal; PR monitoring remains handed off and the research heartbeat stays active.
 
+### November 3, 20:29 UTC — inspect five o-dependent products (static preflight)
+
+The [current coverage](compiler-remaining-products-frontiers.json) leaves ten operands across five o-dependent products per matrix graph. The [selector](trace_o_source_products.py) uses actual o iteration-1 `B_X` operand-0 dependencies for the two polar products and the saved nonpolar product's operand-0/1 dependencies for direct-direction, Gram-refresh and relative-power products. Source scopes and exact caller identities distinguish these roles; compiler ordinals do not select them.
+
+All twenty-one bounded input hashes/sizes and available graph HLO joins passed. Two required computation bodies per graph remain absent from the saved bounded records. The [plan](compiler-o-source-products-plan.json), [manifest](compiler-o-source-products-manifest.json) and [validation](compiler-o-source-products-validation.json) specify one CPU-only us-west4 extraction after exact source publication, with regional HLO SHA/size checks, default preemption and no wall-clock limits. Fixtures reject missing/duplicate/wrong-context/role/projection and already-covered targets. Preserve paired capture and passing controls, reuse covered inputs and retain all other gaps. All original opaque outputs stay opaque; both full numerical gates remain failed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
