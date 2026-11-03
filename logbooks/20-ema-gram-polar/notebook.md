@@ -2612,13 +2612,14 @@ broadcast `norm + eps` denominators to the outputs while retaining every
 original equation and all twenty-eight direction/state outputs. Mapping uses
 source scopes and dependencies of final outputs, with one distinct polar
 normalization required per matrix group. Abstract tracing found all seven
-groups and preserved all 851 equations in the original small-shape program.
+groups and preserved all 851 equations in the original small-shape program;
+only the q/k/v groups receive extra outputs.
 
 The [plan](optimizer-full-input-capture-plan.json) includes two controls for
 each eigensolver layout: evaluate the unchanged traced program, then evaluate
 that program with the six extra outputs. Both are compared against the direct,
 untouched shared full-update function. Each controlled executable replays the
-same fingerprinted input bank. The fixed 1e-5 gate covers all final direction
+same fingerprinted input bank. The fixed rtol=atol=1e-5 gate covers all final direction
 and state leaves; bitwise equality is also recorded. Adding outputs or using
 the evaluator can change compilation, so failed agreement forbids interpreting
 captured values as the original internal path. Final equality alone would not
@@ -2626,6 +2627,27 @@ prove internal identity.
 
 Online CPU validation is pending. No accelerator job is submitted, no optimizer
 change is accepted, and no checkpoint or training data is read.
+
+## 2026-11-03 08:04 UTC — Full-update capture CPU validation passed
+
+The new mode passed on eight virtual CPU devices: twelve finite stages,
+eighteen comparisons at rtol=atol=1e-5, and four bitwise-identical fixed-executable
+replays. Both unchanged-program evaluators and both capture variants match their
+own untouched full-update references bitwise across all twenty-eight leaves.
+The six captured q/k/v values also match across solver layouts in this CPU run.
+
+The [preflight](optimizer-full-input-capture-preflight.json) records the fresh
+online logging check and numerical run. Both W&B runs finished, the report read
+back from GCS matches local bytes, and all twelve compiler files plus two
+traced-program files passed size, SHA256 and decompression checks. The script
+and capture-helper hashes identify the validated implementation.
+
+This validates the small CPU harness. A single sequential v5e-8 diagnostic will
+test the same controls at full matrix sizes, using the published source and
+regional outputs. No training checkpoint is read. Expected numerical mismatches
+will be retained; collection completion will not accept an optimizer or establish
+training MFU. The original precision, refresh, shape and tolerance requirements
+remain unchanged.
 
 ## Final decision
 
