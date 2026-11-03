@@ -1,0 +1,59 @@
+{
+  "run": "ema-gram-20-attribution-8088973753ab",
+  "source": "4acdeb96456807ef56e0495de66e6cb4d2e4d080",
+  "script_sha256": "0f1544df4b92b9111858fb7109277ddcc32c63129edf304a10a24f56adf6ef34",
+  "process_exit": 0,
+  "finite_stages": 36,
+  "comparisons": 30,
+  "all_passed_at_1e5": true,
+  "decisions": {
+    "q_proj": {
+      "inner_sha256": "a80613024a6796d1bdecc98fbe0f112820c38e277c72d3afc280f0fdafb3e0e4",
+      "instrumentation_passed": {
+        "replicated": true,
+        "direction_sharded": true
+      },
+      "instrumentation_bitwise_equal": {
+        "replicated": true,
+        "direction_sharded": false
+      },
+      "first_nonzero": "A",
+      "first_tolerance_failure": null,
+      "selected_crossfeed": null,
+      "selection_reason": "First nonzero first-iteration stage, or A harness control when all traced leaves match"
+    },
+    "k_proj": {
+      "inner_sha256": "9b4c21d03ab930f88d83c4e0a044b6e607da7651cabf82fb8f070c9fdd41b395",
+      "instrumentation_passed": {
+        "replicated": true,
+        "direction_sharded": true
+      },
+      "instrumentation_bitwise_equal": {
+        "replicated": true,
+        "direction_sharded": false
+      },
+      "first_nonzero": "A",
+      "first_tolerance_failure": null,
+      "selected_crossfeed": null,
+      "selection_reason": "First nonzero first-iteration stage, or A harness control when all traced leaves match"
+    },
+    "v_proj": {
+      "inner_sha256": "54de2eca95d14a3dd2f522e959ba65cb0c2958038216d18e6e56e052e8d1d851",
+      "instrumentation_passed": {
+        "replicated": true,
+        "direction_sharded": true
+      },
+      "instrumentation_bitwise_equal": {
+        "replicated": true,
+        "direction_sharded": false
+      },
+      "first_nonzero": "A",
+      "first_tolerance_failure": null,
+      "selected_crossfeed": null,
+      "selection_reason": "First nonzero first-iteration stage, or A harness control when all traced leaves match"
+    }
+  },
+  "limitation": "Direction-sharded traces change final outputs bitwise on CPU despite passing1e-5. Original guard skipped cross-feed; fixed-executable harness therefore not exercised. Revised collection retains original-path rejection but permits explicitly labeled instrumented-path cross-feed controls. No TPU claim.",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.products-smoke/ema-gram-20-attribution-8088973753ab/report.json",
+  "report_sha256": "789147e9ea2b52c396fde308491bcc7d38566c4a4d8d2cadd0ac02575714651c"
+}

@@ -211,6 +211,7 @@ def product_crossfeed(rec, name, stage, traces, rep, sharding):
             input_sha256=inputs_sha,
             input_shardings=str((rep,) * len(keys)),
             output_sharding=str(out_sharding),
+            input_scope="Frozen instrumented operands; see product_decisions for original-path eligibility",
         )
         outputs[layout] = {}
         for bank_name in ("replicated", "direction_sharded", "replicated_replay"):
@@ -296,11 +297,13 @@ def first_product_diagnostic(rec, common, rep, shardings):
             instrumentation_bitwise_equal=exact_instrumentation,
             first_nonzero=first_nonzero,
             first_tolerance_failure=first_failure,
-            selected_crossfeed=selected if all(exact_instrumentation.values()) else None,
+            original_path_interpretation_allowed=all(exact_instrumentation.values()),
+            selected_crossfeed=selected,
+            crossfeed_scope="Instrumented-path perturbation control, not proof of original internal values",
             selection_reason="First nonzero first-iteration stage, or A harness control when all traced leaves match",
         )
         rec.persist()
-        if all(exact_instrumentation.values()) and selected is not None:
+        if selected is not None:
             product_crossfeed(rec, name, selected, traces, rep, sharding)
         assert fingerprint(inner) == inner_sha
         del traces, inner
