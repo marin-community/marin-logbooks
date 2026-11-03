@@ -416,11 +416,12 @@
     ],
     "finding": "All six isolated layout pairs have identical rooted product-producing records with names/metadata removed. Replicated output uses standalone RotatedPincerEmitter/UniDirection1DRingStrategy; sharded output uses SingleInputAllReduceScatterFusion/StrategyRing. Raw isolated producers match original sharded firstA producers, which use the standalone reduction. Static records do not establish runtime values, precision, reduction order or cause.",
     "next_decision": {
-      "state": "Design only; not implemented or submitted",
+      "state": "Implemented and online CPU validated as --polar-collectives; ready for one sequential TPU diagnostic",
       "question": "Do two controlled reduction paths produce different A values when each device partial is held fixed and the same bank is supplied to both paths, and how do those values affect a fixed continuation?",
       "design": "Compute and fingerprint one common bank of local first-Gram partial products on full q/k/v shapes using shared normalization and unchanged source/default precision. Freeze that bank outside the reduction executables. Evaluate each reduction path on identical partials, with fixed executables and bitwise replays; inspect compiled collective paths. Feed resulting A banks and identical normalized X to existing fixed continuations under controlled output layouts; compare untouched shared polar references at rtol=atol=1e-5 and bitwise. One device output bank/executable at a time; block, host-offload, preserve incremental finite reports and compiler checksums.",
       "limitations": "Materializing partials and explicit collective controls perturb compilation and may not reproduce original runtime partial values or collective algorithms. Failed reference agreement forbids original-path interpretation; matching final outputs does not prove internal identity. No precision or tiling override, numerical tolerance relaxation or optimizer acceptance.",
-      "gate": "Own online CPU logging/numerical harness validation and exact published source/plan before one sequential TPU diagnostic. Any optimizer intervention still requires untouched original full-update equivalence on all28 leaves at fixed1e-5."
+      "gate": "Own online CPU logging/numerical harness validation and exact published source/plan before one sequential TPU diagnostic. Any optimizer intervention still requires untouched original full-update equivalence on all28 leaves at fixed1e-5.",
+      "implementation_plan": "optimizer-polar-collectives-plan.json"
     }
   }
 }

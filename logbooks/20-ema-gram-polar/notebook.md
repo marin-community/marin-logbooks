@@ -2420,6 +2420,36 @@ its compiler paths and compare final outputs with the untouched shared polar.
 This control has not been implemented or submitted. It requires its own online
 CPU validation and published source before one sequential TPU diagnostic.
 
+### 2026-11-03 — Prepare a fixed-partial collective control
+
+The new `--polar-collectives` diagnostic stores each device's unreduced local
+first-Gram product in a leading axis sharded across devices, with one partial
+per device. A fixed explicit all-reduce and a fixed reduce-scatter executable
+then read the same bank. Each executable replays
+its first input; the report preserves whole-bank and per-device fingerprints.
+The two resulting Gram banks feed fixed continuations with identical
+normalized inputs. Each continuation consumes the supplied first Gram product,
+finishes iteration one, then performs four later iterations. Same-job references use the untouched shared polar and the
+previous raw-input first-product function under both output layouts.
+
+The diagnostic keeps the full synthetic state geometry, shared normalization,
+coefficients, source precision and `rtol=atol=1e-5`. It changes no optimizer or
+trainer code. Materializing partial products changes compilation, and explicit
+collectives may choose different algorithms from the saved original graphs.
+Compiler-path checks and reference comparisons are required before interpreting
+the result. Even matching final outputs would not establish hidden internal
+identity or full optimizer equivalence.
+
+Online CPU run `848c0f491225` completed all 75 finite stages and all 69
+comparisons at the fixed tolerance. All fifteen executable replays were bitwise
+identical. Its GCS report matched local bytes, and all 60 compiler objects
+passed checksum, size and decompression checks. The separate online logging
+check `27a75440f198` also finished successfully. These CPU checks do not establish
+TPU numerical or collective behavior. The [plan](optimizer-polar-collectives-plan.json)
+requests one sequential eight-chip v5e diagnostic in us-west4, using published
+source, regional outputs, batch priority, default preemption retries and no
+wall-clock limit.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
