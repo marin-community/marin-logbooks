@@ -3243,6 +3243,33 @@ CPU source `a72a212baf0d7da978678c12b175635434520460`. Online runs: paired
 separate logging `f5964be75819`. All finished. The [preflight record](optimizer-paired-input-capture-preflight.json)
 contains source hashes, exact report references and artifact checks.
 
+## 2026-11-03 11:20 UTC — Paired capture starts on v5e
+
+The paired q_proj capture diagnostic is running on eight native v5e chips in
+one JAX process. Iris accepted it at 11:17:30 UTC from published revision
+`ae5ca330717fad85f6e764a6b9f085329cc04fab`. Loaded script and helper hashes match
+the CPU-validated source. Its fresh online W&B run passed the logging check
+before optimizer kernels.
+
+The mode appends only the existing q_proj inner matrix and norm-plus-epsilon
+denominator, retaining all source equations and 28 original output leaves.
+The 30-leaf capture is compared against each solver's untouched full update
+and unchanged evaluator at rtol=atol=1e-5, with bitwise checks and fixed-executable
+replays. All TPU reference gates remain pending. Failed agreement forbids
+original-path interpretation; matching outputs would not establish hidden
+intermediate identity or the complete optimizer discrepancy's cause.
+
+The task requests 96 CPUs, 128 GiB host memory and 50 GiB disk in us-west4,
+with batch priority, default preemption retries and no runtime limit. Preserve
+this job through compilation and assess both solver branches before another
+numerical candidate. Sole log observer 39235 follows the task; PR observer
+77099 remains the sole PR observer. Large compiler files stay regional.
+
+[Startup evidence](optimizer-paired-input-capture-started.json) records attempt UID
+`4dbb9dabf624` and fresh [online W&B run](https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-cfb9fbb20ed7).
+Three stages are finite at startup: zero initialization, initialization and the
+untouched original full update. Numerical capture gates remain pending.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
