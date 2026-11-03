@@ -2825,6 +2825,25 @@ failed, so their intermediates cannot establish untouched hidden values. No
 precision/tiling intervention or new numerical submission is selected. The CPU
 log observer ended naturally; no experiment or queue remains active.
 
+## 2026-11-03 09:18 UTC — Recover missing first-product caller bindings
+
+The saved compiler inventory lacks the enclosing computation bodies for all
+42 first polar products across six graphs. Without those bodies, the parser
+cannot bind each nested parameter to its caller input. A [targeted extraction](compiler-capture-bindings-plan.json)
+will collect those named bodies and nested callees on CPU in us-west4, verifying
+the six optimized-HLO hashes. Large HLO files remain regional.
+
+The new tracer preserves tuple-leaf selections and repeated operand positions,
+follows explicit fusion parameter bindings, and stops at normalization divisions
+or named opaque boundaries. Local fixtures passed nested binding, tuple selection,
+combined all-reduce independence, normalization stopping and explicit missing-body
+reporting. The file-processing CLI passed on six fixtures. No optimizer kernels ran.
+
+Publish the source and plan before one CPU extraction with default preemption
+retries and no wall-clock limit. Both numerical capture checks against their
+untouched references remain failed; these static paths cannot establish hidden
+original values or a numerical cause.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -1,0 +1,130 @@
+{
+  "purpose": "Targeted regional CPU extraction of missing first-product enclosing bodies and their nested callees.",
+  "required_region": "us-west4",
+  "source_record_sha256": "574e96b3d0452bede5b6d4c162e61d353f7e3b02e8a77d9722643bb179a701d5",
+  "artifacts": {
+    "original_untouched": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_original.optimized_hlo.txt.gz",
+      "sha256": "41a90c257a72d24e29ad693e2d275c39a24af7057f0aef8cdb436bb0130b0766",
+      "compressed_bytes": 10060350,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "async_collective_fusion.149082",
+        "async_collective_fusion.149085",
+        "async_collective_fusion.149176",
+        "async_collective_fusion.149348",
+        "async_collective_fusion.149400",
+        "async_collective_fusion.149414",
+        "async_collective_fusion.149433"
+      ]
+    },
+    "original_evaluate": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__original__evaluate.optimized_hlo.txt.gz",
+      "sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+      "compressed_bytes": 10049115,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "async_collective_fusion.149082",
+        "async_collective_fusion.149085",
+        "async_collective_fusion.149176",
+        "async_collective_fusion.149348",
+        "async_collective_fusion.149400",
+        "async_collective_fusion.149414",
+        "async_collective_fusion.149433"
+      ]
+    },
+    "original_capture": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__original__extra_outputs.optimized_hlo.txt.gz",
+      "sha256": "96a1a7e04f1515f0914e7f89c60a1aad7855cbf609936247c42deec1c8278ee2",
+      "compressed_bytes": 10042623,
+      "expected_output_leaves": 34,
+      "computation_names": [
+        "async_collective_fusion.149095",
+        "async_collective_fusion.149098",
+        "async_collective_fusion.149192",
+        "async_collective_fusion.149364",
+        "async_collective_fusion.149416",
+        "async_collective_fusion.149430",
+        "async_collective_fusion.149449"
+      ]
+    },
+    "matrix_untouched": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "async_collective_fusion.144442",
+        "async_collective_fusion.144445",
+        "async_collective_fusion.144539",
+        "async_collective_fusion.144716",
+        "async_collective_fusion.144789",
+        "async_collective_fusion.144808",
+        "async_collective_fusion.144822"
+      ]
+    },
+    "matrix_evaluate": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__matrix__evaluate.optimized_hlo.txt.gz",
+      "sha256": "3e7e23477e3167d786c5c46850abb30531699e6de6412d00046d2e77eabe4bf4",
+      "compressed_bytes": 9399318,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "async_collective_fusion.144442",
+        "async_collective_fusion.144445",
+        "async_collective_fusion.144539",
+        "async_collective_fusion.144716",
+        "async_collective_fusion.144789",
+        "async_collective_fusion.144808",
+        "async_collective_fusion.144822"
+      ]
+    },
+    "matrix_capture": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__matrix__extra_outputs.optimized_hlo.txt.gz",
+      "sha256": "f83cd12f71f7fbd663ce71cd3f989b05c8e0a5b1cf64edecba59ca6ed026c288",
+      "compressed_bytes": 9400238,
+      "expected_output_leaves": 34,
+      "computation_names": [
+        "async_collective_fusion.144462",
+        "async_collective_fusion.144465",
+        "async_collective_fusion.144558",
+        "async_collective_fusion.144752",
+        "async_collective_fusion.144825",
+        "async_collective_fusion.144844",
+        "async_collective_fusion.144858"
+      ]
+    }
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-bindings",
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "accelerator": null,
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "limitations": "All42enclosing scopes are missing from local record; each actualsourceHLO will be checksumverified regionally. No optimizer kernels/training/W&B. Both numericalcapturegatesfailed.",
+  "job_name": "ema-gram-20-capture-bindings-cpu-20261103",
+  "preflight": {
+    "parser_controls": {
+      "normalization_boundary_stop": true,
+      "nested_fusion_parameter_binding": true,
+      "tuple_leaf_selection": true,
+      "combined_allreduce_independence": true,
+      "opaque_boundary_explicit": true,
+      "missing_body_explicit": true
+    },
+    "file_cli": {
+      "completed": true,
+      "graphs": 6,
+      "bodies_each": 14,
+      "report_sha256": "ec0e159cb97aa0e6c8839131c9ba019d7eebd17c0c8dc26d00cd621d3c217aef"
+    },
+    "limitations": "Static parser fixtures only; no numerical kernels or W&B required.",
+    "source_sha256": {
+      "trace_capture_normalization.py": "6938f9b889b7d4c287e18b5a201484512497f5d85fd13fa2d5df26d66525d887",
+      "compiler_selected_bodies.py": "36e485757d701d750374af6d490be2fbfdb01b7d34c999bf290234df62c014f6"
+    }
+  }
+}
