@@ -2382,6 +2382,44 @@ Use the existing small artifacts and dependency mapping; no additional
 accelerator is selected. Static differences alone cannot establish cause or
 justify a precision or tiling override.
 
+### 2026-11-03 — First-product producers match; reduction configurations differ
+
+Within each normalization variant, the saved q/k/v first-Gram graphs place
+the inspected static differences between output layouts after the local matrix
+product. The product-producing instruction graphs match across replicated and
+direction-sharded outputs after
+renaming identifiers and removing source metadata. The comparison retains
+shapes, constants, parameter indices, ordered repeated operands, nested fusion
+bodies and backend configurations. It does not establish equal runtime values.
+The [analysis](compiler-partition-reductions.json) covers eighteen graphs and
+reverifies checksum, size and local bytes for all 36 consumed compiler objects.
+
+All six replicated-output isolated products use a standalone all-reduce with
+`RotatedPincerEmitter` and `UniDirection1DRingStrategy`. All six sharded-output
+products use a custom fusion containing all-reduce and output slicing, configured
+with `SingleInputAllReduceScatterFusion` and `StrategyRing`. Both paths contract
+128 local columns. The original sharded five-step polar's first product also
+uses the standalone all-reduce configuration. Its product-producing graph and
+parent kernel configuration match both raw-input isolated products for each
+q/k/v group. The externally normalized products have different producer graphs.
+
+[Validation](compiler-partition-reductions-validation.json) checks six complete
+polar product chains, twelve isolated one-product graphs and twelve comparisons
+against the same-job original sharded reference. Ten tests of the graph-comparison procedure verify
+invariance to identifier and metadata changes, and sensitivity to constants,
+parameter indices, operand order and repetition, shapes and backend settings.
+These static records support a focused reduction control; they do not establish
+runtime reduction order, precision or the cause of the numerical discrepancy.
+No optimizer change is accepted, and no new experiment is running or queued.
+
+Next design a control that freezes each device's partial first-Gram product
+and supplies the same bank of device partials to both reduction paths. Feed the
+resulting Gram banks into fixed continuations with identical normalized inputs.
+Materializing partial products changes compilation, so the control must verify
+its compiler paths and compare final outputs with the untouched shared polar.
+This control has not been implemented or submitted. It requires its own online
+CPU validation and published source before one sequential TPU diagnostic.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
