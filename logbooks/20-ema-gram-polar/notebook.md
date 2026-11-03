@@ -1454,6 +1454,34 @@ computation for three groups. They do not establish the compiler mechanism or
 fully explain the fused-update discrepancy. Feed-forward groups remain in
 progress. No candidate is accepted for training.
 
+## 2026-11-03 00:25 UTC — Attribution completes across all seven groups
+
+The [completed diagnostic](optimizer-attribution-v5e-completed.json) exited zero
+on attempt zero after 173 finite stages and 101 comparisons. W&B records
+attribution completion and no candidate acceptance. Host peak was 70.09 GiB
+across 211 Finelog samples; the largest recorded JAX allocator peak was
+8,076,038,656 bytes per device.
+
+For the left and right Grams of all seven groups, the original and matrix-layout
+eigensolvers give exactly matching eigenvalues and reconstructed powers. Staged
+and fused power outputs also match exactly in both implementations. Both power branches give
+identical downstream results under a common replicated layout. Changing the
+downstream output layout fails the polar and final-direction comparisons in
+all seven groups. Inner matrices match exactly except for down-projection,
+whose maximum absolute difference is 9.55e-12 and passes rtol=atol=1e-5.
+
+In the isolated polar layout control, polar outputs differ for query, key and
+value; they match exactly for attention-output and all three feed-forward groups. Thus the
+completed controls expose downstream layout sensitivity without establishing
+the compiler mechanism or fully explaining the fused-update discrepancy.
+
+The next diagnostic will capture compiled operations and expose normalization
+and each of the five polar iterates on identical inner inputs under replicated
+and direction-sharded output layouts, preserving the original arithmetic.
+Each traced final output will be checked against its uninstrumented counterpart
+because additional outputs can change compilation. CPU validation and publication
+must precede submission. No training optimization is accepted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

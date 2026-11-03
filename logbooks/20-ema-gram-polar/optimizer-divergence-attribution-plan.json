@@ -1,5 +1,5 @@
 {
-  "status": "running; native eight-device v5e startup and online W&B verified",
+  "status": "completed; next compiler/iterate diagnostic prepared, not submitted",
   "objective": "Locate first numerical divergence between original and matrix-layout default QDWH before proposing another optimization.",
   "evidence": [
     "optimizer-matrix-v5e-numerical-failure.json",
@@ -147,5 +147,31 @@
   "submitted_utc": "2026-11-02T23:57:15Z",
   "source_commit": "39994b06be819fd277ffe36903f66de3eb55c4d4",
   "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-attribution-v5e-8-20261102 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT 39994b06be819fd277ffe36903f66de3eb55c4d4 -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.02.1",
-  "startup_evidence": "optimizer-attribution-started.json"
+  "startup_evidence": "optimizer-attribution-started.json",
+  "completion_evidence": "optimizer-attribution-v5e-completed.json",
+  "followup": {
+    "status": "implementation awaiting CPU validation",
+    "entrypoint": "optimizer_attribution.py --polar-compiler",
+    "objective": "Capture original/candidate optimized compiler IR and locate layout differences across normalization and five polar iterates.",
+    "arithmetic": "Original quintic coefficients, norm epsilon1e-7, five iterations, transpose and mesh constraint, default matrix-product precision. No precision change or tolerance relaxation.",
+    "controls": [
+      "Retain all original173stages and101comparisons.",
+      "For each full original group, return norm, normalized input and five iterates under replicated and direction-sharded outputs.",
+      "Compare each traced final iterate to the corresponding uninstrumented polar output, then compare all intermediate outputs across layouts.",
+      "Capture compressed StableHLO and optimizedHLO for fusedupdates, downstream, isolatedpolar and tracedpolar calls; record regional URI and checksum."
+    ],
+    "expected_cpu_validation": {
+      "stages": 187,
+      "comparisons": 122,
+      "online_wandb": true,
+      "fixed_tolerance": 1e-05
+    },
+    "hardware": "one8chipv5ehost inus-west4,96CPU128GiB50GiB,batch,defaultpreemptionretries,no runtime limit",
+    "limitations": [
+      "Extra outputs change compilation; do not equate first traced divergence with first uninstrumented divergence.",
+      "Compiler IR shows lowering choices, not measured device execution.",
+      "No new candidate or accepted optimization; no checkpoint/training."
+    ],
+    "next_decision": "Inspect per-iteration differences, final-output perturbation controls and actual compiled precision/collectives before proposing a numerical-equivalent layout change."
+  }
 }

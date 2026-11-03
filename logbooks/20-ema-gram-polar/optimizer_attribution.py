@@ -5,6 +5,7 @@
 
 import argparse
 import gc
+import gzip
 import hashlib
 import json
 import math
@@ -21,7 +22,7 @@ from iris.jax.init import initialize_jax
 from jax.sharding import Mesh, NamedSharding
 from jax.sharding import PartitionSpec as P
 from levanter.optim.ema_gram import GramState, init_gram_state, matrix_parallel_eigh, relative_gram_power
-from levanter.optim.util import zeropower_via_newtonschulz5
+from levanter.optim.util import NEWTON_SCHULZ_COEFFICIENTS, zeropower_via_newtonschulz5
 from levanter.tracker.wandb import WandbConfig
 from optimizer_cost import NAMES, ROW_SHARDED, full_update, put_global, refresh
 from rigging.filesystem.storage_path import StoragePath
@@ -106,6 +107,32 @@ def downstream(left, momentum, right):
     return inner, orthogonal, inner_product(left, orthogonal, right)
 
 
+def polar_iterates(inner):
+    """Expose normalization and five iterates with the original arithmetic.
+
+    Extra outputs change compilation. Compare the final iterate against the
+    uninstrumented polar call before interpreting any intermediate difference.
+    """
+
+    def one_matrix(x):
+        norm = jnp.linalg.norm(x)
+        x = x / (norm + 1e-7)
+        outputs = [norm, x]
+        transposed = x.shape[0] > x.shape[1]
+        if transposed:
+            x = x.T
+        if not jax.sharding.get_abstract_mesh().empty:
+            x = jax.lax.with_sharding_constraint(x, P(None, ("data", "model")))
+        for a, b, c in NEWTON_SCHULZ_COEFFICIENTS["quintic"]:
+            gram = x @ x.T
+            polynomial = b * gram + c * gram @ gram
+            x = a * x + polynomial @ x
+            outputs.append(x.T if transposed else x)
+        return tuple(outputs)
+
+    return jax.vmap(one_matrix)(inner)
+
+
 class Recorder:
     """Persist every stage before progressing to another allocation-heavy kernel."""
 
@@ -125,7 +152,18 @@ class Recorder:
         self.persist()
         compiled = jax.jit(fn, in_shardings=in_shardings, out_shardings=out_shardings)
         start = time.perf_counter()
-        result = jax.block_until_ready(compiled(*inputs))
+        capture = self.report["config"]["polar_compiler"] and (
+            name in ("fused_original", "fused_matrix")
+            or name.endswith("/downstream")
+            or "/identical_inner/" in name
+            or "/polar_iterates/" in name
+        )
+        if capture:
+            lowered = compiled.lower(*inputs)
+            executable = lowered.compile()
+            result = jax.block_until_ready(executable(*inputs))
+        else:
+            result = jax.block_until_ready(compiled(*inputs))
         elapsed = time.perf_counter() - start
         memory = [d.memory_stats() for d in jax.local_devices()]
         host = jax.device_get(result)
@@ -138,6 +176,20 @@ class Recorder:
         self.report["stages"][name] = dict(
             compile_and_execution_seconds=elapsed, finite=True, output_sha256=fingerprint(host), device_memory=memory
         )
+        if capture:
+            artifacts = {}
+            for label, source in [("stablehlo", lowered.as_text()), ("optimized_hlo", executable.as_text())]:
+                payload = gzip.compress(source.encode(), mtime=0)
+                filename = name.replace("/", "__") + "." + label + ".txt.gz"
+                (self.local / filename).write_bytes(payload)
+                (self.destination / filename).write_bytes(payload, requests_timeout=REPORT_REQUEST_TIMEOUT)
+                artifacts[label] = dict(
+                    uri=str(self.destination / filename),
+                    sha256=hashlib.sha256(payload).hexdigest(),
+                    compressed_bytes=len(payload),
+                )
+            self.report["stages"][name]["compiler_artifacts"] = artifacts
+            del lowered, executable
         self.tracker.log({f"stage/{name}/compile_and_execution_seconds": elapsed}, step=self.step)
         self.persist()
         print(json.dumps(dict(stage=name, seconds=elapsed, finite=True)), flush=True)
@@ -157,6 +209,7 @@ def main():
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--logging-check", action="store_true")
+    parser.add_argument("--polar-compiler", action="store_true")
     args = parser.parse_args()
     if not args.smoke:
         initialize_jax()
@@ -183,6 +236,16 @@ def main():
         shapes=shapes,
         names=NAMES,
         smoke=args.smoke,
+        polar_compiler=args.polar_compiler,
+        polar_iterate_leaf_order=[
+            "input_norm",
+            "normalized_input",
+            "iteration_1",
+            "iteration_2",
+            "iteration_3",
+            "iteration_4",
+            "iteration_5",
+        ],
         process_count=1,
         devices=[dict(id=d.id, kind=d.device_kind, platform=d.platform) for d in devices],
         output_prefix=str(destination),
@@ -320,6 +383,23 @@ def main():
         polar_rep = rec.run(f"{name}/identical_inner/replicated", polar, (common_inner,), (rep,), rep)
         polar_shard = rec.run(f"{name}/identical_inner/direction_sharded", polar, (common_inner,), (rep,), sharding)
         rec.compare(f"{name}/identical_inner_layout_control", polar_shard, polar_rep)
+        if args.polar_compiler:
+            iterates = {}
+            for layout, output_sharding in [("replicated", rep), ("direction_sharded", sharding)]:
+                iterates[layout] = rec.run(
+                    f"{name}/polar_iterates/{layout}",
+                    polar_iterates,
+                    (common_inner,),
+                    (rep,),
+                    (rep,) + (output_sharding,) * 6,
+                )
+                rec.compare(
+                    f"{name}/polar_iterates/{layout}/final_vs_uninstrumented",
+                    iterates[layout][-1],
+                    polar_rep if layout == "replicated" else polar_shard,
+                )
+            rec.compare(f"{name}/polar_iterates/layout_control", iterates["direction_sharded"], iterates["replicated"])
+            del iterates
         assert rec.report["common_state_sha256"] == fingerprint(common), "Frozen host inputs changed"
         del power_banks, downstream_banks, left, right, common_inner, polar_rep, polar_shard
         gc.collect()
