@@ -4067,6 +4067,23 @@ Both full 28-leaf numerical substitution gates remain failed. Static agreement d
 [validation](compiler-product-inputs-validation.json) retain the source identity,
 report checksums, declared routes and fixture results.
 
+## 2026-11-03 16:00 UTC — Polar boundary inputs preserve the unresolved numerical gates
+
+The regional CPU extraction recovered thirty declared input routes per matrix graph: four ConcatBitcast inputs each for gate/up, ten AsyncCollectiveDone inputs each for down/o, and one input to each of the two matched AsyncCollectiveStart calls. The selected endpoints come from the preceding product-operand traces, with explicit group and operand positions. All thirty unchanged-evaluator signatures and all thirty paired-capture signatures match the untouched controls. These signatures compare declared shapes, attributes, constant literals and ordered connections after normalizing instruction/computation identifiers and source-wrapper labels. Channel and chain IDs remain in the comparison; the signatures do not compare runtime values.
+
+Twenty-six substitution signatures match. Two down routes differ only in the recorded all-gather channel/chain IDs, 358→355 and 53→57. The corresponding two o routes differ in IDs 224→221 and 31→35; the o Start-input route also encounters the previously observed copy-done versus tuple-projection change. The comparison stops at that opcode mismatch without claiming equality of the remaining subtree. These are four route comparisons, not four independent changes. All eight gate/up ConcatBitcast-input signatures match, while o remains a passing numerical control despite its changed route.
+
+For every selected down/o Done call, all ten operand traces reach one common declared Start identity. Their recorded Start tuple paths, in operand order, are [0], [1], [0], [2], [3], [4], [5], [6], [7], [8]; repeated leaf 0 is retained. Done operand 2 encounters an all-gather before reaching Start leaf 0. That record and the all-gather on the Start's single declared input are distinct records with matching channel/chain IDs. They are not merged or assigned exact custom-call semantics. The auxiliary traces terminate at product records and opaque ConcatBitcast or Start calls. Original Start/Done/ConcatBitcast outputs remain opaque.
+
+The task succeeded attempt 0/exit 0, UID b42d5d31eb79, independently verified at 15:55:02–03 UTC. Published source 0175712e0e2878df4c99f2c0a451bad4cd645425 ran on four CPUs/8 GiB/10 GiB in us-west4 with default preemption retries and no wall-clock limit. The worker name includes TPU, but this was CPU-only static parsing without kernels. Four closure rounds recovered ten bodies per graph; no requested records remain missing. All four optimized HLO files passed regional SHA/size checks and stayed regional. The 1,775,955-byte report passed exact GCS readback, SHA 41fcd05ef632f18edbe5dd6f8924137a28e9caa406c50d5c504e5e599ea0a709. Fixtures cover all sixty control comparisons, explicit position ordering, common-Start identity, tuple projections, duplicate/missing records and channel mutations.
+
+Both full 28-leaf numerical substitution gates remain failed. Static agreement does not establish hidden values, precision, summation order, semantic identity or cause. No optimizer, training or MFU result is accepted. Next is static design only: consolidate the saved product and opaque-boundary records by graph, caller context, computation, instruction and tuple path. Identify which remaining frontiers are already covered and which bindings remain unresolved before requesting more extraction. Preserve the passing paired-capture and up/o controls and repeated edges. No numerical intervention is selected. No experiment remains; the heartbeat stays active. PR observer 77099 reached its authorized twelve-hour timeout and exited with code 2. Its final snapshot reports PR #10790 open, mergeable and review required, with 16 comments and 7 reviews. Monitoring is handed off without a replacement observer or manual polling.
+
+[Completion](compiler-polar-boundaries-completed.json),
+[comparison](compiler-polar-boundaries-comparison.json) and
+[validation](compiler-polar-boundaries-validation.json) retain source identity,
+report checksums, declared routes and fixture results.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
