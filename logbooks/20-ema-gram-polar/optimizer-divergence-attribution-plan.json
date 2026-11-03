@@ -528,14 +528,22 @@
                       "original_gate": "optimizer-paired-input-substitution-original-gate.json",
                       "completed": "optimizer-paired-input-substitution-v5e-completed.json",
                       "next_decision": {
-                        "state": "Static design only; not implemented or submitted",
+                        "state": "Completed regional CPU extraction; compiler-substitution-completed.json",
                         "question": "Which declared compiler paths change between passing capture/evaluator controls and failed same-pair substitution executables, including non-q groups?",
                         "manifest": "compiler-substitution-manifest.json",
                         "procedure": "Compare all8same-job optimizedHLO graphs: untouched,evaluator,pairedcapture,substitution for eachsolver. Extend existing inventory support to explicit30output pairedcapture roles as well as28fulloutputs; retain source argument bindings for both external substitution inputs, not assumed surviving parameter ordinals. Map all7groups by output dependencies and source scopes, preserving tuple leaves, repeated operands and caller bindings. Compare normalization, polar15-product chains, first-Gram collectives and enclosing fusion records. Include matrixo_proj passing control and allchanged non-q groups. Explicitly distinguish omitted upstream equations/dead computations from changed records; do not align by text order or infer runtime identities from record equality.",
                         "validation": "Fixtures for30leaf roles, externalinputbindings, outputdependency rather than textorder mapping, repeatedoperandpositions and missing/ambiguous-target rejection; preserve28/34leaf legacy behavior. Verify each consumed optimizedHLO size/SHA regionally before parsing. Recover missing bodies explicitly, retaining opaque custom-call limitations.",
                         "execution": "Only regionalCPUus-west4 extraction, publishedsource/manifest/checksums before submission,4CPU8GiB10GiB,batch/defaultpreemption/no wallclocklimits. No accelerator or optimizer kernels/W&B needed for staticfile parsing. LargeHLO stayregional; retrieve only bounded extracted records.",
                         "interpretation": "Static declarations/configurations/dependency mapping do not establish runtime values, precision, summation order, hidden identity or cause. Both numerical substitution gates remain failed. No numerical,precision,tiling or optimizer intervention selected from static counts/tags alone.",
-                        "constraints": "All science and trainingacceptance gates unchanged. Any future numerical implementation requires ownfreshonlineCPUlogging/harnessvalidation and publishedexactsource beforeONEsequentialTPU."
+                        "constraints": "All science and trainingacceptance gates unchanged. Any future numerical implementation requires ownfreshonlineCPUlogging/harnessvalidation and publishedexactsource beforeONEsequentialTPU.",
+                        "completion": "compiler-substitution-completed.json",
+                        "next_decision": {
+                          "state": "Static design only; not implemented or submitted",
+                          "question": "How does the full-width q first-Gram result reach the next polar product, and how are k/v combined reduction results projected?",
+                          "procedure": "Use existing extracted records first. Trace q first-product result through enclosing fusion output tuple leaves, entry consumers and next product; compare untouched and substitution for both solvers with unchanged-evaluator/capture controls. Verify k/v combined all-reduce independent operand/result projections. Do not infer nested collective absence from no entry match, or omitted/dead source work from missing scope matches. Preserve repeated operand positions and caller contexts; list missing bodies and opaque boundaries explicitly.",
+                          "execution": "If existing records are insufficient, publish targeted extraction source/manifest/checksums before regional CPU-only us-west4 task. Verify saved HLO SHA/size before parsing; retain no limits/default preemption. No accelerator, optimizer kernels or W&B needed for static parsing; no large HLO transfer.",
+                          "interpretation": "Both numerical substitution reference gates remain failed. Static compiler paths do not establish runtime values, precision, summation order, original internal identity or cause. No numerical/precision/tiling intervention selected; new numerical implementation requires own online CPU validation and published source before one sequential TPU."
+                        }
                       }
                     }
                   }

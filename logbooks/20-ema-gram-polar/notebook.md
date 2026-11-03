@@ -3555,6 +3555,55 @@ The [manifest](compiler-substitution-manifest.json) lists the eight regional
 inputs; the [attribution plan](optimizer-divergence-attribution-plan.json)
 records validation and interpretation requirements.
 
+## 2026-11-03 13:12 UTC — Substitution changes declared paths across all seven groups
+
+The regional CPU extraction completed successfully on attempt 0, task exit 0.
+It verified the size and SHA of all eight saved optimized HLO graphs before
+parsing. Each graph maps 105 polar products to seven output-dependent chains.
+The external numerator and denominator are identified by source labels
+`bank[1][0]` and `bank[1][1]`, then checked at q_proj's two normalization-division
+operand positions. Both substitution graphs pass these binding checks;
+conservative dependencies of non-q first products exclude the external inputs.
+
+The unchanged evaluators match all 105 positions against their untouched graphs
+in the inspected product declarations, operand shapes/opcodes, operation
+attributes/backend records and enclosing fusion configurations. Substitution
+changes enclosing fusion configurations at 62 original and 58 matrix positions,
+spanning all seven groups. Matrix o_proj limits interpretation: its numerical
+reference check passes despite changed enclosing configurations at seven
+product positions. These counts alone do not explain the numerical failures.
+
+In both solvers, q_proj normalization and first-product operand declarations
+change from `f32[11,1024,128]` to `f32[11,1024,1024]`. The mapped entry all-reduces
+group q+k with separate v in the untouched graphs, and k+v in substitution.
+No mapped entry collective has q's first-product ancestry in substitution;
+this does not prove that no nested reduction exists. The mapped k/v collective
+algorithms remain RotatedPincerEmitter/UniDirection1DRingStrategy. Other backend
+fields differ; the [comparison](compiler-substitution-comparison.json) records
+them without interpreting runtime summation order or precision.
+
+Five extraction rounds per graph recover all requested missing bodies.
+Ninety-one of 112 first-product operand positions reach a normalization division;
+opaque boundaries remain explicit. Missing-record closure does not establish
+complete semantic provenance, and an absent mapping is not evidence of omitted
+or dead source computations. Both numerical substitution reference gates remain
+failed. These static records do not identify runtime values or cause.
+
+The task used four CPUs, 8 GiB memory and 10 GiB disk in us-west4, with default
+preemption retries and no wall-clock limit. Its worker name includes TPU, but
+this task requested no accelerator and ran no optimizer kernels. Large HLO
+stayed regional. The extracted report is 17,953,035 bytes, SHA
+`1b395fca38d61e77cc56c2595adfdfdc9967b10718e6dbb5ff82b419bbfcf33b`.
+[Completed evidence](compiler-substitution-completed.json) records source,
+checksums and attempt UID `7bc0bb5d9519`. Log observer 67223 ended naturally
+with exit 0. No experiment or queue remains; PR observer 77099 remains live.
+
+Next, trace the q first-Gram result through its enclosing fusion and entry
+consumers, and verify the k/v result projections after regrouping. Use existing
+extracted records first; any missing bodies require published, targeted
+regional CPU extraction. No numerical or precision/tiling intervention is
+selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
