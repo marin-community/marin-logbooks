@@ -1,0 +1,1678 @@
+{
+  "report_sha256": "81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4",
+  "graphs": {
+    "matrix_untouched": {
+      "producer_to_predicate_broadcast": [
+        {
+          "node_index": 38,
+          "computation": "fused_computation.111109",
+          "context": [
+            "main.530_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [],
+          "name": "reduce.8177.clone.1",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "reduce",
+          "operands": [
+            "select_n.8437.clone.1",
+            "constant.10851.clone.57"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={1,2}, to_apply=%region_451.507, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=22}",
+          "instruction": "%reduce.8177.clone.1 = f32[11]{0:T(128)} reduce(%select_n.8437.clone.1, %constant.10851.clone.57), dimensions={1,2}, to_apply=%region_451.507, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=22}"
+        },
+        {
+          "node_index": 37,
+          "computation": "fused_computation.111109",
+          "context": [
+            "main.530_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [
+            3
+          ],
+          "name": "tuple.5700",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "tuple",
+          "operands": [
+            "reduce.8175",
+            "reduce.8181.clone.1",
+            "reduce.8179.clone.1",
+            "reduce.8177.clone.1",
+            "reduce.8176.clone.1",
+            "reduce.8183.clone.1",
+            "reduce.8185.clone.1",
+            "mul.8791.clone.1",
+            "mul.8792.clone.1",
+            "mul.8793.clone.1",
+            "mul.8794.clone.1",
+            "mul.8795.clone.1",
+            "mul.8796.clone.1",
+            "mul.8797.clone.1"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %tuple.5700 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) tuple(%reduce.8175, %reduce.8181.clone.1, %reduce.8179.clone.1, %reduce.8177.clone.1, %reduce.8176.clone.1, /*index=5*/%reduce.8183.clone.1, %reduce.8185.clone.1, %mul.8791.clone.1, %mul.8792.clone.1, %mul.8793.clone.1, /*index=10*/%mul.8794.clone.1, %mul.8795.clone.1, %mul.8796.clone.1, %mul.8797.clone.1)"
+        },
+        {
+          "node_index": 36,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "select_reduce_fusion.803",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1265",
+            "copy-done.845",
+            "bitcast.51507",
+            "copy-done.870",
+            "bitcast.51508",
+            "copy-done.868",
+            "bitcast.51511",
+            "get-tuple-element.100024",
+            "bitcast.51512",
+            "copy-done.871",
+            "bitcast.51509",
+            "copy-done.872",
+            "bitcast.51510",
+            "get-tuple-element.100044",
+            "bitcast.51513"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111109, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=18}",
+          "instruction": "%select_reduce_fusion.803 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) fusion(%copy-done.1265, %copy-done.845, %bitcast.51507, %copy-done.870, %bitcast.51508, /*index=5*/%copy-done.868, %bitcast.51511, %get-tuple-element.100024, %bitcast.51512, %copy-done.871, /*index=10*/%bitcast.51509, %copy-done.872, %bitcast.51510, %get-tuple-element.100044, %bitcast.51513), kind=kLoop, calls=%fused_computation.111109, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=18}"
+        },
+        {
+          "node_index": 35,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.29339",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "select_reduce_fusion.803"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=18}",
+          "instruction": "%get-tuple-element.29339 = f32[11]{0:T(128)} get-tuple-element(%select_reduce_fusion.803), index=3, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=18}"
+        },
+        {
+          "node_index": 34,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1328",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.29339"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1328 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.29339)"
+        },
+        {
+          "node_index": 33,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1328",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1328"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1328 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1328)"
+        },
+        {
+          "node_index": 32,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "all-reduce.163",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "custom-call.13911",
+            "get-tuple-element.100439",
+            "copy-done.1327",
+            "copy-done.1328",
+            "copy-done.1329",
+            "copy-done.1326"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=143, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "instruction": "%all-reduce.163 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%custom-call.13911, %get-tuple-element.100439, %copy-done.1327, %copy-done.1328, %copy-done.1329, /*index=5*/%copy-done.1326), channel_id=143, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+        },
+        {
+          "node_index": 31,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34104",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.163"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=22}",
+          "instruction": "%get-tuple-element.34104 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.163), index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=22}"
+        },
+        {
+          "node_index": 30,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1336",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.34104"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1336 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.34104)"
+        },
+        {
+          "node_index": 29,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1336",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1336"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1336 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1336)"
+        },
+        {
+          "node_index": 28,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "param_0.246473",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%param_0.246473 = f32[11]{0:T(128)S(1)} parameter(0)"
+        },
+        {
+          "node_index": 27,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "div.535",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "multiply",
+          "operands": [
+            "param_0.246473",
+            "broadcast.30077"
+          ],
+          "parameter_index": null,
+          "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/div\" stack_frame_id=22}",
+          "instruction": "%div.535 = f32[11]{0:T(128)} multiply(%param_0.246473, %broadcast.30077), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/div\" stack_frame_id=22}"
+        },
+        {
+          "node_index": 26,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "gt.464",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "compare",
+          "operands": [
+            "div.535",
+            "broadcast.30054"
+          ],
+          "parameter_index": null,
+          "attributes": ", direction=GT, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/gt\" stack_frame_id=43}",
+          "instruction": "ROOT %gt.464 = pred[11]{0:T(512)(128)(4,1)} compare(%div.535, %broadcast.30054), direction=GT, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/gt\" stack_frame_id=43}"
+        },
+        {
+          "node_index": 25,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "multiply_compare_fusion.4",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1336"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111279, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/gt\" stack_frame_id=43}",
+          "instruction": "%multiply_compare_fusion.4 = pred[11]{0:T(512)(128)(4,1)} fusion(%copy-done.1336), kind=kLoop, calls=%fused_computation.111279, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/gt\" stack_frame_id=43}"
+        },
+        {
+          "node_index": 24,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1341",
+          "shape": "(pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "multiply_compare_fusion.4"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1341 = (pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)}) copy-start(%multiply_compare_fusion.4)"
+        },
+        {
+          "node_index": 23,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1341",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1341"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1341 = pred[11]{0:T(512)(128)(4,1)S(1)} copy-done(%copy-start.1341)"
+        },
+        {
+          "node_index": 22,
+          "computation": "async_collective_fusion.144632",
+          "context": [
+            "main.530_spmd/fusion.144632"
+          ],
+          "tuple_path": [],
+          "name": "param_13.947",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 13,
+          "attributes": "",
+          "instruction": "%param_13.947 = pred[11]{0:T(512)(128)(4,1)S(1)} parameter(13)"
+        },
+        {
+          "node_index": 21,
+          "computation": "async_collective_fusion.144632",
+          "context": [
+            "main.530_spmd/fusion.144632"
+          ],
+          "tuple_path": [],
+          "name": "broadcast_in_dim.5283",
+          "shape": "pred[11,1024,128]{2,1,0:T(8,128)(4,1)}",
+          "opcode": "broadcast",
+          "operands": [
+            "param_13.947"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={0}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=62}",
+          "instruction": "%broadcast_in_dim.5283 = pred[11,1024,128]{2,1,0:T(8,128)(4,1)} broadcast(%param_13.947), dimensions={0}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=62}"
+        }
+      ],
+      "side_input_literals": [
+        {
+          "operation": "multiply",
+          "broadcast": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30077",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10852.clone.8"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16911\"}",
+            "instruction": "%broadcast.30077 = f32[11]{0:T(128)} broadcast(%constant.10852.clone.8), dimensions={}, metadata={op_name=\"broadcast.16911\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10852.clone.8",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10852.clone.8 = f32[]{:T(128)} constant(0.0009765625)"
+          }
+        },
+        {
+          "operation": "compare",
+          "broadcast": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30054",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone.9"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16912\"}",
+            "instruction": "%broadcast.30054 = f32[11]{0:T(128)} broadcast(%constant.10851.clone.9), dimensions={}, metadata={op_name=\"broadcast.16912\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10851.clone.9",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10851.clone.9 = f32[]{:T(128)} constant(0)"
+          }
+        }
+      ],
+      "allreduce_selected_projection": 3,
+      "copy_pairs": 3,
+      "scope": "One route in the gate numerator dependency trace, not all uses or runtime values."
+    },
+    "matrix_evaluate": {
+      "producer_to_predicate_broadcast": [
+        {
+          "node_index": 38,
+          "computation": "fused_computation.111109",
+          "context": [
+            "main.530_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [],
+          "name": "reduce.8177.clone.1",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "reduce",
+          "operands": [
+            "select_n.8437.clone.1",
+            "constant.10851.clone.57"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={1,2}, to_apply=%region_451.507, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}",
+          "instruction": "%reduce.8177.clone.1 = f32[11]{0:T(128)} reduce(%select_n.8437.clone.1, %constant.10851.clone.57), dimensions={1,2}, to_apply=%region_451.507, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}"
+        },
+        {
+          "node_index": 37,
+          "computation": "fused_computation.111109",
+          "context": [
+            "main.530_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [
+            3
+          ],
+          "name": "tuple.5700",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "tuple",
+          "operands": [
+            "reduce.8175",
+            "reduce.8181.clone.1",
+            "reduce.8179.clone.1",
+            "reduce.8177.clone.1",
+            "reduce.8176.clone.1",
+            "reduce.8183.clone.1",
+            "reduce.8185.clone.1",
+            "mul.8791.clone.1",
+            "mul.8792.clone.1",
+            "mul.8793.clone.1",
+            "mul.8794.clone.1",
+            "mul.8795.clone.1",
+            "mul.8796.clone.1",
+            "mul.8797.clone.1"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %tuple.5700 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) tuple(%reduce.8175, %reduce.8181.clone.1, %reduce.8179.clone.1, %reduce.8177.clone.1, %reduce.8176.clone.1, /*index=5*/%reduce.8183.clone.1, %reduce.8185.clone.1, %mul.8791.clone.1, %mul.8792.clone.1, %mul.8793.clone.1, /*index=10*/%mul.8794.clone.1, %mul.8795.clone.1, %mul.8796.clone.1, %mul.8797.clone.1)"
+        },
+        {
+          "node_index": 36,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "select_reduce_fusion.803",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1265",
+            "copy-done.845",
+            "bitcast.51507",
+            "copy-done.870",
+            "bitcast.51508",
+            "copy-done.868",
+            "bitcast.51511",
+            "get-tuple-element.100024",
+            "bitcast.51512",
+            "copy-done.871",
+            "bitcast.51509",
+            "copy-done.872",
+            "bitcast.51510",
+            "get-tuple-element.100044",
+            "bitcast.51513"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111109, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}",
+          "instruction": "%select_reduce_fusion.803 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) fusion(%copy-done.1265, %copy-done.845, %bitcast.51507, %copy-done.870, %bitcast.51508, /*index=5*/%copy-done.868, %bitcast.51511, %get-tuple-element.100024, %bitcast.51512, %copy-done.871, /*index=10*/%bitcast.51509, %copy-done.872, %bitcast.51510, %get-tuple-element.100044, %bitcast.51513), kind=kLoop, calls=%fused_computation.111109, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}"
+        },
+        {
+          "node_index": 35,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.29339",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "select_reduce_fusion.803"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}",
+          "instruction": "%get-tuple-element.29339 = f32[11]{0:T(128)} get-tuple-element(%select_reduce_fusion.803), index=3, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}"
+        },
+        {
+          "node_index": 34,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1328",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.29339"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1328 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.29339)"
+        },
+        {
+          "node_index": 33,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1328",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1328"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1328 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1328)"
+        },
+        {
+          "node_index": 32,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "all-reduce.163",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "custom-call.13911",
+            "get-tuple-element.100439",
+            "copy-done.1327",
+            "copy-done.1328",
+            "copy-done.1329",
+            "copy-done.1326"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=143, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.163 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%custom-call.13911, %get-tuple-element.100439, %copy-done.1327, %copy-done.1328, %copy-done.1329, /*index=5*/%copy-done.1326), channel_id=143, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        {
+          "node_index": 31,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34104",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.163"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}",
+          "instruction": "%get-tuple-element.34104 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.163), index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}"
+        },
+        {
+          "node_index": 30,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1336",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.34104"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1336 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.34104)"
+        },
+        {
+          "node_index": 29,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1336",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1336"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1336 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1336)"
+        },
+        {
+          "node_index": 28,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "param_0.246473",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%param_0.246473 = f32[11]{0:T(128)S(1)} parameter(0)"
+        },
+        {
+          "node_index": 27,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "div.535",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "multiply",
+          "operands": [
+            "param_0.246473",
+            "broadcast.30077"
+          ],
+          "parameter_index": null,
+          "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/div\" stack_frame_id=23}",
+          "instruction": "%div.535 = f32[11]{0:T(128)} multiply(%param_0.246473, %broadcast.30077), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/div\" stack_frame_id=23}"
+        },
+        {
+          "node_index": 26,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "gt.464",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "compare",
+          "operands": [
+            "div.535",
+            "broadcast.30054"
+          ],
+          "parameter_index": null,
+          "attributes": ", direction=GT, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}",
+          "instruction": "ROOT %gt.464 = pred[11]{0:T(512)(128)(4,1)} compare(%div.535, %broadcast.30054), direction=GT, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}"
+        },
+        {
+          "node_index": 25,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "multiply_compare_fusion.4",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1336"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111279, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}",
+          "instruction": "%multiply_compare_fusion.4 = pred[11]{0:T(512)(128)(4,1)} fusion(%copy-done.1336), kind=kLoop, calls=%fused_computation.111279, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}"
+        },
+        {
+          "node_index": 24,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1341",
+          "shape": "(pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "multiply_compare_fusion.4"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1341 = (pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)}) copy-start(%multiply_compare_fusion.4)"
+        },
+        {
+          "node_index": 23,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1341",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1341"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1341 = pred[11]{0:T(512)(128)(4,1)S(1)} copy-done(%copy-start.1341)"
+        },
+        {
+          "node_index": 22,
+          "computation": "async_collective_fusion.144632",
+          "context": [
+            "main.530_spmd/fusion.144632"
+          ],
+          "tuple_path": [],
+          "name": "param_13.947",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 13,
+          "attributes": "",
+          "instruction": "%param_13.947 = pred[11]{0:T(512)(128)(4,1)S(1)} parameter(13)"
+        },
+        {
+          "node_index": 21,
+          "computation": "async_collective_fusion.144632",
+          "context": [
+            "main.530_spmd/fusion.144632"
+          ],
+          "tuple_path": [],
+          "name": "broadcast_in_dim.5283",
+          "shape": "pred[11,1024,128]{2,1,0:T(8,128)(4,1)}",
+          "opcode": "broadcast",
+          "operands": [
+            "param_13.947"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={0}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=63}",
+          "instruction": "%broadcast_in_dim.5283 = pred[11,1024,128]{2,1,0:T(8,128)(4,1)} broadcast(%param_13.947), dimensions={0}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=63}"
+        }
+      ],
+      "side_input_literals": [
+        {
+          "operation": "multiply",
+          "broadcast": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30077",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10852.clone.8"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16911\"}",
+            "instruction": "%broadcast.30077 = f32[11]{0:T(128)} broadcast(%constant.10852.clone.8), dimensions={}, metadata={op_name=\"broadcast.16911\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10852.clone.8",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10852.clone.8 = f32[]{:T(128)} constant(0.0009765625)"
+          }
+        },
+        {
+          "operation": "compare",
+          "broadcast": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30054",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone.9"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16912\"}",
+            "instruction": "%broadcast.30054 = f32[11]{0:T(128)} broadcast(%constant.10851.clone.9), dimensions={}, metadata={op_name=\"broadcast.16912\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10851.clone.9",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10851.clone.9 = f32[]{:T(128)} constant(0)"
+          }
+        }
+      ],
+      "allreduce_selected_projection": 3,
+      "copy_pairs": 3,
+      "scope": "One route in the gate numerator dependency trace, not all uses or runtime values."
+    },
+    "matrix_capture": {
+      "producer_to_predicate_broadcast": [
+        {
+          "node_index": 40,
+          "computation": "fused_computation.111109",
+          "context": [
+            "main.530_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [],
+          "name": "reduce.8177.clone.1",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "reduce",
+          "operands": [
+            "select_n.8437.clone.1",
+            "constant.10851.clone.57"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={1,2}, to_apply=%region_451.507, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}",
+          "instruction": "%reduce.8177.clone.1 = f32[11]{0:T(128)} reduce(%select_n.8437.clone.1, %constant.10851.clone.57), dimensions={1,2}, to_apply=%region_451.507, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}"
+        },
+        {
+          "node_index": 39,
+          "computation": "fused_computation.111109",
+          "context": [
+            "main.530_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [
+            3
+          ],
+          "name": "tuple.5700",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "tuple",
+          "operands": [
+            "reduce.8175",
+            "reduce.8181.clone.1",
+            "reduce.8179.clone.1",
+            "reduce.8177.clone.1",
+            "reduce.8176.clone.1",
+            "reduce.8183.clone.1",
+            "reduce.8185.clone.1",
+            "mul.8791.clone.1",
+            "mul.8792.clone.1",
+            "mul.8793.clone.1",
+            "mul.8794.clone.1",
+            "mul.8795.clone.1",
+            "mul.8796.clone.1",
+            "mul.8797.clone.1"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %tuple.5700 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) tuple(%reduce.8175, %reduce.8181.clone.1, %reduce.8179.clone.1, %reduce.8177.clone.1, %reduce.8176.clone.1, /*index=5*/%reduce.8183.clone.1, %reduce.8185.clone.1, %mul.8791.clone.1, %mul.8792.clone.1, %mul.8793.clone.1, /*index=10*/%mul.8794.clone.1, %mul.8795.clone.1, %mul.8796.clone.1, %mul.8797.clone.1)"
+        },
+        {
+          "node_index": 38,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "select_reduce_fusion.803",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1270",
+            "copy-done.845",
+            "bitcast.51509",
+            "copy-done.869",
+            "bitcast.51510",
+            "copy-done.888",
+            "bitcast.51513",
+            "get-tuple-element.100034",
+            "bitcast.51514",
+            "copy-done.870",
+            "bitcast.51511",
+            "copy-done.871",
+            "bitcast.51512",
+            "get-tuple-element.100054",
+            "bitcast.51515"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111109, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}",
+          "instruction": "%select_reduce_fusion.803 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) fusion(%copy-done.1270, %copy-done.845, %bitcast.51509, %copy-done.869, %bitcast.51510, /*index=5*/%copy-done.888, %bitcast.51513, %get-tuple-element.100034, %bitcast.51514, %copy-done.870, /*index=10*/%bitcast.51511, %copy-done.871, %bitcast.51512, %get-tuple-element.100054, %bitcast.51515), kind=kLoop, calls=%fused_computation.111109, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}"
+        },
+        {
+          "node_index": 37,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.29345",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "select_reduce_fusion.803"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}",
+          "instruction": "%get-tuple-element.29345 = f32[11]{0:T(128)} get-tuple-element(%select_reduce_fusion.803), index=3, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=19}"
+        },
+        {
+          "node_index": 36,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1334",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.29345"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1334 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.29345)"
+        },
+        {
+          "node_index": 35,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1334",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1334"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1334 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1334)"
+        },
+        {
+          "node_index": 34,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "all-reduce.163",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100427",
+            "get-tuple-element.100458",
+            "copy-done.1333",
+            "copy-done.1334",
+            "copy-done.1335",
+            "copy-done.1332"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=143, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.163 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100427, %get-tuple-element.100458, %copy-done.1333, %copy-done.1334, %copy-done.1335, /*index=5*/%copy-done.1332), channel_id=143, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        {
+          "node_index": 33,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34110",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.163"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}",
+          "instruction": "%get-tuple-element.34110 = f32[11]{0:T(128)S(1)} get-tuple-element(%all-reduce.163), index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=23}"
+        },
+        {
+          "node_index": 32,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1343",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.34110"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1343 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, u32[]{:S(2)}) copy-start(%get-tuple-element.34110)"
+        },
+        {
+          "node_index": 31,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1343",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1343"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1343 = f32[11]{0:T(128)} copy-done(%copy-start.1343)"
+        },
+        {
+          "node_index": 30,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1344",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "copy-done.1343"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1344 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%copy-done.1343)"
+        },
+        {
+          "node_index": 29,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1344",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1344"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1344 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1344)"
+        },
+        {
+          "node_index": 28,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "param_0.246473",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%param_0.246473 = f32[11]{0:T(128)S(1)} parameter(0)"
+        },
+        {
+          "node_index": 27,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "div.535",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "multiply",
+          "operands": [
+            "param_0.246473",
+            "broadcast.30079"
+          ],
+          "parameter_index": null,
+          "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/div\" stack_frame_id=23}",
+          "instruction": "%div.535 = f32[11]{0:T(128)} multiply(%param_0.246473, %broadcast.30079), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/div\" stack_frame_id=23}"
+        },
+        {
+          "node_index": 26,
+          "computation": "fused_computation.111279",
+          "context": [
+            "main.530_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "gt.464",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "compare",
+          "operands": [
+            "div.535",
+            "broadcast.30056"
+          ],
+          "parameter_index": null,
+          "attributes": ", direction=GT, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}",
+          "instruction": "ROOT %gt.464 = pred[11]{0:T(512)(128)(4,1)} compare(%div.535, %broadcast.30056), direction=GT, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}"
+        },
+        {
+          "node_index": 25,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "multiply_compare_fusion.4",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1344"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111279, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}",
+          "instruction": "%multiply_compare_fusion.4 = pred[11]{0:T(512)(128)(4,1)} fusion(%copy-done.1344), kind=kLoop, calls=%fused_computation.111279, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/gt\" stack_frame_id=44}"
+        },
+        {
+          "node_index": 24,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1349",
+          "shape": "(pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "multiply_compare_fusion.4"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1349 = (pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)}) copy-start(%multiply_compare_fusion.4)"
+        },
+        {
+          "node_index": 23,
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1349",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1349"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1349 = pred[11]{0:T(512)(128)(4,1)S(1)} copy-done(%copy-start.1349)"
+        },
+        {
+          "node_index": 22,
+          "computation": "async_collective_fusion.144647",
+          "context": [
+            "main.530_spmd/fusion.144647"
+          ],
+          "tuple_path": [],
+          "name": "param_13.947",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 13,
+          "attributes": "",
+          "instruction": "%param_13.947 = pred[11]{0:T(512)(128)(4,1)S(1)} parameter(13)"
+        },
+        {
+          "node_index": 21,
+          "computation": "async_collective_fusion.144647",
+          "context": [
+            "main.530_spmd/fusion.144647"
+          ],
+          "tuple_path": [],
+          "name": "broadcast_in_dim.5284",
+          "shape": "pred[11,1024,128]{2,1,0:T(8,128)(4,1)}",
+          "opcode": "broadcast",
+          "operands": [
+            "param_13.947"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={0}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=63}",
+          "instruction": "%broadcast_in_dim.5284 = pred[11,1024,128]{2,1,0:T(8,128)(4,1)} broadcast(%param_13.947), dimensions={0}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=63}"
+        }
+      ],
+      "side_input_literals": [
+        {
+          "operation": "multiply",
+          "broadcast": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30079",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10852.clone.8"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16911\"}",
+            "instruction": "%broadcast.30079 = f32[11]{0:T(128)} broadcast(%constant.10852.clone.8), dimensions={}, metadata={op_name=\"broadcast.16911\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10852.clone.8",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10852.clone.8 = f32[]{:T(128)} constant(0.0009765625)"
+          }
+        },
+        {
+          "operation": "compare",
+          "broadcast": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30056",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone.9"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16912\"}",
+            "instruction": "%broadcast.30056 = f32[11]{0:T(128)} broadcast(%constant.10851.clone.9), dimensions={}, metadata={op_name=\"broadcast.16912\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111279",
+            "context": [
+              "main.530_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10851.clone.9",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10851.clone.9 = f32[]{:T(128)} constant(0)"
+          }
+        }
+      ],
+      "allreduce_selected_projection": 3,
+      "copy_pairs": 4,
+      "scope": "One route in the gate numerator dependency trace, not all uses or runtime values."
+    },
+    "matrix_substitute": {
+      "producer_to_predicate_broadcast": [
+        {
+          "node_index": 40,
+          "computation": "fused_computation.111110",
+          "context": [
+            "main.529_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [],
+          "name": "reduce.8176.clone.1",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "reduce",
+          "operands": [
+            "select_n.8437.clone.1",
+            "constant.10850.clone.57"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={1,2}, to_apply=%region_450.506, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=24}",
+          "instruction": "%reduce.8176.clone.1 = f32[11]{0:T(128)} reduce(%select_n.8437.clone.1, %constant.10850.clone.57), dimensions={1,2}, to_apply=%region_450.506, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=24}"
+        },
+        {
+          "node_index": 39,
+          "computation": "fused_computation.111110",
+          "context": [
+            "main.529_spmd/select_reduce_fusion.803"
+          ],
+          "tuple_path": [
+            3
+          ],
+          "name": "tuple.5700",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "tuple",
+          "operands": [
+            "reduce.8174",
+            "reduce.8180.clone.1",
+            "reduce.8178.clone.1",
+            "reduce.8176.clone.1",
+            "reduce.8175.clone.1",
+            "reduce.8182.clone.1",
+            "reduce.8183.clone.1",
+            "mul.8787.clone.1",
+            "mul.8788.clone.1",
+            "mul.8789.clone.1",
+            "mul.8790.clone.1",
+            "mul.8791.clone.1",
+            "mul.8792.clone.1",
+            "mul.8793.clone.1"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %tuple.5700 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) tuple(%reduce.8174, %reduce.8180.clone.1, %reduce.8178.clone.1, %reduce.8176.clone.1, %reduce.8175.clone.1, /*index=5*/%reduce.8182.clone.1, %reduce.8183.clone.1, %mul.8787.clone.1, %mul.8788.clone.1, %mul.8789.clone.1, /*index=10*/%mul.8790.clone.1, %mul.8791.clone.1, %mul.8792.clone.1, %mul.8793.clone.1)"
+        },
+        {
+          "node_index": 38,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "select_reduce_fusion.803",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)})",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1268",
+            "copy-done.842",
+            "bitcast.51496",
+            "copy-done.843",
+            "bitcast.51497",
+            "get-tuple-element.100037",
+            "bitcast.51500",
+            "get-tuple-element.100048",
+            "bitcast.51501",
+            "copy-done.866",
+            "bitcast.51498",
+            "copy-done.844",
+            "bitcast.51499",
+            "copy-done.864",
+            "bitcast.51502"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111110, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=20}",
+          "instruction": "%select_reduce_fusion.803 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, /*index=10*/f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}, f32[11,128,1024]{1,2,0:T(8,128)}) fusion(%copy-done.1268, %copy-done.842, %bitcast.51496, %copy-done.843, %bitcast.51497, /*index=5*/%get-tuple-element.100037, %bitcast.51500, %get-tuple-element.100048, %bitcast.51501, %copy-done.866, /*index=10*/%bitcast.51498, %copy-done.844, %bitcast.51499, %copy-done.864, %bitcast.51502), kind=kLoop, calls=%fused_computation.111110, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=20}"
+        },
+        {
+          "node_index": 37,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.29339",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "select_reduce_fusion.803"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=20}",
+          "instruction": "%get-tuple-element.29339 = f32[11]{0:T(128)} get-tuple-element(%select_reduce_fusion.803), index=3, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=20}"
+        },
+        {
+          "node_index": 36,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1335",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.29339"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1335 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%get-tuple-element.29339)"
+        },
+        {
+          "node_index": 35,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1335",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1335"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1335 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1335)"
+        },
+        {
+          "node_index": 34,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            3
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100401",
+            "get-tuple-element.100432",
+            "copy-done.1334",
+            "copy-done.1335",
+            "copy-done.1336",
+            "copy-done.1333"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=133, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100401, %get-tuple-element.100432, %copy-done.1334, %copy-done.1335, %copy-done.1336, /*index=5*/%copy-done.1333), channel_id=133, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.130.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+        },
+        {
+          "node_index": 33,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34105",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=24}",
+          "instruction": "%get-tuple-element.34105 = f32[11]{0:T(128)S(1)} get-tuple-element(%all-reduce.162), index=3, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(trace)/reduce_sum\" stack_frame_id=24}"
+        },
+        {
+          "node_index": 32,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1342",
+          "shape": "(f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "get-tuple-element.34105"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1342 = (f32[11]{0:T(128)}, f32[11]{0:T(128)S(1)}, u32[]{:S(2)}) copy-start(%get-tuple-element.34105)"
+        },
+        {
+          "node_index": 31,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1342",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1342"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1342 = f32[11]{0:T(128)} copy-done(%copy-start.1342)"
+        },
+        {
+          "node_index": 30,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1343",
+          "shape": "(f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "copy-done.1342"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1343 = (f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, u32[]{:S(2)}) copy-start(%copy-done.1342)"
+        },
+        {
+          "node_index": 29,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1343",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1343"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1343 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1343)"
+        },
+        {
+          "node_index": 28,
+          "computation": "fused_computation.111277",
+          "context": [
+            "main.529_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "param_0.246468",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%param_0.246468 = f32[11]{0:T(128)S(1)} parameter(0)"
+        },
+        {
+          "node_index": 27,
+          "computation": "fused_computation.111277",
+          "context": [
+            "main.529_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "div.537",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "multiply",
+          "operands": [
+            "param_0.246468",
+            "broadcast.30074"
+          ],
+          "parameter_index": null,
+          "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/div\" stack_frame_id=24}",
+          "instruction": "%div.537 = f32[11]{0:T(128)} multiply(%param_0.246468, %broadcast.30074), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/div\" stack_frame_id=24}"
+        },
+        {
+          "node_index": 26,
+          "computation": "fused_computation.111277",
+          "context": [
+            "main.529_spmd/multiply_compare_fusion.4"
+          ],
+          "tuple_path": [],
+          "name": "gt.464",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "compare",
+          "operands": [
+            "div.537",
+            "broadcast.30051"
+          ],
+          "parameter_index": null,
+          "attributes": ", direction=GT, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=45}",
+          "instruction": "ROOT %gt.464 = pred[11]{0:T(512)(128)(4,1)} compare(%div.537, %broadcast.30051), direction=GT, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=45}"
+        },
+        {
+          "node_index": 25,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "multiply_compare_fusion.4",
+          "shape": "pred[11]{0:T(512)(128)(4,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "copy-done.1343"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%fused_computation.111277, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=45}",
+          "instruction": "%multiply_compare_fusion.4 = pred[11]{0:T(512)(128)(4,1)} fusion(%copy-done.1343), kind=kLoop, calls=%fused_computation.111277, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/gt\" stack_frame_id=45}"
+        },
+        {
+          "node_index": 24,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.1350",
+          "shape": "(pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "multiply_compare_fusion.4"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.1350 = (pred[11]{0:T(512)(128)(4,1)S(1)}, pred[11]{0:T(512)(128)(4,1)}, u32[]{:S(2)}) copy-start(%multiply_compare_fusion.4)"
+        },
+        {
+          "node_index": 23,
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1350",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1350"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1350 = pred[11]{0:T(512)(128)(4,1)S(1)} copy-done(%copy-start.1350)"
+        },
+        {
+          "node_index": 22,
+          "computation": "async_collective_fusion.144634",
+          "context": [
+            "main.529_spmd/fusion.144634"
+          ],
+          "tuple_path": [],
+          "name": "param_13.942",
+          "shape": "pred[11]{0:T(512)(128)(4,1)S(1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 13,
+          "attributes": "",
+          "instruction": "%param_13.942 = pred[11]{0:T(512)(128)(4,1)S(1)} parameter(13)"
+        },
+        {
+          "node_index": 21,
+          "computation": "async_collective_fusion.144634",
+          "context": [
+            "main.529_spmd/fusion.144634"
+          ],
+          "tuple_path": [],
+          "name": "broadcast_in_dim.5278",
+          "shape": "pred[11,1024,128]{2,1,0:T(8,128)(4,1)}",
+          "opcode": "broadcast",
+          "operands": [
+            "param_13.942"
+          ],
+          "parameter_index": null,
+          "attributes": ", dimensions={0}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=65}",
+          "instruction": "%broadcast_in_dim.5278 = pred[11,1024,128]{2,1,0:T(8,128)(4,1)} broadcast(%param_13.942), dimensions={0}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/jit(_where)/broadcast_in_dim\" stack_frame_id=65}"
+        }
+      ],
+      "side_input_literals": [
+        {
+          "operation": "multiply",
+          "broadcast": {
+            "computation": "fused_computation.111277",
+            "context": [
+              "main.529_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30074",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone.8"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16910\"}",
+            "instruction": "%broadcast.30074 = f32[11]{0:T(128)} broadcast(%constant.10851.clone.8), dimensions={}, metadata={op_name=\"broadcast.16910\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111277",
+            "context": [
+              "main.529_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10851.clone.8",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10851.clone.8 = f32[]{:T(128)} constant(0.0009765625)"
+          }
+        },
+        {
+          "operation": "compare",
+          "broadcast": {
+            "computation": "fused_computation.111277",
+            "context": [
+              "main.529_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "broadcast.30051",
+            "shape": "f32[11]{0:T(128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10850.clone.9"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"broadcast.16911\"}",
+            "instruction": "%broadcast.30051 = f32[11]{0:T(128)} broadcast(%constant.10850.clone.9), dimensions={}, metadata={op_name=\"broadcast.16911\"}"
+          },
+          "constant": {
+            "computation": "fused_computation.111277",
+            "context": [
+              "main.529_spmd/multiply_compare_fusion.4"
+            ],
+            "tuple_path": [],
+            "name": "constant.10850.clone.9",
+            "shape": "f32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%constant.10850.clone.9 = f32[]{:T(128)} constant(0)"
+          }
+        }
+      ],
+      "allreduce_selected_projection": 3,
+      "copy_pairs": 4,
+      "scope": "One route in the gate numerator dependency trace, not all uses or runtime values."
+    }
+  },
+  "limitations": "Extra copy route also occurs in the passing paired-capture control. S(1) tags and channel IDs are recorded, not assigned numerical meaning. No causal claim."
+}

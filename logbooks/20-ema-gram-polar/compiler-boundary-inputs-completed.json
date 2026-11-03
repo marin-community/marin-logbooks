@@ -1,0 +1,98 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-boundary-inputs-cpu-20261103",
+  "accepted_utc": "2026-11-03T15:07:48Z",
+  "canonical_job_task_verified_utc": "2026-11-03T15:11:57Z",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "a09eb36623a5",
+  "task_exit_code": 0,
+  "source_commit": "e43e1138a183b0020c40149c832348a1eb12b801",
+  "source_sha256": {
+    "compiler_boundary_inputs.py": "5ae543b39cbe77badecd05a86bdc62252aeeb6e7e269722cbe78ea9ba703bef9",
+    "trace_boundary_inputs.py": "844a3bc0de727072ab411b2044beb2bc0aea2e4be2fea4b2e66914cf3f7595f3",
+    "trace_outer_bindings.py": "36daebb960e73214c5db90fbc73add471389b98ab32c6e58e38ec020ebe1bb5f",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b"
+  },
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.boundary-inputs/boundary-inputs-16055494fc77/report.json",
+  "report_bytes": 30706097,
+  "report_sha256": "cbf8996a1579a9267501e402ccb379fe8dddaf07cb2148ea845ff31dd290c6cd",
+  "exact_gcs_readback": true,
+  "all_four_hlo_sha_size_verified_regionally": true,
+  "summary": "compiler-boundary-inputs-summary.json",
+  "scalar_route": "compiler-gate-scalar-route.json",
+  "validation": "compiler-boundary-inputs-validation.json",
+  "graphs": {
+    "matrix_untouched": {
+      "endpoint_types": {
+        "AsyncCollectiveDone": 10,
+        "ConcatBitcast": 20
+      },
+      "operand_positions": 176,
+      "extraction_rounds": 11,
+      "extracted_bodies": 53
+    },
+    "matrix_evaluate": {
+      "endpoint_types": {
+        "AsyncCollectiveDone": 10,
+        "ConcatBitcast": 20
+      },
+      "operand_positions": 176,
+      "extraction_rounds": 11,
+      "extracted_bodies": 53
+    },
+    "matrix_capture": {
+      "endpoint_types": {
+        "AsyncCollectiveDone": 11,
+        "ConcatBitcast": 18
+      },
+      "operand_positions": 180,
+      "extraction_rounds": 11,
+      "extracted_bodies": 56
+    },
+    "matrix_substitute": {
+      "endpoint_types": {
+        "AsyncCollectiveDone": 11,
+        "ConcatBitcast": 20
+      },
+      "operand_positions": 188,
+      "extraction_rounds": 12,
+      "extracted_bodies": 55
+    }
+  },
+  "evaluator_normalized_operand_checks": 176,
+  "evaluator_all_match": true,
+  "findings": [
+    "All10/10/11/11 AsyncCollectiveDone endpoints have ten operand-position traces each reaching one common declared AsyncCollectiveStart identity. This does not prove exact custom-call semantics.",
+    "All requested records recovered, but original outputs and auxiliary custom-call/while boundaries remain opaque. No polar-product anchors reached.",
+    "The gate scalar route has three copy pairs in untouched/evaluator versus four in capture/substitution. The extra pair follows combined all-reduce projection3 on a trace scalar feeding mean>0. It also occurs in the passing paired-capture control.",
+    "Source and numerical precision, math, tolerances and acceptance gates are unchanged."
+  ],
+  "limitations": [
+    "Static declared operand connections only; no runtime values, precision, order, hidden identity or cause.",
+    "Both numerical full28leaf substitution gates remain failed. No optimizer/training/MFU acceptance."
+  ],
+  "observer": {
+    "session_id": 59623,
+    "command": "job logs --follow --tail --max-lines30",
+    "state": "ended naturally exit0; do not replace",
+    "prior_one_shot_session": 41406,
+    "prior_one_shot_note": "--tail without --follow exited during building; not terminal evidence"
+  },
+  "analysis_source_sha256": {
+    "summarize_boundary_inputs.py": "e87e2367733e2db5311050ee7e15c8ce6fe0214c17ae4a23806295edf6b12a4e",
+    "trace_gate_scalar.py": "c33b1b0f34792963d29c5ab7bcc4643fd15ad68a0071dd15f62d5f0a6f36180b"
+  },
+  "summary_sha256": "d6120e80fabd72b9be53a714044331e332f6d19943442c8d7eac1ecdc0552f8e",
+  "scalar_route_sha256": "4b458f4be5e7d71489d478fce72d65895ffb55cfda7bac1b52e07a1b0d60ba6e"
+}

@@ -3980,6 +3980,59 @@ sole, with its existing 12-hour exit condition.
 [comparison](compiler-outer-bindings-comparison.json) and
 [validation](compiler-outer-bindings-validation.json) retain the evidence.
 
+### November 3, 15:15 UTC — Opaque endpoint inputs and gate trace-scalar route
+
+The new static extraction follows declared inputs of the previously recorded
+AsyncCollectiveDone and ConcatBitcast endpoints. It preserves the original
+outputs as opaque and stores these input dependencies as auxiliary traces.
+Untouched/evaluator/capture/column-substitution contain 30/30/29/31 distinct
+endpoints in the inspected contexts, with 176/176/180/188 operand positions.
+All 176 unchanged-evaluator operand signatures match the untouched controls
+after source-wrapper label normalization. Capture and substitution endpoints
+are not aligned by text order or list index.
+
+The four graphs contain 10/10/11/11 AsyncCollectiveDone endpoints. For every
+such endpoint, all ten operand-position traces reach one common declared
+AsyncCollectiveStart identity through recorded tuple projections. This is a
+connection in the emitted records, not proof of exact start/done semantics.
+The auxiliary traces still stop at opaque starts, other custom calls and solver
+while loops; none reaches a polar-product anchor. Requested records are now
+complete for this auxiliary traversal, but semantic provenance remains partial.
+
+A separate analysis of the saved outer-binding report identifies the changed
+gate route as a Gram trace scalar feeding the `mean > 0` predicate. All four
+graphs select projection 3 of a combined all-reduce. The recorded scalar is
+multiplied by 0.0009765625 (1/1024), compared with zero, then broadcast into the
+Gram-power selection. The path has three `copy-start`/`copy-done` pairs in untouched/evaluator
+and four in capture/substitution. The extra pair follows the all-reduce and
+also occurs in the paired-capture control, whose full reference comparison
+passes tolerance. Its presence alone cannot distinguish the failing
+substitution from that passing control. S(1) tags and channel IDs are retained
+without assigning them runtime precision or summation-order meaning.
+
+The CPU task succeeded on attempt 0 with exit 0, verified at 15:11:57 UTC.
+It used four CPUs, 8 GiB memory and 10 GiB disk in us-west4, with default
+preemption retries and no wall-clock limit. Published source preceded launch.
+All four HLO files passed regional size/SHA checks. Closure took 11/11/11/12
+rounds and recovered 53/53/56/55 requested bodies. Large HLO stayed regional;
+the bounded extracted report is 30,706,097 bytes, with exact GCS readback and SHA
+`cbf8996a1579a9267501e402ccb379fe8dddaf07cb2148ea845ff31dd290c6cd`.
+The initial `--tail` read exited during building and was not terminal evidence.
+The subsequent `--follow --tail` observer ended after the completion record;
+canonical job and task reads confirmed success.
+
+Both numerical full-update substitution gates remain failed. No optimizer,
+training, MFU or causal result is accepted. Next is static design only: inspect
+matched start-record operands and their declared all-gather/product producers,
+using the saved inventory and traces first. Preserve tuple/caller bindings and
+opaque semantics, with passing up/o and paired-capture controls. No numerical
+intervention is selected. No experiment remains; PR observer 77099 remains sole.
+
+[Completion](compiler-boundary-inputs-completed.json),
+[endpoint summary](compiler-boundary-inputs-summary.json),
+[gate route](compiler-gate-scalar-route.json) and
+[validation](compiler-boundary-inputs-validation.json) retain the evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
