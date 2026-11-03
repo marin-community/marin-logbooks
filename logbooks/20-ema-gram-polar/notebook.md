@@ -3437,6 +3437,32 @@ before original-path interpretation. Bitwise status is separate; even passing
 gates cannot establish hidden internal identity or the full discrepancy's cause.
 No optimizer, training MFU or checkpoint-resume result is claimed.
 
+## 2026-11-03 12:13 UTC — Substitution diagnostic passes its original capture gate
+
+The fresh report at 12:11:47 UTC contains eight finite stages and five passing
+comparisons. The original solver's unchanged evaluator matches its untouched
+28-leaf reference bitwise. Its paired capture passes all 28 leaves at
+rtol=atol=1e-5 but is not bitwise equal: only v_proj has nonzero measured error,
+with maximum absolute error 8.94070e-8 and relative Frobenius error 1.06813e-7. Zero measured error on
+the other leaves does not prove per-leaf bitwise equality. Both original fixed
+executables replay bitwise.
+
+The untouched matrix full update is also finite, and the current report stage
+is matrix evaluator compilation. Its capture gate and both substitution
+executables' own-pair reference gates remain pending. Passing the original
+capture gate does not validate substitution or establish hidden internal
+identity. Preserve the current job and sole log observer; no further numerical
+candidate is selected.
+
+Finelog records 69 samples through 12:12:24 UTC and observed cumulative
+host peak 58.98 GiB against the 128 GiB reservation. Accelerator memory is
+null. The small original Jaxpr passed SHA, size and gzip readback; capture
+metadata retains 851 equations and 30 outputs. Large compiler files remain regional
+without a new checksum audit. [Partial evidence](optimizer-paired-input-substitution-partial.json)
+separates this fresh report from the last canonical RUNNING observation at
+12:06 UTC. Sole log observer 86562 and PR observer 77099 were both live at 12:11 UTC. No optimization,
+warmed performance, MFU or checkpoint-resume claim is made.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
