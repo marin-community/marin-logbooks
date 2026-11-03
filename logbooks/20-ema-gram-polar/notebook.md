@@ -4179,6 +4179,12 @@ Both full 28-leaf numerical substitution gates remain failed. Matching these bou
 
 The follow observer ended naturally with exit 0. No experiment, queue, or observer remains active. PR monitoring stays handed off after its earlier 12-hour timeout; the research heartbeat remains active.
 
+### November 3, 17:23 UTC — inspect uncovered fifth-step Concat inputs (static preflight)
+
+The [previous coverage audit](compiler-step5-gram-inputs-frontiers.json) identifies twelve uninspected declared inputs behind the down/up/o Concat endpoints reached by fifth-step `X_Xt` operand 0. The [new selector and manifest](compiler-step5-concat-inputs-manifest.json) use those saved dependencies, check the operand root and caller context, and reject missing or ambiguous boundaries. Saved records resolve part of the traces; two computation bodies per graph remain missing at preflight.
+
+The [plan](compiler-step5-concat-inputs-plan.json) and [validation](compiler-step5-concat-inputs-validation.json) preserve all four operand positions per group and the paired-capture and passing up/o controls. Exact source will be published before one CPU-only us-west4 extraction with HLO SHA/size checks, default preemption, and no wall-clock limit. This is static parsing, with no accelerator, numerical kernels, or W&B run. Both numerical full28leaf gates remain failed; opaque output semantics remain unresolved.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
