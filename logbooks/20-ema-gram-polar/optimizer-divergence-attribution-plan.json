@@ -545,14 +545,25 @@
                           "interpretation": "Both numerical substitution reference gates remain failed. Static compiler paths do not establish runtime values, precision, summation order, original internal identity or cause. No numerical/precision/tiling intervention selected; new numerical implementation requires own online CPU validation and published source before one sequential TPU.",
                           "completion": "compiler-first-gram-paths-completed.json",
                           "next_decision": {
-                            "state": "One sequential TPU diagnostic running; preserve until all gates and terminal artifacts assessed",
+                            "state": "Completed; both column-input substitution full-reference gates failed",
                             "question": "Can placing the external q numerator in the existing q-direction column sharding recover the full same-pair reference gate?",
                             "proposed_control": "Reuse paired substitution_program unchanged. Change only external numerator input NamedSharding to the existing q direction sharding gs[0]=P(None,None,data); denominator remains replicated. Preserve full global11x1024x1024FP32 numerator and11x1x1 denominator, all original input/output shardings, source equations/association/default precision and all28originaloutputs. This is external input placement, not a kernel tiling or precision override. Compiler-selected paths may still change; no agreement presumed.",
                             "procedure": "Fresh process recaptures both paired banks with untouched/unchanged full references. Each solver compiles once and runs own pair plus numerator-only, denominator-only and both swaps, with own-pair bitwise replay. Both fresh capture gates and each own-pair gate versus untouched AND captured full28leaves must pass rtol=atol=1e-5 before original-path interpretation. Preserve failed gates and report all28leaf errors/bitwise; each swap uses fixed-executable own-pair output norms as denominator. Matching endpoints still not internal identity or full cause.",
                             "preflight": "optimizer-column-input-substitution-preflight.json",
                             "interpretation": "Diagnostic only; candidate acceptance false and all training/optimizer gates unchanged. Record compiler artifacts for checking whether declared widths/path actually match; do not infer numerical recovery from static matching alone.",
                             "plan": "optimizer-column-input-substitution-plan.json",
-                            "started": "optimizer-column-input-substitution-started.json"
+                            "started": "optimizer-column-input-substitution-started.json",
+                            "completed": "optimizer-column-input-substitution-v5e-completed.json",
+                            "next_decision": {
+                              "state": "Static design only; not implemented or submitted",
+                              "question": "What declared compiler paths differ with column-sharded external numerator input, including failed non-q leaves and passing controls?",
+                              "manifest": "compiler-column-input-manifest.json",
+                              "procedure": "Inspect eight current same-job optimizedHLO graphs: untouched/evaluator/capture/substitution for bothsolvers. Compare prior replicated-input substitution using its verified regional extracted records. Map all7groups by output dependencies/source scopes, not text order; preserve tuple leaves, repeated operands and caller contexts. Verify actual q normalization/firstproduct operand declarations and first-to-second-product collective path rather than infer them from requested input sharding. Compare all15product chains/enclosingfusion configs, failed original k/o and matrix gate/down plus passing q/other controls. Verify external sourceargument labels and compiled records/shapes, not assumed ordinals. Recover explicitly named missing bodies on regional CPU if needed; retain opaque boundaries.",
+                              "validation": "Reuse and validate inventory/first-Gram tuple-path fixtures, external binding/shape checks, 30leaf capture roles, independent combined-collective projections, repeated uses and missing/ambiguous rejection. Review compatibility with column-local compiled parameter shape before extraction; global source shape is not assumed compiled local shape. Verify each consumed optimizedHLO SHA/size regionally.",
+                              "execution": "Publish exact extraction source/manifest/checksums before any regionalCPU-only us-west4 task, suggested4CPU8GiB10GiB,batch/defaultpreemption/no wallclock limits. Static file parsing needs no accelerator,kernels orW&B. LargeHLOstayregional; retrieve bounded extracted records.",
+                              "interpretation": "Both numerical full-reference gates remain failed. Static declarations/configurations/paths do not establish runtime values, precision, summation order, hidden identity or cause. No numerical, precision or tiling intervention selected.",
+                              "constraints": "Preserve all science/training gates. Any future numerical implementation needs ownfreshonlineCPUlogging/harnessvalidation and published exactsource beforeONEsequentialTPU."
+                            }
                           }
                         }
                       }

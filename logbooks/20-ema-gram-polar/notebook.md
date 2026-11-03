@@ -3792,6 +3792,74 @@ large compiler files stay regional without a new checksum audit.
 retains all leaf errors, fixed-executable replays and telemetry scope. PR observer
 77099 and the heartbeat remain active; reuse both existing observers.
 
+## 2026-11-03 14:18 UTC — Column-input collection completes; both full-reference gates fail
+
+The executable substitutes captured q_proj numerator and denominator values
+at the existing normalization division. Only the external numerator placement
+changes to column sharding; the denominator remains replicated. This does not
+recover the full 28-leaf substitution reference gate. The original executable fails k_proj and
+o_proj directions; the matrix executable fails gate_proj and down_proj.
+Both fail against their own untouched and paired-capture references at
+rtol=atol=1e-5. All 21 state leaves pass. q_proj passes in both executables,
+but that does not satisfy the full gate or permit original-path attribution.
+
+Against untouched references, original k/o relative Frobenius errors are
+0.00666783 and 0.00672929. Matrix gate/down errors are 0.02793480 and
+0.02798260, with maximum absolute errors 0.00959935 and 0.00915089.
+Matrix gate right-Gram and down left-Gram differ by at most 1.77636e-15,
+within tolerance. Original q_proj has maximum absolute error 1.19209e-7;
+matrix q_proj has zero measured absolute error against its untouched
+reference. Zero measured error is not per-leaf bitwise proof.
+
+Both fresh paired captures pass their own full reference gates, not bitwise;
+both unchanged evaluators match their untouched references bitwise. All 22
+stages are finite, 14 of 26 comparisons pass, and all six fixed executables
+replay bitwise. The 12 failures comprise two full matrix-versus-original
+checks, four own-pair reference checks, and six within-executable swaps.
+Original numerator-only, denominator-only and paired swaps change q_proj by
+relative Frobenius errors 0.00702789, 0.00606599 and 0.00703240. Matrix errors
+are 0.00700319, 0.00613309 and 0.00703216. Each denominator is the norm of the
+corresponding own-pair output leaf. Other 27 leaves have zero measured error
+in these swaps. These conditional effects in altered executables do not
+explain the untouched optimizer discrepancy. No optimization is accepted.
+
+The current and prior replicated-input reports pass local SHA verification;
+their input-bank fingerprints and both untouched output hashes match. This
+supports comparing the recorded outcomes across jobs, without establishing
+hidden intermediate identity. The prior replicated-input substitution failed
+seven original directions and six matrix directions; the column-input case
+fails two in each solver. Both still fail the required full-update gate.
+
+Canonical job/task success was verified at 14:14:17/14:14:18 UTC, attempt 0,
+task exit 0. W&B finished with logging success, attribution completed and
+candidate acceptance false. All 20 artifact sizes were verified, totaling
+78,542,301 compressed bytes; four small Jaxpr files passed SHA/gzip readback.
+The 16 large compiler files remain regional without a new SHA audit. Finelog
+has 277 samples through 14:05:59 UTC and observed host peak 96.97 GiB.
+JAX allocator peak 8,122,036,224 bytes/device is not total HBM. Log observer
+9948 ended naturally with exit 0. No experiment or queue remains; PR observer
+77099 remains the sole live PR observer. No warmed-performance, training MFU
+or checkpoint-restoration claim is made.
+
+Next is static comparison of the eight saved current optimized HLO graphs
+with their own controls and the prior replicated-input records. Verify actual
+q normalization/product widths and the first-to-second-product collective
+path; requested input placement alone does not establish those paths. Include
+failed original k/o and matrix gate/down, passing q and other groups. Review
+compiled local parameter shapes separately from global source shapes before
+reusing the external-binding checks. This is design only, with no extraction
+or new numerical submission. Any extraction must verify consumed HLO hashes
+on regional CPU, keep large HLO in us-west4, and preserve tuple/caller bindings
+and opaque limitations. Static records cannot establish runtime values,
+precision, summation order or cause.
+
+[Completed evidence](optimizer-column-input-substitution-v5e-completed.json)
+records final report SHA
+`43edf83f3b2712f43bbe74ea87a23bf9fdf9ea7b3d282869bb11f046fabf916d`.
+The [manifest](compiler-column-input-manifest.json) lists regional inputs;
+the [attribution plan](optimizer-divergence-attribution-plan.json) records the
+next design and its validation requirements.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
