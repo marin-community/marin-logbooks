@@ -447,14 +447,21 @@
       "gate": "Any later numerical control needs own online CPU logging/harness validation and published exact source before one sequential TPU diagnostic. Optimizer promotion still requires untouched original full-update all28leaves at1e-5 and measured full-training MFU after verified restore.",
       "evidence": "compiler-input-provenance-completed.json",
       "next_decision": {
-        "state": "Implemented and CPU-validated; one full-size v5e-8 diagnostic running",
+        "state": "Completed; both capture reference gates failed",
         "question": "Can a minimally instrumented full update expose q/k/v polar inputs while retaining its untouched final outputs?",
         "procedure": "Review shared gram_direction/full_update and the attribution harness for a diagnostic-only capture of pre-normalization inner matrices and normalization values using shared math. Compare every direction and updated-state leaf against the untouched original and matrix full updates respectively at fixed 1e-5 and record bitwise equality before interpreting captured values. Preserve one executable/device output bank at a time, host-offload and finite incremental reports. If capture perturbs a final reference beyond tolerance, reject original-path interpretation and retain it only as an instrumented control. Design and CPU-validate before selecting a launch.",
         "limits": "Matching entry roles does not imply equal intermediate values; capture changes compilation and matching final outputs would not prove internal identity. No precision/tiling override or optimizer promotion.",
         "launch_gate": "Own fresh online CPU logging/numerical validation and exact published source/plan before one sequential TPU diagnostic. Full optimizer acceptance remains untouched-original all28leaf 1e-5 comparison; original saved-state and full restore plus actual MFU>5% required before training schedule.",
         "plan": "optimizer-full-input-capture-plan.json",
         "preflight": "optimizer-full-input-capture-preflight.json",
-        "startup": "optimizer-full-input-capture-started.json"
+        "startup": "optimizer-full-input-capture-started.json",
+        "completion": "optimizer-full-input-capture-v5e-completed.json",
+        "next_decision": {
+          "state": "Design only; no numerical submission selected",
+          "question": "Which compiler changes accompany extra-output capture, compared with the endpoint-preserving unchanged evaluator?",
+          "procedure": "Use the six same-job optimized-HLO graphs: untouched, unchanged evaluator, and capture for each solver. Check hashes and keep large IR in us-west4; run any required extraction on regional CPU only. Reuse lineage/output-dependency helpers with explicit28-original-plus6-captured tuple-leaf mapping. Map all seven direction groups, including changed noncaptured groups, and compare product, normalization, collective, and enclosing-fusion records. Include unchanged output groups and direct-versus-evaluator pairs as controls. Verify mapping with known Jaxpr scopes and preserve repeated operands; flag unsupported calls rather than inventing semantics.",
+          "limits": "Static changes cannot establish runtime values, summation order, precision or a causal mechanism. Both capture gates failed, so do not use captured intermediates as untouched inputs. No precision/tiling intervention selected. Future numerical controls require own onlineCPU validation and published exact source before one sequentialTPU; optimizer gate remains all28leaves1e-5."
+        }
       }
     }
   }

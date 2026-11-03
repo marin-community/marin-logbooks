@@ -2719,6 +2719,46 @@ Keep the existing job and sole log observer running through the matrix branch
 and final artifacts. No additional candidate is selected. These compilation and
 single-call observations are not warmed performance or training MFU.
 
+## 2026-11-03 08:46 UTC — Both full-update captures fail reference gates
+
+The [capture diagnostic](optimizer-full-input-capture-v5e-completed.json)
+completed successfully on attempt 0 with task exit 0. All 12 stages were finite,
+12 of 18 comparisons passed at `rtol=atol=1e-5`, and all four fixed executables
+replayed bitwise. Both unchanged-program evaluators match their own untouched
+full-update references bitwise on all 28 leaves.
+
+Adding six q/k/v outputs changes the original branch's v_proj, o_proj and
+up_proj directions beyond tolerance, as recorded above. It also changes the
+matrix branch's k_proj and down_proj directions beyond tolerance, with relative
+Frobenius errors 0.006667 and 0.027983 against that branch's untouched reference.
+All 21 updated state leaves pass in both captures, but the matrix capture changes
+the down_proj left Gram by a maximum absolute elementwise error of
+1.7764e-15. Both capture reference gates fail.
+
+The six captured inner matrices and normalization denominators pass cross-solver
+tolerance checks but are not bitwise equal. Those are values from altered,
+instrumented computations; they cannot establish the values inside the untouched
+full updates. The untouched matrix-versus-original comparison again fails all
+seven directions while passing all 21 state leaves. Collection success does not
+accept an optimization or explain the full numerical discrepancy.
+
+Online W&B finished with `attribution_completed=1` and
+`candidate_accepted_for_training=false`. All 14 artifact objects are present with
+matching reported sizes, totaling 58,908,027 compressed bytes. The two small
+Jaxpr files passed SHA256 and decompression readback; the twelve compiler files
+remain regional and have not received a new checksum readback audit. Finelog
+recorded 370 samples through 08:45:01 UTC and an observed host peak of
+106.399 GiB. The JAX allocator peak was 8,218,514,432 bytes per device, which is
+not total HBM. These calls do not measure warmed performance or training MFU.
+
+The log observer ended naturally. No experiment or queue remains active. The
+next step is static comparison of the six saved compiler graphs: untouched,
+unchanged evaluator and capture, for each solver. Compare changed and unchanged
+direction groups using output dependencies, preserving tuple-leaf associations;
+keep large files in us-west4 and use CPU extraction if needed. Static differences
+will not establish runtime values or cause. No new numerical submission,
+precision override or tiling intervention is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
