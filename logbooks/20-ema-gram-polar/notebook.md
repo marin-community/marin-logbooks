@@ -4578,6 +4578,12 @@ The [prepared check](saved-state-check-prepared.json) uses one v4-32 slice spann
 The full model/optimizer/step/PRNG restore and configured-stream replay were independently verified by the preceding four-host audit. This additional selective check does not re-establish full restoration and executes no training update. Its compilation-inclusive timings are diagnostic execution times, not steady training throughput. Full-training memory/finite validation and the sequential matched-loss comparison remain outstanding. The final training counter stays 7630, with numerical differences retained as diagnostics.
 
 
+### November 3, 22:14 UTC — saved-state optimizer diagnostic accepted
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-saved-state-loss-check-v4-32-20261103` at 22:14:45 UTC from published source `ed8267a07bd24d3aae3b4eb8a27d762be23e5a98`. Script SHA256 is `85282a7288a1705c296862994c1fa5f93eef2d80d77a5592f39d123108325696`. The [submission record](saved-state-check-submitted.json) preserves the four-host v4-32 resources, regional output prefix and sole follow observer, session 51428. Canonical job/task checks at 22:17:02–11 UTC found all four tasks pending with no attempts, failures or preemptions. The first check followed the requested two-minute wait. The next routine check is no earlier than 22:26:41 UTC. Acceptance does not establish execution success; all four finite-output/immutability reports remain required.
+
+This is the sole active compute job. It runs unchanged-state direction and fixed-synthetic-gradient optimizer checks without training or checkpoint advancement. Numerical-equivalence failures are recorded diagnostics. All prior jobs and follows are terminal, and PR monitoring remains handed off.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

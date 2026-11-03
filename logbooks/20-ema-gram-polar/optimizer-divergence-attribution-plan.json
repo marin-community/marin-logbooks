@@ -221,7 +221,7 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "state": "Full restore verified; saved-state diagnostic own logging/CPU validation passed, regional execution prepared",
+    "state": "Full restore verified; one regional saved-state diagnostic accepted; no training",
     "user_direction": "Comparable loss is the practical criterion. Strict numerical equivalence is diagnostic and is no longer a sole training-launch blocker.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
     "procedure": "Prepare original-versus-candidate paired training with the same model, global batch8, data order, seed, hyperparameters and initialization or verified full checkpoint/data-position restore. Preserve original7630step schedule and all operational constraints. Compare training/validation loss at matched steps and progress per measured wall-clock time. Quantify variability and loss gap; no acceptable loss margin has been specified.",
@@ -229,7 +229,7 @@
     "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
     "prepared_configurations": "loss-pair-prepared.json",
     "validation": "loss-pair-preparation-validation.json",
-    "active_job": null,
+    "active_job": "/kaiyuew@stanford.edu/ema-gram-20-saved-state-loss-check-v4-32-20261103",
     "paired_host_memory": "Both prepared training variants now256GiB per host; only resource RAM changed; neither submitted",
     "restore_failure": "full-restore-failed.json",
     "counter_validation": "full-restore-counter-validation.json",
@@ -242,7 +242,8 @@
     ],
     "full_restore_completion": "full-restore-counter-completed.json",
     "saved_state_preparation": "saved-state-check-prepared.json",
-    "saved_state_validation": "saved-state-check-validation.json"
+    "saved_state_validation": "saved-state-check-validation.json",
+    "saved_state_submission": "saved-state-check-submitted.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",
