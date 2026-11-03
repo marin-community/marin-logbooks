@@ -498,7 +498,7 @@
                   "started": "optimizer-single-inner-capture-started.json",
                   "completed": "optimizer-single-inner-capture-v5e-completed.json",
                   "next_decision": {
-                    "state": "One pairedinputTPUdiagnosticrunning; original28leafgate passes1e-5 notbitwise; matrixbranchpending; no furthercandidate",
+                    "state": "Completed; both28leaf reference gates pass1e-5 notbitwise; no active experiment",
                     "question": "Can the existing q_proj inner matrix and norm-plus-epsilon denominator be captured together under passing full-update reference gates?",
                     "basis": "Separate single-inner and single-denominator captures pass both28leaf own-reference gates. Their measurements come from different executables and cannot be combined into one hidden-path claim. Six-output qkv capture failed its reference gates.",
                     "procedure": "Extend shared capture_program to append exactly the two existing q_proj division input variables, inner then denominator, preserving every source equation/input/constant and original28outputs. Total30leaves; full11x1024x1024FP32 inner and11x1x1FP32 denominator. Bothsolvers: untouchedfull_update,unchanged evaluator,pairedcapture on identicalfingerprintedinputs; compileonce/replay and all28leafown-reference/evaluator comparisons fixedrtol=atol=1e-5 plusbitwise. Record bothreferencegates for each crosssolver capturedvalue comparison. No crossfeed, recomputation, added source arithmetic or optimizer intervention.",
@@ -509,7 +509,19 @@
                     "implementation": "optimizer-paired-input-capture-plan.json",
                     "preflight": "optimizer-paired-input-capture-preflight.json",
                     "started": "optimizer-paired-input-capture-started.json",
-                    "partial": "optimizer-paired-input-capture-partial.json"
+                    "partial": "optimizer-paired-input-capture-partial.json",
+                    "completed": "optimizer-paired-input-capture-v5e-completed.json",
+                    "next_decision": {
+                      "state": "Design only; not implemented or submitted",
+                      "question": "Under a fixed full-update executable, how much does replacing q_proj normalization numerator, denominator, or both change its final direction?",
+                      "basis": "Paired capture passes both full-update28leaf gates at1e-5. gram_direction also applies left/right Gram powers after polar, so an isolated polar endpoint is not the full direction reference.",
+                      "procedure": "Review a Jaxpr-based full-update evaluator that replaces only the two operand uses at the uniquely mapped q_proj normalization division with external paired banks. Keep every other equation, input, constant, operand use and original28output leaves unchanged; do not overwrite the numerator variable globally. Preserve exact division primitive/parameters and downstream association. For each solver, compile one substitution executable and run all four original/matrix numerator-denominator combinations on the same fingerprinted original full-update input bank. Compile once and replay identical banks bitwise. No source precision, tiling or math override.",
+                      "gates": "Recapture both paired banks in the same fresh process with untouched and unchanged-evaluator references and all28leaf1e-5+bitwise gates. Before any crossfeed interpretation, require each substitution executable supplied with its own captured pair to match its own untouched28leaf reference at1e-5; record bitwise status and comparison against its paired-capture outputs. A failed capture or same-bank substitution gate forbids original-path interpretation. Keep failed diagnostics and all attempts. No full-cause claim even when gates pass.",
+                      "measurements": "For each fixed solver executable compare numerator-only, denominator-only and both substitutions against its own-pair output, with explicit reference denominators in relative Frobenius errors. Check all28leaves, separately reporting q direction and other directions/state. Compare fixed-executable results across solvers only as conditional evidence. Reusing compiled executables does not establish untouched internal identity.",
+                      "validation": "Own fresh online CPU logging check and numerical harness validation before kernels; current paired-capture regression; fixtures for exact operand-use replacement, repeated uses, output order/shapes, non-q equations and missing/ambiguous-target rejection. Publish exact source/plan before ONE sequential TPU diagnostic. CPU validation does not prove TPU behavior.",
+                      "memory": "One executable/device input-output bank at a time; host-offload paired banks and reference outputs; cache clear between executables, finite incremental reports. Full11x1024x1024FP32 inner and11x1x1FP32 denominator. Large HLO remains us-west4.",
+                      "constraints": "FullGram/everyupdate/originalmodel/globalbatch8/7630steps/sourceprecision/fixedrtol=atol=1e-5; defaultpreemptionretries/allattempts/no wallclocklimits/no concurrentcandidate. This is a conditional diagnostic, not an optimizer candidate. Training and optimizer acceptance gates unchanged."
+                    }
                   }
                 }
               }

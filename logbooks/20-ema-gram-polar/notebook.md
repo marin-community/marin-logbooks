@@ -3299,6 +3299,56 @@ log observer through the matrix branch; no concurrent candidate is selected.
 report snapshot and canonical running state verified at 11:29:31 UTC. Sole
 experiment log observer 39235 and PR observer 77099 remain active.
 
+## 2026-11-03 11:46 UTC — Paired capture completes with both reference gates passing
+
+The paired q_proj capture completed successfully on attempt 0. Both solvers'
+30-leaf captures pass their own untouched full-update references on all 28
+original leaves at rtol=atol=1e-5, but neither is bitwise identical. The original
+capture has nonzero measured error only in v_proj (maximum absolute error
+8.94070e-8). The matrix capture has nonzero measured error in q_proj, k_proj and
+v_proj (at most 1.04308e-7). Zero measured error on the remaining leaves does not
+establish per-leaf bitwise equality. Both unchanged evaluators match their own
+untouched references bitwise, and all four fixed executables replay bitwise.
+
+The numerator and denominator now come from the same capture executable for
+each solver. Both cross-solver value comparisons pass tolerance but are not
+bitwise equal: numerator maximum absolute error is 1.55183e-11 and relative
+Frobenius error is 5.79009e-6; denominator errors are 2.91038e-10 and 2.65090e-7.
+Each relative error uses the corresponding original-solver captured value as
+its reference. These measurements do not establish untouched internal identity
+or either operand's causal contribution to the optimizer discrepancy.
+
+All 12 stages are finite and 12 of 14 comparisons pass. The two failures compare
+matrix against original full updates, once untouched and once captured; each
+fails all seven directions while all 21 state leaves pass. No optimization,
+warmed performance, training MFU or checkpoint-resume result is accepted.
+
+Canonical job and task status were verified terminal SUCCEEDED, exit 0, at
+11:41:39 UTC. Online W&B finished with attribution completed and candidate
+acceptance false. All 14 artifact sizes were verified (58,899,076 compressed
+bytes), as were SHA and gzip readbacks for the two small Jaxpr files. The 12
+large compiler files remain in us-west4 without a new SHA audit. Finelog records
+206 samples through 11:40:17 UTC and an observed host-memory peak of 98.56 GiB.
+Accelerator-memory telemetry is null; the JAX allocator peak of 8,122,036,224
+bytes per device is not total HBM. The sole experiment log ended naturally with
+exit 0; no experiment or queue remains. PR observer 77099 remains the sole live
+PR observer.
+
+The next step is design review of a conditional full-update substitution
+control. It would replace only the operand uses at q_proj's existing
+normalization division, retaining the outer Gram-power multiplications and
+all other equations. For each solver, one fixed executable would test the four
+original/matrix numerator-denominator combinations. Each substitution executable, supplied with its own solver's captured pair,
+must first match all 28 untouched reference outputs at rtol=atol=1e-5; failed
+agreement forbids original-path interpretation. Fresh paired captures, online CPU validation,
+operand-use preservation checks and published exact source are required before
+one sequential TPU diagnostic. This control is not implemented or submitted.
+
+[Completed evidence](optimizer-paired-input-capture-v5e-completed.json) records
+report SHA `499b25a92d4a2cd43d9f10e3f3dcfe79b8278bb9374ba70f8074e1e417d6c993`.
+The [attribution plan](optimizer-divergence-attribution-plan.json) records the
+proposed control and its interpretation gates.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
