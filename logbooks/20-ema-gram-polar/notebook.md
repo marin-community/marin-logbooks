@@ -4427,6 +4427,12 @@ The next static decision is to inspect the 28 declared operands of those fourtee
 
 No experiment, queue or observer is active. All old jobs remain terminal and PR monitoring remains handed off. The research heartbeat stays active.
 
+### November 3, 20:15 UTC — inspect reconciled product gaps (static preflight)
+
+The [reconciled coverage](compiler-reconciled-coverage-summary.json) identifies fourteen products with twenty-eight uncovered operands per matrix graph. The [selector](trace_remaining_products.py) joins exact saved output dependencies to caller/instruction identities, verifies thirteen polar roles and selects the remaining nonpolar `gram_direction` product through its o iteration-2 dependency. It rejects missing, duplicate, wrong-context, wrong-role, wrong-projection and already-covered targets. Target selection is invariant to report and frontier order.
+
+All twenty bounded input hashes/sizes and available graph HLO identity joins passed. Thirteen required computation bodies per graph are absent locally. The [plan](compiler-remaining-products-plan.json), [manifest](compiler-remaining-products-manifest.json) and [preflight validation](compiler-remaining-products-validation.json) specify one CPU-only us-west4 extraction after exact source publication. Verify each HLO hash/size regionally before parsing; use default preemption and no wall-clock limits. Reuse the existing product-operand tracer and comparator, preserve passing up/o and paired-capture controls, and keep all original opaque outputs opaque. Both full numerical gates remain failed; no numerical intervention is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
