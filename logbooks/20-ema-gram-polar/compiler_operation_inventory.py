@@ -88,6 +88,7 @@ def polar_lineage(lines, groups, diagnostics=None):
     if diagnostics is None:
         diagnostics = {}
     diagnostics["entry_instructions"] = []
+    diagnostics["entry_collective_inputs"] = []
     summaries, nodes, events = {}, {}, {}
     scope, root, entry = None, None, None
     for line in lines:
@@ -111,6 +112,18 @@ def polar_lineage(lines, groups, diagnostics=None):
             diagnostics["entry_instructions"].append(line.rstrip().split(", backend_config=", 1)[0])
         arguments = [nodes[key] for key in OPERAND.findall(operands)]
         deps = frozenset().union(*(dependency_leaves(arg) for arg in arguments))
+        if scope == entry and opcode in ("all-reduce", "reduce-scatter", "all-gather"):
+            diagnostics["entry_collective_inputs"].append(
+                dict(
+                    name=name,
+                    opcode=opcode,
+                    operands=OPERAND.findall(operands),
+                    polar_ancestors_by_operand=[
+                        sorted(token for token in dependency_leaves(arg) if isinstance(token, str)) for arg in arguments
+                    ],
+                    instruction=line.rstrip(),
+                )
+            )
         if opcode == "parameter":
             deps = shaped_dependencies(shape, lambda path, index=int(operands): frozenset({ParameterLeaf(index, path)}))
         elif opcode == "tuple":
@@ -213,6 +226,7 @@ def inventory(lines):
     """Retain direct producers of tagged polar and Gram-refresh matrix operations."""
     counts = Counter()
     operations = []
+    fusion_callers, selected_scopes = [], set()
     nodes, selected = {}, []
     scope, total_lines = None, 0
     for number, line in enumerate(lines, 1):
@@ -222,6 +236,8 @@ def inventory(lines):
             assert not nodes, "Unclosed computation"
             scope = header[1]
         if line.strip() == "}":
+            if selected:
+                selected_scopes.add(scope)
             for node in selected:
                 node["direct_operand_producers"] = [
                     {k: nodes[name][k] for k in ("name", "shape", "opcode", "calls")} for name in node["operands"]
@@ -240,6 +256,14 @@ def inventory(lines):
         call = CALLS.search(attributes)
         node = dict(name=name, shape=shape, opcode=opcode, calls=call[1] if call else None)
         nodes[name] = node
+        config = attributes.split(", backend_config=", 1)
+        captured_attributes = dict(
+            attributes=config[0], backend_config=json.loads(config[1]) if len(config) == 2 else None
+        )
+        if opcode == "fusion" and call and call[1] in selected_scopes:
+            fusion_callers.append(
+                dict(**node, computation=scope, operands=OPERAND.findall(operands), **captured_attributes)
+            )
         metadata = OP_NAME.search(attributes)
         if metadata is None:
             continue
@@ -259,10 +283,13 @@ def inventory(lines):
                     op_name=op_name,
                     stack_frame_id=int(frame[1]) if frame else None,
                     operands=OPERAND.findall(operands),
+                    **captured_attributes,
                 )
             )
     assert not nodes, "Incomplete compiler text"
-    return dict(lines=total_lines, static_counts=dict(counts), selected_operations=operations)
+    return dict(
+        lines=total_lines, static_counts=dict(counts), selected_operations=operations, fusion_callers=fusion_callers
+    )
 
 
 def main():
@@ -288,7 +315,10 @@ def main():
             compressed = Path(directory) / (name + ".txt.gz")
             digest = hashlib.sha256()
             size = 0
-            with StoragePath(artifact["uri"]).open("rb", requests_timeout=60) as source, compressed.open("wb") as target:
+            with (
+                StoragePath(artifact["uri"]).open("rb", requests_timeout=60) as source,
+                compressed.open("wb") as target,
+            ):
                 while chunk := source.read(1024 * 1024):
                     digest.update(chunk)
                     size += len(chunk)

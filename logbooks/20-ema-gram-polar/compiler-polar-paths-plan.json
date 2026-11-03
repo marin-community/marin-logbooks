@@ -1,0 +1,68 @@
+{
+  "purpose": "Map entry collective operands to validated polar groups/iterations; retain tagged operation attributes and calling-fusion backend configurations to compare reduction paths. Static CPU-only analysis.",
+  "source_report_sha256": "437dad736cb8b5d9fe3578980c13e9a229fd2a6618e60cfa1135c680d7ecb224",
+  "required_region": "us-west4",
+  "artifacts": {
+    "fused_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_original.optimized_hlo.txt.gz",
+      "sha256": "f323476e7f76fdb8ecf7398a72dfc4b2acd44ff5034155f610143bd1a249f93d",
+      "compressed_bytes": 10060125
+    },
+    "fused_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662
+    },
+    "direction_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__original.optimized_hlo.txt.gz",
+      "sha256": "9d267db9dbe0557551c380374b77d190a9f334bc8f059248c7733eb609dcbce3",
+      "compressed_bytes": 9695356
+    },
+    "direction_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__matrix.optimized_hlo.txt.gz",
+      "sha256": "37ef4c2aa848bed2e9580db0674f8b61d3c7296bae0f2f0b23076ca92d46c1fb",
+      "compressed_bytes": 9387612
+    }
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-paths",
+  "execution": {
+    "job_name": "ema-gram-20-polar-paths-cpu-20261103",
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default",
+    "output_identity": "Fresh UUID per process, preserving retry outputs",
+    "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-paths-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT <published-commit> -- python logbooks/20-ema-gram-polar/compiler_operation_inventory.py --manifest logbooks/20-ema-gram-polar/compiler-polar-paths-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-paths"
+  },
+  "analysis": "polar-lineage",
+  "groups": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "preflight": {
+    "script_sha256": "b262354c0a13920ce000b84473f47d29fd453420f2ca1c23242be5138ba34c95",
+    "report_sha256": "73dad144b3549d31d099721c2e6cfbb58779680226c183337defb78ea9cab0df",
+    "full_cli_passed": true,
+    "fixtures": [
+      "isolated query pair/reversed outputs",
+      "tuple-valued fusion parameter",
+      "combined allreduce outputs"
+    ],
+    "collective_check": "Two combined-allreduce operands retain exactly their distinct15mappedpolar ancestors",
+    "capture_check": "35selectedoperation attributes;31callingfusion records,26withbackendconfig in syntheticcombinedfixture; absentconfig preserved asnull",
+    "gate": "Existing15products/group,totalchain and uniquegroups unchanged"
+  },
+  "limitations": "Static attributes, combined reduction grouping and backend configuration cannot establish actual reduction order, upstream input equality or numerical causality. No optimizer math, precision, tolerance or runtime changes.",
+  "inspection_evidence": "compiler-ir-slices-completed.json",
+  "semantics_reference": "https://openxla.org/xla/operation_semantics#allreduce",
+  "prior_mapping": "compiler-polar-lineage-collectives-completed.json"
+}
