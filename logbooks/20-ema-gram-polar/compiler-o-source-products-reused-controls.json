@@ -1,0 +1,1274 @@
+{
+  "input": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.remaining-products/remaining-products-bde07d7fe661/report.json",
+    "bytes": 1476105,
+    "sha256": "32d2b7430a01c09bdf1ecbd4d0f2e6a9fac02c9dbbec567143f2bdb6641c511c",
+    "path": "scratch/20261103-remaining-products-report.json"
+  },
+  "graphs": {
+    "matrix_untouched": {
+      "down_proj/polar/3/scaled_A_A/0": {
+        "normalized_signature": "01d2964c176204a427338b0abd3c01a13510e65e87340e474b65c5d514e55e5d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13948",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/3/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114172",
+              "context": [
+                "main.530_spmd/async-collective-done.44"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13357",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13946",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114193",
+              "context": [
+                "main.530_spmd/async-collective-done.50"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13381",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13904",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114176",
+              "context": [
+                "main.530_spmd/async-collective-done.45"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13361",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "f3cba4cb81280bb7ba71b8dd7afa6234a02a75ef5eb7ce7436ff30a3efbcda12",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144998",
+              "context": [
+                "main.530_spmd/fusion.144998"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.643",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114186",
+              "context": [
+                "main.530_spmd/async-collective-done.48"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13373",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13896",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114197",
+              "context": [
+                "main.530_spmd/async-collective-done.51"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13385",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "47c857254b8b7c7ef2d9915ad4e957cf06dcf37d8072b1d1ceda8b9f2cc24d18",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145065",
+              "context": [
+                "main.530_spmd/fusion.145065"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.659",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "6eef6d60b235a3d13ae971fd6ca8e4a436f5ca8a30683b134357054f19c027ce",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114209",
+              "context": [
+                "main.530_spmd/async-collective-done.54"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13397",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "8dd7bbb7e96ca5bf4b0f161fb490a164321a5a8fcd6e994a50c6ed3f79dc69aa",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13942",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114216",
+              "context": [
+                "main.530_spmd/async-collective-done.56"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13405",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_evaluate": {
+      "down_proj/polar/3/scaled_A_A/0": {
+        "normalized_signature": "01d2964c176204a427338b0abd3c01a13510e65e87340e474b65c5d514e55e5d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13948",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/3/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114172",
+              "context": [
+                "main.530_spmd/async-collective-done.44"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13357",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13946",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114193",
+              "context": [
+                "main.530_spmd/async-collective-done.50"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13381",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13904",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114176",
+              "context": [
+                "main.530_spmd/async-collective-done.45"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13361",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "f3cba4cb81280bb7ba71b8dd7afa6234a02a75ef5eb7ce7436ff30a3efbcda12",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144998",
+              "context": [
+                "main.530_spmd/fusion.144998"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.643",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114186",
+              "context": [
+                "main.530_spmd/async-collective-done.48"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13373",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13896",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114197",
+              "context": [
+                "main.530_spmd/async-collective-done.51"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13385",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "47c857254b8b7c7ef2d9915ad4e957cf06dcf37d8072b1d1ceda8b9f2cc24d18",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145065",
+              "context": [
+                "main.530_spmd/fusion.145065"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.659",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "6eef6d60b235a3d13ae971fd6ca8e4a436f5ca8a30683b134357054f19c027ce",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114209",
+              "context": [
+                "main.530_spmd/async-collective-done.54"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13397",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "8dd7bbb7e96ca5bf4b0f161fb490a164321a5a8fcd6e994a50c6ed3f79dc69aa",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13942",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114216",
+              "context": [
+                "main.530_spmd/async-collective-done.56"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13405",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_capture": {
+      "down_proj/polar/3/scaled_A_A/0": {
+        "normalized_signature": "01d2964c176204a427338b0abd3c01a13510e65e87340e474b65c5d514e55e5d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13951",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/3/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114173",
+              "context": [
+                "main.530_spmd/async-collective-done.44"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13357",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13949",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114194",
+              "context": [
+                "main.530_spmd/async-collective-done.50"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13381",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13904",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-done.45"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13361",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "f3cba4cb81280bb7ba71b8dd7afa6234a02a75ef5eb7ce7436ff30a3efbcda12",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144999",
+              "context": [
+                "main.530_spmd/fusion.144999"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.643",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114187",
+              "context": [
+                "main.530_spmd/async-collective-done.48"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13373",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13896",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114198",
+              "context": [
+                "main.530_spmd/async-collective-done.51"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13385",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "47c857254b8b7c7ef2d9915ad4e957cf06dcf37d8072b1d1ceda8b9f2cc24d18",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145066",
+              "context": [
+                "main.530_spmd/fusion.145066"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.659",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "6eef6d60b235a3d13ae971fd6ca8e4a436f5ca8a30683b134357054f19c027ce",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114210",
+              "context": [
+                "main.530_spmd/async-collective-done.54"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13397",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "8dd7bbb7e96ca5bf4b0f161fb490a164321a5a8fcd6e994a50c6ed3f79dc69aa",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13945",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114217",
+              "context": [
+                "main.530_spmd/async-collective-done.56"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13405",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_substitute": {
+      "down_proj/polar/3/scaled_A_A/0": {
+        "normalized_signature": "01d2964c176204a427338b0abd3c01a13510e65e87340e474b65c5d514e55e5d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13964",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/3/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114174",
+              "context": [
+                "main.529_spmd/async-collective-done.48"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13373",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13962",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114195",
+              "context": [
+                "main.529_spmd/async-collective-done.54"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13397",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13923",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.529_spmd/async-collective-done.49"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13377",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "f3cba4cb81280bb7ba71b8dd7afa6234a02a75ef5eb7ce7436ff30a3efbcda12",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144986",
+              "context": [
+                "main.529_spmd/fusion.144986"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.633",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114188",
+              "context": [
+                "main.529_spmd/async-collective-done.52"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13389",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/0": {
+        "normalized_signature": "8e041badc43aaffb4b1a46b1088179a975292a9bc8669f6eae5ea73f284f2b83",
+        "same_normalized_signature_as_untouched": true,
+        "records": 5,
+        "edges": 4,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13915",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/X_Xt/1": {
+        "normalized_signature": "d4352933848f053c427891345db4bc462c93c9d1552c0ac4228393e0efc036e8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114199",
+              "context": [
+                "main.529_spmd/async-collective-done.55"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13401",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "47c857254b8b7c7ef2d9915ad4e957cf06dcf37d8072b1d1ceda8b9f2cc24d18",
+        "same_normalized_signature_as_untouched": true,
+        "records": 10,
+        "edges": 9,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145053",
+              "context": [
+                "main.529_spmd/fusion.145053"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.649",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "gate_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "6eef6d60b235a3d13ae971fd6ca8e4a436f5ca8a30683b134357054f19c027ce",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114211",
+              "context": [
+                "main.529_spmd/async-collective-done.58"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13413",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/0": {
+        "normalized_signature": "8dd7bbb7e96ca5bf4b0f161fb490a164321a5a8fcd6e994a50c6ed3f79dc69aa",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13958",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/5/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114218",
+              "context": [
+                "main.529_spmd/async-collective-done.60"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13421",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

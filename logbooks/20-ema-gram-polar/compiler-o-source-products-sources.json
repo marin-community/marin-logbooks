@@ -1,0 +1,1392 @@
+{
+  "matrix_untouched": {
+    "o_proj/polar/1/X_Xt/0": [
+      {
+        "node": 9,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13989",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2208",
+            "slice-done.2209",
+            "slice-done.2210",
+            "slice-done.2211"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13989 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2208, %slice-done.2209, %slice-done.2210, %slice-done.2211), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 25,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=63}",
+        "record": {
+          "computation": "async_collective_fusion.144627",
+          "context": [
+            "main.530_spmd/fusion.144627"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.545",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144631",
+            "fusion.144630"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=63}",
+          "instruction": "%convolution-base-dilated.545 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144631, %fusion.144630), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=63}"
+        }
+      }
+    ],
+    "o_proj/polar/1/X_Xt/1": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114078",
+          "context": [
+            "main.530_spmd/async-collective-done.17"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13249",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328614",
+            "param_1.318517",
+            "all-gather.868",
+            "param_2.241330",
+            "param_3.121849",
+            "param_4.73256",
+            "param_5.31002",
+            "param_6.13854",
+            "param_7.6018",
+            "param_8.2705"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13249 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.328614, %param_1.318517, %all-gather.868, %param_2.241330, %param_3.121849, /*index=5*/%param_4.73256, %param_5.31002, %param_6.13854, %param_7.6018, %param_8.2705), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/0": [
+      {
+        "node": 7,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+        "record": {
+          "computation": "async_collective_fusion.144716",
+          "context": [
+            "main.530_spmd/fusion.144716"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.577",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144720",
+            "fusion.144719"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "instruction": "%convolution-base-dilated.577 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144720, %fusion.144719), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/1": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114085",
+          "context": [
+            "main.530_spmd/async-collective-done.19"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13257",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328634",
+            "param_1.318529",
+            "all-gather.882",
+            "param_2.241344",
+            "param_3.121863",
+            "param_4.73270",
+            "param_5.31016",
+            "param_6.13868",
+            "param_7.6032",
+            "param_8.2719"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13257 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.328634, %param_1.318529, %all-gather.882, %param_2.241344, %param_3.121863, /*index=5*/%param_4.73270, %param_5.31016, %param_6.13868, %param_7.6032, %param_8.2719), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/0": [
+      {
+        "node": 55,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13980",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2172",
+            "slice-done.2173",
+            "slice-done.2174",
+            "slice-done.2175"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13980 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2172, %slice-done.2173, %slice-done.2174, %slice-done.2175), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 59,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+        "record": {
+          "computation": "async_collective_fusion.144345",
+          "context": [
+            "main.530_spmd/fusion.144345"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.427",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144349",
+            "fusion.144348"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+          "instruction": "%convolution-base-dilated.427 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144349, %fusion.144348), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+        }
+      },
+      {
+        "node": 77,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=57}",
+        "record": {
+          "computation": "async_collective_fusion.144617",
+          "context": [
+            "main.530_spmd/fusion.144617"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.541",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144621",
+            "fusion.144620"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=57}",
+          "instruction": "%convolution-base-dilated.541 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144621, %fusion.144620), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=57}"
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13869",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1788",
+            "slice-done.1789",
+            "slice-done.1790",
+            "slice-done.1791"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13869 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1788, %slice-done.1789, %slice-done.1790, %slice-done.1791), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/0": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13876",
+          "shape": "f32[16,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1816",
+            "slice-done.1817",
+            "slice-done.1818",
+            "slice-done.1819"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13876 = f32[16,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1816, %slice-done.1817, %slice-done.1818, %slice-done.1819), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 23,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            1
+          ],
+          "name": "while.1969",
+          "shape": "(s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+          "opcode": "while",
+          "operands": [
+            "tuple.25180"
+          ],
+          "parameter_index": null,
+          "attributes": ", condition=%wide.region_172.209_spmd, body=%wide.region_171.208_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=12}",
+          "instruction": "%while.1969 = (s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25180), condition=%wide.region_172.209_spmd, body=%wide.region_171.208_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=12}"
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13876",
+          "shape": "f32[16,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1816",
+            "slice-done.1817",
+            "slice-done.1818",
+            "slice-done.1819"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13876 = f32[16,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1816, %slice-done.1817, %slice-done.1818, %slice-done.1819), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/0": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13917",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1958",
+            "slice-done.1959",
+            "slice-done.1960",
+            "slice-done.1961"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13917 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1958, %slice-done.1959, %slice-done.1960, %slice-done.1961), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13917",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1958",
+            "slice-done.1959",
+            "slice-done.1960",
+            "slice-done.1961"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13917 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1958, %slice-done.1959, %slice-done.1960, %slice-done.1961), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ]
+  },
+  "matrix_evaluate": {
+    "o_proj/polar/1/X_Xt/0": [
+      {
+        "node": 9,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13989",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2208",
+            "slice-done.2209",
+            "slice-done.2210",
+            "slice-done.2211"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13989 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2208, %slice-done.2209, %slice-done.2210, %slice-done.2211), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 25,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=64}",
+        "record": {
+          "computation": "async_collective_fusion.144627",
+          "context": [
+            "main.530_spmd/fusion.144627"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.545",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144631",
+            "fusion.144630"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=64}",
+          "instruction": "%convolution-base-dilated.545 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144631, %fusion.144630), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=64}"
+        }
+      }
+    ],
+    "o_proj/polar/1/X_Xt/1": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114078",
+          "context": [
+            "main.530_spmd/async-collective-done.17"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13249",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328614",
+            "param_1.318517",
+            "all-gather.868",
+            "param_2.241330",
+            "param_3.121849",
+            "param_4.73256",
+            "param_5.31002",
+            "param_6.13854",
+            "param_7.6018",
+            "param_8.2705"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13249 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.328614, %param_1.318517, %all-gather.868, %param_2.241330, %param_3.121849, /*index=5*/%param_4.73256, %param_5.31002, %param_6.13854, %param_7.6018, %param_8.2705), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/0": [
+      {
+        "node": 7,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+        "record": {
+          "computation": "async_collective_fusion.144716",
+          "context": [
+            "main.530_spmd/fusion.144716"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.577",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144720",
+            "fusion.144719"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%convolution-base-dilated.577 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144720, %fusion.144719), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/1": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114085",
+          "context": [
+            "main.530_spmd/async-collective-done.19"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13257",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328634",
+            "param_1.318529",
+            "all-gather.882",
+            "param_2.241344",
+            "param_3.121863",
+            "param_4.73270",
+            "param_5.31016",
+            "param_6.13868",
+            "param_7.6032",
+            "param_8.2719"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13257 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.328634, %param_1.318529, %all-gather.882, %param_2.241344, %param_3.121863, /*index=5*/%param_4.73270, %param_5.31016, %param_6.13868, %param_7.6032, %param_8.2719), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/0": [
+      {
+        "node": 55,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13980",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2172",
+            "slice-done.2173",
+            "slice-done.2174",
+            "slice-done.2175"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13980 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2172, %slice-done.2173, %slice-done.2174, %slice-done.2175), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 59,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+        "record": {
+          "computation": "async_collective_fusion.144345",
+          "context": [
+            "main.530_spmd/fusion.144345"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.427",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144349",
+            "fusion.144348"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+          "instruction": "%convolution-base-dilated.427 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144349, %fusion.144348), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+        }
+      },
+      {
+        "node": 77,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+        "record": {
+          "computation": "async_collective_fusion.144617",
+          "context": [
+            "main.530_spmd/fusion.144617"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.541",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144621",
+            "fusion.144620"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+          "instruction": "%convolution-base-dilated.541 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144621, %fusion.144620), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}"
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13869",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1788",
+            "slice-done.1789",
+            "slice-done.1790",
+            "slice-done.1791"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13869 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1788, %slice-done.1789, %slice-done.1790, %slice-done.1791), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/0": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13876",
+          "shape": "f32[16,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1816",
+            "slice-done.1817",
+            "slice-done.1818",
+            "slice-done.1819"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13876 = f32[16,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1816, %slice-done.1817, %slice-done.1818, %slice-done.1819), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 23,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            1
+          ],
+          "name": "while.1969",
+          "shape": "(s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+          "opcode": "while",
+          "operands": [
+            "tuple.25180"
+          ],
+          "parameter_index": null,
+          "attributes": ", condition=%wide.region_172.209_spmd, body=%wide.region_171.208_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=13}",
+          "instruction": "%while.1969 = (s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25180), condition=%wide.region_172.209_spmd, body=%wide.region_171.208_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=13}"
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13876",
+          "shape": "f32[16,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1816",
+            "slice-done.1817",
+            "slice-done.1818",
+            "slice-done.1819"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13876 = f32[16,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1816, %slice-done.1817, %slice-done.1818, %slice-done.1819), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/0": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13917",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1958",
+            "slice-done.1959",
+            "slice-done.1960",
+            "slice-done.1961"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13917 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1958, %slice-done.1959, %slice-done.1960, %slice-done.1961), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13917",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1958",
+            "slice-done.1959",
+            "slice-done.1960",
+            "slice-done.1961"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13917 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1958, %slice-done.1959, %slice-done.1960, %slice-done.1961), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ]
+  },
+  "matrix_capture": {
+    "o_proj/polar/1/X_Xt/0": [
+      {
+        "node": 9,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13991",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2220",
+            "slice-done.2221",
+            "slice-done.2222",
+            "slice-done.2223"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13991 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2220, %slice-done.2221, %slice-done.2222, %slice-done.2223), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 25,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=64}",
+        "record": {
+          "computation": "async_collective_fusion.144642",
+          "context": [
+            "main.530_spmd/fusion.144642"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.551",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144646",
+            "fusion.144645"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=64}",
+          "instruction": "%convolution-base-dilated.551 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144646, %fusion.144645), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=64}"
+        }
+      }
+    ],
+    "o_proj/polar/1/X_Xt/1": [
+      {
+        "node": 11,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13991",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2220",
+            "slice-done.2221",
+            "slice-done.2222",
+            "slice-done.2223"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13991 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2220, %slice-done.2221, %slice-done.2222, %slice-done.2223), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 27,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=64}",
+        "record": {
+          "computation": "async_collective_fusion.144642",
+          "context": [
+            "main.530_spmd/fusion.144642"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.551",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144646",
+            "fusion.144645"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=64}",
+          "instruction": "%convolution-base-dilated.551 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144646, %fusion.144645), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=64}"
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/0": [
+      {
+        "node": 7,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+        "record": {
+          "computation": "async_collective_fusion.144717",
+          "context": [
+            "main.530_spmd/fusion.144717"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.577",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144721",
+            "fusion.144720"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%convolution-base-dilated.577 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144721, %fusion.144720), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/1": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114086",
+          "context": [
+            "main.530_spmd/async-collective-done.19"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13257",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328638",
+            "param_1.318532",
+            "all-gather.887",
+            "param_2.241346",
+            "param_3.121863",
+            "param_4.73270",
+            "param_5.31016",
+            "param_6.13868",
+            "param_7.6032",
+            "param_8.2719"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13257 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.328638, %param_1.318532, %all-gather.887, %param_2.241346, %param_3.121863, /*index=5*/%param_4.73270, %param_5.31016, %param_6.13868, %param_7.6032, %param_8.2719), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/0": [
+      {
+        "node": 55,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13981",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2180",
+            "slice-done.2181",
+            "slice-done.2182",
+            "slice-done.2183"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13981 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2180, %slice-done.2181, %slice-done.2182, %slice-done.2183), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 59,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=51}",
+        "record": {
+          "computation": "async_collective_fusion.144346",
+          "context": [
+            "main.530_spmd/fusion.144346"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.427",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144350",
+            "fusion.144349"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=51}",
+          "instruction": "%convolution-base-dilated.427 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144350, %fusion.144349), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=51}"
+        }
+      },
+      {
+        "node": 77,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+        "record": {
+          "computation": "async_collective_fusion.144632",
+          "context": [
+            "main.530_spmd/fusion.144632"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.547",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144636",
+            "fusion.144635"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+          "instruction": "%convolution-base-dilated.547 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144636, %fusion.144635), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}"
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13868",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1784",
+            "slice-done.1785",
+            "slice-done.1786",
+            "slice-done.1787"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13868 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1784, %slice-done.1785, %slice-done.1786, %slice-done.1787), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/0": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13876",
+          "shape": "f32[16,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1816",
+            "slice-done.1817",
+            "slice-done.1818",
+            "slice-done.1819"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13876 = f32[16,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1816, %slice-done.1817, %slice-done.1818, %slice-done.1819), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 21,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114029",
+          "context": [
+            "main.530_spmd/async-collective-done.10"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13221",
+          "shape": "f32[8,2,1024]{2,1,0:T(2,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328419",
+            "param_1.318386",
+            "all-gather.773",
+            "param_2.241193",
+            "param_3.121715",
+            "param_4.73126",
+            "param_5.30876",
+            "param_6.13728",
+            "param_7.5892",
+            "param_8.2579"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13221 = f32[8,2,1024]{2,1,0:T(2,128)S(1)} custom-call(%param_0.328419, %param_1.318386, %all-gather.773, %param_2.241193, %param_3.121715, /*index=5*/%param_4.73126, %param_5.30876, %param_6.13728, %param_7.5892, %param_8.2579), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13876",
+          "shape": "f32[16,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1816",
+            "slice-done.1817",
+            "slice-done.1818",
+            "slice-done.1819"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13876 = f32[16,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1816, %slice-done.1817, %slice-done.1818, %slice-done.1819), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/0": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13918",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1962",
+            "slice-done.1963",
+            "slice-done.1964",
+            "slice-done.1965"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13918 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1962, %slice-done.1963, %slice-done.1964, %slice-done.1965), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13918",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1962",
+            "slice-done.1963",
+            "slice-done.1964",
+            "slice-done.1965"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13918 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1962, %slice-done.1963, %slice-done.1964, %slice-done.1965), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ]
+  },
+  "matrix_substitute": {
+    "o_proj/polar/1/X_Xt/0": [
+      {
+        "node": 11,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13994",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2171",
+            "slice-done.2172",
+            "slice-done.2173",
+            "slice-done.2174"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13994 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2171, %slice-done.2172, %slice-done.2173, %slice-done.2174), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 27,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=66}",
+        "record": {
+          "computation": "async_collective_fusion.144629",
+          "context": [
+            "main.529_spmd/fusion.144629"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.541",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144633",
+            "fusion.144632"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=66}",
+          "instruction": "%convolution-base-dilated.541 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144633, %fusion.144632), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=66}"
+        }
+      }
+    ],
+    "o_proj/polar/1/X_Xt/1": [
+      {
+        "node": 11,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13994",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2171",
+            "slice-done.2172",
+            "slice-done.2173",
+            "slice-done.2174"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13994 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2171, %slice-done.2172, %slice-done.2173, %slice-done.2174), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 27,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=66}",
+        "record": {
+          "computation": "async_collective_fusion.144629",
+          "context": [
+            "main.529_spmd/fusion.144629"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.541",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144633",
+            "fusion.144632"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=66}",
+          "instruction": "%convolution-base-dilated.541 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144633, %fusion.144632), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=66}"
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/0": [
+      {
+        "node": 7,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+        "record": {
+          "computation": "async_collective_fusion.144704",
+          "context": [
+            "main.529_spmd/fusion.144704"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.567",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144708",
+            "fusion.144707"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+          "instruction": "%convolution-base-dilated.567 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144708, %fusion.144707), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+        }
+      }
+    ],
+    "o_proj/polar/1/scaled_A_A/1": [
+      {
+        "node": 5,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114087",
+          "context": [
+            "main.529_spmd/async-collective-done.23"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13273",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328624",
+            "param_1.318512",
+            "all-gather.886",
+            "param_2.241341",
+            "param_3.121860",
+            "param_4.73267",
+            "param_5.31014",
+            "param_6.13866",
+            "param_7.6030",
+            "param_8.2717"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13273 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.328624, %param_1.318512, %all-gather.886, %param_2.241341, %param_3.121860, /*index=5*/%param_4.73267, %param_5.31014, %param_6.13866, %param_7.6030, %param_8.2717), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/0": [
+      {
+        "node": 59,
+        "reason": "entry parameter",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "param.246",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 17,
+          "attributes": ", sharding={replicated}, metadata={op_name=\"bank[0][1][3].left\"}",
+          "instruction": "%param.246 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(17), sharding={replicated}, metadata={op_name=\"bank[0][1][3].left\"}"
+        }
+      },
+      {
+        "node": 65,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=52}",
+        "record": {
+          "computation": "async_collective_fusion.144327",
+          "context": [
+            "main.529_spmd/fusion.144327"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.417",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144331",
+            "fusion.144330"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=52}",
+          "instruction": "%convolution-base-dilated.417 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144331, %fusion.144330), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=52}"
+        }
+      },
+      {
+        "node": 75,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13946",
+          "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2011",
+            "slice-done.2012",
+            "slice-done.2013",
+            "slice-done.2014"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13946 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2011, %slice-done.2012, %slice-done.2013, %slice-done.2014), custom_call_target=\"ConcatBitcast\""
+        }
+      },
+      {
+        "node": 84,
+        "reason": "declared product frontier",
+        "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=59}",
+        "record": {
+          "computation": "async_collective_fusion.144619",
+          "context": [
+            "main.529_spmd/fusion.144619"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.537",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144623",
+            "fusion.144622"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=59}",
+          "instruction": "%convolution-base-dilated.537 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144623, %fusion.144622), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=59}"
+        }
+      }
+    ],
+    "o_proj/source/direct_direction/1": [
+      {
+        "node": 4,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13885",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.1788",
+            "slice-done.1789",
+            "slice-done.1790",
+            "slice-done.1791"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13885 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1788, %slice-done.1789, %slice-done.1790, %slice-done.1791), custom_call_target=\"ConcatBitcast\""
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/0": [
+      {
+        "node": 10,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            2
+          ],
+          "name": "while.1969",
+          "shape": "(s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, f32[2,1024,1024]{1,2,0:T(8,128)})",
+          "opcode": "while",
+          "operands": [
+            "tuple.25690"
+          ],
+          "parameter_index": null,
+          "attributes": ", condition=%wide.region_171.208_spmd, body=%wide.region_170.207_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=14}",
+          "instruction": "%while.1969 = (s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, f32[2,1024,1024]{1,2,0:T(8,128)}) while(%tuple.25690), condition=%wide.region_171.208_spmd, body=%wide.region_170.207_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=14}"
+        }
+      },
+      {
+        "node": 26,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "fused_computation.114021",
+          "context": [
+            "main.529_spmd/async-collective-done.12"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13229",
+          "shape": "f32[8,2,1024]{2,1,0:T(2,128)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328372",
+            "param_1.318349",
+            "all-gather.754",
+            "param_2.241168",
+            "param_3.121692",
+            "param_4.73104",
+            "param_5.30855",
+            "param_6.13707",
+            "param_7.5871",
+            "param_8.2558"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13229 = f32[8,2,1024]{2,1,0:T(2,128)S(1)} custom-call(%param_0.328372, %param_1.318349, %all-gather.754, %param_2.241168, %param_3.121692, /*index=5*/%param_4.73104, %param_5.30855, %param_6.13707, %param_7.5871, %param_8.2558), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      }
+    ],
+    "o_proj/source/relative_gram_power/1": [
+      {
+        "node": 9,
+        "reason": "opaque operation or unsupported tuple projection",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            2
+          ],
+          "name": "while.1969",
+          "shape": "(s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, f32[2,1024,1024]{1,2,0:T(8,128)})",
+          "opcode": "while",
+          "operands": [
+            "tuple.25690"
+          ],
+          "parameter_index": null,
+          "attributes": ", condition=%wide.region_171.208_spmd, body=%wide.region_170.207_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=14}",
+          "instruction": "%while.1969 = (s32[]{:T(128)}, f32[2,1024]{1,0:T(2,128)}, f32[2,1024,1024]{1,2,0:T(8,128)}, f32[2,1024,1024]{1,2,0:T(8,128)S(1)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[1025]{0:T(1024)}, s32[]{:T(128)}, s32[4]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, f32[2,1024,1024]{1,2,0:T(8,128)}) while(%tuple.25690), condition=%wide.region_171.208_spmd, body=%wide.region_170.207_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=14}"
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/0": [
+      {
+        "node": 4,
+        "reason": "entry parameter",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "param.247",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 3,
+          "attributes": ", sharding={devices=[1,8,1]<=[8]}, metadata={op_name=\"bank[0][0][3]\"}",
+          "instruction": "%param.247 = f32[11,128,1024]{2,1,0:T(8,128)} parameter(3), sharding={devices=[1,8,1]<=[8]}, metadata={op_name=\"bank[0][0][3]\"}"
+        }
+      }
+    ],
+    "o_proj/source/update_gram_state/1": [
+      {
+        "node": 4,
+        "reason": "entry parameter",
+        "record": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "param.247",
+          "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 3,
+          "attributes": ", sharding={devices=[1,8,1]<=[8]}, metadata={op_name=\"bank[0][0][3]\"}",
+          "instruction": "%param.247 = f32[11,128,1024]{2,1,0:T(8,128)} parameter(3), sharding={devices=[1,8,1]<=[8]}, metadata={op_name=\"bank[0][0][3]\"}"
+        }
+      }
+    ]
+  }
+}

@@ -1,7 +1,23 @@
 {
   "passed": true,
-  "stage": "static preflight",
-  "graphs": {
+  "stage": "completed regional static extraction and local result validation",
+  "checks": [
+    "21boundedinputSHA/size and availablegraph priorHLO joins",
+    "Five exactdependency-selected products:two polarroles andthree nonpolar source scopes",
+    "Allfourgraph selector ordering invariance",
+    "Five target missing/duplicate/wrongcaller/wrongscope/arity/projection rejection",
+    "Already-covered operand root, wrongpolarrole and missingnonpolardependency rejection",
+    "All four regional HLO SHA/size verified, exact published source/manifest identities, no requested missing records",
+    "Fourgraph/five-target explicit operand ordering, duplicate/missing/wrongroot/swap and dtype declaration mutation",
+    "Five old products now covered; two new nonpolar/four operand gaps selected through exact direct operand0 dependencies",
+    "Actual refresh/relativepower source scopes and substitution left-state/gradient roles; shared within-graph refresh endpoints",
+    "Capture S1-only subsets and unaligned fusion/allgather/copy stops; substitution only direct operand1 matches",
+    "Global uncovered counts47/47/48/42 and253/253/246/222 positions",
+    "Fourteen reused gate/down/up controls, SHA/size/HLO mutation rejection",
+    "Published summarizer reproduces source/frontier/control supplements"
+  ],
+  "fixture_sha256": "1797e2d0efd6ce4dd7e93636462ea7b2ce4fe613d40ecffd1a9598490fde3ff6",
+  "preflight_graphs": {
     "matrix_untouched": {
       "missing_scopes": [
         "async_collective_fusion.144716",
@@ -27,12 +43,123 @@
       ]
     }
   },
-  "checks": [
-    "21boundedinputSHA/size and availablegraph priorHLO joins",
-    "Five exactdependency-selected products:two polarroles andthree nonpolar source scopes",
-    "Allfourgraph selector ordering invariance",
-    "Five target missing/duplicate/wrongcaller/wrongscope/arity/projection rejection",
-    "Already-covered operand root, wrongpolarrole and missingnonpolardependency rejection"
-  ],
-  "fixture_sha256": "1797e2d0efd6ce4dd7e93636462ea7b2ce4fe613d40ecffd1a9598490fde3ff6"
+  "graphs": {
+    "matrix_untouched": {
+      "closure_rounds": 2,
+      "bodies_recovered": 3,
+      "operand_routes": 10,
+      "matching_at_same_position": 10,
+      "coverage_counts": {
+        "record_occurrences": 13074,
+        "edge_occurrences": 12813,
+        "unique_context_projection_records": 5738,
+        "unique_context_instructions": 4275,
+        "unique_ordered_edges": 5510,
+        "boundary_occurrences": 933,
+        "unique_boundary_context_projections": 426,
+        "unique_boundary_context_instructions": 211,
+        "uncovered_instructions": 47,
+        "uncovered_positions": 253
+      },
+      "gap_kinds": {
+        "AsyncCollectiveDone": 17,
+        "AsyncCollectiveStart": 6,
+        "convolution": 2,
+        "ConcatBitcast": 17,
+        "while": 5
+      }
+    },
+    "matrix_evaluate": {
+      "closure_rounds": 2,
+      "bodies_recovered": 3,
+      "operand_routes": 10,
+      "matching_at_same_position": 10,
+      "coverage_counts": {
+        "record_occurrences": 13074,
+        "edge_occurrences": 12813,
+        "unique_context_projection_records": 5738,
+        "unique_context_instructions": 4275,
+        "unique_ordered_edges": 5510,
+        "boundary_occurrences": 933,
+        "unique_boundary_context_projections": 426,
+        "unique_boundary_context_instructions": 211,
+        "uncovered_instructions": 47,
+        "uncovered_positions": 253
+      },
+      "gap_kinds": {
+        "AsyncCollectiveDone": 17,
+        "AsyncCollectiveStart": 6,
+        "convolution": 2,
+        "ConcatBitcast": 17,
+        "while": 5
+      }
+    },
+    "matrix_capture": {
+      "closure_rounds": 2,
+      "bodies_recovered": 3,
+      "operand_routes": 10,
+      "matching_at_same_position": 5,
+      "coverage_counts": {
+        "record_occurrences": 12797,
+        "edge_occurrences": 12512,
+        "unique_context_projection_records": 5812,
+        "unique_context_instructions": 4317,
+        "unique_ordered_edges": 5577,
+        "boundary_occurrences": 931,
+        "unique_boundary_context_projections": 433,
+        "unique_boundary_context_instructions": 212,
+        "uncovered_instructions": 48,
+        "uncovered_positions": 246
+      },
+      "gap_kinds": {
+        "AsyncCollectiveDone": 16,
+        "AsyncCollectiveStart": 7,
+        "convolution": 2,
+        "ConcatBitcast": 18,
+        "while": 5
+      }
+    },
+    "matrix_substitute": {
+      "closure_rounds": 2,
+      "bodies_recovered": 3,
+      "operand_routes": 10,
+      "matching_at_same_position": 1,
+      "coverage_counts": {
+        "record_occurrences": 13524,
+        "edge_occurrences": 13259,
+        "unique_context_projection_records": 5653,
+        "unique_context_instructions": 4236,
+        "unique_ordered_edges": 5432,
+        "boundary_occurrences": 977,
+        "unique_boundary_context_projections": 422,
+        "unique_boundary_context_instructions": 209,
+        "uncovered_instructions": 42,
+        "uncovered_positions": 222
+      },
+      "gap_kinds": {
+        "AsyncCollectiveDone": 16,
+        "AsyncCollectiveStart": 7,
+        "convolution": 2,
+        "ConcatBitcast": 12,
+        "while": 5
+      }
+    }
+  },
+  "report": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.o-source-products/o-source-products-c8c5565b9a05/report.json",
+    "bytes": 985463,
+    "sha256": "6e338c6bd6f0e2dc49ff746f1b9407da857cdb900bc8d42e848c0b7a7c55e685",
+    "exact_gcs_readback": true
+  },
+  "postprocessing_source": {
+    "path": "logbooks/20-ema-gram-polar/summarize_o_source_products.py",
+    "bytes": 3484,
+    "sha256": "bcd18a77734e3f09337745752c1ab9fcffe6cf5fb118764cad318c959076a002"
+  },
+  "fixture_sources": {
+    "20261103-o-source-products-comparison-fixtures.py": "c8d12cf26a59c48d323d090e745d2d12a4b2b7efc23f1891a62ca400d08c86a5",
+    "20261103-o-source-products-result-fixtures.py": "40fc00e5d003e43713cfa5c1cbd51d3535f507d253d1ad2380589b11fc5d4aad"
+  },
+  "lint_passed": true,
+  "cold_read_passed": true
 }
