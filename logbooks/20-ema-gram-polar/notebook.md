@@ -2088,6 +2088,48 @@ checks. The separate online logging check also passed. These small CPU matrices
 do not establish TPU behavior; the next step is one sequential v5e-8 control
 from the published preflight revision.
 
+## 2026-11-03 05:33 UTC — First-product changes affect a fixed continuation
+
+The [continuation diagnostic](optimizer-polar-continuation-v5e-completed.json)
+succeeded on eight native TPU v5e chips, attempt zero and task exit zero, from
+published source `2da86114ff23d885b1912bf74a3c6d02c6e0d59a`. All 81 recorded
+stages were finite; 93 of 150 comparisons passed at `rtol=atol=1e-5`. All fifteen
+fixed executables replayed their first inputs bitwise. Online W&B finished with
+the collection marker and no training acceptance.
+
+The continuation computes the remainder of the first polar update and the four
+later updates from supplied normalized X and A. Holding X and that compiled
+continuation fixed, substituting A = XXᵀ
+from the internally column-sharded isolated product for A from the replicated
+isolated product changes the final output beyond tolerance in all three groups
+and both output layouts. The relative Frobenius differences range from
+0.005393 to 0.005850, using the output with replicated A as the norm denominator.
+The A inputs differed by at most 2.3283e-10 per element.
+Changing output layout while keeping the A bank fixed also fails all six
+comparisons. These measurements establish conditional sensitivity to both A and
+layout in the separate continuation. They do not give additive contributions to
+the untouched full optimizer's error.
+
+For query/key/value, the replicated continuation supplied with replicated A is
+bitwise identical to the uninstrumented replicated polar result and the traced
+replicated result. The direction-sharded continuation supplied with the
+column-sharded A is bitwise identical to the traced sharded result. No
+continuation result passes against the uninstrumented sharded reference. The
+57 failures comprise six earlier tracing/final-layout checks, six A-bank checks,
+six continuation-layout checks and 39 reference checks. Matching final outputs
+does not verify identical internal values, and the untouched sharded computation
+remains unreproduced.
+
+All 54 compiler artifacts, totaling 127,623 compressed bytes, passed checksum,
+size and decompression checks. Finelog observed a cumulative host peak of
+13.359375 GiB over 48 samples through 05:30:44 UTC; the per-device JAX allocator
+peak was 7,116,572,672 bytes, not total HBM. No warmed performance or training
+MFU was measured. Next compare saved compiler paths for the uninstrumented,
+traced and continuation computations, mapping products by metadata and output
+dependencies. The files are already available locally; no new analysis
+accelerator is needed. No optimizer intervention or new numerical experiment is
+selected, and no experiment remains queued or running.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

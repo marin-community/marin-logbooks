@@ -347,7 +347,7 @@
     "script_sha256": "d1e9c5ff05ab5e36c38004c7313485ba58bff46ac28479393dc0bb52da90be0c",
     "completion": "optimizer-polar-contracting-v5e-completed.json",
     "next_decision": {
-      "status": "CPU online smoke81/150 and state-regression13/26 passed; preflight publication beforeoneTPU",
+      "status": "SUCCEEDED attempt0/exit0;81finite/150comparisons/93pass; no active experiment",
       "question": "How much does the measured first-product A difference change the final polar output when the continuation executable and normalized input are held fixed?",
       "control": "For each q/k/v group, retain identical normalized X and the A outputs from replicated and internally column-sharded isolated evaluators. Compile a continuation from external X,A once per controlled output layout. Reuse it for both A banks and replay first bank. Compute the remaining first-iteration polynomial/update and four later original quintic iterations using shared coefficient definitions, unchanged association and precision. Return only final output.",
       "reference_gate": "Compare continuation outputs against shared uninstrumented five-step polar and traced finals, and record both fixed1e-5 and bitwise results. Separating A changes compilation; failure against uninstrumented references forbids interpreting the continuation as the original fused path. Even passing final equality does not prove internal identity.",
@@ -365,7 +365,14 @@
       "resources": "onev5litepod-8host/8chips,96CPU128GiB50GiB,us-west4,batch/defaultretries/no runtime limit",
       "harness_regression": "Generalized existing fixed-direction executor to arbitrary named banks; revalidate state-crossfeed CPU13stages/26comparisons alongside new81/150 mode.",
       "preflight": "optimizer-polar-continuation-preflight.json",
-      "script_sha256": "c7047d21dedfa5df4866cd32e5656d6868a991402dfa632d43f8333cab077a83"
+      "script_sha256": "c7047d21dedfa5df4866cd32e5656d6868a991402dfa632d43f8333cab077a83",
+      "completion": "optimizer-polar-continuation-v5e-completed.json",
+      "next_decision": {
+        "status": "design only; no new numerical experiment selected",
+        "objective": "Identify remaining compiler differences between uninstrumented sharded polar and the traced/continuation sharded paths whose final outputs match each other but fail the uninstrumented reference.",
+        "analysis": "Use locally saved checksum-verified54compilerfiles. Map source metadata and output dependencies for q/k/v uninstrumented, traced-final and continuation graphs under both outputlayouts. Align first-iteration C/D and later four iteration products; continuation receives external A and lacks its computation. Inspect normalized-input producers, operand shapes/casts, collective ancestry and calling-fusion configuration. Do not align by textual order or equate static declarations with runtime precision.",
+        "constraints": "No analysis accelerator needed. Reuse existing parser/dependency helpers; verify mappings and checksums when consuming artifacts. Do not select precision/tiling overrides from static differences alone. Any later numerical control requires own onlineCPUvalidation and publishedsource; optimizer intervention requires untouched originalfullupdate all28leaves at1e-5."
+      }
     }
   }
 }
