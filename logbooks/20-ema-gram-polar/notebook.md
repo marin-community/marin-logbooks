@@ -3719,6 +3719,38 @@ collect both solver branches and all reference gates before the next decision.
 the exact job, command, source hashes and output prefix. No optimizer or training
 result is accepted.
 
+## 2026-11-03 13:46 UTC — Both fresh capture gates pass; substitution remains pending
+
+This diagnostic captures q_proj's normalization numerator and denominator,
+then column-shards the external numerator during substitution while keeping
+the denominator replicated. Both fresh paired captures pass their own
+28-leaf reference gates at rtol=atol=1e-5, but neither is bitwise identical.
+Original capture differs in v_proj by maximum absolute error 8.940696716308594e-8.
+Matrix capture differs in q/k/v_proj by 1.043081283569336e-7,
+8.940696716308594e-8 and 1.043081283569336e-7, respectively. Other leaves have
+zero measured absolute error, which is not per-leaf bitwise proof. Both
+unchanged Jaxpr evaluators match their own untouched references bitwise, and
+all four fixed capture/evaluator executables replay bitwise.
+
+The 13:45:12 UTC report contains 12 finite stages and 11 comparisons, ten
+passing. The recorded failure is untouched matrix versus original, with all
+seven directions failing and all 21 state leaves passing. Cross-solver capture
+comparisons and both column-input substitution own-pair gates are pending.
+Passing capture checks do not establish untouched hidden internal identity;
+the substitution gates remain necessary before interpreting swaps as evidence
+about the untouched path. No
+optimization or training result is accepted.
+
+Finelog records 85 samples through 13:44:45 UTC and observed cumulative host
+peak 48.6494140625 GiB against the 128 GiB reservation. This is not total HBM.
+Both small capture Jaxpr artifacts pass SHA/size/gzip readback; large compiler
+files stay regional without a new checksum audit. [Partial evidence](optimizer-column-input-substitution-partial.json)
+records the report hash, comparisons and telemetry query. Canonical RUNNING
+remains the 13:37:36 UTC observation; the fresh report and live log observer
+show continued collection, without another scheduler poll before its regular
+interval. Preserve the existing job, sole experiment log 9948 and PR observer
+77099. All numerical and training gates remain unchanged.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
