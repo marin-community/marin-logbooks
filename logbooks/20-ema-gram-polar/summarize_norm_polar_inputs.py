@@ -67,7 +67,7 @@ def main():
         json.loads(args.inventory.read_text()),
         {p.stem: json.loads(p.read_text()) for p in args.saved},
     )
-    args.output.write_text(json.dumps(result, indent=2) + "\n")
+    args.output.write_text(json.dumps(result, separators=(",", ":")) + "\n")
 
 
 if __name__ == "__main__":
