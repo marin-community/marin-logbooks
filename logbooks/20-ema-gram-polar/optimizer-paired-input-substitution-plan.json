@@ -1,0 +1,42 @@
+{
+  "input_recipe": "Same seed0 seven full-shape synthetic gradients and initial state recipe; shared zero initialization and prior refresh. Identical fingerprinted host bank for every direct/evaluated/capture invocation. No checkpoint/data read.",
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "status": "Implemented; online CPU validation and TPU submission pending",
+  "script": "optimizer_attribution.py --paired-input-substitution",
+  "question": "Under fixed full-update executables, how do q_proj numerator-only, denominator-only and paired substitutions change the output?",
+  "science": "Only operand uses at one mapped q_proj division are replaced with two appended inputs. All other source equations remain identical; target primitive/parameters/outputvars/effects retained; original inputs/constants/28outputs retained. Other uses of the inner and denominator variables are unchanged. Full Gram geometry/source precision/every-update refresh unchanged; no shared optimizer edit.",
+  "stages": [
+    "Fresh paired captures, untouched and unchanged-evaluator references, four fixed replays as in paired-input-capture",
+    "For each solver compile one28output substitution executable; run own pair, other numerator, other denominator, both other, own-pair replay",
+    "Compare own-pair against untouched and paired-capture28leaf references, all at fixed1e-5 plusbitwise",
+    "Compare each swap against own-pair under same executable, all28leaves, relative error denominator explicitly own-pair leaf norm"
+  ],
+  "instrumentation_gate": "Both fresh capture gates plus each executable own-pair vsuntouched and vscapture28leaf gates required before original-path interpretation. Failed gates retained and collection continues; no hiddenidentity/fullcause claim even when passing.",
+  "expected": {
+    "finite_stages": 22,
+    "comparisons": 26,
+    "fixed_executables": 6,
+    "compiler_files": 16,
+    "jaxpr_files": 4,
+    "substitution_appended_inputs": 2,
+    "substitution_output_leaves": 28
+  },
+  "memory": "One executable/device input-output bank at a time. Host-offload references, captures and four substitution outputs per solver; free outputs before next solver. Host pair banks are shared references, not repeated full-input copies. Cacheclear between executables. Full11x1024x1024FP32inner/11x1x1FP32denominator. LargeHLO regional.",
+  "cpu_validation": "Fresh online logging-only run, fresh online substitution smoke including repeatedoperand-use/non-target-use/shape/outputorder/invalidtarget/missingambiguousmapping fixtures, paired-capture regression; allreport/artifactSHA/size/gzipreadbacks. ExplicitworktreePYTHONPATH. CPU cannot establish TPU behavior.",
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.13",
+  "job_name": "ema-gram-20-paired-input-substitution-v5e-8-20261103",
+  "limitations": "Conditional diagnostic, not optimizer candidate. Separate compilation can change full-update behavior; gate failures forbid original-path interpretation. No performance/MFU/checkpointrestore claim. Fixed1e-5, no precision/association/tilingoverride, no wallclocklimits, defaultpreemptionretries/allattempts retained.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-paired-input-substitution-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --paired-input-substitution --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.13"
+}

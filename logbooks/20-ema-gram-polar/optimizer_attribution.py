@@ -25,7 +25,7 @@ from levanter.optim.ema_gram import GramState, init_gram_state, matrix_parallel_
 from levanter.optim.util import NEWTON_SCHULZ_COEFFICIENTS, zeropower_via_newtonschulz5
 from levanter.tracker.wandb import WandbConfig
 from optimizer_cost import NAMES, ROW_SHARDED, directions, full_update, put_global, refresh
-from optimizer_input_capture import capture_program
+from optimizer_input_capture import capture_program, substitution_fixtures, substitution_program
 from rigging.filesystem.storage_path import StoragePath
 
 REPORT_REQUEST_TIMEOUT = 60
@@ -900,7 +900,9 @@ def state_crossfeed(rec, banks, references, matrix_eigh, state_shardings, output
         )
 
 
-def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardings, replicated, capture_kind):
+def full_input_capture(
+    rec, inputs, matrix_eigh, input_shardings, output_shardings, replicated, capture_kind, substitute=False
+):
     """Compare untouched full updates, unchanged traced programs and extra outputs."""
     input_sha = fingerprint(inputs)
     captures, references = {}, {}
@@ -992,7 +994,86 @@ def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardin
     assert fingerprint(inputs) == input_sha
     assert len(rec.report["stages"]) == 12 and len(rec.report["comparisons"]) == 12 + len(values)
     rec.persist()
+    if substitute:
+        paired_substitution(
+            rec, inputs, captures, references, matrix_eigh, input_shardings, output_shardings, replicated
+        )
     return passed
+
+
+def paired_substitution(rec, inputs, captures, references, matrix_eigh, input_shardings, output_shardings, replicated):
+    """Conditional operand substitutions, gated against the entire untouched update."""
+    rec.report["substitution_gates"] = {}
+    rec.report["substitution_programs"] = {}
+    input_sha = fingerprint(inputs)
+    for label, solver in [("original", jax.lax.linalg.eigh), ("matrix", matrix_eigh)]:
+        fn = full_update if label == "original" else partial(full_update, eigh_fn=solver)
+        exemplars = jax.tree.map(lambda x: jax.ShapeDtypeStruct(x.shape, x.dtype), inputs)
+        substitute, metadata, source = substitution_program(fn, exemplars)
+        payload = gzip.compress(source.encode(), mtime=0)
+        filename = "substitution_program_" + label + ".jaxpr.txt.gz"
+        (rec.local / filename).write_bytes(payload)
+        (rec.destination / filename).write_bytes(payload, requests_timeout=REPORT_REQUEST_TIMEOUT)
+        metadata["jaxpr_artifact"] = dict(
+            uri=str(rec.destination / filename),
+            sha256=hashlib.sha256(payload).hexdigest(),
+            compressed_bytes=len(payload),
+        )
+        rec.report["substitution_programs"][label] = metadata
+        # Own pair is first so the fixed-executable replay verifies the gate bank.
+        other = "matrix" if label == "original" else "original"
+        pairs = [(label, label), (other, label), (label, other), (other, other)]
+        banks = {
+            numerator
+            + "_inner__"
+            + denominator
+            + "_norm": (inputs, (captures[numerator][1][0], captures[denominator][1][1]))
+            for numerator, denominator in pairs
+        }
+        outputs = fixed_bank_outputs(
+            rec,
+            label + "_substitute",
+            "substitute/" + label,
+            substitute,
+            banks,
+            (input_shardings, (replicated, replicated)),
+            output_shardings,
+        )
+        own_name = next(iter(banks))
+        own = outputs[own_name]
+        gate_checks = {}
+        for name, expected in [
+            ("own_pair_vs_untouched", references[label]),
+            ("own_pair_vs_capture", captures[label][0]),
+        ]:
+            gate_checks[name] = compare_bitwise(rec, "substitute/" + label + "/" + name, own, expected)
+        gates = dict(
+            comparisons_passed=gate_checks,
+            both_capture_gates_passed=all(g["reference_agreement"] for g in rec.report["capture_gates"].values()),
+            same_bank_reference_agreement=all(gate_checks.values()),
+            original_internal_identity_established=False,
+        )
+        gates["conditional_interpretation_gates_passed"] = (
+            gates["both_capture_gates_passed"] and gates["same_bank_reference_agreement"]
+        )
+        rec.report["substitution_gates"][label] = gates
+        for name, output in outputs.items():
+            if name == own_name:
+                continue
+            key = "substitute/" + label + "/" + name + "_vs_own_pair"
+            compare_bitwise(rec, key, output, own)
+            rec.report["comparisons"][key].update(
+                reference_bank=own_name,
+                relative_frobenius_denominator="Corresponding leaf norm of this executable's own-pair output",
+                conditional_interpretation_gates_passed=gates["conditional_interpretation_gates_passed"],
+            )
+        del outputs, own, output, expected, banks, substitute, source
+        jax.clear_caches()
+        gc.collect()
+        rec.persist()
+    assert fingerprint(inputs) == input_sha
+    assert len(rec.report["stages"]) == 22 and len(rec.report["comparisons"]) == 26
+    rec.persist()
 
 
 def finish(rec, tracker, fused_pass, smoke):
@@ -1035,13 +1116,18 @@ def main():
     mode.add_argument("--single-norm-capture", action="store_true")
     mode.add_argument("--single-inner-capture", action="store_true")
     mode.add_argument("--paired-input-capture", action="store_true")
+    mode.add_argument("--paired-input-substitution", action="store_true")
     args = parser.parse_args()
     capture_mode = (
-        args.full_input_capture or args.single_norm_capture or args.single_inner_capture or args.paired_input_capture
+        args.full_input_capture
+        or args.single_norm_capture
+        or args.single_inner_capture
+        or args.paired_input_capture
+        or args.paired_input_substitution
     )
     capture_kind = (
         "q_pair"
-        if args.paired_input_capture
+        if args.paired_input_capture or args.paired_input_substitution
         else "q_inner" if args.single_inner_capture else "q_norm" if args.single_norm_capture else "qkv_inputs"
     )
     product_mode = (
@@ -1079,6 +1165,7 @@ def main():
         smoke=args.smoke,
         polar_compiler=args.polar_compiler or args.state_crossfeed or product_mode or capture_mode,
         full_input_capture=capture_mode,
+        paired_input_substitution=args.paired_input_substitution,
         capture_kind=capture_kind if capture_mode else None,
         capture_helper_sha256=hashlib.sha256(
             Path(__file__).with_name("optimizer_input_capture.py").read_bytes()
@@ -1136,6 +1223,9 @@ def main():
         tracker.finish()
         return
     rec = Recorder(destination, local, tracker, config)
+    if args.smoke and args.paired_input_substitution:
+        rec.report["substitution_fixtures"] = substitution_fixtures()
+        rec.persist()
     mesh = Mesh(np.array(devices), ("data",))
     rep = NamedSharding(mesh, P())
     gs = tuple(NamedSharding(mesh, P(None, "data", None) if n in ROW_SHARDED else P(None, None, "data")) for n in NAMES)
@@ -1160,7 +1250,9 @@ def main():
         del gradients, states
         jax.clear_caches()
         gc.collect()
-        fused_pass = full_input_capture(rec, inputs, matrix_eigh, (gs, ss), (gs, ss), rep, capture_kind)
+        fused_pass = full_input_capture(
+            rec, inputs, matrix_eigh, (gs, ss), (gs, ss), rep, capture_kind, args.paired_input_substitution
+        )
         finish(rec, tracker, fused_pass, args.smoke)
         return
     common = rec.run("common_refresh", refresh, (gradients, states), (gs, ss), ss)

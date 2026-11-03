@@ -3349,6 +3349,30 @@ report SHA `499b25a92d4a2cd43d9f10e3f3dcfe79b8278bb9374ba70f8074e1e417d6c993`.
 The [attribution plan](optimizer-divergence-attribution-plan.json) records the
 proposed control and its interpretation gates.
 
+## 2026-11-03 12:00 UTC — Implement a division-operand substitution control
+
+The new diagnostic replaces only the two operand uses at q_proj's existing
+normalization division with external numerator and denominator inputs. Every
+other traced equation, the target division primitive and its parameters,
+original inputs, constants and 28 outputs are retained. Other uses of the
+numerator and denominator variables are unchanged. Each solver has one fixed
+substitution executable for all four combinations of original/matrix solver
+numerators and denominators. Its own-pair replay uses both operands from that
+solver's capture.
+
+Fresh paired captures retain untouched and unchanged-evaluator references.
+Before interpreting substitutions, both capture gates and the substitution
+executable's own-pair comparisons against its untouched and captured 28-leaf
+references must pass at rtol=atol=1e-5. Bitwise status is recorded separately.
+Failed gates remain evidence and forbid original-path interpretation. Passing
+gates does not establish hidden internal identity or the complete cause.
+
+The [plan](optimizer-paired-input-substitution-plan.json) specifies 22 finite
+stages, 26 comparisons, six fixed executables and bounded device residency.
+Online CPU logging, numerical fixtures and the paired-capture regression are
+pending. No TPU job has been submitted. Source precision, full geometry,
+default preemption retries and all training gates remain unchanged.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
