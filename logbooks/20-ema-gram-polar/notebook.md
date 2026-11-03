@@ -1938,6 +1938,44 @@ CPU matrices do not establish TPU behavior. The next run is one non-training
 v5e-8 diagnostic in us-west4 from published source, with default preemption
 retries and no runtime limit.
 
+## 2026-11-03 04:50 UTC — Product tracing changes the TPU computation
+
+The [v5e diagnostic](optimizer-polar-products-v5e-completed.json) completed on eight
+native TPU v5e chips with one JAX process, attempt zero and task exit zero. Iris
+confirmed success at 04:48 UTC, and online W&B finished with the collection marker
+and `candidate_accepted_for_training=false`. The run used published source
+`0798f70171a97a351506ffed95f8a1e4fdc2cded`. Every element of all 54 recorded stage outputs was finite; 54 of 60
+comparisons passed elementwise at `rtol=atol=1e-5`. The comparisons cover traced
+versus uninstrumented outputs, output layouts, frozen operand banks and replays. Collection success is not numerical
+acceptance.
+
+For query/key/value, replicated traced final outputs exactly match their
+uninstrumented references using the same output layout. Direction-sharded traced finals fail against their
+uninstrumented references, with relative Frobenius errors 0.00539–0.00587.
+Their intermediate tensors therefore cannot be assumed to reproduce the
+uninstrumented path. Between the two instrumented layouts, normalization matches
+exactly and the first nonzero difference among recorded intermediates is at A = X Xᵀ: maximum absolute error
+2.3283e-10 in every group. All recorded first-iteration quantities pass tolerance;
+the five-iteration final outputs fail, with relative errors 0.00630–0.00636.
+The six failures are the three direction-sharded instrumentation checks and
+the three traced final-output layout comparisons. This does not isolate the contribution of the first product to the final error.
+
+In the separate A-product controls, the normalized-input banks saved from the two traced layouts are bitwise identical.
+For each group, outputs are bitwise identical across the two fixed layout executables,
+and each executable also replays its first bank bitwise. The isolated product does not reproduce the
+instrumented layout difference. Compilation context remains relevant to the next
+investigation, but neither a kernel-tiling cause nor the full optimizer mechanism
+is established.
+
+All 36 compiler artifacts, totaling 87,825 compressed bytes, passed checksum,
+size and decompression checks. The final report checksum is recorded with the
+completion evidence. Finelog observed a cumulative host peak of 13.3496 GiB over
+31 samples through 04:48:33 UTC; the per-device JAX allocator peak was
+7,116,572,672 bytes, not total HBM. No warmed performance or training MFU was
+measured. Next inspect the saved trace and isolated-product compiler artifacts,
+including normalization, casts and collective paths, before selecting another
+numerical control. No experiment remains queued or running.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
