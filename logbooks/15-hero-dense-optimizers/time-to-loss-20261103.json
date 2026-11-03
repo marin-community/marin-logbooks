@@ -1,0 +1,3469 @@
+{
+  "campaign": "hero-dense-opt-20261026",
+  "project": "marin-community/marin_moe",
+  "metric": "eval/paloma/macro_loss",
+  "history_read_utc": "2026-11-03T05:33:20.004820+00:00",
+  "method": {
+    "clock": "UTC elapsed hours from the first logged training row at zero-based step 0 to an evaluation row",
+    "includes": "All intervening wall time, including evaluations, checkpointing, retries, preemption waits and replay",
+    "excludes": "Initial scheduling, process startup and compilation before the first logged step 0",
+    "thresholds": [
+      4.0,
+      3.75,
+      3.5,
+      3.25,
+      3.1,
+      3.0,
+      2.9
+    ],
+    "threshold_selection": "Descriptive round loss levels selected after observing the completed ladder; not preregistered",
+    "sampling": "All recorded Paloma evaluations, normally each quarter of updates plus the final evaluation",
+    "interpretation": "First observed evaluation at or below a threshold, with its previous sampled evaluation; no interpolation",
+    "bracket_limit": "The previous sample is above threshold when present, but unsampled non-monotonic crossings are not excluded",
+    "no_hit": "No recorded evaluation met the threshold; unsampled crossings are not excluded",
+    "not_compute_time": "This clock is operational latency for this execution, not uninterrupted optimizer training time or GPU efficiency",
+    "runtime_policy": "W&B _runtime and last-attempt durations are not used",
+    "query_bounds": "Exact 28 selected IDs only; initial training steps 0 through 5 and evaluation history bounded by each target update count"
+  },
+  "limitations": [
+    "One seed per recipe and budget; no uncertainty estimate or statistical significance claim.",
+    "LR multipliers transferred from a limited three-point 1e18 calibration; AdamW, AdamH and Muon selected the upper boundary.",
+    "Queueing, preemptions and replay differed across runs, so elapsed-time ordering is not a causal optimizer speed comparison.",
+    "Model size, training token budget and schedule differ across rungs; cross-rung times are not matched training trajectories.",
+    "Sparse evaluation windows can span many hours; exact threshold crossing times and uninterrupted compute time are not established."
+  ],
+  "runs": [
+    {
+      "budget": "1e+18",
+      "updates": 4963,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+18-adamw-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T00:07:42Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793059741.9999113,
+          "train/loss": 11.805472373962402
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793059742.8364072,
+          "train/loss": 11.80803394317627
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793059743.1027448,
+          "train/loss": 11.800106048583984
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793059743.6585736,
+          "train/loss": 11.790038108825684
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793059744.1710746,
+          "train/loss": 11.778390884399414
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793059744.4875531,
+          "train/loss": 11.749069213867188
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1239,
+          "_timestamp": 1793060337.6471713,
+          "eval/paloma/macro_loss": 4.265841960906982
+        },
+        {
+          "_step": 2479,
+          "_timestamp": 1793060848.4030914,
+          "eval/paloma/macro_loss": 4.104223728179932
+        },
+        {
+          "_step": 3719,
+          "_timestamp": 1793061359.971502,
+          "eval/paloma/macro_loss": 4.015862464904785
+        },
+        {
+          "_step": 4959,
+          "_timestamp": 1793061880.537552,
+          "eval/paloma/macro_loss": 3.9759902954101562
+        },
+        {
+          "_step": 4962,
+          "_timestamp": 1793061902.796666,
+          "eval/paloma/macro_loss": 3.9749631881713867
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T00:09:01.999911+00:00",
+      "final_evaluation_elapsed_wall_hours": 0.6002213207218382,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 4959,
+          "first_observed_hit_loss": 3.9759902954101562,
+          "first_observed_hit_utc": "2026-10-27T00:44:40.537552+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.5940382335583368,
+          "previous_sample_step": 3719,
+          "previous_sample_loss": 4.015862464904785,
+          "previous_sample_elapsed_wall_hours": 0.4494365529881583
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+18",
+      "updates": 4963,
+      "optimizer": "adamh",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+18-adamh-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T02:16:26Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793067464.0498767,
+          "train/loss": 11.805472373962402
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793067465.7868922,
+          "train/loss": 11.808034896850586
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793067466.2128356,
+          "train/loss": 11.802610397338867
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793067466.7173839,
+          "train/loss": 11.798720359802246
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793067467.0425262,
+          "train/loss": 11.792794227600098
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793067467.739291,
+          "train/loss": 11.77781867980957
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1239,
+          "_timestamp": 1793068068.7839947,
+          "eval/paloma/macro_loss": 4.5434160232543945
+        },
+        {
+          "_step": 2479,
+          "_timestamp": 1793068575.8026884,
+          "eval/paloma/macro_loss": 4.296751022338867
+        },
+        {
+          "_step": 3719,
+          "_timestamp": 1793069072.6929927,
+          "eval/paloma/macro_loss": 4.106959342956543
+        },
+        {
+          "_step": 4959,
+          "_timestamp": 1793069567.5594165,
+          "eval/paloma/macro_loss": 4.010981559753418
+        },
+        {
+          "_step": 4962,
+          "_timestamp": 1793069583.4335418,
+          "eval/paloma/macro_loss": 4.013601303100586
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:17:44.049877+00:00",
+      "final_evaluation_elapsed_wall_hours": 0.5887176847457886,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+18",
+      "updates": 4963,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+18-muon-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T00:07:46Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793059751.8280535,
+          "train/loss": 11.805472373962402
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793059752.4133565,
+          "train/loss": 11.80803394317627
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793059753.301349,
+          "train/loss": 11.80112075805664
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793059753.51564,
+          "train/loss": 11.793704986572266
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793059754.297204,
+          "train/loss": 11.784099578857422
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793059754.7773013,
+          "train/loss": 11.761402130126953
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1239,
+          "_timestamp": 1793060389.5534062,
+          "eval/paloma/macro_loss": 4.299748420715332
+        },
+        {
+          "_step": 2479,
+          "_timestamp": 1793060935.0232313,
+          "eval/paloma/macro_loss": 4.163161277770996
+        },
+        {
+          "_step": 3719,
+          "_timestamp": 1793061520.6635244,
+          "eval/paloma/macro_loss": 4.044912338256836
+        },
+        {
+          "_step": 4959,
+          "_timestamp": 1793066597.6329522,
+          "eval/paloma/macro_loss": 3.962360382080078
+        },
+        {
+          "_step": 4962,
+          "_timestamp": 1793066612.237473,
+          "eval/paloma/macro_loss": 3.9614901542663574
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T00:09:11.828053+00:00",
+      "final_evaluation_elapsed_wall_hours": 1.9056692832046085,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 4959,
+          "first_observed_hit_loss": 3.962360382080078,
+          "first_observed_hit_utc": "2026-10-27T02:03:17.632952+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.9016124718719059,
+          "previous_sample_step": 3719,
+          "previous_sample_loss": 4.044912338256836,
+          "previous_sample_elapsed_wall_hours": 0.49134318636523355
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+18",
+      "updates": 4963,
+      "optimizer": "muonh",
+      "lr_multiplier": 1,
+      "id": "hero-dense-opt-20261026-1e+18-muonh-lr1",
+      "state": "finished",
+      "created_at": "2026-10-27T02:09:49Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793067075.8378463,
+          "train/loss": 11.805472373962402
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793067077.398601,
+          "train/loss": 11.808034896850586
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793067079.2550426,
+          "train/loss": 11.803268432617188
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793067079.8436537,
+          "train/loss": 11.801115036010742
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793067080.6422527,
+          "train/loss": 11.796813011169434
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793067081.3708436,
+          "train/loss": 11.78565788269043
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1239,
+          "_timestamp": 1793067739.8683414,
+          "eval/paloma/macro_loss": 4.920112133026123
+        },
+        {
+          "_step": 2479,
+          "_timestamp": 1793068327.426835,
+          "eval/paloma/macro_loss": 4.514986991882324
+        },
+        {
+          "_step": 3719,
+          "_timestamp": 1793068870.905198,
+          "eval/paloma/macro_loss": 4.2296929359436035
+        },
+        {
+          "_step": 4959,
+          "_timestamp": 1793069408.154376,
+          "eval/paloma/macro_loss": 4.102942943572998
+        },
+        {
+          "_step": 4962,
+          "_timestamp": 1793069423.5438828,
+          "eval/paloma/macro_loss": 4.101895332336426
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:11:15.837846+00:00",
+      "final_evaluation_elapsed_wall_hours": 0.6521405657132466,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+18",
+      "updates": 6540,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+18-adamw-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T15:29:11Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793460628.5498114,
+          "train/loss": 11.806879997253418
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793460629.2192652,
+          "train/loss": 11.809612274169922
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793460630.2712324,
+          "train/loss": 11.797761917114258
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793460631.2860708,
+          "train/loss": 11.775121688842773
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793460632.161497,
+          "train/loss": 11.751687049865723
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793460632.7184858,
+          "train/loss": 11.697775840759277
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1634,
+          "_timestamp": 1793461608.9689991,
+          "eval/paloma/macro_loss": 3.9780898094177246
+        },
+        {
+          "_step": 3269,
+          "_timestamp": 1793462505.814168,
+          "eval/paloma/macro_loss": 3.7990567684173584
+        },
+        {
+          "_step": 4904,
+          "_timestamp": 1793463362.4701455,
+          "eval/paloma/macro_loss": 3.699408769607544
+        },
+        {
+          "_step": 6539,
+          "_timestamp": 1793464209.1291792,
+          "eval/paloma/macro_loss": 3.6471548080444336
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T15:30:28.549811+00:00",
+      "final_evaluation_elapsed_wall_hours": 0.9946053799655702,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 1634,
+          "first_observed_hit_loss": 3.9780898094177246,
+          "first_observed_hit_utc": "2026-10-31T15:46:48.968999+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.27233866327338746,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 4904,
+          "first_observed_hit_loss": 3.699408769607544,
+          "first_observed_hit_utc": "2026-10-31T16:16:02.470145+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.7594223150279786,
+          "previous_sample_step": 3269,
+          "previous_sample_loss": 3.7990567684173584,
+          "previous_sample_elapsed_wall_hours": 0.5214623212814331
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+18",
+      "updates": 6540,
+      "optimizer": "adamh",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+18-adamh-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T15:44:45Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793461564.811126,
+          "train/loss": 11.806879997253418
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793461565.5432582,
+          "train/loss": 11.809612274169922
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793461566.4621198,
+          "train/loss": 11.803866386413574
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793461567.46849,
+          "train/loss": 11.796647071838379
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793461568.3014495,
+          "train/loss": 11.786893844604492
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793461568.6323168,
+          "train/loss": 11.770135879516602
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1634,
+          "_timestamp": 1793462462.552939,
+          "eval/paloma/macro_loss": 4.262815475463867
+        },
+        {
+          "_step": 3269,
+          "_timestamp": 1793463261.9750633,
+          "eval/paloma/macro_loss": 4.024711608886719
+        },
+        {
+          "_step": 4904,
+          "_timestamp": 1793464058.7164528,
+          "eval/paloma/macro_loss": 3.801835536956787
+        },
+        {
+          "_step": 6539,
+          "_timestamp": 1793464845.402509,
+          "eval/paloma/macro_loss": 3.68043851852417
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T15:46:04.811126+00:00",
+      "final_evaluation_elapsed_wall_hours": 0.9112753841612075,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 4904,
+          "first_observed_hit_loss": 3.801835536956787,
+          "first_observed_hit_utc": "2026-10-31T16:27:38.716453+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.6927514796786838,
+          "previous_sample_step": 3269,
+          "previous_sample_loss": 4.024711608886719,
+          "previous_sample_elapsed_wall_hours": 0.47143442703617944
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 6539,
+          "first_observed_hit_loss": 3.68043851852417,
+          "first_observed_hit_utc": "2026-10-31T16:40:45.402509+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.9112753841612075,
+          "previous_sample_step": 4904,
+          "previous_sample_loss": 3.801835536956787,
+          "previous_sample_elapsed_wall_hours": 0.6927514796786838
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+18",
+      "updates": 6540,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+18-muon-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T15:29:12Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793460637.4376776,
+          "train/loss": 11.806879997253418
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793460638.5448308,
+          "train/loss": 11.809612274169922
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793460639.4325333,
+          "train/loss": 11.801902770996094
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793460640.2145965,
+          "train/loss": 11.790054321289062
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793460641.0369594,
+          "train/loss": 11.77527141571045
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793460641.4026794,
+          "train/loss": 11.748117446899414
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1634,
+          "_timestamp": 1793461527.7382746,
+          "eval/paloma/macro_loss": 4.038660526275635
+        },
+        {
+          "_step": 3269,
+          "_timestamp": 1793462328.9498198,
+          "eval/paloma/macro_loss": 3.8663058280944824
+        },
+        {
+          "_step": 4904,
+          "_timestamp": 1793463124.137146,
+          "eval/paloma/macro_loss": 3.7367563247680664
+        },
+        {
+          "_step": 6539,
+          "_timestamp": 1793463903.9823995,
+          "eval/paloma/macro_loss": 3.645834445953369
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T15:30:37.437678+00:00",
+      "final_evaluation_elapsed_wall_hours": 0.9073735338449478,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 3269,
+          "first_observed_hit_loss": 3.8663058280944824,
+          "first_observed_hit_utc": "2026-10-31T15:58:48.949820+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.4698644839392768,
+          "previous_sample_step": 1634,
+          "previous_sample_loss": 4.038660526275635,
+          "previous_sample_elapsed_wall_hours": 0.24730572137567733
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 4904,
+          "first_observed_hit_loss": 3.7367563247680664,
+          "first_observed_hit_utc": "2026-10-31T16:12:04.137146+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.6907498523261812,
+          "previous_sample_step": 3269,
+          "previous_sample_loss": 3.8663058280944824,
+          "previous_sample_elapsed_wall_hours": 0.4698644839392768
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+18",
+      "updates": 6540,
+      "optimizer": "muonh",
+      "lr_multiplier": 1,
+      "id": "hero-dense-opt-20261026-3e+18-muonh-lr1",
+      "state": "finished",
+      "created_at": "2026-10-31T15:48:38Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793461807.7064004,
+          "train/loss": 11.806879997253418
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793461808.6546946,
+          "train/loss": 11.809612274169922
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793461808.9725475,
+          "train/loss": 11.805110931396484
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793461809.8931444,
+          "train/loss": 11.801227569580078
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793461810.7344837,
+          "train/loss": 11.794492721557617
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793461811.4238474,
+          "train/loss": 11.785299301147461
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 1634,
+          "_timestamp": 1793462685.0600162,
+          "eval/paloma/macro_loss": 4.473748207092285
+        },
+        {
+          "_step": 3269,
+          "_timestamp": 1793463473.5210433,
+          "eval/paloma/macro_loss": 4.1627607345581055
+        },
+        {
+          "_step": 4904,
+          "_timestamp": 1793464260.3627362,
+          "eval/paloma/macro_loss": 3.890517234802246
+        },
+        {
+          "_step": 6539,
+          "_timestamp": 1793465038.2719746,
+          "eval/paloma/macro_loss": 3.736362934112549
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T15:50:07.706400+00:00",
+      "final_evaluation_elapsed_wall_hours": 0.8973793261580997,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 4904,
+          "first_observed_hit_loss": 3.890517234802246,
+          "first_observed_hit_utc": "2026-10-31T16:31:00.362736+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.6812934266196357,
+          "previous_sample_step": 3269,
+          "previous_sample_loss": 4.1627607345581055,
+          "previous_sample_elapsed_wall_hours": 0.4627262896961636
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 6539,
+          "first_observed_hit_loss": 3.736362934112549,
+          "first_observed_hit_utc": "2026-10-31T16:43:58.271975+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.8973793261580997,
+          "previous_sample_step": 4904,
+          "previous_sample_loss": 3.890517234802246,
+          "previous_sample_elapsed_wall_hours": 0.6812934266196357
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+19",
+      "updates": 12539,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+19-adamw-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T11:16:26Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793445466.8762782,
+          "train/loss": 11.804622650146484
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793445468.3697882,
+          "train/loss": 11.807230949401855
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793445469.246541,
+          "train/loss": 11.795817375183105
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793445470.2331457,
+          "train/loss": 11.778241157531738
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793445471.2081702,
+          "train/loss": 11.761103630065918
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793445472.1496754,
+          "train/loss": 11.716976165771484
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 3133,
+          "_timestamp": 1793447475.0891874,
+          "eval/paloma/macro_loss": 3.73673939704895
+        },
+        {
+          "_step": 6267,
+          "_timestamp": 1793449386.9497797,
+          "eval/paloma/macro_loss": 3.581756830215454
+        },
+        {
+          "_step": 9401,
+          "_timestamp": 1793451307.6242266,
+          "eval/paloma/macro_loss": 3.480832099914551
+        },
+        {
+          "_step": 12535,
+          "_timestamp": 1793453189.5781393,
+          "eval/paloma/macro_loss": 3.4321069717407227
+        },
+        {
+          "_step": 12538,
+          "_timestamp": 1793453216.0575554,
+          "eval/paloma/macro_loss": 3.431227684020996
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T11:17:46.876278+00:00",
+      "final_evaluation_elapsed_wall_hours": 2.1525503547986347,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 3133,
+          "first_observed_hit_loss": 3.73673939704895,
+          "first_observed_hit_utc": "2026-10-31T11:51:15.089187+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.5578369192282359,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 3133,
+          "first_observed_hit_loss": 3.73673939704895,
+          "first_observed_hit_utc": "2026-10-31T11:51:15.089187+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.5578369192282359,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 9401,
+          "first_observed_hit_loss": 3.480832099914551,
+          "first_observed_hit_utc": "2026-10-31T12:55:07.624227+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.6224299856689242,
+          "previous_sample_step": 6267,
+          "previous_sample_loss": 3.581756830215454,
+          "previous_sample_elapsed_wall_hours": 1.088909305996365
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+19",
+      "updates": 12539,
+      "optimizer": "adamh",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+19-adamh-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T13:30:24Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793453501.903962,
+          "train/loss": 11.804622650146484
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793453502.8894255,
+          "train/loss": 11.807231903076172
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793453504.2330773,
+          "train/loss": 11.801149368286133
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793453505.1466048,
+          "train/loss": 11.79731559753418
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793453505.5729735,
+          "train/loss": 11.792299270629883
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793453506.6390908,
+          "train/loss": 11.78004264831543
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 3133,
+          "_timestamp": 1793455507.9015572,
+          "eval/paloma/macro_loss": 4.004280090332031
+        },
+        {
+          "_step": 6267,
+          "_timestamp": 1793457419.1532748,
+          "eval/paloma/macro_loss": 3.7895519733428955
+        },
+        {
+          "_step": 9401,
+          "_timestamp": 1793459348.3105595,
+          "eval/paloma/macro_loss": 3.5626771450042725
+        },
+        {
+          "_step": 12535,
+          "_timestamp": 1793461243.4111257,
+          "eval/paloma/macro_loss": 3.4528844356536865
+        },
+        {
+          "_step": 12538,
+          "_timestamp": 1793461269.4116504,
+          "eval/paloma/macro_loss": 3.4478654861450195
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T13:31:41.903962+00:00",
+      "final_evaluation_elapsed_wall_hours": 2.1576410245895388,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 6267,
+          "first_observed_hit_loss": 3.7895519733428955,
+          "first_observed_hit_utc": "2026-10-31T14:36:59.153275+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.088124809132682,
+          "previous_sample_step": 3133,
+          "previous_sample_loss": 4.004280090332031,
+          "previous_sample_elapsed_wall_hours": 0.5572215542528365
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 9401,
+          "first_observed_hit_loss": 3.5626771450042725,
+          "first_observed_hit_utc": "2026-10-31T15:09:08.310560+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.6240018326706356,
+          "previous_sample_step": 6267,
+          "previous_sample_loss": 3.7895519733428955,
+          "previous_sample_elapsed_wall_hours": 1.088124809132682
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 12535,
+          "first_observed_hit_loss": 3.4528844356536865,
+          "first_observed_hit_utc": "2026-10-31T15:40:43.411126+00:00",
+          "first_observed_hit_elapsed_wall_hours": 2.1504186566008463,
+          "previous_sample_step": 9401,
+          "previous_sample_loss": 3.5626771450042725,
+          "previous_sample_elapsed_wall_hours": 1.6240018326706356
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+19",
+      "updates": 12539,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+19-muon-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T13:04:45Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793451976.350483,
+          "train/loss": 11.804622650146484
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793451977.3377986,
+          "train/loss": 11.807230949401855
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793451978.175841,
+          "train/loss": 11.800005912780762
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793451979.3355775,
+          "train/loss": 11.793501853942871
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793451980.3650963,
+          "train/loss": 11.785484313964844
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793451982.0739517,
+          "train/loss": 11.767193794250488
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 3133,
+          "_timestamp": 1793454145.1622326,
+          "eval/paloma/macro_loss": 3.8540573120117188
+        },
+        {
+          "_step": 6267,
+          "_timestamp": 1793456176.0331056,
+          "eval/paloma/macro_loss": 3.7156410217285156
+        },
+        {
+          "_step": 9401,
+          "_timestamp": 1793458239.9422827,
+          "eval/paloma/macro_loss": 3.564258575439453
+        },
+        {
+          "_step": 12535,
+          "_timestamp": 1793460281.6233127,
+          "eval/paloma/macro_loss": 3.4737329483032227
+        },
+        {
+          "_step": 12538,
+          "_timestamp": 1793460308.3595912,
+          "eval/paloma/macro_loss": 3.4735655784606934
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T13:06:16.350483+00:00",
+      "final_evaluation_elapsed_wall_hours": 2.3144469745291603,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 3133,
+          "first_observed_hit_loss": 3.8540573120117188,
+          "first_observed_hit_utc": "2026-10-31T13:42:25.162233+00:00",
+          "first_observed_hit_elapsed_wall_hours": 0.6024477082490921,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 6267,
+          "first_observed_hit_loss": 3.7156410217285156,
+          "first_observed_hit_utc": "2026-10-31T14:16:16.033106+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.1665785062975353,
+          "previous_sample_step": 3133,
+          "previous_sample_loss": 3.8540573120117188,
+          "previous_sample_elapsed_wall_hours": 0.6024477082490921
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 12535,
+          "first_observed_hit_loss": 3.4737329483032227,
+          "first_observed_hit_utc": "2026-10-31T15:24:41.623313+00:00",
+          "first_observed_hit_elapsed_wall_hours": 2.3070202304919563,
+          "previous_sample_step": 9401,
+          "previous_sample_loss": 3.564258575439453,
+          "previous_sample_elapsed_wall_hours": 1.7398866110377842
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+19",
+      "updates": 12539,
+      "optimizer": "muonh",
+      "lr_multiplier": 1,
+      "id": "hero-dense-opt-20261026-1e+19-muonh-lr1",
+      "state": "finished",
+      "created_at": "2026-10-31T13:35:41Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793453828.0231464,
+          "train/loss": 11.804622650146484
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793453829.3685446,
+          "train/loss": 11.807236671447754
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793453830.3336463,
+          "train/loss": 11.802090644836426
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793453831.336718,
+          "train/loss": 11.80081558227539
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793453832.2363148,
+          "train/loss": 11.798134803771973
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793453833.158122,
+          "train/loss": 11.791607856750488
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 3133,
+          "_timestamp": 1793455805.5724692,
+          "eval/paloma/macro_loss": 4.1868896484375
+        },
+        {
+          "_step": 6267,
+          "_timestamp": 1793457695.2223666,
+          "eval/paloma/macro_loss": 3.9538142681121826
+        },
+        {
+          "_step": 9401,
+          "_timestamp": 1793459609.3636754,
+          "eval/paloma/macro_loss": 3.680105447769165
+        },
+        {
+          "_step": 12535,
+          "_timestamp": 1793461480.550795,
+          "eval/paloma/macro_loss": 3.5303115844726562
+        },
+        {
+          "_step": 12538,
+          "_timestamp": 1793461506.4258604,
+          "eval/paloma/macro_loss": 3.5279951095581055
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T13:37:08.023146+00:00",
+      "final_evaluation_elapsed_wall_hours": 2.1328896427816817,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 6267,
+          "first_observed_hit_loss": 3.9538142681121826,
+          "first_observed_hit_utc": "2026-10-31T14:41:35.222367+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.0742220056056977,
+          "previous_sample_step": 3133,
+          "previous_sample_loss": 4.1868896484375,
+          "previous_sample_elapsed_wall_hours": 0.549319256345431
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 9401,
+          "first_observed_hit_loss": 3.680105447769165,
+          "first_observed_hit_utc": "2026-10-31T15:13:29.363675+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.605927924712499,
+          "previous_sample_step": 6267,
+          "previous_sample_loss": 3.9538142681121826,
+          "previous_sample_elapsed_wall_hours": 1.0742220056056977
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+19",
+      "updates": 18319,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+19-adamw-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T01:59:43Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793412059.6375277,
+          "train/loss": 11.808598518371582
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793412061.718815,
+          "train/loss": 11.808244705200195
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793412062.9650407,
+          "train/loss": 11.798110008239746
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793412064.063864,
+          "train/loss": 11.773348808288574
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793412065.2832963,
+          "train/loss": 11.745929718017578
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793412067.1623027,
+          "train/loss": 11.688116073608398
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 4578,
+          "_timestamp": 1793416105.6392865,
+          "eval/paloma/macro_loss": 3.549689292907715
+        },
+        {
+          "_step": 9157,
+          "_timestamp": 1793420082.1649184,
+          "eval/paloma/macro_loss": 3.405362129211426
+        },
+        {
+          "_step": 13736,
+          "_timestamp": 1793424055.961197,
+          "eval/paloma/macro_loss": 3.2962827682495117
+        },
+        {
+          "_step": 18315,
+          "_timestamp": 1793427986.8055751,
+          "eval/paloma/macro_loss": 3.238797187805176
+        },
+        {
+          "_step": 18318,
+          "_timestamp": 1793428048.9095466,
+          "eval/paloma/macro_loss": 3.2401280403137207
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T02:00:59.637528+00:00",
+      "final_evaluation_elapsed_wall_hours": 4.4414644496970705,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 4578,
+          "first_observed_hit_loss": 3.549689292907715,
+          "first_observed_hit_utc": "2026-10-31T03:08:25.639287+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.1238893774482939,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 4578,
+          "first_observed_hit_loss": 3.549689292907715,
+          "first_observed_hit_utc": "2026-10-31T03:08:25.639287+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.1238893774482939,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 9157,
+          "first_observed_hit_loss": 3.405362129211426,
+          "first_observed_hit_utc": "2026-10-31T04:14:42.164918+00:00",
+          "first_observed_hit_elapsed_wall_hours": 2.228479830755128,
+          "previous_sample_step": 4578,
+          "previous_sample_loss": 3.549689292907715,
+          "previous_sample_elapsed_wall_hours": 1.1238893774482939
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 18315,
+          "first_observed_hit_loss": 3.238797187805176,
+          "first_observed_hit_utc": "2026-10-31T06:26:26.805575+00:00",
+          "first_observed_hit_elapsed_wall_hours": 4.424213346507814,
+          "previous_sample_step": 13736,
+          "previous_sample_loss": 3.2962827682495117,
+          "previous_sample_elapsed_wall_hours": 3.332312130331993
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+19",
+      "updates": 18319,
+      "optimizer": "adamh",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+19-adamh-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T06:43:06Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793429066.865012,
+          "train/loss": 11.808599472045898
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793429067.9950054,
+          "train/loss": 11.808243751525879
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793429069.977533,
+          "train/loss": 11.805936813354492
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793429071.0803943,
+          "train/loss": 11.801567077636719
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793429073.7698238,
+          "train/loss": 11.791973114013672
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793429076.382873,
+          "train/loss": 11.781506538391113
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 4578,
+          "_timestamp": 1793433107.622012,
+          "eval/paloma/macro_loss": 3.8437867164611816
+        },
+        {
+          "_step": 9157,
+          "_timestamp": 1793437119.8182068,
+          "eval/paloma/macro_loss": 3.6253738403320312
+        },
+        {
+          "_step": 13736,
+          "_timestamp": 1793441195.0566375,
+          "eval/paloma/macro_loss": 3.401052951812744
+        },
+        {
+          "_step": 18315,
+          "_timestamp": 1793445126.1489847,
+          "eval/paloma/macro_loss": 3.2720770835876465
+        },
+        {
+          "_step": 18318,
+          "_timestamp": 1793445168.4015281,
+          "eval/paloma/macro_loss": 3.270362138748169
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T06:44:26.865012+00:00",
+      "final_evaluation_elapsed_wall_hours": 4.472649032274882,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 4578,
+          "first_observed_hit_loss": 3.8437867164611816,
+          "first_observed_hit_utc": "2026-10-31T07:51:47.622012+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.122432499991523,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 9157,
+          "first_observed_hit_loss": 3.6253738403320312,
+          "first_observed_hit_utc": "2026-10-31T08:58:39.818207+00:00",
+          "first_observed_hit_elapsed_wall_hours": 2.2369314430157345,
+          "previous_sample_step": 4578,
+          "previous_sample_loss": 3.8437867164611816,
+          "previous_sample_elapsed_wall_hours": 1.122432499991523
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 13736,
+          "first_observed_hit_loss": 3.401052951812744,
+          "first_observed_hit_utc": "2026-10-31T10:06:35.056638+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.368942118220859,
+          "previous_sample_step": 9157,
+          "previous_sample_loss": 3.6253738403320312,
+          "previous_sample_elapsed_wall_hours": 2.2369314430157345
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+19",
+      "updates": 18319,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+19-muon-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T06:30:58Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793428343.8849432,
+          "train/loss": 11.808598518371582
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793428345.3695562,
+          "train/loss": 11.808244705200195
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793428347.4117975,
+          "train/loss": 11.805017471313477
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793428348.4561617,
+          "train/loss": 11.79863452911377
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793428350.022742,
+          "train/loss": 11.78650951385498
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793428351.2190816,
+          "train/loss": 11.771368026733398
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 4578,
+          "_timestamp": 1793432356.3474567,
+          "eval/paloma/macro_loss": 3.7104434967041016
+        },
+        {
+          "_step": 9157,
+          "_timestamp": 1793436296.888028,
+          "eval/paloma/macro_loss": 3.5668935775756836
+        },
+        {
+          "_step": 13736,
+          "_timestamp": 1793440228.671217,
+          "eval/paloma/macro_loss": 3.4214987754821777
+        },
+        {
+          "_step": 18315,
+          "_timestamp": 1793444109.8732626,
+          "eval/paloma/macro_loss": 3.316073417663574
+        },
+        {
+          "_step": 18318,
+          "_timestamp": 1793444152.6525443,
+          "eval/paloma/macro_loss": 3.3161673545837402
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T06:32:23.884943+00:00",
+      "final_evaluation_elapsed_wall_hours": 4.391324333614773,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 4578,
+          "first_observed_hit_loss": 3.7104434967041016,
+          "first_observed_hit_utc": "2026-10-31T07:39:16.347457+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.114572920401891,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 4578,
+          "first_observed_hit_loss": 3.7104434967041016,
+          "first_observed_hit_utc": "2026-10-31T07:39:16.347457+00:00",
+          "first_observed_hit_elapsed_wall_hours": 1.114572920401891,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 13736,
+          "first_observed_hit_loss": 3.4214987754821777,
+          "first_observed_hit_utc": "2026-10-31T09:50:28.671217+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.301329520477189,
+          "previous_sample_step": 9157,
+          "previous_sample_loss": 3.5668935775756836,
+          "previous_sample_elapsed_wall_hours": 2.209167523516549
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+19",
+      "updates": 18319,
+      "optimizer": "muonh",
+      "lr_multiplier": 1,
+      "id": "hero-dense-opt-20261026-3e+19-muonh-lr1",
+      "state": "finished",
+      "created_at": "2026-10-31T10:59:23Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793444450.8601224,
+          "train/loss": 11.808599472045898
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793444452.8973658,
+          "train/loss": 11.80824089050293
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793444453.7825577,
+          "train/loss": 11.807099342346191
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793444455.4424758,
+          "train/loss": 11.805920600891113
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793444456.5654342,
+          "train/loss": 11.799185752868652
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793444457.591354,
+          "train/loss": 11.795923233032227
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 4578,
+          "_timestamp": 1793448475.2264123,
+          "eval/paloma/macro_loss": 4.025617599487305
+        },
+        {
+          "_step": 9157,
+          "_timestamp": 1793452425.8447711,
+          "eval/paloma/macro_loss": 3.8019185066223145
+        },
+        {
+          "_step": 13736,
+          "_timestamp": 1793456381.3919225,
+          "eval/paloma/macro_loss": 3.521897792816162
+        },
+        {
+          "_step": 18315,
+          "_timestamp": 1793460299.8261855,
+          "eval/paloma/macro_loss": 3.3551764488220215
+        },
+        {
+          "_step": 18318,
+          "_timestamp": 1793460342.521695,
+          "eval/paloma/macro_loss": 3.35629940032959
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T11:00:50.860122+00:00",
+      "final_evaluation_elapsed_wall_hours": 4.414350436793433,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 9157,
+          "first_observed_hit_loss": 3.8019185066223145,
+          "first_observed_hit_utc": "2026-10-31T13:13:45.844771+00:00",
+          "first_observed_hit_elapsed_wall_hours": 2.2152735135290356,
+          "previous_sample_step": 4578,
+          "previous_sample_loss": 4.025617599487305,
+          "previous_sample_elapsed_wall_hours": 1.1178795249594582
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 13736,
+          "first_observed_hit_loss": 3.521897792816162,
+          "first_observed_hit_utc": "2026-10-31T14:19:41.391922+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.314036611119906,
+          "previous_sample_step": 9157,
+          "previous_sample_loss": 3.8019185066223145,
+          "previous_sample_elapsed_wall_hours": 2.2152735135290356
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 18315,
+          "first_observed_hit_loss": 3.3551764488220215,
+          "first_observed_hit_utc": "2026-10-31T15:24:59.826185+00:00",
+          "first_observed_hit_elapsed_wall_hours": 4.402490573061837,
+          "previous_sample_step": 13736,
+          "previous_sample_loss": 3.521897792816162,
+          "previous_sample_elapsed_wall_hours": 3.314036611119906
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+20",
+      "updates": 41956,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+20-adamw-lr3",
+      "state": "finished",
+      "created_at": "2026-10-30T13:09:49Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793365865.54671,
+          "train/loss": 11.808032989501953
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793365867.1321807,
+          "train/loss": 11.804827690124512
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793365869.306396,
+          "train/loss": 11.801328659057617
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793365870.3496344,
+          "train/loss": 11.787747383117676
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793365872.2320518,
+          "train/loss": 11.777111053466797
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793365874.020936,
+          "train/loss": 11.748047828674316
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 10488,
+          "_timestamp": 1793377403.957001,
+          "eval/paloma/macro_loss": 3.3717479705810547
+        },
+        {
+          "_step": 20977,
+          "_timestamp": 1793388880.4649866,
+          "eval/paloma/macro_loss": 3.2518138885498047
+        },
+        {
+          "_step": 31466,
+          "_timestamp": 1793400358.888669,
+          "eval/paloma/macro_loss": 3.1527395248413086
+        },
+        {
+          "_step": 41955,
+          "_timestamp": 1793411775.645258,
+          "eval/paloma/macro_loss": 3.086409568786621
+        }
+      ],
+      "first_logged_training_utc": "2026-10-30T13:11:05.546710+00:00",
+      "final_evaluation_elapsed_wall_hours": 12.752805152204301,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.3717479705810547,
+          "first_observed_hit_utc": "2026-10-30T16:23:23.957001+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.2051139697101383,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.3717479705810547,
+          "first_observed_hit_utc": "2026-10-30T16:23:23.957001+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.2051139697101383,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.3717479705810547,
+          "first_observed_hit_utc": "2026-10-30T16:23:23.957001+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.2051139697101383,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 31466,
+          "first_observed_hit_loss": 3.1527395248413086,
+          "first_observed_hit_utc": "2026-10-30T22:45:58.888669+00:00",
+          "first_observed_hit_elapsed_wall_hours": 9.581483877499899,
+          "previous_sample_step": 20977,
+          "previous_sample_loss": 3.2518138885498047,
+          "previous_sample_elapsed_wall_hours": 6.393032854596774
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 41955,
+          "first_observed_hit_loss": 3.086409568786621,
+          "first_observed_hit_utc": "2026-10-31T01:56:15.645258+00:00",
+          "first_observed_hit_elapsed_wall_hours": 12.752805152204301,
+          "previous_sample_step": 31466,
+          "previous_sample_loss": 3.1527395248413086,
+          "previous_sample_elapsed_wall_hours": 9.581483877499899
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+20",
+      "updates": 41956,
+      "optimizer": "adamh",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+20-adamh-lr3",
+      "state": "finished",
+      "created_at": "2026-10-31T00:10:52Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793405534.6120818,
+          "train/loss": 11.808032989501953
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793405536.2620351,
+          "train/loss": 11.80483341217041
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793405538.3967187,
+          "train/loss": 11.805444717407227
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793405539.3692198,
+          "train/loss": 11.802620887756348
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793405541.4298565,
+          "train/loss": 11.801064491271973
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793405543.263177,
+          "train/loss": 11.796049118041992
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 10488,
+          "_timestamp": 1793417156.6263127,
+          "eval/paloma/macro_loss": 3.651693344116211
+        },
+        {
+          "_step": 20977,
+          "_timestamp": 1793428728.2958295,
+          "eval/paloma/macro_loss": 3.448305130004883
+        },
+        {
+          "_step": 31466,
+          "_timestamp": 1793440215.8338468,
+          "eval/paloma/macro_loss": 3.232285737991333
+        },
+        {
+          "_step": 41955,
+          "_timestamp": 1793451658.5492826,
+          "eval/paloma/macro_loss": 3.1003620624542236
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T00:12:14.612082+00:00",
+      "final_evaluation_elapsed_wall_hours": 12.812204777995746,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.651693344116211,
+          "first_observed_hit_utc": "2026-10-31T03:25:56.626313+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.228337286379602,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.651693344116211,
+          "first_observed_hit_utc": "2026-10-31T03:25:56.626313+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.228337286379602,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 20977,
+          "first_observed_hit_loss": 3.448305130004883,
+          "first_observed_hit_utc": "2026-10-31T06:38:48.295830+00:00",
+          "first_observed_hit_elapsed_wall_hours": 6.442689929935668,
+          "previous_sample_step": 10488,
+          "previous_sample_loss": 3.651693344116211,
+          "previous_sample_elapsed_wall_hours": 3.228337286379602
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 31466,
+          "first_observed_hit_loss": 3.232285737991333,
+          "first_observed_hit_utc": "2026-10-31T09:50:15.833847+00:00",
+          "first_observed_hit_elapsed_wall_hours": 9.633672712511487,
+          "previous_sample_step": 20977,
+          "previous_sample_loss": 3.448305130004883,
+          "previous_sample_elapsed_wall_hours": 6.442689929935668
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+20",
+      "updates": 41956,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+20-muon-lr3",
+      "state": "finished",
+      "created_at": "2026-10-30T18:00:06Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793383295.5115986,
+          "train/loss": 11.808032989501953
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793383297.1111903,
+          "train/loss": 11.804827690124512
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793383298.734248,
+          "train/loss": 11.805108070373535
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793383300.5574796,
+          "train/loss": 11.801599502563477
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793383302.468957,
+          "train/loss": 11.799071311950684
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793383305.51119,
+          "train/loss": 11.792374610900879
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 10488,
+          "_timestamp": 1793394745.0422468,
+          "eval/paloma/macro_loss": 3.576958417892456
+        },
+        {
+          "_step": 20977,
+          "_timestamp": 1793406081.9909387,
+          "eval/paloma/macro_loss": 3.4657859802246094
+        },
+        {
+          "_step": 31466,
+          "_timestamp": 1793417459.8467734,
+          "eval/paloma/macro_loss": 3.3226451873779297
+        },
+        {
+          "_step": 41955,
+          "_timestamp": 1793428753.718048,
+          "eval/paloma/macro_loss": 3.206676721572876
+        }
+      ],
+      "first_logged_training_utc": "2026-10-30T18:01:35.511599+00:00",
+      "final_evaluation_elapsed_wall_hours": 12.627279569307962,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.576958417892456,
+          "first_observed_hit_utc": "2026-10-30T21:12:25.042247+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.1804251800643075,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.576958417892456,
+          "first_observed_hit_utc": "2026-10-30T21:12:25.042247+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.1804251800643075,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 20977,
+          "first_observed_hit_loss": 3.4657859802246094,
+          "first_observed_hit_utc": "2026-10-31T00:21:21.990939+00:00",
+          "first_observed_hit_elapsed_wall_hours": 6.32957759446568,
+          "previous_sample_step": 10488,
+          "previous_sample_loss": 3.576958417892456,
+          "previous_sample_elapsed_wall_hours": 3.1804251800643075
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 41955,
+          "first_observed_hit_loss": 3.206676721572876,
+          "first_observed_hit_utc": "2026-10-31T06:39:13.718048+00:00",
+          "first_observed_hit_elapsed_wall_hours": 12.627279569307962,
+          "previous_sample_step": 31466,
+          "previous_sample_loss": 3.3226451873779297,
+          "previous_sample_elapsed_wall_hours": 9.490093104110823
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+20",
+      "updates": 41956,
+      "optimizer": "muonh",
+      "lr_multiplier": 1,
+      "id": "hero-dense-opt-20261026-1e+20-muonh-lr1",
+      "state": "finished",
+      "created_at": "2026-10-31T00:56:54Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793408315.8735688,
+          "train/loss": 11.808032989501953
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793408317.9523525,
+          "train/loss": 11.804831504821777
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793408320.507206,
+          "train/loss": 11.805992126464844
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793408321.6277611,
+          "train/loss": 11.804729461669922
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793408324.5212905,
+          "train/loss": 11.80451488494873
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793408325.903837,
+          "train/loss": 11.802946090698242
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 10488,
+          "_timestamp": 1793419778.8390656,
+          "eval/paloma/macro_loss": 3.8236777782440186
+        },
+        {
+          "_step": 20977,
+          "_timestamp": 1793431088.7697709,
+          "eval/paloma/macro_loss": 3.624469757080078
+        },
+        {
+          "_step": 31466,
+          "_timestamp": 1793442357.2101977,
+          "eval/paloma/macro_loss": 3.3652758598327637
+        },
+        {
+          "_step": 41955,
+          "_timestamp": 1793453525.980865,
+          "eval/paloma/macro_loss": 3.1998119354248047
+        }
+      ],
+      "first_logged_training_utc": "2026-10-31T00:58:35.873569+00:00",
+      "final_evaluation_elapsed_wall_hours": 12.558363137841225,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 10488,
+          "first_observed_hit_loss": 3.8236777782440186,
+          "first_observed_hit_utc": "2026-10-31T04:09:38.839066+00:00",
+          "first_observed_hit_elapsed_wall_hours": 3.184157082438469,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 20977,
+          "first_observed_hit_loss": 3.624469757080078,
+          "first_observed_hit_utc": "2026-10-31T07:18:08.769771+00:00",
+          "first_observed_hit_elapsed_wall_hours": 6.325804500579834,
+          "previous_sample_step": 10488,
+          "previous_sample_loss": 3.8236777782440186,
+          "previous_sample_elapsed_wall_hours": 3.184157082438469
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 31466,
+          "first_observed_hit_loss": 3.3652758598327637,
+          "first_observed_hit_utc": "2026-10-31T10:25:57.210198+00:00",
+          "first_observed_hit_elapsed_wall_hours": 9.455926841364967,
+          "previous_sample_step": 20977,
+          "previous_sample_loss": 3.624469757080078,
+          "previous_sample_elapsed_wall_hours": 6.325804500579834
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 41955,
+          "first_observed_hit_loss": 3.1998119354248047,
+          "first_observed_hit_utc": "2026-10-31T13:32:05.980865+00:00",
+          "first_observed_hit_elapsed_wall_hours": 12.558363137841225,
+          "previous_sample_step": 31466,
+          "previous_sample_loss": 3.3652758598327637,
+          "previous_sample_elapsed_wall_hours": 9.455926841364967
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+20",
+      "updates": 56989,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+20-adamw-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T02:56:57Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069907.7217677,
+          "train/loss": 11.803382873535156
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069910.723829,
+          "train/loss": 11.80557918548584
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069912.840978,
+          "train/loss": 11.797776222229004
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069915.6596303,
+          "train/loss": 11.775060653686523
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069918.4866881,
+          "train/loss": 11.75792121887207
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069925.6277213,
+          "train/loss": 11.708670616149902
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 14246,
+          "_timestamp": 1793099379.1409504,
+          "eval/paloma/macro_loss": 3.247885227203369
+        },
+        {
+          "_step": 28493,
+          "_timestamp": 1793262922.47592,
+          "eval/paloma/macro_loss": 3.127516746520996
+        },
+        {
+          "_step": 42740,
+          "_timestamp": 1793347510.3850884,
+          "eval/paloma/macro_loss": 3.0134453773498535
+        },
+        {
+          "_step": 56987,
+          "_timestamp": 1793382869.4879363,
+          "eval/paloma/macro_loss": 2.9458656311035156
+        },
+        {
+          "_step": 56988,
+          "_timestamp": 1793382988.6491213,
+          "eval/paloma/macro_loss": 2.945930004119873
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:58:27.721768+00:00",
+      "final_evaluation_elapsed_wall_hours": 86.96692426489459,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.247885227203369,
+          "first_observed_hit_utc": "2026-10-27T11:09:39.140950+00:00",
+          "first_observed_hit_elapsed_wall_hours": 8.186505328549279,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.247885227203369,
+          "first_observed_hit_utc": "2026-10-27T11:09:39.140950+00:00",
+          "first_observed_hit_elapsed_wall_hours": 8.186505328549279,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.247885227203369,
+          "first_observed_hit_utc": "2026-10-27T11:09:39.140950+00:00",
+          "first_observed_hit_elapsed_wall_hours": 8.186505328549279,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.247885227203369,
+          "first_observed_hit_utc": "2026-10-27T11:09:39.140950+00:00",
+          "first_observed_hit_elapsed_wall_hours": 8.186505328549279,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 42740,
+          "first_observed_hit_loss": 3.0134453773498535,
+          "first_observed_hit_utc": "2026-10-30T08:05:10.385088+00:00",
+          "first_observed_hit_elapsed_wall_hours": 77.11185092243883,
+          "previous_sample_step": 28493,
+          "previous_sample_loss": 3.127516746520996,
+          "previous_sample_elapsed_wall_hours": 53.615209486749436
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 56987,
+          "first_observed_hit_loss": 2.9458656311035156,
+          "first_observed_hit_utc": "2026-10-30T17:54:29.487936+00:00",
+          "first_observed_hit_elapsed_wall_hours": 86.93382393572065,
+          "previous_sample_step": 42740,
+          "previous_sample_loss": 3.0134453773498535,
+          "previous_sample_elapsed_wall_hours": 77.11185092243883
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+20",
+      "updates": 56989,
+      "optimizer": "adamh",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+20-adamh-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T02:57:30Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069929.4677467,
+          "train/loss": 11.803382873535156
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069938.0601394,
+          "train/loss": 11.805577278137207
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069940.0219057,
+          "train/loss": 11.804597854614258
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069944.24526,
+          "train/loss": 11.799657821655273
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069946.6704705,
+          "train/loss": 11.798127174377441
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069953.6134276,
+          "train/loss": 11.78884506225586
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 14246,
+          "_timestamp": 1793173921.1937144,
+          "eval/paloma/macro_loss": 3.5263962745666504
+        },
+        {
+          "_step": 28493,
+          "_timestamp": 1793333652.713856,
+          "eval/paloma/macro_loss": 3.343873977661133
+        },
+        {
+          "_step": 42740,
+          "_timestamp": 1793374932.8928034,
+          "eval/paloma/macro_loss": 3.104310989379883
+        },
+        {
+          "_step": 56987,
+          "_timestamp": 1793405101.0964043,
+          "eval/paloma/macro_loss": 2.9713618755340576
+        },
+        {
+          "_step": 56988,
+          "_timestamp": 1793405217.4197464,
+          "eval/paloma/macro_loss": 2.970654010772705
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:58:49.467747+00:00",
+      "final_evaluation_elapsed_wall_hours": 93.13554222212898,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.5263962745666504,
+          "first_observed_hit_utc": "2026-10-28T07:52:01.193714+00:00",
+          "first_observed_hit_elapsed_wall_hours": 28.886590546568236,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.5263962745666504,
+          "first_observed_hit_utc": "2026-10-28T07:52:01.193714+00:00",
+          "first_observed_hit_elapsed_wall_hours": 28.886590546568236,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 28493,
+          "first_observed_hit_loss": 3.343873977661133,
+          "first_observed_hit_utc": "2026-10-30T04:14:12.713856+00:00",
+          "first_observed_hit_elapsed_wall_hours": 73.25645725256867,
+          "previous_sample_step": 14246,
+          "previous_sample_loss": 3.5263962745666504,
+          "previous_sample_elapsed_wall_hours": 28.886590546568236
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 42740,
+          "first_observed_hit_loss": 3.104310989379883,
+          "first_observed_hit_utc": "2026-10-30T15:42:12.892803+00:00",
+          "first_observed_hit_elapsed_wall_hours": 84.72317362685999,
+          "previous_sample_step": 28493,
+          "previous_sample_loss": 3.343873977661133,
+          "previous_sample_elapsed_wall_hours": 73.25645725256867
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 56987,
+          "first_observed_hit_loss": 2.9713618755340576,
+          "first_observed_hit_utc": "2026-10-31T00:05:01.096404+00:00",
+          "first_observed_hit_elapsed_wall_hours": 93.10323018266095,
+          "previous_sample_step": 42740,
+          "previous_sample_loss": 3.104310989379883,
+          "previous_sample_elapsed_wall_hours": 84.72317362685999
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 56987,
+          "first_observed_hit_loss": 2.9713618755340576,
+          "first_observed_hit_utc": "2026-10-31T00:05:01.096404+00:00",
+          "first_observed_hit_elapsed_wall_hours": 93.10323018266095,
+          "previous_sample_step": 42740,
+          "previous_sample_loss": 3.104310989379883,
+          "previous_sample_elapsed_wall_hours": 84.72317362685999
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+20",
+      "updates": 56989,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-3e+20-muon-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T02:57:31Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069943.2712054,
+          "train/loss": 11.803382873535156
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069945.6732063,
+          "train/loss": 11.80557918548584
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069953.5245168,
+          "train/loss": 11.804397583007812
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069955.6737068,
+          "train/loss": 11.79913330078125
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069958.4797688,
+          "train/loss": 11.79696273803711
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069961.7889762,
+          "train/loss": 11.786846160888672
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 14246,
+          "_timestamp": 1793298392.1876912,
+          "eval/paloma/macro_loss": 3.485347270965576
+        },
+        {
+          "_step": 28493,
+          "_timestamp": 1793347190.7201684,
+          "eval/paloma/macro_loss": 3.375453472137451
+        },
+        {
+          "_step": 42740,
+          "_timestamp": 1793379062.3497548,
+          "eval/paloma/macro_loss": 3.220647096633911
+        },
+        {
+          "_step": 56987,
+          "_timestamp": 1793407915.4752479,
+          "eval/paloma/macro_loss": 3.107304573059082
+        },
+        {
+          "_step": 56988,
+          "_timestamp": 1793408007.3594341,
+          "eval/paloma/macro_loss": 3.106992244720459
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:59:03.271205+00:00",
+      "final_evaluation_elapsed_wall_hours": 93.90669117463959,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.485347270965576,
+          "first_observed_hit_utc": "2026-10-29T18:26:32.187691+00:00",
+          "first_observed_hit_elapsed_wall_hours": 63.4580323571629,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.485347270965576,
+          "first_observed_hit_utc": "2026-10-29T18:26:32.187691+00:00",
+          "first_observed_hit_elapsed_wall_hours": 63.4580323571629,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.485347270965576,
+          "first_observed_hit_utc": "2026-10-29T18:26:32.187691+00:00",
+          "first_observed_hit_elapsed_wall_hours": 63.4580323571629,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 42740,
+          "first_observed_hit_loss": 3.220647096633911,
+          "first_observed_hit_utc": "2026-10-30T16:51:02.349755+00:00",
+          "first_observed_hit_elapsed_wall_hours": 85.86641070816252,
+          "previous_sample_step": 28493,
+          "previous_sample_loss": 3.375453472137451,
+          "previous_sample_elapsed_wall_hours": 77.01318026747968
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": false
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "3e+20",
+      "updates": 56989,
+      "optimizer": "muonh",
+      "lr_multiplier": 1,
+      "id": "hero-dense-opt-20261026-3e+20-muonh-lr1",
+      "state": "finished",
+      "created_at": "2026-10-27T02:57:30Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069940.507488,
+          "train/loss": 11.803382873535156
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069944.556883,
+          "train/loss": 11.805577278137207
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069952.263009,
+          "train/loss": 11.805378913879395
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069955.3808,
+          "train/loss": 11.802576065063477
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069958.1023242,
+          "train/loss": 11.802950859069824
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069960.2847514,
+          "train/loss": 11.798471450805664
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 14246,
+          "_timestamp": 1793209778.7196527,
+          "eval/paloma/macro_loss": 3.7194557189941406
+        },
+        {
+          "_step": 28493,
+          "_timestamp": 1793238458.8067803,
+          "eval/paloma/macro_loss": 3.524402379989624
+        },
+        {
+          "_step": 42740,
+          "_timestamp": 1793325773.2814867,
+          "eval/paloma/macro_loss": 3.239816665649414
+        },
+        {
+          "_step": 56987,
+          "_timestamp": 1793365484.4103527,
+          "eval/paloma/macro_loss": 3.0714869499206543
+        },
+        {
+          "_step": 56988,
+          "_timestamp": 1793365594.338744,
+          "eval/paloma/macro_loss": 3.0711474418640137
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:59:00.507488+00:00",
+      "final_evaluation_elapsed_wall_hours": 82.12606423775355,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.7194557189941406,
+          "first_observed_hit_utc": "2026-10-28T17:49:38.719653+00:00",
+          "first_observed_hit_elapsed_wall_hours": 38.84394782351123,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 14246,
+          "first_observed_hit_loss": 3.7194557189941406,
+          "first_observed_hit_utc": "2026-10-28T17:49:38.719653+00:00",
+          "first_observed_hit_elapsed_wall_hours": 38.84394782351123,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 42740,
+          "first_observed_hit_loss": 3.239816665649414,
+          "first_observed_hit_utc": "2026-10-30T02:02:53.281487+00:00",
+          "first_observed_hit_elapsed_wall_hours": 71.0646594440937,
+          "previous_sample_step": 28493,
+          "previous_sample_loss": 3.524402379989624,
+          "previous_sample_elapsed_wall_hours": 46.81063869231277
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 42740,
+          "first_observed_hit_loss": 3.239816665649414,
+          "first_observed_hit_utc": "2026-10-30T02:02:53.281487+00:00",
+          "first_observed_hit_elapsed_wall_hours": 71.0646594440937,
+          "previous_sample_step": 28493,
+          "previous_sample_loss": 3.524402379989624,
+          "previous_sample_elapsed_wall_hours": 46.81063869231277
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 56987,
+          "first_observed_hit_loss": 3.0714869499206543,
+          "first_observed_hit_utc": "2026-10-30T13:04:44.410353+00:00",
+          "first_observed_hit_elapsed_wall_hours": 82.09552857352628,
+          "previous_sample_step": 42740,
+          "previous_sample_loss": 3.239816665649414,
+          "previous_sample_elapsed_wall_hours": 71.0646594440937
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+21",
+      "updates": 113219,
+      "optimizer": "adamw",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+21-adamw-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T02:56:59Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069898.0816405,
+          "train/loss": 11.804479598999023
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069901.6272492,
+          "train/loss": 11.802498817443848
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069905.5098968,
+          "train/loss": 11.797636985778809
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069909.3351116,
+          "train/loss": 11.782877922058105
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069913.1761138,
+          "train/loss": 11.769770622253418
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069917.2663085,
+          "train/loss": 11.738262176513672
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 28303,
+          "_timestamp": 1793270720.144108,
+          "eval/paloma/macro_loss": 3.1178743839263916
+        },
+        {
+          "_step": 56607,
+          "_timestamp": 1793407729.9480507,
+          "eval/paloma/macro_loss": 3.012206554412842
+        },
+        {
+          "_step": 84911,
+          "_timestamp": 1793498025.7124915,
+          "eval/paloma/macro_loss": 2.899810791015625
+        },
+        {
+          "_step": 113215,
+          "_timestamp": 1793588074.2198415,
+          "eval/paloma/macro_loss": 2.8333353996276855
+        },
+        {
+          "_step": 113218,
+          "_timestamp": 1793588220.779604,
+          "eval/paloma/macro_loss": 2.833735466003418
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:58:18.081640+00:00",
+      "final_evaluation_elapsed_wall_hours": 143.97852721207673,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.1178743839263916,
+          "first_observed_hit_utc": "2026-10-29T10:45:20.144108+00:00",
+          "first_observed_hit_elapsed_wall_hours": 55.783906240993076,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.1178743839263916,
+          "first_observed_hit_utc": "2026-10-29T10:45:20.144108+00:00",
+          "first_observed_hit_elapsed_wall_hours": 55.783906240993076,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.1178743839263916,
+          "first_observed_hit_utc": "2026-10-29T10:45:20.144108+00:00",
+          "first_observed_hit_elapsed_wall_hours": 55.783906240993076,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.1178743839263916,
+          "first_observed_hit_utc": "2026-10-29T10:45:20.144108+00:00",
+          "first_observed_hit_elapsed_wall_hours": 55.783906240993076,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 56607,
+          "first_observed_hit_loss": 3.012206554412842,
+          "first_observed_hit_utc": "2026-10-31T00:48:49.948051+00:00",
+          "first_observed_hit_elapsed_wall_hours": 93.84218511395984,
+          "previous_sample_step": 28303,
+          "previous_sample_loss": 3.1178743839263916,
+          "previous_sample_elapsed_wall_hours": 55.783906240993076
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 84911,
+          "first_observed_hit_loss": 2.899810791015625,
+          "first_observed_hit_utc": "2026-11-01T01:53:45.712492+00:00",
+          "first_observed_hit_elapsed_wall_hours": 118.92434190306399,
+          "previous_sample_step": 56607,
+          "previous_sample_loss": 3.012206554412842,
+          "previous_sample_elapsed_wall_hours": 93.84218511395984
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": true,
+          "first_observed_hit_step": 84911,
+          "first_observed_hit_loss": 2.899810791015625,
+          "first_observed_hit_utc": "2026-11-01T01:53:45.712492+00:00",
+          "first_observed_hit_elapsed_wall_hours": 118.92434190306399,
+          "previous_sample_step": 56607,
+          "previous_sample_loss": 3.012206554412842,
+          "previous_sample_elapsed_wall_hours": 93.84218511395984
+        }
+      ]
+    },
+    {
+      "budget": "1e+21",
+      "updates": 113219,
+      "optimizer": "adamh",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+21-adamh-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T02:57:17Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069921.1934974,
+          "train/loss": 11.804479598999023
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069925.1625993,
+          "train/loss": 11.802499771118164
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069928.9179986,
+          "train/loss": 11.802474975585938
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069932.5261989,
+          "train/loss": 11.800274848937988
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069936.5066783,
+          "train/loss": 11.798145294189453
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069943.118118,
+          "train/loss": 11.793664932250977
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 28303,
+          "_timestamp": 1793401492.061065,
+          "eval/paloma/macro_loss": 3.394087553024292
+        },
+        {
+          "_step": 56607,
+          "_timestamp": 1793495552.0538425,
+          "eval/paloma/macro_loss": 3.213822603225708
+        },
+        {
+          "_step": 84911,
+          "_timestamp": 1793589640.5476553,
+          "eval/paloma/macro_loss": 2.98832368850708
+        },
+        {
+          "_step": 113215,
+          "_timestamp": 1793683609.8597631,
+          "eval/paloma/macro_loss": 2.8603787422180176
+        },
+        {
+          "_step": 113218,
+          "_timestamp": 1793683776.4856827,
+          "eval/paloma/macro_loss": 2.8610494136810303
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:58:41.193497+00:00",
+      "final_evaluation_elapsed_wall_hours": 170.51535894036294,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.394087553024292,
+          "first_observed_hit_utc": "2026-10-30T23:04:52.061065+00:00",
+          "first_observed_hit_elapsed_wall_hours": 92.10301876876089,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.394087553024292,
+          "first_observed_hit_utc": "2026-10-30T23:04:52.061065+00:00",
+          "first_observed_hit_elapsed_wall_hours": 92.10301876876089,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.394087553024292,
+          "first_observed_hit_utc": "2026-10-30T23:04:52.061065+00:00",
+          "first_observed_hit_elapsed_wall_hours": 92.10301876876089,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 56607,
+          "first_observed_hit_loss": 3.213822603225708,
+          "first_observed_hit_utc": "2026-11-01T01:12:32.053843+00:00",
+          "first_observed_hit_elapsed_wall_hours": 118.23079454031256,
+          "previous_sample_step": 28303,
+          "previous_sample_loss": 3.394087553024292,
+          "previous_sample_elapsed_wall_hours": 92.10301876876089
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 84911,
+          "first_observed_hit_loss": 2.98832368850708,
+          "first_observed_hit_utc": "2026-11-02T03:20:40.547655+00:00",
+          "first_observed_hit_elapsed_wall_hours": 144.3664872660902,
+          "previous_sample_step": 56607,
+          "previous_sample_loss": 3.213822603225708,
+          "previous_sample_elapsed_wall_hours": 118.23079454031256
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 84911,
+          "first_observed_hit_loss": 2.98832368850708,
+          "first_observed_hit_utc": "2026-11-02T03:20:40.547655+00:00",
+          "first_observed_hit_elapsed_wall_hours": 144.3664872660902,
+          "previous_sample_step": 56607,
+          "previous_sample_loss": 3.213822603225708,
+          "previous_sample_elapsed_wall_hours": 118.23079454031256
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": true,
+          "first_observed_hit_step": 113215,
+          "first_observed_hit_loss": 2.8603787422180176,
+          "first_observed_hit_utc": "2026-11-03T05:26:49.859763+00:00",
+          "first_observed_hit_elapsed_wall_hours": 170.46907396270169,
+          "previous_sample_step": 84911,
+          "previous_sample_loss": 2.98832368850708,
+          "previous_sample_elapsed_wall_hours": 144.3664872660902
+        }
+      ]
+    },
+    {
+      "budget": "1e+21",
+      "updates": 113219,
+      "optimizer": "muon",
+      "lr_multiplier": 3,
+      "id": "hero-dense-opt-20261026-1e+21-muon-lr3",
+      "state": "finished",
+      "created_at": "2026-10-27T02:56:56Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069909.1379802,
+          "train/loss": 11.804479598999023
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069912.901299,
+          "train/loss": 11.802498817443848
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069916.562795,
+          "train/loss": 11.802433013916016
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069923.5001202,
+          "train/loss": 11.800252914428711
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069927.168737,
+          "train/loss": 11.79794979095459
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069930.8996131,
+          "train/loss": 11.793389320373535
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 28303,
+          "_timestamp": 1793348635.9983008,
+          "eval/paloma/macro_loss": 3.395238161087036
+        },
+        {
+          "_step": 56607,
+          "_timestamp": 1793444999.678084,
+          "eval/paloma/macro_loss": 3.2945961952209473
+        },
+        {
+          "_step": 84911,
+          "_timestamp": 1793537660.1292977,
+          "eval/paloma/macro_loss": 3.136902332305908
+        },
+        {
+          "_step": 113215,
+          "_timestamp": 1793628033.8706203,
+          "eval/paloma/macro_loss": 3.029782295227051
+        },
+        {
+          "_step": 113218,
+          "_timestamp": 1793628191.6249413,
+          "eval/paloma/macro_loss": 3.031090497970581
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:58:29.137980+00:00",
+      "final_evaluation_elapsed_wall_hours": 155.07846860031287,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.395238161087036,
+          "first_observed_hit_utc": "2026-10-30T08:23:55.998301+00:00",
+          "first_observed_hit_elapsed_wall_hours": 77.42412786682446,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.395238161087036,
+          "first_observed_hit_utc": "2026-10-30T08:23:55.998301+00:00",
+          "first_observed_hit_elapsed_wall_hours": 77.42412786682446,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.395238161087036,
+          "first_observed_hit_utc": "2026-10-30T08:23:55.998301+00:00",
+          "first_observed_hit_elapsed_wall_hours": 77.42412786682446,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 84911,
+          "first_observed_hit_loss": 3.136902332305908,
+          "first_observed_hit_utc": "2026-11-01T12:54:20.129298+00:00",
+          "first_observed_hit_elapsed_wall_hours": 129.9308309215307,
+          "previous_sample_step": 56607,
+          "previous_sample_loss": 3.2945961952209473,
+          "previous_sample_elapsed_wall_hours": 104.19181669546498
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 113215,
+          "first_observed_hit_loss": 3.029782295227051,
+          "first_observed_hit_utc": "2026-11-02T14:00:33.870620+00:00",
+          "first_observed_hit_elapsed_wall_hours": 155.03464795556334,
+          "previous_sample_step": 84911,
+          "previous_sample_loss": 3.136902332305908,
+          "previous_sample_elapsed_wall_hours": 129.9308309215307
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    },
+    {
+      "budget": "1e+21",
+      "updates": 113219,
+      "optimizer": "muonh",
+      "lr_multiplier": 1,
+      "id": "hero-dense-opt-20261026-1e+21-muonh-lr1",
+      "state": "finished",
+      "created_at": "2026-10-27T02:56:56Z",
+      "first_training_rows": [
+        {
+          "_step": 0,
+          "_timestamp": 1793069904.6291072,
+          "train/loss": 11.804479598999023
+        },
+        {
+          "_step": 1,
+          "_timestamp": 1793069908.3662844,
+          "train/loss": 11.802498817443848
+        },
+        {
+          "_step": 2,
+          "_timestamp": 1793069911.801486,
+          "train/loss": 11.802968978881836
+        },
+        {
+          "_step": 3,
+          "_timestamp": 1793069915.454405,
+          "train/loss": 11.802115440368652
+        },
+        {
+          "_step": 4,
+          "_timestamp": 1793069919.2959805,
+          "train/loss": 11.801203727722168
+        },
+        {
+          "_step": 5,
+          "_timestamp": 1793069923.3208265,
+          "train/loss": 11.799601554870605
+        }
+      ],
+      "evaluations": [
+        {
+          "_step": 28303,
+          "_timestamp": 1793277226.7401907,
+          "eval/paloma/macro_loss": 3.6552486419677734
+        },
+        {
+          "_step": 56607,
+          "_timestamp": 1793408724.4898198,
+          "eval/paloma/macro_loss": 3.4287233352661133
+        },
+        {
+          "_step": 84911,
+          "_timestamp": 1793495884.746148,
+          "eval/paloma/macro_loss": 3.1784842014312744
+        },
+        {
+          "_step": 113215,
+          "_timestamp": 1793582283.0579567,
+          "eval/paloma/macro_loss": 3.036374092102051
+        },
+        {
+          "_step": 113218,
+          "_timestamp": 1793582434.817655,
+          "eval/paloma/macro_loss": 3.037168264389038
+        }
+      ],
+      "first_logged_training_utc": "2026-10-27T02:58:24.629107+00:00",
+      "final_evaluation_elapsed_wall_hours": 142.36949681884713,
+      "thresholds": [
+        {
+          "threshold": 4.0,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.6552486419677734,
+          "first_observed_hit_utc": "2026-10-29T12:33:46.740191+00:00",
+          "first_observed_hit_elapsed_wall_hours": 57.589475300974314,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.75,
+          "observed_hit": true,
+          "first_observed_hit_step": 28303,
+          "first_observed_hit_loss": 3.6552486419677734,
+          "first_observed_hit_utc": "2026-10-29T12:33:46.740191+00:00",
+          "first_observed_hit_elapsed_wall_hours": 57.589475300974314,
+          "previous_sample_step": null,
+          "previous_sample_loss": null,
+          "previous_sample_elapsed_wall_hours": null
+        },
+        {
+          "threshold": 3.5,
+          "observed_hit": true,
+          "first_observed_hit_step": 56607,
+          "first_observed_hit_loss": 3.4287233352661133,
+          "first_observed_hit_utc": "2026-10-31T01:05:24.489820+00:00",
+          "first_observed_hit_elapsed_wall_hours": 94.11662797570229,
+          "previous_sample_step": 28303,
+          "previous_sample_loss": 3.6552486419677734,
+          "previous_sample_elapsed_wall_hours": 57.589475300974314
+        },
+        {
+          "threshold": 3.25,
+          "observed_hit": true,
+          "first_observed_hit_step": 84911,
+          "first_observed_hit_loss": 3.1784842014312744,
+          "first_observed_hit_utc": "2026-11-01T01:18:04.746148+00:00",
+          "first_observed_hit_elapsed_wall_hours": 118.32781028913126,
+          "previous_sample_step": 56607,
+          "previous_sample_loss": 3.4287233352661133,
+          "previous_sample_elapsed_wall_hours": 94.11662797570229
+        },
+        {
+          "threshold": 3.1,
+          "observed_hit": true,
+          "first_observed_hit_step": 113215,
+          "first_observed_hit_loss": 3.036374092102051,
+          "first_observed_hit_utc": "2026-11-02T01:18:03.057957+00:00",
+          "first_observed_hit_elapsed_wall_hours": 142.32734134707187,
+          "previous_sample_step": 84911,
+          "previous_sample_loss": 3.1784842014312744,
+          "previous_sample_elapsed_wall_hours": 118.32781028913126
+        },
+        {
+          "threshold": 3.0,
+          "observed_hit": false
+        },
+        {
+          "threshold": 2.9,
+          "observed_hit": false
+        }
+      ]
+    }
+  ]
+}

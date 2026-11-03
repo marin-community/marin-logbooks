@@ -569,3 +569,110 @@ Paloma loss than MuonH at 1e21. Optimizer and selected LR schedule both
 differ between recipes. These results do not establish statistical
 significance or optimizer-optimal scaling. AdamH's final and time-to-loss
 analysis remain pending.
+
+## 2026-11-03 UTC: All 28 selected finals verified
+
+AdamH completed the 1e21-FLOP recipe with final Paloma macro loss 2.8610494
+and final logged training loss 1.7120358. It completed 113,219 updates and
+59,359,363,072 tokens. W&B finished at zero-based step 113,218; Iris reports
+success with zero application failures. Its permanent checkpoint records
+update 113,219 at 05:29:56 UTC with `is_temporary=false`; metadata, both
+manifests and the data directory are present.
+
+The [final result audit](final-results-20261103.json) contains all 28 selected
+finals: four recipes at seven budgets, including the four selected 1e18
+calibrations. It reconciles finite finished W&B metrics, Iris success and
+permanent checkpoint metadata and directory contents. The selected calibration
+exports were checked again at 05:33 UTC. This verifies metadata and object
+presence; full tensors were not read back or checksummed. All twelve
+calibrations and eight endpoint smoke gates had succeeded.
+
+At 05:32 UTC, the coordinator and all 24 jobs in its final execution tree
+reported succeeded. This tree contains the 24 runs above 1e18; the four
+selected calibration runs completed separately. Muon's parent display now agrees with its retained
+successful-completion event. The earlier status discrepancy is resolved;
+SIGTERM and rank-0 SIGKILL after Muon's success event still leave clean
+process teardown unestablished. No manual status change, relaunch, extra job
+or allocation change was made. No selected training jobs remain active or
+queued.
+
+Paloma macro loss is the unweighted mean across Paloma dataset tags of
+their per-token next-token cross-entropy losses, in nats/token. See the
+[evaluation configuration](https://github.com/marin-community/marin-logbooks/blob/5e46cfb93934c8c5e9a218f45117685887410d59/experiments/grug/moe_hero_ep/hero_recipe.py#L143)
+and [aggregation](https://github.com/marin-community/marin-logbooks/blob/5e46cfb93934c8c5e9a218f45117685887410d59/lib/levanter/src/levanter/eval.py#L636).
+
+Final held-out Paloma macro loss (lower is better):
+
+| Budget FLOPs | AdamW | AdamH | Muon | MuonH |
+|---|---:|---:|---:|---:|
+| 1e+18 | 3.9749632 | 4.0136013 | 3.9614902 | 4.1018953 |
+| 3e+18 | 3.6471548 | 3.6804385 | 3.6458344 | 3.7363629 |
+| 1e+19 | 3.4312277 | 3.4478655 | 3.4735656 | 3.5279951 |
+| 3e+19 | 3.2401280 | 3.2703621 | 3.3161674 | 3.3562994 |
+| 1e+20 | 3.0864096 | 3.1003621 | 3.2066767 | 3.1998119 |
+| 3e+20 | 2.9459300 | 2.9706540 | 3.1069922 | 3.0711474 |
+| 1e+21 | 2.8337355 | 2.8610494 | 3.0310905 | 3.0371683 |
+
+Muon has the lowest observed final loss at 1e18 and 3e18; its advantage over
+AdamW at 3e18 is 0.0013204. AdamW has the lowest at each budget from 1e19
+through 1e21. At 1e21, its Paloma loss is 0.0273139 below AdamH, 0.1973550
+below Muon and 0.2034328 below MuonH. Muon is 0.0060778 below MuonH. Final
+logged training losses at this rung are AdamW 1.6886252, AdamH 1.7120358,
+Muon 1.8646038 and MuonH 1.8673214; these individual final batches are not
+averaged training-loss estimates.
+
+These compare the recipes defined in the
+[initial design](#2026-10-26-initial-design-and-launch-contract), with shared
+architecture, seed 0, token order and update count at each budget. LR
+multipliers remain AdamW=3, AdamH=3, Muon=3 and MuonH=1, transferred from the
+1e18 multiplier grid {0.3, 1, 3}. AdamW, AdamH and Muon won at its upper boundary.
+One seed, limited LR search and transferred rates constrain the comparison;
+no statistical significance, optimizer-optimal scaling or causal explanation
+for the gaps is established. The authorized scope ends at these 28 runs;
+no further training is scheduled.
+
+## 2026-11-03 UTC: Observed time to Paloma thresholds
+
+The [time-to-loss evidence](time-to-loss-20261103.json) includes the sparse
+Paloma evaluation history for all 28 selected runs and first observed hits
+at descriptive loss thresholds 4.0, 3.75, 3.5, 3.25, 3.1, 3.0 and 2.9.
+These round thresholds were selected after seeing the ladder. Reproduce the
+derived results without network access using:
+
+```bash
+python logbooks/15-hero-dense-optimizers/time_to_loss.py \
+  --input logbooks/15-hero-dense-optimizers/time-to-loss-20261103.json \
+  --output /tmp/hero-dense-time-to-loss-recomputed.json
+```
+
+Elapsed hours use evaluation UTC minus the UTC of each run's first logged
+training update (zero-based step 0). They include subsequent waits,
+preemptions, replay, evaluations and saves, and exclude scheduling, startup
+and compilation before that first update. W&B `_runtime` and last-attempt
+durations are not used. This measures operational latency for this execution;
+uninterrupted training time and optimizer compute efficiency are not
+established. Models and schedules also differ across budgets.
+
+At 1e21, the previous sampled evaluation and first observed evaluation at or
+below each threshold occurred at these elapsed hours:
+
+| Recipe | Paloma <=3.1: previous above / first hit (h) | Paloma <=3.0: previous above / first hit (h) | Final evaluation (h) |
+|---|---:|---:|---:|
+| AdamW | 55.78 / 93.84 | 93.84 / 118.92 | 143.98 |
+| AdamH | 118.23 / 144.37 | 118.23 / 144.37 | 170.52 |
+| Muon | 129.93 / 155.03 | no recorded hit | 155.08 |
+| MuonH | 118.33 / 142.33 | no recorded hit | 142.37 |
+
+Evaluations normally occur every quarter of the update budget and at the
+final update. The intervals above locate adjacent sampled evaluations;
+unsampled non-monotonic crossings are possible, so they do not establish
+exact first crossing times. No interpolation was applied. “No recorded hit”
+means that none of the retained evaluations met the threshold. Queueing,
+preemption and replay differed between runs, so this ordering cannot be
+attributed to optimizer speed. The one-seed, limited-LR and upper-boundary
+selection caveats of the final loss comparison also apply.
+
+The authorized seven-rung ladder and its requested loss/time-to-loss analysis
+are complete. Preserve the published research branch and final checkpoints.
+The heartbeat can stop after the evidence and issue closeout are published;
+no further training or recovery action is scheduled.
