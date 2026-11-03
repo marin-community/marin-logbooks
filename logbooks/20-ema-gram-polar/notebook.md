@@ -4646,6 +4646,16 @@ The native run reports 16 TPU v4 devices across four hosts and the expected FLOP
 
 Follow 29414 remains the sole observer. The next routine canonical check is no earlier than 23:43:53 UTC. The matrix candidate remains unsubmitted; both variants retain the final counter 7630 schedule and loss-first acceptance criterion.
 
+### November 3, 23:49 UTC — original continuation completes five finite updates
+
+The original replicated continuation has logged finite losses for labels 924–928: 4.93143, 5.33822, 5.44402, 5.22129 and 5.10353. Local incremental JSON metrics contain all five updates; the W&B history read contains labels 924–927 and matches those local values exactly. All four tasks remain running on attempt 0 without failures or preemptions at the canonical 23:49 UTC check. The [first-update evidence](loss-pair-original-first-updates.json) retains individual losses, times, source identities and the scope of each observation.
+
+The first native step took 531.46 seconds including compilation. The following four took 45.586–45.644 seconds each. Using 80,353,469,399,040 model FLOPs per batch-8 update and the verified 4.4 PFLOP/s v4-32 peak gives 0.04001–0.04006% MFU for those four updates. The native metric is already a percentage; treating 0.040 as a fraction would overstate utilization by 100 times. These are early samples outside the designated steady window and remain far below the 5% target. Loading and post-step hook times are logged separately.
+
+Five ordinary updates completed with finite logged losses; this observation does not check every intermediate tensor or optimizer-state value. The watch-enabled executable for label 929 has lowered to HLO but has no completed metric in this observation. Native artifact names are counterintuitive: `train_step_hooks` denotes the ordinary path and `train_step` the watch-enabled path. Profile label 940 and later evaluation/checkpoint stages still require observation; no complete training-memory assessment is claimed. One truncated hparams log record was excluded from metric parsing; all ten loss/throughput JSON records parsed, and every reported MFU was independently reproduced from its duration.
+
+The candidate remains unsubmitted, so no paired loss or speed result exists. Follow 29414 remains the sole observer, with the next routine canonical check no earlier than 23:58:57 UTC. Both variants retain final counter 7630; the original continues before the matrix candidate.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

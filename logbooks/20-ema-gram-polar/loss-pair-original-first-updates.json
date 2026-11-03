@@ -1,0 +1,120 @@
+{
+  "observed_utc": "2026-11-03T23:49:27Z",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-loss-pair-replicated-v4-32-20261103",
+  "execution_source": "7b357fae4545635f75c232a037901f4b5489859d",
+  "canonical_status": "All four tasks RUNNING attempt0 failures0/preemptions0",
+  "canonical_evidence": [
+    {
+      "path": "scratch/20261103-original-2349-job.txt",
+      "bytes": 582,
+      "sha256": "947290cd03d3707b1c122410498aa18f7f39e2f4dab6fb2128caa22e122f99be"
+    },
+    {
+      "path": "scratch/20261103-original-2349-task0.txt",
+      "bytes": 617,
+      "sha256": "4a36894a4f1fcbda5a48cde07f15bfc2cf96d7087a57e16ac50b25cf806cade0"
+    },
+    {
+      "path": "scratch/20261103-original-2349-task1.txt",
+      "bytes": 617,
+      "sha256": "7fc54de8646989f2899ac42c0493972f8607b4befc99a1f6589bbf23a6b30e3c"
+    },
+    {
+      "path": "scratch/20261103-original-2349-task2.txt",
+      "bytes": 617,
+      "sha256": "8281125c561d72fe01784d44305d474f6c4525ce125c7d2fb499c4d1dfe60753"
+    },
+    {
+      "path": "scratch/20261103-original-2349-task3.txt",
+      "bytes": 617,
+      "sha256": "fe2b3d86d92b48e6b42e4add9329e13276953d608ac9c4c80e8f5bd7d886afdf"
+    }
+  ],
+  "rows": [
+    {
+      "label": 924,
+      "loss": 4.931427955627441,
+      "native_step_seconds": 531.463777578,
+      "mfu_percent": 0.0034361988354822963
+    },
+    {
+      "label": 925,
+      "loss": 5.338220596313477,
+      "native_step_seconds": 45.58564434500022,
+      "mfu_percent": 0.04006119118978391
+    },
+    {
+      "label": 926,
+      "loss": 5.44401741027832,
+      "native_step_seconds": 45.63880415699987,
+      "mfu_percent": 0.04001452814872778
+    },
+    {
+      "label": 927,
+      "loss": 5.221286773681641,
+      "native_step_seconds": 45.59784480600001,
+      "mfu_percent": 0.040050472152452304
+    },
+    {
+      "label": 928,
+      "loss": 5.103525638580322,
+      "native_step_seconds": 45.64391860900014,
+      "mfu_percent": 0.0400100444762087
+    }
+  ],
+  "wandb": {
+    "state": "running",
+    "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.11.03.21-1100fafdef3a",
+    "history_labels": [
+      924,
+      925,
+      926,
+      927
+    ],
+    "evidence": {
+      "path": "scratch/20261103-original-2349-wandb.json",
+      "bytes": 10722,
+      "sha256": "0c13b90e1acb0d61c87523f27e6866e066df28040186127912866736f26d0bac"
+    },
+    "history_matches_local_metrics_exactly": true
+  },
+  "local_metric_rows": 10,
+  "unparsed_nonmetric_rows": [
+    {
+      "prefix": "{\"tracker\": \"json_logger\", \"event\": \"hparams\", \"hparams\": {\"data\": {\"tokenizer\": \"meta-lla",
+      "reason": "Truncated hparams JSON; not a training metric row"
+    }
+  ],
+  "mfu_units": "percent; source explicitly multiplies model_flops_per_second / theoretical_flops by 100",
+  "mfu_source": {
+    "path": "lib/levanter/src/levanter/callbacks/_metrics.py",
+    "bytes": 7840,
+    "sha256": "1fda722c467e0422d9cbeb854566c6471b3f9d4da5c17f2e3aac5d3e9be16cfc"
+  },
+  "flops_per_update": 80353469399040,
+  "aggregate_peak_flops_per_second": 4400000000000000,
+  "formula_reproduces_all_rows": true,
+  "timing_scope": "Native step interval; first update includes compilation; excludes separately logged loading and post-step hooks. Early observations, not designated steady window.",
+  "ordinary_finite_labels": [
+    924,
+    925,
+    926,
+    927,
+    928
+  ],
+  "watch_enabled_label929_completed": false,
+  "watch_stage_lines": [
+    "[23:46:47] task=/kaiyuew@stanford.edu/ema-gram-20-loss-pair-replicated-v4-32-20261103/0 attempt=0 | I20261103 23:46:46 139680566469440 levanter.trainer Lowered train_step in 2.8s",
+    "[23:46:51] task=/kaiyuew@stanford.edu/ema-gram-20-loss-pair-replicated-v4-32-20261103/1 attempt=0 | I20261103 23:46:46 139965763965760 levanter.trainer Lowered train_step in 2.7s",
+    "[23:46:51] task=/kaiyuew@stanford.edu/ema-gram-20-loss-pair-replicated-v4-32-20261103/3 attempt=0 | I20261103 23:46:45 140543378916160 levanter.trainer Lowered train_step in 2.1s",
+    "[23:46:52] task=/kaiyuew@stanford.edu/ema-gram-20-loss-pair-replicated-v4-32-20261103/2 attempt=0 | I20261103 23:46:45 139915208102720 levanter.trainer Lowered train_step in 2.1s"
+  ],
+  "artifact_naming": "trainer.py uses train_step_hooks for ordinary no-hook path and train_step for watch-enabled path; hook selection uses (state.step+1)%interval.",
+  "training_memory_scope": "Ordinary path completed five updates with finite losses; no all-intermediate or state-finiteness assertion. Watch/profile/evaluation/checkpoint paths not yet established. No peak RSS or total HBM claim.",
+  "candidate_submitted": false,
+  "paired_loss_result": false,
+  "final_counter": 7630,
+  "observer_session": 29414,
+  "next_canonical_check_not_before": "2026-11-03T23:58:57Z",
+  "cold_read": "Narrowed finite-execution wording to completed updates with finite losses; no other concrete clarity findings."
+}
