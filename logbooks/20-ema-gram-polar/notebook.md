@@ -4541,6 +4541,12 @@ Both prepared training configurations now request 256 GiB per host. Their model,
 
 The [failure record](full-restore-failed.json) preserves canonical status and the assertion. The [corrected validation](full-restore-counter-validation.json) records fresh finished W&B runs and exact source hashes; CPU success does not validate the original TPU checkpoint. The [prepared follow-up](full-restore-counter-prepared.json) uses a new output version, `2026.11.03.24`, and a new job identity after source publication. It remains a non-training audit with four v4-32 hosts, 120 CPUs/256 GiB/50 GiB each in us-central2, default preemption/retries and no wall-clock limits. All previous jobs remain terminal.
 
+### November 3, 21:41 UTC — corrected counter audit accepted
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-stored-counter-audit-v4-32-20261103` at 21:41:06 UTC from published source `b55656b4c2fd364292b75aeaee765698cbd9fc56`. Source SHA256 is `49f551e2c101ea2b9fde522a651312e95df8d53aa5c0eb3a2b55ac70faac2011`. The [submission record](full-restore-counter-submitted.json) identifies output version `2026.11.03.24`, unchanged audit resources and the sole follow observer, session 37396. Canonical job/task reads at 21:42:50–52 UTC show all four tasks pending, with no attempts, failures or preemptions. The initial check began 17 seconds before the requested two-minute wait; this monitoring deviation is recorded, and no duplicate check was made.
+
+This is the sole active job. It performs no training update and must produce all four successful state/data reports before restoration is accepted. The old failed audit remains terminal. The next routine canonical check is no earlier than 21:52:22 UTC; asynchronous failure or completion evidence may justify earlier diagnosis. Paired training remains unsubmitted, and PR monitoring remains handed off.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
