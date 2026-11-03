@@ -4547,6 +4547,16 @@ Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-stored-counter-audit-v4-32-2026
 
 This is the sole active job. It performs no training update and must produce all four successful state/data reports before restoration is accepted. The old failed audit remains terminal. The next routine canonical check is no earlier than 21:52:22 UTC; asynchronous failure or completion evidence may justify earlier diagnosis. Paired training remains unsubmitted, and PR monitoring remains handed off.
 
+### November 3, 21:52 UTC — specify paired loss and speed measurements while restore is queued
+
+The sole corrected restore audit remains pending on all four tasks, with no attempts, failures or preemptions at the canonical 21:52:42–44 UTC check. Follow session 37396 remains the observer; the next routine canonical check is no earlier than 22:02:14 UTC. Queueing is not a failure and no replacement job is authorized by the wait.
+
+The [measurement protocol](loss-pair-measurement-protocol.md) specifies complete matched-step loss histories, separate attempt/checkpoint ancestry, and steady-step versus end-to-end time. Static source/configuration checks confirm both prepared runs enable native NaN and Inf loss guards. If stored counter 924 is independently verified, the continuation has 6,706 updates remaining, starts at data example offset 7,392 and logs new losses at labels 924 through 7629. Evaluation callbacks use the next-step counter, so the first scheduled evaluation label is 1525; final forced hooks may repeat label 7629 and must not be silently merged.
+
+The first designated steady-step window is labels 1000–1099, subject to the documented process/recompilation warmup rule. It is a measurement window, not a training limit. The full schedule remains 7630. The protocol retains the existing model-FLOP definition and aggregate hardware peak, reports restart/restore/compile/evaluation overhead separately, and treats single-seed variation as descriptive rather than seed-level uncertainty. No loss-equivalence margin is invented.
+
+No numerical kernels, new job or training were launched for this preparation. The original saved-state check still needs both a direction on unchanged saved Gram/momentum and a full update with fixed synthetic gradients, retaining input immutability. The historical cost script's strict equivalence assertions require adjustment before reuse under the loss-first criterion; no such numerical change is implemented here. All four regional restore/data reports and full-training memory/finite checks remain outstanding.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
