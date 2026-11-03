@@ -1,0 +1,1290 @@
+{
+  "graphs": {
+    "matrix_untouched": {
+      "down_proj/polar/2/B_X/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13947",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2074",
+              "slice-done.2075",
+              "slice-done.2076",
+              "slice-done.2077"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13947 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2074, %slice-done.2075, %slice-done.2076, %slice-done.2077), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144929",
+            "context": [
+              "main.530_spmd/fusion.144929"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.629",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144933",
+              "fusion.144932"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.629 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144933, %fusion.144932), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          },
+          "polar_role": {
+            "group": "down_proj",
+            "iteration": 2,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/polar/2/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114138",
+            "context": [
+              "main.530_spmd/async-collective-done.34"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13317",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328780",
+              "param_1.318627",
+              "all-gather.988",
+              "param_2.241464",
+              "param_3.121976",
+              "param_4.73383",
+              "param_5.31129",
+              "param_6.13981",
+              "param_7.6145",
+              "param_8.2832"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13317 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328780, %param_1.318627, %all-gather.988, %param_2.241464, %param_3.121976, /*index=5*/%param_4.73383, %param_5.31129, %param_6.13981, %param_7.6145, %param_8.2832), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13951",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2090",
+              "slice-done.2091",
+              "slice-done.2092",
+              "slice-done.2093"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13951 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2090, %slice-done.2091, %slice-done.2092, %slice-done.2093), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.145031",
+            "context": [
+              "main.530_spmd/fusion.145031"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.651",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145035",
+              "fusion.145034"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+            "instruction": "%convolution-base-dilated.651 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145035, %fusion.145034), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          },
+          "polar_role": {
+            "group": "up_proj",
+            "iteration": 4,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114180",
+            "context": [
+              "main.530_spmd/async-collective-done.46"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13365",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328894",
+              "param_1.318705",
+              "all-gather.1072",
+              "param_2.241560",
+              "param_3.122066",
+              "param_4.73473",
+              "param_5.31219",
+              "param_6.14071",
+              "param_7.6235",
+              "param_8.2922"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13365 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328894, %param_1.318705, %all-gather.1072, %param_2.241560, %param_3.122066, /*index=5*/%param_4.73473, %param_5.31219, %param_6.14071, %param_7.6235, %param_8.2922), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ]
+    },
+    "matrix_evaluate": {
+      "down_proj/polar/2/B_X/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13947",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2074",
+              "slice-done.2075",
+              "slice-done.2076",
+              "slice-done.2077"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13947 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2074, %slice-done.2075, %slice-done.2076, %slice-done.2077), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144929",
+            "context": [
+              "main.530_spmd/fusion.144929"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.629",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144933",
+              "fusion.144932"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+            "instruction": "%convolution-base-dilated.629 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144933, %fusion.144932), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "polar_role": {
+            "group": "down_proj",
+            "iteration": 2,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/polar/2/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114138",
+            "context": [
+              "main.530_spmd/async-collective-done.34"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13317",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328780",
+              "param_1.318627",
+              "all-gather.988",
+              "param_2.241464",
+              "param_3.121976",
+              "param_4.73383",
+              "param_5.31129",
+              "param_6.13981",
+              "param_7.6145",
+              "param_8.2832"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13317 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328780, %param_1.318627, %all-gather.988, %param_2.241464, %param_3.121976, /*index=5*/%param_4.73383, %param_5.31129, %param_6.13981, %param_7.6145, %param_8.2832), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13951",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2090",
+              "slice-done.2091",
+              "slice-done.2092",
+              "slice-done.2093"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13951 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2090, %slice-done.2091, %slice-done.2092, %slice-done.2093), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.145031",
+            "context": [
+              "main.530_spmd/fusion.145031"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.651",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145035",
+              "fusion.145034"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+            "instruction": "%convolution-base-dilated.651 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145035, %fusion.145034), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "polar_role": {
+            "group": "up_proj",
+            "iteration": 4,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114180",
+            "context": [
+              "main.530_spmd/async-collective-done.46"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13365",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328894",
+              "param_1.318705",
+              "all-gather.1072",
+              "param_2.241560",
+              "param_3.122066",
+              "param_4.73473",
+              "param_5.31219",
+              "param_6.14071",
+              "param_7.6235",
+              "param_8.2922"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13365 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328894, %param_1.318705, %all-gather.1072, %param_2.241560, %param_3.122066, /*index=5*/%param_4.73473, %param_5.31219, %param_6.14071, %param_7.6235, %param_8.2922), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ]
+    },
+    "matrix_capture": {
+      "down_proj/polar/2/B_X/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13950",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2088",
+              "slice-done.2089",
+              "slice-done.2090",
+              "slice-done.2091"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13950 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2088, %slice-done.2089, %slice-done.2090, %slice-done.2091), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144930",
+            "context": [
+              "main.530_spmd/fusion.144930"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.629",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144934",
+              "fusion.144933"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+            "instruction": "%convolution-base-dilated.629 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144934, %fusion.144933), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "polar_role": {
+            "group": "down_proj",
+            "iteration": 2,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/polar/2/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114139",
+            "context": [
+              "main.530_spmd/async-collective-done.34"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13317",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328784",
+              "param_1.318630",
+              "all-gather.993",
+              "param_2.241466",
+              "param_3.121976",
+              "param_4.73383",
+              "param_5.31129",
+              "param_6.13981",
+              "param_7.6145",
+              "param_8.2832"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13317 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328784, %param_1.318630, %all-gather.993, %param_2.241466, %param_3.121976, /*index=5*/%param_4.73383, %param_5.31129, %param_6.13981, %param_7.6145, %param_8.2832), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13954",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2104",
+              "slice-done.2105",
+              "slice-done.2106",
+              "slice-done.2107"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13954 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2104, %slice-done.2105, %slice-done.2106, %slice-done.2107), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.145032",
+            "context": [
+              "main.530_spmd/fusion.145032"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.651",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145036",
+              "fusion.145035"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+            "instruction": "%convolution-base-dilated.651 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145036, %fusion.145035), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "polar_role": {
+            "group": "up_proj",
+            "iteration": 4,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114181",
+            "context": [
+              "main.530_spmd/async-collective-done.46"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13365",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328898",
+              "param_1.318708",
+              "all-gather.1077",
+              "param_2.241562",
+              "param_3.122066",
+              "param_4.73473",
+              "param_5.31219",
+              "param_6.14071",
+              "param_7.6235",
+              "param_8.2922"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13365 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328898, %param_1.318708, %all-gather.1077, %param_2.241562, %param_3.122066, /*index=5*/%param_4.73473, %param_5.31219, %param_6.14071, %param_7.6235, %param_8.2922), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ]
+    },
+    "matrix_substitute": {
+      "down_proj/polar/2/B_X/0": [
+        {
+          "record": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13963",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2077",
+              "slice-done.2078",
+              "slice-done.2079",
+              "slice-done.2080"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13963 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2077, %slice-done.2078, %slice-done.2079, %slice-done.2080), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144917",
+            "context": [
+              "main.529_spmd/fusion.144917"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.619",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144921",
+              "fusion.144920"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}",
+            "instruction": "%convolution-base-dilated.619 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144921, %fusion.144920), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+          },
+          "polar_role": {
+            "group": "down_proj",
+            "iteration": 2,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/polar/2/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114140",
+            "context": [
+              "main.529_spmd/async-collective-done.38"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13333",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328770",
+              "param_1.318610",
+              "all-gather.992",
+              "param_2.241461",
+              "param_3.121973",
+              "param_4.73380",
+              "param_5.31127",
+              "param_6.13979",
+              "param_7.6143",
+              "param_8.2830"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13333 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328770, %param_1.318610, %all-gather.992, %param_2.241461, %param_3.121973, /*index=5*/%param_4.73380, %param_5.31127, %param_6.13979, %param_7.6143, %param_8.2830), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/0": [
+        {
+          "record": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13967",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2093",
+              "slice-done.2094",
+              "slice-done.2095",
+              "slice-done.2096"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13967 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2093, %slice-done.2094, %slice-done.2095, %slice-done.2096), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.145019",
+            "context": [
+              "main.529_spmd/fusion.145019"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.641",
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.145023",
+              "fusion.145022"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}",
+            "instruction": "%convolution-base-dilated.641 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145023, %fusion.145022), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+          },
+          "boundary": {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+          },
+          "polar_role": {
+            "group": "up_proj",
+            "iteration": 4,
+            "product": "scaled_A_A"
+          },
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "up_proj/polar/4/B_X/1": [
+        {
+          "record": {
+            "computation": "fused_computation.114182",
+            "context": [
+              "main.529_spmd/async-collective-done.50"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13381",
+            "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328884",
+              "param_1.318688",
+              "all-gather.1076",
+              "param_2.241557",
+              "param_3.122063",
+              "param_4.73470",
+              "param_5.31217",
+              "param_6.14069",
+              "param_7.6233",
+              "param_8.2920"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13381 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328884, %param_1.318688, %all-gather.1076, %param_2.241557, %param_3.122063, /*index=5*/%param_4.73470, %param_5.31217, %param_6.14069, %param_7.6233, %param_8.2920), custom_call_target=\"AsyncCollectiveDone\""
+          },
+          "boundary": {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 4,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 5,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 6,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 7,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 8,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 9,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Coverage joins exact graph/caller/computation/instruction/empty tuple path of complete saved trace roots.",
+    "Each operand position retained, including repeated operands. Record presence alone is not input coverage.",
+    "Covered declared inputs do not establish opaque output semantics or input runtime values.",
+    "Source product roles come from dependency-mapped column polar lineage; no text-order matching."
+  ]
+}

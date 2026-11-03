@@ -69,7 +69,7 @@ def compare(report):
     return dict(
         graphs=result,
         limitations=[
-            "Endpoints selected by dependency-mapped group/iteration/product and verified unique entry callers.",
+            "Endpoints selected from four agreeing saved frontier contexts and dependency-mapped polar roles.",
             "Signatures retain declarations, attributes, constant literals, ordered connections and boundary labels.",
             "Instruction/computation identifiers and source wrappers normalized; channel/chain IDs retained.",
             "Difference walker stops at unaligned subtrees. Recursive hashes do not distinguish sharing.",
