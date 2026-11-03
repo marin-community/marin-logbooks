@@ -3003,6 +3003,25 @@ observer 85107 follows this task; PR observer 77099 remains live. Preserve the
 job through compilation and collect both solver branches before selecting any
 further diagnostic. Large compiler artifacts stay regional.
 
+## 2026-11-03 09:58 UTC — Original evaluator replay passed
+
+The [single-denominator diagnostic](optimizer-single-norm-capture-partial.json)
+remains running on attempt 0. Five stages are finite, and the unchanged original
+Jaxpr evaluator replayed bitwise on the same fingerprinted inputs. The run is
+compiling the original solver's extra-output capture. Its all-28-leaf reference
+checks and the matrix branch remain pending.
+
+Schema-confirmed Finelog telemetry contains 72 host-memory samples through
+09:57:05 UTC, with an observed cumulative peak of 58.13 GiB against the 128 GiB
+reservation. Accelerator memory is null in these rows, so they do not measure
+HBM. The original capture Jaxpr preserves 851 equations and has 29 output leaves;
+its small artifact passed SHA, size and gzip readback. Large compiler artifacts
+remain regional and have no new SHA readback claim here.
+
+Preserve the job and sole log observer through compilation. No new diagnostic,
+optimizer acceptance or warmed-performance claim follows from this partial
+snapshot.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

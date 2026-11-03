@@ -1,0 +1,200 @@
+{
+  "verified_utc": "2026-11-03T09:57:29.453222+00:00",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-single-norm-capture-v5e-8-20261103",
+  "state": "RUNNING",
+  "attempt": 0,
+  "attempt_uid": "551e2aad6d8c",
+  "canonical_verified_utc": "2026-11-03T09:56:34Z",
+  "source_commit": "95ae974e58e1c3f83c79574c57f89ee19bb3b9e6",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.10/ema-gram-20-attribution-8854b678361e/report.json",
+  "snapshot_sha256": "ef4d350e8ed3d354078882eef233ee2eef1de0af27b16d8d0fffdcdc32c4b393",
+  "active_stage": "capture/original/extra_outputs/compile",
+  "finite_stages": 5,
+  "comparisons": 1,
+  "passed_comparisons": 1,
+  "capture_gates": {},
+  "original_program": {
+    "mapping": {
+      "q_proj": {
+        "equation_index": 145,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "k_proj": {
+        "equation_index": 254,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "v_proj": {
+        "equation_index": 363,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "o_proj": {
+        "equation_index": 472,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "gate_proj": {
+        "equation_index": 581,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          4096,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "up_proj": {
+        "equation_index": 692,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          4096,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "down_proj": {
+        "equation_index": 803,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          4096
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      }
+    },
+    "original_equations": 851,
+    "extended_equations": 851,
+    "original_output_leaves": 28,
+    "capture_kind": "q_norm",
+    "capture_output_leaves": 29,
+    "appended_output_leaves": 1,
+    "equations_preserved_by_identity": true,
+    "input_and_constant_variables_preserved": true,
+    "jaxpr_artifact": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.10/ema-gram-20-attribution-8854b678361e/capture_program_original.jaxpr.txt.gz",
+      "sha256": "4eabaff9a7bce91af493be2c9b221669f0b04ff70e31d4adf7b1b861350ff9cc",
+      "compressed_bytes": 7935
+    }
+  },
+  "jaxpr_sha_size_gzip_readback": true,
+  "fixed_executables": {
+    "original_evaluate": {
+      "compile_count": 1,
+      "compile_seconds": 11.027969307993772,
+      "compiler_artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.10/ema-gram-20-attribution-8854b678361e/capture__original__evaluate.stablehlo.txt.gz",
+          "sha256": "e461d01245771d2ae46dc8a14ef31d1abf1e29daf1081a93136208a0e8772659",
+          "compressed_bytes": 86719
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.10/ema-gram-20-attribution-8854b678361e/capture__original__evaluate.optimized_hlo.txt.gz",
+          "sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+          "compressed_bytes": 10049115
+        }
+      },
+      "input_shardings": "((NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device)), (GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device))))",
+      "output_shardings": "((NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device)), (GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device))))",
+      "invocation_order": [
+        "identical_inputs",
+        "identical_inputs_replay"
+      ],
+      "input_sha256": {
+        "identical_inputs": "767b28f52ea849e010ac0da5543b43a2b8da4ed1efd3fab5a63a48d649dc4ff1"
+      },
+      "replay_bitwise_equal": true
+    }
+  },
+  "memory": {
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "window_utc": [
+      "2026-11-03T09:49:00Z",
+      "2026-11-03T09:57:30Z"
+    ],
+    "query": "SELECT task_id, attempt_id, worker_id, \"cluster\", count(*) AS samples,\n min(ts) AS first_ts, max(ts) AS last_ts,\n max(memory_peak_mb)/1024.0 AS cumulative_host_peak_gib,\n max(memory_mb)/1024.0 AS sampled_host_peak_gib,\n max(cpu_millicores) AS peak_cpu_millicores,\n max(accelerator_mem_bytes) AS reported_accelerator_mem_bytes\nFROM \"iris.task\"\nWHERE task_id='/kaiyuew@stanford.edu/ema-gram-20-single-norm-capture-v5e-8-20261103/0'\n AND attempt_id=0\n AND ts >= TIMESTAMP '2026-11-03 09:49:00'\n AND ts < TIMESTAMP '2026-11-03 09:57:30'\nGROUP BY task_id, attempt_id, worker_id, \"cluster\"\n",
+    "rows": [
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-single-norm-capture-v5e-8-20261103/0",
+        "attempt_id": 0,
+        "worker_id": "marin-tpu-v5e-serving-8-us-west4-a-20261102-1425-f3ce3efc-worker-0",
+        "cluster": null,
+        "samples": 72,
+        "first_ts": "2026-11-03 09:49:15.100000",
+        "last_ts": "2026-11-03 09:57:05.266000",
+        "cumulative_host_peak_gib": 58.1298828125,
+        "sampled_host_peak_gib": 58.1298828125,
+        "peak_cpu_millicores": 96384,
+        "reported_accelerator_mem_bytes": null
+      }
+    ],
+    "semantics": "memory_peak_mb is cumulative observed host peak in MiB; hub rows may lag. Null accelerator telemetry is not HBM measurement."
+  },
+  "limitations": "Still running; reference gates pending. Single calls include compilation; no warmed performance or MFU. Large compiler artifacts remain regional; no new SHA readback claim for them."
+}
