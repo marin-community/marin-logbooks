@@ -4475,6 +4475,20 @@ The next static decision is to inspect the four declared operands of the two new
 
 The sole follow observer ended naturally with exit 0. No experiment, queue or observer remains active. Old jobs stay terminal, PR monitoring stays handed off, and the research heartbeat remains active.
 
+### November 3 — prioritize training loss and measured speed
+
+The user clarified that the practical criterion is comparable training loss, rather than strict numerical equivalence. The research priority is now a paired training comparison of the original and candidate implementations. The existing `rtol=atol=1e-5` checks remain recorded diagnostics; failing that equivalence threshold alone no longer blocks a training-quality experiment. This changes the acceptance criterion, not the measured results, source precision, full Gram geometry or every-update refresh.
+
+The latest direct candidate-versus-original comparison has relative Frobenius errors of approximately 0.70% for q/k/v/o update directions and 2.90% for gate/up/down, while all 21 state outputs pass the numerical threshold. These are single-update differences, not measured training-loss degradation. The input-replacement diagnostic feeds each path its own captured intermediate values and checks whether it reproduces that path's untouched outputs. Those self-checks fail, which is a separate comparison and still prevents causal claims about the untouched executable. No loss-equivalence or training-speed improvement is established yet.
+
+Defer further compiler-boundary expansion unless it becomes necessary to explain an observed training problem. The interrupted four-operand o-product audit reached only local preflight: saved records suffice, but no validated result was published and no job was launched. Its draft selector is preserved under scratch. Existing opaque-output and causal limitations remain valid.
+
+Next, prepare the paired training experiment from published implementations. Match model, global batch 8, data ordering, seed, optimizer hyperparameters and initialization or a verified full checkpoint restore. Preserve the original 7,630-step schedule; do not silently shorten it or introduce queue/task/training/watchdog wall-clock limits. Compare training and validation loss at matched steps and progress against measured wall-clock time. Record actual steady training throughput/MFU; the performance target remains an absolute steady training MFU above 5%, not a 5% relative improvement. Do not infer loss quality from update-norm error or substitute synthetic timing for training MFU. Quantify any loss gap and its variability before declaring it acceptable; no numerical loss-equivalence margin has been specified.
+
+The remaining preparation is operational validation: confirm the selected published entrypoints and configurations, verify full model/optimizer/data-position restore if resuming, and run the required online logging check and CPU harness for any new numerical implementation. Keep finite-output, configuration, restoration and logging checks. Report numerical-equivalence failures transparently rather than treating them as training outcomes. Preserve fresh online W&B runs for fresh processes, default preemption/retries and evidence across attempts. Keep large checkpoint arrays in their existing region. Any GPU launch requires an allocation-retention holder.
+
+No training run was launched by this priority change. No experiment or observer is active; all old jobs remain terminal and must not be repolled or restarted. PR monitoring remains handed off without replacement or manual polling. The existing research heartbeat stays active and follows this loss-first priority.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

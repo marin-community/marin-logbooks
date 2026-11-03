@@ -221,265 +221,12 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "status": "Completed on TPU:13finite stages/26comparisons/4pass; no accepted candidate",
-    "objective": "Hold direction compilation fixed while comparing refreshed-state banks, then compare evaluator layouts on identical banks.",
-    "controls": [
-      "Keep original full fused original/matrix reference directions and all returned updated state banks.",
-      "Fingerprint three banks: separate common refresh, fused-original returned state, fused-matrix returned state. Preserve full geometry and exact values.",
-      "Compile one original direction-only executable and one matrix-eigensolver direction-only executable, with identical input/output shardings. No refresh inside these evaluators.",
-      "Evaluate all three banks through each fixed executable, one executable at a time, blocking and host-offloading outputs. Reuse the executable across banks so this control changes only input values.",
-      "Compare the two evaluators on identical banks; compare different banks under the same evaluator; compare direction-only outputs to original fused references. Fixed rtol=atol=1e-5.",
-      "Capture compiler manifests and verify checksums regionally when consuming larger objects; keep all previous artifacts in their region.",
-      "CPU-validate logging, full comparison harness and unchanged science before one sequential TPU submission from published source."
-    ],
-    "memory": "Three3.46GBhoststatebanks plus retaineddirections; one executable/deviceoutputbank at a time. Preserve per-case memory reports.",
-    "limitations": [
-      "Removing refresh from the executable changes compilation. Comparisons to full fused references are perturbation controls, not accepted optimizations.",
-      "No change to numerical tolerance, precision, number of polar steps, Gram refresh cadence or scientific protocol.",
-      "No new accelerator request or training in this design.",
-      "These controls hold one factor fixed per comparison but do not fully disentangle input/compiler interactions."
-    ],
-    "promotion_gate": "Any later optimization still requires paired full-update numerical/memory/performance checks, regional saved-state validation, full trainer restore and actual steady training MFU.",
-    "mode": "--state-crossfeed",
-    "expected_collection": {
-      "finite_stages": 13,
-      "comparisons": 26,
-      "compiler_files": 8,
-      "fixed_direction_executables": 2,
-      "invocations_per_executable": 4
-    },
-    "replay_control": "After all three banks, replay common through the same executable; compare and record bitwise equality.",
-    "cpu_command": "Explicit worktree PYTHONPATH, JAX_PLATFORMS=cpu, XLA_FLAGS=--xla_force_host_platform_device_count=8, published GIT_COMMIT; uv run --no-sync python logbooks/20-ema-gram-polar/optimizer_attribution.py --smoke --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.crossfeed-smoke",
-    "preflight": "optimizer-state-crossfeed-preflight.json",
-    "submission": {
-      "job_name": "ema-gram-20-state-crossfeed-v5e-8-20261103",
-      "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2",
-      "tpu": "v5litepod-8",
-      "chips": 8,
-      "hosts": 1,
-      "cpu": 96,
-      "memory": "128GB",
-      "disk": "50GB",
-      "region": "us-west4",
-      "priority": "batch",
-      "preemption_retries": "Iris default, no override",
-      "runtime_limit": null,
-      "source": "Published preflight commit; unchanged script SHA f3d26d7ace3711b131111c055d1e30ecd40011a46591e88246cfa3f678182213",
-      "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-state-crossfeed-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT <published-preflight-commit> -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2"
-    },
-    "completion": "optimizer-state-crossfeed-v5e-completed.json",
-    "completed_evidence": "compiler-outer-bindings-completed.json",
-    "next_decision": {
-      "state": "Static design only; not implemented or submitted",
-      "question": "Which declared producer/caller bindings lie immediately behind the remaining outer-product async and ConcatBitcast boundaries, and what is the role of the changed gate producer route?",
-      "procedure": "Use outer-bindings report plus existing column inventory/entry/closure records first. For matrix gate/down and passing up/o controls, locate opaque AsyncCollectiveDone/ConcatBitcast endpoints by output dependency and source scope; recover declared caller operands, tuple projections and matching async-start records where unambiguous. Keep opaque labels and distinguish conservative input roles from exact semantics. Inspect gate tuple-projection versus copy-done route with caller context. Down final-direction comparison differs only in two channel IDs within the bounded normalized trace; do not interpret channel renumbering as numerical cause. No text-order alignment, global variable overwrite or silent boundary crossing.",
-      "execution": "If needed, publish exact source/manifest/checksums before targeted regional CPU-only us-west4 extraction; verify HLO size/SHA before parsing. Large HLO stays regional. No accelerator, kernels or W&B needed for static parsing.",
-      "interpretation": "Both numerical full28leaf substitution gates remain failed. No runtime values, precision, summation order, hidden identity or cause inferred; no numerical intervention selected.",
-      "future_numerical_gate": "Any new numerical implementation needs own fresh online CPU logging/harness validation and exact published source before ONE sequential TPU. Full28leaf rtol=atol=1e-5 unchanged.",
-      "completed_evidence": "compiler-boundary-inputs-completed.json",
-      "next_decision": {
-        "state": "Completed static start-input producer extraction; numerical gates remain failed",
-        "question": "Which declared all-gather and product producers feed the matched AsyncCollectiveStart operands on the final outer-product routes?",
-        "procedure": "Use boundary-input auxiliary report, saved column inventory selected operations/entry records and outer traces first. Identify the final direct gram_direction product operand frontiers by output dependency; distinguish them from upstream covariance/eigensolver boundaries. Trace the declared single input of each relevant AsyncCollectiveStart through its emitted all-gather record and caller bindings toward first product/source roles. Keep start/done/ConcatBitcast semantics opaque and record missing scopes explicitly. Compare matrix gate/down with passing up/o and paired-capture controls; no text-order or rawordinal alignment. Gate trace-scalar extra copy pair also occurs in passing capture and is not sufficient to identify numerical cause.",
-        "execution": "If missing records require extraction, publish exact source/manifest/checksums before CPU-only regional us-west4 reads with HLO SHA/size verification. Large HLO staysregional; retrieve bounded records only. No audit accelerator or kernels/W&B.",
-        "interpretation": "Both full28leaf numerical substitution gates remain failed; no runtime values, precision, summation order, hidden identity or cause inferred. No new numerical or precision/tiling intervention selected.",
-        "future_numerical_gate": "Fresh online CPU logging/harness validation and exact published source before ONE sequential TPU for any new numerical implementation; fixed full28leaf rtol=atol=1e-5 unchanged.",
-        "completed_evidence": "compiler-start-producers-completed.json",
-        "next_decision": {
-          "state": "Completed static product-input extraction; both numerical full28leaf gates remain failed",
-          "question": "Which declared operands feed the newly reached gate/up direct products and down/o fifth-step B_X plus ConcatBitcast branches?",
-          "procedure": "Use saved start-producer report, column inventory, outer and boundary traces first. Select by output dependency and source scopes. Inspect both operands of gate/up direct gram_direction products; distinguish left-Gram-power and polar roles only where compiled bindings support them. For down/o, trace the declared fifth-step B_X/output-combination inputs and the ConcatBitcast declared operands without making its output transparent. Retain paired-capture and passing up/o controls, caller contexts, repeated operands and missing/opaque boundaries. No inference from unselected sibling S(1) tags or channel/chain renumbering.",
-          "execution": "Any needed extraction requires published exact source/manifest/checksums before regional CPU-only us-west4 HLO SHA/size verification. No audit accelerator, kernels, W&B or large HLO transfer.",
-          "interpretation": "Both numerical full28leaf substitution gates remain failed; no runtime values, precision, summation order, hidden identity or cause claimed. No new numerical/precision/tiling intervention selected.",
-          "future_numerical_gate": "Own fresh online non-training CPU logging and numerical harness validation plus exact published source before ONE sequential TPU diagnostic; fixed full28leaf rtol=atol=1e-5.",
-          "completed_evidence": "compiler-product-inputs-completed.json",
-          "next_decision": {
-            "state": "Completed static extraction; see compiler-polar-boundaries-completed.json",
-            "question": "Which declared producer records feed the remaining down/o fifth-step B_X operand-1 Done boundaries and gate/up polar-input ConcatBitcast boundaries?",
-            "procedure": "Use product-input/start/outer/boundary reports and column inventory first. Select endpoints by output dependency, group, endpoint kind and explicit operand position. For down/o product operand1, match Done declared operands to Start identities where unambiguous and inspect Start declared inputs toward earlier polar-product/source roles. For gate/up product operand1, inspect declared ConcatBitcast input routes without making its output transparent. Retain paired-capture and passing up/o controls, caller arguments, tuple projections, repeated positions and explicit missing/opaque records. All six inspected down routes match despite numerical failure; channel renumbering and changed passing-o copy routes do not establish cause.",
-            "execution": "If needed, publish exact extraction source/manifest/checksums before regional CPU-only us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer. Preserve default preemption retries and no wall-clock limits.",
-            "interpretation": "Both numerical full28leaf substitution gates remain failed. Static roles/record equality are not runtime values, semantic identity, precision/order or cause. No numerical/precision/tiling intervention selected.",
-            "future_numerical_gate": "Own fresh online non-training logging check and online CPU numerical harness validation plus exact published source before ONE sequential TPU diagnostic; all28leaf rtol=atol=1e-5 unchanged.",
-            "completed_evidence": {
-              "completion": "compiler-polar-boundaries-completed.json",
-              "comparison": "compiler-polar-boundaries-comparison.json",
-              "validation": "compiler-polar-boundaries-validation.json",
-              "control_signatures": "30 evaluator and 30 paired-capture match; substitution26match/4differ; both full numerical gates remain failed"
-            },
-            "next_decision": {
-              "state": "Completed local saved-record consolidation",
-              "question": "Which remaining product and opaque-boundary frontiers are already covered by saved records, and which caller/operand bindings remain unresolved?",
-              "procedure": "Consolidate product-input, polar-boundary, start, outer and boundary reports plus column inventory by graph, caller context, computation, instruction and tuple path. Preserve ordered/repeated operand edges and source-role labels. Classify each frontier as already inspected, newly bound to a declared product/source, missing-record, or semantically opaque; keep output opacity separate from coverage. Select further work by unresolved output dependencies rather than repeated text-order traversal. Preserve paired-capture and passing up/o controls. Do not infer cause from channel IDs or the changed passing-o copy route.",
-              "execution": "Use saved records first. Any needed extraction requires published exact source/manifest/checksums before CPU-only regional us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer; default preemption retries and no wall-clock limits.",
-              "interpretation": "Both full28leaf numerical substitution gates remain failed. No runtime values, precision/order, semantic identity, causal acceptance or numerical intervention selected.",
-              "future_numerical_gate": "Own fresh online non-training logging check and online CPU numerical harness validation plus exact published source before ONE sequential TPU diagnostic; all28leaf rtol=atol=1e-5 unchanged.",
-              "completed_evidence": "compiler-record-coverage-completed.json",
-              "next_decision": {
-                "state": "Static design only; not implemented or submitted",
-                "question": "Which declared operand producers feed the fourteen uninspected product frontiers per matrix graph, and which connections differ from passing controls?",
-                "procedure": "Use compiler-record-coverage-summary.json exact graph/context/computation/instruction selectors and saved records first. Four of28 scoped operand declarations exist in inventory but none of28 is present in saved traces in the same caller context. Preserve all14 targets, source roles, output dependencies, ordered/repeated operands, tuple projections and caller arguments. Ten targets map to gate B_X4/5,up B_X5,down B_X3/4 andscaled_A_A5,o B_X2/3/4 andscaled_A_A5;four others are outsidepolar map. Preserve untouched/evaluator/pairedcapture/substitution andpassingup/o controls. Trace only needed producer/caller records; keep opaque Start/Done/Concat/while outputs opaque. Do not repeat alreadycovered boundary expansion or equate matchingrecords withvalues.",
-                "execution": "Any needed extraction requires exact published source/manifest/checksums before regional CPU-only us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer; default preemption retries and no wall-clock limits.",
-                "interpretation": "Both full28leaf numerical gates still failed; no runtimevalues/precision/order/semanticidentity/cause or numerical intervention selected.",
-                "future_numerical_gate": "Own fresh online non-training logging check and online CPU harness validation plus exact published source before ONE sequential TPU diagnostic; all28leaf rtol=atol=1e-5 unchanged.",
-                "completion": "compiler-frontier-operands-completed.json: all14targets/28operands recovered; evaluator28/28 andpairedcapture28/28 signaturesmatch,substitution17/28. Bothnumericalgatesstillfailed.",
-                "next_decision": {
-                  "state": "Static design only; not implemented or submitted",
-                  "question": "Which declared Done-to-Start input bindings lie behind the newly exposed down scaled_A_A step5 operand1 route, and how do passing controls compare?",
-                  "procedure": "Use frontier operand/down-route report plus saved boundary, polar-boundary, column inventory and coverage records FIRST. Select down step5 scaled_A_A operand1 Done endpoints by output dependency and exact caller context; trace declared Done operands to a common Start identity only where unambiguous, then inspect declared Start input. Preserve paired-capture controls and passing o polar-product input routes, tuple projections, ordered/repeated positions and source roles. Keep Start/Done/Concat/while outputs opaque. Do not repeat already covered boundary expansions or infer cause from the added copy pair. No assumed ordinal or text-order pairing.",
-                  "execution": "Any needed extraction requires exact published source/manifest/checksums before regional CPU-only us-west4 HLO size/SHA verified parsing. No audit accelerator, kernels/W&B or large HLO transfer; default preemption retries and no wall-clock limits.",
-                  "interpretation": "Both full28leaf numerical substitution gates remain failed. Static records do not establish values, precision, order, semantic identity or cause. No numerical intervention selected.",
-                  "future_numerical_gate": "Own fresh online non-training logging check and online CPU harness validation plus exact published source before ONE sequential TPU; all28leaf rtol=atol=1e-5 unchanged.",
-                  "completion": "compiler-frontier-collectives-completed.json: evaluator26/26,capture25/26;sub15alignedall differ plus4unalignedConcatinputs. Down only boundedS1/channelchanges;originaloutputsopaque.",
-                  "next_decision": {
-                    "state": "Static design only; not implemented or submitted",
-                    "question": "Which declared inputs feed the remaining down ConcatBitcast at the matched Start input, and which earlier polar/source roles do they reach?",
-                    "procedure": "Use current frontier-collectives report and saved reports/inventory/coverage first. Select the unique ConcatBitcast frontier of down scaled_A_A step5 operand1 matchedStart input by exact caller/context/record, not text order. All four graphs have four declared inputs, none with existing exact-context endpoint-input traces across the seven saved reports inspected. Preserve untouched/evaluator/pairedcapture/substitution and passing o controls; reuse alreadyinspected o routes without pairing different endpoint kinds. Trace only missing producer/caller records; retain repeated edges, tuple projections, source/polar role checks and all opaque outputs. S(1), channel IDs and copy insertion do not establish cause.",
-                    "execution": "Any needed extraction requires published exactsource/manifest/checksums before CPU-only regional us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer; defaultpreemption and no wall-clock limits.",
-                    "interpretation": "Both full28leaf numerical substitution gates remain failed; no runtime values, precision, order, hiddenidentity, cause or numerical intervention selected.",
-                    "future_numerical_gate": "Own fresh online non-training logging and online CPU harness validation plus exact source before ONE sequential TPU; all28leaf rtol=atol=1e-5 unchanged.",
-                    "completion": "compiler-down-concat-completed.json: all4inputroutesrecovered; evaluator/capture4/4samepositions;sub0/4butunique fullsignaturemapping[2,3,0,1],opaqueoutputsemanticsremainunknown.",
-                    "next_decision": {
-                      "state": "Completed static extraction; see compiler-step5-gram-inputs-completed.json",
-                      "question": "Which declared producers feed the two operands of the newly reached down step5 X_Xt product, relative to corresponding passing up/o controls?",
-                      "procedure": "Use current downConcat slices/report, exact caller identities, prior reports and column polar lineage FIRST. Select down/up/o step5 X_Xt by dependency-mapped group/product/iteration and verify source scope; never text order or assumed ordinals. Check existing input coverage before extraction. Trace both operand bindings only to next product/source/opaque boundary, preserving repeated uses, tuple projections and caller arguments. Retain pairedcapture and passingup/o controls. Keep Concat/Start/Done/while outputs opaque; [2,3,0,1] signature mapping does not establish data permutation semantics, runtime order or cause.",
-                      "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-only us-west4 regional HLO SHA/size parse. No audit accelerator/kernels/W&B/largeHLOtransfer; defaultpreemption/no limits.",
-                      "interpretation": "Both full28leaf numerical substitution gates failed; no numerical/precision/tilingintervention or optimization/training/MFU acceptance selected.",
-                      "future_numerical_gate": "Own freshonlineCPUlogging/harnessvalidation and exactpublishedsource beforeONEsequentialTPU; full28leafrtol=atol=1e-5 unchanged.",
-                      "evidence": "Allsix bounded routes match across evaluator/pairedcapture/substitution versus untouched. All remain semantically opaque; original numerical gates failed.",
-                      "next_decision": {
-                        "state": "Completed static extraction; see compiler-step5-concat-inputs-completed.json",
-                        "question": "Which declared producers feed the twelve uncovered down/up/o Concat inputs reached by fifth-step X_Xt operand0?",
-                        "procedure": "Use current step5 Gram report/frontier coverage and eight saved reports plus inventory FIRST. Select endpoints by actual operand0 dependencies and exact caller contexts, not names/ordinals/textorder. Preserve allfour declared input positions pergroup and pairedcapture/passingup/o controls. Reuse already covered downBX3/4 and down/oDone inputs; do not repeat expansion. UpDone ten input positions remain separately uninspected. Stop at next product/source/opaque boundary; preserve ordered repeated edges and tuple projections. Opaque outputs remain opaque even with input coverage.",
-                        "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-only us-west4 HLO SHA/size parse; defaultpreemption/no limits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
-                        "interpretation": "Both full28leaf numerical substitution gates FAILED. Allsix matching bounded signatures and prior slice mapping do not establish input values/semanticidentity/runtimeprecision/order/cause. No numerical/precision/tiling intervention selected.",
-                        "future_numerical_gate": "Own freshonlineCPUlogging/harnessvalidation and publishedsource beforeONEsequentialTPU; full28leafrtol=atol=1e-5 unchanged.",
-                        "evidence": "All12 evaluator/capture signatures match; all8 down/up substitution match; four o routes differ at one shared copy record and remain passing numerical controls. Both full28leaf numerical gates failed.",
-                        "next_decision": {
-                          "state": "Completed static extraction; see compiler-earlier-bx-inputs-completed.json",
-                          "question": "Which declared producers feed the four uncovered operands of down iteration2 B_X and up iteration4 B_X?",
-                          "procedure": "Use current step5 Concat report/frontier coverage and saved reports/inventory FIRST. Select by dependency-mapped group/iteration/product and exact caller context; retain both explicit operand positions. Reuse covered o iteration2/3/4 product inputs as passing controls, preserving paired capture. Trace only missing producer/caller records to next product/source/opaque boundary. Newly reached down/upConcat inputs remain uncovered; oConcat inputs covered only in substitution, not controls; upDone gap remains separately recorded. Do not repeat covered expansion or pair different endpoint kinds. Keep ordered/repeated edges, tuple projections, source roles and opaque outputs.",
-                          "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-only us-west4 HLO SHA/size parse; defaultpreemption/no limits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
-                          "interpretation": "Both full28leaf numerical gates FAILED. Eight matching down/up substitution routes and four passing-o copy differences are not input equality/runtimeprecision/order/semanticidentity/cause. No numerical/precision/tiling intervention selected.",
-                          "future_numerical_gate": "Own freshonlineCPUlogging/harnessvalidation and publishedsource beforeONEsequentialTPU; full28leafrtol=atol=1e-5 unchanged.",
-                          "evidence": "All4 new operand signatures match across evaluator/capture/substitution. Operand0 reaches same-iteration scaled_A_A and opaqueConcat; operand1 opaqueDone. Both numericalfull28gates failed.",
-                          "next_decision": {
-                            "state": "Completed static extraction; see compiler-earlier-bindings-completed.json",
-                            "question": "Which declared producers feed the 32 uncovered product/Concat/Done input positions behind downBX2 and upBX4?",
-                            "procedure": "Use CURRENTearlierBXreport/frontiercoverage plus allsavedreports/inventory FIRST. Batch four scaled_A_A productoperands, eightConcatinputs and20Doneinputs selected by exactcaller/outputdependencies and sourcepolarroles. Match eachDone teninputs toonecommonStartidentity onlywhereunambiguous; separatelyinspect itsdeclaredsingleinput, retainingoriginalDone/Startoutputopacity. Preserve explicitordered/repeatedpositions,tuplepaths/source roles,pairedcapture. Reuse alreadycovered o productcontrols withsameHLO checks; do not repeatcoveredexpansion orpairdifferentendpointkinds. OlderremainingConcat/upDone gaps remainrecorded. Coverage isnotsemantics.",
-                            "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-onlyus-west4HLOSHA/sizeparse; defaultpreemption/nolimits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
-                            "interpretation": "Both full28leaf numerical gatesFAILED. All4 boundedroute matches and priorpassingcontrol differences are notruntimeinputequality/precision/order/semanticidentity/cause. No numerical/precision/tiling interventionselected.",
-                            "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsource beforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
-                            "evidence": "All34 evaluator/capture routes match; substitution30/34, differences bounded to channel/chain IDs. Both numerical full28leaf gates remain failed.",
-                            "next_decision": {
-                              "state": "Completed static extraction; see compiler-upstream-bindings-completed.json",
-                              "question": "Which declared producers feed the 36 newly uncovered product/Concat/Done input positions?",
-                              "procedure": "Use current earlier-bindings report/frontier coverage plus all saved reports and inventory first. Inspect eight product operands (down2 X_Xt, down1 B_X, up4 X_Xt, up3 B_X), eight Concat inputs and twenty Done inputs by exact caller/output dependencies. Match Done inputs to one common Start identity only where unambiguous; separately inspect its single input. Retain ordered repeated edges, tuple projections, source roles, paired capture and reused o controls. Reuse current covered Start/Concat inputs; do not repeat expansion or pair different endpoint kinds. Older gaps remain recorded; coverage is not semantics.",
-                              "execution": "Publish exact source/manifest/checksums before any CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
-                              "interpretation": "All opaque outputs remain opaque; both full28leaf numerical gates FAILED. Bounded matches and channel/chain IDs do not establish runtime inputs, precision, order, semantic identity or cause. No numerical/precision/tiling intervention selected.",
-                              "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
-                              "evidence": "All38 evaluator/capture signatures match; substitution30/38. Down combined-AR selected projection differs5to6, but separate selected-input bounded subtree matches; no runtime identity or cause. Both numerical gates remain failed.",
-                              "next_decision": {
-                                "state": "Completed static extraction; see compiler-norm-polar-inputs-completed.json",
-                                "question": "Which declared producers feed the 48 uncovered input positions, including down normalization's nonpolar product?",
-                                "procedure": "Use current upstream-bindings report/frontier coverage and down-norm-projection supplement plus saved reports/inventory first. Inspect eight product operands (down1 scaled_A_A, up3 scaled_A_A, up2 B_X, and nonpolar down gram_direction product), twenty inputs across five Concat endpoints and twenty inputs across two Done endpoints. Identify the nonpolar product by actual normalization dependency/source scope, not text order or a guessed polar role. Preserve exact callers, ordered repeated positions, tuple projections, paired capture and reused passing controls. Match Done inputs to a common Start only where unambiguous and inspect Start input separately. Reuse covered inputs; opaque outputs remain opaque. Older gaps remain recorded.",
-                                "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
-                                "interpretation": "Both full28leaf numerical gates FAILED. Shared projection changes and matching selected producer subtrees do not establish runtime values, precision/order, identity or cause. No numerical/precision/tiling intervention selected.",
-                                "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
-                                "evidence": "All50 evaluator/capture signatures match; substitution45/50. Down nonpolar product inputs reach another directproduct and right-state/Gram-refresh/relative-power frontiers. Previously seen normalization projection recurs; no runtime identity or cause. Both numerical gates failed.",
-                                "next_decision": {
-                                  "state": "Completed static extraction; see compiler-gram-source-inputs-completed.json",
-                                  "question": "Which declared producers feed the 52 uncovered input positions on down normalization/right-Gram and earlier polar routes?",
-                                  "procedure": "Use current norm-polar-inputs report/frontier coverage and saved reports/inventory first. Inspect14operands across7products: down1X_Xt, up1B_X, up2scaled_A_A, up3X_Xt and three nonpolar down direct-direction/Gram-refresh/relative-power products; eight inputs across2Concat and thirty inputs across3Done. Identify nonpolar products by exact output dependencies and source scopes, not guessed polar roles or compiler ordinals. Preserve exact callers, ordered repeated positions, tuple projections, paired capture and reused passing controls. Match Done inputs to a common Start only where unambiguous and inspect Start input separately. Reuse covered inputs; opaque outputs remain opaque. Older gaps remain recorded.",
-                                  "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
-                                  "interpretation": "Both full28leaf numerical gates FAILED. Bounded route signatures, source labels, IDs and repeated normalization projection changes do not establish runtime values, precision/order, identity or cause. No numerical/precision/tiling intervention selected.",
-                                  "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
-                                  "evidence": "Evaluator55/55,capture54/55,sub42/55. Passingcapture ARtuple siblingS1tags retained. Both down rightGram refresh operands reach same within-graph declaredgradient. Directinputs encounter changed/opaque producer paths; passingup shares normalizationprojection4to5. Both numerical gates remain failed.",
-                                  "next_decision": {
-                                    "state": "Completed static extraction; see compiler-state-initializer-completed.json",
-                                    "question": "Which producers feed35uncovered positions on down Gram-power and earlier up polar routes?",
-                                    "procedure": "Use current gram-source-inputs report/frontier/source-route summaries and saved reports/inventory first. Inspect10operands across5products: up1scaled_A_A,up2X_Xt, down Gram-refresh/relative-power products and up direct-direction product; four inputs ofoneConcat,twenty inputs oftwoDone and the single declared initializer ofonewhile. Select three nonpolar products using exact outputdependencies/source scopes; preserve the while output projection[1] separately from its whole declared initializer, do not infer loop-body/recurrence semantics. Preserve exactcallers,orderedrepeatedpositions,tuplepaths,pairedcapture and reusedpassingcontrols. MatchDone\u2192Start onlywhereunambiguous,inspectStartinput separately. Reusecoveredinputs,retainoldergaps; allopaqueoutputsremainopaque.",
-                                    "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
-                                    "interpretation": "Both full28leaf numerical gates FAILED. Passingcapture tags, shared up projection changes and declared gradient bindings are not runtime values/precision/order/identity/cause. No numerical/precision/tiling intervention selected.",
-                                    "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
-                                    "evidence": "Evaluator37/37,capture37/37,substitution21/37 bounded signatures match. Thirteen-element initializer reaches rightstate/refresh and an earlier opaquewhile projection[6]; only recordedARchannel329to326 differs. Passingup Done routes show S1tags/IDs and previous normalizationprojection4to5. Opaqueoutputs and failed numerical gates remain; no runtime/causal/training/MFU acceptance.",
-                                    "next_decision": {
-                                      "state": "Completed static extraction; see compiler-polar-initializers-completed.json",
-                                      "question": "Which producers feed14uncovered positions on up first-Gram and two down spectral initializer routes?",
-                                      "procedure": "Use current state-initializer report/frontier/initializer-source summaries and saved reports/inventory first. Inspect both upiteration1X_Xt operands, teninputs ofupDone reached fromscaled_A_A operand1, and two declaredwhile initializers reached fromdownleft relativepower operand0 anddownright wholeinitializer. Preserve observedoutputprojections[1]and[6] and opaqueoutputs; no loopbody/recurrence interpretation. Select exact outputdependencies/callers/source scopes without compilerordinals/textorder. Preserve ordered repeated positions, tuplepaths,pairedcapture and passingcontrols. MatchDone\u2192commonStart onlywhereunambiguous and inspectStartinput separately. Reusecoveredinputs,retainoldergaps.",
-                                      "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
-                                      "interpretation": "Both full28leaf numerical gates FAILED. Wholeinitializer declarations, S1tags and IDs are not runtime values/precision/order/identity/cause. No numerical/precision/tiling intervention selected.",
-                                      "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
-                                      "evidence": "Evaluator15/15,capture14/15,substitution11/15 bounded signatures match. Both wholeinitializers have12constituents, repeatedconstant positions5/7 and boundaries onlyposition3. Leftpower initializer controls reach states[6].left, substitutionopaqueConcat; earlierinitializer reachedfromrightpower consumer reaches states[5].left inallgraphs. Passingcapture S1siblings3/4,selectedleaf5unchanged. All original loop/custom outputs opaque; failed numerical gates unchanged; no runtime/causal/training/MFU acceptance.",
-                                      "next_decision": {
-                                        "state": "Completed locally from saved records; see compiler-left-initializer-concat-completed.json",
-                                        "question": "Which producers feed the four uncovered Concat inputs reached through left-initializer position3?",
-                                        "procedure": "Use current polar-initializers report/frontier/source summaries and saved reports/inventory first. Select the uncovered Concat by exact caller/output dependency through position3 of the initializer on down left-relative-power operand0, not compilerordinal/textorder. Inspect its four declared input positions only; preserve ordered repeated edges/tuplepaths/source roles, pairedcapture and passingcontrols. Reuse covered inputs and retain older gaps. All original while/Start/Done/Concat outputs remain opaque; no loopbody/recurrence interpretation.",
-                                        "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
-                                        "interpretation": "Both full28leaf numerical gates FAILED. Initializer labels describe consumer dependencies, not loop ownership/semantics. Declarations/S1tags/IDs are not runtime values/precision/order/identity/cause. No numerical/precision/tiling intervention selected.",
-                                        "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
-                                        "evidence": "Evaluator4/4,capture0/4,substitution0/4. Fourordered slices share oneallgather pergraph. Untouched/evaluator reach GTE/state6.left/Gramrefresh/opaqueConcat; passingcapture andsubstitution stopatsharedopaqueConcat. Sub alsoAG325to322. No runtimevalues/precision/order/identity/cause; all originalopaqueoutputs retained, bothfull28numericalgates FAILED.",
-                                        "next_decision": {
-                                          "state": "Completed locally from saved records; see compiler-capture-initializer-concat-completed.json",
-                                          "question": "Which producers feed the newly reached Concat in passing capture and substitution?",
-                                          "procedure": "Use current left-initializer-concat report/frontiers and saved reports/inventory first. Select the unique opaqueConcat reached from each declaredinput through its allgather onleftinitializerposition3 in matrix_capture andmatrix_substitute. Inspect allfour declaredpositions pergraph, preserving exactcaller/outputdependency/orderedrepeatededges/tuplepaths. Retain passingcapture and reusecovered untouched/evaluator state/refresh/Concat routes plus existingo controls. Do not pair capture/subConcat inputs with a different untouched/evaluator endpointkind. Keep all originaloutputsopaque andretainoldergaps.",
-                                          "execution": "Local static parsing needs no job/accelerator/kernels/W&B. Publish exactsource/manifest/checksums before any needed CPU-onlyus-west4 HLO SHA/size parse; defaultpreemption/no wallclocklimits/no largeHLOtransfer.",
-                                          "interpretation": "Both full28 numerical gates FAILED. Capturepassing despitechangedroute; no runtimeinputequality/precision/order/identity/cause. No numerical/precision/tiling interventionselected.",
-                                          "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation andexactpublishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
-                                          "evidence": "Substitution0/4 bounded signatures matchcapture. Capture reachesstate6.left/Gramrefresh/opaqueConcat;substitutionGramrefresh/opaqueConcat. Sliceorders differ,plusS1tags/alltoall323to320/two unalignedconnections. All reachedproduct/Concatinputs alreadycovered; currentbranch0newgaps,oldergaps unreconciled. All originaloutputsopaque; bothfull28 numericalgatesFAILED, no runtimevalues/precision/order/identity/cause.",
-                                          "next_decision": {
-                                            "state": "Completed local reconciliation; see compiler-reconciled-coverage-completed.json",
-                                            "question": "Which exact output-dependent input gaps remain across all accumulated reports after the current branch closes?",
-                                            "procedure": "Reconcile saved exact-context input-root coverage across all nineteen reports plusinventory, including currentcapture-initializer-concat andpriorleft-initializer-concat boundedpublishedreports. Preserve graph/caller/computation/instruction/tuplepath identities,orderedrepeatedpositions,source roles andoutputdependencies. Separate coveredinputs/deliberatefrontiergaps/opaqueoutputs; identify olderunresolveddependencies beforeanynewextraction. Reuse passingcapture/untouched/evaluator/o controls; no cross-kindendpointpairing or repeatedcoveredexpansion. Current0gap resultisnotglobalclosure/runtimeidentity.",
-                                            "execution": "Localstaticparsing nojob/accelerator/kernels/W&B. Any neededregionalCPUus-west4HLOparse requires exactpublishedsource/manifest/checksumsandHLOSHA/sizefirst;defaultpreemption/nolimits/no largeHLOtransfer.",
-                                            "interpretation": "Bothfull28numericalgatesFAILED; no values/precision/order/identity/cause or numerical/precision/tilinginterventionselected.",
-                                            "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
-                                            "evidence": "Uncoveredinstructions46/46/48/43 andpositions171/171/174/154. Eachgraph14products28operands uncovered; othercollective/Concat/whilegaps retained. Exactcontextrootcoverage notopaqueoutputsemantics/runtimegraph/identity/cause. Bothfull28numericalgates FAILED. No numericalinterventionselected.",
-                                            "next_decision": {
-                                              "state": "Completed by compiler-remaining-products-completed.json",
-                                              "question": "Which producers feed the28uncovered operands of14productfrontiers pergraph?",
-                                              "procedure": "Use reconciledsummary exactgapidentities/output_dependencies andall savedreports/inventory first. Select13polarproducts bydependency-mappedroles: o1B_X,o2scaled_A_A,o3/4X_Xt+scaled_A_A,down3/4scaled_A_A,gate4/5X_Xt+scaled_A_A,up5scaled_A_A. Selectone nonpolargram_directionproduct throughsavedo2B_X dependencies/source scopes,neverguessedpolarrole/textorder/compilerordinal. Tracebothdeclaredpositions onlytonextproduct/source/opaqueboundary. Preserveexactcallers/orderedrepeatededges/tupleprojections andpairedcapture/passingup/o controls; reusecoveredinputs. RetainotherDone/Start/Concat/whilegaps; no unlikeendpointpairing. Allopaqueoutputsremainopaque.",
-                                              "execution": "Localstaticparsing nojob/kernels/W&B. NeededregionalCPUus-west4parse requires exactpublishedsource/manifest/checksums andHLOSHA/sizebeforeparse;defaultpreemption/nolimits/noaccelerator/largeHLOtransfer. Full36MBindex stayslocal; regeneratefromsource/manifest asneeded.",
-                                              "interpretation": "Bothfull28numericalgatesFAILED. Coveragecounts anddeclarations notruntimevalues/precision/order/identity/cause. No numerical/precision/tilinginterventionselected.",
-                                              "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
-                                              "completion": "28operands pergraph recovered; evaluator28/capture27/sub23matching. All14priorproductgaps covered. Five furtherproducts/tenoperands pergraph uncovered; otherglobalgaps retained.",
-                                              "next_decision": {
-                                                "state": "Completed: compiler-o-source-products-completed.json",
-                                                "question": "Which producers feed the ten uncovered operands of five o-dependent product frontiers pergraph?",
-                                                "procedure": "Use current remaining-products report/frontiers/source summary and allsavedreports/inventory first. Select o1X_Xt/o1scaled_A_A via actual o1B_Xoperand0 dependencies and polarlineage; select three nonpolar direct/refresh/relativepower products via exact nonpolar product operand0/1 dependencies and source scopes. Never guessedpolarroles/compilerordinals/textorder. Preserve exactcallers, orderedrepeatedpositions, tuplepaths, pairedcapture andpassingup/o controls. Reuse coveredinputs; retain globalDone/Start/Concat/whilegaps. No unlikeendpointpairing; allopaqueoutputs remainopaque.",
-                                                "execution": "Publish exactsource/manifest/checksums before any neededCPU-onlyus-west4HLOSHA/sizeparse; defaultpreemption/nolimits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
-                                                "interpretation": "Currentboundedmatches/differencesnotruntimevalues/precision/order/inputequality/identity/cause. Bothfull28numericalgates FAILED. No numerical/precision/tiling interventionselected.",
-                                                "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5 unchanged.",
-                                                "result": "Evaluator10/10, capture5/10, substitution1/10 bounded signatures match untouched. Passing o numerical control retained. Substitution refresh operands share declared gradients[3]; other graphs stop at shared opaque Concat. Direct operand0 reaches states[3].left only in substitution on these bounded routes. All opaque outputs remain opaque; no runtime equality/values/precision/order/identity/cause claim. Both full28leaf numerical substitution gates remain failed.",
-                                                "next_decision": {
-                                                  "state": "Static design only; not implemented or submitted",
-                                                  "question": "Which producers feed the four declared operands of the two newly uncovered nonpolar o-dependent products?",
-                                                  "procedure": "Use current o-source-products report/frontiers/sources and all saved reports/inventory first. Select both products through actual direct_direction operand0 dependencies and exact update_gram_state/relative_gram_power source scopes. No guessed polar role, text order or compiler ordinal. Preserve exact callers, ordered repeated positions, tuple paths, paired capture and passing up/o controls. Reuse covered inputs; retain all other global Done/Start/Concat/while gaps. Never pair unlike endpoint kinds; all opaque outputs remain opaque.",
-                                                  "execution": "Exact published source/manifest/checksums before any needed CPU-only us-west4 HLO SHA/size parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
-                                                  "interpretation": "Static source declarations and bounded signatures do not establish runtime inputs/values/precision/order/identity/cause. Both full28leaf numerical gates failed; no numerical/precision/tiling intervention selected.",
-                                                  "future_numerical_gate": "Own fresh online CPU logging/harness validation and exact published source before ONE sequential TPU; full28leaf rtol=atol=1e-5 unchanged."
-                                                }
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+    "state": "Paired training preparation; no run launched",
+    "user_direction": "Comparable loss is the practical criterion. Strict numerical equivalence is diagnostic and is no longer a sole training-launch blocker.",
+    "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
+    "procedure": "Prepare original-versus-candidate paired training with the same model, global batch8, data order, seed, hyperparameters and initialization or verified full checkpoint/data-position restore. Preserve original7630step schedule and all operational constraints. Compare training/validation loss at matched steps and progress per measured wall-clock time. Quantify variability and loss gap; no acceptable loss margin has been specified.",
+    "remaining_preparation": "Verify published implementations/configurations, original saved optimizer arrays and full trainer restore in checkpoint region if resuming. For new numerical implementations, run own fresh online logging check/CPU harness and publish exact source before one sequential TPU. Preserve finite-output/logging/restore checks; equivalence failure alone no longer blocks a training-quality test.",
+    "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing."
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",
@@ -783,6 +530,267 @@
                                 "execution": "Any needed targeted extraction must use published exactsource/manifest/checksums and CPU-only regionalus-west4 SHA/size verification before parsing. LargeHLO staysregional; no auditaccelerator or kernels/W&B. No numerical intervention selected.",
                                 "interpretation": "Both full28leaf numerical substitution gates remain failed. Static equality is limited to inspected records; no runtime precision/order/values/cause claim. No precision, tiling, tolerance or MFU changes.",
                                 "future_numerical_gate": "New numericalimplementation requires ownfreshonlineCPUlogging/harnessvalidation and exactpublishedsource beforeONEsequentialTPU; originalfull28leaf1e-5gate unchanged."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "historical_static_decisions": {
+    "status": "Completed on TPU:13finite stages/26comparisons/4pass; no accepted candidate",
+    "objective": "Hold direction compilation fixed while comparing refreshed-state banks, then compare evaluator layouts on identical banks.",
+    "controls": [
+      "Keep original full fused original/matrix reference directions and all returned updated state banks.",
+      "Fingerprint three banks: separate common refresh, fused-original returned state, fused-matrix returned state. Preserve full geometry and exact values.",
+      "Compile one original direction-only executable and one matrix-eigensolver direction-only executable, with identical input/output shardings. No refresh inside these evaluators.",
+      "Evaluate all three banks through each fixed executable, one executable at a time, blocking and host-offloading outputs. Reuse the executable across banks so this control changes only input values.",
+      "Compare the two evaluators on identical banks; compare different banks under the same evaluator; compare direction-only outputs to original fused references. Fixed rtol=atol=1e-5.",
+      "Capture compiler manifests and verify checksums regionally when consuming larger objects; keep all previous artifacts in their region.",
+      "CPU-validate logging, full comparison harness and unchanged science before one sequential TPU submission from published source."
+    ],
+    "memory": "Three3.46GBhoststatebanks plus retaineddirections; one executable/deviceoutputbank at a time. Preserve per-case memory reports.",
+    "limitations": [
+      "Removing refresh from the executable changes compilation. Comparisons to full fused references are perturbation controls, not accepted optimizations.",
+      "No change to numerical tolerance, precision, number of polar steps, Gram refresh cadence or scientific protocol.",
+      "No new accelerator request or training in this design.",
+      "These controls hold one factor fixed per comparison but do not fully disentangle input/compiler interactions."
+    ],
+    "promotion_gate": "Any later optimization still requires paired full-update numerical/memory/performance checks, regional saved-state validation, full trainer restore and actual steady training MFU.",
+    "mode": "--state-crossfeed",
+    "expected_collection": {
+      "finite_stages": 13,
+      "comparisons": 26,
+      "compiler_files": 8,
+      "fixed_direction_executables": 2,
+      "invocations_per_executable": 4
+    },
+    "replay_control": "After all three banks, replay common through the same executable; compare and record bitwise equality.",
+    "cpu_command": "Explicit worktree PYTHONPATH, JAX_PLATFORMS=cpu, XLA_FLAGS=--xla_force_host_platform_device_count=8, published GIT_COMMIT; uv run --no-sync python logbooks/20-ema-gram-polar/optimizer_attribution.py --smoke --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.crossfeed-smoke",
+    "preflight": "optimizer-state-crossfeed-preflight.json",
+    "submission": {
+      "job_name": "ema-gram-20-state-crossfeed-v5e-8-20261103",
+      "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2",
+      "tpu": "v5litepod-8",
+      "chips": 8,
+      "hosts": 1,
+      "cpu": 96,
+      "memory": "128GB",
+      "disk": "50GB",
+      "region": "us-west4",
+      "priority": "batch",
+      "preemption_retries": "Iris default, no override",
+      "runtime_limit": null,
+      "source": "Published preflight commit; unchanged script SHA f3d26d7ace3711b131111c055d1e30ecd40011a46591e88246cfa3f678182213",
+      "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-state-crossfeed-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT <published-preflight-commit> -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2"
+    },
+    "completion": "optimizer-state-crossfeed-v5e-completed.json",
+    "completed_evidence": "compiler-outer-bindings-completed.json",
+    "next_decision": {
+      "state": "Static design only; not implemented or submitted",
+      "question": "Which declared producer/caller bindings lie immediately behind the remaining outer-product async and ConcatBitcast boundaries, and what is the role of the changed gate producer route?",
+      "procedure": "Use outer-bindings report plus existing column inventory/entry/closure records first. For matrix gate/down and passing up/o controls, locate opaque AsyncCollectiveDone/ConcatBitcast endpoints by output dependency and source scope; recover declared caller operands, tuple projections and matching async-start records where unambiguous. Keep opaque labels and distinguish conservative input roles from exact semantics. Inspect gate tuple-projection versus copy-done route with caller context. Down final-direction comparison differs only in two channel IDs within the bounded normalized trace; do not interpret channel renumbering as numerical cause. No text-order alignment, global variable overwrite or silent boundary crossing.",
+      "execution": "If needed, publish exact source/manifest/checksums before targeted regional CPU-only us-west4 extraction; verify HLO size/SHA before parsing. Large HLO stays regional. No accelerator, kernels or W&B needed for static parsing.",
+      "interpretation": "Both numerical full28leaf substitution gates remain failed. No runtime values, precision, summation order, hidden identity or cause inferred; no numerical intervention selected.",
+      "future_numerical_gate": "Any new numerical implementation needs own fresh online CPU logging/harness validation and exact published source before ONE sequential TPU. Full28leaf rtol=atol=1e-5 unchanged.",
+      "completed_evidence": "compiler-boundary-inputs-completed.json",
+      "next_decision": {
+        "state": "Completed static start-input producer extraction; numerical gates remain failed",
+        "question": "Which declared all-gather and product producers feed the matched AsyncCollectiveStart operands on the final outer-product routes?",
+        "procedure": "Use boundary-input auxiliary report, saved column inventory selected operations/entry records and outer traces first. Identify the final direct gram_direction product operand frontiers by output dependency; distinguish them from upstream covariance/eigensolver boundaries. Trace the declared single input of each relevant AsyncCollectiveStart through its emitted all-gather record and caller bindings toward first product/source roles. Keep start/done/ConcatBitcast semantics opaque and record missing scopes explicitly. Compare matrix gate/down with passing up/o and paired-capture controls; no text-order or rawordinal alignment. Gate trace-scalar extra copy pair also occurs in passing capture and is not sufficient to identify numerical cause.",
+        "execution": "If missing records require extraction, publish exact source/manifest/checksums before CPU-only regional us-west4 reads with HLO SHA/size verification. Large HLO staysregional; retrieve bounded records only. No audit accelerator or kernels/W&B.",
+        "interpretation": "Both full28leaf numerical substitution gates remain failed; no runtime values, precision, summation order, hidden identity or cause inferred. No new numerical or precision/tiling intervention selected.",
+        "future_numerical_gate": "Fresh online CPU logging/harness validation and exact published source before ONE sequential TPU for any new numerical implementation; fixed full28leaf rtol=atol=1e-5 unchanged.",
+        "completed_evidence": "compiler-start-producers-completed.json",
+        "next_decision": {
+          "state": "Completed static product-input extraction; both numerical full28leaf gates remain failed",
+          "question": "Which declared operands feed the newly reached gate/up direct products and down/o fifth-step B_X plus ConcatBitcast branches?",
+          "procedure": "Use saved start-producer report, column inventory, outer and boundary traces first. Select by output dependency and source scopes. Inspect both operands of gate/up direct gram_direction products; distinguish left-Gram-power and polar roles only where compiled bindings support them. For down/o, trace the declared fifth-step B_X/output-combination inputs and the ConcatBitcast declared operands without making its output transparent. Retain paired-capture and passing up/o controls, caller contexts, repeated operands and missing/opaque boundaries. No inference from unselected sibling S(1) tags or channel/chain renumbering.",
+          "execution": "Any needed extraction requires published exact source/manifest/checksums before regional CPU-only us-west4 HLO SHA/size verification. No audit accelerator, kernels, W&B or large HLO transfer.",
+          "interpretation": "Both numerical full28leaf substitution gates remain failed; no runtime values, precision, summation order, hidden identity or cause claimed. No new numerical/precision/tiling intervention selected.",
+          "future_numerical_gate": "Own fresh online non-training CPU logging and numerical harness validation plus exact published source before ONE sequential TPU diagnostic; fixed full28leaf rtol=atol=1e-5.",
+          "completed_evidence": "compiler-product-inputs-completed.json",
+          "next_decision": {
+            "state": "Completed static extraction; see compiler-polar-boundaries-completed.json",
+            "question": "Which declared producer records feed the remaining down/o fifth-step B_X operand-1 Done boundaries and gate/up polar-input ConcatBitcast boundaries?",
+            "procedure": "Use product-input/start/outer/boundary reports and column inventory first. Select endpoints by output dependency, group, endpoint kind and explicit operand position. For down/o product operand1, match Done declared operands to Start identities where unambiguous and inspect Start declared inputs toward earlier polar-product/source roles. For gate/up product operand1, inspect declared ConcatBitcast input routes without making its output transparent. Retain paired-capture and passing up/o controls, caller arguments, tuple projections, repeated positions and explicit missing/opaque records. All six inspected down routes match despite numerical failure; channel renumbering and changed passing-o copy routes do not establish cause.",
+            "execution": "If needed, publish exact extraction source/manifest/checksums before regional CPU-only us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer. Preserve default preemption retries and no wall-clock limits.",
+            "interpretation": "Both numerical full28leaf substitution gates remain failed. Static roles/record equality are not runtime values, semantic identity, precision/order or cause. No numerical/precision/tiling intervention selected.",
+            "future_numerical_gate": "Own fresh online non-training logging check and online CPU numerical harness validation plus exact published source before ONE sequential TPU diagnostic; all28leaf rtol=atol=1e-5 unchanged.",
+            "completed_evidence": {
+              "completion": "compiler-polar-boundaries-completed.json",
+              "comparison": "compiler-polar-boundaries-comparison.json",
+              "validation": "compiler-polar-boundaries-validation.json",
+              "control_signatures": "30 evaluator and 30 paired-capture match; substitution26match/4differ; both full numerical gates remain failed"
+            },
+            "next_decision": {
+              "state": "Completed local saved-record consolidation",
+              "question": "Which remaining product and opaque-boundary frontiers are already covered by saved records, and which caller/operand bindings remain unresolved?",
+              "procedure": "Consolidate product-input, polar-boundary, start, outer and boundary reports plus column inventory by graph, caller context, computation, instruction and tuple path. Preserve ordered/repeated operand edges and source-role labels. Classify each frontier as already inspected, newly bound to a declared product/source, missing-record, or semantically opaque; keep output opacity separate from coverage. Select further work by unresolved output dependencies rather than repeated text-order traversal. Preserve paired-capture and passing up/o controls. Do not infer cause from channel IDs or the changed passing-o copy route.",
+              "execution": "Use saved records first. Any needed extraction requires published exact source/manifest/checksums before CPU-only regional us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer; default preemption retries and no wall-clock limits.",
+              "interpretation": "Both full28leaf numerical substitution gates remain failed. No runtime values, precision/order, semantic identity, causal acceptance or numerical intervention selected.",
+              "future_numerical_gate": "Own fresh online non-training logging check and online CPU numerical harness validation plus exact published source before ONE sequential TPU diagnostic; all28leaf rtol=atol=1e-5 unchanged.",
+              "completed_evidence": "compiler-record-coverage-completed.json",
+              "next_decision": {
+                "state": "Static design only; not implemented or submitted",
+                "question": "Which declared operand producers feed the fourteen uninspected product frontiers per matrix graph, and which connections differ from passing controls?",
+                "procedure": "Use compiler-record-coverage-summary.json exact graph/context/computation/instruction selectors and saved records first. Four of28 scoped operand declarations exist in inventory but none of28 is present in saved traces in the same caller context. Preserve all14 targets, source roles, output dependencies, ordered/repeated operands, tuple projections and caller arguments. Ten targets map to gate B_X4/5,up B_X5,down B_X3/4 andscaled_A_A5,o B_X2/3/4 andscaled_A_A5;four others are outsidepolar map. Preserve untouched/evaluator/pairedcapture/substitution andpassingup/o controls. Trace only needed producer/caller records; keep opaque Start/Done/Concat/while outputs opaque. Do not repeat alreadycovered boundary expansion or equate matchingrecords withvalues.",
+                "execution": "Any needed extraction requires exact published source/manifest/checksums before regional CPU-only us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer; default preemption retries and no wall-clock limits.",
+                "interpretation": "Both full28leaf numerical gates still failed; no runtimevalues/precision/order/semanticidentity/cause or numerical intervention selected.",
+                "future_numerical_gate": "Own fresh online non-training logging check and online CPU harness validation plus exact published source before ONE sequential TPU diagnostic; all28leaf rtol=atol=1e-5 unchanged.",
+                "completion": "compiler-frontier-operands-completed.json: all14targets/28operands recovered; evaluator28/28 andpairedcapture28/28 signaturesmatch,substitution17/28. Bothnumericalgatesstillfailed.",
+                "next_decision": {
+                  "state": "Static design only; not implemented or submitted",
+                  "question": "Which declared Done-to-Start input bindings lie behind the newly exposed down scaled_A_A step5 operand1 route, and how do passing controls compare?",
+                  "procedure": "Use frontier operand/down-route report plus saved boundary, polar-boundary, column inventory and coverage records FIRST. Select down step5 scaled_A_A operand1 Done endpoints by output dependency and exact caller context; trace declared Done operands to a common Start identity only where unambiguous, then inspect declared Start input. Preserve paired-capture controls and passing o polar-product input routes, tuple projections, ordered/repeated positions and source roles. Keep Start/Done/Concat/while outputs opaque. Do not repeat already covered boundary expansions or infer cause from the added copy pair. No assumed ordinal or text-order pairing.",
+                  "execution": "Any needed extraction requires exact published source/manifest/checksums before regional CPU-only us-west4 HLO size/SHA verified parsing. No audit accelerator, kernels/W&B or large HLO transfer; default preemption retries and no wall-clock limits.",
+                  "interpretation": "Both full28leaf numerical substitution gates remain failed. Static records do not establish values, precision, order, semantic identity or cause. No numerical intervention selected.",
+                  "future_numerical_gate": "Own fresh online non-training logging check and online CPU harness validation plus exact published source before ONE sequential TPU; all28leaf rtol=atol=1e-5 unchanged.",
+                  "completion": "compiler-frontier-collectives-completed.json: evaluator26/26,capture25/26;sub15alignedall differ plus4unalignedConcatinputs. Down only boundedS1/channelchanges;originaloutputsopaque.",
+                  "next_decision": {
+                    "state": "Static design only; not implemented or submitted",
+                    "question": "Which declared inputs feed the remaining down ConcatBitcast at the matched Start input, and which earlier polar/source roles do they reach?",
+                    "procedure": "Use current frontier-collectives report and saved reports/inventory/coverage first. Select the unique ConcatBitcast frontier of down scaled_A_A step5 operand1 matchedStart input by exact caller/context/record, not text order. All four graphs have four declared inputs, none with existing exact-context endpoint-input traces across the seven saved reports inspected. Preserve untouched/evaluator/pairedcapture/substitution and passing o controls; reuse alreadyinspected o routes without pairing different endpoint kinds. Trace only missing producer/caller records; retain repeated edges, tuple projections, source/polar role checks and all opaque outputs. S(1), channel IDs and copy insertion do not establish cause.",
+                    "execution": "Any needed extraction requires published exactsource/manifest/checksums before CPU-only regional us-west4 HLO SHA/size verification. No audit accelerator, kernels/W&B or large HLO transfer; defaultpreemption and no wall-clock limits.",
+                    "interpretation": "Both full28leaf numerical substitution gates remain failed; no runtime values, precision, order, hiddenidentity, cause or numerical intervention selected.",
+                    "future_numerical_gate": "Own fresh online non-training logging and online CPU harness validation plus exact source before ONE sequential TPU; all28leaf rtol=atol=1e-5 unchanged.",
+                    "completion": "compiler-down-concat-completed.json: all4inputroutesrecovered; evaluator/capture4/4samepositions;sub0/4butunique fullsignaturemapping[2,3,0,1],opaqueoutputsemanticsremainunknown.",
+                    "next_decision": {
+                      "state": "Completed static extraction; see compiler-step5-gram-inputs-completed.json",
+                      "question": "Which declared producers feed the two operands of the newly reached down step5 X_Xt product, relative to corresponding passing up/o controls?",
+                      "procedure": "Use current downConcat slices/report, exact caller identities, prior reports and column polar lineage FIRST. Select down/up/o step5 X_Xt by dependency-mapped group/product/iteration and verify source scope; never text order or assumed ordinals. Check existing input coverage before extraction. Trace both operand bindings only to next product/source/opaque boundary, preserving repeated uses, tuple projections and caller arguments. Retain pairedcapture and passingup/o controls. Keep Concat/Start/Done/while outputs opaque; [2,3,0,1] signature mapping does not establish data permutation semantics, runtime order or cause.",
+                      "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-only us-west4 regional HLO SHA/size parse. No audit accelerator/kernels/W&B/largeHLOtransfer; defaultpreemption/no limits.",
+                      "interpretation": "Both full28leaf numerical substitution gates failed; no numerical/precision/tilingintervention or optimization/training/MFU acceptance selected.",
+                      "future_numerical_gate": "Own freshonlineCPUlogging/harnessvalidation and exactpublishedsource beforeONEsequentialTPU; full28leafrtol=atol=1e-5 unchanged.",
+                      "evidence": "Allsix bounded routes match across evaluator/pairedcapture/substitution versus untouched. All remain semantically opaque; original numerical gates failed.",
+                      "next_decision": {
+                        "state": "Completed static extraction; see compiler-step5-concat-inputs-completed.json",
+                        "question": "Which declared producers feed the twelve uncovered down/up/o Concat inputs reached by fifth-step X_Xt operand0?",
+                        "procedure": "Use current step5 Gram report/frontier coverage and eight saved reports plus inventory FIRST. Select endpoints by actual operand0 dependencies and exact caller contexts, not names/ordinals/textorder. Preserve allfour declared input positions pergroup and pairedcapture/passingup/o controls. Reuse already covered downBX3/4 and down/oDone inputs; do not repeat expansion. UpDone ten input positions remain separately uninspected. Stop at next product/source/opaque boundary; preserve ordered repeated edges and tuple projections. Opaque outputs remain opaque even with input coverage.",
+                        "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-only us-west4 HLO SHA/size parse; defaultpreemption/no limits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
+                        "interpretation": "Both full28leaf numerical substitution gates FAILED. Allsix matching bounded signatures and prior slice mapping do not establish input values/semanticidentity/runtimeprecision/order/cause. No numerical/precision/tiling intervention selected.",
+                        "future_numerical_gate": "Own freshonlineCPUlogging/harnessvalidation and publishedsource beforeONEsequentialTPU; full28leafrtol=atol=1e-5 unchanged.",
+                        "evidence": "All12 evaluator/capture signatures match; all8 down/up substitution match; four o routes differ at one shared copy record and remain passing numerical controls. Both full28leaf numerical gates failed.",
+                        "next_decision": {
+                          "state": "Completed static extraction; see compiler-earlier-bx-inputs-completed.json",
+                          "question": "Which declared producers feed the four uncovered operands of down iteration2 B_X and up iteration4 B_X?",
+                          "procedure": "Use current step5 Concat report/frontier coverage and saved reports/inventory FIRST. Select by dependency-mapped group/iteration/product and exact caller context; retain both explicit operand positions. Reuse covered o iteration2/3/4 product inputs as passing controls, preserving paired capture. Trace only missing producer/caller records to next product/source/opaque boundary. Newly reached down/upConcat inputs remain uncovered; oConcat inputs covered only in substitution, not controls; upDone gap remains separately recorded. Do not repeat covered expansion or pair different endpoint kinds. Keep ordered/repeated edges, tuple projections, source roles and opaque outputs.",
+                          "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-only us-west4 HLO SHA/size parse; defaultpreemption/no limits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
+                          "interpretation": "Both full28leaf numerical gates FAILED. Eight matching down/up substitution routes and four passing-o copy differences are not input equality/runtimeprecision/order/semanticidentity/cause. No numerical/precision/tiling intervention selected.",
+                          "future_numerical_gate": "Own freshonlineCPUlogging/harnessvalidation and publishedsource beforeONEsequentialTPU; full28leafrtol=atol=1e-5 unchanged.",
+                          "evidence": "All4 new operand signatures match across evaluator/capture/substitution. Operand0 reaches same-iteration scaled_A_A and opaqueConcat; operand1 opaqueDone. Both numericalfull28gates failed.",
+                          "next_decision": {
+                            "state": "Completed static extraction; see compiler-earlier-bindings-completed.json",
+                            "question": "Which declared producers feed the 32 uncovered product/Concat/Done input positions behind downBX2 and upBX4?",
+                            "procedure": "Use CURRENTearlierBXreport/frontiercoverage plus allsavedreports/inventory FIRST. Batch four scaled_A_A productoperands, eightConcatinputs and20Doneinputs selected by exactcaller/outputdependencies and sourcepolarroles. Match eachDone teninputs toonecommonStartidentity onlywhereunambiguous; separatelyinspect itsdeclaredsingleinput, retainingoriginalDone/Startoutputopacity. Preserve explicitordered/repeatedpositions,tuplepaths/source roles,pairedcapture. Reuse alreadycovered o productcontrols withsameHLO checks; do not repeatcoveredexpansion orpairdifferentendpointkinds. OlderremainingConcat/upDone gaps remainrecorded. Coverage isnotsemantics.",
+                            "execution": "Any needed extraction requires exact published source/manifest/checksums before CPU-onlyus-west4HLOSHA/sizeparse; defaultpreemption/nolimits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
+                            "interpretation": "Both full28leaf numerical gatesFAILED. All4 boundedroute matches and priorpassingcontrol differences are notruntimeinputequality/precision/order/semanticidentity/cause. No numerical/precision/tiling interventionselected.",
+                            "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsource beforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
+                            "evidence": "All34 evaluator/capture routes match; substitution30/34, differences bounded to channel/chain IDs. Both numerical full28leaf gates remain failed.",
+                            "next_decision": {
+                              "state": "Completed static extraction; see compiler-upstream-bindings-completed.json",
+                              "question": "Which declared producers feed the 36 newly uncovered product/Concat/Done input positions?",
+                              "procedure": "Use current earlier-bindings report/frontier coverage plus all saved reports and inventory first. Inspect eight product operands (down2 X_Xt, down1 B_X, up4 X_Xt, up3 B_X), eight Concat inputs and twenty Done inputs by exact caller/output dependencies. Match Done inputs to one common Start identity only where unambiguous; separately inspect its single input. Retain ordered repeated edges, tuple projections, source roles, paired capture and reused o controls. Reuse current covered Start/Concat inputs; do not repeat expansion or pair different endpoint kinds. Older gaps remain recorded; coverage is not semantics.",
+                              "execution": "Publish exact source/manifest/checksums before any CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
+                              "interpretation": "All opaque outputs remain opaque; both full28leaf numerical gates FAILED. Bounded matches and channel/chain IDs do not establish runtime inputs, precision, order, semantic identity or cause. No numerical/precision/tiling intervention selected.",
+                              "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
+                              "evidence": "All38 evaluator/capture signatures match; substitution30/38. Down combined-AR selected projection differs5to6, but separate selected-input bounded subtree matches; no runtime identity or cause. Both numerical gates remain failed.",
+                              "next_decision": {
+                                "state": "Completed static extraction; see compiler-norm-polar-inputs-completed.json",
+                                "question": "Which declared producers feed the 48 uncovered input positions, including down normalization's nonpolar product?",
+                                "procedure": "Use current upstream-bindings report/frontier coverage and down-norm-projection supplement plus saved reports/inventory first. Inspect eight product operands (down1 scaled_A_A, up3 scaled_A_A, up2 B_X, and nonpolar down gram_direction product), twenty inputs across five Concat endpoints and twenty inputs across two Done endpoints. Identify the nonpolar product by actual normalization dependency/source scope, not text order or a guessed polar role. Preserve exact callers, ordered repeated positions, tuple projections, paired capture and reused passing controls. Match Done inputs to a common Start only where unambiguous and inspect Start input separately. Reuse covered inputs; opaque outputs remain opaque. Older gaps remain recorded.",
+                                "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
+                                "interpretation": "Both full28leaf numerical gates FAILED. Shared projection changes and matching selected producer subtrees do not establish runtime values, precision/order, identity or cause. No numerical/precision/tiling intervention selected.",
+                                "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
+                                "evidence": "All50 evaluator/capture signatures match; substitution45/50. Down nonpolar product inputs reach another directproduct and right-state/Gram-refresh/relative-power frontiers. Previously seen normalization projection recurs; no runtime identity or cause. Both numerical gates failed.",
+                                "next_decision": {
+                                  "state": "Completed static extraction; see compiler-gram-source-inputs-completed.json",
+                                  "question": "Which declared producers feed the 52 uncovered input positions on down normalization/right-Gram and earlier polar routes?",
+                                  "procedure": "Use current norm-polar-inputs report/frontier coverage and saved reports/inventory first. Inspect14operands across7products: down1X_Xt, up1B_X, up2scaled_A_A, up3X_Xt and three nonpolar down direct-direction/Gram-refresh/relative-power products; eight inputs across2Concat and thirty inputs across3Done. Identify nonpolar products by exact output dependencies and source scopes, not guessed polar roles or compiler ordinals. Preserve exact callers, ordered repeated positions, tuple projections, paired capture and reused passing controls. Match Done inputs to a common Start only where unambiguous and inspect Start input separately. Reuse covered inputs; opaque outputs remain opaque. Older gaps remain recorded.",
+                                  "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
+                                  "interpretation": "Both full28leaf numerical gates FAILED. Bounded route signatures, source labels, IDs and repeated normalization projection changes do not establish runtime values, precision/order, identity or cause. No numerical/precision/tiling intervention selected.",
+                                  "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
+                                  "evidence": "Evaluator55/55,capture54/55,sub42/55. Passingcapture ARtuple siblingS1tags retained. Both down rightGram refresh operands reach same within-graph declaredgradient. Directinputs encounter changed/opaque producer paths; passingup shares normalizationprojection4to5. Both numerical gates remain failed.",
+                                  "next_decision": {
+                                    "state": "Completed static extraction; see compiler-state-initializer-completed.json",
+                                    "question": "Which producers feed35uncovered positions on down Gram-power and earlier up polar routes?",
+                                    "procedure": "Use current gram-source-inputs report/frontier/source-route summaries and saved reports/inventory first. Inspect10operands across5products: up1scaled_A_A,up2X_Xt, down Gram-refresh/relative-power products and up direct-direction product; four inputs ofoneConcat,twenty inputs oftwoDone and the single declared initializer ofonewhile. Select three nonpolar products using exact outputdependencies/source scopes; preserve the while output projection[1] separately from its whole declared initializer, do not infer loop-body/recurrence semantics. Preserve exactcallers,orderedrepeatedpositions,tuplepaths,pairedcapture and reusedpassingcontrols. MatchDone\u2192Start onlywhereunambiguous,inspectStartinput separately. Reusecoveredinputs,retainoldergaps; allopaqueoutputsremainopaque.",
+                                    "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
+                                    "interpretation": "Both full28leaf numerical gates FAILED. Passingcapture tags, shared up projection changes and declared gradient bindings are not runtime values/precision/order/identity/cause. No numerical/precision/tiling intervention selected.",
+                                    "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
+                                    "evidence": "Evaluator37/37,capture37/37,substitution21/37 bounded signatures match. Thirteen-element initializer reaches rightstate/refresh and an earlier opaquewhile projection[6]; only recordedARchannel329to326 differs. Passingup Done routes show S1tags/IDs and previous normalizationprojection4to5. Opaqueoutputs and failed numerical gates remain; no runtime/causal/training/MFU acceptance.",
+                                    "next_decision": {
+                                      "state": "Completed static extraction; see compiler-polar-initializers-completed.json",
+                                      "question": "Which producers feed14uncovered positions on up first-Gram and two down spectral initializer routes?",
+                                      "procedure": "Use current state-initializer report/frontier/initializer-source summaries and saved reports/inventory first. Inspect both upiteration1X_Xt operands, teninputs ofupDone reached fromscaled_A_A operand1, and two declaredwhile initializers reached fromdownleft relativepower operand0 anddownright wholeinitializer. Preserve observedoutputprojections[1]and[6] and opaqueoutputs; no loopbody/recurrence interpretation. Select exact outputdependencies/callers/source scopes without compilerordinals/textorder. Preserve ordered repeated positions, tuplepaths,pairedcapture and passingcontrols. MatchDone\u2192commonStart onlywhereunambiguous and inspectStartinput separately. Reusecoveredinputs,retainoldergaps.",
+                                      "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
+                                      "interpretation": "Both full28leaf numerical gates FAILED. Wholeinitializer declarations, S1tags and IDs are not runtime values/precision/order/identity/cause. No numerical/precision/tiling intervention selected.",
+                                      "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
+                                      "evidence": "Evaluator15/15,capture14/15,substitution11/15 bounded signatures match. Both wholeinitializers have12constituents, repeatedconstant positions5/7 and boundaries onlyposition3. Leftpower initializer controls reach states[6].left, substitutionopaqueConcat; earlierinitializer reachedfromrightpower consumer reaches states[5].left inallgraphs. Passingcapture S1siblings3/4,selectedleaf5unchanged. All original loop/custom outputs opaque; failed numerical gates unchanged; no runtime/causal/training/MFU acceptance.",
+                                      "next_decision": {
+                                        "state": "Completed locally from saved records; see compiler-left-initializer-concat-completed.json",
+                                        "question": "Which producers feed the four uncovered Concat inputs reached through left-initializer position3?",
+                                        "procedure": "Use current polar-initializers report/frontier/source summaries and saved reports/inventory first. Select the uncovered Concat by exact caller/output dependency through position3 of the initializer on down left-relative-power operand0, not compilerordinal/textorder. Inspect its four declared input positions only; preserve ordered repeated edges/tuplepaths/source roles, pairedcapture and passingcontrols. Reuse covered inputs and retain older gaps. All original while/Start/Done/Concat outputs remain opaque; no loopbody/recurrence interpretation.",
+                                        "execution": "Publish exact source/manifest/checksums before CPU-only us-west4 HLO SHA/size-checked parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
+                                        "interpretation": "Both full28leaf numerical gates FAILED. Initializer labels describe consumer dependencies, not loop ownership/semantics. Declarations/S1tags/IDs are not runtime values/precision/order/identity/cause. No numerical/precision/tiling intervention selected.",
+                                        "future_numerical_gate": "Own fresh online CPU logging/harness validation and published source before ONE sequential TPU diagnostic; full28leaf rtol=atol=1e-5 unchanged.",
+                                        "evidence": "Evaluator4/4,capture0/4,substitution0/4. Fourordered slices share oneallgather pergraph. Untouched/evaluator reach GTE/state6.left/Gramrefresh/opaqueConcat; passingcapture andsubstitution stopatsharedopaqueConcat. Sub alsoAG325to322. No runtimevalues/precision/order/identity/cause; all originalopaqueoutputs retained, bothfull28numericalgates FAILED.",
+                                        "next_decision": {
+                                          "state": "Completed locally from saved records; see compiler-capture-initializer-concat-completed.json",
+                                          "question": "Which producers feed the newly reached Concat in passing capture and substitution?",
+                                          "procedure": "Use current left-initializer-concat report/frontiers and saved reports/inventory first. Select the unique opaqueConcat reached from each declaredinput through its allgather onleftinitializerposition3 in matrix_capture andmatrix_substitute. Inspect allfour declaredpositions pergraph, preserving exactcaller/outputdependency/orderedrepeatededges/tuplepaths. Retain passingcapture and reusecovered untouched/evaluator state/refresh/Concat routes plus existingo controls. Do not pair capture/subConcat inputs with a different untouched/evaluator endpointkind. Keep all originaloutputsopaque andretainoldergaps.",
+                                          "execution": "Local static parsing needs no job/accelerator/kernels/W&B. Publish exactsource/manifest/checksums before any needed CPU-onlyus-west4 HLO SHA/size parse; defaultpreemption/no wallclocklimits/no largeHLOtransfer.",
+                                          "interpretation": "Both full28 numerical gates FAILED. Capturepassing despitechangedroute; no runtimeinputequality/precision/order/identity/cause. No numerical/precision/tiling interventionselected.",
+                                          "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation andexactpublishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
+                                          "evidence": "Substitution0/4 bounded signatures matchcapture. Capture reachesstate6.left/Gramrefresh/opaqueConcat;substitutionGramrefresh/opaqueConcat. Sliceorders differ,plusS1tags/alltoall323to320/two unalignedconnections. All reachedproduct/Concatinputs alreadycovered; currentbranch0newgaps,oldergaps unreconciled. All originaloutputsopaque; bothfull28 numericalgatesFAILED, no runtimevalues/precision/order/identity/cause.",
+                                          "next_decision": {
+                                            "state": "Completed local reconciliation; see compiler-reconciled-coverage-completed.json",
+                                            "question": "Which exact output-dependent input gaps remain across all accumulated reports after the current branch closes?",
+                                            "procedure": "Reconcile saved exact-context input-root coverage across all nineteen reports plusinventory, including currentcapture-initializer-concat andpriorleft-initializer-concat boundedpublishedreports. Preserve graph/caller/computation/instruction/tuplepath identities,orderedrepeatedpositions,source roles andoutputdependencies. Separate coveredinputs/deliberatefrontiergaps/opaqueoutputs; identify olderunresolveddependencies beforeanynewextraction. Reuse passingcapture/untouched/evaluator/o controls; no cross-kindendpointpairing or repeatedcoveredexpansion. Current0gap resultisnotglobalclosure/runtimeidentity.",
+                                            "execution": "Localstaticparsing nojob/accelerator/kernels/W&B. Any neededregionalCPUus-west4HLOparse requires exactpublishedsource/manifest/checksumsandHLOSHA/sizefirst;defaultpreemption/nolimits/no largeHLOtransfer.",
+                                            "interpretation": "Bothfull28numericalgatesFAILED; no values/precision/order/identity/cause or numerical/precision/tilinginterventionselected.",
+                                            "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
+                                            "evidence": "Uncoveredinstructions46/46/48/43 andpositions171/171/174/154. Eachgraph14products28operands uncovered; othercollective/Concat/whilegaps retained. Exactcontextrootcoverage notopaqueoutputsemantics/runtimegraph/identity/cause. Bothfull28numericalgates FAILED. No numericalinterventionselected.",
+                                            "next_decision": {
+                                              "state": "Completed by compiler-remaining-products-completed.json",
+                                              "question": "Which producers feed the28uncovered operands of14productfrontiers pergraph?",
+                                              "procedure": "Use reconciledsummary exactgapidentities/output_dependencies andall savedreports/inventory first. Select13polarproducts bydependency-mappedroles: o1B_X,o2scaled_A_A,o3/4X_Xt+scaled_A_A,down3/4scaled_A_A,gate4/5X_Xt+scaled_A_A,up5scaled_A_A. Selectone nonpolargram_directionproduct throughsavedo2B_X dependencies/source scopes,neverguessedpolarrole/textorder/compilerordinal. Tracebothdeclaredpositions onlytonextproduct/source/opaqueboundary. Preserveexactcallers/orderedrepeatededges/tupleprojections andpairedcapture/passingup/o controls; reusecoveredinputs. RetainotherDone/Start/Concat/whilegaps; no unlikeendpointpairing. Allopaqueoutputsremainopaque.",
+                                              "execution": "Localstaticparsing nojob/kernels/W&B. NeededregionalCPUus-west4parse requires exactpublishedsource/manifest/checksums andHLOSHA/sizebeforeparse;defaultpreemption/nolimits/noaccelerator/largeHLOtransfer. Full36MBindex stayslocal; regeneratefromsource/manifest asneeded.",
+                                              "interpretation": "Bothfull28numericalgatesFAILED. Coveragecounts anddeclarations notruntimevalues/precision/order/identity/cause. No numerical/precision/tilinginterventionselected.",
+                                              "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5unchanged.",
+                                              "completion": "28operands pergraph recovered; evaluator28/capture27/sub23matching. All14priorproductgaps covered. Five furtherproducts/tenoperands pergraph uncovered; otherglobalgaps retained.",
+                                              "next_decision": {
+                                                "state": "Completed: compiler-o-source-products-completed.json",
+                                                "question": "Which producers feed the ten uncovered operands of five o-dependent product frontiers pergraph?",
+                                                "procedure": "Use current remaining-products report/frontiers/source summary and allsavedreports/inventory first. Select o1X_Xt/o1scaled_A_A via actual o1B_Xoperand0 dependencies and polarlineage; select three nonpolar direct/refresh/relativepower products via exact nonpolar product operand0/1 dependencies and source scopes. Never guessedpolarroles/compilerordinals/textorder. Preserve exactcallers, orderedrepeatedpositions, tuplepaths, pairedcapture andpassingup/o controls. Reuse coveredinputs; retain globalDone/Start/Concat/whilegaps. No unlikeendpointpairing; allopaqueoutputs remainopaque.",
+                                                "execution": "Publish exactsource/manifest/checksums before any neededCPU-onlyus-west4HLOSHA/sizeparse; defaultpreemption/nolimits/noauditaccelerator/kernels/W&B/largeHLOtransfer.",
+                                                "interpretation": "Currentboundedmatches/differencesnotruntimevalues/precision/order/inputequality/identity/cause. Bothfull28numericalgates FAILED. No numerical/precision/tiling interventionselected.",
+                                                "future_numerical_gate": "OwnfreshonlineCPUlogging/harnessvalidation+publishedsourcebeforeONEsequentialTPU;full28leafrtol=atol=1e-5 unchanged.",
+                                                "result": "Evaluator10/10, capture5/10, substitution1/10 bounded signatures match untouched. Passing o numerical control retained. Substitution refresh operands share declared gradients[3]; other graphs stop at shared opaque Concat. Direct operand0 reaches states[3].left only in substitution on these bounded routes. All opaque outputs remain opaque; no runtime equality/values/precision/order/identity/cause claim. Both full28leaf numerical substitution gates remain failed.",
+                                                "next_decision": {
+                                                  "state": "Deferred by user clarification: prioritize paired training loss and measured speed.",
+                                                  "question": "Which producers feed the four declared operands of the two newly uncovered nonpolar o-dependent products?",
+                                                  "procedure": "Use current o-source-products report/frontiers/sources and all saved reports/inventory first. Select both products through actual direct_direction operand0 dependencies and exact update_gram_state/relative_gram_power source scopes. No guessed polar role, text order or compiler ordinal. Preserve exact callers, ordered repeated positions, tuple paths, paired capture and passing up/o controls. Reuse covered inputs; retain all other global Done/Start/Concat/while gaps. Never pair unlike endpoint kinds; all opaque outputs remain opaque.",
+                                                  "execution": "Exact published source/manifest/checksums before any needed CPU-only us-west4 HLO SHA/size parse. Default preemption, no wall-clock limits, no accelerator/kernels/W&B or large HLO transfer.",
+                                                  "interpretation": "Static source declarations and bounded signatures do not establish runtime inputs/values/precision/order/identity/cause. Both full28leaf numerical gates failed; no numerical/precision/tiling intervention selected.",
+                                                  "future_numerical_gate": "Own fresh online CPU logging/harness validation and exact published source before ONE sequential TPU; full28leaf rtol=atol=1e-5 unchanged."
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
                               }
                             }
                           }
