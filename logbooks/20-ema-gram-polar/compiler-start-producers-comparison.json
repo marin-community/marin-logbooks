@@ -1,0 +1,1816 @@
+{
+  "graphs": {
+    "matrix_untouched": {
+      "gate_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "642f1d631e1dd918d4027b6338a82c66e6116675c47c36753abe65856d824e20",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114220",
+          "context": [
+            "main.530_spmd/async-collective-start.58"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13411",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1152"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13411 = (f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1152), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "gate_proj",
+          "product": "convolution-base-dilated.691",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114230",
+            "context": [
+              "main.530_spmd/async-collective-done.58"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13413",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329031",
+              "param_1.318804",
+              "all-gather.1172",
+              "param_2.241678",
+              "param_3.122177",
+              "param_4.73584",
+              "param_5.31330",
+              "param_6.14182",
+              "param_7.6346",
+              "param_8.3033"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13413 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329031, %param_1.318804, %all-gather.1172, %param_2.241678, %param_3.122177, /*index=5*/%param_4.73584, %param_5.31330, %param_6.14182, %param_7.6346, %param_8.3033), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114220",
+          "context": [
+            "main.530_spmd/async-collective-start.58"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1152",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.328999"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=275, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"58\"}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}",
+          "instruction": "%all-gather.1152 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.328999), channel_id=275, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"58\"}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145098",
+              "context": [
+                "main.530_spmd/fusion.145098"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.669",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145102",
+                "fusion.145101"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}",
+              "instruction": "%convolution-base-dilated.669 = f32[11,4096,128]{2,1,0:T(8,128)} convolution(%fusion.145102, %fusion.145101), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}"
+            }
+          }
+        ]
+      },
+      "down_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "03eae1839585227a5902f8d178d06790b918ec392e79f8dd1e2dea2faf17bf44",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114231",
+          "context": [
+            "main.530_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13415",
+          "shape": "(f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1174"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13415 = (f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1174), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "down_proj",
+          "product": "convolution-base-dilated.693",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114234",
+            "context": [
+              "main.530_spmd/async-collective-done.59"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13417",
+            "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329040",
+              "param_1.318811",
+              "all-gather.1180",
+              "param_2.241686",
+              "param_3.122185",
+              "param_4.73592",
+              "param_5.31338",
+              "param_6.14190",
+              "param_7.6354",
+              "param_8.3041"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13417 = f32[11,1024,4096]{1,2,0:T(8,128)} custom-call(%param_0.329040, %param_1.318811, %all-gather.1180, %param_2.241686, %param_3.122185, /*index=5*/%param_4.73592, %param_5.31338, %param_6.14190, %param_7.6354, %param_8.3041), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114231",
+          "context": [
+            "main.530_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1174",
+          "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329033"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=364, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/add\" stack_frame_id=67}",
+          "instruction": "%all-gather.1174 = f32[11,1024,4096]{1,2,0:T(8,128)} all-gather(%param_0.329033), channel_id=364, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/add\" stack_frame_id=67}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13895",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.1870",
+                "slice-done.1871",
+                "slice-done.1872",
+                "slice-done.1873"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13895 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1870, %slice-done.1871, %slice-done.1872, %slice-done.1873), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145145",
+              "context": [
+                "main.530_spmd/fusion.145145"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.687",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145149",
+                "fusion.145148"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+              "instruction": "%convolution-base-dilated.687 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145149, %fusion.145148), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+            }
+          }
+        ]
+      },
+      "up_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "8dc63f0fb93329fa74d2117f1deaa087b65c8106013ccb84d591df5739f05622",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114235",
+          "context": [
+            "main.530_spmd/async-collective-start.60"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13419",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1182"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13419 = (f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1182), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "up_proj",
+          "product": "convolution-base-dilated.409",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114238",
+            "context": [
+              "main.530_spmd/async-collective-done.60"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13421",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329049",
+              "param_1.318818",
+              "all-gather.1188",
+              "param_2.241694",
+              "param_3.122193",
+              "param_4.73600",
+              "param_5.31346",
+              "param_6.14198",
+              "param_7.6362",
+              "param_8.3049"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13421 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329049, %param_1.318818, %all-gather.1188, %param_2.241694, %param_3.122193, /*index=5*/%param_4.73600, %param_5.31346, %param_6.14198, %param_7.6362, %param_8.3049), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114235",
+          "context": [
+            "main.530_spmd/async-collective-start.60"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1182",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329042"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=320, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"60\"}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}",
+          "instruction": "%all-gather.1182 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.329042), channel_id=320, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"60\"}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145152",
+              "context": [
+                "main.530_spmd/fusion.145152"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.689",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)S(1)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145156",
+                "fusion.145155"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}",
+              "instruction": "%convolution-base-dilated.689 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} convolution(%fusion.145156, %fusion.145155), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=70}"
+            }
+          }
+        ]
+      },
+      "o_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "9f66e6f58edebe6c4f3f4cbc5fc95e37e8b8a1d6cb96de8bbadc81966c1dfa8c",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114210",
+          "context": [
+            "main.530_spmd/async-collective-start.55"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13399",
+          "shape": "(f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1132"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13399 = (f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1132), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "o_proj",
+          "product": "convolution-base-dilated.677",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114213",
+            "context": [
+              "main.530_spmd/async-collective-done.55"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13401",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328985",
+              "param_1.318768",
+              "all-gather.1138",
+              "param_2.241636",
+              "param_3.122138",
+              "param_4.73545",
+              "param_5.31291",
+              "param_6.14143",
+              "param_7.6307",
+              "param_8.2994"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13401 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%param_0.328985, %param_1.318768, %all-gather.1138, %param_2.241636, %param_3.122138, /*index=5*/%param_4.73545, %param_5.31291, %param_6.14143, %param_7.6307, %param_8.2994), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114210",
+          "context": [
+            "main.530_spmd/async-collective-start.55"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1132",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.328975"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=230, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"55\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/add\" stack_frame_id=67}",
+          "instruction": "%all-gather.1132 = f32[11,1024,1024]{2,1,0:T(8,128)} all-gather(%param_0.328975), channel_id=230, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"55\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/add\" stack_frame_id=67}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13938",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.2038",
+                "slice-done.2039",
+                "slice-done.2040",
+                "slice-done.2041"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13938 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2038, %slice-done.2039, %slice-done.2040, %slice-done.2041), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145048",
+              "context": [
+                "main.530_spmd/fusion.145048"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.655",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145052",
+                "fusion.145051"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+              "instruction": "%convolution-base-dilated.655 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145052, %fusion.145051), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_evaluate": {
+      "gate_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "642f1d631e1dd918d4027b6338a82c66e6116675c47c36753abe65856d824e20",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114220",
+          "context": [
+            "main.530_spmd/async-collective-start.58"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13411",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1152"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13411 = (f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1152), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "gate_proj",
+          "product": "convolution-base-dilated.691",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114230",
+            "context": [
+              "main.530_spmd/async-collective-done.58"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13413",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329031",
+              "param_1.318804",
+              "all-gather.1172",
+              "param_2.241678",
+              "param_3.122177",
+              "param_4.73584",
+              "param_5.31330",
+              "param_6.14182",
+              "param_7.6346",
+              "param_8.3033"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13413 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329031, %param_1.318804, %all-gather.1172, %param_2.241678, %param_3.122177, /*index=5*/%param_4.73584, %param_5.31330, %param_6.14182, %param_7.6346, %param_8.3033), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114220",
+          "context": [
+            "main.530_spmd/async-collective-start.58"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1152",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.328999"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=275, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"58\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}",
+          "instruction": "%all-gather.1152 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.328999), channel_id=275, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"58\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145098",
+              "context": [
+                "main.530_spmd/fusion.145098"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.669",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145102",
+                "fusion.145101"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}",
+              "instruction": "%convolution-base-dilated.669 = f32[11,4096,128]{2,1,0:T(8,128)} convolution(%fusion.145102, %fusion.145101), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}"
+            }
+          }
+        ]
+      },
+      "down_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "03eae1839585227a5902f8d178d06790b918ec392e79f8dd1e2dea2faf17bf44",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114231",
+          "context": [
+            "main.530_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13415",
+          "shape": "(f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1174"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13415 = (f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1174), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "down_proj",
+          "product": "convolution-base-dilated.693",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114234",
+            "context": [
+              "main.530_spmd/async-collective-done.59"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13417",
+            "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329040",
+              "param_1.318811",
+              "all-gather.1180",
+              "param_2.241686",
+              "param_3.122185",
+              "param_4.73592",
+              "param_5.31338",
+              "param_6.14190",
+              "param_7.6354",
+              "param_8.3041"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13417 = f32[11,1024,4096]{1,2,0:T(8,128)} custom-call(%param_0.329040, %param_1.318811, %all-gather.1180, %param_2.241686, %param_3.122185, /*index=5*/%param_4.73592, %param_5.31338, %param_6.14190, %param_7.6354, %param_8.3041), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114231",
+          "context": [
+            "main.530_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1174",
+          "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329033"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=364, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=68}",
+          "instruction": "%all-gather.1174 = f32[11,1024,4096]{1,2,0:T(8,128)} all-gather(%param_0.329033), channel_id=364, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=68}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13895",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.1870",
+                "slice-done.1871",
+                "slice-done.1872",
+                "slice-done.1873"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13895 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1870, %slice-done.1871, %slice-done.1872, %slice-done.1873), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145145",
+              "context": [
+                "main.530_spmd/fusion.145145"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.687",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145149",
+                "fusion.145148"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+              "instruction": "%convolution-base-dilated.687 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145149, %fusion.145148), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+            }
+          }
+        ]
+      },
+      "up_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "8dc63f0fb93329fa74d2117f1deaa087b65c8106013ccb84d591df5739f05622",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114235",
+          "context": [
+            "main.530_spmd/async-collective-start.60"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13419",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1182"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13419 = (f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1182), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "up_proj",
+          "product": "convolution-base-dilated.409",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114238",
+            "context": [
+              "main.530_spmd/async-collective-done.60"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13421",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329049",
+              "param_1.318818",
+              "all-gather.1188",
+              "param_2.241694",
+              "param_3.122193",
+              "param_4.73600",
+              "param_5.31346",
+              "param_6.14198",
+              "param_7.6362",
+              "param_8.3049"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13421 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329049, %param_1.318818, %all-gather.1188, %param_2.241694, %param_3.122193, /*index=5*/%param_4.73600, %param_5.31346, %param_6.14198, %param_7.6362, %param_8.3049), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114235",
+          "context": [
+            "main.530_spmd/async-collective-start.60"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1182",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329042"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=320, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"60\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}",
+          "instruction": "%all-gather.1182 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.329042), channel_id=320, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"60\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145152",
+              "context": [
+                "main.530_spmd/fusion.145152"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.689",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)S(1)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145156",
+                "fusion.145155"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}",
+              "instruction": "%convolution-base-dilated.689 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} convolution(%fusion.145156, %fusion.145155), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=71}"
+            }
+          }
+        ]
+      },
+      "o_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "9f66e6f58edebe6c4f3f4cbc5fc95e37e8b8a1d6cb96de8bbadc81966c1dfa8c",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114210",
+          "context": [
+            "main.530_spmd/async-collective-start.55"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13399",
+          "shape": "(f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1132"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13399 = (f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1132), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "o_proj",
+          "product": "convolution-base-dilated.677",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114213",
+            "context": [
+              "main.530_spmd/async-collective-done.55"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13401",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328985",
+              "param_1.318768",
+              "all-gather.1138",
+              "param_2.241636",
+              "param_3.122138",
+              "param_4.73545",
+              "param_5.31291",
+              "param_6.14143",
+              "param_7.6307",
+              "param_8.2994"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13401 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%param_0.328985, %param_1.318768, %all-gather.1138, %param_2.241636, %param_3.122138, /*index=5*/%param_4.73545, %param_5.31291, %param_6.14143, %param_7.6307, %param_8.2994), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114210",
+          "context": [
+            "main.530_spmd/async-collective-start.55"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1132",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.328975"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=230, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"55\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=68}",
+          "instruction": "%all-gather.1132 = f32[11,1024,1024]{2,1,0:T(8,128)} all-gather(%param_0.328975), channel_id=230, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"55\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=68}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13938",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.2038",
+                "slice-done.2039",
+                "slice-done.2040",
+                "slice-done.2041"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13938 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2038, %slice-done.2039, %slice-done.2040, %slice-done.2041), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145048",
+              "context": [
+                "main.530_spmd/fusion.145048"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.655",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145052",
+                "fusion.145051"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+              "instruction": "%convolution-base-dilated.655 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145052, %fusion.145051), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_capture": {
+      "gate_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "642f1d631e1dd918d4027b6338a82c66e6116675c47c36753abe65856d824e20",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114221",
+          "context": [
+            "main.530_spmd/async-collective-start.58"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13411",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1157"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13411 = (f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1157), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "gate_proj",
+          "product": "convolution-base-dilated.691",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114231",
+            "context": [
+              "main.530_spmd/async-collective-done.58"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13413",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329035",
+              "param_1.318807",
+              "all-gather.1177",
+              "param_2.241680",
+              "param_3.122177",
+              "param_4.73584",
+              "param_5.31330",
+              "param_6.14182",
+              "param_7.6346",
+              "param_8.3033"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13413 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329035, %param_1.318807, %all-gather.1177, %param_2.241680, %param_3.122177, /*index=5*/%param_4.73584, %param_5.31330, %param_6.14182, %param_7.6346, %param_8.3033), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114221",
+          "context": [
+            "main.530_spmd/async-collective-start.58"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1157",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329003"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=275, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"58\"}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}",
+          "instruction": "%all-gather.1157 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.329003), channel_id=275, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"58\"}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145099",
+              "context": [
+                "main.530_spmd/fusion.145099"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.669",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145103",
+                "fusion.145102"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}",
+              "instruction": "%convolution-base-dilated.669 = f32[11,4096,128]{2,1,0:T(8,128)} convolution(%fusion.145103, %fusion.145102), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}"
+            }
+          }
+        ]
+      },
+      "down_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "03eae1839585227a5902f8d178d06790b918ec392e79f8dd1e2dea2faf17bf44",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114232",
+          "context": [
+            "main.530_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13415",
+          "shape": "(f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1179"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13415 = (f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1179), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "down_proj",
+          "product": "convolution-base-dilated.693",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114235",
+            "context": [
+              "main.530_spmd/async-collective-done.59"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13417",
+            "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329044",
+              "param_1.318814",
+              "all-gather.1185",
+              "param_2.241688",
+              "param_3.122185",
+              "param_4.73592",
+              "param_5.31338",
+              "param_6.14190",
+              "param_7.6354",
+              "param_8.3041"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13417 = f32[11,1024,4096]{1,2,0:T(8,128)} custom-call(%param_0.329044, %param_1.318814, %all-gather.1185, %param_2.241688, %param_3.122185, /*index=5*/%param_4.73592, %param_5.31338, %param_6.14190, %param_7.6354, %param_8.3041), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114232",
+          "context": [
+            "main.530_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1179",
+          "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329037"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=364, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap()/add\" stack_frame_id=68}",
+          "instruction": "%all-gather.1179 = f32[11,1024,4096]{1,2,0:T(8,128)} all-gather(%param_0.329037), channel_id=364, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap()/add\" stack_frame_id=68}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13895",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.1870",
+                "slice-done.1871",
+                "slice-done.1872",
+                "slice-done.1873"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13895 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1870, %slice-done.1871, %slice-done.1872, %slice-done.1873), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145146",
+              "context": [
+                "main.530_spmd/fusion.145146"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.687",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145150",
+                "fusion.145149"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+              "instruction": "%convolution-base-dilated.687 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145150, %fusion.145149), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+            }
+          }
+        ]
+      },
+      "up_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "8dc63f0fb93329fa74d2117f1deaa087b65c8106013ccb84d591df5739f05622",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114236",
+          "context": [
+            "main.530_spmd/async-collective-start.60"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13419",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1187"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13419 = (f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1187), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "up_proj",
+          "product": "convolution-base-dilated.409",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114239",
+            "context": [
+              "main.530_spmd/async-collective-done.60"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13421",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329053",
+              "param_1.318821",
+              "all-gather.1193",
+              "param_2.241696",
+              "param_3.122193",
+              "param_4.73600",
+              "param_5.31346",
+              "param_6.14198",
+              "param_7.6362",
+              "param_8.3049"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13421 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329053, %param_1.318821, %all-gather.1193, %param_2.241696, %param_3.122193, /*index=5*/%param_4.73600, %param_5.31346, %param_6.14198, %param_7.6362, %param_8.3049), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114236",
+          "context": [
+            "main.530_spmd/async-collective-start.60"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1187",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329046"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=320, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"60\"}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}",
+          "instruction": "%all-gather.1187 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.329046), channel_id=320, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"60\"}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145153",
+              "context": [
+                "main.530_spmd/fusion.145153"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.689",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)S(1)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145157",
+                "fusion.145156"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}",
+              "instruction": "%convolution-base-dilated.689 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} convolution(%fusion.145157, %fusion.145156), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=71}"
+            }
+          }
+        ]
+      },
+      "o_proj": {
+        "same_normalized_signature_as_untouched": true,
+        "normalized_signature": "9f66e6f58edebe6c4f3f4cbc5fc95e37e8b8a1d6cb96de8bbadc81966c1dfa8c",
+        "rooted_differences": [],
+        "start": {
+          "computation": "fused_computation.114211",
+          "context": [
+            "main.530_spmd/async-collective-start.55"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13399",
+          "shape": "(f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1137"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13399 = (f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1137), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "o_proj",
+          "product": "convolution-base-dilated.677",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114214",
+            "context": [
+              "main.530_spmd/async-collective-done.55"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13401",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328989",
+              "param_1.318771",
+              "all-gather.1143",
+              "param_2.241638",
+              "param_3.122138",
+              "param_4.73545",
+              "param_5.31291",
+              "param_6.14143",
+              "param_7.6307",
+              "param_8.2994"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13401 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%param_0.328989, %param_1.318771, %all-gather.1143, %param_2.241638, %param_3.122138, /*index=5*/%param_4.73545, %param_5.31291, %param_6.14143, %param_7.6307, %param_8.2994), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114211",
+          "context": [
+            "main.530_spmd/async-collective-start.55"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1137",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.328979"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=230, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"55\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap()/add\" stack_frame_id=68}",
+          "instruction": "%all-gather.1137 = f32[11,1024,1024]{2,1,0:T(8,128)} all-gather(%param_0.328979), channel_id=230, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"55\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap()/add\" stack_frame_id=68}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13941",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.2052",
+                "slice-done.2053",
+                "slice-done.2054",
+                "slice-done.2055"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13941 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2052, %slice-done.2053, %slice-done.2054, %slice-done.2055), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145049",
+              "context": [
+                "main.530_spmd/fusion.145049"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.655",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145053",
+                "fusion.145052"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+              "instruction": "%convolution-base-dilated.655 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145053, %fusion.145052), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_substitute": {
+      "gate_proj": {
+        "same_normalized_signature_as_untouched": false,
+        "normalized_signature": "91a7b195ac6efcf41ca1a64d518dc530aaba7b12e984955e88eeb928c4c8a0ec",
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=275, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"58\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=272, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"62\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0
+            ],
+            "left_node": 3,
+            "right_node": 3,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "right": {
+              "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "left_node": 4,
+            "right_node": 4,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "right": {
+              "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "start": {
+          "computation": "fused_computation.114222",
+          "context": [
+            "main.529_spmd/async-collective-start.62"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13427",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1156"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13427 = (f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1156), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "gate_proj",
+          "product": "convolution-base-dilated.683",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114233",
+            "context": [
+              "main.529_spmd/async-collective-done.62"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13429",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329028",
+              "param_1.318794",
+              "all-gather.1178",
+              "param_2.241679",
+              "param_3.122178",
+              "param_4.73585",
+              "param_5.31331",
+              "param_6.14183",
+              "param_7.6347",
+              "param_8.3034"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13429 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329028, %param_1.318794, %all-gather.1178, %param_2.241679, %param_3.122178, /*index=5*/%param_4.73585, %param_5.31331, %param_6.14183, %param_7.6347, %param_8.3034), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114222",
+          "context": [
+            "main.529_spmd/async-collective-start.62"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1156",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.328989"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=272, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"62\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}",
+          "instruction": "%all-gather.1156 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.328989), channel_id=272, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"62\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145086",
+              "context": [
+                "main.529_spmd/fusion.145086"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.659",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145090",
+                "fusion.145089"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}",
+              "instruction": "%convolution-base-dilated.659 = f32[11,4096,128]{2,1,0:T(8,128)} convolution(%fusion.145090, %fusion.145089), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}"
+            }
+          }
+        ]
+      },
+      "down_proj": {
+        "same_normalized_signature_as_untouched": false,
+        "normalized_signature": "2c34e804baca9cbd5809372162477bcaaa970d4e8421c110f5f15526dd27789d",
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=364, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=361, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"63\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "start": {
+          "computation": "fused_computation.114234",
+          "context": [
+            "main.529_spmd/async-collective-start.63"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13431",
+          "shape": "(f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1180"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13431 = (f32[11,128,4096]{1,2,0:T(8,128)S(1)}, f32[11,1024,4096]{1,2,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1180), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "down_proj",
+          "product": "convolution-base-dilated.685",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114237",
+            "context": [
+              "main.529_spmd/async-collective-done.63"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13433",
+            "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329037",
+              "param_1.318801",
+              "all-gather.1186",
+              "param_2.241687",
+              "param_3.122186",
+              "param_4.73593",
+              "param_5.31339",
+              "param_6.14191",
+              "param_7.6355",
+              "param_8.3042"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13433 = f32[11,1024,4096]{1,2,0:T(8,128)} custom-call(%param_0.329037, %param_1.318801, %all-gather.1186, %param_2.241687, %param_3.122186, /*index=5*/%param_4.73593, %param_5.31339, %param_6.14191, %param_7.6355, %param_8.3042), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114234",
+          "context": [
+            "main.529_spmd/async-collective-start.63"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1180",
+          "shape": "f32[11,1024,4096]{1,2,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329030"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=361, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"63\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=69}",
+          "instruction": "%all-gather.1180 = f32[11,1024,4096]{1,2,0:T(8,128)} all-gather(%param_0.329030), channel_id=361, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"63\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=69}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13913",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.1879",
+                "slice-done.1880",
+                "slice-done.1881",
+                "slice-done.1882"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13913 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1879, %slice-done.1880, %slice-done.1881, %slice-done.1882), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145138",
+              "context": [
+                "main.529_spmd/fusion.145138"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.679",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145142",
+                "fusion.145141"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+              "instruction": "%convolution-base-dilated.679 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145142, %fusion.145141), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+            }
+          }
+        ]
+      },
+      "up_proj": {
+        "same_normalized_signature_as_untouched": false,
+        "normalized_signature": "7acb4fc77467b87877357cce1b9f6912467f07d909e46c259191a460f7b8c471",
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=320, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"60\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=317, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"64\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "start": {
+          "computation": "fused_computation.114238",
+          "context": [
+            "main.529_spmd/async-collective-start.64"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13435",
+          "shape": "(f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1188"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13435 = (f32[11,4096,128]{2,1,0:T(8,128)S(1)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1188), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "up_proj",
+          "product": "convolution-base-dilated.405",
+          "operand_position": 0,
+          "done": {
+            "computation": "fused_computation.114241",
+            "context": [
+              "main.529_spmd/async-collective-done.64"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13437",
+            "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.329046",
+              "param_1.318808",
+              "all-gather.1194",
+              "param_2.241695",
+              "param_3.122194",
+              "param_4.73601",
+              "param_5.31347",
+              "param_6.14199",
+              "param_7.6363",
+              "param_8.3050"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13437 = f32[11,4096,1024]{2,1,0:T(8,128)} custom-call(%param_0.329046, %param_1.318808, %all-gather.1194, %param_2.241695, %param_3.122194, /*index=5*/%param_4.73601, %param_5.31347, %param_6.14199, %param_7.6363, %param_8.3050), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114238",
+          "context": [
+            "main.529_spmd/async-collective-start.64"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1188",
+          "shape": "f32[11,4096,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.329039"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=317, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"64\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}",
+          "instruction": "%all-gather.1188 = f32[11,4096,1024]{2,1,0:T(8,128)} all-gather(%param_0.329039), channel_id=317, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={2}, use_global_device_ids=true, frontend_attributes={chain_id=\"64\"}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}"
+        },
+        "records": 6,
+        "edges": 5,
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145145",
+              "context": [
+                "main.529_spmd/fusion.145145"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.681",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)S(1)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145149",
+                "fusion.145148"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}",
+              "instruction": "%convolution-base-dilated.681 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} convolution(%fusion.145149, %fusion.145148), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=72}"
+            }
+          }
+        ]
+      },
+      "o_proj": {
+        "same_normalized_signature_as_untouched": false,
+        "normalized_signature": "f50d83baa6eba76448699b286bf0bea5250069742684044ade6900143f3ead7a",
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=230, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"55\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=227, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "start": {
+          "computation": "fused_computation.114212",
+          "context": [
+            "main.529_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [
+            8
+          ],
+          "name": "custom-call.13415",
+          "shape": "(f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+          "opcode": "custom-call",
+          "operands": [
+            "all-gather.1136"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveStart\"",
+          "instruction": "ROOT %custom-call.13415 = (f32[11,128,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.1136), custom_call_target=\"AsyncCollectiveStart\""
+        },
+        "final_product_use": {
+          "group": "o_proj",
+          "product": "convolution-base-dilated.669",
+          "operand_position": 1,
+          "done": {
+            "computation": "fused_computation.114215",
+            "context": [
+              "main.529_spmd/async-collective-done.59"
+            ],
+            "tuple_path": [],
+            "name": "custom-call.13417",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "param_0.328975",
+              "param_1.318751",
+              "all-gather.1142",
+              "param_2.241633",
+              "param_3.122135",
+              "param_4.73542",
+              "param_5.31289",
+              "param_6.14141",
+              "param_7.6305",
+              "param_8.2992"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+            "instruction": "ROOT %custom-call.13417 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} custom-call(%param_0.328975, %param_1.318751, %all-gather.1142, %param_2.241633, %param_3.122135, /*index=5*/%param_4.73542, %param_5.31289, %param_6.14141, %param_7.6305, %param_8.2992), custom_call_target=\"AsyncCollectiveDone\""
+          }
+        },
+        "declared_input": {
+          "computation": "fused_computation.114212",
+          "context": [
+            "main.529_spmd/async-collective-start.59"
+          ],
+          "tuple_path": [],
+          "name": "all-gather.1136",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-gather",
+          "operands": [
+            "param_0.328965"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=227, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=69}",
+          "instruction": "%all-gather.1136 = f32[11,1024,1024]{2,1,0:T(8,128)} all-gather(%param_0.328965), channel_id=227, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"59\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/add\" stack_frame_id=69}"
+        },
+        "records": 12,
+        "edges": 11,
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13955",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call",
+              "operands": [
+                "slice-done.2045",
+                "slice-done.2046",
+                "slice-done.2047",
+                "slice-done.2048"
+              ],
+              "parameter_index": null,
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "instruction": "%custom-call.13955 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2045, %slice-done.2046, %slice-done.2047, %slice-done.2048), custom_call_target=\"ConcatBitcast\""
+            }
+          },
+          {
+            "node": 11,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145036",
+              "context": [
+                "main.529_spmd/fusion.145036"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.145040",
+                "fusion.145039"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+              "instruction": "%convolution-base-dilated.645 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145040, %fusion.145039), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Selection uses output dependencies and a unique immediate Done frontier per group, not list positions.",
+    "Auxiliary Start input routes do not make Start/Done/Concat outputs transparent.",
+    "Matching bounded signatures is not semantic identity, runtime values, precision, reduction order or cause.",
+    "Raw edges retain caller contexts and repeated positions; recursive signatures do not distinguish sharing.",
+    "Both full28leaf numerical substitution gates remain failed."
+  ]
+}

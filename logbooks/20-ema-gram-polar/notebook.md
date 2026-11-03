@@ -4033,6 +4033,23 @@ intervention is selected. No experiment remains; PR observer 77099 remains sole.
 [gate route](compiler-gate-scalar-route.json) and
 [validation](compiler-boundary-inputs-validation.json) retain the evidence.
 
+## 2026-11-03 15:31 UTC — Declared start inputs reach product records
+
+The regional CPU extraction recovered the declared all-gather inputs for four AsyncCollectiveStart calls per matrix graph. These calls were selected from the immediate opaque boundaries of the final Gram-direction products' operand paths. Traversal stops at intervening products, so upstream covariance calls are excluded. The four groups are gate/down, whose column-substitution direction checks failed, and passing up/o controls. The untouched, unchanged-evaluator, paired-capture and column-substitution graphs are compared.
+
+All four evaluator and all four paired-capture normalized input-route signatures match untouched. These signatures remove compiler identifiers and wrapper metadata, retain declared shapes, attributes, ordered connections and constant literals, and canonicalize source-wrapper roles; this is record normalization, not numerical input normalization. In substitution, every group differs in its all-gather channel and chain IDs. Gate also differs in S(1) tags on sibling tuple leaves 2 and 3 of a producer fusion; the traced path selects leaf 0, whose declaration is unchanged. Down/up/o have no other differences within these bounded signatures. These identifiers and tags are recorded without interpreting runtime precision, order or cause.
+
+Gate/up each reach a product labeled with the source function gram_direction after six recorded nodes. Down/o each have twelve nodes and terminate at a polar-product record and an opaque ConcatBitcast. The product records match the B_X matrix product (B times X) in the fifth polar update in the existing dependency-mapped polar chains. Start/Done outputs remain opaque: examining their declared inputs does not establish exact custom-call semantics or complete left/right Gram-power provenance.
+
+The task succeeded attempt 0/exit 0, UID b848e05f829c, verified November 3 at 15:27:57–58 UTC. It used published source ee1310afe12a9ccd0da6ba00133b28df3d67d89f, four CPUs/8 GiB/10 GiB in us-west4, default preemption retries and no wall-clock limit. Two closure rounds recovered eight bodies per graph; no requested records remain missing. All four optimized HLO SHA/size checks passed regionally. Large HLO stayed regional. The extracted report is 387,447 bytes, SHA 48b61b4e367b55789f002f357f8551fb662e71a24997fb369007a50bd0192435, with exact GCS readback.
+
+Both full 28-leaf numerical substitution gates remain failed. No optimization, training, MFU or causal result is accepted. Next is static design only: inspect the newly reached gate/up direct-product operand bindings and the down/o polar-product-plus-ConcatBitcast input branches using saved records first. Preserve passing paired-capture controls and opaque boundaries; do not infer a cause from unselected tuple tags or channel renumbering. No new numerical intervention is selected. No experiment remains; PR observer 77099 remains sole and the heartbeat stays active.
+
+[Completion](compiler-start-producers-completed.json),
+[comparison](compiler-start-producers-comparison.json) and
+[validation](compiler-start-producers-validation.json) retain the exact source,
+report, declared records and fixture checks.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -13,5 +13,80 @@
     "sha256": "260610c8c7fd0bd38d68fa3315fa118ed75e9a5f61f84fe785a170cd6198d66c",
     "passed": true
   },
-  "saved_record_selection": "Four starts / twelve operand roles per graph; four missing enclosing bodies per graph. No HLO read locally."
+  "saved_record_selection": "Four starts / twelve operand roles per graph; four missing enclosing bodies per graph. No HLO read locally.",
+  "post_completion": {
+    "comparison_source_sha256": "ad14c17942903a0ffe70c5e422f4e77ad5473e594a73d34b4dccdcfcbe62e81a",
+    "fixture_sha256": "ebe8fc17c8a012d698e3188b4b0ad19c325be4b12d855e29049c4821d52cb51d",
+    "passed": true,
+    "checks": [
+      "Eight evaluator/capture signatures match untouched",
+      "Start-list order invariance",
+      "Channel and shape mutations detected",
+      "Missing records and ambiguous group mapping rejected",
+      "Published source and manifest hashes match execution",
+      "Exact GCS report bytes readback; four HLO SHA/size verified regionally"
+    ]
+  },
+  "polar_frontier_identity_crosscheck": {
+    "inventory_sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a",
+    "matches": {
+      "matrix_untouched": {
+        "down_proj": {
+          "operation": "async_collective_fusion.145145/convolution-base-dilated.687",
+          "group": "down_proj",
+          "iteration": 5,
+          "product": "B_X"
+        },
+        "o_proj": {
+          "operation": "async_collective_fusion.145048/convolution-base-dilated.655",
+          "group": "o_proj",
+          "iteration": 5,
+          "product": "B_X"
+        }
+      },
+      "matrix_evaluate": {
+        "down_proj": {
+          "operation": "async_collective_fusion.145145/convolution-base-dilated.687",
+          "group": "down_proj",
+          "iteration": 5,
+          "product": "B_X"
+        },
+        "o_proj": {
+          "operation": "async_collective_fusion.145048/convolution-base-dilated.655",
+          "group": "o_proj",
+          "iteration": 5,
+          "product": "B_X"
+        }
+      },
+      "matrix_capture": {
+        "down_proj": {
+          "operation": "async_collective_fusion.145146/convolution-base-dilated.687",
+          "group": "down_proj",
+          "iteration": 5,
+          "product": "B_X"
+        },
+        "o_proj": {
+          "operation": "async_collective_fusion.145049/convolution-base-dilated.655",
+          "group": "o_proj",
+          "iteration": 5,
+          "product": "B_X"
+        }
+      },
+      "matrix_substitute": {
+        "down_proj": {
+          "operation": "async_collective_fusion.145138/convolution-base-dilated.679",
+          "group": "down_proj",
+          "iteration": 5,
+          "product": "B_X"
+        },
+        "o_proj": {
+          "operation": "async_collective_fusion.145036/convolution-base-dilated.645",
+          "group": "o_proj",
+          "iteration": 5,
+          "product": "B_X"
+        }
+      }
+    },
+    "scope": "Matches declared scope/name to previously dependency-mapped chain; not runtime-value identity."
+  }
 }
