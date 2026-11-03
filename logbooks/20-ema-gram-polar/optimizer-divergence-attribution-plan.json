@@ -150,7 +150,7 @@
   "startup_evidence": "optimizer-attribution-started.json",
   "completion_evidence": "optimizer-attribution-v5e-completed.json",
   "followup": {
-    "status": "CPU validation passed; ready for one sequential TPU diagnostic",
+    "status": "running; native8v5e/oneprocess/sourcehash andonlineW&B verified",
     "entrypoint": "optimizer_attribution.py --polar-compiler",
     "objective": "Capture original/candidate optimized compiler IR and locate layout differences across normalization and five polar iterates.",
     "arithmetic": "Original quintic coefficients, norm epsilon1e-7, five iterations, transpose and mesh constraint, default matrix-product precision. No precision change or tolerance relaxation.",
@@ -210,6 +210,13 @@
     },
     "preflight_evidence": "optimizer-polar-compiler-preflight.json",
     "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-compiler-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-compiler --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1",
-    "source_policy": "Resolve PUBLISHED_HEAD to the pushed commit before submission; script hash must equal479d929a489caacaa1ff9fe8908e6d247047ed90e17c051de2cb112c5119c84e."
+    "source_policy": "Resolve PUBLISHED_HEAD to the pushed commit before submission; script hash must equal479d929a489caacaa1ff9fe8908e6d247047ed90e17c051de2cb112c5119c84e.",
+    "job_id": "/kaiyuew@stanford.edu/ema-gram-20-polar-compiler-v5e-8-20261103",
+    "submitted_utc": "2026-11-03T00:39:29Z",
+    "source_commit": "0729daeaf8e1732e87725426c4eebf52dc7ff807",
+    "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-compiler-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT 0729daeaf8e1732e87725426c4eebf52dc7ff807 -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-compiler --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1",
+    "startup_evidence": "optimizer-polar-compiler-started.json",
+    "run_id": "ema-gram-20-attribution-f28f477c787b",
+    "output_directory": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1/ema-gram-20-attribution-f28f477c787b"
   }
 }

@@ -1500,6 +1500,20 @@ is part of it. The initial local logging invocation failed before initialization
 because an editable install resolved an older checkout; explicit import paths
 corrected it, and the failed invocation is retained in the preflight record.
 
+## 2026-11-03 00:42 UTC — Compiler attribution running on v5e
+
+Iris accepted the compiler/iteration diagnostic at 00:39:29 UTC from published
+source `0729daeaf8e1732e87725426c4eebf52dc7ff807`. The
+[startup record](optimizer-polar-compiler-started.json) verifies eight native
+TPU v5 lite devices, one JAX process, the expected script hash and an online
+W&B run with `logging_check/success=1`. The job has entered the fused original update.
+The [plan](optimizer-divergence-attribution-plan.json) records the exact command
+and resources.
+
+One log observer follows this process; the earlier attribution observer ended
+naturally. The v4-32 reference request remains queued. No training or original checkpoint
+read is part of this diagnostic.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
