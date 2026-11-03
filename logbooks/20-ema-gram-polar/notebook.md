@@ -2982,6 +2982,27 @@ SHA, size and gzip readback checks. These small-matrix CPU checks do not establi
 TPU behavior or hidden intermediate identity. Publish this evidence before one
 sequential TPU diagnostic using the validated source and unchanged tolerances.
 
+## 2026-11-03 09:50 UTC — Single-denominator TPU diagnostic started
+
+The [single-output diagnostic](optimizer-single-norm-capture-started.json) was
+accepted at 09:49:07 UTC from published revision
+`95ae974e58e1c3f83c79574c57f89ee19bb3b9e6`. Attempt 0 is running on eight native
+v5e chips in one JAX process. The loaded script and helper hashes match the CPU
+validation. The fresh [online W&B run](https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-8854b678361e)
+passed its logging check before optimizer kernels.
+
+This run exposes only the existing q_proj normalization denominator. All
+28-leaf reference comparisons remain pending at startup. Failed agreement will
+forbid interpreting the captured denominator as an untouched internal value; even
+matching final outputs would not establish internal identity. No optimizer
+acceptance or performance claim is made.
+
+The task requests 96 CPUs, 128 GiB host memory and 50 GiB disk in us-west4, with
+batch priority, default preemption retries and no runtime limit. Sole log
+observer 85107 follows this task; PR observer 77099 remains live. Preserve the
+job through compilation and collect both solver branches before selecting any
+further diagnostic. Large compiler artifacts stay regional.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
