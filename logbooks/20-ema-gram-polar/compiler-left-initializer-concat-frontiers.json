@@ -1,0 +1,1690 @@
+{
+  "graphs": {
+    "matrix_untouched": {
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"states[6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"states[6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/1": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"states[6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"states[6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/2": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"states[6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"states[6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/3": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"states[6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"states[6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "matrix_evaluate": {
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/1": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/2": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/3": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "param.257",
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "parameter",
+            "operands": [],
+            "parameter_index": 26,
+            "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}",
+            "instruction": "%param.257 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(26), sharding={replicated}, metadata={op_name=\"bank[1][6].left\"}"
+          },
+          "boundary": {
+            "node": 19,
+            "reason": "entry parameter"
+          },
+          "polar_role": null,
+          "declared_input_coverage": []
+        },
+        {
+          "record": {
+            "computation": "async_collective_fusion.144367",
+            "context": [
+              "main.530_spmd/fusion.144367"
+            ],
+            "tuple_path": [],
+            "name": "convolution-base-dilated.435",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144371",
+              "fusion.144370"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+            "instruction": "%convolution-base-dilated.435 = f32[11,128,1024]{1,2,0:T(8,128)} convolution(%fusion.144371, %fusion.144370), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "boundary": {
+            "node": 29,
+            "reason": "declared product frontier",
+            "role": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "state-initializer",
+                  "path": [
+                    "targets",
+                    "down_proj/source/refresh_product",
+                    "operands",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13932",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2014",
+              "slice-done.2015",
+              "slice-done.2016",
+              "slice-done.2017"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13932 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2014, %slice-done.2015, %slice-done.2016, %slice-done.2017), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 39,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "0",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "1",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "2",
+                    "trace"
+                  ]
+                }
+              ]
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": [
+                {
+                  "report": "boundary-inputs",
+                  "path": [
+                    "endpoints",
+                    "7",
+                    "operand_traces",
+                    "3",
+                    "trace"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "matrix_capture": {
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/0": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13975",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2156",
+              "slice-done.2157",
+              "slice-done.2158",
+              "slice-done.2159"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13975 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2156, %slice-done.2157, %slice-done.2158, %slice-done.2159), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/1": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13975",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2156",
+              "slice-done.2157",
+              "slice-done.2158",
+              "slice-done.2159"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13975 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2156, %slice-done.2157, %slice-done.2158, %slice-done.2159), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/2": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13975",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2156",
+              "slice-done.2157",
+              "slice-done.2158",
+              "slice-done.2159"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13975 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2156, %slice-done.2157, %slice-done.2158, %slice-done.2159), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/3": [
+        {
+          "record": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13975",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2156",
+              "slice-done.2157",
+              "slice-done.2158",
+              "slice-done.2159"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13975 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2156, %slice-done.2157, %slice-done.2158, %slice-done.2159), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ]
+    },
+    "matrix_substitute": {
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/0": [
+        {
+          "record": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13988",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2147",
+              "slice-done.2148",
+              "slice-done.2149",
+              "slice-done.2150"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13988 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2147, %slice-done.2148, %slice-done.2149, %slice-done.2150), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/1": [
+        {
+          "record": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13988",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2147",
+              "slice-done.2148",
+              "slice-done.2149",
+              "slice-done.2150"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13988 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2147, %slice-done.2148, %slice-done.2149, %slice-done.2150), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/2": [
+        {
+          "record": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13988",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2147",
+              "slice-done.2148",
+              "slice-done.2149",
+              "slice-done.2150"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13988 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2147, %slice-done.2148, %slice-done.2149, %slice-done.2150), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ],
+      "down_proj/left_power/while_initializer/position3/ConcatBitcast/3": [
+        {
+          "record": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "custom-call.13988",
+            "shape": "f32[11,128,1024]{1,2,0:T(8,128)S(1)}",
+            "opcode": "custom-call",
+            "operands": [
+              "slice-done.2147",
+              "slice-done.2148",
+              "slice-done.2149",
+              "slice-done.2150"
+            ],
+            "parameter_index": null,
+            "attributes": ", custom_call_target=\"ConcatBitcast\"",
+            "instruction": "%custom-call.13988 = f32[11,128,1024]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.2147, %slice-done.2148, %slice-done.2149, %slice-done.2150), custom_call_target=\"ConcatBitcast\""
+          },
+          "boundary": {
+            "node": 3,
+            "reason": "opaque operation or unsupported tuple projection"
+          },
+          "polar_role": null,
+          "declared_input_coverage": [
+            {
+              "operand_position": 0,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 1,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 2,
+              "existing_input_traces": []
+            },
+            {
+              "operand_position": 3,
+              "existing_input_traces": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Coverage joins exact graph/caller/computation/instruction/empty tuple path of complete saved trace roots.",
+    "Each operand position retained, including repeated operands. Record presence alone is not input coverage.",
+    "Covered declared inputs do not establish opaque output semantics or input runtime values.",
+    "Source product roles come from dependency-mapped column polar lineage; no text-order matching."
+  ]
+}

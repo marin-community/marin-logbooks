@@ -4371,6 +4371,24 @@ The next static decision is to inspect those four Concat inputs using saved depe
 
 The sole follow observer ended naturally with exit 0. No experiment, queue or observer remains active. PR monitoring remains handed off after its completed twelve-hour wait; the research heartbeat stays active.
 
+### November 3, 19:33 UTC — saved records resolve four left-initializer Concat inputs
+
+All four evaluator input-route signatures match untouched. Paired capture and column substitution each match zero of four at the same declared operand positions. The four graphs are matrix-path untouched, evaluator, paired capture and column substitution. Paired capture still passes its numerical reference gate, while both full 28-leaf substitution gates remain failed. The static mismatch therefore does not establish the cause of numerical failure.
+
+This audit selects the previously uncovered Concat through position 3 of the initializer on the down left-relative-power route. Every declared input follows slice-done/start to the same within-graph all-gather. The leading slices, in operand order, are [0:3], [3:6], [6:9], [9:11]; both other axes span [0:1024]. Untouched and evaluator then reach a tuple projection and producer tree containing declared `states[6].left` (with the evaluator bank wrapper), a Gram-refresh product and an opaque Concat. The product and Concat inputs already have complete exact-context traces in saved reports; their outputs are not thereby semantically resolved.
+
+Capture and substitution instead stop at one shared opaque Concat per graph where untouched has a tuple projection. The comparator stops at that opcode/connection mismatch, without claiming equality of the remaining subtrees. Substitution additionally changes all-gather channel 325→322; capture retains channel 325. Four input routes are repeated views of shared declarations, not four independent changes. The passing capture control prevents treating this Concat-versus-projection difference alone as the failure cause. Declared shapes, tags and IDs do not establish runtime precision, values or execution order.
+
+All required computation bodies were already present in the eighteen SHA/size-checked bounded inputs: the inventory and seventeen saved reports. This was local static parsing only, with no new job, HLO download, accelerator, numerical kernels or W&B run. Per-graph HLO identities were joined to the previously verified regional inventory; no new HLO audit is claimed. The [complete local report](compiler-left-initializer-concat-report.json) is 448,760 bytes with SHA256 `06591fc7a0f9c6ce88ecee73db86a5ecea268076c518bd5301abaa5c3603f1ef`. No requested records are missing.
+
+The [coverage summary](compiler-left-initializer-concat-frontiers.json) leaves no new uninspected positions on the current untouched/evaluator frontiers. Capture and substitution each expose four uncovered inputs on their newly reached Concat. Their endpoint identities remain separate; no counterpart is invented for the untouched/evaluator tuple projection. Older gaps remain recorded. All original while/Start/Done/Concat outputs stay opaque, and traversal stops at product records before their operands.
+
+The [comparison](compiler-left-initializer-concat-comparison.json) retains all original mismatches. Normalized signatures retain shapes, attributes, literals, channel/chain IDs and ordered connections after canonicalizing compiler identifiers, metadata and source wrappers. Raw caller contexts and repeated edges are retained; recursive hashes do not distinguish sharing. The [validation](compiler-left-initializer-concat-validation.json) checks exact selectors, initializer position, explicit operand order, missing/duplicate/wrong-root rejection, dtype mutation, shared records, source scopes and coverage. Six same-HLO o controls are reused with their three prior substitution mismatches; no control measurement is repeated.
+
+The next static decision is to inspect the four new Concat inputs in each of capture and substitution using saved dependencies first, retaining the passing capture control and reusing covered untouched/evaluator routes. Do not pair different endpoint kinds. Publish exact source before any necessary regional CPU extraction. Both numerical gates remain failed at rtol=atol=1e-5; no numerical, precision or tiling intervention, optimization, training, MFU or restore acceptance is selected.
+
+No experiment, queue or observer is active. Old jobs remain terminal and PR monitoring remains handed off; the research heartbeat stays active.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
