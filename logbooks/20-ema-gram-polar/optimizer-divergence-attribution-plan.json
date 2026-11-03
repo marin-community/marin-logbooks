@@ -512,7 +512,7 @@
                     "partial": "optimizer-paired-input-capture-partial.json",
                     "completed": "optimizer-paired-input-capture-v5e-completed.json",
                     "next_decision": {
-                      "state": "Current job original capture gate passes1e-5 notbitwise; matrix and both substitution gates pending; preserve job",
+                      "state": "Original same-pair substitution gate failed; no original-path interpretation. Preserve running matrix branch; no next numerical candidate",
                       "question": "Under a fixed full-update executable, how much does replacing q_proj normalization numerator, denominator, or both change its final direction?",
                       "basis": "Paired capture passes both full-update28leaf gates at1e-5. gram_direction also applies left/right Gram powers after polar, so an isolated polar endpoint is not the full direction reference.",
                       "procedure": "Review a Jaxpr-based full-update evaluator that replaces only the two operand uses at the uniquely mapped q_proj normalization division with external paired banks. Keep every other equation, input, constant, operand use and original28output leaves unchanged; do not overwrite the numerator variable globally. Preserve exact division primitive/parameters and downstream association. For each solver, compile one substitution executable and run all four original/matrix numerator-denominator combinations on the same fingerprinted original full-update input bank. Compile once and replay identical banks bitwise. No source precision, tiling or math override.",
@@ -524,7 +524,8 @@
                       "implementation": "optimizer-paired-input-substitution-plan.json",
                       "preflight": "optimizer-paired-input-substitution-preflight.json",
                       "started": "optimizer-paired-input-substitution-started.json",
-                      "partial": "optimizer-paired-input-substitution-partial.json"
+                      "partial": "optimizer-paired-input-substitution-partial.json",
+                      "original_gate": "optimizer-paired-input-substitution-original-gate.json"
                     }
                   }
                 }

@@ -3463,6 +3463,43 @@ separates this fresh report from the last canonical RUNNING observation at
 12:06 UTC. Sole log observer 86562 and PR observer 77099 were both live at 12:11 UTC. No optimization,
 warmed performance, MFU or checkpoint-resume claim is made.
 
+## 2026-11-03 12:28 UTC — Original substitution fails its same-pair reference gate
+
+The original substitution executable, supplied with its own solver's freshly
+captured numerator and denominator, fails the untouched 28-leaf reference gate
+at rtol=atol=1e-5. All seven direction leaves fail; all 21 state leaves pass.
+Direction relative Frobenius errors range from 0.006139 to 0.026861, relative to
+the corresponding untouched outputs. The comparison against the paired-capture
+outputs also fails all seven directions. Both fresh paired captures had passed
+their reference gates, so capture agreement does not validate this substitution
+executable. The failed same-pair gate forbids original-path interpretation.
+
+Within that fixed altered executable, numerator-only, denominator-only and
+paired cross-solver substitutions change q_proj by relative Frobenius errors
+0.00700109, 0.00610410 and 0.00700086, respectively. Each uses the corresponding
+own-pair output leaf as reference. The other 27 leaves have zero measured
+absolute error, which does not prove per-leaf bitwise equality. These are
+conditional differences within the altered executable; they do not establish
+the cause of the untouched optimizer discrepancy. Its own-pair replay is bitwise.
+
+The 12:26:40 UTC report contains 17 finite stages and 13 passing comparisons out
+of 20. Both unchanged evaluators match their own untouched references bitwise;
+both paired captures pass tolerance but are not bitwise equal. All five
+completed fixed executables replay bitwise. The matrix substitution executable
+is compiling, and its same-pair gate remains pending. Iris reports the same job
+running at 12:26:38 UTC, with zero failures and preemptions. Preserve it through
+the remaining branch; no new numerical candidate is selected.
+
+All four small capture/substitution Jaxpr artifacts passed SHA, size and gzip
+readback. Large compiler files remain regional without a new SHA audit. Finelog
+records 204 samples through 12:27:18 UTC and an observed cumulative host-memory
+peak of 91.55 GiB against the 128 GiB reservation; accelerator memory is null.
+No optimizer, warmed performance, training MFU or checkpoint-resume claim is
+made. Sole log observer 86562 and PR observer 77099 remain live.
+
+[Original-gate evidence](optimizer-paired-input-substitution-original-gate.json)
+retains the failed checks, report hash, operand-bank identities and pending gate.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
