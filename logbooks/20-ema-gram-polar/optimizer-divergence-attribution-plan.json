@@ -512,7 +512,7 @@
                     "partial": "optimizer-paired-input-capture-partial.json",
                     "completed": "optimizer-paired-input-capture-v5e-completed.json",
                     "next_decision": {
-                      "state": "Original same-pair substitution gate failed; no original-path interpretation. Preserve running matrix branch; no next numerical candidate",
+                      "state": "Completed; both same-pair substitution gates failed; original-path interpretation forbidden",
                       "question": "Under a fixed full-update executable, how much does replacing q_proj normalization numerator, denominator, or both change its final direction?",
                       "basis": "Paired capture passes both full-update28leaf gates at1e-5. gram_direction also applies left/right Gram powers after polar, so an isolated polar endpoint is not the full direction reference.",
                       "procedure": "Review a Jaxpr-based full-update evaluator that replaces only the two operand uses at the uniquely mapped q_proj normalization division with external paired banks. Keep every other equation, input, constant, operand use and original28output leaves unchanged; do not overwrite the numerator variable globally. Preserve exact division primitive/parameters and downstream association. For each solver, compile one substitution executable and run all four original/matrix numerator-denominator combinations on the same fingerprinted original full-update input bank. Compile once and replay identical banks bitwise. No source precision, tiling or math override.",
@@ -525,7 +525,18 @@
                       "preflight": "optimizer-paired-input-substitution-preflight.json",
                       "started": "optimizer-paired-input-substitution-started.json",
                       "partial": "optimizer-paired-input-substitution-partial.json",
-                      "original_gate": "optimizer-paired-input-substitution-original-gate.json"
+                      "original_gate": "optimizer-paired-input-substitution-original-gate.json",
+                      "completed": "optimizer-paired-input-substitution-v5e-completed.json",
+                      "next_decision": {
+                        "state": "Static design only; not implemented or submitted",
+                        "question": "Which declared compiler paths change between passing capture/evaluator controls and failed same-pair substitution executables, including non-q groups?",
+                        "manifest": "compiler-substitution-manifest.json",
+                        "procedure": "Compare all8same-job optimizedHLO graphs: untouched,evaluator,pairedcapture,substitution for eachsolver. Extend existing inventory support to explicit30output pairedcapture roles as well as28fulloutputs; retain source argument bindings for both external substitution inputs, not assumed surviving parameter ordinals. Map all7groups by output dependencies and source scopes, preserving tuple leaves, repeated operands and caller bindings. Compare normalization, polar15-product chains, first-Gram collectives and enclosing fusion records. Include matrixo_proj passing control and allchanged non-q groups. Explicitly distinguish omitted upstream equations/dead computations from changed records; do not align by text order or infer runtime identities from record equality.",
+                        "validation": "Fixtures for30leaf roles, externalinputbindings, outputdependency rather than textorder mapping, repeatedoperandpositions and missing/ambiguous-target rejection; preserve28/34leaf legacy behavior. Verify each consumed optimizedHLO size/SHA regionally before parsing. Recover missing bodies explicitly, retaining opaque custom-call limitations.",
+                        "execution": "Only regionalCPUus-west4 extraction, publishedsource/manifest/checksums before submission,4CPU8GiB10GiB,batch/defaultpreemption/no wallclocklimits. No accelerator or optimizer kernels/W&B needed for staticfile parsing. LargeHLO stayregional; retrieve only bounded extracted records.",
+                        "interpretation": "Static declarations/configurations/dependency mapping do not establish runtime values, precision, summation order, hidden identity or cause. Both numerical substitution gates remain failed. No numerical,precision,tiling or optimizer intervention selected from static counts/tags alone.",
+                        "constraints": "All science and trainingacceptance gates unchanged. Any future numerical implementation requires ownfreshonlineCPUlogging/harnessvalidation and publishedexactsource beforeONEsequentialTPU."
+                      }
                     }
                   }
                 }

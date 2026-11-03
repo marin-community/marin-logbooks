@@ -3500,6 +3500,61 @@ made. Sole log observer 86562 and PR observer 77099 remain live.
 [Original-gate evidence](optimizer-paired-input-substitution-original-gate.json)
 retains the failed checks, report hash, operand-bank identities and pending gate.
 
+## 2026-11-03 12:45 UTC — Both substitution reference gates fail; collection completes
+
+The substitution diagnostic completed successfully on attempt 0 with task exit
+0. Both executables fail their same-pair reference gates at rtol=atol=1e-5.
+The original fails all seven direction leaves; the matrix version fails six,
+with o_proj passing. All 21 state leaves pass in both cases. For the six failing matrix directions,
+relative Frobenius errors range from 0.005995 to 0.029045 against its untouched
+reference. Its gate_proj right-Gram and down_proj left-Gram states differ by
+at most 1.77636e-15. These small state differences pass tolerance; zero measured
+error on other leaves is not per-leaf bitwise proof.
+
+Both fresh paired captures pass their own 28-leaf reference gates, not bitwise,
+and both unchanged evaluators match their untouched references bitwise. The
+failed same-pair substitution gates therefore remain decisive: neither altered
+executable supports original-path interpretation. Passing capture agreement
+alone did not validate substitution.
+
+All 22 stages are finite and 14 of 26 comparisons pass. All six fixed executables
+replay bitwise. The 12 failed comparisons comprise two full matrix-vs-original
+comparisons, four substitution own-pair reference checks, and six swaps against
+own-pair outputs. In the matrix substitution executable, numerator-only,
+denominator-only and paired swaps change q_proj by relative Frobenius errors
+0.00701153, 0.00613400 and 0.00700061, respectively, using that executable's
+own-pair output as reference. The original executable's corresponding errors
+were 0.00700109, 0.00610410 and 0.00700086. Other leaves have zero measured
+absolute error in these swap comparisons. These are conditional differences
+within altered executables, not an explanation of the untouched optimizer's
+discrepancy. No optimization or training result is accepted.
+
+Canonical job success was verified at 12:41:38 UTC and task success at
+12:42:22 UTC. Online W&B finished with logging success, attribution completed
+and candidate acceptance false. All 20 artifact sizes were verified, totaling
+78,527,323 compressed bytes; all four small Jaxpr files passed SHA/gzip readback.
+The 16 large compiler files remain in us-west4 without a new SHA audit. Finelog
+records 274 samples through 12:35:04 UTC and observed host peak 91.55 GiB.
+Accelerator memory is null; JAX allocator peak 8,128,457,216 bytes/device is not
+total HBM. Log observer 86562 ended naturally with exit 0; no experiment or queue
+remains. PR observer 77099 remains the sole live PR observer.
+
+Next, compare the eight saved optimized HLO graphs on regional CPU, using the
+untouched, unchanged-evaluator, paired-capture and substitution graphs for both
+solvers. Map all seven groups by output dependencies, including changed non-q
+groups and matrix o_proj as a passing control. The existing inventory needs
+explicit 30-leaf paired-capture roles and external-input binding checks before
+use. This is static design only: no extraction or numerical intervention has
+been submitted. Static records cannot establish runtime values, precision,
+summation order or cause. Both failed numerical gates remain in force.
+
+[Completed evidence](optimizer-paired-input-substitution-v5e-completed.json)
+records final report SHA
+`bb2adee4365661f280afa0b24dc52c05d82083e109c716d1ac43fbaa7cac6e09`.
+The [manifest](compiler-substitution-manifest.json) lists the eight regional
+inputs; the [attribution plan](optimizer-divergence-attribution-plan.json)
+records validation and interpretation requirements.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
