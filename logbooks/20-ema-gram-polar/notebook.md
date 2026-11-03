@@ -1433,6 +1433,27 @@ The final report and interpretation remain pending. This is one synthetic
 non-training diagnostic; no original checkpoint was read. The v4-32 reference
 request remains queued with its original priority.
 
+## 2026-11-03 00:09 UTC — Polar output depends on layout in frozen-input controls
+
+The [partial attribution report](optimizer-attribution-v5e-partial.json)
+contains completed query, key, value and attention-output projection controls
+on eight native v5e devices. For these four groups, the staged original and
+matrix-layout eigensolvers produce exactly matching eigenvalues and reconstructed
+powers. Both power branches produce identical outputs under the same replicated
+downstream layout.
+
+Changing downstream outputs from replicated to direction-sharded layout with
+identical powers leaves the inner matrix unchanged but changes the polar output and final direction beyond
+rtol=atol=1e-5 in all four groups. Feeding an identical inner matrix directly
+into the polar function reproduces the layout discrepancy for query, key and
+value, with relative Frobenius errors 0.00618–0.00640. For the attention-output
+projection, this isolated polar output matches exactly.
+
+These partial results establish layout sensitivity in the instrumented polar
+computation for three groups. They do not establish the compiler mechanism or
+fully explain the fused-update discrepancy. Feed-forward groups remain in
+progress. No candidate is accepted for training.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
