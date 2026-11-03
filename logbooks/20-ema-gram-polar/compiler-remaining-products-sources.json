@@ -1,0 +1,1625 @@
+{
+  "graphs": {
+    "matrix_untouched": {
+      "right_state_parameter": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "param.248",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+        "opcode": "parameter",
+        "operands": [],
+        "parameter_index": 18,
+        "attributes": ", sharding={replicated}, metadata={op_name=\"states[3].right\"}",
+        "instruction": "%param.248 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"states[3].right\"}"
+      },
+      "right_route_boundaries": [
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13994",
+          "shape": "pred[1024,1024]{0,1:T(8,128)(4,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2226",
+            "slice-done.2227",
+            "slice-done.2228",
+            "slice-done.2229"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13994 = pred[1024,1024]{0,1:T(8,128)(4,1)S(1)} custom-call(%slice-done.2226, %slice-done.2227, %slice-done.2228, %slice-done.2229), custom_call_target=\"ConcatBitcast\""
+        },
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "param.248",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 18,
+          "attributes": ", sharding={replicated}, metadata={op_name=\"states[3].right\"}",
+          "instruction": "%param.248 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"states[3].right\"}"
+        },
+        {
+          "computation": "async_collective_fusion.144328",
+          "context": [
+            "main.530_spmd/fusion.144328"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.421",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144332",
+            "fusion.144331"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=52}",
+          "instruction": "%convolution-base-dilated.421 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144332, %fusion.144331), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=52}"
+        },
+        {
+          "computation": "async_collective_fusion.144534",
+          "context": [
+            "main.530_spmd/fusion.144534"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.501",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144538",
+            "fusion.144537"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=60}",
+          "instruction": "%convolution-base-dilated.501 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144538, %fusion.144537), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=60}"
+        }
+      ],
+      "new_product_gaps": [
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144328"
+            ],
+            "async_collective_fusion.144328",
+            "convolution-base-dilated.421"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144332",
+              "fusion.144331"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=52}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144332",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144328"
+                ],
+                "async_collective_fusion.144328",
+                "fusion.144332",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144331",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144328"
+                ],
+                "async_collective_fusion.144328",
+                "fusion.144331",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144534"
+            ],
+            "async_collective_fusion.144534",
+            "convolution-base-dilated.501"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144538",
+              "fusion.144537"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=60}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144538",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144534"
+                ],
+                "async_collective_fusion.144534",
+                "fusion.144538",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144537",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144534"
+                ],
+                "async_collective_fusion.144534",
+                "fusion.144537",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144622"
+            ],
+            "async_collective_fusion.144622",
+            "convolution-base-dilated.543"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144626",
+              "fusion.144625"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/dot_general\" stack_frame_id=58}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144626",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144622"
+                ],
+                "async_collective_fusion.144622",
+                "fusion.144626",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144625",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144622"
+                ],
+                "async_collective_fusion.144622",
+                "fusion.144625",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144716"
+            ],
+            "async_collective_fusion.144716",
+            "convolution-base-dilated.577"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144720",
+              "fusion.144719"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "X_Xt"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144720",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144716"
+                ],
+                "async_collective_fusion.144716",
+                "fusion.144720",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144719",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144716"
+                ],
+                "async_collective_fusion.144716",
+                "fusion.144719",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144737"
+            ],
+            "async_collective_fusion.144737",
+            "convolution-base-dilated.585"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144741",
+              "fusion.144740"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "scaled_A_A"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144741",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144737"
+                ],
+                "async_collective_fusion.144737",
+                "fusion.144741",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144740",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144737"
+                ],
+                "async_collective_fusion.144737",
+                "fusion.144740",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        }
+      ],
+      "matching_routes": 28
+    },
+    "matrix_evaluate": {
+      "right_state_parameter": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "param.248",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+        "opcode": "parameter",
+        "operands": [],
+        "parameter_index": 18,
+        "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}",
+        "instruction": "%param.248 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}"
+      },
+      "right_route_boundaries": [
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13994",
+          "shape": "pred[1024,1024]{0,1:T(8,128)(4,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2226",
+            "slice-done.2227",
+            "slice-done.2228",
+            "slice-done.2229"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13994 = pred[1024,1024]{0,1:T(8,128)(4,1)S(1)} custom-call(%slice-done.2226, %slice-done.2227, %slice-done.2228, %slice-done.2229), custom_call_target=\"ConcatBitcast\""
+        },
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "param.248",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 18,
+          "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}",
+          "instruction": "%param.248 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}"
+        },
+        {
+          "computation": "async_collective_fusion.144328",
+          "context": [
+            "main.530_spmd/fusion.144328"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.421",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144332",
+            "fusion.144331"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=53}",
+          "instruction": "%convolution-base-dilated.421 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144332, %fusion.144331), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=53}"
+        },
+        {
+          "computation": "async_collective_fusion.144534",
+          "context": [
+            "main.530_spmd/fusion.144534"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.501",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144538",
+            "fusion.144537"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=61}",
+          "instruction": "%convolution-base-dilated.501 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144538, %fusion.144537), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=61}"
+        }
+      ],
+      "new_product_gaps": [
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144328"
+            ],
+            "async_collective_fusion.144328",
+            "convolution-base-dilated.421"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144332",
+              "fusion.144331"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=53}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144332",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144328"
+                ],
+                "async_collective_fusion.144328",
+                "fusion.144332",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144331",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144328"
+                ],
+                "async_collective_fusion.144328",
+                "fusion.144331",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144534"
+            ],
+            "async_collective_fusion.144534",
+            "convolution-base-dilated.501"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144538",
+              "fusion.144537"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=61}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144538",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144534"
+                ],
+                "async_collective_fusion.144534",
+                "fusion.144538",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144537",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144534"
+                ],
+                "async_collective_fusion.144534",
+                "fusion.144537",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144622"
+            ],
+            "async_collective_fusion.144622",
+            "convolution-base-dilated.543"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144626",
+              "fusion.144625"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=59}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144626",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144622"
+                ],
+                "async_collective_fusion.144622",
+                "fusion.144626",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144625",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144622"
+                ],
+                "async_collective_fusion.144622",
+                "fusion.144625",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144716"
+            ],
+            "async_collective_fusion.144716",
+            "convolution-base-dilated.577"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144720",
+              "fusion.144719"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "X_Xt"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144720",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144716"
+                ],
+                "async_collective_fusion.144716",
+                "fusion.144720",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144719",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144716"
+                ],
+                "async_collective_fusion.144716",
+                "fusion.144719",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144737"
+            ],
+            "async_collective_fusion.144737",
+            "convolution-base-dilated.585"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144741",
+              "fusion.144740"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "scaled_A_A"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144741",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144737"
+                ],
+                "async_collective_fusion.144737",
+                "fusion.144741",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144740",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144737"
+                ],
+                "async_collective_fusion.144737",
+                "fusion.144740",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        }
+      ],
+      "matching_routes": 28
+    },
+    "matrix_capture": {
+      "right_state_parameter": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "param.248",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+        "opcode": "parameter",
+        "operands": [],
+        "parameter_index": 18,
+        "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}",
+        "instruction": "%param.248 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}"
+      },
+      "right_route_boundaries": [
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13996",
+          "shape": "pred[1024,1024]{0,1:T(8,128)(4,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2238",
+            "slice-done.2239",
+            "slice-done.2240",
+            "slice-done.2241"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13996 = pred[1024,1024]{0,1:T(8,128)(4,1)S(1)} custom-call(%slice-done.2238, %slice-done.2239, %slice-done.2240, %slice-done.2241), custom_call_target=\"ConcatBitcast\""
+        },
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "param.248",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 18,
+          "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}",
+          "instruction": "%param.248 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"bank[1][3].right\"}"
+        },
+        {
+          "computation": "async_collective_fusion.144329",
+          "context": [
+            "main.530_spmd/fusion.144329"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.421",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144333",
+            "fusion.144332"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=53}",
+          "instruction": "%convolution-base-dilated.421 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144333, %fusion.144332), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=53}"
+        },
+        {
+          "computation": "async_collective_fusion.144537",
+          "context": [
+            "main.530_spmd/fusion.144537"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.501",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144541",
+            "fusion.144540"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=61}",
+          "instruction": "%convolution-base-dilated.501 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144541, %fusion.144540), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=61}"
+        }
+      ],
+      "new_product_gaps": [
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144329"
+            ],
+            "async_collective_fusion.144329",
+            "convolution-base-dilated.421"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144333",
+              "fusion.144332"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=53}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144333",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144329"
+                ],
+                "async_collective_fusion.144329",
+                "fusion.144333",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144332",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144329"
+                ],
+                "async_collective_fusion.144329",
+                "fusion.144332",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144537"
+            ],
+            "async_collective_fusion.144537",
+            "convolution-base-dilated.501"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144541",
+              "fusion.144540"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=61}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144541",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144537"
+                ],
+                "async_collective_fusion.144537",
+                "fusion.144541",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144540",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144537"
+                ],
+                "async_collective_fusion.144537",
+                "fusion.144540",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144637"
+            ],
+            "async_collective_fusion.144637",
+            "convolution-base-dilated.549"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144641",
+              "fusion.144640"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/dot_general\" stack_frame_id=59}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144641",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144637"
+                ],
+                "async_collective_fusion.144637",
+                "fusion.144641",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144640",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144637"
+                ],
+                "async_collective_fusion.144637",
+                "fusion.144640",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144717"
+            ],
+            "async_collective_fusion.144717",
+            "convolution-base-dilated.577"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144721",
+              "fusion.144720"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "X_Xt"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144721",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144717"
+                ],
+                "async_collective_fusion.144717",
+                "fusion.144721",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144720",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144717"
+                ],
+                "async_collective_fusion.144717",
+                "fusion.144720",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.530_spmd/fusion.144738"
+            ],
+            "async_collective_fusion.144738",
+            "convolution-base-dilated.585"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144742",
+              "fusion.144741"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "scaled_A_A"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144742",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144738"
+                ],
+                "async_collective_fusion.144738",
+                "fusion.144742",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144741",
+              "input_root_identity": [
+                [
+                  "main.530_spmd/fusion.144738"
+                ],
+                "async_collective_fusion.144738",
+                "fusion.144741",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        }
+      ],
+      "matching_routes": 27
+    },
+    "matrix_substitute": {
+      "right_state_parameter": {
+        "computation": "main.529_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "param.249",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+        "opcode": "parameter",
+        "operands": [],
+        "parameter_index": 18,
+        "attributes": ", sharding={replicated}, metadata={op_name=\"bank[0][1][3].right\"}",
+        "instruction": "%param.249 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"bank[0][1][3].right\"}"
+      },
+      "right_route_boundaries": [
+        {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "custom-call.13998",
+          "shape": "pred[1024,1024]{0,1:T(8,128)(4,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "slice-done.2187",
+            "slice-done.2188",
+            "slice-done.2189",
+            "slice-done.2190"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"ConcatBitcast\"",
+          "instruction": "%custom-call.13998 = pred[1024,1024]{0,1:T(8,128)(4,1)S(1)} custom-call(%slice-done.2187, %slice-done.2188, %slice-done.2189, %slice-done.2190), custom_call_target=\"ConcatBitcast\""
+        },
+        {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "param.249",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 18,
+          "attributes": ", sharding={replicated}, metadata={op_name=\"bank[0][1][3].right\"}",
+          "instruction": "%param.249 = f32[11,1024,1024]{2,1,0:T(8,128)} parameter(18), sharding={replicated}, metadata={op_name=\"bank[0][1][3].right\"}"
+        },
+        {
+          "computation": "async_collective_fusion.144351",
+          "context": [
+            "main.529_spmd/fusion.144351"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.425",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144355",
+            "fusion.144354"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=54}",
+          "instruction": "%convolution-base-dilated.425 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144355, %fusion.144354), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=54}"
+        },
+        {
+          "computation": "async_collective_fusion.144524",
+          "context": [
+            "main.529_spmd/fusion.144524"
+          ],
+          "tuple_path": [],
+          "name": "convolution-base-dilated.491",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion.144528",
+            "fusion.144527"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=63}",
+          "instruction": "%convolution-base-dilated.491 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion.144528, %fusion.144527), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=63}"
+        }
+      ],
+      "new_product_gaps": [
+        {
+          "identity": [
+            [
+              "main.529_spmd/fusion.144351"
+            ],
+            "async_collective_fusion.144351",
+            "convolution-base-dilated.425"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144355",
+              "fusion.144354"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=54}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144355",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144351"
+                ],
+                "async_collective_fusion.144351",
+                "fusion.144355",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144354",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144351"
+                ],
+                "async_collective_fusion.144351",
+                "fusion.144354",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.529_spmd/fusion.144524"
+            ],
+            "async_collective_fusion.144524",
+            "convolution-base-dilated.491"
+          ],
+          "declaration": {
+            "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144528",
+              "fusion.144527"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=63}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"1\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144528",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144524"
+                ],
+                "async_collective_fusion.144524",
+                "fusion.144528",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144527",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144524"
+                ],
+                "async_collective_fusion.144524",
+                "fusion.144527",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.529_spmd/fusion.144624"
+            ],
+            "async_collective_fusion.144624",
+            "convolution-base-dilated.539"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144628",
+              "fusion.144627"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/dot_general\" stack_frame_id=60}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": null,
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/dependency/nonpolar_gram_direction\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144628",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144624"
+                ],
+                "async_collective_fusion.144624",
+                "fusion.144628",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144627",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144624"
+                ],
+                "async_collective_fusion.144624",
+                "fusion.144627",
+                []
+              ],
+              "record_present": true,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.529_spmd/fusion.144704"
+            ],
+            "async_collective_fusion.144704",
+            "convolution-base-dilated.567"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144708",
+              "fusion.144707"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "X_Xt"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144708",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144704"
+                ],
+                "async_collective_fusion.144704",
+                "fusion.144708",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144707",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144704"
+                ],
+                "async_collective_fusion.144704",
+                "fusion.144707",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        },
+        {
+          "identity": [
+            [
+              "main.529_spmd/fusion.144739"
+            ],
+            "async_collective_fusion.144739",
+            "convolution-base-dilated.581"
+          ],
+          "declaration": {
+            "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+            "opcode": "convolution",
+            "operands": [
+              "fusion.144743",
+              "fusion.144742"
+            ],
+            "parameter_index": null,
+            "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+          },
+          "kind": "convolution",
+          "category": "product",
+          "output_remains_opaque": false,
+          "polar_role": {
+            "group": "o_proj",
+            "iteration": 1,
+            "product": "scaled_A_A"
+          },
+          "projections": [
+            []
+          ],
+          "uncovered_positions": [
+            0,
+            1
+          ],
+          "output_dependencies": [
+            "{\"path\":[\"targets\",\"o_proj/polar/1/B_X\",\"operands\",\"0\",\"trace\"],\"report\":\"remaining-products\"}"
+          ],
+          "declared_input_positions": [
+            {
+              "operand_position": 0,
+              "operand_name": "fusion.144743",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144739"
+                ],
+                "async_collective_fusion.144739",
+                "fusion.144743",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            },
+            {
+              "operand_position": 1,
+              "operand_name": "fusion.144742",
+              "input_root_identity": [
+                [
+                  "main.529_spmd/fusion.144739"
+                ],
+                "async_collective_fusion.144739",
+                "fusion.144742",
+                []
+              ],
+              "record_present": false,
+              "complete_input_root_count": 0
+            }
+          ]
+        }
+      ],
+      "matching_routes": 23
+    }
+  },
+  "limitations": "Declared state/source roles only; product traversal stops before operands; all original opaque outputs remain opaque. Matching bounded routes not runtime equality; both full28 numerical gates failed."
+}
