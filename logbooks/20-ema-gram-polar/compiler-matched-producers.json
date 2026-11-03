@@ -1,0 +1,203 @@
+{
+  "input_report_sha256": "5166908ae20529809a26a92f2c8d62398b76ee3209e6e7af20cf50afaee208d9",
+  "method": "Compare immediate operand producer instruction signatures, preserving shape/opcode/operand order/constants/parameter indices/attributes before metadata; rename SSA names by local instruction order; recursively include available nested fusion bodies; reject missing/cyclic callees. Secondary comparison removes only S(1) tags.",
+  "limitations": "Not whole-graph equivalence, upstream buffer equality, backend configuration, scheduling, runtime ordering or causal proof. Counts are matched static product positions, not independent runtime invocations.",
+  "comparisons": {
+    "fused_original_vs_fused_matrix": {
+      "compared_product_pairs": 105,
+      "different_signatures": 58,
+      "different_after_removing_only_S1": 0,
+      "remaining_keys": [],
+      "excluded_keys": [],
+      "first_difference": {
+        "key": [
+          "q_proj",
+          1,
+          "B_X"
+        ],
+        "left": [
+          [
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "bitcast",
+              "@0",
+              ""
+            ]
+          ],
+          [
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "f32[11]{0:T(128)S(1)}",
+              "parameter",
+              "1",
+              ""
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "broadcast",
+              "@1",
+              ", dimensions={0}"
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "divide",
+              "@0, @2",
+              ""
+            ]
+          ]
+        ],
+        "right": [
+          [
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "bitcast",
+              "@0",
+              ""
+            ]
+          ],
+          [
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)S(1)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "f32[11]{0:T(128)S(1)}",
+              "parameter",
+              "1",
+              ""
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "broadcast",
+              "@1",
+              ", dimensions={0}"
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "divide",
+              "@0, @2",
+              ""
+            ]
+          ]
+        ]
+      }
+    },
+    "direction_original_vs_direction_matrix": {
+      "compared_product_pairs": 105,
+      "different_signatures": 25,
+      "different_after_removing_only_S1": 0,
+      "remaining_keys": [],
+      "excluded_keys": [],
+      "first_difference": {
+        "key": [
+          "q_proj",
+          1,
+          "B_X"
+        ],
+        "left": [
+          [
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "bitcast",
+              "@0",
+              ""
+            ]
+          ],
+          [
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)S(1)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "f32[11]{0:T(128)S(1)}",
+              "parameter",
+              "1",
+              ""
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "broadcast",
+              "@1",
+              ", dimensions={0}"
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "divide",
+              "@0, @2",
+              ""
+            ]
+          ]
+        ],
+        "right": [
+          [
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "bitcast",
+              "@0",
+              ""
+            ]
+          ],
+          [
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "parameter",
+              "0",
+              ""
+            ],
+            [
+              "f32[11]{0:T(128)S(1)}",
+              "parameter",
+              "1",
+              ""
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "broadcast",
+              "@1",
+              ", dimensions={0}"
+            ],
+            [
+              "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "divide",
+              "@0, @2",
+              ""
+            ]
+          ]
+        ]
+      }
+    }
+  }
+}

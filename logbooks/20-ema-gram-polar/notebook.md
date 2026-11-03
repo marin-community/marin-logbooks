@@ -1827,6 +1827,36 @@ polar products per matrix group, one ordered dependency chain per group, and no
 product shared across groups. Full-graph validation remains pending.
 The optimizer, its precision and numerical tolerance are unchanged.
 
+## 2026-11-03 04:20 UTC — Full compiler mapping passes
+
+The [corrected CPU mapping](compiler-polar-lineage-collectives-completed.json)
+succeeded on all four optimized HLO files after verifying their checksums in
+us-west4. Each graph maps 105 polar products to the query/key/value/output and
+gate/up/down projection groups, fifteen products per group. Each of five
+iterations contains the ordered products X Xᵀ, scaled A A and B X. The report
+preserves 240, 238, 210 and 207 unique producer fusion bodies across selected
+Gram/polar records for the original/matrix full updates and original/matrix
+direction-only evaluators, respectively. Keeping combined-all-reduce tuple
+results separate removes the observed mapping overcount. This CPU analysis
+did not execute optimizer kernels.
+
+A [matched-body comparison](compiler-matched-producers.json) covers all 105
+product positions in each original/matrix pair, including nested producer
+fusions. Instruction records preserve shapes, operand order, parameter indices,
+scalar constants and attributes preceding metadata, while renaming local SSA
+identifiers. The full-update pair differs at 58 positions and the direction-only
+pair at 25. Removing only the literal `S(1)` layout tags makes the records textually equal
+after SSA renaming at every position. This comparison excludes attributes after
+metadata, backend configuration, upstream values and paths connecting producer
+inputs. It establishes neither full precision equivalence nor a cause for the
+direction discrepancies.
+
+Next inspect matched upstream values and collective reduction paths, including
+precision attributes, before selecting a layout intervention. Reuse the saved
+regional compiler artifacts. No accelerator candidate is selected and there is
+no queued or running experiment. Numerical equivalence to the untouched original full update, saved-state
+checks, full trainer restoration and measured training MFU remain unverified.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
