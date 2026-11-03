@@ -2893,6 +2893,25 @@ plan before extracting those bodies and nested callees in us-west4, with default
 preemption retries and no wall-clock limit. No accelerator or numerical
 experiment is selected; both capture-reference checks remain failed.
 
+## 2026-11-03 09:34 UTC — Preserve opaque collective boundaries during extraction
+
+The [CPU slice-body extraction](compiler-capture-slices-completed.json) succeeded
+on attempt 0 with exit 0 and verified all six optimized-HLO hashes regionally.
+The 17 recovered bodies terminate at AsyncCollectiveDone custom calls, each
+with one explicit all-gather operand. Tracing that operand separately exposes
+17 further missing enclosing bodies. The opaque result and its other arguments
+remain recorded; the all-gather branch is not assumed to determine that result.
+
+The [next CPU extractor](compiler-normalization-closure-plan.json) follows
+missing-body references iteratively until no requested record is absent or the
+tracer stops at an explicit opaque boundary. A local fixture recovered two
+missing layers and preserved repeated product operands; its file-processing
+CLI passed. Slice fixtures and auxiliary all-gather fixtures passed, and the
+previous default mapping retained all 84 operand-position results.
+Publish this source and plan before the regional CPU extraction. No accelerator
+or numerical experiment is selected, and both numerical capture gates remain
+failed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

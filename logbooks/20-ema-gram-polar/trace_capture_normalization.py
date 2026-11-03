@@ -33,8 +33,11 @@ def parse_nodes(lines):
     return nodes, root
 
 
-def trace(scopes, start_scope, start_name, bindings, context=(), follow_concat_operands=False):
+def trace(
+    scopes, start_scope, start_name, bindings, context=(), follow_concat_operands=False, inspect_async_allgather=False
+):
     records, found, missing, boundaries, visited = [], [], set(), [], set()
+    auxiliary = []
 
     def walk(scope, name, arguments, call_context, path=()):
         key = (call_context, scope, name, path)
@@ -111,6 +114,25 @@ def trace(scopes, start_scope, start_name, bindings, context=(), follow_concat_o
                 and 'custom_call_target="ConcatBitcast"' in node["attributes"]
             )
             boundaries.append(dict(reason="opaque operation", declared_operands_followed=conservative, **row))
+            if inspect_async_allgather and 'custom_call_target="AsyncCollectiveDone"' in node["attributes"]:
+                for index, operand in enumerate(operands):
+                    if scopes[scope][0][operand]["opcode"] == "all-gather":
+                        auxiliary.append(
+                            dict(
+                                opaque_call=row,
+                                operand_index=index,
+                                interpretation="Declared all-gather operand only; opaque result semantics unresolved",
+                                trace=trace(
+                                    scopes,
+                                    scope,
+                                    operand,
+                                    arguments,
+                                    (*call_context, f"{scope}/{name}:allgather_operand{index}"),
+                                    follow_concat_operands,
+                                    False,
+                                ),
+                            )
+                        )
             if conservative:
                 assert not path
                 for index, operand in enumerate(operands):
@@ -123,13 +145,14 @@ def trace(scopes, start_scope, start_name, bindings, context=(), follow_concat_o
     walk(start_scope, start_name, bindings, context)
     return dict(
         normalization_divisions=found,
+        opaque_allgather_branches=auxiliary,
         missing_records=sorted(missing),
         unresolved_boundaries=boundaries,
         records=records,
     )
 
 
-def analyze(source, supplements=(), follow_concat_operands=False):
+def analyze(source, supplements=(), follow_concat_operands=False, inspect_async_allgather=False):
     graphs = {}
     for name, graph in source["artifacts"].items():
         bodies = dict(graph["producer_bodies"])
@@ -170,6 +193,7 @@ def analyze(source, supplements=(), follow_concat_operands=False):
                         bindings,
                         (entry + "/" + parent["name"],),
                         follow_concat_operands,
+                        inspect_async_allgather,
                     ),
                 )
                 for index, operand in enumerate(product["operands"])
@@ -191,6 +215,7 @@ def main():
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--supplement", type=Path, action="append", default=[])
     parser.add_argument("--follow-concat-operands", action="store_true")
+    parser.add_argument("--inspect-async-allgather", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     raw = args.report.read_bytes()
@@ -199,7 +224,7 @@ def main():
     supplements = [json.loads(path.read_bytes()) for path in args.supplement]
     for supplement in supplements:
         assert supplement["completed"]
-    result = analyze(source, supplements, args.follow_concat_operands)
+    result = analyze(source, supplements, args.follow_concat_operands, args.inspect_async_allgather)
     result["input_report_sha256"] = hashlib.sha256(raw).hexdigest()
     result["supplement_sha256"] = [hashlib.sha256(path.read_bytes()).hexdigest() for path in args.supplement]
     args.output.write_text(json.dumps(result, indent=2) + "\n")

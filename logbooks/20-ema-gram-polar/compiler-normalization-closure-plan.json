@@ -1,0 +1,60 @@
+{
+  "purpose": "Iteratively recover only missing computation bodies requested by normalization binding tracer, stopping at explicit opaque boundaries.",
+  "inventory": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-ir/capture-ir-b094a8e4db6a/report.json",
+    "bytes": 11914404,
+    "sha256": "574e96b3d0452bede5b6d4c162e61d353f7e3b02e8a77d9722643bb179a701d5"
+  },
+  "supplements": [
+    {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-bindings/selected-bodies-c2fea16767a0/report.json",
+      "bytes": 156417,
+      "sha256": "857cee50451ea11b173db2a13e2a2f8bdcacefc151a7000c6ec7245f5840dad5"
+    },
+    {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-slices/selected-bodies-34c416b7eebc/report.json",
+      "bytes": 32870,
+      "sha256": "19350ecfa90f19819e752132a7a910d5d1555db92a2acfcdade27e3a1058fc7f"
+    }
+  ],
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "job_name": "ema-gram-20-normalization-closure-cpu-20261103",
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.normalization-closure",
+  "source_sha256": {
+    "compiler_normalization_closure.py": "5e1ff374818afdd3f5bb7a2c85810ff948559fdd2f22acb94c6f79cf292e8780",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b"
+  },
+  "preflight": {
+    "closure": {
+      "two_missing_layers_recovered": true,
+      "repeated_positions_preserved": true,
+      "normalization_boundary_stop": true
+    },
+    "slice": {
+      "slice_association": true,
+      "invalid_slice_association_rejected": true,
+      "independent_slice_inputs": true,
+      "repeated_operand_contexts": true,
+      "opaque_boundary_preserved": true,
+      "default_boundary_unchanged": true
+    },
+    "async_auxiliary": {
+      "auxiliary_operand_index": true,
+      "opaque_result_unresolved": true,
+      "other_arguments_preserved": true,
+      "default_opaque_stop": true
+    },
+    "file_cli_passed": true,
+    "default_mapping_regression_positions": 84
+  },
+  "interpretation": "ConcatBitcast declared operands followed conservatively. AsyncCollectiveDone all-gather branch is auxiliary only; main result semantics remain unresolved and all other arguments recorded. No numerical intervention/precision/tiling override. Bothcapturegatesfailed."
+}
