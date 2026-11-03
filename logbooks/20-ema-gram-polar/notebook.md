@@ -4179,11 +4179,27 @@ Both full 28-leaf numerical substitution gates remain failed. Matching these bou
 
 The follow observer ended naturally with exit 0. No experiment, queue, or observer remains active. PR monitoring stays handed off after its earlier 12-hour timeout; the research heartbeat remains active.
 
-### November 3, 17:23 UTC — inspect uncovered fifth-step Concat inputs (static preflight)
+### November 3, 17:22 UTC — inspect uncovered fifth-step Concat inputs (static preflight)
 
 The [previous coverage audit](compiler-step5-gram-inputs-frontiers.json) identifies twelve uninspected declared inputs behind the down/up/o Concat endpoints reached by fifth-step `X_Xt` operand 0. The [new selector and manifest](compiler-step5-concat-inputs-manifest.json) use those saved dependencies, check the operand root and caller context, and reject missing or ambiguous boundaries. Saved records resolve part of the traces; two computation bodies per graph remain missing at preflight.
 
 The [plan](compiler-step5-concat-inputs-plan.json) and [validation](compiler-step5-concat-inputs-validation.json) preserve all four operand positions per group and the paired-capture and passing up/o controls. Exact source will be published before one CPU-only us-west4 extraction with HLO SHA/size checks, default preemption, and no wall-clock limit. This is static parsing, with no accelerator, numerical kernels, or W&B run. Both numerical full28leaf gates remain failed; opaque output semantics remain unresolved.
+
+### November 3, 17:26 UTC — fifth-step Concat inputs reach earlier polar products
+
+The twelve declared Concat input routes all match the untouched graph in the evaluator and paired capture. In column substitution, all eight down/up routes match, while the four o routes differ at the same copy-done versus tuple-projection record. The comparison stops at that opcode mismatch; it does not establish equality of the remaining subtrees. The four mismatches are repeated views of one changed record, and o remains a passing numerical control. This is not an explanation of the failing down direction.
+
+The CPU job `ema-gram-20-step5-concat-inputs-cpu-20261103` succeeded on attempt 0 with exit 0, verified by canonical job/task reads at 17:24 UTC. It ran published source `88c92932779943bc58ac94485f6342856b817371` with four CPUs in us-west4, default preemption, and no wall-clock limit. All four HLO hashes/sizes were verified before parsing; one closure round recovered two computation bodies per graph. No requested records remain missing. The 1,198,574-byte report has SHA256 `b81cd2490ba9bbe4c9e00a9130388901bfeca4c2bd5cf37d53e5c6a70840a63f` and passed exact GCS readback. Large HLO stayed regional; the task used no accelerator or numerical kernels.
+
+The [comparison](compiler-step5-concat-inputs-comparison.json) preserves all four declared input positions for each group. Each down route reaches down iteration-2 `B_X` and another opaque Concat; each up route reaches up iteration-4 `B_X` and another opaque Concat. Each o route reaches o iteration-2/3/4 `B_X` products plus another opaque Concat. These roles are checked against the dependency-mapped polar lineage, where `B_X` denotes `B @ X`; traversal stops at each product record before following its operands. Four routes per group share these producers, rather than establishing four independent product changes.
+
+“Matching normalized signatures” means compiler identifiers, metadata, and source-wrapper labels have been removed or canonicalized while shapes, attributes, channel/chain IDs, literals, and ordered connections remain. Raw traces retain caller contexts and repeated edges; recursive hashes do not distinguish sharing. All original Concat/Start/Done/while outputs remain opaque. These static records do not establish runtime values, precision, reduction order, semantic identity, or cause. Both full 28-leaf numerical substitution gates remain failed, with no optimization, training, MFU, or restore acceptance.
+
+The [coverage summary](compiler-step5-concat-inputs-frontiers.json) finds no complete saved input-trace roots for the two operands of down iteration-2 `B_X` or up iteration-4 `B_X`, using exact caller/computation/instruction/tuple-path identities. The corresponding o iteration-2/3/4 product inputs are already covered. Newly reached down/up Concat inputs remain uncovered; the new o Concat inputs are covered only in substitution, not in the three control graphs. The previously recorded up Done gap also remains. [Validation](compiler-step5-concat-inputs-validation.json) checks positions, ambiguous selection, wrong callers, product roles, declaration mutations, and the shared identity of the four o mismatch records.
+
+The next static decision is to inspect the four uncovered input positions of down iteration-2 and up iteration-4 `B_X`, reusing the covered o product controls and retaining paired capture. Other uncovered Concat/Done inputs remain recorded, not silently treated as resolved. Any needed extraction requires published exact source and regional CPU HLO verification. No new numerical or precision/tiling intervention is selected.
+
+The sole follow observer ended naturally with exit 0. No experiment, queue, or observer remains active. PR monitoring remains handed off after its earlier 12-hour timeout; the research heartbeat stays active.
 
 ## Final decision
 
