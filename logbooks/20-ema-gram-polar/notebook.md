@@ -4592,6 +4592,10 @@ Fifteen static mutation fixtures reject missing or duplicate processes, incomple
 
 The regional saved-state job remains the only active computation. Actual global errors require its complete reports and separate canonical completion/logging checks. This preparation does not change its submitted source or claim a new TPU result. The measurement protocol now records the already-verified restored counter 924; the paired final counter remains 7630.
 
+Static inspection of native training identifies two compiled startup paths. With the prepared ten-update watch interval and restored counter 924, label 924 uses the ordinary path and label 929 first enables watch metrics inside the compiled step. A first-step success alone would not validate that second executable. The [startup-path record](loss-pair-startup-path-validation.json) preserves source hashes and both configurations. These are measurement milestones within the full 7630 schedule, with later profiling, evaluation and checkpoint memory still requiring observation. No training was launched.
+
+Canonical job/task checks at 22:27 UTC still show all four tasks pending, with no attempts, failures or preemptions. Follow 51428 remains the sole observer; the next routine check is no earlier than 22:36:37 UTC.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
