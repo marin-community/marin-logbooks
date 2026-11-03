@@ -1,0 +1,141 @@
+{
+  "inventory": {
+    "bytes": 18035069,
+    "sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a",
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir-conservative/substitution-ir-725f48e1a71d/report.json"
+  },
+  "reports": {
+    "outer-bindings": {
+      "bytes": 5717993,
+      "sha256": "81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.outer-bindings/outer-bindings-21ac5d3e4f6e/report.json"
+    },
+    "boundary-inputs": {
+      "bytes": 30706097,
+      "sha256": "cbf8996a1579a9267501e402ccb379fe8dddaf07cb2148ea845ff31dd290c6cd",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.boundary-inputs/boundary-inputs-16055494fc77/report.json"
+    },
+    "start-producers": {
+      "bytes": 387447,
+      "sha256": "48b61b4e367b55789f002f357f8551fb662e71a24997fb369007a50bd0192435",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.start-producers/start-producers-ddc2a22f7b1d/report.json"
+    },
+    "product-inputs": {
+      "bytes": 2162972,
+      "sha256": "580d846d18b0aacd842a91b3b77b5826b1a9ce7a1c1dec7c562ed9b5fd605e04",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.product-inputs/product-inputs-574263feb30d/report.json"
+    },
+    "polar-boundaries": {
+      "bytes": 1775955,
+      "sha256": "41fcd05ef632f18edbe5dd6f8924137a28e9caa406c50d5c504e5e599ea0a709",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-boundaries/polar-boundaries-f02b7a238929/report.json"
+    },
+    "frontier-operands": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.frontier-operands/frontier-operands-dd4ebe7ab487/report.json",
+      "bytes": 1676770,
+      "sha256": "9c6c9b75fab8ca0ca64dba66bbfa179c72858ed0fbf106f8cdef6a145d5e2e0f"
+    },
+    "frontier-collectives": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.frontier-collectives/frontier-collectives-d5a94507813e/report.json",
+      "bytes": 1884282,
+      "sha256": "a75d20f108ca32b4c8388aca1fbb847255d492dca7dd212fc0bfca13b2361523"
+    }
+  },
+  "graphs": [
+    "matrix_untouched",
+    "matrix_evaluate",
+    "matrix_capture",
+    "matrix_substitute"
+  ],
+  "targets": {
+    "matrix_untouched": {
+      "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13974",
+        "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2148",
+          "slice-done.2149",
+          "slice-done.2150",
+          "slice-done.2151"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13974 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%slice-done.2148, %slice-done.2149, %slice-done.2150, %slice-done.2151), custom_call_target=\"ConcatBitcast\""
+      }
+    },
+    "matrix_evaluate": {
+      "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13974",
+        "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2148",
+          "slice-done.2149",
+          "slice-done.2150",
+          "slice-done.2151"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13974 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%slice-done.2148, %slice-done.2149, %slice-done.2150, %slice-done.2151), custom_call_target=\"ConcatBitcast\""
+      }
+    },
+    "matrix_capture": {
+      "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13974",
+        "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2152",
+          "slice-done.2153",
+          "slice-done.2154",
+          "slice-done.2155"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13974 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%slice-done.2152, %slice-done.2153, %slice-done.2154, %slice-done.2155), custom_call_target=\"ConcatBitcast\""
+      }
+    },
+    "matrix_substitute": {
+      "down_proj/polar/5/scaled_A_A/start_input/ConcatBitcast": {
+        "computation": "main.529_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13987",
+        "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2143",
+          "slice-done.2144",
+          "slice-done.2145",
+          "slice-done.2146"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13987 = bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%slice-done.2143, %slice-done.2144, %slice-done.2145, %slice-done.2146), custom_call_target=\"ConcatBitcast\""
+      }
+    }
+  },
+  "source_files": {
+    "consolidate_compiler_records.py": "a501a878d07cb9157e98fff57d43d325113e84eec37471390563383116dae486",
+    "compiler_polar_boundaries.py": "8bbe37163ce536e65f8b8f39d7d6c8c2fea1a7c46cdbdc3afe08ba2500054f3a",
+    "trace_polar_boundaries.py": "251578af625965085872760dafb1870884f99410490a469e181b53d21382d6ab",
+    "trace_start_producers.py": "62acb58c0e2aa1a895e6f21a4d0c6fcfe13123af3560897486bff72d3d42fc63",
+    "trace_boundary_inputs.py": "844a3bc0de727072ab411b2044beb2bc0aea2e4be2fea4b2e66914cf3f7595f3",
+    "trace_outer_bindings.py": "36daebb960e73214c5db90fbc73add471389b98ab32c6e58e38ec020ebe1bb5f",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b",
+    "compiler_down_concat.py": "fcd12f34e3a40211188f2fe561f5a1d4bb23a73284e08cad38733f0851cca4d9",
+    "trace_down_concat.py": "288ea17497ce435ee8bc7b29ab289571773d17a392090c3ec9c1881ff1b0e76e",
+    "trace_frontier_operands.py": "a5b09df730767d9662e9594e3f81168ba7689bc3e5f444c6e30024af687e1dd8"
+  }
+}
