@@ -18,5 +18,356 @@
       "Unexpected opaque-call rejection",
       "Repeated product operands retain separate positions"
     ]
+  },
+  "post_completion": {
+    "comparison_source_sha256": "8b9b21b921ebefabfa922afbacdbb49dfb67a5ad5fb5bee40d60ae369d3b6969",
+    "fixture_sha256": "b240eab2aca3c08d22d1efcfffd825cfc1a3928e27e5fdf503c670f54dbbde96",
+    "passed": true,
+    "checks": [
+      "32 evaluator/capture normalized comparisons match untouched",
+      "Operand-list order invariance with explicit positions",
+      "Duplicate positions/missing records rejected",
+      "Literal and source-role mutations detected",
+      "Execution source/manifest identity verified",
+      "Four HLO SHA/size checks regional; report exact GCS readback"
+    ]
+  },
+  "source_role_crosschecks": {
+    "inventory_sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a",
+    "scope": "Actual source labels canonicalized by known wrapper structure; product identities matched to dependency-mapped chains. No semantic identity inferred.",
+    "graphs": {
+      "matrix_untouched": {
+        "gate_proj": {
+          "product": {
+            "polar_positions": [
+              [
+                "gate_proj",
+                5,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": [
+              "states[4].left"
+            ]
+          }
+        },
+        "down_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "down_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "down_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "down_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        },
+        "up_proj": {
+          "product": {
+            "polar_positions": [],
+            "entry_source_roles": [
+              "states[5].left"
+            ]
+          }
+        },
+        "o_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "o_proj",
+                2,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "o_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        }
+      },
+      "matrix_evaluate": {
+        "gate_proj": {
+          "product": {
+            "polar_positions": [
+              [
+                "gate_proj",
+                5,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": [
+              "states[4].left"
+            ]
+          }
+        },
+        "down_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "down_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "down_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "down_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        },
+        "up_proj": {
+          "product": {
+            "polar_positions": [],
+            "entry_source_roles": [
+              "states[5].left"
+            ]
+          }
+        },
+        "o_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "o_proj",
+                2,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "o_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        }
+      },
+      "matrix_capture": {
+        "gate_proj": {
+          "product": {
+            "polar_positions": [
+              [
+                "gate_proj",
+                5,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": [
+              "states[4].left"
+            ]
+          }
+        },
+        "down_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "down_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "down_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "down_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        },
+        "up_proj": {
+          "product": {
+            "polar_positions": [],
+            "entry_source_roles": [
+              "states[5].left"
+            ]
+          }
+        },
+        "o_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "o_proj",
+                2,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "o_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        }
+      },
+      "matrix_substitute": {
+        "gate_proj": {
+          "product": {
+            "polar_positions": [
+              [
+                "gate_proj",
+                5,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": [
+              "states[4].left"
+            ]
+          }
+        },
+        "down_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "down_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "down_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "down_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        },
+        "up_proj": {
+          "product": {
+            "polar_positions": [],
+            "entry_source_roles": [
+              "states[5].left"
+            ]
+          }
+        },
+        "o_proj": {
+          "concat_declared_inputs": {
+            "polar_positions": [
+              [
+                "o_proj",
+                2,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                3,
+                "B_X"
+              ],
+              [
+                "o_proj",
+                4,
+                "B_X"
+              ]
+            ],
+            "entry_source_roles": []
+          },
+          "product": {
+            "polar_positions": [
+              [
+                "o_proj",
+                5,
+                "scaled_A_A"
+              ]
+            ],
+            "entry_source_roles": []
+          }
+        }
+      }
+    }
   }
 }

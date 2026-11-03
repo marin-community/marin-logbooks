@@ -4050,6 +4050,23 @@ Both full 28-leaf numerical substitution gates remain failed. No optimization, t
 [validation](compiler-start-producers-validation.json) retain the exact source,
 report, declared records and fixture checks.
 
+## 2026-11-03 15:43 UTC — Product operand routes retain numerical ambiguity
+
+The regional CPU extraction recovered sixteen declared operand routes per matrix graph: eight inputs to four product records, plus eight inputs to two ConcatBitcast calls. All sixteen unchanged-evaluator routes and all sixteen paired-capture routes match the untouched graph's normalized signatures. The signatures compare declared shapes, attributes, constant literals and ordered connections after removing instruction/computation names and canonicalizing source-wrapper labels; channel IDs remain in the comparison; they do not compare numerical values.
+
+Ten substitution routes match. Gate/up product operand 0 differs only in a recorded all-reduce channel ID (231→228 and 276→273) within these signatures. The four inspected o ConcatBitcast inputs encounter copy-done where the controls reach a tuple projection. The comparator stops comparing descendants at that opcode mismatch; it does not claim the remaining subtrees are equal. These four positions traverse the same changed route, not four independent copy changes. All six down routes match despite down's numerical direction failure, and o remains a passing numerical control despite its changed routes.
+
+The polar source uses A = XXᵀ and B = bA + (cA)A. The existing chain map names the products BX and (cA)A as B_X and scaled_A_A, respectively. Gate/up operand 0 reaches the corresponding left-Gram state parameter, a Gram-refresh product and a relative_gram_power product, supporting a declared left-power route. Traversal stops at those product records; their inputs and runtime values are not established. Gate operand 1 reaches the fifth polar update's B_X product (B times X) and an opaque ConcatBitcast. Up operand 1 stops at an opaque ConcatBitcast. Down/o B_X operand 0 reaches the fifth update's scaled_A_A product and a ConcatBitcast; operand 1 stops at AsyncCollectiveDone. The four declared ConcatBitcast inputs for each group reach earlier B_X product records—steps 3/4 for down and 2/3/4 for o—plus another opaque ConcatBitcast. These are source-scope/dependency-map matches, not semantic identity across the opaque calls.
+
+The task succeeded attempt 0/exit 0, UID 7bd00ca2a4c0, verified November 3 at 15:38:57–58 UTC. Published source a6feb8318abeff0da2d4fd171ed4c0021c3027fb ran on four CPUs/8 GiB/10 GiB in us-west4 with default preemption retries and no wall-clock limit. The worker name includes TPU, but the task requested CPU only and ran static parsing without kernels. Seven closure rounds recovered 27 bodies per graph, with no requested records missing. All four optimized HLO SHA/size checks passed regionally; large HLO stayed there. The 2,162,972-byte extracted report passed exact GCS readback, SHA 580d846d18b0aacd842a91b3b77b5826b1a9ce7a1c1dec7c562ed9b5fd605e04.
+
+Both full 28-leaf numerical substitution gates remain failed. Static agreement does not establish runtime precision, summation order, hidden values or cause. No optimizer, training or MFU result is accepted. Next is static design only: inspect the declared producers behind the remaining down/o fifth-step operand-1 AsyncCollectiveDone boundaries and gate/up polar-input ConcatBitcast boundaries, using existing records first. Preserve passing paired-capture and up/o controls, caller contexts and repeated positions, and keep the custom-call outputs opaque. No numerical intervention is selected. The experiment is terminal; PR observer 77099 remains sole and the heartbeat stays active.
+
+[Completion](compiler-product-inputs-completed.json),
+[comparison](compiler-product-inputs-comparison.json) and
+[validation](compiler-product-inputs-validation.json) retain the source identity,
+report checksums, declared routes and fixture results.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
