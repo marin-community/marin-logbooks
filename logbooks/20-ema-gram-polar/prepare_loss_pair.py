@@ -26,7 +26,7 @@ def differences(left, right, path=()):
     return []
 
 
-def prepare(checkpoint, versions):
+def prepare(checkpoint, versions, host_memory="256g"):
     assert len(versions) == 2 and versions[0] != versions[1]
     cell = Cell(alpha=0.25, ridge=1e-4, learning_rate=0.002, seed=0)
     configs = {}
@@ -35,6 +35,7 @@ def prepare(checkpoint, versions):
             cell,
             version,
             tpu_type="v4-32",
+            host_memory=host_memory,
             eigh_layout=layout,
             eigh_implementation="default",
             initialize_from=checkpoint,
@@ -102,10 +103,11 @@ def prepare(checkpoint, versions):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", required=True)
+    parser.add_argument("--host-memory", default="256g")
     parser.add_argument("--versions", nargs=2, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    result = prepare(args.checkpoint, args.versions)
+    result = prepare(args.checkpoint, args.versions, args.host_memory)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
 
 

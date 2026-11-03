@@ -89,6 +89,7 @@ def build_training_step(
     version: str,
     *,
     tpu_type: str | None = None,
+    host_memory: str = "128g",
     eigh_layout: str = "replicated",
     eigh_implementation: str = "default",
     initialize_from: str | None = None,
@@ -99,7 +100,7 @@ def build_training_step(
     caches = reference.build(((cell.slug, 42),))[0].deps
     base = reference._training_step(cell.slug, cell.seed, caches)
     spec = reference.MODELS[cell.slug]
-    resources = reference.ResourceConfig.with_tpu(tpu_type or spec.tpu_type, regions=["us-central2"], ram="128g")
+    resources = reference.ResourceConfig.with_tpu(tpu_type or spec.tpu_type, regions=["us-central2"], ram=host_memory)
     steps = (
         math.ceil(PILOT_TOKENS / (spec.batch_size * reference.SEQUENCE_LENGTH))
         if cell.phase == PILOT
@@ -178,6 +179,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True, help="Resolved configs retained before submission")
     parser.add_argument("--prefix", default="gs://marin-us-central2")
     parser.add_argument("--tpu-type", choices=("v4-32",), default="v4-32")
+    parser.add_argument("--host-memory", default="128g", help="Per-host memory request; does not change model precision")
     parser.add_argument("--eigh-layout", choices=("replicated", "matrix"), default="replicated")
     parser.add_argument("--eigh-implementation", choices=("default", "jacobi"), default="default")
     parser.add_argument("--initialize-from", help="Full trainer checkpoint; never permits partial restoration")
@@ -208,6 +210,7 @@ def main():
             c,
             args.version,
             tpu_type=args.tpu_type,
+            host_memory=args.host_memory,
             eigh_layout=args.eigh_layout,
             eigh_implementation=args.eigh_implementation,
             initialize_from=args.initialize_from,

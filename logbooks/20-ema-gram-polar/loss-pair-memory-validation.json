@@ -1,0 +1,80 @@
+{
+  "scope": "Static resource/configuration comparison only; no numerical process or job launched",
+  "previous_publication": "41ae0bc5599bbd4db93760a8b804046d73c1736d",
+  "per_variant_change_from_previous": {
+    "replicated": [
+      {
+        "path": [
+          "resources",
+          "ram"
+        ],
+        "original": "128g",
+        "candidate": "256g"
+      }
+    ],
+    "matrix": [
+      {
+        "path": [
+          "resources",
+          "ram"
+        ],
+        "original": "128g",
+        "candidate": "256g"
+      }
+    ]
+  },
+  "within_pair_difference_count": 11,
+  "model_data_optimizer_precision_unchanged": true,
+  "training_submitted": false,
+  "active_restore_source_unchanged": "e045d6919861359860847d6b0044cc79f475239b",
+  "files": {
+    "experiments/ema_gram/train.py": {
+      "bytes": 10375,
+      "sha256": "bf14af8db4ddb9c48fc252ce0f024561bd5c7f5f1bd8af21dd4be5044aee1f5b"
+    },
+    "logbooks/20-ema-gram-polar/prepare_loss_pair.py": {
+      "bytes": 5232,
+      "sha256": "537ddb93fb065a429f4da1a9aee2123c5ba5554bae264519ac94746f04e726e9"
+    },
+    "logbooks/20-ema-gram-polar/loss-pair-prepared.json": {
+      "bytes": 88734,
+      "sha256": "992bd1f9f6632229b73ed114de6ac5d0cdef468405d89898afebcb162cd366ac"
+    }
+  },
+  "source_checkpoint_protocol": {
+    "file": "logbooks/20-ema-gram-polar/quarter-pilot-128g-resolved.json",
+    "file_sha256": "d5e1e9b55bf964b0015a9d038fd4f0837b07049e3a541a5b43a6909eab7c297d",
+    "source_run_id": "ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.10.30.23",
+    "exact_matching_fields": [
+      "model",
+      "data",
+      "data_seed",
+      "train_seq_len",
+      "z_loss_weight",
+      "all original optimizer keys",
+      "train_batch_size",
+      "num_train_steps",
+      "seed",
+      "mixed precision policy",
+      "per_device_parallelism"
+    ],
+    "new_explicit_optimizer_fields": {
+      "eigh_layout": "replicated",
+      "eigh_implementation": "default"
+    },
+    "execution_differences": [
+      "mesh data=-1/model=1 to data=4/model=4",
+      "profile start100/10steps to940/1step",
+      "run/output/restore identities"
+    ],
+    "limitations": "Configuration identity, not historical cache-content or runtime batch proof; native regional restore/data audit still pending"
+  },
+  "checkpoint_selection_tests": {
+    "passed": 2,
+    "deselected": 15,
+    "elapsed_seconds": 5.29,
+    "command": "PYTHONPATH=\"$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\" uv run --no-sync pytest experiments/ema_gram/test_experiment.py -k \"v4_32_continuation_preserves_training_protocol or continuation_restores_own_progress_after_preemption\" -n 0 -q"
+  },
+  "cold_read": "Passed after distinguishing matching trainer.per_device_parallelism field from changed mesh sharding",
+  "lint": "passed"
+}

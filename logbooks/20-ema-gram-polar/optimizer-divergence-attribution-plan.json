@@ -225,7 +225,7 @@
     "user_direction": "Comparable loss is the practical criterion. Strict numerical equivalence is diagnostic and is no longer a sole training-launch blocker.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
     "procedure": "Prepare original-versus-candidate paired training with the same model, global batch8, data order, seed, hyperparameters and initialization or verified full checkpoint/data-position restore. Preserve original7630step schedule and all operational constraints. Compare training/validation loss at matched steps and progress per measured wall-clock time. Quantify variability and loss gap; no acceptable loss margin has been specified.",
-    "remaining_preparation": "Verify all four full-state/data audit reports and native job/task completion. Restore memory is not full-training memory. Retain original saved-state synthetic-gradient/unchanged-state checks before paired training, fresh online logging, finite checks and exact source. Reconcile both training configurations to the same chosen resources before original/candidate sequential continuation to step7630.",
+    "remaining_preparation": "Verify all four full-state/data audit reports and native job/task completion. Restore memory is not full-training memory. Both paired configs now match the audit256GiB host request. Retain original saved-state synthetic-gradient/unchanged-state checks before paired training, fresh online logging, finite checks and exact source. Then original/candidate sequential continuation to step7630; numerical-equivalence failure alone is not a veto.",
     "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
     "prepared_configurations": "loss-pair-prepared.json",
     "validation": "loss-pair-preparation-validation.json",
@@ -253,7 +253,8 @@
       "observer_session": 6883,
       "observer_command": "uv run --no-sync iris --cluster=marin job logs --follow /kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103",
       "next_canonical_check_not_before": "2026-11-03T21:31:54Z"
-    }
+    },
+    "paired_host_memory": "Both prepared training variants now256GiB per host; only resource RAM changed; neither submitted"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",

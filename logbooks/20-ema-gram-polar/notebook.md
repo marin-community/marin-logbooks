@@ -4521,6 +4521,14 @@ Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103` at
 
 The probe does not train or advance the saved checkpoint. Its four-host restore audit is the sole active experiment; monitoring belongs to the current thread. After restore validation, retain the original saved-state synthetic-gradient and unchanged-state checks, full-training memory/finite checks and matched execution resources before the paired continuation. Old jobs remain terminal and PR monitoring stays handed off.
 
+### November 3 — match both continuation memory requests to the restore audit
+
+Both prepared training configurations now request 256 GiB per host, matching the queued restore audit. Relative to the previously published configurations, the only payload change within each variant is `resources.ram`, from `128g` to `256g`. The shared recipe exposes this as `--host-memory`; its existing default remains `128g`. No numerical optimizer code, model, data or precision setting changed. Neither training variant has been submitted, and the queued restore worker retains its previously published source.
+
+The saved configuration for the checkpoint's source run, version `2026.10.30.23`, exactly matches the new original configuration's model, data specification, data seed, sequence length, loss weighting, original optimizer fields, global batch, final step, training seed, mixed-precision policy and the configured `trainer.per_device_parallelism` value. That matching field does not mean the effective sharding layout is unchanged. The new original explicitly records `eigh_layout=replicated` and `eigh_implementation=default`, which were absent from the older serialization. Execution differences remain explicit: the new mesh is data4/model4 instead of data=-1/model1, profiling is at step940 for one step, and run/output/restore identities differ. Configuration matching does not prove historical cache contents or runtime batch identity.
+
+The [resource and source-protocol comparison](loss-pair-memory-validation.json) records these checks. The two continuation configuration/recovery tests pass again. Full regional restoration remains pending; no training loss, training memory fit or speed improvement has been measured. After successful restore evidence, retain the saved-state synthetic-gradient/unchanged-state checks and full-training finite/memory checks before the paired continuation. Numerical-equivalence failure alone remains diagnostic, not a veto.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
