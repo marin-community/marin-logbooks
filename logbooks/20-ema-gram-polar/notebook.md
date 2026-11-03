@@ -4489,6 +4489,20 @@ The remaining preparation is operational validation: confirm the selected publis
 
 No training run was launched by this priority change. No experiment or observer is active; all old jobs remain terminal and must not be repolled or restarted. PR monitoring remains handed off without replacement or manual polling. The existing research heartbeat stays active and follows this loss-first priority.
 
+### November 3 — paired continuation configuration and preemption recovery
+
+The original and candidate training configurations are prepared for a matched continuation from the same step-923 checkpoint in us-central2. No training has been submitted and no new loss result exists. The original uses the published replicated eigensolver layout; the candidate uses the published matrix layout, both with the default eigensolver implementation. The model, global batch 8, seed/data seed 0, data configuration, optimizer hyperparameters and 7,630-step final schedule match. The only resolved configuration differences are the layout and ten run/output/checkpoint identity fields. A continuation starts at the restored step; it does not run 7,630 additional steps.
+
+Preparation exposed a preemption-recovery bug in the continuation recipe: `load_checkpoint=False` forced every new process back to the shared initial checkpoint, even when that run had saved later progress. The recipe now uses automatic checkpoint selection (`None`), preferring its own permanent or temporary checkpoint roots and falling back to the shared source on first start. Two configuration/recovery tests pass, including first start, own temporary-checkpoint recovery and a missing-source failure. These are mocked checkpoint-selection tests, not evidence that the real trainer state has been restored. No observed loss of running-job progress is claimed.
+
+A fresh read of the small source metadata and manifest at 21:00:50 UTC matched the saved identities. They declare step 923 and 57 arrays across model, optimizer state, step and training PRNG state, including 21 FP32 Gram/momentum arrays totaling 3,460,300,800 bytes. No checkpoint arrays were downloaded or read on TPU. Metadata presence does not verify array contents, full restore or data position.
+
+The [prepared configurations](loss-pair-prepared.json), [generator](prepare_loss_pair.py), [checkpoint metadata evidence](loss-pair-checkpoint-metadata.json) and [validation](loss-pair-preparation-validation.json) make this setup reproducible. The first local test invocation accidentally used another checkout's installed packages and failed; explicit worktree `PYTHONPATH` corrected the environment, and the two relevant tests then passed. Required lint passed. Preparation performed no numerical kernels and launched no W&B run or compute job.
+
+Next, validate full trainer restoration and host/device memory in us-central2 before continuing the pair. Verify model, optimizer, step and PRNG state, plus the data stream's position derived from the restored step and matched data configuration. Keep the unchanged-state and synthetic-gradient optimizer checks. Run the required online logging check before numerical execution, publish exact source, and use fresh online W&B for each process. The proposed v4-32 configuration is not proof that full training fits; the earlier synthetic host-memory failure remains relevant. Keep default preemption/retries, all attempt evidence and no wall-clock limits.
+
+Compare training and held-out loss at matched steps and progress per measured wall-clock time. Keep numerical-equivalence failures as diagnostics, without using them alone to veto the loss experiment. The absolute steady training MFU target remains above 5%; no acceptable loss margin or training speedup is claimed. Static compiler expansion remains deferred. All old jobs remain terminal, no experiment/observer is active, and PR monitoring stays handed off.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

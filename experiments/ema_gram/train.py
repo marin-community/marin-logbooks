@@ -152,8 +152,9 @@ def build_training_step(
         if tpu_type == "v4-32":
             trainer = replace(trainer, mesh=replace(trainer.mesh, axes={"data": 4, "model": 4, "replica": 1}))
         if initialize_from is not None:
+            # Prefer this run's own checkpoint after preemption; use the shared source only on first start.
             trainer = replace(
-                trainer, initialize_from=initialize_from, load_checkpoint=False, allow_partial_checkpoint=False
+                trainer, initialize_from=initialize_from, load_checkpoint=None, allow_partial_checkpoint=False
             )
         return replace(
             pod,

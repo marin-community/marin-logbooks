@@ -4,6 +4,7 @@
 import json
 import logging
 from dataclasses import asdict, replace
+from types import SimpleNamespace
 
 import draccus
 import equinox as eqx
@@ -16,8 +17,10 @@ from levanter.main.train_lm import TrainLmConfig
 from levanter.models.qwen import Qwen3Config
 from levanter.optim.ema_gram import EmaGramConfig
 from levanter.optim.util import flatten_linear_layers
+from levanter.trainer import Trainer
 from levanter.trainer_state import TrainerState
 from marin.execution.lazy import materialized_config
+from marin.training.training import apply_output_path
 from rigging.filesystem.storage_path import StoragePath
 from wandb.util import json_friendly_val
 
@@ -123,7 +126,7 @@ def test_v4_32_continuation_preserves_training_protocol():
     assert cfg.trainer.per_device_parallelism == original.trainer.per_device_parallelism
     assert cfg.trainer.mesh.axes == {"data": 4, "model": 4, "replica": 1}
     assert cfg.trainer.initialize_from == checkpoint
-    assert cfg.trainer.load_checkpoint is False
+    assert cfg.trainer.load_checkpoint is None
     assert cfg.trainer.allow_partial_checkpoint is False
     assert cfg.trainer.tracker.mode == "online"
     assert cfg.trainer.tracker.resume == "never"
@@ -274,3 +277,28 @@ def test_attempt_metrics_preserve_incremental_chunks_and_final_tail(tmp_path):
     assert [json.loads(line)["step"] for line in (artifact / "metrics-000001.jsonl").read_text().splitlines()] == list(
         range(100, 105)
     )
+
+
+def test_continuation_restores_own_progress_after_preemption(monkeypatch):
+    source = "gs://experiment/checkpoints/step-923"
+    pod = materialized_config(
+        build_training_step(Cell(0.25, 1e-4, 0.002), "resume-dev", initialize_from=source),
+        "/tmp/ema-retry-test",
+    )
+    cfg = apply_output_path(pod.train_config, pod.output_path).trainer
+    own_paths = cfg.checkpoint_search_paths(cfg.id)
+    assert len(own_paths) == 2
+    assert source not in own_paths
+    available = {source}
+    monkeypatch.setattr("levanter.checkpoint.is_checkpoint_path", lambda path: path in available)
+    monkeypatch.setattr("levanter.trainer.is_checkpoint_path", lambda path: path in available)
+    trainer = SimpleNamespace(config=cfg, checkpoint_search_paths=own_paths)
+    # The first process starts from the common full trainer checkpoint.
+    assert Trainer.checkpoint_load_plan(trainer) == ([source], True)
+    # A later process must preserve its own progress, including temporary checkpoints.
+    available.add(own_paths[-1])
+    assert Trainer.checkpoint_load_plan(trainer) == (own_paths, True)
+    # Missing common source cannot silently become a fresh initialization.
+    available.clear()
+    with pytest.raises(ValueError, match="initialize_from must be a checkpoint path"):
+        Trainer.checkpoint_load_plan(trainer)

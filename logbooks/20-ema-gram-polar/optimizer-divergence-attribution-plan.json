@@ -221,12 +221,14 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "state": "Paired training preparation; no run launched",
+    "state": "Paired continuation configurations prepared; full regional restore and memory validation pending; no run launched",
     "user_direction": "Comparable loss is the practical criterion. Strict numerical equivalence is diagnostic and is no longer a sole training-launch blocker.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
     "procedure": "Prepare original-versus-candidate paired training with the same model, global batch8, data order, seed, hyperparameters and initialization or verified full checkpoint/data-position restore. Preserve original7630step schedule and all operational constraints. Compare training/validation loss at matched steps and progress per measured wall-clock time. Quantify variability and loss gap; no acceptable loss margin has been specified.",
-    "remaining_preparation": "Verify published implementations/configurations, original saved optimizer arrays and full trainer restore in checkpoint region if resuming. For new numerical implementations, run own fresh online logging check/CPU harness and publish exact source before one sequential TPU. Preserve finite-output/logging/restore checks; equivalence failure alone no longer blocks a training-quality test.",
-    "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing."
+    "remaining_preparation": "Prepare and validate a regional full-trainer restore/memory check using step923 in us-central2. Verify full model/optimizer/step/PRNG and data-position alignment, retain unchanged-state and synthetic-gradient checks, and perform online logging before kernels. Publish exact source before execution. Then run original and matrix candidate sequentially to final step7630 with matched loss/speed measurements; numerical equivalence failure alone is not a veto.",
+    "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
+    "prepared_configurations": "loss-pair-prepared.json",
+    "validation": "loss-pair-preparation-validation.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",
