@@ -4319,6 +4319,14 @@ The next static decision is to inspect the 35 uncovered positions using saved de
 
 The follow observer ended naturally with exit 0. No experiment, queue or observer remains active. PR monitoring stays handed off after its completed twelve-hour wait; the research heartbeat remains active.
 
+### November 3, 18:59 UTC — inspect Gram-state and while-initializer inputs (static preflight)
+
+The [current coverage](compiler-gram-source-inputs-frontiers.json) leaves 35 declared positions uninspected: ten product operands, four Concat inputs, twenty Done inputs and one while initializer. The [selector](trace_state_initializer.py) identifies the three nonpolar products by exact saved dependencies and source scopes, checks two polar roles, and preserves caller contexts and ordered repeated positions. Six computation bodies per graph remain missing locally.
+
+The existing tracer rejects whole tuples without a selected leaf. A [scoped initializer tracer](trace_initializer_tuple.py) follows the declared whole tuple's constituents, preserving repeated edges and stopping at products, entry parameters and opaque operations. Fixtures check nested tuples, repeated sharing, unchanged selected-leaf behavior and opacity of unselected collective outputs. The while output projection `[1]` stays opaque; no loop body or recurrence is interpreted.
+
+The [plan](compiler-state-initializer-plan.json), [manifest](compiler-state-initializer-manifest.json) and [preflight](compiler-state-initializer-validation.json) verify sixteen bounded inputs. Publish exact source before CPU-only us-west4 extraction with regional HLO SHA/size verification, default preemption and no wall-clock limit. Reuse covered inputs and o controls, retain paired capture, and inspect newly matched Start inputs separately. Both numerical gates remain failed; no numerical intervention is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

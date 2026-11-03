@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "graphs": {
+    "matrix_untouched": {
+      "missing_scopes": [
+        "async_collective_fusion.144808",
+        "async_collective_fusion.144853",
+        "async_collective_fusion.144891",
+        "fused_computation.110842",
+        "fused_computation.114100",
+        "fused_computation.114148"
+      ],
+      "initial_input_positions": 35,
+      "auxiliary_start_inputs_expected": 2
+    },
+    "matrix_evaluate": {
+      "missing_scopes": [
+        "async_collective_fusion.144808",
+        "async_collective_fusion.144853",
+        "async_collective_fusion.144891",
+        "fused_computation.110842",
+        "fused_computation.114100",
+        "fused_computation.114148"
+      ],
+      "initial_input_positions": 35,
+      "auxiliary_start_inputs_expected": 2
+    },
+    "matrix_capture": {
+      "missing_scopes": [
+        "async_collective_fusion.144809",
+        "async_collective_fusion.144854",
+        "async_collective_fusion.144892",
+        "fused_computation.110842",
+        "fused_computation.114101",
+        "fused_computation.114149"
+      ],
+      "initial_input_positions": 35,
+      "auxiliary_start_inputs_expected": 2
+    },
+    "matrix_substitute": {
+      "missing_scopes": [
+        "async_collective_fusion.144796",
+        "async_collective_fusion.144841",
+        "async_collective_fusion.144879",
+        "fused_computation.110842",
+        "fused_computation.114102",
+        "fused_computation.114150"
+      ],
+      "initial_input_positions": 35,
+      "auxiliary_start_inputs_expected": 2
+    }
+  },
+  "checks": [
+    "All16 boundedinput SHA/size and graphHLO identities verified",
+    "Fourgraph wrongpolar role and allthree nonpolar scope/duplicate/missing mutations rejected",
+    "Selector independent of operand/boundary list order",
+    "All35 positions uncovered by exact-context complete roots; partial-coverage mutation rejected",
+    "While projection/arity/source/dependency mutations rejected; only declared initializer traced, output projection[1] retained opaque",
+    "Opaque labels derive from explicit parent operand dependencies, no compiler ordinal alignment",
+    "Nested wholetuple ordered/repeated edges and sharing; selected-leaf oldtracer regression; product/while/custom-call and unselectedwholecollective boundaries passed"
+  ],
+  "preflight_fixture_sha256": "35211a6e3d1b11e623afcd721c50ddc80c6d35193603fd12910734f5be50ee4e",
+  "initializer_tuple_fixture_sha256": "ffdfcde573aa3294bf73af8e44532f8720819e7f281a71f3454ef3c86c99ee3a"
+}
