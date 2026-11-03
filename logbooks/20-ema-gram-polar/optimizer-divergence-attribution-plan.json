@@ -498,7 +498,7 @@
                   "started": "optimizer-single-inner-capture-started.json",
                   "completed": "optimizer-single-inner-capture-v5e-completed.json",
                   "next_decision": {
-                    "state": "One pairedinputTPUdiagnosticrunning/startupverified; no furthercandidate",
+                    "state": "One pairedinputTPUdiagnosticrunning; original28leafgate passes1e-5 notbitwise; matrixbranchpending; no furthercandidate",
                     "question": "Can the existing q_proj inner matrix and norm-plus-epsilon denominator be captured together under passing full-update reference gates?",
                     "basis": "Separate single-inner and single-denominator captures pass both28leaf own-reference gates. Their measurements come from different executables and cannot be combined into one hidden-path claim. Six-output qkv capture failed its reference gates.",
                     "procedure": "Extend shared capture_program to append exactly the two existing q_proj division input variables, inner then denominator, preserving every source equation/input/constant and original28outputs. Total30leaves; full11x1024x1024FP32 inner and11x1x1FP32 denominator. Bothsolvers: untouchedfull_update,unchanged evaluator,pairedcapture on identicalfingerprintedinputs; compileonce/replay and all28leafown-reference/evaluator comparisons fixedrtol=atol=1e-5 plusbitwise. Record bothreferencegates for each crosssolver capturedvalue comparison. No crossfeed, recomputation, added source arithmetic or optimizer intervention.",
@@ -508,7 +508,8 @@
                     "constraints": "FullGram/everyupdate/source/defaultprecision/globalbatch8/7630steps/fixed1e-5 preserved. No precision,tiling,association override. Defaultpreemptionretries/no wallclocklimits/no concurrentcandidate. Fulloptimizeracceptance stillrequires untouchedoriginalall28leaves1e-5,savedstatevalidation/fullrestore/actualsteadyMFU>5%.",
                     "implementation": "optimizer-paired-input-capture-plan.json",
                     "preflight": "optimizer-paired-input-capture-preflight.json",
-                    "started": "optimizer-paired-input-capture-started.json"
+                    "started": "optimizer-paired-input-capture-started.json",
+                    "partial": "optimizer-paired-input-capture-partial.json"
                   }
                 }
               }

@@ -3270,6 +3270,35 @@ numerical candidate. Sole log observer 39235 follows the task; PR observer
 Three stages are finite at startup: zero initialization, initialization and the
 untouched original full update. Numerical capture gates remain pending.
 
+## 2026-11-03 11:31 UTC — Paired capture passes the original reference gate
+
+The paired capture exposes q_proj's pre-normalization inner matrix and
+norm-plus-epsilon denominator. It passes the original solver's 28-leaf
+reference gate at rtol=atol=1e-5. It is not bitwise identical to the untouched full update:
+v_proj alone has nonzero measured error, with maximum absolute error
+8.94070e-8 and relative Frobenius error 1.06813e-7. The other 27 leaves have
+zero measured absolute error, which does not establish per-leaf bitwise equality.
+The unchanged Jaxpr evaluator matches the untouched reference bitwise, and both
+original fixed executables replay bitwise.
+
+Seven stages are finite and all five recorded comparisons pass. The job remains
+running on attempt 0 and has entered the matrix-solver branch. Its reference
+gate and the cross-solver paired-value comparisons remain pending. Passing the
+original gate does not establish hidden intermediate identity or explain the
+full optimizer discrepancy; no optimization or performance claim is made.
+
+Schema-confirmed Finelog telemetry records 92 samples through 11:27:41 UTC,
+with an observed cumulative host-memory peak of 67.71 GiB against the 128 GiB
+reservation. Accelerator-memory telemetry is null. The small original Jaxpr
+artifact passed SHA, size and gzip readback; capture metadata records
+851 preserved equations and 30 output leaves. Large compiler files remain in
+us-west4 without a new checksum readback. Preserve the existing job and sole
+log observer through the matrix branch; no concurrent candidate is selected.
+
+[Partial evidence](optimizer-paired-input-capture-partial.json) records the
+report snapshot and canonical running state verified at 11:29:31 UTC. Sole
+experiment log observer 39235 and PR observer 77099 remain active.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
