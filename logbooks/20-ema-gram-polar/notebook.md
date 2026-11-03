@@ -2945,6 +2945,27 @@ CPU validation and published source before one sequential TPU diagnostic.
 Matching final outputs would still not establish hidden intermediate identity.
 The CPU log observer ended naturally; no experiment or queue remains active.
 
+## 2026-11-03 09:44 UTC — Reduce capture to one existing denominator
+
+The [single-denominator capture](optimizer-single-norm-capture-plan.json) appends
+only the existing q_proj broadcast norm-plus-epsilon variable. The shared Jaxpr
+helper retains every equation, input/constant variable and all 28 original
+outputs; the capture has 29 output leaves. The source equations and precision
+settings are unchanged.
+
+Each solver keeps its untouched full-update reference, unchanged evaluator and
+capture comparisons at rtol=atol=1e-5, with bitwise checks, fixed-executable
+replays and input fingerprints. Failed reference agreement forbids interpreting
+the captured denominator as an untouched internal value. Even matching final
+outputs would not prove internal identity. This is an instrumentation control;
+no optimization or performance claim is made.
+
+Publish the implementation and plan before fresh online CPU logging and numerical
+checks for the new mode and the existing six-output mode. A TPU submission
+requires those checks and artifact readbacks to pass. Memory controls, full
+matrix geometry and default preemption retries remain unchanged; no runtime
+limit is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

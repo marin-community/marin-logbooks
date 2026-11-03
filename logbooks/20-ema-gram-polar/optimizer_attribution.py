@@ -900,7 +900,7 @@ def state_crossfeed(rec, banks, references, matrix_eigh, state_shardings, output
         )
 
 
-def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardings, replicated):
+def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardings, replicated, capture_kind):
     """Compare untouched full updates, unchanged traced programs and extra outputs."""
     input_sha = fingerprint(inputs)
     captures, references = {}, {}
@@ -912,7 +912,7 @@ def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardin
         reference = rec.run("fused_" + label, fn, inputs, input_shardings, output_shardings)
         references[label] = reference
         exemplars = jax.tree.map(lambda x: jax.ShapeDtypeStruct(x.shape, x.dtype), inputs)
-        evaluate, capture, metadata, source = capture_program(fn, exemplars)
+        evaluate, capture, metadata, source = capture_program(fn, exemplars, capture_kind)
         payload = gzip.compress(source.encode(), mtime=0)
         filename = "capture_program_" + label + ".jaxpr.txt.gz"
         (rec.local / filename).write_bytes(payload)
@@ -933,7 +933,10 @@ def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardin
             input_shardings,
             output_shardings,
         )["identical_inputs"]
-        capture_shardings = (output_shardings, tuple((replicated, replicated) for _ in NAMES[:3]))
+        extra_shardings = (
+            (replicated,) if capture_kind == "q_norm" else tuple((replicated, replicated) for _ in NAMES[:3])
+        )
+        capture_shardings = (output_shardings, extra_shardings)
         captured = fixed_bank_outputs(
             rec,
             label + "_capture",
@@ -963,17 +966,23 @@ def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardin
         gc.collect()
     passed = rec.compare("fused_candidate_vs_original", references["matrix"], references["original"])
     rec.compare("capture/candidate_vs_original", captures["matrix"][0], captures["original"][0])
-    for index, group in enumerate(NAMES[:3]):
-        for field, name in enumerate(("inner", "norm_plus_eps")):
-            actual, expected = captures["matrix"][1][index][field], captures["original"][1][index][field]
-            key = "capture/values/" + group + "/" + name
-            rec.compare(key, actual, expected)
-            rec.report["comparisons"][key]["bitwise_equal"] = fingerprint(actual) == fingerprint(expected)
-            rec.report["comparisons"][key]["input_reference_gates_passed"] = all(
-                g["reference_agreement"] for g in rec.report["capture_gates"].values()
-            )
+    if capture_kind == "q_norm":
+        values = [("q_proj", "norm_plus_eps", captures["matrix"][1][0], captures["original"][1][0])]
+    else:
+        values = [
+            (group, name, captures["matrix"][1][index][field], captures["original"][1][index][field])
+            for index, group in enumerate(NAMES[:3])
+            for field, name in enumerate(("inner", "norm_plus_eps"))
+        ]
+    for group, name, actual, expected in values:
+        key = "capture/values/" + group + "/" + name
+        rec.compare(key, actual, expected)
+        rec.report["comparisons"][key]["bitwise_equal"] = fingerprint(actual) == fingerprint(expected)
+        rec.report["comparisons"][key]["input_reference_gates_passed"] = all(
+            g["reference_agreement"] for g in rec.report["capture_gates"].values()
+        )
     assert fingerprint(inputs) == input_sha
-    assert len(rec.report["stages"]) == 12 and len(rec.report["comparisons"]) == 18
+    assert len(rec.report["stages"]) == 12 and len(rec.report["comparisons"]) == 12 + len(values)
     rec.persist()
     return passed
 
@@ -1015,7 +1024,10 @@ def main():
     mode.add_argument("--polar-partition", action="store_true")
     mode.add_argument("--polar-collectives", action="store_true")
     mode.add_argument("--full-input-capture", action="store_true")
+    mode.add_argument("--single-norm-capture", action="store_true")
     args = parser.parse_args()
+    capture_mode = args.full_input_capture or args.single_norm_capture
+    capture_kind = "q_norm" if args.single_norm_capture else "qkv_inputs"
     product_mode = (
         args.polar_products
         or args.polar_contracting
@@ -1049,8 +1061,9 @@ def main():
         shapes=shapes,
         names=NAMES,
         smoke=args.smoke,
-        polar_compiler=args.polar_compiler or args.state_crossfeed or product_mode or args.full_input_capture,
-        full_input_capture=args.full_input_capture,
+        polar_compiler=args.polar_compiler or args.state_crossfeed or product_mode or capture_mode,
+        full_input_capture=capture_mode,
+        capture_kind=capture_kind if capture_mode else None,
         capture_helper_sha256=hashlib.sha256(
             Path(__file__).with_name("optimizer_input_capture.py").read_bytes()
         ).hexdigest(),
@@ -1126,12 +1139,12 @@ def main():
     del prior
     states = jax.tree.map(lambda x: put_global(x, rep), initial)
     del initial
-    if args.full_input_capture:
+    if capture_mode:
         inputs = jax.device_get((gradients, states))
         del gradients, states
         jax.clear_caches()
         gc.collect()
-        fused_pass = full_input_capture(rec, inputs, matrix_eigh, (gs, ss), (gs, ss), rep)
+        fused_pass = full_input_capture(rec, inputs, matrix_eigh, (gs, ss), (gs, ss), rep, capture_kind)
         finish(rec, tracker, fused_pass, args.smoke)
         return
     common = rec.run("common_refresh", refresh, (gradients, states), (gs, ss), ss)

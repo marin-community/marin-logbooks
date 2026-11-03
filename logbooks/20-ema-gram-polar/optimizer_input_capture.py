@@ -7,12 +7,13 @@ import jax
 from optimizer_cost import NAMES
 
 
-def capture_program(fn, exemplars):
-    """Keep every traced equation and append q/k/v normalization operands.
+def capture_program(fn, exemplars, capture_kind="qkv_inputs"):
+    """Keep every traced equation and append selected existing normalization operands.
 
     This modifies outputs, not optimizer equations. Evaluation and extra outputs
     can still change compilation; compare both controls with the direct function.
     """
+    assert capture_kind in ("qkv_inputs", "q_norm")
     closed, output_shape = jax.make_jaxpr(fn, return_shape=True)(*exemplars)
     program = closed.jaxpr
     output_tree = jax.tree.structure(output_shape)
@@ -53,8 +54,10 @@ def capture_program(fn, exemplars):
             dtype=str(inner.aval.dtype),
             role="Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)",
         )
-        if group in NAMES[:3]:
+        if capture_kind == "qkv_inputs" and group in NAMES[:3]:
             captured.extend((inner, denominator))
+        elif capture_kind == "q_norm" and group == "q_proj":
+            captured.append(denominator)
     extended = program.replace(outvars=[*program.outvars, *captured])
     assert all(a is b for a, b in zip(program.eqns, extended.eqns, strict=True))
     assert extended.invars == program.invars and extended.constvars == program.constvars
@@ -67,7 +70,10 @@ def capture_program(fn, exemplars):
     def capture(bank):
         leaves = jax.core.eval_jaxpr(extended, closed.consts, *jax.tree.leaves(bank))
         full = jax.tree.unflatten(output_tree, leaves[:28])
-        return full, tuple((leaves[i], leaves[i + 1]) for i in range(28, 34, 2))
+        values = (
+            (leaves[28],) if capture_kind == "q_norm" else tuple((leaves[i], leaves[i + 1]) for i in range(28, 34, 2))
+        )
+        return full, values
 
     return (
         evaluate,
@@ -77,7 +83,9 @@ def capture_program(fn, exemplars):
             original_equations=len(program.eqns),
             extended_equations=len(extended.eqns),
             original_output_leaves=28,
-            capture_output_leaves=34,
+            capture_kind=capture_kind,
+            capture_output_leaves=len(extended.outvars),
+            appended_output_leaves=len(captured),
             equations_preserved_by_identity=True,
             input_and_constant_variables_preserved=True,
         ),

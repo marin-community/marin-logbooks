@@ -1,0 +1,48 @@
+{
+  "status": "Implemented; CPU preflight pending; no TPU submission yet",
+  "script": "optimizer_attribution.py --single-norm-capture",
+  "question": "Does exposing only one existing q_proj normalization denominator preserve each solver full update?",
+  "prior_evidence": [
+    "optimizer-full-input-capture-v5e-completed.json",
+    "compiler-normalization-closure-completed.json"
+  ],
+  "input_recipe": "Same seed0 seven full-shape synthetic gradients and initial state recipe; shared zero initialization and prior refresh. Identical fingerprinted host bank for every direct/evaluated/capture invocation. No checkpoint/data read.",
+  "science": "No shared optimizer source edits. Capture uses traced shared full_update equations verbatim and appends existing variables to outputs. Trace mapping uses final-output ancestors and source scopes, asserting one distinct normalization per group. All equations, input variables, constants and original outputs retained. No math, precision, coefficient, association or tiling override.",
+  "stages": [
+    "Shared zero initialization and prior refresh",
+    "Untouched original and matrix full_update references",
+    "Unchanged28-output Jaxpr evaluator, compiled once/replayed for each solver",
+    "Same equations with only q_proj broadcast(norm+eps) appended:29outputs, compiled once/replayed",
+    "All28leaf own-reference/evaluator gates plus crosssolver denominator comparison"
+  ],
+  "instrumentation_gate": "Compare unchanged evaluator and capture full outputs against untouched direct full_update for each solver at fixed rtol=atol=1e-5, report bitwise equality. Failed agreement forbids original-path interpretation. Matching finals does not prove internal identity. Expected TPU mismatches persist while collection continues; candidate_accepted_for_training stays false.",
+  "expected": {
+    "finite_stages": 12,
+    "comparisons": 13,
+    "fixed_executables": 4,
+    "compiler_files": 12,
+    "jaxpr_files": 2,
+    "appended_outputs": 1
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "Oneexecutable/devicebank atatime; host inputs/references, block/hostoffload/cacheclear. Only one11x1x1 FP32denominator appended at fullgeometry.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.10",
+  "job_name": "ema-gram-20-single-norm-capture-v5e-8-20261103",
+  "limitations": "Tracing/evaluating Jaxpr and adding outputs can alter compilation. Captured values are instrumentation outputs; same endpoints do not establish original hidden values. No warmed performance, full optimizer acceptance, checkpoint restore or training MFU.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-single-norm-capture-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --single-norm-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.10",
+  "script_sha256": "59f60503724566c15b16918609681f51faefa084345a758e4948a31ab0b312d2",
+  "capture_helper_sha256": "a49e5572ad688fa8cbda7ae080e5b341b09a3e5bff3279463922159e7211865c",
+  "cpu_validation": "Own freshonline loggingcheck and newmode12/13, plus existingfull-input-capture12/18 regression; allcompiler/JaxprSHA/size/gzipreadbacks and exactreportbytes. ExplicitworktreePYTHONPATH required."
+}
