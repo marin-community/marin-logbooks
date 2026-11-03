@@ -1,0 +1,1043 @@
+{
+  "input_report": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.frontier-operands/frontier-operands-dd4ebe7ab487/report.json",
+    "bytes": 1676770,
+    "sha256": "9c6c9b75fab8ca0ca64dba66bbfa179c72858ed0fbf106f8cdef6a145d5e2e0f"
+  },
+  "comparator_source": "compare_frontier_operands.py",
+  "graphs": {
+    "matrix_untouched": {
+      "o_proj/polar/2/B_X/0": {
+        "normalized_signature": "ed4ab4038131492a648bdab54b4864475d023c8d81c8b043cf22be5da99d336b",
+        "same_normalized_signature_as_untouched": true,
+        "records": 15,
+        "edges": 14,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13940",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144770",
+              "context": [
+                "main.530_spmd/fusion.144770"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.595",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/2/B_X/1": {
+        "normalized_signature": "3f916c8c1cfb192f869850bd5f87a33e67411d67481a9252a03b7581265c77a8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114093",
+              "context": [
+                "main.530_spmd/async-collective-done.21"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13265",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/0": {
+        "normalized_signature": "a9db644e7b7313e570b137da7bacb616f43ea5d74d1051a1f2a01afe7985d8b5",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144782",
+              "context": [
+                "main.530_spmd/fusion.144782"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.597",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144796",
+              "context": [
+                "main.530_spmd/fusion.144796"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.601",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/1": {
+        "normalized_signature": "61a141fde6b39b8eac8904dd536967c9269e166b5409253b8276383b411dbe96",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13990",
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/0": {
+        "normalized_signature": "88593b82423d3d350665ba0acd1963a2b593849c74a3ed67dc8193edfd345384",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144815",
+              "context": [
+                "main.530_spmd/fusion.144815"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.605",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144834",
+              "context": [
+                "main.530_spmd/fusion.144834"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.611",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114113",
+              "context": [
+                "main.530_spmd/async-collective-done.27"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13289",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_evaluate": {
+      "o_proj/polar/2/B_X/0": {
+        "normalized_signature": "ed4ab4038131492a648bdab54b4864475d023c8d81c8b043cf22be5da99d336b",
+        "same_normalized_signature_as_untouched": true,
+        "records": 15,
+        "edges": 14,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13940",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144770",
+              "context": [
+                "main.530_spmd/fusion.144770"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.595",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/2/B_X/1": {
+        "normalized_signature": "3f916c8c1cfb192f869850bd5f87a33e67411d67481a9252a03b7581265c77a8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114093",
+              "context": [
+                "main.530_spmd/async-collective-done.21"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13265",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/0": {
+        "normalized_signature": "a9db644e7b7313e570b137da7bacb616f43ea5d74d1051a1f2a01afe7985d8b5",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144782",
+              "context": [
+                "main.530_spmd/fusion.144782"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.597",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144796",
+              "context": [
+                "main.530_spmd/fusion.144796"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.601",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/1": {
+        "normalized_signature": "61a141fde6b39b8eac8904dd536967c9269e166b5409253b8276383b411dbe96",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13990",
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/0": {
+        "normalized_signature": "88593b82423d3d350665ba0acd1963a2b593849c74a3ed67dc8193edfd345384",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144815",
+              "context": [
+                "main.530_spmd/fusion.144815"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.605",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144834",
+              "context": [
+                "main.530_spmd/fusion.144834"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.611",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114113",
+              "context": [
+                "main.530_spmd/async-collective-done.27"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13289",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_capture": {
+      "o_proj/polar/2/B_X/0": {
+        "normalized_signature": "ed4ab4038131492a648bdab54b4864475d023c8d81c8b043cf22be5da99d336b",
+        "same_normalized_signature_as_untouched": true,
+        "records": 15,
+        "edges": 14,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13943",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144771",
+              "context": [
+                "main.530_spmd/fusion.144771"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.595",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/2/B_X/1": {
+        "normalized_signature": "3f916c8c1cfb192f869850bd5f87a33e67411d67481a9252a03b7581265c77a8",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114094",
+              "context": [
+                "main.530_spmd/async-collective-done.21"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13265",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/0": {
+        "normalized_signature": "a9db644e7b7313e570b137da7bacb616f43ea5d74d1051a1f2a01afe7985d8b5",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144783",
+              "context": [
+                "main.530_spmd/fusion.144783"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.597",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144797",
+              "context": [
+                "main.530_spmd/fusion.144797"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.601",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/1": {
+        "normalized_signature": "61a141fde6b39b8eac8904dd536967c9269e166b5409253b8276383b411dbe96",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13992",
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/0": {
+        "normalized_signature": "88593b82423d3d350665ba0acd1963a2b593849c74a3ed67dc8193edfd345384",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144816",
+              "context": [
+                "main.530_spmd/fusion.144816"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.605",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144835",
+              "context": [
+                "main.530_spmd/fusion.144835"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.611",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114114",
+              "context": [
+                "main.530_spmd/async-collective-done.27"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13289",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_substitute": {
+      "o_proj/polar/2/B_X/0": {
+        "normalized_signature": "09c2c923f50bcdaf886fd171cfe70027a91254b588bed5f00379b8e206b39822",
+        "same_normalized_signature_as_untouched": false,
+        "records": 15,
+        "edges": 14,
+        "rooted_differences": [
+          {
+            "operand_path": [
+              0,
+              0
+            ],
+            "left_node": 2,
+            "right_node": 2,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}"
+            },
+            "right": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0
+            ],
+            "left_node": 3,
+            "right_node": 3,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}"
+            },
+            "right": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              10
+            ],
+            "left_node": 4,
+            "right_node": 4,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}"
+            },
+            "right": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              10,
+              0
+            ],
+            "left_node": 5,
+            "right_node": 5,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "(bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "right": {
+              "shape": "(bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              10,
+              0,
+              0
+            ],
+            "left_node": 6,
+            "right_node": 6,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "(bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "right": {
+              "shape": "(bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              10,
+              0,
+              0,
+              0
+            ],
+            "left_node": 7,
+            "right_node": 7,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}"
+            },
+            "right": {
+              "shape": "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)S(1)}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13957",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144758",
+              "context": [
+                "main.529_spmd/fusion.144758"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.585",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/2/B_X/1": {
+        "normalized_signature": "6cbb298ff2e59810b1aa9e5ba00fc4ae8318acc539c4a384f7fb0401e61c0869",
+        "same_normalized_signature_as_untouched": false,
+        "records": 40,
+        "edges": 40,
+        "rooted_differences": [
+          {
+            "operand_path": [
+              0,
+              0
+            ],
+            "left_node": 2,
+            "right_node": 2,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}"
+            },
+            "right": {
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0
+            ],
+            "left_node": 3,
+            "right_node": 3,
+            "changed_fields": [
+              "shape"
+            ],
+            "left": {
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}"
+            },
+            "right": {
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              9
+            ],
+            "left_node": 4,
+            "right_node": 4,
+            "changed_fields": [
+              "attributes",
+              "opcode",
+              "shape"
+            ],
+            "left": {
+              "attributes": ", kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=<identifier>, frontend_attributes={is_spmd_generated=\"true\"}",
+              "opcode": "fusion",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}"
+            },
+            "right": {
+              "attributes": ", channel_id=203, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}",
+              "opcode": "all-gather",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": true
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 17,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13994",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 33,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144629",
+              "context": [
+                "main.529_spmd/fusion.144629"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.541",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 39,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144744",
+              "context": [
+                "main.529_spmd/fusion.144744"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.288.clone.3",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/0": {
+        "normalized_signature": "a9db644e7b7313e570b137da7bacb616f43ea5d74d1051a1f2a01afe7985d8b5",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144770",
+              "context": [
+                "main.529_spmd/fusion.144770"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.587",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144784",
+              "context": [
+                "main.529_spmd/fusion.144784"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.591",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/3/B_X/1": {
+        "normalized_signature": "f5504d59c0cb4c0a9b2ac2ffda868792d788e7a5ae4d9741997f84e59589f35f",
+        "same_normalized_signature_as_untouched": false,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              9,
+              0,
+              0
+            ],
+            "left_node": 6,
+            "right_node": 6,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=212, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=209, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={is_spmd_generated=\"true\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          },
+          {
+            "operand_path": [
+              0,
+              0,
+              0,
+              9,
+              0,
+              0,
+              0
+            ],
+            "left_node": 7,
+            "right_node": 7,
+            "changed_fields": [
+              "attributes",
+              "boundary",
+              "opcode"
+            ],
+            "left": {
+              "attributes": ", custom_call_target=\"ConcatBitcast\"",
+              "boundary": {
+                "reason": "opaque operation or unsupported tuple projection"
+              },
+              "opcode": "custom-call"
+            },
+            "right": {
+              "attributes": ", index=0",
+              "boundary": null,
+              "opcode": "get-tuple-element"
+            },
+            "operand_positions_differ": true,
+            "unaligned_subtrees_not_compared": true
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13953",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144763",
+              "context": [
+                "main.529_spmd/fusion.144763"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.286.clone.3",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/0": {
+        "normalized_signature": "88593b82423d3d350665ba0acd1963a2b593849c74a3ed67dc8193edfd345384",
+        "same_normalized_signature_as_untouched": true,
+        "records": 18,
+        "edges": 17,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 14,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144803",
+              "context": [
+                "main.529_spmd/fusion.144803"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.595",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 17,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144822",
+              "context": [
+                "main.529_spmd/fusion.144822"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.601",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "o_proj/polar/4/B_X/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114115",
+              "context": [
+                "main.529_spmd/async-collective-done.31"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13305",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Existing same-HLO o input traces reused; no new control extraction or execution.",
+    "These are passing numerical controls in the prior full28leaf report, not newly measured outputs.",
+    "Opaque boundaries and all prior mismatches retained; no runtime or causal inference."
+  ]
+}

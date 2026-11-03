@@ -1,0 +1,3496 @@
+{
+  "graphs": {
+    "matrix_untouched": {
+      "down_proj/polar/2/ConcatBitcast/0": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/1": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/2": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/3": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/0": {
+        "normalized_signature": "5573bc8ecc4069dfdbec48256c815a449c76db736d2b3069654116981e7e16e6",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13947",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114151",
+              "context": [
+                "main.530_spmd/async-collective-done.38"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13333",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/0": {
+        "normalized_signature": "691675830541b952e8e761f8f834f0a5c9a8e606df19ec214343fa6a96c6d821",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/1": {
+        "normalized_signature": "78797dfe632d9879c0868bfecf202fe709f478c67ace5ea88c7b1c8d5b762ecf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/2": {
+        "normalized_signature": "7a9c2668754d889ca46a1a5b777bb915265de0b1f86b4fcda932791e6da8ee47",
+        "same_normalized_signature_as_untouched": true,
+        "records": 9,
+        "edges": 8,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/3": {
+        "normalized_signature": "aefb46611a541ef10a9b743e14a0fe445645d55ad54ce148d2c758d1e3b323b2",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/4": {
+        "normalized_signature": "c7992962c8b1587b1b90cd112314a5531ab4096da6c574f8cfa6f27840ba973e",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/5": {
+        "normalized_signature": "9dac34d62ca31c6daecda55b32e7c46c3cd03bc9a1557577f2516797cd24e192",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/6": {
+        "normalized_signature": "b76fa3e9bb167f109bd9fe027b1414efac79e551d6c83bb4ab8d760f14e998ff",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/7": {
+        "normalized_signature": "15cabf5ee6bde5b8302b3bb382b925ac48d42725cee857ad3b50cdd19f28030d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/8": {
+        "normalized_signature": "5209191013edfed7a3f6ed002931ec3295a0c669fdcbfd91ab77113a035f7d89",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/9": {
+        "normalized_signature": "82eb7f7193ee431a4cc12c08dd93efc72b26467eb7abd4daee07f028394ab597",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "ed84bf5f45ac87d4a9c9f0a2fc01d2dcfa8132c620adc657136fd9cf6b857063",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13893",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144870",
+              "context": [
+                "main.530_spmd/fusion.144870"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.236.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/0": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/1": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/2": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/3": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13951",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114190",
+              "context": [
+                "main.530_spmd/async-collective-done.49"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13377",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/0": {
+        "normalized_signature": "95ea985d584b69e2164ddb2dde27d80cc22d336507efe9c87438b23a1c955bf0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/1": {
+        "normalized_signature": "482ed68961436e38b1ba54eda81c8ec8cab3003d94020ba5e8e8ad9a1a67f143",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/2": {
+        "normalized_signature": "bd1b8f6095c0d49253a080b47f0b0ac02e8055b050258a08cab6316e2768c454",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 12,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/3": {
+        "normalized_signature": "c4765828c9dabfdbb07079bc70c0cfec54310bffc9953c9254126b908c7cb022",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/4": {
+        "normalized_signature": "0c6d2348562163a09238645e2912d328cbf880b7f0373bf5c21254105f3906ad",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/5": {
+        "normalized_signature": "4b5486251891644c23678e680dc0158664a1fa6534f97e38477b12c8704a70e1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/6": {
+        "normalized_signature": "60fc1b924d821ce7993e2c1628db32ecaaaf4beac2608e7c237e0d51058979a1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/7": {
+        "normalized_signature": "d122ceed4397a11244df2604245e50c1993fd8c430fe12f4f6b39d22b3a9356f",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/8": {
+        "normalized_signature": "466690e024f603cf21946a35a226ef0f9b3c022d210cae8b4f234921612a38d0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/9": {
+        "normalized_signature": "4b361c19725a8803ff3faec34cbf1ce65f38dfc8ff47727ab7474b51c55fb6a7",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "789530d5c420a9fc759424d1f04af5f184ce7c28eaa6998b1318f7109bfda2d9",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13902",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144979",
+              "context": [
+                "main.530_spmd/fusion.144979"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.239.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_evaluate": {
+      "down_proj/polar/2/ConcatBitcast/0": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/1": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/2": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/3": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144898",
+              "context": [
+                "main.530_spmd/fusion.144898"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/0": {
+        "normalized_signature": "5573bc8ecc4069dfdbec48256c815a449c76db736d2b3069654116981e7e16e6",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13947",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114151",
+              "context": [
+                "main.530_spmd/async-collective-done.38"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13333",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/0": {
+        "normalized_signature": "691675830541b952e8e761f8f834f0a5c9a8e606df19ec214343fa6a96c6d821",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/1": {
+        "normalized_signature": "78797dfe632d9879c0868bfecf202fe709f478c67ace5ea88c7b1c8d5b762ecf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/2": {
+        "normalized_signature": "7a9c2668754d889ca46a1a5b777bb915265de0b1f86b4fcda932791e6da8ee47",
+        "same_normalized_signature_as_untouched": true,
+        "records": 9,
+        "edges": 8,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/3": {
+        "normalized_signature": "aefb46611a541ef10a9b743e14a0fe445645d55ad54ce148d2c758d1e3b323b2",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/4": {
+        "normalized_signature": "c7992962c8b1587b1b90cd112314a5531ab4096da6c574f8cfa6f27840ba973e",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/5": {
+        "normalized_signature": "9dac34d62ca31c6daecda55b32e7c46c3cd03bc9a1557577f2516797cd24e192",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/6": {
+        "normalized_signature": "b76fa3e9bb167f109bd9fe027b1414efac79e551d6c83bb4ab8d760f14e998ff",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/7": {
+        "normalized_signature": "15cabf5ee6bde5b8302b3bb382b925ac48d42725cee857ad3b50cdd19f28030d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/8": {
+        "normalized_signature": "5209191013edfed7a3f6ed002931ec3295a0c669fdcbfd91ab77113a035f7d89",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/9": {
+        "normalized_signature": "82eb7f7193ee431a4cc12c08dd93efc72b26467eb7abd4daee07f028394ab597",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114136",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "ed84bf5f45ac87d4a9c9f0a2fc01d2dcfa8132c620adc657136fd9cf6b857063",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13893",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144870",
+              "context": [
+                "main.530_spmd/fusion.144870"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.236.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/0": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/1": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/2": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/3": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145005",
+              "context": [
+                "main.530_spmd/fusion.145005"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13951",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114190",
+              "context": [
+                "main.530_spmd/async-collective-done.49"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13377",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/0": {
+        "normalized_signature": "95ea985d584b69e2164ddb2dde27d80cc22d336507efe9c87438b23a1c955bf0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/1": {
+        "normalized_signature": "482ed68961436e38b1ba54eda81c8ec8cab3003d94020ba5e8e8ad9a1a67f143",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/2": {
+        "normalized_signature": "bd1b8f6095c0d49253a080b47f0b0ac02e8055b050258a08cab6316e2768c454",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 12,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/3": {
+        "normalized_signature": "c4765828c9dabfdbb07079bc70c0cfec54310bffc9953c9254126b908c7cb022",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/4": {
+        "normalized_signature": "0c6d2348562163a09238645e2912d328cbf880b7f0373bf5c21254105f3906ad",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/5": {
+        "normalized_signature": "4b5486251891644c23678e680dc0158664a1fa6534f97e38477b12c8704a70e1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/6": {
+        "normalized_signature": "60fc1b924d821ce7993e2c1628db32ecaaaf4beac2608e7c237e0d51058979a1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/7": {
+        "normalized_signature": "d122ceed4397a11244df2604245e50c1993fd8c430fe12f4f6b39d22b3a9356f",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/8": {
+        "normalized_signature": "466690e024f603cf21946a35a226ef0f9b3c022d210cae8b4f234921612a38d0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/9": {
+        "normalized_signature": "4b361c19725a8803ff3faec34cbf1ce65f38dfc8ff47727ab7474b51c55fb6a7",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114177",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "789530d5c420a9fc759424d1f04af5f184ce7c28eaa6998b1318f7109bfda2d9",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13902",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144979",
+              "context": [
+                "main.530_spmd/fusion.144979"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.239.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_capture": {
+      "down_proj/polar/2/ConcatBitcast/0": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144899",
+              "context": [
+                "main.530_spmd/fusion.144899"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/1": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144899",
+              "context": [
+                "main.530_spmd/fusion.144899"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/2": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144899",
+              "context": [
+                "main.530_spmd/fusion.144899"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/3": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144899",
+              "context": [
+                "main.530_spmd/fusion.144899"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.623",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/0": {
+        "normalized_signature": "5573bc8ecc4069dfdbec48256c815a449c76db736d2b3069654116981e7e16e6",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13950",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114152",
+              "context": [
+                "main.530_spmd/async-collective-done.38"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13333",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/0": {
+        "normalized_signature": "691675830541b952e8e761f8f834f0a5c9a8e606df19ec214343fa6a96c6d821",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/1": {
+        "normalized_signature": "78797dfe632d9879c0868bfecf202fe709f478c67ace5ea88c7b1c8d5b762ecf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/2": {
+        "normalized_signature": "7a9c2668754d889ca46a1a5b777bb915265de0b1f86b4fcda932791e6da8ee47",
+        "same_normalized_signature_as_untouched": true,
+        "records": 9,
+        "edges": 8,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/3": {
+        "normalized_signature": "aefb46611a541ef10a9b743e14a0fe445645d55ad54ce148d2c758d1e3b323b2",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/4": {
+        "normalized_signature": "c7992962c8b1587b1b90cd112314a5531ab4096da6c574f8cfa6f27840ba973e",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/5": {
+        "normalized_signature": "9dac34d62ca31c6daecda55b32e7c46c3cd03bc9a1557577f2516797cd24e192",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/6": {
+        "normalized_signature": "b76fa3e9bb167f109bd9fe027b1414efac79e551d6c83bb4ab8d760f14e998ff",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/7": {
+        "normalized_signature": "15cabf5ee6bde5b8302b3bb382b925ac48d42725cee857ad3b50cdd19f28030d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/8": {
+        "normalized_signature": "5209191013edfed7a3f6ed002931ec3295a0c669fdcbfd91ab77113a035f7d89",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/9": {
+        "normalized_signature": "82eb7f7193ee431a4cc12c08dd93efc72b26467eb7abd4daee07f028394ab597",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114137",
+              "context": [
+                "main.530_spmd/async-collective-start.34"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13315",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "ed84bf5f45ac87d4a9c9f0a2fc01d2dcfa8132c620adc657136fd9cf6b857063",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13893",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144871",
+              "context": [
+                "main.530_spmd/fusion.144871"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.236.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/0": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145006",
+              "context": [
+                "main.530_spmd/fusion.145006"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/1": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145006",
+              "context": [
+                "main.530_spmd/fusion.145006"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/2": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145006",
+              "context": [
+                "main.530_spmd/fusion.145006"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/3": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.145006",
+              "context": [
+                "main.530_spmd/fusion.145006"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.645",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13954",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114191",
+              "context": [
+                "main.530_spmd/async-collective-done.49"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13377",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/0": {
+        "normalized_signature": "95ea985d584b69e2164ddb2dde27d80cc22d336507efe9c87438b23a1c955bf0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/1": {
+        "normalized_signature": "482ed68961436e38b1ba54eda81c8ec8cab3003d94020ba5e8e8ad9a1a67f143",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/2": {
+        "normalized_signature": "bd1b8f6095c0d49253a080b47f0b0ac02e8055b050258a08cab6316e2768c454",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 12,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/3": {
+        "normalized_signature": "c4765828c9dabfdbb07079bc70c0cfec54310bffc9953c9254126b908c7cb022",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/4": {
+        "normalized_signature": "0c6d2348562163a09238645e2912d328cbf880b7f0373bf5c21254105f3906ad",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/5": {
+        "normalized_signature": "4b5486251891644c23678e680dc0158664a1fa6534f97e38477b12c8704a70e1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/6": {
+        "normalized_signature": "60fc1b924d821ce7993e2c1628db32ecaaaf4beac2608e7c237e0d51058979a1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/7": {
+        "normalized_signature": "d122ceed4397a11244df2604245e50c1993fd8c430fe12f4f6b39d22b3a9356f",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/8": {
+        "normalized_signature": "466690e024f603cf21946a35a226ef0f9b3c022d210cae8b4f234921612a38d0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/9": {
+        "normalized_signature": "4b361c19725a8803ff3faec34cbf1ce65f38dfc8ff47727ab7474b51c55fb6a7",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114178",
+              "context": [
+                "main.530_spmd/async-collective-start.46"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13363",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "789530d5c420a9fc759424d1f04af5f184ce7c28eaa6998b1318f7109bfda2d9",
+        "same_normalized_signature_as_untouched": true,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13902",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144980",
+              "context": [
+                "main.530_spmd/fusion.144980"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.239.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_substitute": {
+      "down_proj/polar/2/ConcatBitcast/0": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144886",
+              "context": [
+                "main.529_spmd/fusion.144886"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.613",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/1": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144886",
+              "context": [
+                "main.529_spmd/fusion.144886"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.613",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/2": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144886",
+              "context": [
+                "main.529_spmd/fusion.144886"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.613",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/ConcatBitcast/3": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144886",
+              "context": [
+                "main.529_spmd/fusion.144886"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.613",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/0": {
+        "normalized_signature": "5573bc8ecc4069dfdbec48256c815a449c76db736d2b3069654116981e7e16e6",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13963",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114153",
+              "context": [
+                "main.529_spmd/async-collective-done.42"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13349",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/0": {
+        "normalized_signature": "691675830541b952e8e761f8f834f0a5c9a8e606df19ec214343fa6a96c6d821",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/1": {
+        "normalized_signature": "78797dfe632d9879c0868bfecf202fe709f478c67ace5ea88c7b1c8d5b762ecf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/2": {
+        "normalized_signature": "c1701ae31044d3cf6e1036e6f7b75ff64e32a5dc6649d3b40e9a957c290a8958",
+        "same_normalized_signature_as_untouched": false,
+        "records": 9,
+        "edges": 8,
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=340, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"34\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=337, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"38\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 8,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/3": {
+        "normalized_signature": "aefb46611a541ef10a9b743e14a0fe445645d55ad54ce148d2c758d1e3b323b2",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/4": {
+        "normalized_signature": "c7992962c8b1587b1b90cd112314a5531ab4096da6c574f8cfa6f27840ba973e",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/5": {
+        "normalized_signature": "9dac34d62ca31c6daecda55b32e7c46c3cd03bc9a1557577f2516797cd24e192",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/6": {
+        "normalized_signature": "b76fa3e9bb167f109bd9fe027b1414efac79e551d6c83bb4ab8d760f14e998ff",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/7": {
+        "normalized_signature": "15cabf5ee6bde5b8302b3bb382b925ac48d42725cee857ad3b50cdd19f28030d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/8": {
+        "normalized_signature": "5209191013edfed7a3f6ed002931ec3295a0c669fdcbfd91ab77113a035f7d89",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/9": {
+        "normalized_signature": "82eb7f7193ee431a4cc12c08dd93efc72b26467eb7abd4daee07f028394ab597",
+        "same_normalized_signature_as_untouched": true,
+        "records": 8,
+        "edges": 7,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 7,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114138",
+              "context": [
+                "main.529_spmd/async-collective-start.38"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13331",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "down_proj/polar/2/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "c96538d2adb8fb1f179bd16edb92e5c9f5eb74fd82c28860ea25b4e2ee9b576a",
+        "same_normalized_signature_as_untouched": false,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=340, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"34\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=337, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"38\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13912",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144858",
+              "context": [
+                "main.529_spmd/fusion.144858"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.234.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/0": {
+        "normalized_signature": "9c5409c2a6af2d00a955e6fce9b791da8ee54fc5b79726e762c1e481a045d42d",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144993",
+              "context": [
+                "main.529_spmd/fusion.144993"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.635",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/1": {
+        "normalized_signature": "b18d7eae13edda16e0f10159ef6ddb06263ba28a7aa36692cf192428ebd63fdb",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144993",
+              "context": [
+                "main.529_spmd/fusion.144993"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.635",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/2": {
+        "normalized_signature": "fdb7e75406943ab974e951c34a4c6cf7fcbc28ff3753e84283cfc3872a73c71a",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144993",
+              "context": [
+                "main.529_spmd/fusion.144993"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.635",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/ConcatBitcast/3": {
+        "normalized_signature": "599c8d0803685df20c550c081d5c022ddd7e8c1ea6887b97462aa91949330a15",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144993",
+              "context": [
+                "main.529_spmd/fusion.144993"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.635",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/0": {
+        "normalized_signature": "4ce74e62481f22aa5bdd89afc1db2942181d60f6cd12970001f1177039d51abf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 7,
+        "edges": 6,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 4,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13967",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/scaled_A_A/1": {
+        "normalized_signature": "30842cc245a7dad2a6712f7126eca0584b56346b8d91591f870a3b042d5e2caf",
+        "same_normalized_signature_as_untouched": true,
+        "records": 6,
+        "edges": 5,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 5,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114192",
+              "context": [
+                "main.529_spmd/async-collective-done.53"
+              ],
+              "tuple_path": [],
+              "name": "custom-call.13393",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/0": {
+        "normalized_signature": "95ea985d584b69e2164ddb2dde27d80cc22d336507efe9c87438b23a1c955bf0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/1": {
+        "normalized_signature": "482ed68961436e38b1ba54eda81c8ec8cab3003d94020ba5e8e8ad9a1a67f143",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                1
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/2": {
+        "normalized_signature": "a4601ad5312e5ba90fff22fa6edc2df1a68d43868c44c01c8fcfb64dc348671f",
+        "same_normalized_signature_as_untouched": false,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=308, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"46\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=305, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"50\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 12,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                0
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/3": {
+        "normalized_signature": "c4765828c9dabfdbb07079bc70c0cfec54310bffc9953c9254126b908c7cb022",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                2
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/4": {
+        "normalized_signature": "0c6d2348562163a09238645e2912d328cbf880b7f0373bf5c21254105f3906ad",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                3
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/5": {
+        "normalized_signature": "4b5486251891644c23678e680dc0158664a1fa6534f97e38477b12c8704a70e1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                4
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/6": {
+        "normalized_signature": "60fc1b924d821ce7993e2c1628db32ecaaaf4beac2608e7c237e0d51058979a1",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                5
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/7": {
+        "normalized_signature": "d122ceed4397a11244df2604245e50c1993fd8c430fe12f4f6b39d22b3a9356f",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                6
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/8": {
+        "normalized_signature": "466690e024f603cf21946a35a226ef0f9b3c022d210cae8b4f234921612a38d0",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                7
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/9": {
+        "normalized_signature": "4b361c19725a8803ff3faec34cbf1ce65f38dfc8ff47727ab7474b51c55fb6a7",
+        "same_normalized_signature_as_untouched": true,
+        "records": 12,
+        "edges": 11,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 11,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "fused_computation.114179",
+              "context": [
+                "main.529_spmd/async-collective-start.50"
+              ],
+              "tuple_path": [
+                8
+              ],
+              "name": "custom-call.13379",
+              "shape": "(bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)})",
+              "opcode": "custom-call"
+            }
+          }
+        ]
+      },
+      "up_proj/polar/4/AsyncCollectiveDone/Start/0": {
+        "normalized_signature": "eedbe308a30581c62534fab36398794b797246be71295a890b5217732b74680f",
+        "same_normalized_signature_as_untouched": false,
+        "records": 13,
+        "edges": 12,
+        "rooted_differences": [
+          {
+            "operand_path": [],
+            "left_node": 0,
+            "right_node": 0,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=308, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"46\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=305, replica_groups=mesh['axis_0'=8] {'axis_0'}, dimensions={1}, use_global_device_ids=true, frontend_attributes={chain_id=\"50\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 9,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "custom-call.13921",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)S(1)}",
+              "opcode": "custom-call"
+            }
+          },
+          {
+            "node": 12,
+            "reason": "declared product frontier",
+            "role": "/gram_direction/vmap()/dot_general",
+            "record": {
+              "computation": "async_collective_fusion.144967",
+              "context": [
+                "main.529_spmd/fusion.144967"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.237.clone.3",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Endpoints selected by saved dependencies, caller contexts and mapped polar roles.",
+    "Signatures retain declarations, attributes, constant literals, ordered connections and boundary labels.",
+    "Instruction/computation identifiers and source wrappers normalized; channel/chain IDs retained.",
+    "Difference walker stops at unaligned subtrees. Recursive hashes do not distinguish sharing.",
+    "Opaque outputs remain opaque. No runtime values, precision, order, semantic identity or cause claim.",
+    "Both full28leaf numerical substitution gates remain failed; no numerical intervention selected."
+  ]
+}
