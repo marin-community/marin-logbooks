@@ -3928,6 +3928,58 @@ No new numerical, precision or tiling intervention is selected.
 [tuple paths](compiler-column-input-first-gram-paths.json) and
 [initial failure](compiler-column-input-initial-failed.json) retain the evidence.
 
+### November 3, 15:00 UTC — Upstream and outer-Gram bindings remain only partly visible
+
+The new CPU-only extraction compares normalization operands and final direction
+outputs for matrix gate/down, which fail the numerical substitution gate, and
+up/o, which pass it. All twelve compared unchanged-evaluator signatures match the untouched
+signatures after source labels are normalized from the wrapper argument structure.
+Seven paired-capture traces and eight column-substitution traces differ from
+untouched controls. These are differences in rooted declarations and ordered
+connections, not evidence of different runtime values.
+
+For column substitution, gate_proj differs at all three roots: normalization
+numerator, denominator and final direction. One corresponding upstream route
+changes from a tuple projection to copy-done; collective channel IDs also differ.
+The down_proj numerator trace matches but stops at opaque ConcatBitcast. Its
+final-direction signature differs only in two collective channel IDs (329→326 and 331→328). This comparison stops
+at opaque boundaries and does not identify a numerical cause. Passing controls
+also differ: up_proj at the denominator and final direction, and o_proj at the
+denominator. A differing signature therefore does not distinguish a failed
+numerical gate from a passing one.
+
+The final-output traces expose one direct gram_direction product for gate and
+up, and two for down and o, per graph. Their immediate operand declarations are
+recorded by position. Other parts of the outer-Gram computation remain behind
+opaque AsyncCollectiveDone or ConcatBitcast operations; eigensolver while loops
+are also boundaries. None of these traces reaches a polar-product anchor.
+Recovering all requested records is not complete semantic provenance. The
+signature comparison includes constant literals and canonical source roles,
+retains channel IDs, and excludes instruction identifiers and metadata. Raw
+traces retain caller contexts and repeated edges; recursive signatures do not
+distinguish edge sharing.
+
+The job succeeded on attempt 0 with exit 0, verified at 14:54:31 UTC. It used
+four CPUs, 8 GiB memory and 10 GiB disk in us-west4, with default preemption
+retries and no wall-clock limit. Exact source and manifest were published
+before extraction. All four optimized HLO files passed regional size/SHA
+verification; large HLO stayed regional. Nine closure rounds per graph recovered
+99/99/100/101 requested bodies for untouched/evaluator/capture/substitution.
+The 5,717,993-byte report passed exact GCS readback and has SHA
+`81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4`.
+
+Both full-update numerical substitution gates remain failed. No optimization,
+training or MFU result is accepted. Next is static design only: inspect the
+remaining outer-product async/ConcatBitcast boundaries and gate's changed
+producer route using existing records first. Retain opaque semantics and
+compare passing controls before selecting any numerical intervention.
+The CPU log ended naturally; no experiment remains. PR observer 77099 remains
+sole, with its existing 12-hour exit condition.
+
+[Completion](compiler-outer-bindings-completed.json),
+[comparison](compiler-outer-bindings-comparison.json) and
+[validation](compiler-outer-bindings-validation.json) retain the evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

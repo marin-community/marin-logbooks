@@ -1,0 +1,177 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-outer-bindings-cpu-20261103",
+  "accepted_utc": "2026-11-03T14:53:13Z",
+  "canonical_job_task_verified_utc": "2026-11-03T14:54:31Z",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "6584460b89ad",
+  "task_exit_code": 0,
+  "source_commit": "abc5ed06773dff3c398786759d3ed63bde4b7fcd",
+  "source_sha256": {
+    "compiler_outer_bindings.py": "36ffb79f71015ccedfc6ccb7ed94d9c9574b9c4a419f32b70649e580fbfbb4a1",
+    "trace_outer_bindings.py": "36daebb960e73214c5db90fbc73add471389b98ab32c6e58e38ec020ebe1bb5f",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b"
+  },
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default"
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.outer-bindings/outer-bindings-21ac5d3e4f6e/report.json",
+  "report_bytes": 5717993,
+  "report_sha256": "81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4",
+  "exact_gcs_readback": true,
+  "graphs": {
+    "matrix_untouched": {
+      "extraction_rounds": 9,
+      "requested_bodies": 99,
+      "roots": 12,
+      "opaque_boundaries": 50,
+      "entry_parameter_boundaries": 10,
+      "polar_anchors": 0
+    },
+    "matrix_evaluate": {
+      "extraction_rounds": 9,
+      "requested_bodies": 99,
+      "roots": 12,
+      "opaque_boundaries": 50,
+      "entry_parameter_boundaries": 10,
+      "polar_anchors": 0
+    },
+    "matrix_capture": {
+      "extraction_rounds": 9,
+      "requested_bodies": 100,
+      "roots": 12,
+      "opaque_boundaries": 54,
+      "entry_parameter_boundaries": 10,
+      "polar_anchors": 0
+    },
+    "matrix_substitute": {
+      "extraction_rounds": 9,
+      "requested_bodies": 101,
+      "roots": 12,
+      "opaque_boundaries": 54,
+      "entry_parameter_boundaries": 11,
+      "polar_anchors": 0
+    }
+  },
+  "comparison": "compiler-outer-bindings-comparison.json",
+  "validation": "compiler-outer-bindings-validation.json",
+  "all_four_hlo_sha_size_verified_regionally": true,
+  "observer": {
+    "session_id": 92437,
+    "state": "ended naturally exit0; do not replace"
+  },
+  "limitations": [
+    "All requested records recovered, but opaque AsyncCollectiveDone, ConcatBitcast and while boundaries remain. No polar product anchor was reached from these roots.",
+    "Normalized signatures preserve ordered edges and constant literals; wrapper labels canonicalized from source. Names/metadata excluded, channel IDs retained, edge sharing retained only in raw records.",
+    "Both numerical substitution full-reference gates remain failed. No hidden identity, runtime precision, summation order, cause, optimization or training acceptance."
+  ],
+  "analysis_source_sha256": {
+    "compare_outer_bindings.py": "985902e3b461a9194e5ff7da52365b775c1e567b3a848410b165e862e22a998b"
+  },
+  "visible_final_product_operand_declarations": {
+    "gate_proj": [
+      [
+        "f32[11,4096,128]{2,1,0:T(8,128)}",
+        [
+          [
+            0,
+            "f32[11,4096,1024]{2,1,0:T(8,128)}"
+          ],
+          [
+            1,
+            "f32[11,1024,128]{2,1,0:T(8,128)}"
+          ]
+        ]
+      ]
+    ],
+    "down_proj": [
+      [
+        "f32[11,128,4096]{2,1,0:T(8,128)}",
+        [
+          [
+            0,
+            "f32[11,128,4096]{2,1,0:T(8,128)}"
+          ],
+          [
+            1,
+            "f32[11,4096,4096]{2,1,0:T(8,128)}"
+          ]
+        ]
+      ],
+      [
+        "f32[11,128,4096]{2,1,0:T(8,128)S(1)}",
+        [
+          [
+            0,
+            "f32[11,128,1024]{2,1,0:T(8,128)}"
+          ],
+          [
+            1,
+            "f32[11,1024,4096]{1,2,0:T(8,128)}"
+          ]
+        ]
+      ]
+    ],
+    "up_proj": [
+      [
+        "f32[11,4096,128]{2,1,0:T(8,128)}",
+        [
+          [
+            0,
+            "f32[11,4096,1024]{2,1,0:T(8,128)}"
+          ],
+          [
+            1,
+            "f32[11,1024,128]{2,1,0:T(8,128)}"
+          ]
+        ]
+      ]
+    ],
+    "o_proj": [
+      [
+        "f32[11,128,1024]{2,1,0:T(8,128)}",
+        [
+          [
+            0,
+            "f32[11,128,1024]{2,1,0:T(8,128)}"
+          ],
+          [
+            1,
+            "f32[11,1024,1024]{2,1,0:T(8,128)}"
+          ]
+        ]
+      ],
+      [
+        "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        [
+          [
+            0,
+            "f32[11,128,1024]{2,1,0:T(8,128)}"
+          ],
+          [
+            1,
+            "f32[11,1024,1024]{2,1,0:T(8,128)}"
+          ]
+        ]
+      ]
+    ]
+  },
+  "visible_declarations_match_across_four_graphs": true,
+  "findings": [
+    "All12 evaluator normalized rooted signatures match untouched controls after source-wrapper label normalization.",
+    "Seven capture and eight substitution normalized rooted signatures differ from untouched; opaque boundaries remain in every root.",
+    "Substitution gate differs at all3roots; down at denominator and final; passing up at denominator and final; passing o at denominator.",
+    "Down final bounded comparison differs only by channel IDs329to326 and331to328; no causal interpretation. Gate has tuple-projection versus copy-done producer route differences.",
+    "Visible direct gram_direction products in final-output traces: gate1/down2/up1/o2 pergraph. Immediate operand declarations match across all4graphs; this is not complete outer-Gram provenance."
+  ],
+  "comparison_sha256": "5c63e15fdb5cb87679e0204fd470c429a2078484f57bf5232475d24fef8f3033",
+  "boundary_count_semantics": "Counts sum boundary occurrences across12root traces pergraph; not unique operations."
+}
