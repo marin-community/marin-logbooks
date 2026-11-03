@@ -3082,6 +3082,23 @@ mode's numerical check and a regression of the single-denominator mode. Only
 validated, published source may proceed to one sequential TPU diagnostic.
 No optimizer intervention or performance claim is selected.
 
+## 2026-11-03 10:31 UTC — Single-inner CPU preflight
+
+The [online CPU preflight](optimizer-single-inner-capture-preflight.json) passed
+for the new mode, which captures only the existing q_proj pre-normalization
+inner matrix, and the single-denominator regression. Each mode
+completed 12 finite stages, all 13 comparisons and four bitwise fixed-executable
+replays. Both evaluators and captures matched their own untouched 28-leaf
+references bitwise. Each capture retained 29 outputs. Compiler output signatures confirm the new
+mode appends a matrix and the regression appends a denominator.
+
+Fresh online W&B runs finished for both numerical checks and the separate
+logging check. Both reports matched their GCS bytes; all 28 compiler/Jaxpr
+objects passed SHA, size and gzip readback. These eight-virtual-device CPU checks
+validate the harness and regression, not TPU behavior. Publish this evidence
+before one sequential TPU diagnostic using unchanged source equations, precision
+settings and rtol=atol=1e-5.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
