@@ -2681,7 +2681,7 @@ report checksum, compilation observation and telemetry query. Finelog recorded
 75 samples through 08:12:22 UTC with a cumulative host-memory peak of
 56.449 GiB, below the 128 GiB reservation. Its accelerator-memory field is null.
 The original full-size program maps all seven polar normalizations and preserves
-851 equations when appending the six q/k/v operands. Its small saved Jaxpr file
+851 equations when appending the six q/k/v operands as outputs. Its small saved Jaxpr file
 passed SHA256, size and decompression readback; the large compiler files remain
 regional and have not been re-downloaded for this check.
 
