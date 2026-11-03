@@ -2211,6 +2211,42 @@ and do not establish TPU behavior. Next submit one sequential v5e-8 diagnostic
 from the published source and preflight, with batch priority, default preemption
 retries and no wall-clock limit.
 
+## 2026-11-03 06:07 UTC — Normalization separation changes sharded polar results
+
+The [normalization-boundary diagnostic](optimizer-polar-normalization-v5e-completed.json)
+succeeded on eight native v5e chips, attempt zero and task exit zero, from source
+`9e51263b02a40bdc477db5dd33c4852f10f511df`. All 69 stages were finite,
+33 of 48 comparisons passed at `rtol=atol=1e-5`, and all eighteen fixed
+executables replayed bitwise. Online W&B finished with the collection marker
+and `candidate_accepted_for_training=false`.
+
+For each query/key/value group, the isolated first Gram product A = XXᵀ matches
+bitwise with normalization inside or outside its executable, under either
+output layout. Those isolated products also match across replicated and
+direction-sharded outputs. The externally normalized five-step polar result
+matches the shared uninstrumented replicated reference bitwise under replicated
+outputs. Under direction-sharded outputs it fails the corresponding
+uninstrumented reference: relative Frobenius error is 0.005941 for query,
+0.005004 for key and 0.005425 for value, with the uninstrumented sharded output
+as denominator. The fifteen failed comparisons are three normalized-polar
+layout checks, three uninstrumented-reference layout checks and nine
+final-reference checks.
+
+This measures sensitivity to separating normalization in a different compiled
+computation. Equality of isolated first products does not establish equality of
+the first products inside either five-step executable. The result does not
+isolate runtime precision, collective summation or the untouched full optimizer
+mechanism, and no optimization is accepted.
+
+All 54 compiler files, totaling 103,743 compressed bytes, passed checksum, size
+and decompression checks. Finelog observed a cumulative host peak of
+13.359375 GiB over 39 samples through 06:06:00 UTC. The JAX allocator peak was
+7,116,572,672 bytes per device; it is not total HBM. No warmed timing or training
+MFU was measured. Next map the saved normalized-input five-step and
+isolated-product compiler paths against their uninstrumented references using
+output dependencies and source metadata. The files are local; no further
+accelerator is selected or running.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

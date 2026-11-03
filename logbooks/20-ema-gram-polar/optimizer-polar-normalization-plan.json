@@ -1,5 +1,5 @@
 {
-  "status": "implemented and CPU validated; one sequential TPU submission next",
+  "status": "Completed TPU collection; numerical mismatches preserved. No optimization accepted.",
   "script": "optimizer_attribution.py --polar-normalization",
   "script_sha256": "2883c1cf608d425b3c3fc2de5e639b9eb0c3d66b8aea4733d8457ac6124faa7d",
   "question": "Measure numerical effects of separating normalization from the first Gram product and five polar iterations.",
@@ -40,5 +40,6 @@
   "job_name": "ema-gram-20-polar-normalization-v5e-8-20261103",
   "limitations": "No warmed timing or device profile promised; no training/MFU/correctness promotion. Additional outputs and isolated product boundaries change compilation. Trace equality at final output does not prove all internal operations are unchanged.",
   "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-normalization-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-normalization --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.6",
-  "preflight": "optimizer-polar-normalization-preflight.json"
+  "preflight": "optimizer-polar-normalization-preflight.json",
+  "result": "optimizer-polar-normalization-v5e-completed.json"
 }
