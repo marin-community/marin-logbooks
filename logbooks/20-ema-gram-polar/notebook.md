@@ -4610,6 +4610,14 @@ Neither training variant has been submitted. The current saved-state check must 
 
 Canonical job/task checks at 22:49 UTC show all four tasks running on the same attempt-0 identities, with no failures or preemptions. Four bounded reports retrieved again retain empty case dictionaries and no completion flag; their SHA/size index is preserved locally. This is not a completed finite-output or equivalence result. Follow 51428 remains the sole observer, with the next routine canonical check no earlier than 22:59:01 UTC. No additional job or training was launched; the published paired launch preparation and loss-first acceptance policy remain unchanged.
 
+### November 3, 23:04 UTC — first saved-state case complete; full update still running
+
+All four process reports now contain the unchanged-saved-state direction case. In both replicated and matrix layouts, each process reports finite local outputs and unchanged input-state fingerprints. Each local numerical comparison fails the fixed tolerance. The full-update case is still missing, so these are partial reports, not accepted global completion. The complete-report summarizer has not been run and no global error magnitude is claimed. The [partial evidence](saved-state-check-partial.json) retains exact source-manifest matches, bounded report hashes and per-process flags.
+
+The primary online W&B run records that the fixed-synthetic-gradient update has started in the replicated layout. Canonical job/task checks at 23:04 UTC show all four tasks running on their original attempt-0 identities, with no failures or preemptions. The reported first-case execution times include compilation and are not steady training throughput or MFU. Follow 51428 remains the sole observer; the next routine canonical check is no earlier than 23:14:00 UTC.
+
+No training was launched. Complete finite/immutable reports for both cases, canonical success and finished logging are still required. Numerical differences alone will not veto the prepared original-then-candidate loss comparison; the final training counter remains 7630.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
