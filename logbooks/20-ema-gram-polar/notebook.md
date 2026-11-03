@@ -4606,6 +4606,10 @@ Static validation confirms output-path application is idempotent and the native 
 
 Neither training variant has been submitted. The current saved-state check must finish with canonical success and all four finite, immutable process reports; numerical-equivalence failure alone remains diagnostic. Then the original replicated continuation precedes the matrix continuation, both from the verified common counter 924 to final counter 7630 with the same model, batch, data, seed, precision and hyperparameters. Native ordinary label 924 and watch-enabled label 929 are full-training finite/memory evidence milestones within that unchanged schedule; later profiling, evaluation and checkpoint stages still require observation. No paired loss, full-training memory fit or speed improvement is claimed.
 
+### November 3, 22:49 UTC — saved-state check remains active
+
+Canonical job/task checks at 22:49 UTC show all four tasks running on the same attempt-0 identities, with no failures or preemptions. Four bounded reports retrieved again retain empty case dictionaries and no completion flag; their SHA/size index is preserved locally. This is not a completed finite-output or equivalence result. Follow 51428 remains the sole observer, with the next routine canonical check no earlier than 22:59:01 UTC. No additional job or training was launched; the published paired launch preparation and loss-first acceptance policy remain unchanged.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
