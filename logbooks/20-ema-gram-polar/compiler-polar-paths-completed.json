@@ -1,0 +1,43 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-polar-paths-cpu-20261103",
+  "submitted_utc": "2026-11-03T04:25:06Z",
+  "verified_utc": "2026-11-03T04:27:38Z",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "1e8d6b020ee0",
+  "exit_code": 0,
+  "source_commit": "1939540c0b9aa1c18abb023b624ae39bf6d7d627",
+  "script_sha256": "b262354c0a13920ce000b84473f47d29fd453420f2ca1c23242be5138ba34c95",
+  "resources": "4 CPU/8 GiB/10 GiB, us-west4, no accelerator, batch/default retries/no limit",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-paths/ir-inventory-e2e05fe35a09/report.json",
+  "report_bytes": 7108888,
+  "report_sha256": "1d226cb82a05ed6dbe190d1bf1210f274240d723cfefc88ee69fa6745221f8ef",
+  "comparison": "compiler-matched-paths.json",
+  "isolated_control": "compiler-isolated-query-paths.json",
+  "all_four_input_checksums_verified": true,
+  "findings": {
+    "matched_products_per_graph": 105,
+    "entry_allreduces_with_polar_ancestry_per_graph": 10,
+    "polar_reduction_grouping": "q/k X_Xt combined at each of five iterations; v X_Xt separate, all four graphs. Other operands with no polar ancestry join q/k at iterations 4 and 5 in both fused graphs, only 5 in both direction-only graphs.",
+    "all_40_collective_algorithm_configs_equal": true,
+    "collective_algorithm_config": {
+      "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+      "emitter": "RotatedPincerEmitter",
+      "strategy": "UniDirection1DRingStrategy"
+    },
+    "fused_pair_parent_config_different_positions": 70,
+    "direction_pair_parent_config_different_positions": 28,
+    "operation_attributes_before_metadata_equal_all_105_each_pair": true,
+    "operation_backend_config_equal_all_105_each_pair": true,
+    "isolated_query": "Checksum-verified small isolated q graphs also differ in first-product window/iteration configuration. This is not the same exact configuration pair as the full-update graphs."
+  },
+  "limitations": "Static parent-kernel configurations differ; neither actual reduction order nor numerical cause is established. Matching operation attributes does not establish runtime precision equivalence. No optimizer kernels, training or accepted optimization.",
+  "next_decision": {
+    "status": "design only; not implemented or submitted",
+    "control": "Instrument the first polar iteration on identical frozen q/k/v inputs under replicated and direction-sharded outputs: normalized input, A=X@X.T, C=(c*A)@A, B=b*A+C, D=B@X, X1=a*X+D. Preserve exact original expression association, coefficients, dtype, default matmul precision and sharding constraint.",
+    "instrumentation_gate": "Compare traced final five-iteration output with shared uninstrumented polar function in each layout at fixed 1e-5; report bitwise equality too. If adding product outputs changes the final output, do not interpret the trace as the original path.",
+    "crossfeed": "After identifying first differing product, compile each product evaluator once with identical external shardings and replay identical frozen operands under both controlled output layouts; treat removing fusion as a perturbation.",
+    "source_controls": "Reuse shared uninstrumented polar and coefficient definitions. Include full matrix shapes and per-stage finite checks, fingerprints, bounded memory, compiler artifacts with checksums. No precision or tolerance change; no compiler tiling override selected.",
+    "launch_gate": "Own online CPU logging/harness validation and exact published source before one sequential non-training TPU diagnostic. No accelerator job launched by this static milestone."
+  }
+}

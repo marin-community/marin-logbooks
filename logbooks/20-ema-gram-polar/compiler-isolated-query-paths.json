@@ -1,0 +1,325 @@
+{
+  "replicated": {
+    "artifact": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1/ema-gram-20-attribution-f28f477c787b/q_proj__identical_inner__replicated.optimized_hlo.txt.gz",
+      "sha256": "c2ffe20e01eff915d2577ce50044670f8917554b395c1da33ddd5c548c60be7b",
+      "compressed_bytes": 4319
+    },
+    "sha256_verified": true,
+    "first_product": {
+      "operation": "fused_computation.22/convolution-base-dilated.35",
+      "iteration": 1,
+      "product": "X_Xt"
+    },
+    "operation": {
+      "name": "convolution-base-dilated.35",
+      "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+      "opcode": "convolution",
+      "calls": null,
+      "line": 73,
+      "computation": "fused_computation.22",
+      "family": "polar",
+      "op_name": "jit(polar)/vmap()/dot_general",
+      "stack_frame_id": 8,
+      "operands": [
+        "fusion.27",
+        "fusion.27"
+      ],
+      "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}",
+      "backend_config": null,
+      "direct_operand_producers": [
+        {
+          "name": "fusion.27",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "fusion",
+          "calls": "fused_computation.23"
+        },
+        {
+          "name": "fusion.27",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "fusion",
+          "calls": "fused_computation.23"
+        }
+      ]
+    },
+    "fusion_callers": [
+      {
+        "name": "fusion.26",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "fusion",
+        "calls": "fused_computation.22",
+        "computation": "main.2_spmd",
+        "operands": [
+          "copy-done",
+          "sqrt_add_fusion"
+        ],
+        "attributes": ", kind=kOutput, calls=%fused_computation.22, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}",
+        "backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "convolution_algorithm_config": {
+            "emitter": "EmitAllBatchInSublanes"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "2027520"
+            }
+          ],
+          "window_config": {
+            "buffering_level": "2",
+            "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+            "estimated_bundle_count": "0",
+            "estimated_cycles": "183040",
+            "estimated_scoped_vmem_bytes": "0",
+            "estimated_vmem_bytes": "0",
+            "input_window_bounds": [
+              "1",
+              "128",
+              "8"
+            ],
+            "is_mask": false,
+            "iteration_bounds": [
+              "11",
+              "1",
+              "1",
+              "1",
+              "1"
+            ],
+            "kernel_window_bounds": [
+              "1",
+              "128",
+              "8"
+            ],
+            "ml_estimated_microseconds": 0,
+            "output_window_bounds": [
+              "1",
+              "128",
+              "8"
+            ],
+            "pad_input_on_minor_dim": "0",
+            "pad_output_on_minor_dim": "0"
+          }
+        }
+      }
+    ],
+    "collectives": []
+  },
+  "direction_sharded": {
+    "artifact": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1/ema-gram-20-attribution-f28f477c787b/q_proj__identical_inner__direction_sharded.optimized_hlo.txt.gz",
+      "sha256": "58516d10fad08831dfb39024ab45ba8848d0a85be728a440d4eca702b4509273",
+      "compressed_bytes": 5158
+    },
+    "sha256_verified": true,
+    "first_product": {
+      "operation": "fused_computation.27/convolution-base-dilated.35",
+      "iteration": 1,
+      "product": "X_Xt"
+    },
+    "operation": {
+      "name": "convolution-base-dilated.35",
+      "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+      "opcode": "convolution",
+      "calls": null,
+      "line": 77,
+      "computation": "fused_computation.27",
+      "family": "polar",
+      "op_name": "jit(polar)/vmap()/dot_general",
+      "stack_frame_id": 8,
+      "operands": [
+        "dynamic-slice_divide_fusion.1",
+        "dynamic-slice_divide_fusion.1"
+      ],
+      "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}",
+      "backend_config": null,
+      "direct_operand_producers": [
+        {
+          "name": "dynamic-slice_divide_fusion.1",
+          "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+          "opcode": "fusion",
+          "calls": "fused_computation.26.clone"
+        },
+        {
+          "name": "dynamic-slice_divide_fusion.1",
+          "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+          "opcode": "fusion",
+          "calls": "fused_computation.26.clone"
+        }
+      ]
+    },
+    "fusion_callers": [
+      {
+        "name": "fusion.30",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "fusion",
+        "calls": "fused_computation.27",
+        "computation": "main.2_spmd",
+        "operands": [
+          "param",
+          "multiply.1",
+          "sqrt_add_fusion"
+        ],
+        "attributes": ", kind=kOutput, calls=%fused_computation.27, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}",
+        "backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "convolution_algorithm_config": {
+            "emitter": "EmitAllBatchInSublanes"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "5242880"
+            }
+          ],
+          "window_config": {
+            "buffering_level": "2",
+            "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+            "estimated_bundle_count": "0",
+            "estimated_cycles": "54888",
+            "estimated_scoped_vmem_bytes": "0",
+            "estimated_vmem_bytes": "0",
+            "input_window_bounds": [
+              "4",
+              "128",
+              "1"
+            ],
+            "is_mask": false,
+            "iteration_bounds": [
+              "3",
+              "4",
+              "1",
+              "1",
+              "1"
+            ],
+            "kernel_window_bounds": [
+              "4",
+              "32",
+              "1"
+            ],
+            "ml_estimated_microseconds": 0,
+            "output_window_bounds": [
+              "4",
+              "128",
+              "2"
+            ],
+            "pad_input_on_minor_dim": "0",
+            "pad_output_on_minor_dim": "0"
+          }
+        }
+      }
+    ],
+    "collectives": [
+      {
+        "name": "all-reduce",
+        "opcode": "all-reduce",
+        "operands": [
+          "fusion.30"
+        ],
+        "polar_ancestors_by_operand": [
+          [
+            "fused_computation.27/convolution-base-dilated.35"
+          ]
+        ],
+        "instruction": "  %all-reduce = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} all-reduce(%fusion.30), channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+      },
+      {
+        "name": "all-reduce.1",
+        "opcode": "all-reduce",
+        "operands": [
+          "fusion.56"
+        ],
+        "polar_ancestors_by_operand": [
+          [
+            "fused_computation.10/convolution-base-dilated.21",
+            "fused_computation.25/convolution-base-dilated.34",
+            "fused_computation.27/convolution-base-dilated.35",
+            "fused_computation.42/convolution-base-dilated.44"
+          ]
+        ],
+        "instruction": "  %all-reduce.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} all-reduce(%fusion.56), channel_id=2, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+      },
+      {
+        "name": "all-reduce.2",
+        "opcode": "all-reduce",
+        "operands": [
+          "fusion.57"
+        ],
+        "polar_ancestors_by_operand": [
+          [
+            "fused_computation.10/convolution-base-dilated.21",
+            "fused_computation.11.clone.clone/convolution-base-dilated.43",
+            "fused_computation.24/convolution-base-dilated.33",
+            "fused_computation.25/convolution-base-dilated.34",
+            "fused_computation.27/convolution-base-dilated.35",
+            "fused_computation.42/convolution-base-dilated.44",
+            "fused_computation.43/convolution-base-dilated.45"
+          ]
+        ],
+        "instruction": "  %all-reduce.2 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} all-reduce(%fusion.57), channel_id=3, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.2.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+      },
+      {
+        "name": "all-reduce.3",
+        "opcode": "all-reduce",
+        "operands": [
+          "fusion.58"
+        ],
+        "polar_ancestors_by_operand": [
+          [
+            "fused_computation.10/convolution-base-dilated.21",
+            "fused_computation.11.clone.clone/convolution-base-dilated.43",
+            "fused_computation.12.clone.clone/convolution-base-dilated.41",
+            "fused_computation.23/convolution-base-dilated.32",
+            "fused_computation.24/convolution-base-dilated.33",
+            "fused_computation.25/convolution-base-dilated.34",
+            "fused_computation.27/convolution-base-dilated.35",
+            "fused_computation.42/convolution-base-dilated.44",
+            "fused_computation.43/convolution-base-dilated.45",
+            "fused_computation.44/convolution-base-dilated.46"
+          ]
+        ],
+        "instruction": "  %all-reduce.3 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} all-reduce(%fusion.58), channel_id=4, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.3.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+      },
+      {
+        "name": "all-reduce.4",
+        "opcode": "all-reduce",
+        "operands": [
+          "fusion.59"
+        ],
+        "polar_ancestors_by_operand": [
+          [
+            "fused_computation.10/convolution-base-dilated.21",
+            "fused_computation.11.clone.clone/convolution-base-dilated.43",
+            "fused_computation.12.clone.clone/convolution-base-dilated.41",
+            "fused_computation.13.clone.clone/convolution-base-dilated.39",
+            "fused_computation.22/convolution-base-dilated.31",
+            "fused_computation.23/convolution-base-dilated.32",
+            "fused_computation.24/convolution-base-dilated.33",
+            "fused_computation.25/convolution-base-dilated.34",
+            "fused_computation.27/convolution-base-dilated.35",
+            "fused_computation.42/convolution-base-dilated.44",
+            "fused_computation.43/convolution-base-dilated.45",
+            "fused_computation.44/convolution-base-dilated.46",
+            "fused_computation.45/convolution-base-dilated.47"
+          ]
+        ],
+        "instruction": "  %all-reduce.4 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} all-reduce(%fusion.59), channel_id=5, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.4.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(polar)/vmap()/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+      }
+    ]
+  }
+}

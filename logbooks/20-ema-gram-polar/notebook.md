@@ -1857,6 +1857,48 @@ regional compiler artifacts. No accelerator candidate is selected and there is
 no queued or running experiment. Numerical equivalence to the untouched original full update, saved-state
 checks, full trainer restoration and measured training MFU remain unverified.
 
+## 2026-11-03 04:35 UTC — Compiler kernel settings differ at matched polar products
+
+The [static CPU inspection](compiler-polar-paths-completed.json) succeeded and verified
+all four optimized compiler files in us-west4. It maps the same polar reduction
+groups in both full-update graphs and both direction-only graphs: query and key
+X Xᵀ products share an all-reduce at each of five iterations, while value products
+are reduced separately. All forty mapped entry all-reduces have the same recorded
+algorithm configuration. This does not establish identical runtime reduction
+order; nested collectives are outside these entry-level counts.
+
+The matrix candidate distributes independent eigensolver matrices across devices;
+the original evaluator is unchanged. The [matched configuration comparison](compiler-matched-paths.json) finds equal
+convolution attributes before the metadata field (excluding metadata itself) and equal operation-level backend
+configuration at all 105 matched polar operation sites in each original/matrix pair. The calling
+fusion's backend configuration differs at 70 product sites for full updates and 28
+for direction-only evaluators. Differences include kernel window and iteration
+bounds, scoped-memory configuration records and compiler cost estimates. For the first query X Xᵀ
+product, the full original uses kernel bounds `[11,32,1]` and iteration bounds
+`[1,4,2,1,1]`; the matrix candidate uses `[1,128,1]` and `[11,1,1,1,1]`.
+These are static compiler fields, not measured runtime counts or proof of a
+numerical mechanism.
+
+The two small [isolated query compiler files](compiler-isolated-query-paths.json)
+were also read back with checksum verification. Their first-product kernel
+settings differ under replicated versus direction-sharded output layouts, but
+neither matches the corresponding full-update configuration. Earlier numerical
+controls found identical normalized query inputs under the two output layouts
+and a difference in their first-iteration outputs. This combination motivates inspecting individual products;
+it does not identify which product first differs or prove tiling is the cause.
+
+The next diagnostic is designed, not implemented or submitted: expose the first
+iteration's products on identical frozen query/key/value inputs, preserving the
+original expression association, coefficients, precision and sharding constraint.
+Compare the traced final output with the shared uninstrumented polar function
+at `rtol=atol=1e-5`, also reporting bitwise equality, before interpreting intermediate values. If tracing changes the final output,
+report that limitation. Then use identical operands to test the first differing
+product under controlled output layouts. Removing fusion is itself a perturbation.
+CPU numerical-harness validation with online W&B and source published to the research
+branch remain required before one
+sequential TPU diagnostic. No experiment is currently running or queued; no
+optimization is accepted for training.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

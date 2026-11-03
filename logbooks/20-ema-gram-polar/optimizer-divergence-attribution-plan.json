@@ -309,5 +309,13 @@
         "constraint": "Static evidence only; no accelerator candidate from configuration differences alone."
       }
     }
+  },
+  "compiler_paths_next": {
+    "status": "design only; not implemented or submitted",
+    "control": "Instrument the first polar iteration on identical frozen q/k/v inputs under replicated and direction-sharded outputs: normalized input, A=X@X.T, C=(c*A)@A, B=b*A+C, D=B@X, X1=a*X+D. Preserve exact original expression association, coefficients, dtype, default matmul precision and sharding constraint.",
+    "instrumentation_gate": "Compare traced final five-iteration output with shared uninstrumented polar function in each layout at fixed 1e-5; report bitwise equality too. If adding product outputs changes the final output, do not interpret the trace as the original path.",
+    "crossfeed": "After identifying first differing product, compile each product evaluator once with identical external shardings and replay identical frozen operands under both controlled output layouts; treat removing fusion as a perturbation.",
+    "source_controls": "Reuse shared uninstrumented polar and coefficient definitions. Include full matrix shapes and per-stage finite checks, fingerprints, bounded memory, compiler artifacts with checksums. No precision or tolerance change; no compiler tiling override selected.",
+    "launch_gate": "Own online CPU logging/harness validation and exact published source before one sequential non-training TPU diagnostic. No accelerator job launched by this static milestone."
   }
 }
