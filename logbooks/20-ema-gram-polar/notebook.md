@@ -2569,6 +2569,41 @@ minimal semantic inputs or equal runtime values. The job requests four CPUs,
 8 GiB memory and no accelerator, with default preemption retries and no runtime
 limit. No numerical intervention or training run is selected.
 
+## 2026-11-03 07:52 UTC — Full-update inputs map to the same source roles
+
+The CPU-only provenance extraction succeeded on attempt 0 with task exit 0.
+It verified both optimized HLO inputs by SHA256 and size in us-west4, then
+mapped twelve selected operations and their twenty-four operand dependency
+sets. The [completed record](compiler-input-provenance-completed.json) contains
+the exact source, report checksum and source-leaf mappings.
+
+For each of q, k and v, the original and matrix-eigensolver full updates map the
+normalization numerator, normalization denominator and both first-Gram operands to that
+group's gradient, momentum, left Gram and right Gram. Fusion parameter binding
+and tuple projection preserve these source identities. Both operand positions
+of each first-Gram product reference the same HLO value, and the report retains
+both positions. No other group's entry parameter appears in these
+conservative dependency sets.
+
+Every path includes opaque calls or loops whose outputs are conservatively
+assigned dependencies from all declared inputs. The matrix-layout k path lacks
+the asynchronous-collective call tags found in the original k path. These tags
+describe the parsed graph, not runtime execution or numerical differences.
+The mapping does not evaluate eigensolver loops, establish minimal semantic
+inputs, or show that the two implementations produce equal inner matrices or
+normalization values. The earlier shared first-Gram reduction configuration
+also remains insufficient to explain the full-update discrepancy.
+
+Next design a diagnostic that exposes the q/k/v inputs to the polar operation
+inside each full update, reusing shared optimizer math. Before interpreting
+those captured values, compare all final direction and state leaves with each
+untouched full-update reference at the fixed tolerance and record bitwise
+agreement. Capturing values changes compilation; failed reference agreement
+would forbid original-path interpretation, while matching final outputs would
+still not prove internal identity. This is design work only. No numerical
+submission is selected, no optimizer is accepted, and training MFU remains
+unverified. The CPU task is terminal; no experiment or queue remains active.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

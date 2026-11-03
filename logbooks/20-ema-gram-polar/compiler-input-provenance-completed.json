@@ -1,0 +1,995 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-input-provenance-cpu-20261103",
+  "submitted_utc": "2026-11-03T07:49:56Z",
+  "verified_utc": "2026-11-03T07:50:38Z",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "181eb837c1ca",
+  "exit_code": 0,
+  "source_commit": "ff8c66242506614e452613406872deef532b67b9",
+  "script_sha256": "fedd6ad15f976ffce03287440e929afd0a3963e780ed6ce8260ac2edf605b92e",
+  "resources": {
+    "job_name": "ema-gram-20-input-provenance-cpu-20261103",
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default",
+    "output_identity": "Fresh UUID per process; retain all attempts",
+    "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-input-provenance-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT <published-commit> -- python logbooks/20-ema-gram-polar/compiler_input_provenance.py --manifest logbooks/20-ema-gram-polar/compiler-input-provenance-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.input-provenance"
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.input-provenance/input-provenance-9b870beb62a1/report.json",
+  "report_bytes": 55807,
+  "report_sha256": "ca1e596cf0b5ff9949b861dc08b06d3599c45623e16cf568feffafe0ab08c0d5",
+  "input_checksums_verified": [
+    "fused_original",
+    "fused_matrix"
+  ],
+  "target_count": 12,
+  "operand_provenance_sets": 24,
+  "all_source_role_pairs_equal": true,
+  "findings": {
+    "q_proj": {
+      "fused_original": {
+        "normalization": [
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.257"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.258"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.256"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.259"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.257"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.258"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.256"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.259"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ],
+        "first_A": [
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.257"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.258"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.256"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.259"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.257"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.258"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.256"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.259"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ]
+      },
+      "fused_matrix": {
+        "normalization": [
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.234"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.235"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.233"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.236"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.234"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.235"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.233"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.236"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ],
+        "first_A": [
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.234"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.235"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.233"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.236"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 0,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[0]",
+                "name": "param.234"
+              },
+              {
+                "index": 7,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].momentum",
+                "name": "param.235"
+              },
+              {
+                "index": 8,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].left",
+                "name": "param.233"
+              },
+              {
+                "index": 9,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[0].right",
+                "name": "param.236"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ]
+      }
+    },
+    "k_proj": {
+      "fused_original": {
+        "normalization": [
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.261"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.262"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.260"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.263"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.261"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.262"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.260"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.263"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ],
+        "first_A": [
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.261"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.262"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.260"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.263"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.261"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.262"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.260"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.263"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ]
+      },
+      "fused_matrix": {
+        "normalization": [
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.238"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.239"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.237"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.240"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.238"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.239"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.237"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.240"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ],
+        "first_A": [
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.238"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.239"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.237"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.240"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 1,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[1]",
+                "name": "param.238"
+              },
+              {
+                "index": 10,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].momentum",
+                "name": "param.239"
+              },
+              {
+                "index": 11,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].left",
+                "name": "param.237"
+              },
+              {
+                "index": 12,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[1].right",
+                "name": "param.240"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ]
+      }
+    },
+    "v_proj": {
+      "fused_original": {
+        "normalization": [
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.265"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.266"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.264"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.267"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.265"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.266"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.264"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.267"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ],
+        "first_A": [
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.265"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.266"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.264"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.267"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.265"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.266"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.264"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.267"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ]
+      },
+      "fused_matrix": {
+        "normalization": [
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.242"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.243"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.241"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.244"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.242"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.243"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.241"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.244"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ],
+        "first_A": [
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.242"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.243"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.241"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.244"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          },
+          {
+            "entry_parameters": [
+              {
+                "index": 2,
+                "tuple_path": [],
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "source_label": "gradients[2]",
+                "name": "param.242"
+              },
+              {
+                "index": 13,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].momentum",
+                "name": "param.243"
+              },
+              {
+                "index": 14,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].left",
+                "name": "param.241"
+              },
+              {
+                "index": 15,
+                "tuple_path": [],
+                "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "source_label": "states[2].right",
+                "name": "param.244"
+              }
+            ],
+            "conservative_operations": [
+              "opaque:custom-call:AsyncCollectiveDone",
+              "opaque:custom-call:AsyncCollectiveStart",
+              "opaque:custom-call:ConcatBitcast",
+              "opaque:while"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "interpretation": "Both updates map each q/k/v first-product operand and normalization numerator/denominator to that group gradient, momentum, left Gram and right Gram only under conservative declared-operand dependency analysis. All paths are tainted by opaque operations. Matrix k lacks the AsyncCollectiveStart/Done taint observed in original k; static taint sets do not establish runtime path or numerical cause.",
+  "limitations": [
+    "Tuple-leaf and fusion substitution preserves source parameter identity, but opaque operations conservatively depend on all declared inputs.",
+    "Matching source roles does not establish equal numerical values or complete causal isolation.",
+    "No optimizer acceptance, training or MFU claim; large inputs remain in us-west4."
+  ],
+  "next_decision": {
+    "state": "Design only; no numerical submission selected",
+    "question": "Can a minimally instrumented full update expose q/k/v polar inputs while retaining its untouched final outputs?",
+    "procedure": "Review shared gram_direction/full_update and the attribution harness for a diagnostic-only capture of pre-normalization inner matrices and normalization values using shared math. Compare every direction and updated-state leaf against the untouched original and matrix full updates respectively at fixed 1e-5 and record bitwise equality before interpreting captured values. Preserve one executable/device output bank at a time, host-offload and finite incremental reports. If capture perturbs a final reference beyond tolerance, reject original-path interpretation and retain it only as an instrumented control. Design and CPU-validate before selecting a launch.",
+    "limits": "Matching entry roles does not imply equal intermediate values; capture changes compilation and matching final outputs would not prove internal identity. No precision/tiling override or optimizer promotion.",
+    "launch_gate": "Own fresh online CPU logging/numerical validation and exact published source/plan before one sequential TPU diagnostic. Full optimizer acceptance remains untouched-original all28leaf 1e-5 comparison; original saved-state and full restore plus actual MFU>5% required before training schedule."
+  }
+}
