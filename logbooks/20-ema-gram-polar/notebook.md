@@ -2691,6 +2691,34 @@ result. Keep this job and its sole log observer running. Reference agreement,
 capture comparisons, fixed-executable replays and final artifacts remain
 pending; no concurrent candidate or training run is selected.
 
+## 2026-11-03 08:30 UTC — Capture changes original full-update outputs
+
+The unchanged-program evaluator matches the untouched original full update
+bitwise on all 28 output leaves. Appending the six q/k/v capture outputs changes
+three direction tensors beyond the fixed `rtol=atol=1e-5` gate: v_proj, o_proj
+and up_proj. Their relative Frobenius errors are 0.006707, 0.002827 and 0.024913,
+respectively, using the untouched reference norm as denominator. The other 25
+output leaves, including all 21 Gram/momentum leaves, match bitwise. Both fixed
+executables replay bitwise on the identical input bank.
+
+The [original-branch gate record](optimizer-full-input-capture-original-gate.json)
+preserves all five comparisons, the failed capture gate and the report checksum.
+Preserving the Jaxpr equations did not preserve the compiled computation's
+outputs when extra outputs were added. The captured values therefore cannot be
+interpreted as values from the untouched original path. Exact agreement of the
+unchanged evaluator establishes endpoint agreement, not internal-value identity.
+
+Iris still reports attempt 0 running, and the report has advanced to the untouched
+matrix-layout reference. Seven stages are finite; three of five comparisons pass.
+Finelog recorded 207 samples through 08:26:58 UTC with an observed cumulative
+host peak of 90.590 GiB, below the 128 GiB reservation. Its accelerator-memory
+field remains null. New large compiler files remain regional; their reported
+checksums have not been independently read back in this check.
+
+Keep the existing job and sole log observer running through the matrix branch
+and final artifacts. No additional candidate is selected. These compilation and
+single-call observations are not warmed performance or training MFU.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
