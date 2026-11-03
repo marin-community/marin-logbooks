@@ -2001,6 +2001,16 @@ output, so its operands cannot be assumed to be the original internal values.
 CPU online validation and published source are required before one TPU run.
 No experiment is currently queued or running.
 
+The [CPU preflight](optimizer-polar-contracting-preflight.json) passed all 63 finite
+stages and 84 comparisons at the unchanged tolerance on eight virtual devices.
+Each of nine fixed executables replayed its first input bitwise. The report
+matched GCS bytes, all 42 compiler artifacts passed checksum and decompression
+checks, and online W&B finished with the collection marker. A separate online
+logging check passed. Direction-sharded tracing still changes the final output
+bitwise; its original-path interpretation flag remains false. These CPU results
+validate the harness, not TPU behavior. The next run is one sequential v5e-8
+control in us-west4 from the published preflight revision.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

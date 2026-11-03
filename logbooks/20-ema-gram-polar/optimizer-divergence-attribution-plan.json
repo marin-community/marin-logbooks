@@ -327,7 +327,7 @@
     "static_evidence": "compiler-first-product-paths.json"
   },
   "polar_contracting_next": {
-    "status": "implemented; CPU validation and publication pending; no submission",
+    "status": "own online CPU validation passed; preflight publication before one TPU submission",
     "hypothesis": "The previous isolated A control did not request the traced contraction split: traced sharded A contracts 128 columns per device then combines partial results; isolated sharded A contracts all1024 columns without an output-ancestry collective.",
     "control": "Add a third fixed isolated A executable with the same replicated external input and direction-sharded output, but with an internal column-sharding constraint on X before the unchanged X@X.T expression. Reuse across both identical frozen normalized-input banks and replay first bank.",
     "interpretation": "Inspect saved optimized HLO to verify actual contraction/collective structure. The constraint is a request, not proof. Numerical agreement or disagreement concerns isolated instrumented operands; tracing changes the sharded final output, so this does not establish the original optimizer mechanism.",
@@ -342,6 +342,8 @@
     "resources": "One v5litepod-8 host/8chips,96CPU128GiB50GiB,us-west4,batch,defaultpreemptionretries,no runtime limit",
     "command_mode": "--polar-contracting",
     "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.4",
-    "candidate_accepted_for_training": false
+    "candidate_accepted_for_training": false,
+    "preflight": "optimizer-polar-contracting-preflight.json",
+    "script_sha256": "d1e9c5ff05ab5e36c38004c7313485ba58bff46ac28479393dc0bb52da90be0c"
   }
 }
