@@ -1612,6 +1612,20 @@ retries and no configured runtime limit. The diagnostic uses seed-zero synthetic
 gradients and states with the original full matrix geometry; outputs remain
 in the same region. No original checkpoint or training dataset is read.
 
+## 2026-11-03 01:16 UTC — State comparison starts on v5e
+
+Iris accepted `ema-gram-20-state-crossfeed-v5e-8-20261103` at 01:13:36 UTC from
+[published source](https://github.com/marin-community/marin-logbooks/commit/489ba99fe00cbaa08e05c9ff46b6c7de466eff22). The
+[startup record](optimizer-state-crossfeed-started.json) verifies attempt zero,
+eight native TPU v5 lite devices, one JAX process, the expected script hash and
+online W&B initialization. The matrix-eigensolver versus original full fused
+comparison reproduces all seven direction failures at rtol=atol=1e-5, while
+all twenty-one updated Gram/momentum leaves pass that same gate.
+The fixed-executable state comparisons remain pending.
+
+One log observer follows this job. The v4-32 reference remains queued; no other
+candidate diagnostic or training run was submitted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
