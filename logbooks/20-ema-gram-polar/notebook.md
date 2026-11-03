@@ -1626,6 +1626,34 @@ The fixed-executable state comparisons remain pending.
 One log observer follows this job. The v4-32 reference remains queued; no other
 candidate diagnostic or training run was submitted.
 
+## 2026-11-03 01:26 UTC — Refreshed input differences affect fixed directions
+
+The [partial state comparison](optimizer-state-crossfeed-v5e-partial.json)
+has completed the original direction evaluator's four executions. Replaying the
+common state produces bitwise-identical direction outputs. Holding this executable fixed while replacing
+the common bank with the fused-original bank fails the 1e-5 direction comparison
+for query, key, value and attention-output projections. Replacing it with the
+fused-matrix bank fails for query, key, value, gate and up projections, with a
+maximum relative Frobenius error of 0.0279447 across the seven projection groups,
+using each common-bank direction norm as denominator. Both fused state banks
+passed elementwise rtol=atol=1e-5 against the standalone common bank; that input
+gate does not imply an output-error bound.
+
+The original direction-only evaluator also differs from its own full fused
+reference on all seven direction tensors even when given the state returned by
+that reference. This is its returned post-refresh state; equality to every
+internal value consumed in the fused graph has not been established. The
+controls establish input sensitivity under one fixed executable and differing
+outputs across the separate and fused execution paths. They do not fully explain
+the original-versus-matrix fused discrepancy. At the latest report, the matrix
+direction evaluator is compiling; no optimization is accepted.
+
+Original direction compilation took 376.7 seconds. Finelog's cumulative task
+host-memory peak through 01:23 UTC was 67.819 GiB, including original compilation
+before the matrix evaluator began. A read-only stack inspection at 01:23:33 UTC found
+the process waiting for device execution of the common bank. That inspection may
+affect the single-call duration; no warmed-performance claim is made.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
