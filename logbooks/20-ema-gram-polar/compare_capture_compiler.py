@@ -81,7 +81,10 @@ def compare(report):
         )
     comparisons = {}
     for solver in ("original", "matrix"):
-        for left, right in (("untouched", "evaluate"), ("untouched", "capture"), ("evaluate", "capture")):
+        pairs = [("untouched", "evaluate"), ("untouched", "capture"), ("evaluate", "capture")]
+        if solver + "_substitute" in products:
+            pairs += [(role, "substitute") for role in ("untouched", "evaluate", "capture")]
+        for left, right in pairs:
             first, second = products[solver + "_" + left], products[solver + "_" + right]
             assert first.keys() == second.keys()
             fields = tuple(next(iter(first.values())))
@@ -100,7 +103,7 @@ def compare(report):
             "Static mapped operation fields and immediate enclosing configurations, not runtime precision or cause. "
             "Operand shapes/opcodes omit upstream values and connections. Equal fields do not establish equal internal "
             "computations. Normalization scope associations are syntactic and may be empty. "
-            "The underlying numerical capture reference gates both failed."
+            "Reference gates must be read from the associated numerical report; static agreement cannot replace them."
         ),
     )
 

@@ -52,6 +52,18 @@ def normalization_records(lines):
     return dict(records=records, callers=[row for row in callers if row["calls"] in scopes])
 
 
+def output_roles(groups, expected_outputs):
+    assert len(groups) == 7 and len(set(groups)) == 7
+    assert expected_outputs in (28, 30, 34)
+    roles = [f"direction/{group}" for group in groups] + [
+        f"state/{group}/{field}" for group in groups for field in ("momentum", "left", "right")
+    ]
+    captured = groups[:1] if expected_outputs == 30 else groups[:3] if expected_outputs == 34 else []
+    roles += [f"capture/{group}/{field}" for group in captured for field in ("inner", "norm_plus_eps")]
+    assert len(roles) == expected_outputs
+    return roles
+
+
 def extract(path, groups, expected_outputs):
     with gzip.open(path, "rt") as lines:
         result = inventory(lines)
@@ -60,15 +72,8 @@ def extract(path, groups, expected_outputs):
         result["polar_lineage"] = polar_lineage(lines, groups, diagnostics)
     outputs = diagnostics["output_polar_ancestors"]
     assert len(outputs) == expected_outputs, (len(outputs), expected_outputs)
-    assert expected_outputs in (28, 34)
     assert all(not ancestors for ancestors in outputs[7:]), "State/capture outputs have polar ancestry"
-    result["output_roles"] = [f"direction/{group}" for group in groups] + [
-        f"state/{group}/{field}" for group in groups for field in ("momentum", "left", "right")
-    ]
-    if expected_outputs == 34:
-        result["output_roles"] += [
-            f"capture/{group}/{field}" for group in groups[:3] for field in ("inner", "norm_plus_eps")
-        ]
+    result["output_roles"] = output_roles(groups, expected_outputs)
     with gzip.open(path, "rt") as lines:
         result["normalization"] = normalization_records(lines)
     scopes = {row["computation"] for row in result["normalization"]["records"]}
