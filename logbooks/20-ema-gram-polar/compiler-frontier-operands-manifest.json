@@ -1,0 +1,1018 @@
+{
+  "inventory": {
+    "bytes": 18035069,
+    "sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a",
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir-conservative/substitution-ir-725f48e1a71d/report.json"
+  },
+  "reports": {
+    "outer-bindings": {
+      "bytes": 5717993,
+      "sha256": "81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.outer-bindings/outer-bindings-21ac5d3e4f6e/report.json"
+    },
+    "boundary-inputs": {
+      "bytes": 30706097,
+      "sha256": "cbf8996a1579a9267501e402ccb379fe8dddaf07cb2148ea845ff31dd290c6cd",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.boundary-inputs/boundary-inputs-16055494fc77/report.json"
+    },
+    "start-producers": {
+      "bytes": 387447,
+      "sha256": "48b61b4e367b55789f002f357f8551fb662e71a24997fb369007a50bd0192435",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.start-producers/start-producers-ddc2a22f7b1d/report.json"
+    },
+    "product-inputs": {
+      "bytes": 2162972,
+      "sha256": "580d846d18b0aacd842a91b3b77b5826b1a9ce7a1c1dec7c562ed9b5fd605e04",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.product-inputs/product-inputs-574263feb30d/report.json"
+    },
+    "polar-boundaries": {
+      "bytes": 1775955,
+      "sha256": "41fcd05ef632f18edbe5dd6f8924137a28e9caa406c50d5c504e5e599ea0a709",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-boundaries/polar-boundaries-f02b7a238929/report.json"
+    }
+  },
+  "coverage": {
+    "path": "compiler-record-coverage-summary.json",
+    "sha256": "170b97672c6514782461ff451da708abf5f758f539d63cf2141676338638c92f"
+  },
+  "graphs": [
+    "matrix_untouched",
+    "matrix_evaluate",
+    "matrix_capture",
+    "matrix_substitute"
+  ],
+  "targets": {
+    "matrix_untouched": {
+      "gate_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144654",
+        "context": [
+          "main.530_spmd/fusion.144654"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.555",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144658",
+          "fusion.144657"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=57}",
+        "instruction": "%convolution-base-dilated.555 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144658, %fusion.144657), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=57}"
+      },
+      "up_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144666",
+        "context": [
+          "main.530_spmd/fusion.144666"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.559",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144670",
+          "fusion.144669"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=57}",
+        "instruction": "%convolution-base-dilated.559 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144670, %fusion.144669), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=57}"
+      },
+      "o_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144775",
+        "context": [
+          "main.530_spmd/fusion.144775"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.288.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144779",
+          "fusion.144778"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.288.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144779, %fusion.144778), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "o_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144801",
+        "context": [
+          "main.530_spmd/fusion.144801"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.286.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144805",
+          "fusion.144804"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.286.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144805, %fusion.144804), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "o_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.144839",
+        "context": [
+          "main.530_spmd/fusion.144839"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.284.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144843",
+          "fusion.144842"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.284.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144843, %fusion.144842), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "down_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144991",
+        "context": [
+          "main.530_spmd/fusion.144991"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.234.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144995",
+          "fusion.144994"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.234.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144995, %fusion.144994), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "gate_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145024",
+        "context": [
+          "main.530_spmd/fusion.145024"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.243.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145028",
+          "fusion.145027"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.243.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145028, %fusion.145027), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "o_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145043",
+        "context": [
+          "main.530_spmd/fusion.145043"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.653",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145047",
+          "fusion.145046"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+        "instruction": "%convolution-base-dilated.653 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145047, %fusion.145046), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+      },
+      "down_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145058",
+        "context": [
+          "main.530_spmd/fusion.145058"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.233.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145062",
+          "fusion.145061"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.233.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145062, %fusion.145061), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "gate_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145091",
+        "context": [
+          "main.530_spmd/fusion.145091"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.667",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145095",
+          "fusion.145094"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.667 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145095, %fusion.145094), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "down_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145135",
+        "context": [
+          "main.530_spmd/fusion.145135"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.683",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145139",
+          "fusion.145138"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+        "instruction": "%convolution-base-dilated.683 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145139, %fusion.145138), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+      },
+      "up_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145140",
+        "context": [
+          "main.530_spmd/fusion.145140"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.685",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145144",
+          "fusion.145143"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.685 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145144, %fusion.145143), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "gate_proj/update_gram_state": {
+        "computation": "fused_computation.113960",
+        "context": [
+          "main.530_spmd/fusion.74552"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.402",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75533",
+          "fusion.81180"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+        "instruction": "ROOT %convolution-base-dilated.402 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75533, %fusion.81180), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+      },
+      "up_proj/update_gram_state": {
+        "computation": "fused_computation.113964",
+        "context": [
+          "main.530_spmd/fusion.74556"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.406",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75537",
+          "fusion.81184"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}",
+        "instruction": "ROOT %convolution-base-dilated.406 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75537, %fusion.81184), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=50}"
+      }
+    },
+    "matrix_evaluate": {
+      "gate_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144654",
+        "context": [
+          "main.530_spmd/fusion.144654"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.555",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144658",
+          "fusion.144657"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+        "instruction": "%convolution-base-dilated.555 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144658, %fusion.144657), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}"
+      },
+      "up_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144666",
+        "context": [
+          "main.530_spmd/fusion.144666"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.559",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144670",
+          "fusion.144669"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+        "instruction": "%convolution-base-dilated.559 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144670, %fusion.144669), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}"
+      },
+      "o_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144775",
+        "context": [
+          "main.530_spmd/fusion.144775"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.288.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144779",
+          "fusion.144778"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.288.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144779, %fusion.144778), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "o_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144801",
+        "context": [
+          "main.530_spmd/fusion.144801"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.286.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144805",
+          "fusion.144804"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.286.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144805, %fusion.144804), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "o_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.144839",
+        "context": [
+          "main.530_spmd/fusion.144839"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.284.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144843",
+          "fusion.144842"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.284.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144843, %fusion.144842), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "down_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144991",
+        "context": [
+          "main.530_spmd/fusion.144991"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.234.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144995",
+          "fusion.144994"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.234.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144995, %fusion.144994), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "gate_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145024",
+        "context": [
+          "main.530_spmd/fusion.145024"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.243.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145028",
+          "fusion.145027"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.243.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145028, %fusion.145027), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "o_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145043",
+        "context": [
+          "main.530_spmd/fusion.145043"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.653",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145047",
+          "fusion.145046"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.653 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145047, %fusion.145046), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "down_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145058",
+        "context": [
+          "main.530_spmd/fusion.145058"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.233.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145062",
+          "fusion.145061"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.233.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145062, %fusion.145061), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "gate_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145091",
+        "context": [
+          "main.530_spmd/fusion.145091"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.667",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145095",
+          "fusion.145094"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.667 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145095, %fusion.145094), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "down_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145135",
+        "context": [
+          "main.530_spmd/fusion.145135"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.683",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145139",
+          "fusion.145138"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.683 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145139, %fusion.145138), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "up_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145140",
+        "context": [
+          "main.530_spmd/fusion.145140"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.685",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145144",
+          "fusion.145143"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.685 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145144, %fusion.145143), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "gate_proj/update_gram_state": {
+        "computation": "fused_computation.113960",
+        "context": [
+          "main.530_spmd/fusion.74552"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.402",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75533",
+          "fusion.81180"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+        "instruction": "ROOT %convolution-base-dilated.402 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75533, %fusion.81180), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+      },
+      "up_proj/update_gram_state": {
+        "computation": "fused_computation.113964",
+        "context": [
+          "main.530_spmd/fusion.74556"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.406",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75537",
+          "fusion.81184"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}",
+        "instruction": "ROOT %convolution-base-dilated.406 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75537, %fusion.81184), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=51}"
+      }
+    },
+    "matrix_capture": {
+      "gate_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144669",
+        "context": [
+          "main.530_spmd/fusion.144669"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.561",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144673",
+          "fusion.144672"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+        "instruction": "%convolution-base-dilated.561 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144673, %fusion.144672), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}"
+      },
+      "up_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144681",
+        "context": [
+          "main.530_spmd/fusion.144681"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.565",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144685",
+          "fusion.144684"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}",
+        "instruction": "%convolution-base-dilated.565 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144685, %fusion.144684), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=58}"
+      },
+      "o_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144776",
+        "context": [
+          "main.530_spmd/fusion.144776"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.288.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144780",
+          "fusion.144779"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.288.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144780, %fusion.144779), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "o_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144802",
+        "context": [
+          "main.530_spmd/fusion.144802"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.286.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144806",
+          "fusion.144805"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.286.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144806, %fusion.144805), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "o_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.144840",
+        "context": [
+          "main.530_spmd/fusion.144840"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.284.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144844",
+          "fusion.144843"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.284.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144844, %fusion.144843), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "down_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144992",
+        "context": [
+          "main.530_spmd/fusion.144992"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.234.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144996",
+          "fusion.144995"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.234.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144996, %fusion.144995), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "gate_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145025",
+        "context": [
+          "main.530_spmd/fusion.145025"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.243.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145029",
+          "fusion.145028"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.243.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145029, %fusion.145028), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "o_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145044",
+        "context": [
+          "main.530_spmd/fusion.145044"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.653",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145048",
+          "fusion.145047"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.653 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145048, %fusion.145047), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "down_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145059",
+        "context": [
+          "main.530_spmd/fusion.145059"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.233.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145063",
+          "fusion.145062"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.233.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145063, %fusion.145062), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "gate_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145092",
+        "context": [
+          "main.530_spmd/fusion.145092"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.667",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145096",
+          "fusion.145095"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.667 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145096, %fusion.145095), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "down_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145136",
+        "context": [
+          "main.530_spmd/fusion.145136"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.683",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145140",
+          "fusion.145139"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.683 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145140, %fusion.145139), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "up_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145141",
+        "context": [
+          "main.530_spmd/fusion.145141"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.685",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145145",
+          "fusion.145144"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.685 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145145, %fusion.145144), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "gate_proj/update_gram_state": {
+        "computation": "fused_computation.113961",
+        "context": [
+          "main.530_spmd/fusion.74553"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.402",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75534",
+          "fusion.81181"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=51}",
+        "instruction": "ROOT %convolution-base-dilated.402 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75534, %fusion.81181), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=51}"
+      },
+      "up_proj/update_gram_state": {
+        "computation": "fused_computation.113965",
+        "context": [
+          "main.530_spmd/fusion.74557"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.406",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75538",
+          "fusion.81185"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=51}",
+        "instruction": "ROOT %convolution-base-dilated.406 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75538, %fusion.81185), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=51}"
+      }
+    },
+    "matrix_substitute": {
+      "gate_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144656",
+        "context": [
+          "main.529_spmd/fusion.144656"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.551",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144660",
+          "fusion.144659"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=59}",
+        "instruction": "%convolution-base-dilated.551 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144660, %fusion.144659), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=59}"
+      },
+      "up_proj/relative_gram_power": {
+        "computation": "async_collective_fusion.144668",
+        "context": [
+          "main.529_spmd/fusion.144668"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.555",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144672",
+          "fusion.144671"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=59}",
+        "instruction": "%convolution-base-dilated.555 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.144672, %fusion.144671), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/dot_general\" stack_frame_id=59}"
+      },
+      "o_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144763",
+        "context": [
+          "main.529_spmd/fusion.144763"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.286.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144767",
+          "fusion.144766"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.286.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144767, %fusion.144766), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "o_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144789",
+        "context": [
+          "main.529_spmd/fusion.144789"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.284.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144793",
+          "fusion.144792"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.284.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144793, %fusion.144792), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "o_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.144827",
+        "context": [
+          "main.529_spmd/fusion.144827"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.282.clone.3",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144831",
+          "fusion.144830"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.282.clone.3 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144831, %fusion.144830), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "down_proj/polar/3/B_X": {
+        "computation": "async_collective_fusion.144979",
+        "context": [
+          "main.529_spmd/fusion.144979"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.232.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144983",
+          "fusion.144982"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.232.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144983, %fusion.144982), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "gate_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145012",
+        "context": [
+          "main.529_spmd/fusion.145012"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.241.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145016",
+          "fusion.145015"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.241.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145016, %fusion.145015), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "o_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145031",
+        "context": [
+          "main.529_spmd/fusion.145031"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.643",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145035",
+          "fusion.145034"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}",
+        "instruction": "%convolution-base-dilated.643 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145035, %fusion.145034), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+      },
+      "down_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145046",
+        "context": [
+          "main.529_spmd/fusion.145046"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.231.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145050",
+          "fusion.145049"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.231.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145050, %fusion.145049), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "gate_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145079",
+        "context": [
+          "main.529_spmd/fusion.145079"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.657",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145083",
+          "fusion.145082"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.657 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145083, %fusion.145082), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "down_proj/polar/5/scaled_A_A": {
+        "computation": "async_collective_fusion.145128",
+        "context": [
+          "main.529_spmd/fusion.145128"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.675",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145132",
+          "fusion.145131"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}",
+        "instruction": "%convolution-base-dilated.675 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145132, %fusion.145131), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+      },
+      "up_proj/polar/5/B_X": {
+        "computation": "async_collective_fusion.145133",
+        "context": [
+          "main.529_spmd/fusion.145133"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.677",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145137",
+          "fusion.145136"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.677 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145137, %fusion.145136), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "gate_proj/update_gram_state": {
+        "computation": "fused_computation.113957",
+        "context": [
+          "main.529_spmd/fusion.74551"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.398",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75530",
+          "fusion.81175"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=52}",
+        "instruction": "ROOT %convolution-base-dilated.398 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75530, %fusion.81175), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=52}"
+      },
+      "up_proj/update_gram_state": {
+        "computation": "fused_computation.113961",
+        "context": [
+          "main.529_spmd/fusion.74555"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.402",
+        "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.75534",
+          "fusion.81179"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=52}",
+        "instruction": "ROOT %convolution-base-dilated.402 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75534, %fusion.81179), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=52}"
+      }
+    }
+  },
+  "source_files": {
+    "compiler_frontier_operands.py": "62a8f9f8caebfed9f41e0363b1331fd86949e1c64fea2af4c0b991d5c078bbe6",
+    "trace_frontier_operands.py": "a5b09df730767d9662e9594e3f81168ba7689bc3e5f444c6e30024af687e1dd8",
+    "consolidate_compiler_records.py": "a501a878d07cb9157e98fff57d43d325113e84eec37471390563383116dae486",
+    "compiler_polar_boundaries.py": "8bbe37163ce536e65f8b8f39d7d6c8c2fea1a7c46cdbdc3afe08ba2500054f3a",
+    "trace_polar_boundaries.py": "251578af625965085872760dafb1870884f99410490a469e181b53d21382d6ab",
+    "trace_start_producers.py": "62acb58c0e2aa1a895e6f21a4d0c6fcfe13123af3560897486bff72d3d42fc63",
+    "trace_boundary_inputs.py": "844a3bc0de727072ab411b2044beb2bc0aea2e4be2fea4b2e66914cf3f7595f3",
+    "trace_outer_bindings.py": "36daebb960e73214c5db90fbc73add471389b98ab32c6e58e38ec020ebe1bb5f",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b"
+  }
+}
