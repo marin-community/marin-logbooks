@@ -1,0 +1,1122 @@
+{
+  "verified_utc": "2026-11-03T10:44:08.679731+00:00",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-single-inner-capture-v5e-8-20261103",
+  "state": "RUNNING",
+  "attempt": 0,
+  "attempt_uid": "23c6f6927a7d",
+  "canonical_verified_utc": "2026-11-03T10:41:35Z",
+  "source_commit": "9f8bb3320ceebedc2a999e19d9370f89d90aa307",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11/ema-gram-20-attribution-ee0ff400e3c3/report.json",
+  "snapshot_sha256": "298cae8d92a0f86cf8a2bc54e037f48207b7e43878f2c13fa03c99c042ac432f",
+  "active_stage": "fused_matrix",
+  "finite_stages": 7,
+  "comparisons": 5,
+  "passed_comparisons": 5,
+  "capture_gates": {
+    "original": {
+      "comparisons_passed": {
+        "evaluate_vs_untouched": true,
+        "capture_vs_untouched": true,
+        "capture_vs_evaluate": true
+      },
+      "reference_agreement": true,
+      "original_internal_identity_established": false
+    }
+  },
+  "original_program": {
+    "mapping": {
+      "q_proj": {
+        "equation_index": 145,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "k_proj": {
+        "equation_index": 254,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "v_proj": {
+        "equation_index": 363,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "o_proj": {
+        "equation_index": 472,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "gate_proj": {
+        "equation_index": 581,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          4096,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "up_proj": {
+        "equation_index": 692,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          4096,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "down_proj": {
+        "equation_index": 803,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          4096
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      }
+    },
+    "original_equations": 851,
+    "extended_equations": 851,
+    "original_output_leaves": 28,
+    "capture_kind": "q_inner",
+    "capture_output_leaves": 29,
+    "appended_output_leaves": 1,
+    "equations_preserved_by_identity": true,
+    "input_and_constant_variables_preserved": true,
+    "jaxpr_artifact": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11/ema-gram-20-attribution-ee0ff400e3c3/capture_program_original.jaxpr.txt.gz",
+      "sha256": "4eabaff9a7bce91af493be2c9b221669f0b04ff70e31d4adf7b1b861350ff9cc",
+      "compressed_bytes": 7935
+    }
+  },
+  "jaxpr_sha_size_gzip_readback": true,
+  "fixed_executables": {
+    "original_evaluate": {
+      "compile_count": 1,
+      "compile_seconds": 10.981082398997387,
+      "compiler_artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11/ema-gram-20-attribution-ee0ff400e3c3/capture__original__evaluate.stablehlo.txt.gz",
+          "sha256": "e461d01245771d2ae46dc8a14ef31d1abf1e29daf1081a93136208a0e8772659",
+          "compressed_bytes": 86719
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11/ema-gram-20-attribution-ee0ff400e3c3/capture__original__evaluate.optimized_hlo.txt.gz",
+          "sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+          "compressed_bytes": 10049115
+        }
+      },
+      "input_shardings": "((NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device)), (GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device))))",
+      "output_shardings": "((NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device)), (GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device))))",
+      "invocation_order": [
+        "identical_inputs",
+        "identical_inputs_replay"
+      ],
+      "input_sha256": {
+        "identical_inputs": "767b28f52ea849e010ac0da5543b43a2b8da4ed1efd3fab5a63a48d649dc4ff1"
+      },
+      "replay_bitwise_equal": true
+    },
+    "original_capture": {
+      "compile_count": 1,
+      "compile_seconds": 383.627219916998,
+      "compiler_artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11/ema-gram-20-attribution-ee0ff400e3c3/capture__original__extra_outputs.stablehlo.txt.gz",
+          "sha256": "0ffa5b6a811099fc1400fd27acc4c7a1be2d0129cddec0665b9754fca1146b69",
+          "compressed_bytes": 86728
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11/ema-gram-20-attribution-ee0ff400e3c3/capture__original__extra_outputs.optimized_hlo.txt.gz",
+          "sha256": "66aa6e7b72ce51f0579b7a75c4e7cc7c5e6ef4f7c55d03165cf51acb29645a07",
+          "compressed_bytes": 10040086
+        }
+      },
+      "input_shardings": "((NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device)), (GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device))))",
+      "output_shardings": "(((NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device), NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, 'data', None), memory_kind=device)), (GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)), GramState(momentum=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), left=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device), right=NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)))), (NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device),))",
+      "invocation_order": [
+        "identical_inputs",
+        "identical_inputs_replay"
+      ],
+      "input_sha256": {
+        "identical_inputs": "767b28f52ea849e010ac0da5543b43a2b8da4ed1efd3fab5a63a48d649dc4ff1"
+      },
+      "replay_bitwise_equal": true
+    }
+  },
+  "memory": {
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "window_utc": [
+      "2026-11-03T10:31:00Z",
+      "2026-11-03T10:42:30Z"
+    ],
+    "query": "SELECT task_id, attempt_id, worker_id, \"cluster\", count(*) AS samples,\n min(ts) AS first_ts, max(ts) AS last_ts,\n max(memory_peak_mb)/1024.0 AS cumulative_host_peak_gib,\n max(memory_mb)/1024.0 AS sampled_host_peak_gib,\n max(cpu_millicores) AS peak_cpu_millicores,\n max(accelerator_mem_bytes) AS reported_accelerator_mem_bytes\nFROM \"iris.task\"\nWHERE task_id='/kaiyuew@stanford.edu/ema-gram-20-single-inner-capture-v5e-8-20261103/0'\n AND attempt_id=0\n AND ts >= TIMESTAMP '2026-11-03 10:31:00'\n AND ts < TIMESTAMP '2026-11-03 10:42:30'\nGROUP BY task_id, attempt_id, worker_id, \"cluster\"\n",
+    "rows": [
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-single-inner-capture-v5e-8-20261103/0",
+        "attempt_id": 0,
+        "worker_id": "marin-tpu-v5e-serving-8-us-west4-a-20261102-1756-2db9bbbe-worker-0",
+        "cluster": null,
+        "samples": 96,
+        "first_ts": "2026-11-03 10:31:20.519000",
+        "last_ts": "2026-11-03 10:41:50.219000",
+        "cumulative_host_peak_gib": 68.3291015625,
+        "sampled_host_peak_gib": 68.3291015625,
+        "peak_cpu_millicores": 96358,
+        "reported_accelerator_mem_bytes": null
+      }
+    ],
+    "semantics": "memory_peak_mb is cumulative observed host peak in MiB. Hub rows may lag; null accelerator telemetry does not measure HBM."
+  },
+  "limitations": "Original capture own-referencegate passes1e-5 but is notbitwise: v_proj maxabs8.940696716308594e-8,other27leaveszero measuredabsoluteerror. Unchanged evaluator matchesbitwise. Matrixbranch and finalartifacts/terminalstatuspending. Matchingwithin tolerance does not establish untouchedhiddenidentity. Singlecallsincludecompilation;no warmedperformance/MFU. LargecompilerfilesstayregionalwithoutnewSHAreadback.",
+  "comparisons_detail": {
+    "capture/original/evaluate/replay": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 1,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 2,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 3,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 4,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 5,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 6,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 7,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 8,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 9,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 10,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 11,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 12,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 13,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 14,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 15,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 16,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 17,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 18,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 19,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 20,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 21,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 22,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 23,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 24,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 25,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 26,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 27,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    "capture/original/extra_outputs/replay": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 1,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 2,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 3,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 4,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 5,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 6,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 7,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 8,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 9,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 10,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 11,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 12,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 13,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 14,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 15,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 16,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 17,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 18,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 19,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 20,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 21,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 22,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 23,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 24,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 25,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 26,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 27,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 28,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    "capture/original/evaluate_vs_untouched": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 1,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 2,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 3,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 4,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 5,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 6,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 7,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 8,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 9,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 10,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 11,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 12,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 13,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 14,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 15,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 16,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 17,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 18,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 19,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 20,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 21,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 22,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 23,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 24,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 25,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 26,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 27,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "capture/original/capture_vs_untouched": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 1,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 2,
+          "max_absolute_error": 8.940696716308594e-08,
+          "relative_frobenius_error": 1.0681334888565728e-07,
+          "passed": true
+        },
+        {
+          "leaf": 3,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 4,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 5,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 6,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 7,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 8,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 9,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 10,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 11,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 12,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 13,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 14,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 15,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 16,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 17,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 18,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 19,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 20,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 21,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 22,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 23,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 24,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 25,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 26,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 27,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "capture/original/capture_vs_evaluate": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 1,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 2,
+          "max_absolute_error": 8.940696716308594e-08,
+          "relative_frobenius_error": 1.0681334888565728e-07,
+          "passed": true
+        },
+        {
+          "leaf": 3,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 4,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 5,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 6,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 7,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 8,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 9,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 10,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 11,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 12,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 13,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 14,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 15,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 16,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 17,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 18,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 19,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 20,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 21,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 22,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 23,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 24,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 25,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 26,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        },
+        {
+          "leaf": 27,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    }
+  }
+}

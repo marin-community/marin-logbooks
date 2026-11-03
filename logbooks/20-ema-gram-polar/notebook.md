@@ -3120,6 +3120,30 @@ observer 54894 follows this task; PR observer 77099 remains live. Preserve the
 job through compilation and assess both solver branches before another numerical
 candidate. Large compiler artifacts remain regional.
 
+## 2026-11-03 10:45 UTC — Original single-inner reference gate passes
+
+The [single-inner diagnostic](optimizer-single-inner-capture-partial.json)
+remains running on attempt 0 and has entered the matrix branch. Seven stages
+are finite and all five comparisons recorded so far pass at rtol=atol=1e-5.
+The unchanged original Jaxpr evaluator matches its untouched full-update
+reference bitwise. The single-inner capture passes all 28 reference leaves but
+is not bitwise identical: only v_proj has nonzero measured error, with maximum
+absolute error 8.94070e-8 and relative Frobenius error 1.06813e-7. The other
+27 leaves have zero measured absolute error. Both original fixed executables
+replay bitwise.
+
+Schema-confirmed Finelog telemetry records 96 host-memory samples through
+10:41:50 UTC, with an observed cumulative peak of 68.33 GiB against the 128 GiB
+reservation. Accelerator-memory telemetry is null and does not measure HBM.
+The small original Jaxpr artifact passed SHA, size and gzip readback and retains
+851 equations and 29 output leaves. Large compiler files stay regional without
+a new SHA readback claim.
+
+Preserve the job and sole log observer while the matrix branch completes.
+Passing the original reference gate does not establish hidden intermediate
+identity. Matrix reference gates, final artifacts and terminal status remain
+pending; no optimizer acceptance or warmed-performance claim is made.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
