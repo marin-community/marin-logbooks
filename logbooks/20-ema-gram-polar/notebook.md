@@ -2966,6 +2966,22 @@ requires those checks and artifact readbacks to pass. Memory controls, full
 matrix geometry and default preemption retries remain unchanged; no runtime
 limit is selected.
 
+## 2026-11-03 09:49 UTC — Single-output CPU preflight
+
+The [CPU preflight](optimizer-single-norm-capture-preflight.json) passed on eight
+virtual CPU devices. The new mode appends only the existing q_proj normalization
+denominator. It completed 12 finite stages and all
+13 comparisons; the existing six-output regression completed 12 finite stages
+and all 18 comparisons. Each mode replayed four fixed executables bitwise, and
+both evaluators and captures matched their own untouched 28-leaf references
+bitwise. The new mode retained 29 output leaves; the regression retained 34.
+
+Fresh online W&B runs finished for both modes and the separate logging check.
+Both reports matched their GCS bytes, and all 28 compiler/Jaxpr objects passed
+SHA, size and gzip readback checks. These small-matrix CPU checks do not establish
+TPU behavior or hidden intermediate identity. Publish this evidence before one
+sequential TPU diagnostic using the validated source and unchanged tolerances.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

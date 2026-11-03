@@ -1,5 +1,5 @@
 {
-  "status": "Implemented; CPU preflight pending; no TPU submission yet",
+  "status": "Own online CPU preflight passed for single-output mode and six-output regression; one sequential TPU diagnostic selected after publication",
   "script": "optimizer_attribution.py --single-norm-capture",
   "question": "Does exposing only one existing q_proj normalization denominator preserve each solver full update?",
   "prior_evidence": [
@@ -44,5 +44,6 @@
   "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-single-norm-capture-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --single-norm-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.10",
   "script_sha256": "59f60503724566c15b16918609681f51faefa084345a758e4948a31ab0b312d2",
   "capture_helper_sha256": "a49e5572ad688fa8cbda7ae080e5b341b09a3e5bff3279463922159e7211865c",
-  "cpu_validation": "Own freshonline loggingcheck and newmode12/13, plus existingfull-input-capture12/18 regression; allcompiler/JaxprSHA/size/gzipreadbacks and exactreportbytes. ExplicitworktreePYTHONPATH required."
+  "cpu_validation": "Own freshonline loggingcheck and newmode12/13, plus existingfull-input-capture12/18 regression; allcompiler/JaxprSHA/size/gzipreadbacks and exactreportbytes. ExplicitworktreePYTHONPATH required.",
+  "preflight": "optimizer-single-norm-capture-preflight.json"
 }

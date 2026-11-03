@@ -479,7 +479,10 @@
                 "question": "Can appending only one existing q_proj normalization-denominator output preserve each full-update reference when the six-output capture failed?",
                 "basis": "Both unchanged-Jaxpr evaluators matched untouched28leaves bitwise, while six-output capture changed final directions. Static closure resolved record gaps but not opaque semantics or numerical cause. This motivates reducing the instrumentation outputs, not changing optimizer math.",
                 "procedure": "Review and specify a single-output Jaxpr capture using the existing shared capture helper: append the already-computed q_proj broadcast norm+epsilon variable only, preserving every equation, input/constant and original28outputs. For bothsolvers compare untouched full_update, unchanged evaluator and single-output capture on identicalfingerprinted inputs at rtol=atol=1e-5 and reportbitwiseagreement/all28leaves. Compileonce/replay fixedbanks; oneexecutable/devicebank atatime,block/hostoffload/cacheclear. Do not infer hiddenidentity from finalagreement; failedgate forbids originalpathinterpretation. No approximation, precision or tilingoverride. Own freshonlineCPU logging/numerical validation and exactpublishedsource/plan before ONE sequentialTPU diagnostic. No submission currentlyselected.",
-                "limits": "This tests instrumentation sensitivity, not optimizeracceptance ortrainingMFU. Any optimizer intervention stillrequires untouchedoriginalall28leaf1e-5, savedstatevalidation, fullrestore and actualsteadytrainingMFU>5%."
+                "limits": "This tests instrumentation sensitivity, not optimizeracceptance ortrainingMFU. Any optimizer intervention stillrequires untouchedoriginalall28leaf1e-5, savedstatevalidation, fullrestore and actualsteadytrainingMFU>5%.",
+                "implementation": "optimizer-single-norm-capture-plan.json",
+                "preflight": "optimizer-single-norm-capture-preflight.json",
+                "status": "Implemented and CPU validated; publish exact source and preflight before one sequential TPU diagnostic"
               }
             }
           }
