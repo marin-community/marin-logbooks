@@ -1,0 +1,82 @@
+{
+  "state": "PREPARED ONLY; training not submitted",
+  "binding": "Calls existing experiments.ema_gram.train.run_training; no numerical implementation change",
+  "prepared_config_sha256": "992bd1f9f6632229b73ed114de6ac5d0cdef468405d89898afebcb162cd366ac",
+  "prerequisites": [
+    "Current saved-state job canonical success and all four complete finite/immutable reports; numerical equivalence is diagnostic only",
+    "Fresh execution-host non-training online logging check",
+    "Publish exact command/config/source before launch",
+    "Original full continuation precedes candidate; no concurrent candidate"
+  ],
+  "full_training_validation": "Native ordinary label924 and watch-enabled label929 are evidence milestones within unchanged final7630 schedule. Monitor later profile/eval/checkpoint stages separately. No finite/memory fit claim before actual execution.",
+  "configs": {
+    "replicated": {
+      "version": "2026.11.03.21",
+      "job_name": "ema-gram-20-loss-pair-replicated-v4-32-20261103",
+      "resources": {
+        "cpu": 120,
+        "ram": "256g",
+        "disk": "50g",
+        "device": {
+          "variant": "v4-32",
+          "kind": "tpu",
+          "topology": null
+        },
+        "preemptible": true,
+        "regions": [
+          "us-central2"
+        ],
+        "zone": null,
+        "target_cluster": null,
+        "replicas": 4,
+        "device_alternatives": null,
+        "image": null,
+        "container_profile": null
+      },
+      "worker_command": [
+        "bash",
+        "-c",
+        "export PYTHONPATH=\"$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\"; JAX_PLATFORMS=cpu python -m experiments.ema_gram.train --plan logbooks/20-ema-gram-polar/quarter-pilot.json --version 2026.11.03.21 --output /tmp/ema-gram-pair-replicated-logging.json --tpu-type v4-32 --host-memory 256g --eigh-layout replicated --eigh-implementation default --initialize-from gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923 --profile-start-step 940 --profile-steps 1 --logging-check && exec python -c 'import json, hashlib\nfrom pathlib import Path\nfrom dataclasses import replace\nimport draccus\nfrom marin.execution.lazy import materialized_config\nfrom marin.training.training import apply_output_path\nfrom experiments.ema_gram.train import build_training_step, run_training\nfrom experiments.ema_gram.plan import Cell\np = Path(\"logbooks/20-ema-gram-polar/loss-pair-prepared.json\")\nassert hashlib.sha256(p.read_bytes()).hexdigest() == \"992bd1f9f6632229b73ed114de6ac5d0cdef468405d89898afebcb162cd366ac\"\nprepared = json.loads(p.read_text())\nfor name, expected in prepared[\"source_sha256\"].items():\n    assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == expected, name\nstep = build_training_step(Cell(0.25, 1e-4, 0.002, seed=0), \"2026.11.03.21\", tpu_type=\"v4-32\", host_memory=\"256g\", eigh_layout=\"replicated\", eigh_implementation=\"default\", initialize_from=prepared[\"checkpoint\"], profile_start_step=940, profile_steps=1)\npod = materialized_config(step, \"gs://marin-us-central2\")\npod = replace(pod, train_config=apply_output_path(pod.train_config, pod.output_path))\nassert draccus.encode(pod) == prepared[\"configs\"][\"replicated\"]\nrun_training(pod)\n'"
+      ],
+      "worker_python_sha256": "f73249dfb0576a0c3c1bee18f56e4a17384aa8fb76c47b9ca4fe12f839546fc6",
+      "wall_clock_limits": null,
+      "preemption_retries": "default",
+      "training_final_counter": 7630,
+      "source_commit": "Set to exact published preparation commit at submission; never launch from unpublished changes"
+    },
+    "matrix": {
+      "version": "2026.11.03.22",
+      "job_name": "ema-gram-20-loss-pair-matrix-v4-32-20261103",
+      "resources": {
+        "cpu": 120,
+        "ram": "256g",
+        "disk": "50g",
+        "device": {
+          "variant": "v4-32",
+          "kind": "tpu",
+          "topology": null
+        },
+        "preemptible": true,
+        "regions": [
+          "us-central2"
+        ],
+        "zone": null,
+        "target_cluster": null,
+        "replicas": 4,
+        "device_alternatives": null,
+        "image": null,
+        "container_profile": null
+      },
+      "worker_command": [
+        "bash",
+        "-c",
+        "export PYTHONPATH=\"$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\"; JAX_PLATFORMS=cpu python -m experiments.ema_gram.train --plan logbooks/20-ema-gram-polar/quarter-pilot.json --version 2026.11.03.22 --output /tmp/ema-gram-pair-matrix-logging.json --tpu-type v4-32 --host-memory 256g --eigh-layout matrix --eigh-implementation default --initialize-from gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923 --profile-start-step 940 --profile-steps 1 --logging-check && exec python -c 'import json, hashlib\nfrom pathlib import Path\nfrom dataclasses import replace\nimport draccus\nfrom marin.execution.lazy import materialized_config\nfrom marin.training.training import apply_output_path\nfrom experiments.ema_gram.train import build_training_step, run_training\nfrom experiments.ema_gram.plan import Cell\np = Path(\"logbooks/20-ema-gram-polar/loss-pair-prepared.json\")\nassert hashlib.sha256(p.read_bytes()).hexdigest() == \"992bd1f9f6632229b73ed114de6ac5d0cdef468405d89898afebcb162cd366ac\"\nprepared = json.loads(p.read_text())\nfor name, expected in prepared[\"source_sha256\"].items():\n    assert hashlib.sha256(Path(name).read_bytes()).hexdigest() == expected, name\nstep = build_training_step(Cell(0.25, 1e-4, 0.002, seed=0), \"2026.11.03.22\", tpu_type=\"v4-32\", host_memory=\"256g\", eigh_layout=\"matrix\", eigh_implementation=\"default\", initialize_from=prepared[\"checkpoint\"], profile_start_step=940, profile_steps=1)\npod = materialized_config(step, \"gs://marin-us-central2\")\npod = replace(pod, train_config=apply_output_path(pod.train_config, pod.output_path))\nassert draccus.encode(pod) == prepared[\"configs\"][\"matrix\"]\nrun_training(pod)\n'"
+      ],
+      "worker_python_sha256": "3ca4e1b09891e0472ab9979ec0e189f356eb19fc73a6a289717f54fb9a0f0e0e",
+      "wall_clock_limits": null,
+      "preemption_retries": "default",
+      "training_final_counter": 7630,
+      "source_commit": "Set to exact published preparation commit at submission; never launch from unpublished changes"
+    }
+  }
+}

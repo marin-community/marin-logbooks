@@ -4596,6 +4596,16 @@ Static inspection of native training identifies two compiled startup paths. With
 
 Canonical job/task checks at 22:27 UTC still show all four tasks pending, with no attempts, failures or preemptions. Follow 51428 remains the sole observer; the next routine check is no earlier than 22:36:37 UTC.
 
+### November 3, 22:36 UTC — saved-state check running; native training commands prepared
+
+The saved-state diagnostic is running on all four tasks, attempt 0, with no failures or preemptions at the canonical 22:36:47–57 UTC check. Follow session 51428 remains the sole observer. Four partial process reports retrieved at 22:37 contain loaded-state evidence but no completed numerical cases. They do not establish the global finite-output, immutability or equivalence result. The next routine canonical check is no earlier than 22:46:27 UTC.
+
+The [launch preparation](loss-pair-launch-prepared.json) binds both paired configurations to the existing `experiments.ema_gram.train.run_training` function. It reconstructs each configuration through the published recipe, verifies the prepared configuration and seven source hashes, and requires exact effective-configuration equality before calling the native training entrypoint. The two local non-training online logging checks finished successfully and were verified through W&B. Native serialization adds three Git provenance fields and omits two empty dictionaries; these differences are explicitly recorded, and all remaining fields match. Each execution host must repeat its own fresh online logging check before training.
+
+Static validation confirms output-path application is idempotent and the native helper preserves the W&B/JSON tracker tuple. Direct JSON decoding was rejected because the pod's training-config field is typed as `object`; the prepared command instead uses the published recipe. Review also caught literal escaped newlines in the first command serialization. The corrected commands preserve actual newlines, and their exact shell-extracted Python arguments compile without execution. No optimizer or trainer implementation changed. The [validation](loss-pair-launch-validation.json) retains both preparation failures and the corrected checks.
+
+Neither training variant has been submitted. The current saved-state check must finish with canonical success and all four finite, immutable process reports; numerical-equivalence failure alone remains diagnostic. Then the original replicated continuation precedes the matrix continuation, both from the verified common counter 924 to final counter 7630 with the same model, batch, data, seed, precision and hyperparameters. Native ordinary label 924 and watch-enabled label 929 are full-training finite/memory evidence milestones within that unchanged schedule; later profiling, evaluation and checkpoint stages still require observation. No paired loss, full-training memory fit or speed improvement is claimed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
