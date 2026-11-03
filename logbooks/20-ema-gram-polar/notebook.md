@@ -3373,6 +3373,42 @@ Online CPU logging, numerical fixtures and the paired-capture regression are
 pending. No TPU job has been submitted. Source precision, full geometry,
 default preemption retries and all training gates remain unchanged.
 
+## 2026-11-03 12:03 UTC — Substitution CPU validation passes
+
+The new substitution harness completed 22 finite stages and all 26 comparisons
+passed at fixed rtol=atol=1e-5. All six fixed executables replayed bitwise. Both
+fresh paired captures passed their reference gates, and each substitution
+executable supplied with its own solver's captured pair passed all 28 untouched
+and captured reference leaves at1e-5, but not bitwise. Both solvers show nonzero
+measured error in q_proj direction (maxabs9.53674e-7, relative Frobenius4.80648e-7)
+and its momentum state (maxabs2.91038e-11). The four bank combinations are
+bitwise equivalent within each fixed CPU executable; that does not predict
+TPU sensitivity. Own-pair substitution changes CPU outputs within tolerance;
+the source of that difference remains unresolved.
+
+The targeted fixture used distinct replacement values at a division whose two
+operands originally shared one variable. It verified the replaced division's
+result and an unchanged additional use of that variable. Invalid targets and
+missing or ambiguous normalization mappings were rejected. Actual full-update
+program assertions preserve all non-target equations and the original outputs,
+inputs and constants. The paired-capture regression passed 12 finite stages,
+14 comparisons and four bitwise replays, with all recorded bitwise checks equal.
+
+Both numerical reports matched their GCS copies. All 34 compiler/Jaxpr artifacts
+passed SHA, size and gzip readback: 887,003 compressed bytes for substitution
+and 660,926 for regression. Substitution StableHLO signatures retain 28 output
+leaves and include both external operand shapes. A separate fresh online
+logging check also passed. Every process used its own online W&B identity.
+These small-matrix, eight-virtual-device CPU results do not establish TPU
+behavior or untouched internal identity.
+
+Source `381e3a697009e750843ce5615a30e205a882a328`; numerical runs
+`f277f8c932fc` and `1eb7ab54998f`, logging run `faf92ad2b105`.
+The [preflight](optimizer-paired-input-substitution-preflight.json) records
+exact reports and source hashes. One sequential full-size v5e diagnostic is
+ready under the published plan, preserving all numerical gates and resource
+constraints. No optimizer or training result is accepted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
