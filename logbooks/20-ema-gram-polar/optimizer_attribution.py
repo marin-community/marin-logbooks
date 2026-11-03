@@ -901,7 +901,15 @@ def state_crossfeed(rec, banks, references, matrix_eigh, state_shardings, output
 
 
 def full_input_capture(
-    rec, inputs, matrix_eigh, input_shardings, output_shardings, replicated, capture_kind, substitute=False
+    rec,
+    inputs,
+    matrix_eigh,
+    input_shardings,
+    output_shardings,
+    replicated,
+    capture_kind,
+    substitute=False,
+    numerator_sharding=None,
 ):
     """Compare untouched full updates, unchanged traced programs and extra outputs."""
     input_sha = fingerprint(inputs)
@@ -996,15 +1004,38 @@ def full_input_capture(
     rec.persist()
     if substitute:
         paired_substitution(
-            rec, inputs, captures, references, matrix_eigh, input_shardings, output_shardings, replicated
+            rec,
+            inputs,
+            captures,
+            references,
+            matrix_eigh,
+            input_shardings,
+            output_shardings,
+            replicated,
+            replicated if numerator_sharding is None else numerator_sharding,
         )
     return passed
 
 
-def paired_substitution(rec, inputs, captures, references, matrix_eigh, input_shardings, output_shardings, replicated):
+def paired_substitution(
+    rec, inputs, captures, references, matrix_eigh, input_shardings, output_shardings, replicated, numerator_sharding
+):
     """Conditional operand substitutions, gated against the entire untouched update."""
     rec.report["substitution_gates"] = {}
     rec.report["substitution_programs"] = {}
+    inner, denominator = captures["original"][1]
+    assert inner.shape == inputs[0][0].shape and denominator.shape == (inner.shape[0], 1, 1)
+    assert inner.dtype == denominator.dtype == np.float32
+    placements = {}
+    for name, value, sharding in [("inner", inner, numerator_sharding), ("norm_plus_eps", denominator, replicated)]:
+        indices = sharding.devices_indices_map(value.shape)
+        placements[name] = dict(
+            global_shape=list(value.shape),
+            dtype=str(value.dtype),
+            spec=str(sharding.spec),
+            device_indices={str(d.id): str(index) for d, index in indices.items()},
+        )
+    rec.report["substitution_input_placement"] = placements
     input_sha = fingerprint(inputs)
     for label, solver in [("original", jax.lax.linalg.eigh), ("matrix", matrix_eigh)]:
         fn = full_update if label == "original" else partial(full_update, eigh_fn=solver)
@@ -1036,7 +1067,7 @@ def paired_substitution(rec, inputs, captures, references, matrix_eigh, input_sh
             "substitute/" + label,
             substitute,
             banks,
-            (input_shardings, (replicated, replicated)),
+            (input_shardings, (numerator_sharding, replicated)),
             output_shardings,
         )
         own_name = next(iter(banks))
@@ -1117,17 +1148,19 @@ def main():
     mode.add_argument("--single-inner-capture", action="store_true")
     mode.add_argument("--paired-input-capture", action="store_true")
     mode.add_argument("--paired-input-substitution", action="store_true")
+    mode.add_argument("--column-input-substitution", action="store_true")
     args = parser.parse_args()
+    substitution_mode = args.paired_input_substitution or args.column_input_substitution
     capture_mode = (
         args.full_input_capture
         or args.single_norm_capture
         or args.single_inner_capture
         or args.paired_input_capture
-        or args.paired_input_substitution
+        or substitution_mode
     )
     capture_kind = (
         "q_pair"
-        if args.paired_input_capture or args.paired_input_substitution
+        if args.paired_input_capture or substitution_mode
         else "q_inner" if args.single_inner_capture else "q_norm" if args.single_norm_capture else "qkv_inputs"
     )
     product_mode = (
@@ -1165,7 +1198,8 @@ def main():
         smoke=args.smoke,
         polar_compiler=args.polar_compiler or args.state_crossfeed or product_mode or capture_mode,
         full_input_capture=capture_mode,
-        paired_input_substitution=args.paired_input_substitution,
+        paired_input_substitution=substitution_mode,
+        column_input_substitution=args.column_input_substitution,
         capture_kind=capture_kind if capture_mode else None,
         capture_helper_sha256=hashlib.sha256(
             Path(__file__).with_name("optimizer_input_capture.py").read_bytes()
@@ -1223,7 +1257,7 @@ def main():
         tracker.finish()
         return
     rec = Recorder(destination, local, tracker, config)
-    if args.smoke and args.paired_input_substitution:
+    if args.smoke and substitution_mode:
         rec.report["substitution_fixtures"] = substitution_fixtures()
         rec.persist()
     mesh = Mesh(np.array(devices), ("data",))
@@ -1251,7 +1285,15 @@ def main():
         jax.clear_caches()
         gc.collect()
         fused_pass = full_input_capture(
-            rec, inputs, matrix_eigh, (gs, ss), (gs, ss), rep, capture_kind, args.paired_input_substitution
+            rec,
+            inputs,
+            matrix_eigh,
+            (gs, ss),
+            (gs, ss),
+            rep,
+            capture_kind,
+            substitution_mode,
+            gs[0] if args.column_input_substitution else rep,
         )
         finish(rec, tracker, fused_pass, args.smoke)
         return
