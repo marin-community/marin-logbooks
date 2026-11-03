@@ -2315,6 +2315,24 @@ unchanged. Constraints may change casts and kernel selection; final agreement
 would not prove internal identity. Online CPU validation is pending, and no
 accelerator has been submitted.
 
+## 2026-11-03 06:36 UTC — Paired partition control passes CPU validation
+
+The [CPU preflight](optimizer-polar-partition-preflight.json) from source
+`dded42b0429b54f3287b1f918bef2a19bc76f986` completed 87 finite stages and
+passed all 111 comparisons at `rtol=atol=1e-5`. All eighteen fixed executables
+replayed bitwise. Online W&B run `31292c51856a` finished; the separate logging
+check `c93a30308fb4` also finished with its success marker. The regional GCS
+report matches local bytes, and all 54 compiler objects passed checksum, size
+and decompression checks. This validates the small-matrix CPU harness; TPU
+partitioning and numerical behavior remain unverified.
+
+The next diagnostic uses one eight-chip native v5e host in us-west4 with
+96 CPUs, 128 GiB host memory, batch priority, default preemption retries and no
+wall-clock limit. Its [published plan](optimizer-polar-partition-plan.json)
+requires checking the compiled first-product contraction and reduction before
+interpreting numerical comparisons. It reads no original checkpoint or training
+data and cannot establish optimizer acceptance or training MFU.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
