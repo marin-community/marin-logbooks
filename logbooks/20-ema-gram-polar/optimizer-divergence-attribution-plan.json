@@ -150,7 +150,7 @@
   "startup_evidence": "optimizer-attribution-started.json",
   "completion_evidence": "optimizer-attribution-v5e-completed.json",
   "followup": {
-    "status": "running; native8v5e/oneprocess/sourcehash andonlineW&B verified",
+    "status": "completed; no accepted optimization",
     "entrypoint": "optimizer_attribution.py --polar-compiler",
     "objective": "Capture original/candidate optimized compiler IR and locate layout differences across normalization and five polar iterates.",
     "arithmetic": "Original quintic coefficients, norm epsilon1e-7, five iterations, transpose and mesh constraint, default matrix-product precision. No precision change or tolerance relaxation.",
@@ -217,6 +217,28 @@
     "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-compiler-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT 0729daeaf8e1732e87725426c4eebf52dc7ff807 -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-compiler --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1",
     "startup_evidence": "optimizer-polar-compiler-started.json",
     "run_id": "ema-gram-20-attribution-f28f477c787b",
-    "output_directory": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1/ema-gram-20-attribution-f28f477c787b"
+    "output_directory": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1/ema-gram-20-attribution-f28f477c787b",
+    "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
+  },
+  "next_decision": {
+    "status": "design only; not implemented or submitted",
+    "objective": "Hold direction compilation fixed while comparing refreshed-state banks, then compare evaluator layouts on identical banks.",
+    "controls": [
+      "Keep original full fused original/matrix reference directions and all returned updated state banks.",
+      "Fingerprint three banks: separate common refresh, fused-original returned state, fused-matrix returned state. Preserve full geometry and exact values.",
+      "Compile one original direction-only executable and one matrix-eigensolver direction-only executable, with identical input/output shardings. No refresh inside these evaluators.",
+      "Evaluate all three banks through each fixed executable, one executable at a time, blocking and host-offloading outputs. Reuse the executable across banks so this control changes only input values.",
+      "Compare the two evaluators on identical banks; compare different banks under the same evaluator; compare direction-only outputs to original fused references. Fixed rtol=atol=1e-5.",
+      "Capture compiler manifests and verify checksums regionally when consuming larger objects; keep all previous artifacts in their region.",
+      "CPU-validate logging, full comparison harness and unchanged science before one sequential TPU submission from published source."
+    ],
+    "memory": "Three3.46GBhoststatebanks plus retaineddirections; one executable/deviceoutputbank at a time. Preserve per-case memory reports.",
+    "limitations": [
+      "Removing refresh from the executable changes compilation. Comparisons to full fused references are perturbation controls, not accepted optimizations.",
+      "No change to numerical tolerance, precision, number of polar steps, Gram refresh cadence or scientific protocol.",
+      "No new accelerator request or training in this design.",
+      "These controls hold one factor fixed per comparison but do not fully disentangle input/compiler interactions."
+    ],
+    "promotion_gate": "Any later optimization still requires paired full-update numerical/memory/performance checks, regional saved-state validation, full trainer restore and actual steady training MFU."
   }
 }

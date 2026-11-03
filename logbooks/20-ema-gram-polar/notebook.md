@@ -1535,6 +1535,34 @@ unresolved. Feed-forward traces are still running. A read-only streaming
 inspection of the larger fused compiler files ran inside the task; those
 artifacts remain in their region, and no warmed-performance claim is made.
 
+## 2026-11-03 00:54 UTC — Compiler attribution completes
+
+The [compiler diagnostic](optimizer-polar-compiler-v5e-completed.json) succeeded
+on attempt zero with task exit zero, 187 finite stages and 122 comparisons
+collected. W&B records completion and no candidate acceptance. All fourteen
+traced final polar outputs match their corresponding uninstrumented outputs
+exactly. Query, key and value retain the growing differences between replicated
+and direction-sharded outputs described above; attention-output, gate, up and down projections match through every
+isolated polar iterate. The fused matrix-eigensolver candidate still fails
+rtol=atol=1e-5 against the original fused update.
+
+All 116 compiler objects are present with matching recorded sizes, totaling
+20,058,285 compressed bytes. The final report and two small isolated compiler
+objects were read back with verified SHA-256 values. The larger fused files
+were inspected inside their original region; a full remote SHA-256 audit of
+all compiler objects has not been performed. Host peak was 26.5 GiB across
+117 Finelog samples, including the read-only compiler inspection. JAX allocator
+peak was 8,076,038,656 bytes per device.
+
+The [next controlled diagnostic](optimizer-divergence-attribution-plan.json)
+will pass three refreshed-state banks through fixed direction-only executables:
+a standalone refresh on the same initial state and gradients, and the states
+returned by each fused implementation. Reusing each executable holds compilation
+fixed while comparing input banks; it does not isolate every interaction between
+inputs and compilation. Direction-only results must also be compared with the fused
+references because removing refresh changes compilation. This is a design;
+it has not been implemented or submitted. No optimization is accepted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
