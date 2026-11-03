@@ -1,0 +1,1474 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-polar-collectives-v5e-8-20261103",
+  "submitted_utc": "2026-11-03T07:13:54Z",
+  "verified_utc": "2026-11-03T07:19:43.478852+00:00",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "398f1e7e8316",
+  "exit_code": 0,
+  "config": {
+    "source_commit": "b33a3825496648c8cb05574f0bf2f618ddd52c45",
+    "script_sha256": "11dadc88cfcbeb75028ec19c408510a664cb8ba8391a9d3fac47efc610b75f9a",
+    "seed": 0,
+    "shapes": [
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        1024,
+        4096
+      ]
+    ],
+    "names": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "smoke": false,
+    "polar_compiler": true,
+    "state_crossfeed": false,
+    "polar_products": true,
+    "contracting_control": false,
+    "continuation_control": false,
+    "normalization_control": false,
+    "partition_control": false,
+    "collective_control": true,
+    "polar_iterate_leaf_order": [
+      "input_norm",
+      "normalized_input",
+      "iteration_1",
+      "iteration_2",
+      "iteration_3",
+      "iteration_4",
+      "iteration_5"
+    ],
+    "process_count": 1,
+    "devices": [
+      {
+        "id": 0,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 1,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 2,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 3,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 4,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 5,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 6,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 7,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      }
+    ],
+    "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952",
+    "alpha": 0.25,
+    "ridge": 0.0001,
+    "beta1": 0.95,
+    "beta2": 0.99,
+    "polar_steps": 5,
+    "solver": "default",
+    "gcs_report_request_timeout_seconds": 60,
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "limitations": "Synthetic non-training stage attribution. Single calls include compilation; no performance or MFU claim. Staging changes compilation. Expected candidate mismatches are recorded, never accepted for training."
+  },
+  "wandb": {
+    "run": "ema-gram-20-attribution-310521548952",
+    "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-310521548952",
+    "state": "finished",
+    "logging_check_success": 1,
+    "attribution_completed": 1,
+    "candidate_accepted_for_training": false
+  },
+  "finite_stages": 75,
+  "comparisons": 69,
+  "passed_comparisons": 33,
+  "all15fixed_replays_bitwise_equal": true,
+  "reference_checks": {
+    "q_proj": {
+      "reference_checks": {
+        "q_proj/collectives/continuation/replicated/replicated/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/collectives/continuation/replicated/replicated/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/collectives/continuation/replicated/direction_sharded/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/collectives/continuation/replicated/direction_sharded/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/collectives/continuation/direction_sharded/replicated/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/collectives/continuation/direction_sharded/replicated/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "q_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        }
+      },
+      "original_path_interpretation_allowed": false,
+      "limitation": "Materializing partials changes product compilation; explicit collectives may select different algorithms. Inspect compiled paths. Equal final endpoints do not prove internal identity or optimizer equivalence."
+    },
+    "k_proj": {
+      "reference_checks": {
+        "k_proj/collectives/continuation/replicated/replicated/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/collectives/continuation/replicated/replicated/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/collectives/continuation/replicated/direction_sharded/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/collectives/continuation/replicated/direction_sharded/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/collectives/continuation/direction_sharded/replicated/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/collectives/continuation/direction_sharded/replicated/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "k_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        }
+      },
+      "original_path_interpretation_allowed": false,
+      "limitation": "Materializing partials changes product compilation; explicit collectives may select different algorithms. Inspect compiled paths. Equal final endpoints do not prove internal identity or optimizer equivalence."
+    },
+    "v_proj": {
+      "reference_checks": {
+        "v_proj/collectives/continuation/replicated/replicated/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/collectives/continuation/replicated/replicated/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/collectives/continuation/replicated/direction_sharded/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/collectives/continuation/replicated/direction_sharded/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/collectives/continuation/direction_sharded/replicated/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/collectives/continuation/direction_sharded/replicated/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "v_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        }
+      },
+      "original_path_interpretation_allowed": false,
+      "limitation": "Materializing partials changes product compilation; explicit collectives may select different algorithms. Inspect compiled paths. Equal final endpoints do not prove internal identity or optimizer equivalence."
+    }
+  },
+  "partial_banks": {
+    "q_proj": {
+      "shape": [
+        8,
+        11,
+        1024,
+        1024
+      ],
+      "dtype": "float32",
+      "sha256": "c21f86dbc29db42807faf99e6563f682a609e05ba484b11702f52d1dff12957b",
+      "per_device_sha256": [
+        "a560132a464f069c9828f27f782bfd1a6f65e453fc322af7a1543bf960345ae5",
+        "d85a8e8eaf3f1d42cfc7f3f36afe0f3ba9066d619e4897b8ecfa680e7c4b5069",
+        "3dd567112275194bcc1e24b040e235d676ae8d6833d71fb4250f7b459c140cfb",
+        "d3de69ce2a11bafec843820b710bf1bfe587886647ae5379ea2eb7655a0e3232",
+        "dfb57a19c017ef470a55b62a6a2aedd5a7b40a594149b7398263f5a8a60476ab",
+        "4cadf14b40366a16bcc791a9b14938e62b918ce38f66b5a74d5ca0a6b36bf704",
+        "efa54d98e037f2ed16445168c15d95f746d4e6c9dc1dc6b44cae845280968cbf",
+        "1e1a032161859cb146d38f1c0b4a3576303795a9ff0337ae1b1d2dd377a540d4"
+      ],
+      "normalized_input_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec"
+    },
+    "k_proj": {
+      "shape": [
+        8,
+        11,
+        1024,
+        1024
+      ],
+      "dtype": "float32",
+      "sha256": "c1223ac9558ffda73da90a31adf151365345a40c200ea7c6b499a57983ff3f45",
+      "per_device_sha256": [
+        "3be67bbd36a79527139d23ea73b62e147eaad025c7d0f800b7c913f2e42901f4",
+        "ce531cf613a898aad352a2bd2eb90e073f4178e9aabbf934c6a48e7573b2b333",
+        "4d81b56b5047d63270abfd31e2b76022c1d0c2d2ff67502774a34b66ea0f00f3",
+        "0ed369d45ffcc1677c3e5af985e0ae96886d507940c44fe9011ba4875f5c7ebf",
+        "a4eb7dcac29b24873edfc07df12148937e6751d09053a36e2e30a5c44ebd35d5",
+        "1c18964cf58edbde54041e8322b1c1b519e0879b6f081091fdeda7062f1e111a",
+        "947ce31db773f2da2ec3e94434d3a148aee0a6ad61f8dd404ff5b15d626efa38",
+        "8846a839772c485a70ff5e62989e34b507dd43c20247892f335acab6b534c353"
+      ],
+      "normalized_input_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65"
+    },
+    "v_proj": {
+      "shape": [
+        8,
+        11,
+        1024,
+        1024
+      ],
+      "dtype": "float32",
+      "sha256": "e7ff39269712b456362eed0c26fd4020d4c9c548f964cad4a656fe4f08bc821e",
+      "per_device_sha256": [
+        "9aad0f650bd62821822b36959e91fb3757ed843d67a35093eba8802da8f2f5e7",
+        "c45befbaeee74bac543b2e529ca8558f2936546294ef044c1cf715a942efb196",
+        "2662555b45dc551ca8eb8d6b44b9023dee5ecfdc982e2bd2b3f6cbd9adfb9bb4",
+        "efd8f993fb6f3a6a286b70e521dbcf2f3520f492592f8345574656c7cd4cfd3a",
+        "3542b5027e1989f315bb09aa0293d0432efd02cfed8543802ab445db94c12784",
+        "86182f3d5f0bff3d24d22a5ff2999bad4ee9880f9993038ce46f7f481adb9bb6",
+        "c0f249dd54da50fce554cce6f435733ed1b777369105aa05692b44462a83db38",
+        "72055ed603540c335491e53db829c93cbf3bb5edca31dd5c930b96cb891f920f"
+      ],
+      "normalized_input_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270"
+    }
+  },
+  "non_replay_comparisons": {
+    "q_proj/collectives/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.806632851752085e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/reference_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003266453742980957,
+          "relative_frobenius_error": 0.006397530152104468,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/replicated/A_vs_raw_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/collectives/replicated/A_vs_raw_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.806632850442768e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/direction_sharded/A_vs_raw_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.806632851752085e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/direction_sharded/A_vs_raw_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/collectives/continuation/replicated/A_banks": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.00327417254447937,
+          "relative_frobenius_error": 0.005885640938495114,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/replicated/replicated/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0033197402954101562,
+          "relative_frobenius_error": 0.005990960088992366,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/replicated/replicated/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031901299953460693,
+          "relative_frobenius_error": 0.006170014763864615,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/replicated/direction_sharded/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003270760178565979,
+          "relative_frobenius_error": 0.005616267966754932,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/replicated/direction_sharded/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003245219588279724,
+          "relative_frobenius_error": 0.006369852061906011,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/direction_sharded/A_banks": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003109350800514221,
+          "relative_frobenius_error": 0.005871981165574509,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/direction_sharded/replicated/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003266453742980957,
+          "relative_frobenius_error": 0.006397530152104468,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/direction_sharded/replicated/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.00300462543964386,
+          "relative_frobenius_error": 0.006361670810540781,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003109350800514221,
+          "relative_frobenius_error": 0.005871981165574509,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/replicated/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031901299953460693,
+          "relative_frobenius_error": 0.006170126052214479,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/collectives/direction_sharded/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003251880407333374,
+          "relative_frobenius_error": 0.0061723462820692165,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.860077594362632e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/reference_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0030691921710968018,
+          "relative_frobenius_error": 0.00630542743584103,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/replicated/A_vs_raw_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/collectives/replicated/A_vs_raw_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.860077596582389e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/direction_sharded/A_vs_raw_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.860077594362632e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/direction_sharded/A_vs_raw_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/collectives/continuation/replicated/A_banks": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032593756914138794,
+          "relative_frobenius_error": 0.005455389104897898,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/replicated/replicated/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031945407390594482,
+          "relative_frobenius_error": 0.004984100057873337,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/replicated/replicated/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032233595848083496,
+          "relative_frobenius_error": 0.006182105825120454,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/replicated/direction_sharded/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.002590581774711609,
+          "relative_frobenius_error": 0.005397417019133909,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/replicated/direction_sharded/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003073781728744507,
+          "relative_frobenius_error": 0.006327188274699024,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/direction_sharded/A_banks": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003312051296234131,
+          "relative_frobenius_error": 0.005389647673276021,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/direction_sharded/replicated/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0030691921710968018,
+          "relative_frobenius_error": 0.00630542743584103,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/direction_sharded/replicated/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003153860569000244,
+          "relative_frobenius_error": 0.006304064427513527,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003312051296234131,
+          "relative_frobenius_error": 0.005389647673276021,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/replicated/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032233595848083496,
+          "relative_frobenius_error": 0.006182347453415068,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/collectives/direction_sharded/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031253397464752197,
+          "relative_frobenius_error": 0.006161144884906911,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.850655330726536e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/reference_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031773746013641357,
+          "relative_frobenius_error": 0.006176724689671874,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/replicated/A_vs_raw_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/collectives/replicated/A_vs_raw_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.850655330387298e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/direction_sharded/A_vs_raw_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.850655330726536e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/direction_sharded/A_vs_raw_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/collectives/continuation/replicated/A_banks": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0033855140209198,
+          "relative_frobenius_error": 0.005843152038747154,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/replicated/replicated/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003361612558364868,
+          "relative_frobenius_error": 0.005459289012151446,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/replicated/replicated/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031856298446655273,
+          "relative_frobenius_error": 0.006051123182235202,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/replicated/direction_sharded/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003133639693260193,
+          "relative_frobenius_error": 0.005849698044141157,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/replicated/direction_sharded/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032012760639190674,
+          "relative_frobenius_error": 0.006307928044027668,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/direction_sharded/A_banks": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032157599925994873,
+          "relative_frobenius_error": 0.005769373214879608,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/direction_sharded/replicated/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031773746013641357,
+          "relative_frobenius_error": 0.006176724689671874,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/direction_sharded/replicated/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032695531845092773,
+          "relative_frobenius_error": 0.006314611308773024,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/continuation/direction_sharded/direction_sharded/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032157599925994873,
+          "relative_frobenius_error": 0.005769373214879608,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/replicated/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031856298446655273,
+          "relative_frobenius_error": 0.00605118755564179,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/collectives/direction_sharded/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003293454647064209,
+          "relative_frobenius_error": 0.006011570635613436,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    }
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/report.json",
+  "report_sha256": "338c1836d9e91803b82e9f6f99619683e8433732f328ce34d3d8167185afa2ee",
+  "compiler_artifacts": {
+    "count": 60,
+    "compressed_bytes": 111135,
+    "all_sha_size_decompression_verified": true,
+    "manifest": {
+      "q_proj/collectives/input": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__input.stablehlo.txt.gz",
+          "sha256": "e5a756cf33de001a7beb912d0f4c20b796f4824491c900dd360f6f9f11b904f9",
+          "compressed_bytes": 515
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__input.optimized_hlo.txt.gz",
+          "sha256": "e894ce7d7b665bd6cb583c271ba22d312bf0d924b71ab22d3513c3b4242413d6",
+          "compressed_bytes": 1626
+        }
+      },
+      "q_proj/identical_inner/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__identical_inner__replicated.stablehlo.txt.gz",
+          "sha256": "5dfc289bf9cc206c7137cbf7736eaa238101c713c347456a3b9f96417840f01f",
+          "compressed_bytes": 1268
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__identical_inner__replicated.optimized_hlo.txt.gz",
+          "sha256": "c2ffe20e01eff915d2577ce50044670f8917554b395c1da33ddd5c548c60be7b",
+          "compressed_bytes": 4319
+        }
+      },
+      "q_proj/collectives/raw_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__raw_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "2e049c06e7d8f915b807cab825e66525d1aa62b7c11a5396187f907432811946",
+          "compressed_bytes": 626
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__raw_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "1d8bf4e6d9811c30ff4063949ea1049c3acea7384e1efae520d9a1ffc6ceada2",
+          "compressed_bytes": 2464
+        }
+      },
+      "q_proj/identical_inner/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__identical_inner__direction_sharded.stablehlo.txt.gz",
+          "sha256": "55af1b5f77b3cffe640013854baa45d32eafff88cf272b577dc50904ea7f443e",
+          "compressed_bytes": 1271
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__identical_inner__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "58516d10fad08831dfb39024ab45ba8848d0a85be728a440d4eca702b4509273",
+          "compressed_bytes": 5158
+        }
+      },
+      "q_proj/collectives/raw_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__raw_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "18b50409d9a58b0712b556704fea93829fbef8a637dbf644537ec0ab26595d20",
+          "compressed_bytes": 625
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "a7a5105a589293619e22917485d4e7f82a7945a9cba424be00f51809a8d95cb5",
+          "compressed_bytes": 2770
+        }
+      },
+      "k_proj/collectives/input": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__input.stablehlo.txt.gz",
+          "sha256": "e5a756cf33de001a7beb912d0f4c20b796f4824491c900dd360f6f9f11b904f9",
+          "compressed_bytes": 515
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__input.optimized_hlo.txt.gz",
+          "sha256": "e894ce7d7b665bd6cb583c271ba22d312bf0d924b71ab22d3513c3b4242413d6",
+          "compressed_bytes": 1626
+        }
+      },
+      "k_proj/identical_inner/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__identical_inner__replicated.stablehlo.txt.gz",
+          "sha256": "5dfc289bf9cc206c7137cbf7736eaa238101c713c347456a3b9f96417840f01f",
+          "compressed_bytes": 1268
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__identical_inner__replicated.optimized_hlo.txt.gz",
+          "sha256": "c2ffe20e01eff915d2577ce50044670f8917554b395c1da33ddd5c548c60be7b",
+          "compressed_bytes": 4319
+        }
+      },
+      "k_proj/collectives/raw_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__raw_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "2e049c06e7d8f915b807cab825e66525d1aa62b7c11a5396187f907432811946",
+          "compressed_bytes": 626
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__raw_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "1d8bf4e6d9811c30ff4063949ea1049c3acea7384e1efae520d9a1ffc6ceada2",
+          "compressed_bytes": 2464
+        }
+      },
+      "k_proj/identical_inner/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__identical_inner__direction_sharded.stablehlo.txt.gz",
+          "sha256": "55af1b5f77b3cffe640013854baa45d32eafff88cf272b577dc50904ea7f443e",
+          "compressed_bytes": 1271
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__identical_inner__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "58516d10fad08831dfb39024ab45ba8848d0a85be728a440d4eca702b4509273",
+          "compressed_bytes": 5158
+        }
+      },
+      "k_proj/collectives/raw_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__raw_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "18b50409d9a58b0712b556704fea93829fbef8a637dbf644537ec0ab26595d20",
+          "compressed_bytes": 625
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "a7a5105a589293619e22917485d4e7f82a7945a9cba424be00f51809a8d95cb5",
+          "compressed_bytes": 2770
+        }
+      },
+      "v_proj/collectives/input": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__input.stablehlo.txt.gz",
+          "sha256": "e5a756cf33de001a7beb912d0f4c20b796f4824491c900dd360f6f9f11b904f9",
+          "compressed_bytes": 515
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__input.optimized_hlo.txt.gz",
+          "sha256": "e894ce7d7b665bd6cb583c271ba22d312bf0d924b71ab22d3513c3b4242413d6",
+          "compressed_bytes": 1626
+        }
+      },
+      "v_proj/identical_inner/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__identical_inner__replicated.stablehlo.txt.gz",
+          "sha256": "5dfc289bf9cc206c7137cbf7736eaa238101c713c347456a3b9f96417840f01f",
+          "compressed_bytes": 1268
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__identical_inner__replicated.optimized_hlo.txt.gz",
+          "sha256": "c2ffe20e01eff915d2577ce50044670f8917554b395c1da33ddd5c548c60be7b",
+          "compressed_bytes": 4319
+        }
+      },
+      "v_proj/collectives/raw_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__raw_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "2e049c06e7d8f915b807cab825e66525d1aa62b7c11a5396187f907432811946",
+          "compressed_bytes": 626
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__raw_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "1d8bf4e6d9811c30ff4063949ea1049c3acea7384e1efae520d9a1ffc6ceada2",
+          "compressed_bytes": 2464
+        }
+      },
+      "v_proj/identical_inner/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__identical_inner__direction_sharded.stablehlo.txt.gz",
+          "sha256": "55af1b5f77b3cffe640013854baa45d32eafff88cf272b577dc50904ea7f443e",
+          "compressed_bytes": 1271
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__identical_inner__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "58516d10fad08831dfb39024ab45ba8848d0a85be728a440d4eca702b4509273",
+          "compressed_bytes": 5158
+        }
+      },
+      "v_proj/collectives/raw_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__raw_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "18b50409d9a58b0712b556704fea93829fbef8a637dbf644537ec0ab26595d20",
+          "compressed_bytes": 625
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "a7a5105a589293619e22917485d4e7f82a7945a9cba424be00f51809a8d95cb5",
+          "compressed_bytes": 2770
+        }
+      },
+      "q_proj/collectives/local_partials": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__local_partials.stablehlo.txt.gz",
+          "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+          "compressed_bytes": 501
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__local_partials.optimized_hlo.txt.gz",
+          "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+          "compressed_bytes": 1637
+        }
+      },
+      "q_proj/collectives/reduce/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+          "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+          "compressed_bytes": 530
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+          "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+          "compressed_bytes": 1174
+        }
+      },
+      "q_proj/collectives/reduce/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+          "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+          "compressed_bytes": 557
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+          "compressed_bytes": 1351
+        }
+      },
+      "q_proj/collectives/continuation/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__continuation__replicated.stablehlo.txt.gz",
+          "sha256": "73b42d791139ca4e8b0dea39687b72758794372f08c4d0791220f38b4aa8ec08",
+          "compressed_bytes": 1074
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__continuation__replicated.optimized_hlo.txt.gz",
+          "sha256": "e406e6a09342f93b6b5b40c6f191ce306330ab52def687f498902764cc143c2e",
+          "compressed_bytes": 3900
+        }
+      },
+      "q_proj/collectives/continuation/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__continuation__direction_sharded.stablehlo.txt.gz",
+          "sha256": "2541f2d3ad69f2cf4a542ef5d16167d34d683c9770744f941b42ee6b5890ac3a",
+          "compressed_bytes": 1078
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__continuation__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "f4ccbf06ea93821852ff923be9f7f952b1f6cda40b86f639e0d63fb24a6d738f",
+          "compressed_bytes": 4601
+        }
+      },
+      "k_proj/collectives/local_partials": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__local_partials.stablehlo.txt.gz",
+          "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+          "compressed_bytes": 501
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__local_partials.optimized_hlo.txt.gz",
+          "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+          "compressed_bytes": 1637
+        }
+      },
+      "k_proj/collectives/reduce/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+          "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+          "compressed_bytes": 530
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+          "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+          "compressed_bytes": 1174
+        }
+      },
+      "k_proj/collectives/reduce/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+          "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+          "compressed_bytes": 557
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+          "compressed_bytes": 1351
+        }
+      },
+      "k_proj/collectives/continuation/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__continuation__replicated.stablehlo.txt.gz",
+          "sha256": "73b42d791139ca4e8b0dea39687b72758794372f08c4d0791220f38b4aa8ec08",
+          "compressed_bytes": 1074
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__continuation__replicated.optimized_hlo.txt.gz",
+          "sha256": "e406e6a09342f93b6b5b40c6f191ce306330ab52def687f498902764cc143c2e",
+          "compressed_bytes": 3900
+        }
+      },
+      "k_proj/collectives/continuation/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__continuation__direction_sharded.stablehlo.txt.gz",
+          "sha256": "2541f2d3ad69f2cf4a542ef5d16167d34d683c9770744f941b42ee6b5890ac3a",
+          "compressed_bytes": 1078
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__continuation__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "f4ccbf06ea93821852ff923be9f7f952b1f6cda40b86f639e0d63fb24a6d738f",
+          "compressed_bytes": 4601
+        }
+      },
+      "v_proj/collectives/local_partials": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__local_partials.stablehlo.txt.gz",
+          "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+          "compressed_bytes": 501
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__local_partials.optimized_hlo.txt.gz",
+          "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+          "compressed_bytes": 1637
+        }
+      },
+      "v_proj/collectives/reduce/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+          "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+          "compressed_bytes": 530
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+          "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+          "compressed_bytes": 1174
+        }
+      },
+      "v_proj/collectives/reduce/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+          "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+          "compressed_bytes": 557
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+          "compressed_bytes": 1351
+        }
+      },
+      "v_proj/collectives/continuation/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__continuation__replicated.stablehlo.txt.gz",
+          "sha256": "73b42d791139ca4e8b0dea39687b72758794372f08c4d0791220f38b4aa8ec08",
+          "compressed_bytes": 1074
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__continuation__replicated.optimized_hlo.txt.gz",
+          "sha256": "e406e6a09342f93b6b5b40c6f191ce306330ab52def687f498902764cc143c2e",
+          "compressed_bytes": 3900
+        }
+      },
+      "v_proj/collectives/continuation/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__continuation__direction_sharded.stablehlo.txt.gz",
+          "sha256": "2541f2d3ad69f2cf4a542ef5d16167d34d683c9770744f941b42ee6b5890ac3a",
+          "compressed_bytes": 1078
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__continuation__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "f4ccbf06ea93821852ff923be9f7f952b1f6cda40b86f639e0d63fb24a6d738f",
+          "compressed_bytes": 4601
+        }
+      }
+    }
+  },
+  "memory": {
+    "finelog": {
+      "task_id": "/kaiyuew@stanford.edu/ema-gram-20-polar-collectives-v5e-8-20261103/0",
+      "attempt_id": 0,
+      "cluster": null,
+      "samples": 46,
+      "first_ts": "2026-11-03 07:14:00.903000",
+      "last_ts": "2026-11-03 07:18:58.473000",
+      "cumulative_host_peak_gib": 13.419921875,
+      "sampled_host_peak_gib": 13.419921875,
+      "reported_accelerator_mem_bytes": null
+    },
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "query": "SELECT task_id, attempt_id, \"cluster\", count(*) AS samples,\n       min(ts) AS first_ts, max(ts) AS last_ts,\n       max(memory_peak_mb)/1024.0 AS cumulative_host_peak_gib,\n       max(memory_mb)/1024.0 AS sampled_host_peak_gib,\n       max(accelerator_mem_bytes) AS reported_accelerator_mem_bytes\nFROM \"iris.task\"\nWHERE task_id='/kaiyuew@stanford.edu/ema-gram-20-polar-collectives-v5e-8-20261103/0'\n  AND attempt_id=0\n  AND ts >= TIMESTAMP '2026-11-03 07:13:00'\n  AND ts < TIMESTAMP '2026-11-03 07:30:00'\nGROUP BY task_id, attempt_id, \"cluster\"\n",
+    "semantics": "Schema-confirmed MiB; observed cumulative host peak; hub cluster null retained.",
+    "jax_allocator_peak_bytes_per_device": 7116572672,
+    "jax_limitation": "Allocator accounting is not total HBM"
+  },
+  "limitations": "Constraints and boundaries perturb compilation. Conditional numerical sensitivity, not runtime precision cause or original internal-path reproduction. No optimizer acceptance, warmed performance, training MFU or checkpoint restoration.",
+  "identical_partial_bank_hashes_verified_for_both_reductions": true,
+  "compiler_path_evidence": "compiler-frozen-collective-paths.json"
+}

@@ -2456,6 +2456,61 @@ v5e devices, one JAX process, the expected source and script hashes, and online
 W&B run `310521548952` with a successful logging check before kernels. One log
 observer owns this attempt. Numerical and compiler-path results are pending.
 
+### 2026-11-03 — Collective paths differ on identical frozen partials
+
+The [frozen-partial diagnostic](optimizer-polar-collectives-v5e-completed.json)
+succeeded on eight native v5e devices, attempt 0, task exit 0, verified at
+07:19 UTC. It completed 75 finite stages; 33 of 69 comparisons passed the fixed
+`rtol=atol=1e-5` gate. All fifteen fixed executables replayed bitwise. Online
+W&B run `310521548952` finished with collection complete and
+`candidate_accepted_for_training=false`.
+
+For each q/k/v group, both reduction executables consumed the same fingerprinted
+bank of device-local partial products. Their Gram outputs differed by at most
+2.3283064e-10, which passes the elementwise tolerance. Each reduction output
+matched the corresponding same-job raw-input first-Gram reference bitwise:
+all-reduce matched replicated output, and reduce-scatter matched sharded output.
+Holding normalized X and a continuation executable fixed, substituting these
+Gram outputs changed the final result by 0.539–0.589% relative Frobenius error,
+using the continuation supplied with all-reduce output as denominator.
+All six substitutions failed the fixed tolerance.
+
+For all three groups, the direction-sharded continuation supplied with
+all-reduce output matched the untouched sharded five-step polar bitwise.
+Supplying reduce-scatter output failed that reference. All replicated-output
+continuations failed both untouched five-step polar references (replicated and
+direction-sharded outputs). The 36 failed comparisons comprise
+three original-reference layout checks, six Gram-bank substitutions, six
+continuation-layout checks and 21 final-reference checks.
+
+The [compiler-path inspection](compiler-frozen-collective-paths.json) verified
+nine graphs and eighteen consumed objects. Each local-product graph contains one
+convolution with 128-column operands and no collective reduction; each
+reduction graph contains one collective and
+no matrix product. All-reduce uses `RotatedPincerEmitter` with
+`UniDirection1DRingStrategy`; reduce-scatter uses
+`SingleInputAllReduceScatterFusion` with `StrategyRing`. This control demonstrates
+numerical differences between these compiled collective paths on identical
+partial inputs, and their effect under fixed continuations. It does not identify
+the runtime summation order or precision, verify hidden original partial values,
+or explain the complete fused optimizer discrepancy.
+
+All 60 compiler objects, totaling 111,135 compressed bytes, passed checksum,
+size and decompression checks. Finelog observed a host peak of 13.419922 GiB
+across 46 samples through 07:18:58 UTC. The JAX allocator peak was 7,116,572,672
+bytes per device; this is not total HBM. No warmed performance or training MFU
+was measured. The log observer exited naturally; no experiment is running or
+queued, and no optimizer is accepted.
+
+Next map the first-Gram collective ancestry in the existing original and
+matrix-layout full-update compiler records to the validated isolated paths.
+Earlier equality of all-reduce configurations in HLO entry computations does
+not by itself compare
+enclosing collective fusions. Check group/iteration mapping and both operation
+and enclosing-fusion settings before deciding whether this isolated mechanism
+applies to the full-update discrepancy. Use existing records; no new numerical
+submission or precision/tiling intervention is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

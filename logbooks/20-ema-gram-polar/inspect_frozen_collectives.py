@@ -53,6 +53,19 @@ def main():
             result["graphs"][key] = dict(
                 artifacts=artifacts[key],
                 products=products,
+                product_operand_declarations=[
+                    [
+                        next(
+                            r["shape"]
+                            for r in rows
+                            if r["name"] == operand
+                            and r["computation"] == product["computation"]
+                            and r["context"] == product["context"]
+                        )
+                        for operand in product["operands"]
+                    ]
+                    for product in products
+                ],
                 collectives=collectives,
                 backend_configs=configs,
                 partial_bank=report["partial_banks"][group],

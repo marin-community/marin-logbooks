@@ -416,7 +416,7 @@
     ],
     "finding": "All six isolated layout pairs have identical rooted product-producing records with names/metadata removed. Replicated output uses standalone RotatedPincerEmitter/UniDirection1DRingStrategy; sharded output uses SingleInputAllReduceScatterFusion/StrategyRing. Raw isolated producers match original sharded firstA producers, which use the standalone reduction. Static records do not establish runtime values, precision, reduction order or cause.",
     "next_decision": {
-      "state": "One sequential --polar-collectives TPU diagnostic RUNNING; no concurrent candidate",
+      "state": "TPU control terminal SUCCEEDED; results in optimizer-polar-collectives-v5e-completed.json; no optimizer accepted",
       "question": "Do two controlled reduction paths produce different A values when each device partial is held fixed and the same bank is supplied to both paths, and how do those values affect a fixed continuation?",
       "design": "Compute and fingerprint one common bank of local first-Gram partial products on full q/k/v shapes using shared normalization and unchanged source/default precision. Freeze that bank outside the reduction executables. Evaluate each reduction path on identical partials, with fixed executables and bitwise replays; inspect compiled collective paths. Feed resulting A banks and identical normalized X to existing fixed continuations under controlled output layouts; compare untouched shared polar references at rtol=atol=1e-5 and bitwise. One device output bank/executable at a time; block, host-offload, preserve incremental finite reports and compiler checksums.",
       "limitations": "Materializing partials and explicit collective controls perturb compilation and may not reproduce original runtime partial values or collective algorithms. Failed reference agreement forbids original-path interpretation; matching final outputs does not prove internal identity. No precision or tiling override, numerical tolerance relaxation or optimizer acceptance.",
@@ -424,5 +424,19 @@
       "implementation_plan": "optimizer-polar-collectives-plan.json",
       "startup_evidence": "optimizer-polar-collectives-started.json"
     }
+  },
+  "collectives_next": {
+    "state": "Static mapping only; no new numerical submission selected",
+    "question": "Do the validated isolated collective paths occur at corresponding first-Gram operations in original and matrix-layout full updates?",
+    "inputs": [
+      "compiler-polar-paths-completed.json",
+      "compiler-matched-paths.json",
+      "compiler-polar-lineage-collectives-completed.json",
+      "compiler-frozen-collective-paths.json",
+      "optimizer-polar-collectives-v5e-completed.json"
+    ],
+    "procedure": "Use existing dependency/lineage records to map first A for q/k/v in full fused original and matrix updates. Follow product-to-collective ancestry and enclosing collective fusions, preserve tuple-leaf associations and repeated operands. Compare operation and enclosing-fusion configurations with the validated isolated all-reduce and reduce-scatter paths. Earlier equal entry all-reduce configs alone do not compare enclosing fusions. Verify consumed checksums; keep large regional HLO in-region. Use existing local records first; no analysis accelerator.",
+    "interpretation": "Controlled identical partial inputs establish a numerical difference between these two compiled collective paths. Runtime summation order/precision, original internal partial identity and full optimizer mechanism remain unresolved. Do not select a full optimizer intervention solely from static config counts.",
+    "future_gate": "Own online CPU validation and published exact source before one sequential numerical diagnostic. Any optimizer intervention requires untouched original full-update all28leaf comparison at fixed1e-5; no precision/tiling override, training/MFU claim or checkpoint resume."
   }
 }

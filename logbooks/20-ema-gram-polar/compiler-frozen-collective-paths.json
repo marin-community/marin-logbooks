@@ -1,0 +1,1356 @@
+{
+  "graphs": {
+    "q_proj/collectives/local_partials": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__local_partials.stablehlo.txt.gz",
+          "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+          "compressed_bytes": 501
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__local_partials.optimized_hlo.txt.gz",
+          "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+          "compressed_bytes": 1637
+        }
+      },
+      "products": [
+        {
+          "identity": "[[\"main.0_spmd/convolution_bitcast_fusion\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+          "context": [
+            "main.0_spmd/convolution_bitcast_fusion"
+          ],
+          "computation": "fused_computation",
+          "selected_tuple_path": [],
+          "name": "convolution-base-dilated.1",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion",
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(local_product)/shard_map/dot_general\" stack_frame_id=7}",
+          "instruction": "%convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion, %fusion), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(local_product)/shard_map/dot_general\" stack_frame_id=7}"
+        }
+      ],
+      "product_operand_declarations": [
+        [
+          "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+          "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+        ]
+      ],
+      "collectives": [],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"convolution_bitcast_fusion\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "9687040"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "115824",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "11",
+                "13",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "1",
+                "1",
+                "10",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "11",
+                "128",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "11",
+                "13",
+                "8"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        {
+          "identity": "[[\"main.0_spmd/convolution_bitcast_fusion\", \"fused_computation/fusion\"], \"fused_computation.1\", \"dynamic-slice.3\", []]",
+          "config": {
+            "flag_configs": [],
+            "indices_config": {
+              "index_known_bits": [
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294967295"
+                },
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294967295"
+                },
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294966399"
+                }
+              ],
+              "is_index_aligned": []
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"copy-done\", []]",
+          "config": {
+            "dma_priority": 1,
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"copy-start\", [0]]",
+          "config": {
+            "dma_priority": 1,
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"multiply.1\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "2"
+                  ]
+                }
+              ]
+            },
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"convert\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "c21f86dbc29db42807faf99e6563f682a609e05ba484b11702f52d1dff12957b",
+        "per_device_sha256": [
+          "a560132a464f069c9828f27f782bfd1a6f65e453fc322af7a1543bf960345ae5",
+          "d85a8e8eaf3f1d42cfc7f3f36afe0f3ba9066d619e4897b8ecfa680e7c4b5069",
+          "3dd567112275194bcc1e24b040e235d676ae8d6833d71fb4250f7b459c140cfb",
+          "d3de69ce2a11bafec843820b710bf1bfe587886647ae5379ea2eb7655a0e3232",
+          "dfb57a19c017ef470a55b62a6a2aedd5a7b40a594149b7398263f5a8a60476ab",
+          "4cadf14b40366a16bcc791a9b14938e62b918ce38f66b5a74d5ca0a6b36bf704",
+          "efa54d98e037f2ed16445168c15d95f746d4e6c9dc1dc6b44cae845280968cbf",
+          "1e1a032161859cb146d38f1c0b4a3576303795a9ff0337ae1b1d2dd377a540d4"
+        ],
+        "normalized_input_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.37983229300152743,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__local_partials.stablehlo.txt.gz",
+            "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+            "compressed_bytes": 501
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__local_partials.optimized_hlo.txt.gz",
+            "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+            "compressed_bytes": 1637
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "invocation_order": [
+          "input",
+          "input_replay"
+        ],
+        "input_sha256": {
+          "input": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "q_proj/collectives/reduce/replicated": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+          "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+          "compressed_bytes": 530
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+          "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+          "compressed_bytes": 1174
+        }
+      },
+      "products": [],
+      "product_operand_declarations": [],
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"psum_invariant.7\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "psum_invariant.7",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "bitcast.1"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/psum_invariant\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %psum_invariant.7 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%bitcast.1), channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/psum_invariant\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"psum_invariant.7\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "barrier_config": {
+              "barrier_type": "CUSTOM",
+              "id": "0"
+            },
+            "collective_algorithm_config": {
+              "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+              "emitter": "RotatedPincerEmitter",
+              "strategy": "UniDirection1DRingStrategy"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [
+              {
+                "memory_space": "0",
+                "offset": "0",
+                "size": "67108864"
+              }
+            ],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "13860864"
+              }
+            ]
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "c21f86dbc29db42807faf99e6563f682a609e05ba484b11702f52d1dff12957b",
+        "per_device_sha256": [
+          "a560132a464f069c9828f27f782bfd1a6f65e453fc322af7a1543bf960345ae5",
+          "d85a8e8eaf3f1d42cfc7f3f36afe0f3ba9066d619e4897b8ecfa680e7c4b5069",
+          "3dd567112275194bcc1e24b040e235d676ae8d6833d71fb4250f7b459c140cfb",
+          "d3de69ce2a11bafec843820b710bf1bfe587886647ae5379ea2eb7655a0e3232",
+          "dfb57a19c017ef470a55b62a6a2aedd5a7b40a594149b7398263f5a8a60476ab",
+          "4cadf14b40366a16bcc791a9b14938e62b918ce38f66b5a74d5ca0a6b36bf704",
+          "efa54d98e037f2ed16445168c15d95f746d4e6c9dc1dc6b44cae845280968cbf",
+          "1e1a032161859cb146d38f1c0b4a3576303795a9ff0337ae1b1d2dd377a540d4"
+        ],
+        "normalized_input_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.1824905969988322,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+            "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+            "compressed_bytes": 530
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+            "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+            "compressed_bytes": 1174
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)",
+        "invocation_order": [
+          "partials",
+          "partials_replay"
+        ],
+        "input_sha256": {
+          "partials": "c21f86dbc29db42807faf99e6563f682a609e05ba484b11702f52d1dff12957b"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "q_proj/collectives/reduce/direction_sharded": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+          "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+          "compressed_bytes": 557
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+          "compressed_bytes": 1351
+        }
+      },
+      "products": [],
+      "product_operand_declarations": [],
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"reduce_scatter.7\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "reduce_scatter.7",
+          "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+          "opcode": "reduce-scatter",
+          "operands": [
+            "bitcast.1"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, dimensions={2}, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/reduce_scatter\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte\",\"emitter\":\"SingleInputAllReduceScatterFusion\",\"strategy\":\"StrategyRing\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"8650752\"}]}",
+          "instruction": "ROOT %reduce_scatter.7 = f32[11,1024,128]{2,1,0:T(8,128)} reduce-scatter(%bitcast.1), channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, dimensions={2}, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/reduce_scatter\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte\",\"emitter\":\"SingleInputAllReduceScatterFusion\",\"strategy\":\"StrategyRing\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"8650752\"}]}"
+        }
+      ],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"reduce_scatter.7\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "barrier_config": {
+              "barrier_type": "CUSTOM",
+              "id": "0"
+            },
+            "collective_algorithm_config": {
+              "debug": "\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte",
+              "emitter": "SingleInputAllReduceScatterFusion",
+              "strategy": "StrategyRing"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "8650752"
+              }
+            ]
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "c21f86dbc29db42807faf99e6563f682a609e05ba484b11702f52d1dff12957b",
+        "per_device_sha256": [
+          "a560132a464f069c9828f27f782bfd1a6f65e453fc322af7a1543bf960345ae5",
+          "d85a8e8eaf3f1d42cfc7f3f36afe0f3ba9066d619e4897b8ecfa680e7c4b5069",
+          "3dd567112275194bcc1e24b040e235d676ae8d6833d71fb4250f7b459c140cfb",
+          "d3de69ce2a11bafec843820b710bf1bfe587886647ae5379ea2eb7655a0e3232",
+          "dfb57a19c017ef470a55b62a6a2aedd5a7b40a594149b7398263f5a8a60476ab",
+          "4cadf14b40366a16bcc791a9b14938e62b918ce38f66b5a74d5ca0a6b36bf704",
+          "efa54d98e037f2ed16445168c15d95f746d4e6c9dc1dc6b44cae845280968cbf",
+          "1e1a032161859cb146d38f1c0b4a3576303795a9ff0337ae1b1d2dd377a540d4"
+        ],
+        "normalized_input_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.14058421000663657,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+            "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+            "compressed_bytes": 557
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/q_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+            "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+            "compressed_bytes": 1351
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device)",
+        "invocation_order": [
+          "partials",
+          "partials_replay"
+        ],
+        "input_sha256": {
+          "partials": "c21f86dbc29db42807faf99e6563f682a609e05ba484b11702f52d1dff12957b"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "k_proj/collectives/local_partials": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__local_partials.stablehlo.txt.gz",
+          "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+          "compressed_bytes": 501
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__local_partials.optimized_hlo.txt.gz",
+          "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+          "compressed_bytes": 1637
+        }
+      },
+      "products": [
+        {
+          "identity": "[[\"main.0_spmd/convolution_bitcast_fusion\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+          "context": [
+            "main.0_spmd/convolution_bitcast_fusion"
+          ],
+          "computation": "fused_computation",
+          "selected_tuple_path": [],
+          "name": "convolution-base-dilated.1",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion",
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(local_product)/shard_map/dot_general\" stack_frame_id=7}",
+          "instruction": "%convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion, %fusion), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(local_product)/shard_map/dot_general\" stack_frame_id=7}"
+        }
+      ],
+      "product_operand_declarations": [
+        [
+          "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+          "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+        ]
+      ],
+      "collectives": [],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"convolution_bitcast_fusion\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "9687040"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "115824",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "11",
+                "13",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "1",
+                "1",
+                "10",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "11",
+                "128",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "11",
+                "13",
+                "8"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        {
+          "identity": "[[\"main.0_spmd/convolution_bitcast_fusion\", \"fused_computation/fusion\"], \"fused_computation.1\", \"dynamic-slice.3\", []]",
+          "config": {
+            "flag_configs": [],
+            "indices_config": {
+              "index_known_bits": [
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294967295"
+                },
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294967295"
+                },
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294966399"
+                }
+              ],
+              "is_index_aligned": []
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"copy-done\", []]",
+          "config": {
+            "dma_priority": 1,
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"copy-start\", [0]]",
+          "config": {
+            "dma_priority": 1,
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"multiply.1\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "2"
+                  ]
+                }
+              ]
+            },
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"convert\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "c1223ac9558ffda73da90a31adf151365345a40c200ea7c6b499a57983ff3f45",
+        "per_device_sha256": [
+          "3be67bbd36a79527139d23ea73b62e147eaad025c7d0f800b7c913f2e42901f4",
+          "ce531cf613a898aad352a2bd2eb90e073f4178e9aabbf934c6a48e7573b2b333",
+          "4d81b56b5047d63270abfd31e2b76022c1d0c2d2ff67502774a34b66ea0f00f3",
+          "0ed369d45ffcc1677c3e5af985e0ae96886d507940c44fe9011ba4875f5c7ebf",
+          "a4eb7dcac29b24873edfc07df12148937e6751d09053a36e2e30a5c44ebd35d5",
+          "1c18964cf58edbde54041e8322b1c1b519e0879b6f081091fdeda7062f1e111a",
+          "947ce31db773f2da2ec3e94434d3a148aee0a6ad61f8dd404ff5b15d626efa38",
+          "8846a839772c485a70ff5e62989e34b507dd43c20247892f335acab6b534c353"
+        ],
+        "normalized_input_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.357833895002841,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__local_partials.stablehlo.txt.gz",
+            "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+            "compressed_bytes": 501
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__local_partials.optimized_hlo.txt.gz",
+            "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+            "compressed_bytes": 1637
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "invocation_order": [
+          "input",
+          "input_replay"
+        ],
+        "input_sha256": {
+          "input": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "k_proj/collectives/reduce/replicated": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+          "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+          "compressed_bytes": 530
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+          "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+          "compressed_bytes": 1174
+        }
+      },
+      "products": [],
+      "product_operand_declarations": [],
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"psum_invariant.7\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "psum_invariant.7",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "bitcast.1"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/psum_invariant\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %psum_invariant.7 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%bitcast.1), channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/psum_invariant\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"psum_invariant.7\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "barrier_config": {
+              "barrier_type": "CUSTOM",
+              "id": "0"
+            },
+            "collective_algorithm_config": {
+              "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+              "emitter": "RotatedPincerEmitter",
+              "strategy": "UniDirection1DRingStrategy"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [
+              {
+                "memory_space": "0",
+                "offset": "0",
+                "size": "67108864"
+              }
+            ],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "13860864"
+              }
+            ]
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "c1223ac9558ffda73da90a31adf151365345a40c200ea7c6b499a57983ff3f45",
+        "per_device_sha256": [
+          "3be67bbd36a79527139d23ea73b62e147eaad025c7d0f800b7c913f2e42901f4",
+          "ce531cf613a898aad352a2bd2eb90e073f4178e9aabbf934c6a48e7573b2b333",
+          "4d81b56b5047d63270abfd31e2b76022c1d0c2d2ff67502774a34b66ea0f00f3",
+          "0ed369d45ffcc1677c3e5af985e0ae96886d507940c44fe9011ba4875f5c7ebf",
+          "a4eb7dcac29b24873edfc07df12148937e6751d09053a36e2e30a5c44ebd35d5",
+          "1c18964cf58edbde54041e8322b1c1b519e0879b6f081091fdeda7062f1e111a",
+          "947ce31db773f2da2ec3e94434d3a148aee0a6ad61f8dd404ff5b15d626efa38",
+          "8846a839772c485a70ff5e62989e34b507dd43c20247892f335acab6b534c353"
+        ],
+        "normalized_input_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.1925405360016157,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+            "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+            "compressed_bytes": 530
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+            "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+            "compressed_bytes": 1174
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)",
+        "invocation_order": [
+          "partials",
+          "partials_replay"
+        ],
+        "input_sha256": {
+          "partials": "c1223ac9558ffda73da90a31adf151365345a40c200ea7c6b499a57983ff3f45"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "k_proj/collectives/reduce/direction_sharded": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+          "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+          "compressed_bytes": 557
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+          "compressed_bytes": 1351
+        }
+      },
+      "products": [],
+      "product_operand_declarations": [],
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"reduce_scatter.7\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "reduce_scatter.7",
+          "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+          "opcode": "reduce-scatter",
+          "operands": [
+            "bitcast.1"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, dimensions={2}, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/reduce_scatter\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte\",\"emitter\":\"SingleInputAllReduceScatterFusion\",\"strategy\":\"StrategyRing\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"8650752\"}]}",
+          "instruction": "ROOT %reduce_scatter.7 = f32[11,1024,128]{2,1,0:T(8,128)} reduce-scatter(%bitcast.1), channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, dimensions={2}, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/reduce_scatter\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte\",\"emitter\":\"SingleInputAllReduceScatterFusion\",\"strategy\":\"StrategyRing\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"8650752\"}]}"
+        }
+      ],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"reduce_scatter.7\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "barrier_config": {
+              "barrier_type": "CUSTOM",
+              "id": "0"
+            },
+            "collective_algorithm_config": {
+              "debug": "\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte",
+              "emitter": "SingleInputAllReduceScatterFusion",
+              "strategy": "StrategyRing"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "8650752"
+              }
+            ]
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "c1223ac9558ffda73da90a31adf151365345a40c200ea7c6b499a57983ff3f45",
+        "per_device_sha256": [
+          "3be67bbd36a79527139d23ea73b62e147eaad025c7d0f800b7c913f2e42901f4",
+          "ce531cf613a898aad352a2bd2eb90e073f4178e9aabbf934c6a48e7573b2b333",
+          "4d81b56b5047d63270abfd31e2b76022c1d0c2d2ff67502774a34b66ea0f00f3",
+          "0ed369d45ffcc1677c3e5af985e0ae96886d507940c44fe9011ba4875f5c7ebf",
+          "a4eb7dcac29b24873edfc07df12148937e6751d09053a36e2e30a5c44ebd35d5",
+          "1c18964cf58edbde54041e8322b1c1b519e0879b6f081091fdeda7062f1e111a",
+          "947ce31db773f2da2ec3e94434d3a148aee0a6ad61f8dd404ff5b15d626efa38",
+          "8846a839772c485a70ff5e62989e34b507dd43c20247892f335acab6b534c353"
+        ],
+        "normalized_input_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.13385240999923553,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+            "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+            "compressed_bytes": 557
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/k_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+            "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+            "compressed_bytes": 1351
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device)",
+        "invocation_order": [
+          "partials",
+          "partials_replay"
+        ],
+        "input_sha256": {
+          "partials": "c1223ac9558ffda73da90a31adf151365345a40c200ea7c6b499a57983ff3f45"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "v_proj/collectives/local_partials": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__local_partials.stablehlo.txt.gz",
+          "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+          "compressed_bytes": 501
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__local_partials.optimized_hlo.txt.gz",
+          "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+          "compressed_bytes": 1637
+        }
+      },
+      "products": [
+        {
+          "identity": "[[\"main.0_spmd/convolution_bitcast_fusion\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+          "context": [
+            "main.0_spmd/convolution_bitcast_fusion"
+          ],
+          "computation": "fused_computation",
+          "selected_tuple_path": [],
+          "name": "convolution-base-dilated.1",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "operands": [
+            "fusion",
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(local_product)/shard_map/dot_general\" stack_frame_id=7}",
+          "instruction": "%convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)} convolution(%fusion, %fusion), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(local_product)/shard_map/dot_general\" stack_frame_id=7}"
+        }
+      ],
+      "product_operand_declarations": [
+        [
+          "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+          "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+        ]
+      ],
+      "collectives": [],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"convolution_bitcast_fusion\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "9687040"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "115824",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "11",
+                "13",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "1",
+                "1",
+                "10",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "11",
+                "128",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "11",
+                "13",
+                "8"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        {
+          "identity": "[[\"main.0_spmd/convolution_bitcast_fusion\", \"fused_computation/fusion\"], \"fused_computation.1\", \"dynamic-slice.3\", []]",
+          "config": {
+            "flag_configs": [],
+            "indices_config": {
+              "index_known_bits": [
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294967295"
+                },
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294967295"
+                },
+                {
+                  "bitwidth": "32",
+                  "ones": "0",
+                  "zeroes": "4294966399"
+                }
+              ],
+              "is_index_aligned": []
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"copy-done\", []]",
+          "config": {
+            "dma_priority": 1,
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"copy-start\", [0]]",
+          "config": {
+            "dma_priority": 1,
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"multiply.1\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "2"
+                  ]
+                }
+              ]
+            },
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        },
+        {
+          "identity": "[[], \"main.0_spmd\", \"convert\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "flag_configs": [],
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": []
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "e7ff39269712b456362eed0c26fd4020d4c9c548f964cad4a656fe4f08bc821e",
+        "per_device_sha256": [
+          "9aad0f650bd62821822b36959e91fb3757ed843d67a35093eba8802da8f2f5e7",
+          "c45befbaeee74bac543b2e529ca8558f2936546294ef044c1cf715a942efb196",
+          "2662555b45dc551ca8eb8d6b44b9023dee5ecfdc982e2bd2b3f6cbd9adfb9bb4",
+          "efd8f993fb6f3a6a286b70e521dbcf2f3520f492592f8345574656c7cd4cfd3a",
+          "3542b5027e1989f315bb09aa0293d0432efd02cfed8543802ab445db94c12784",
+          "86182f3d5f0bff3d24d22a5ff2999bad4ee9880f9993038ce46f7f481adb9bb6",
+          "c0f249dd54da50fce554cce6f435733ed1b777369105aa05692b44462a83db38",
+          "72055ed603540c335491e53db829c93cbf3bb5edca31dd5c930b96cb891f920f"
+        ],
+        "normalized_input_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.35857475500233704,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__local_partials.stablehlo.txt.gz",
+            "sha256": "38b2c485659e06038e06a792cba1f3096cc0a06290b6065b15c35618e71457a9",
+            "compressed_bytes": 501
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__local_partials.optimized_hlo.txt.gz",
+            "sha256": "c1e1407adfde1aa6df222a110e03bb5bedf1d341cf48c102369188857e6e7cb4",
+            "compressed_bytes": 1637
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "invocation_order": [
+          "input",
+          "input_replay"
+        ],
+        "input_sha256": {
+          "input": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "v_proj/collectives/reduce/replicated": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+          "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+          "compressed_bytes": 530
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+          "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+          "compressed_bytes": 1174
+        }
+      },
+      "products": [],
+      "product_operand_declarations": [],
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"psum_invariant.7\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "psum_invariant.7",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "bitcast.1"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/psum_invariant\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %psum_invariant.7 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%bitcast.1), channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/psum_invariant\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"psum_invariant.7\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "barrier_config": {
+              "barrier_type": "CUSTOM",
+              "id": "0"
+            },
+            "collective_algorithm_config": {
+              "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+              "emitter": "RotatedPincerEmitter",
+              "strategy": "UniDirection1DRingStrategy"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [
+              {
+                "memory_space": "0",
+                "offset": "0",
+                "size": "67108864"
+              }
+            ],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "13860864"
+              }
+            ]
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "e7ff39269712b456362eed0c26fd4020d4c9c548f964cad4a656fe4f08bc821e",
+        "per_device_sha256": [
+          "9aad0f650bd62821822b36959e91fb3757ed843d67a35093eba8802da8f2f5e7",
+          "c45befbaeee74bac543b2e529ca8558f2936546294ef044c1cf715a942efb196",
+          "2662555b45dc551ca8eb8d6b44b9023dee5ecfdc982e2bd2b3f6cbd9adfb9bb4",
+          "efd8f993fb6f3a6a286b70e521dbcf2f3520f492592f8345574656c7cd4cfd3a",
+          "3542b5027e1989f315bb09aa0293d0432efd02cfed8543802ab445db94c12784",
+          "86182f3d5f0bff3d24d22a5ff2999bad4ee9880f9993038ce46f7f481adb9bb6",
+          "c0f249dd54da50fce554cce6f435733ed1b777369105aa05692b44462a83db38",
+          "72055ed603540c335491e53db829c93cbf3bb5edca31dd5c930b96cb891f920f"
+        ],
+        "normalized_input_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.18678141700365813,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__replicated.stablehlo.txt.gz",
+            "sha256": "0a65057751d9b7e40b36681aa49c1784aeef506a35748915dc00d473dbf29f90",
+            "compressed_bytes": 530
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__replicated.optimized_hlo.txt.gz",
+            "sha256": "a2013bcffcc8d6d6fc11f7ee6d0614eb739a34bd8fd75dbe6675ad5857478190",
+            "compressed_bytes": 1174
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(), memory_kind=device)",
+        "invocation_order": [
+          "partials",
+          "partials_replay"
+        ],
+        "input_sha256": {
+          "partials": "e7ff39269712b456362eed0c26fd4020d4c9c548f964cad4a656fe4f08bc821e"
+        },
+        "replay_bitwise_equal": true
+      }
+    },
+    "v_proj/collectives/reduce/direction_sharded": {
+      "artifacts": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+          "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+          "compressed_bytes": 557
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+          "compressed_bytes": 1351
+        }
+      },
+      "products": [],
+      "product_operand_declarations": [],
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"reduce_scatter.7\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "reduce_scatter.7",
+          "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+          "opcode": "reduce-scatter",
+          "operands": [
+            "bitcast.1"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, dimensions={2}, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/reduce_scatter\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte\",\"emitter\":\"SingleInputAllReduceScatterFusion\",\"strategy\":\"StrategyRing\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"8650752\"}]}",
+          "instruction": "ROOT %reduce_scatter.7 = f32[11,1024,128]{2,1,0:T(8,128)} reduce-scatter(%bitcast.1), channel_id=1, replica_groups=mesh['data'=8] {'data'}, use_global_device_ids=true, dimensions={2}, to_apply=%region_0.0, metadata={op_name=\"jit(reduce_local)/shard_map/reduce_scatter\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte\",\"emitter\":\"SingleInputAllReduceScatterFusion\",\"strategy\":\"StrategyRing\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"8650752\"}]}"
+        }
+      ],
+      "backend_configs": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"reduce_scatter.7\", []]",
+          "config": {
+            "aliasing_operands": {
+              "lists": []
+            },
+            "barrier_config": {
+              "barrier_type": "CUSTOM",
+              "id": "0"
+            },
+            "collective_algorithm_config": {
+              "debug": "\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte",
+              "emitter": "SingleInputAllReduceScatterFusion",
+              "strategy": "StrategyRing"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "8650752"
+              }
+            ]
+          }
+        }
+      ],
+      "partial_bank": {
+        "shape": [
+          8,
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "sha256": "e7ff39269712b456362eed0c26fd4020d4c9c548f964cad4a656fe4f08bc821e",
+        "per_device_sha256": [
+          "9aad0f650bd62821822b36959e91fb3757ed843d67a35093eba8802da8f2f5e7",
+          "c45befbaeee74bac543b2e529ca8558f2936546294ef044c1cf715a942efb196",
+          "2662555b45dc551ca8eb8d6b44b9023dee5ecfdc982e2bd2b3f6cbd9adfb9bb4",
+          "efd8f993fb6f3a6a286b70e521dbcf2f3520f492592f8345574656c7cd4cfd3a",
+          "3542b5027e1989f315bb09aa0293d0432efd02cfed8543802ab445db94c12784",
+          "86182f3d5f0bff3d24d22a5ff2999bad4ee9880f9993038ce46f7f481adb9bb6",
+          "c0f249dd54da50fce554cce6f435733ed1b777369105aa05692b44462a83db38",
+          "72055ed603540c335491e53db829c93cbf3bb5edca31dd5c930b96cb891f920f"
+        ],
+        "normalized_input_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270"
+      },
+      "fixed_executable": {
+        "compile_count": 1,
+        "compile_seconds": 0.13860229100100696,
+        "compiler_artifacts": {
+          "stablehlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__direction_sharded.stablehlo.txt.gz",
+            "sha256": "c04e20708f9bf9494e64104b1a040f53378af4bfbeda3cc0dce6073132decd99",
+            "compressed_bytes": 557
+          },
+          "optimized_hlo": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8/ema-gram-20-attribution-310521548952/v_proj__collectives__reduce__direction_sharded.optimized_hlo.txt.gz",
+            "sha256": "9c60260ea812fec45203bafdb402c0797563c1590a99d9cf054e14c00433c7bb",
+            "compressed_bytes": 1351
+          }
+        },
+        "input_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P('data', None, None, None), memory_kind=device)",
+        "output_shardings": "NamedSharding(mesh=Mesh('data': 8, axis_types=(Auto,)), spec=P(None, None, 'data'), memory_kind=device)",
+        "invocation_order": [
+          "partials",
+          "partials_replay"
+        ],
+        "input_sha256": {
+          "partials": "e7ff39269712b456362eed0c26fd4020d4c9c548f964cad4a656fe4f08bc821e"
+        },
+        "replay_bitwise_equal": true
+      }
+    }
+  },
+  "consumed_files": 18,
+  "limitations": "Dependency-visible compiler records only. Collective names and configurations do not establish runtime precision, reduction order, original partial values or full optimizer equivalence."
+}
