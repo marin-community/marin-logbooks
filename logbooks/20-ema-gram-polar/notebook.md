@@ -4103,6 +4103,25 @@ Both full 28-leaf numerical substitution gates remain failed. The next static qu
 [validation](compiler-record-coverage-validation.json) and
 [reproducible source](consolidate_compiler_records.py) retain the evidence.
 
+## 2026-11-03 16:30 UTC — Product-frontier inputs expose a deeper down route change
+
+The regional CPU extraction traced both operands of fourteen previously uninspected product frontiers in each matrix graph. All 28 unchanged-evaluator signatures and all 28 paired-capture signatures match the untouched controls. Column substitution matches 17 of 28. These are static operand-route comparisons, separate from the full 28-leaf numerical reference gates, which remain failed for both substitution solvers.
+
+The new down difference feeds operand 1 of the fifth polar update's scaled_A_A product, the source expression (cA)A. In untouched, evaluator and paired-capture graphs, the route reaches an AsyncCollectiveDone fusion directly from the consuming fusion's parameter. Substitution inserts a copy-done/copy-start pair on that route before reaching its own AsyncCollectiveDone fusion. The reached custom-call outputs remain opaque. The normalized comparator stops at the fusion-versus-copy-done mismatch; it does not establish equality of the remaining producer subtree. The other five inspected down operand routes match. The preceding report's six matching down routes stopped at shallower product frontiers and did not cover this new difference.
+
+The other ten substitution differences include three relative_gram_power operand routes with only recorded all-reduce channel-ID changes within their bounded signatures; two gate Gram-refresh inputs with S(1) declaration tags; two up Gram-refresh inputs encountering an entry gradient parameter where controls have a copy; and three o polar-product inputs with S(1) tags or producer-route changes. Up and o remain passing numerical controls despite their changed routes. Recorded bf16 declarations and S(1) tags are compiler evidence, not a new source-precision override or proof of runtime arithmetic precision. Neither copies, channel renumbering nor tags establish the cause of a numerical failure.
+
+Targets retain exact graph, caller context, computation, instruction and operand position from the coverage index. Ten products use the existing dependency-mapped polar roles; four use gate/up Gram-refresh and relative-power source scopes. Three closure rounds recovered forty bodies per graph, with no requested records missing. Traversal stops at the next product, source parameter or opaque boundary; recovering requested records does not complete semantic provenance. Signatures retain shapes, attributes, constants and ordered connections while normalizing instruction/computation identifiers and source-wrapper labels. Raw traces preserve caller contexts and repeated positions; recursive signatures do not distinguish sharing.
+
+The CPU-only task succeeded attempt 0/exit 0, UID cbdaa50702c1, with canonical task/job status independently verified at 16:26:57–58 UTC. Published source 4ea554f09f2f7ccc5c07b1fb48585aca7e6b0fff ran on four CPUs/8 GiB/10 GiB in us-west4 with default preemption retries and no wall-clock limit. All four optimized HLO size/SHA checks passed regionally; large HLO stayed there. The 1,676,770-byte report passed exact GCS readback, SHA 9c6c9b75fab8ca0ca64dba66bbfa179c72858ed0fbf106f8cdef6a145d5e2e0f. Fixtures passed for exact target roles, missing/duplicate rejection, operand ordering, wrong-root/semantic-swap rejection, literal mutation and all 28 evaluator comparisons.
+
+Next is static design only: use saved records first to compare the declared Done-to-Start input bindings behind this down route, retaining the paired-capture and passing o controls. Select endpoints by dependencies and exact caller context, preserve repeated tuple projections, and keep custom-call outputs opaque. Any needed regional extraction must publish exact source, manifest and checksums before CPU-only parsing with HLO identity checks. No numerical intervention or optimizer/training/MFU acceptance is selected. No experiment or observer remains; PR monitoring stays handed off after its twelve-hour timeout. The research heartbeat remains active.
+
+[Completion](compiler-frontier-operands-completed.json),
+[comparison](compiler-frontier-operands-comparison.json),
+[down route records](compiler-frontier-down-route.json) and
+[validation](compiler-frontier-operands-validation.json) retain the evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

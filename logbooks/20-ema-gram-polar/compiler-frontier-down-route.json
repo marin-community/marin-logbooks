@@ -1,0 +1,640 @@
+{
+  "report_sha256": "9c6c9b75fab8ca0ca64dba66bbfa179c72858ed0fbf106f8cdef6a145d5e2e0f",
+  "target": "down_proj/polar/5/scaled_A_A",
+  "operand_position": 1,
+  "limitation": "Declared routes only; all custom-call outputs remain opaque. No runtime values, precision, order or cause claim.",
+  "graphs": {
+    "matrix_untouched": {
+      "root": 0,
+      "records": [
+        {
+          "computation": "async_collective_fusion.145135",
+          "context": [
+            "main.530_spmd/fusion.145135"
+          ],
+          "tuple_path": [],
+          "name": "fusion.145138",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "param_9.2392"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%bitcast_fusion.6506.clone.clone",
+          "instruction": "%fusion.145138 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} fusion(%param_9.2392), kind=kLoop, calls=%bitcast_fusion.6506.clone.clone"
+        },
+        {
+          "computation": "bitcast_fusion.6506.clone.clone",
+          "context": [
+            "main.530_spmd/fusion.145135",
+            "async_collective_fusion.145135/fusion.145138"
+          ],
+          "tuple_path": [],
+          "name": "bitcast.50682",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "bitcast",
+          "operands": [
+            "bitcast_input.33079"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %bitcast.50682 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} bitcast(%bitcast_input.33079)"
+        },
+        {
+          "computation": "bitcast_fusion.6506.clone.clone",
+          "context": [
+            "main.530_spmd/fusion.145135",
+            "async_collective_fusion.145135/fusion.145138"
+          ],
+          "tuple_path": [],
+          "name": "bitcast_input.33079",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%bitcast_input.33079 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "computation": "async_collective_fusion.145135",
+          "context": [
+            "main.530_spmd/fusion.145135"
+          ],
+          "tuple_path": [],
+          "name": "param_9.2392",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 9,
+          "attributes": "",
+          "instruction": "%param_9.2392 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(9)"
+        },
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "async-collective-done.57",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "get-tuple-element.102077",
+            "get-tuple-element.102078",
+            "get-tuple-element.102080",
+            "get-tuple-element.102081",
+            "get-tuple-element.102082",
+            "get-tuple-element.102083",
+            "get-tuple-element.102084",
+            "get-tuple-element.102085",
+            "get-tuple-element.102086"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114219, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "instruction": "%async-collective-done.57 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} fusion(%get-tuple-element.102077, %get-tuple-element.102078, %get-tuple-element.102080, %get-tuple-element.102081, %get-tuple-element.102082, /*index=5*/%get-tuple-element.102083, %get-tuple-element.102084, %get-tuple-element.102085, %get-tuple-element.102086), kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114219, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+        },
+        {
+          "computation": "fused_computation.114219",
+          "context": [
+            "main.530_spmd/async-collective-done.57"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13409",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328997",
+            "param_1.318776",
+            "all-gather.1150",
+            "param_2.241647",
+            "param_3.122148",
+            "param_4.73555",
+            "param_5.31301",
+            "param_6.14153",
+            "param_7.6317",
+            "param_8.3004"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13409 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.328997, %param_1.318776, %all-gather.1150, %param_2.241647, %param_3.122148, /*index=5*/%param_4.73555, %param_5.31301, %param_6.14153, %param_7.6317, %param_8.3004), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      ],
+      "edges": [
+        {
+          "source": 4,
+          "operand_index": 0,
+          "target": 5
+        },
+        {
+          "source": 3,
+          "operand_index": 9,
+          "target": 4
+        },
+        {
+          "source": 2,
+          "operand_index": 0,
+          "target": 3
+        },
+        {
+          "source": 1,
+          "operand_index": 0,
+          "target": 2
+        },
+        {
+          "source": 0,
+          "operand_index": 0,
+          "target": 1
+        }
+      ],
+      "missing_records": [],
+      "boundaries": [
+        {
+          "node": 5,
+          "reason": "opaque operation or unsupported tuple projection"
+        }
+      ]
+    },
+    "matrix_evaluate": {
+      "root": 0,
+      "records": [
+        {
+          "computation": "async_collective_fusion.145135",
+          "context": [
+            "main.530_spmd/fusion.145135"
+          ],
+          "tuple_path": [],
+          "name": "fusion.145138",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "param_9.2392"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%bitcast_fusion.6506.clone.clone",
+          "instruction": "%fusion.145138 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} fusion(%param_9.2392), kind=kLoop, calls=%bitcast_fusion.6506.clone.clone"
+        },
+        {
+          "computation": "bitcast_fusion.6506.clone.clone",
+          "context": [
+            "main.530_spmd/fusion.145135",
+            "async_collective_fusion.145135/fusion.145138"
+          ],
+          "tuple_path": [],
+          "name": "bitcast.50682",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "bitcast",
+          "operands": [
+            "bitcast_input.33079"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %bitcast.50682 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} bitcast(%bitcast_input.33079)"
+        },
+        {
+          "computation": "bitcast_fusion.6506.clone.clone",
+          "context": [
+            "main.530_spmd/fusion.145135",
+            "async_collective_fusion.145135/fusion.145138"
+          ],
+          "tuple_path": [],
+          "name": "bitcast_input.33079",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%bitcast_input.33079 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "computation": "async_collective_fusion.145135",
+          "context": [
+            "main.530_spmd/fusion.145135"
+          ],
+          "tuple_path": [],
+          "name": "param_9.2392",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 9,
+          "attributes": "",
+          "instruction": "%param_9.2392 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(9)"
+        },
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "async-collective-done.57",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "get-tuple-element.102077",
+            "get-tuple-element.102078",
+            "get-tuple-element.102080",
+            "get-tuple-element.102081",
+            "get-tuple-element.102082",
+            "get-tuple-element.102083",
+            "get-tuple-element.102084",
+            "get-tuple-element.102085",
+            "get-tuple-element.102086"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114219, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%async-collective-done.57 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} fusion(%get-tuple-element.102077, %get-tuple-element.102078, %get-tuple-element.102080, %get-tuple-element.102081, %get-tuple-element.102082, /*index=5*/%get-tuple-element.102083, %get-tuple-element.102084, %get-tuple-element.102085, %get-tuple-element.102086), kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114219, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        {
+          "computation": "fused_computation.114219",
+          "context": [
+            "main.530_spmd/async-collective-done.57"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13409",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328997",
+            "param_1.318776",
+            "all-gather.1150",
+            "param_2.241647",
+            "param_3.122148",
+            "param_4.73555",
+            "param_5.31301",
+            "param_6.14153",
+            "param_7.6317",
+            "param_8.3004"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13409 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.328997, %param_1.318776, %all-gather.1150, %param_2.241647, %param_3.122148, /*index=5*/%param_4.73555, %param_5.31301, %param_6.14153, %param_7.6317, %param_8.3004), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      ],
+      "edges": [
+        {
+          "source": 4,
+          "operand_index": 0,
+          "target": 5
+        },
+        {
+          "source": 3,
+          "operand_index": 9,
+          "target": 4
+        },
+        {
+          "source": 2,
+          "operand_index": 0,
+          "target": 3
+        },
+        {
+          "source": 1,
+          "operand_index": 0,
+          "target": 2
+        },
+        {
+          "source": 0,
+          "operand_index": 0,
+          "target": 1
+        }
+      ],
+      "missing_records": [],
+      "boundaries": [
+        {
+          "node": 5,
+          "reason": "opaque operation or unsupported tuple projection"
+        }
+      ]
+    },
+    "matrix_capture": {
+      "root": 0,
+      "records": [
+        {
+          "computation": "async_collective_fusion.145136",
+          "context": [
+            "main.530_spmd/fusion.145136"
+          ],
+          "tuple_path": [],
+          "name": "fusion.145139",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "param_9.2392"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%bitcast_fusion.6506.clone.clone",
+          "instruction": "%fusion.145139 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} fusion(%param_9.2392), kind=kLoop, calls=%bitcast_fusion.6506.clone.clone"
+        },
+        {
+          "computation": "bitcast_fusion.6506.clone.clone",
+          "context": [
+            "main.530_spmd/fusion.145136",
+            "async_collective_fusion.145136/fusion.145139"
+          ],
+          "tuple_path": [],
+          "name": "bitcast.50684",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "bitcast",
+          "operands": [
+            "bitcast_input.33079"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %bitcast.50684 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} bitcast(%bitcast_input.33079)"
+        },
+        {
+          "computation": "bitcast_fusion.6506.clone.clone",
+          "context": [
+            "main.530_spmd/fusion.145136",
+            "async_collective_fusion.145136/fusion.145139"
+          ],
+          "tuple_path": [],
+          "name": "bitcast_input.33079",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%bitcast_input.33079 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "computation": "async_collective_fusion.145136",
+          "context": [
+            "main.530_spmd/fusion.145136"
+          ],
+          "tuple_path": [],
+          "name": "param_9.2392",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 9,
+          "attributes": "",
+          "instruction": "%param_9.2392 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(9)"
+        },
+        {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "async-collective-done.57",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "get-tuple-element.102087",
+            "get-tuple-element.102088",
+            "get-tuple-element.102090",
+            "get-tuple-element.102091",
+            "get-tuple-element.102092",
+            "get-tuple-element.102093",
+            "get-tuple-element.102094",
+            "get-tuple-element.102095",
+            "get-tuple-element.102096"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114220, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%async-collective-done.57 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} fusion(%get-tuple-element.102087, %get-tuple-element.102088, %get-tuple-element.102090, %get-tuple-element.102091, %get-tuple-element.102092, /*index=5*/%get-tuple-element.102093, %get-tuple-element.102094, %get-tuple-element.102095, %get-tuple-element.102096), kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114220, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        {
+          "computation": "fused_computation.114220",
+          "context": [
+            "main.530_spmd/async-collective-done.57"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13409",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.329001",
+            "param_1.318779",
+            "all-gather.1155",
+            "param_2.241649",
+            "param_3.122148",
+            "param_4.73555",
+            "param_5.31301",
+            "param_6.14153",
+            "param_7.6317",
+            "param_8.3004"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13409 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.329001, %param_1.318779, %all-gather.1155, %param_2.241649, %param_3.122148, /*index=5*/%param_4.73555, %param_5.31301, %param_6.14153, %param_7.6317, %param_8.3004), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      ],
+      "edges": [
+        {
+          "source": 4,
+          "operand_index": 0,
+          "target": 5
+        },
+        {
+          "source": 3,
+          "operand_index": 9,
+          "target": 4
+        },
+        {
+          "source": 2,
+          "operand_index": 0,
+          "target": 3
+        },
+        {
+          "source": 1,
+          "operand_index": 0,
+          "target": 2
+        },
+        {
+          "source": 0,
+          "operand_index": 0,
+          "target": 1
+        }
+      ],
+      "missing_records": [],
+      "boundaries": [
+        {
+          "node": 5,
+          "reason": "opaque operation or unsupported tuple projection"
+        }
+      ]
+    },
+    "matrix_substitute": {
+      "root": 0,
+      "records": [
+        {
+          "computation": "async_collective_fusion.145128",
+          "context": [
+            "main.529_spmd/fusion.145128"
+          ],
+          "tuple_path": [],
+          "name": "fusion.145131",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "fusion",
+          "operands": [
+            "param_9.2389"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kLoop, calls=%bitcast_fusion.6504.clone.clone",
+          "instruction": "%fusion.145131 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} fusion(%param_9.2389), kind=kLoop, calls=%bitcast_fusion.6504.clone.clone"
+        },
+        {
+          "computation": "bitcast_fusion.6504.clone.clone",
+          "context": [
+            "main.529_spmd/fusion.145128",
+            "async_collective_fusion.145128/fusion.145131"
+          ],
+          "tuple_path": [],
+          "name": "bitcast.50671",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "bitcast",
+          "operands": [
+            "bitcast_input.33067"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "ROOT %bitcast.50671 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} bitcast(%bitcast_input.33067)"
+        },
+        {
+          "computation": "bitcast_fusion.6504.clone.clone",
+          "context": [
+            "main.529_spmd/fusion.145128",
+            "async_collective_fusion.145128/fusion.145131"
+          ],
+          "tuple_path": [],
+          "name": "bitcast_input.33067",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 0,
+          "attributes": "",
+          "instruction": "%bitcast_input.33067 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(0)"
+        },
+        {
+          "computation": "async_collective_fusion.145128",
+          "context": [
+            "main.529_spmd/fusion.145128"
+          ],
+          "tuple_path": [],
+          "name": "param_9.2389",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "parameter",
+          "operands": [],
+          "parameter_index": 9,
+          "attributes": "",
+          "instruction": "%param_9.2389 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} parameter(9)"
+        },
+        {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.829",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.829"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.829 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)} copy-done(%copy-start.829)"
+        },
+        {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            0
+          ],
+          "name": "copy-start.829",
+          "shape": "(bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, u32[]{:S(2)})",
+          "opcode": "copy-start",
+          "operands": [
+            "async-collective-done.61"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-start.829 = (bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, u32[]{:S(2)}) copy-start(%async-collective-done.61)"
+        },
+        {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "async-collective-done.61",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+          "opcode": "fusion",
+          "operands": [
+            "get-tuple-element.102072",
+            "get-tuple-element.102073",
+            "get-tuple-element.102075",
+            "get-tuple-element.102076",
+            "get-tuple-element.102077",
+            "get-tuple-element.102078",
+            "get-tuple-element.102079",
+            "get-tuple-element.102080",
+            "get-tuple-element.102081"
+          ],
+          "parameter_index": null,
+          "attributes": ", kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114221, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+          "instruction": "%async-collective-done.61 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} fusion(%get-tuple-element.102072, %get-tuple-element.102073, %get-tuple-element.102075, %get-tuple-element.102076, %get-tuple-element.102077, /*index=5*/%get-tuple-element.102078, %get-tuple-element.102079, %get-tuple-element.102080, %get-tuple-element.102081), kind=kCustom, output_to_operand_aliasing={{}: (1, {})}, calls=%fused_computation.114221, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+        },
+        {
+          "computation": "fused_computation.114221",
+          "context": [
+            "main.529_spmd/async-collective-done.61"
+          ],
+          "tuple_path": [],
+          "name": "custom-call.13425",
+          "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}",
+          "opcode": "custom-call",
+          "operands": [
+            "param_0.328987",
+            "param_1.318759",
+            "all-gather.1154",
+            "param_2.241644",
+            "param_3.122145",
+            "param_4.73552",
+            "param_5.31299",
+            "param_6.14151",
+            "param_7.6315",
+            "param_8.3002"
+          ],
+          "parameter_index": null,
+          "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+          "instruction": "ROOT %custom-call.13425 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.328987, %param_1.318759, %all-gather.1154, %param_2.241644, %param_3.122145, /*index=5*/%param_4.73552, %param_5.31299, %param_6.14151, %param_7.6315, %param_8.3002), custom_call_target=\"AsyncCollectiveDone\""
+        }
+      ],
+      "edges": [
+        {
+          "source": 6,
+          "operand_index": 0,
+          "target": 7
+        },
+        {
+          "source": 5,
+          "operand_index": 0,
+          "target": 6
+        },
+        {
+          "source": 4,
+          "operand_index": 0,
+          "target": 5
+        },
+        {
+          "source": 3,
+          "operand_index": 9,
+          "target": 4
+        },
+        {
+          "source": 2,
+          "operand_index": 0,
+          "target": 3
+        },
+        {
+          "source": 1,
+          "operand_index": 0,
+          "target": 2
+        },
+        {
+          "source": 0,
+          "operand_index": 0,
+          "target": 1
+        }
+      ],
+      "missing_records": [],
+      "boundaries": [
+        {
+          "node": 7,
+          "reason": "opaque operation or unsupported tuple projection"
+        }
+      ]
+    }
+  }
+}
