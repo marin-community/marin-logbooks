@@ -1,0 +1,163 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-paired-input-substitution-v5e-8-20261103",
+  "submitted_utc": "2026-11-03T12:04:36Z",
+  "verified_utc": "2026-11-03T12:06:44.332984+00:00",
+  "canonical_state": "RUNNING",
+  "attempt": 0,
+  "attempt_uid": "b0627618bb81",
+  "config": {
+    "source_commit": "206cf9561b6f4c974f46b03154b8615e97b7a5e0",
+    "script_sha256": "2b9e676658c33deb81613c1f84cb335e596f322309bee3f3da82dee8029ce46a",
+    "seed": 0,
+    "shapes": [
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        1024,
+        4096
+      ]
+    ],
+    "names": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "smoke": false,
+    "polar_compiler": true,
+    "full_input_capture": true,
+    "paired_input_substitution": true,
+    "capture_kind": "q_pair",
+    "capture_helper_sha256": "2a1aacb7c3533371cef0dff22f07b5ceea7b6e80953a35723fda3083510fa24f",
+    "state_crossfeed": false,
+    "polar_products": false,
+    "contracting_control": false,
+    "continuation_control": false,
+    "normalization_control": false,
+    "partition_control": false,
+    "collective_control": false,
+    "polar_iterate_leaf_order": [
+      "input_norm",
+      "normalized_input",
+      "iteration_1",
+      "iteration_2",
+      "iteration_3",
+      "iteration_4",
+      "iteration_5"
+    ],
+    "process_count": 1,
+    "devices": [
+      {
+        "id": 0,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 1,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 2,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 3,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 4,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 5,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 6,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 7,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      }
+    ],
+    "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.13/ema-gram-20-attribution-e6b9c35d4798",
+    "alpha": 0.25,
+    "ridge": 0.0001,
+    "beta1": 0.95,
+    "beta2": 0.99,
+    "polar_steps": 5,
+    "solver": "default",
+    "gcs_report_request_timeout_seconds": 60,
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "limitations": "Synthetic non-training stage attribution. Single calls include compilation; no performance or MFU claim. Staging changes compilation. Expected candidate mismatches are recorded, never accepted for training."
+  },
+  "wandb": {
+    "run": "ema-gram-20-attribution-e6b9c35d4798",
+    "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-e6b9c35d4798",
+    "state": "running",
+    "logging_check_success": 1
+  },
+  "log_session": 86562,
+  "limitations": "Startup only; numerical reference gates and final artifacts pending. Fresh capture and same-pair substitution gates are pending; matching finals does not establish hidden identity. No warmedperformance/MFU or checkpointrestoration.",
+  "memory": {
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "query": "SELECT task_id, attempt_id, worker_id, \"cluster\", count(*) AS samples,\n min(ts) AS first_ts, max(ts) AS last_ts,\n max(memory_peak_mb)/1024.0 AS cumulative_host_peak_gib,\n max(memory_mb)/1024.0 AS sampled_host_peak_gib,\n max(accelerator_mem_bytes) AS reported_accelerator_mem_bytes\nFROM \"iris.task\"\nWHERE task_id='/kaiyuew@stanford.edu/ema-gram-20-paired-input-substitution-v5e-8-20261103/0'\n AND attempt_id=0\n AND ts >= TIMESTAMP '2026-11-03 12:04:00'\n AND ts < TIMESTAMP '2026-11-03 12:08:00'\nGROUP BY task_id, attempt_id, worker_id, \"cluster\"\n",
+    "observations": [
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-paired-input-substitution-v5e-8-20261103/0",
+        "attempt_id": 0,
+        "worker_id": "marin-tpu-v5e-serving-8-us-west4-a-20261102-1756-2db9bbbe-worker-0",
+        "cluster": null,
+        "samples": 24,
+        "first_ts": "2026-11-03 12:04:54.203000",
+        "last_ts": "2026-11-03 12:07:25.700000",
+        "cumulative_host_peak_gib": 36.7099609375,
+        "sampled_host_peak_gib": 36.7099609375,
+        "reported_accelerator_mem_bytes": null
+      }
+    ],
+    "limitations": "Early sampled cumulative host telemetry; accelerator memory null is not total HBM."
+  }
+}

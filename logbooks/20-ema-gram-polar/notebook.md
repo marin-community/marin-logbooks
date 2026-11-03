@@ -3409,6 +3409,34 @@ exact reports and source hashes. One sequential full-size v5e diagnostic is
 ready under the published plan, preserving all numerical gates and resource
 constraints. No optimizer or training result is accepted.
 
+## 2026-11-03 12:07 UTC — Full-update substitution starts on v5e
+
+Iris accepted the single substitution diagnostic at 12:04:36 UTC from published
+revision `206cf9561b6f4c974f46b03154b8615e97b7a5e0`. Job and task are running on
+attempt 0, UID `b0627618bb81`, verified at 12:06 UTC. The loaded script and
+helper hashes match the CPU-validated source. Fresh online W&B run
+`ema-gram-20-attribution-e6b9c35d4798` reports logging success before kernels.
+Three stages are finite: zero initialization, initialization and the untouched
+original full update. All TPU capture and substitution reference gates remain
+pending; single calls include compilation and are not warmed performance.
+
+The task uses eight native v5e chips in one JAX process, with 96 CPUs, 128 GiB
+host memory and 50 GiB disk in us-west4. Batch priority, default preemption
+retries and no runtime limit are retained. Preserve this job through compilation
+and assess both solver branches before any further numerical candidate.
+Sole log observer 86562 follows the task; PR observer 77099 remains the sole
+PR observer. Large compiler files remain regional.
+
+The control substitutes q_proj's normalization numerator and denominator;
+"own-pair" means both values captured from that same solver.
+The [startup record](optimizer-paired-input-substitution-started.json) and
+[preflight](optimizer-paired-input-substitution-preflight.json) retain the exact
+source, run identities and checks. Both fresh capture gates and each
+substitution executable's own-pair 28-leaf reference gates must pass fixed1e-5
+before original-path interpretation. Bitwise status is separate; even passing
+gates cannot establish hidden internal identity or the full discrepancy's cause.
+No optimizer, training MFU or checkpoint-resume result is claimed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

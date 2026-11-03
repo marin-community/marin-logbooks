@@ -512,7 +512,7 @@
                     "partial": "optimizer-paired-input-capture-partial.json",
                     "completed": "optimizer-paired-input-capture-v5e-completed.json",
                     "next_decision": {
-                      "state": "Implemented and own online CPU validated; one sequential TPU diagnostic ready, not submitted",
+                      "state": "One sequential TPU substitution diagnostic RUNNING attempt0; preserve through compilation; no concurrent candidate",
                       "question": "Under a fixed full-update executable, how much does replacing q_proj normalization numerator, denominator, or both change its final direction?",
                       "basis": "Paired capture passes both full-update28leaf gates at1e-5. gram_direction also applies left/right Gram powers after polar, so an isolated polar endpoint is not the full direction reference.",
                       "procedure": "Review a Jaxpr-based full-update evaluator that replaces only the two operand uses at the uniquely mapped q_proj normalization division with external paired banks. Keep every other equation, input, constant, operand use and original28output leaves unchanged; do not overwrite the numerator variable globally. Preserve exact division primitive/parameters and downstream association. For each solver, compile one substitution executable and run all four original/matrix numerator-denominator combinations on the same fingerprinted original full-update input bank. Compile once and replay identical banks bitwise. No source precision, tiling or math override.",
@@ -522,7 +522,8 @@
                       "memory": "One executable/device input-output bank at a time; host-offload paired banks and reference outputs; cache clear between executables, finite incremental reports. Full11x1024x1024FP32 inner and11x1x1FP32 denominator. Large HLO remains us-west4.",
                       "constraints": "FullGram/everyupdate/originalmodel/globalbatch8/7630steps/sourceprecision/fixedrtol=atol=1e-5; defaultpreemptionretries/allattempts/no wallclocklimits/no concurrentcandidate. This is a conditional diagnostic, not an optimizer candidate. Training and optimizer acceptance gates unchanged.",
                       "implementation": "optimizer-paired-input-substitution-plan.json",
-                      "preflight": "optimizer-paired-input-substitution-preflight.json"
+                      "preflight": "optimizer-paired-input-substitution-preflight.json",
+                      "started": "optimizer-paired-input-substitution-started.json"
                     }
                   }
                 }
