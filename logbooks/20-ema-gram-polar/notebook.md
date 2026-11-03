@@ -4271,6 +4271,12 @@ The next static decision is to inspect the 48 uncovered positions together using
 
 The follow observer ended naturally with exit 0. No experiment, queue or observer remains active. PR monitoring remains handed off after its earlier timeout; the research heartbeat stays active.
 
+### November 3, 18:34 UTC — inspect normalization and earlier polar inputs (static preflight)
+
+The [upstream coverage](compiler-upstream-bindings-frontiers.json) leaves 48 declared input positions uninspected. The [new selector](trace_norm_polar_inputs.py) uses exact saved dependencies for three polar products, the nonpolar down product reached through normalization, five Concat endpoints and two Done endpoints. It identifies the nonpolar product by the selected normalization reduction and repeated multiplication of its output, and checks the polar products against mapped source roles. Multiple Concat endpoints are distinguished by explicit parent operand routes, not compiler ordinals.
+
+The [plan](compiler-norm-polar-inputs-plan.json), [manifest](compiler-norm-polar-inputs-manifest.json) and [preflight](compiler-norm-polar-inputs-validation.json) verify fourteen bounded input identities and exclude covered input roots. Eight computation bodies per graph remain missing locally. Publish exact source before CPU-only us-west4 extraction with HLO SHA/size checks, default preemption and no wall-clock limit. Done-to-Start matching remains a declared binding, and every original opaque output remains opaque. Both numerical gates still fail; no numerical intervention is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
