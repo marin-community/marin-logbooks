@@ -1,0 +1,578 @@
+{
+  "inventory": {
+    "bytes": 18035069,
+    "sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a",
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir-conservative/substitution-ir-725f48e1a71d/report.json"
+  },
+  "reports": {
+    "outer-bindings": {
+      "bytes": 5717993,
+      "sha256": "81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.outer-bindings/outer-bindings-21ac5d3e4f6e/report.json"
+    },
+    "boundary-inputs": {
+      "bytes": 30706097,
+      "sha256": "cbf8996a1579a9267501e402ccb379fe8dddaf07cb2148ea845ff31dd290c6cd",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.boundary-inputs/boundary-inputs-16055494fc77/report.json"
+    },
+    "start-producers": {
+      "bytes": 387447,
+      "sha256": "48b61b4e367b55789f002f357f8551fb662e71a24997fb369007a50bd0192435",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.start-producers/start-producers-ddc2a22f7b1d/report.json"
+    },
+    "product-inputs": {
+      "bytes": 2162972,
+      "sha256": "580d846d18b0aacd842a91b3b77b5826b1a9ce7a1c1dec7c562ed9b5fd605e04",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.product-inputs/product-inputs-574263feb30d/report.json"
+    },
+    "polar-boundaries": {
+      "bytes": 1775955,
+      "sha256": "41fcd05ef632f18edbe5dd6f8924137a28e9caa406c50d5c504e5e599ea0a709",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-boundaries/polar-boundaries-f02b7a238929/report.json"
+    },
+    "frontier-operands": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.frontier-operands/frontier-operands-dd4ebe7ab487/report.json",
+      "bytes": 1676770,
+      "sha256": "9c6c9b75fab8ca0ca64dba66bbfa179c72858ed0fbf106f8cdef6a145d5e2e0f"
+    },
+    "frontier-collectives": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.frontier-collectives/frontier-collectives-d5a94507813e/report.json",
+      "bytes": 1884282,
+      "sha256": "a75d20f108ca32b4c8388aca1fbb847255d492dca7dd212fc0bfca13b2361523"
+    },
+    "down-concat": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.down-concat/down-concat-915568675c3d/report.json",
+      "bytes": 181140,
+      "sha256": "1c1881b19ef6be952f4ac4aecbb02b3404f92e3c4614da1605e3ca087d9fde66"
+    },
+    "step5-gram-inputs": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.step5-gram-inputs/step5-gram-inputs-2e6e2e0b351b/report.json",
+      "bytes": 278520,
+      "sha256": "3759e105fd024f26422a0481bb5164c72b67485cfeddbdd288dd6320575338f6"
+    },
+    "step5-concat-inputs": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.step5-concat-inputs/step5-concat-inputs-1c1c6033ef6a/report.json",
+      "bytes": 1198574,
+      "sha256": "b81cd2490ba9bbe4c9e00a9130388901bfeca4c2bd5cf37d53e5c6a70840a63f"
+    },
+    "earlier-bx-inputs": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.earlier-bx-inputs/earlier-bx-inputs-e777bcb2587c/report.json",
+      "bytes": 234859,
+      "sha256": "9c1456d09d0387dc5ea0758d4ea807e1409fa331e2ceb15a9662d1e26761772f"
+    }
+  },
+  "graphs": [
+    "matrix_untouched",
+    "matrix_evaluate",
+    "matrix_capture",
+    "matrix_substitute"
+  ],
+  "targets": {
+    "matrix_untouched": {
+      "down_proj/polar/2/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13947",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2074",
+          "slice-done.2075",
+          "slice-done.2076",
+          "slice-done.2077"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13947 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2074, %slice-done.2075, %slice-done.2076, %slice-done.2077), custom_call_target=\"ConcatBitcast\""
+      },
+      "down_proj/polar/2/scaled_A_A": {
+        "computation": "async_collective_fusion.144929",
+        "context": [
+          "main.530_spmd/fusion.144929"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.629",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144933",
+          "fusion.144932"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+        "instruction": "%convolution-base-dilated.629 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144933, %fusion.144932), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+      },
+      "down_proj/polar/2/AsyncCollectiveDone": {
+        "computation": "fused_computation.114138",
+        "context": [
+          "main.530_spmd/async-collective-done.34"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13317",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328780",
+          "param_1.318627",
+          "all-gather.988",
+          "param_2.241464",
+          "param_3.121976",
+          "param_4.73383",
+          "param_5.31129",
+          "param_6.13981",
+          "param_7.6145",
+          "param_8.2832"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13317 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328780, %param_1.318627, %all-gather.988, %param_2.241464, %param_3.121976, /*index=5*/%param_4.73383, %param_5.31129, %param_6.13981, %param_7.6145, %param_8.2832), custom_call_target=\"AsyncCollectiveDone\""
+      },
+      "up_proj/polar/4/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13951",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2090",
+          "slice-done.2091",
+          "slice-done.2092",
+          "slice-done.2093"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13951 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2090, %slice-done.2091, %slice-done.2092, %slice-done.2093), custom_call_target=\"ConcatBitcast\""
+      },
+      "up_proj/polar/4/scaled_A_A": {
+        "computation": "async_collective_fusion.145031",
+        "context": [
+          "main.530_spmd/fusion.145031"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.651",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145035",
+          "fusion.145034"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+        "instruction": "%convolution-base-dilated.651 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145035, %fusion.145034), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+      },
+      "up_proj/polar/4/AsyncCollectiveDone": {
+        "computation": "fused_computation.114180",
+        "context": [
+          "main.530_spmd/async-collective-done.46"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13365",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328894",
+          "param_1.318705",
+          "all-gather.1072",
+          "param_2.241560",
+          "param_3.122066",
+          "param_4.73473",
+          "param_5.31219",
+          "param_6.14071",
+          "param_7.6235",
+          "param_8.2922"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13365 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328894, %param_1.318705, %all-gather.1072, %param_2.241560, %param_3.122066, /*index=5*/%param_4.73473, %param_5.31219, %param_6.14071, %param_7.6235, %param_8.2922), custom_call_target=\"AsyncCollectiveDone\""
+      }
+    },
+    "matrix_evaluate": {
+      "down_proj/polar/2/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13947",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2074",
+          "slice-done.2075",
+          "slice-done.2076",
+          "slice-done.2077"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13947 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2074, %slice-done.2075, %slice-done.2076, %slice-done.2077), custom_call_target=\"ConcatBitcast\""
+      },
+      "down_proj/polar/2/scaled_A_A": {
+        "computation": "async_collective_fusion.144929",
+        "context": [
+          "main.530_spmd/fusion.144929"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.629",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144933",
+          "fusion.144932"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.629 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144933, %fusion.144932), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "down_proj/polar/2/AsyncCollectiveDone": {
+        "computation": "fused_computation.114138",
+        "context": [
+          "main.530_spmd/async-collective-done.34"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13317",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328780",
+          "param_1.318627",
+          "all-gather.988",
+          "param_2.241464",
+          "param_3.121976",
+          "param_4.73383",
+          "param_5.31129",
+          "param_6.13981",
+          "param_7.6145",
+          "param_8.2832"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13317 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328780, %param_1.318627, %all-gather.988, %param_2.241464, %param_3.121976, /*index=5*/%param_4.73383, %param_5.31129, %param_6.13981, %param_7.6145, %param_8.2832), custom_call_target=\"AsyncCollectiveDone\""
+      },
+      "up_proj/polar/4/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13951",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2090",
+          "slice-done.2091",
+          "slice-done.2092",
+          "slice-done.2093"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13951 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2090, %slice-done.2091, %slice-done.2092, %slice-done.2093), custom_call_target=\"ConcatBitcast\""
+      },
+      "up_proj/polar/4/scaled_A_A": {
+        "computation": "async_collective_fusion.145031",
+        "context": [
+          "main.530_spmd/fusion.145031"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.651",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145035",
+          "fusion.145034"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.651 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145035, %fusion.145034), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "up_proj/polar/4/AsyncCollectiveDone": {
+        "computation": "fused_computation.114180",
+        "context": [
+          "main.530_spmd/async-collective-done.46"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13365",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328894",
+          "param_1.318705",
+          "all-gather.1072",
+          "param_2.241560",
+          "param_3.122066",
+          "param_4.73473",
+          "param_5.31219",
+          "param_6.14071",
+          "param_7.6235",
+          "param_8.2922"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13365 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328894, %param_1.318705, %all-gather.1072, %param_2.241560, %param_3.122066, /*index=5*/%param_4.73473, %param_5.31219, %param_6.14071, %param_7.6235, %param_8.2922), custom_call_target=\"AsyncCollectiveDone\""
+      }
+    },
+    "matrix_capture": {
+      "down_proj/polar/2/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13950",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2088",
+          "slice-done.2089",
+          "slice-done.2090",
+          "slice-done.2091"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13950 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2088, %slice-done.2089, %slice-done.2090, %slice-done.2091), custom_call_target=\"ConcatBitcast\""
+      },
+      "down_proj/polar/2/scaled_A_A": {
+        "computation": "async_collective_fusion.144930",
+        "context": [
+          "main.530_spmd/fusion.144930"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.629",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144934",
+          "fusion.144933"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.629 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144934, %fusion.144933), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "down_proj/polar/2/AsyncCollectiveDone": {
+        "computation": "fused_computation.114139",
+        "context": [
+          "main.530_spmd/async-collective-done.34"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13317",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328784",
+          "param_1.318630",
+          "all-gather.993",
+          "param_2.241466",
+          "param_3.121976",
+          "param_4.73383",
+          "param_5.31129",
+          "param_6.13981",
+          "param_7.6145",
+          "param_8.2832"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13317 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328784, %param_1.318630, %all-gather.993, %param_2.241466, %param_3.121976, /*index=5*/%param_4.73383, %param_5.31129, %param_6.13981, %param_7.6145, %param_8.2832), custom_call_target=\"AsyncCollectiveDone\""
+      },
+      "up_proj/polar/4/ConcatBitcast": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13954",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2104",
+          "slice-done.2105",
+          "slice-done.2106",
+          "slice-done.2107"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13954 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2104, %slice-done.2105, %slice-done.2106, %slice-done.2107), custom_call_target=\"ConcatBitcast\""
+      },
+      "up_proj/polar/4/scaled_A_A": {
+        "computation": "async_collective_fusion.145032",
+        "context": [
+          "main.530_spmd/fusion.145032"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.651",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145036",
+          "fusion.145035"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}",
+        "instruction": "%convolution-base-dilated.651 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145036, %fusion.145035), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=66}"
+      },
+      "up_proj/polar/4/AsyncCollectiveDone": {
+        "computation": "fused_computation.114181",
+        "context": [
+          "main.530_spmd/async-collective-done.46"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13365",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328898",
+          "param_1.318708",
+          "all-gather.1077",
+          "param_2.241562",
+          "param_3.122066",
+          "param_4.73473",
+          "param_5.31219",
+          "param_6.14071",
+          "param_7.6235",
+          "param_8.2922"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13365 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328898, %param_1.318708, %all-gather.1077, %param_2.241562, %param_3.122066, /*index=5*/%param_4.73473, %param_5.31219, %param_6.14071, %param_7.6235, %param_8.2922), custom_call_target=\"AsyncCollectiveDone\""
+      }
+    },
+    "matrix_substitute": {
+      "down_proj/polar/2/ConcatBitcast": {
+        "computation": "main.529_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13963",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2077",
+          "slice-done.2078",
+          "slice-done.2079",
+          "slice-done.2080"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13963 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2077, %slice-done.2078, %slice-done.2079, %slice-done.2080), custom_call_target=\"ConcatBitcast\""
+      },
+      "down_proj/polar/2/scaled_A_A": {
+        "computation": "async_collective_fusion.144917",
+        "context": [
+          "main.529_spmd/fusion.144917"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.619",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144921",
+          "fusion.144920"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}",
+        "instruction": "%convolution-base-dilated.619 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.144921, %fusion.144920), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+      },
+      "down_proj/polar/2/AsyncCollectiveDone": {
+        "computation": "fused_computation.114140",
+        "context": [
+          "main.529_spmd/async-collective-done.38"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13333",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328770",
+          "param_1.318610",
+          "all-gather.992",
+          "param_2.241461",
+          "param_3.121973",
+          "param_4.73380",
+          "param_5.31127",
+          "param_6.13979",
+          "param_7.6143",
+          "param_8.2830"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13333 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328770, %param_1.318610, %all-gather.992, %param_2.241461, %param_3.121973, /*index=5*/%param_4.73380, %param_5.31127, %param_6.13979, %param_7.6143, %param_8.2830), custom_call_target=\"AsyncCollectiveDone\""
+      },
+      "up_proj/polar/4/ConcatBitcast": {
+        "computation": "main.529_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "custom-call.13967",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "slice-done.2093",
+          "slice-done.2094",
+          "slice-done.2095",
+          "slice-done.2096"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"ConcatBitcast\"",
+        "instruction": "%custom-call.13967 = f32[11,128,1024]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.2093, %slice-done.2094, %slice-done.2095, %slice-done.2096), custom_call_target=\"ConcatBitcast\""
+      },
+      "up_proj/polar/4/scaled_A_A": {
+        "computation": "async_collective_fusion.145019",
+        "context": [
+          "main.529_spmd/fusion.145019"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.641",
+        "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145023",
+          "fusion.145022"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}",
+        "instruction": "%convolution-base-dilated.641 = f32[11,128,1024]{2,1,0:T(8,128)} convolution(%fusion.145023, %fusion.145022), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=67}"
+      },
+      "up_proj/polar/4/AsyncCollectiveDone": {
+        "computation": "fused_computation.114182",
+        "context": [
+          "main.529_spmd/async-collective-done.50"
+        ],
+        "tuple_path": [],
+        "name": "custom-call.13381",
+        "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+        "opcode": "custom-call",
+        "operands": [
+          "param_0.328884",
+          "param_1.318688",
+          "all-gather.1076",
+          "param_2.241557",
+          "param_3.122063",
+          "param_4.73470",
+          "param_5.31217",
+          "param_6.14069",
+          "param_7.6233",
+          "param_8.2920"
+        ],
+        "parameter_index": null,
+        "attributes": ", custom_call_target=\"AsyncCollectiveDone\"",
+        "instruction": "ROOT %custom-call.13381 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328884, %param_1.318688, %all-gather.1076, %param_2.241557, %param_3.122063, /*index=5*/%param_4.73470, %param_5.31217, %param_6.14069, %param_7.6233, %param_8.2920), custom_call_target=\"AsyncCollectiveDone\""
+      }
+    }
+  },
+  "source_files": {
+    "compare_earlier_bindings.py": "278e652b878e75d3126f7081fc390b5e93043b5bd68a06593937415c517f3d02",
+    "compare_earlier_bx_inputs.py": "af52c8a5cf5a07d63881e2b25dd72b21985b49edcc8b77ab18a5a158ec52bb0c",
+    "compare_step5_concat_inputs.py": "472e6e35e3ae122b682263736dc1e2dd7f5c3321e7d2e036661209a49f56af8d",
+    "compare_step5_gram_inputs.py": "1769b15ac6483e77a37dd0ed110894516a83cb2ace4c539b443b36a5d749bdde",
+    "compiler_down_concat.py": "fcd12f34e3a40211188f2fe561f5a1d4bb23a73284e08cad38733f0851cca4d9",
+    "compiler_earlier_bindings.py": "240df591fef30679c035e531b4c703b65dc0b822ff5c428c8ddf22c8e4b741cd",
+    "compiler_earlier_bx_inputs.py": "49415ee4644eff3768b4050f903f10d3cb5ebfc17f0ff09398b7b3c7d6453b13",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "compiler_polar_boundaries.py": "8bbe37163ce536e65f8b8f39d7d6c8c2fea1a7c46cdbdc3afe08ba2500054f3a",
+    "compiler_step5_concat_inputs.py": "49635774a25f02479004556b892861fd1978873cf420d3cd73ed949c59abd354",
+    "compiler_step5_gram_inputs.py": "0373e0b64ecfa5339a614666d0001e39589914951a578d14d9611a385fab361c",
+    "consolidate_compiler_records.py": "a501a878d07cb9157e98fff57d43d325113e84eec37471390563383116dae486",
+    "trace_boundary_inputs.py": "844a3bc0de727072ab411b2044beb2bc0aea2e4be2fea4b2e66914cf3f7595f3",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b",
+    "trace_down_concat.py": "288ea17497ce435ee8bc7b29ab289571773d17a392090c3ec9c1881ff1b0e76e",
+    "trace_earlier_bindings.py": "0401154f0adbf55f636c7c0edca0b40df38d79c2e0d5c3d8c87e4d93fc7e1070",
+    "trace_earlier_bx_inputs.py": "afbc4b163fadb2d4a8de9454874a561221ae10814a9a8dff17485515fa9f8488",
+    "trace_frontier_collectives.py": "4f201f55fda902cc61a81a6175cda5c389acc54fa5fe7a66658c1a09ae5b3551",
+    "trace_frontier_operands.py": "a5b09df730767d9662e9594e3f81168ba7689bc3e5f444c6e30024af687e1dd8",
+    "trace_outer_bindings.py": "36daebb960e73214c5db90fbc73add471389b98ab32c6e58e38ec020ebe1bb5f",
+    "trace_polar_boundaries.py": "251578af625965085872760dafb1870884f99410490a469e181b53d21382d6ab",
+    "trace_start_producers.py": "62acb58c0e2aa1a895e6f21a4d0c6fcfe13123af3560897486bff72d3d42fc63",
+    "trace_step5_concat_inputs.py": "5ce0bd2a0c578ae835d21bce11f1686dad23a0d989aa7e3532ff0ea25ac0e082",
+    "trace_step5_gram_inputs.py": "7cf94b39dc34de611917ad77e6a00d3a8a9cf1b6f33338f2f511430eb927fde6"
+  }
+}

@@ -4223,6 +4223,12 @@ The next static decision is a combined binding audit of those 32 uncovered posit
 
 The sole follow observer ended naturally with exit 0. No experiment, queue, or observer remains active. PR monitoring remains handed off after its earlier 12-hour timeout; the research heartbeat stays active. No optimizer, training, MFU, or restore acceptance is claimed.
 
+### November 3, 17:53 UTC — inspect earlier product and collective inputs (static preflight)
+
+The [previous frontier coverage](compiler-earlier-bx-inputs-frontiers.json) identifies 32 uninspected positions behind down iteration-2 and up iteration-4 `B_X`: four `scaled_A_A` product operands, eight Concat inputs, and twenty Done inputs. The [selector](trace_earlier_bindings.py) checks their saved output dependencies, exact caller contexts, declared arities, and mapped polar roles. All 32 positions lack complete input-trace roots in the eleven prior reports. Six computation bodies per graph remain missing from the local record set at preflight.
+
+The [plan](compiler-earlier-bindings-plan.json) and [manifest](compiler-earlier-bindings-manifest.json) preserve explicit repeated positions and paired capture. Each Done's ten inputs must reach one common Start identity before its single declared input is traced separately. Original custom-call outputs remain opaque. Already inspected o controls will be reused with the same HLO identity checks. Publish exact source before CPU-only us-west4 parsing with HLO SHA/size verification, default preemption and no wall-clock limit. No numerical intervention is selected; both full 28-leaf gates remain failed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
