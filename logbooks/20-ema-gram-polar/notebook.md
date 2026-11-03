@@ -4515,6 +4515,12 @@ The proposed regional check uses one sequential v4-32 job with four hosts, 120 C
 
 After successful regional reports, full training still needs measured memory, loss and speed evidence. Numerical-equivalence failures remain diagnostics and do not by themselves veto the paired loss experiment. Static compiler expansion stays deferred; old jobs remain terminal and PR monitoring remains handed off.
 
+### November 3, 21:20 UTC — regional full restore audit accepted
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103` at 21:20:10 UTC from published source `e045d6919861359860847d6b0044cc79f475239b`. The job requests one v4-32 slice, four hosts with 120 CPUs/256 GiB/50 GiB each in us-central2, default preemption/retries and no wall-clock limit. Source SHA256 is `51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e`. The [preflight validation](full-restore-preflight-validation.json) records finished online logging and CPU harness runs with that exact source hash. Canonical job/task checks at 21:22:22–24 UTC show all four tasks pending, with no attempts yet. The sole follow observer is session 6883. Submission and queueing do not establish successful restoration; canonical success and all four process reports are still required.
+
+The probe does not train or advance the saved checkpoint. Its four-host restore audit is the sole active experiment; monitoring belongs to the current thread. After restore validation, retain the original saved-state synthetic-gradient and unchanged-state checks, full-training memory/finite checks and matched execution resources before the paired continuation. Old jobs remain terminal and PR monitoring stays handed off.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
