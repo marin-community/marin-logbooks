@@ -2550,6 +2550,25 @@ control. Matching roles would not establish equal runtime values. Use local
 captured records first; any missing large HLO inspection stays in-region. No
 numerical submission, precision change or tiling override is selected.
 
+## 2026-11-03 07:50 UTC — Preparing input-provenance extraction
+
+The saved local records contain the q/k/v normalization divisions but omit
+some enclosing fusion bodies needed to bind their inputs to source parameters.
+A CPU-only extraction will read the two existing optimized HLO files in
+us-west4 and trace those divisions and first polar Gram products back to entry
+parameter leaves. The [plan](compiler-input-provenance-plan.json) records the
+input checksums, exact command and resources; the
+[parser](compiler_input_provenance.py) runs no optimizer kernels.
+
+Local controls passed for nested fusion bindings, tuple projection, independent
+combined-all-reduce operands, reversed output order, repeated operands and
+missing-target rejection. Opaque calls are flagged and conservatively depend
+on all declared operands; a control confirmed that this uncertainty remains
+confined to the affected branch. These are static dependencies, not proof of
+minimal semantic inputs or equal runtime values. The job requests four CPUs,
+8 GiB memory and no accelerator, with default preemption retries and no runtime
+limit. No numerical intervention or training run is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

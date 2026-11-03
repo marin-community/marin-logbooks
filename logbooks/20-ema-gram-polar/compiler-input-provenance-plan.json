@@ -1,0 +1,103 @@
+{
+  "purpose": "Map first q/k/v polar-product inputs to conservative gradient/state entry-parameter dependencies. No numerical kernels.",
+  "source_report_sha256": "1d226cb82a05ed6dbe190d1bf1210f274240d723cfefc88ee69fa6745221f8ef",
+  "required_region": "us-west4",
+  "artifacts": {
+    "fused_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_original.optimized_hlo.txt.gz",
+      "sha256": "f323476e7f76fdb8ecf7398a72dfc4b2acd44ff5034155f610143bd1a249f93d",
+      "compressed_bytes": 10060125,
+      "targets": {
+        "q_proj_normalization": {
+          "operation": "fused_computation.112853.clone.clone/div.503",
+          "role": "raw inner matrix and broadcast normalization denominator"
+        },
+        "q_proj_first_A": {
+          "operation": "async_collective_fusion.149082/convolution-base-dilated.451",
+          "role": "first polar Gram: repeated normalized matrix operand"
+        },
+        "k_proj_normalization": {
+          "operation": "fused_computation.112850.clone.clone/div.507",
+          "role": "raw inner matrix and broadcast normalization denominator"
+        },
+        "k_proj_first_A": {
+          "operation": "async_collective_fusion.149085/convolution-base-dilated.453",
+          "role": "first polar Gram: repeated normalized matrix operand"
+        },
+        "v_proj_normalization": {
+          "operation": "fused_computation.112847.clone.clone/div.519",
+          "role": "raw inner matrix and broadcast normalization denominator"
+        },
+        "v_proj_first_A": {
+          "operation": "async_collective_fusion.149176/convolution-base-dilated.491",
+          "role": "first polar Gram: repeated normalized matrix operand"
+        }
+      }
+    },
+    "fused_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662,
+      "targets": {
+        "q_proj_normalization": {
+          "operation": "fused_computation.111160.clone.clone/div.564",
+          "role": "raw inner matrix and broadcast normalization denominator"
+        },
+        "q_proj_first_A": {
+          "operation": "async_collective_fusion.144442/convolution-base-dilated.461",
+          "role": "first polar Gram: repeated normalized matrix operand"
+        },
+        "k_proj_normalization": {
+          "operation": "fused_computation.111157.clone.clone/div.568",
+          "role": "raw inner matrix and broadcast normalization denominator"
+        },
+        "k_proj_first_A": {
+          "operation": "async_collective_fusion.144445/convolution-base-dilated.463",
+          "role": "first polar Gram: repeated normalized matrix operand"
+        },
+        "v_proj_normalization": {
+          "operation": "fused_computation.111154.clone.clone/div.580",
+          "role": "raw inner matrix and broadcast normalization denominator"
+        },
+        "v_proj_first_A": {
+          "operation": "async_collective_fusion.144539/convolution-base-dilated.503",
+          "role": "first polar Gram: repeated normalized matrix operand"
+        }
+      }
+    }
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.input-provenance",
+  "execution": {
+    "job_name": "ema-gram-20-input-provenance-cpu-20261103",
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default",
+    "output_identity": "Fresh UUID per process; retain all attempts",
+    "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-input-provenance-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT <published-commit> -- python logbooks/20-ema-gram-polar/compiler_input_provenance.py --manifest logbooks/20-ema-gram-polar/compiler-input-provenance-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.input-provenance"
+  },
+  "limitations": [
+    "Tuple-leaf and fusion substitution preserves source parameter identity, but opaque operations conservatively depend on all declared inputs.",
+    "Matching source roles does not establish equal numerical values or complete causal isolation.",
+    "No optimizer acceptance, training or MFU claim; large inputs remain in us-west4."
+  ],
+  "preflight": {
+    "script_sha256": "fedd6ad15f976ffce03287440e929afd0a3963e780ed6ce8260ac2edf605b92e",
+    "passed": true,
+    "checks": [
+      "Nested fusion parameter binding",
+      "Tuple parameter leaf projection",
+      "Combined all-reduce keeps q/k independent",
+      "Reversed final tuple order",
+      "Repeated product operands retained",
+      "Opaque calls flagged with conservative union",
+      "Opaque q path does not taint independent k",
+      "Missing target rejected"
+    ],
+    "scope": "Static parser only; no numerical kernels or W&B requirement"
+  }
+}
