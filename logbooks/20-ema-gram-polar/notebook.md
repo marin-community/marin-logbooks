@@ -3751,6 +3751,47 @@ show continued collection, without another scheduler poll before its regular
 interval. Preserve the existing job, sole experiment log 9948 and PR observer
 77099. All numerical and training gates remain unchanged.
 
+## 2026-11-03 14:00 UTC — Original column-input substitution fails k and o reference leaves
+
+With the external q_proj numerator column-sharded and its denominator
+replicated, the original substitution executable's own captured pair fails
+full-update checks against both untouched and paired-capture outputs at
+rtol=atol=1e-5. The failing leaves are
+k_proj and o_proj directions. Against the untouched reference, their maximum
+absolute errors are 0.0039804131 and 0.0039047748; relative Frobenius errors are
+0.0066678317 and 0.0067292870. All other direction leaves and all 21 state leaves
+pass tolerance. q_proj passes with maxabs 1.1920928955078125e-7 and relative
+Frobenius error 1.7284896441321625e-7. Nonzero measured errors also occur in
+v_proj and gate_proj, within tolerance. Zero measured error elsewhere is not
+per-leaf bitwise proof.
+
+Passing q_proj does not satisfy the full 28-leaf gate. Both original
+same-bank reference agreement and conditional interpretation flags are false.
+These flags prohibit attributing swaps to the untouched path; differences
+within the altered executable can still be measured. Within this altered fixed
+executable, numerator-only, denominator-only and paired swaps fail q_proj at
+relative Frobenius errors 0.0070278945, 0.0060659926 and 0.0070323970, using the
+own-pair q output norm as denominator. Other 27 leaves have zero measured
+absolute error in these swap comparisons. These conditional differences do
+not establish the cause of the untouched optimizer discrepancy.
+
+The 13:59:26 UTC report has 17 finite stages and 20 comparisons, 13 passing.
+Both fresh paired capture gates pass tolerance but are not bitwise; both
+unchanged evaluators match their own untouched references bitwise. All five
+completed fixed executables replay bitwise. The matrix substitution executable
+is compiling; its own-pair gate and final artifacts remain pending. Canonical
+job state is RUNNING at 13:59:26 UTC with zero failures or preemptions. Preserve
+the existing job and sole log observer 9948 through the matrix branch. No new
+candidate is submitted and no optimizer or training result is accepted.
+
+Finelog records 221 samples through 13:59:47 UTC and observed cumulative host
+peak 82.7294921875 GiB against 128 GiB. This is not total accelerator HBM.
+All four small capture/substitution Jaxpr artifacts pass SHA/size/gzip readback;
+large compiler files stay regional without a new checksum audit.
+[Partial gate evidence](optimizer-column-input-substitution-original-gate.json)
+retains all leaf errors, fixed-executable replays and telemetry scope. PR observer
+77099 and the heartbeat remain active; reuse both existing observers.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
