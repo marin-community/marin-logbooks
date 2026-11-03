@@ -294,6 +294,101 @@ def polar_continuation(bank):
     return jax.vmap(one_matrix)(*bank)
 
 
+def normalized_polar_input(inner):
+    """Use the shared polar function's normalization and constraint without iterations."""
+    return jax.vmap(partial(zeropower_via_newtonschulz5, steps=0))(inner)
+
+
+def normalization_first_gram(inner):
+    def one_matrix(x):
+        assert x.shape[0] == x.shape[1]
+        x = zeropower_via_newtonschulz5(x, steps=0)
+        return x @ x.T
+
+    return jax.vmap(one_matrix)(inner)
+
+
+def normalized_first_gram(inner):
+    def one_matrix(x):
+        assert x.shape[0] == x.shape[1]
+        if not jax.sharding.get_abstract_mesh().empty:
+            x = jax.lax.with_sharding_constraint(x, P(None, ("data", "model")))
+        return x @ x.T
+
+    return jax.vmap(one_matrix)(inner)
+
+
+def polar_from_normalized(inner):
+    """Retain original square-matrix iterations, omitting only normalization."""
+
+    def one_matrix(x):
+        assert x.shape[0] == x.shape[1]
+        if not jax.sharding.get_abstract_mesh().empty:
+            x = jax.lax.with_sharding_constraint(x, P(None, ("data", "model")))
+        for a, b, c in NEWTON_SCHULZ_COEFFICIENTS["quintic"]:
+            gram = x @ x.T
+            polynomial = b * gram + c * gram @ gram
+            x = a * x + polynomial @ x
+        return x
+
+    return jax.vmap(one_matrix)(inner)
+
+
+def compare_bitwise(rec, name, actual, expected):
+    passed = rec.compare(name, actual, expected)
+    rec.report["comparisons"][name]["bitwise_equal"] = fingerprint(actual) == fingerprint(expected)
+    rec.persist()
+    return passed
+
+
+def normalization_boundary(rec, name, inner, rep, sharding):
+    normalized = rec.run(f"{name}/normalization/input", normalized_polar_input, (inner,), (rep,), rep)
+    raw_hash, normalized_hash = fingerprint(inner), fingerprint(normalized)
+    references, outputs = {}, {}
+    for layout, out_sharding in [("replicated", rep), ("direction_sharded", sharding)]:
+        references[layout] = rec.run(f"{name}/identical_inner/{layout}", polar, (inner,), (rep,), out_sharding)
+        outputs[layout] = {}
+        for mode, fn, bank in (
+            ("raw_first_A", normalization_first_gram, inner),
+            ("normalized_first_A", normalized_first_gram, normalized),
+            ("normalized_polar", polar_from_normalized, normalized),
+        ):
+            label = f"{name}/normalization/{mode}/{layout}"
+            values = fixed_bank_outputs(rec, label, label, fn, {"input": bank}, rep, out_sharding)
+            outputs[layout][mode] = values["input"]
+        compare_bitwise(
+            rec,
+            f"{name}/normalization/{layout}/A_boundary",
+            outputs[layout]["normalized_first_A"],
+            outputs[layout]["raw_first_A"],
+        )
+    for mode in ("raw_first_A", "normalized_first_A", "normalized_polar"):
+        compare_bitwise(
+            rec, f"{name}/normalization/{mode}/layouts", outputs["direction_sharded"][mode], outputs["replicated"][mode]
+        )
+    compare_bitwise(
+        rec, f"{name}/normalization/reference/layouts", references["direction_sharded"], references["replicated"]
+    )
+    checks = {}
+    for layout in outputs:
+        for reference_layout in references:
+            label = f"{name}/normalization/{layout}/polar_vs_reference_{reference_layout}"
+            passed = compare_bitwise(rec, label, outputs[layout]["normalized_polar"], references[reference_layout])
+            checks[label] = dict(passed=passed, bitwise_equal=rec.report["comparisons"][label]["bitwise_equal"])
+    assert fingerprint(inner) == raw_hash and fingerprint(normalized) == normalized_hash
+    rec.report.setdefault("normalization_boundary_checks", {})[name] = dict(
+        raw_input_sha256=raw_hash,
+        normalized_input_sha256=normalized_hash,
+        reference_checks=checks,
+        original_path_interpretation_allowed=False,
+        limitation=(
+            "Separating normalization and returning only a first Gram changes compilation. "
+            "Final agreement does not prove equal internal values or isolate arithmetic precision."
+        ),
+    )
+    rec.persist()
+
+
 def continuation_crossfeed(rec, name, products, traces, references, rep, sharding):
     """Hold X and each executable fixed while changing the supplied first Gram."""
     x = traces["replicated"]["normalized_input"]
@@ -349,6 +444,13 @@ def first_product_diagnostic(rec, common, rep, shardings):
         inner = rec.run(f"{name}/inner", inner_product, (powers[0], state.momentum, powers[1]), (rep,) * 3, rep)
         del powers
         inner_sha = fingerprint(inner)
+        if rec.report["config"].get("normalization_control"):
+            normalization_boundary(rec, name, inner, rep, sharding)
+            assert fingerprint(inner) == inner_sha
+            del inner
+            jax.clear_caches()
+            gc.collect()
+            continue
         traces, instrumentation, exact_instrumentation, references = {}, {}, {}, {}
         for layout, out_sharding in [("replicated", rep), ("direction_sharded", sharding)]:
             reference = rec.run(f"{name}/identical_inner/{layout}", polar, (inner,), (rep,), out_sharding)
@@ -430,6 +532,7 @@ class Recorder:
             or "/identical_inner/" in name
             or "/polar_iterates/" in name
             or "/products/" in name
+            or "/normalization/" in name
         )
         if capture:
             lowered = compiled.lower(*inputs)
@@ -625,8 +728,9 @@ def main():
     mode.add_argument("--polar-products", action="store_true")
     mode.add_argument("--polar-contracting", action="store_true")
     mode.add_argument("--polar-continuation", action="store_true")
+    mode.add_argument("--polar-normalization", action="store_true")
     args = parser.parse_args()
-    product_mode = args.polar_products or args.polar_contracting or args.polar_continuation
+    product_mode = args.polar_products or args.polar_contracting or args.polar_continuation or args.polar_normalization
     if not args.smoke:
         initialize_jax()
     devices = jax.devices()
@@ -657,6 +761,7 @@ def main():
         polar_products=product_mode,
         contracting_control=args.polar_contracting or args.polar_continuation,
         continuation_control=args.polar_continuation,
+        normalization_control=args.polar_normalization,
         polar_iterate_leaf_order=[
             "input_norm",
             "normalized_input",

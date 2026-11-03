@@ -1,0 +1,44 @@
+{
+  "status": "implemented; CPU logging and numerical validation pending",
+  "script": "optimizer_attribution.py --polar-normalization",
+  "script_sha256": "2883c1cf608d425b3c3fc2de5e639b9eb0c3d66b8aea4733d8457ac6124faa7d",
+  "question": "Measure numerical effects of separating normalization from the first Gram product and five polar iterations.",
+  "prior_evidence": "compiler-continuation-paths.json",
+  "input_recipe": "Seed0, same seven full synthetic state shapes and common standalone refresh recipe as prior attribution. Only square q/k/v groups enter the new polar-product diagnostic. Identical frozen inner tensor within each layout comparison; no cross-job bitwise input claim.",
+  "stages": [
+    "common refreshed state and original eigenvalue powers/inner product",
+    "shared normalization via zeropower_via_newtonschulz5 steps=0",
+    "shared uninstrumented five-step polar reference under both layouts",
+    "fixed first-A executable with internal normalization",
+    "fixed first-A executable with external normalized input",
+    "fixed five-step iteration executable with external normalized input"
+  ],
+  "science": "Shared uninstrumented polar, coefficients, Gram refresh, normalization and powers. No precision overrides, approximation, tolerance change or optimizer/trainer change. Expression association retained.",
+  "instrumentation_gate": "All fixed1e-5 mismatches recorded; no original internal-path interpretation even when final results match. candidate_accepted_for_training remains false.",
+  "crossfeed": "One frozen input and bitwise replay per executable. Raw input and separately normalized input are hashed; compiler boundary and supplied values differ, so this does not isolate a runtime mechanism. Compare first-A outputs within each layout, all outputs across layouts, and normalized five-step outputs against both shared polar references.",
+  "expected_cpu_equal_path": {
+    "finite_stages": 69,
+    "comparisons": 48,
+    "fixed_executables": 18,
+    "compiler_files": 54
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "One group and one executable/device output bank at a time; reference/traces offloaded to host; clear executable caches; original common state on host. No training checkpoint or dataset.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.6",
+  "job_name": "ema-gram-20-polar-normalization-v5e-8-20261103",
+  "limitations": "No warmed timing or device profile promised; no training/MFU/correctness promotion. Additional outputs and isolated product boundaries change compilation. Trace equality at final output does not prove all internal operations are unchanged.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-normalization-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-normalization --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.6",
+  "preflight": "optimizer-polar-normalization-preflight.json"
+}

@@ -2174,6 +2174,33 @@ can change compilation; agreement with a final reference would not prove
 internal identity. No precision or tiling override, numerical submission or
 optimizer intervention is selected. No experiment is queued or running.
 
+## 2026-11-03 05:57 UTC — Separate normalization from polar products
+
+The [next diagnostic](optimizer-polar-normalization-plan.json) compares the
+shared five-step polar function with the same quintic iterations applied to an
+externally normalized input. The shared polar function with zero iterations
+computes that input, preserving its norm, epsilon and sharding constraint. Each
+square query/key/value group has shape [11, 1024, 1024] on TPU, using the seed-zero
+synthetic Gram/momentum refresh recipe recorded in the diagnostic plan.
+
+Two additional functions return only the first Gram product A = XXᵀ: one
+normalizes its input inside the compiled function; the other receives the
+separately normalized input. All three diagnostic functions, including the
+five-step function, run under replicated and direction-sharded outputs with
+replicated external inputs. Every fixed executable compiles once,
+evaluates its input, then replays it. Input fingerprints, finite outputs,
+per-stage memory, compiler artifacts, tolerance comparisons and bitwise checks
+are recorded. The normalized five-step result is compared with both output
+layouts of the shared uninstrumented polar reference.
+
+Expected collection is 69 finite stages, 48 comparisons, eighteen fixed-executable
+replays and 54 compiler files. A separate online logging check and an eight-device
+CPU smoke must pass before one sequential v5e-8 diagnostic. Splitting
+normalization or returning a first product changes compilation; final agreement
+cannot verify internal identity. Precision, coefficients, tolerance and training
+remain unchanged. These controls cannot establish an accepted optimizer
+improvement. No accelerator has been submitted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
