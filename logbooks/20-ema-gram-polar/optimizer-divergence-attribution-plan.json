@@ -382,11 +382,19 @@
     }
   },
   "normalization_next": {
-    "status": "static analysis next; no new numerical submission selected",
+    "status": "Completed static inspection; compiler-normalization-boundary-paths.json and validation record.",
     "evidence": "optimizer-polar-normalization-v5e-completed.json",
     "objective": "Map saved normalized-input five-step and isolated first-product compiler paths against shared uninstrumented polar paths under both layouts.",
     "inputs": "54 checksum/size/gzip-verified small files in scratch/20261103-normalization-compiler; exact manifest in completion record.",
     "method": "Reuse output_dependency_graph, output_ancestors and aligned_products. Add explicit supported source metadata for polar_from_normalized. Validate fifteen-product chains and contraction labels; one-product paths for raw_first_A and normalized_first_A. Compare normalization producers, local contraction dimensions, collective ancestry, operand declarations and enclosing-fusion configs. Do not align by text order. Compare within same job first; verify input hashes before any cross-job output-hash comparison.",
-    "limitations": "Isolated A equality does not prove hidden full-path A equality. Static declarations do not establish runtime precision or numerical cause. No audit-only accelerator, precision/tiling override or optimizer intervention selected. Future numerical changes require own online CPU validation and published source; optimizer acceptance requires untouched full-update all28 leaves at fixed1e-5."
+    "limitations": "Isolated A equality does not prove hidden full-path A equality. Static declarations do not establish runtime precision or numerical cause. No audit-only accelerator, precision/tiling override or optimizer intervention selected. Future numerical changes require own online CPU validation and published source; optimizer acceptance requires untouched full-update all28 leaves at fixed1e-5.",
+    "next_decision": {
+      "status": "design only; not implemented or submitted",
+      "objective": "Compare normalization-inside versus normalization-outside first Gram products with explicit internal column sharding on both paths.",
+      "motivation": "Previous isolated products both used full1024 contraction while original sharded full-polar first A used local128 contraction plus allreduce. The prior isolated comparison did not hold this partition equal.",
+      "method": "Use shared normalization steps=0 on the raw path and identical frozen normalized X on the external path. Explicit NamedSharding P(None,None,data) on normalized X before first product in both functions, unchanged full q/k/v shapes/dtype/default precision. Verify compiled local128 contraction and reduction rather than assuming constraints succeeded. Compile once per output layout, replay inputs, preserve input fingerprints and bounded memory. Cross-feed resulting A banks into the existing fixed continuation with common normalized X, compare all finals to untouched shared five-step references at1e-5 and bitwise.",
+      "interpretation": "Conditional boundary/partition control; source constraints may also change casts/kernel selection. No claim of pure collective-order isolation, hidden-input equality or runtime precision. Final agreement cannot prove internal identity. Not an optimizer intervention.",
+      "launch_gate": "Own online CPU logging/numerical harness validation and exact published source/plan before ONE sequential TPU diagnostic. Default preemption retries; no limits. No concurrent candidate. Optimizer acceptance still requires untouched original full-update all28 leaves at fixed1e-5."
+    }
   }
 }

@@ -33,7 +33,8 @@ def aligned_products(text, path, kind):
         assert ancestors(key) & products == preceding, (kind, index, "non-total dependency chain")
         row = records[key]
         assert re.search(
-            r'op_name="jit\((polar|polar_products|polar_continuation)\)/vmap\(\)/dot_general"', row["attributes"]
+            r'op_name="jit\((polar|polar_products|polar_continuation|polar_from_normalized)\)/vmap\(\)/dot_general"',
+            row["attributes"],
         )
         offset = index + (kind == "continuation")
         role = ("A", "C", "D")[offset % 3]

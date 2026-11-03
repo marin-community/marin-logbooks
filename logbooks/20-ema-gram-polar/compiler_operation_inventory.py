@@ -158,6 +158,7 @@ def polar_lineage(lines, groups, diagnostics=None):
             and (
                 metadata[1].endswith("/gram_direction/vmap()/dot_general")
                 or metadata[1].endswith("jit(polar)/vmap()/dot_general")
+                or metadata[1].endswith("jit(polar_from_normalized)/vmap()/dot_general")
             )
         ):
             key = scope + "/" + name

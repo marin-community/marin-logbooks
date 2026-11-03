@@ -89,7 +89,10 @@ def output_dependency_graph(text, output_path):
             walk(scope, operands[path[0]], bindings, context, path[1:])
             return
         assert not path, (scope, name, path)
-        assert op not in ("while", "call", "conditional", "custom-call"), (scope, name, op)
+        if op == "custom-call":
+            assert 'custom_call_target="ConcatBitcast"' in node["attributes"], (scope, name, node["attributes"])
+            records[-1]["dependency_policy"] = "Opaque ConcatBitcast: conservatively follow all declared operands"
+        assert op not in ("while", "call", "conditional"), (scope, name, op)
         for operand in operands:
             walk(scope, operand, bindings, context)
 

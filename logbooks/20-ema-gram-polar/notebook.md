@@ -2247,6 +2247,53 @@ isolated-product compiler paths against their uninstrumented references using
 output dependencies and source metadata. The files are local; no further
 accelerator is selected or running.
 
+## 2026-11-03 06:18 UTC — First-product contraction differs after normalization separation
+
+The [normalization-control compiler comparison](compiler-normalization-boundary-paths.json)
+maps 24 graphs: twelve five-step graphs with fifteen visible products each and
+twelve isolated-product graphs. All 48 consumed IR objects passed checksum,
+size and local-byte checks. The twelve full-graph product chains match the
+existing independent lineage parser, and twelve earlier single-product ancestry
+results are unchanged. Three replicated normalized-input graphs contain an
+opaque `ConcatBitcast` custom call. The parser follows its declared operands
+conservatively and makes no claim about hidden operations or runtime behavior.
+
+For query/key/value under direction-sharded outputs, the original five-step
+graph uses a 128-column local contraction for first A = XXᵀ followed by an
+all-reduce. The externally normalized five-step graph uses a full 1,024-column
+first contraction with no corresponding first-A all-reduce. Later iterations
+retain local contractions and reductions. Among the compared product fields,
+only first A changes operand declarations and enclosing-fusion configuration;
+operation-level attributes and backend configurations match. Under replicated
+outputs, operand declarations match throughout, while enclosing-fusion
+configurations differ at first A and D = (bA + (cA)A)X. Static configurations do
+not establish runtime precision or numerical cause.
+
+Both isolated first-product variants use the full 1,024-column contraction.
+With raw input and sharded output, the graph gathers a declared BF16 normalized
+operand before multiplication; the externally normalized variant has no
+collective in its output ancestry. Their outputs nevertheless match bitwise.
+Thus those isolated controls did not hold the first-product contraction
+partition equal to the original sharded five-step path.
+
+After verifying both final-report checksums, the raw input before normalization
+and normalized-input fingerprints match the earlier continuation experiment in
+all three groups. All six new five-step output fingerprints match the
+corresponding continuation supplied with replicated A. These endpoint matches
+do not prove equal hidden first products.
+
+Next design a paired first-product control that requests internal column
+sharding for both raw-input normalization and externally normalized input.
+Verify the compiled local contraction and reduction before interpreting
+results. Use shared normalization and unchanged coefficients, dtype and
+precision; feed the resulting A banks into fixed continuations holding
+normalized X constant, with replay and original five-step reference checks.
+This is a conditional diagnostic: constraints and boundaries can change casts
+and kernel selection, and final agreement would not prove internal identity.
+No optimizer intervention or accelerator submission is selected; the new
+implementation needs its own online CPU validation and published source before
+one sequential TPU diagnostic.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
