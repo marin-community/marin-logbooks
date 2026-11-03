@@ -2078,6 +2078,16 @@ The continuation mode should produce 81 finite stages, 150 comparisons and 54
 compiler files; the state comparison retains 13 stages and 26 comparisons.
 No accelerator job is queued or running.
 
+The [CPU preflight](optimizer-polar-continuation-preflight.json) passed all 81
+finite stages and 150 fixed-tolerance comparisons. All fifteen fixed executables
+replayed their first inputs bitwise. The state-comparison regression passed all
+13 stages and 26 comparisons, including both bitwise replays. Both online W&B
+runs finished successfully, both reports matched GCS bytes, and all 54 new-mode
+compiler files plus eight regression files passed checksum and decompression
+checks. The separate online logging check also passed. These small CPU matrices
+do not establish TPU behavior; the next step is one sequential v5e-8 control
+from the published preflight revision.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

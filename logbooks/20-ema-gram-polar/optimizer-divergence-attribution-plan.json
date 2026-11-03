@@ -347,7 +347,7 @@
     "script_sha256": "d1e9c5ff05ab5e36c38004c7313485ba58bff46ac28479393dc0bb52da90be0c",
     "completion": "optimizer-polar-contracting-v5e-completed.json",
     "next_decision": {
-      "status": "implemented; own CPU validation and publication pending; no submission",
+      "status": "CPU online smoke81/150 and state-regression13/26 passed; preflight publication beforeoneTPU",
       "question": "How much does the measured first-product A difference change the final polar output when the continuation executable and normalized input are held fixed?",
       "control": "For each q/k/v group, retain identical normalized X and the A outputs from replicated and internally column-sharded isolated evaluators. Compile a continuation from external X,A once per controlled output layout. Reuse it for both A banks and replay first bank. Compute the remaining first-iteration polynomial/update and four later original quintic iterations using shared coefficient definitions, unchanged association and precision. Return only final output.",
       "reference_gate": "Compare continuation outputs against shared uninstrumented five-step polar and traced finals, and record both fixed1e-5 and bitwise results. Separating A changes compilation; failure against uninstrumented references forbids interpreting the continuation as the original fused path. Even passing final equality does not prove internal identity.",
@@ -363,7 +363,9 @@
       },
       "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.5",
       "resources": "onev5litepod-8host/8chips,96CPU128GiB50GiB,us-west4,batch/defaultretries/no runtime limit",
-      "harness_regression": "Generalized existing fixed-direction executor to arbitrary named banks; revalidate state-crossfeed CPU13stages/26comparisons alongside new81/150 mode."
+      "harness_regression": "Generalized existing fixed-direction executor to arbitrary named banks; revalidate state-crossfeed CPU13stages/26comparisons alongside new81/150 mode.",
+      "preflight": "optimizer-polar-continuation-preflight.json",
+      "script_sha256": "c7047d21dedfa5df4866cd32e5656d6868a991402dfa632d43f8333cab077a83"
     }
   }
 }
