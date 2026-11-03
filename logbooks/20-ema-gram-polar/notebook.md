@@ -4247,6 +4247,12 @@ The next static decision is to inspect the 36 uncovered positions together, usin
 
 The sole follow observer ended naturally with exit 0. No experiment, queue or observer remains active. PR monitoring remains handed off after its earlier twelve-hour timeout; the research heartbeat stays active.
 
+### November 3, 18:07 UTC — inspect upstream product and collective inputs (static preflight)
+
+The [current coverage](compiler-earlier-bindings-frontiers.json) leaves 36 declared positions uninspected: eight operands of down iteration-2 `X_Xt`/iteration-1 `B_X` and up iteration-4 `X_Xt`/iteration-3 `B_X`, eight Concat inputs, and twenty Done inputs. The [selector](trace_upstream_bindings.py) preserves exact saved caller dependencies, deduplicates repeated views, and checks product roles. Complete input-trace roots from twelve saved reports exclude already covered endpoints. A partially covered input set is rejected for explicit position-level review.
+
+The [plan](compiler-upstream-bindings-plan.json), [manifest](compiler-upstream-bindings-manifest.json) and [preflight](compiler-upstream-bindings-validation.json) preserve paired capture and reused o controls. Match each Done's ten inputs to one Start only where unambiguous, then inspect its declared input separately. Exact source will be published before regional CPU-only parsing with HLO SHA/size checks, default preemption and no wall-clock limit. No numerical intervention is selected; both full28leaf gates remain failed and opaque outputs remain opaque.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
