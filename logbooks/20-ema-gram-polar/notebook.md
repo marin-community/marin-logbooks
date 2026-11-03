@@ -2130,6 +2130,50 @@ dependencies. The files are already available locally; no new analysis
 accelerator is needed. No optimizer intervention or new numerical experiment is
 selected, and no experiment remains queued or running.
 
+## 2026-11-03 05:45 UTC — First-iteration compiler paths remain different
+
+The [saved-graph comparison](compiler-continuation-paths.json) finds differences
+in the inspected product fields only in the first polar iteration. The parser
+mapped all 18 query/key/value graphs by final-output dependencies: 15 ordered
+products per uninstrumented or traced computation, and 14 per continuation
+because its first A = XXᵀ is an external input. Each iteration computes
+A = XXᵀ, C = (cA)A and D = (bA + C)X. Fusion-parameter and tuple-leaf traversal,
+source metadata and contraction dimension labels validate the mapping without
+using instruction text order. All 36 consumed StableHLO/optimized-HLO files
+passed checksum, size and local-byte checks. Six uninstrumented mappings matched
+the existing independent lineage parser; twelve earlier single-product ancestry
+results remained unchanged.
+
+For each group and output layout, uninstrumented-versus-traced configurations
+of the enclosing compiled fusion differ at first-iteration A, C and D. These
+configurations include kernel-window and iteration bounds; they are separate
+from the product operation's own backend settings. The compared product
+attributes, operation-level backend configurations, operand declarations and
+calling-fusion configurations match at every product in iterations two through
+five. This does not cover all upstream graph structure or internal values.
+In the sharded paths, traced C declares a BF16 left operand and a 128-column
+right operand, whereas uninstrumented C declares two F32 full-size operands.
+The uninstrumented first-A fusion consumes input before normalization and the
+norm denominator, and computes the division inside that fusion. The traced
+first-A fusion consumes a separately computed normalized tensor. These
+compiler declarations do not establish runtime arithmetic precision or
+numerical cause.
+
+For uninstrumented-versus-continuation sharded paths, operand declarations and
+operation-level attributes/configurations match for all fourteen corresponding
+products; only first C has a different calling-fusion configuration. The
+continuation receives external normalized X and A, so this comparison does not
+establish equal inputs to corresponding internal products. Its final output
+still fails the uninstrumented sharded reference despite these matching fields.
+
+Next design a control of the normalization/first-iteration boundary, retaining
+source math and fixed tolerance. Distinguish input before normalization from
+externally normalized input at the first-product computation, and compare final
+outputs with the shared uninstrumented polar function. Changing that boundary
+can change compilation; agreement with a final reference would not prove
+internal identity. No precision or tiling override, numerical submission or
+optimizer intervention is selected. No experiment is queued or running.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

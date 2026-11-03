@@ -14,7 +14,7 @@ from compiler_operation_inventory import CALLS, COMPUTATION, INSTRUCTION, OPERAN
 from rigging.filesystem.storage_path import StoragePath
 
 
-def output_ancestors(text, output_path):
+def output_dependency_graph(text, output_path):
     scopes, roots, entry = {}, {}, None
     for line in text.splitlines():
         header = COMPUTATION.match(line)
@@ -38,15 +38,27 @@ def output_ancestors(text, output_path):
             if line.lstrip().startswith("ROOT "):
                 roots[scope] = name
     assert entry is not None
-    records, visited = [], set()
+    records, visited, edges, stack = [], set(), {}, []
 
     def walk(scope, name, bindings, context, path=()):
-        identity = (context, scope, name, path)
+        identity = json.dumps([context, scope, name, path])
+        if stack:
+            edges[stack[-1]].add(identity)
+        if identity in visited:
+            return
+        edges[identity] = set()
+        stack.append(identity)
+        visit(scope, name, bindings, context, path, identity)
+        stack.pop()
+
+    def visit(scope, name, bindings, context, path, identity):
         if identity in visited:
             return
         visited.add(identity)
         node = scopes[scope][name]
-        records.append(dict(context=list(context), computation=scope, selected_tuple_path=list(path), **node))
+        records.append(
+            dict(identity=identity, context=list(context), computation=scope, selected_tuple_path=list(path), **node)
+        )
         op, operands = node["opcode"], node["operands"]
         if op == "parameter":
             if bindings:
@@ -82,11 +94,22 @@ def output_ancestors(text, output_path):
             walk(scope, operand, bindings, context)
 
     walk(entry, roots[entry], [], (), output_path)
-    products = [row for row in records if row["opcode"] in ("dot", "convolution")]
-    assert len(products) == 1, len(products)
     return dict(
         entry=entry,
         output_path=list(output_path),
+        dependencies={key: sorted(value) for key, value in edges.items()},
+        records=records,
+    )
+
+
+def output_ancestors(text, output_path):
+    graph = output_dependency_graph(text, output_path)
+    records = graph["records"]
+    products = [row for row in records if row["opcode"] in ("dot", "convolution")]
+    assert len(products) == 1, len(products)
+    return dict(
+        entry=graph["entry"],
+        output_path=graph["output_path"],
         matrix_product=products[0],
         collectives=[row for row in records if row["opcode"] in ("all-reduce", "reduce-scatter", "all-gather")],
         declared_bf16_nodes=[row for row in records if row["shape"].startswith("bf16[")],

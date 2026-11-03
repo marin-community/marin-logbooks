@@ -368,10 +368,16 @@
       "script_sha256": "c7047d21dedfa5df4866cd32e5656d6868a991402dfa632d43f8333cab077a83",
       "completion": "optimizer-polar-continuation-v5e-completed.json",
       "next_decision": {
-        "status": "design only; no new numerical experiment selected",
+        "status": "Completed local static comparison; compiler-continuation-paths.json. No numerical submission selected.",
         "objective": "Identify remaining compiler differences between uninstrumented sharded polar and the traced/continuation sharded paths whose final outputs match each other but fail the uninstrumented reference.",
         "analysis": "Use locally saved checksum-verified54compilerfiles. Map source metadata and output dependencies for q/k/v uninstrumented, traced-final and continuation graphs under both outputlayouts. Align first-iteration C/D and later four iteration products; continuation receives external A and lacks its computation. Inspect normalized-input producers, operand shapes/casts, collective ancestry and calling-fusion configuration. Do not align by textual order or equate static declarations with runtime precision.",
-        "constraints": "No analysis accelerator needed. Reuse existing parser/dependency helpers; verify mappings and checksums when consuming artifacts. Do not select precision/tiling overrides from static differences alone. Any later numerical control requires own onlineCPUvalidation and publishedsource; optimizer intervention requires untouched originalfullupdate all28leaves at1e-5."
+        "constraints": "No analysis accelerator needed. Reuse existing parser/dependency helpers; verify mappings and checksums when consuming artifacts. Do not select precision/tiling overrides from static differences alone. Any later numerical control requires own onlineCPUvalidation and publishedsource; optimizer intervention requires untouched originalfullupdate all28leaves at1e-5.",
+        "findings": "18 total product chains verified, 36 consumed IR files checksum/size/local-byte checked. Inspected differences confined to first iteration; uninstrumented versus traced enclosing-fusion configurations differ A/C/D, later products match inspected fields. Sharded uninstrumented versus continuation differs only first-C enclosing-fusion config across 14 matched products; inputs/internal values not established equal.",
+        "next_decision": {
+          "status": "design only; not implemented or submitted",
+          "objective": "Design a source-math-preserving control of the normalization/first-iteration boundary.",
+          "constraints": "Distinguish pre-normalization input from externally normalized input at the first-product computation. Compare final outputs with shared untouched polar at fixed1e-5; removing or separating normalization changes compilation. Require own online CPU validation and published exact source before one sequential TPU diagnostic. No precision/tiling override; final equality does not prove internal identity. Optimizer acceptance still requires original full-update all28-leaf comparison."
+        }
       }
     }
   }
