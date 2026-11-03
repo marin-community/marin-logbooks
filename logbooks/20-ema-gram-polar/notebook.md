@@ -2294,6 +2294,27 @@ No optimizer intervention or accelerator submission is selected; the new
 implementation needs its own online CPU validation and published source before
 one sequential TPU diagnostic.
 
+## 2026-11-03 06:29 UTC — Pair normalization boundaries with internal column sharding
+
+The [paired control](optimizer-polar-partition-plan.json) now requests the same
+internal column partition for two first Gram products A = XXᵀ. One normalizes
+the raw input inside the compiled first-product function before applying the
+constraint; the other receives a separately computed tensor using the same
+shared normalization formula. Internal tensor equality is not assumed. Each path runs
+under replicated and direction-sharded output layouts. Saved compiler ancestry
+must verify the local contraction and reduction before interpreting the result.
+
+For each query/key/value group, one fixed continuation per output layout will
+evaluate all four resulting A banks with normalized X held fixed, then replay
+the first bank. It computes the remainder of iteration one and four later
+quintic iterations. Final outputs are compared to both shared, uninstrumented
+five-step references at `rtol=atol=1e-5`, with bitwise equality also recorded.
+The implementation reuses shared normalization, product, continuation and
+fixed-executable helpers. Source-level precision settings, coefficients and full matrix shapes stay
+unchanged. Constraints may change casts and kernel selection; final agreement
+would not prove internal identity. Online CPU validation is pending, and no
+accelerator has been submitted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

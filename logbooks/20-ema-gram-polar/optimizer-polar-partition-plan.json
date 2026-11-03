@@ -1,0 +1,42 @@
+{
+  "status": "Implemented; online CPU validation pending; no accelerator submitted",
+  "script": "optimizer_attribution.py --polar-partition",
+  "script_sha256": "2d6a8c81c6c9c6a368176a047b2db334fada3dc8410bf42f263a696bcdeda7a5",
+  "question": "Does separating shared normalization change first Gram products when both paths request internal column sharding?",
+  "prior_evidence": "compiler-normalization-boundary-paths.json",
+  "input_recipe": "Seed0, same seven full synthetic state shapes and common standalone refresh recipe as prior attribution. Only square q/k/v groups enter the new polar-product diagnostic. Identical frozen inner tensor within each layout comparison; no cross-job bitwise input claim.",
+  "stages": [
+    "Common original refreshed state and q/k/v powers/inner products",
+    "Shared uninstrumented five-step references and separately normalized X",
+    "Raw normalization plus internally column-sharded first A; external normalized X plus same constraint; two output layouts",
+    "One fixed continuation per output layout across all four A banks then first-bank replay"
+  ],
+  "science": "Shared uninstrumented polar, coefficients, Gram refresh, normalization and powers. No precision overrides, approximation, tolerance change or optimizer/trainer change. Expression association retained.",
+  "instrumentation_gate": "All fixed1e-5 mismatches recorded; no original internal-path interpretation even when final results match. candidate_accepted_for_training remains false.",
+  "crossfeed": "Both first-product functions request NamedSharding P(None,None,data) on normalized X. Verify optimized local contraction and reduction after collection. Each continuation reuses one executable and identical normalized X across four A banks; compare to both untouched polar references and across layouts.",
+  "expected_cpu_equal_path": {
+    "finite_stages": 87,
+    "comparisons": 111,
+    "fixed_executables": 18,
+    "compiler_files": 54
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "One group and one executable/device output bank at a time; reference/traces offloaded to host; clear executable caches; original common state on host. No training checkpoint or dataset.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7",
+  "job_name": "ema-gram-20-polar-partition-v5e-8-20261103",
+  "limitations": "Conditional normalization/partition sensitivity only. Constraints and separate executables can change casts and kernels; no pure collective or runtime precision attribution. No optimizer acceptance, checkpoint read, warmed performance or training MFU.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-partition-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-partition --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7",
+  "preflight": "optimizer-polar-partition-preflight.json"
+}

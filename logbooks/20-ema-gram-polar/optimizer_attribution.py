@@ -389,6 +389,88 @@ def normalization_boundary(rec, name, inner, rep, sharding):
     rec.persist()
 
 
+def raw_contracting_gram(inner, sharding):
+    """Normalize through the shared implementation, then constrain product operands."""
+    return contracting_product(normalized_polar_input(inner), sharding)
+
+
+def normalization_partition(rec, name, inner, rep, sharding):
+    """Pair normalization boundaries with the same requested contraction partition."""
+    normalized = rec.run(f"{name}/partition/input", normalized_polar_input, (inner,), (rep,), rep)
+    raw_hash, normalized_hash = fingerprint(inner), fingerprint(normalized)
+    internal = NamedSharding(rep.mesh, P(None, None, "data"))
+    layouts = [("replicated", rep), ("direction_sharded", sharding)]
+    references, products = {}, {}
+    for layout, out_sharding in layouts:
+        references[layout] = rec.run(f"{name}/identical_inner/{layout}", polar, (inner,), (rep,), out_sharding)
+        products[layout] = {}
+        for boundary, fn, bank in (
+            ("raw", partial(raw_contracting_gram, sharding=internal), inner),
+            ("normalized", partial(contracting_product, sharding=internal), normalized),
+        ):
+            label = f"{name}/partition/{boundary}_first_A/{layout}"
+            result = fixed_bank_outputs(rec, label, label, fn, {"input": bank}, rep, out_sharding)
+            products[layout][boundary] = result["input"]
+            rec.report["fixed_executables"][label].update(
+                requested_internal_sharding=str(internal),
+                internal_layout_verification="Inspect output ancestry in optimized HLO; constraint alone is not proof",
+            )
+        compare_bitwise(
+            rec, f"{name}/partition/{layout}/A_boundary", products[layout]["normalized"], products[layout]["raw"]
+        )
+    for boundary in ("raw", "normalized"):
+        compare_bitwise(
+            rec,
+            f"{name}/partition/{boundary}/A_layouts",
+            products["direction_sharded"][boundary],
+            products["replicated"][boundary],
+        )
+    compare_bitwise(
+        rec, f"{name}/partition/reference/layouts", references["direction_sharded"], references["replicated"]
+    )
+    banks = {
+        f"{layout}_{boundary}_A": (normalized, products[layout][boundary])
+        for layout, _ in layouts
+        for boundary in ("raw", "normalized")
+    }
+    rec.report.setdefault("partition_banks", {})[name] = {
+        key: dict(sha256=fingerprint(bank), x_sha256=fingerprint(bank[0]), A_sha256=fingerprint(bank[1]))
+        for key, bank in banks.items()
+    }
+    outputs, checks = {}, {}
+    first = next(iter(banks))
+    for layout, out_sharding in layouts:
+        label = f"{name}/partition/continuation/{layout}"
+        outputs[layout] = fixed_bank_outputs(rec, label, label, polar_continuation, banks, (rep, rep), out_sharding)
+        for bank_name, result in outputs[layout].items():
+            if bank_name != first:
+                compare_bitwise(rec, f"{label}/{bank_name}/vs_first_bank", result, outputs[layout][first])
+            for reference_layout, reference in references.items():
+                key = f"{label}/{bank_name}/vs_reference_{reference_layout}"
+                passed = compare_bitwise(rec, key, result, reference)
+                checks[key] = dict(passed=passed, bitwise_equal=rec.report["comparisons"][key]["bitwise_equal"])
+    for bank_name in banks:
+        compare_bitwise(
+            rec,
+            f"{name}/partition/{bank_name}/continuation_layouts",
+            outputs["direction_sharded"][bank_name],
+            outputs["replicated"][bank_name],
+        )
+    assert fingerprint(inner) == raw_hash and fingerprint(normalized) == normalized_hash
+    rec.report.setdefault("normalization_partition_checks", {})[name] = dict(
+        raw_input_sha256=raw_hash,
+        normalized_input_sha256=normalized_hash,
+        reference_checks=checks,
+        original_path_interpretation_allowed=False,
+        limitation=(
+            "Constraints and separate boundaries can change casts, kernels and supplied values. "
+            "Conditional sensitivity does not isolate collective order or precision. "
+            "Final agreement cannot establish internal identity or optimizer acceptance."
+        ),
+    )
+    rec.persist()
+
+
 def continuation_crossfeed(rec, name, products, traces, references, rep, sharding):
     """Hold X and each executable fixed while changing the supplied first Gram."""
     x = traces["replicated"]["normalized_input"]
@@ -444,8 +526,11 @@ def first_product_diagnostic(rec, common, rep, shardings):
         inner = rec.run(f"{name}/inner", inner_product, (powers[0], state.momentum, powers[1]), (rep,) * 3, rep)
         del powers
         inner_sha = fingerprint(inner)
-        if rec.report["config"].get("normalization_control"):
-            normalization_boundary(rec, name, inner, rep, sharding)
+        if rec.report["config"].get("normalization_control") or rec.report["config"].get("partition_control"):
+            if rec.report["config"].get("partition_control"):
+                normalization_partition(rec, name, inner, rep, sharding)
+            else:
+                normalization_boundary(rec, name, inner, rep, sharding)
             assert fingerprint(inner) == inner_sha
             del inner
             jax.clear_caches()
@@ -533,6 +618,7 @@ class Recorder:
             or "/polar_iterates/" in name
             or "/products/" in name
             or "/normalization/" in name
+            or "/partition/" in name
         )
         if capture:
             lowered = compiled.lower(*inputs)
@@ -729,8 +815,15 @@ def main():
     mode.add_argument("--polar-contracting", action="store_true")
     mode.add_argument("--polar-continuation", action="store_true")
     mode.add_argument("--polar-normalization", action="store_true")
+    mode.add_argument("--polar-partition", action="store_true")
     args = parser.parse_args()
-    product_mode = args.polar_products or args.polar_contracting or args.polar_continuation or args.polar_normalization
+    product_mode = (
+        args.polar_products
+        or args.polar_contracting
+        or args.polar_continuation
+        or args.polar_normalization
+        or args.polar_partition
+    )
     if not args.smoke:
         initialize_jax()
     devices = jax.devices()
@@ -762,6 +855,7 @@ def main():
         contracting_control=args.polar_contracting or args.polar_continuation,
         continuation_control=args.polar_continuation,
         normalization_control=args.polar_normalization,
+        partition_control=args.polar_partition,
         polar_iterate_leaf_order=[
             "input_norm",
             "normalized_input",
