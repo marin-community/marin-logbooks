@@ -1899,6 +1899,45 @@ branch remain required before one
 sequential TPU diagnostic. No experiment is currently running or queued; no
 optimization is accepted for training.
 
+## 2026-11-03 04:44 UTC — First-iteration product diagnostic
+
+The [new diagnostic](optimizer-polar-products-plan.json) records the first polar
+iteration's normalized input, three matrix products, intervening additions and
+final five-iteration output for the full-size query/key/value groups. Replicated and direction-sharded output
+layouts receive the same frozen inner tensor. The uninstrumented reference uses
+the shared polar function; tracing retains its coefficients, expression
+association, default precision and sharding constraint. The existing synthetic
+state and refresh recipe is unchanged. No training data or checkpoint is read.
+
+The initial eight-device CPU check completed 36 finite stages and passed all 30
+comparisons at `rtol=atol=1e-5`. However, the direction-sharded traced final outputs
+were not bitwise equal to their uninstrumented references. That version skipped
+all product cross-feeds, so it did not validate the fixed-executable harness.
+[This result is retained](optimizer-polar-products-cpu-instrumentation.json).
+
+The revised harness rejects interpreting a bitwise-changed trace as the original
+path and continues collecting
+explicitly labeled instrumented-path controls. It selects the earliest first-iteration quantity that differs bitwise between
+the output layouts, compiles one isolated evaluator per output layout,
+and reuses each executable on two frozen operand banks plus a replay of the
+first bank. Each bank contains operands saved from one layout's traced computation
+of that selected quantity, starting from the common inner tensor. It compares banks under a fixed executable, layouts on an identical
+bank, and isolated against traced outputs. When tracing changes the final output,
+its intermediates cannot be assumed to reproduce the uninstrumented computation. Even a bitwise-matching final output
+does not prove every internal operation is unchanged; isolating products changes compilation boundaries. These controls do not change the optimizer or accept a candidate
+for training.
+
+The [final CPU smoke](optimizer-polar-products-preflight.json) passed all 54 finite
+stages and 60 comparisons at the unchanged tolerance. All six fixed-executable
+replays were bitwise identical. All three direction-sharded traces still change
+the final output bitwise, and their original-path interpretation flag remains
+false. Online W&B finished successfully; the GCS report matched local bytes, and
+all 36 compiler files (73,659 compressed bytes) passed checksum, decompression
+and readback checks. A separate online logging check also passed. These small
+CPU matrices do not establish TPU behavior. The next run is one non-training
+v5e-8 diagnostic in us-west4 from published source, with default preemption
+retries and no runtime limit.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

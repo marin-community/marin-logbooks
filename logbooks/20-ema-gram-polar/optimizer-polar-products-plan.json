@@ -1,5 +1,5 @@
 {
-  "status": "implemented; own CPU validation pending; no accelerator submission",
+  "status": "implemented and CPU validated; one TPU submission next",
   "script": "optimizer_attribution.py --polar-products",
   "script_sha256": "872497980ad07ddf7b497143798951e48514a366ffe30b9d1972aba49cd6a43c",
   "question": "Locate the first differing first-iteration product under controlled output layouts, while checking whether tracing changes the uninstrumented final output.",
@@ -17,7 +17,7 @@
   ],
   "science": "Shared uninstrumented polar, coefficients, Gram refresh, normalization and powers. No precision overrides, approximation, tolerance change or optimizer/trainer change. Expression association retained.",
   "instrumentation_gate": "Compare traced final with shared uninstrumented polar at fixed1e-5 and bitwise. A bitwise change disallows interpreting trace as original path, even when tolerance passes. Cross-feeds may continue only as instrumented-path perturbation controls; this does not relax the numerical or interpretation gate.",
-  "crossfeed": "Select first nonzero A/C/B/D/X1, or A harness control if all traced outputs match. Norm/normalized-input/final-only first differences skip product cross-feed. Compile once per output layout, fixed replicated external input shardings; evaluate both frozen operand banks and replay first. Compare banks, layouts, and isolated outputs against traced outputs. Removing fusion is a perturbation.",
+  "crossfeed": "Select first nonzero A/C/B/D/X1, or A harness control if all traced outputs match. Norm/normalized-input/final-only first differences skip product cross-feed. Compile once per output layout, fixed replicated external input shardings; evaluate both frozen operand banks and replay first. Compare banks, layouts, and isolated outputs against traced outputs. Isolating a product changes compilation boundaries.",
   "expected_cpu_equal_path": {
     "finite_stages": 54,
     "comparisons": 60,
@@ -41,5 +41,6 @@
   "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.3",
   "job_name": "ema-gram-20-polar-products-v5e-8-20261103",
   "limitations": "No warmed timing or device profile promised; no training/MFU/correctness promotion. Additional outputs and isolated product boundaries change compilation. Trace equality at final output does not prove all internal operations are unchanged.",
-  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-products-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-products --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.3"
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-products-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-products --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.3",
+  "preflight": "optimizer-polar-products-preflight.json"
 }
