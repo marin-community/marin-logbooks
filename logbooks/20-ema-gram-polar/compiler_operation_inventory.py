@@ -22,6 +22,132 @@ OP_NAME = re.compile(r'metadata=\{op_name="([^"]+)"')
 CALLS = re.compile(r"calls=%([^, }]+)")
 OPERAND = re.compile(r"%([a-zA-Z0-9_.-]+)")
 STACK_FRAME = re.compile(r"stack_frame_id=(\d+)")
+TUPLE_INDEX = re.compile(r"index=(\d+)")
+
+
+def dependency_leaves(value):
+    if isinstance(value, tuple):
+        return frozenset().union(*(dependency_leaves(part) for part in value))
+    return value
+
+
+def substitute_dependencies(value, arguments):
+    if isinstance(value, tuple):
+        return tuple(substitute_dependencies(part, arguments) for part in value)
+    return frozenset().union(
+        *(dependency_leaves(arguments[token]) if isinstance(token, int) else {token} for token in value)
+    )
+
+
+def polar_lineage(lines, groups):
+    """Follow fusion parameters and tuple leaves to associate polar operations with outputs.
+
+    Other operations conservatively depend on every operand. Reject polar operations
+    inside unsupported control flow or reused fusion instances instead of guessing.
+    """
+    summaries, nodes, events = {}, {}, {}
+    scope, root, entry = None, None, None
+    for line in lines:
+        header = COMPUTATION.match(line.rstrip())
+        if header:
+            assert not nodes
+            scope, root = header[1], None
+            if line.startswith("ENTRY "):
+                entry = scope
+        if line.strip() == "}":
+            assert root is not None, scope
+            reachable = dependency_leaves(root)
+            summaries[scope] = (root, {key: value for key, value in events.items() if key in reachable})
+            nodes, events = {}, {}
+            continue
+        match = INSTRUCTION.match(line)
+        if match is None:
+            continue
+        name, _shape, opcode, operands, attributes = match.groups()
+        arguments = [nodes[key] for key in OPERAND.findall(operands)]
+        deps = frozenset().union(*(dependency_leaves(arg) for arg in arguments))
+        if opcode == "parameter":
+            deps = frozenset({int(operands)})
+        elif opcode == "tuple":
+            deps = tuple(arguments)
+        elif opcode == "get-tuple-element" and isinstance(arguments[0], tuple):
+            deps = arguments[0][int(TUPLE_INDEX.search(attributes)[1])]
+        elif opcode == "fusion":
+            callee = CALLS.search(attributes)[1]
+            callee_root, callee_events = summaries[callee]
+            deps = substitute_dependencies(callee_root, arguments)
+            for key, value in callee_events.items():
+                assert key not in events, f"Repeated polar fusion instance: {key}"
+                events[key] = substitute_dependencies(value, arguments)
+        else:
+            for target in OPERAND.findall(attributes):
+                if target in summaries:
+                    assert not summaries[target][1], f"Unsupported polar call: {opcode} -> {target}"
+        metadata = OP_NAME.search(attributes)
+        if (
+            metadata
+            and opcode in ("dot", "convolution")
+            and (
+                metadata[1].endswith("/gram_direction/vmap()/dot_general")
+                or metadata[1].endswith("jit(polar)/vmap()/dot_general")
+            )
+        ):
+            key = scope + "/" + name
+            events[key] = dependency_leaves(deps)
+            deps = dependency_leaves(deps) | {key}
+        nodes[name] = deps
+        if line.lstrip().startswith("ROOT "):
+            root = deps
+    assert not nodes and entry is not None
+    outputs, events = summaries[entry]
+    if not isinstance(outputs, tuple):
+        outputs = (outputs,)
+    assert len(outputs) >= len(groups)
+    result, assigned = {}, set()
+    for group, output in zip(groups, outputs, strict=False):
+        keys = {token for token in dependency_leaves(output) if isinstance(token, str)}
+        assert len(keys) == 15, (group, len(keys))
+        assert not assigned.intersection(keys), f"Polar operations shared between output groups: {group}"
+        ordered = sorted(keys, key=lambda key: len(events[key] & keys))
+        preceding = set()
+        mapped = []
+        for index, key in enumerate(ordered):
+            assert events[key] & keys == preceding, f"Polar dependency chain is not total: {group}/{key}"
+            mapped.append(
+                dict(operation=key, iteration=index // 3 + 1, product=("X_Xt", "scaled_A_A", "B_X")[index % 3])
+            )
+            preceding.add(key)
+        result[group] = mapped
+        assigned.update(keys)
+    assert assigned == set(events), "Unassigned polar operations"
+    return dict(
+        output_groups=result,
+        assigned_operations=len(assigned),
+        method="Fusion parameter substitution and tuple-aware output ancestry; each group must form a total chain.",
+        limitations=(
+            "Static dependencies, not runtime ordering. Product roles follow the unchanged three-product "
+            "quintic source after chain validation."
+        ),
+    )
+
+
+def producer_bodies(lines, operations):
+    """Collect immediate fusion bodies without loading the entire compiler module."""
+    wanted = {producer["calls"] for op in operations for producer in op["direct_operand_producers"] if producer["calls"]}
+    bodies, scope, body = {}, None, []
+    for line in lines:
+        header = COMPUTATION.match(line.rstrip())
+        if header:
+            scope, body = header[1], []
+        if scope in wanted:
+            # Runtime backend configuration is large; preserve the operation and metadata.
+            body.append(line.rstrip().split(", backend_config=", 1)[0])
+        if line.strip() == "}":
+            if scope in wanted:
+                bodies[scope] = body
+            scope = None
+    assert set(bodies) == wanted
+    return bodies
 
 
 def inventory(lines):
@@ -112,6 +238,17 @@ def main():
             with gzip.open(compressed, "rt") as lines:
                 report["artifacts"][name] = inventory(lines)
             report["artifacts"][name]["sha256_verified"] = True
+            if manifest.get("analysis") == "polar-lineage":
+                report["active_stage"] = name + "/polar_lineage"
+                output.write_text(json.dumps(report, indent=2), requests_timeout=60)
+                with gzip.open(compressed, "rt") as lines:
+                    report["artifacts"][name]["polar_lineage"] = polar_lineage(lines, manifest["groups"])
+                report["active_stage"] = name + "/producer_bodies"
+                output.write_text(json.dumps(report, indent=2), requests_timeout=60)
+                with gzip.open(compressed, "rt") as lines:
+                    report["artifacts"][name]["producer_bodies"] = producer_bodies(
+                        lines, report["artifacts"][name]["selected_operations"]
+                    )
             output.write_text(json.dumps(report, indent=2), requests_timeout=60)
             print(
                 json.dumps(
@@ -121,6 +258,7 @@ def main():
             )
             compressed.unlink()
     report["completed"] = True
+    report["active_stage"] = "completed"
     output.write_text(json.dumps(report, indent=2), requests_timeout=60)
     print(json.dumps(dict(completed=True, output=str(output))), flush=True)
 

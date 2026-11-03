@@ -1721,6 +1721,28 @@ precision and pass all direction, Gram and momentum comparisons against the
 untouched full-update reference at rtol=atol=1e-5.
 No optimization is accepted, and no training has resumed.
 
+## 2026-11-03 02:09 UTC — Map polar products by output dependencies
+
+The three polar-operation stack-frame IDs each occur 35 times in a full graph,
+so those IDs alone do not identify matrix groups or iterations. The
+[follow-up parser](compiler-polar-lineage-plan.json) follows fusion parameters
+and tuple elements from each returned direction. It requires fifteen distinct
+polar matrix products in one dependency chain per group. After validating a total dependency order, it assigns those positions to
+five iteration triplets using the three-product order in the unchanged
+quintic source.
+Unsupported polar control flow or shared group operations cause an error.
+
+On each saved isolated query graph, it recovers fifteen operations and five
+iterations. A synthetic composition with known graph identities and reversed
+output order maps each output to its expected graph; a duplicated output is rejected. The full local
+file-parser command also passed checksum, gzip and output checks. Immediate
+operand-producing fusion bodies are retained for inspection. These checks
+validate the static parser, not optimizer equivalence or runtime ordering.
+
+The next CPU-only job will read the four existing optimized graphs in
+us-west4 using the published parser revision. No accelerator or optimizer execution is
+requested, and the large compiler files remain in their storage region.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
