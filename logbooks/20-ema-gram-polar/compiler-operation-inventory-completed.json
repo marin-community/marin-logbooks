@@ -1,0 +1,628 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-ir-inventory-cpu-20261103",
+  "submitted_utc": "2026-11-03T01:48:52Z",
+  "verified_utc": "2026-11-03T01:54:17Z",
+  "canonical_state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "592109aae357",
+  "task_exit_code": 0,
+  "worker": "marin-tpu-v5e-serving-8-us-west4-a-20261102-1756-2db9bbbe-worker-0",
+  "resources": {
+    "cpu": 4,
+    "memory_gib": 8,
+    "disk_gib": 10,
+    "accelerator_requested": false,
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "default",
+    "runtime_limit": null
+  },
+  "source_commit": "30095e0ef7a2bdf6bc3dadf266b0a65eb98dd84c",
+  "script_sha256": "1959c35c40411b647fdf26a9b3f159628125f411d3d859dfaec9d3cf7ef64232",
+  "manifest_sha256": "f0e79851cb2d673730f9029836b7ccfd1e06e6ddac8c86c7b4ab441cc1771423",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.ir-inventory/ir-inventory-9dfca6015930/report.json",
+  "report_sha256": "7810fbffec10bddd276de681835bb09caa305a3ebbf3d469add9748812b4d7e0",
+  "report_bytes": 924876,
+  "completed": true,
+  "consumed_artifacts": {
+    "fused_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_original.optimized_hlo.txt.gz",
+      "sha256": "f323476e7f76fdb8ecf7398a72dfc4b2acd44ff5034155f610143bd1a249f93d",
+      "compressed_bytes": 10060125
+    },
+    "fused_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662
+    },
+    "direction_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__original.optimized_hlo.txt.gz",
+      "sha256": "9d267db9dbe0557551c380374b77d190a9f334bc8f059248c7733eb609dcbce3",
+      "compressed_bytes": 9695356
+    },
+    "direction_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__matrix.optimized_hlo.txt.gz",
+      "sha256": "37ef4c2aa848bed2e9580db0674f8b61d3c7296bae0f2f0b23076ca92d46c1fb",
+      "compressed_bytes": 9387612
+    }
+  },
+  "summary": {
+    "fused_original": {
+      "sha256_verified": true,
+      "static_explicit_converts_to_bf16": 63,
+      "static_all_reduce": 30,
+      "tagged_families": {
+        "refresh": {
+          "static_opcode_counts": {
+            "all-gather": 24,
+            "convolution": 14,
+            "all-reduce": 5
+          },
+          "matrix_shape_signatures": [
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "f32[11,128,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 3
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{2,1,0:T(8,128)}",
+                "f32[11,1024,4096]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "f32[11,4096,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{2,1,0:T(8,128)}",
+                "f32[11,128,4096]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "f32[11,4096,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 2
+            }
+          ]
+        },
+        "polar": {
+          "static_opcode_counts": {
+            "convolution": 105,
+            "all-gather": 133,
+            "all-reduce": 10
+          },
+          "matrix_shape_signatures": [
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 4
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 15
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 11
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 3
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 12
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 5
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 25
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{1,2,0:T(8,128)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            }
+          ]
+        }
+      }
+    },
+    "fused_matrix": {
+      "sha256_verified": true,
+      "static_explicit_converts_to_bf16": 63,
+      "static_all_reduce": 16,
+      "tagged_families": {
+        "refresh": {
+          "static_opcode_counts": {
+            "convolution": 14,
+            "all-gather": 20,
+            "all-reduce": 5
+          },
+          "matrix_shape_signatures": [
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "f32[11,128,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,128,1024]{1,2,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 3
+            },
+            {
+              "output": "f32[11,128,1024]{1,2,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,128,1024]{1,2,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{2,1,0:T(8,128)}",
+                "f32[11,1024,4096]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,128,1024]{1,2,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "f32[11,4096,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{2,1,0:T(8,128)}",
+                "f32[11,128,4096]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "f32[11,4096,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 2
+            }
+          ]
+        },
+        "polar": {
+          "static_opcode_counts": {
+            "convolution": 105,
+            "all-gather": 134,
+            "all-reduce": 10
+          },
+          "matrix_shape_signatures": [
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 15
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 15
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 3
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 12
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 5
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 25
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{1,2,0:T(8,128)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            }
+          ]
+        }
+      }
+    },
+    "direction_original": {
+      "sha256_verified": true,
+      "static_explicit_converts_to_bf16": 63,
+      "static_all_reduce": 11,
+      "tagged_families": {
+        "refresh": {
+          "static_opcode_counts": {},
+          "matrix_shape_signatures": []
+        },
+        "polar": {
+          "static_opcode_counts": {
+            "convolution": 105,
+            "all-gather": 136,
+            "all-reduce": 10
+          },
+          "matrix_shape_signatures": [
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 15
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 15
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 3
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 12
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 5
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 25
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{1,2,0:T(8,128)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            }
+          ]
+        }
+      }
+    },
+    "direction_matrix": {
+      "sha256_verified": true,
+      "static_explicit_converts_to_bf16": 63,
+      "static_all_reduce": 11,
+      "tagged_families": {
+        "refresh": {
+          "static_opcode_counts": {},
+          "matrix_shape_signatures": []
+        },
+        "polar": {
+          "static_opcode_counts": {
+            "convolution": 105,
+            "all-gather": 134,
+            "all-reduce": 10
+          },
+          "matrix_shape_signatures": [
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 1
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,1024]{2,1,0:T(8,128)}"
+              ],
+              "count": 15
+            },
+            {
+              "output": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 14
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 3
+            },
+            {
+              "output": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,1024,1024]{2,1,0:T(8,128)}",
+                "f32[11,1024,128]{2,1,0:T(8,128)}"
+              ],
+              "count": 12
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 5
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,1024]{2,1,0:T(8,128)}",
+                "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 25
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,128,4096]{1,2,0:T(8,128)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "operands": [
+                "f32[11,4096,128]{2,1,0:T(8,128)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}"
+              ],
+              "count": 13
+            },
+            {
+              "output": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "operands": [
+                "bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}",
+                "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}"
+              ],
+              "count": 2
+            }
+          ]
+        }
+      }
+    }
+  },
+  "interpretation": [
+    "All four consumed optimized HLO files passed full compressed-byte SHA and size verification within us-west4. The four remaining StableHLO files were not consumed by this task.",
+    "Each graph has 105 polar-tagged convolutions and 10 polar-tagged all-reduces; equal counts do not imply equal computation or execution.",
+    "All four graphs contain 63 explicit BF16 conversions. Tagged convolution output layouts, direct operand shapes and all-gather counts differ. These static observations do not establish the numerical mechanism.",
+    "No optimizer kernels, training, warmed timing or device profile ran in this CPU-only analysis. A TPU-named worker hosted the CPU task; the task requested no accelerator."
+  ],
+  "next_decision": "Map relevant compiler metadata to source group/iteration and inspect operand-producing computation bodies before selecting a precision-preserving layout constraint. Existing counts and direct producers do not justify another accelerator candidate."
+}

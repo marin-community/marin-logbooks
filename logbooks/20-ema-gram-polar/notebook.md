@@ -1695,6 +1695,32 @@ no accelerator is requested. The source and manifest will be published before
 execution. Numerical changes remain gated on a concrete hypothesis from the
 complete evidence.
 
+## 2026-11-03 01:54 UTC — Regional compiler inventory completes
+
+The [CPU inventory](compiler-operation-inventory-completed.json) succeeded on
+attempt zero with exit zero. Its four consumed optimized HLO files passed
+full compressed-byte checksum and size verification in us-west4. The task
+requested four CPUs and no accelerator; it ran on a worker whose name includes
+TPU. Of the eight compiler files saved by the state comparison, the four StableHLO
+files were not read by this analysis.
+
+Each of the four graphs contains 105 polar-tagged matrix operations lowered as
+convolutions, ten polar-tagged all-reduces, and 63 explicit BF16 conversions
+across the entire graph, including operations without polar tags. Equal counts do not imply equal computation. Polar-tagged
+all-gather counts are 133/134 for the original and matrix-distributed
+eigensolver full updates, respectively, and 136/134 for the corresponding
+evaluators that compute directions from externally supplied refreshed state. Some matrix output layouts and direct operand
+shapes also differ. These are static compiler records; they establish neither
+runtime frequency nor a cause of the direction mismatch between implementations.
+
+Before testing another optimizer implementation on TPU, map the compiler metadata to source
+matrix groups and polar iterations and inspect the matched operand-producing
+computations. The current inventory stops at direct producers, many of which
+are fusion calls. Any later layout intervention must retain the original
+precision and pass all direction, Gram and momentum comparisons against the
+untouched full-update reference at rtol=atol=1e-5.
+No optimization is accepted, and no training has resumed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
