@@ -2201,6 +2201,16 @@ cannot verify internal identity. Precision, coefficients, tolerance and training
 remain unchanged. These controls cannot establish an accepted optimizer
 improvement. No accelerator has been submitted.
 
+The [normalization-boundary CPU smoke](optimizer-polar-normalization-preflight.json)
+completed all 69 finite stages and passed all 48 comparisons at
+`rtol=atol=1e-5`. All eighteen fixed executables replayed bitwise. The online
+W&B run finished, its GCS report matched local bytes, and all 54 compiler files
+passed checksum, size and decompression checks. A separate online logging
+check also passed. These checks use small matrices on eight virtual CPU devices
+and do not establish TPU behavior. Next submit one sequential v5e-8 diagnostic
+from the published source and preflight, with batch priority, default preemption
+retries and no wall-clock limit.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
