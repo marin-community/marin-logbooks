@@ -2450,6 +2450,12 @@ requests one sequential eight-chip v5e diagnostic in us-west4, using published
 source, regional outputs, batch priority, default preemption retries and no
 wall-clock limit.
 
+The diagnostic was accepted at 07:13:54 UTC from `b33a382549`.
+[Startup checks](optimizer-polar-collectives-started.json) verified eight native
+v5e devices, one JAX process, the expected source and script hashes, and online
+W&B run `310521548952` with a successful logging check before kernels. One log
+observer owns this attempt. Numerical and compiler-path results are pending.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

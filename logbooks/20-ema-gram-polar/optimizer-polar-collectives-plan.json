@@ -1,5 +1,5 @@
 {
-  "status": "Online CPU preflight passed; ready for one sequential TPU diagnostic",
+  "status": "Accepted and startup verified; one native v5e diagnostic running",
   "script": "optimizer_attribution.py --polar-collectives",
   "script_sha256": "11dadc88cfcbeb75028ec19c408510a664cb8ba8391a9d3fac47efc610b75f9a",
   "question": "Do explicit sum and sum-scatter differ on identical frozen per-device partial first-Gram products?",
@@ -39,5 +39,6 @@
   "job_name": "ema-gram-20-polar-collectives-v5e-8-20261103",
   "limitations": "Conditional collective and input sensitivity. Materializing local partials changes compilation and may not reproduce original partial values. Explicit collectives may select different algorithms. Final agreement does not prove internal identity or full optimizer equivalence; no warmed timing, MFU or training claim.",
   "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-collectives-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-collectives --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8",
-  "preflight": "optimizer-polar-collectives-preflight.json"
+  "preflight": "optimizer-polar-collectives-preflight.json",
+  "launch_source": "b33a3825496648c8cb05574f0bf2f618ddd52c45"
 }
