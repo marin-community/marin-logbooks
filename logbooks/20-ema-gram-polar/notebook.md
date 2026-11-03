@@ -2876,6 +2876,23 @@ hidden original values or a numerical cause. No numerical experiment or
 optimizer intervention is selected. The CPU log observer ended naturally;
 no experiment or queue remains active.
 
+## 2026-11-03 09:29 UTC — Trace declared slice inputs behind opaque calls
+
+All 21 unresolved ConcatBitcast boundaries consume four slice-done results.
+Each recorded slice-done references a slice-start with one declared source.
+Following those declared sources conservatively reaches normalization divisions;
+the custom calls remain marked opaque, and no runtime semantics are inferred.
+The trace preserves each custom-call operand position and its slice attributes.
+
+Local fixtures passed independent slice inputs, repeated operand contexts,
+opaque-boundary retention and rejection of an invalid slice-done association.
+The optional traversal leaves the default opaque-stop behavior unchanged.
+The remaining 17 missing computation bodies are listed in the
+[targeted CPU plan](compiler-capture-slices-plan.json). Publish this source and
+plan before extracting those bodies and nested callees in us-west4, with default
+preemption retries and no wall-clock limit. No accelerator or numerical
+experiment is selected; both capture-reference checks remain failed.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

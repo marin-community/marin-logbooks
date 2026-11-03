@@ -1,0 +1,95 @@
+{
+  "purpose": "Recover17 explicitly missing caller bodies; retain opaque ConcatBitcast declared-operand provenance.",
+  "required_region": "us-west4",
+  "job_name": "ema-gram-20-capture-slices-cpu-20261103",
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-slices",
+  "artifacts": {
+    "original_untouched": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_original.optimized_hlo.txt.gz",
+      "sha256": "41a90c257a72d24e29ad693e2d275c39a24af7057f0aef8cdb436bb0130b0766",
+      "compressed_bytes": 10060350,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "fused_computation.116945",
+        "fused_computation.116959",
+        "fused_computation.116963"
+      ]
+    },
+    "original_evaluate": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__original__evaluate.optimized_hlo.txt.gz",
+      "sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+      "compressed_bytes": 10049115,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "fused_computation.116945",
+        "fused_computation.116959",
+        "fused_computation.116963"
+      ]
+    },
+    "original_capture": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__original__extra_outputs.optimized_hlo.txt.gz",
+      "sha256": "96a1a7e04f1515f0914e7f89c60a1aad7855cbf609936247c42deec1c8278ee2",
+      "compressed_bytes": 10042623,
+      "expected_output_leaves": 34,
+      "computation_names": [
+        "fused_computation.116949",
+        "fused_computation.116963",
+        "fused_computation.116967"
+      ]
+    },
+    "matrix_untouched": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "fused_computation.114078",
+        "fused_computation.114100",
+        "fused_computation.114103"
+      ]
+    },
+    "matrix_evaluate": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__matrix__evaluate.optimized_hlo.txt.gz",
+      "sha256": "3e7e23477e3167d786c5c46850abb30531699e6de6412d00046d2e77eabe4bf4",
+      "compressed_bytes": 9399318,
+      "expected_output_leaves": 28,
+      "computation_names": [
+        "fused_computation.114078",
+        "fused_computation.114100",
+        "fused_computation.114103"
+      ]
+    },
+    "matrix_capture": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__matrix__extra_outputs.optimized_hlo.txt.gz",
+      "sha256": "f83cd12f71f7fbd663ce71cd3f989b05c8e0a5b1cf64edecba59ca6ed026c288",
+      "compressed_bytes": 9400238,
+      "expected_output_leaves": 34,
+      "computation_names": [
+        "fused_computation.114124",
+        "fused_computation.114127"
+      ]
+    }
+  },
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "accelerator": null,
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "preflight": {
+    "slice_association": true,
+    "invalid_slice_association_rejected": true,
+    "independent_slice_inputs": true,
+    "repeated_operand_contexts": true,
+    "opaque_boundary_preserved": true,
+    "default_boundary_unchanged": true
+  },
+  "source_sha256": {
+    "trace_capture_normalization.py": "14fc8cc23b85247d49a34422ebb35828279f94439ff17d677bf9f145832c531a",
+    "compiler_selected_bodies.py": "36e485757d701d750374af6d490be2fbfdb01b7d34c999bf290234df62c014f6"
+  },
+  "interpretation": "Only static file analysis. Declared ConcatBitcast operands are conservative dependencies, not runtime semantics. Both numericalcapture gates failed. No kernels/W&B required; no accelerator or numerical intervention selected."
+}

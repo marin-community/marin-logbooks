@@ -33,7 +33,7 @@ def parse_nodes(lines):
     return nodes, root
 
 
-def trace(scopes, start_scope, start_name, bindings, context=()):
+def trace(scopes, start_scope, start_name, bindings, context=(), follow_concat_operands=False):
     records, found, missing, boundaries, visited = [], [], set(), [], set()
 
     def walk(scope, name, arguments, call_context, path=()):
@@ -67,6 +67,15 @@ def trace(scopes, start_scope, start_name, bindings, context=()):
             assert path
             walk(scope, operands[path[0]], arguments, call_context, path[1:])
             return
+        if op == "slice-done":
+            assert not path and len(operands) == 1
+            assert scopes[scope][0][operands[0]]["opcode"] == "slice-start"
+            walk(scope, operands[0], arguments, call_context)
+            return
+        if op == "slice-start":
+            assert not path and len(operands) == 1
+            walk(scope, operands[0], arguments, call_context)
+            return
         if op == "copy-done":
             walk(scope, operands[0], arguments, call_context, (0, *path))
             return
@@ -96,7 +105,16 @@ def trace(scopes, start_scope, start_name, bindings, context=()):
             "async-collective-start",
             "async-collective-done",
         ):
-            boundaries.append(dict(reason="opaque operation; operands not traversed", **row))
+            conservative = (
+                follow_concat_operands
+                and op == "custom-call"
+                and 'custom_call_target="ConcatBitcast"' in node["attributes"]
+            )
+            boundaries.append(dict(reason="opaque operation", declared_operands_followed=conservative, **row))
+            if conservative:
+                assert not path
+                for index, operand in enumerate(operands):
+                    walk(scope, operand, arguments, (*call_context, f"{scope}/{name}:operand{index}"))
             return
         assert not path, (scope, name, path)
         for operand in operands:
@@ -111,12 +129,12 @@ def trace(scopes, start_scope, start_name, bindings, context=()):
     )
 
 
-def analyze(source, supplements=None):
+def analyze(source, supplements=(), follow_concat_operands=False):
     graphs = {}
     for name, graph in source["artifacts"].items():
         bodies = dict(graph["producer_bodies"])
-        if supplements:
-            extra = supplements["artifacts"][name]
+        for supplement in supplements:
+            extra = supplement["artifacts"][name]
             assert extra["sha256_verified"]
             assert extra["input_sha256"] == source["manifest"]["artifacts"][name]["sha256"]
             bodies.update(extra["bodies"])
@@ -145,7 +163,14 @@ def analyze(source, supplements=None):
                 dict(
                     operand_index=index,
                     first_product=chain[0]["operation"],
-                    **trace(scopes, product["computation"], operand, bindings, (entry + "/" + parent["name"],)),
+                    **trace(
+                        scopes,
+                        product["computation"],
+                        operand,
+                        bindings,
+                        (entry + "/" + parent["name"],),
+                        follow_concat_operands,
+                    ),
                 )
                 for index, operand in enumerate(product["operands"])
             ]
@@ -154,7 +179,7 @@ def analyze(source, supplements=None):
         graphs=graphs,
         limitations=(
             "Static parameter and tuple-leaf bindings, stopping at normalization divisions "
-            "or explicit opaque boundaries. "
+            "or explicit opaque boundaries. Optional ConcatBitcast traversal follows declared operands conservatively; "
             "Repeated product operands retain separate positions. Reaching a division is not a runtime-value identity. "
             "Both numerical capture gates failed; no original-path or causal claim."
         ),
@@ -164,18 +189,19 @@ def analyze(source, supplements=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", type=Path, required=True)
-    parser.add_argument("--supplement", type=Path)
+    parser.add_argument("--supplement", type=Path, action="append", default=[])
+    parser.add_argument("--follow-concat-operands", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     raw = args.report.read_bytes()
     source = json.loads(raw)
     assert source["completed"]
-    supplements = json.loads(args.supplement.read_bytes()) if args.supplement else None
-    if supplements:
-        assert supplements["completed"]
-    result = analyze(source, supplements)
+    supplements = [json.loads(path.read_bytes()) for path in args.supplement]
+    for supplement in supplements:
+        assert supplement["completed"]
+    result = analyze(source, supplements, args.follow_concat_operands)
     result["input_report_sha256"] = hashlib.sha256(raw).hexdigest()
-    result["supplement_sha256"] = hashlib.sha256(args.supplement.read_bytes()).hexdigest() if supplements else None
+    result["supplement_sha256"] = [hashlib.sha256(path.read_bytes()).hexdigest() for path in args.supplement]
     args.output.write_text(json.dumps(result, indent=2) + "\n")
 
 
