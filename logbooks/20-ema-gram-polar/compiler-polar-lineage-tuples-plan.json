@@ -1,0 +1,89 @@
+{
+  "purpose": "Map output groups and five polar iterations by static fusion-aware dependencies, then capture immediate producer bodies. No numerical kernels.",
+  "source_report_sha256": "437dad736cb8b5d9fe3578980c13e9a229fd2a6618e60cfa1135c680d7ecb224",
+  "required_region": "us-west4",
+  "artifacts": {
+    "fused_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_original.optimized_hlo.txt.gz",
+      "sha256": "f323476e7f76fdb8ecf7398a72dfc4b2acd44ff5034155f610143bd1a249f93d",
+      "compressed_bytes": 10060125
+    },
+    "fused_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662
+    },
+    "direction_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__original.optimized_hlo.txt.gz",
+      "sha256": "9d267db9dbe0557551c380374b77d190a9f334bc8f059248c7733eb609dcbce3",
+      "compressed_bytes": 9695356
+    },
+    "direction_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__matrix.optimized_hlo.txt.gz",
+      "sha256": "37ef4c2aa848bed2e9580db0674f8b61d3c7296bae0f2f0b23076ca92d46c1fb",
+      "compressed_bytes": 9387612
+    }
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-lineage-tuples",
+  "execution": {
+    "job_name": "ema-gram-20-polar-lineage-tuples-cpu-20261103",
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default",
+    "output_identity": "Fresh UUID per process, preserving retry outputs",
+    "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-lineage-tuples-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT <published-commit> -- python logbooks/20-ema-gram-polar/compiler_operation_inventory.py --manifest logbooks/20-ema-gram-polar/compiler-polar-lineage-tuples-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-lineage-tuples"
+  },
+  "analysis": "polar-lineage",
+  "groups": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "preflight": {
+    "script_sha256": "ba1cb9626480976d97e174b74e13689bca5d4e08f72561fae397377220f82ebf",
+    "validation": {
+      "replicated": {
+        "operations": 15,
+        "iterations": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "direction_sharded": {
+        "operations": 15,
+        "iterations": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "reversed_tuple_groups": "mapped to correct independent producer chains",
+      "shared_output_rejected": "Polar operations shared between output groups: second"
+    },
+    "full_cli_report": "scratch/20261103-lineage-validation/tuple-final-output/ir-inventory-5b6a5b634a98/report.json",
+    "scope": "Static parser validation on two existing isolated query HLO files and their reversed-tuple composition; no numerical kernels.",
+    "guard": "Each group must have15distinct operations in a total dependency chain; shared groups/unsupported polar calls raise instead of inventing a mapping.",
+    "report_sha256": "47796b08121757c154b439a0a3cce777c198e97c4c3bb431fe24b33559ed0213",
+    "producer_bodies": {
+      "paired": 63,
+      "tuple_regression": 63
+    },
+    "tuple_parameter_regression": "Old parser merged30operations into eachgroup; new parser maps15each through tuple-valued fusion parameter. Reversed output order and originalpaired fixture pass."
+  },
+  "previous_attempt": "compiler-polar-lineage-failed.json",
+  "limitations": "Tuple-path fix validated locally; full-graph mapping remains unverified. Fixed15operation chain and uniquegroup gates unchanged. Partial entry instructions saved on assertion failure."
+}

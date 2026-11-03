@@ -1743,6 +1743,28 @@ The next CPU-only job will read the four existing optimized graphs in
 us-west4 using the published parser revision. No accelerator or optimizer execution is
 requested, and the large compiler files remain in their storage region.
 
+## 2026-11-03 02:14 UTC — Tuple-parameter mapping failure
+
+The [CPU mapping job](compiler-polar-lineage-failed.json) failed before accepting
+a group mapping. The first full graph gave 28 upstream polar operations for
+query projection, violating the requirement of exactly fifteen dependent
+polar products per output. Its partial
+inventory and verified input checksum were saved. No optimizer ran.
+
+A local composition exposed a parser defect: when a fusion accepted a tuple
+of two independent polar results, the original parameter representation lost
+which tuple element was selected and merged both dependency sets. Tracking
+parameter leaf paths recovers fifteen products per output in that reproducer.
+The reversed-output test and both isolated query graphs still pass the
+fifteen-product chain and unique-group checks. This
+establishes a parser bug; the full graph must be checked again to determine
+whether it explains the observed count of 28.
+
+The [corrected CPU analysis](compiler-polar-lineage-tuples-plan.json) retains
+the same chain and unique-group checks and now saves entry instructions on
+mapping failure. It will use a fresh job identity and published parser source;
+the failed job remains terminal. No numerical or precision setting changes.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

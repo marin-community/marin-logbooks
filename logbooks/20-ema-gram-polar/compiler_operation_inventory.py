@@ -12,6 +12,7 @@ import re
 import tempfile
 import uuid
 from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
 
 from rigging.filesystem.storage_path import StoragePath
@@ -25,6 +26,37 @@ STACK_FRAME = re.compile(r"stack_frame_id=(\d+)")
 TUPLE_INDEX = re.compile(r"index=(\d+)")
 
 
+@dataclass(frozen=True)
+class ParameterLeaf:
+    index: int
+    path: tuple[int, ...]
+
+
+def tuple_shapes(shape):
+    if not shape.startswith("("):
+        return None
+    assert shape.endswith(")"), shape
+    parts, start, depth = [], 1, 0
+    for index, char in enumerate(shape[1:-1], 1):
+        if char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+        elif char == "," and depth == 0:
+            parts.append(shape[start:index].strip())
+            start = index + 1
+    if shape[start:-1].strip():
+        parts.append(shape[start:-1].strip())
+    return parts
+
+
+def shaped_dependencies(shape, leaf, path=()):
+    parts = tuple_shapes(shape)
+    if parts is None:
+        return leaf(path)
+    return tuple(shaped_dependencies(part, leaf, (*path, index)) for index, part in enumerate(parts))
+
+
 def dependency_leaves(value):
     if isinstance(value, tuple):
         return frozenset().union(*(dependency_leaves(part) for part in value))
@@ -34,17 +66,28 @@ def dependency_leaves(value):
 def substitute_dependencies(value, arguments):
     if isinstance(value, tuple):
         return tuple(substitute_dependencies(part, arguments) for part in value)
-    return frozenset().union(
-        *(dependency_leaves(arguments[token]) if isinstance(token, int) else {token} for token in value)
-    )
+    dependencies = set()
+    for token in value:
+        if isinstance(token, ParameterLeaf):
+            argument = arguments[token.index]
+            for index in token.path:
+                assert isinstance(argument, tuple), (token, argument)
+                argument = argument[index]
+            dependencies.update(dependency_leaves(argument))
+        else:
+            dependencies.add(token)
+    return frozenset(dependencies)
 
 
-def polar_lineage(lines, groups):
+def polar_lineage(lines, groups, diagnostics=None):
     """Follow fusion parameters and tuple leaves to associate polar operations with outputs.
 
     Other operations conservatively depend on every operand. Reject polar operations
     inside unsupported control flow or reused fusion instances instead of guessing.
     """
+    if diagnostics is None:
+        diagnostics = {}
+    diagnostics["entry_instructions"] = []
     summaries, nodes, events = {}, {}, {}
     scope, root, entry = None, None, None
     for line in lines:
@@ -63,14 +106,17 @@ def polar_lineage(lines, groups):
         match = INSTRUCTION.match(line)
         if match is None:
             continue
-        name, _shape, opcode, operands, attributes = match.groups()
+        name, shape, opcode, operands, attributes = match.groups()
+        if scope == entry:
+            diagnostics["entry_instructions"].append(line.rstrip().split(", backend_config=", 1)[0])
         arguments = [nodes[key] for key in OPERAND.findall(operands)]
         deps = frozenset().union(*(dependency_leaves(arg) for arg in arguments))
         if opcode == "parameter":
-            deps = frozenset({int(operands)})
+            deps = shaped_dependencies(shape, lambda path, index=int(operands): frozenset({ParameterLeaf(index, path)}))
         elif opcode == "tuple":
             deps = tuple(arguments)
-        elif opcode == "get-tuple-element" and isinstance(arguments[0], tuple):
+        elif opcode == "get-tuple-element":
+            assert isinstance(arguments[0], tuple), name
             deps = arguments[0][int(TUPLE_INDEX.search(attributes)[1])]
         elif opcode == "fusion":
             callee = CALLS.search(attributes)[1]
@@ -83,6 +129,7 @@ def polar_lineage(lines, groups):
             for target in OPERAND.findall(attributes):
                 if target in summaries:
                     assert not summaries[target][1], f"Unsupported polar call: {opcode} -> {target}"
+            deps = shaped_dependencies(shape, lambda _path, dependencies=deps: dependencies)
         metadata = OP_NAME.search(attributes)
         if (
             metadata
@@ -102,6 +149,9 @@ def polar_lineage(lines, groups):
     outputs, events = summaries[entry]
     if not isinstance(outputs, tuple):
         outputs = (outputs,)
+    diagnostics["output_polar_ancestors"] = [
+        sorted(token for token in dependency_leaves(output) if isinstance(token, str)) for output in outputs
+    ]
     assert len(outputs) >= len(groups)
     result, assigned = {}, set()
     for group, output in zip(groups, outputs, strict=False):
@@ -241,8 +291,15 @@ def main():
             if manifest.get("analysis") == "polar-lineage":
                 report["active_stage"] = name + "/polar_lineage"
                 output.write_text(json.dumps(report, indent=2), requests_timeout=60)
-                with gzip.open(compressed, "rt") as lines:
-                    report["artifacts"][name]["polar_lineage"] = polar_lineage(lines, manifest["groups"])
+                diagnostics = report["artifacts"][name]["lineage_diagnostics"] = {}
+                try:
+                    with gzip.open(compressed, "rt") as lines:
+                        report["artifacts"][name]["polar_lineage"] = polar_lineage(
+                            lines, manifest["groups"], diagnostics
+                        )
+                except AssertionError:
+                    output.write_text(json.dumps(report, indent=2), requests_timeout=60)
+                    raise
                 report["active_stage"] = name + "/producer_bodies"
                 output.write_text(json.dumps(report, indent=2), requests_timeout=60)
                 with gzip.open(compressed, "rt") as lines:

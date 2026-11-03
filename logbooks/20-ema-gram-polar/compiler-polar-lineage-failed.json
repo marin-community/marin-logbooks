@@ -1,0 +1,21 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-polar-lineage-cpu-20261103",
+  "source_commit": "c81b75561d0fb95a7e1238590ea8ef4ff2c043b5",
+  "canonical_state": "FAILED",
+  "task_exit_code": 1,
+  "attempt": 0,
+  "attempt_uid": "53aaea99eddd",
+  "submitted_utc": "2026-11-03T02:11:35Z",
+  "error_utc": "2026-11-03T02:11:58Z",
+  "verified_utc": "2026-11-03T02:14:30Z",
+  "worker": "marin-tpu-v5e-serving-8-us-west4-a-20261102-1756-2db9bbbe-worker-0",
+  "resources": "4CPU/8GiB/10GiB,us-west4,no accelerator",
+  "error": "AssertionError: ('q_proj', 28)",
+  "phase": "fused_original/polar_lineage",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-lineage/ir-inventory-bc97e15eb9ca/report.json",
+  "report_sha256": "ff3741f6f118d0a8be30693ec5fdf49e40a7aba954d9bf8dc7891f39be37a522",
+  "completed": false,
+  "evidence_preserved": "First optimized artifact checksum and inventory were saved before the mapping assertion. No group mapping was accepted.",
+  "local_reproducer": "A fusion accepting a tuple of two independent isolated polar outputs makes old parser merge30operations into each group. Corrected parameter-leaf paths recover15operations pergroup.",
+  "interpretation": "A parser defect is reproduced; whether it accounts for the full-graph28count remains to be verified. No optimizer execution or scientific candidate result."
+}
