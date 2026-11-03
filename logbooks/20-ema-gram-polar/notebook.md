@@ -3604,6 +3604,53 @@ extracted records first; any missing bodies require published, targeted
 regional CPU extraction. No numerical or precision/tiling intervention is
 selected.
 
+## 2026-11-03 13:24 UTC — First-Gram result paths close across all eight graphs
+
+The targeted regional CPU extraction succeeded on attempt 0 with exit 0.
+It verified all eight optimized HLO sizes and hashes and recovered 15 selected
+or nested computation bodies per graph. A tuple-aware trace closes all 48
+operand paths from each q/k/v second polar product back to its first Gram
+product, across eight graphs and two operands. Every path reaches only its
+intended group's first product through leaf 0 of that product's enclosing
+fusion, with no missing record or opaque boundary on these paths.
+
+In the untouched, unchanged-evaluator and paired-capture graphs, both q paths
+cross an entry all-reduce. In both substitution graphs, neither q path crosses
+a declared collective between the first and second products. The k/v paths
+retain one all-reduce each. After regrouping, result projection 0 follows only
+k's operand and projection 1 follows only v's operand; the independent
+combined-reduction projections are preserved. This scope ends at the first
+product and does not describe upstream computations or other consumers.
+
+The trace establishes a declared path difference introduced by substitution.
+It does not measure runtime summation order, precision or numerical causality.
+Both substitution reference gates remain failed. No optimizer or training
+result is accepted. Parser fixtures cover nested fusion/tuple bindings, reversed
+collective operands, repeated operand edges, missing bodies and opaque stops.
+A deliberate mutation of k's combined-reduction result projection in an actual
+graph is rejected. [Validation](compiler-first-gram-paths-validation.json) and
+[traced paths](compiler-first-gram-paths-comparison.json) retain this scope.
+
+The task used four CPUs, 8 GiB memory and 10 GiB disk in us-west4 with default
+preemption retries and no wall-clock limit. It requested no accelerator and
+ran no numerical kernels. It was already terminal at the first canonical read;
+no log observer was attached. All large HLO remained regional. The retrieved
+body report is 195,969 bytes, SHA
+`4e5351ff3b6dfdce01dbcc96dfbd4637c42216266436ae478a357e4d5bd86295`.
+[Completed evidence](compiler-first-gram-paths-completed.json) records the
+published source and attempt UID `bdf95e039f94`. No experiment or queue remains;
+PR observer 77099 is still the sole live PR observer.
+
+Next, review a diagnostic that places only the external full q inner matrix in
+the existing q-direction column sharding, with the denominator replicated and
+all original full-update inputs, outputs and source arithmetic unchanged.
+This tests whether aligning external input placement can recover the full
+28-leaf same-pair reference gate. It does not force kernel tiling or precision,
+and matching declarations would not establish numerical agreement. The design
+is not implemented or submitted. It requires fresh online CPU validation, a
+replicated-input regression, exact published source and one sequential TPU
+diagnostic. All original numerical and training gates remain in force.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
