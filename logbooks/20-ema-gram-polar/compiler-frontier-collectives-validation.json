@@ -1,0 +1,64 @@
+{
+  "preflight_passed": true,
+  "graphs": {
+    "matrix_untouched": {
+      "initial_missing_scopes": [
+        "async_collective_fusion.144775",
+        "fused_computation.114093",
+        "fused_computation.114219"
+      ],
+      "kinds": {
+        "down_proj/polar/5/scaled_A_A": "AsyncCollectiveDone",
+        "o_proj/polar/2/B_X": "AsyncCollectiveDone",
+        "o_proj/polar/3/B_X": "ConcatBitcast"
+      }
+    },
+    "matrix_evaluate": {
+      "initial_missing_scopes": [
+        "async_collective_fusion.144775",
+        "fused_computation.114093",
+        "fused_computation.114219"
+      ],
+      "kinds": {
+        "down_proj/polar/5/scaled_A_A": "AsyncCollectiveDone",
+        "o_proj/polar/2/B_X": "AsyncCollectiveDone",
+        "o_proj/polar/3/B_X": "ConcatBitcast"
+      }
+    },
+    "matrix_capture": {
+      "initial_missing_scopes": [
+        "async_collective_fusion.144776",
+        "fused_computation.114094",
+        "fused_computation.114220"
+      ],
+      "kinds": {
+        "down_proj/polar/5/scaled_A_A": "AsyncCollectiveDone",
+        "o_proj/polar/2/B_X": "AsyncCollectiveDone",
+        "o_proj/polar/3/B_X": "ConcatBitcast"
+      }
+    },
+    "matrix_substitute": {
+      "initial_missing_scopes": [
+        "fused_computation.114221"
+      ],
+      "kinds": {
+        "down_proj/polar/5/scaled_A_A": "AsyncCollectiveDone",
+        "o_proj/polar/2/B_X": "ConcatBitcast",
+        "o_proj/polar/3/B_X": "ConcatBitcast"
+      }
+    }
+  },
+  "checks": [
+    "Seven saved report SHA/size verified",
+    "Explicit operand-position order invariance",
+    "Missing/duplicate operand rejection",
+    "Selected endpoint kinds retained, no cross-kind matching",
+    "Inventory SHA/size verified",
+    "Eight saved common-Start identity and repeated tuple projection checks",
+    "Common-Start mutation rejected; explicit position-order invariance"
+  ],
+  "fixtures": {
+    "20261103-frontier-collectives-preflight.py": "04bbf0ab89b1c232603876a385f3a375e8c9e710e6f06cd958d9ed2119969015",
+    "20261103-frontier-collectives-fixtures.py": "a60471e14cab67857e51f885e1c7566d95030f073981d74b93bd943f16d09137"
+  }
+}
