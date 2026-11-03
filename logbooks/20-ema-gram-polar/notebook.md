@@ -1419,6 +1419,20 @@ same default eigensolver under both layouts and collect the stage comparisons;
 TPU numerical behavior and the cause of the earlier discrepancy remain unknown.
 No training or original-checkpoint read is part of this diagnostic.
 
+## 2026-11-03 00:00 UTC — Attribution diagnostic running on v5e
+
+Iris accepted `ema-gram-20-attribution-v5e-8-20261102` at 23:57:15 UTC on
+November 2 from published source `39994b06be819fd277ffe36903f66de3eb55c4d4`.
+The [plan](optimizer-divergence-attribution-plan.json) records the exact command
+and resources. Startup verifies eight native TPU v5 lite devices, one JAX
+process, the expected script hash and online W&B with its logging check set to
+one. The [startup record](optimizer-attribution-started.json) links the run.
+
+The job has completed the fused checks and entered the per-stage comparisons.
+The final report and interpretation remain pending. This is one synthetic
+non-training diagnostic; no original checkpoint was read. The v4-32 reference
+request remains queued with its original priority.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

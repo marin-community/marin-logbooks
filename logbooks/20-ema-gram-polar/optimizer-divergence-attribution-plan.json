@@ -1,5 +1,5 @@
 {
-  "status": "CPU validated; ready for one sequential TPU attribution diagnostic; not submitted",
+  "status": "running; native eight-device v5e startup and online W&B verified",
   "objective": "Locate first numerical divergence between original and matrix-layout default QDWH before proposing another optimization.",
   "evidence": [
     "optimizer-matrix-v5e-numerical-failure.json",
@@ -142,5 +142,10 @@
     "negative_control": "Exact copies accepted; a1e-4 perturbation at zero rejected by the same comparator.",
     "communication_timeout_seconds": 60,
     "scope": "CPU harness validation only; no TPU numerical or performance claim."
-  }
+  },
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-attribution-v5e-8-20261102",
+  "submitted_utc": "2026-11-02T23:57:15Z",
+  "source_commit": "39994b06be819fd277ffe36903f66de3eb55c4d4",
+  "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-attribution-v5e-8-20261102 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT 39994b06be819fd277ffe36903f66de3eb55c4d4 -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.02.1",
+  "startup_evidence": "optimizer-attribution-started.json"
 }
