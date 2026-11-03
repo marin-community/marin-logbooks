@@ -2051,6 +2051,33 @@ This tests conditional sensitivity to A; separating the computation still
 changes compilation and requires its own reference checks. It is not implemented
 or submitted. No experiment remains queued or running.
 
+## 2026-11-03 05:19 UTC — Hold the polar continuation fixed while changing A
+
+The new `--polar-continuation` diagnostic takes the normalized input X and
+first product A = XXᵀ as external inputs. It computes the remainder of the first
+quintic update and the four later updates, using the shared original coefficients,
+expression association, source dtype and default precision. It returns only the
+final polar output. For each query/key/value group and each output layout
+(replicated or direction-sharded), one compiled executable evaluates A from the replicated isolated product, then A
+from the internally column-sharded isolated product, then replays the first.
+X remains identical across those calls. Exact input fingerprints and output
+comparisons record repeatability and sensitivity to A under that executable.
+
+Each result is compared with both output layouts of the shared uninstrumented
+polar reference and the intermediate-returning trace. The tolerance remains
+`rtol=atol=1e-5`, with bitwise equality reported separately. Removing the first
+product from the compiled continuation changes compilation; reference failures
+therefore prevent interpreting the continuation as the original fused path.
+Even matching final values cannot verify internal identity. This control does
+not change the optimizer or establish training performance.
+
+The implementation reuses the fixed-executable harness from `--state-crossfeed`.
+Before any TPU submission, validate both the new continuation mode and that
+existing state-comparison mode on eight virtual CPU devices with online W&B.
+The continuation mode should produce 81 finite stages, 150 comparisons and 54
+compiler files; the state comparison retains 13 stages and 26 comparisons.
+No accelerator job is queued or running.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
