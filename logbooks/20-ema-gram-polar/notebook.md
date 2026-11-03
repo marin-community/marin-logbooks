@@ -3144,6 +3144,49 @@ Passing the original reference gate does not establish hidden intermediate
 identity. Matrix reference gates, final artifacts and terminal status remain
 pending; no optimizer acceptance or warmed-performance claim is made.
 
+## 2026-11-03 10:58 UTC — Single-inner capture passes both reference gates
+
+The single-inner diagnostic completed successfully on attempt 0. It adds only
+the existing q_proj pre-normalization matrix to each full optimizer update's
+outputs. Both solver variants pass all 28 output-leaf checks against their own
+untouched references at rtol=atol=1e-5. Both unchanged Jaxpr evaluators match their
+references bitwise; neither extra-output capture does. The original capture has
+nonzero measured error only in v_proj (maximum absolute error 8.94070e-8).
+The matrix-solver capture has nonzero measured error in q_proj, k_proj and
+v_proj (maximum 1.04308e-7). Other leaves have zero measured absolute error,
+which does not establish per-leaf bitwise equality.
+
+All 12 stages are finite, 11 of 13 comparisons pass, and all four fixed
+executables replay bitwise on identical fingerprinted inputs. The captured
+q_proj inner matrices pass tolerance across solvers but differ bitwise:
+maximum absolute error 1.55183e-11 and relative Frobenius error 5.79009e-6,
+using the original solver's captured matrix as denominator. The two failing
+comparisons compare matrix versus original full updates, with and without
+capture; each fails all seven direction leaves while all 21 state leaves pass.
+These results do not accept an optimizer change or establish the mismatch's cause.
+
+All 14 compiler/Jaxpr object sizes are verified (58,898,587 compressed bytes).
+The two small Jaxpr files passed SHA and gzip readback; the 12 large compiler
+files remain in us-west4 without a new SHA audit. Observed host memory peaked
+at 94.10 GiB across 202 Finelog samples through 10:53:32 UTC. The JAX allocator
+peak of 8,122,035,712 bytes per device is not total HBM. No warmed-performance
+or training-MFU claim is made.
+
+The next control is design-only: append q_proj's existing inner matrix and
+norm-plus-epsilon denominator together, retaining every source equation and
+all 28 original outputs. Separate single-output captures cannot establish
+values along one hidden computation. A paired capture still needs its own
+online CPU validation, published source and all-leaf reference gates before
+interpretation. Matching final outputs would not prove hidden intermediate
+identity. No new numerical job has been submitted.
+
+Completed evidence: [single-inner capture](optimizer-single-inner-capture-v5e-completed.json).
+Source `9f8bb3320ceebedc2a999e19d9370f89d90aa307`; canonical success was
+verified at 10:57:01 UTC. The [online W&B run](https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-ee0ff400e3c3)
+finished with collection complete and candidate acceptance false. Log observer
+54894 ended naturally with exit 0; no experiment or queue remains. PR observer
+77099 remains the sole PR observer.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

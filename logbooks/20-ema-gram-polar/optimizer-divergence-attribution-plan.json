@@ -486,7 +486,7 @@
                 "started": "optimizer-single-norm-capture-started.json",
                 "completed": "optimizer-single-norm-capture-v5e-completed.json",
                 "next_decision": {
-                  "state": "One single-innerTPUdiagnosticrunning/startupverified; no furthercandidate",
+                  "state": "Completed; both single-inner own-reference gates pass1e-5 but notbitwise; no accepted optimizer",
                   "question": "Does exposing only the existing q_proj pre-normalization inner matrix preserve each full-update reference, and how do captured numerators differ across solver variants?",
                   "basis": "Single existing denominator output preserved both28leafreferences bitwise, unlike six-outputcapture. Captured denominator differs crosssolver within1e-5; full7directionmismatch remains. Numerator is not yet captured under passing own-reference gates.",
                   "procedure": "Extend shared capture_program with one output selection: append existing q_proj division numerator only, preserving all source equations/inputvariables/constants/original28outputs. Bothsolvers use untouchedfull_update, unchanged evaluator, singleinnercapture with identicalfingerprinted hostinputbank. Compileeachonce/replay; all28leafownreference/evaluator comparisons at fixedrtol=atol=1e-5 and bitwise. Crosssolver inner comparison records bothreferencegates. Oneexecutable/devicebankatatime; hostoffload/cacheclear/finiteincrementalreports/compilerhashes. Output29leaves; full qinner11x1024x1024 FP32 and originalall7groups. No sourceprecision/tiling/association/coefficientchange.",
@@ -495,7 +495,18 @@
                   "limits": "FullGram/everyupdate/globalbatch8/7630/sourceprecision/rtol=atol1e-5 preserved. No time limits/defaultpreemptionretries. No concurrentcandidate; no large crossregionartifacts. Anyoptimizerintervention stillrequires untouchedoriginal28leaf1e-5, savedstatevalidation, fullrestore and actualsteadyMFU>5%.",
                   "implementation": "optimizer-single-inner-capture-plan.json",
                   "preflight": "optimizer-single-inner-capture-preflight.json",
-                  "started": "optimizer-single-inner-capture-started.json"
+                  "started": "optimizer-single-inner-capture-started.json",
+                  "completed": "optimizer-single-inner-capture-v5e-completed.json",
+                  "next_decision": {
+                    "state": "Design only; not implemented or submitted",
+                    "question": "Can the existing q_proj inner matrix and norm-plus-epsilon denominator be captured together under passing full-update reference gates?",
+                    "basis": "Separate single-inner and single-denominator captures pass both28leaf own-reference gates. Their measurements come from different executables and cannot be combined into one hidden-path claim. Six-output qkv capture failed its reference gates.",
+                    "procedure": "Extend shared capture_program to append exactly the two existing q_proj division input variables, inner then denominator, preserving every source equation/input/constant and original28outputs. Total30leaves; full11x1024x1024FP32 inner and11x1x1FP32 denominator. Bothsolvers: untouchedfull_update,unchanged evaluator,pairedcapture on identicalfingerprintedinputs; compileonce/replay and all28leafown-reference/evaluator comparisons fixedrtol=atol=1e-5 plusbitwise. Record bothreferencegates for each crosssolver capturedvalue comparison. No crossfeed, recomputation, added source arithmetic or optimizer intervention.",
+                    "validation": "Own freshonlineCPUlogging and numerical validation, current single-inner and single-norm regressions, output-order/shape and equation/input/constant preservation checks. Publishexactsource/plan beforeONEsequentialTPUdiagnostic.",
+                    "memory": "Oneexecutable/devicebank atatime, boundedhostoffload/cacheclear; finiteincrementalreports and compilerchecksums; largeHLOremainregional.",
+                    "interpretation": "Failedreferencegate forbids original-path interpretation. Matching finaloutputs doesnotestablish hiddeninternalidentity. A coherent capturedpair remains an instrumented graph; its values alone cannot establish the fulloptimizer cause.",
+                    "constraints": "FullGram/everyupdate/source/defaultprecision/globalbatch8/7630steps/fixed1e-5 preserved. No precision,tiling,association override. Defaultpreemptionretries/no wallclocklimits/no concurrentcandidate. Fulloptimizeracceptance stillrequires untouchedoriginalall28leaves1e-5,savedstatevalidation/fullrestore/actualsteadyMFU>5%."
+                  }
                 }
               }
             }
