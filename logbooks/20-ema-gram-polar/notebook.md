@@ -4159,6 +4159,12 @@ Next is static design only: inspect the two declared operands of the reached dow
 [slice records and mapping](compiler-down-concat-slices.json) and
 [validation](compiler-down-concat-validation.json) retain the evidence.
 
+### November 3, 17:10 UTC — inspect fifth-step Gram operands (static preflight)
+
+The down Concat audit reaches a fifth-step `X_Xt` product but stops before its operands. I selected that product and the corresponding passing up/o controls by dependency-mapped polar roles, then verified their unique entry callers. None of the six immediate operand records per graph appears in the eight saved traces with the same caller context. The down product itself agrees with all four prior Concat input routes.
+
+The [plan](compiler-step5-gram-inputs-plan.json), [manifest](compiler-step5-gram-inputs-manifest.json), and [preflight](compiler-step5-gram-inputs-validation.json) preserve both ordered operands across untouched/evaluator/paired-capture/column-substitution graphs. Missing or duplicate roles, ambiguous callers, and a wrong down role are rejected. Only missing producer bodies will be read from SHA/size-verified HLO on regional CPU in us-west4. No accelerator, numerical run, or precision/tiling intervention is involved. Both full 28-leaf numerical substitution gates remain failed; the slice-signature mapping is not executable permutation semantics or a cause.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
