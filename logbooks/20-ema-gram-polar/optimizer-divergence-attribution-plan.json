@@ -150,7 +150,7 @@
   "startup_evidence": "optimizer-attribution-started.json",
   "completion_evidence": "optimizer-attribution-v5e-completed.json",
   "followup": {
-    "status": "implementation awaiting CPU validation",
+    "status": "CPU validation passed; ready for one sequential TPU diagnostic",
     "entrypoint": "optimizer_attribution.py --polar-compiler",
     "objective": "Capture original/candidate optimized compiler IR and locate layout differences across normalization and five polar iterates.",
     "arithmetic": "Original quintic coefficients, norm epsilon1e-7, five iterations, transpose and mesh constraint, default matrix-product precision. No precision change or tolerance relaxation.",
@@ -172,6 +172,44 @@
       "Compiler IR shows lowering choices, not measured device execution.",
       "No new candidate or accepted optimization; no checkpoint/training."
     ],
-    "next_decision": "Inspect per-iteration differences, final-output perturbation controls and actual compiled precision/collectives before proposing a numerical-equivalent layout change."
+    "next_decision": "Inspect per-iteration differences, final-output perturbation controls and actual compiled precision/collectives before proposing a numerical-equivalent layout change.",
+    "execution": {
+      "job_name": "ema-gram-20-polar-compiler-v5e-8-20261103",
+      "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1",
+      "tpu": "v5litepod-8",
+      "hosts": 1,
+      "devices": 8,
+      "cpu": 96,
+      "memory": "128GB",
+      "disk": "50GB",
+      "region": "us-west4",
+      "priority": "batch",
+      "preemption_retries": "Iris defaults",
+      "wall_clock_limits": null,
+      "seed": 0,
+      "polar_compiler": true
+    },
+    "validated_source_candidate": "03f482db14b1d2d4a0783def5cffca210c6e681e",
+    "logging_check": {
+      "run_id": "ema-gram-20-attribution-10925a85d942",
+      "online": true,
+      "success": 1,
+      "exit_code": 0,
+      "devices": 8
+    },
+    "cpu_smoke": {
+      "run_id": "ema-gram-20-attribution-6d81d4a31c6e",
+      "status": "passed187stages/122comparisons;116compilerartifact checksums verified",
+      "source_commit": "03f482db14b1d2d4a0783def5cffca210c6e681e"
+    },
+    "import_preflight_failure": {
+      "log": "scratch/20261103-compiler-logging-check.log",
+      "exit_code": 1,
+      "before_tracker_initialization": true,
+      "cause": "Shared editable install resolved an older checkout; corrected explicit PYTHONPATH to this worktree before logging check."
+    },
+    "preflight_evidence": "optimizer-polar-compiler-preflight.json",
+    "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-compiler-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-compiler --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.1",
+    "source_policy": "Resolve PUBLISHED_HEAD to the pushed commit before submission; script hash must equal479d929a489caacaa1ff9fe8908e6d247047ed90e17c051de2cb112c5119c84e."
   }
 }

@@ -1482,6 +1482,24 @@ Each traced final output will be checked against its uninstrumented counterpart
 because additional outputs can change compilation. CPU validation and publication
 must precede submission. No training optimization is accepted.
 
+## 2026-11-03 00:39 UTC — Compiler and iterate harness passes CPU validation
+
+The [compiler/iteration harness](optimizer-polar-compiler-preflight.json) passed
+187 stages with finite outputs and all 122 comparisons at rtol=atol=1e-5 on
+eight virtual CPU devices.
+Its online W&B run finished and the process exited zero. The regional GCS report
+matches the local bytes; all 116 compressed compiler artifacts passed checksum
+and decompression checks.
+
+This validates the harness only. The next synthetic TPU diagnostic uses the same
+11-layer, 1024/4096-dimensional matrix geometry as the original optimizer-cost
+diagnostic. It preserves the default eigensolver and existing five-step quintic
+Newton–Schulz arithmetic, captures compiler IR, and compares traced final polar
+outputs against uninstrumented calls. No checkpoint or training
+is part of it. The initial local logging invocation failed before initialization
+because an editable install resolved an older checkout; explicit import paths
+corrected it, and the failed invocation is retained in the preflight record.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
