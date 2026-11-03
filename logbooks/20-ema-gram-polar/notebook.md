@@ -2666,6 +2666,31 @@ limit. One log observer is attached. Full-size numerical capture gates,
 replays, memory and final artifacts remain pending. No original checkpoint
 or training dataset is read; this is not a resumed training process.
 
+## 2026-11-03 08:14 UTC — Original reference finite; evaluator compiling
+
+The active full-update capture job completed its untouched original reference
+with finite outputs. The 424.861-second call includes compilation and does not
+measure warmed optimizer performance. Three stages are now finite, but no
+numerical comparison has completed. The report has advanced to compilation of
+the unchanged-program evaluator; a read-only, nonblocking stack inspection at
+08:13 UTC found the main thread in JAX's `backend_compile_and_load` through
+`fixed_bank_outputs`.
+
+The [partial record](optimizer-full-input-capture-partial.json) preserves the
+report checksum, compilation observation and telemetry query. Finelog recorded
+75 samples through 08:12:22 UTC with a cumulative host-memory peak of
+56.449 GiB, below the 128 GiB reservation. Its accelerator-memory field is null.
+The original full-size program maps all seven polar normalizations and preserves
+851 equations when appending the six q/k/v operands. Its small saved Jaxpr file
+passed SHA256, size and decompression readback; the large compiler files remain
+regional and have not been re-downloaded for this check.
+
+The stack inspection may add compilation overhead. It establishes where the
+process was waiting at that instant, not a completion estimate or a numerical
+result. Keep this job and its sole log observer running. Reference agreement,
+capture comparisons, fixed-executable replays and final artifacts remain
+pending; no concurrent candidate or training run is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

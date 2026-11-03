@@ -1,0 +1,291 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-full-input-capture-v5e-8-20261103",
+  "observed_utc": "2026-11-03T08:14:37.596340+00:00",
+  "canonical_state": "RUNNING at08:11:44UTC",
+  "attempt": 0,
+  "attempt_uid": "1b5395498c6c",
+  "active_stage": "capture/original/evaluate/compile",
+  "finite_stages": 3,
+  "comparisons": 0,
+  "reference": {
+    "compile_and_execution_seconds": 424.8610527109995,
+    "finite": true,
+    "output_sha256": "062b86519246d1b9fab2e40a6cb1adb8259d03cc5377f72377587f3ded24050a",
+    "device_memory": [
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      },
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      },
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      },
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      },
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      },
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      },
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      },
+      {
+        "num_allocs": 31,
+        "bytes_in_use": 4523462656,
+        "peak_bytes_in_use": 8076038656,
+        "largest_alloc_size": 970858496,
+        "bytes_limit": 16909332480,
+        "bytes_reserved": 4836057088,
+        "peak_bytes_reserved": 4836057088,
+        "bytes_reservable_limit": 9804154880,
+        "largest_free_block_bytes": 3997236736
+      }
+    ],
+    "compiler_artifacts": {
+      "stablehlo": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_original.stablehlo.txt.gz",
+        "sha256": "fd218ce5ab804016f3241fe4d214424939030d2aa30dabcd370c45fc9b30f807",
+        "compressed_bytes": 86299
+      },
+      "optimized_hlo": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_original.optimized_hlo.txt.gz",
+        "sha256": "41a90c257a72d24e29ad693e2d275c39a24af7057f0aef8cdb436bb0130b0766",
+        "compressed_bytes": 10060350
+      }
+    }
+  },
+  "original_program": {
+    "mapping": {
+      "q_proj": {
+        "equation_index": 145,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "k_proj": {
+        "equation_index": 254,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "v_proj": {
+        "equation_index": 363,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "o_proj": {
+        "equation_index": 472,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "gate_proj": {
+        "equation_index": 581,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          4096,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "up_proj": {
+        "equation_index": 692,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          4096,
+          1024
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      },
+      "down_proj": {
+        "equation_index": 803,
+        "source_scope": "gram_direction/vmap()",
+        "inner_shape": [
+          11,
+          1024,
+          4096
+        ],
+        "denominator_shape": [
+          11,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+      }
+    },
+    "original_equations": 851,
+    "extended_equations": 851,
+    "original_output_leaves": 28,
+    "capture_output_leaves": 34,
+    "equations_preserved_by_identity": true,
+    "input_and_constant_variables_preserved": true,
+    "jaxpr_artifact": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture_program_original.jaxpr.txt.gz",
+      "sha256": "4eabaff9a7bce91af493be2c9b221669f0b04ff70e31d4adf7b1b861350ff9cc",
+      "compressed_bytes": 7935
+    }
+  },
+  "original_jaxpr_sha_size_gzip_readback_verified": true,
+  "partial_report_sha256": "308c8f8b264735ffcd7f4b647ce6a877fe43d97922c85206e6229bd7b55a7202",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/report.json",
+  "memory": {
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "schema_verified": true,
+    "query": "SELECT task_id, attempt_id, \"cluster\", count(*) AS samples,\n min(ts) AS first_ts, max(ts) AS last_ts,\n max(memory_peak_mb)/1024.0 AS cumulative_host_peak_gib,\n max(memory_mb)/1024.0 AS sampled_host_peak_gib,\n max(cpu_millicores) AS peak_cpu_millicores,\n max(accelerator_mem_bytes) AS reported_accelerator_mem_bytes\nFROM \"iris.task\"\nWHERE task_id='/kaiyuew@stanford.edu/ema-gram-20-full-input-capture-v5e-8-20261103/0'\n AND attempt_id=0\n AND ts >= TIMESTAMP '2026-11-03 08:04:00'\n AND ts < TIMESTAMP '2026-11-03 08:13:00'\nGROUP BY task_id, attempt_id, \"cluster\"\n",
+    "result": {
+      "task_id": "/kaiyuew@stanford.edu/ema-gram-20-full-input-capture-v5e-8-20261103/0",
+      "attempt_id": 0,
+      "cluster": null,
+      "samples": 75,
+      "first_ts": "2026-11-03 08:04:10.959000",
+      "last_ts": "2026-11-03 08:12:22.266000",
+      "cumulative_host_peak_gib": 56.44921875,
+      "sampled_host_peak_gib": 56.44921875,
+      "peak_cpu_millicores": 97697,
+      "reported_accelerator_mem_bytes": null
+    },
+    "semantics": "Observed cumulative task host peak; memory fields are MiB, divided by1024. Accelerator memory field is null. No total-HBM claim."
+  },
+  "inspection": {
+    "observed_utc": "2026-11-03T08:13:03Z",
+    "method": "Read-only py-spy dump --pid1 --nonblocking",
+    "stack_head": [
+      "Process 1: python logbooks/20-ema-gram-polar/optimizer_attribution.py --full-input-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9",
+      "Python v3.12.15 (/usr/local/bin/python3.12)",
+      "",
+      "Thread 1 (idle): \"MainThread\"",
+      "    backend_compile_and_load (jax/_src/compiler.py:391)",
+      "    annotate_function.<locals>.wrapper (jax/_src/profiler.py:420)",
+      "    _compile_and_write_cache (jax/_src/compiler.py:770)",
+      "    compile_or_get_cached (jax/_src/compiler.py:505)",
+      "    _cached_compilation (jax/_src/interpreters/pxla.py:1534)",
+      "    UnloadedMeshExecutable.from_hlo (jax/_src/interpreters/pxla.py:1754)",
+      "    MeshComputation.compile (jax/_src/interpreters/pxla.py:1257)",
+      "    Lowered.compile (jax/_src/stages.py:645)",
+      "    fixed_bank_outputs (optimizer_attribution.py:801)",
+      "    full_input_capture (optimizer_attribution.py:927)",
+      "    main (optimizer_attribution.py:1134)",
+      "    <module> (optimizer_attribution.py:1259)"
+    ],
+    "finding": "Main thread in backend_compile_and_load through fixed_bank_outputs for original unchanged-program evaluator",
+    "caveat": "Inspection may add overhead during compilation; no warmed timing claim."
+  },
+  "limitations": "Original reference finite; all unchanged-evaluator and capture numerical gates still pending. Original reference424.861seconds includes compilation and is not steady optimizer timing or trainingMFU. No additional job, checkpoint restore or optimizer acceptance."
+}
