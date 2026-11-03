@@ -545,13 +545,14 @@
                           "interpretation": "Both numerical substitution reference gates remain failed. Static compiler paths do not establish runtime values, precision, summation order, original internal identity or cause. No numerical/precision/tiling intervention selected; new numerical implementation requires own online CPU validation and published source before one sequential TPU.",
                           "completion": "compiler-first-gram-paths-completed.json",
                           "next_decision": {
-                            "state": "Implemented and own online CPU validated; one sequential TPU diagnostic pending",
+                            "state": "One sequential TPU diagnostic running; preserve until all gates and terminal artifacts assessed",
                             "question": "Can placing the external q numerator in the existing q-direction column sharding recover the full same-pair reference gate?",
                             "proposed_control": "Reuse paired substitution_program unchanged. Change only external numerator input NamedSharding to the existing q direction sharding gs[0]=P(None,None,data); denominator remains replicated. Preserve full global11x1024x1024FP32 numerator and11x1x1 denominator, all original input/output shardings, source equations/association/default precision and all28originaloutputs. This is external input placement, not a kernel tiling or precision override. Compiler-selected paths may still change; no agreement presumed.",
                             "procedure": "Fresh process recaptures both paired banks with untouched/unchanged full references. Each solver compiles once and runs own pair plus numerator-only, denominator-only and both swaps, with own-pair bitwise replay. Both fresh capture gates and each own-pair gate versus untouched AND captured full28leaves must pass rtol=atol=1e-5 before original-path interpretation. Preserve failed gates and report all28leaf errors/bitwise; each swap uses fixed-executable own-pair output norms as denominator. Matching endpoints still not internal identity or full cause.",
                             "preflight": "optimizer-column-input-substitution-preflight.json",
                             "interpretation": "Diagnostic only; candidate acceptance false and all training/optimizer gates unchanged. Record compiler artifacts for checking whether declared widths/path actually match; do not infer numerical recovery from static matching alone.",
-                            "plan": "optimizer-column-input-substitution-plan.json"
+                            "plan": "optimizer-column-input-substitution-plan.json",
+                            "started": "optimizer-column-input-substitution-started.json"
                           }
                         }
                       }

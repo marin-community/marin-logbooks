@@ -1,0 +1,173 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-column-input-substitution-v5e-8-20261103",
+  "submitted_utc": "2026-11-03T13:35:15Z",
+  "verified_utc": "2026-11-03T13:37:42.383451+00:00",
+  "canonical_state": "RUNNING",
+  "attempt": 0,
+  "attempt_uid": "7a5f9038a997",
+  "config": {
+    "source_commit": "406d595538a32a6e97df2869d2bb0438efecd465",
+    "script_sha256": "e506962e7eea60c381cb699ecbd63785ab65d89e711609316d308c5761d38645",
+    "seed": 0,
+    "shapes": [
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        1024,
+        4096
+      ]
+    ],
+    "names": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "smoke": false,
+    "polar_compiler": true,
+    "full_input_capture": true,
+    "paired_input_substitution": true,
+    "column_input_substitution": true,
+    "capture_kind": "q_pair",
+    "capture_helper_sha256": "2a1aacb7c3533371cef0dff22f07b5ceea7b6e80953a35723fda3083510fa24f",
+    "state_crossfeed": false,
+    "polar_products": false,
+    "contracting_control": false,
+    "continuation_control": false,
+    "normalization_control": false,
+    "partition_control": false,
+    "collective_control": false,
+    "polar_iterate_leaf_order": [
+      "input_norm",
+      "normalized_input",
+      "iteration_1",
+      "iteration_2",
+      "iteration_3",
+      "iteration_4",
+      "iteration_5"
+    ],
+    "process_count": 1,
+    "devices": [
+      {
+        "id": 0,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 1,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 2,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 3,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 4,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 5,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 6,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 7,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      }
+    ],
+    "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0",
+    "alpha": 0.25,
+    "ridge": 0.0001,
+    "beta1": 0.95,
+    "beta2": 0.99,
+    "polar_steps": 5,
+    "solver": "default",
+    "gcs_report_request_timeout_seconds": 60,
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "limitations": "Synthetic non-training stage attribution. Single calls include compilation; no performance or MFU claim. Staging changes compilation. Expected candidate mismatches are recorded, never accepted for training."
+  },
+  "wandb": {
+    "run": "ema-gram-20-attribution-6fa93c0837a0",
+    "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-6fa93c0837a0",
+    "state": "running",
+    "logging_check_success": 1
+  },
+  "log_session": 9948,
+  "limitations": "Startup only; numerical reference gates and final artifacts pending. Fresh capture and same-pair substitution gates are pending; matching finals does not establish hidden identity. No warmedperformance/MFU or checkpointrestoration.",
+  "canonical_verified_utc": "2026-11-03T13:37:36Z",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "memory": {
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "window_start": "2026-11-03T13:35:00Z",
+    "window_end": "2026-11-03T13:40:00Z",
+    "observation": {
+      "task_id": "/kaiyuew@stanford.edu/ema-gram-20-column-input-substitution-v5e-8-20261103/0",
+      "attempt_id": 0,
+      "samples": 19,
+      "first_ts": "2026-11-03 13:35:28.234000",
+      "last_ts": "2026-11-03 13:37:28.142000",
+      "observed_host_peak_gib": 34.919921875
+    },
+    "limitation": "Observed host cumulative peak; not total accelerator HBM."
+  },
+  "command": "set -e\nuv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-column-input-substitution-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT 406d595538a32a6e97df2869d2bb0438efecd465 -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --column-input-substitution --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14\n"
+}

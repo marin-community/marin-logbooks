@@ -13,7 +13,7 @@
     "preemption_retries": "Iris default",
     "wall_clock_limit": null
   },
-  "status": "Own online CPU logging, column harness and replicated-input regression passed; ready for one sequential TPU diagnostic",
+  "status": "One sequential TPU diagnostic running; all capture/substitution reference gates pending",
   "script": "optimizer_attribution.py --column-input-substitution",
   "question": "Does existing q-direction column placement of the external numerator recover full same-pair reference agreement?",
   "science": "Only operand uses at one mapped q_proj division are replaced with two appended inputs. All other source equations remain identical; target primitive/parameters/outputvars/effects retained; original inputs/constants/28outputs retained. Other uses of the inner and denominator variables are unchanged. Full Gram geometry/source precision/every-update refresh unchanged; no shared optimizer edit. Only external numerator input placement changes to gs[0]=P(None,None,data); denominator stays replicated. Global shapes/source arithmetic/default precision/original input-output shardings unchanged. No kernel tiling override.",
@@ -41,5 +41,6 @@
   "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-column-input-substitution-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --column-input-substitution --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14",
   "preflight": "optimizer-column-input-substitution-preflight.json",
   "script_sha256": "e506962e7eea60c381cb699ecbd63785ab65d89e711609316d308c5761d38645",
-  "capture_helper_sha256": "2a1aacb7c3533371cef0dff22f07b5ceea7b6e80953a35723fda3083510fa24f"
+  "capture_helper_sha256": "2a1aacb7c3533371cef0dff22f07b5ceea7b6e80953a35723fda3083510fa24f",
+  "started": "optimizer-column-input-substitution-started.json"
 }

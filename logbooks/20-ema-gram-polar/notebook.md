@@ -3691,6 +3691,34 @@ records identities and checksums; the [plan](optimizer-column-input-substitution
 records the single sequential TPU launch. No TPU result or optimizer acceptance
 is claimed. Large compiler artifacts will remain in us-west4.
 
+## 2026-11-03 13:38 UTC — Column-input TPU diagnostic starts
+
+This control column-shards the external q_proj normalization numerator while
+keeping its denominator replicated. It was accepted at 13:35:15 UTC from
+published source `406d595538a32a6e97df2869d2bb0438efecd465`. Canonical job and
+task state were running at 13:37:36 UTC, attempt 0, UID `7a5f9038a997`.
+It uses eight native v5e chips in one JAX process, 96 CPUs, 128 GiB memory and
+50 GiB disk in us-west4, with default preemption retries and no wall-clock limit.
+The script and unchanged capture-helper hashes match the CPU-validated source.
+
+Fresh online W&B run
+[6fa93c0837a0](https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-6fa93c0837a0)
+passed its logging check before kernels. Three stages are finite at startup:
+zero initialization, prior-state refresh and the untouched original full update.
+Capture and same-pair substitution reference gates are pending. Single-call
+timings include compilation and are not warmed performance or training MFU.
+Finelog records 19 samples through 13:37:28 UTC and an observed host peak of
+34.919921875 GiB; this is not total accelerator HBM. No current compiler-artifact
+readback is claimed. Large HLO remains regional.
+
+Sole experiment log observer 9948 started at 13:35:26 UTC. Reuse it and preserve
+the job through compilation; no duplicate or concurrent candidate is authorized.
+PR observer 77099 remains the sole live PR observer. The active heartbeat will
+collect both solver branches and all reference gates before the next decision.
+[Startup evidence](optimizer-column-input-substitution-started.json) records
+the exact job, command, source hashes and output prefix. No optimizer or training
+result is accepted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
