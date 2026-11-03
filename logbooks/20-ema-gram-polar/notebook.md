@@ -4626,6 +4626,16 @@ On the original saved Gram/momentum state, matrix-versus-replicated direction re
 
 Full native model/optimizer/counter/PRNG restoration and configured-stream replay were verified separately. The additional saved-state finite/immutability prerequisite is now satisfied. The [launch readiness record](loss-pair-launch-ready.json) rechecks the published paired commands and source/configuration hashes. Proceed with the original replicated continuation from verified counter 924 to final counter 7630, using the existing native training entrypoint and fresh execution-host online logging. Its ordinary, watch-enabled and profiling paths are evidence milestones inside the full schedule; training memory fit, actual loss and speed remain unmeasured. The matrix candidate follows sequentially after the original run's terminal evidence. No training is claimed by this readiness record.
 
+### November 3, 23:21 UTC — original full continuation accepted
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-loss-pair-replicated-v4-32-20261103` at 23:21:31 UTC from published source `7b357fae4545635f75c232a037901f4b5489859d`. This is the original replicated-layout continuation, version `2026.11.03.21`, using the existing native training entrypoint and exact prepared configuration. It requests one v4-32 slice across four hosts in us-central2, each with 120 CPUs, 256 GiB memory and 50 GiB disk, batch priority, default preemption/retries and no wall-clock limits. Each execution host must complete fresh non-training online logging before the native worker initializes its own online tracking and numerical kernels.
+
+The common source checkpoint's independently verified counter is 924 and the requested final counter remains 7630. Submission does not prove that this new training process has restored that counter or made progress. Its own restore, finite-loss and full-training memory evidence remain pending. Ordinary label 924, watch-enabled label 929 and profile label 940 are observation milestones inside the unchanged full schedule. The candidate matrix run remains unsubmitted and will follow sequentially after the original run's terminal evidence.
+
+The [submission record](loss-pair-original-submitted.json) preserves the exact command, source, resources and observation ownership. Follow 29414 is the sole live observer. The completed saved-state diagnostic and all earlier jobs remain terminal and will not be polled or restarted.
+
+The first canonical job/task check, after the required two-minute wait, found all four tasks pending with no attempts, failures or preemptions at 23:23 UTC. The next routine check is no earlier than 23:33:18 UTC.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
