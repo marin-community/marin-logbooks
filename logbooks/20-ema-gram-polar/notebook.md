@@ -3099,6 +3099,27 @@ validate the harness and regression, not TPU behavior. Publish this evidence
 before one sequential TPU diagnostic using unchanged source equations, precision
 settings and rtol=atol=1e-5.
 
+## 2026-11-03 10:32 UTC — Single-inner TPU diagnostic started
+
+The [single-inner diagnostic](optimizer-single-inner-capture-started.json) was
+accepted at 10:31:14 UTC from published revision
+`9f8bb3320ceebedc2a999e19d9370f89d90aa307`. Attempt 0 is running on eight native
+v5e chips in one JAX process. Loaded script/helper hashes match the validated
+source. The fresh [online W&B run](https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-ee0ff400e3c3)
+passed its logging check before optimizer kernels.
+
+This diagnostic appends the existing q_proj pre-normalization inner matrix.
+All 28-leaf reference gates remain pending at startup. Failed agreement forbids
+original-path interpretation; matching final outputs would not prove hidden
+intermediate identity. Separate inner and denominator capture executables cannot
+be treated as a single hidden path. No optimizer or performance claim is made.
+
+The task requests 96 CPUs, 128 GiB host memory and 50 GiB disk in us-west4, with
+batch priority, default preemption retries and no runtime limit. Sole log
+observer 54894 follows this task; PR observer 77099 remains live. Preserve the
+job through compilation and assess both solver branches before another numerical
+candidate. Large compiler artifacts remain regional.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
