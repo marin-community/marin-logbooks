@@ -1,0 +1,21 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-ir-slices-cpu-20261103",
+  "submitted_utc": "2026-11-03T04:09:39Z",
+  "verified_utc": "2026-11-03T04:10:45Z",
+  "source_commit": "095356ceaaddcaa31e52c1b9d9e372c41114da54",
+  "script_sha256": "f43f4375805192c0ac600ef2d75fd795787a4da944a5489a35adf375065bcbfa",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "edea42543af4",
+  "exit_code": 0,
+  "resources": "4CPU/8GiB/10GiB us-west4, no accelerator",
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.ir-slices/ir-inventory-0a0b6cb7a64e/report.json",
+  "report_sha256": "6a3a1e9bd5010c2abc5c6eb9771586f0710dc125362d0637e9fb29252d8ae314",
+  "report_bytes": 258980,
+  "input_sha256_verified": true,
+  "captured_computations": 6,
+  "observation": "Both selected asynchronous fusion first outputs depend on parameters9/10 through independent nested fusions and a convolution. Other tuple buffers are separate. This does not locate all upstream dependency merging.",
+  "followup": "Entry graph contains combined all-reduce operations. Existing parser assigns all operand dependencies to every tuple result, contrary to independent element semantics. Local reproduction maps30polaroperations peroutput before correction and15each after. Fullgraph correction remains unverified.",
+  "semantics_reference": "https://openxla.org/xla/operation_semantics#allreduce",
+  "limitations": "Static parser investigation, no optimizer execution or causal performance result."
+}

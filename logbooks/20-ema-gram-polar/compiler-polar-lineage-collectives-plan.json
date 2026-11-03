@@ -1,0 +1,62 @@
+{
+  "purpose": "Map output groups and five polar iterations by static fusion-aware dependencies, then capture immediate producer bodies. No numerical kernels.",
+  "source_report_sha256": "437dad736cb8b5d9fe3578980c13e9a229fd2a6618e60cfa1135c680d7ecb224",
+  "required_region": "us-west4",
+  "artifacts": {
+    "fused_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_original.optimized_hlo.txt.gz",
+      "sha256": "f323476e7f76fdb8ecf7398a72dfc4b2acd44ff5034155f610143bd1a249f93d",
+      "compressed_bytes": 10060125
+    },
+    "fused_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662
+    },
+    "direction_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__original.optimized_hlo.txt.gz",
+      "sha256": "9d267db9dbe0557551c380374b77d190a9f334bc8f059248c7733eb609dcbce3",
+      "compressed_bytes": 9695356
+    },
+    "direction_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__matrix.optimized_hlo.txt.gz",
+      "sha256": "37ef4c2aa848bed2e9580db0674f8b61d3c7296bae0f2f0b23076ca92d46c1fb",
+      "compressed_bytes": 9387612
+    }
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-lineage-collectives",
+  "execution": {
+    "job_name": "ema-gram-20-polar-lineage-collectives-cpu-20261103",
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default",
+    "output_identity": "Fresh UUID per process, preserving retry outputs",
+    "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-lineage-collectives-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT <published-commit> -- python logbooks/20-ema-gram-polar/compiler_operation_inventory.py --manifest logbooks/20-ema-gram-polar/compiler-polar-lineage-collectives-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-lineage-collectives"
+  },
+  "analysis": "polar-lineage",
+  "groups": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "preflight": {
+    "script_sha256": "c9401429384e1a7339823e4eecf1b0878545028832aadf3cfb3fef5d9667a803",
+    "full_cli_report_sha256": "70eb617919d2a20af8acb74c0a6463cc7dc2dce06dff923e5193fb8467da044e",
+    "validation": "Paired isolated graphs, tuple-parameter regression and combined-allreduce regression each map15products/group; duplicate output remains rejected. FullCLI passed all3fixtures with input checksums and producer bodies.",
+    "old_parser_regression": "Combined allreduce merged30operations intoeachoutput; fixed preserves15each",
+    "guard": "15 distinct products pergroup, total dependency chain, unique groups, unsupported polar callee rejection unchanged"
+  },
+  "previous_attempt": "compiler-polar-lineage-tuples-failed.json",
+  "limitations": "Combined allreduce leaf fix validated locally; fullgraph mapping and numerical causality unverified. No optimizer math or tolerance change.",
+  "inspection_evidence": "compiler-ir-slices-completed.json",
+  "semantics_reference": "https://openxla.org/xla/operation_semantics#allreduce"
+}

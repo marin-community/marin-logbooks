@@ -1804,6 +1804,29 @@ no survivor. Current comments and reviews contained no new actionable feedback;
 the head remains d19131429. One replacement foreground monitor was started.
 There is now no queued or running experiment; no accelerator job was resubmitted.
 
+## 2026-11-03 04:14 UTC — Preserve independent combined-reduction outputs
+
+The [CPU extraction in us-west4](compiler-ir-slices-completed.json) verified
+the saved fused-original optimized HLO file and collected six fusion bodies.
+The two asynchronous fusions selected because they return query/key directions
+have first-output data dependencies only on their fusion-local parameters nine
+and ten. Their other tuple buffers are separate data paths. This inspection
+does not explain the optimizer direction discrepancies.
+
+The entry graph also contains combined all-reduces. The parser incorrectly
+assigned all operand dependencies to every result of those operations.
+[OpenXLA semantics](https://openxla.org/xla/operation_semantics#allreduce)
+specifies an independent reduction for each tuple element. A local composition
+of two known isolated polar graphs reproduced the overcount: thirty polar matrix-product operations
+per output before the correction, fifteen per output afterward. Tuple-parameter
+and reversed-output fixtures still pass; duplicated outputs are still rejected.
+
+The [implemented correction](compiler-polar-lineage-collectives-plan.json)
+preserves independent all-reduce result dependencies. It still requires fifteen
+polar products per matrix group, one ordered dependency chain per group, and no
+product shared across groups. Full-graph validation remains pending.
+The optimizer, its precision and numerical tolerance are unchanged.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

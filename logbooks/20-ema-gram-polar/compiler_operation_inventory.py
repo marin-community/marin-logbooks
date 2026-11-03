@@ -115,6 +115,14 @@ def polar_lineage(lines, groups, diagnostics=None):
             deps = shaped_dependencies(shape, lambda path, index=int(operands): frozenset({ParameterLeaf(index, path)}))
         elif opcode == "tuple":
             deps = tuple(arguments)
+        elif opcode == "all-reduce" and len(arguments) > 1:
+            # AllReduce operates independently on each tuple element.
+            # https://openxla.org/xla/operation_semantics#allreduce
+            assert len(tuple_shapes(shape)) == len(arguments), name
+            for target in OPERAND.findall(attributes):
+                if target in summaries:
+                    assert not summaries[target][1], f"Unsupported polar reducer: {target}"
+            deps = tuple(arguments)
         elif opcode == "get-tuple-element":
             assert isinstance(arguments[0], tuple), name
             deps = arguments[0][int(TUPLE_INDEX.search(attributes)[1])]
