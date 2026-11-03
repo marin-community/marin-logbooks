@@ -4122,6 +4122,24 @@ Next is static design only: use saved records first to compare the declared Done
 [down route records](compiler-frontier-down-route.json) and
 [validation](compiler-frontier-operands-validation.json) retain the evidence.
 
+## 2026-11-03 16:42 UTC — Collective input records retain the unresolved down failure
+
+The regional CPU extraction inspected the declared inputs behind three selected operand frontiers: down's fifth-step (cA)A product and o's second/third-step BX products, all at operand position 1. Untouched, evaluator and paired-capture graphs have 26 input routes each: two Done calls with ten inputs and one matched Start input apiece, plus four ConcatBitcast inputs. Substitution has 19 routes because the selected o second-step frontier is ConcatBitcast rather than Done. These different endpoint kinds are retained without pairing their operands.
+
+All 26 evaluator signatures match untouched. Paired capture matches 25; its o second-step Start-input signature differs only in recorded S(1) tags within the inspected tree. Substitution's eleven down signatures differ: nine Done-input routes differ only in S(1) declaration tags, Done input 2 also differs in all-gather channel/chain IDs 360→357 and 57→61, and the Start-input route differs only in those IDs. These are repeated views of shared declarations, not eleven independent changes. The Start's declared input is an all-gather whose producer trace stops at an opaque ConcatBitcast in every graph. The extra copy pair found on the consuming side in the preceding extraction remains recorded separately; this input inspection does not establish its numerical effect.
+
+For each selected Done, all ten declared operand traces reach one common Start identity. Their Start tuple paths are [0], [1], [0], [2], [3], [4], [5], [6], [7], [8] in operand order, retaining repeated leaf 0. This is a declared binding result, not exact Start/Done semantics. Original custom-call outputs remain opaque.
+
+The passing o control has broader changes. Its four third-step ConcatBitcast input signatures all differ: the selected producer tuple projection changes from leaf 0 with bf16 declarations to leaf 1 with f32 declarations, followed by different operand connections. The difference walker stops when those connections cease to align; it does not claim equality beyond that point. Substitution's four second-step ConcatBitcast input routes are reported without comparison to the control Done inputs. Matching endpoint roles or emitted dtype declarations alone does not establish semantic equivalence, runtime precision, or the cause of a numerical failure. Source precision and the numerical test remain unchanged.
+
+Five closure rounds recovered nine bodies per control graph; three rounds recovered three bodies for substitution. No requested records remain missing, but product and opaque frontiers remain. The task succeeded attempt 0/exit 0, UID 1e4029c1c3ef, with canonical job/task status verified at 16:40:31–32 UTC. Published source 657ef87ffd57090cf85ccd2588ddef10d9f45535 ran on four CPUs/8 GiB/10 GiB in us-west4 with default preemption retries and no wall-clock limit. No accelerator or numerical kernels were used. All four HLO SHA/size checks passed regionally; large HLO stayed there. The 1,884,282-byte report passed exact GCS readback, SHA a75d20f108ca32b4c8388aca1fbb847255d492dca7dd212fc0bfca13b2361523. Fixtures cover explicit position ordering, missing/duplicate/wrong-caller roots, common-Start mutations, literal changes, evaluator comparisons and rejection of cross-kind operand alignment.
+
+Both full 28-leaf numerical substitution gates remain failed. Next is static design only: inspect the four declared inputs of the down ConcatBitcast reached from Start's input, using existing records first. None has a saved endpoint-input trace in the same caller context among the seven inspected reports. Reuse already inspected o controls and preserve their different endpoint kinds. Any needed extraction requires published source/manifest/checksums before regional CPU parsing with HLO identity checks. No numerical intervention or optimizer/training/MFU acceptance is selected. No experiment or observer remains; PR monitoring stays handed off after its twelve-hour timeout, and the research heartbeat remains active.
+
+[Completion](compiler-frontier-collectives-completed.json),
+[comparison](compiler-frontier-collectives-comparison.json) and
+[validation](compiler-frontier-collectives-validation.json) retain the evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
