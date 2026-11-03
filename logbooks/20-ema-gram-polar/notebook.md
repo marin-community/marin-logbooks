@@ -4557,6 +4557,16 @@ The first designated steady-step window is labels 1000–1099, subject to the do
 
 No numerical kernels, new job or training were launched for this preparation. The original saved-state check still needs both a direction on unchanged saved Gram/momentum and a full update with fixed synthetic gradients, retaining input immutability. The historical cost script's strict equivalence assertions require adjustment before reuse under the loss-first criterion; no such numerical change is implemented here. All four regional restore/data reports and full-training memory/finite checks remain outstanding.
 
+### November 3, 22:02 UTC — full checkpoint restore and configured data replay verified
+
+The corrected regional audit succeeded on all four tasks, attempt 0, exit 0, with no failures or preemptions. Canonical job/task checks completed at 22:01:52–22:02:16 UTC. All four process reports were retrieved and SHA/size checked. Each process verified all 57 manifest arrays across its four addressable devices: 228 local shard records per process, covering all 16 devices. Restored model, optimizer, step and PRNG bytes match independent TensorStore reads, all checked values are finite, and replicated records with the same path/index have consistent hashes. The [completion record](full-restore-counter-completed.json) preserves report URIs, checksums, task/attempt identities and per-process evidence.
+
+The independently stored trainer counter is 924; checkpoint metadata label is 923. Every process's configured iterator starts at counter 924, example offset 7,392, and its first batch matches a separately constructed iterator at that position. This verifies replay of the configured stream, not identity with an unsaved historical batch. The earlier label/counter assertion failure remains preserved. No training update or checkpoint advancement occurred in either restore audit.
+
+Restore/audit peak process RSS was 29.99, 29.88, 30.09 and 29.99 GiB for processes 0–3. The largest reported per-device JAX allocator peak was 4,340,666,880 bytes; this is not total HBM usage. These measurements include verification work and do not establish full-training memory fit. All four fresh execution-host logging checks and the native process-zero W&B run finished successfully. Source `b55656b4c2fd364292b75aeaee765698cbd9fc56` and its exact SHA were checked before execution. Large checkpoint arrays stayed in us-central2; only bounded reports were retrieved.
+
+The sole follow observer, session 37396, ended naturally with exit 0. No experiment, queue or observer remains active; all old jobs are terminal and will not be restarted. Next prepare the saved-state optimizer diagnostic: directions from unchanged saved Gram/momentum, plus a full refresh/update with a fixed synthetic gradient, retaining finite-output and input-immutability checks. Numerical-equivalence failures remain reported diagnostics rather than a veto on the paired loss experiment. A new numerical entrypoint still requires its own online logging check, online CPU harness and exact publication before one sequential TPU diagnostic. Full-training memory/finite checks and the sequential loss/speed comparison remain outstanding; neither training variant has launched.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

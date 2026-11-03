@@ -221,50 +221,15 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "state": "Corrected regional restore audit pending on four tasks; no training launched",
+    "state": "Full trainer restore and configured data replay verified; prepare saved-state optimizer check; no active job or training",
     "user_direction": "Comparable loss is the practical criterion. Strict numerical equivalence is diagnostic and is no longer a sole training-launch blocker.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
     "procedure": "Prepare original-versus-candidate paired training with the same model, global batch8, data order, seed, hyperparameters and initialization or verified full checkpoint/data-position restore. Preserve original7630step schedule and all operational constraints. Compare training/validation loss at matched steps and progress per measured wall-clock time. Quantify variability and loss gap; no acceptable loss margin has been specified.",
-    "remaining_preparation": "Validate direct stored-scalar step check and native StepInfo label regression; publish exact source before one new regional full restore audit. Require all four shard/data reports. Retain saved-state synthetic-gradient/unchanged-state and full-training finite/memory checks before sequential matched loss comparison. Both paired variants request256GiB perhost. Numerical equivalence alone is not a veto.",
+    "remaining_preparation": "Prepare both unchanged saved-state direction and fixed-synthetic-gradient full update checks with input immutability and finite outputs; numerical equivalence reported not asserted as veto. Own online logging/CPU harness and publication before one sequential TPU. Then full-training memory/finite validation and paired continuation to7630.",
     "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
     "prepared_configurations": "loss-pair-prepared.json",
     "validation": "loss-pair-preparation-validation.json",
-    "active_job": {
-      "job_id": "/kaiyuew@stanford.edu/ema-gram-20-stored-counter-audit-v4-32-20261103",
-      "cluster": "marin",
-      "accepted_utc": "2026-11-03T21:41:06Z",
-      "source_commit": "b55656b4c2fd364292b75aeaee765698cbd9fc56",
-      "source_sha256": "49f551e2c101ea2b9fde522a651312e95df8d53aa5c0eb3a2b55ac70faac2011",
-      "status": "PENDING; all4 tasks pending with no attempts/failures/preemptions",
-      "resources": {
-        "tpu": "v4-32",
-        "hosts": 4,
-        "cpu_per_host": 120,
-        "memory_per_host": "256GiB",
-        "disk_per_host": "50GiB",
-        "region": "us-central2"
-      },
-      "wall_clock_limits": null,
-      "preemption_retries": "default",
-      "scope": "Corrected non-training full native trainer restore/data audit; no optimizer update",
-      "observer_session": 37396,
-      "observer_owner": "current root thread; sole live follow; never duplicate",
-      "observer_log": "scratch/20261103-stored-counter-audit-follow.log",
-      "submission_log": "scratch/20261103-stored-counter-audit-submit.log",
-      "output_version": "2026.11.03.24",
-      "training_launched": false,
-      "restoration_accepted": false,
-      "observed_utc": "2026-11-03T21:52:44Z",
-      "next_canonical_check_not_before": "2026-11-03T22:02:14Z",
-      "monitoring_deviation": "First canonical check started21:42:49,17seconds before requested120second wait; no corrective duplicate poll. Next routine check delayed570seconds from completed check.",
-      "tracking_publication": "8632d2e422f855f5fffffb34fff9d5e14a68c9af",
-      "heartbeat_readback": "ACTIVE, exact prompt verified",
-      "issue_comment": "https://github.com/marin-community/marin-logbooks/issues/20#issuecomment-6616176997",
-      "issue_exact_readback": true,
-      "latest_publication": "57bfeff5decd35d813c428d750924c807f54df47",
-      "latest_job_evidence": "scratch/20261103-stored-counter-audit-2152-job.txt",
-      "latest_task_evidence": "scratch/20261103-stored-counter-audit-2152-task0.txt"
-    },
+    "active_job": null,
     "paired_host_memory": "Both prepared training variants now256GiB per host; only resource RAM changed; neither submitted",
     "restore_failure": "full-restore-failed.json",
     "counter_validation": "full-restore-counter-validation.json",
@@ -274,7 +239,8 @@
       "Direction on unchanged saved Gram/momentum state",
       "Full refresh/update with identical fixed synthetic gradient",
       "Input state immutability in both cases"
-    ]
+    ],
+    "full_restore_completion": "full-restore-counter-completed.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",
