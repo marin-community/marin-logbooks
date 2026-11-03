@@ -2844,6 +2844,38 @@ retries and no wall-clock limit. Both numerical capture checks against their
 untouched references remain failed; these static paths cannot establish hidden
 original values or a numerical cause.
 
+## 2026-11-03 09:22 UTC — Caller bindings extend normalization mapping
+
+The [targeted CPU extraction](compiler-capture-bindings-completed.json) finished
+on attempt 0 with exit 0. It verified all six optimized-HLO hashes in us-west4
+and captured 18 named or nested computation bodies per graph. Large HLO stayed
+regional; the selected-body report is 156,417 bytes.
+
+[Following fusion parameter bindings](compiler-capture-normalization-bindings.json)
+now reaches a normalization division from 46 of 84 first-product operand
+positions across the six graphs. This includes all 36 q/k/v positions, one
+o_proj position in every graph plus the second position in matrix capture,
+and one gate_proj position in each matrix graph. Repeated operands remain separate
+positions. Seventeen positions stop at named missing computation bodies and
+21 stop at ConcatBitcast custom calls. These are parser-coverage counts, not
+evidence that normalization is absent or that custom-call runtime semantics
+are known.
+
+[Binding fixtures](compiler-capture-normalization-bindings-validation.json)
+passed tuple selection and combined-collective independence. An additional
+end-to-end tracer probe on the older synthetic seven-subgraph fixture rejected
+its nested callers because the tracer currently requires first-product callers
+in the entry computation. No assertion was relaxed. All six actual graphs
+passed that structural check and the reported coverage checks, retaining the
+unresolved positions above. Their q/k/v mappings agree with the earlier analysis.
+
+Next, inspect the recorded slice producers behind the opaque boundaries and
+recover the explicitly listed missing bodies if needed. Both numerical captures
+still fail their untouched-reference checks. The static paths do not establish
+hidden original values or a numerical cause. No numerical experiment or
+optimizer intervention is selected. The CPU log observer ended naturally;
+no experiment or queue remains active.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

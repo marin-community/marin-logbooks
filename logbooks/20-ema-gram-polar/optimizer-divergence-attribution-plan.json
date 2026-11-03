@@ -463,10 +463,17 @@
           "limits": "Static changes cannot establish runtime values, summation order, precision or a causal mechanism. Both capture gates failed, so do not use captured intermediates as untouched inputs. No precision/tiling intervention selected. Future numerical controls require own onlineCPU validation and published exact source before one sequentialTPU; optimizer gate remains all28leaves1e-5.",
           "completion": "compiler-capture-inventory-completed.json",
           "next_decision": {
-            "state": "Design only; no numerical intervention selected",
+            "state": "Partial static mapping completed; numerical intervention not selected",
             "question": "Which upstream producer and normalization paths remain unresolved for changed directions whose product fields match?",
             "procedure": "Use existing captured producer bodies, normalization records and entry instructions to trace all normalization producers and caller inputs for original o_proj/up_proj and matrix k_proj/down_proj, with unchanged groups as controls. q/k/v immediate operand-producing normalization paths are mapped, but other four groups currently stop at parameters or non-fusion producers. Preserve tuple leaves, repeated operand positions and binding context; explicitly list missing computation bodies. Any targeted missing-body extraction must remain CPU-only inus-west4 with input checksums, published exact source and no accelerator. Do not select an intervention based only on S(1)tags, backend counts or static equalities.",
-            "limits": "Both capture gates failed; captured intermediates are not verified untouched values. Static records cannot establish runtime precision, summation order, complete input identity or cause. Future numerical controls need ownonlineCPU validation/publishedsource; optimizer acceptance remains untouchedoriginal all28leaves1e-5."
+            "limits": "Both capture gates failed; captured intermediates are not verified untouched values. Static records cannot establish runtime precision, summation order, complete input identity or cause. Future numerical controls need ownonlineCPU validation/publishedsource; optimizer acceptance remains untouchedoriginal all28leaves1e-5.",
+            "completion": "compiler-capture-bindings-completed.json",
+            "next_decision": {
+              "state": "Design only; no new submission selected",
+              "question": "Can the17 missing caller bodies and explicit ConcatBitcast operand boundaries connect remaining first-product paths to normalization records?",
+              "procedure": "First inspect the existing entry slice-start/done producer records behind the21 opaque ConcatBitcast boundaries without assuming custom-call runtime semantics. Preserve explicit opaque boundary labels even if all declared operands are followed as conservative static dependencies. Use the17 named missing bodies in compiler-capture-normalization-bindings.json for a targeted regional CPU-only extraction if required, extending to their nested callees. Retain tuple-leaf/binding contexts and repeated operands; test supported async slice associations before interpreting coverage. Compare mapped normalization producers and caller inputs for originalo/up andmatrixk/down against untouched/evaluator controls. No accelerator or numerical experiment selected.",
+              "limits": "Static coverage is not runtime-value equivalence or cause. Both capture reference gates failed. Preserve all28leaf1e-5 acceptance gate, fullgeometry/math/precision and defaultpreemption/no runtime limits."
+            }
           }
         }
       }

@@ -1,0 +1,61 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-capture-bindings-cpu-20261103",
+  "accepted_utc": "2026-11-03T09:19:05Z",
+  "verified_utc": "2026-11-03T09:21:28.369229+00:00",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "14a1158b9fe8",
+  "exit_code": 0,
+  "source_commit": "3791c4e521aac1263a11f4c772d7e4e21ca011ed",
+  "script_sha256": "36e485757d701d750374af6d490be2fbfdb01b7d34c999bf290234df62c014f6",
+  "manifest_sha256": "2d808d82315705da6e91763dba939c391668d07194f4edab0f8cce4cfcd603a1",
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-bindings/selected-bodies-c2fea16767a0/report.json",
+  "report_bytes": 156417,
+  "report_sha256": "857cee50451ea11b173db2a13e2a2f8bdcacefc151a7000c6ec7245f5840dad5",
+  "graphs": {
+    "original_untouched": {
+      "input_sha256": "41a90c257a72d24e29ad693e2d275c39a24af7057f0aef8cdb436bb0130b0766",
+      "sha256_verified": true,
+      "bodies": 18
+    },
+    "original_evaluate": {
+      "input_sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+      "sha256_verified": true,
+      "bodies": 18
+    },
+    "original_capture": {
+      "input_sha256": "96a1a7e04f1515f0914e7f89c60a1aad7855cbf609936247c42deec1c8278ee2",
+      "sha256_verified": true,
+      "bodies": 18
+    },
+    "matrix_untouched": {
+      "input_sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "sha256_verified": true,
+      "bodies": 18
+    },
+    "matrix_evaluate": {
+      "input_sha256": "3e7e23477e3167d786c5c46850abb30531699e6de6412d00046d2e77eabe4bf4",
+      "sha256_verified": true,
+      "bodies": 18
+    },
+    "matrix_capture": {
+      "input_sha256": "f83cd12f71f7fbd663ce71cd3f989b05c8e0a5b1cf64edecba59ca6ed026c288",
+      "sha256_verified": true,
+      "bodies": 18
+    }
+  },
+  "comparison": "compiler-capture-normalization-bindings.json",
+  "validation": "compiler-capture-normalization-bindings-validation.json",
+  "limitations": "CPU-only static extraction; no optimizer kernels or W&B. Worker name includes TPU but requested allocation is CPU-only. All6 large optimizedHLO hashes verified inus-west4; only156417byte selected-body report downloaded. Both capture gates failed; no original hidden-value or causal claim. No host-memory measurement claimed.",
+  "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-capture-bindings-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT 3791c4e521aac1263a11f4c772d7e4e21ca011ed -- python logbooks/20-ema-gram-polar/compiler_selected_bodies.py --manifest logbooks/20-ema-gram-polar/compiler-capture-bindings-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-bindings"
+}
