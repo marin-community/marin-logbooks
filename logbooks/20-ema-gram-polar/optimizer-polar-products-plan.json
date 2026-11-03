@@ -1,0 +1,45 @@
+{
+  "status": "implemented; own CPU validation pending; no accelerator submission",
+  "script": "optimizer_attribution.py --polar-products",
+  "script_sha256": "0f1544df4b92b9111858fb7109277ddcc32c63129edf304a10a24f56adf6ef34",
+  "question": "Locate the first differing first-iteration product under controlled output layouts, while checking whether tracing changes the uninstrumented final output.",
+  "prior_evidence": "compiler-polar-paths-completed.json",
+  "input_recipe": "Seed0, same seven full synthetic state shapes and common standalone refresh recipe as prior attribution. Only square q/k/v groups enter the new polar-product diagnostic. Identical frozen inner tensor within each layout comparison; no cross-job bitwise input claim.",
+  "stages": [
+    "norm",
+    "normalized_input",
+    "A=X@X.T",
+    "C=(c*A)@A",
+    "B=b*A+C",
+    "D=B@X",
+    "X1=a*X+D",
+    "final after five original quintic iterations"
+  ],
+  "science": "Shared uninstrumented polar, coefficients, Gram refresh, normalization and powers. No precision overrides, approximation, tolerance change or optimizer/trainer change. Expression association retained.",
+  "instrumentation_gate": "Compare traced final with shared uninstrumented polar at rtol=atol=1e-5 and bitwise. Only bitwise-equal final outputs in both layouts permit a cross-feed selected from that trace. A changed trace is recorded, never interpreted as original-path causality.",
+  "crossfeed": "Select first nonzero A/C/B/D/X1, or A harness control if all traced outputs match. Norm/normalized-input/final-only first differences skip product cross-feed. Compile once per output layout, fixed replicated external input shardings; evaluate both frozen operand banks and replay first. Compare banks, layouts, and isolated outputs against traced outputs. Removing fusion is a perturbation.",
+  "expected_cpu_equal_path": {
+    "finite_stages": 54,
+    "comparisons": 60,
+    "fixed_executables": 6,
+    "compiler_files": 36
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "One group and one executable/device output bank at a time; reference/traces offloaded to host; clear executable caches; original common state on host. No training checkpoint or dataset.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.3",
+  "job_name": "ema-gram-20-polar-products-v5e-8-20261103",
+  "limitations": "No warmed timing or device profile promised; no training/MFU/correctness promotion. Additional outputs and isolated product boundaries change compilation. Trace equality at final output does not prove all internal operations are unchanged.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-products-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-products --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.3"
+}

@@ -133,6 +133,181 @@ def polar_iterates(inner):
     return jax.vmap(one_matrix)(inner)
 
 
+def polar_products(inner):
+    """Expose first-iteration products; extra outputs can change compilation."""
+
+    def one_matrix(x):
+        # This diagnostic is restricted to the square query/key/value matrices.
+        assert x.shape[0] == x.shape[1]
+        norm = jnp.linalg.norm(x)
+        x = x / (norm + 1e-7)
+        if not jax.sharding.get_abstract_mesh().empty:
+            x = jax.lax.with_sharding_constraint(x, P(None, ("data", "model")))
+        result = dict(norm=norm, normalized_input=x)
+        for iteration, (a, b, c) in enumerate(NEWTON_SCHULZ_COEFFICIENTS["quintic"]):
+            gram = x @ x.T
+            cubic = (c * gram) @ gram
+            polynomial = b * gram + cubic
+            product = polynomial @ x
+            x = a * x + product
+            if iteration == 0:
+                result.update(A=gram, C=cubic, B=polynomial, D=product, X1=x)
+        result["final"] = x
+        return result
+
+    return jax.vmap(one_matrix)(inner)
+
+
+def isolated_product(stage, *operands):
+    a, b, c = NEWTON_SCHULZ_COEFFICIENTS["quintic"][0]
+    if stage == "A":
+        return operands[0] @ jnp.swapaxes(operands[0], -1, -2)
+    if stage == "C":
+        return (c * operands[0]) @ operands[0]
+    if stage == "B":
+        return b * operands[0] + operands[1]
+    if stage == "D":
+        return operands[0] @ operands[1]
+    if stage == "X1":
+        return a * operands[0] + operands[1]
+    raise ValueError(stage)
+
+
+def product_crossfeed(rec, name, stage, traces, rep, sharding):
+    """Reuse one executable per layout across both frozen operand banks and replay."""
+    keys = {
+        "A": ("normalized_input",),
+        "C": ("A",),
+        "B": ("A", "C"),
+        "D": ("B", "normalized_input"),
+        "X1": ("normalized_input", "D"),
+    }[stage]
+    banks = {layout: tuple(trace[key] for key in keys) for layout, trace in traces.items()}
+    inputs_sha = {label: fingerprint(bank) for label, bank in banks.items()}
+    outputs = {}
+    for layout, out_sharding in [("replicated", rep), ("direction_sharded", sharding)]:
+        group = f"{name}/fixed_product/{stage}/{layout}"
+        compiled = jax.jit(partial(isolated_product, stage), in_shardings=(rep,) * len(keys), out_shardings=out_sharding)
+        rec.report["active_stage"] = group + "/compile"
+        rec.persist()
+        exemplar = tuple(jax.ShapeDtypeStruct(x.shape, x.dtype, sharding=rep) for x in banks["replicated"])
+        lowered = compiled.lower(*exemplar)
+        executable = lowered.compile()
+        artifacts = {}
+        for kind, text in [("stablehlo", lowered.as_text()), ("optimized_hlo", executable.as_text())]:
+            payload = gzip.compress(text.encode(), mtime=0)
+            filename = group.replace("/", "__") + "." + kind + ".txt.gz"
+            (rec.local / filename).write_bytes(payload)
+            (rec.destination / filename).write_bytes(payload, requests_timeout=REPORT_REQUEST_TIMEOUT)
+            artifacts[kind] = dict(
+                uri=str(rec.destination / filename),
+                sha256=hashlib.sha256(payload).hexdigest(),
+                compressed_bytes=len(payload),
+            )
+        rec.report.setdefault("fixed_product_executables", {})[group] = dict(
+            compile_count=1,
+            compiler_artifacts=artifacts,
+            operands=keys,
+            input_sha256=inputs_sha,
+            input_shardings=str((rep,) * len(keys)),
+            output_sharding=str(out_sharding),
+        )
+        outputs[layout] = {}
+        for bank_name in ("replicated", "direction_sharded", "replicated_replay"):
+            bank = banks["replicated" if bank_name == "replicated_replay" else bank_name]
+            invocation = group + "/" + bank_name
+            rec.report["active_stage"] = invocation
+            rec.persist()
+            device_bank = tuple(put_global(x, rep) for x in bank)
+            result = jax.block_until_ready(executable(*device_bank))
+            host = jax.device_get(result)
+            assert np.isfinite(host).all(), invocation
+            memory = [d.memory_stats() for d in jax.local_devices()]
+            del result, device_bank
+            outputs[layout][bank_name] = host
+            rec.step += 1
+            rec.report["stages"][invocation] = dict(
+                finite=True, input_sha256=fingerprint(bank), output_sha256=fingerprint(host), device_memory=memory
+            )
+            rec.tracker.log({f"stage/{invocation}/finite": 1}, step=rec.step)
+            rec.persist()
+        rec.compare(group + "/replay", outputs[layout]["replicated_replay"], outputs[layout]["replicated"])
+        rec.report["fixed_product_executables"][group]["replay_bitwise_equal"] = fingerprint(
+            outputs[layout].pop("replicated_replay")
+        ) == fingerprint(outputs[layout]["replicated"])
+        rec.compare(group + "/banks", outputs[layout]["direction_sharded"], outputs[layout]["replicated"])
+        for bank_name in banks:
+            rec.compare(group + "/" + bank_name + "/vs_traced", outputs[layout][bank_name], traces[bank_name][stage])
+        compiled.clear_cache()
+        del compiled, lowered, executable
+        gc.collect()
+    for bank_name in banks:
+        rec.compare(
+            f"{name}/fixed_product/{stage}/{bank_name}/layouts",
+            outputs["direction_sharded"][bank_name],
+            outputs["replicated"][bank_name],
+        )
+        assert fingerprint(banks[bank_name]) == inputs_sha[bank_name]
+    rec.persist()
+
+
+def first_product_diagnostic(rec, common, rep, shardings):
+    """Probe square q/k/v groups using the same refreshed-state recipe as attribution."""
+    for name, state, sharding in zip(NAMES[:3], common[:3], shardings[:3], strict=True):
+        powers = []
+        for side, gram in [("left", state.left), ("right", state.right)]:
+            normalized = rec.run(f"{name}/{side}/normalize", normalize, (gram,), (rep,), rep)
+            vectors, values = rec.run(f"{name}/{side}/eigh", jax.lax.linalg.eigh, (normalized,), (rep,), (rep, rep))
+            powers.append(rec.run(f"{name}/{side}/power", reconstruct, (vectors, values), (rep, rep), rep))
+            del normalized, vectors, values
+        inner = rec.run(f"{name}/inner", inner_product, (powers[0], state.momentum, powers[1]), (rep,) * 3, rep)
+        del powers
+        inner_sha = fingerprint(inner)
+        traces, instrumentation, exact_instrumentation = {}, {}, {}
+        for layout, out_sharding in [("replicated", rep), ("direction_sharded", sharding)]:
+            reference = rec.run(f"{name}/identical_inner/{layout}", polar, (inner,), (rep,), out_sharding)
+            trace_shardings = {
+                key: rep if key == "norm" else out_sharding
+                for key in ("norm", "normalized_input", "A", "C", "B", "D", "X1", "final")
+            }
+            traces[layout] = rec.run(f"{name}/products/{layout}", polar_products, (inner,), (rep,), trace_shardings)
+            gate = f"{name}/products/{layout}/final_vs_uninstrumented"
+            instrumentation[layout] = rec.compare(gate, traces[layout]["final"], reference)
+            exact_instrumentation[layout] = fingerprint(traces[layout]["final"]) == fingerprint(reference)
+            rec.report["comparisons"][gate]["bitwise_equal"] = exact_instrumentation[layout]
+            del reference
+        first_nonzero, first_failure = None, None
+        for key in ("norm", "normalized_input", "A", "C", "B", "D", "X1", "final"):
+            left, right = traces["direction_sharded"][key], traces["replicated"][key]
+            passed = rec.compare(f"{name}/products/layouts/{key}", left, right)
+            equal = fingerprint(left) == fingerprint(right)
+            rec.report["comparisons"][f"{name}/products/layouts/{key}"]["bitwise_equal"] = equal
+            if first_nonzero is None and not equal:
+                first_nonzero = key
+            if first_failure is None and not passed:
+                first_failure = key
+        # CPU-equal controls still exercise the fixed-executable harness at A.
+        selected = first_nonzero if first_nonzero in ("A", "C", "B", "D", "X1") else None
+        if first_nonzero is None:
+            selected = "A"
+        rec.report.setdefault("product_decisions", {})[name] = dict(
+            inner_sha256=inner_sha,
+            instrumentation_passed=instrumentation,
+            instrumentation_bitwise_equal=exact_instrumentation,
+            first_nonzero=first_nonzero,
+            first_tolerance_failure=first_failure,
+            selected_crossfeed=selected if all(exact_instrumentation.values()) else None,
+            selection_reason="First nonzero first-iteration stage, or A harness control when all traced leaves match",
+        )
+        rec.persist()
+        if all(exact_instrumentation.values()) and selected is not None:
+            product_crossfeed(rec, name, selected, traces, rep, sharding)
+        assert fingerprint(inner) == inner_sha
+        del traces, inner
+        jax.clear_caches()
+        gc.collect()
+
+
 class Recorder:
     """Persist every stage before progressing to another allocation-heavy kernel."""
 
@@ -157,6 +332,7 @@ class Recorder:
             or name.endswith("/downstream")
             or "/identical_inner/" in name
             or "/polar_iterates/" in name
+            or "/products/" in name
         )
         if capture:
             lowered = compiled.lower(*inputs)
@@ -338,6 +514,7 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--polar-compiler", action="store_true")
     mode.add_argument("--state-crossfeed", action="store_true")
+    mode.add_argument("--polar-products", action="store_true")
     args = parser.parse_args()
     if not args.smoke:
         initialize_jax()
@@ -364,8 +541,9 @@ def main():
         shapes=shapes,
         names=NAMES,
         smoke=args.smoke,
-        polar_compiler=args.polar_compiler or args.state_crossfeed,
+        polar_compiler=args.polar_compiler or args.state_crossfeed or args.polar_products,
         state_crossfeed=args.state_crossfeed,
+        polar_products=args.polar_products,
         polar_iterate_leaf_order=[
             "input_norm",
             "normalized_input",
@@ -432,6 +610,13 @@ def main():
     states = jax.tree.map(lambda x: put_global(x, rep), initial)
     del initial
     common = rec.run("common_refresh", refresh, (gradients, states), (gs, ss), ss)
+    if args.polar_products:
+        del gradients, states
+        jax.clear_caches()
+        gc.collect()
+        first_product_diagnostic(rec, common, rep, gs)
+        finish(rec, tracker, None, args.smoke)
+        return
     original = rec.run("fused_original", full_update, (gradients, states), (gs, ss), (gs, ss))
     candidate = rec.run(
         "fused_matrix", partial(full_update, eigh_fn=matrix_eigh), (gradients, states), (gs, ss), (gs, ss)
