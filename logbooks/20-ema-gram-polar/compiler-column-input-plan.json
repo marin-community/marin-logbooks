@@ -1,5 +1,5 @@
 {
-  "status": "Validated, not submitted",
+  "status": "Revised static parser validated, not submitted",
   "manifest": "compiler-column-input-manifest.json",
   "resources": {
     "cpu": 4,
@@ -11,17 +11,17 @@
     "preemption_retries": "Iris default",
     "wall_clock_limit": null
   },
-  "job_name": "ema-gram-20-column-ir-cpu-20261103",
-  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir",
+  "job_name": "ema-gram-20-column-ir-conservative-cpu-20261103",
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir-conservative",
   "validation": "compiler-column-input-validation.json",
   "source_sha256": {
-    "compiler_substitution_inventory.py": "9f1a413ba5a6b27aa4675c3f7b69111cddd4b53436c9e3ad7b5a6067281f878d",
+    "compiler_substitution_inventory.py": "659b47d14cc5a93591a53f789e1ce6efff9e843c8b80d758887dec93528d137e",
     "compiler_capture_inventory.py": "0c0ad434b65085e3fdb9b28c5cb578a09f68c5120868b870206db0ea32c8b9a9",
     "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
     "compiler_input_provenance.py": "fedd6ad15f976ffce03287440e929afd0a3963e780ed6ce8260ac2edf605b92e",
     "compiler_normalization_closure.py": "5e1ff374818afdd3f5bb7a2c85810ff948559fdd2f22acb94c6f79cf292e8780",
     "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b"
   },
-  "method": "Reuse source-labelled inventory, assert expected local128-column compiled numerator shape separately from sourceglobal1024 shape. Capture first/secondqkv product bodies and nested callees alongside existing normalization closure; reject missing requested bodies. Compareall7groups and trace firstGram paths using tuple/caller/repeatedoperand safeguards.",
+  "method": "Reuse source-labelled inventory, assert expected local128-column compiled numerator shape separately from sourceglobal1024 shape. Capture first/secondqkv product bodies and nested callees alongside existing normalization closure; reject missing requested bodies. Compareall7groups and trace firstGram paths using tuple/caller/repeatedoperand safeguards. Explicitly permit the observed opaque ConcatBitcast boundary on numerator provenance while retaining its tag, single-source binding checks and rejecting all unexpected opaque kinds. No exact semantic provenance claim.",
   "limitations": "Static CPU file parsing only. Both numerical fullreferencegates failed. No runtime values, precision, summation order or cause inferred. LargeHLO staysregional; verify SHA/size before consumption."
 }

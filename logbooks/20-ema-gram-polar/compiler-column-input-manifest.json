@@ -1,5 +1,5 @@
 {
-  "status": "Validated and ready for regional CPU extraction; not yet submitted",
+  "status": "Revised conservative-binding extraction validated; initial strict extraction failed and preserved",
   "source_report": {
     "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/report.json",
     "sha256": "43edf83f3b2712f43bbe74ea87a23bf9fdf9ea7b3d282869bb11f046fabf916d"
@@ -77,7 +77,13 @@
             1
           ]
         }
-      }
+      },
+      "allowed_conservative_boundaries": {
+        "inner": [
+          "opaque:custom-call:ConcatBitcast"
+        ]
+      },
+      "binding_limitation": "Conservative source role only when an opaque boundary is traversed; not exact semantic provenance."
     },
     "matrix_untouched": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/fused_matrix.optimized_hlo.txt.gz",
@@ -142,7 +148,13 @@
             1
           ]
         }
-      }
+      },
+      "allowed_conservative_boundaries": {
+        "inner": [
+          "opaque:custom-call:ConcatBitcast"
+        ]
+      },
+      "binding_limitation": "Conservative source role only when an opaque boundary is traversed; not exact semantic provenance."
     }
   },
   "source_files": [

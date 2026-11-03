@@ -51,6 +51,16 @@ def first_gram_bodies(path, graph):
     return bodies
 
 
+def validate_division_bindings(division, bindings, allowed_boundaries):
+    """Check source roles while retaining explicitly allowed opaque boundaries."""
+    for index, role in enumerate(("inner", "norm_plus_eps")):
+        row = division[index]
+        assert set(row["conservative_operations"]) <= set(allowed_boundaries.get(role, [])), row
+        assert len(row["entry_parameters"]) == 1, row
+        param = row["entry_parameters"][0]
+        assert param["index"] == bindings[role]["compiled_parameter_index"] and param["tuple_path"] == [], row
+
+
 def enrich(path, graph, name, artifact):
     closure = complete_graph(name, graph, artifact, path)
     targets = {
@@ -71,12 +81,7 @@ def enrich(path, graph, name, artifact):
     bindings = external_bindings(inputs["entry_parameters"], artifact.get("external_inputs", {}))
     if bindings:
         division = inputs["targets"]["q_proj/normalization"]["operand_provenance"]
-        for index, role in enumerate(("inner", "norm_plus_eps")):
-            row = division[index]
-            assert not row["conservative_operations"], row
-            assert len(row["entry_parameters"]) == 1, row
-            param = row["entry_parameters"][0]
-            assert param["index"] == bindings[role]["compiled_parameter_index"] and param["tuple_path"] == [], row
+        validate_division_bindings(division, bindings, artifact.get("allowed_conservative_boundaries", {}))
         external = {row["compiled_parameter_index"] for row in bindings.values()}
         for group in graph["polar_lineage"]["output_groups"]:
             if group != "q_proj":
