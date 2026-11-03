@@ -1,0 +1,70 @@
+{
+  "state": "Own logging and CPU harness passed; original regional checkpoint not yet restored",
+  "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+  "wandb_runs": {
+    "logging": "https://wandb.ai/marin-community/marin/runs/ema-gram-restore-logging-check-49959ba3b88b",
+    "cpu": "https://wandb.ai/marin-community/marin/runs/ema-gram-restore-cpu-check-fc5d908628f2"
+  },
+  "source": "experiments/ema_gram/restore.py",
+  "cpu_report": "full-restore-cpu-validation.json",
+  "checks": [
+    "All57 tiny trainer checkpoint arrays restored through Trainer.initial_state",
+    "All manifest paths present and local bytes match independent storage reads",
+    "Known source state matches; step2/dataoffset4/firstbatch4,5 verified",
+    "Changed PRNG rejected",
+    "Synthetic update finite and input state unchanged"
+  ],
+  "failures_preserved": [
+    {
+      "log": "scratch/20261103-restore-cpu.log",
+      "reason": "Invalid fixture calendar version before model kernels; corrected to restore-cpu-dev"
+    }
+  ],
+  "resources": {
+    "tpu": "v4-32",
+    "hosts": 4,
+    "cpu_per_host": 120,
+    "memory_per_host": "256GiB",
+    "disk_per_host": "50GiB",
+    "region": "us-central2",
+    "wall_clock_limit": null,
+    "preemption_retries": "default"
+  },
+  "training_steps_executed": 0,
+  "full_original_checkpoint_restored": false,
+  "full_training_memory_fit_verified": false,
+  "lint": "passed",
+  "files": {
+    "experiments/ema_gram/restore.py": {
+      "bytes": 13477,
+      "sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e"
+    },
+    "logbooks/20-ema-gram-polar/full-restore-prepared.json": {
+      "bytes": 36557,
+      "sha256": "1fdf5f32f1c673815f9e44b6f613c0b43be415b83e98e413ea39d1aca5bef738"
+    },
+    "logbooks/20-ema-gram-polar/full-restore-cpu-validation.json": {
+      "bytes": 24418,
+      "sha256": "12d9ab246f007597b15bb7b7e7add6ef921265725ceec88b4fd07ab327dc41b7"
+    },
+    "logbooks/20-ema-gram-polar/loss-pair-checkpoint-metadata.json": {
+      "bytes": 6467,
+      "sha256": "e9ee39d73c81157ba708f58b4f98a80c35aee26400d4cdcc3af03b56fb98434e"
+    }
+  },
+  "online_readback": {
+    "logging": {
+      "state": "finished",
+      "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+      "logging_success": 1,
+      "cpu_success": null
+    },
+    "cpu": {
+      "state": "finished",
+      "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+      "logging_success": 1,
+      "cpu_success": 1
+    }
+  },
+  "cold_read": "Passed after narrowing host-memory headroom claim to an unmeasured resource request."
+}

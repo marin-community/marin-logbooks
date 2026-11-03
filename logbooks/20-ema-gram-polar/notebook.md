@@ -4503,6 +4503,18 @@ Next, validate full trainer restoration and host/device memory in us-central2 be
 
 Compare training and held-out loss at matched steps and progress per measured wall-clock time. Keep numerical-equivalence failures as diagnostics, without using them alone to veto the loss experiment. The absolute steady training MFU target remains above 5%; no acceptable loss margin or training speedup is claimed. Static compiler expansion remains deferred. All old jobs remain terminal, no experiment/observer is active, and PR monitoring stays handed off.
 
+### November 3 — full trainer restore audit ready for regional validation
+
+A non-training restore audit now follows the native LM initialization path and intercepts entry into its training loop. It compares every locally addressable shard of the complete saved trainer state against an independent TensorStore read, requires the exact manifest path set and restored step, and checks finite values. Each process must produce a successful report before the distributed restore can be accepted. The audit includes model, optimizer, step and training PRNG state; it does not selectively load only the Gram arrays.
+
+The data check requires the iterator to start at the restored step and hashes the first batch against a second iterator at that same position. This verifies reproducibility of the configured stream at the restored offset. It cannot compare against a historical batch that was never saved. The probe executes no training update and does not save an advanced checkpoint. Its memory report covers restoration and verification, including temporary host copies; it does not establish full-training memory fit.
+
+The own online logging check and generated CPU checkpoint harness passed. The CPU harness restores all 57 arrays through `Trainer.initial_state`, compares all bytes to storage and the known original state, verifies a known data-offset oracle, rejects a changed PRNG state and confirms that a synthetic optimizer update is finite without mutating its input. This uses a tiny generated model and local checkpoint, so it does not validate the original TPU checkpoint. An initial harness attempt failed before model kernels because its fixture version did not satisfy the repository naming rule; the corrected version is retained with the failed attempt evidence.
+
+The proposed regional check uses one sequential v4-32 job with four hosts, 120 CPUs, 256 GiB memory and 50 GiB disk per host in us-central2. The request raises the per-host budget from 128 to 256 GiB to accommodate verification copies; actual usage remains to be measured. It does not change model geometry, source precision or numerical algorithms. Use default preemption/retries and no wall-clock limits. Publish the exact source and validation before submission. Each execution host first performs a separate online logging check; the native trainer then creates fresh online tracking before model kernels. Verify source, checkpoint metadata and manifest identities before loading arrays. Keep all large checkpoint data regional.
+
+After successful regional reports, full training still needs measured memory, loss and speed evidence. Numerical-equivalence failures remain diagnostics and do not by themselves veto the paired loss experiment. Static compiler expansion stays deferred; old jobs remain terminal and PR monitoring remains handed off.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
