@@ -221,7 +221,7 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "status": "design only; not implemented or submitted",
+    "status": "implemented; CPU validation pending; no accelerator submitted",
     "objective": "Hold direction compilation fixed while comparing refreshed-state banks, then compare evaluator layouts on identical banks.",
     "controls": [
       "Keep original full fused original/matrix reference directions and all returned updated state banks.",
@@ -239,6 +239,16 @@
       "No new accelerator request or training in this design.",
       "These controls hold one factor fixed per comparison but do not fully disentangle input/compiler interactions."
     ],
-    "promotion_gate": "Any later optimization still requires paired full-update numerical/memory/performance checks, regional saved-state validation, full trainer restore and actual steady training MFU."
+    "promotion_gate": "Any later optimization still requires paired full-update numerical/memory/performance checks, regional saved-state validation, full trainer restore and actual steady training MFU.",
+    "mode": "--state-crossfeed",
+    "expected_collection": {
+      "finite_stages": 13,
+      "comparisons": 26,
+      "compiler_files": 8,
+      "fixed_direction_executables": 2,
+      "invocations_per_executable": 4
+    },
+    "replay_control": "After all three banks, replay common through the same executable; compare and record bitwise equality.",
+    "cpu_command": "Explicit worktree PYTHONPATH, JAX_PLATFORMS=cpu, XLA_FLAGS=--xla_force_host_platform_device_count=8, published GIT_COMMIT; uv run --no-sync python logbooks/20-ema-gram-polar/optimizer_attribution.py --smoke --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.crossfeed-smoke"
   }
 }

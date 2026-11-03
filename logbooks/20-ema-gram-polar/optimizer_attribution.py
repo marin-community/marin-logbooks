@@ -24,7 +24,7 @@ from jax.sharding import PartitionSpec as P
 from levanter.optim.ema_gram import GramState, init_gram_state, matrix_parallel_eigh, relative_gram_power
 from levanter.optim.util import NEWTON_SCHULZ_COEFFICIENTS, zeropower_via_newtonschulz5
 from levanter.tracker.wandb import WandbConfig
-from optimizer_cost import NAMES, ROW_SHARDED, full_update, put_global, refresh
+from optimizer_cost import NAMES, ROW_SHARDED, directions, full_update, put_global, refresh
 from rigging.filesystem.storage_path import StoragePath
 
 REPORT_REQUEST_TIMEOUT = 60
@@ -203,13 +203,141 @@ class Recorder:
         return result["passed"]
 
 
+def fixed_direction_outputs(rec, label, fn, banks, state_shardings, output_shardings):
+    """Compile once, then change only the input bank for four executions."""
+    group = f"fixed_direction/{label}"
+    rec.report["active_stage"] = group + "/compile"
+    rec.persist()
+    exemplar = jax.tree.map(
+        lambda x, sh: jax.ShapeDtypeStruct(x.shape, x.dtype, sharding=sh), banks["common"], state_shardings
+    )
+    compiled = jax.jit(fn, in_shardings=(state_shardings,), out_shardings=output_shardings)
+    start = time.perf_counter()
+    lowered = compiled.lower(exemplar)
+    executable = lowered.compile()
+    compile_seconds = time.perf_counter() - start
+    artifacts = {}
+    for kind, text in [("stablehlo", lowered.as_text()), ("optimized_hlo", executable.as_text())]:
+        payload = gzip.compress(text.encode(), mtime=0)
+        filename = group.replace("/", "__") + "." + kind + ".txt.gz"
+        (rec.local / filename).write_bytes(payload)
+        (rec.destination / filename).write_bytes(payload, requests_timeout=REPORT_REQUEST_TIMEOUT)
+        artifacts[kind] = dict(
+            uri=str(rec.destination / filename),
+            sha256=hashlib.sha256(payload).hexdigest(),
+            compressed_bytes=len(payload),
+        )
+    rec.report.setdefault("fixed_executables", {})[label] = dict(
+        compile_count=1,
+        compile_seconds=compile_seconds,
+        compiler_artifacts=artifacts,
+        input_shardings=str(state_shardings),
+        output_shardings=str(output_shardings),
+        invocation_order=["common", "fused_original", "fused_matrix", "common_replay"],
+    )
+    rec.persist()
+    outputs = {}
+    for index, bank_name in enumerate(("common", "fused_original", "fused_matrix", "common_replay")):
+        bank = banks["common" if bank_name == "common_replay" else bank_name]
+        name = group + "/" + bank_name
+        rec.report["active_stage"] = name
+        rec.persist()
+        device_bank = jax.tree.map(put_global, bank, state_shardings)
+        jax.block_until_ready(device_bank)
+        start = time.perf_counter()
+        result = jax.block_until_ready(executable(device_bank))
+        elapsed = time.perf_counter() - start
+        memory = [d.memory_stats() for d in jax.local_devices()]
+        host = jax.device_get(result)
+        assert all(np.isfinite(x).all() for x in jax.tree.leaves(host)), name
+        del result, device_bank
+        gc.collect()
+        outputs[bank_name] = host
+        rec.step += 1
+        rec.report["stages"][name] = dict(
+            execution_seconds=elapsed,
+            timing_scope="Single execution; no warmup or performance claim; excludes explicit transfer and compilation",
+            finite=True,
+            output_sha256=fingerprint(host),
+            input_sha256=fingerprint(bank),
+            executable_group=label,
+            invocation_index=index,
+            device_memory=memory,
+        )
+        rec.tracker.log({f"stage/{name}/execution_seconds": elapsed}, step=rec.step)
+        rec.persist()
+        print(json.dumps(dict(stage=name, finite=True, executable_group=label, invocation_index=index)), flush=True)
+    compiled.clear_cache()
+    del compiled, lowered, executable
+    gc.collect()
+    rec.compare(group + "/replay", outputs["common_replay"], outputs["common"])
+    rec.report["fixed_executables"][label]["replay_bitwise_equal"] = fingerprint(
+        outputs.pop("common_replay")
+    ) == fingerprint(outputs["common"])
+    rec.persist()
+    return outputs
+
+
+def state_crossfeed(rec, banks, references, matrix_eigh, state_shardings, output_shardings):
+    """Compare saved refresh outputs without recompiling for their values."""
+    rec.report["state_banks"] = {
+        label: dict(sha256=fingerprint(bank), bytes=sum(x.nbytes for x in jax.tree.leaves(bank)))
+        for label, bank in banks.items()
+    }
+    rec.persist()
+    all_outputs = {}
+    for label, eig_fn in [("original", jax.lax.linalg.eigh), ("matrix", matrix_eigh)]:
+        outputs = fixed_direction_outputs(
+            rec, label, partial(directions, alpha=0.25, eigh_fn=eig_fn), banks, state_shardings, output_shardings
+        )
+        all_outputs[label] = outputs
+        for left, right in [
+            ("fused_original", "common"),
+            ("fused_matrix", "common"),
+            ("fused_matrix", "fused_original"),
+        ]:
+            rec.compare(f"crossfeed/{label}/banks/{left}_vs_{right}", outputs[left], outputs[right])
+        for bank_name, output in outputs.items():
+            for reference_name, reference in references.items():
+                rec.compare(f"crossfeed/{label}/{bank_name}/vs_{reference_name}", output, reference)
+        for bank_name, bank in banks.items():
+            assert fingerprint(bank) == rec.report["state_banks"][bank_name]["sha256"], "Frozen bank changed"
+    for bank_name in banks:
+        rec.compare(
+            f"crossfeed/evaluators/{bank_name}", all_outputs["matrix"][bank_name], all_outputs["original"][bank_name]
+        )
+
+
+def finish(rec, tracker, fused_pass, smoke):
+    if smoke:
+        assert all(x["passed"] for x in rec.report["comparisons"].values()), "CPU harness comparison failed"
+    # Collection completion never means the candidate is accepted for training.
+    rec.report["active_stage"] = "completed"
+    rec.report["attribution_completed"] = True
+    rec.report["candidate_accepted_for_training"] = False
+    rec.persist()
+    tracker.log_summary(
+        {
+            "diagnostic/attribution_completed": 1,
+            "diagnostic/fused_comparison_passed": fused_pass,
+            "diagnostic/candidate_accepted_for_training": False,
+        }
+    )
+    tracker.finish()
+    print(json.dumps(dict(completed=True, output=str(rec.destination))), flush=True)
+    if jax.distributed.is_initialized():
+        jax.distributed.shutdown()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-prefix", required=True)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--smoke", action="store_true")
     parser.add_argument("--logging-check", action="store_true")
-    parser.add_argument("--polar-compiler", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--polar-compiler", action="store_true")
+    mode.add_argument("--state-crossfeed", action="store_true")
     args = parser.parse_args()
     if not args.smoke:
         initialize_jax()
@@ -236,7 +364,8 @@ def main():
         shapes=shapes,
         names=NAMES,
         smoke=args.smoke,
-        polar_compiler=args.polar_compiler,
+        polar_compiler=args.polar_compiler or args.state_crossfeed,
+        state_crossfeed=args.state_crossfeed,
         polar_iterate_leaf_order=[
             "input_norm",
             "normalized_input",
@@ -310,6 +439,16 @@ def main():
     fused_pass = rec.compare("fused_candidate_vs_original", candidate, original)
     rec.compare("original_refresh_vs_common", original[1], common)
     rec.compare("candidate_refresh_vs_common", candidate[1], common)
+    if args.state_crossfeed:
+        banks = dict(common=common, fused_original=original[1], fused_matrix=candidate[1])
+        references = dict(fused_original=original[0], fused_matrix=candidate[0])
+        del original, candidate, gradients, states
+        jax.clear_caches()
+        gc.collect()
+        state_crossfeed(rec, banks, references, matrix_eigh, ss, gs)
+        assert len(rec.report["stages"]) == 13 and len(rec.report["comparisons"]) == 26
+        finish(rec, tracker, fused_pass, args.smoke)
+        return
     original_directions, candidate_directions = original[0], candidate[0]
     del original, candidate, gradients, states
     gc.collect()
@@ -403,24 +542,7 @@ def main():
         assert rec.report["common_state_sha256"] == fingerprint(common), "Frozen host inputs changed"
         del power_banks, downstream_banks, left, right, common_inner, polar_rep, polar_shard
         gc.collect()
-    if args.smoke:
-        assert all(x["passed"] for x in rec.report["comparisons"].values()), "CPU harness comparison failed"
-    # Diagnostic completion means all attribution stages were collected, never candidate acceptance.
-    rec.report["active_stage"] = "completed"
-    rec.report["attribution_completed"] = True
-    rec.report["candidate_accepted_for_training"] = False
-    rec.persist()
-    tracker.log_summary(
-        {
-            "diagnostic/attribution_completed": 1,
-            "diagnostic/fused_comparison_passed": fused_pass,
-            "diagnostic/candidate_accepted_for_training": False,
-        }
-    )
-    tracker.finish()
-    print(json.dumps(dict(completed=True, output=str(destination))), flush=True)
-    if jax.distributed.is_initialized():
-        jax.distributed.shutdown()
+    finish(rec, tracker, fused_pass, args.smoke)
 
 
 if __name__ == "__main__":

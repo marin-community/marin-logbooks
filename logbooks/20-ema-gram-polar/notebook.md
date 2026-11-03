@@ -1563,6 +1563,35 @@ inputs and compilation. Direction-only results must also be compared with the fu
 references because removing refresh changes compilation. This is a design;
 it has not been implemented or submitted. No optimization is accepted.
 
+## 2026-11-03 01:10 UTC — Hold direction executables fixed across input states
+
+The [EMA-Gram state comparison](optimizer_attribution.py) now accepts
+`--state-crossfeed` to test sensitivity to refreshed input values while holding
+each direction executable fixed. All three state banks use the same pre-update
+state and gradients and represent the same post-refresh boundary. They come
+from standalone refresh, fused original update and fused matrix-eigensolver
+update. Their Gram/momentum fields and shapes match; their values can differ.
+Host-array fingerprints check that evaluation leaves each bank unchanged.
+
+Two evaluators compute directions directly from refreshed Grams and momentum:
+the original eigensolver and matrix-distributed eigensolver. Both use identical
+external input/output shardings; internal compiler layouts may differ. Each is
+compiled once, processes all three banks plus a replay of the first, then releases
+its executable before the other evaluator starts. Outputs are copied to host.
+The [plan](optimizer-divergence-attribution-plan.json) records the thirteen stages,
+twenty-six comparisons and eight compiler files expected from this diagnostic.
+
+Comparisons vary input banks under one executable, vary evaluators on an identical
+bank, and check each result against directions returned by both full fused updates
+on the original pre-update inputs. Bank sensitivity would show that those input
+changes matter under a fixed evaluator. Evaluator sensitivity would show that
+the implementations differ on identical inputs. Neither alone explains every
+interaction in the fused graphs. Mathematical operations, requested precision,
+five polar iterations and rtol=atol=1e-5 remain unchanged. Removing refresh changes
+compilation; this diagnostic makes no warmed-performance or training-acceptance
+claim. CPU harness validation with online W&B tracking is next. No accelerator
+diagnostic has been submitted.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
