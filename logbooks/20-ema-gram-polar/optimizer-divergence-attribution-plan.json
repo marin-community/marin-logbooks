@@ -482,8 +482,18 @@
                 "limits": "This tests instrumentation sensitivity, not optimizeracceptance ortrainingMFU. Any optimizer intervention stillrequires untouchedoriginalall28leaf1e-5, savedstatevalidation, fullrestore and actualsteadytrainingMFU>5%.",
                 "implementation": "optimizer-single-norm-capture-plan.json",
                 "preflight": "optimizer-single-norm-capture-preflight.json",
-                "status": "Submitted and startup verified; one diagnostic running; no further candidate",
-                "started": "optimizer-single-norm-capture-started.json"
+                "status": "Terminal SUCCEEDED; bothsingleqnormcaptures matchownuntouched28leavesbitwise; fullmatrixvsoriginal stillrejected",
+                "started": "optimizer-single-norm-capture-started.json",
+                "completed": "optimizer-single-norm-capture-v5e-completed.json",
+                "next_decision": {
+                  "state": "Design only; not implemented or submitted",
+                  "question": "Does exposing only the existing q_proj pre-normalization inner matrix preserve each full-update reference, and how do captured numerators differ across solver variants?",
+                  "basis": "Single existing denominator output preserved both28leafreferences bitwise, unlike six-outputcapture. Captured denominator differs crosssolver within1e-5; full7directionmismatch remains. Numerator is not yet captured under passing own-reference gates.",
+                  "procedure": "Extend shared capture_program with one output selection: append existing q_proj division numerator only, preserving all source equations/inputvariables/constants/original28outputs. Bothsolvers use untouchedfull_update, unchanged evaluator, singleinnercapture with identicalfingerprinted hostinputbank. Compileeachonce/replay; all28leafownreference/evaluator comparisons at fixedrtol=atol=1e-5 and bitwise. Crosssolver inner comparison records bothreferencegates. Oneexecutable/devicebankatatime; hostoffload/cacheclear/finiteincrementalreports/compilerhashes. Output29leaves; full qinner11x1024x1024 FP32 and originalall7groups. No sourceprecision/tiling/association/coefficientchange.",
+                  "validation": "Own freshonlineCPUlogging and numerical check; regression currentqnorm mode; exactpublishedsource/plan beforeONEsequentialTPUdiagnostic. No checkpointread/training/performance claim.",
+                  "interpretation": "Failedreferenceagreement forbids original-path interpretation. Matching finals is not hiddenintermediateidentity. Separate numerator/denominator capture executables cannot be combined into a claim about one hidden computation without further controls. This is instrumentation sensitivity, not optimizeracceptance.",
+                  "limits": "FullGram/everyupdate/globalbatch8/7630/sourceprecision/rtol=atol1e-5 preserved. No time limits/defaultpreemptionretries. No concurrentcandidate; no large crossregionartifacts. Anyoptimizerintervention stillrequires untouchedoriginal28leaf1e-5, savedstatevalidation, fullrestore and actualsteadyMFU>5%."
+                }
               }
             }
           }

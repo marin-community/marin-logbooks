@@ -3022,6 +3022,46 @@ Preserve the job and sole log observer through compilation. No new diagnostic,
 optimizer acceptance or warmed-performance claim follows from this partial
 snapshot.
 
+## 2026-11-03 10:15 UTC — Single-denominator capture preserves both references
+
+The [single-output diagnostic](optimizer-single-norm-capture-v5e-completed.json)
+succeeded on attempt 0 with exit 0. All 12 stages are finite; 11 of 13 comparisons
+pass at rtol=atol=1e-5. Both unchanged evaluators and both single-output captures
+match their own untouched full-update references on all 28 leaves, bitwise.
+All four fixed executables replay bitwise. This contrasts with the earlier
+six-output captures, which failed their own reference gates.
+
+The captured q_proj normalization denominators pass tolerance across solvers but
+are not bitwise equal: maximum absolute error is 2.91038e-10 and relative
+Frobenius error is 2.65090e-7, relative to the original solver's captured value.
+The matrix-versus-original comparisons of untouched outputs and captured full
+outputs each still fail all seven directions while all 21 state leaves pass. Passing capture gates does not establish hidden
+intermediate identity or show how much the denominator difference contributes
+to the final optimizer discrepancy. No optimization is accepted.
+
+The prior six-output report hash and current report hash were verified before
+cross-job comparison. Input-bank fingerprints and both untouched full-update
+output fingerprints match across those jobs. The 14 compiler/Jaxpr objects total
+58,898,640 compressed bytes, with all sizes verified. Both small Jaxpr files
+passed SHA and gzip readback; the 12 large compiler files remain regional and
+were not newly SHA-audited. Online W&B finished with collection completed and
+candidate acceptance false.
+
+Finelog observed a 99.609375 GiB cumulative host peak over 215 samples through
+10:12:52 UTC. The JAX allocator peak is 8,076,040,192 bytes per device; neither
+this allocator value nor null accelerator telemetry is a total-HBM measurement.
+Single-call timings include compilation and support no warmed-performance or
+training-MFU claim. The log observer ended naturally; no experiment or queue
+remains active.
+
+The next design exposes only the existing q_proj pre-normalization inner matrix,
+using the same Jaxpr helper and all-28-leaf reference gates. This asks whether a
+single matrix output also preserves each reference and permits a separate
+comparison of captured numerators. It does not combine values from separate
+executables into a claim about one hidden path. The design requires fresh online
+CPU validation and published exact source before one sequential TPU diagnostic;
+no implementation or submission is selected yet.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
