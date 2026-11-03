@@ -1,0 +1,25 @@
+{
+  "status": "Validated static extraction plan; not yet submitted",
+  "manifest": "compiler-outer-bindings-manifest.json",
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "wall_clock_limit": null,
+    "preemption_retries": "Iris default"
+  },
+  "job_name": "ema-gram-20-outer-bindings-cpu-20261103",
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.outer-bindings",
+  "source_sha256": {
+    "compiler_outer_bindings.py": "36ffb79f71015ccedfc6ccb7ed94d9c9574b9c4a419f32b70649e580fbfbb4a1",
+    "trace_outer_bindings.py": "36daebb960e73214c5db90fbc73add471389b98ab32c6e58e38ec020ebe1bb5f",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b"
+  },
+  "validation": "compiler-outer-bindings-validation.json",
+  "method": "Use existing extracted records first. Recover only explicitly missing bodies through regional verified HLO reads. Trace matrix gate/down normalization operands and final direction outputs, with up/o controls. Retain tuple projections, caller contexts, repeated operand positions, entry source labels and explicit opaque or polar-product boundaries. Compare ordered rooted declarations and connections; preserve raw edge sharing separately.",
+  "limitations": "Static parsing only. Neither numerical substitution full-reference gate passes. No runtime values, precision, summation order, hidden identity or cause inferred. A closed record set may retain opaque boundaries. No accelerator or numerical kernels; no W&B needed."
+}
