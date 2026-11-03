@@ -4293,6 +4293,12 @@ The [comparison](compiler-norm-polar-inputs-comparison.json) and [validation](co
 
 The sole follow observer ended naturally with exit 0. No experiment, queue or observer remains active. PR monitoring remains handed off after its completed twelve-hour wait; the research heartbeat stays active.
 
+### November 3, 18:43 UTC — inspect Gram-source and earlier polar inputs (static preflight)
+
+The [current frontier coverage](compiler-norm-polar-inputs-frontiers.json) leaves 52 declared positions uninspected. The [selector](trace_gram_source_inputs.py) identifies three nonpolar down products by their actual normalization-operand dependencies and source scopes: direct direction, Gram refresh and relative power. Four other products are checked against the mapped polar lineage. Two Concat and three Done endpoints retain explicit parent operand labels, caller contexts and repeated positions.
+
+The [plan](compiler-gram-source-inputs-plan.json), [manifest](compiler-gram-source-inputs-manifest.json) and [preflight](compiler-gram-source-inputs-validation.json) verify fifteen bounded input reports and exclude already covered input roots. Eight computation bodies per graph remain missing locally. Exact source will be published before one CPU-only us-west4 extraction with HLO SHA/size checks, default preemption and no wall-clock limit. Match each Done to a Start only where unambiguous and trace its single declared input separately. All opaque outputs remain opaque; both numerical gates remain failed and no numerical intervention is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
