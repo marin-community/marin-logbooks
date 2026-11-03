@@ -1,5 +1,5 @@
 {
-  "status": "Implemented; own CPU validation pending; not submitted",
+  "status": "Own CPU validation passed; one sequential TPU diagnostic selected, not yet submitted",
   "script": "optimizer_attribution.py --paired-input-capture",
   "question": "Can the existing q_proj inner matrix and norm-plus-epsilon denominator be captured together while preserving each full-update reference?",
   "prior_evidence": [
@@ -45,5 +45,6 @@
   "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-paired-input-capture-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --paired-input-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.12",
   "script_sha256": "a30914306da5408699274bc1715617eaa84bd77b109c68a487d5a2a8b3cde569",
   "capture_helper_sha256": "b9131140d3f3424e1821e1e66998967a471de8dca4336275eb6876222782ac22",
-  "cpu_validation": "Own fresh online logging check; paired12finite/14checks, single-inner and single-norm regressions12/13each. Verify exactGCSreports and all14artifactSHA/size/gzipreadbacks perrun; StableHLO outputorder/shapes 30leaves with extra3x8x8 and3x1x1; equation/input/constant preservation. ExplicitworktreePYTHONPATH."
+  "cpu_validation": "Own fresh online logging check; paired12finite/14checks, single-inner and single-norm regressions12/13each. Verify exactGCSreports and all14artifactSHA/size/gzipreadbacks perrun; StableHLO outputorder/shapes 30leaves with extra3x8x8 and3x1x1; equation/input/constant preservation. ExplicitworktreePYTHONPATH.",
+  "preflight": "optimizer-paired-input-capture-preflight.json"
 }

@@ -3215,6 +3215,34 @@ The [paired-input plan](optimizer-paired-input-capture-plan.json) preserves
 full geometry, source precision, one executable/device bank at a time, host
 offload and cache clearing. No precision, tiling or optimizer change is selected.
 
+## 2026-11-03 11:17 UTC — Paired capture passes CPU validation
+
+The paired q_proj capture passed its online CPU harness: 12 finite stages,
+14 passing comparisons and four bitwise fixed-executable replays. Both solver
+captures and unchanged evaluators match their own untouched 28-leaf references
+bitwise. The single-inner and single-denominator regressions each passed
+12 finite stages, 13 comparisons and four bitwise replays from the same source.
+All recorded cross-solver captured-value comparisons are bitwise equal on CPU.
+
+Compiler signatures verify 30 output leaves for the paired mode, with the inner
+matrix followed by its broadcast denominator; the regression modes retain
+29 leaves. All reports match their GCS readbacks, and all 42 compiler/Jaxpr
+artifacts across the three runs passed SHA, size and gzip checks. A separate
+fresh online logging check also passed. These checks use eight virtual CPU
+devices and small matrices and do not establish TPU behavior.
+
+The next diagnostic uses eight native v5e chips in one JAX process, the original
+full geometry, source precision and fixed rtol=atol=1e-5. It retains both
+untouched references and all-leaf instrumentation gates. Collection will
+continue through expected TPU comparison failures; it cannot accept an
+optimizer change. No precision or tiling override is introduced. No optimizer
+acceptance, performance improvement or training result is claimed.
+
+CPU source `a72a212baf0d7da978678c12b175635434520460`. Online runs: paired
+`5fe1e8e63a90`, single-inner `76fb3a7a5d53`, single-denominator `99c8f79b2921`;
+separate logging `f5964be75819`. All finished. The [preflight record](optimizer-paired-input-capture-preflight.json)
+contains source hashes, exact report references and artifact checks.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
