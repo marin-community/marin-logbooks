@@ -1,0 +1,44 @@
+{
+  "status": "Implemented; own online CPU validation pending; no accelerator submitted",
+  "script": "optimizer_attribution.py --full-input-capture",
+  "script_sha256": "b9fb2db304bfe2c71c7585e23915995ebf448fd1f0660e080103ac91882e48a5",
+  "question": "Does exposing existing q/k/v normalization operands preserve each full update, and do captured operands differ between original and matrix eigensolver layouts?",
+  "prior_evidence": "compiler-input-provenance-completed.json",
+  "input_recipe": "Same seed0 seven full-shape synthetic gradients and initial state recipe; shared zero initialization and prior refresh. Identical fingerprinted host bank for every direct/evaluated/capture invocation. No checkpoint/data read.",
+  "stages": [
+    "Shared zero initialization and prior refresh",
+    "Untouched original and matrix full_update references, all28 leaves retained on host",
+    "Unchanged closed-Jaxpr evaluator with original28 outputs, compiled once and replayed for each solver",
+    "Same Jaxpr equations with six existing q/k/v normalization operands appended, compiled once and replayed",
+    "All28leaf own-reference and evaluator comparisons; six captured inner/denominator comparisons across solvers"
+  ],
+  "science": "No shared optimizer source edits. Capture uses traced shared full_update equations verbatim and appends existing variables to outputs. Trace mapping uses final-output ancestors and source scopes, asserting one distinct normalization per group. All equations, input variables, constants and original outputs retained. No math, precision, coefficient, association or tiling override.",
+  "instrumentation_gate": "Compare unchanged evaluator and capture full outputs against untouched direct full_update for each solver at fixed rtol=atol=1e-5, report bitwise equality. Failed agreement forbids original-path interpretation. Matching finals does not prove internal identity. Expected TPU mismatches persist while collection continues; candidate_accepted_for_training stays false.",
+  "expected_cpu_equal_path": {
+    "finite_stages": 12,
+    "comparisons": 18,
+    "fixed_executables": 4,
+    "compiler_files": 12,
+    "jaxpr_files": 2
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "Host input bank and references; one executable and device input/output bank at a time; synchronize, host-offload and clear caches. Capture adds three full q/k/v inner matrices and three broadcast norm+eps values.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9",
+  "job_name": "ema-gram-20-full-input-capture-v5e-8-20261103",
+  "limitations": "Tracing/evaluating Jaxpr and adding outputs can alter compilation. Captured values are instrumentation outputs; same endpoints do not establish original hidden values. No warmed performance, full optimizer acceptance, checkpoint restore or training MFU.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-full-input-capture-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --full-input-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9",
+  "preflight": "optimizer-full-input-capture-preflight.json",
+  "capture_helper_sha256": "3be1436181a32a809cd32121a10130f7a0b748e639636da860f44b2fbaacc179"
+}

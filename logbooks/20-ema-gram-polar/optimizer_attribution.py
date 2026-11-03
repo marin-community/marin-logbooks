@@ -25,6 +25,7 @@ from levanter.optim.ema_gram import GramState, init_gram_state, matrix_parallel_
 from levanter.optim.util import NEWTON_SCHULZ_COEFFICIENTS, zeropower_via_newtonschulz5
 from levanter.tracker.wandb import WandbConfig
 from optimizer_cost import NAMES, ROW_SHARDED, directions, full_update, put_global, refresh
+from optimizer_input_capture import capture_program
 from rigging.filesystem.storage_path import StoragePath
 
 REPORT_REQUEST_TIMEOUT = 60
@@ -899,6 +900,84 @@ def state_crossfeed(rec, banks, references, matrix_eigh, state_shardings, output
         )
 
 
+def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardings, replicated):
+    """Compare untouched full updates, unchanged traced programs and extra outputs."""
+    input_sha = fingerprint(inputs)
+    captures, references = {}, {}
+    rec.report["capture_inputs_sha256"] = input_sha
+    rec.report["capture_programs"] = {}
+    rec.report["capture_gates"] = {}
+    for label, solver in [("original", jax.lax.linalg.eigh), ("matrix", matrix_eigh)]:
+        fn = full_update if label == "original" else partial(full_update, eigh_fn=solver)
+        reference = rec.run("fused_" + label, fn, inputs, input_shardings, output_shardings)
+        references[label] = reference
+        exemplars = jax.tree.map(lambda x: jax.ShapeDtypeStruct(x.shape, x.dtype), inputs)
+        evaluate, capture, metadata, source = capture_program(fn, exemplars)
+        payload = gzip.compress(source.encode(), mtime=0)
+        filename = "capture_program_" + label + ".jaxpr.txt.gz"
+        (rec.local / filename).write_bytes(payload)
+        (rec.destination / filename).write_bytes(payload, requests_timeout=REPORT_REQUEST_TIMEOUT)
+        metadata["jaxpr_artifact"] = dict(
+            uri=str(rec.destination / filename),
+            sha256=hashlib.sha256(payload).hexdigest(),
+            compressed_bytes=len(payload),
+        )
+        rec.report["capture_programs"][label] = metadata
+        rec.persist()
+        evaluated = fixed_bank_outputs(
+            rec,
+            label + "_evaluate",
+            "capture/" + label + "/evaluate",
+            evaluate,
+            {"identical_inputs": inputs},
+            input_shardings,
+            output_shardings,
+        )["identical_inputs"]
+        capture_shardings = (output_shardings, tuple((replicated, replicated) for _ in NAMES[:3]))
+        captured = fixed_bank_outputs(
+            rec,
+            label + "_capture",
+            "capture/" + label + "/extra_outputs",
+            capture,
+            {"identical_inputs": inputs},
+            input_shardings,
+            capture_shardings,
+        )["identical_inputs"]
+        gates = {}
+        for kind, actual, expected in [
+            ("evaluate_vs_untouched", evaluated, reference),
+            ("capture_vs_untouched", captured[0], reference),
+            ("capture_vs_evaluate", captured[0], evaluated),
+        ]:
+            key = "capture/" + label + "/" + kind
+            gates[kind] = rec.compare(key, actual, expected)
+            rec.report["comparisons"][key]["bitwise_equal"] = fingerprint(actual) == fingerprint(expected)
+        rec.report["capture_gates"][label] = dict(
+            comparisons_passed=gates,
+            reference_agreement=all(gates.values()),
+            original_internal_identity_established=False,
+        )
+        captures[label] = captured
+        del evaluated, reference, evaluate, capture, source
+        jax.clear_caches()
+        gc.collect()
+    passed = rec.compare("fused_candidate_vs_original", references["matrix"], references["original"])
+    rec.compare("capture/candidate_vs_original", captures["matrix"][0], captures["original"][0])
+    for index, group in enumerate(NAMES[:3]):
+        for field, name in enumerate(("inner", "norm_plus_eps")):
+            actual, expected = captures["matrix"][1][index][field], captures["original"][1][index][field]
+            key = "capture/values/" + group + "/" + name
+            rec.compare(key, actual, expected)
+            rec.report["comparisons"][key]["bitwise_equal"] = fingerprint(actual) == fingerprint(expected)
+            rec.report["comparisons"][key]["input_reference_gates_passed"] = all(
+                g["reference_agreement"] for g in rec.report["capture_gates"].values()
+            )
+    assert fingerprint(inputs) == input_sha
+    assert len(rec.report["stages"]) == 12 and len(rec.report["comparisons"]) == 18
+    rec.persist()
+    return passed
+
+
 def finish(rec, tracker, fused_pass, smoke):
     if smoke:
         assert all(x["passed"] for x in rec.report["comparisons"].values()), "CPU harness comparison failed"
@@ -935,6 +1014,7 @@ def main():
     mode.add_argument("--polar-normalization", action="store_true")
     mode.add_argument("--polar-partition", action="store_true")
     mode.add_argument("--polar-collectives", action="store_true")
+    mode.add_argument("--full-input-capture", action="store_true")
     args = parser.parse_args()
     product_mode = (
         args.polar_products
@@ -969,7 +1049,11 @@ def main():
         shapes=shapes,
         names=NAMES,
         smoke=args.smoke,
-        polar_compiler=args.polar_compiler or args.state_crossfeed or product_mode,
+        polar_compiler=args.polar_compiler or args.state_crossfeed or product_mode or args.full_input_capture,
+        full_input_capture=args.full_input_capture,
+        capture_helper_sha256=hashlib.sha256(
+            Path(__file__).with_name("optimizer_input_capture.py").read_bytes()
+        ).hexdigest(),
         state_crossfeed=args.state_crossfeed,
         polar_products=product_mode,
         contracting_control=args.polar_contracting or args.polar_continuation,
@@ -1042,6 +1126,14 @@ def main():
     del prior
     states = jax.tree.map(lambda x: put_global(x, rep), initial)
     del initial
+    if args.full_input_capture:
+        inputs = jax.device_get((gradients, states))
+        del gradients, states
+        jax.clear_caches()
+        gc.collect()
+        fused_pass = full_input_capture(rec, inputs, matrix_eigh, (gs, ss), (gs, ss), rep)
+        finish(rec, tracker, fused_pass, args.smoke)
+        return
     common = rec.run("common_refresh", refresh, (gradients, states), (gs, ss), ss)
     if product_mode:
         del gradients, states

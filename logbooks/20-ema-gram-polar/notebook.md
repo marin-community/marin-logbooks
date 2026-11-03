@@ -2604,6 +2604,29 @@ still not prove internal identity. This is design work only. No numerical
 submission is selected, no optimizer is accepted, and training MFU remains
 unverified. The CPU task is terminal; no experiment or queue remains active.
 
+## 2026-11-03 08:01 UTC — Preparing full-update polar-input capture
+
+The diagnostic now exposes existing q/k/v normalization operands from the
+traced shared `full_update` program. It appends the inner matrices and the
+broadcast `norm + eps` denominators to the outputs while retaining every
+original equation and all twenty-eight direction/state outputs. Mapping uses
+source scopes and dependencies of final outputs, with one distinct polar
+normalization required per matrix group. Abstract tracing found all seven
+groups and preserved all 851 equations in the original small-shape program.
+
+The [plan](optimizer-full-input-capture-plan.json) includes two controls for
+each eigensolver layout: evaluate the unchanged traced program, then evaluate
+that program with the six extra outputs. Both are compared against the direct,
+untouched shared full-update function. Each controlled executable replays the
+same fingerprinted input bank. The fixed 1e-5 gate covers all final direction
+and state leaves; bitwise equality is also recorded. Adding outputs or using
+the evaluator can change compilation, so failed agreement forbids interpreting
+captured values as the original internal path. Final equality alone would not
+prove internal identity.
+
+Online CPU validation is pending. No accelerator job is submitted, no optimizer
+change is accepted, and no checkpoint or training data is read.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
