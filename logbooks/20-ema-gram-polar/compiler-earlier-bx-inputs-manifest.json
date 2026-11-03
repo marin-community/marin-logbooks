@@ -1,0 +1,233 @@
+{
+  "inventory": {
+    "bytes": 18035069,
+    "sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a",
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir-conservative/substitution-ir-725f48e1a71d/report.json"
+  },
+  "reports": {
+    "outer-bindings": {
+      "bytes": 5717993,
+      "sha256": "81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.outer-bindings/outer-bindings-21ac5d3e4f6e/report.json"
+    },
+    "boundary-inputs": {
+      "bytes": 30706097,
+      "sha256": "cbf8996a1579a9267501e402ccb379fe8dddaf07cb2148ea845ff31dd290c6cd",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.boundary-inputs/boundary-inputs-16055494fc77/report.json"
+    },
+    "start-producers": {
+      "bytes": 387447,
+      "sha256": "48b61b4e367b55789f002f357f8551fb662e71a24997fb369007a50bd0192435",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.start-producers/start-producers-ddc2a22f7b1d/report.json"
+    },
+    "product-inputs": {
+      "bytes": 2162972,
+      "sha256": "580d846d18b0aacd842a91b3b77b5826b1a9ce7a1c1dec7c562ed9b5fd605e04",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.product-inputs/product-inputs-574263feb30d/report.json"
+    },
+    "polar-boundaries": {
+      "bytes": 1775955,
+      "sha256": "41fcd05ef632f18edbe5dd6f8924137a28e9caa406c50d5c504e5e599ea0a709",
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.polar-boundaries/polar-boundaries-f02b7a238929/report.json"
+    },
+    "frontier-operands": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.frontier-operands/frontier-operands-dd4ebe7ab487/report.json",
+      "bytes": 1676770,
+      "sha256": "9c6c9b75fab8ca0ca64dba66bbfa179c72858ed0fbf106f8cdef6a145d5e2e0f"
+    },
+    "frontier-collectives": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.frontier-collectives/frontier-collectives-d5a94507813e/report.json",
+      "bytes": 1884282,
+      "sha256": "a75d20f108ca32b4c8388aca1fbb847255d492dca7dd212fc0bfca13b2361523"
+    },
+    "down-concat": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.down-concat/down-concat-915568675c3d/report.json",
+      "bytes": 181140,
+      "sha256": "1c1881b19ef6be952f4ac4aecbb02b3404f92e3c4614da1605e3ca087d9fde66"
+    },
+    "step5-gram-inputs": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.step5-gram-inputs/step5-gram-inputs-2e6e2e0b351b/report.json",
+      "bytes": 278520,
+      "sha256": "3759e105fd024f26422a0481bb5164c72b67485cfeddbdd288dd6320575338f6"
+    },
+    "step5-concat-inputs": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.step5-concat-inputs/step5-concat-inputs-1c1c6033ef6a/report.json",
+      "bytes": 1198574,
+      "sha256": "b81cd2490ba9bbe4c9e00a9130388901bfeca4c2bd5cf37d53e5c6a70840a63f"
+    }
+  },
+  "graphs": [
+    "matrix_untouched",
+    "matrix_evaluate",
+    "matrix_capture",
+    "matrix_substitute"
+  ],
+  "targets": {
+    "matrix_untouched": {
+      "down_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144934",
+        "context": [
+          "main.530_spmd/fusion.144934"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.235.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144938",
+          "fusion.144937"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.235.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144938, %fusion.144937), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      },
+      "up_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145036",
+        "context": [
+          "main.530_spmd/fusion.145036"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.238.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145040",
+          "fusion.145039"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}",
+        "instruction": "%convolution-base-dilated.238.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145040, %fusion.145039), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=68}"
+      }
+    },
+    "matrix_evaluate": {
+      "down_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144934",
+        "context": [
+          "main.530_spmd/fusion.144934"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.235.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144938",
+          "fusion.144937"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.235.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144938, %fusion.144937), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "up_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145036",
+        "context": [
+          "main.530_spmd/fusion.145036"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.238.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145040",
+          "fusion.145039"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.238.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145040, %fusion.145039), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      }
+    },
+    "matrix_capture": {
+      "down_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144935",
+        "context": [
+          "main.530_spmd/fusion.144935"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.235.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144939",
+          "fusion.144938"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.235.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144939, %fusion.144938), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      },
+      "up_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145037",
+        "context": [
+          "main.530_spmd/fusion.145037"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.238.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145041",
+          "fusion.145040"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}",
+        "instruction": "%convolution-base-dilated.238.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145041, %fusion.145040), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=69}"
+      }
+    },
+    "matrix_substitute": {
+      "down_proj/polar/2/B_X": {
+        "computation": "async_collective_fusion.144922",
+        "context": [
+          "main.529_spmd/fusion.144922"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.233.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.144926",
+          "fusion.144925"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.233.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.144926, %fusion.144925), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      },
+      "up_proj/polar/4/B_X": {
+        "computation": "async_collective_fusion.145024",
+        "context": [
+          "main.529_spmd/fusion.145024"
+        ],
+        "tuple_path": [],
+        "name": "convolution-base-dilated.236.clone.3",
+        "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.145028",
+          "fusion.145027"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}",
+        "instruction": "%convolution-base-dilated.236.clone.3 = f32[11,128,4096]{1,2,0:T(8,128)} convolution(%fusion.145028, %fusion.145027), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0io->0bf, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=70}"
+      }
+    }
+  },
+  "source_files": {
+    "compare_earlier_bx_inputs.py": "caf79d8d341654423f40bffd96fa523a22bcfb4ec53ac21c1147eb4782dcb593",
+    "compare_step5_concat_inputs.py": "472e6e35e3ae122b682263736dc1e2dd7f5c3321e7d2e036661209a49f56af8d",
+    "compare_step5_gram_inputs.py": "1769b15ac6483e77a37dd0ed110894516a83cb2ace4c539b443b36a5d749bdde",
+    "compiler_down_concat.py": "fcd12f34e3a40211188f2fe561f5a1d4bb23a73284e08cad38733f0851cca4d9",
+    "compiler_earlier_bx_inputs.py": "49415ee4644eff3768b4050f903f10d3cb5ebfc17f0ff09398b7b3c7d6453b13",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "compiler_polar_boundaries.py": "8bbe37163ce536e65f8b8f39d7d6c8c2fea1a7c46cdbdc3afe08ba2500054f3a",
+    "compiler_step5_concat_inputs.py": "49635774a25f02479004556b892861fd1978873cf420d3cd73ed949c59abd354",
+    "compiler_step5_gram_inputs.py": "0373e0b64ecfa5339a614666d0001e39589914951a578d14d9611a385fab361c",
+    "consolidate_compiler_records.py": "a501a878d07cb9157e98fff57d43d325113e84eec37471390563383116dae486",
+    "trace_boundary_inputs.py": "844a3bc0de727072ab411b2044beb2bc0aea2e4be2fea4b2e66914cf3f7595f3",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b",
+    "trace_down_concat.py": "288ea17497ce435ee8bc7b29ab289571773d17a392090c3ec9c1881ff1b0e76e",
+    "trace_earlier_bx_inputs.py": "afbc4b163fadb2d4a8de9454874a561221ae10814a9a8dff17485515fa9f8488",
+    "trace_frontier_operands.py": "a5b09df730767d9662e9594e3f81168ba7689bc3e5f444c6e30024af687e1dd8",
+    "trace_outer_bindings.py": "36daebb960e73214c5db90fbc73add471389b98ab32c6e58e38ec020ebe1bb5f",
+    "trace_polar_boundaries.py": "251578af625965085872760dafb1870884f99410490a469e181b53d21382d6ab",
+    "trace_start_producers.py": "62acb58c0e2aa1a895e6f21a4d0c6fcfe13123af3560897486bff72d3d42fc63",
+    "trace_step5_concat_inputs.py": "5ce0bd2a0c578ae835d21bce11f1686dad23a0d989aa7e3532ff0ea25ac0e082",
+    "trace_step5_gram_inputs.py": "7cf94b39dc34de611917ad77e6a00d3a8a9cf1b6f33338f2f511430eb927fde6"
+  }
+}

@@ -4201,6 +4201,12 @@ The next static decision is to inspect the four uncovered input positions of dow
 
 The sole follow observer ended naturally with exit 0. No experiment, queue, or observer remains active. PR monitoring remains handed off after its earlier 12-hour timeout; the research heartbeat stays active.
 
+### November 3, 17:37 UTC — inspect earlier B@X operands (static preflight)
+
+The [latest frontier coverage](compiler-step5-concat-inputs-frontiers.json) leaves four immediate operands uninspected: down iteration-2 `B_X` and up iteration-4 `B_X`. The [new selector](trace_earlier_bx_inputs.py) requires all four saved Concat routes to agree on each product's exact caller context and declaration, and cross-checks the dependency-mapped group/iteration/product. It rejects missing or duplicate boundaries, caller disagreement, duplicate positions, and wrong roles.
+
+The [plan](compiler-earlier-bx-inputs-plan.json), [manifest](compiler-earlier-bx-inputs-manifest.json), and [validation](compiler-earlier-bx-inputs-validation.json) reuse eleven bounded inputs including inventory. Two scoped bodies per graph must be read again to recover operand records absent from the saved traces; already-covered o product controls will be reused without extraction. Publish exact source before one CPU-only regional us-west4 extraction, with HLO SHA/size checks, default preemption and no wall-clock limit. Both full28leaf numerical gates remain failed, and opaque outputs remain opaque.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
