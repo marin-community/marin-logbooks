@@ -1,0 +1,106 @@
+{
+  "inventory": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir-conservative/substitution-ir-725f48e1a71d/report.json",
+    "bytes": 18035069,
+    "sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a"
+  },
+  "graphs": [
+    "matrix_untouched",
+    "matrix_evaluate",
+    "matrix_capture",
+    "matrix_substitute"
+  ],
+  "artifacts": {
+    "matrix_untouched": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662,
+      "expected_output_leaves": 28,
+      "graph_role": "untouched",
+      "solver": "matrix",
+      "capture_first_gram_bodies": true
+    },
+    "matrix_evaluate": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/capture__matrix__evaluate.optimized_hlo.txt.gz",
+      "sha256": "3e7e23477e3167d786c5c46850abb30531699e6de6412d00046d2e77eabe4bf4",
+      "compressed_bytes": 9399318,
+      "expected_output_leaves": 28,
+      "graph_role": "evaluate",
+      "solver": "matrix",
+      "capture_first_gram_bodies": true
+    },
+    "matrix_capture": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/capture__matrix__extra_outputs.optimized_hlo.txt.gz",
+      "sha256": "5221c8b88da4707891229a26ebfe43f8439a7c9d65cfe861c19355dd4f5fd580",
+      "compressed_bytes": 9394109,
+      "expected_output_leaves": 30,
+      "graph_role": "capture",
+      "solver": "matrix",
+      "capture_first_gram_bodies": true
+    },
+    "matrix_substitute": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/substitute__matrix.optimized_hlo.txt.gz",
+      "sha256": "40be51e439da197176309c125cbaa1a51cf7b56c784214a8086ffdcd626a74dc",
+      "compressed_bytes": 9402524,
+      "expected_output_leaves": 28,
+      "graph_role": "substitute",
+      "solver": "matrix",
+      "capture_first_gram_bodies": true,
+      "external_inputs": {
+        "inner": {
+          "source_label": "bank[1][0]",
+          "source_argument": [
+            1,
+            0
+          ],
+          "shape": "f32[11,1024,128]",
+          "source_global_shape": [
+            11,
+            1024,
+            1024
+          ],
+          "shape_scope": "Expected per-device compiled parameter shape; checked, not treated as observed until extraction"
+        },
+        "norm_plus_eps": {
+          "source_label": "bank[1][1]",
+          "source_argument": [
+            1,
+            1
+          ],
+          "shape": "f32[11,1,1]",
+          "source_global_shape": [
+            11,
+            1,
+            1
+          ]
+        }
+      },
+      "allowed_conservative_boundaries": {
+        "inner": [
+          "opaque:custom-call:ConcatBitcast"
+        ]
+      },
+      "binding_limitation": "Conservative source role only when an opaque boundary is traversed; not exact semantic provenance."
+    }
+  },
+  "outer_report": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.outer-bindings/outer-bindings-21ac5d3e4f6e/report.json",
+    "bytes": 5717993,
+    "sha256": "81c89f0aaceed5bf7ff2a9ce09eefd1d554172299b58080438d909cf6269f8c4"
+  },
+  "boundary_report": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.boundary-inputs/boundary-inputs-16055494fc77/report.json",
+    "bytes": 30706097,
+    "sha256": "cbf8996a1579a9267501e402ccb379fe8dddaf07cb2148ea845ff31dd290c6cd"
+  },
+  "start_report": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.start-producers/start-producers-ddc2a22f7b1d/report.json",
+    "bytes": 387447,
+    "sha256": "48b61b4e367b55789f002f357f8551fb662e71a24997fb369007a50bd0192435"
+  },
+  "product_input_report": {
+    "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.product-inputs/product-inputs-574263feb30d/report.json",
+    "bytes": 2162972,
+    "sha256": "580d846d18b0aacd842a91b3b77b5826b1a9ce7a1c1dec7c562ed9b5fd605e04"
+  }
+}
