@@ -4584,6 +4584,14 @@ Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-saved-state-loss-check-v4-32-20
 
 This is the sole active compute job. It runs unchanged-state direction and fixed-synthetic-gradient optimizer checks without training or checkpoint advancement. Numerical-equivalence failures are recorded diagnostics. All prior jobs and follows are terminal, and PR monitoring remains handed off.
 
+### November 3 — prepare complete saved-state report aggregation
+
+A local report summarizer now requires all four saved-state process reports before producing global numerical diagnostics. It checks the published source hashes, exact checkpoint identities and 21 loaded paths, geometry, fixed tolerance, finite-output and input-immutability flags. It requires complete coverage of all 16 declared output shards for each of seven directions. The full-update case also requires all 21 replicated state outputs on every process, with matching hashes and statistics before deduplication. Expected unique leaf/index record counts are 112 for unchanged-state directions and 133 for the full update.
+
+Fifteen static mutation fixtures reject missing or duplicate processes, incomplete cases or shards, wrong source/checkpoint/geometry, changed inputs, nonfinite outputs or statistics, changed tolerance and disagreeing replicas. The generated fixture deliberately fails numerical equivalence while retaining a valid finite-output result. Report and row reordering leave the summary unchanged, and a known fixture gives relative Frobenius error `||matrix − replicated||F / ||replicated||F = 0.5` for every leaf. These are JSON validation fixtures; no numerical kernels, new W&B process or additional compute job ran. The [validation record](saved-state-summary-validation.json) identifies the summarizer source.
+
+The regional saved-state job remains the only active computation. Actual global errors require its complete reports and separate canonical completion/logging checks. This preparation does not change its submitted source or claim a new TPU result. The measurement protocol now records the already-verified restored counter 924; the paired final counter remains 7630.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
