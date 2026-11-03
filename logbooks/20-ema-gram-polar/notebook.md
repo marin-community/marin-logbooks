@@ -4636,6 +4636,16 @@ The [submission record](loss-pair-original-submitted.json) preserves the exact c
 
 The first canonical job/task check, after the required two-minute wait, found all four tasks pending with no attempts, failures or preemptions at 23:23 UTC. The next routine check is no earlier than 23:33:18 UTC.
 
+### November 3, 23:34 UTC — original workers restored counter 924
+
+All four original-continuation tasks are running on attempt 0, with no failures or preemptions at the canonical 23:34 UTC check. Each native process logs restoration from the common `step-923` source and reports resuming from stored counter 924. This establishes this attempt's native restore point; it is separate from the preceding independent full-array audit. No completed new update or training-loss value has yet been observed.
+
+All four execution-host online logging checks finished successfully. Their configuration fields match the prepared recipe before native output-path application, apart from the three added Git fields and two omitted empty dictionaries already documented. The native training W&B run is online and running. Its model and optimizer fields match the prepared effective configuration after accounting for omitted model, rope and optimizer type discriminators; the selected batch, final-step, seed, restore and finite-loss guard fields also match. The published worker's exact full-configuration assertion executed before entering native training. The [startup record](loss-pair-original-startup.json) preserves the scope of each check and all four restore lines.
+
+The native run reports 16 TPU v4 devices across four hosts and the expected FLOP/peak metadata. These are configuration observations, not a throughput or MFU measurement. Cache metadata warnings about `max_length` and `append_bos` also occur in the saved successful restore-audit log; they do not establish historical cache identity. Full-training finite loss and memory fit remain pending, including the separate watch-enabled executable at label 929 and subsequent profile, evaluation and checkpoint stages.
+
+Follow 29414 remains the sole observer. The next routine canonical check is no earlier than 23:43:53 UTC. The matrix candidate remains unsubmitted; both variants retain the final counter 7630 schedule and loss-first acceptance criterion.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
