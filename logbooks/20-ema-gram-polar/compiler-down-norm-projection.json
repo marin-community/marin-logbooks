@@ -1,0 +1,886 @@
+{
+  "graphs": {
+    "matrix_untouched": [
+      {
+        "operand_position": 0,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 1,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 2,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 3,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=48}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      }
+    ],
+    "matrix_evaluate": [
+      {
+        "operand_position": 0,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 1,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 2,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 3,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100514",
+            "get-tuple-element.100536",
+            "copy-done.1330",
+            "get-tuple-element.47592",
+            "get-tuple-element.47594",
+            "copy-done.1325"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100514, %get-tuple-element.100536, %copy-done.1330, %get-tuple-element.47592, %get-tuple-element.47594, /*index=5*/%copy-done.1325), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34100",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34100 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1325",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1325"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1325 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1325)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      }
+    ],
+    "matrix_capture": [
+      {
+        "operand_position": 0,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100632",
+            "get-tuple-element.100654",
+            "copy-done.1336",
+            "get-tuple-element.47600",
+            "get-tuple-element.47602",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100632, %get-tuple-element.100654, %copy-done.1336, %get-tuple-element.47600, %get-tuple-element.47602, /*index=5*/%copy-done.1331), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34106",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34106 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 1,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100632",
+            "get-tuple-element.100654",
+            "copy-done.1336",
+            "get-tuple-element.47600",
+            "get-tuple-element.47602",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100632, %get-tuple-element.100654, %copy-done.1336, %get-tuple-element.47600, %get-tuple-element.47602, /*index=5*/%copy-done.1331), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34106",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34106 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 2,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100632",
+            "get-tuple-element.100654",
+            "copy-done.1336",
+            "get-tuple-element.47600",
+            "get-tuple-element.47602",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100632, %get-tuple-element.100654, %copy-done.1336, %get-tuple-element.47600, %get-tuple-element.47602, /*index=5*/%copy-done.1331), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34106",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34106 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 3,
+        "all_reduce": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [
+            5
+          ],
+          "name": "all-reduce.162",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100632",
+            "get-tuple-element.100654",
+            "copy-done.1336",
+            "get-tuple-element.47600",
+            "get-tuple-element.47602",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}",
+          "instruction": "%all-reduce.162 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100632, %get-tuple-element.100654, %copy-done.1336, %get-tuple-element.47600, %get-tuple-element.47602, /*index=5*/%copy-done.1331), channel_id=144, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(capture)/gram_direction/vmap()/dot_general\" stack_frame_id=65}"
+        },
+        "projection": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34106",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.162"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}",
+          "instruction": "%get-tuple-element.34106 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.162), index=5, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(capture)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=49}"
+        },
+        "selected_input_root": {
+          "computation": "main.530_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      }
+    ],
+    "matrix_substitute": [
+      {
+        "operand_position": 0,
+        "all_reduce": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            6
+          ],
+          "name": "all-reduce.161",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100617",
+            "copy-done.1332",
+            "get-tuple-element.100639",
+            "copy-done.1337",
+            "get-tuple-element.47589",
+            "get-tuple-element.47591",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+          "instruction": "%all-reduce.161 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100617, %copy-done.1332, %get-tuple-element.100639, %copy-done.1337, %get-tuple-element.47589, /*index=5*/%get-tuple-element.47591, %copy-done.1331), channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+        },
+        "projection": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34101",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.161"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}",
+          "instruction": "%get-tuple-element.34101 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.161), index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}"
+        },
+        "selected_input_root": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 1,
+        "all_reduce": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            6
+          ],
+          "name": "all-reduce.161",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100617",
+            "copy-done.1332",
+            "get-tuple-element.100639",
+            "copy-done.1337",
+            "get-tuple-element.47589",
+            "get-tuple-element.47591",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+          "instruction": "%all-reduce.161 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100617, %copy-done.1332, %get-tuple-element.100639, %copy-done.1337, %get-tuple-element.47589, /*index=5*/%get-tuple-element.47591, %copy-done.1331), channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+        },
+        "projection": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34101",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.161"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}",
+          "instruction": "%get-tuple-element.34101 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.161), index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}"
+        },
+        "selected_input_root": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 2,
+        "all_reduce": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            6
+          ],
+          "name": "all-reduce.161",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100617",
+            "copy-done.1332",
+            "get-tuple-element.100639",
+            "copy-done.1337",
+            "get-tuple-element.47589",
+            "get-tuple-element.47591",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+          "instruction": "%all-reduce.161 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100617, %copy-done.1332, %get-tuple-element.100639, %copy-done.1337, %get-tuple-element.47589, /*index=5*/%get-tuple-element.47591, %copy-done.1331), channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+        },
+        "projection": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34101",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.161"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}",
+          "instruction": "%get-tuple-element.34101 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.161), index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}"
+        },
+        "selected_input_root": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      },
+      {
+        "operand_position": 3,
+        "all_reduce": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [
+            6
+          ],
+          "name": "all-reduce.161",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)})",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100617",
+            "copy-done.1332",
+            "get-tuple-element.100639",
+            "copy-done.1337",
+            "get-tuple-element.47589",
+            "get-tuple-element.47591",
+            "copy-done.1331"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}",
+          "instruction": "%all-reduce.161 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11]{0:T(128)S(1)}, f32[11]{0:T(128)}, /*index=5*/f32[11]{0:T(128)}, f32[11]{0:T(128)}) all-reduce(%get-tuple-element.100617, %copy-done.1332, %get-tuple-element.100639, %copy-done.1337, %get-tuple-element.47589, /*index=5*/%get-tuple-element.47591, %copy-done.1331), channel_id=134, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.131.clone, metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/dot_general\" stack_frame_id=62}"
+        },
+        "projection": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "get-tuple-element.34101",
+          "shape": "f32[11]{0:T(128)}",
+          "opcode": "get-tuple-element",
+          "operands": [
+            "all-reduce.161"
+          ],
+          "parameter_index": null,
+          "attributes": ", index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}",
+          "instruction": "%get-tuple-element.34101 = f32[11]{0:T(128)} get-tuple-element(%all-reduce.161), index=6, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(evaluate)/gram_direction/vmap(jit(norm))/reduce_sum\" stack_frame_id=50}"
+        },
+        "selected_input_root": {
+          "computation": "main.529_spmd",
+          "context": [],
+          "tuple_path": [],
+          "name": "copy-done.1331",
+          "shape": "f32[11]{0:T(128)S(1)}",
+          "opcode": "copy-done",
+          "operands": [
+            "copy-start.1331"
+          ],
+          "parameter_index": null,
+          "attributes": "",
+          "instruction": "%copy-done.1331 = f32[11]{0:T(128)S(1)} copy-done(%copy-start.1331)"
+        },
+        "selected_input_signature": "bb2aa6db52648326e000237a1e0c92d6eb2e956c8206d4ebffe3214f9eafc3c6",
+        "same_selected_input_signature_as_untouched": true
+      }
+    ]
+  },
+  "limitations": [
+    "Four views share one exact all-reduce projection per graph; no ordinal or text-order matching.",
+    "Selected-input subtree comparison is separate and does not erase whole-route mismatches.",
+    "Bounded declarations and connections only; no runtime values, precision, order or cause.",
+    "All custom-call outputs remain opaque and both full28leaf numerical gates remain failed."
+  ]
+}
