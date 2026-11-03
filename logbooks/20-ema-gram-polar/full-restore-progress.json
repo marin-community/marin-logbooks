@@ -1,0 +1,88 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103",
+  "accepted_utc": "2026-11-03T21:20:10Z",
+  "cluster": "marin",
+  "source_commit": "e045d6919861359860847d6b0044cc79f475239b",
+  "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+  "status": "FAILED; task1 exit1, tasks0/2/3 cosched_failed; no restoration accepted",
+  "resources": {
+    "tpu": "v4-32",
+    "hosts": 4,
+    "cpu_per_host": 120,
+    "memory_per_host": "256GiB",
+    "disk_per_host": "50GiB",
+    "region": "us-central2"
+  },
+  "wall_clock_limits": null,
+  "preemption_retries": "default",
+  "scope": "All4 host logging checks passed; full native restore still unverified",
+  "observer_owner": "current root thread; reuse sole live follow6883, never create duplicate",
+  "submission_log": "scratch/20261103-full-restore-submit.log",
+  "observed_utc": "2026-11-03T21:38:21Z",
+  "observer_session": 6883,
+  "observer_command": "uv run --no-sync iris --cluster=marin job logs --follow /kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103",
+  "tracking_publication": "f6c56a54376e681e704016ed216ac400fc42f123",
+  "issue_comment": "https://github.com/marin-community/marin-logbooks/issues/20#issuecomment-6615772679",
+  "heartbeat_readback": "ACTIVE, exact prompt verified",
+  "task0_attempt_uid": "917bf3a17244",
+  "task0_worker": "marin-tpu-v4-reserved-32-us-central2-b-20261103-2126-87f7db58-worker-0",
+  "execution_host_logging_checks": {
+    "2": {
+      "attempt": 0,
+      "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-restore-logging-check-004b5ec5f688",
+      "state": "finished",
+      "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+      "logging_success": 1
+    },
+    "0": {
+      "attempt": 0,
+      "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-restore-logging-check-d9b4a80c761a",
+      "state": "finished",
+      "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+      "logging_success": 1
+    },
+    "1": {
+      "attempt": 0,
+      "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-restore-logging-check-515cfe70f5bf",
+      "state": "finished",
+      "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+      "logging_success": 1
+    },
+    "3": {
+      "attempt": 0,
+      "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-restore-logging-check-a8181a217a64",
+      "state": "finished",
+      "source_sha256": "51341f7c170f84fe84eea64f1956ffe28c0bf2bd445f769c1ce811e5d8221f6e",
+      "logging_success": 1
+    }
+  },
+  "latest_log_evidence": {
+    "observed_utc": "2026-11-03T21:33:54Z",
+    "all_four_tasks_logged_source_checkpoint_load": true,
+    "checkpoint_load_log_time": "21:33:41\u201342UTC",
+    "native_wandb_url": "https://wandb.ai/marin-community/marin/runs/ema-gram-restore-997c509a16e5",
+    "state_audit_reports_seen": 0,
+    "restoration_accepted": false
+  },
+  "observer": {
+    "session_id": 6883,
+    "state": "ended naturally",
+    "exit_code": 0
+  },
+  "failure": {
+    "assertion": "int(state.step) == expected_step",
+    "expected_from_metadata": 923,
+    "native_state_step_all_four_processes": 924,
+    "failed_task": 1,
+    "attempt": 0,
+    "uid": "ebad5d996d00",
+    "exit_code": 1,
+    "preemptions": 0,
+    "canonical_job": "Job: /kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103 (/kaiyuew/ema-gram-20-full-restore-v4-32-20261103)\nState: failed  exit=0  failures=1  preemptions=0\nTasks: 0/4 completed  cosched_failed=3  failed=1\nError: Cumulative failed task attempts exceeded max_task_failures: failures=1, limit=0; Exit code: 1. stderr: AssertionError\n\n  TASK  STATE             EXIT  DURATION                     PEAK MEM    CUR MEM    DIAGNOSTIC\n     0  cosched_failed       0  2 minutes and 55.64 seconds  -           -          Coscheduled sibling /kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103/1 failed\n     1  failed               1  2 minutes and 44.92 seconds  -           -          Exit code: 1. stderr: AssertionError\n     2  cosched_failed       0  2 minutes and 48.86 seconds  -           -          Coscheduled sibling /kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103/1 failed\n     3  cosched_failed       0  2 minutes and 46.18 seconds  -           -          Coscheduled sibling /kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103/1 failed\n",
+    "canonical_task": "Task: /kaiyuew@stanford.edu/ema-gram-20-full-restore-v4-32-20261103/1\nState: failed  exit=1  backend=default\nWorker: marin-tpu-v4-reserved-32-us-central2-b-20261103-2126-87f7db58-worker-1 (10.130.0.187:10001)\nBackend object (current attempt 0): 52c8c839289c2ba7d8e55507a179d67633b8ea39500fc50293b3eb3aa2c5c053\nResources: cpu=120, memory=274.88 GB, disk=53.69 GB, tpu=v4-32\nError: Exit code: 1. stderr: AssertionError\n\nAttempts:\n  ATTEMPT  UID           STATE      EXIT  WORKER                                                                  REASON\n        0  ebad5d996d00  failed        1  marin-tpu-v4-reserved-32-us-central2-b-20261103-2126-87f7db58-worker-1  Exit code: 1. stderr: AssertionError\n\nRoot cause:\n  I20261103 21:33:53 139693760373568 jax.experimental.array_serialization.serialization Error check finished successfully\n  Traceback (most recent call last):\n    File \"<frozen runpy>\", line 198, in _run_module_as_main\n    File \"<frozen runpy>\", line 88, in _run_code\n    File \"/app/experiments/ema_gram/restore.py\", line 306, in <module>\n    File \"/app/experiments/ema_gram/restore.py\", line 302, in main\n    File \"/app/experiments/ema_gram/restore.py\", line 181, in run_restore_probe\n    File \"/app/lib/marin/src/marin/training/training.py\", line 585, in run_levanter_train_lm\n    File \"/app/lib/levanter/src/levanter/main/train_lm.py\", line 437, in main\n    File \"/app/experiments/ema_gram/restore.py\", line 159, in inspect\n    File \"/app/experiments/ema_gram/restore.py\", line 65, in audit_state\n  AssertionError\n",
+    "interpretation": "Audit incorrectly equated completed-update checkpoint label with next-update trainer state counter. StepInfo.step is state.step-1; native checkpoint hook saves info.state with info.step label. Failure precedes independent array/data auditing. No checkpoint corruption or numerical optimizer failure established."
+  },
+  "restoration_accepted": false,
+  "training_steps_executed": 0,
+  "successful_process_reports": 0
+}

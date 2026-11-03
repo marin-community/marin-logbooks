@@ -21,6 +21,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import tensorstore as ts
+from levanter.callbacks import StepInfo
 from levanter.checkpoint import save_checkpoint
 from levanter.checkpoint_manifest import read_manifest
 from levanter.data.dataset import ListAsyncDataset
@@ -54,7 +55,7 @@ def describe_arrays(tree):
     return result
 
 
-def audit_state(state, checkpoint, expected_step):
+def audit_state(state, checkpoint, expected_step=None):
     """Compare every locally addressable restored shard against independent storage reads."""
     manifest = read_manifest(checkpoint)
     assert manifest is not None and manifest.array_driver == "zarr3" and manifest.kvstore_driver == "ocdbt"
@@ -62,7 +63,14 @@ def audit_state(state, checkpoint, expected_step):
     assert len(paths) == len(set(paths)) and set(paths) == manifest.array_paths
     entries = {entry.path: entry for entry in manifest.arrays}
     assert {path.split("/")[0] for path in paths} >= {"model", "opt_state", "step", "training_key"}
-    assert int(state.step) == expected_step
+    # Checkpoint labels name the completed update; the stored trainer counter names the next one.
+    # Read that scalar independently rather than deriving it from the checkpoint label.
+    saved_step = np.asarray(ts.open(_create_ocdbt_spec(checkpoint, "step"), open=True).result().read().result())
+    assert saved_step.shape == () and np.issubdtype(saved_step.dtype, np.integer)
+    assert int(state.step) == int(saved_step), "Restored trainer step differs from storage"
+    if expected_step is not None:
+        assert int(saved_step) == expected_step, "Stored trainer step differs from fixture oracle"
+    metadata = json.loads((StoragePath(checkpoint) / "metadata.json").read_text())
     rows = []
     for path, array in zip(paths, arrays, strict=True):
         entry = entries[path]
@@ -87,6 +95,8 @@ def audit_state(state, checkpoint, expected_step):
             del actual, saved
     return dict(
         step=int(state.step),
+        stored_step=int(saved_step),
+        checkpoint_label_step=metadata["step"],
         array_count=len(paths),
         local_shards=rows,
         all_manifest_paths_present=True,
@@ -136,8 +146,6 @@ def run_restore_probe(pod):
     pod = replace(
         pod, train_config=replace(pod.train_config, trainer=replace(pod.train_config.trainer, tracker=tracker))
     )
-    metadata = json.loads((StoragePath(checkpoint) / "metadata.json").read_text())
-    expected_step = metadata["step"]
     calls = []
 
     def inspect(trainer, state, loader):
@@ -156,7 +164,7 @@ def run_restore_probe(pod):
             process_count=jax.process_count(),
             identity=identity,
             config=draccus.encode(pod),
-            state=audit_state(state, checkpoint, expected_step),
+            state=audit_state(state, checkpoint),
         )
         try:
             report["data"] = audit_data(state, loader)
@@ -204,8 +212,11 @@ def cpu_check(tracker, output):
     state = update(update(state))
     jax.block_until_ready(state)
     with tempfile.TemporaryDirectory(prefix="ema-full-restore-") as folder:
-        source = str(Path(folder) / "step-2")
-        save_checkpoint(state.saveable_state, 2, source)
+        # Use the same StepInfo label/state relation as Trainer's checkpoint hook.
+        info = StepInfo(state, 0.0, 0.0)
+        assert info.step == 1 and info.next_step == 2
+        source = str(Path(folder) / f"step-{info.step}")
+        save_checkpoint(info.state.saveable_state, info.step, source)
         cfg = replace(
             pod.train_config.trainer,
             id="restore-cpu",
@@ -222,6 +233,14 @@ def cpu_check(tracker, output):
                 model_init=lambda: model_config.build(hax.Axis("vocab", 16), key=jax.random.PRNGKey(77)),
             )
             report = dict(state=audit_state(loaded, source, 2))
+            assert report["state"]["checkpoint_label_step"] == 1
+            assert report["state"]["stored_step"] == 2
+            try:
+                audit_state(replace(loaded, step=loaded.step + 1), source)
+            except AssertionError:
+                report["mutated_step_rejected"] = True
+            else:
+                raise AssertionError("Mutated trainer step was accepted")
             assert describe_arrays(loaded.saveable_state) == describe_arrays(state.saveable_state)
             dataset = ListAsyncDataset([np.array([i], dtype=np.int32) for i in range(16)])
             loader = trainer.data_loader(dataset).iter_from_step(2)

@@ -4529,6 +4529,18 @@ The saved configuration for the checkpoint's source run, version `2026.10.30.23`
 
 The [resource and source-protocol comparison](loss-pair-memory-validation.json) records these checks. The two continuation configuration/recovery tests pass again. Full regional restoration remains pending; no training loss, training memory fit or speed improvement has been measured. After successful restore evidence, retain the saved-state synthetic-gradient/unchanged-state checks and full-training finite/memory checks before the paired continuation. Numerical-equivalence failure alone remains diagnostic, not a veto.
 
+### November 3 — restore audit exposed an incorrect step-label assumption
+
+The regional full-restore audit failed before its independent array and data checks. All four processes loaded a trainer state with counter 924 from the checkpoint named `step-923`. The audit incorrectly required that counter to equal the metadata label 923. Native `StepInfo.step` is `state.step - 1`, and the checkpoint callback saves the post-update state using that completed-update label. The observed difference is consistent with the native writer's convention; it does not establish checkpoint corruption or an optimizer failure.
+
+Canonical status is failed: task 1 exited 1 on attempt 0, UID `ebad5d996d00`; tasks 0, 2 and 3 ended as coscheduled siblings. No preemption occurred. The sole follow observer ended naturally with exit 0. All four execution-host online logging checks passed, but no successful per-process audit report was produced. Full restoration, data replay and training memory fit remain unverified. This job is terminal and will not be restarted.
+
+The corrected audit compares the loaded counter to an independent TensorStore read of the saved `step` scalar and reports the checkpoint label separately. Its CPU regression uses the native `StepInfo` convention to save label 1 with state counter 2; it also rejects a mutated restored counter. The fresh online logging check and CPU harness passed with the corrected source. The harness restored all 57 arrays, verified data offset 4 and known batch [4,5], rejected changed step/PRNG values, and retained finite synthetic-update and unchanged-input checks. The original CPU fixture used equal label and counter values, which failed to exercise this convention. The correction changes validation only; no optimizer algorithm or precision changes.
+
+Both prepared training configurations now request 256 GiB per host. Their model, data specification and original optimizer settings match the saved source-run configuration; effective mesh differences remain explicit. Neither training variant has launched. The next regional audit must complete all four array/data reports before the paired continuation. Data replay follows the verified stored counter, not the checkpoint's label; the final schedule remains 7630 steps. The research priority remains matched training/validation loss and measured speed, with numerical-equivalence failures retained as diagnostics.
+
+The [failure record](full-restore-failed.json) preserves canonical status and the assertion. The [corrected validation](full-restore-counter-validation.json) records fresh finished W&B runs and exact source hashes; CPU success does not validate the original TPU checkpoint. The [prepared follow-up](full-restore-counter-prepared.json) uses a new output version, `2026.11.03.24`, and a new job identity after source publication. It remains a non-training audit with four v4-32 hosts, 120 CPUs/256 GiB/50 GiB each in us-central2, default preemption/retries and no wall-clock limits. All previous jobs remain terminal.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
