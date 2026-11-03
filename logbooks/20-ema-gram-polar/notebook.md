@@ -3651,6 +3651,46 @@ is not implemented or submitted. It requires fresh online CPU validation, a
 replicated-input regression, exact published source and one sequential TPU
 diagnostic. All original numerical and training gates remain in force.
 
+## 2026-11-03 13:35 UTC — Column placement control passes its CPU preflight
+
+The column-input substitution control changes only the external q_proj
+numerator's input placement to the existing q-direction column sharding,
+`PartitionSpec(None, None, "data")`, on the eight-device data mesh. The
+denominator remains replicated. Global shapes remain 11×1024×1024 FP32 for
+the numerator and 11×1×1 FP32 for the denominator. The Jaxpr substitution
+helper, original full-update input/output shardings and source arithmetic are
+unchanged. All 28-leaf reference checks retain rtol=atol=1e-5 and bitwise checks.
+
+One fresh diagnostic process runs both the original and matrix eigensolver
+variants. Each variant recaptures its paired normalization inputs with
+untouched and unchanged-evaluator references. One fixed substitution executable per solver evaluates all four
+combinations of the two captured numerators and denominators, then replays its
+own pair. Both capture gates and each executable's own-pair checks against
+untouched and captured full-update outputs must pass before original-path
+interpretation. Failed checks remain in the report. Passing endpoints still
+do not establish hidden internal identity or numerical cause.
+
+Own online CPU validation from source `446be9950` completed with 22 finite
+stages, 26 passing comparisons and six bitwise fixed-executable replays. The
+replicated-input substitution regression also passed 22 stages, 26 comparisons
+and six replays. Both runs' same-pair checks pass tolerance but are not bitwise.
+The new mode has nonzero measured error only in q momentum, maxabs
+2.9103830456733704e-11. The replicated control also has a q-direction difference,
+maxabs 9.5367431640625e-7. These are small CPU matrices and do not establish TPU
+behavior or explain the differences. Shared mapping, repeated-use, non-target
+preservation, shape/order and rejection fixtures passed.
+
+Explicit device-index checks verify eight disjoint column slices for the new
+CPU numerator and replication for the denominator. StableHLO signatures retain
+28 outputs, with the two extra inputs declared as 3×8×8 and 3×1×1 FP32 and the
+intended shardings. All 40 artifacts passed size/SHA/gzip readback, totaling
+891,581 bytes for the new run and 886,995 for the regression. Both reports match
+GCS exactly and both online W&B runs finished. A separate fresh online logging
+check also finished successfully. The [preflight](optimizer-column-input-substitution-preflight.json)
+records identities and checksums; the [plan](optimizer-column-input-substitution-plan.json)
+records the single sequential TPU launch. No TPU result or optimizer acceptance
+is claimed. Large compiler artifacts will remain in us-west4.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

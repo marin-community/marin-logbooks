@@ -1,0 +1,1771 @@
+{
+  "source": "446be995035f382f5cd0d62b187cce77bf7260b4",
+  "validations": {
+    "cpu": {
+      "run": "ema-gram-20-attribution-1681c0b20468",
+      "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-1681c0b20468",
+      "state": "finished",
+      "process_exit": 0,
+      "finite_stages": 22,
+      "comparisons": 26,
+      "all_passed": true,
+      "fixed_executables": 6,
+      "all_replays_bitwise_equal": true,
+      "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-cpu/ema-gram-20-attribution-1681c0b20468/report.json",
+      "report_sha256": "25c61e2aea27b55aa9981ef04a85de77de162af70c76dff0bcd72bf9f61314de",
+      "report_exact_gcs": true,
+      "artifact_count": 20,
+      "all_artifact_sha_size_gzip_verified": true,
+      "compressed_bytes": 891581,
+      "capture_gates": {
+        "original": {
+          "comparisons_passed": {
+            "evaluate_vs_untouched": true,
+            "capture_vs_untouched": true,
+            "capture_vs_evaluate": true
+          },
+          "reference_agreement": true,
+          "original_internal_identity_established": false
+        },
+        "matrix": {
+          "comparisons_passed": {
+            "evaluate_vs_untouched": true,
+            "capture_vs_untouched": true,
+            "capture_vs_evaluate": true
+          },
+          "reference_agreement": true,
+          "original_internal_identity_established": false
+        }
+      },
+      "substitution_gates": {
+        "original": {
+          "comparisons_passed": {
+            "own_pair_vs_untouched": true,
+            "own_pair_vs_capture": true
+          },
+          "both_capture_gates_passed": true,
+          "same_bank_reference_agreement": true,
+          "original_internal_identity_established": false,
+          "conditional_interpretation_gates_passed": true
+        },
+        "matrix": {
+          "comparisons_passed": {
+            "own_pair_vs_untouched": true,
+            "own_pair_vs_capture": true
+          },
+          "both_capture_gates_passed": true,
+          "same_bank_reference_agreement": true,
+          "original_internal_identity_established": false,
+          "conditional_interpretation_gates_passed": true
+        }
+      },
+      "substitution_fixtures": {
+        "repeated_operand_positions": true,
+        "non_target_uses_unchanged": true,
+        "output_order_shapes_preserved": true,
+        "invalid_target_rejected": true,
+        "missing_ambiguous_mapping_rejected": true,
+        "numerical_fixture_bitwise_equal": true
+      },
+      "programs": {
+        "original": {
+          "target": {
+            "equation_index": 145,
+            "source_scope": "gram_direction/vmap()",
+            "inner_shape": [
+              3,
+              8,
+              8
+            ],
+            "denominator_shape": [
+              3,
+              1,
+              1
+            ],
+            "dtype": "float32",
+            "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+          },
+          "original_equations": 851,
+          "modified_equations": 851,
+          "original_output_leaves": 28,
+          "appended_input_leaves": 2,
+          "only_target_operand_uses_replaced": true,
+          "all_other_equations_preserved_by_identity": true,
+          "outputs_constants_original_inputs_preserved": true,
+          "original_internal_identity_established": false,
+          "jaxpr_artifact": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-cpu/ema-gram-20-attribution-1681c0b20468/substitution_program_original.jaxpr.txt.gz",
+            "sha256": "88e14355af076ee7092744cd4debbd0e326860c0985c67007aca197dcbf3b354",
+            "compressed_bytes": 7819
+          }
+        },
+        "matrix": {
+          "target": {
+            "equation_index": 155,
+            "source_scope": "gram_direction/vmap()",
+            "inner_shape": [
+              3,
+              8,
+              8
+            ],
+            "denominator_shape": [
+              3,
+              1,
+              1
+            ],
+            "dtype": "float32",
+            "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+          },
+          "original_equations": 921,
+          "modified_equations": 921,
+          "original_output_leaves": 28,
+          "appended_input_leaves": 2,
+          "only_target_operand_uses_replaced": true,
+          "all_other_equations_preserved_by_identity": true,
+          "outputs_constants_original_inputs_preserved": true,
+          "original_internal_identity_established": false,
+          "jaxpr_artifact": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-cpu/ema-gram-20-attribution-1681c0b20468/substitution_program_matrix.jaxpr.txt.gz",
+            "sha256": "7d1f4ba4d09c57a79d43a38cb020930f6d035ef25425e8ac47643a17ec2a3b81",
+            "compressed_bytes": 9677
+          }
+        }
+      },
+      "input_placement": {
+        "inner": {
+          "global_shape": [
+            3,
+            8,
+            8
+          ],
+          "dtype": "float32",
+          "spec": "P(None, None, 'data')",
+          "device_indices": {
+            "0": "(slice(None, None, None), slice(None, None, None), slice(0, 1, None))",
+            "1": "(slice(None, None, None), slice(None, None, None), slice(1, 2, None))",
+            "2": "(slice(None, None, None), slice(None, None, None), slice(2, 3, None))",
+            "3": "(slice(None, None, None), slice(None, None, None), slice(3, 4, None))",
+            "4": "(slice(None, None, None), slice(None, None, None), slice(4, 5, None))",
+            "5": "(slice(None, None, None), slice(None, None, None), slice(5, 6, None))",
+            "6": "(slice(None, None, None), slice(None, None, None), slice(6, 7, None))",
+            "7": "(slice(None, None, None), slice(None, None, None), slice(7, 8, None))"
+          }
+        },
+        "norm_plus_eps": {
+          "global_shape": [
+            3,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "spec": "P()",
+          "device_indices": {
+            "0": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "1": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "2": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "3": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "4": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "5": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "6": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "7": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))"
+          }
+        }
+      },
+      "same_pair_reference_checks": {
+        "substitute/original/own_pair_vs_untouched": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        },
+        "substitute/original/own_pair_vs_capture": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        },
+        "substitute/matrix/own_pair_vs_untouched": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        },
+        "substitute/matrix/own_pair_vs_capture": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        }
+      },
+      "all_recorded_bitwise_comparisons_equal": false
+    },
+    "regression": {
+      "run": "ema-gram-20-attribution-7d777bd73c3c",
+      "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-7d777bd73c3c",
+      "state": "finished",
+      "process_exit": 0,
+      "finite_stages": 22,
+      "comparisons": 26,
+      "all_passed": true,
+      "fixed_executables": 6,
+      "all_replays_bitwise_equal": true,
+      "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-regression/ema-gram-20-attribution-7d777bd73c3c/report.json",
+      "report_sha256": "223c1be957d9620a63dad69a3334ad4830c3594171f120116ab69347d0a2a53e",
+      "report_exact_gcs": true,
+      "artifact_count": 20,
+      "all_artifact_sha_size_gzip_verified": true,
+      "compressed_bytes": 886995,
+      "capture_gates": {
+        "original": {
+          "comparisons_passed": {
+            "evaluate_vs_untouched": true,
+            "capture_vs_untouched": true,
+            "capture_vs_evaluate": true
+          },
+          "reference_agreement": true,
+          "original_internal_identity_established": false
+        },
+        "matrix": {
+          "comparisons_passed": {
+            "evaluate_vs_untouched": true,
+            "capture_vs_untouched": true,
+            "capture_vs_evaluate": true
+          },
+          "reference_agreement": true,
+          "original_internal_identity_established": false
+        }
+      },
+      "substitution_gates": {
+        "original": {
+          "comparisons_passed": {
+            "own_pair_vs_untouched": true,
+            "own_pair_vs_capture": true
+          },
+          "both_capture_gates_passed": true,
+          "same_bank_reference_agreement": true,
+          "original_internal_identity_established": false,
+          "conditional_interpretation_gates_passed": true
+        },
+        "matrix": {
+          "comparisons_passed": {
+            "own_pair_vs_untouched": true,
+            "own_pair_vs_capture": true
+          },
+          "both_capture_gates_passed": true,
+          "same_bank_reference_agreement": true,
+          "original_internal_identity_established": false,
+          "conditional_interpretation_gates_passed": true
+        }
+      },
+      "substitution_fixtures": {
+        "repeated_operand_positions": true,
+        "non_target_uses_unchanged": true,
+        "output_order_shapes_preserved": true,
+        "invalid_target_rejected": true,
+        "missing_ambiguous_mapping_rejected": true,
+        "numerical_fixture_bitwise_equal": true
+      },
+      "programs": {
+        "original": {
+          "target": {
+            "equation_index": 145,
+            "source_scope": "gram_direction/vmap()",
+            "inner_shape": [
+              3,
+              8,
+              8
+            ],
+            "denominator_shape": [
+              3,
+              1,
+              1
+            ],
+            "dtype": "float32",
+            "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+          },
+          "original_equations": 851,
+          "modified_equations": 851,
+          "original_output_leaves": 28,
+          "appended_input_leaves": 2,
+          "only_target_operand_uses_replaced": true,
+          "all_other_equations_preserved_by_identity": true,
+          "outputs_constants_original_inputs_preserved": true,
+          "original_internal_identity_established": false,
+          "jaxpr_artifact": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-regression/ema-gram-20-attribution-7d777bd73c3c/substitution_program_original.jaxpr.txt.gz",
+            "sha256": "88e14355af076ee7092744cd4debbd0e326860c0985c67007aca197dcbf3b354",
+            "compressed_bytes": 7819
+          }
+        },
+        "matrix": {
+          "target": {
+            "equation_index": 155,
+            "source_scope": "gram_direction/vmap()",
+            "inner_shape": [
+              3,
+              8,
+              8
+            ],
+            "denominator_shape": [
+              3,
+              1,
+              1
+            ],
+            "dtype": "float32",
+            "role": "Division numerator is pre-normalization inner; denominator is broadcast(norm + eps)"
+          },
+          "original_equations": 921,
+          "modified_equations": 921,
+          "original_output_leaves": 28,
+          "appended_input_leaves": 2,
+          "only_target_operand_uses_replaced": true,
+          "all_other_equations_preserved_by_identity": true,
+          "outputs_constants_original_inputs_preserved": true,
+          "original_internal_identity_established": false,
+          "jaxpr_artifact": {
+            "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-regression/ema-gram-20-attribution-7d777bd73c3c/substitution_program_matrix.jaxpr.txt.gz",
+            "sha256": "7d1f4ba4d09c57a79d43a38cb020930f6d035ef25425e8ac47643a17ec2a3b81",
+            "compressed_bytes": 9677
+          }
+        }
+      },
+      "input_placement": {
+        "inner": {
+          "global_shape": [
+            3,
+            8,
+            8
+          ],
+          "dtype": "float32",
+          "spec": "P()",
+          "device_indices": {
+            "0": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "1": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "2": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "3": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "4": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "5": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "6": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "7": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))"
+          }
+        },
+        "norm_plus_eps": {
+          "global_shape": [
+            3,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "spec": "P()",
+          "device_indices": {
+            "0": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "1": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "2": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "3": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "4": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "5": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "6": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "7": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))"
+          }
+        }
+      },
+      "same_pair_reference_checks": {
+        "substitute/original/own_pair_vs_untouched": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 9.5367431640625e-07,
+              "relative_frobenius_error": 4.806477187606653e-07,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        },
+        "substitute/original/own_pair_vs_capture": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 9.5367431640625e-07,
+              "relative_frobenius_error": 4.806477187606653e-07,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        },
+        "substitute/matrix/own_pair_vs_untouched": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 9.5367431640625e-07,
+              "relative_frobenius_error": 4.806477187606653e-07,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        },
+        "substitute/matrix/own_pair_vs_capture": {
+          "rtol": 1e-05,
+          "atol": 1e-05,
+          "passed": true,
+          "leaves": [
+            {
+              "leaf": 0,
+              "max_absolute_error": 9.5367431640625e-07,
+              "relative_frobenius_error": 4.806477187606653e-07,
+              "passed": true
+            },
+            {
+              "leaf": 1,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 2,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 3,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 4,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 5,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 6,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 7,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "relative_frobenius_error": 4.259572948913569e-08,
+              "passed": true
+            },
+            {
+              "leaf": 8,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 9,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 10,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 11,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 12,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 13,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 14,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 15,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 16,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 17,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 18,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 19,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 20,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 21,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 22,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 23,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 24,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 25,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 26,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            },
+            {
+              "leaf": 27,
+              "max_absolute_error": 0.0,
+              "relative_frobenius_error": 0.0,
+              "passed": true
+            }
+          ],
+          "bitwise_equal": false
+        }
+      },
+      "all_recorded_bitwise_comparisons_equal": false
+    }
+  },
+  "script_sha256": "e506962e7eea60c381cb699ecbd63785ab65d89e711609316d308c5761d38645",
+  "capture_helper_sha256": "2a1aacb7c3533371cef0dff22f07b5ceea7b6e80953a35723fda3083510fa24f",
+  "logging_check": {
+    "run": "ema-gram-20-attribution-38c9abcf26bb",
+    "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-38c9abcf26bb",
+    "state": "finished",
+    "success": 1,
+    "process_exit": 0
+  },
+  "limitations": "Eight virtual CPU devices/small matrices only. No TPU behavior or hidden internal identity established. Fixed1e-5 gates unchanged."
+}

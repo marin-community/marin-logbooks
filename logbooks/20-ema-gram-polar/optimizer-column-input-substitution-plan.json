@@ -13,7 +13,7 @@
     "preemption_retries": "Iris default",
     "wall_clock_limit": null
   },
-  "status": "Implemented; awaiting own online CPU validation before TPU submission",
+  "status": "Own online CPU logging, column harness and replicated-input regression passed; ready for one sequential TPU diagnostic",
   "script": "optimizer_attribution.py --column-input-substitution",
   "question": "Does existing q-direction column placement of the external numerator recover full same-pair reference agreement?",
   "science": "Only operand uses at one mapped q_proj division are replaced with two appended inputs. All other source equations remain identical; target primitive/parameters/outputvars/effects retained; original inputs/constants/28outputs retained. Other uses of the inner and denominator variables are unchanged. Full Gram geometry/source precision/every-update refresh unchanged; no shared optimizer edit. Only external numerator input placement changes to gs[0]=P(None,None,data); denominator stays replicated. Global shapes/source arithmetic/default precision/original input-output shardings unchanged. No kernel tiling override.",
