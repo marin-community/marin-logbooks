@@ -15,6 +15,7 @@ from pathlib import Path
 from compiler_capture_inventory import extract
 from compiler_input_provenance import provenance
 from compiler_normalization_closure import complete_graph
+from compiler_operation_inventory import CALLS, producer_bodies
 from rigging.filesystem.storage_path import StoragePath
 
 
@@ -29,6 +30,25 @@ def external_bindings(parameters, expectations):
         result[role] = dict(compiled_parameter_index=int(index), **row, source_argument=expected["source_argument"])
     assert len({row["compiled_parameter_index"] for row in result.values()}) == len(result)
     return result
+
+
+def first_gram_bodies(path, graph):
+    """Capture first/second product bodies and nested callees for tuple-path checks."""
+    pending = {
+        row["operation"].split("/")[0]
+        for group in ("q_proj", "k_proj", "v_proj")
+        for row in graph["polar_lineage"]["output_groups"][group][:2]
+    }
+    bodies = {}
+    while pending:
+        with gzip.open(path, "rt") as lines:
+            captured = producer_bodies(lines, [], pending)
+        assert pending <= captured.keys(), sorted(pending - captured.keys())
+        bodies.update(captured)
+        pending = {
+            match[1] for body in captured.values() for line in body for match in CALLS.finditer(line)
+        } - bodies.keys()
+    return bodies
 
 
 def enrich(path, graph, name, artifact):
@@ -62,6 +82,8 @@ def enrich(path, graph, name, artifact):
             if group != "q_proj":
                 for operand in inputs["targets"][group + "/first_product"]["operand_provenance"]:
                     assert not external.intersection(p["index"] for p in operand["entry_parameters"]), group
+    if artifact.get("capture_first_gram_bodies", False):
+        graph["first_gram_path_bodies"] = first_gram_bodies(path, graph)
     graph["normalization_closure"] = closure
     graph["normalization_by_group"] = divisions
     graph["input_provenance"] = inputs

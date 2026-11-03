@@ -1,5 +1,5 @@
 {
-  "status": "Static design only; no extraction submitted",
+  "status": "Validated and ready for regional CPU extraction; not yet submitted",
   "source_report": {
     "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/report.json",
     "sha256": "43edf83f3b2712f43bbe74ea87a23bf9fdf9ea7b3d282869bb11f046fabf916d"
@@ -20,7 +20,8 @@
       "compressed_bytes": 10060350,
       "expected_output_leaves": 28,
       "graph_role": "untouched",
-      "solver": "original"
+      "solver": "original",
+      "capture_first_gram_bodies": true
     },
     "original_evaluate": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/capture__original__evaluate.optimized_hlo.txt.gz",
@@ -28,7 +29,8 @@
       "compressed_bytes": 10049115,
       "expected_output_leaves": 28,
       "graph_role": "evaluate",
-      "solver": "original"
+      "solver": "original",
+      "capture_first_gram_bodies": true
     },
     "original_capture": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/capture__original__extra_outputs.optimized_hlo.txt.gz",
@@ -36,7 +38,8 @@
       "compressed_bytes": 10039854,
       "expected_output_leaves": 30,
       "graph_role": "capture",
-      "solver": "original"
+      "solver": "original",
+      "capture_first_gram_bodies": true
     },
     "original_substitute": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/substitute__original.optimized_hlo.txt.gz",
@@ -44,7 +47,37 @@
       "compressed_bytes": 10049359,
       "expected_output_leaves": 28,
       "graph_role": "substitute",
-      "solver": "original"
+      "solver": "original",
+      "capture_first_gram_bodies": true,
+      "external_inputs": {
+        "inner": {
+          "source_label": "bank[1][0]",
+          "source_argument": [
+            1,
+            0
+          ],
+          "shape": "f32[11,1024,128]",
+          "source_global_shape": [
+            11,
+            1024,
+            1024
+          ],
+          "shape_scope": "Expected per-device compiled parameter shape; checked, not treated as observed until extraction"
+        },
+        "norm_plus_eps": {
+          "source_label": "bank[1][1]",
+          "source_argument": [
+            1,
+            1
+          ],
+          "shape": "f32[11,1,1]",
+          "source_global_shape": [
+            11,
+            1,
+            1
+          ]
+        }
+      }
     },
     "matrix_untouched": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/fused_matrix.optimized_hlo.txt.gz",
@@ -52,7 +85,8 @@
       "compressed_bytes": 9417662,
       "expected_output_leaves": 28,
       "graph_role": "untouched",
-      "solver": "matrix"
+      "solver": "matrix",
+      "capture_first_gram_bodies": true
     },
     "matrix_evaluate": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/capture__matrix__evaluate.optimized_hlo.txt.gz",
@@ -60,7 +94,8 @@
       "compressed_bytes": 9399318,
       "expected_output_leaves": 28,
       "graph_role": "evaluate",
-      "solver": "matrix"
+      "solver": "matrix",
+      "capture_first_gram_bodies": true
     },
     "matrix_capture": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/capture__matrix__extra_outputs.optimized_hlo.txt.gz",
@@ -68,7 +103,8 @@
       "compressed_bytes": 9394109,
       "expected_output_leaves": 30,
       "graph_role": "capture",
-      "solver": "matrix"
+      "solver": "matrix",
+      "capture_first_gram_bodies": true
     },
     "matrix_substitute": {
       "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.14/ema-gram-20-attribution-6fa93c0837a0/substitute__matrix.optimized_hlo.txt.gz",
@@ -76,7 +112,51 @@
       "compressed_bytes": 9402524,
       "expected_output_leaves": 28,
       "graph_role": "substitute",
-      "solver": "matrix"
+      "solver": "matrix",
+      "capture_first_gram_bodies": true,
+      "external_inputs": {
+        "inner": {
+          "source_label": "bank[1][0]",
+          "source_argument": [
+            1,
+            0
+          ],
+          "shape": "f32[11,1024,128]",
+          "source_global_shape": [
+            11,
+            1024,
+            1024
+          ],
+          "shape_scope": "Expected per-device compiled parameter shape; checked, not treated as observed until extraction"
+        },
+        "norm_plus_eps": {
+          "source_label": "bank[1][1]",
+          "source_argument": [
+            1,
+            1
+          ],
+          "shape": "f32[11,1,1]",
+          "source_global_shape": [
+            11,
+            1,
+            1
+          ]
+        }
+      }
     }
+  },
+  "source_files": [
+    "compiler_substitution_inventory.py",
+    "compiler_capture_inventory.py",
+    "compiler_operation_inventory.py",
+    "compiler_input_provenance.py",
+    "compiler_normalization_closure.py",
+    "trace_capture_normalization.py"
+  ],
+  "binding_source": {
+    "file": "optimizer_input_capture.py",
+    "function": "substitution_program.evaluate(bank)",
+    "statement": "inputs, pair = bank; eval_jaxpr receives flattened original inputs followed by pair[0], pair[1]",
+    "sha256": "2a1aacb7c3533371cef0dff22f07b5ceea7b6e80953a35723fda3083510fa24f"
   }
 }
