@@ -471,6 +471,119 @@ def normalization_partition(rec, name, inner, rep, sharding):
     rec.persist()
 
 
+def partial_gram_function(mesh):
+    """Materialize each device's unreduced local product in a leading bank axis."""
+
+    def local_product(x):
+        return isolated_product("A", x)[None, ...]
+
+    return jax.shard_map(
+        local_product,
+        mesh=mesh,
+        axis_names={"data"},
+        in_specs=P(None, None, "data"),
+        out_specs=P("data", None, None, None),
+    )
+
+
+def reduce_partial_function(mesh, scatter):
+    """Apply an explicit collective to the same frozen local-product bank."""
+
+    def reduce_local(bank):
+        assert bank.shape[0] == 1
+        local = bank[0]
+        if scatter:
+            return jax.lax.psum_scatter(local, "data", scatter_dimension=2, tiled=True)
+        return jax.lax.psum(local, "data")
+
+    return jax.shard_map(
+        reduce_local,
+        mesh=mesh,
+        axis_names={"data"},
+        in_specs=P("data", None, None, None),
+        out_specs=P(None, None, "data") if scatter else P(),
+    )
+
+
+def frozen_partial_collectives(rec, name, inner, rep, sharding):
+    """Hold per-device partial values fixed across two collective executables."""
+    normalized = rec.run(f"{name}/collectives/input", normalized_polar_input, (inner,), (rep,), rep)
+    normalized_hash = fingerprint(normalized)
+    partial_sharding = NamedSharding(rep.mesh, P("data", None, None, None))
+    label = f"{name}/collectives/local_partials"
+    partials = fixed_bank_outputs(
+        rec, label, label, partial_gram_function(rep.mesh), {"input": normalized}, rep, partial_sharding
+    )["input"]
+    assert partials.shape == (rep.mesh.size, *normalized.shape)
+    partial_hash = fingerprint(partials)
+    rec.report.setdefault("partial_banks", {})[name] = dict(
+        shape=list(partials.shape),
+        dtype=str(partials.dtype),
+        sha256=partial_hash,
+        per_device_sha256=[fingerprint(x) for x in partials],
+        normalized_input_sha256=normalized_hash,
+    )
+    products, references, raw_products = {}, {}, {}
+    layouts = [("replicated", rep), ("direction_sharded", sharding)]
+    internal = NamedSharding(rep.mesh, P(None, None, "data"))
+    for layout, out_sharding in layouts:
+        label = f"{name}/collectives/reduce/{layout}"
+        products[layout] = fixed_bank_outputs(
+            rec,
+            label,
+            label,
+            reduce_partial_function(rep.mesh, layout == "direction_sharded"),
+            {"partials": partials},
+            partial_sharding,
+            out_sharding,
+        )["partials"]
+        references[layout] = rec.run(f"{name}/identical_inner/{layout}", polar, (inner,), (rep,), out_sharding)
+        raw_products[layout] = rec.run(
+            f"{name}/collectives/raw_first_A/{layout}",
+            partial(raw_contracting_gram, sharding=internal),
+            (inner,),
+            (rep,),
+            out_sharding,
+        )
+    compare_bitwise(rec, f"{name}/collectives/A_layouts", products["direction_sharded"], products["replicated"])
+    compare_bitwise(
+        rec, f"{name}/collectives/reference_layouts", references["direction_sharded"], references["replicated"]
+    )
+    for layout in products:
+        for ref_layout in raw_products:
+            compare_bitwise(
+                rec, f"{name}/collectives/{layout}/A_vs_raw_{ref_layout}", products[layout], raw_products[ref_layout]
+            )
+    banks = {layout: (normalized, value) for layout, value in products.items()}
+    outputs, checks = {}, {}
+    for layout, out_sharding in layouts:
+        label = f"{name}/collectives/continuation/{layout}"
+        outputs[layout] = fixed_bank_outputs(rec, label, label, polar_continuation, banks, (rep, rep), out_sharding)
+        compare_bitwise(rec, f"{label}/A_banks", outputs[layout]["direction_sharded"], outputs[layout]["replicated"])
+        for bank_name, value in outputs[layout].items():
+            for ref_layout, reference in references.items():
+                key = f"{label}/{bank_name}/vs_reference_{ref_layout}"
+                passed = compare_bitwise(rec, key, value, reference)
+                checks[key] = dict(passed=passed, bitwise_equal=rec.report["comparisons"][key]["bitwise_equal"])
+    for bank_name in banks:
+        compare_bitwise(
+            rec,
+            f"{name}/collectives/{bank_name}/continuation_layouts",
+            outputs["direction_sharded"][bank_name],
+            outputs["replicated"][bank_name],
+        )
+    assert fingerprint(partials) == partial_hash and fingerprint(normalized) == normalized_hash
+    rec.report.setdefault("frozen_partial_checks", {})[name] = dict(
+        reference_checks=checks,
+        original_path_interpretation_allowed=False,
+        limitation=(
+            "Materializing partials changes product compilation; explicit collectives may select different algorithms. "
+            "Inspect compiled paths. Equal final endpoints do not prove internal identity or optimizer equivalence."
+        ),
+    )
+    rec.persist()
+
+
 def continuation_crossfeed(rec, name, products, traces, references, rep, sharding):
     """Hold X and each executable fixed while changing the supplied first Gram."""
     x = traces["replicated"]["normalized_input"]
@@ -526,8 +639,12 @@ def first_product_diagnostic(rec, common, rep, shardings):
         inner = rec.run(f"{name}/inner", inner_product, (powers[0], state.momentum, powers[1]), (rep,) * 3, rep)
         del powers
         inner_sha = fingerprint(inner)
-        if rec.report["config"].get("normalization_control") or rec.report["config"].get("partition_control"):
-            if rec.report["config"].get("partition_control"):
+        if any(
+            rec.report["config"].get(k) for k in ("normalization_control", "partition_control", "collective_control")
+        ):
+            if rec.report["config"].get("collective_control"):
+                frozen_partial_collectives(rec, name, inner, rep, sharding)
+            elif rec.report["config"].get("partition_control"):
                 normalization_partition(rec, name, inner, rep, sharding)
             else:
                 normalization_boundary(rec, name, inner, rep, sharding)
@@ -619,6 +736,7 @@ class Recorder:
             or "/products/" in name
             or "/normalization/" in name
             or "/partition/" in name
+            or "/collectives/" in name
         )
         if capture:
             lowered = compiled.lower(*inputs)
@@ -816,6 +934,7 @@ def main():
     mode.add_argument("--polar-continuation", action="store_true")
     mode.add_argument("--polar-normalization", action="store_true")
     mode.add_argument("--polar-partition", action="store_true")
+    mode.add_argument("--polar-collectives", action="store_true")
     args = parser.parse_args()
     product_mode = (
         args.polar_products
@@ -823,6 +942,7 @@ def main():
         or args.polar_continuation
         or args.polar_normalization
         or args.polar_partition
+        or args.polar_collectives
     )
     if not args.smoke:
         initialize_jax()
@@ -856,6 +976,7 @@ def main():
         continuation_control=args.polar_continuation,
         normalization_control=args.polar_normalization,
         partition_control=args.polar_partition,
+        collective_control=args.polar_collectives,
         polar_iterate_leaf_order=[
             "input_norm",
             "normalized_input",

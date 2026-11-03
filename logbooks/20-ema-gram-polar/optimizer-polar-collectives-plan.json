@@ -1,0 +1,43 @@
+{
+  "status": "Implementation prepared; online CPU validation required before TPU submission",
+  "script": "optimizer_attribution.py --polar-collectives",
+  "script_sha256": "11dadc88cfcbeb75028ec19c408510a664cb8ba8391a9d3fac47efc610b75f9a",
+  "question": "Do explicit sum and sum-scatter differ on identical frozen per-device partial first-Gram products?",
+  "prior_evidence": "compiler-partition-reductions.json",
+  "input_recipe": "Seed0, same seven full synthetic state shapes and common standalone refresh recipe as prior attribution. Only square q/k/v groups enter the new polar-product diagnostic. Identical frozen inner tensor within each layout comparison; no cross-job bitwise input claim.",
+  "stages": [
+    "Common original refreshed state and q/k/v powers/inner products",
+    "Shared normalized X; shard_map local column products materialized as device-indexed bank",
+    "Fixed explicit psum and psum_scatter executables consume the identical partial bank and replay",
+    "Untouched shared polar and raw internally-column-sharded firstA references under both output layouts",
+    "Fixed continuations across the two reduced A banks, replay, both polar references and layout comparisons"
+  ],
+  "science": "Shared uninstrumented polar, coefficients, Gram refresh, normalization and powers. No precision overrides, approximation, tolerance change or optimizer/trainer change. Expression association retained.",
+  "instrumentation_gate": "All fixed1e-5 mismatches recorded; no original internal-path interpretation even when final results match. candidate_accepted_for_training remains false.",
+  "crossfeed": "Each device partial is held fixed across collective evaluators; bank shape [devices,layers,width,width], manual-axis first dimension. Local column contraction remains full shape partitioned across devices. No precision override or compiler tiling choice. Explicit psum and tiled psum_scatter may select different algorithms from the original graphs; inspect optimized HLO before interpreting results.",
+  "expected_cpu_equal_path": {
+    "finite_stages": 75,
+    "comparisons": 69,
+    "fixed_executables": 15,
+    "compiler_files": 60
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "One group and one executable/device output bank at a time; reference/traces offloaded to host; clear executable caches; original common state on host. No training checkpoint or dataset.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8",
+  "job_name": "ema-gram-20-polar-collectives-v5e-8-20261103",
+  "limitations": "Conditional collective and input sensitivity. Materializing local partials changes compilation and may not reproduce original partial values. Explicit collectives may select different algorithms. Final agreement does not prove internal identity or full optimizer equivalence; no warmed timing, MFU or training claim.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-collectives-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-collectives --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.8",
+  "preflight": "optimizer-polar-collectives-preflight.json"
+}
