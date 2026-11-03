@@ -1,0 +1,1611 @@
+{
+  "graphs": {
+    "matrix_untouched": {
+      "original_while_endpoint": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [
+          1
+        ],
+        "name": "while.1981",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "while",
+        "operands": [
+          "tuple.25705"
+        ],
+        "parameter_index": null,
+        "attributes": ", condition=%wide.region_467.527_spmd, body=%wide.region_466.526_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=12}",
+        "instruction": "%while.1981 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) while(%tuple.25705), condition=%wide.region_467.527_spmd, body=%wide.region_466.526_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=12}"
+      },
+      "initializer": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "tuple.25705",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "tuple",
+        "operands": [
+          "copy.46738",
+          "broadcast_in_dim.1446.clone.2",
+          "broadcast_in_dim.1447.clone.4",
+          "fusion.71529",
+          "constant.10193.clone.1",
+          "constant.11132",
+          "copy-done.1124",
+          "constant.11132",
+          "constant.10798.clone.9",
+          "constant.10177.clone.33",
+          "constant.10797.clone.9",
+          "constant.10800.clone.9",
+          "copy-done.1123"
+        ],
+        "parameter_index": null,
+        "attributes": "",
+        "instruction": "%tuple.25705 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) tuple(%copy.46738, %broadcast_in_dim.1446.clone.2, %broadcast_in_dim.1447.clone.4, %fusion.71529, %constant.10193.clone.1, /*index=5*/%constant.11132, %copy-done.1124, %constant.11132, %constant.10798.clone.9, %constant.10177.clone.33, /*index=10*/%constant.10797.clone.9, %constant.10800.clone.9, %copy-done.1123)"
+      },
+      "positions": [
+        {
+          "position": 0,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy.46738",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "copy",
+            "operands": [
+              "constant.11132"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy.46738 = s32[]{:T(128)} copy(%constant.11132)"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 1,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1446.clone.2",
+            "shape": "f32[2,4096]{1,0:T(2,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=9}",
+            "instruction": "%broadcast_in_dim.1446.clone.2 = f32[2,4096]{1,0:T(2,128)} broadcast(%constant.10851.clone), dimensions={}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=9}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 2,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1447.clone.4",
+            "shape": "f32[2,4096,4096]{1,2,0:T(8,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=9}",
+            "instruction": "%broadcast_in_dim.1447.clone.4 = f32[2,4096,4096]{1,2,0:T(8,128)} broadcast(%constant.10851.clone), dimensions={}, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=9}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 3,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "fusion.71529",
+            "shape": "f32[2,4096,4096]{2,1,0:T(8,128)}",
+            "opcode": "fusion",
+            "operands": [
+              "copy.18276",
+              "pad_dynamic-slice_fusion.632",
+              "multiply.2180"
+            ],
+            "parameter_index": null,
+            "attributes": ", kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=12}",
+            "instruction": "%fusion.71529 = f32[2,4096,4096]{2,1,0:T(8,128)} fusion(%copy.18276, %pad_dynamic-slice_fusion.632, %multiply.2180), kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=12}"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.260",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter",
+              "operands": [],
+              "parameter_index": 27,
+              "attributes": ", sharding={replicated}, metadata={op_name=\"states[6].right\"}",
+              "instruction": "%param.260 = f32[11,4096,4096]{2,1,0:T(8,128)} parameter(27), sharding={replicated}, metadata={op_name=\"states[6].right\"}"
+            },
+            {
+              "computation": "fused_computation.113969",
+              "context": [
+                "main.530_spmd/fusion.74561"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.411",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.75542",
+                "fusion.81189"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=52}",
+              "instruction": "ROOT %convolution-base-dilated.411 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75542, %fusion.81189), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(full_update)/update_gram_state/dot_general\" stack_frame_id=52}"
+            }
+          ]
+        },
+        {
+          "position": 4,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10193.clone.1",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=9}",
+            "instruction": "%constant.10193.clone.1 = s32[]{:T(128)} constant(1), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=9}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 5,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11132",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=14}",
+            "instruction": "%constant.11132 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=14}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 6,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1124",
+            "shape": "s32[4097]{0:T(1024)S(1)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1124"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1124 = s32[4097]{0:T(1024)S(1)} copy-done(%copy-start.1124)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25703"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=9}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25703), condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=9}"
+            }
+          ]
+        },
+        {
+          "position": 7,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11132",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=14}",
+            "instruction": "%constant.11132 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=14}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 8,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10798.clone.9",
+            "shape": "s32[6]{0:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}",
+            "instruction": "%constant.10798.clone.9 = s32[6]{0:T(128)} constant({256, 4096, 2080, 1056, 544, 288}), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 9,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10177.clone.33",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}",
+            "instruction": "%constant.10177.clone.33 = s32[]{:T(128)} constant(-1), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 10,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10797.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}",
+            "instruction": "%constant.10797.clone.9 = s32[]{:T(128)} constant(4096), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 11,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10800.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}",
+            "instruction": "%constant.10800.clone.9 = s32[]{:T(128)} constant(5), metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=9}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 12,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1123",
+            "shape": "s32[4097]{0:T(1024)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1123"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1123 = s32[4097]{0:T(1024)} copy-done(%copy-start.1123)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25703"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=9}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25703), condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(full_update)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=9}"
+            }
+          ]
+        }
+      ],
+      "repeated_positions": [
+        5,
+        7
+      ],
+      "shared_opaque_while_positions": [
+        6,
+        12
+      ],
+      "comparison": {
+        "normalized_signature": "8bd384892fc08a2a4603bfc6321ba1ad7c2a01da01cc88341860d6006869ef50",
+        "same_normalized_signature_as_untouched": true,
+        "records": 116,
+        "edges": 128,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 39,
+            "reason": "entry parameter",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.260",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter"
+            }
+          },
+          {
+            "node": 46,
+            "reason": "declared product frontier",
+            "role": "/update_gram_state/dot_general",
+            "record": {
+              "computation": "fused_computation.113969",
+              "context": [
+                "main.530_spmd/fusion.74561"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.411",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 111,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_evaluate": {
+      "original_while_endpoint": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [
+          1
+        ],
+        "name": "while.1981",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "while",
+        "operands": [
+          "tuple.25705"
+        ],
+        "parameter_index": null,
+        "attributes": ", condition=%wide.region_467.527_spmd, body=%wide.region_466.526_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=13}",
+        "instruction": "%while.1981 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) while(%tuple.25705), condition=%wide.region_467.527_spmd, body=%wide.region_466.526_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=13}"
+      },
+      "initializer": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "tuple.25705",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "tuple",
+        "operands": [
+          "copy.46738",
+          "broadcast_in_dim.1446.clone.2",
+          "broadcast_in_dim.1447.clone.4",
+          "fusion.71529",
+          "constant.10193.clone.1",
+          "constant.11132",
+          "copy-done.1124",
+          "constant.11132",
+          "constant.10798.clone.9",
+          "constant.10177.clone.33",
+          "constant.10797.clone.9",
+          "constant.10800.clone.9",
+          "copy-done.1123"
+        ],
+        "parameter_index": null,
+        "attributes": "",
+        "instruction": "%tuple.25705 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) tuple(%copy.46738, %broadcast_in_dim.1446.clone.2, %broadcast_in_dim.1447.clone.4, %fusion.71529, %constant.10193.clone.1, /*index=5*/%constant.11132, %copy-done.1124, %constant.11132, %constant.10798.clone.9, %constant.10177.clone.33, /*index=10*/%constant.10797.clone.9, %constant.10800.clone.9, %copy-done.1123)"
+      },
+      "positions": [
+        {
+          "position": 0,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy.46738",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "copy",
+            "operands": [
+              "constant.11132"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy.46738 = s32[]{:T(128)} copy(%constant.11132)"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 1,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1446.clone.2",
+            "shape": "f32[2,4096]{1,0:T(2,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}",
+            "instruction": "%broadcast_in_dim.1446.clone.2 = f32[2,4096]{1,0:T(2,128)} broadcast(%constant.10851.clone), dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 2,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1447.clone.4",
+            "shape": "f32[2,4096,4096]{1,2,0:T(8,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}",
+            "instruction": "%broadcast_in_dim.1447.clone.4 = f32[2,4096,4096]{1,2,0:T(8,128)} broadcast(%constant.10851.clone), dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 3,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "fusion.71529",
+            "shape": "f32[2,4096,4096]{2,1,0:T(8,128)}",
+            "opcode": "fusion",
+            "operands": [
+              "copy.18276",
+              "pad_dynamic-slice_fusion.632",
+              "multiply.2180"
+            ],
+            "parameter_index": null,
+            "attributes": ", kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=13}",
+            "instruction": "%fusion.71529 = f32[2,4096,4096]{2,1,0:T(8,128)} fusion(%copy.18276, %pad_dynamic-slice_fusion.632, %multiply.2180), kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=13}"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.260",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter",
+              "operands": [],
+              "parameter_index": 27,
+              "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][6].right\"}",
+              "instruction": "%param.260 = f32[11,4096,4096]{2,1,0:T(8,128)} parameter(27), sharding={replicated}, metadata={op_name=\"bank[1][6].right\"}"
+            },
+            {
+              "computation": "fused_computation.113969",
+              "context": [
+                "main.530_spmd/fusion.74561"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.411",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.75542",
+                "fusion.81189"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=53}",
+              "instruction": "ROOT %convolution-base-dilated.411 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75542, %fusion.81189), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=53}"
+            }
+          ]
+        },
+        {
+          "position": 4,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10193.clone.1",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=10}",
+            "instruction": "%constant.10193.clone.1 = s32[]{:T(128)} constant(1), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 5,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11132",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}",
+            "instruction": "%constant.11132 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 6,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1124",
+            "shape": "s32[4097]{0:T(1024)S(1)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1124"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1124 = s32[4097]{0:T(1024)S(1)} copy-done(%copy-start.1124)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25703"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25703), condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}"
+            }
+          ]
+        },
+        {
+          "position": 7,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11132",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}",
+            "instruction": "%constant.11132 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 8,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10798.clone.9",
+            "shape": "s32[6]{0:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10798.clone.9 = s32[6]{0:T(128)} constant({256, 4096, 2080, 1056, 544, 288}), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 9,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10177.clone.33",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10177.clone.33 = s32[]{:T(128)} constant(-1), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 10,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10797.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10797.clone.9 = s32[]{:T(128)} constant(4096), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 11,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10800.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10800.clone.9 = s32[]{:T(128)} constant(5), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 12,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1123",
+            "shape": "s32[4097]{0:T(1024)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1123"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1123 = s32[4097]{0:T(1024)} copy-done(%copy-start.1123)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25703"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25703), condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}"
+            }
+          ]
+        }
+      ],
+      "repeated_positions": [
+        5,
+        7
+      ],
+      "shared_opaque_while_positions": [
+        6,
+        12
+      ],
+      "comparison": {
+        "normalized_signature": "8bd384892fc08a2a4603bfc6321ba1ad7c2a01da01cc88341860d6006869ef50",
+        "same_normalized_signature_as_untouched": true,
+        "records": 116,
+        "edges": 128,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 39,
+            "reason": "entry parameter",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.260",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter"
+            }
+          },
+          {
+            "node": 46,
+            "reason": "declared product frontier",
+            "role": "/update_gram_state/dot_general",
+            "record": {
+              "computation": "fused_computation.113969",
+              "context": [
+                "main.530_spmd/fusion.74561"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.411",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 111,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_capture": {
+      "original_while_endpoint": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [
+          1
+        ],
+        "name": "while.1981",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "while",
+        "operands": [
+          "tuple.25706"
+        ],
+        "parameter_index": null,
+        "attributes": ", condition=%wide.region_467.527_spmd, body=%wide.region_466.526_spmd.sunk, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=13}",
+        "instruction": "%while.1981 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) while(%tuple.25706), condition=%wide.region_467.527_spmd, body=%wide.region_466.526_spmd.sunk, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=13}"
+      },
+      "initializer": {
+        "computation": "main.530_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "tuple.25706",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "tuple",
+        "operands": [
+          "copy.46738",
+          "broadcast_in_dim.1447.clone.2",
+          "broadcast_in_dim.1448.clone.4",
+          "fusion.71529",
+          "constant.10193.clone.1",
+          "constant.11132",
+          "copy-done.1127",
+          "constant.11132",
+          "constant.10798.clone.9",
+          "constant.10177.clone.33",
+          "constant.10797.clone.9",
+          "constant.10800.clone.9",
+          "copy-done.1126"
+        ],
+        "parameter_index": null,
+        "attributes": "",
+        "instruction": "%tuple.25706 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) tuple(%copy.46738, %broadcast_in_dim.1447.clone.2, %broadcast_in_dim.1448.clone.4, %fusion.71529, %constant.10193.clone.1, /*index=5*/%constant.11132, %copy-done.1127, %constant.11132, %constant.10798.clone.9, %constant.10177.clone.33, /*index=10*/%constant.10797.clone.9, %constant.10800.clone.9, %copy-done.1126)"
+      },
+      "positions": [
+        {
+          "position": 0,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy.46738",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "copy",
+            "operands": [
+              "constant.11132"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy.46738 = s32[]{:T(128)} copy(%constant.11132)"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 1,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1447.clone.2",
+            "shape": "f32[2,4096]{1,0:T(2,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}",
+            "instruction": "%broadcast_in_dim.1447.clone.2 = f32[2,4096]{1,0:T(2,128)} broadcast(%constant.10851.clone), dimensions={}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 2,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1448.clone.4",
+            "shape": "f32[2,4096,4096]{1,2,0:T(8,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10851.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}",
+            "instruction": "%broadcast_in_dim.1448.clone.4 = f32[2,4096,4096]{1,2,0:T(8,128)} broadcast(%constant.10851.clone), dimensions={}, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 3,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "fusion.71529",
+            "shape": "f32[2,4096,4096]{2,1,0:T(8,128)}",
+            "opcode": "fusion",
+            "operands": [
+              "copy.18276",
+              "pad_dynamic-slice_fusion.632",
+              "multiply.2180"
+            ],
+            "parameter_index": null,
+            "attributes": ", kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=13}",
+            "instruction": "%fusion.71529 = f32[2,4096,4096]{2,1,0:T(8,128)} fusion(%copy.18276, %pad_dynamic-slice_fusion.632, %multiply.2180), kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=13}"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.260",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter",
+              "operands": [],
+              "parameter_index": 27,
+              "attributes": ", sharding={replicated}, metadata={op_name=\"bank[1][6].right\"}",
+              "instruction": "%param.260 = f32[11,4096,4096]{2,1,0:T(8,128)} parameter(27), sharding={replicated}, metadata={op_name=\"bank[1][6].right\"}"
+            },
+            {
+              "computation": "fused_computation.113970",
+              "context": [
+                "main.530_spmd/fusion.74562"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.411",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.75543",
+                "fusion.81190"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=53}",
+              "instruction": "ROOT %convolution-base-dilated.411 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75543, %fusion.81190), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(capture)/update_gram_state/dot_general\" stack_frame_id=53}"
+            }
+          ]
+        },
+        {
+          "position": 4,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10193.clone.1",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=10}",
+            "instruction": "%constant.10193.clone.1 = s32[]{:T(128)} constant(1), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 5,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11132",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}",
+            "instruction": "%constant.11132 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 6,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1127",
+            "shape": "s32[4097]{0:T(1024)S(1)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1127"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1127 = s32[4097]{0:T(1024)S(1)} copy-done(%copy-start.1127)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25704"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25704), condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}"
+            }
+          ]
+        },
+        {
+          "position": 7,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11132",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}",
+            "instruction": "%constant.11132 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=15}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 8,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10798.clone.9",
+            "shape": "s32[6]{0:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10798.clone.9 = s32[6]{0:T(128)} constant({256, 4096, 2080, 1056, 544, 288}), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 9,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10177.clone.33",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10177.clone.33 = s32[]{:T(128)} constant(-1), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 10,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10797.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10797.clone.9 = s32[]{:T(128)} constant(4096), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 11,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10800.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}",
+            "instruction": "%constant.10800.clone.9 = s32[]{:T(128)} constant(5), metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=10}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 12,
+          "producer": {
+            "computation": "main.530_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1126",
+            "shape": "s32[4097]{0:T(1024)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1126"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1126 = s32[4097]{0:T(1024)} copy-done(%copy-start.1126)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25704"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25704), condition=%wide.region_457.514_spmd, body=%wide.region_456.513_spmd.sunk, metadata={op_name=\"jit(capture)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=10}"
+            }
+          ]
+        }
+      ],
+      "repeated_positions": [
+        5,
+        7
+      ],
+      "shared_opaque_while_positions": [
+        6,
+        12
+      ],
+      "comparison": {
+        "normalized_signature": "8bd384892fc08a2a4603bfc6321ba1ad7c2a01da01cc88341860d6006869ef50",
+        "same_normalized_signature_as_untouched": true,
+        "records": 116,
+        "edges": 128,
+        "rooted_differences": [],
+        "boundaries": [
+          {
+            "node": 39,
+            "reason": "entry parameter",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.260",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter"
+            }
+          },
+          {
+            "node": 46,
+            "reason": "declared product frontier",
+            "role": "/update_gram_state/dot_general",
+            "record": {
+              "computation": "fused_computation.113970",
+              "context": [
+                "main.530_spmd/fusion.74562"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.411",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 111,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.530_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while"
+            }
+          }
+        ]
+      }
+    },
+    "matrix_substitute": {
+      "original_while_endpoint": {
+        "computation": "main.529_spmd",
+        "context": [],
+        "tuple_path": [
+          1
+        ],
+        "name": "while.1981",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "while",
+        "operands": [
+          "tuple.25697"
+        ],
+        "parameter_index": null,
+        "attributes": ", condition=%wide.region_466.526_spmd, body=%wide.region_465.525_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=14}",
+        "instruction": "%while.1981 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) while(%tuple.25697), condition=%wide.region_466.526_spmd, body=%wide.region_465.525_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=14}"
+      },
+      "initializer": {
+        "computation": "main.529_spmd",
+        "context": [],
+        "tuple_path": [],
+        "name": "tuple.25697",
+        "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)})",
+        "opcode": "tuple",
+        "operands": [
+          "copy.46724",
+          "broadcast_in_dim.1445.clone.2",
+          "broadcast_in_dim.1446.clone.4",
+          "fusion.71529",
+          "constant.10192.clone.1",
+          "constant.11131",
+          "copy-done.1121",
+          "constant.11131",
+          "constant.10797.clone.9",
+          "constant.10176.clone.33",
+          "constant.10796.clone.9",
+          "constant.10799.clone.9",
+          "copy-done.1120"
+        ],
+        "parameter_index": null,
+        "attributes": "",
+        "instruction": "%tuple.25697 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}, s32[4097]{0:T(1024)}) tuple(%copy.46724, %broadcast_in_dim.1445.clone.2, %broadcast_in_dim.1446.clone.4, %fusion.71529, %constant.10192.clone.1, /*index=5*/%constant.11131, %copy-done.1121, %constant.11131, %constant.10797.clone.9, %constant.10176.clone.33, /*index=10*/%constant.10796.clone.9, %constant.10799.clone.9, %copy-done.1120)"
+      },
+      "positions": [
+        {
+          "position": 0,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy.46724",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "copy",
+            "operands": [
+              "constant.11131"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy.46724 = s32[]{:T(128)} copy(%constant.11131)"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 1,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1445.clone.2",
+            "shape": "f32[2,4096]{1,0:T(2,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10850.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=11}",
+            "instruction": "%broadcast_in_dim.1445.clone.2 = f32[2,4096]{1,0:T(2,128)} broadcast(%constant.10850.clone), dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=11}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 2,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "broadcast_in_dim.1446.clone.4",
+            "shape": "f32[2,4096,4096]{1,2,0:T(8,128)}",
+            "opcode": "broadcast",
+            "operands": [
+              "constant.10850.clone"
+            ],
+            "parameter_index": null,
+            "attributes": ", dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=11}",
+            "instruction": "%broadcast_in_dim.1446.clone.4 = f32[2,4096,4096]{1,2,0:T(8,128)} broadcast(%constant.10850.clone), dimensions={}, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/broadcast_in_dim\" stack_frame_id=11}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 3,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "fusion.71529",
+            "shape": "f32[2,4096,4096]{2,1,0:T(8,128)}",
+            "opcode": "fusion",
+            "operands": [
+              "copy.18272",
+              "pad_dynamic-slice_fusion.632",
+              "multiply.2180"
+            ],
+            "parameter_index": null,
+            "attributes": ", kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=14}",
+            "instruction": "%fusion.71529 = f32[2,4096,4096]{2,1,0:T(8,128)} fusion(%copy.18272, %pad_dynamic-slice_fusion.632, %multiply.2180), kind=kLoop, calls=%fused_computation.110842, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/div\" stack_frame_id=14}"
+          },
+          "boundaries": [
+            {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.261",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter",
+              "operands": [],
+              "parameter_index": 27,
+              "attributes": ", sharding={replicated}, metadata={op_name=\"bank[0][1][6].right\"}",
+              "instruction": "%param.261 = f32[11,4096,4096]{2,1,0:T(8,128)} parameter(27), sharding={replicated}, metadata={op_name=\"bank[0][1][6].right\"}"
+            },
+            {
+              "computation": "fused_computation.113966",
+              "context": [
+                "main.529_spmd/fusion.74560"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.407",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution",
+              "operands": [
+                "fusion.75539",
+                "fusion.81184"
+              ],
+              "parameter_index": null,
+              "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=54}",
+              "instruction": "ROOT %convolution-base-dilated.407 = f32[11,4096,4096]{2,1,0:T(8,128)} convolution(%fusion.75539, %fusion.81184), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0fb_0io->0bf, operand_precision={highest,highest}, metadata={op_name=\"jit(evaluate)/update_gram_state/dot_general\" stack_frame_id=54}"
+            }
+          ]
+        },
+        {
+          "position": 4,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10192.clone.1",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=11}",
+            "instruction": "%constant.10192.clone.1 = s32[]{:T(128)} constant(1), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map\" stack_frame_id=11}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 5,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11131",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=16}",
+            "instruction": "%constant.11131 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=16}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 6,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1121",
+            "shape": "s32[4097]{0:T(1024)S(1)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1121"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1121 = s32[4097]{0:T(1024)S(1)} copy-done(%copy-start.1121)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25695"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_456.513_spmd, body=%wide.region_455.512_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=11}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25695), condition=%wide.region_456.513_spmd, body=%wide.region_455.512_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=11}"
+            }
+          ]
+        },
+        {
+          "position": 7,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.11131",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=16}",
+            "instruction": "%constant.11131 = s32[]{:T(128)} constant(0), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/optimization_barrier\" stack_frame_id=16}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 8,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10797.clone.9",
+            "shape": "s32[6]{0:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}",
+            "instruction": "%constant.10797.clone.9 = s32[6]{0:T(128)} constant({256, 4096, 2080, 1056, 544, 288}), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 9,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10176.clone.33",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}",
+            "instruction": "%constant.10176.clone.33 = s32[]{:T(128)} constant(-1), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 10,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10796.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}",
+            "instruction": "%constant.10796.clone.9 = s32[]{:T(128)} constant(4096), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 11,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "constant.10799.clone.9",
+            "shape": "s32[]{:T(128)}",
+            "opcode": "constant",
+            "operands": [],
+            "parameter_index": null,
+            "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}",
+            "instruction": "%constant.10799.clone.9 = s32[]{:T(128)} constant(5), metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while/body/eval_jaxpr\" stack_frame_id=11}"
+          },
+          "boundaries": []
+        },
+        {
+          "position": 12,
+          "producer": {
+            "computation": "main.529_spmd",
+            "context": [],
+            "tuple_path": [],
+            "name": "copy-done.1120",
+            "shape": "s32[4097]{0:T(1024)}",
+            "opcode": "copy-done",
+            "operands": [
+              "copy-start.1120"
+            ],
+            "parameter_index": null,
+            "attributes": "",
+            "instruction": "%copy-done.1120 = s32[4097]{0:T(1024)} copy-done(%copy-start.1120)"
+          },
+          "boundaries": [
+            {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while",
+              "operands": [
+                "tuple.25695"
+              ],
+              "parameter_index": null,
+              "attributes": ", condition=%wide.region_456.513_spmd, body=%wide.region_455.512_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=11}",
+              "instruction": "%while.1975 = (s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)}) while(%tuple.25695), condition=%wide.region_456.513_spmd, body=%wide.region_455.512_spmd.sunk, metadata={op_name=\"jit(evaluate)/gram_direction/relative_gram_power/shard_map/while\" stack_frame_id=11}"
+            }
+          ]
+        }
+      ],
+      "repeated_positions": [
+        5,
+        7
+      ],
+      "shared_opaque_while_positions": [
+        6,
+        12
+      ],
+      "comparison": {
+        "normalized_signature": "a7ea599abfff6cf5135d3e4c87d5e42c6a3cc1b3d864e4dc89c4591bdb4a77ed",
+        "same_normalized_signature_as_untouched": false,
+        "records": 116,
+        "edges": 128,
+        "rooted_differences": [
+          {
+            "operand_path": [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "left_node": 44,
+            "right_node": 44,
+            "changed_fields": [
+              "attributes"
+            ],
+            "left": {
+              "attributes": ", channel_id=329, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=<identifier>, frontend_attributes={is_spmd_generated=\"true\"}"
+            },
+            "right": {
+              "attributes": ", channel_id=326, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=<identifier>, frontend_attributes={is_spmd_generated=\"true\"}"
+            },
+            "operand_positions_differ": false,
+            "unaligned_subtrees_not_compared": false
+          }
+        ],
+        "boundaries": [
+          {
+            "node": 39,
+            "reason": "entry parameter",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [],
+              "name": "param.261",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "parameter"
+            }
+          },
+          {
+            "node": 46,
+            "reason": "declared product frontier",
+            "role": "/update_gram_state/dot_general",
+            "record": {
+              "computation": "fused_computation.113966",
+              "context": [
+                "main.529_spmd/fusion.74560"
+              ],
+              "tuple_path": [],
+              "name": "convolution-base-dilated.407",
+              "shape": "f32[11,4096,4096]{2,1,0:T(8,128)}",
+              "opcode": "convolution"
+            }
+          },
+          {
+            "node": 111,
+            "reason": "opaque operation or unsupported tuple projection",
+            "record": {
+              "computation": "main.529_spmd",
+              "context": [],
+              "tuple_path": [
+                6
+              ],
+              "name": "while.1975",
+              "shape": "(s32[]{:T(128)}, f32[2,4096]{1,0:T(2,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, f32[2,4096,4096]{1,2,0:T(8,128)}, s32[]{:T(128)}, /*index=5*/s32[]{:T(128)}, s32[4097]{0:T(1024)S(1)}, s32[]{:T(128)}, s32[6]{0:T(128)}, s32[]{:T(128)}, /*index=10*/s32[]{:T(128)}, s32[]{:T(128)})",
+              "opcode": "while"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Declared whole initializer only; original while output projection[1] remains opaque.",
+    "Positions6/12 reach one earlier while projection[6]; no body or recurrence semantics inferred.",
+    "Tuple constituents retain explicit ordered repeated positions and exact caller identities.",
+    "No runtime values, precision, order, input equality, semantic identity or cause claim."
+  ]
+}
