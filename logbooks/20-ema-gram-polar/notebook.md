@@ -4084,6 +4084,25 @@ Both full 28-leaf numerical substitution gates remain failed. Static agreement d
 [validation](compiler-polar-boundaries-validation.json) retain source identity,
 report checksums, declared routes and fixture results.
 
+## 2026-11-03 16:12 UTC — Saved trace coverage exposes specific input gaps
+
+A local consolidation of six checksummed reports separates repeated trace records from uninspected operand bindings. It joins records only within one optimized HLO graph, retaining caller context, computation, instruction and tuple path. It preserves ordered edges and repeated operand positions. Explicit traces of a custom call's inputs are recorded separately from the opaque semantics of its output. No new job, accelerator, numerical kernel or HLO transfer was used.
+
+For untouched/evaluator/capture/column-substitution respectively, 8,526/8,526/8,187/8,884 record occurrences reduce to 3,084/3,084/3,144/3,092 distinct records with caller context and tuple projection retained. Boundary occurrences total 480/480/472/521, representing 193/193/200/201 distinct context-and-projection boundaries, or 92/92/93/94 instructions when projections of the same instruction are grouped. These are coverage counts, not cross-graph equality checks or runtime graphs.
+
+Every graph has eighteen product frontiers: four have complete saved input traces and fourteen do not. Ten of the fourteen have roles in the existing dependency-mapped polar chains: gate B_X steps 4/5, up B_X step 5, down B_X steps 3/4 and scaled_A_A step 5, and o B_X steps 2/3/4 and scaled_A_A step 5. None of the fourteen products' 28 immediate operand records is present in the saved traces in the same caller context. Four operand declarations are available in the scoped inventory; their availability alone does not provide full caller bindings. The remaining four product frontiers are outside this polar-chain map.
+
+Grouping output projections by instruction, untouched/evaluator each have 42 opaque frontiers whose declared inputs are fully inspected and 22 whose inputs are not; capture has 41/24 and substitution 43/20. The uninspected opaque instructions comprise 6/6/7/7 Start calls, 10/10/11/7 ConcatBitcast calls and six while loops per graph. All opaque outputs remain opaque, including those with complete input coverage. The index rejects reported missing records within supplied traces and conflicting declarations. Deliberately unexpanded frontier operands remain valid coverage gaps. It does not join different caller contexts or infer semantics from matching channel IDs.
+
+Fixtures passed for repeated edges, caller-context and tuple-projection separation, retained opacity, conflicting declarations, duplicate positions, wrong operand roots and missing records. Reordering record and edge lists, and reordering operand-list entries while retaining their explicit position labels, preserves the summary and edge identities in all four actual graphs. All source report SHA/size checks and per-graph HLO identity checks passed. The full consolidated index remains local; the published source and manifest reproduce it from the existing bounded reports. No large artifact was transferred.
+
+Both full 28-leaf numerical substitution gates remain failed. The next static question is confined to the fourteen product frontiers' operand producers, with gate/down failures and paired-capture/up/o passing controls retained. Reuse the available scoped declarations first; any further regional CPU extraction must publish exact source, manifest and checksums before launch. Keep opaque boundaries explicit and use output dependencies and caller bindings rather than text-order alignment. No numerical intervention or training acceptance is selected. The heartbeat remains active, with no experiment or observer running; PR monitoring remains handed off after its twelve-hour timeout.
+
+[Coverage summary](compiler-record-coverage-summary.json),
+[completion](compiler-record-coverage-completed.json),
+[validation](compiler-record-coverage-validation.json) and
+[reproducible source](consolidate_compiler_records.py) retain the evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -1,0 +1,150 @@
+{
+  "completed_utc": "2026-11-03T16:11:27.324711+00:00",
+  "execution": "Local CPU static JSON parsing; no new job, HLO download, accelerator or numerical kernels.",
+  "source": "consolidate_compiler_records.py",
+  "source_sha256": "a501a878d07cb9157e98fff57d43d325113e84eec37471390563383116dae486",
+  "manifest": "compiler-record-coverage-manifest.json",
+  "manifest_sha256": "61dc735e4226abfb76d36409d125153edaadedd4bdb1f83b1e6301dd7f020d19",
+  "summary": "compiler-record-coverage-summary.json",
+  "summary_bytes": 364470,
+  "summary_sha256": "170b97672c6514782461ff451da708abf5f758f539d63cf2141676338638c92f",
+  "local_full_report": "scratch/20261103-record-coverage-report.json",
+  "local_full_report_bytes": 33724474,
+  "local_full_report_sha256": "c523178d50e1c1dba84f69f6e84046c1d9ca20d5301ff78db515648c9eb50a3d",
+  "full_report_publication": "Kept locally; regenerate from published source and six checksummed bounded input reports. No large cross-region transfer.",
+  "counts": {
+    "matrix_untouched": {
+      "traces": {
+        "outer-bindings": 12,
+        "boundary-inputs": 176,
+        "start-producers": 4,
+        "product-inputs": 16,
+        "polar-boundaries": 30
+      },
+      "record_occurrences": 8526,
+      "unique_context_projection_records": 3084,
+      "unique_context_instruction_records": 2297,
+      "edge_occurrences": 8549,
+      "unique_ordered_edges": 3005,
+      "boundary_occurrences": 480,
+      "unique_boundary_context_projections": 193,
+      "frontier_categories": {
+        "opaque_inputs_inspected": 90,
+        "opaque_inputs_not_fully_inspected": 75,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 10
+      },
+      "unique_boundary_context_instructions": 92,
+      "instruction_frontier_categories": {
+        "opaque_inputs_inspected": 42,
+        "opaque_inputs_not_fully_inspected": 22,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 10
+      }
+    },
+    "matrix_evaluate": {
+      "traces": {
+        "outer-bindings": 12,
+        "boundary-inputs": 176,
+        "start-producers": 4,
+        "product-inputs": 16,
+        "polar-boundaries": 30
+      },
+      "record_occurrences": 8526,
+      "unique_context_projection_records": 3084,
+      "unique_context_instruction_records": 2297,
+      "edge_occurrences": 8549,
+      "unique_ordered_edges": 3005,
+      "boundary_occurrences": 480,
+      "unique_boundary_context_projections": 193,
+      "frontier_categories": {
+        "opaque_inputs_inspected": 90,
+        "opaque_inputs_not_fully_inspected": 75,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 10
+      },
+      "unique_boundary_context_instructions": 92,
+      "instruction_frontier_categories": {
+        "opaque_inputs_inspected": 42,
+        "opaque_inputs_not_fully_inspected": 22,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 10
+      }
+    },
+    "matrix_capture": {
+      "traces": {
+        "outer-bindings": 12,
+        "boundary-inputs": 180,
+        "start-producers": 4,
+        "product-inputs": 16,
+        "polar-boundaries": 30
+      },
+      "record_occurrences": 8187,
+      "unique_context_projection_records": 3144,
+      "unique_context_instruction_records": 2327,
+      "edge_occurrences": 8188,
+      "unique_ordered_edges": 3058,
+      "boundary_occurrences": 472,
+      "unique_boundary_context_projections": 200,
+      "frontier_categories": {
+        "opaque_inputs_inspected": 89,
+        "opaque_inputs_not_fully_inspected": 83,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 10
+      },
+      "unique_boundary_context_instructions": 93,
+      "instruction_frontier_categories": {
+        "opaque_inputs_inspected": 41,
+        "opaque_inputs_not_fully_inspected": 24,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 10
+      }
+    },
+    "matrix_substitute": {
+      "traces": {
+        "outer-bindings": 12,
+        "boundary-inputs": 188,
+        "start-producers": 4,
+        "product-inputs": 16,
+        "polar-boundaries": 30
+      },
+      "record_occurrences": 8884,
+      "unique_context_projection_records": 3092,
+      "unique_context_instruction_records": 2307,
+      "edge_occurrences": 8895,
+      "unique_ordered_edges": 3008,
+      "boundary_occurrences": 521,
+      "unique_boundary_context_projections": 201,
+      "frontier_categories": {
+        "opaque_inputs_inspected": 91,
+        "opaque_inputs_not_fully_inspected": 79,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 13
+      },
+      "unique_boundary_context_instructions": 94,
+      "instruction_frontier_categories": {
+        "opaque_inputs_inspected": 43,
+        "opaque_inputs_not_fully_inspected": 20,
+        "product_inputs_not_fully_inspected": 14,
+        "product_inputs_inspected": 4,
+        "source_parameter": 13
+      }
+    }
+  },
+  "limitations": [
+    "Joins stay within one HLO graph and retain caller context and tuple path; no cross-graph alignment.",
+    "Explicit input coverage belongs to a declared instruction, not to semantics of any projected output.",
+    "Opaque outputs remain opaque even when all declared operands have saved traces.",
+    "Stored ordered edges preserve repeated operand positions and occurrences; union is not a runtime graph.",
+    "Inventory record availability alone establishes neither complete bindings nor semantic provenance.",
+    "Both numerical full28leaf substitution gates remain failed; no precision/order/value/cause claim."
+  ],
+  "observers": "No active experiment/queue/observer. PR77099 twelve-hour timeout already handed off; no repoll or replacement."
+}
