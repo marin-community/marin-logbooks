@@ -2784,6 +2784,47 @@ the extraction will verify their hashes while reading them. Static records
 cannot establish hidden original values, runtime precision or numerical cause.
 No accelerator or numerical experiment is selected.
 
+## 2026-11-03 09:07 UTC — Capture compiler records mapped; cause unresolved
+
+The [regional CPU extraction](compiler-capture-inventory-completed.json)
+finished on attempt 0 with task exit 0. It verified all six optimized-HLO hashes
+in us-west4 and mapped 105 polar products in seven disjoint 15-product chains
+per graph. Output counts are 28 for untouched/evaluator graphs and 34 for
+capture graphs. Large HLO files stayed regional; the extracted record is
+11,914,404 bytes. No optimizer kernels or training ran.
+
+The [product comparison](compiler-capture-comparison.json) matches untouched
+and unchanged-evaluator records at all 105 positions for both solvers in the
+inspected fields: result and operand declarations, immediate operand opcodes,
+operation attributes/backend configuration and immediate enclosing-fusion
+configuration. This agrees with their bitwise-equal final outputs, but does not
+establish internal numerical identity.
+
+Original capture changes enclosing-fusion configurations at 13 product positions
+in q/k/v. Two v_proj product result declarations differ only by an `S(1)` tag,
+whose meaning is not interpreted here.
+Matrix capture changes enclosing-fusion configurations at 16 positions across
+six groups. The other inspected product fields match, aside from those two
+original-branch result declarations. This comparison does not establish an
+explanation for all failed final directions: the original capture's o_proj and up_proj directions
+failed numerically despite matching all inspected product fields in those groups.
+Upstream values and connections were not included in that equality claim.
+
+Each graph retains 13 normalization division records. Following immediate
+operand-producing fusions maps both first-product operands to a normalization
+division for q/k/v, preserving repeated operand positions. The remaining four
+groups are unresolved at this boundary; an empty direct-scope match does not
+mean normalization is absent. The plan records fixture ordering/count checks;
+the [comparison validation](compiler-capture-comparison-validation.json) records
+a targeted operand-shape mutation and the q/k/v operand mapping checks.
+
+Next, trace the remaining normalization producers and caller inputs using the
+captured bodies and entry records, listing any missing bodies explicitly. Any
+needed extraction stays on regional CPU. Both numerical capture gates remain
+failed, so their intermediates cannot establish untouched hidden values. No
+precision/tiling intervention or new numerical submission is selected. The CPU
+log observer ended naturally; no experiment or queue remains active.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

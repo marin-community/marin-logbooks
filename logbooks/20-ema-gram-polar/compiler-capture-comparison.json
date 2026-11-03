@@ -1,0 +1,2214 @@
+{
+  "graphs": {
+    "original_untouched": {
+      "mapped_products": 105,
+      "output_roles": [
+        "direction/q_proj",
+        "direction/k_proj",
+        "direction/v_proj",
+        "direction/o_proj",
+        "direction/gate_proj",
+        "direction/up_proj",
+        "direction/down_proj",
+        "state/q_proj/momentum",
+        "state/q_proj/left",
+        "state/q_proj/right",
+        "state/k_proj/momentum",
+        "state/k_proj/left",
+        "state/k_proj/right",
+        "state/v_proj/momentum",
+        "state/v_proj/left",
+        "state/v_proj/right",
+        "state/o_proj/momentum",
+        "state/o_proj/left",
+        "state/o_proj/right",
+        "state/gate_proj/momentum",
+        "state/gate_proj/left",
+        "state/gate_proj/right",
+        "state/up_proj/momentum",
+        "state/up_proj/left",
+        "state/up_proj/right",
+        "state/down_proj/momentum",
+        "state/down_proj/left",
+        "state/down_proj/right"
+      ],
+      "normalization_records": 13,
+      "normalization_first_product_scope_matches": {
+        "q_proj": [],
+        "k_proj": [],
+        "v_proj": [],
+        "o_proj": [],
+        "gate_proj": [],
+        "up_proj": [],
+        "down_proj": []
+      },
+      "captured_producer_bodies": 247,
+      "entry_collective_count": 30,
+      "first_product_normalization_operands": {
+        "q_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149084",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112853.clone.clone\", \"div.503\", []]",
+                "context": [],
+                "computation": "fused_computation.112853.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.503",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338506",
+                  "div.504"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.503 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338506, %div.504), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149084",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112853.clone.clone\", \"div.503\", []]",
+                "context": [],
+                "computation": "fused_computation.112853.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.503",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338506",
+                  "div.504"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.503 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338506, %div.504), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "k_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149087",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112850.clone.clone\", \"div.507\", []]",
+                "context": [],
+                "computation": "fused_computation.112850.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.507",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338511",
+                  "div.508"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.507 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338511, %div.508), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149087",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112850.clone.clone\", \"div.507\", []]",
+                "context": [],
+                "computation": "fused_computation.112850.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.507",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338511",
+                  "div.508"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.507 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338511, %div.508), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "v_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149178",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112847.clone.clone\", \"div.519\", []]",
+                "context": [],
+                "computation": "fused_computation.112847.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.519",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338597",
+                  "div.520"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.519 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338597, %div.520), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149178",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112847.clone.clone\", \"div.519\", []]",
+                "context": [],
+                "computation": "fused_computation.112847.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.519",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338597",
+                  "div.520"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.519 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338597, %div.520), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "o_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149352",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1088.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149351",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6938.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "gate_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149404",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1097.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149403",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6947.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "up_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149418",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1106.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149417",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6956.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "down_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149437",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1115.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149436",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6965.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ]
+      }
+    },
+    "original_evaluate": {
+      "mapped_products": 105,
+      "output_roles": [
+        "direction/q_proj",
+        "direction/k_proj",
+        "direction/v_proj",
+        "direction/o_proj",
+        "direction/gate_proj",
+        "direction/up_proj",
+        "direction/down_proj",
+        "state/q_proj/momentum",
+        "state/q_proj/left",
+        "state/q_proj/right",
+        "state/k_proj/momentum",
+        "state/k_proj/left",
+        "state/k_proj/right",
+        "state/v_proj/momentum",
+        "state/v_proj/left",
+        "state/v_proj/right",
+        "state/o_proj/momentum",
+        "state/o_proj/left",
+        "state/o_proj/right",
+        "state/gate_proj/momentum",
+        "state/gate_proj/left",
+        "state/gate_proj/right",
+        "state/up_proj/momentum",
+        "state/up_proj/left",
+        "state/up_proj/right",
+        "state/down_proj/momentum",
+        "state/down_proj/left",
+        "state/down_proj/right"
+      ],
+      "normalization_records": 13,
+      "normalization_first_product_scope_matches": {
+        "q_proj": [],
+        "k_proj": [],
+        "v_proj": [],
+        "o_proj": [],
+        "gate_proj": [],
+        "up_proj": [],
+        "down_proj": []
+      },
+      "captured_producer_bodies": 247,
+      "entry_collective_count": 30,
+      "first_product_normalization_operands": {
+        "q_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149084",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112853.clone.clone\", \"div.503\", []]",
+                "context": [],
+                "computation": "fused_computation.112853.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.503",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338506",
+                  "div.504"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.503 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338506, %div.504), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149084",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112853.clone.clone\", \"div.503\", []]",
+                "context": [],
+                "computation": "fused_computation.112853.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.503",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338506",
+                  "div.504"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.503 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338506, %div.504), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "k_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149087",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112850.clone.clone\", \"div.507\", []]",
+                "context": [],
+                "computation": "fused_computation.112850.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.507",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338511",
+                  "div.508"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.507 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338511, %div.508), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149087",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112850.clone.clone\", \"div.507\", []]",
+                "context": [],
+                "computation": "fused_computation.112850.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.507",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338511",
+                  "div.508"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.507 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338511, %div.508), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "v_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149178",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112847.clone.clone\", \"div.519\", []]",
+                "context": [],
+                "computation": "fused_computation.112847.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.519",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338597",
+                  "div.520"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.519 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338597, %div.520), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149178",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112847.clone.clone\", \"div.519\", []]",
+                "context": [],
+                "computation": "fused_computation.112847.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.519",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338597",
+                  "div.520"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.519 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338597, %div.520), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "o_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149352",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1088.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149351",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6938.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "gate_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149404",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1097.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149403",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6947.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "up_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149418",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1106.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149417",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6956.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "down_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149437",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1115.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149436",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6965.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ]
+      }
+    },
+    "original_capture": {
+      "mapped_products": 105,
+      "output_roles": [
+        "direction/q_proj",
+        "direction/k_proj",
+        "direction/v_proj",
+        "direction/o_proj",
+        "direction/gate_proj",
+        "direction/up_proj",
+        "direction/down_proj",
+        "state/q_proj/momentum",
+        "state/q_proj/left",
+        "state/q_proj/right",
+        "state/k_proj/momentum",
+        "state/k_proj/left",
+        "state/k_proj/right",
+        "state/v_proj/momentum",
+        "state/v_proj/left",
+        "state/v_proj/right",
+        "state/o_proj/momentum",
+        "state/o_proj/left",
+        "state/o_proj/right",
+        "state/gate_proj/momentum",
+        "state/gate_proj/left",
+        "state/gate_proj/right",
+        "state/up_proj/momentum",
+        "state/up_proj/left",
+        "state/up_proj/right",
+        "state/down_proj/momentum",
+        "state/down_proj/left",
+        "state/down_proj/right",
+        "capture/q_proj/inner",
+        "capture/q_proj/norm_plus_eps",
+        "capture/k_proj/inner",
+        "capture/k_proj/norm_plus_eps",
+        "capture/v_proj/inner",
+        "capture/v_proj/norm_plus_eps"
+      ],
+      "normalization_records": 13,
+      "normalization_first_product_scope_matches": {
+        "q_proj": [],
+        "k_proj": [],
+        "v_proj": [],
+        "o_proj": [],
+        "gate_proj": [],
+        "up_proj": [],
+        "down_proj": []
+      },
+      "captured_producer_bodies": 245,
+      "entry_collective_count": 34,
+      "first_product_normalization_operands": {
+        "q_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149097",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112853.clone.clone\", \"div.503\", []]",
+                "context": [],
+                "computation": "fused_computation.112853.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.503",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338524",
+                  "div.504"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.503 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338524, %div.504), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149097",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112853.clone.clone\", \"div.503\", []]",
+                "context": [],
+                "computation": "fused_computation.112853.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.503",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338524",
+                  "div.504"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.503 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338524, %div.504), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "k_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149100",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112850.clone.clone\", \"div.507\", []]",
+                "context": [],
+                "computation": "fused_computation.112850.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.507",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338529",
+                  "div.508"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.507 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338529, %div.508), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149100",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112850.clone.clone\", \"div.507\", []]",
+                "context": [],
+                "computation": "fused_computation.112850.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.507",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338529",
+                  "div.508"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.507 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338529, %div.508), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "v_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149194",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112847.clone.clone\", \"div.519\", []]",
+                "context": [],
+                "computation": "fused_computation.112847.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.519",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338617",
+                  "div.520"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.519 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338617, %div.520), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149194",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.112847.clone.clone\", \"div.519\", []]",
+                "context": [],
+                "computation": "fused_computation.112847.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.519",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.338617",
+                  "div.520"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}",
+                "instruction": "ROOT %div.519 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.338617, %div.520), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=154}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "o_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149368",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1088.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149367",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6938.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "gate_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149420",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1097.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149419",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6947.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "up_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149434",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1106.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149433",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6956.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "down_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.149453",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.1115.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.149452",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6965.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ]
+      }
+    },
+    "matrix_untouched": {
+      "mapped_products": 105,
+      "output_roles": [
+        "direction/q_proj",
+        "direction/k_proj",
+        "direction/v_proj",
+        "direction/o_proj",
+        "direction/gate_proj",
+        "direction/up_proj",
+        "direction/down_proj",
+        "state/q_proj/momentum",
+        "state/q_proj/left",
+        "state/q_proj/right",
+        "state/k_proj/momentum",
+        "state/k_proj/left",
+        "state/k_proj/right",
+        "state/v_proj/momentum",
+        "state/v_proj/left",
+        "state/v_proj/right",
+        "state/o_proj/momentum",
+        "state/o_proj/left",
+        "state/o_proj/right",
+        "state/gate_proj/momentum",
+        "state/gate_proj/left",
+        "state/gate_proj/right",
+        "state/up_proj/momentum",
+        "state/up_proj/left",
+        "state/up_proj/right",
+        "state/down_proj/momentum",
+        "state/down_proj/left",
+        "state/down_proj/right"
+      ],
+      "normalization_records": 13,
+      "normalization_first_product_scope_matches": {
+        "q_proj": [],
+        "k_proj": [],
+        "v_proj": [],
+        "o_proj": [],
+        "gate_proj": [],
+        "up_proj": [],
+        "down_proj": []
+      },
+      "captured_producer_bodies": 245,
+      "entry_collective_count": 63,
+      "first_product_normalization_operands": {
+        "q_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144444",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111160.clone.clone\", \"div.564\", []]",
+                "context": [],
+                "computation": "fused_computation.111160.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.564",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328357",
+                  "div.565"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}",
+                "instruction": "ROOT %div.564 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328357, %div.565), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144444",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111160.clone.clone\", \"div.564\", []]",
+                "context": [],
+                "computation": "fused_computation.111160.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.564",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328357",
+                  "div.565"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}",
+                "instruction": "ROOT %div.564 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328357, %div.565), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "k_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144447",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111157.clone.clone\", \"div.568\", []]",
+                "context": [],
+                "computation": "fused_computation.111157.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.568",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328362",
+                  "div.569"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}",
+                "instruction": "ROOT %div.568 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328362, %div.569), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144447",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111157.clone.clone\", \"div.568\", []]",
+                "context": [],
+                "computation": "fused_computation.111157.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.568",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328362",
+                  "div.569"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}",
+                "instruction": "ROOT %div.568 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328362, %div.569), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "v_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144541",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111154.clone.clone\", \"div.580\", []]",
+                "context": [],
+                "computation": "fused_computation.111154.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.580",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328452",
+                  "div.581"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}",
+                "instruction": "ROOT %div.580 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328452, %div.581), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144541",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111154.clone.clone\", \"div.580\", []]",
+                "context": [],
+                "computation": "fused_computation.111154.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.580",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328452",
+                  "div.581"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}",
+                "instruction": "ROOT %div.580 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328452, %div.581), metadata={op_name=\"jit(full_update)/gram_direction/vmap()/div\" stack_frame_id=49}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "o_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144720",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.905.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144719",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6552.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "gate_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144793",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.914.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144792",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6561.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "up_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144812",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.923.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144811",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6570.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "down_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144826",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.932.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144825",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6579.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ]
+      }
+    },
+    "matrix_evaluate": {
+      "mapped_products": 105,
+      "output_roles": [
+        "direction/q_proj",
+        "direction/k_proj",
+        "direction/v_proj",
+        "direction/o_proj",
+        "direction/gate_proj",
+        "direction/up_proj",
+        "direction/down_proj",
+        "state/q_proj/momentum",
+        "state/q_proj/left",
+        "state/q_proj/right",
+        "state/k_proj/momentum",
+        "state/k_proj/left",
+        "state/k_proj/right",
+        "state/v_proj/momentum",
+        "state/v_proj/left",
+        "state/v_proj/right",
+        "state/o_proj/momentum",
+        "state/o_proj/left",
+        "state/o_proj/right",
+        "state/gate_proj/momentum",
+        "state/gate_proj/left",
+        "state/gate_proj/right",
+        "state/up_proj/momentum",
+        "state/up_proj/left",
+        "state/up_proj/right",
+        "state/down_proj/momentum",
+        "state/down_proj/left",
+        "state/down_proj/right"
+      ],
+      "normalization_records": 13,
+      "normalization_first_product_scope_matches": {
+        "q_proj": [],
+        "k_proj": [],
+        "v_proj": [],
+        "o_proj": [],
+        "gate_proj": [],
+        "up_proj": [],
+        "down_proj": []
+      },
+      "captured_producer_bodies": 245,
+      "entry_collective_count": 63,
+      "first_product_normalization_operands": {
+        "q_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144444",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111160.clone.clone\", \"div.564\", []]",
+                "context": [],
+                "computation": "fused_computation.111160.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.564",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328357",
+                  "div.565"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.564 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328357, %div.565), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144444",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111160.clone.clone\", \"div.564\", []]",
+                "context": [],
+                "computation": "fused_computation.111160.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.564",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328357",
+                  "div.565"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.564 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328357, %div.565), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "k_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144447",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111157.clone.clone\", \"div.568\", []]",
+                "context": [],
+                "computation": "fused_computation.111157.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.568",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328362",
+                  "div.569"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.568 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328362, %div.569), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144447",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111157.clone.clone\", \"div.568\", []]",
+                "context": [],
+                "computation": "fused_computation.111157.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.568",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328362",
+                  "div.569"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.568 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328362, %div.569), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "v_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144541",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111154.clone.clone\", \"div.580\", []]",
+                "context": [],
+                "computation": "fused_computation.111154.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.580",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328452",
+                  "div.581"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.580 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328452, %div.581), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144541",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111154.clone.clone\", \"div.580\", []]",
+                "context": [],
+                "computation": "fused_computation.111154.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.580",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328452",
+                  "div.581"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.580 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328452, %div.581), metadata={op_name=\"jit(evaluate)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "o_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144720",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.905.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144719",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6552.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "gate_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144793",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.914.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144792",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6561.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "up_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144812",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.923.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144811",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6570.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "down_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144826",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.932.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144825",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6579.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ]
+      }
+    },
+    "matrix_capture": {
+      "mapped_products": 105,
+      "output_roles": [
+        "direction/q_proj",
+        "direction/k_proj",
+        "direction/v_proj",
+        "direction/o_proj",
+        "direction/gate_proj",
+        "direction/up_proj",
+        "direction/down_proj",
+        "state/q_proj/momentum",
+        "state/q_proj/left",
+        "state/q_proj/right",
+        "state/k_proj/momentum",
+        "state/k_proj/left",
+        "state/k_proj/right",
+        "state/v_proj/momentum",
+        "state/v_proj/left",
+        "state/v_proj/right",
+        "state/o_proj/momentum",
+        "state/o_proj/left",
+        "state/o_proj/right",
+        "state/gate_proj/momentum",
+        "state/gate_proj/left",
+        "state/gate_proj/right",
+        "state/up_proj/momentum",
+        "state/up_proj/left",
+        "state/up_proj/right",
+        "state/down_proj/momentum",
+        "state/down_proj/left",
+        "state/down_proj/right",
+        "capture/q_proj/inner",
+        "capture/q_proj/norm_plus_eps",
+        "capture/k_proj/inner",
+        "capture/k_proj/norm_plus_eps",
+        "capture/v_proj/inner",
+        "capture/v_proj/norm_plus_eps"
+      ],
+      "normalization_records": 13,
+      "normalization_first_product_scope_matches": {
+        "q_proj": [],
+        "k_proj": [],
+        "v_proj": [],
+        "o_proj": [],
+        "gate_proj": [],
+        "up_proj": [],
+        "down_proj": []
+      },
+      "captured_producer_bodies": 242,
+      "entry_collective_count": 57,
+      "first_product_normalization_operands": {
+        "q_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144464",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111160.clone.clone\", \"div.564\", []]",
+                "context": [],
+                "computation": "fused_computation.111160.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.564",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328381",
+                  "div.565"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.564 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328381, %div.565), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144464",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111160.clone.clone\", \"div.564\", []]",
+                "context": [],
+                "computation": "fused_computation.111160.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.564",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328381",
+                  "div.565"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.564 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328381, %div.565), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "k_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144467",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111157.clone.clone\", \"div.568\", []]",
+                "context": [],
+                "computation": "fused_computation.111157.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.568",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328386",
+                  "div.569"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.568 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328386, %div.569), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144467",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111157.clone.clone\", \"div.568\", []]",
+                "context": [],
+                "computation": "fused_computation.111157.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.568",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328386",
+                  "div.569"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.568 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328386, %div.569), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "v_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144560",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111154.clone.clone\", \"div.580\", []]",
+                "context": [],
+                "computation": "fused_computation.111154.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.580",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328475",
+                  "div.581"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.580 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328475, %div.581), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144560",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            },
+            "mapped": true,
+            "normalization_divisions": [
+              {
+                "identity": "[[], \"fused_computation.111154.clone.clone\", \"div.580\", []]",
+                "context": [],
+                "computation": "fused_computation.111154.clone.clone",
+                "selected_tuple_path": [],
+                "name": "div.580",
+                "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+                "opcode": "divide",
+                "operands": [
+                  "param_0.328475",
+                  "div.581"
+                ],
+                "parameter_index": null,
+                "attributes": ", metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}",
+                "instruction": "ROOT %div.580 = f32[11,1024,128]{2,1,0:T(8,128)} divide(%param_0.328475, %div.581), metadata={op_name=\"jit(capture)/gram_direction/vmap()/div\" stack_frame_id=50}"
+              }
+            ],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "o_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144756",
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.905.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144755",
+              "shape": "bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6552.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "gate_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144829",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.914.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144828",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6561.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "up_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144848",
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.923.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144847",
+              "shape": "bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6570.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ],
+        "down_proj": [
+          {
+            "operand_index": 0,
+            "producer": {
+              "name": "fusion.144862",
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.932.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          },
+          {
+            "operand_index": 1,
+            "producer": {
+              "name": "fusion.144861",
+              "shape": "bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}",
+              "opcode": "fusion",
+              "calls": "bitcast_fusion.6579.clone.clone"
+            },
+            "mapped": false,
+            "normalization_divisions": [],
+            "parameter_boundary": "Immediate producer fusion parameters; caller values not resolved here"
+          }
+        ]
+      }
+    }
+  },
+  "comparisons": {
+    "original/untouched_vs_evaluate": {
+      "matched_positions": 105,
+      "differences": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": []
+      },
+      "affected_groups": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": []
+      }
+    },
+    "original/untouched_vs_capture": {
+      "matched_positions": 105,
+      "differences": {
+        "shape": [
+          "v_proj/2/X_Xt",
+          "v_proj/4/X_Xt"
+        ],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "q_proj/1/scaled_A_A",
+          "q_proj/2/B_X",
+          "q_proj/3/B_X",
+          "q_proj/4/X_Xt",
+          "q_proj/4/B_X",
+          "k_proj/3/B_X",
+          "k_proj/4/X_Xt",
+          "v_proj/1/B_X",
+          "v_proj/2/X_Xt",
+          "v_proj/2/B_X",
+          "v_proj/3/X_Xt",
+          "v_proj/3/B_X",
+          "v_proj/4/X_Xt"
+        ]
+      },
+      "affected_groups": {
+        "shape": [
+          "v_proj"
+        ],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "k_proj",
+          "q_proj",
+          "v_proj"
+        ]
+      }
+    },
+    "original/evaluate_vs_capture": {
+      "matched_positions": 105,
+      "differences": {
+        "shape": [
+          "v_proj/2/X_Xt",
+          "v_proj/4/X_Xt"
+        ],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "q_proj/1/scaled_A_A",
+          "q_proj/2/B_X",
+          "q_proj/3/B_X",
+          "q_proj/4/X_Xt",
+          "q_proj/4/B_X",
+          "k_proj/3/B_X",
+          "k_proj/4/X_Xt",
+          "v_proj/1/B_X",
+          "v_proj/2/X_Xt",
+          "v_proj/2/B_X",
+          "v_proj/3/X_Xt",
+          "v_proj/3/B_X",
+          "v_proj/4/X_Xt"
+        ]
+      },
+      "affected_groups": {
+        "shape": [
+          "v_proj"
+        ],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "k_proj",
+          "q_proj",
+          "v_proj"
+        ]
+      }
+    },
+    "matrix/untouched_vs_evaluate": {
+      "matched_positions": 105,
+      "differences": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": []
+      },
+      "affected_groups": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": []
+      }
+    },
+    "matrix/untouched_vs_capture": {
+      "matched_positions": 105,
+      "differences": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "q_proj/1/X_Xt",
+          "q_proj/2/B_X",
+          "q_proj/3/B_X",
+          "q_proj/4/X_Xt",
+          "k_proj/1/X_Xt",
+          "k_proj/1/B_X",
+          "k_proj/3/B_X",
+          "v_proj/1/X_Xt",
+          "v_proj/5/B_X",
+          "o_proj/1/scaled_A_A",
+          "o_proj/1/B_X",
+          "o_proj/3/B_X",
+          "o_proj/4/B_X",
+          "up_proj/5/scaled_A_A",
+          "down_proj/5/scaled_A_A",
+          "down_proj/5/B_X"
+        ]
+      },
+      "affected_groups": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "down_proj",
+          "k_proj",
+          "o_proj",
+          "q_proj",
+          "up_proj",
+          "v_proj"
+        ]
+      }
+    },
+    "matrix/evaluate_vs_capture": {
+      "matched_positions": 105,
+      "differences": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "q_proj/1/X_Xt",
+          "q_proj/2/B_X",
+          "q_proj/3/B_X",
+          "q_proj/4/X_Xt",
+          "k_proj/1/X_Xt",
+          "k_proj/1/B_X",
+          "k_proj/3/B_X",
+          "v_proj/1/X_Xt",
+          "v_proj/5/B_X",
+          "o_proj/1/scaled_A_A",
+          "o_proj/1/B_X",
+          "o_proj/3/B_X",
+          "o_proj/4/B_X",
+          "up_proj/5/scaled_A_A",
+          "down_proj/5/scaled_A_A",
+          "down_proj/5/B_X"
+        ]
+      },
+      "affected_groups": {
+        "shape": [],
+        "operand_shapes": [],
+        "operand_opcodes": [],
+        "operation_attributes": [],
+        "operation_backend": [],
+        "enclosing_fusion_backend": [
+          "down_proj",
+          "k_proj",
+          "o_proj",
+          "q_proj",
+          "up_proj",
+          "v_proj"
+        ]
+      }
+    }
+  },
+  "limitations": "Static mapped operation fields and immediate enclosing configurations, not runtime precision or cause. Operand shapes/opcodes omit upstream values and connections. Equal fields do not establish equal internal computations. Normalization scope associations are syntactic and may be empty. The underlying numerical capture reference gates both failed.",
+  "input_report_sha256": "574e96b3d0452bede5b6d4c162e61d353f7e3b02e8a77d9722643bb179a701d5"
+}
