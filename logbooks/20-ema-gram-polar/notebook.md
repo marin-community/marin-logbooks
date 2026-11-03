@@ -3187,6 +3187,34 @@ finished with collection complete and candidate acceptance false. Log observer
 54894 ended naturally with exit 0; no experiment or queue remains. PR observer
 77099 remains the sole PR observer.
 
+## 2026-11-03 11:13 UTC — Capture q_proj normalization operands together
+
+The paired-input capture mode appends q_proj's existing pre-normalization
+inner matrix and norm-plus-epsilon denominator to the full update's outputs.
+It preserves all source equations, inputs, constants and 28 original outputs,
+yielding 30 output leaves. The two added values come from the same instrumented
+executable. Separate single-value captures previously passed their own
+reference gates, but do not establish values from one hidden computation.
+
+For each solver, the harness compares the untouched update, unchanged Jaxpr
+evaluator and paired capture on identical fingerprinted inputs. Each evaluator
+and capture is compiled once and replayed. All 28 reference leaves use fixed
+rtol=atol=1e-5 plus bitwise checks. Each cross-solver captured-value comparison
+records both reference gates. Failed agreement forbids original-path
+interpretation; matching final outputs would not prove hidden internal identity
+or explain the complete optimizer discrepancy.
+
+Validation is pending: a fresh online logging check, a paired CPU run, and
+single-inner and single-denominator regressions. The expected paired result is
+12 finite stages, 14 comparisons, four fixed executable replays and 14 compiler
+or Jaxpr artifacts. Validation will check output order and shapes as well as
+artifact checksums. No numerical job has been submitted to Iris. One sequential
+TPU diagnostic is planned only after this validation and source publication.
+
+The [paired-input plan](optimizer-paired-input-capture-plan.json) preserves
+full geometry, source precision, one executable/device bank at a time, host
+offload and cache clearing. No precision, tiling or optimizer change is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

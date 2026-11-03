@@ -934,8 +934,8 @@ def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardin
             output_shardings,
         )["identical_inputs"]
         extra_shardings = (
-            (replicated,)
-            if capture_kind in ("q_norm", "q_inner")
+            (replicated,) * metadata["appended_output_leaves"]
+            if capture_kind in ("q_norm", "q_inner", "q_pair")
             else tuple((replicated, replicated) for _ in NAMES[:3])
         )
         capture_shardings = (output_shardings, extra_shardings)
@@ -971,6 +971,11 @@ def full_input_capture(rec, inputs, matrix_eigh, input_shardings, output_shardin
     if capture_kind in ("q_norm", "q_inner"):
         field = "norm_plus_eps" if capture_kind == "q_norm" else "inner"
         values = [("q_proj", field, captures["matrix"][1][0], captures["original"][1][0])]
+    elif capture_kind == "q_pair":
+        values = [
+            ("q_proj", name, captures["matrix"][1][index], captures["original"][1][index])
+            for index, name in enumerate(("inner", "norm_plus_eps"))
+        ]
     else:
         values = [
             (group, name, captures["matrix"][1][index][field], captures["original"][1][index][field])
@@ -1029,9 +1034,16 @@ def main():
     mode.add_argument("--full-input-capture", action="store_true")
     mode.add_argument("--single-norm-capture", action="store_true")
     mode.add_argument("--single-inner-capture", action="store_true")
+    mode.add_argument("--paired-input-capture", action="store_true")
     args = parser.parse_args()
-    capture_mode = args.full_input_capture or args.single_norm_capture or args.single_inner_capture
-    capture_kind = "q_inner" if args.single_inner_capture else "q_norm" if args.single_norm_capture else "qkv_inputs"
+    capture_mode = (
+        args.full_input_capture or args.single_norm_capture or args.single_inner_capture or args.paired_input_capture
+    )
+    capture_kind = (
+        "q_pair"
+        if args.paired_input_capture
+        else "q_inner" if args.single_inner_capture else "q_norm" if args.single_norm_capture else "qkv_inputs"
+    )
     product_mode = (
         args.polar_products
         or args.polar_contracting

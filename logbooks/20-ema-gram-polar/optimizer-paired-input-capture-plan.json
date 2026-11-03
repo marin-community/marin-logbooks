@@ -1,0 +1,49 @@
+{
+  "status": "Implemented; own CPU validation pending; not submitted",
+  "script": "optimizer_attribution.py --paired-input-capture",
+  "question": "Can the existing q_proj inner matrix and norm-plus-epsilon denominator be captured together while preserving each full-update reference?",
+  "prior_evidence": [
+    "optimizer-single-inner-capture-v5e-completed.json",
+    "optimizer-single-norm-capture-v5e-completed.json",
+    "optimizer-full-input-capture-v5e-completed.json"
+  ],
+  "input_recipe": "Same seed0 seven full-shape synthetic gradients and initial state recipe; shared zero initialization and prior refresh. Identical fingerprinted host bank for every direct/evaluated/capture invocation. No checkpoint/data read.",
+  "science": "No shared optimizer source edits. Capture uses traced shared full_update equations verbatim and appends existing variables to outputs. Trace mapping uses final-output ancestors and source scopes, asserting one distinct normalization per group. All equations, input variables, constants and original outputs retained. No math, precision, coefficient, association or tiling override.",
+  "stages": [
+    "Shared zero initialization and prior refresh",
+    "Untouched original and matrix full_update references",
+    "Unchanged28-output Jaxpr evaluator, compiled once/replayed for each solver",
+    "Same equations with existing q_proj inner then norm-plus-epsilon appended:30outputs, compiledonce/replayed",
+    "All28leaf own-reference/evaluator gates plus two crosssolver captured-value comparisons with bothreferencegates"
+  ],
+  "instrumentation_gate": "Compare unchanged evaluator and capture full outputs against untouched direct full_update for each solver at fixed rtol=atol=1e-5, report bitwise equality. Failed agreement forbids original-path interpretation. Matching finals does not prove internal identity. Expected TPU mismatches persist while collection continues; candidate_accepted_for_training stays false.",
+  "expected": {
+    "finite_stages": 12,
+    "comparisons": 14,
+    "fixed_executables": 4,
+    "compiler_files": 12,
+    "jaxpr_files": 2,
+    "appended_outputs": 2
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "One executable/device bank at a time; host inputs/references, block/hostoffload/cacheclear. Append full11x1024x1024FP32inner and11x1x1FP32denominator, both replicated.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.12",
+  "job_name": "ema-gram-20-paired-input-capture-v5e-8-20261103",
+  "limitations": "Additional outputs can alter compilation. Failed own-reference agreement forbids original-path interpretation; matching finals does not establish hidden internal identity. Paired values are from one instrumented graph, but cannot establish complete optimizer cause. No crossfeed or recomputation, precision/tiling override, warmed performance, optimizer acceptance, checkpoint restore or trainingMFU.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-paired-input-capture-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --paired-input-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.12",
+  "script_sha256": "a30914306da5408699274bc1715617eaa84bd77b109c68a487d5a2a8b3cde569",
+  "capture_helper_sha256": "b9131140d3f3424e1821e1e66998967a471de8dca4336275eb6876222782ac22",
+  "cpu_validation": "Own fresh online logging check; paired12finite/14checks, single-inner and single-norm regressions12/13each. Verify exactGCSreports and all14artifactSHA/size/gzipreadbacks perrun; StableHLO outputorder/shapes 30leaves with extra3x8x8 and3x1x1; equation/input/constant preservation. ExplicitworktreePYTHONPATH."
+}

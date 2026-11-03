@@ -13,7 +13,7 @@ def capture_program(fn, exemplars, capture_kind="qkv_inputs"):
     This modifies outputs, not optimizer equations. Evaluation and extra outputs
     can still change compilation; compare both controls with the direct function.
     """
-    assert capture_kind in ("qkv_inputs", "q_norm", "q_inner")
+    assert capture_kind in ("qkv_inputs", "q_norm", "q_inner", "q_pair")
     closed, output_shape = jax.make_jaxpr(fn, return_shape=True)(*exemplars)
     program = closed.jaxpr
     output_tree = jax.tree.structure(output_shape)
@@ -58,6 +58,8 @@ def capture_program(fn, exemplars, capture_kind="qkv_inputs"):
             captured.extend((inner, denominator))
         elif capture_kind in ("q_norm", "q_inner") and group == "q_proj":
             captured.append(denominator if capture_kind == "q_norm" else inner)
+        elif capture_kind == "q_pair" and group == "q_proj":
+            captured.extend((inner, denominator))
     extended = program.replace(outvars=[*program.outvars, *captured])
     assert all(a is b for a, b in zip(program.eqns, extended.eqns, strict=True))
     assert extended.invars == program.invars and extended.constvars == program.constvars
@@ -71,8 +73,8 @@ def capture_program(fn, exemplars, capture_kind="qkv_inputs"):
         leaves = jax.core.eval_jaxpr(extended, closed.consts, *jax.tree.leaves(bank))
         full = jax.tree.unflatten(output_tree, leaves[:28])
         values = (
-            (leaves[28],)
-            if capture_kind in ("q_norm", "q_inner")
+            tuple(leaves[28:])
+            if capture_kind in ("q_norm", "q_inner", "q_pair")
             else tuple((leaves[i], leaves[i + 1]) for i in range(28, 34, 2))
         )
         return full, values
