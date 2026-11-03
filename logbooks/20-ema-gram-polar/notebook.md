@@ -4618,6 +4618,14 @@ The primary online W&B run records that the fixed-synthetic-gradient update has 
 
 No training was launched. Complete finite/immutable reports for both cases, canonical success and finished logging are still required. Numerical differences alone will not veto the prepared original-then-candidate loss comparison; the final training counter remains 7630.
 
+### November 3, 23:19 UTC — saved-state validation complete; proceed to original continuation
+
+The saved-state diagnostic succeeded on all four tasks, attempt 0, exit 0, without failures or preemptions. All four completed reports pass the published aggregator's source/checkpoint, finite-output, input-immutability, shard coverage and replica-consistency checks. The two cases contain 112 and 133 unique leaf/index records after replica deduplication. The primary numerical W&B run and all four execution-host logging runs finished successfully with exact source hashes. Follow 51428 ended naturally with exit 0; this job is terminal and will not be polled or restarted. The [completion record](saved-state-check-completed.json) preserves bounded report/config hashes, canonical task evidence and logging verification.
+
+On the original saved Gram/momentum state, matrix-versus-replicated direction relative Frobenius errors range from 0.556% to 0.660%. After the fixed synthetic-gradient refresh/update, direction errors range from 0.571% to 0.701%, with maximum absolute error 0.01873. All seven directions fail `rtol=atol=1e-5` in both cases. All 21 refreshed Gram/momentum outputs pass tolerance; 18 have identical recorded shard hashes, while three have nonzero errors with maximum absolute error 2.8422e-14. The [global summary](saved-state-check-summary.json) preserves every leaf. These single-update diagnostics do not establish training-loss degradation. Case times include compilation and do not measure steady training throughput or MFU.
+
+Full native model/optimizer/counter/PRNG restoration and configured-stream replay were verified separately. The additional saved-state finite/immutability prerequisite is now satisfied. The [launch readiness record](loss-pair-launch-ready.json) rechecks the published paired commands and source/configuration hashes. Proceed with the original replicated continuation from verified counter 924 to final counter 7630, using the existing native training entrypoint and fresh execution-host online logging. Its ordinary, watch-enabled and profiling paths are evidence milestones inside the full schedule; training memory fit, actual loss and speed remain unmeasured. The matrix candidate follows sequentially after the original run's terminal evidence. No training is claimed by this readiness record.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
