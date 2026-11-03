@@ -3062,6 +3062,26 @@ executables into a claim about one hidden path. The design requires fresh online
 CPU validation and published exact source before one sequential TPU diagnostic;
 no implementation or submission is selected yet.
 
+## 2026-11-03 10:28 UTC — Capture one existing inner matrix
+
+The [single-inner capture](optimizer-single-inner-capture-plan.json) appends only
+the existing q_proj pre-normalization inner matrix to the full-update Jaxpr.
+It preserves all equations, input/constant variables and 28 original outputs,
+with the same source precision and sharding settings. The extra matrix output
+is replicated, as in the earlier six-output capture; it adds no source-level arithmetic.
+
+Both solver variants retain untouched full-update references, unchanged
+Jaxpr evaluators and fixed-executable capture replays. All 28 reference leaves
+are compared at rtol=atol=1e-5 with bitwise checks. Failed agreement forbids
+original-path interpretation, and matching final outputs would not establish
+hidden intermediate identity. Values from separate numerator and denominator
+capture executables cannot be treated as one hidden path.
+
+Publish this implementation and plan before fresh online CPU logging, the new
+mode's numerical check and a regression of the single-denominator mode. Only
+validated, published source may proceed to one sequential TPU diagnostic.
+No optimizer intervention or performance claim is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

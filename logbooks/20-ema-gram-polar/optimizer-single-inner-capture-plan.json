@@ -1,0 +1,48 @@
+{
+  "status": "Implemented; own online CPU preflight pending; no TPU submission",
+  "script": "optimizer_attribution.py --single-inner-capture",
+  "question": "Does exposing only the existing q_proj pre-normalization inner matrix preserve each solver full-update reference?",
+  "prior_evidence": [
+    "optimizer-single-norm-capture-v5e-completed.json",
+    "optimizer-full-input-capture-v5e-completed.json"
+  ],
+  "input_recipe": "Same seed0 seven full-shape synthetic gradients and initial state recipe; shared zero initialization and prior refresh. Identical fingerprinted host bank for every direct/evaluated/capture invocation. No checkpoint/data read.",
+  "science": "No shared optimizer source edits. Capture uses traced shared full_update equations verbatim and appends existing variables to outputs. Trace mapping uses final-output ancestors and source scopes, asserting one distinct normalization per group. All equations, input variables, constants and original outputs retained. No math, precision, coefficient, association or tiling override.",
+  "stages": [
+    "Shared zero initialization and prior refresh",
+    "Untouched original and matrix full_update references",
+    "Unchanged28-output Jaxpr evaluator, compiled once/replayed for each solver",
+    "Same equations with only existing q_proj pre-normalization inner matrix appended:29outputs, compiledonce/replayed",
+    "All28leaf own-reference/evaluator gates plus crosssolver captured-inner comparison"
+  ],
+  "instrumentation_gate": "Compare unchanged evaluator and capture full outputs against untouched direct full_update for each solver at fixed rtol=atol=1e-5, report bitwise equality. Failed agreement forbids original-path interpretation. Matching finals does not prove internal identity. Expected TPU mismatches persist while collection continues; candidate_accepted_for_training stays false.",
+  "expected": {
+    "finite_stages": 12,
+    "comparisons": 13,
+    "fixed_executables": 4,
+    "compiler_files": 12,
+    "jaxpr_files": 2,
+    "appended_outputs": 1
+  },
+  "tracking": "Fresh online W&B before kernels; separate non-training logging check; incremental finite stage/comparison records; input/output fingerprints and per-stage JAX allocator memory; final attribution_completed means collection only; candidate_accepted_for_training remains false.",
+  "memory": "One executable/device bank at a time; host inputs/references, block/hostoffload/cacheclear. One11x1024x1024FP32 inner tensor appended at full geometry.",
+  "resources": {
+    "tpu": "v5litepod-8",
+    "processes": 1,
+    "chips": 8,
+    "cpu": 96,
+    "memory": "128GB",
+    "disk": "50GB",
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11",
+  "job_name": "ema-gram-20-single-inner-capture-v5e-8-20261103",
+  "limitations": "Tracing/evaluation and additional outputs can alter compilation. Failedownreferencegate forbids original-path interpretation; matchingfinals does not establish hiddenidentity. Separate inner/denominator capture executables cannot be combined into one hidden-path claim. No warmed performance, optimizeracceptance, checkpointrestore or trainingMFU.",
+  "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-single-inner-capture-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --single-inner-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.11",
+  "script_sha256": "54c7f13210130a01f97bd57f0a98e53a782f6b367d14bbb669f9dcdde8fb8258",
+  "capture_helper_sha256": "993e24c7c3e1e63a2723a767aba2739803b8ae9bd35b4c58726dc286191b808b",
+  "cpu_validation": "Own freshonline loggingcheck, newinner12finite/13checks and currentqnorm12/13regression. All14artifacts perrun SHA/size/gzipreadback and exactGCSreport. ExplicitworktreePYTHONPATH."
+}
