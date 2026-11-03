@@ -426,7 +426,7 @@
     }
   },
   "collectives_next": {
-    "state": "Static mapping only; no new numerical submission selected",
+    "state": "Static mapping complete; no collective-path substitution at mapped first-Gram sites",
     "question": "Do the validated isolated collective paths occur at corresponding first-Gram operations in original and matrix-layout full updates?",
     "inputs": [
       "compiler-polar-paths-completed.json",
@@ -437,6 +437,14 @@
     ],
     "procedure": "Use existing dependency/lineage records to map first A for q/k/v in full fused original and matrix updates. Follow product-to-collective ancestry and enclosing collective fusions, preserve tuple-leaf associations and repeated operands. Compare operation and enclosing-fusion configurations with the validated isolated all-reduce and reduce-scatter paths. Earlier equal entry all-reduce configs alone do not compare enclosing fusions. Verify consumed checksums; keep large regional HLO in-region. Use existing local records first; no analysis accelerator.",
     "interpretation": "Controlled identical partial inputs establish a numerical difference between these two compiled collective paths. Runtime summation order/precision, original internal partial identity and full optimizer mechanism remain unresolved. Do not select a full optimizer intervention solely from static config counts.",
-    "future_gate": "Own online CPU validation and published exact source before one sequential numerical diagnostic. Any optimizer intervention requires untouched original full-update all28leaf comparison at fixed1e-5; no precision/tiling override, training/MFU claim or checkpoint resume."
+    "future_gate": "Own online CPU validation and published exact source before one sequential numerical diagnostic. Any optimizer intervention requires untouched original full-update all28leaf comparison at fixed1e-5; no precision/tiling override, training/MFU claim or checkpoint resume.",
+    "evidence": "compiler-full-update-collective-comparison.json",
+    "next_decision": {
+      "state": "Static input-provenance mapping only; no numerical submission selected",
+      "question": "Which source gradient/state leaves, normalization scalars and intervening computations supply the first q/k/v product fusions in original and matrix-layout full updates?",
+      "procedure": "Use existing captured producer bodies, entry instructions and tuple-leaf dependency helpers. Map fusion argument roles through nested calls without conflating aliases or tuple outputs. Compare both updates and identify missing records explicitly; keep any necessary large-HLO inspection regional, with CPU-only extraction if local records are insufficient. No analysis accelerator.",
+      "interpretation": "Same collective configurations and source parameter roles do not establish equal hidden values, runtime order or precision. The isolated collective-path sensitivity is not a demonstrated full-update cause. Do not select a precision/tiling override or claim compiler settings establish cause.",
+      "gate": "Any later numerical control needs own online CPU logging/harness validation and published exact source before one sequential TPU diagnostic. Optimizer promotion still requires untouched original full-update all28leaves at1e-5 and measured full-training MFU after verified restore."
+    }
   }
 }

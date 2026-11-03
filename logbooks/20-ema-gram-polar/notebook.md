@@ -2511,6 +2511,45 @@ and enclosing-fusion settings before deciding whether this isolated mechanism
 applies to the full-update discrepancy. Use existing records; no new numerical
 submission or precision/tiling intervention is selected.
 
+### 2026-11-03 — Full updates use the same first-Gram collective path
+
+The [full-update mapping](compiler-full-update-collective-comparison.json)
+finds no all-reduce-to-reduce-scatter substitution at the first q/k/v Gram
+products. The [matrix-layout variant](optimizer-matrix-v5e-memory-plan.json)
+distributes independent full-matrix eigendecompositions across devices. In both
+updates, q and k feed a combined all-reduce through separate tuple operands; v feeds a separate all-reduce.
+Each operand directly selects tuple element zero from its product-producing
+fusion. The reductions are in the HLO entry computation, with no enclosing
+collective fusion at those sites.
+
+All six mapped paths use `RotatedPincerEmitter` and
+`UniDirection1DRingStrategy`, matching the isolated all-reduce configuration.
+The original and matrix-layout collective backend records differ only in their
+barrier IDs. Their product-producing fusion settings differ in kernel window
+bounds, iteration bounds, estimated cycles and scoped-memory records. These
+static differences do not establish numerical cause or runtime precision.
+
+The analysis verified the 7,108,888-byte captured regional report against its
+published SHA256 and checked all six mappings against the earlier group/iteration
+records. Original IR checksum checks belong to that earlier regional extraction;
+the large HLO files were not downloaded again. The comparison preserves which
+tuple operand belongs to q or k and checks the direct product-output projection.
+It does not verify hidden input values or intermediate arithmetic inside each
+product fusion.
+
+The isolated collective experiment therefore does not explain the full-update
+mismatch as an all-reduce-to-reduce-scatter replacement at these first-Gram
+sites. Its conditional sensitivity result remains valid. No numerical experiment
+ran in this analysis, no optimizer is accepted, and training MFU remains
+unverified.
+
+Next trace the first-product fusion inputs back to source gradient/state leaves
+and normalization scalars in the existing records. Compare parameter-leaf roles
+and intervening producer computations before designing a fixed-input product
+control. Matching roles would not establish equal runtime values. Use local
+captured records first; any missing large HLO inspection stays in-region. No
+numerical submission, precision change or tiling override is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

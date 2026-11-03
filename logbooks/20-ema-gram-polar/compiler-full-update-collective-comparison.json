@@ -1,0 +1,1468 @@
+{
+  "captured_report_sha256": "1d226cb82a05ed6dbe190d1bf1210f274240d723cfefc88ee69fa6745221f8ef",
+  "captured_report_bytes": 7108888,
+  "isolated_record_sha256": "3bbcca4c9646047edd288aaef1c2a89147563c9e332829439596fb741dc81fd4",
+  "original_ir_manifest": {
+    "fused_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_original.optimized_hlo.txt.gz",
+      "sha256": "f323476e7f76fdb8ecf7398a72dfc4b2acd44ff5034155f610143bd1a249f93d",
+      "compressed_bytes": 10060125
+    },
+    "fused_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662
+    },
+    "direction_original": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__original.optimized_hlo.txt.gz",
+      "sha256": "9d267db9dbe0557551c380374b77d190a9f334bc8f059248c7733eb609dcbce3",
+      "compressed_bytes": 9695356
+    },
+    "direction_matrix": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2/ema-gram-20-attribution-36ad51cd15d0/fixed_direction__matrix.optimized_hlo.txt.gz",
+      "sha256": "37ef4c2aa848bed2e9580db0674f8b61d3c7296bae0f2f0b23076ca92d46c1fb",
+      "compressed_bytes": 9387612
+    }
+  },
+  "graphs": {
+    "fused_original": {
+      "q_proj": {
+        "product": {
+          "name": "convolution-base-dilated.451",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "calls": null,
+          "line": 697828,
+          "computation": "async_collective_fusion.149082",
+          "family": "polar",
+          "op_name": "jit(full_update)/gram_direction/vmap()/dot_general",
+          "stack_frame_id": 173,
+          "operands": [
+            "fusion.149084",
+            "fusion.149084"
+          ],
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+          "backend_config": null,
+          "direct_operand_producers": [
+            {
+              "name": "fusion.149084",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            },
+            {
+              "name": "fusion.149084",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112853.clone.clone"
+            }
+          ]
+        },
+        "product_enclosing_fusion": {
+          "name": "fusion.149082",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,128,1024]{2,1,0:T(8,128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})",
+          "opcode": "fusion",
+          "calls": "async_collective_fusion.149082",
+          "computation": "main.603_spmd",
+          "operands": [
+            "get-tuple-element.116128",
+            "get-tuple-element.116129",
+            "get-tuple-element.116131",
+            "get-tuple-element.116132",
+            "get-tuple-element.116133",
+            "get-tuple-element.116134",
+            "get-tuple-element.116135",
+            "get-tuple-element.116136",
+            "get-tuple-element.116137",
+            "get-tuple-element.50433",
+            "sqrt_add_fusion.6"
+          ],
+          "attributes": ", kind=kOutput, output_to_operand_aliasing={{1}: (0, {}), {2}: (1, {}), {3}: (1, {}), {4}: (2, {}), {5}: (3, {}), {6}: (4, {}), {7}: (5, {}), {8}: (6, {}), {9}: (7, {}), {10}: (8, {})}, calls=%async_collective_fusion.149082, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+          "backend_config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "12"
+                  ]
+                },
+                {
+                  "indices": [
+                    "1",
+                    "13",
+                    "14"
+                  ]
+                },
+                {
+                  "indices": [
+                    "2",
+                    "15"
+                  ]
+                },
+                {
+                  "indices": [
+                    "3",
+                    "16"
+                  ]
+                },
+                {
+                  "indices": [
+                    "4",
+                    "17"
+                  ]
+                },
+                {
+                  "indices": [
+                    "5",
+                    "18"
+                  ]
+                },
+                {
+                  "indices": [
+                    "6",
+                    "19"
+                  ]
+                },
+                {
+                  "indices": [
+                    "7",
+                    "20"
+                  ]
+                },
+                {
+                  "indices": [
+                    "8",
+                    "21"
+                  ]
+                }
+              ]
+            },
+            "continuation_config": {
+              "operand_original_end": "10",
+              "operand_original_start": "9",
+              "output_tuple_original_end": "0",
+              "output_tuple_original_start": "0"
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "11534336"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "111288",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "11",
+                "64",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "1",
+                "4",
+                "2",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "11",
+                "32",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "11",
+                "64",
+                "2"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        "product_result_projection": "  %get-tuple-element.116138 = f32[11,1024,1024]{2,1,0:T(8,128)} get-tuple-element(%fusion.149082), index=0, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+        "collective": {
+          "name": "all-reduce.68",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.116138",
+            "get-tuple-element.116149"
+          ],
+          "polar_ancestors_by_operand": [
+            [
+              "async_collective_fusion.149082/convolution-base-dilated.451"
+            ],
+            [
+              "async_collective_fusion.149085/convolution-base-dilated.453"
+            ]
+          ],
+          "instruction": "  %all-reduce.68 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}) all-reduce(%get-tuple-element.116138, %get-tuple-element.116149), channel_id=139, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.3.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"8\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"15433728\"}]}"
+        },
+        "collective_operand_index": 0,
+        "collective_backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "barrier_config": {
+            "barrier_type": "CUSTOM",
+            "id": "8"
+          },
+          "collective_algorithm_config": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [
+            {
+              "memory_space": "0",
+              "offset": "0",
+              "size": "67108864"
+            }
+          ],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "15433728"
+            }
+          ]
+        },
+        "collective_enclosing_fusion": null,
+        "scope_evidence": "Reduction is in the HLO entry computation; operand projects result0 of product fusion.",
+        "previous_mapping_regression_passed": true
+      },
+      "k_proj": {
+        "product": {
+          "name": "convolution-base-dilated.453",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "calls": null,
+          "line": 697861,
+          "computation": "async_collective_fusion.149085",
+          "family": "polar",
+          "op_name": "jit(full_update)/gram_direction/vmap()/dot_general",
+          "stack_frame_id": 173,
+          "operands": [
+            "fusion.149087",
+            "fusion.149087"
+          ],
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+          "backend_config": null,
+          "direct_operand_producers": [
+            {
+              "name": "fusion.149087",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            },
+            {
+              "name": "fusion.149087",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112850.clone.clone"
+            }
+          ]
+        },
+        "product_enclosing_fusion": {
+          "name": "fusion.149085",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,128,1024]{2,1,0:T(8,128)S(1)}, f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})",
+          "opcode": "fusion",
+          "calls": "async_collective_fusion.149085",
+          "computation": "main.603_spmd",
+          "operands": [
+            "get-tuple-element.116139",
+            "get-tuple-element.116140",
+            "get-tuple-element.116142",
+            "get-tuple-element.116143",
+            "get-tuple-element.116144",
+            "get-tuple-element.116145",
+            "get-tuple-element.116146",
+            "get-tuple-element.116147",
+            "get-tuple-element.116148",
+            "get-tuple-element.50435",
+            "sqrt_add_fusion.5"
+          ],
+          "attributes": ", kind=kOutput, output_to_operand_aliasing={{1}: (0, {}), {2}: (1, {}), {3}: (1, {}), {4}: (2, {}), {5}: (3, {}), {6}: (4, {}), {7}: (5, {}), {8}: (6, {}), {9}: (7, {}), {10}: (8, {})}, calls=%async_collective_fusion.149085, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+          "backend_config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "12"
+                  ]
+                },
+                {
+                  "indices": [
+                    "1",
+                    "13",
+                    "14"
+                  ]
+                },
+                {
+                  "indices": [
+                    "2",
+                    "15"
+                  ]
+                },
+                {
+                  "indices": [
+                    "3",
+                    "16"
+                  ]
+                },
+                {
+                  "indices": [
+                    "4",
+                    "17"
+                  ]
+                },
+                {
+                  "indices": [
+                    "5",
+                    "18"
+                  ]
+                },
+                {
+                  "indices": [
+                    "6",
+                    "19"
+                  ]
+                },
+                {
+                  "indices": [
+                    "7",
+                    "20"
+                  ]
+                },
+                {
+                  "indices": [
+                    "8",
+                    "21"
+                  ]
+                }
+              ]
+            },
+            "continuation_config": {
+              "operand_original_end": "10",
+              "operand_original_start": "9",
+              "output_tuple_original_end": "0",
+              "output_tuple_original_start": "0"
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "11534336"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "111288",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "11",
+                "64",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "1",
+                "4",
+                "2",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "11",
+                "32",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "11",
+                "64",
+                "2"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        "product_result_projection": "  %get-tuple-element.116149 = f32[11,1024,1024]{2,1,0:T(8,128)} get-tuple-element(%fusion.149085), index=0, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+        "collective": {
+          "name": "all-reduce.68",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.116138",
+            "get-tuple-element.116149"
+          ],
+          "polar_ancestors_by_operand": [
+            [
+              "async_collective_fusion.149082/convolution-base-dilated.451"
+            ],
+            [
+              "async_collective_fusion.149085/convolution-base-dilated.453"
+            ]
+          ],
+          "instruction": "  %all-reduce.68 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}) all-reduce(%get-tuple-element.116138, %get-tuple-element.116149), channel_id=139, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.3.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"8\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"15433728\"}]}"
+        },
+        "collective_operand_index": 1,
+        "collective_backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "barrier_config": {
+            "barrier_type": "CUSTOM",
+            "id": "8"
+          },
+          "collective_algorithm_config": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [
+            {
+              "memory_space": "0",
+              "offset": "0",
+              "size": "67108864"
+            }
+          ],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "15433728"
+            }
+          ]
+        },
+        "collective_enclosing_fusion": null,
+        "scope_evidence": "Reduction is in the HLO entry computation; operand projects result0 of product fusion.",
+        "previous_mapping_regression_passed": true
+      },
+      "v_proj": {
+        "product": {
+          "name": "convolution-base-dilated.491",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+          "opcode": "convolution",
+          "calls": null,
+          "line": 819374,
+          "computation": "async_collective_fusion.149176",
+          "family": "polar",
+          "op_name": "jit(full_update)/gram_direction/vmap()/dot_general",
+          "stack_frame_id": 173,
+          "operands": [
+            "fusion.149178",
+            "fusion.149178"
+          ],
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+          "backend_config": null,
+          "direct_operand_producers": [
+            {
+              "name": "fusion.149178",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            },
+            {
+              "name": "fusion.149178",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.112847.clone.clone"
+            }
+          ]
+        },
+        "product_enclosing_fusion": {
+          "name": "fusion.149176",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)S(1)}, f32[11,128,4096]{2,1,0:T(8,128)S(1)}, f32[11,1024,4096]{2,1,0:T(8,128)}, f32[11,1024,4096]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})",
+          "opcode": "fusion",
+          "calls": "async_collective_fusion.149176",
+          "computation": "main.603_spmd",
+          "operands": [
+            "get-tuple-element.116350",
+            "get-tuple-element.116351",
+            "get-tuple-element.116352",
+            "get-tuple-element.116353",
+            "get-tuple-element.116354",
+            "get-tuple-element.116355",
+            "get-tuple-element.116356",
+            "get-tuple-element.116357",
+            "get-tuple-element.116358",
+            "custom-call.14443",
+            "sqrt_add_fusion.4"
+          ],
+          "attributes": ", kind=kOutput, output_to_operand_aliasing={{1}: (0, {}), {2}: (1, {}), {3}: (1, {}), {4}: (2, {}), {5}: (3, {}), {6}: (4, {}), {7}: (5, {}), {8}: (6, {}), {9}: (7, {}), {10}: (8, {})}, calls=%async_collective_fusion.149176, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+          "backend_config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "12"
+                  ]
+                },
+                {
+                  "indices": [
+                    "1",
+                    "13",
+                    "14"
+                  ]
+                },
+                {
+                  "indices": [
+                    "2",
+                    "15"
+                  ]
+                },
+                {
+                  "indices": [
+                    "3",
+                    "16"
+                  ]
+                },
+                {
+                  "indices": [
+                    "4",
+                    "17"
+                  ]
+                },
+                {
+                  "indices": [
+                    "5",
+                    "18"
+                  ]
+                },
+                {
+                  "indices": [
+                    "6",
+                    "19"
+                  ]
+                },
+                {
+                  "indices": [
+                    "7",
+                    "20"
+                  ]
+                },
+                {
+                  "indices": [
+                    "8",
+                    "21"
+                  ]
+                }
+              ]
+            },
+            "continuation_config": {
+              "operand_original_end": "10",
+              "operand_original_start": "9",
+              "output_tuple_original_end": "0",
+              "output_tuple_original_start": "0"
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "0"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "24576",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "11",
+                "64",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "1",
+                "4",
+                "2",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "11",
+                "32",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "11",
+                "64",
+                "2"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        "product_result_projection": "  %get-tuple-element.116359 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} get-tuple-element(%fusion.149176), index=0, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}",
+        "collective": {
+          "name": "all-reduce.21",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.116359"
+          ],
+          "polar_ancestors_by_operand": [
+            [
+              "async_collective_fusion.149176/convolution-base-dilated.491"
+            ]
+          ],
+          "instruction": "  %all-reduce.21 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} all-reduce(%get-tuple-element.116359), channel_id=175, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.15.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=173}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"8\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        },
+        "collective_operand_index": 0,
+        "collective_backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "barrier_config": {
+            "barrier_type": "CUSTOM",
+            "id": "8"
+          },
+          "collective_algorithm_config": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [
+            {
+              "memory_space": "0",
+              "offset": "0",
+              "size": "67108864"
+            }
+          ],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "13860864"
+            }
+          ]
+        },
+        "collective_enclosing_fusion": null,
+        "scope_evidence": "Reduction is in the HLO entry computation; operand projects result0 of product fusion.",
+        "previous_mapping_regression_passed": true
+      }
+    },
+    "fused_matrix": {
+      "q_proj": {
+        "product": {
+          "name": "convolution-base-dilated.461",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "calls": null,
+          "line": 681607,
+          "computation": "async_collective_fusion.144442",
+          "family": "polar",
+          "op_name": "jit(full_update)/gram_direction/vmap()/dot_general",
+          "stack_frame_id": 64,
+          "operands": [
+            "fusion.144444",
+            "fusion.144444"
+          ],
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "backend_config": null,
+          "direct_operand_producers": [
+            {
+              "name": "fusion.144444",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            },
+            {
+              "name": "fusion.144444",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111160.clone.clone"
+            }
+          ]
+        },
+        "product_enclosing_fusion": {
+          "name": "fusion.144442",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})",
+          "opcode": "fusion",
+          "calls": "async_collective_fusion.144442",
+          "computation": "main.530_spmd",
+          "operands": [
+            "get-tuple-element.100237",
+            "get-tuple-element.100238",
+            "get-tuple-element.100240",
+            "get-tuple-element.100241",
+            "get-tuple-element.100242",
+            "get-tuple-element.100243",
+            "get-tuple-element.100244",
+            "get-tuple-element.100245",
+            "get-tuple-element.100246",
+            "get-tuple-element.47585",
+            "sqrt_add_fusion.6"
+          ],
+          "attributes": ", kind=kOutput, output_to_operand_aliasing={{1}: (0, {}), {2}: (1, {}), {3}: (1, {}), {4}: (2, {}), {5}: (3, {}), {6}: (4, {}), {7}: (5, {}), {8}: (6, {}), {9}: (7, {}), {10}: (8, {})}, calls=%async_collective_fusion.144442, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "backend_config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "12"
+                  ]
+                },
+                {
+                  "indices": [
+                    "1",
+                    "13",
+                    "14"
+                  ]
+                },
+                {
+                  "indices": [
+                    "2",
+                    "15"
+                  ]
+                },
+                {
+                  "indices": [
+                    "3",
+                    "16"
+                  ]
+                },
+                {
+                  "indices": [
+                    "4",
+                    "17"
+                  ]
+                },
+                {
+                  "indices": [
+                    "5",
+                    "18"
+                  ]
+                },
+                {
+                  "indices": [
+                    "6",
+                    "19"
+                  ]
+                },
+                {
+                  "indices": [
+                    "7",
+                    "20"
+                  ]
+                },
+                {
+                  "indices": [
+                    "8",
+                    "21"
+                  ]
+                }
+              ]
+            },
+            "continuation_config": {
+              "operand_original_end": "10",
+              "operand_original_start": "9",
+              "output_tuple_original_end": "0",
+              "output_tuple_original_start": "0"
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "8437760"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "115912",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "1",
+                "128",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "11",
+                "1",
+                "1",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "1",
+                "128",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "1",
+                "128",
+                "8"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        "product_result_projection": "  %get-tuple-element.100247 = f32[11,1024,1024]{2,1,0:T(8,128)} get-tuple-element(%fusion.144442), index=0, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+        "collective": {
+          "name": "all-reduce.166",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100247",
+            "get-tuple-element.100258"
+          ],
+          "polar_ancestors_by_operand": [
+            [
+              "async_collective_fusion.144442/convolution-base-dilated.461"
+            ],
+            [
+              "async_collective_fusion.144445/convolution-base-dilated.463"
+            ]
+          ],
+          "instruction": "  %all-reduce.166 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}) all-reduce(%get-tuple-element.100247, %get-tuple-element.100258), channel_id=140, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.127.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"2\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"15433728\"}]}"
+        },
+        "collective_operand_index": 0,
+        "collective_backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "barrier_config": {
+            "barrier_type": "CUSTOM",
+            "id": "2"
+          },
+          "collective_algorithm_config": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [
+            {
+              "memory_space": "0",
+              "offset": "0",
+              "size": "67108864"
+            }
+          ],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "15433728"
+            }
+          ]
+        },
+        "collective_enclosing_fusion": null,
+        "scope_evidence": "Reduction is in the HLO entry computation; operand projects result0 of product fusion.",
+        "previous_mapping_regression_passed": true
+      },
+      "k_proj": {
+        "product": {
+          "name": "convolution-base-dilated.463",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "calls": null,
+          "line": 681640,
+          "computation": "async_collective_fusion.144445",
+          "family": "polar",
+          "op_name": "jit(full_update)/gram_direction/vmap()/dot_general",
+          "stack_frame_id": 64,
+          "operands": [
+            "fusion.144447",
+            "fusion.144447"
+          ],
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "backend_config": null,
+          "direct_operand_producers": [
+            {
+              "name": "fusion.144447",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            },
+            {
+              "name": "fusion.144447",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111157.clone.clone"
+            }
+          ]
+        },
+        "product_enclosing_fusion": {
+          "name": "fusion.144445",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,4096,128]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, f32[11,4096,1024]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})",
+          "opcode": "fusion",
+          "calls": "async_collective_fusion.144445",
+          "computation": "main.530_spmd",
+          "operands": [
+            "get-tuple-element.100248",
+            "get-tuple-element.100249",
+            "get-tuple-element.100251",
+            "get-tuple-element.100252",
+            "get-tuple-element.100253",
+            "get-tuple-element.100254",
+            "get-tuple-element.100255",
+            "get-tuple-element.100256",
+            "get-tuple-element.100257",
+            "get-tuple-element.47587",
+            "sqrt_add_fusion.5"
+          ],
+          "attributes": ", kind=kOutput, output_to_operand_aliasing={{1}: (0, {}), {2}: (1, {}), {3}: (1, {}), {4}: (2, {}), {5}: (3, {}), {6}: (4, {}), {7}: (5, {}), {8}: (6, {}), {9}: (7, {}), {10}: (8, {})}, calls=%async_collective_fusion.144445, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "backend_config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "12"
+                  ]
+                },
+                {
+                  "indices": [
+                    "1",
+                    "13",
+                    "14"
+                  ]
+                },
+                {
+                  "indices": [
+                    "2",
+                    "15"
+                  ]
+                },
+                {
+                  "indices": [
+                    "3",
+                    "16"
+                  ]
+                },
+                {
+                  "indices": [
+                    "4",
+                    "17"
+                  ]
+                },
+                {
+                  "indices": [
+                    "5",
+                    "18"
+                  ]
+                },
+                {
+                  "indices": [
+                    "6",
+                    "19"
+                  ]
+                },
+                {
+                  "indices": [
+                    "7",
+                    "20"
+                  ]
+                },
+                {
+                  "indices": [
+                    "8",
+                    "21"
+                  ]
+                }
+              ]
+            },
+            "continuation_config": {
+              "operand_original_end": "10",
+              "operand_original_start": "9",
+              "output_tuple_original_end": "0",
+              "output_tuple_original_start": "0"
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "8437760"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "115912",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "1",
+                "128",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "11",
+                "1",
+                "1",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "1",
+                "128",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "1",
+                "128",
+                "8"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        "product_result_projection": "  %get-tuple-element.100258 = f32[11,1024,1024]{2,1,0:T(8,128)} get-tuple-element(%fusion.144445), index=0, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+        "collective": {
+          "name": "all-reduce.166",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100247",
+            "get-tuple-element.100258"
+          ],
+          "polar_ancestors_by_operand": [
+            [
+              "async_collective_fusion.144442/convolution-base-dilated.461"
+            ],
+            [
+              "async_collective_fusion.144445/convolution-base-dilated.463"
+            ]
+          ],
+          "instruction": "  %all-reduce.166 = (f32[11,1024,1024]{2,1,0:T(8,128)}, f32[11,1024,1024]{2,1,0:T(8,128)S(1)}) all-reduce(%get-tuple-element.100247, %get-tuple-element.100258), channel_id=140, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.127.clone, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"2\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"15433728\"}]}"
+        },
+        "collective_operand_index": 1,
+        "collective_backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "barrier_config": {
+            "barrier_type": "CUSTOM",
+            "id": "2"
+          },
+          "collective_algorithm_config": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [
+            {
+              "memory_space": "0",
+              "offset": "0",
+              "size": "67108864"
+            }
+          ],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "15433728"
+            }
+          ]
+        },
+        "collective_enclosing_fusion": null,
+        "scope_evidence": "Reduction is in the HLO entry computation; operand projects result0 of product fusion.",
+        "previous_mapping_regression_passed": true
+      },
+      "v_proj": {
+        "product": {
+          "name": "convolution-base-dilated.503",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "convolution",
+          "calls": null,
+          "line": 681468,
+          "computation": "async_collective_fusion.144539",
+          "family": "polar",
+          "op_name": "jit(full_update)/gram_direction/vmap()/dot_general",
+          "stack_frame_id": 64,
+          "operands": [
+            "fusion.144541",
+            "fusion.144541"
+          ],
+          "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "backend_config": null,
+          "direct_operand_producers": [
+            {
+              "name": "fusion.144541",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            },
+            {
+              "name": "fusion.144541",
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "fusion",
+              "calls": "fused_computation.111154.clone.clone"
+            }
+          ]
+        },
+        "product_enclosing_fusion": {
+          "name": "fusion.144539",
+          "shape": "(f32[11,1024,1024]{2,1,0:T(8,128)}, f32[2,4096,4096]{2,1,0:T(8,128)}, f32[16,4096,4096]{2,1,0:T(8,128)}, f32[16,4096,4096]{2,1,0:T(8,128)}, s32[2]{0:S(4)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=10*/u32[]{:S(2)})",
+          "opcode": "fusion",
+          "calls": "async_collective_fusion.144539",
+          "computation": "main.530_spmd",
+          "operands": [
+            "get-tuple-element.100460",
+            "get-tuple-element.100461",
+            "get-tuple-element.100463",
+            "get-tuple-element.100464",
+            "get-tuple-element.100465",
+            "get-tuple-element.100466",
+            "get-tuple-element.100467",
+            "get-tuple-element.100468",
+            "get-tuple-element.100469",
+            "get-tuple-element.47589",
+            "sqrt_add_fusion.4"
+          ],
+          "attributes": ", kind=kOutput, output_to_operand_aliasing={{1}: (0, {}), {2}: (1, {}), {3}: (1, {}), {4}: (2, {}), {5}: (3, {}), {6}: (4, {}), {7}: (5, {}), {8}: (6, {}), {9}: (7, {}), {10}: (8, {})}, calls=%async_collective_fusion.144539, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+          "backend_config": {
+            "aliasing_operands": {
+              "lists": [
+                {
+                  "indices": [
+                    "0",
+                    "12"
+                  ]
+                },
+                {
+                  "indices": [
+                    "1",
+                    "13",
+                    "14"
+                  ]
+                },
+                {
+                  "indices": [
+                    "2",
+                    "15"
+                  ]
+                },
+                {
+                  "indices": [
+                    "3",
+                    "16"
+                  ]
+                },
+                {
+                  "indices": [
+                    "4",
+                    "17"
+                  ]
+                },
+                {
+                  "indices": [
+                    "5",
+                    "18"
+                  ]
+                },
+                {
+                  "indices": [
+                    "6",
+                    "19"
+                  ]
+                },
+                {
+                  "indices": [
+                    "7",
+                    "20"
+                  ]
+                },
+                {
+                  "indices": [
+                    "8",
+                    "21"
+                  ]
+                }
+              ]
+            },
+            "continuation_config": {
+              "operand_original_end": "10",
+              "operand_original_start": "9",
+              "output_tuple_original_end": "0",
+              "output_tuple_original_start": "0"
+            },
+            "convolution_algorithm_config": {
+              "emitter": "EmitAllBatchInSublanes"
+            },
+            "flag_configs": [],
+            "retry_config": {
+              "retry_count": "0"
+            },
+            "scoped_memory_configs": [],
+            "used_scoped_memory_configs": [
+              {
+                "memory_space": "1",
+                "offset": "0",
+                "size": "13631488"
+              }
+            ],
+            "window_config": {
+              "buffering_level": "2",
+              "cost_model_type": "COST_MODEL_TYPE_CLASSIC",
+              "estimated_bundle_count": "0",
+              "estimated_cycles": "178824",
+              "estimated_scoped_vmem_bytes": "0",
+              "estimated_vmem_bytes": "0",
+              "input_window_bounds": [
+                "4",
+                "128",
+                "1"
+              ],
+              "is_mask": false,
+              "iteration_bounds": [
+                "3",
+                "4",
+                "1",
+                "1",
+                "1"
+              ],
+              "kernel_window_bounds": [
+                "4",
+                "32",
+                "1"
+              ],
+              "ml_estimated_microseconds": 0,
+              "output_window_bounds": [
+                "4",
+                "128",
+                "2"
+              ],
+              "pad_input_on_minor_dim": "0",
+              "pad_output_on_minor_dim": "0"
+            }
+          }
+        },
+        "product_result_projection": "  %get-tuple-element.100470 = f32[11,1024,1024]{2,1,0:T(8,128)} get-tuple-element(%fusion.144539), index=0, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}",
+        "collective": {
+          "name": "all-reduce.145",
+          "opcode": "all-reduce",
+          "operands": [
+            "get-tuple-element.100470"
+          ],
+          "polar_ancestors_by_operand": [
+            [
+              "async_collective_fusion.144539/convolution-base-dilated.503"
+            ]
+          ],
+          "instruction": "  %all-reduce.145 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} all-reduce(%get-tuple-element.100470), channel_id=180, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.139.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(full_update)/gram_direction/vmap()/dot_general\" stack_frame_id=64}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"2\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        },
+        "collective_operand_index": 0,
+        "collective_backend_config": {
+          "aliasing_operands": {
+            "lists": []
+          },
+          "barrier_config": {
+            "barrier_type": "CUSTOM",
+            "id": "2"
+          },
+          "collective_algorithm_config": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          },
+          "flag_configs": [],
+          "retry_config": {
+            "retry_count": "0"
+          },
+          "scoped_memory_configs": [
+            {
+              "memory_space": "0",
+              "offset": "0",
+              "size": "67108864"
+            }
+          ],
+          "used_scoped_memory_configs": [
+            {
+              "memory_space": "1",
+              "offset": "0",
+              "size": "13860864"
+            }
+          ]
+        },
+        "collective_enclosing_fusion": null,
+        "scope_evidence": "Reduction is in the HLO entry computation; operand projects result0 of product fusion.",
+        "previous_mapping_regression_passed": true
+      }
+    }
+  },
+  "comparisons": {
+    "q_proj": {
+      "original_matrix_collective_algorithm_equal": true,
+      "whole_collective_backend_different_fields": [
+        "/barrier_config/id"
+      ],
+      "product_parent_backend_different_fields": [
+        "/used_scoped_memory_configs",
+        "/window_config/estimated_cycles",
+        "/window_config/input_window_bounds",
+        "/window_config/iteration_bounds",
+        "/window_config/kernel_window_bounds",
+        "/window_config/output_window_bounds"
+      ],
+      "isolated_algorithms": {
+        "replicated": {
+          "equal": true,
+          "configuration": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          }
+        },
+        "direction_sharded": {
+          "equal": false,
+          "configuration": {
+            "debug": "\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte",
+            "emitter": "SingleInputAllReduceScatterFusion",
+            "strategy": "StrategyRing"
+          }
+        }
+      }
+    },
+    "k_proj": {
+      "original_matrix_collective_algorithm_equal": true,
+      "whole_collective_backend_different_fields": [
+        "/barrier_config/id"
+      ],
+      "product_parent_backend_different_fields": [
+        "/used_scoped_memory_configs",
+        "/window_config/estimated_cycles",
+        "/window_config/input_window_bounds",
+        "/window_config/iteration_bounds",
+        "/window_config/kernel_window_bounds",
+        "/window_config/output_window_bounds"
+      ],
+      "isolated_algorithms": {
+        "replicated": {
+          "equal": true,
+          "configuration": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          }
+        },
+        "direction_sharded": {
+          "equal": false,
+          "configuration": {
+            "debug": "\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte",
+            "emitter": "SingleInputAllReduceScatterFusion",
+            "strategy": "StrategyRing"
+          }
+        }
+      }
+    },
+    "v_proj": {
+      "original_matrix_collective_algorithm_equal": true,
+      "whole_collective_backend_different_fields": [
+        "/barrier_config/id"
+      ],
+      "product_parent_backend_different_fields": [
+        "/used_scoped_memory_configs",
+        "/window_config/estimated_cycles",
+        "/window_config/input_window_bounds",
+        "/window_config/iteration_bounds",
+        "/window_config/kernel_window_bounds",
+        "/window_config/output_window_bounds"
+      ],
+      "isolated_algorithms": {
+        "replicated": {
+          "equal": true,
+          "configuration": {
+            "debug": "\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}",
+            "emitter": "RotatedPincerEmitter",
+            "strategy": "UniDirection1DRingStrategy"
+          }
+        },
+        "direction_sharded": {
+          "equal": false,
+          "configuration": {
+            "debug": "\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nStrategyRing{colors:1 phases:1 cores:{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\nType: 1D phase_count: 1; color_count: 1; sharded_partitions: 8; original_shape: f32[11,1024,1024]{2,1,0:T(8,128)}; per_color_shard_counts: 8; color_dim: 2; sharding_dim: 2; sharding_type: minor; convert_all_gather_output_to_bf16: 0; formatting steps: ()\nall-reduce-scatter fusion ND: span_size:11264*k512Byte, shard count:8, span_count:8, total_size:90112*k512Byte, valid_granules:90112*k512Byte",
+            "emitter": "SingleInputAllReduceScatterFusion",
+            "strategy": "StrategyRing"
+          }
+        }
+      }
+    }
+  },
+  "limitations": "Current read verifies the captured regional report checksum; original IR checksum checks were performed by its recorded regional extraction, not repeated here. Mapping covers first-Gram q/k/v paths only. It preserves tuple-leaf operand correspondence but does not verify numerical identity inside producer fusions, runtime order or precision. Equal configurations do not establish equal execution or explain full-update errors."
+}
