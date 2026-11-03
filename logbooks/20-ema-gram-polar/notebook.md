@@ -4347,6 +4347,12 @@ The next static decision is to inspect those fourteen uncovered positions from s
 
 The sole follow observer ended naturally with exit 0. No experiment, queue or observer remains active. PR monitoring remains handed off after its completed twelve-hour wait; the research heartbeat stays active.
 
+### November 3, 19:13 UTC — inspect first-Gram and two spectral initializers (static preflight)
+
+The [current coverage](compiler-state-initializer-frontiers.json) leaves fourteen declared input positions uninspected: up iteration-1 `X_Xt` operands, ten up Done inputs and two separate while initializers. The [selector](trace_polar_initializers.py) uses exact saved output dependencies, checks the polar product role and preserves the while projections `[1]` and `[6]`. It rejects missing, duplicate, wrong-arity, wrong-projection and already-covered targets. Four computation bodies per graph are missing locally.
+
+The [plan](compiler-polar-initializers-plan.json), [manifest](compiler-polar-initializers-manifest.json) and [preflight](compiler-polar-initializers-validation.json) verify seventeen bounded inputs. The existing whole-tuple initializer tracer is reused without modification; loop bodies and recurrence remain uninterpreted. Publish exact source before CPU-only us-west4 extraction with regional HLO SHA/size verification, default preemption and no wall-clock limit. Preserve paired capture and passing controls, reuse covered inputs and keep original outputs opaque. Both full numerical gates remain failed; no numerical intervention is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
