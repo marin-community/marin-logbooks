@@ -1,5 +1,5 @@
 {
-  "status": "CPU online validation passed; ready for one sequential TPU diagnostic",
+  "status": "TPU collection complete; endpoint matches in controlled path; no optimizer accepted",
   "script": "optimizer_attribution.py --polar-partition",
   "script_sha256": "2d6a8c81c6c9c6a368176a047b2db334fada3dc8410bf42f263a696bcdeda7a5",
   "question": "Does separating shared normalization change first Gram products when both paths request internal column sharding?",
@@ -38,5 +38,6 @@
   "job_name": "ema-gram-20-polar-partition-v5e-8-20261103",
   "limitations": "Conditional normalization/partition sensitivity only. Constraints and separate executables can change casts and kernels; no pure collective or runtime precision attribution. No optimizer acceptance, checkpoint read, warmed performance or training MFU.",
   "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-polar-partition-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --polar-partition --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7",
-  "preflight": "optimizer-polar-partition-preflight.json"
+  "preflight": "optimizer-polar-partition-preflight.json",
+  "result": "optimizer-polar-partition-v5e-completed.json"
 }

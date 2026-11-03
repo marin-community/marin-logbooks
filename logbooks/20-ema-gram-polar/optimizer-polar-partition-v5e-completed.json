@@ -1,0 +1,2086 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-polar-partition-v5e-8-20261103",
+  "submitted_utc": "2026-11-03T06:36:41Z",
+  "verified_utc": "2026-11-03T06:44:00.606566+00:00",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "01faae098cfd",
+  "exit_code": 0,
+  "config": {
+    "source_commit": "c38032801a63afe4106a9230a2b088f6535c3eb9",
+    "script_sha256": "2d6a8c81c6c9c6a368176a047b2db334fada3dc8410bf42f263a696bcdeda7a5",
+    "seed": 0,
+    "shapes": [
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        1024,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        4096,
+        1024
+      ],
+      [
+        11,
+        1024,
+        4096
+      ]
+    ],
+    "names": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "smoke": false,
+    "polar_compiler": true,
+    "state_crossfeed": false,
+    "polar_products": true,
+    "contracting_control": false,
+    "continuation_control": false,
+    "normalization_control": false,
+    "partition_control": true,
+    "polar_iterate_leaf_order": [
+      "input_norm",
+      "normalized_input",
+      "iteration_1",
+      "iteration_2",
+      "iteration_3",
+      "iteration_4",
+      "iteration_5"
+    ],
+    "process_count": 1,
+    "devices": [
+      {
+        "id": 0,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 1,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 2,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 3,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 4,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 5,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 6,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      },
+      {
+        "id": 7,
+        "kind": "TPU v5 lite",
+        "platform": "tpu"
+      }
+    ],
+    "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e",
+    "alpha": 0.25,
+    "ridge": 0.0001,
+    "beta1": 0.95,
+    "beta2": 0.99,
+    "polar_steps": 5,
+    "solver": "default",
+    "gcs_report_request_timeout_seconds": 60,
+    "rtol": 1e-05,
+    "atol": 1e-05,
+    "limitations": "Synthetic non-training stage attribution. Single calls include compilation; no performance or MFU claim. Staging changes compilation. Expected candidate mismatches are recorded, never accepted for training."
+  },
+  "wandb": {
+    "run": "ema-gram-20-attribution-b74aea8d111e",
+    "url": "https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-b74aea8d111e",
+    "state": "finished",
+    "logging_check_success": 1,
+    "attribution_completed": 1,
+    "candidate_accepted_for_training": false
+  },
+  "finite_stages": 87,
+  "comparisons": 111,
+  "passed_comparisons": 42,
+  "all18fixed_replays_bitwise_equal": true,
+  "reference_checks": {
+    "q_proj": {
+      "raw_input_sha256": "b3ad2a53a29a315a8b86d1f9d1957111fde185fea37b4d30c37c3386fd8a5dc3",
+      "normalized_input_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec",
+      "reference_checks": {
+        "q_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "q_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "q_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "q_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        }
+      },
+      "original_path_interpretation_allowed": false,
+      "limitation": "Constraints and separate boundaries can change casts, kernels and supplied values. Conditional sensitivity does not isolate collective order or precision. Final agreement cannot establish internal identity or optimizer acceptance."
+    },
+    "k_proj": {
+      "raw_input_sha256": "6d384b9ff8cd8a411cf316ae67dd46ad982d9c959e57708f9a005b9a02048bdd",
+      "normalized_input_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65",
+      "reference_checks": {
+        "k_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "k_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "k_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "k_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        }
+      },
+      "original_path_interpretation_allowed": false,
+      "limitation": "Constraints and separate boundaries can change casts, kernels and supplied values. Conditional sensitivity does not isolate collective order or precision. Final agreement cannot establish internal identity or optimizer acceptance."
+    },
+    "v_proj": {
+      "raw_input_sha256": "37c7bcaa0823290d3e74ba6ae7a823d33b68511b9caa3d9724e953335a975b9a",
+      "normalized_input_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270",
+      "reference_checks": {
+        "v_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "v_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_direction_sharded": {
+          "passed": true,
+          "bitwise_equal": true
+        },
+        "v_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_replicated": {
+          "passed": false,
+          "bitwise_equal": false
+        },
+        "v_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+          "passed": false,
+          "bitwise_equal": false
+        }
+      },
+      "original_path_interpretation_allowed": false,
+      "limitation": "Constraints and separate boundaries can change casts, kernels and supplied values. Conditional sensitivity does not isolate collective order or precision. Final agreement cannot establish internal identity or optimizer acceptance."
+    }
+  },
+  "partition_banks": {
+    "q_proj": {
+      "replicated_raw_A": {
+        "sha256": "c5d7f4c1d685349199ba5dc32c0be278fd75b1f0e8901bb6b8ecc994a8eb12aa",
+        "x_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec",
+        "A_sha256": "dc080a140ba564c342844d8fc914e7a8ee925d09b395513603e7cec6bdd6e58a"
+      },
+      "replicated_normalized_A": {
+        "sha256": "c5d7f4c1d685349199ba5dc32c0be278fd75b1f0e8901bb6b8ecc994a8eb12aa",
+        "x_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec",
+        "A_sha256": "dc080a140ba564c342844d8fc914e7a8ee925d09b395513603e7cec6bdd6e58a"
+      },
+      "direction_sharded_raw_A": {
+        "sha256": "854d03661ac882b5065e3f753482549e50a395173ef3542350ac7f04e690ab03",
+        "x_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec",
+        "A_sha256": "4eb68b727a5be441c426e83bf44e788c78bfb02cc7d8827a06cac47e73e928a2"
+      },
+      "direction_sharded_normalized_A": {
+        "sha256": "854d03661ac882b5065e3f753482549e50a395173ef3542350ac7f04e690ab03",
+        "x_sha256": "1a082b8f9a14f637598b6779e91828f63f073e763fe928088b0883e9eaff43ec",
+        "A_sha256": "4eb68b727a5be441c426e83bf44e788c78bfb02cc7d8827a06cac47e73e928a2"
+      }
+    },
+    "k_proj": {
+      "replicated_raw_A": {
+        "sha256": "e52236ac7b09ac5d2cbadd8e0cdcc04f0c38c71b93b429c63900cebe2e5b9f14",
+        "x_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65",
+        "A_sha256": "847ec292650c4f5068842dce70a36d216660843e7ae2f0273b48902ee2e38d44"
+      },
+      "replicated_normalized_A": {
+        "sha256": "e52236ac7b09ac5d2cbadd8e0cdcc04f0c38c71b93b429c63900cebe2e5b9f14",
+        "x_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65",
+        "A_sha256": "847ec292650c4f5068842dce70a36d216660843e7ae2f0273b48902ee2e38d44"
+      },
+      "direction_sharded_raw_A": {
+        "sha256": "35dcdc3d04fc1f566973a07375b7c365db422a1f332acec3565895081531fafb",
+        "x_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65",
+        "A_sha256": "eed418d4930399866b50e561dd4c5e4de83f83ae79509a5355d82305fedb0a0b"
+      },
+      "direction_sharded_normalized_A": {
+        "sha256": "35dcdc3d04fc1f566973a07375b7c365db422a1f332acec3565895081531fafb",
+        "x_sha256": "2ca62386be3d9154069845e3a92dca92e74dc42becbf3844381235a00ab00e65",
+        "A_sha256": "eed418d4930399866b50e561dd4c5e4de83f83ae79509a5355d82305fedb0a0b"
+      }
+    },
+    "v_proj": {
+      "replicated_raw_A": {
+        "sha256": "3d6937ec8f408b2e6a2bd68db7ec708857c3cb845fd3ca9a1fff0e101bd1525b",
+        "x_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270",
+        "A_sha256": "eb66234600ed742c55fce168fc10157d7c21b69af95509633351d1a9fce743d0"
+      },
+      "replicated_normalized_A": {
+        "sha256": "3d6937ec8f408b2e6a2bd68db7ec708857c3cb845fd3ca9a1fff0e101bd1525b",
+        "x_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270",
+        "A_sha256": "eb66234600ed742c55fce168fc10157d7c21b69af95509633351d1a9fce743d0"
+      },
+      "direction_sharded_raw_A": {
+        "sha256": "45518142c1b726017b3b68cb55635f83dfb8ef023166fc02fe619fa44a3bafa5",
+        "x_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270",
+        "A_sha256": "1f1fdf4fec334933c23b07e5e54954117272689025eedbe091ff0cb5f7048b69"
+      },
+      "direction_sharded_normalized_A": {
+        "sha256": "45518142c1b726017b3b68cb55635f83dfb8ef023166fc02fe619fa44a3bafa5",
+        "x_sha256": "553b2024c2018997e98f8f39f0d27384ae30ba8c525bc63ed61985d26d75a270",
+        "A_sha256": "1f1fdf4fec334933c23b07e5e54954117272689025eedbe091ff0cb5f7048b69"
+      }
+    }
+  },
+  "non_replay_comparisons": {
+    "q_proj/partition/replicated/A_boundary": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/partition/direction_sharded/A_boundary": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/partition/raw/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.806632851752085e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/normalized/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.806632851752085e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/reference/layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003266453742980957,
+          "relative_frobenius_error": 0.006397530152104468,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0033197402954101562,
+          "relative_frobenius_error": 0.005990960088992366,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031901299953460693,
+          "relative_frobenius_error": 0.006170014763864615,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/replicated_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0033197402954101562,
+          "relative_frobenius_error": 0.005990960088992366,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031901299953460693,
+          "relative_frobenius_error": 0.006170014763864615,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.00327417254447937,
+          "relative_frobenius_error": 0.005885640938495114,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003270760178565979,
+          "relative_frobenius_error": 0.005616267966754932,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003245219588279724,
+          "relative_frobenius_error": 0.006369852061906011,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.00327417254447937,
+          "relative_frobenius_error": 0.005885640938495114,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003270760178565979,
+          "relative_frobenius_error": 0.005616267966754932,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003245219588279724,
+          "relative_frobenius_error": 0.006369852061906011,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003266453742980957,
+          "relative_frobenius_error": 0.006397530152104468,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003266453742980957,
+          "relative_frobenius_error": 0.006397530152104468,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "q_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003109350800514221,
+          "relative_frobenius_error": 0.005871981165574509,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.00300462543964386,
+          "relative_frobenius_error": 0.006361670810540781,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003109350800514221,
+          "relative_frobenius_error": 0.005871981165574509,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003109350800514221,
+          "relative_frobenius_error": 0.005871981165574509,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.00300462543964386,
+          "relative_frobenius_error": 0.006361670810540781,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003109350800514221,
+          "relative_frobenius_error": 0.005871981165574509,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/replicated_raw_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031901299953460693,
+          "relative_frobenius_error": 0.006170126052214479,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/replicated_normalized_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031901299953460693,
+          "relative_frobenius_error": 0.006170126052214479,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/direction_sharded_raw_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003251880407333374,
+          "relative_frobenius_error": 0.0061723462820692165,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "q_proj/partition/direction_sharded_normalized_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003251880407333374,
+          "relative_frobenius_error": 0.0061723462820692165,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/replicated/A_boundary": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/partition/direction_sharded/A_boundary": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/partition/raw/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.860077594362632e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/normalized/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.860077594362632e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/reference/layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0030691921710968018,
+          "relative_frobenius_error": 0.00630542743584103,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031945407390594482,
+          "relative_frobenius_error": 0.004984100057873337,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032233595848083496,
+          "relative_frobenius_error": 0.006182105825120454,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/replicated_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031945407390594482,
+          "relative_frobenius_error": 0.004984100057873337,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032233595848083496,
+          "relative_frobenius_error": 0.006182105825120454,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032593756914138794,
+          "relative_frobenius_error": 0.005455389104897898,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.002590581774711609,
+          "relative_frobenius_error": 0.005397417019133909,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003073781728744507,
+          "relative_frobenius_error": 0.006327188274699024,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032593756914138794,
+          "relative_frobenius_error": 0.005455389104897898,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.002590581774711609,
+          "relative_frobenius_error": 0.005397417019133909,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003073781728744507,
+          "relative_frobenius_error": 0.006327188274699024,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0030691921710968018,
+          "relative_frobenius_error": 0.00630542743584103,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0030691921710968018,
+          "relative_frobenius_error": 0.00630542743584103,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "k_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003312051296234131,
+          "relative_frobenius_error": 0.005389647673276021,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003153860569000244,
+          "relative_frobenius_error": 0.006304064427513527,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003312051296234131,
+          "relative_frobenius_error": 0.005389647673276021,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003312051296234131,
+          "relative_frobenius_error": 0.005389647673276021,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003153860569000244,
+          "relative_frobenius_error": 0.006304064427513527,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003312051296234131,
+          "relative_frobenius_error": 0.005389647673276021,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/replicated_raw_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032233595848083496,
+          "relative_frobenius_error": 0.006182347453415068,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/replicated_normalized_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032233595848083496,
+          "relative_frobenius_error": 0.006182347453415068,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/direction_sharded_raw_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031253397464752197,
+          "relative_frobenius_error": 0.006161144884906911,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "k_proj/partition/direction_sharded_normalized_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031253397464752197,
+          "relative_frobenius_error": 0.006161144884906911,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/replicated/A_boundary": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/partition/direction_sharded/A_boundary": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/partition/raw/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.850655330726536e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/normalized/A_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 2.3283064365386963e-10,
+          "relative_frobenius_error": 6.850655330726536e-08,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/reference/layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031773746013641357,
+          "relative_frobenius_error": 0.006176724689671874,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003361612558364868,
+          "relative_frobenius_error": 0.005459289012151446,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/replicated_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031856298446655273,
+          "relative_frobenius_error": 0.006051123182235202,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/replicated_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003361612558364868,
+          "relative_frobenius_error": 0.005459289012151446,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/replicated_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031856298446655273,
+          "relative_frobenius_error": 0.006051123182235202,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0033855140209198,
+          "relative_frobenius_error": 0.005843152038747154,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003133639693260193,
+          "relative_frobenius_error": 0.005849698044141157,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/direction_sharded_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032012760639190674,
+          "relative_frobenius_error": 0.006307928044027668,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0033855140209198,
+          "relative_frobenius_error": 0.005843152038747154,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003133639693260193,
+          "relative_frobenius_error": 0.005849698044141157,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/replicated/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032012760639190674,
+          "relative_frobenius_error": 0.006307928044027668,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031773746013641357,
+          "relative_frobenius_error": 0.006176724689671874,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/replicated_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031773746013641357,
+          "relative_frobenius_error": 0.006176724689671874,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/replicated_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": true,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "passed": true
+        }
+      ],
+      "bitwise_equal": true
+    },
+    "v_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032157599925994873,
+          "relative_frobenius_error": 0.005769373214879608,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032695531845092773,
+          "relative_frobenius_error": 0.006314611308773024,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/direction_sharded_raw_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032157599925994873,
+          "relative_frobenius_error": 0.005769373214879608,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_first_bank": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032157599925994873,
+          "relative_frobenius_error": 0.005769373214879608,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_replicated": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032695531845092773,
+          "relative_frobenius_error": 0.006314611308773024,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/continuation/direction_sharded/direction_sharded_normalized_A/vs_reference_direction_sharded": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0032157599925994873,
+          "relative_frobenius_error": 0.005769373214879608,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/replicated_raw_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031856298446655273,
+          "relative_frobenius_error": 0.00605118755564179,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/replicated_normalized_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.0031856298446655273,
+          "relative_frobenius_error": 0.00605118755564179,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/direction_sharded_raw_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003293454647064209,
+          "relative_frobenius_error": 0.006011570635613436,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    },
+    "v_proj/partition/direction_sharded_normalized_A/continuation_layouts": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "max_absolute_error": 0.003293454647064209,
+          "relative_frobenius_error": 0.006011570635613436,
+          "passed": false
+        }
+      ],
+      "bitwise_equal": false
+    }
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/report.json",
+  "report_sha256": "96a4b6f14c83e567540b18327ff8525912cb4842d81146be257c4c1847257013",
+  "compiler_artifacts": {
+    "count": 54,
+    "compressed_bytes": 108825,
+    "all_sha_size_decompression_verified": true,
+    "manifest": {
+      "q_proj/partition/input": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__input.stablehlo.txt.gz",
+          "sha256": "e5a756cf33de001a7beb912d0f4c20b796f4824491c900dd360f6f9f11b904f9",
+          "compressed_bytes": 515
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__input.optimized_hlo.txt.gz",
+          "sha256": "105e2591f3a486b06e9001e34ac92a6bb9dfa235d502b37d8a7a2aa39d3144b5",
+          "compressed_bytes": 1614
+        }
+      },
+      "q_proj/identical_inner/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__identical_inner__replicated.stablehlo.txt.gz",
+          "sha256": "5dfc289bf9cc206c7137cbf7736eaa238101c713c347456a3b9f96417840f01f",
+          "compressed_bytes": 1268
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__identical_inner__replicated.optimized_hlo.txt.gz",
+          "sha256": "c2ffe20e01eff915d2577ce50044670f8917554b395c1da33ddd5c548c60be7b",
+          "compressed_bytes": 4319
+        }
+      },
+      "q_proj/identical_inner/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__identical_inner__direction_sharded.stablehlo.txt.gz",
+          "sha256": "55af1b5f77b3cffe640013854baa45d32eafff88cf272b577dc50904ea7f443e",
+          "compressed_bytes": 1271
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__identical_inner__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "58516d10fad08831dfb39024ab45ba8848d0a85be728a440d4eca702b4509273",
+          "compressed_bytes": 5158
+        }
+      },
+      "k_proj/partition/input": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__input.stablehlo.txt.gz",
+          "sha256": "e5a756cf33de001a7beb912d0f4c20b796f4824491c900dd360f6f9f11b904f9",
+          "compressed_bytes": 515
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__input.optimized_hlo.txt.gz",
+          "sha256": "105e2591f3a486b06e9001e34ac92a6bb9dfa235d502b37d8a7a2aa39d3144b5",
+          "compressed_bytes": 1614
+        }
+      },
+      "k_proj/identical_inner/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__identical_inner__replicated.stablehlo.txt.gz",
+          "sha256": "5dfc289bf9cc206c7137cbf7736eaa238101c713c347456a3b9f96417840f01f",
+          "compressed_bytes": 1268
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__identical_inner__replicated.optimized_hlo.txt.gz",
+          "sha256": "c2ffe20e01eff915d2577ce50044670f8917554b395c1da33ddd5c548c60be7b",
+          "compressed_bytes": 4319
+        }
+      },
+      "k_proj/identical_inner/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__identical_inner__direction_sharded.stablehlo.txt.gz",
+          "sha256": "55af1b5f77b3cffe640013854baa45d32eafff88cf272b577dc50904ea7f443e",
+          "compressed_bytes": 1271
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__identical_inner__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "58516d10fad08831dfb39024ab45ba8848d0a85be728a440d4eca702b4509273",
+          "compressed_bytes": 5158
+        }
+      },
+      "v_proj/partition/input": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__input.stablehlo.txt.gz",
+          "sha256": "e5a756cf33de001a7beb912d0f4c20b796f4824491c900dd360f6f9f11b904f9",
+          "compressed_bytes": 515
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__input.optimized_hlo.txt.gz",
+          "sha256": "105e2591f3a486b06e9001e34ac92a6bb9dfa235d502b37d8a7a2aa39d3144b5",
+          "compressed_bytes": 1614
+        }
+      },
+      "v_proj/identical_inner/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__identical_inner__replicated.stablehlo.txt.gz",
+          "sha256": "5dfc289bf9cc206c7137cbf7736eaa238101c713c347456a3b9f96417840f01f",
+          "compressed_bytes": 1268
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__identical_inner__replicated.optimized_hlo.txt.gz",
+          "sha256": "c2ffe20e01eff915d2577ce50044670f8917554b395c1da33ddd5c548c60be7b",
+          "compressed_bytes": 4319
+        }
+      },
+      "v_proj/identical_inner/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__identical_inner__direction_sharded.stablehlo.txt.gz",
+          "sha256": "55af1b5f77b3cffe640013854baa45d32eafff88cf272b577dc50904ea7f443e",
+          "compressed_bytes": 1271
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__identical_inner__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "58516d10fad08831dfb39024ab45ba8848d0a85be728a440d4eca702b4509273",
+          "compressed_bytes": 5158
+        }
+      },
+      "q_proj/partition/raw_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__raw_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "2e049c06e7d8f915b807cab825e66525d1aa62b7c11a5396187f907432811946",
+          "compressed_bytes": 626
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__raw_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "8c7a9715b3b8ed1d448d4be34ef41a3fb6ae26dc8d68090274dab7342d1b6a72",
+          "compressed_bytes": 2464
+        }
+      },
+      "q_proj/partition/normalized_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__normalized_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "6a6d1891fb36cefc3cd1ba04def2d9bc96f004aadcf5cb6827d49cc451ecaa77",
+          "compressed_bytes": 395
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__normalized_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "1bdb307699a3ee962e19177bf3db68e949564119aeaacdbd6dfac838699b5386",
+          "compressed_bytes": 1943
+        }
+      },
+      "q_proj/partition/raw_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__raw_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "18b50409d9a58b0712b556704fea93829fbef8a637dbf644537ec0ab26595d20",
+          "compressed_bytes": 625
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "6a344446b027e48dc98e1a6236a86637327cb6c762a1c01e91ff89f87ed4c2d9",
+          "compressed_bytes": 2768
+        }
+      },
+      "q_proj/partition/normalized_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__normalized_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "f3f0c994a4628454588d9f48fe21e6d921054b22e3de271fd1914d9ab71aa62a",
+          "compressed_bytes": 396
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__normalized_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "2e56f928fc0c9ea596ef9ab36d35c308dd763c4f3270893a32ff4de7e3c5e67a",
+          "compressed_bytes": 2260
+        }
+      },
+      "q_proj/partition/continuation/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__continuation__replicated.stablehlo.txt.gz",
+          "sha256": "73b42d791139ca4e8b0dea39687b72758794372f08c4d0791220f38b4aa8ec08",
+          "compressed_bytes": 1074
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__continuation__replicated.optimized_hlo.txt.gz",
+          "sha256": "e406e6a09342f93b6b5b40c6f191ce306330ab52def687f498902764cc143c2e",
+          "compressed_bytes": 3900
+        }
+      },
+      "q_proj/partition/continuation/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__continuation__direction_sharded.stablehlo.txt.gz",
+          "sha256": "2541f2d3ad69f2cf4a542ef5d16167d34d683c9770744f941b42ee6b5890ac3a",
+          "compressed_bytes": 1078
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__continuation__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "f4ccbf06ea93821852ff923be9f7f952b1f6cda40b86f639e0d63fb24a6d738f",
+          "compressed_bytes": 4601
+        }
+      },
+      "k_proj/partition/raw_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__raw_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "2e049c06e7d8f915b807cab825e66525d1aa62b7c11a5396187f907432811946",
+          "compressed_bytes": 626
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__raw_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "8c7a9715b3b8ed1d448d4be34ef41a3fb6ae26dc8d68090274dab7342d1b6a72",
+          "compressed_bytes": 2464
+        }
+      },
+      "k_proj/partition/normalized_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__normalized_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "6a6d1891fb36cefc3cd1ba04def2d9bc96f004aadcf5cb6827d49cc451ecaa77",
+          "compressed_bytes": 395
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__normalized_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "1bdb307699a3ee962e19177bf3db68e949564119aeaacdbd6dfac838699b5386",
+          "compressed_bytes": 1943
+        }
+      },
+      "k_proj/partition/raw_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__raw_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "18b50409d9a58b0712b556704fea93829fbef8a637dbf644537ec0ab26595d20",
+          "compressed_bytes": 625
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "6a344446b027e48dc98e1a6236a86637327cb6c762a1c01e91ff89f87ed4c2d9",
+          "compressed_bytes": 2768
+        }
+      },
+      "k_proj/partition/normalized_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__normalized_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "f3f0c994a4628454588d9f48fe21e6d921054b22e3de271fd1914d9ab71aa62a",
+          "compressed_bytes": 396
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__normalized_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "2e56f928fc0c9ea596ef9ab36d35c308dd763c4f3270893a32ff4de7e3c5e67a",
+          "compressed_bytes": 2260
+        }
+      },
+      "k_proj/partition/continuation/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__continuation__replicated.stablehlo.txt.gz",
+          "sha256": "73b42d791139ca4e8b0dea39687b72758794372f08c4d0791220f38b4aa8ec08",
+          "compressed_bytes": 1074
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__continuation__replicated.optimized_hlo.txt.gz",
+          "sha256": "e406e6a09342f93b6b5b40c6f191ce306330ab52def687f498902764cc143c2e",
+          "compressed_bytes": 3900
+        }
+      },
+      "k_proj/partition/continuation/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__continuation__direction_sharded.stablehlo.txt.gz",
+          "sha256": "2541f2d3ad69f2cf4a542ef5d16167d34d683c9770744f941b42ee6b5890ac3a",
+          "compressed_bytes": 1078
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__continuation__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "f4ccbf06ea93821852ff923be9f7f952b1f6cda40b86f639e0d63fb24a6d738f",
+          "compressed_bytes": 4601
+        }
+      },
+      "v_proj/partition/raw_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__raw_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "2e049c06e7d8f915b807cab825e66525d1aa62b7c11a5396187f907432811946",
+          "compressed_bytes": 626
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__raw_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "8c7a9715b3b8ed1d448d4be34ef41a3fb6ae26dc8d68090274dab7342d1b6a72",
+          "compressed_bytes": 2464
+        }
+      },
+      "v_proj/partition/normalized_first_A/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__normalized_first_A__replicated.stablehlo.txt.gz",
+          "sha256": "6a6d1891fb36cefc3cd1ba04def2d9bc96f004aadcf5cb6827d49cc451ecaa77",
+          "compressed_bytes": 395
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__normalized_first_A__replicated.optimized_hlo.txt.gz",
+          "sha256": "1bdb307699a3ee962e19177bf3db68e949564119aeaacdbd6dfac838699b5386",
+          "compressed_bytes": 1943
+        }
+      },
+      "v_proj/partition/raw_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__raw_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "18b50409d9a58b0712b556704fea93829fbef8a637dbf644537ec0ab26595d20",
+          "compressed_bytes": 625
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "6a344446b027e48dc98e1a6236a86637327cb6c762a1c01e91ff89f87ed4c2d9",
+          "compressed_bytes": 2768
+        }
+      },
+      "v_proj/partition/normalized_first_A/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__normalized_first_A__direction_sharded.stablehlo.txt.gz",
+          "sha256": "f3f0c994a4628454588d9f48fe21e6d921054b22e3de271fd1914d9ab71aa62a",
+          "compressed_bytes": 396
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__normalized_first_A__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "2e56f928fc0c9ea596ef9ab36d35c308dd763c4f3270893a32ff4de7e3c5e67a",
+          "compressed_bytes": 2260
+        }
+      },
+      "v_proj/partition/continuation/replicated": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__continuation__replicated.stablehlo.txt.gz",
+          "sha256": "73b42d791139ca4e8b0dea39687b72758794372f08c4d0791220f38b4aa8ec08",
+          "compressed_bytes": 1074
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__continuation__replicated.optimized_hlo.txt.gz",
+          "sha256": "e406e6a09342f93b6b5b40c6f191ce306330ab52def687f498902764cc143c2e",
+          "compressed_bytes": 3900
+        }
+      },
+      "v_proj/partition/continuation/direction_sharded": {
+        "stablehlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__continuation__direction_sharded.stablehlo.txt.gz",
+          "sha256": "2541f2d3ad69f2cf4a542ef5d16167d34d683c9770744f941b42ee6b5890ac3a",
+          "compressed_bytes": 1078
+        },
+        "optimized_hlo": {
+          "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__continuation__direction_sharded.optimized_hlo.txt.gz",
+          "sha256": "f4ccbf06ea93821852ff923be9f7f952b1f6cda40b86f639e0d63fb24a6d738f",
+          "compressed_bytes": 4601
+        }
+      }
+    }
+  },
+  "memory": {
+    "finelog": {
+      "task_id": "/kaiyuew@stanford.edu/ema-gram-20-polar-partition-v5e-8-20261103/0",
+      "attempt_id": 0,
+      "cluster": null,
+      "samples": 58,
+      "first_ts": "2026-11-03 06:36:59.682000",
+      "last_ts": "2026-11-03 06:43:17.813000",
+      "cumulative_host_peak_gib": 13.3994140625,
+      "sampled_host_peak_gib": 13.3994140625,
+      "reported_accelerator_mem_bytes": null
+    },
+    "deployment": "marin",
+    "namespace": "iris.task",
+    "query": "SELECT task_id, attempt_id, \"cluster\", count(*) AS samples,\n       min(ts) AS first_ts, max(ts) AS last_ts,\n       max(memory_peak_mb)/1024.0 AS cumulative_host_peak_gib,\n       max(memory_mb)/1024.0 AS sampled_host_peak_gib,\n       max(accelerator_mem_bytes) AS reported_accelerator_mem_bytes\nFROM \"iris.task\"\nWHERE task_id='/kaiyuew@stanford.edu/ema-gram-20-polar-partition-v5e-8-20261103/0'\n  AND attempt_id=0\n  AND ts >= TIMESTAMP '2026-11-03 06:36:00'\n  AND ts < TIMESTAMP '2026-11-03 07:00:00'\nGROUP BY task_id, attempt_id, \"cluster\"\n",
+    "semantics": "Schema-confirmed MiB; observed cumulative host peak; hub cluster null retained.",
+    "jax_allocator_peak_bytes_per_device": 7116572672,
+    "jax_limitation": "Allocator accounting is not total HBM"
+  },
+  "limitations": "Constraints and boundaries perturb compilation. Conditional numerical sensitivity, not runtime precision cause or original internal-path reproduction. No optimizer acceptance, warmed performance, training MFU or checkpoint restoration."
+}

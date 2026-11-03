@@ -2333,6 +2333,55 @@ requires checking the compiled first-product contraction and reduction before
 interpreting numerical comparisons. It reads no original checkpoint or training
 data and cannot establish optimizer acceptance or training MFU.
 
+## 2026-11-03 06:44 UTC — Paired partition control reproduces selected sharded polar endpoints
+
+The [paired partition diagnostic](optimizer-polar-partition-v5e-completed.json)
+succeeded on eight native v5e chips, attempt zero and task exit zero, from
+`c38032801a63afe4106a9230a2b088f6535c3eb9`. All 87 stages were finite,
+42 of 111 comparisons passed at `rtol=atol=1e-5`, and all eighteen fixed
+executables replayed bitwise. Online W&B run `b74aea8d111e` finished with
+collection complete and `candidate_accepted_for_training=false`.
+
+For query/key/value under each output layout, first A = XXᵀ is bitwise equal
+whether shared normalization occurs inside the first-product executable or
+its normalized input is supplied separately. All twelve saved first-product
+graphs contain a local 128-column contraction followed by an all-reduce.
+Matrix-product operands on raw-input paths are declared F32, and those on
+externally normalized paths BF16;
+these declarations do not establish runtime precision. Changing the product's
+output layout still changes A by a maximum absolute elementwise difference
+of 2.3283064e-10, although it passes the fixed tolerance.
+
+For all three groups, the direction-sharded fixed continuation supplied with A
+from either replicated-output first-product path is bitwise identical to the
+shared uninstrumented sharded five-step reference. Supplying A from either
+sharded-output product instead fails that reference, with relative Frobenius
+errors 0.005872, 0.005390 and 0.005769 for query, key and value respectively.
+The denominator is the original sharded reference norm. All replicated-output
+continuations fail both original references. The 69 failures comprise three
+original-reference layout checks, twelve A-bank substitutions under fixed
+continuations, twelve continuation-output-layout checks and 42 reference checks.
+
+This reproduces selected final endpoints while exposing sensitivity to the
+first product's output layout despite matching contraction partitions. It does
+not verify hidden internal values, isolate runtime precision or collective
+order, or establish equivalence of the full optimizer. No warmed performance
+or training MFU was measured, and no optimizer change is accepted.
+
+All 54 compiler objects, totaling 108,825 compressed bytes, passed checksum,
+size and decompression checks. The [first-product ancestry](compiler-partition-product-paths.json)
+rechecked twelve optimized objects against local bytes. Each graph has one
+visible product with 128-column operands and one all-reduce in its output ancestry. Finelog observed a host peak of 13.399414 GiB
+across 58 samples through 06:43:17 UTC. The JAX allocator peak was
+7,116,572,672 bytes per device; it does not measure total HBM. The sole log
+observer ended naturally. No experiment is queued or running.
+
+Next inspect saved first-product producer and reduction paths across output
+layouts, including enclosing-kernel configurations and normalization producers.
+Use the existing small artifacts and dependency mapping; no additional
+accelerator is selected. Static differences alone cannot establish cause or
+justify a precision or tiling override.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

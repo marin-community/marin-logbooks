@@ -1,0 +1,605 @@
+{
+  "graphs": {
+    "q_proj/partition/raw_first_A/replicated": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__raw_first_A__replicated.optimized_hlo.txt.gz",
+        "sha256": "8c7a9715b3b8ed1d448d4be34ef41a3fb6ae26dc8d68090274dab7342d1b6a72",
+        "compressed_bytes": 2464
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "f32[11,1024,128]{2,1,0:T(8,128)}",
+        "f32[11,1024,128]{2,1,0:T(8,128)}"
+      ],
+      "product": {
+        "identity": "[[\"main.2_spmd/fusion\"], \"fused_computation.1\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.2_spmd/fusion"
+        ],
+        "computation": "fused_computation.1",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.1",
+          "fusion.1"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.1, %fusion.1), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}"
+      },
+      "collectives": [
+        {
+          "identity": "[[], \"main.2_spmd\", \"all-reduce\", []]",
+          "context": [],
+          "computation": "main.2_spmd",
+          "selected_tuple_path": [],
+          "name": "all-reduce",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %all-reduce = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%fusion), channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "a3ffadc520c2f45109ad3a894917c8f80add591d0e6cdaa3dc06ad646acc8cfd"
+    },
+    "q_proj/partition/raw_first_A/direction_sharded": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+        "sha256": "6a344446b027e48dc98e1a6236a86637327cb6c762a1c01e91ff89f87ed4c2d9",
+        "compressed_bytes": 2768
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "f32[11,1024,128]{2,1,0:T(8,128)}",
+        "f32[11,1024,128]{2,1,0:T(8,128)}"
+      ],
+      "product": {
+        "identity": "[[\"main.2_spmd/fusion.1\"], \"fused_computation.1\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.2_spmd/fusion.1"
+        ],
+        "computation": "fused_computation.1",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.2",
+          "fusion.2"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.2, %fusion.2), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}"
+      },
+      "collectives": [
+        {
+          "identity": "[[\"main.2_spmd/fusion\"], \"all-reduce-scatter\", \"all-reduce.2\", []]",
+          "context": [
+            "main.2_spmd/fusion"
+          ],
+          "computation": "all-reduce-scatter",
+          "selected_tuple_path": [],
+          "name": "all-reduce.2",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "input"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}",
+          "instruction": "%all-reduce.2 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%input), channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "998fa7f38b9c06a67390c6b5d3a97ec0145c3ecb50eb17f1bf6600606e5d6da7"
+    },
+    "q_proj/partition/normalized_first_A/replicated": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__normalized_first_A__replicated.optimized_hlo.txt.gz",
+        "sha256": "1bdb307699a3ee962e19177bf3db68e949564119aeaacdbd6dfac838699b5386",
+        "compressed_bytes": 1943
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+      ],
+      "product": {
+        "identity": "[[\"main.0_spmd/fusion\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.0_spmd/fusion"
+        ],
+        "computation": "fused_computation",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.1",
+          "fusion.1"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.1, %fusion.1), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}"
+      },
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"all-reduce\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "all-reduce",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %all-reduce = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%fusion), channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "7d7c68ad3402b962b0dec713ca42ed97894a1197854ecce480a3d842816ef3e9"
+    },
+    "q_proj/partition/normalized_first_A/direction_sharded": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/q_proj__partition__normalized_first_A__direction_sharded.optimized_hlo.txt.gz",
+        "sha256": "2e56f928fc0c9ea596ef9ab36d35c308dd763c4f3270893a32ff4de7e3c5e67a",
+        "compressed_bytes": 2260
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+      ],
+      "product": {
+        "identity": "[[\"main.0_spmd/fusion.1\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.0_spmd/fusion.1"
+        ],
+        "computation": "fused_computation",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.2",
+          "fusion.2"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.2, %fusion.2), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}"
+      },
+      "collectives": [
+        {
+          "identity": "[[\"main.0_spmd/fusion\"], \"all-reduce-scatter\", \"all-reduce.2\", []]",
+          "context": [
+            "main.0_spmd/fusion"
+          ],
+          "computation": "all-reduce-scatter",
+          "selected_tuple_path": [],
+          "name": "all-reduce.2",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "input"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}",
+          "instruction": "%all-reduce.2 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%input), channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "82e480bd31329c17bcf06fc80207b2106343f6399d1216bcddcecec05f4f209b"
+    },
+    "k_proj/partition/raw_first_A/replicated": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__raw_first_A__replicated.optimized_hlo.txt.gz",
+        "sha256": "8c7a9715b3b8ed1d448d4be34ef41a3fb6ae26dc8d68090274dab7342d1b6a72",
+        "compressed_bytes": 2464
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "f32[11,1024,128]{2,1,0:T(8,128)}",
+        "f32[11,1024,128]{2,1,0:T(8,128)}"
+      ],
+      "product": {
+        "identity": "[[\"main.2_spmd/fusion\"], \"fused_computation.1\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.2_spmd/fusion"
+        ],
+        "computation": "fused_computation.1",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.1",
+          "fusion.1"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.1, %fusion.1), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}"
+      },
+      "collectives": [
+        {
+          "identity": "[[], \"main.2_spmd\", \"all-reduce\", []]",
+          "context": [],
+          "computation": "main.2_spmd",
+          "selected_tuple_path": [],
+          "name": "all-reduce",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %all-reduce = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%fusion), channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "a3ffadc520c2f45109ad3a894917c8f80add591d0e6cdaa3dc06ad646acc8cfd"
+    },
+    "k_proj/partition/raw_first_A/direction_sharded": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+        "sha256": "6a344446b027e48dc98e1a6236a86637327cb6c762a1c01e91ff89f87ed4c2d9",
+        "compressed_bytes": 2768
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "f32[11,1024,128]{2,1,0:T(8,128)}",
+        "f32[11,1024,128]{2,1,0:T(8,128)}"
+      ],
+      "product": {
+        "identity": "[[\"main.2_spmd/fusion.1\"], \"fused_computation.1\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.2_spmd/fusion.1"
+        ],
+        "computation": "fused_computation.1",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.2",
+          "fusion.2"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.2, %fusion.2), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}"
+      },
+      "collectives": [
+        {
+          "identity": "[[\"main.2_spmd/fusion\"], \"all-reduce-scatter\", \"all-reduce.2\", []]",
+          "context": [
+            "main.2_spmd/fusion"
+          ],
+          "computation": "all-reduce-scatter",
+          "selected_tuple_path": [],
+          "name": "all-reduce.2",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "input"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}",
+          "instruction": "%all-reduce.2 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%input), channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "998fa7f38b9c06a67390c6b5d3a97ec0145c3ecb50eb17f1bf6600606e5d6da7"
+    },
+    "k_proj/partition/normalized_first_A/replicated": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__normalized_first_A__replicated.optimized_hlo.txt.gz",
+        "sha256": "1bdb307699a3ee962e19177bf3db68e949564119aeaacdbd6dfac838699b5386",
+        "compressed_bytes": 1943
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+      ],
+      "product": {
+        "identity": "[[\"main.0_spmd/fusion\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.0_spmd/fusion"
+        ],
+        "computation": "fused_computation",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.1",
+          "fusion.1"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.1, %fusion.1), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}"
+      },
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"all-reduce\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "all-reduce",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %all-reduce = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%fusion), channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "7d7c68ad3402b962b0dec713ca42ed97894a1197854ecce480a3d842816ef3e9"
+    },
+    "k_proj/partition/normalized_first_A/direction_sharded": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/k_proj__partition__normalized_first_A__direction_sharded.optimized_hlo.txt.gz",
+        "sha256": "2e56f928fc0c9ea596ef9ab36d35c308dd763c4f3270893a32ff4de7e3c5e67a",
+        "compressed_bytes": 2260
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+      ],
+      "product": {
+        "identity": "[[\"main.0_spmd/fusion.1\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.0_spmd/fusion.1"
+        ],
+        "computation": "fused_computation",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.2",
+          "fusion.2"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.2, %fusion.2), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}"
+      },
+      "collectives": [
+        {
+          "identity": "[[\"main.0_spmd/fusion\"], \"all-reduce-scatter\", \"all-reduce.2\", []]",
+          "context": [
+            "main.0_spmd/fusion"
+          ],
+          "computation": "all-reduce-scatter",
+          "selected_tuple_path": [],
+          "name": "all-reduce.2",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "input"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}",
+          "instruction": "%all-reduce.2 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%input), channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "82e480bd31329c17bcf06fc80207b2106343f6399d1216bcddcecec05f4f209b"
+    },
+    "v_proj/partition/raw_first_A/replicated": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__raw_first_A__replicated.optimized_hlo.txt.gz",
+        "sha256": "8c7a9715b3b8ed1d448d4be34ef41a3fb6ae26dc8d68090274dab7342d1b6a72",
+        "compressed_bytes": 2464
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "f32[11,1024,128]{2,1,0:T(8,128)}",
+        "f32[11,1024,128]{2,1,0:T(8,128)}"
+      ],
+      "product": {
+        "identity": "[[\"main.2_spmd/fusion\"], \"fused_computation.1\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.2_spmd/fusion"
+        ],
+        "computation": "fused_computation.1",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.1",
+          "fusion.1"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.1, %fusion.1), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}"
+      },
+      "collectives": [
+        {
+          "identity": "[[], \"main.2_spmd\", \"all-reduce\", []]",
+          "context": [],
+          "computation": "main.2_spmd",
+          "selected_tuple_path": [],
+          "name": "all-reduce",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %all-reduce = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%fusion), channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "a3ffadc520c2f45109ad3a894917c8f80add591d0e6cdaa3dc06ad646acc8cfd"
+    },
+    "v_proj/partition/raw_first_A/direction_sharded": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__raw_first_A__direction_sharded.optimized_hlo.txt.gz",
+        "sha256": "6a344446b027e48dc98e1a6236a86637327cb6c762a1c01e91ff89f87ed4c2d9",
+        "compressed_bytes": 2768
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "f32[11,1024,128]{2,1,0:T(8,128)}",
+        "f32[11,1024,128]{2,1,0:T(8,128)}"
+      ],
+      "product": {
+        "identity": "[[\"main.2_spmd/fusion.1\"], \"fused_computation.1\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.2_spmd/fusion.1"
+        ],
+        "computation": "fused_computation.1",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.2",
+          "fusion.2"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.2, %fusion.2), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(raw_contracting_gram)/dot_general\" stack_frame_id=12}"
+      },
+      "collectives": [
+        {
+          "identity": "[[\"main.2_spmd/fusion\"], \"all-reduce-scatter\", \"all-reduce.2\", []]",
+          "context": [
+            "main.2_spmd/fusion"
+          ],
+          "computation": "all-reduce-scatter",
+          "selected_tuple_path": [],
+          "name": "all-reduce.2",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "input"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}",
+          "instruction": "%all-reduce.2 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%input), channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "998fa7f38b9c06a67390c6b5d3a97ec0145c3ecb50eb17f1bf6600606e5d6da7"
+    },
+    "v_proj/partition/normalized_first_A/replicated": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__normalized_first_A__replicated.optimized_hlo.txt.gz",
+        "sha256": "1bdb307699a3ee962e19177bf3db68e949564119aeaacdbd6dfac838699b5386",
+        "compressed_bytes": 1943
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+      ],
+      "product": {
+        "identity": "[[\"main.0_spmd/fusion\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.0_spmd/fusion"
+        ],
+        "computation": "fused_computation",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.1",
+          "fusion.1"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.1, %fusion.1), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}"
+      },
+      "collectives": [
+        {
+          "identity": "[[], \"main.0_spmd\", \"all-reduce\", []]",
+          "context": [],
+          "computation": "main.0_spmd",
+          "selected_tuple_path": [],
+          "name": "all-reduce",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "fusion"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}",
+          "instruction": "ROOT %all-reduce = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%fusion), channel_id=1, replica_groups=mesh['axis_0'=8] {'axis_0'}, use_global_device_ids=true, to_apply=%add.clone, frontend_attributes={is_spmd_generated=\"true\"}, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}, backend_config={\"aliasing_operands\":{\"lists\":[]},\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"collective_algorithm_config\":{\"debug\":\"\\nUniDirection1DRingStrategy{colors:2 phases:1 cores:{8},{8} nophase0:0 reserved_sflags:0 cross_module_on_2d_plane:0 has_reordering_map:0 use_routing_table_indices:0}\",\"emitter\":\"RotatedPincerEmitter\",\"strategy\":\"UniDirection1DRingStrategy\"},\"flag_configs\":[],\"retry_config\":{\"retry_count\":\"0\"},\"scoped_memory_configs\":[{\"memory_space\":\"0\",\"offset\":\"0\",\"size\":\"67108864\"}],\"used_scoped_memory_configs\":[{\"memory_space\":\"1\",\"offset\":\"0\",\"size\":\"13860864\"}]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "7d7c68ad3402b962b0dec713ca42ed97894a1197854ecce480a3d842816ef3e9"
+    },
+    "v_proj/partition/normalized_first_A/direction_sharded": {
+      "artifact": {
+        "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.7/ema-gram-20-attribution-b74aea8d111e/v_proj__partition__normalized_first_A__direction_sharded.optimized_hlo.txt.gz",
+        "sha256": "2e56f928fc0c9ea596ef9ab36d35c308dd763c4f3270893a32ff4de7e3c5e67a",
+        "compressed_bytes": 2260
+      },
+      "sha_size_localbytes_verified": true,
+      "operand_declarations": [
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}",
+        "bf16[11,1024,128]{2,1,0:T(8,128)(2,1)}"
+      ],
+      "product": {
+        "identity": "[[\"main.0_spmd/fusion.1\"], \"fused_computation\", \"convolution-base-dilated.1\", []]",
+        "context": [
+          "main.0_spmd/fusion.1"
+        ],
+        "computation": "fused_computation",
+        "selected_tuple_path": [],
+        "name": "convolution-base-dilated.1",
+        "shape": "f32[11,1024,1024]{2,1,0:T(8,128)S(1)}",
+        "opcode": "convolution",
+        "operands": [
+          "fusion.2",
+          "fusion.2"
+        ],
+        "parameter_index": null,
+        "attributes": ", window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}",
+        "instruction": "ROOT %convolution-base-dilated.1 = f32[11,1024,1024]{2,1,0:T(8,128)S(1)} convolution(%fusion.2, %fusion.2), window={size=11 stride=10 lhs_dilate=11}, dim_labels=0bf_0oi->0bf, metadata={op_name=\"jit(contracting_product)/dot_general\" stack_frame_id=8}"
+      },
+      "collectives": [
+        {
+          "identity": "[[\"main.0_spmd/fusion\"], \"all-reduce-scatter\", \"all-reduce.2\", []]",
+          "context": [
+            "main.0_spmd/fusion"
+          ],
+          "computation": "all-reduce-scatter",
+          "selected_tuple_path": [],
+          "name": "all-reduce.2",
+          "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+          "opcode": "all-reduce",
+          "operands": [
+            "input"
+          ],
+          "parameter_index": null,
+          "attributes": ", channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}",
+          "instruction": "%all-reduce.2 = f32[11,1024,1024]{2,1,0:T(8,128)} all-reduce(%input), channel_id=2, replica_groups={{0,1,2,3,4,5,6,7}}, use_global_device_ids=true, to_apply=%add.1.clone, frontend_attributes={from-cross-replica-sharding=\"true\"}, backend_config={\"barrier_config\":{\"barrier_type\":\"CUSTOM\",\"id\":\"0\"},\"flag_configs\":[],\"scoped_memory_configs\":[],\"used_scoped_memory_configs\":[]}"
+        }
+      ],
+      "has_output_ancestry_reduction": true,
+      "source_sha256": "82e480bd31329c17bcf06fc80207b2106343f6399d1216bcddcecec05f4f209b"
+    }
+  },
+  "limitation": "Static declared contraction and collective ancestry; no runtime precision or causal attribution."
+}
