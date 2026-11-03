@@ -4567,6 +4567,17 @@ Restore/audit peak process RSS was 29.99, 29.88, 30.09 and 29.99 GiB for process
 
 The sole follow observer, session 37396, ended naturally with exit 0. No experiment, queue or observer remains active; all old jobs are terminal and will not be restarted. Next prepare the saved-state optimizer diagnostic: directions from unchanged saved Gram/momentum, plus a full refresh/update with a fixed synthetic gradient, retaining finite-output and input-immutability checks. Numerical-equivalence failures remain reported diagnostics rather than a veto on the paired loss experiment. A new numerical entrypoint still requires its own online logging check, online CPU harness and exact publication before one sequential TPU diagnostic. Full-training memory/finite checks and the sequential loss/speed comparison remain outstanding; neither training variant has launched.
 
+### November 3 — validate saved optimizer state before paired training
+
+The saved-state diagnostic is ready for one regional TPU check. It reuses the published optimizer functions to compare replicated and matrix eigensolver layouts in two cases: computing directions from unchanged saved Gram/momentum, and refreshing the state with fixed synthetic gradients before computing a full update. Both cases require finite outputs and unchanged input arrays. The fixed `rtol=atol=1e-5` comparison is reported without aborting on numerical differences, consistent with the loss-first acceptance criterion. No optimizer algorithm, source precision or geometry changed.
+
+Its fresh online logging check and CPU harness finished successfully with the exact three source-file hashes verified through W&B. The generated CPU checkpoint round-tripped all 21 Gram/momentum arrays. On four virtual CPU devices, both layouts produced finite outputs and preserved their inputs in both cases; the seven direction outputs and 28 full-update outputs matched with zero measured error. A deliberately changed comparison value was detected without invoking a numerical-equivalence veto. This tiny generated fixture does not establish the result on the original TPU state.
+
+The [prepared check](saved-state-check-prepared.json) uses one v4-32 slice spanning four hosts in us-central2, with 120 CPUs, 256 GiB memory and 50 GiB disk per host, default preemption/retries and no wall-clock limits. Exact source and manifest publication precede submission. Each execution host performs a fresh online logging check, and the numerical worker initializes native online tracking before kernels. The worker validates source and checkpoint metadata identities, then selectively reads the original 21 Gram/momentum arrays within the region. All four process reports are required to join shard comparisons; repeated replicas must agree before deduplication.
+
+The full model/optimizer/step/PRNG restore and configured-stream replay were independently verified by the preceding four-host audit. This additional selective check does not re-establish full restoration and executes no training update. Its compilation-inclusive timings are diagnostic execution times, not steady training throughput. Full-training memory/finite validation and the sequential matched-loss comparison remain outstanding. The final training counter stays 7630, with numerical differences retained as diagnostics.
+
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

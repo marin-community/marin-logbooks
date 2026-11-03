@@ -221,11 +221,11 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "state": "Full trainer restore and configured data replay verified; prepare saved-state optimizer check; no active job or training",
+    "state": "Full restore verified; saved-state diagnostic own logging/CPU validation passed, regional execution prepared",
     "user_direction": "Comparable loss is the practical criterion. Strict numerical equivalence is diagnostic and is no longer a sole training-launch blocker.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
     "procedure": "Prepare original-versus-candidate paired training with the same model, global batch8, data order, seed, hyperparameters and initialization or verified full checkpoint/data-position restore. Preserve original7630step schedule and all operational constraints. Compare training/validation loss at matched steps and progress per measured wall-clock time. Quantify variability and loss gap; no acceptable loss margin has been specified.",
-    "remaining_preparation": "Prepare both unchanged saved-state direction and fixed-synthetic-gradient full update checks with input immutability and finite outputs; numerical equivalence reported not asserted as veto. Own online logging/CPU harness and publication before one sequential TPU. Then full-training memory/finite validation and paired continuation to7630.",
+    "remaining_preparation": "Publish exact source and manifest, then one sequential regional TPU saved-state check. Require four finite/immutable process reports; record equivalence without veto. Then full-training memory/finite validation and paired continuation to7630.",
     "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
     "prepared_configurations": "loss-pair-prepared.json",
     "validation": "loss-pair-preparation-validation.json",
@@ -240,7 +240,9 @@
       "Full refresh/update with identical fixed synthetic gradient",
       "Input state immutability in both cases"
     ],
-    "full_restore_completion": "full-restore-counter-completed.json"
+    "full_restore_completion": "full-restore-counter-completed.json",
+    "saved_state_preparation": "saved-state-check-prepared.json",
+    "saved_state_validation": "saved-state-check-validation.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",
