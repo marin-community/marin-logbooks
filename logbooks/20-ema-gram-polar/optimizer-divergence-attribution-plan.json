@@ -221,7 +221,7 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "status": "CPU validated; prepared for one sequential TPU diagnostic from next published checkpoint",
+    "status": "Completed on TPU:13finite stages/26comparisons/4pass; no accepted candidate",
     "objective": "Hold direction compilation fixed while comparing refreshed-state banks, then compare evaluator layouts on identical banks.",
     "controls": [
       "Keep original full fused original/matrix reference directions and all returned updated state banks.",
@@ -266,6 +266,25 @@
       "runtime_limit": null,
       "source": "Published preflight commit; unchanged script SHA f3d26d7ace3711b131111c055d1e30ecd40011a46591e88246cfa3f678182213",
       "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-state-crossfeed-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT <published-preflight-commit> -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --state-crossfeed --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.2"
-    }
+    },
+    "completion": "optimizer-state-crossfeed-v5e-completed.json"
+  },
+  "compiler_inventory_next": {
+    "status": "implemented and locally checked on two previously downloaded isolated q_proj files; not submitted",
+    "purpose": "Compare tagged polar and Gram-refresh matrix operations, their direct operand producer types/layouts and collective structure across four existing optimized graphs. Static records do not establish causality.",
+    "manifest": "compiler-operation-inventory-plan.json",
+    "script": "compiler_operation_inventory.py",
+    "resources": {
+      "cpu": 4,
+      "memory": "8GB",
+      "disk": "10GB",
+      "region": "us-west4",
+      "accelerator": null,
+      "priority": "batch",
+      "runtime_limit": null,
+      "preemption_retries": "default"
+    },
+    "numerical_kernels": false,
+    "input_policy": "Read compressed artifacts in their existing region, verifySHA beforedecompression, retainfullartifactsregionally; downloadonlysmallsummary."
   }
 }

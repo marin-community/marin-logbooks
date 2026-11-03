@@ -1654,6 +1654,47 @@ before the matrix evaluator began. A read-only stack inspection at 01:23:33 UTC 
 the process waiting for device execution of the common bank. That inspection may
 affect the single-call duration; no warmed-performance claim is made.
 
+## 2026-11-03 01:38 UTC — State comparison completes without numerical acceptance
+
+The [completed state comparison](optimizer-state-crossfeed-v5e-completed.json)
+succeeded on attempt zero with task exit zero and online W&B completion.
+All thirteen stages produced finite outputs; four of twenty-six comparisons
+passed at rtol=atol=1e-5: the two returned-state comparisons against standalone
+refresh and the two bitwise-identical direction replays.
+Both fixed evaluators remain sensitive to input-bank changes. On identical
+common or fused-original banks, the original and matrix evaluators fail the
+direction tolerance for six groups; on the fused-matrix bank, all seven fail.
+Every separate-evaluator result also fails against both full fused references.
+Changing the input bank did not eliminate the discrepancy in these tests.
+The matrix-eigensolver candidate remains rejected for training.
+
+Finelog recorded 170 samples and a cumulative task host-memory peak of
+78.0391 GiB. The maximum reported JAX allocator peak was 8,076,038,656 bytes
+per device, which does not measure total HBM occupancy. All eight compiler
+objects are present with matching sizes, totaling 38,905,232 compressed bytes.
+The final report's SHA-256 is recorded; the compiler objects have not yet all
+been read back for checksum verification. The existing v4-32 reference is
+still queued, and the completed job's log observer ended naturally.
+
+## 2026-11-03 01:45 UTC — Inspect compiler operations in their storage region
+
+The next step is a [static compiler inventory](compiler-operation-inventory-plan.json)
+of four existing optimized graphs: both full fused updates and both fixed
+direction evaluators. A [streaming parser](compiler_operation_inventory.py)
+selects tagged polar and Gram-refresh matrix operations, their direct operand
+producer shapes/types, and collective operations carrying those same operation
+metadata tags. Its local check on the two
+previously downloaded query-polar files recovers fifteen matrix operations in
+each. Replicated versus direction-sharded output files contain five versus one
+explicit conversions to BF16, and zero versus five all-reduce instructions. These are static text counts, not runtime measurements or
+proof of a numerical cause.
+
+A CPU-only task will read and checksum the large files within us-west4 and
+write a small inventory there. It executes no optimizer kernels or training;
+no accelerator is requested. The source and manifest will be published before
+execution. Numerical changes remain gated on a concrete hypothesis from the
+complete evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
