@@ -1,0 +1,149 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-normalization-closure-cpu-20261103",
+  "accepted_utc": "2026-11-03T09:34:56Z",
+  "verified_utc": "2026-11-03T09:36:14Z",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "489c6b741ea6",
+  "exit_code": 0,
+  "source_commit": "a0aa2baf67f3ffcb4a484bb82e2f3ea99d705752",
+  "script_sha256": "5e1ff374818afdd3f5bb7a2c85810ff948559fdd2f22acb94c6f79cf292e8780",
+  "tracer_sha256": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b",
+  "manifest_sha256": "964473d03b2e49f1cbdb85ff368006c8b3304e806864ad53b6a2cda2c72a9b02",
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.normalization-closure/normalization-closure-f000ef824167/report.json",
+  "report_bytes": 1246589,
+  "report_sha256": "3a0871d103d3d3f644e6a4332c2b62c34add4b4054bff8cef68daedfaea2f929",
+  "graphs": {
+    "original_untouched": {
+      "input_sha256": "41a90c257a72d24e29ad693e2d275c39a24af7057f0aef8cdb436bb0130b0766",
+      "sha256_verified": true,
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.149341",
+          "async_collective_fusion.149381",
+          "async_collective_fusion.149393"
+        ],
+        [
+          "async_collective_fusion.149334",
+          "async_collective_fusion.149388",
+          "fused_computation.116957"
+        ],
+        [
+          "fused_computation.116942",
+          "fused_computation.116960"
+        ]
+      ]
+    },
+    "original_evaluate": {
+      "input_sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+      "sha256_verified": true,
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.149341",
+          "async_collective_fusion.149381",
+          "async_collective_fusion.149393"
+        ],
+        [
+          "async_collective_fusion.149334",
+          "async_collective_fusion.149388",
+          "fused_computation.116957"
+        ],
+        [
+          "fused_computation.116942",
+          "fused_computation.116960"
+        ]
+      ]
+    },
+    "original_capture": {
+      "input_sha256": "96a1a7e04f1515f0914e7f89c60a1aad7855cbf609936247c42deec1c8278ee2",
+      "sha256_verified": true,
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.149357",
+          "async_collective_fusion.149397",
+          "async_collective_fusion.149409"
+        ],
+        [
+          "async_collective_fusion.149350",
+          "async_collective_fusion.149404",
+          "fused_computation.116961"
+        ],
+        [
+          "fused_computation.116946",
+          "fused_computation.116964"
+        ]
+      ]
+    },
+    "matrix_untouched": {
+      "input_sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "sha256_verified": true,
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.144709",
+          "async_collective_fusion.144775",
+          "async_collective_fusion.144782"
+        ],
+        [
+          "async_collective_fusion.144702",
+          "async_collective_fusion.144770",
+          "fused_computation.114101"
+        ],
+        [
+          "fused_computation.114075",
+          "fused_computation.114097"
+        ]
+      ]
+    },
+    "matrix_evaluate": {
+      "input_sha256": "3e7e23477e3167d786c5c46850abb30531699e6de6412d00046d2e77eabe4bf4",
+      "sha256_verified": true,
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.144709",
+          "async_collective_fusion.144775",
+          "async_collective_fusion.144782"
+        ],
+        [
+          "async_collective_fusion.144702",
+          "async_collective_fusion.144770",
+          "fused_computation.114101"
+        ],
+        [
+          "fused_computation.114075",
+          "fused_computation.114097"
+        ]
+      ]
+    },
+    "matrix_capture": {
+      "input_sha256": "f83cd12f71f7fbd663ce71cd3f989b05c8e0a5b1cf64edecba59ca6ed026c288",
+      "sha256_verified": true,
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.144811",
+          "async_collective_fusion.144818"
+        ],
+        [
+          "async_collective_fusion.144806",
+          "fused_computation.114125"
+        ],
+        [
+          "fused_computation.114121"
+        ]
+      ]
+    }
+  },
+  "comparison": "compiler-normalization-closure-comparison.json",
+  "validation": "compiler-normalization-closure-validation.json",
+  "limitations": "No optimizer kernels/training/W&B. CPU-only task on worker whose name includesTPU; no accelerator requested. LargeHLO verified and read only inus-west4. All requested record gaps recovered, but opaque runtime semantics and hiddenvalues remain unresolved. Both numerical capture reference gates failed; no accepted optimization/MFU.",
+  "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-normalization-closure-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT a0aa2baf67f3ffcb4a484bb82e2f3ea99d705752 -- python logbooks/20-ema-gram-polar/compiler_normalization_closure.py --manifest logbooks/20-ema-gram-polar/compiler-normalization-closure-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.normalization-closure"
+}

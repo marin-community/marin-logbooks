@@ -2912,6 +2912,39 @@ Publish this source and plan before the regional CPU extraction. No accelerator
 or numerical experiment is selected, and both numerical capture gates remain
 failed.
 
+## 2026-11-03 09:39 UTC — Record gaps resolved; opaque semantics remain
+
+The [iterative regional CPU extraction](compiler-normalization-closure-completed.json)
+succeeded on attempt 0 with exit 0 and verified all six optimized-HLO hashes.
+Three extraction rounds per graph recovered every body requested by the tracer.
+The 1,246,589-byte report retains the remaining opaque boundaries.
+
+Normalization divisions are reached at 67 of 84 first-product operand positions.
+This includes 21 paths that conservatively follow declared ConcatBitcast inputs.
+The other 17 positions end at AsyncCollectiveDone; their separately traced
+all-gather inputs end at opaque AsyncCollectiveStart results. No missing
+computation record remains, but semantic provenance is incomplete.
+
+For each solver, untouched-versus-evaluator and untouched-versus-capture
+[comparisons](compiler-normalization-closure-comparison.json) share 11 mapped
+operand positions. Their ordered normalization result declarations, opcodes and
+operation attributes preceding the metadata field in the HLO instruction text
+match. The comparison excludes unresolved
+endpoints and does not compare operand values, caller bindings or backend
+configurations. A [targeted declaration mutation](compiler-normalization-closure-validation.json)
+was detected; removing an endpoint excluded it from equality rather than treating
+it as a match.
+
+The prior six-output captures failed their reference checks while unchanged
+evaluators matched bitwise. The next design tests whether appending only the
+existing q_proj normalization denominator preserves all 28 outputs against each
+solver variant’s own untouched reference.
+This would test instrumentation sensitivity; no implementation, numerical
+submission or optimizer intervention is selected. It requires its own online
+CPU validation and published source before one sequential TPU diagnostic.
+Matching final outputs would still not establish hidden intermediate identity.
+The CPU log observer ended naturally; no experiment or queue remains active.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

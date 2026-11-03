@@ -1,0 +1,1577 @@
+{
+  "graphs": {
+    "original_untouched": {
+      "input_sha256": "41a90c257a72d24e29ad693e2d275c39a24af7057f0aef8cdb436bb0130b0766",
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.149341",
+          "async_collective_fusion.149381",
+          "async_collective_fusion.149393"
+        ],
+        [
+          "async_collective_fusion.149334",
+          "async_collective_fusion.149388",
+          "fused_computation.116957"
+        ],
+        [
+          "fused_computation.116942",
+          "fused_computation.116960"
+        ]
+      ],
+      "normalization_reached_positions": 11,
+      "auxiliary_only_positions": 3,
+      "positions": {
+        "q_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "q_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13735 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338746, %param_1.326886, %all-gather.4013, %param_2.249871, %param_3.128616, /*index=5*/%param_4.79675, %param_5.36534, %param_6.18451, %param_7.10465, %param_8.6634), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13733 = (bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4007), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "gate_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14360 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1824, %slice-done.1825, %slice-done.1826, %slice-done.1827), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "gate_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14430 = bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%slice-done.2104, %slice-done.2105, %slice-done.2106, %slice-done.2107), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14357 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1812, %slice-done.1813, %slice-done.1814, %slice-done.1815), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13751 = bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338785, %param_1.326911, %all-gather.4041, %param_2.249901, %param_3.128645, /*index=5*/%param_4.79704, %param_5.36563, %param_6.18480, %param_7.10494, %param_8.6663), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13749 = (bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4037), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "down_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14356 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1808, %slice-done.1809, %slice-done.1810, %slice-done.1811), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "down_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13755 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338797, %param_1.326919, %all-gather.4049, %param_2.249911, %param_3.128654, /*index=5*/%param_4.79713, %param_5.36572, %param_6.18489, %param_7.10503, %param_8.6672), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13753 = (bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4043), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "original_evaluate": {
+      "input_sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.149341",
+          "async_collective_fusion.149381",
+          "async_collective_fusion.149393"
+        ],
+        [
+          "async_collective_fusion.149334",
+          "async_collective_fusion.149388",
+          "fused_computation.116957"
+        ],
+        [
+          "fused_computation.116942",
+          "fused_computation.116960"
+        ]
+      ],
+      "normalization_reached_positions": 11,
+      "auxiliary_only_positions": 3,
+      "positions": {
+        "q_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "q_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13735 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338746, %param_1.326886, %all-gather.4013, %param_2.249871, %param_3.128616, /*index=5*/%param_4.79675, %param_5.36534, %param_6.18451, %param_7.10465, %param_8.6634), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13733 = (bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4007), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "gate_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14360 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1824, %slice-done.1825, %slice-done.1826, %slice-done.1827), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "gate_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14430 = bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%slice-done.2104, %slice-done.2105, %slice-done.2106, %slice-done.2107), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14357 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1812, %slice-done.1813, %slice-done.1814, %slice-done.1815), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13751 = bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338785, %param_1.326911, %all-gather.4041, %param_2.249901, %param_3.128645, /*index=5*/%param_4.79704, %param_5.36563, %param_6.18480, %param_7.10494, %param_8.6663), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13749 = (bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4037), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "down_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14356 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1808, %slice-done.1809, %slice-done.1810, %slice-done.1811), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "down_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13755 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338797, %param_1.326919, %all-gather.4049, %param_2.249911, %param_3.128654, /*index=5*/%param_4.79713, %param_5.36572, %param_6.18489, %param_7.10503, %param_8.6672), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13753 = (bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4043), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "original_capture": {
+      "input_sha256": "96a1a7e04f1515f0914e7f89c60a1aad7855cbf609936247c42deec1c8278ee2",
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.149357",
+          "async_collective_fusion.149397",
+          "async_collective_fusion.149409"
+        ],
+        [
+          "async_collective_fusion.149350",
+          "async_collective_fusion.149404",
+          "fused_computation.116961"
+        ],
+        [
+          "fused_computation.116946",
+          "fused_computation.116964"
+        ]
+      ],
+      "normalization_reached_positions": 11,
+      "auxiliary_only_positions": 3,
+      "positions": {
+        "q_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "q_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13731 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338766, %param_1.326903, %all-gather.4030, %param_2.249885, %param_3.128624, /*index=5*/%param_4.79682, %param_5.36541, %param_6.18458, %param_7.10472, %param_8.6641), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13729 = (bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4024), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "gate_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14351 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1804, %slice-done.1805, %slice-done.1806, %slice-done.1807), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "gate_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14424 = bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%slice-done.2096, %slice-done.2097, %slice-done.2098, %slice-done.2099), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14348 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1792, %slice-done.1793, %slice-done.1794, %slice-done.1795), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13747 = bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338805, %param_1.326928, %all-gather.4058, %param_2.249915, %param_3.128653, /*index=5*/%param_4.79711, %param_5.36570, %param_6.18487, %param_7.10501, %param_8.6670), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13745 = (bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4054), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "down_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.14347 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1788, %slice-done.1789, %slice-done.1790, %slice-done.1791), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "down_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13751 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)S(1)} custom-call(%param_0.338817, %param_1.326936, %all-gather.4066, %param_2.249925, %param_3.128662, /*index=5*/%param_4.79720, %param_5.36579, %param_6.18496, %param_7.10510, %param_8.6679), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13749 = (bf16[11,128,4096]{1,2,0:T(8,128)(2,1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.4060), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "matrix_untouched": {
+      "input_sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.144709",
+          "async_collective_fusion.144775",
+          "async_collective_fusion.144782"
+        ],
+        [
+          "async_collective_fusion.144702",
+          "async_collective_fusion.144770",
+          "fused_computation.114101"
+        ],
+        [
+          "fused_computation.114075",
+          "fused_computation.114097"
+        ]
+      ],
+      "normalization_reached_positions": 11,
+      "auxiliary_only_positions": 3,
+      "positions": {
+        "q_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "q_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13249 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.328614, %param_1.318517, %all-gather.868, %param_2.241330, %param_3.121849, /*index=5*/%param_4.73256, %param_5.31002, %param_6.13854, %param_7.6018, %param_8.2705), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13247 = (bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.862), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "gate_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13894 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1866, %slice-done.1867, %slice-done.1868, %slice-done.1869), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "gate_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13892 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1858, %slice-done.1859, %slice-done.1860, %slice-done.1861), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13273 = bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.328678, %param_1.318557, %all-gather.912, %param_2.241378, %param_3.121895, /*index=5*/%param_4.73302, %param_5.31048, %param_6.13900, %param_7.6064, %param_8.2751), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13271 = (bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.906), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "down_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13893 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1862, %slice-done.1863, %slice-done.1864, %slice-done.1865), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "down_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13277 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328685, %param_1.318562, %all-gather.918, %param_2.241384, %param_3.121901, /*index=5*/%param_4.73308, %param_5.31054, %param_6.13906, %param_7.6070, %param_8.2757), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13275 = (bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.914), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "matrix_evaluate": {
+      "input_sha256": "3e7e23477e3167d786c5c46850abb30531699e6de6412d00046d2e77eabe4bf4",
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.144709",
+          "async_collective_fusion.144775",
+          "async_collective_fusion.144782"
+        ],
+        [
+          "async_collective_fusion.144702",
+          "async_collective_fusion.144770",
+          "fused_computation.114101"
+        ],
+        [
+          "fused_computation.114075",
+          "fused_computation.114097"
+        ]
+      ],
+      "normalization_reached_positions": 11,
+      "auxiliary_only_positions": 3,
+      "positions": {
+        "q_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "q_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13249 = bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)} custom-call(%param_0.328614, %param_1.318517, %all-gather.868, %param_2.241330, %param_3.121849, /*index=5*/%param_4.73256, %param_5.31002, %param_6.13854, %param_7.6018, %param_8.2705), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13247 = (bf16[11,128,1024]{2,1,0:T(8,128)(2,1)}, bf16[11,1024,1024]{2,1,0:T(8,128)(2,1)S(1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.862), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "gate_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13894 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1866, %slice-done.1867, %slice-done.1868, %slice-done.1869), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "gate_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13892 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1858, %slice-done.1859, %slice-done.1860, %slice-done.1861), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13273 = bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.328678, %param_1.318557, %all-gather.912, %param_2.241378, %param_3.121895, /*index=5*/%param_4.73302, %param_5.31048, %param_6.13900, %param_7.6064, %param_8.2751), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13271 = (bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.906), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "down_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13893 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1862, %slice-done.1863, %slice-done.1864, %slice-done.1865), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "down_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13277 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328685, %param_1.318562, %all-gather.918, %param_2.241384, %param_3.121901, /*index=5*/%param_4.73308, %param_5.31054, %param_6.13906, %param_7.6070, %param_8.2757), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13275 = (bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.914), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "matrix_capture": {
+      "input_sha256": "f83cd12f71f7fbd663ce71cd3f989b05c8e0a5b1cf64edecba59ca6ed026c288",
+      "extraction_rounds": [
+        [
+          "async_collective_fusion.144811",
+          "async_collective_fusion.144818"
+        ],
+        [
+          "async_collective_fusion.144806",
+          "fused_computation.114125"
+        ],
+        [
+          "fused_computation.114121"
+        ]
+      ],
+      "normalization_reached_positions": 12,
+      "auxiliary_only_positions": 2,
+      "positions": {
+        "q_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "q_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "k_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "v_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "o_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,1024]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "gate_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13931 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1869, %slice-done.1870, %slice-done.1871, %slice-done.1872), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "gate_proj/1": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,4096,128]{2,1,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13929 = f32[11,4096,128]{2,1,0:T(8,128)S(1)} custom-call(%slice-done.1861, %slice-done.1862, %slice-done.1863, %slice-done.1864), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "up_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13309 = bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)} custom-call(%param_0.328726, %param_1.318581, %all-gather.969, %param_2.241411, %param_3.121922, /*index=5*/%param_4.73329, %param_5.31075, %param_6.13927, %param_7.6091, %param_8.2778), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13307 = (bf16[11,4096,128]{2,1,0:T(8,128)(2,1)S(1)}, bf16[11,4096,1024]{2,1,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.963), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        },
+        "down_proj/0": {
+          "normalization_fields": [
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            },
+            {
+              "shape": "f32[11,128,4096]{1,2,0:T(8,128)}",
+              "opcode": "divide",
+              "attributes": ""
+            }
+          ],
+          "opaque_boundaries": [
+            "%custom-call.13930 = f32[11,128,4096]{1,2,0:T(8,128)S(1)} custom-call(%slice-done.1865, %slice-done.1866, %slice-done.1867, %slice-done.1868), custom_call_target=\"ConcatBitcast\""
+          ],
+          "auxiliary_allgather_branches": []
+        },
+        "down_proj/1": {
+          "normalization_fields": [],
+          "opaque_boundaries": [
+            "ROOT %custom-call.13313 = bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)} custom-call(%param_0.328733, %param_1.318586, %all-gather.975, %param_2.241417, %param_3.121928, /*index=5*/%param_4.73335, %param_5.31081, %param_6.13933, %param_7.6097, %param_8.2784), custom_call_target=\"AsyncCollectiveDone\""
+          ],
+          "auxiliary_allgather_branches": [
+            {
+              "operand_index": 2,
+              "normalization_divisions": 0,
+              "unresolved_boundaries": [
+                "ROOT %custom-call.13311 = (bf16[11,128,4096]{1,2,0:T(8,128)(2,1)S(1)}, bf16[11,1024,4096]{1,2,0:T(8,128)(2,1)}, s32[2]{0:S(4)}, u32[]{:S(2)}, u32[]{:S(2)}, /*index=5*/u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}, u32[]{:S(2)}) custom-call(%all-gather.971), custom_call_target=\"AsyncCollectiveStart\""
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "original/untouched_vs_evaluate": {
+      "compared_positions": [
+        "q_proj/0",
+        "q_proj/1",
+        "k_proj/0",
+        "k_proj/1",
+        "v_proj/0",
+        "v_proj/1",
+        "o_proj/0",
+        "gate_proj/0",
+        "gate_proj/1",
+        "up_proj/0",
+        "down_proj/0"
+      ],
+      "different_positions": [],
+      "excluded_unresolved_positions": [
+        "o_proj/1",
+        "up_proj/1",
+        "down_proj/1"
+      ]
+    },
+    "original/untouched_vs_capture": {
+      "compared_positions": [
+        "q_proj/0",
+        "q_proj/1",
+        "k_proj/0",
+        "k_proj/1",
+        "v_proj/0",
+        "v_proj/1",
+        "o_proj/0",
+        "gate_proj/0",
+        "gate_proj/1",
+        "up_proj/0",
+        "down_proj/0"
+      ],
+      "different_positions": [],
+      "excluded_unresolved_positions": [
+        "o_proj/1",
+        "up_proj/1",
+        "down_proj/1"
+      ]
+    },
+    "matrix/untouched_vs_evaluate": {
+      "compared_positions": [
+        "q_proj/0",
+        "q_proj/1",
+        "k_proj/0",
+        "k_proj/1",
+        "v_proj/0",
+        "v_proj/1",
+        "o_proj/0",
+        "gate_proj/0",
+        "gate_proj/1",
+        "up_proj/0",
+        "down_proj/0"
+      ],
+      "different_positions": [],
+      "excluded_unresolved_positions": [
+        "o_proj/1",
+        "up_proj/1",
+        "down_proj/1"
+      ]
+    },
+    "matrix/untouched_vs_capture": {
+      "compared_positions": [
+        "q_proj/0",
+        "q_proj/1",
+        "k_proj/0",
+        "k_proj/1",
+        "v_proj/0",
+        "v_proj/1",
+        "o_proj/0",
+        "gate_proj/0",
+        "gate_proj/1",
+        "up_proj/0",
+        "down_proj/0"
+      ],
+      "different_positions": [],
+      "excluded_unresolved_positions": [
+        "o_proj/1",
+        "up_proj/1",
+        "down_proj/1"
+      ]
+    }
+  },
+  "comparison_scope": "Ordered normalization result declarations, opcode and operation attributes before metadata. Operand values, caller bindings, backend configurations and runtime precision are not compared.",
+  "limitations": "ConcatBitcast traversal follows declared operands conservatively. AsyncCollectiveDone branches inspect one declared all-gather operand only; opaque result semantics remain unresolved. No missing record does not imply complete semantic provenance. Both capture reference gates failed.",
+  "input_report_sha256": "3a0871d103d3d3f644e6a4332c2b62c34add4b4054bff8cef68daedfaea2f929"
+}
