@@ -2759,6 +2759,31 @@ keep large files in us-west4 and use CPU extraction if needed. Static difference
 will not establish runtime values or cause. No new numerical submission,
 precision override or tiling intervention is selected.
 
+## 2026-11-03 09:01 UTC — Static capture-graph extraction validated locally
+
+A [CPU-only extraction plan](compiler-capture-inventory-plan.json) will compare
+six saved optimized-HLO files from the completed capture job. It retains the
+existing 15-product chain check for each of seven direction groups, checks the
+28 versus 34 output-leaf counts, and records normalization divisions, nested
+producer bodies, collectives and enclosing-fusion configurations. Missing
+normalization-to-first-product scope matches remain explicit.
+
+Local parser fixtures built from a saved TPU query-polar graph passed both output
+layouts, reversed direction-output ordering, repeated nonpolar operands and
+wrong-output-count rejection. Each fixture maps 105 products and preserves all
+21 compiled normalization divisions. The full file-processing CLI passed on
+six fixture files. Non-JSON CPU backend attributes are now retained as opaque
+text; JSON configurations keep their previous interpretation. The tiny CPU
+optimizer graph lowers to only five tagged products per group and was rejected
+by the unchanged full-size chain gate, so it is not used as a full-size parser
+validation fixture. No numerical kernels were executed for this preflight.
+
+Publish this source and plan before one us-west4 CPU extraction, with default
+preemption retries and no wall-clock limit. Large compiler files stay regional;
+the extraction will verify their hashes while reading them. Static records
+cannot establish hidden original values, runtime precision or numerical cause.
+No accelerator or numerical experiment is selected.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

@@ -223,6 +223,14 @@ def producer_bodies(lines, operations, extra_computations=()):
     return bodies
 
 
+def backend_record(value):
+    """Keep non-JSON backend attributes opaque rather than interpreting their syntax."""
+    try:
+        return json.loads(value)
+    except json.JSONDecodeError:
+        return {"opaque_hlo_backend_config": value.strip()}
+
+
 def inventory(lines):
     """Retain direct producers of tagged polar and Gram-refresh matrix operations."""
     counts = Counter()
@@ -259,7 +267,7 @@ def inventory(lines):
         nodes[name] = node
         config = attributes.split(", backend_config=", 1)
         captured_attributes = dict(
-            attributes=config[0], backend_config=json.loads(config[1]) if len(config) == 2 else None
+            attributes=config[0], backend_config=backend_record(config[1]) if len(config) == 2 else None
         )
         if opcode == "fusion" and call and call[1] in selected_scopes:
             fusion_callers.append(

@@ -1,0 +1,92 @@
+{
+  "purpose": "CPU-only regional static extraction for six same-job compiler graphs; no kernels.",
+  "analysis": "capture-lineage",
+  "required_region": "us-west4",
+  "source_report_sha256": "89b14f73f615e10ba278692304d7f972f63cf2c2b102bdc6a7b015a651d2039b",
+  "artifacts": {
+    "original_untouched": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_original.optimized_hlo.txt.gz",
+      "sha256": "41a90c257a72d24e29ad693e2d275c39a24af7057f0aef8cdb436bb0130b0766",
+      "compressed_bytes": 10060350,
+      "expected_output_leaves": 28
+    },
+    "original_evaluate": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__original__evaluate.optimized_hlo.txt.gz",
+      "sha256": "c65ce042238782c3ee10ea3607c60b447efcecb7b78e3cc60b4a34f64ea4edc6",
+      "compressed_bytes": 10049115,
+      "expected_output_leaves": 28
+    },
+    "original_capture": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__original__extra_outputs.optimized_hlo.txt.gz",
+      "sha256": "96a1a7e04f1515f0914e7f89c60a1aad7855cbf609936247c42deec1c8278ee2",
+      "compressed_bytes": 10042623,
+      "expected_output_leaves": 34
+    },
+    "matrix_untouched": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/fused_matrix.optimized_hlo.txt.gz",
+      "sha256": "3e80b5376d220ee2b121d6ee2e49f7e52c6b65d72c5465ee2b219c9550be37eb",
+      "compressed_bytes": 9417662,
+      "expected_output_leaves": 28
+    },
+    "matrix_evaluate": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__matrix__evaluate.optimized_hlo.txt.gz",
+      "sha256": "3e7e23477e3167d786c5c46850abb30531699e6de6412d00046d2e77eabe4bf4",
+      "compressed_bytes": 9399318,
+      "expected_output_leaves": 28
+    },
+    "matrix_capture": {
+      "uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9/ema-gram-20-attribution-e084152068d5/capture__matrix__extra_outputs.optimized_hlo.txt.gz",
+      "sha256": "f83cd12f71f7fbd663ce71cd3f989b05c8e0a5b1cf64edecba59ca6ed026c288",
+      "compressed_bytes": 9400238,
+      "expected_output_leaves": 34
+    }
+  },
+  "groups": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "output_prefix": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-ir",
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "accelerator": null,
+    "region": "us-west4",
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "limitations": "Both numerical capture gates failed. Static extraction cannot establish original internal values or numerical cause. Normalization scope associations are explicit syntactic matches, not semantic identities.",
+  "preflight": {
+    "checks": {
+      "28": {
+        "normalization_records": 21,
+        "products": 105,
+        "outputs": 28,
+        "state_capture_have_no_polar_ancestry": true
+      },
+      "34": {
+        "normalization_records": 21,
+        "products": 105,
+        "outputs": 34,
+        "state_capture_have_no_polar_ancestry": true
+      },
+      "reversed_direction_outputs": true,
+      "wrong_output_count_rejected": true,
+      "backend_json_and_opaque_preserved": true
+    },
+    "fixture": "Seven renamed independent copies of saved TPU isolated-q graph;28/34tupleleaves and repeated nonpolar inputs. Parser fixture only, no kernels. CPU full optimizer smoke lowers to5taggedproducts/group and is rejected by unchanged15productgate; not a numerical failure.",
+    "source_sha256": "3f541799e615e33331ecf2c1cb90b66eb42a9d4f50edefef9e2c6f9d1005cc6a",
+    "full_cli_completed": true,
+    "script_sha256": "7af8734803257d463d1dcca19a325fb6624b628c39c58a872ff825fa0c96b28c",
+    "shared_inventory_sha256": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "report_sha256": "6d738fd462b27f44f3ace5e25f630335a107213498651d3fde8ac33df7afd33e"
+  },
+  "job_name": "ema-gram-20-capture-ir-cpu-20261103",
+  "command": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-capture-ir-cpu-20261103 --priority batch --enable-extra-resources --cpu 4 --memory 8GB --disk 10GB --region us-west4 --extra cpu --sync-package marin-core --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_HEAD -- python logbooks/20-ema-gram-polar/compiler_capture_inventory.py --manifest logbooks/20-ema-gram-polar/compiler-capture-inventory-plan.json --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.capture-ir"
+}
