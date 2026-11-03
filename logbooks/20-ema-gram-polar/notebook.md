@@ -3860,6 +3860,74 @@ The [manifest](compiler-column-input-manifest.json) lists regional inputs;
 the [attribution plan](optimizer-divergence-attribution-plan.json) records the
 next design and its validation requirements.
 
+## 2026-11-03 14:43 UTC — Column input recovers the declared q collective path, not full numerical agreement
+
+Regional CPU inspection verifies that both column-input substitution graphs
+use q normalization and first-product operands declared f32[11,1024,128].
+The external source matrix still has global shape 11x1024x1024. In both graphs,
+the q first-to-second-product path crosses an all-reduce, matching the presence
+of that collective in their untouched controls. The prior replicated-input
+substitution had width 1024 at those operands and no declared collective on
+that segment. This is a compiler-path comparison, not proof that the collective
+change caused the numerical differences.
+
+All 48 paths across eight graphs, three groups and two second-product operands
+reach only their intended first Gram product through fusion result leaf 0.
+Each crosses one all-reduce, with no missing record or opaque boundary within
+this segment. The combined q/k reduction independently projects q and k;
+v has a separate reduction. The original q collective record matches its
+untouched control; the matrix record differs only in its aliasing-operands
+field. Both declare RotatedPincerEmitter/UniDirection1DRingStrategy. These
+records do not establish runtime summation order or precision.
+
+Column substitution changes enclosing fusion configurations at 16 original
+and 19 matrix product positions against untouched controls. Three original
+product result declarations differ only by S(1) tags, whose meaning is not
+interpreted here. Matrix gate_proj and down_proj fail numerically despite
+matching all inspected fields at their 15 product positions, including parent
+configurations. Those comparisons omit upstream values and connections.
+Original k/o each has one changed parent configuration, but this association
+does not establish causality. All six control graphs have identical compressed
+HLO hashes across the column and replicated jobs, and their inspected product
+records match. The two substitution graphs differ in parent configurations at
+64 original and 53 matrix positions across input placements.
+
+The initial CPU extraction failed its strict no-opaque-provenance guard at the
+original substitution numerator. It had completed three control graphs. That
+failed attempt is preserved. A separately published parser revision retains
+ConcatBitcast as an explicit opaque boundary on the numerator route, while
+checking the source label, local parameter shape and operand position and
+rejecting unexpected boundary kinds. Both substitution numerators traverse
+this boundary; the denominator routes do not. These are conservative source
+roles, not complete semantic provenance. The separate first-to-second-product
+paths above begin downstream of this boundary. Normalization closure recovers
+all requested missing records in five rounds per graph, with 90 of 112 operand
+positions reaching normalization; other opaque boundaries remain.
+
+The revised CPU-only task succeeded on attempt 0 with exit 0, verified at
+14:40:02 UTC. It used four CPUs, 8 GiB memory and 10 GiB disk in us-west4, with
+default preemption retries and no wall-clock limit. All eight optimized HLO
+files passed regional SHA/size verification before parsing. Large HLO stayed
+regional; the extracted report is 18,035,069 bytes with SHA
+`b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a`.
+The initial failed task and revised successful task are terminal; neither will
+be restarted. Their log observers ended naturally. PR observer 77099 remains
+live and sole. No experiment or queue remains.
+
+Both numerical full-reference substitution gates remain failed. No optimizer,
+training, performance or MFU result is accepted. Next is static design only:
+trace pre-normalization and outer-Gram operand bindings for matrix gate/down,
+with passing up/o controls, using existing extracted records first. Preserve
+caller contexts, repeated operands and opaque boundaries; recover explicitly
+missing bodies on regional CPU only if needed. Matching product fields alone
+cannot establish identical hidden computations or explain the numerical cause.
+No new numerical, precision or tiling intervention is selected.
+
+[Completion](compiler-column-input-completed.json),
+[comparison](compiler-column-input-comparison.json),
+[tuple paths](compiler-column-input-first-gram-paths.json) and
+[initial failure](compiler-column-input-initial-failed.json) retain the evidence.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is

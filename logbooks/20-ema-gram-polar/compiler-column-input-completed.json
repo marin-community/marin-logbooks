@@ -1,0 +1,684 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-column-ir-conservative-cpu-20261103",
+  "accepted_utc": "2026-11-03T14:35:23Z",
+  "canonical_job_task_verified_utc": "2026-11-03T14:40:02Z",
+  "state": "SUCCEEDED",
+  "attempt": 0,
+  "attempt_uid": "68650e330dd6",
+  "task_exit_code": 0,
+  "source_commit": "a6ced9e96aff361498ce4f91e854ab1c9d3e9822",
+  "source_sha256": {
+    "compiler_substitution_inventory.py": "659b47d14cc5a93591a53f789e1ce6efff9e843c8b80d758887dec93528d137e",
+    "compiler_capture_inventory.py": "0c0ad434b65085e3fdb9b28c5cb578a09f68c5120868b870206db0ea32c8b9a9",
+    "compiler_operation_inventory.py": "9edce3ddf208516d72b0f0bc7a80fcfdb702aa1f02f8d8183395a2864c8831e9",
+    "compiler_input_provenance.py": "fedd6ad15f976ffce03287440e929afd0a3963e780ed6ce8260ac2edf605b92e",
+    "compiler_normalization_closure.py": "5e1ff374818afdd3f5bb7a2c85810ff948559fdd2f22acb94c6f79cf292e8780",
+    "trace_capture_normalization.py": "cf27855bbc97771678eb62acc97fce7e78813f67fa67250723e720052d89033b"
+  },
+  "resources": {
+    "cpu": 4,
+    "memory": "8GB",
+    "disk": "10GB",
+    "region": "us-west4",
+    "accelerator": null,
+    "priority": "batch",
+    "preemption_retries": "Iris default",
+    "wall_clock_limit": null
+  },
+  "report_uri": "gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.column-ir-conservative/substitution-ir-725f48e1a71d/report.json",
+  "report_bytes": 18035069,
+  "report_sha256": "b20c7269986af1a9b4a30ce20309f595a5e7504b4206674c37fc21d2159d5a8a",
+  "all_eight_optimized_hlo_sha_size_verified_regionally": true,
+  "initial_failed_extraction": "compiler-column-input-initial-failed.json",
+  "comparison": "compiler-column-input-comparison.json",
+  "first_gram_paths": "compiler-column-input-first-gram-paths.json",
+  "validation": "compiler-column-input-validation.json",
+  "graphs": {
+    "original_untouched": {
+      "products": 105,
+      "outputs": 28,
+      "external_bindings": {},
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "gradients[0]",
+              "name": "param.257"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].momentum",
+              "name": "param.258"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].left",
+              "name": "param.256"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].right",
+              "name": "param.259"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "gradients[0]",
+              "name": "param.257"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].momentum",
+              "name": "param.258"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].left",
+              "name": "param.256"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].right",
+              "name": "param.259"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    },
+    "original_evaluate": {
+      "products": 105,
+      "outputs": 28,
+      "external_bindings": {},
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.257"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.258"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.256"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.259"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.257"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.258"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.256"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.259"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    },
+    "original_capture": {
+      "products": 105,
+      "outputs": 30,
+      "external_bindings": {},
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.257"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.258"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.256"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.259"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.257"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.258"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.256"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.259"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    },
+    "original_substitute": {
+      "products": 105,
+      "outputs": 28,
+      "external_bindings": {
+        "inner": {
+          "compiled_parameter_index": 28,
+          "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+          "source_label": "bank[1][0]",
+          "name": "param.258",
+          "source_argument": [
+            1,
+            0
+          ]
+        },
+        "norm_plus_eps": {
+          "compiled_parameter_index": 29,
+          "shape": "f32[11,1,1]{0,2,1:T(1,128)}",
+          "source_label": "bank[1][1]",
+          "name": "param.259",
+          "source_argument": [
+            1,
+            1
+          ]
+        }
+      },
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 28,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0]",
+              "name": "param.258"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:ConcatBitcast"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 29,
+              "tuple_path": [],
+              "shape": "f32[11,1,1]{0,2,1:T(1,128)}",
+              "source_label": "bank[1][1]",
+              "name": "param.259"
+            }
+          ],
+          "conservative_operations": []
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    },
+    "matrix_untouched": {
+      "products": 105,
+      "outputs": 28,
+      "external_bindings": {},
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "gradients[0]",
+              "name": "param.234"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].momentum",
+              "name": "param.235"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].left",
+              "name": "param.233"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].right",
+              "name": "param.236"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "gradients[0]",
+              "name": "param.234"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].momentum",
+              "name": "param.235"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].left",
+              "name": "param.233"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "states[0].right",
+              "name": "param.236"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    },
+    "matrix_evaluate": {
+      "products": 105,
+      "outputs": 28,
+      "external_bindings": {},
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.234"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.235"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.233"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.236"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.234"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.235"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.233"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.236"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    },
+    "matrix_capture": {
+      "products": 105,
+      "outputs": 30,
+      "external_bindings": {},
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.234"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.235"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.233"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.236"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 0,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[0][0]",
+              "name": "param.234"
+            },
+            {
+              "index": 7,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].momentum",
+              "name": "param.235"
+            },
+            {
+              "index": 8,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].left",
+              "name": "param.233"
+            },
+            {
+              "index": 9,
+              "tuple_path": [],
+              "shape": "f32[11,1024,1024]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0].right",
+              "name": "param.236"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:AsyncCollectiveDone",
+            "opaque:custom-call:AsyncCollectiveStart",
+            "opaque:custom-call:ConcatBitcast",
+            "opaque:while"
+          ]
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    },
+    "matrix_substitute": {
+      "products": 105,
+      "outputs": 28,
+      "external_bindings": {
+        "inner": {
+          "compiled_parameter_index": 28,
+          "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+          "source_label": "bank[1][0]",
+          "name": "param.235",
+          "source_argument": [
+            1,
+            0
+          ]
+        },
+        "norm_plus_eps": {
+          "compiled_parameter_index": 29,
+          "shape": "f32[11,1,1]{0,2,1:T(1,128)}",
+          "source_label": "bank[1][1]",
+          "name": "param.236",
+          "source_argument": [
+            1,
+            1
+          ]
+        }
+      },
+      "q_normalization_operand_provenance": [
+        {
+          "entry_parameters": [
+            {
+              "index": 28,
+              "tuple_path": [],
+              "shape": "f32[11,1024,128]{2,1,0:T(8,128)}",
+              "source_label": "bank[1][0]",
+              "name": "param.235"
+            }
+          ],
+          "conservative_operations": [
+            "opaque:custom-call:ConcatBitcast"
+          ]
+        },
+        {
+          "entry_parameters": [
+            {
+              "index": 29,
+              "tuple_path": [],
+              "shape": "f32[11,1,1]{0,2,1:T(1,128)}",
+              "source_label": "bank[1][1]",
+              "name": "param.236"
+            }
+          ],
+          "conservative_operations": []
+        }
+      ],
+      "first_gram_bodies": 15,
+      "closure_rounds": 5
+    }
+  },
+  "findings": [
+    "Both substitution q normalization/first-product operands are declared f32[11,1024,128]; external global source matrix remains11x1024x1024.",
+    "All48qkv first-to-second-product paths cross one all-reduce, reach only intended first product via fusion leaf0, with no missing/opaque boundary on these paths. q+k combined reduction projections independently selectq/k;v separate.",
+    "Original q mapped collective record equals own untouched; matrix differs in aliasing_operands only. Both use RotatedPincerEmitter/UniDirection1DRingStrategy. No runtime order or precision inferred.",
+    "Against own untouched controls, enclosing fusion configs differ16original/19matrix product positions; matrix gate/down numerical failures have all15inspected product fields equal. Upstream values/connections are not included.",
+    "Six cross-job control optimizedHLO hashes and inspected records match. Replicated-vs-column substitution parent configs differ64original/53matrix positions.",
+    "Both numerator source bindings cross explicitly retained opaqueConcatBitcast. These are conservative source roles, not complete semantic provenance.",
+    "Normalization closure recovers requested records in5rounds pergraph;90/112positions reach normalization; other opaque boundaries retained."
+  ],
+  "limitations": [
+    "Both numerical full28leaf substitution reference gates remain failed; no optimizer/training acceptance.",
+    "Static records/path mappings do not establish runtime values, precision, summation order, hidden identity or cause. S(1)tag differences are not interpreted.",
+    "LargeHLO stayedus-west4; only extractedreport retrieved. CPU-only task despiteTPUworkername."
+  ],
+  "observer": {
+    "session_id": 47224,
+    "state": "ended naturally exit0; do not replace"
+  },
+  "analysis_source_sha256": {
+    "compare_column_compiler.py": "ae849f6e7207d26923d6f0e918f93ffa0fffe7b0b4a9a31449c14e8f5fd71bd3",
+    "compare_substitution_compiler.py": "285397141014bd4ba103c7322e2e3a569e381185fc305c85c412a789b36503a5",
+    "compare_capture_compiler.py": "bdafdf313cdaa4e3e094faeb2ba257f58f8f3e9f61da8db9a7ba50d9cd98497c",
+    "trace_first_gram_paths.py": "9d2b1818decf1633723c7059ee2eea7b4104675277b632f5754061b05d568344"
+  }
+}
