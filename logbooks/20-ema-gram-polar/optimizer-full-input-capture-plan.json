@@ -1,5 +1,5 @@
 {
-  "status": "Own online CPU validation passed; source to be published before one sequential TPU diagnostic",
+  "status": "One native v5e-8 diagnostic running; startup verified; final gates pending",
   "script": "optimizer_attribution.py --full-input-capture",
   "script_sha256": "b9fb2db304bfe2c71c7585e23915995ebf448fd1f0660e080103ac91882e48a5",
   "question": "Does exposing existing q/k/v normalization operands preserve each full update, and do captured operands differ between original and matrix eigensolver layouts?",
@@ -41,5 +41,6 @@
   "command_template": "uv run --no-sync iris --cluster=marin job run --no-wait --no-cancel-on-exit --job-name ema-gram-20-full-input-capture-v5e-8-20261103 --priority batch --enable-extra-resources --tpu v5litepod-8 --cpu 96 --memory 128GB --disk 50GB --region us-west4 --extra tpu --sync-package marin-core --sync-package marin-levanter --sync-package marin-dupekit -e GIT_COMMIT PUBLISHED_VALIDATED_HEAD -- python logbooks/20-ema-gram-polar/optimizer_attribution.py --full-input-capture --seed 0 --output-prefix gs://marin-us-west4/ema-gram-20-attribution/2026.11.03.9",
   "preflight": "optimizer-full-input-capture-preflight.json",
   "capture_helper_sha256": "3be1436181a32a809cd32121a10130f7a0b748e639636da860f44b2fbaacc179",
-  "validated_source": "728368e898d4e7113ad199c869381d6aa8c4377c"
+  "validated_source": "728368e898d4e7113ad199c869381d6aa8c4377c",
+  "launch_source": "fd3a36bba20f06a93425205a8592ff3e0a3f601d"
 }

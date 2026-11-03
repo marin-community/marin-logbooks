@@ -2634,7 +2634,7 @@ The new mode passed on eight virtual CPU devices: twelve finite stages,
 eighteen comparisons at rtol=atol=1e-5, and four bitwise-identical fixed-executable
 replays. Both unchanged-program evaluators and both capture variants match their
 own untouched full-update references bitwise across all twenty-eight leaves.
-The six captured q/k/v values also match across solver layouts in this CPU run.
+The six captured q/k/v values also match bitwise across solver layouts in this CPU run.
 
 The [preflight](optimizer-full-input-capture-preflight.json) records the fresh
 online logging check and numerical run. Both W&B runs finished, the report read
@@ -2648,6 +2648,23 @@ regional outputs. No training checkpoint is read. Expected numerical mismatches
 will be retained; collection completion will not accept an optimizer or establish
 training MFU. The original precision, refresh, shape and tolerance requirements
 remain unchanged.
+
+## 2026-11-03 08:05 UTC — Full-update capture running on v5e
+
+One diagnostic was accepted at 08:04:05 UTC from published source
+`fd3a36bba20f06a93425205a8592ff3e0a3f601d`. Iris reports attempt 0 running;
+startup confirms eight native TPU v5 lite devices in one JAX process, the
+validated script/helper hashes, and fresh online
+[W&B tracking](https://wandb.ai/marin-community/marin/runs/ema-gram-20-attribution-e084152068d5)
+with a successful logging check before kernels. The
+[startup record](optimizer-full-input-capture-started.json) links the exact
+regional output directory and execution identity.
+
+The task requests 96 CPUs, 128 GiB host memory and one v5litepod-8 host in
+us-west4, at batch priority with default preemption retries and no runtime
+limit. One log observer is attached. Full-size numerical capture gates,
+replays, memory and final artifacts remain pending. No original checkpoint
+or training dataset is read; this is not a resumed training process.
 
 ## Final decision
 
