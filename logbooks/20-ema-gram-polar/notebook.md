@@ -5988,3 +5988,30 @@ discarded and replaced with an explicit invalid-result record. That check does
 not show missing token chunks or establish a usable replacement dataset. The
 24-prefix candidate search completed; the broad original-name query remains
 owned by session42678. No data-source switch or replacement job was launched.
+
+### 2026-11-04 23:00 UTC — bounded subset worker ready for regional source probe
+
+Implemented the native Llama 3.1 tokenizer and Levanter cache writer in
+`experiments/ema_gram/subset_data.py`. The frozen source manifest selects 32
+crawl/kind strata per original Nemotron component, with four source prefixes
+per CPU task, plus bounded copies of the intact code/math caches (58 tasks).
+The approximately 2B-token budget keeps whole documents, records actual token
+counts and stream hashes, and never silently accepts source exhaustion.
+This is a new fixed subset, not the original training stream; all 30 pilot
+cells, including alpha zero, must use the same rebuilt dataset.
+
+The final source passed an ONLINE CPU check for exact native token IDs,
+deterministic replay, Unicode/empty/long documents, whole-document limits,
+source-exhaustion rejection and a native cache write/read round trip.
+W&B run `ema-gram-subset-self-check-da6e394c0822` and the prior non-training
+logging check are API-verified FINISHED/success. The three tokenizer files
+are SHA256-pinned in `subset-inputs.json`; source hashes and evidence are in
+`subset-preflight.json`. Lint passed. A separate guarded launcher requests
+2 CPU / 8 GB in us-central2, normal batch, no accelerator or wallclock limit,
+and unchanged default preemption/retries. Build submission requires a
+successful regional probe first. Old failed training identities stay terminal.
+
+Local public source GETs returned HTTP 503 SlowDown, while the index and
+object HEAD worked. The next published-source CPU probe tests actual original
+source decoding in the training region. No data or training completion is
+claimed from local preflight.
