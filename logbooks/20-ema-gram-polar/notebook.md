@@ -5246,3 +5246,38 @@ attempt 0.
 Log-follow session 22285 remains the sole observer of the current job. The next
 routine Iris job/task status check is due no earlier than 04:28:28 UTC. The
 numerical source and requested work are unchanged.
+
+### November 4, 04:31 UTC — both fixed-state layouts reported; full update pending
+
+All four tasks in the [power-reconstruction diagnostic with corrected logging credentials](power-reconstruction-auth-startup.json)
+remain running on attempt 0, with the same task UIDs, no failures and no
+preemptions. Four refreshed process reports now contain both `matrix` and
+`matrix_power` calculations of directions from fixed saved optimizer state.
+The baseline `matrix` gathers eigenpairs before reconstructing powers; the
+candidate `matrix_power` reconstructs powers inside each eigensolver shard
+before gathering them. Both have finite outputs and unchanged state/gradient
+inputs. All three warmed outputs match the first output bitwise within each
+process. All four local comparisons of candidate versus baseline directions fail
+`rtol=atol=1e-5`. Those local failures are diagnostic; they do not establish
+training-loss degradation or by themselves veto a training comparison.
+
+The recorded warmed calls range from 3.308–3.459 seconds for `matrix` and
+3.416–6.929 seconds for `matrix_power`. The candidate's first warmed call is
+slower on every process; all samples remain in the record. The harness runs the
+baseline first and measures only three warmed calls, so order and timing
+variability remain unresolved. These are optimizer-only fixed-state samples,
+not training model FLOP utilization (MFU). They do not yet support a speedup.
+
+The case that refreshes Gram/momentum state and computes an optimizer update
+using fixed synthetic gradients is absent from all four reports. Each report
+has `completed=false`. The complete-report summarizer
+has not run; global candidate-versus-baseline error magnitudes and agreement
+among repeated output shards across processes remain unverified. Source hashes and checkpoint identities match
+the [published manifest](power-reconstruction-manifest.json) and startup evidence.
+[Partial evidence](power-reconstruction-auth-partial.json) retains per-process
+raw timings and report identities.
+
+Log-follow session 22285 remains the only observer. The next routine Iris
+job/task check is due no earlier than 04:40:51.818719 UTC, as recorded in
+[the submission record](power-reconstruction-auth-submitted.json). No source change, new job or training extension
+was made.
