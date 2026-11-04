@@ -4765,7 +4765,7 @@ The published optimizer pads eleven matrices to sixteen shard slots and restores
 The [next profile audit](prefix-intervals-prepared.json) retains recorded event
 intervals on each device track, rather than only host aggregates. It selects
 the same three relative-power all-gather names from the completed profile and
-preserves repeated records, adjacent events, source annotations and raw
+preserves repeated records, adjacent events, source annotations and decoded
 metadata. Integer-picosecond timestamps avoid rounding at epoch scale.
 Per-track interval unions count overlapping time only once within that track;
 selected raw collective records remain separate. The unions are not summed
@@ -4779,3 +4779,56 @@ excludes the active training slice and retains default preemption and no
 wall-clock limits. No optimizer implementation changed. The 924-update
 training run remains active; the 17:39 Pacific canonical check found all four
 tasks on their original attempts with no failures or preemptions.
+
+The regional CPU interval audit was accepted at 17:45:58 Pacific from published
+source `d6e320350`. It has eight CPUs, 64 GiB memory and 20 GiB disk, with no
+accelerator or wall-clock limit. The scheduler constraint excludes the active
+training slice and the worker checks that exclusion again. Its sole log
+observer is 12309; training retains observer 67222. Initial canonical status
+and interval results are pending. See [submission](prefix-intervals-submitted.json).
+
+### November 3, 17:53 Pacific — recorded intervals separate early arrivals from long eigensolver paths
+
+The [regional interval audit](prefix-intervals-completed.json) succeeded on
+attempt 0 with exit 0, no failures or preemptions. It preserves all 96 selected
+all-gather records. On host 0, the eight records for each of three gathers
+have start-time spreads of 875–913 ms but end-time spreads of 1.6–4.2 ms.
+This recorded pattern is consistent with some participants waiting for others;
+it does not isolate network transfer time. Cross-device and cross-host clocks
+were not independently calibrated.
+
+Across 32 recorded device XLA Ops tracks, 22 have about 3.00–3.18 seconds of
+intervals tagged `_eigh_work`; ten have about 2.87 milliseconds. These are
+source-scope interval unions, not arithmetic-only timings. The profile has
+32 device planes while JAX reports 16 v4 devices; the verified 4.4 PF MFU
+denominator is unchanged. Source padding from 11 matrices to 16 is known,
+but exact matrix-slot ownership is still unverified. The existing metadata
+decoder replaces invalid UTF8 in byte-valued stats, so `core_details` cannot
+be treated as byte-exact device mapping. No numerical intervention was selected.
+
+[The summary](prefix-intervals-summary.json) retains every device track and
+within-host gather spread. It reproduces all prior per-host gather counts and
+durations. Each host has 121 recorded markers: 15 marker names on eight device
+planes plus one host `train` event labelled 100. These are not 121 training
+updates. Nine actual-report identity and structure mutations were rejected,
+in addition to the eight static interval fixtures. Lint and cold-read passed.
+
+All four generation-pinned XPlanes were checked against size, CRC32C, MD5 and
+the prior SHA256 before parsing. Large profiles stayed in us-central2. The
+compact report is 916,121 bytes, SHA256
+`f4a8da3a88730993b9782b097201353f02c63bc7d896045eecebaed1c0633e67`,
+with exact GCS readback. Parser peak RSS was 1.30–2.78 GiB, not training memory.
+The CPU worker was outside the training slice; follow 12309 ended naturally
+with exit 0 and must not be replaced. Training keeps sole follow 67222.
+
+[Training losses through 716](prefix-train-interim700.json) are finite; W&B
+through 714 matches local loss, duration and MFU exactly. The 600–699 block
+averages 3.726 seconds/update and 0.4902% MFU, with mean candidate-minus-
+historical loss −0.000700 and maximum absolute difference 0.03381. This is
+not the prescribed 800–899 window or final 924 acceptance. Historical hardware
+and mesh differ, so this is not a layout-only causal comparison. The 17:49
+Pacific canonical check found all four training tasks on attempt 0 without
+failures or preemptions. Shared validation at 762 and final hooks remain to
+be verified. Continue the requested 924-update run; use the saved interval
+and source evidence to establish device/slot assignment before selecting
+one bounded performance change.
