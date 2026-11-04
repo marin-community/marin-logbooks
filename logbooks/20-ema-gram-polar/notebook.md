@@ -5281,3 +5281,60 @@ Log-follow session 22285 remains the only observer. The next routine Iris
 job/task check is due no earlier than 04:40:51.818719 UTC, as recorded in
 [the submission record](power-reconstruction-auth-submitted.json). No source change, new job or training extension
 was made.
+
+### November 4, 04:46 UTC — power reconstruction completed without established speedup
+
+Keep `matrix` as the working training baseline. Reconstructing matrix powers
+inside the eigensolver shard (`matrix_power`) has not established a speed
+benefit in this optimizer-only diagnostic. The baseline gathers eigenpairs
+before reconstructing powers. Both preserve full Gram geometry, every-update
+refresh and source precision.
+
+All four tasks succeeded on attempt 0 with exit 0, no failures and no
+preemptions. Four complete reports match the published source/checkpoint
+identities; exact regional readbacks and all eight finished online logging and
+worker runs were verified. Both fixed-state directions and the full
+synthetic-gradient refresh/update are finite and input-immutable. All three
+warmed outputs match the initial compilation-inclusive output bitwise within
+every case/layout/process.
+The aggregation checks repeated shard hashes/statistics before deduplication,
+covering 112 unique direction records and 133 full-update records.
+[Completion](power-reconstruction-auth-completed.json) and
+[summary](power-reconstruction-auth-summary.json) preserve the evidence.
+
+| Case | `matrix` mean, seconds per process | `matrix_power` mean, seconds per process | Baseline/candidate mean ratio |
+|---|---:|---:|---:|
+| Fixed saved state | 3.312–3.369 | 3.599–4.607 | 0.731–0.921 |
+| Full synthetic-gradient update | 3.758–5.554 | 3.989–5.255 | 0.847–1.297 |
+
+Each mean uses all three warmed calls on one process; host times are not
+summed. Ratios compare the same process and values above one favor the
+candidate. Fixed-state means are slower on all processes. Full-update ratios
+include improvements and regressions, so they do not support a consistent
+speedup. The fixed baseline-first order, three samples and host-side checks
+between calls limit interpretation. Local output blocking does not establish
+aligned host entry into each timed call. Compilation is recorded separately;
+these timings are not training throughput or MFU.
+
+Candidate-versus-baseline direction relative Frobenius errors are
+0.550–0.641% for fixed saved state and 0.553–0.676% for full update. All seven
+directions fail `rtol=atol=1e-5` in both cases. Maximum absolute errors are
+0.01832855 and 0.02057588, respectively. All 21 updated state outputs pass with
+zero measured error and matching recorded shard hashes. These state outputs
+are momentum and left/right Gram matrices, refreshed from the same inputs;
+the returned directions are not applied to model parameters in this diagnostic.
+These single-update
+errors do not establish loss degradation and are not the sole reason to
+withhold adoption. The existing matrix training baseline remains 3.70021
+seconds/update and 0.49354% MFU in its prespecified window.
+
+The sole log-follow session 22285 exited 1 after a Finelog request timeout at
+04:33:30 UTC. This was an observer failure; canonical job/task records and
+complete reports establish later task success. The observer will not be
+replaced. All jobs and observers are now terminal, with no active queue.
+
+The [next design](power-reconstruction-timing-next.md) changes measurement
+ordering and host barriers while retaining the same numerical implementations.
+It proposes one separately validated, published, sequential diagnostic to
+resolve timing uncertainty. It is not implemented or submitted. No training
+extension or numerical candidate adoption is made from this result.
