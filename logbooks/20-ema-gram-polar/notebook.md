@@ -4656,6 +4656,18 @@ Five ordinary updates completed with finite logged losses; this observation does
 
 The candidate remains unsubmitted, so no paired loss or speed result exists. Follow 29414 remains the sole observer, with the next routine canonical check no earlier than 23:58:57 UTC. Both variants retain final counter 7630; the original continues before the matrix candidate.
 
+### November 4, 00:05 UTC — watch metrics and regional profile recorded
+
+The original replicated continuation has completed labels 924–940 with finite logged losses. The first watch-enabled update, label 929, reports loss 5.27278 and takes 545.25 seconds including its first compilation. At the next watch-enabled label 939, loss is 5.09462 and the native step takes 45.105 seconds. W&B contains 272 finite parameter/gradient norm metrics at each of these two labels. These recorded norms do not audit every intermediate tensor or optimizer-state value. The [watch and profile record](loss-pair-original-watch-profile.json) retains the individual metrics and all four canonical task identities, still running on attempt 0 without failures or preemptions at 00:04:22 UTC.
+
+Label 940 reports loss 5.09870, native step time 45.774 seconds and a separate post-step hook time of 55.743 seconds. All four hosts log profiler start, stop and upload. A regional GCS metadata listing confirms four XPlane files and four compressed trace files totaling 14,975,268 bytes under the `steps-940-to-941` profile directory. Only names, sizes and timestamps were read; the profile contents remain in us-central2 and have not been analyzed or checksum-audited. The native callback has returned its timing metrics, providing evidence beyond the earlier profiler-stop messages.
+
+Steps 930–938 take 45.569–45.862 seconds, corresponding to 0.03982–0.04008% MFU with the unchanged FLOP and hardware-peak definition. These early samples remain outside the prescribed steady window. The `marin` Finelog `iris.task` query contains 291–292 samples per attempt through about 00:05 UTC, with reported host task-memory peaks of 66.55, 68.13, 68.33 and 68.21 GiB. The record preserves task, worker, attempt, null cluster and timestamp bounds. These sampled task-memory values are not device HBM measurements and do not establish later evaluation/checkpoint memory fit.
+
+W&B loss, duration and MFU rows through label 939 match the local incremental records exactly; local metrics also contain label 940. One malformed local norm record at 939 and the previously malformed hparams record are retained as parsing gaps. The complete W&B norm record supplies the reported 939 metrics. All loss/duration records parsed and each MFU was independently reproduced from its duration.
+
+Follow 29414 remains the sole observer; the next routine canonical check is no earlier than 00:13:52 UTC. Continue the original schedule to counter 7630 and observe the eligible steady window and later validation/checkpoint stages. The candidate remains unsubmitted, with no paired loss or speed result yet.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
