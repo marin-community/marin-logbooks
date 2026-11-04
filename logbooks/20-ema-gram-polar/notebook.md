@@ -5657,3 +5657,15 @@ pending tasks, zero failures and zero preemptions. The ready-capacity observatio
 was advisory and did not reserve the slice. Keep this one submitted job and its
 follower while it waits; do not cancel or resubmit it. No worker W&B identity or
 performance result is available yet.
+
+## 2026-11-04: Eight scaled-Gram tasks are running
+
+At the 16:44 UTC canonical check, job
+`/kaiyuew@stanford.edu/ema-gram-20-scaled-gram-v4-64-20261104` had eight
+running tasks, zero completed tasks, zero failures and zero preemptions. The
+existing log follower was still active at that check. Each task's stdout identifies attempt 0
+and separate W&B URLs for its logging check and numerical worker. These links
+have not yet been API-verified, and worker attempt UIDs remain unverified.
+No complete performance result is available. Preserve the single submitted
+job and collect all eight numerical process reports before comparing optimizer latency.
+[Running observation and W&B links](scaled-gram-running.json).
