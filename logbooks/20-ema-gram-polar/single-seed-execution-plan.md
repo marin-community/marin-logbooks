@@ -58,24 +58,27 @@ dispatcher must not change or release another job's allocation. GPU execution
 requires a compatible data/runtime setup and an allocation holder that survives
 worker success or failure before submission; no GPU launch is prepared here.
 
-The previous instruction forbids cold queueing. Until the user explicitly
-changes it, launch only against newly observed ready, healthy, idle compatible
-capacity. A capacity snapshot is advisory and a job may still queue after a
-race; preserve that job rather than canceling or resubmitting it. If cold
-queueing is authorized, enqueue all remaining cells at normal batch priority.
-Queued jobs do not count as running experiments or completed progress.
+The user explicitly authorized cold queueing on 2026-11-04: enqueue all
+29 remaining cells at normal batch priority, prioritizing elapsed completion
+time. This supersedes the earlier ready-only restriction. Inspect ready
+capacity first, then submit every remaining cell without waiting for a free
+snapshot. The initial requests are 24 v4-32 jobs and five v4-8 jobs, totaling
+404 v4 JAX devices if every requested job is allocated simultaneously. This
+is requested capacity, not an allocation or an ETA. Preserve any queued job;
+do not cancel or resubmit to chase a newer snapshot. Queued jobs do not count
+as running experiments or completed progress.
 
-Run `submit_single_seed.py --source-commit CURRENT_EXACT_PUBLISHED_HEAD --launch --watch`
+Run `submit_single_seed.py --source-commit CURRENT_EXACT_PUBLISHED_HEAD --launch --allow-cold-queue`
 from an immutable campaign worktree with its library PYTHONPATH. The fixed
 source branch is `codex/20-ema-gram-single-seed-20261104`; the research branch
 continues to receive notebook and outcome updates. Record the absolute
 execution-worktree and ledger paths in monitoring state before starting. It refreshes fleet
 capacity, fills every eligible slot in that snapshot and submits selected
 cells concurrently. `scratch/20261104-single-seed-ledger.json` owns all
-per-cell guards. The current thread owns dispatch; a single local `--watch` dispatcher checks ready capacity every 60 seconds
-until all 29 cells have submission guards. The existing heartbeat inspects
-that dispatcher and ledger, without starting a duplicate watcher or replacing
-active jobs. Idle v4-8 slots serve alpha=0 first and may then serve nonzero cells
+per-cell guards. The current thread owns dispatch; the initial ready-only watcher was stopped under its idle dispatch lock
+after cold queueing was authorized, before any submission. The full-grid
+dispatch has no wait for ready capacity. The existing heartbeat inspects
+the ledger without starting duplicate submissions or replacing active jobs. Idle v4-8 slots serve alpha=0 first and may then serve nonzero cells
 with the source-defined data=4, model=1 mesh. Timing on that fallback is
 measured separately from the 16-device baseline.
 

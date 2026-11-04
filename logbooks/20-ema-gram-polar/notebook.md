@@ -5858,3 +5858,31 @@ full training counters, online metrics and checkpoints still require review.
 The standing heartbeat now follows this campaign and must not launch the
 superseded64-device synthetic diagnostic or any old terminal job.
 See single-seed-started.json for the initial observation.
+
+
+### 2026-11-04 21:52 UTC — Cold queue authorized; all 29 submissions started
+
+The user explicitly answered “允许全部并行排队，优先缩短总时间”.
+This supersedes the earlier ready-only restriction. Under the dispatch lock,
+confirmed zero existing cell submissions and stopped only the idle local
+capacity watcher; no Iris job or allocation was canceled or released.
+Started the published launcher with --allow-cold-queue. All29 distinct
+launch-started guards are written:24nonzero cells request v4-32 and5alpha0
+cells request v4-8, normal batch priority, 404v4devices if all are allocated.
+Submission acceptance and actual allocations remain to be observed. The
+companion monitoring owner is active, ready to attach one follower and
+canonical checks to each accepted job. No scientific training result is
+claimed by these submission guards.
+
+
+### 2026-11-04 21:54 UTC — All 29 scientific pilot submissions accepted
+
+All29 submissions returned exit0 with their unique canonical Iris job IDs;
+the submit process ended naturally. The observer owner attached one follower
+to each accepted job and scheduled first canonical checks after120seconds.
+The accepted requests comprise24v4-32 jobs and5v4-8 jobs:404requested v4JAX
+devices and101host tasks if all are allocated concurrently. Requested capacity
+is not actual allocation. No training completion is claimed; first canonical
+allocation and online training signals remain pending. Source, exactcommands,
+cell parameters and persistent launch-started guards are preserved in
+[single-seed-submitted.json](single-seed-submitted.json).
