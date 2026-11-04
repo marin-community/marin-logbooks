@@ -5443,3 +5443,10 @@ entry is absent and the reserved size-8 group is available in this snapshot.
 The reserved v4-32 group has four ready slices and one booting slice. Routing
 is not task assignment or numerical progress. Sole follow 92765 remains live.
 Next routine check: 2026-11-04T06:59:31.544959+00:00. No new job or source change.
+
+Canonical checks at 2026-11-04T07:04:51.706032+00:00 still show all four tasks pending,
+with no attempts, failures or preemptions. Reserved v4-32 demand routing
+continues with no task-specific unmet entry. Both size-8 groups are available
+in this snapshot; reserved v4-32 still has four ready slices and one booting.
+Sole follow 92765 remains live. Next routine check: 2026-11-04T07:14:21.706032+00:00.
+No new job, source change or numerical result.
