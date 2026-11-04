@@ -101,6 +101,8 @@ def main():
         probe = json.loads((BASE / probe_name).read_text())
         assert probe["source_sha256"] == validation["source_files"]["experiments/ema_gram/subset_data.py"]
         assert probe["success"] and probe["canonical_success"] and probe["wandb_finished"]
+        if args.stage != "hq01":
+            assert probe["regional_cache_roundtrip"]["full_native_readback"]
         assert probe["manifest_sha256"] == hashlib.sha256((BASE / "subset-inputs.json").read_bytes()).hexdigest()
         expected = {t["component"] for t in manifest["tasks"] if "url" in t["sources"][0]}
         assert {s["component"] for s in probe["sources"]} == expected

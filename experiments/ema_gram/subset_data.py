@@ -368,6 +368,11 @@ def main():
                     stats["sample_tokens"] = [len(x["input_ids"]) for x in sample]
                     stats["sample_sha256"] = [digest_ids(x["input_ids"]) for x in sample]
                     print(json.dumps(stats), flush=True)
+                    with tempfile.TemporaryDirectory(prefix="ema-subset-probe-") as tmp:
+                        write_levanter_cache(sample, tmp + "/input", metadata=processor.metadata, batch_size=2)
+                        small = {"sources": [{"cache": tmp + "/input", "target_tokens": sum(stats["sample_tokens"])}]}
+                        output = manifest["output_prefix"] + "/probes/" + identity
+                        report["regional_cache_roundtrip"] = build_task(small, processor, output, run)
             elif args.mode == "build":
                 if not manifest.get("tokenizer_files"):
                     raise ValueError("Production requires frozen tokenizer bytes")
