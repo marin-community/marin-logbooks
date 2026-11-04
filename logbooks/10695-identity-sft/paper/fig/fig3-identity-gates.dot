@@ -1,0 +1,19 @@
+digraph G {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=11, nodesep=0.25, ranksep=0.4, pad=0.1, bgcolor="white"];
+  node [fontname="Helvetica", fontsize=11, margin="0.12,0.06"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+  ckpt [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#548235", penwidth=1.5, label=<<B>Arm checkpoint</B><BR/>served by vLLM on 8 H100>];
+  g1 [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>Identity</B> 52 core prompts + 14 controls<BR/>thinking off and on, no system prompt<BR/>name / creator / claims another lab;<BR/>invented "system message"; rewrites>];
+  g2 [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>BFCL-Parity</B> 123 tool-calling tasks<BR/>pi agent, thinking on, temperature 1.0<BR/>5 full runs, run-level bootstrap>];
+  g3 [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>GSM8K</B> (off), <B>MATH500</B> (on)<BR/>3 decodes, paired vs v0.1<BR/>stop line: −1.5 with CI below 0>];
+  g4 [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>SWE-bench r100</B>, <B>Panel-60</B><BR/>v0.1, A0, A3, A8a (SWE);<BR/>A3, A8a, A13 (panel)>];
+  k1 [shape=note, style="filled", fillcolor="#fde9e7", color="#c0504d", label=<<B>Thinking-ON identity rows break tool calling</B><BR/>A0, A1, A6, A8b: BFCL 15–17% vs 27.6%;<BR/>the model answers and stops; same with<BR/>an empty span or real reasoning>];
+  k2 [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>Training length is not monotonic</B><BR/>18 updates: BFCL collapsed (A12);<BR/>36 recovered; 72 added nothing (A9, A11);<BR/>GSM8K −1 to −2 with every 36-update recipe>];
+  k3 [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>Did not help</B><BR/>Tülu-style set (A10); linear merges of A3<BR/>and A8a (BFCL and the reasoning quirk switch<BR/>together); self-distilled ON rows (0 of 200 pass QC)>];
+  lead [shape=box, style="rounded,filled", fillcolor="#e2efda", color="#548235", penwidth=1.5, label=<<B>Lead: A13</B><BR/>claims another lab 0/52 on, 1/52 off (v0.1: 46/41)<BR/>BFCL 28.3%, +0.7 [−3.4, +4.4]<BR/>GSM8K −1.1 [−1.9, −0.3], MATH500 unchanged>];
+  fall [shape=box, style="rounded,filled,dashed", fillcolor="#ffffff", color="#548235", penwidth=1.5, label=<<B>Fallback: A3</B> (thinking-OFF rows only)<BR/>best BFCL 31.1%; but reasoning invents<BR/>a system message (17/52) and GSM8K −1.7<BR/>trips the stop line>];
+  ckpt -> g1; ckpt -> g2; ckpt -> g3; ckpt -> g4 [style=dashed];
+  g2 -> k1; g2 -> k2; g3 -> k2; g1 -> k3; g2 -> k3;
+  k1 -> lead; k2 -> lead; k3 -> lead; k1 -> fall [style=dashed];
+  { rank=same; lead; fall; }
+}

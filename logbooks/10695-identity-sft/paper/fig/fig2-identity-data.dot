@@ -1,0 +1,29 @@
+digraph G {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=11, nodesep=0.3, ranksep=0.4, pad=0.1, bgcolor="white"];
+  node [fontname="Helvetica", fontsize=11, margin="0.12,0.06"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+  src [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>Identity dataset</B><BR/>marin-community/identity-data<BR/>Q&amp;A about name, creator, origin>];
+  rep [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>Replay prompts</B><BR/>chat, code, math, tool calling<BR/>(a few fiction and third-person)>];
+  v01 [shape=box, style="rounded,filled", fillcolor="#e2efda", color="#548235", penwidth=1.5, label=<<B>Snowball v0.1</B><BR/>parent; writes the replay answers>];
+  glm [shape=box, style="rounded,filled", fillcolor="#fff2cc", color="#b8860b", penwidth=1.5, label=<<B>GLM</B><BR/>writes reasoning spans for<BR/>thinking-ON identity rows>];
+  r_off [shape=box, label=<<B>identity, thinking OFF</B><BR/>answer only>];
+  r_on  [shape=box, label=<<B>identity, thinking ON</B><BR/>empty span (A0) or GLM reasoning (A6, A8, A13)>];
+  r_rep [shape=box, label=<<B>replay rows</B><BR/>v0.1's own answers, thinking off and on>];
+  qc [shape=box, style="rounded,filled", fillcolor="#f6f6f6", color="#777777", label=<<B>QC + packing</B> (v0.1 chat template, no system prompt)<BR/>reasoning that quotes a system prompt is rejected;<BR/>packed file rebuilds byte for byte from the inputs>];
+  arms [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#f6f6f6"><B>arm</B></TD><TD BGCOLOR="#f6f6f6"><B>identity rows</B></TD><TD BGCOLOR="#f6f6f6"><B>other</B></TD></TR>
+      <TR><TD>A0 / A1</TD><TD ALIGN="LEFT">OFF + ON with empty span</TD><TD ALIGN="LEFT">A1: no special-token freeze</TD></TR>
+      <TR><TD>A2</TD><TD ALIGN="LEFT">none (replay only)</TD><TD ALIGN="LEFT">control</TD></TR>
+      <TR><TD>A3</TD><TD ALIGN="LEFT">OFF only</TD><TD ALIGN="LEFT">A11: same, 72 updates</TD></TR>
+      <TR><TD>A6</TD><TD ALIGN="LEFT">A0's mix; GLM reasoning in the 1,791 eligible ON rows</TD><TD ALIGN="LEFT">ineligible ON rows fall back to OFF</TD></TR>
+      <TR><TD>A8a / A8b</TD><TD ALIGN="LEFT">A3 + 10% / 30% of A6's ON rows</TD><TD ALIGN="LEFT">A9: A8a, 72 updates; A12: 18 updates</TD></TR>
+      <TR><TD>A10</TD><TD ALIGN="LEFT">44 Tülu-style Q&amp;As × 10</TD><TD ALIGN="LEFT"></TD></TR>
+      <TR><TD BGCOLOR="#e2efda"><B>A13</B></TD><TD ALIGN="LEFT" BGCOLOR="#e2efda">A8a's mix</TD><TD ALIGN="LEFT" BGCOLOR="#e2efda">thinking-ON tool replay doubled</TD></TR>
+    </TABLE>>];
+  out [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#548235", penwidth=1.5, label=<<B>One checkpoint per arm</B>: 36 updates from v0.1 (18 or 72 in the length arms), 32 H100 → gates (Figure 3)>];
+  src -> r_off; src -> r_on; rep -> r_rep; v01 -> r_rep [label="answers"]; glm -> r_on [label="reasoning", style=dashed];
+  r_off -> qc; r_on -> qc; r_rep -> qc; qc -> arms; arms -> out;
+  { rank=same; src; rep; v01; glm; }
+  { rank=same; r_off; r_on; r_rep; }
+}

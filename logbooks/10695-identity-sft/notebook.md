@@ -181,4 +181,5 @@ The arm-by-arm history (A0 to A13, merges M25/M49/M51/M75) is in #10695 and in t
   - Linear merges of A3 and A8a (M25, M49, M51, M75) did not get both A3's BFCL and A8a's reasoning.
 - Marin contribution PRs: #10683, #10684, #10685, #10687, #10705, #10782 (library fixes); #10707 (export audit), #10884 (native identity scorer), #10885 (BFCL parity eval); #10686, #10688, #10706 (uncertain, still open).
 - Reproduction instructions: [REPRODUCE.md](REPRODUCE.md)
+- Paper: [snowball-identity.pdf](paper/snowball-identity.pdf) (15 pages, 2026-11-04; one report covering the context-distillation phase and the identity-dataset SFT arms, with the three experiment diagrams; source and figure sources in `paper/`)
 - Remaining uncertainty: the 36-update arms screened on paired maths lost about 1–2 GSM8K points; halving training (A12) removed that cost but collapsed BFCL. Panel-60 is a development set. Mini840 results are still pending.

@@ -1,0 +1,620 @@
+#+TITLE: Teaching Snowball v0.1 Its Name: Context Distillation, Weight Edits and SFT on Identity Data
+#+AUTHOR: Marin post-training team
+#+DATE: Unified report, 2026-11-04 (work from 2026-10-20 to 2026-11-03)
+#+OPTIONS: toc:t num:t ^:{} broken-links:mark
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt]
+#+LATEX_HEADER: \usepackage{booktabs,longtable,hyperref,graphicx,float}
+#+LATEX_HEADER: \usepackage[margin=2.0cm]{geometry}
+#+LATEX_HEADER: \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+#+LATEX_HEADER: \usepackage{adjustbox,etoolbox,xurl}
+#+LATEX_HEADER: \BeforeBeginEnvironment{tabular}{\begin{adjustbox}{max width=\textwidth}}
+#+LATEX_HEADER: \AfterEndEnvironment{tabular}{\end{adjustbox}}
+#+LATEX_HEADER: \AtBeginDocument{\sloppy}
+#+LATEX_HEADER: \renewcommand{\arraystretch}{1.1}
+#+LATEX_HEADER: \setlength{\tabcolsep}{4pt}
+
+#+begin_abstract
+Marin Snowball 67B-A2B v0.1, a mixture-of-experts chat model, does not know its own name. With no
+system prompt it says it is ChatGPT (thinking on, 46 of 52 identity prompts) or Nemotron (thinking
+off, 41 of 52). Interpretability runs and a scan of the SFT data agree on the cause: the training
+data never names the model, about 16k rows teach a Nemotron identity, and late routed experts fill
+the gap with "generic AI assistant". This report covers every fix we tried in two phases. In the
+first phase, we tried a default system prompt, an earlier identity SFT and weight merges of it,
+rank-1 edits, steering vectors, MEMIT, a cold-start SFT, context distillation (CD) from v0.1 with an
+identity system prompt as its own teacher, CD restricted to late attention, on-policy distillation
+and two CD variants with tool replay. A precision check before this phase found five numerical
+mismatches between the Levanter training stack and the vLLM serve, the worst being silent MoE token
+dropping. None of these fixes taught the model its name without a prompt: no trained run said
+"Marin Snowball" in more than 2 of 52 prompts (6 with thinking on), and the first CD run cut tool
+calling by 20 points. In the
+second phase we ran short SFTs from v0.1 on a community identity dataset mixed with replay of v0.1's
+own answers. The main finding is that identity rows rendered with thinking on teach the model to
+answer and stop instead of calling a tool: BFCL tool calling fell from 27.6% to about 15%, whether
+the thinking span was empty or held real reasoning. Rendering identity rows with thinking off, with
+a 10% share of thinking-on rows with reasoning and the thinking-on tool-calling replay doubled (arm
+A13), gives a model that never claims another lab with thinking on (0 of 52), keeps BFCL at 28.3%
+(+0.7 [−3.4, +4.4]) and loses 1.1 GSM8K points. A13 is the lead candidate; A3 (thinking-off identity
+rows only) is the fallback.
+#+end_abstract
+
+* Introduction
+:PROPERTIES:
+:CUSTOM_ID: sec:intro
+:END:
+
+Snowball v0.1 is the chat release of Marin's 67B-A2B mixture-of-experts model. Asked who it is,
+with no system prompt, it answers as ChatGPT when its thinking channel is on and as Nemotron when
+it is off. Its published chat template carries a default system prompt that fixes most answers, but
+the project wants the model itself to know what it is, because downstream users strip or replace
+system prompts, and because a model that invents a "system message" in its reasoning behaves oddly
+in other tasks.
+
+The goal, stated at the start, was a model with no system prompt that names itself and its creator,
+denies being another lab's model, keeps third-person facts about other labs intact, and loses
+nothing measurable on tool calling, maths and coding. The target identity changed once during the
+work: the first phase trained toward "Marin Snowball, created by Open Athena"; the second phase
+used a community identity dataset whose answers say "Marin's Latest MoE, developed and trained by
+the Marin Community". Counts in each phase use that phase's target.
+
+** Terms
+- *Thinking on / off.* Snowball has a reasoning channel delimited by special tokens. "Thinking on"
+  means the model writes reasoning before its answer. Agent harnesses run with thinking on.
+- *Replay.* Rows where v0.1 itself wrote the answer to a prompt. Training on them keeps the model
+  near v0.1 on that kind of prompt.
+- *Context distillation (CD).* The teacher is v0.1 with an identity system prompt. The student is
+  v0.1 trained on the teacher's answers with the prompt removed.
+- *BFCL-Parity.* 123 tool-calling tasks run by an agent harness with thinking on. It is the tool-calling
+  gate in both phases.
+- *Updates.* One optimizer step on a global batch of 8 sequences × 8,192 tokens.
+
+** The two phases in one paragraph
+Phase one (2026-10-20 to 10-28) diagnosed the cause, tried every fix cheaper than a full SFT,
+repaired the training stack, and then ran context distillation and three follow-ons. Every trained
+run learned the creator but not the name, and the first run broke tool calling. Phase two
+(2026-10-29 to 11-03) switched to a community identity dataset and ran thirteen short SFT arms
+plus four merges, each scored on the same gates. Figure [[fig:diagnosis]] shows the diagnosis and
+the phase-one fixes; Figures [[fig:data]] and [[fig:gates]] show the phase-two data and gates.
+
+* Where the wrong name comes from
+:PROPERTIES:
+:CUSTOM_ID: sec:cause
+:END:
+
+#+CAPTION: Diagnosis and the fixes tried before SFT on the identity dataset. Each fix is listed with what it taught and what it cost. The precision check repaired the training stack before the trained fixes ran.
+#+NAME: fig:diagnosis
+#+ATTR_LATEX: :width \textwidth :placement [H]
+[[file:fig/fig1-diagnosis.pdf]]
+
+We located the wrong name with a torch reference harness that matches vLLM on every name and
+creator decision, using logit lens, direct logit attribution, activation patching and
+max-activation labelling of neurons.
+
+#+ATTR_LATEX: :align p{4.3cm}p{5.2cm}p{6.3cm} :booktabs t
+| Component                        | Role                                   | Evidence                                                  |
+|----------------------------------+----------------------------------------+-----------------------------------------------------------|
+| Routed experts, layers 16–23     | push " Chat" over " Marin"             | logit lens: ≈0 at layer 14 to −10.4 at layer 25           |
+| Routed experts, layers 20 and 23 | push "AI" over "-Athena" after "Open"  | attribution −2.9 and −5.6; "AI" wins by 15.6 nats         |
+| Shared expert, layers 24–25      | final push toward ChatGPT              | attribution −2.0, −2.9                                    |
+| L20 expert 46 #1072, L23 expert 25 #1014 | top "wrong name" neurons       | same activation on self, third-person and neutral prompts |
+| Heads L23H1, L23H4, L22H5, L22H3 | copy an identity from a system prompt  | patching recovers 0.32 / 0.26 / 0.24 / 0.15 of the gap    |
+
+Three things follow. The top neurons store general facts about AI assistants, not a self-identity;
+editing them would damage facts about other labs. A system prompt works by a copy mechanism in
+late attention heads, not by changing what the experts store. And with thinking on, the model often
+reasons "The system says: You are ChatGPT", inventing a system prompt that is not there.
+
+The SFT data explains why. In a sample of about 497k of the 15.2M SFT rows, no row names Marin,
+about 16k rows train a Nemotron identity on purpose, and about 2.2k rows carry ChatGPT asides in
+the thinking channel. Pretraining data was not scanned.
+
+* Measuring identity and its cost
+:PROPERTIES:
+:CUSTOM_ID: sec:measure
+:END:
+
+Every fix was scored on an identity screen and on a set of capability gates. The screens evolved
+between the phases, so numbers are comparable within a phase and within a table, not across them.
+
+- *Identity screen.* 52 core identity prompts, thinking off and on, no system prompt, plus
+  third-person controls (14 in the development set, 30 unseen) that ask about other labs' products.
+  Phase one counted "says Snowball" and "says Open Athena". Phase two counts name, creator and
+  "claims another lab", and reads answers with special tokens kept so reasoning and answer split at
+  the model's own end-of-thinking token. Only 31 of the 52 core prompts ask for the model's name;
+  17 ask about the creator, origin or contact, where naming the creator alone is correct.
+- *Teacher-forced gate (phase one only).* Negative log-likelihood per answer token of the target
+  name and creator strings. Every trained run passed it by a wide margin, and it predicted nothing
+  about generation (Section [[#sec:lessons]]).
+- *BFCL-Parity.* 123 tool-calling tasks run with the Pi agent, thinking on. The agent sends no
+  temperature, so the server default (1.0) applies, and single runs swing by 10 points (one
+  checkpoint scored 29 and then 17 of 123). Phase two scores five full runs per model with a
+  run-level bootstrap against a fresh five-run v0.1 baseline. Phase-one numbers are single runs and
+  carry about ±10 points of paired noise.
+- *Maths.* GSM8K (thinking off) and MATH500 (thinking on), paired against v0.1, 3 decodes each,
+  item-level bootstrap. Pre-set stop line: a drop of more than 1.5 points with the whole interval
+  below zero.
+- *SWE-bench r100.* 100 SWE-bench Verified tasks with mini-swe-agent 2.1; only runs with all 100
+  tasks scored count.
+- *Panel-60.* An external 60-question identity and history panel, thinking off, temperature 0,
+  graded blind by one model grader. Ship line: clean ≥ 20, name ≥ 15, claims another lab ≤ 3.
+  Each phase ran its own grading pass, so the two v0.1 rows differ.
+- *14-eval suite.* MMLU-Pro, GPQA Diamond, HumanEval+, MBPP+, MATH500, GSM8K, SWE-bench r100,
+  TBLite r100, BFCL and others; used for the system prompt, v0.1.1 and CD-16 only.
+
+Two measurement facts shaped the design. The served model is not deterministic: vLLM with data and
+expert parallelism changes 5.6% of its own expert choices between identical requests, and its
+log-probs vary by up to 0.67 nats per answer, so each gate scores several passes. And the torch
+reference changes routes with batch shape, so the Levanter-vs-serve agreement rule was set against
+the measured floor (95.8% batched route agreement) rather than an ideal.
+
+* Fixes without full training
+:PROPERTIES:
+:CUSTOM_ID: sec:cheap
+:END:
+
+** Default system prompt
+The published chat template already carries "I am Marin Snowball, an AI model created by Open
+Athena". With it, v0.1 answers 41 of 47 identity prompts correctly with thinking off and 35 of 47
+with thinking on, and shows no cost on the 14-eval suite. Its one measured side effect is identity
+leaking into fiction (8 of 47 story prompts). It is a mitigation, not a fix: the weights are
+unchanged, and the goal is for the model to know its identity without a prompt.
+
+** An earlier identity SFT and merges of it
+An earlier identity SFT (v0.1.1) names itself in 48 of 48 prompts but loses 21 points of MMLU-Pro,
+29 of HumanEval+ and 28 of GSM8K. Part of its drop is answer format (no =\boxed{}=, unfenced code).
+A merge ladder v0.1 + α (v0.1.1 − v0.1) in BF16 finds no sweet spot: identity and the GSM8K loss
+rise together.
+
+#+ATTR_LATEX: :booktabs t
+| α          | Identity (off / on) | Fiction leaks / 78 | GSM8K | MATH500 |
+|------------+---------------------+--------------------+-------+---------|
+| 0 (v0.1)   | 0 / 0               |                  9 | 92.0% | 92.1%   |
+| 0.5        | 0 / 0               |                 13 | –     | –       |
+| 0.75       | 42 / 27             |                  9 | 86.9% | 93.5%   |
+| 0.875      | 46 / 47             |                 21 | 83.4% | 91.3%   |
+| 0.9375     | 47 / 47             |                 21 | 80.6% | 90.1%   |
+| 1 (v0.1.1) | 48 / 48             |                 22 | 76.4% | 88.7%   |
+
+At α = 0.875, GSM8K is −8.6 points [−10.1, −7.1] and fiction leaks double. BF16 rounding erases 84%
+of the delta at α = 0.5, which is why identity is unchanged there. Grafting only v0.1.1's attention
+tensors into v0.1 (layers 18–23, or all layers) taught nothing in generation.
+
+** Edits, steering and a cold-start SFT
+#+ATTR_LATEX: :align p{5.4cm}p{3.6cm}p{6.8cm} :booktabs t
+| Fix                                        | Identity              | Problem                                   |
+|--------------------------------------------+-----------------------+-------------------------------------------|
+| Rank-1 AlphaEdit, L20 shared expert down-proj | 15 / 3; creator 0/10 | too weak with thinking on                 |
+| Rank-1 at L23 o-proj, L24 shared expert    | up to 9/10 held-out   | loops, "Snowflake" bleed                  |
+| Steering vector, layers 18–23              | 2/8 held-out          | answers barely change                     |
+| MEMIT, layers 18–22                        | 1–6/10 held-out       | memorizes keys or does not transfer       |
+| Cold-start identity SFT, 8 updates         | 24/24 contrastive     | 16 of 21 fiction stories contaminated     |
+
+The cold-start SFT trained before the training-stack fixes below, with MoE token drops in place.
+That may explain part of its collapse; we did not re-run it.
+
+#+ATTR_LATEX: :booktabs t
+| Eval            | v0.1 | v0.1.1 | rank-1 edit | system prompt |
+|-----------------+------+--------+-------------+---------------|
+| MMLU-Pro        | 73.2 |   52.1 |        73.8 |          73.0 |
+| GPQA Diamond    | 64.3 |   55.9 |        65.8 |          65.2 |
+| HumanEval+      | 88.4 |   59.1 |        86.6 |          87.8 |
+| MBPP+           | 79.1 |   64.8 |        75.1 |          77.3 |
+| MATH500         | 95.2 |   87.0 |        95.2 |          95.0 |
+| GSM8K           | 91.5 |   63.7 |        91.7 |          92.3 |
+| SWE-bench r100  |   26 |     22 |          32 |            30 |
+| TBLite r100     |   23 |      5 |          16 |            19 |
+
+The noise floor on this suite is about 1 point. The rank-1 edit costs nothing because it changes
+almost nothing.
+
+* Fixing the training stack first
+:PROPERTIES:
+:CUSTOM_ID: sec:stack
+:END:
+
+Before any full-model training, a zero-learning-rate precision check compared Levanter's Snowball
+forward pass with vLLM's on the same inputs. It took eight 32-H100 runs plus small diagnostics
+(108 H100-hours) and found that Levanter was computing a different model from the one being served.
+
+#+ATTR_LATEX: :align p{4.4cm}p{6.6cm}p{4.8cm} :booktabs t
+| Where                        | Mismatch                                                    | Fix                     |
+|------------------------------+-------------------------------------------------------------+-------------------------|
+| MoE dispatch                 | capacity factor 1.0 silently drops tokens; pad tokens dispatched unmasked | dropless MoE + pad mask |
+| MoE combine                  | combine weights cast to BF16; vLLM keeps FP32               | FP32 combine            |
+| XLA silu / sigmoid (13 sites) | one BF16 step off in 30–36% of elements                    | FP32 activations flag   |
+| FlashAttention-4 core        | rounds the attention probabilities differently from torch; 30% of elements differ | torch-order attention |
+| HF reload                    | silently dropped the attention implementation setting       | preserved and tested    |
+
+The token drops were the main mismatch: dropless MoE moved top-1 token agreement with vLLM from
+88.6% to 99.4% and the p99 log-prob error from 3.96 to 0.60 nats. The check also found twelve
+plumbing bugs, each of which crashed a run: a multi-host mesh layout, a storage-path kwargs leak,
+three multi-host gather bugs, an int32 narrowing of memory statistics, an export audit that rejected
+the tokenizer saver's own chat template, a loss path that differed between training and the gate,
+and others. With all fixes, the final check passed: one update ran, peak memory was 50.2 of 59.4
+GiB, and all 502 exported tensors were byte-equal to v0.1.
+
+Two of these matter beyond this project. Levanter's default MoE capacity factor of 1.0 drops
+tokens silently under expert parallelism (now configurable), and the training loss path must be
+the same code the gate uses.
+
+* Context distillation and its follow-ons
+:PROPERTIES:
+:CUSTOM_ID: sec:cd
+:END:
+
+** CD-16: the first full-model run
+The teacher is v0.1 with the system prompt "I am Marin Snowball, an AI model created by Open
+Athena". The student trains on the teacher's answers with the prompt removed. The mix is 220
+identity rows plus 547 replay rows (v0.1's own answers on new maths, code, chat and fiction prompts)
+plus persona and third-person controls; identity is about 3.8% of supervised tokens. 16 updates at
+learning rate 2e-6 on 32 H100 (24.7 H100-hours). Attention q/k projections, router weights and
+biases and the 256 special-token rows are frozen; this freeze is kept in every later arm unless
+noted.
+
+- *Teacher-forced gate:* name NLL 8.85 → 1.45 nats per token, creator 14.02 → 0.011.
+- *Generation:* names Open Athena in 38 of 52 prompts but itself in only 2 of 52 (6 with thinking
+  on). It credits 4 of 30 unseen OpenAI products to Open Athena.
+- *14-eval suite:* within noise of v0.1 except BFCL (−20.3 points; 109 of 123 trials end with no
+  answer file), TruthfulQA (−1.4) and TriviaQA (+2.4). The training mix had no tool-calling rows.
+
+The model and its training data (every row, the training order, mixture settings, QC verdicts and
+generation scripts) are public (Section [[#sec:artifacts]]).
+
+** Controls: late attention only
+Training only q/k/v/o in layers 18–23 (24 tensors) on the same data kept tool calling but taught
+almost nothing: at learning rate 1e-5 it names Open Athena in 14 of 52 prompts (thinking off only)
+and never names itself, while its teacher-forced NLL moved almost as far as CD-16's. The identity
+cannot be written into the copy heads alone.
+
+** On-policy distillation from CD-16
+Starting from CD-16, 20 steps of on-policy distillation with v0.1 + system prompt as the teacher on
+identity and tool prompts, and plain v0.1 elsewhere (learning rate 3e-6; 51 H100-hours including
+export). It repaired most of the tool calling (BFCL 18.7%; the no-answer failure is gone), but it
+never names itself (0 of 52, 0 of 60 on the panel) and MATH500 fell 2.3 points. It was stopped.
+
+** Tool replay and new identity rows (T2, T3)
+One v0.1 serve produced 156 rows of v0.1's own tool-calling answers on prompts disjoint from BFCL,
+112 new identity rows (name-first, and "Are you X?" denials) and 54 third-person controls. History
+questions were meant to point at the project site, but the teacher invented dates and founders in
+every answer, so no history row passed the filters.
+
+T2 ran the CD-16 recipe on the 1,089-row pool. Tool calling recovered (22.8%), but 16 updates of
+batch 8 sample only 128 sequences, and only 8 of the 112 new identity rows were seen. T3 reweighted
+the same pool (new identity rows 4.5×, controls 6×, tool rows 3×), so 28 new identity rows, 19
+controls and 25 tool rows were seen. BFCL rose to 35.0% (+7.3 vs the system prompt; CI −2.4 to
++17.9) and maths held, but the name count was 1 of 52, and panel claims to be another lab's model
+rose from 5 to 10.
+
+** All phase-one trained fixes in one table
+Generation counts are without a system prompt, thinking off / on: says "Snowball", says "Open
+Athena", claims another lab, and third-person rewrites on the 14 development and 30 unseen
+controls. "Gate" is the teacher-forced NLL gain over v0.1 in nats per token. BFCL is a single run
+against the system-prompt reference (27.6%). Maths deltas are paired against v0.1.
+
+#+ATTR_LATEX: :align llllllll :booktabs t :font \small
+| Arm | Snowball (/52) | Open Athena (/52) | Other lab (/122) | Rewrites 14 / 30 | Gate name / creator | BFCL (Δ) | Maths Δ G / M |
+|------------------------------------+-------+---------+---------+-------+--------------+-------------+-------------|
+| v0.1                               | 0 / 0 | 0 / 0   | 52 / 21 | 0 / 0 | –            | 26.0        | –           |
+| CD-16 | 2 / 6 | 38 / 36 | 19 / 4  | 2 / 4 | 7.41 / 14.01 | 7.3 (−20.3) | +0.3 / +0.2 |
+| CD, late attn., lr 2e-6 | 0 / 0 | 0 / 0   | 55 / 30 | 0 / 0 | 0.35 / 1.58  | 27.6 (0.0)  | +0.1 / 0.0  |
+| CD, late attn., lr 1e-5 | 0 / 0 | 14 / 0  | 36 / 28 | 0 / 0 | 2.39 / 12.76 | 24.4 (−3.3) | +0.1 / −1.3 |
+| Graft attn., L18–23 | 0 / 0 | 0 / 0 | 54 / 27 | 0 / 0 | 0.80 / 1.41  | 27.6 (0.0)  | 0.0 / 0.0   |
+| Graft attn., all layers | 0 / 0 | 0 / 0   | 69 / 33 | 0 / 0 | 2.03 / 4.26  | 26.0 (−1.6) | −2.5 / −0.2 |
+| OPD-20 | 0 / 0 | –       | –       | 0 / 1 | 6.96 / 13.91 | 18.7 (−8.9) | −0.3 / −2.3 |
+| T2 | 0 / 0 | 39 / 43 | 15 / 6 | 2 / 4 | 7.11 / 14.01 | 22.8 (−4.9) | +1.3 / −0.1 |
+| T3 | 1 / – | 38 / –  | –       | 0 / 2 | 7.02 / 14.01 | 35.0 (+7.3) | +1.8 / 0.0  |
+
+Panel-60 in this phase (one grader): v0.1 8 clean / 1 name, v0.1 + system prompt 26 / 17, CD-16
+15 / 5, OPD-20 19 / 0, T2 17 / 2, T3 15 / 6. Against the pre-stated ship lines (BFCL parity, no
+third-person rewrites, name ≥ 26 and creator ≥ 38 of 52, panel ≥ 20 clean / ≥ 15 name / ≤ 3 other
+lab, maths, then the full suite), T2 failed three lines and T3 failed two. At this point the
+system prompt was still the best option, and the phase was closed.
+
+** What phase one taught
+- Teacher-forced NLL does not predict generation. Every run passed the gate; none said its name.
+- The creator is learned far more easily than the name, and it spreads: "My name is Open Athena",
+  and other labs' products credited to Open Athena.
+- A little tool replay prevents the tool-calling collapse: 25–31 tool rows in 16 updates were
+  enough to go from 7.3% to 35.0%.
+- Small SFT runs see little of their data. With 128 sequences per run, the sampling weights decide
+  which rows train at all; T2 never saw the rows it was meant to test.
+- A weight change small enough to keep every capability did not teach the name. The name may need
+  more rows, a cleaner target, or identity data earlier in training.
+
+* SFT on the identity dataset
+:PROPERTIES:
+:CUSTOM_ID: sec:pathb
+:END:
+
+Phase two changed the data rather than the method. Instead of distilling v0.1's prompted answers,
+each arm is a short SFT from v0.1 on a community identity dataset
+([[https://huggingface.co/datasets/marin-community/identity-data][marin-community/identity-data]]
+at =665ac6e=, by Will Held) mixed with replay. The target identity becomes "Marin's Latest MoE,
+developed and trained by the Marin Community".
+
+#+CAPTION: Data and arms for the identity-dataset SFTs. Every arm starts from v0.1 and trains for 36 updates unless noted. A4 was a control; A5 and A7 were reasoning-generation pilots, not trained arms.
+#+NAME: fig:data
+#+ATTR_LATEX: :width 0.95\textwidth :placement [H]
+[[file:fig/fig2-identity-data.pdf]]
+
+** Data
+- *Identity rows.* The dataset's question–answer pairs about name, creator and origin, after
+  capping the "not known / should not guess" refusal rows. Each row can be rendered with thinking
+  off (answer only) or thinking on (a reasoning span, then the answer).
+- *Reasoning for thinking-on rows.* v0.1 itself cannot write it: with an identity system prompt
+  as the teacher, 0 of 200 pilot traces passed QC because the reasoning quotes the system prompt,
+  even when told not to; with A3 as a forced-thinking teacher, 11 of 200 passed. GLM wrote the
+  reasoning instead; 1,791 identity rows were eligible for a GLM span, and ineligible rows fall
+  back to thinking off.
+- *Replay rows.* v0.1's own answers: a pool of 547 general rows (chat, code, maths, fiction,
+  third-person) and 156 tool-calling rows, each usable with thinking off and on. A 36-update arm
+  consumes about 340 chat, 279 code, 346 maths and 282 tool-calling rows (82 first calls, 113
+  after a tool result, 87 final replies), plus a few fiction and third-person rows.
+- *QC and packing.* Rows are rendered with the v0.1 chat template and no system prompt. Each
+  source row is used at most twice across the two modes. The packed training file rebuilds byte
+  for byte from the preserved inputs (SHA256 =f860030d= for A13).
+- *Mix.* A 36-update arm consumes about 7,300–7,400 rendered rows. Identity rows are short, so
+  they are most of the rows but about 10% of supervised tokens (A3 9.7%, A13 9.9%); replay rows are
+  the rest. For comparison, CD-16's identity share was 3.8%.
+
+** Recipe
+36 updates from v0.1 (18 in A12, 72 in A9 and A11), learning rate 2e-6 constant, global batch
+8 × 8,192 tokens, seed 310, on 32 H100. The q/k projections, router weights and biases and the 256
+special-token rows are frozen except in A1.
+
+#+ATTR_LATEX: :align llp{6cm} :booktabs t
+| Arm      | Identity rows                                  | Other                                  |
+|----------+------------------------------------------------+----------------------------------------|
+| A0       | thinking off + thinking on with an empty span  |                                        |
+| A1       | as A0                                          | no special-token freeze                |
+| A2       | none                                           | replay only (control)                  |
+| A3       | thinking off only                              |                                        |
+| A4       | phase-one T3 data and target                   | control for the old data               |
+| A6       | A0's mix; GLM reasoning in the 1,791 eligible thinking-on rows | ineligible rows fall back to off |
+| A8a / A8b | A3 + 10% / 30% of A6's thinking-on rows (179 / 537) |                                   |
+| A9       | as A8a                                         | 72 updates                             |
+| A10      | 44 Tülu-style identity Q&As × 10               |                                        |
+| A11      | as A3                                          | 72 updates                             |
+| A12      | as A8a                                         | first 18 updates                       |
+| A13      | as A8a                                         | thinking-on tool-calling replay doubled |
+| M25–M75  | linear merges of A3 and A8a                    | weights 0.25, 0.49, 0.51, 0.75 on A8a |
+
+** Results
+#+CAPTION: Gates and findings for the identity-dataset SFTs. Solid arrows are the gates every arm ran; the dashed arrow marks gates run on a subset.
+#+NAME: fig:gates
+#+ATTR_LATEX: :width \textwidth :placement [H]
+[[file:fig/fig3-identity-gates.pdf]]
+
+*** Tool calling
+Five full runs per arm unless noted.
+
+#+ATTR_LATEX: :booktabs t
+| Arm  | What changed                                  |  BFCL | vs v0.1 [95% CI]            |
+|------+-----------------------------------------------+-------+-----------------------------|
+| v0.1 | –                                             | 27.6% | –                           |
+| A0   | identity rows; thinking-on rows empty         | 15.6% | −12.1 [−16.5, −7.6]         |
+| A1   | A0 without the special-token freeze           | 14.8% | −12.8 [−16.3, −9.9]         |
+| A2   | replay only                                   | 24.6% | −3.1 [−6.2, −0.7]           |
+| A3   | identity rows with thinking off only          | 31.1% | +3.4 [−0.5, +7.2]           |
+| A4   | phase-one T3 data, 36 updates                 | 36.3% | one run, vs the frozen 34/123 reference |
+| A6   | thinking-on rows with GLM reasoning (1,791)   | 15.4% | −12.2 [−15.6, −9.3]         |
+| A8b  | A3 + 30% of A6's thinking-on rows             | 17.2% | −10.4 [−14.0, −7.3]         |
+| A8a  | A3 + 10% of A6's thinking-on rows             | 26.2% | −1.5 [−4.9, +1.5]           |
+| A9   | A8a, 72 updates                               | 24.6% | −3.1 [−6.7, +0.3]           |
+| A10  | Tülu-style: 44 identity Q&As × 10             | 24.0% | −3.7 [−8.0, +0.0] (4 runs)  |
+| A11  | A3, 72 updates                                | 31.2% | +3.6 [−0.5, +7.5]           |
+| A12  | A8a, first 18 updates                         | 14.8% | −12.8 [−16.4, −9.9]         |
+| A13  | A8a + thinking-on tool replay doubled         | 28.3% | +0.7 [−3.4, +4.4]           |
+| M25  | 0.75 A3 + 0.25 A8a                            | 30.4% | +2.8 [−0.8, +6.0]           |
+| M49  | 0.51 A3 + 0.49 A8a                            | 29.5% | +1.8 [−1.7, +4.9] (4 runs)  |
+| M51  | 0.49 A3 + 0.51 A8a                            | 23.8% | −3.9 [−7.9, +0.1] (4 runs)  |
+| M75  | 0.25 A3 + 0.75 A8a                            | 23.9% | −3.7 [−6.8, −1.3]           |
+
+The pattern is in the first column. Every arm whose identity rows are rendered with thinking on
+(A0, A1, A6, A8b, A12) scores about 15–17%. Arms whose identity rows are thinking off (A3, A11)
+score at or above v0.1. The special-token freeze is not the cause (A1 ≈ A0), and real reasoning
+does not help (A6 ≈ A0). A4, trained for 36 updates on the phase-one T3 data, has the best BFCL
+(a single run, so not comparable with the five-run rows) and names itself in 42 of 52 prompts with thinking off, which the same
+data could not do in 16 updates. It was a control only: it credits the old identity ("Marin
+Snowball / Open Athena"), it rewrites other labs' facts in 5 of 14 controls (the worst of any arm),
+and its identity read predates the fixed parser.
+
+How the failing models fail, from the first registered run of each (123 tasks):
+
+#+ATTR_LATEX: :booktabs t
+|                               | A0 | A3 | A6 | A8a | A8b | A9 | A10 | A12 | A13 |
+|-------------------------------+----+----+----+-----+-----+----+-----+-----+-----|
+| Answers once, no tool call    | 60 | 12 | 66 |  17 |  43 | 40 |  44 |  45 |  16 |
+| Recites its identity in a tool task | 3 | 0 | 29 | 0 | 15 |  1 |   0 |   3 |   1 |
+
+The agent runs with thinking on. If most thinking-on training examples are short identity answers
+with no tool call, the model learns to answer and stop.
+
+*** Identity
+N / C / O = says its name / says its creator / claims another lab, of 52 core prompts. Sys. =
+reasoning invents a system message (thinking on, of 52). Rewr. = credits another lab's product to
+Marin (of 14 controls, off / on). C counts only a final answer that credits the Marin Community
+with developing or training the model.
+
+#+ATTR_LATEX: :booktabs t
+| Model | On: N / C / O | Off: N / C / O | Sys. | Rewr. |
+|-------+---------------+----------------+------+-------|
+| v0.1  | 0 / 0 / 46    | 0 / 0 / 41     |   10 | 0 / 0 |
+| A3    | 31 / 44 / 0   | 30 / 34 / 0    |   17 | 0 / 0 |
+| A8a   | 34 / 33 / 0   | 29 / 30 / 1    |    1 | 0 / 0 |
+| A9    | 32 / 40 / 1   | 28 / 39 / 1    |    1 | 1 / 1 |
+| A10   | 26 / 32 / 9   | 29 / 24 / 5    |    3 | 0 / 0 |
+| A11   | 31 / 37 / 2   | 27 / 39 / 1    |   16 | 1 / 1 |
+| A12   | 30 / 33 / 1   | 31 / 35 / 3    |    0 | 0 / 0 |
+| A13   | 35 / 32 / 0   | 29 / 30 / 1    |    3 | 0 / 0 |
+| M25   | 32 / 45 / 0   | 29 / 33 / 0    |   18 | 0 / 0 |
+| M49   | 30 / 40 / 0   | 29 / 32 / 0    |   13 | 0 / 0 |
+| M51   | 33 / 31 / 0   | 30 / 30 / 0    |    1 | 0 / 0 |
+| M75   | 33 / 34 / 0   | 30 / 30 / 0    |    1 | 0 / 0 |
+
+On the 31 prompts that ask for the name, A3 and A8a name themselves in 26 to 28. Truly missing or
+wrong identity is 0 to 5 per mode, against 47 to 51 for v0.1. Unlike phase one, the name is
+learned: the dataset's name is in the answer of most rows, and 36 updates see every row.
+
+The "invents a system message" column is the cost of training on thinking-off rows only. A3 and
+A11 reason about a system prompt that is not there in 16–17 of 52 answers (v0.1: 10). A small share
+of thinking-on identity rows with real reasoning (A8a, A13) removes it. Our first "thinking-on
+format broken" counts were a parser artefact from a serve that did not split reasoning from the
+answer; they hit v0.1 just as hard (52 of 52), and reading with special tokens kept removes them.
+
+*** Maths, SWE-bench and the panel
+v0.1 scores 92.1% on GSM8K and 92.0% on MATH500 in this phase's serve.
+
+#+ATTR_LATEX: :booktabs t
+| Model | GSM8K (thinking off)     | MATH500 (thinking on) |
+|-------+--------------------------+-----------------------|
+| A3    | −1.7 [−2.6, −0.9] (stop) | −0.2 [−1.4, +1.0]     |
+| A8a   | −1.1 [−1.9, −0.3]        | +0.7 [−0.5, +1.9]     |
+| A11   | −1.3 [−2.1, −0.5]        | −0.3 [−1.4, +0.9]     |
+| A12   | +0.2 [−0.7, +1.1]        | +0.1 [−1.0, +1.1]     |
+| A13   | −1.1 [−1.9, −0.3]        | +0.2 [−1.1, +1.5]     |
+| M25   | −1.5 [−2.4, −0.7] (stop) | +0.4 [−0.9, +1.7]     |
+| M49   | −1.6 [−2.5, −0.8] (stop) | +0.1 [−1.3, +1.4]     |
+| M51   | −1.2 [−2.0, −0.4]        | +0.9 [−0.2, +2.0]     |
+| M75   | −1.2 [−2.1, −0.4]        | +0.8 [−0.5, +2.1]     |
+
+Every 36-update recipe costs 1–2 GSM8K points; A12, at 18 updates, costs nothing but has
+collapsed tool calling. The cost comes with the training
+length, not the identity data alone. A better replay mix is the likely fix and is untested.
+
+SWE-bench r100 (mini-swe-agent, full runs only): v0.1 29.7% (28, 33, 28); A3 28.3% (−1.3 [−4.7,
++0.7]); A8a 27.3% (−2.4 [−5.6, +0.2]); A0 28.0% (one run). There is no BFCL-size collapse here, even
+for A0: mini-swe-agent re-prompts any reply without a command (2,594 re-prompts across 560 task
+attempts, for every model including v0.1), so the model cannot answer and stop. SWE-bench is not
+sensitive to this failure, which is why BFCL is the gate.
+
+Panel-60 (this phase's grading pass; any Marin-family name counts):
+
+#+ATTR_LATEX: :booktabs t
+| Model                 | Clean | Name = Marin | Creator = Marin | Claims another lab | Invents facts |
+|-----------------------+-------+--------------+-----------------+--------------------+---------------|
+| v0.1                  |    10 |            5 |               4 |                 17 |            22 |
+| v0.1 + system prompt  |    33 |           26 |              40 |                  4 |            13 |
+| A3                    |    15 |           34 |              56 |                  0 |             1 |
+| A8a                   |    14 |           35 |              47 |                  0 |             3 |
+| A13                   |    15 |           35 |              54 |                  1 |             3 |
+
+All three candidates pass the name and other-lab lines by a wide margin and miss the "clean" line.
+The grader's reasons are about answer quality, not identity: the models recite a canned identity
+line instead of answering the question asked, or do not explain how the model relates to the Marin
+project. One grading caveat: the grader was told that item 26 held A3's length-terminated answer,
+which identifies A3 on that item; A3's counts are unchanged without it.
+
+*** Training length versus tool-example dose
+A12 is A8a stopped halfway, not a lower dose. The two kinds of "more" behave differently:
+
+#+ATTR_LATEX: :booktabs t
+| What increased                | Arms                                | BFCL                             |
+|-------------------------------+-------------------------------------+----------------------------------|
+| Training length, same mix     | A12 (18) → A8a (36) → A9 (72)       | 14.8% → 26.2% → 24.6%            |
+| Thinking-on tool replay       | A8a (1×) → A13 (2×)                 | 26.2% → 28.3% (+2.1 [−1.5, +5.7]) |
+
+Tool calling drops early in training and recovers by update 36; more training of the same mix does
+not improve it further, and 72 updates add a few other-lab rewrites ("GPT-4 trained by the Marin
+Community"). More thinking-on examples that end in a tool call help a little, consistent with the
+answer-and-stop mechanism; the dose was not tested beyond 2×.
+
+*** What did not help
+- Self-distillation from v0.1 for thinking-on rows: 0 of 200 traces passed QC (Section [[#sec:pathb]], Data).
+- More training (A9, A11): no identity gain, a few rewrites.
+- Less training (A12): tool calling collapses.
+- A tiny Tülu-style set (A10): weaker identity; still claims another lab in 9 of 52 thinking-on answers.
+- Linear merges of A3 and A8a: BFCL and the system-message quirk switch together near t = 0.5, so no
+  blend gets both A3's BFCL and A8a's clean reasoning.
+
+* Lessons across both phases
+:PROPERTIES:
+:CUSTOM_ID: sec:lessons
+:END:
+
+1. *The data decided, not the method.* Context distillation, on-policy distillation and the
+   identity-dataset SFT all use the same optimizer, learning rate and freeze. The phase-one runs
+   taught the creator and not the name because the teacher's own answers rarely said the name
+   cleanly and because 16 updates saw few of the rows that did. The dataset rows say the name in
+   most answers, and 36 updates see all of them.
+2. *Tool calling breaks through the thinking channel.* Both the phase-one collapse (no tool rows at
+   all) and the phase-two collapse (thinking-on identity rows) are the model learning to end a
+   thinking-on turn without a tool call. The repair is the same both times: thinking-on replay
+   rows that end in a tool call, in enough quantity.
+3. *The loss gate does not see any of this.* Teacher-forced NLL passed in every run; BFCL and
+   generation counts were the only measures that moved. A paired agentic tool-use eval belongs in
+   every SFT screen.
+4. *Thinking-off-only identity training leaves a reasoning quirk.* The model reasons about a system
+   message that is not there. A small share of thinking-on rows with real reasoning fixes it, and
+   the share has a narrow window (10% works, 30% collapses tool calling).
+5. *Length is not monotonic.* Tool calling collapses at 18 updates and recovers at 36; checking one
+   checkpoint can mislead.
+6. *Measure with enough passes.* The serve is non-deterministic, and BFCL at temperature 1.0 swings
+   by 10 points between runs. Five full runs with a run-level bootstrap was the minimum that made
+   arm differences readable.
+7. *Fix the stack first.* The precision check cost 108 H100-hours and found a silent token-dropping
+   bug that would have made every later result uninterpretable.
+
+** Limitations
+- Panel-60 is a development set graded by one model, not by people. Only the within-phase
+  comparisons are blind.
+- The two phases use different identity targets, different screen readers and different v0.1
+  serves, so their counts are not directly comparable.
+- The GSM8K cost of the 36-update recipes (1–2 points) is unexplained; the replay mix has not been
+  varied.
+- Mini840 and a full release check of A13 are pending; no broader capability suite was run on the
+  phase-two candidates beyond maths, BFCL and SWE-bench r100.
+- Pretraining data was not scanned for identity rows.
+
+* Conclusions
+:PROPERTIES:
+:CUSTOM_ID: sec:conclusions
+:END:
+
+A13 is the lead candidate. Its recipe is identity rows rendered with thinking off, plus a 10% share
+of thinking-on identity rows with GLM-written reasoning, plus the thinking-on tool-calling replay
+rows doubled, trained for 36 updates from v0.1. With thinking on it names itself in 35 and its
+creator in 32 of 52 core prompts and never claims another lab (v0.1: 46 of 52). BFCL is 28.3%
+(+0.7 [−3.4, +4.4] vs v0.1), GSM8K −1.1 [−1.9, −0.3] and MATH500 unchanged. A3 (thinking-off rows
+only) is the fallback: best BFCL (31.1%), but a system-message quirk in 17 of 52 reasoning traces
+and a GSM8K drop (−1.7) that trips the stop line. The earlier recommendation to rely on the default
+system prompt is withdrawn: the identity now lives in the weights.
+
+Open work: a release check of A13 on the full suite, the pending Mini840 run, and a replay-mix
+sweep aimed at the 1–2 point GSM8K cost.
+
+** Cost
+Phase one used 530.5 H100-hours and 319 CPU-hours across 245 jobs (precision check 108, CD-16 142,
+late-attention and merge controls 78, on-policy distillation 135, T2 and T3 62, panel serves 5).
+Phase two used at least 3,168 H100-hours and 1,154 CPU-hours through 2026-10-31 (training and
+exports 2,166, evals 708, data generation 45, other 249); A12, A13, the merges and their evals ran
+after the ledger closed and are not booked. Five-run BFCL on every arm is most of the eval cost.
+These are cluster allocations, not provider billing, and exclude sandbox time for the agentic evals
+and the shared GLM serve.
+
+** Artifacts
+:PROPERTIES:
+:CUSTOM_ID: sec:artifacts
+:END:
+- Issue: [[https://github.com/marin-community/marin/issues/10695][marin-community/marin#10695]].
+- Phase-two research record (notebook, reproduction guide, pinned inputs):
+  [[https://github.com/marin-community/marin-logbooks/tree/codex/10695-identity-sft][marin-logbooks =codex/10695-identity-sft=]].
+- Public models: [[https://huggingface.co/open-athena/Snowball-67B-A2B-Identity-PathB-A13-2026.10.30][A13]],
+  [[https://huggingface.co/open-athena/Snowball-67B-A2B-Identity-PathB-A3-2026.10.30][A3]],
+  [[https://huggingface.co/open-athena/Snowball-67B-A2B-Identity-PathB-A8a-2026.10.30][A8a]],
+  [[https://huggingface.co/open-athena/Snowball-67B-A2B-Identity-PathB-A11-2026.10.30][A11]];
+  A13's exact training inputs:
+  [[https://huggingface.co/datasets/open-athena/Snowball-Identity-PathB-A13-Inputs-2026.10.30][dataset]].
+- Phase-one model and data: [[https://huggingface.co/open-athena/Snowball-67B-A2B-Identity-CD16-2026.10.26][CD-16]],
+  [[https://huggingface.co/datasets/open-athena/Snowball-67B-A2B-Identity-CD16-Data-2026.10.26][CD-16 training data]];
+  training code tag =snowball-identity-cd16-2026.10.26=.
+- Identity dataset: [[https://huggingface.co/datasets/marin-community/identity-data][marin-community/identity-data]].
+- Evidence gists: [[https://gist.github.com/karansag/a62ac0cb2a6037e252e794a686b4235c][interpretability]],
+  [[https://gist.github.com/karansag/95c40bb6e55b82e0db08b76f3c5fff6a][SFT-data scan]],
+  [[https://gist.github.com/karansag/8955dcc7d82b5445b832d707ce1313af][weight edits]],
+  [[https://gist.github.com/karansag/050061adbebdd789579e5c3fe27cc5f6][merge ladder]],
+  [[https://gist.github.com/karansag/296cbfa3cd4e9530ef73f55da97927e8][14-eval suite]],
+  [[https://gist.github.com/karansag/2ac0c5798b18bfdbec9a81b7090361d2][precision check]],
+  [[https://gist.github.com/penfever/ff6565deebbd68700685807f8e081be1][Panel-60 protocol]].
+- Findings issues: interpretability #10696, Levanter MoE token drops #10697, Levanter vs vLLM
+  numerics #10698, vLLM serve nondeterminism #10699, weight-merge ladder #10700.

@@ -1,0 +1,23 @@
+digraph G {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=11, nodesep=0.25, ranksep=0.4, pad=0.1, bgcolor="white"];
+  node [fontname="Helvetica", fontsize=11, margin="0.12,0.06"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+  prob [shape=box, style="rounded,filled", fillcolor="#fde9e7", color="#c0504d", penwidth=1.5, label=<<B>Snowball v0.1 has no self-name</B><BR/>thinking on: "I am ChatGPT" (46 of 52) · thinking off: "I am Nemotron" (41 of 52)>];
+  c1 [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>Interpretability</B> (logit lens, attribution, patching)<BR/>routed experts L16–23 and shared expert L24–25 push " Chat" over " Marin";<BR/>the top neurons store general facts about AI assistants, not "self";<BR/>heads L22–23 copy an identity from a system prompt>];
+  c2 [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>SFT data scan</B> (497k of 15.2M rows)<BR/>no row names Marin; ~16k rows teach<BR/>a Nemotron identity; ~2.2k rows carry<BR/>ChatGPT asides in thinking>];
+  fixes [shape=plaintext, label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" STYLE="rounded" COLOR="#999999">
+      <TR><TD ALIGN="LEFT"><B>Fixes tried</B> (identity → cost)</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>Default system prompt</B> in the chat template: 41/47, 35/47 → no eval cost, but not in the weights</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>Earlier identity SFT</B> (v0.1.1): 48/48 → MMLU-Pro −21, HumanEval+ −29, GSM8K −28</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>Merge ladder</B> v0.1 + α (v0.1.1 − v0.1): identity and the GSM8K loss rise together</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>Rank-1 edit, steering vector, MEMIT</B>: too weak, or loops and name bleed</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>Cold-start identity SFT</B>, 8 updates: 24/24 → 16 of 21 fiction prompts contaminated</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>Context distillation</B>, 16 updates: creator learned (38/52), name not (2/52) → BFCL −20 points</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>CD + tool replay</B>, reweighted: BFCL repaired (35.0%) → name still 1/52</TD></TR>
+    </TABLE>>];
+  stack [shape=box, style="rounded,filled,dashed", fillcolor="#fff2cc", color="#b8860b", label=<<B>Precision check before training</B> (Levanter vs vLLM)<BR/>MoE capacity 1.0 dropped tokens silently<BR/>(top-1 agreement 88.6% → 99.4% dropless);<BR/>BF16 combine weights, BF16 silu/sigmoid,<BR/>FA4 rounding, HF reload; + 9 plumbing bugs>];
+  next [shape=box, style="rounded,filled", fillcolor="#e2efda", color="#548235", penwidth=1.5, label=<<B>SFT on the identity dataset</B> with replay (Figures 2 and 3)>];
+  prob -> c1; prob -> c2; c1 -> fixes; c2 -> fixes; stack -> fixes [style=dashed, label="fixed stack"]; fixes -> next;
+  { rank=same; c1; c2; }
+}
