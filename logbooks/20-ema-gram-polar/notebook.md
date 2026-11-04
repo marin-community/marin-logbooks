@@ -6074,3 +6074,19 @@ Native training binding's online logging7a6dc8d5b0c9 and CPUc8bfa177fac9
 passed and are API-verified; subset-training-cpu-validation.json records
 the exact unchanged numerical sources. This is not real-model TPU or actual
 regional data-loader qualification. All30 new pilots remain gated on data.
+
+### 2026-11-04 23:42 UTC — all58 CPU builds accepted and running
+
+All58 hq01 build submissions from source24a029e61 were accepted; submit60948
+ended naturally exit0. Sole observer74503 owns all follows and canonical
+checks. Its first canonical checks observed58RUNNING; no training allocation
+is implied by these CPU tasks. subset-build-launched.json freezes the exact
+identities, source, commands and guard evidence. Two log followers (tasks2,54)
+ended with Finelog Bad Gateway; this is not worker failure and no replacement
+followers were created. Both logging identities were retained in their logs.
+
+The58 tasks use native cache writing, full token readback, and unchanged
+pinned tokenizer bytes. Collection, regional assembly and real native loader
+qualification are prepared. All30 static pilot configs and distinct output
+paths were checked: seed0/fromscratch/7630steps/globalbatch8/4096context;
+24nonzero usev4-32 and6alpha0 usev4-8. No pilot has been submitted yet.

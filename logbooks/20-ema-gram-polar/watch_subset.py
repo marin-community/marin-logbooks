@@ -17,11 +17,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--worktree", type=Path, required=True)
     parser.add_argument("--stage", default="hq01")
-    parser.add_argument("--mode", choices=("probe", "build"), required=True)
+    parser.add_argument("--mode", choices=("probe", "build", "assemble", "data-check"), required=True)
     args = parser.parse_args()
     scratch = args.worktree / "scratch"
     prefix = f"subset-{args.stage}-{args.mode}"
-    expected = 1 if args.mode == "probe" else 58
+    expected = 58 if args.mode == "build" else 1
     state_path = scratch / f"20261104-{prefix}-observers.json"
     base = ["uv", "run", "--no-sync", "iris", "--cluster=marin"]
     with (scratch / f"20261104-{prefix}-observers.lock").open("w") as lock:
