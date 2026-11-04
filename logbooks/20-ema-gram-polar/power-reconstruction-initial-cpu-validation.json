@@ -1,0 +1,1435 @@
+{
+  "mode": "cpu-check",
+  "process_index": 0,
+  "process_count": 1,
+  "source_files": {
+    "logbooks/20-ema-gram-polar/power_reconstruction_check.py": {
+      "bytes": 12843,
+      "sha256": "33d6466e5375bfd9e194e86219dae323b2e551d899cd0085e5a5603f19c8cbbc"
+    },
+    "logbooks/20-ema-gram-polar/saved_state_check.py": {
+      "bytes": 10957,
+      "sha256": "85282a7288a1705c296862994c1fa5f93eef2d80d77a5592f39d123108325696"
+    },
+    "logbooks/20-ema-gram-polar/optimizer_cost.py": {
+      "bytes": 21061,
+      "sha256": "906c3166b1d65cca383963890e2034dd5edcb6afd074308cb9e97f209ad70033"
+    },
+    "lib/levanter/src/levanter/optim/ema_gram.py": {
+      "bytes": 13664,
+      "sha256": "0e2bc2487e3c1df2eb14201552d6a08165830bb557bb5a01eb284b0dc137416f"
+    }
+  },
+  "source_commit": null,
+  "checkpoint": {
+    "checkpoint_uri": "/var/folders/t6/2jwt4xns2vjd22f__yxsb1qm0000gn/T/ema-power-reconstruction-j8zn65tv/step-0",
+    "metadata": {
+      "step": 0,
+      "timestamp": "2026-11-03T19:15:15.673141",
+      "is_temporary": true
+    },
+    "loaded_paths": [
+      "saved/matrices/0/momentum",
+      "saved/matrices/0/left",
+      "saved/matrices/0/right",
+      "saved/matrices/1/momentum",
+      "saved/matrices/1/left",
+      "saved/matrices/1/right",
+      "saved/matrices/2/momentum",
+      "saved/matrices/2/left",
+      "saved/matrices/2/right",
+      "saved/matrices/3/momentum",
+      "saved/matrices/3/left",
+      "saved/matrices/3/right",
+      "saved/matrices/4/momentum",
+      "saved/matrices/4/left",
+      "saved/matrices/4/right",
+      "saved/matrices/5/momentum",
+      "saved/matrices/5/left",
+      "saved/matrices/5/right",
+      "saved/matrices/6/momentum",
+      "saved/matrices/6/left",
+      "saved/matrices/6/right"
+    ],
+    "loaded_bytes": 57600,
+    "manifest_sha256": "7ce0243689f020958e3d86bc4ed771d6ec9cda0539d77920969e97c788fb9897",
+    "full_trainer_restore": false,
+    "scope": "Saved FP32 Gram and momentum arrays only; model, AdamW, step and data state are not restored"
+  },
+  "shapes": [
+    [
+      3,
+      8,
+      8
+    ],
+    [
+      3,
+      8,
+      8
+    ],
+    [
+      3,
+      8,
+      8
+    ],
+    [
+      3,
+      8,
+      8
+    ],
+    [
+      3,
+      32,
+      8
+    ],
+    [
+      3,
+      32,
+      8
+    ],
+    [
+      3,
+      8,
+      32
+    ]
+  ],
+  "gradient_seed": 0,
+  "gradient_scale": 0.0018042195912175807,
+  "cases": {
+    "unchanged_saved_state_direction": {
+      "matrix": {
+        "finite": true,
+        "input_immutable": true,
+        "bitwise_replays": 3,
+        "replay_comparisons": [
+          true,
+          true,
+          true
+        ],
+        "compile_and_first_seconds": 0.5104722080286592,
+        "warmed_sample_seconds": [
+          0.0020121249835938215,
+          0.002021790947765112,
+          0.0019446660298854113
+        ]
+      },
+      "matrix_power": {
+        "finite": true,
+        "input_immutable": true,
+        "bitwise_replays": 3,
+        "replay_comparisons": [
+          true,
+          true,
+          true
+        ],
+        "compile_and_first_seconds": 0.43552766600623727,
+        "warmed_sample_seconds": [
+          0.001793665811419487,
+          0.0017159590497612953,
+          0.0016546249389648438
+        ]
+      },
+      "comparison": {
+        "rtol": 1e-05,
+        "atol": 1e-05,
+        "local_passed": true,
+        "shards": [
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 712.737756493364,
+            "passed": true,
+            "actual_sha256": "6ae9b90dbdd57eee863709f5d41fbb1b106e2e4ad1306e97e532ff7af3486c10",
+            "reference_sha256": "6ae9b90dbdd57eee863709f5d41fbb1b106e2e4ad1306e97e532ff7af3486c10"
+          },
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 181.1606405887365,
+            "passed": true,
+            "actual_sha256": "e01293a9b667ad338f47d14dcba27510788a49a27aa5c1fe8276b34c25876b7a",
+            "reference_sha256": "e01293a9b667ad338f47d14dcba27510788a49a27aa5c1fe8276b34c25876b7a"
+          },
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 346.3723407580577,
+            "passed": true,
+            "actual_sha256": "194f373f9e0bff2183370e5dd9e76f148355df930fde685ef5cef10b37d43e8f",
+            "reference_sha256": "194f373f9e0bff2183370e5dd9e76f148355df930fde685ef5cef10b37d43e8f"
+          },
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 281.86937944177254,
+            "passed": true,
+            "actual_sha256": "61b9ddaf80f7870741630152394f2d12a44e98c6d4fec7983c674bf72aa4e27e",
+            "reference_sha256": "61b9ddaf80f7870741630152394f2d12a44e98c6d4fec7983c674bf72aa4e27e"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 57.34978911789183,
+            "passed": true,
+            "actual_sha256": "35b62ef61a99cd8f66b1d3fa3b3aceb6189a7e7668646c3c8657c048614d23d0",
+            "reference_sha256": "35b62ef61a99cd8f66b1d3fa3b3aceb6189a7e7668646c3c8657c048614d23d0"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 62.769872007929486,
+            "passed": true,
+            "actual_sha256": "bd7e992b4d27dface82f73a07f229b4c8bf340a27215ffc72765d2fc061a5f3f",
+            "reference_sha256": "bd7e992b4d27dface82f73a07f229b4c8bf340a27215ffc72765d2fc061a5f3f"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 105.09220562007306,
+            "passed": true,
+            "actual_sha256": "01af29eb113ca43251838ee1179fc79a533087ec13e55124692f76e2b6a7fd9d",
+            "reference_sha256": "01af29eb113ca43251838ee1179fc79a533087ec13e55124692f76e2b6a7fd9d"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 104.81874907734468,
+            "passed": true,
+            "actual_sha256": "ed07a376f83f881daeb51ef818bea36b4ceb95eb299be5c28c889256b4a66d1f",
+            "reference_sha256": "ed07a376f83f881daeb51ef818bea36b4ceb95eb299be5c28c889256b4a66d1f"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 109.83087364412778,
+            "passed": true,
+            "actual_sha256": "105944f6d0c0b666dfb78f1a0a323848bbf8459f711aa6dbaf4ec849be9ce2ac",
+            "reference_sha256": "105944f6d0c0b666dfb78f1a0a323848bbf8459f711aa6dbaf4ec849be9ce2ac"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 291.5636810342303,
+            "passed": true,
+            "actual_sha256": "ed138a558d0251319f36bfbe31c7c9e92467394fa8f978e1b85ddb3fb4ac0465",
+            "reference_sha256": "ed138a558d0251319f36bfbe31c7c9e92467394fa8f978e1b85ddb3fb4ac0465"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 208.08860541153683,
+            "passed": true,
+            "actual_sha256": "4e04dd9faafcd8ba74148aee57627f5b0e35bc9f85a86f5235d959a7b6a5839c",
+            "reference_sha256": "4e04dd9faafcd8ba74148aee57627f5b0e35bc9f85a86f5235d959a7b6a5839c"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 147.10596814165686,
+            "passed": true,
+            "actual_sha256": "77afc112b76e69be3d5aef9f535a089d9175165e5c875103261e74d5b6112329",
+            "reference_sha256": "77afc112b76e69be3d5aef9f535a089d9175165e5c875103261e74d5b6112329"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(0, 2, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 2473.1798838960735,
+            "passed": true,
+            "actual_sha256": "588c2f700ea91fcfbce0e2aa30d6ead53b4104686a101b984ce99a01b80082b4",
+            "reference_sha256": "588c2f700ea91fcfbce0e2aa30d6ead53b4104686a101b984ce99a01b80082b4"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(2, 4, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1536.72001183814,
+            "passed": true,
+            "actual_sha256": "05ef38616dd403c171107db83a18946f19a69791da5c523e7960c84551396a0c",
+            "reference_sha256": "05ef38616dd403c171107db83a18946f19a69791da5c523e7960c84551396a0c"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(4, 6, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3945.9437502090914,
+            "passed": true,
+            "actual_sha256": "ce0c62f01d989b8d659f4d88a921e9dee870d8f37dc4de2e4a8fb36723cf781b",
+            "reference_sha256": "ce0c62f01d989b8d659f4d88a921e9dee870d8f37dc4de2e4a8fb36723cf781b"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(6, 8, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 703.2103743879285,
+            "passed": true,
+            "actual_sha256": "ee098ed012b7416296205d62fea82f622bd0a4c2ac8bafd5c398845cb02dc39f",
+            "reference_sha256": "ee098ed012b7416296205d62fea82f622bd0a4c2ac8bafd5c398845cb02dc39f"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.762349948518721,
+            "passed": true,
+            "actual_sha256": "eda2d15c70e9e2f24f2c884445169b3504f65edea01394ef8b5dfe2f3c38f5a5",
+            "reference_sha256": "eda2d15c70e9e2f24f2c884445169b3504f65edea01394ef8b5dfe2f3c38f5a5"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.0710533216903015,
+            "passed": true,
+            "actual_sha256": "59e96e8b1a522f0830d7de03b8d1983d70f3c3253a8536d2145b5878f47bc7a9",
+            "reference_sha256": "59e96e8b1a522f0830d7de03b8d1983d70f3c3253a8536d2145b5878f47bc7a9"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.5615396515206053,
+            "passed": true,
+            "actual_sha256": "a19d6c50bda8f5273eb84365aa18346c16b8d6bb9d8bec6eaab73f687d4f70c4",
+            "reference_sha256": "a19d6c50bda8f5273eb84365aa18346c16b8d6bb9d8bec6eaab73f687d4f70c4"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.994321243922164,
+            "passed": true,
+            "actual_sha256": "8b24caa2c1ee005c8e92542872b17a006398c2a89d28b6b3811195444adc6eab",
+            "reference_sha256": "8b24caa2c1ee005c8e92542872b17a006398c2a89d28b6b3811195444adc6eab"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.961708760909115,
+            "passed": true,
+            "actual_sha256": "9144f6a34ec74dc9b8d38e0b1a123d0dd21abe1ae4f4133c71ed2ea3e8fe3504",
+            "reference_sha256": "9144f6a34ec74dc9b8d38e0b1a123d0dd21abe1ae4f4133c71ed2ea3e8fe3504"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.7664800995044345,
+            "passed": true,
+            "actual_sha256": "71c70a877d574caf20904b1c0e1d83ad141f2adc6d9eb10c83b6a4804868b7d9",
+            "reference_sha256": "71c70a877d574caf20904b1c0e1d83ad141f2adc6d9eb10c83b6a4804868b7d9"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.965517626374564,
+            "passed": true,
+            "actual_sha256": "9c8983d424e9a38fb1e445ce7874f4df787e2d5eea913179a55f9ac76e7fa918",
+            "reference_sha256": "9c8983d424e9a38fb1e445ce7874f4df787e2d5eea913179a55f9ac76e7fa918"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.270225193558048,
+            "passed": true,
+            "actual_sha256": "8a43dd092560abfeb85179c18b3d9db67320c2a3ce69bfe5c0ceac306176cb7b",
+            "reference_sha256": "8a43dd092560abfeb85179c18b3d9db67320c2a3ce69bfe5c0ceac306176cb7b"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(0, 2, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.298210539220639,
+            "passed": true,
+            "actual_sha256": "cc39d1ddf66801fa784517e9819a33e21284649bf2cfbb9f4d0d72318e08efd2",
+            "reference_sha256": "cc39d1ddf66801fa784517e9819a33e21284649bf2cfbb9f4d0d72318e08efd2"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(2, 4, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.407735904944143,
+            "passed": true,
+            "actual_sha256": "eba3a6a02a59c0c666242ad1bbcbcf274f220d28d74b62a6d58081c4fc91a0c3",
+            "reference_sha256": "eba3a6a02a59c0c666242ad1bbcbcf274f220d28d74b62a6d58081c4fc91a0c3"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(4, 6, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.5538741586434828,
+            "passed": true,
+            "actual_sha256": "207dcbb42ea76182efa27577068c1202cdcf7af1803f107d1ef5b9b4ed9808ca",
+            "reference_sha256": "207dcbb42ea76182efa27577068c1202cdcf7af1803f107d1ef5b9b4ed9808ca"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(6, 8, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.332207954752042,
+            "passed": true,
+            "actual_sha256": "44db70cf838b74410ceeaa2e764f5b12e28588b565bb70573e097ee4b93644a1",
+            "reference_sha256": "44db70cf838b74410ceeaa2e764f5b12e28588b565bb70573e097ee4b93644a1"
+          }
+        ],
+        "scope": "Local unique leaf/index records; not a global gate until all process reports are joined"
+      }
+    },
+    "fixed_synthetic_gradient_update": {
+      "matrix": {
+        "finite": true,
+        "input_immutable": true,
+        "bitwise_replays": 3,
+        "replay_comparisons": [
+          true,
+          true,
+          true
+        ],
+        "compile_and_first_seconds": 0.5618123752065003,
+        "warmed_sample_seconds": [
+          0.003223832929506898,
+          0.003212040988728404,
+          0.0031505830120295286
+        ]
+      },
+      "matrix_power": {
+        "finite": true,
+        "input_immutable": true,
+        "bitwise_replays": 3,
+        "replay_comparisons": [
+          true,
+          true,
+          true
+        ],
+        "compile_and_first_seconds": 0.5794373331591487,
+        "warmed_sample_seconds": [
+          0.00287920911796391,
+          0.002959874924272299,
+          0.00283391703851521
+        ]
+      },
+      "comparison": {
+        "rtol": 1e-05,
+        "atol": 1e-05,
+        "local_passed": true,
+        "shards": [
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 712.7156024140916,
+            "passed": true,
+            "actual_sha256": "18fad05736d783ae900b984d1affa019f3fc6f2dacb283b4ae23effba68fd48e",
+            "reference_sha256": "18fad05736d783ae900b984d1affa019f3fc6f2dacb283b4ae23effba68fd48e"
+          },
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 181.16127693998868,
+            "passed": true,
+            "actual_sha256": "3f4096ba898075d84d875dca7c63b1428793595897dcbb4fd879869f6e83e90b",
+            "reference_sha256": "3f4096ba898075d84d875dca7c63b1428793595897dcbb4fd879869f6e83e90b"
+          },
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 346.36940803748973,
+            "passed": true,
+            "actual_sha256": "7aec3f1441bd9164c883f6aab7d04c542a058a4bce76b95abffb2ef557f2121e",
+            "reference_sha256": "7aec3f1441bd9164c883f6aab7d04c542a058a4bce76b95abffb2ef557f2121e"
+          },
+          {
+            "leaf": 0,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 281.87006155110146,
+            "passed": true,
+            "actual_sha256": "9a068bed908259f761814a705548a8a2221d1870d2399412d721aeeb274081e0",
+            "reference_sha256": "9a068bed908259f761814a705548a8a2221d1870d2399412d721aeeb274081e0"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 57.3565064370355,
+            "passed": true,
+            "actual_sha256": "53ab7a194da562742bd52f18233cf7081b2bb62872ad374761d43e0a4180e6d6",
+            "reference_sha256": "53ab7a194da562742bd52f18233cf7081b2bb62872ad374761d43e0a4180e6d6"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 62.77709574245837,
+            "passed": true,
+            "actual_sha256": "fcbe8a596197489e50e525ab229438e8303ac070069a8fe5a0d71d1671a94afe",
+            "reference_sha256": "fcbe8a596197489e50e525ab229438e8303ac070069a8fe5a0d71d1671a94afe"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 105.10510948402043,
+            "passed": true,
+            "actual_sha256": "92bc78d58b1d6b85cdd6dbf8088d17c5dc993672d7fdc5065814008e357aeaff",
+            "reference_sha256": "92bc78d58b1d6b85cdd6dbf8088d17c5dc993672d7fdc5065814008e357aeaff"
+          },
+          {
+            "leaf": 1,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 104.83195142135884,
+            "passed": true,
+            "actual_sha256": "e3ea1499a7b37f215865b985911a38aa013c399332c81200747b651aa299f2bb",
+            "reference_sha256": "e3ea1499a7b37f215865b985911a38aa013c399332c81200747b651aa299f2bb"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 109.8338637764625,
+            "passed": true,
+            "actual_sha256": "61fb5f6c8a7f844a1807f46901d4811ba4bf9b410c1725465dba92dc8357c2b5",
+            "reference_sha256": "61fb5f6c8a7f844a1807f46901d4811ba4bf9b410c1725465dba92dc8357c2b5"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 291.5755936638001,
+            "passed": true,
+            "actual_sha256": "1ad2bc43a7acb3876ffe7b55fab60f49479dab6f0c89e1b6a0e3e34d389c5d5b",
+            "reference_sha256": "1ad2bc43a7acb3876ffe7b55fab60f49479dab6f0c89e1b6a0e3e34d389c5d5b"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 208.09981896724827,
+            "passed": true,
+            "actual_sha256": "1f3cc100349fa44bfb50c6ce0d670c9b1be638ef32e7c6b8bec52e735054fdb8",
+            "reference_sha256": "1f3cc100349fa44bfb50c6ce0d670c9b1be638ef32e7c6b8bec52e735054fdb8"
+          },
+          {
+            "leaf": 2,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              8,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 147.10650174412655,
+            "passed": true,
+            "actual_sha256": "e36a6c1e9eb765779e33db3e1c38d990eea430ef7a4a8b66123eb6d7661e830e",
+            "reference_sha256": "e36a6c1e9eb765779e33db3e1c38d990eea430ef7a4a8b66123eb6d7661e830e"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(0, 2, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 2464.886939502133,
+            "passed": true,
+            "actual_sha256": "df4f6eb382f5a98f1120c819828432a756f94fb68dc6611b244f863e2c89bce0",
+            "reference_sha256": "df4f6eb382f5a98f1120c819828432a756f94fb68dc6611b244f863e2c89bce0"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(2, 4, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1531.8786269965165,
+            "passed": true,
+            "actual_sha256": "3da0dd415e7e335b3e7ee6c7e299ffe8078612e0fa64016b19e4e93ed058549c",
+            "reference_sha256": "3da0dd415e7e335b3e7ee6c7e299ffe8078612e0fa64016b19e4e93ed058549c"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(4, 6, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3932.6461671331977,
+            "passed": true,
+            "actual_sha256": "d96ccf8b47a6c3166052b3be4af64a93cb698dfc1655bd4478bf2b0b594b9534",
+            "reference_sha256": "d96ccf8b47a6c3166052b3be4af64a93cb698dfc1655bd4478bf2b0b594b9534"
+          },
+          {
+            "leaf": 3,
+            "index": "(slice(None, None, None), slice(6, 8, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 701.3891158848637,
+            "passed": true,
+            "actual_sha256": "b5388b2034b7faa1c9eec14cc1b14bbdf042b3c1bd0d7ce6daf0f1bf9a29d1bd",
+            "reference_sha256": "b5388b2034b7faa1c9eec14cc1b14bbdf042b3c1bd0d7ce6daf0f1bf9a29d1bd"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.762761735581905,
+            "passed": true,
+            "actual_sha256": "7b464179a00d74c8c5ed604505d48f5f32baf9623d1272257d0ad95a1f10a70c",
+            "reference_sha256": "7b464179a00d74c8c5ed604505d48f5f32baf9623d1272257d0ad95a1f10a70c"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.071317937363034,
+            "passed": true,
+            "actual_sha256": "251010515651b4d4e02ee87b323905476499b60f0be8c875ecc4256c3a525ee0",
+            "reference_sha256": "251010515651b4d4e02ee87b323905476499b60f0be8c875ecc4256c3a525ee0"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.5618427734866556,
+            "passed": true,
+            "actual_sha256": "40a1fb01a6616555b742f359dfafb00d384389a4eaedf43353451ec4521a3de3",
+            "reference_sha256": "40a1fb01a6616555b742f359dfafb00d384389a4eaedf43353451ec4521a3de3"
+          },
+          {
+            "leaf": 4,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.994753728408254,
+            "passed": true,
+            "actual_sha256": "618903505fb3595bbda6ccd5f8bf468beffdaa74760aea3c681c2f19e1c85463",
+            "reference_sha256": "618903505fb3595bbda6ccd5f8bf468beffdaa74760aea3c681c2f19e1c85463"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(0, 2, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.962061959818618,
+            "passed": true,
+            "actual_sha256": "f059d50632e0a3e7dd50200a8fb71568dcb665e8913afe76ca78100b5d3d976e",
+            "reference_sha256": "f059d50632e0a3e7dd50200a8fb71568dcb665e8913afe76ca78100b5d3d976e"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(2, 4, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.766891796015285,
+            "passed": true,
+            "actual_sha256": "318f36fbe65d6429257f7f90f4228da65c692c33335506c7274cf3ad4507e930",
+            "reference_sha256": "318f36fbe65d6429257f7f90f4228da65c692c33335506c7274cf3ad4507e930"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(4, 6, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.9658647327351777,
+            "passed": true,
+            "actual_sha256": "60e95994dd85191ffcd7d5213b6a4b6bbcf28785f654637e34b50ca43371baf8",
+            "reference_sha256": "60e95994dd85191ffcd7d5213b6a4b6bbcf28785f654637e34b50ca43371baf8"
+          },
+          {
+            "leaf": 5,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(6, 8, None))",
+            "shape": [
+              3,
+              32,
+              2
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.2706031549014325,
+            "passed": true,
+            "actual_sha256": "b7d0ba1deea4f058cfa0d5ca088ff5add0ff82aa16d4219050c10a7ae2e6e007",
+            "reference_sha256": "b7d0ba1deea4f058cfa0d5ca088ff5add0ff82aa16d4219050c10a7ae2e6e007"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(0, 2, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.298579761981952,
+            "passed": true,
+            "actual_sha256": "faf8ecfde116d8dc2c4fe877aff2e37f86474379ffc6e1f4d5a6a0661e07f3ce",
+            "reference_sha256": "faf8ecfde116d8dc2c4fe877aff2e37f86474379ffc6e1f4d5a6a0661e07f3ce"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(2, 4, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.408108884956761,
+            "passed": true,
+            "actual_sha256": "93cc31aa1277f8400dfc9e7fca833128d881c436c5f3c77b34dfc666625dc24a",
+            "reference_sha256": "93cc31aa1277f8400dfc9e7fca833128d881c436c5f3c77b34dfc666625dc24a"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(4, 6, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 3.5541806503129907,
+            "passed": true,
+            "actual_sha256": "73b9631477d7efd45cc80dd79c1c3d123f192b376bf304d0681f6bb0d0a5d4e9",
+            "reference_sha256": "73b9631477d7efd45cc80dd79c1c3d123f192b376bf304d0681f6bb0d0a5d4e9"
+          },
+          {
+            "leaf": 6,
+            "index": "(slice(None, None, None), slice(6, 8, None), slice(None, None, None))",
+            "shape": [
+              3,
+              2,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 4.332572779562776,
+            "passed": true,
+            "actual_sha256": "0fcc460493b4aea6f92b33852ebbc0b78626d23d3c06316349f9464ea9a44fdc",
+            "reference_sha256": "0fcc460493b4aea6f92b33852ebbc0b78626d23d3c06316349f9464ea9a44fdc"
+          },
+          {
+            "leaf": 7,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 6.005560587517181e-06,
+            "passed": true,
+            "actual_sha256": "59d9b31855c794b5f5b0f3c399e447572476fbd9f20589c147a9a5b852f7c150",
+            "reference_sha256": "59d9b31855c794b5f5b0f3c399e447572476fbd9f20589c147a9a5b852f7c150"
+          },
+          {
+            "leaf": 8,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.3922306381196271e-11,
+            "passed": true,
+            "actual_sha256": "937bcfbf82a20f5b5075aa9b68bc1f60b4909b107d600af0b02ce65b5d62731f",
+            "reference_sha256": "937bcfbf82a20f5b5075aa9b68bc1f60b4909b107d600af0b02ce65b5d62731f"
+          },
+          {
+            "leaf": 9,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.3922305764644771e-11,
+            "passed": true,
+            "actual_sha256": "d8e3e2b871b308a70945e7a8135eac38fa3c4a952bd9e05b24b5dfede073a51a",
+            "reference_sha256": "d8e3e2b871b308a70945e7a8135eac38fa3c4a952bd9e05b24b5dfede073a51a"
+          },
+          {
+            "leaf": 10,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 5.633317397914492e-06,
+            "passed": true,
+            "actual_sha256": "8bee8ce5244c865d0d21545396f49d5095233c2e74d4f4116eadf824d8886e2a",
+            "reference_sha256": "8bee8ce5244c865d0d21545396f49d5095233c2e74d4f4116eadf824d8886e2a"
+          },
+          {
+            "leaf": 11,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.2453472355053304e-11,
+            "passed": true,
+            "actual_sha256": "7bb61e97cf6042fc5ce0bc88a7b2554f69543b7db0fbdf06a62c2fb4c3ded355",
+            "reference_sha256": "7bb61e97cf6042fc5ce0bc88a7b2554f69543b7db0fbdf06a62c2fb4c3ded355"
+          },
+          {
+            "leaf": 12,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.2453471965554213e-11,
+            "passed": true,
+            "actual_sha256": "17a1db8aed71331da7d77c2210fc862f5c69b2d8ddc2b1803ea8c3444e50631d",
+            "reference_sha256": "17a1db8aed71331da7d77c2210fc862f5c69b2d8ddc2b1803ea8c3444e50631d"
+          },
+          {
+            "leaf": 13,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 7.003397095023141e-06,
+            "passed": true,
+            "actual_sha256": "7221594b1b768eb98243d10820ffb647c5b676cb25654db12420d9dadf46b2e0",
+            "reference_sha256": "7221594b1b768eb98243d10820ffb647c5b676cb25654db12420d9dadf46b2e0"
+          },
+          {
+            "leaf": 14,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.9991210622278618e-11,
+            "passed": true,
+            "actual_sha256": "432175dba35bf25c42b3de5e410d09f0352e6ce974077c4a28b417ac29b1eee0",
+            "reference_sha256": "432175dba35bf25c42b3de5e410d09f0352e6ce974077c4a28b417ac29b1eee0"
+          },
+          {
+            "leaf": 15,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.999121139104495e-11,
+            "passed": true,
+            "actual_sha256": "86750b284687a3794d8a8ac0bac24b3640c7d52c905b93cdc2d80808db520c26",
+            "reference_sha256": "86750b284687a3794d8a8ac0bac24b3640c7d52c905b93cdc2d80808db520c26"
+          },
+          {
+            "leaf": 16,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 5.8772160562433645e-06,
+            "passed": true,
+            "actual_sha256": "82735ec28220d31ffbd0e70bbdc3e09fafc29aa5f6b748a44f612cb9f4f7d85f",
+            "reference_sha256": "82735ec28220d31ffbd0e70bbdc3e09fafc29aa5f6b748a44f612cb9f4f7d85f"
+          },
+          {
+            "leaf": 17,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.4080594863194013e-11,
+            "passed": true,
+            "actual_sha256": "3a7813f73e2459a62d944132b68fb438560c19d8e05cdaf1998a4a58c5de6b25",
+            "reference_sha256": "3a7813f73e2459a62d944132b68fb438560c19d8e05cdaf1998a4a58c5de6b25"
+          },
+          {
+            "leaf": 18,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.4080594959520468e-11,
+            "passed": true,
+            "actual_sha256": "c3fa8d3baa7b3f40bc295b35930697d8ae6960b981377ef66912b07103b8fb58",
+            "reference_sha256": "c3fa8d3baa7b3f40bc295b35930697d8ae6960b981377ef66912b07103b8fb58"
+          },
+          {
+            "leaf": 19,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              32,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 2.4900121337180702e-05,
+            "passed": true,
+            "actual_sha256": "064b48d3ec87d0f90a0514e9961fcc3782d18579557857d818994bf3f33fe277",
+            "reference_sha256": "064b48d3ec87d0f90a0514e9961fcc3782d18579557857d818994bf3f33fe277"
+          },
+          {
+            "leaf": 20,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              32,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.4519534183180687e-10,
+            "passed": true,
+            "actual_sha256": "0dc92da138aed62c8d4dea722c63c66882c26df38e0dc09586c7a72530b93ac4",
+            "reference_sha256": "0dc92da138aed62c8d4dea722c63c66882c26df38e0dc09586c7a72530b93ac4"
+          },
+          {
+            "leaf": 21,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.4519534891069324e-10,
+            "passed": true,
+            "actual_sha256": "2f2e9524d2c1ba4c52b10ea334f62cc694978f86be3f28804d2c46c17879d533",
+            "reference_sha256": "2f2e9524d2c1ba4c52b10ea334f62cc694978f86be3f28804d2c46c17879d533"
+          },
+          {
+            "leaf": 22,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              32,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 2.3600022960458138e-05,
+            "passed": true,
+            "actual_sha256": "da5151947f91d0c10d14b703ba36b53ff466f5273aa8acac5810a6677eec5924",
+            "reference_sha256": "da5151947f91d0c10d14b703ba36b53ff466f5273aa8acac5810a6677eec5924"
+          },
+          {
+            "leaf": 23,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              32,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.3384356678108362e-10,
+            "passed": true,
+            "actual_sha256": "4d0ba0e0e558def593e3476940e8e37d721aa763735c836a123e0863a22160bc",
+            "reference_sha256": "4d0ba0e0e558def593e3476940e8e37d721aa763735c836a123e0863a22160bc"
+          },
+          {
+            "leaf": 24,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.3384356361963127e-10,
+            "passed": true,
+            "actual_sha256": "b7ca1e3f0bdf84c089e76c8ca4f63251958f3fe13937631f3fdeef6bf3fd1edb",
+            "reference_sha256": "b7ca1e3f0bdf84c089e76c8ca4f63251958f3fe13937631f3fdeef6bf3fd1edb"
+          },
+          {
+            "leaf": 25,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 2.5038755152534776e-05,
+            "passed": true,
+            "actual_sha256": "0a733ab6ec1d60c1e5112ab6dc267290a73b9dea9846b6c31790335ac70aae00",
+            "reference_sha256": "0a733ab6ec1d60c1e5112ab6dc267290a73b9dea9846b6c31790335ac70aae00"
+          },
+          {
+            "leaf": 26,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              8,
+              8
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.5349636585914486e-10,
+            "passed": true,
+            "actual_sha256": "fac90e62a85508d35a1f0c3aadc8fd9da1bec7f0e7758cbabadec164fefbef51",
+            "reference_sha256": "fac90e62a85508d35a1f0c3aadc8fd9da1bec7f0e7758cbabadec164fefbef51"
+          },
+          {
+            "leaf": 27,
+            "index": "(slice(None, None, None), slice(None, None, None), slice(None, None, None))",
+            "shape": [
+              3,
+              32,
+              32
+            ],
+            "dtype": "float32",
+            "max_absolute_error": 0.0,
+            "squared_error": 0.0,
+            "squared_reference": 1.5349635447564414e-10,
+            "passed": true,
+            "actual_sha256": "b229f8fc6cd265aaea0e5ae73b846b618a340b32f64173e30ed7c62a83590128",
+            "reference_sha256": "b229f8fc6cd265aaea0e5ae73b846b618a340b32f64173e30ed7c62a83590128"
+          }
+        ],
+        "scope": "Local unique leaf/index records; not a global gate until all process reports are joined"
+      }
+    }
+  },
+  "completed": true,
+  "reference": "matrix",
+  "candidate": "matrix_power",
+  "samples": 3,
+  "training_steps": 0,
+  "full_trainer_restore": false,
+  "full_training_memory_fit": false,
+  "equivalence_is_training_veto": false,
+  "scope": "Optimizer-only; timings exclude training and are not MFU",
+  "cpu_power_cases": {
+    "zero_exact_identity": true,
+    "rank_deficient_finite": true,
+    "independent_numpy_full_rank_reference": true,
+    "input_unchanged": true,
+    "nondivisible_batch": 3
+  },
+  "cpu_alpha_zero_exact": true,
+  "peak_rss_native_units": 612483072,
+  "rss_units": "bytes on Darwin; KiB on Linux; optimizer harness only"
+}

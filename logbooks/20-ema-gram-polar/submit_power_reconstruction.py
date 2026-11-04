@@ -17,7 +17,7 @@ def launch_argv(source_commit):
     directory = "logbooks/20-ema-gram-polar"
     script = f"{directory}/power_reconstruction_check.py"
     manifest = f"{directory}/power-reconstruction-manifest.json"
-    prefix = "gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.01"
+    prefix = "gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.02"
     checkpoint = json.loads((ROOT / directory / "loss-pair-checkpoint-metadata.json").read_text())["checkpoint"]
     common = ["python", script, "--source-manifest", manifest, "--samples", "3"]
     logging = [*common, "--mode", "logging-check", "--output-prefix", prefix + "/host-logging"]
@@ -34,7 +34,7 @@ def launch_argv(source_commit):
         "--no-wait",
         "--no-cancel-on-exit",
         "--job-name",
-        "ema-gram-20-power-reconstruction-v4-32-20261104",
+        "ema-gram-20-power-reconstruction-auth-v4-32-20261104",
         "--priority",
         "batch",
         "--enable-extra-resources",

@@ -36,6 +36,7 @@ from levanter.optim.ema_gram import (
 from levanter.tracker.wandb import WandbTracker
 from optimizer_cost import NAMES, ROW_SHARDED, checkpoint_states, put_global, refresh
 from rigging.filesystem.storage_path import StoragePath
+from rigging.secrets import require_secret
 from saved_state_check import compare, fingerprints, snapshot
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -271,6 +272,7 @@ def main():
         group="ema-gram-20-power-reconstruction",
         mode="online",
         resume="never",
+        settings={"api_key": require_secret("WANDB_API_KEY")},
     )
     assert run.settings.mode == "online"
     tracker = WandbTracker(run, replicate_path=str(destination))

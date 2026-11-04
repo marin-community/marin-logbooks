@@ -1,7 +1,7 @@
 {
-  "prepared_utc": "2026-11-04T03:23:13.471967+00:00",
-  "status": "PREPARED; not submitted",
-  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-power-reconstruction-v4-32-20261104",
+  "prepared_utc": "2026-11-04T03:49:23.013332+00:00",
+  "status": "Corrected authentication PREPARED; not submitted",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-power-reconstruction-auth-v4-32-20261104",
   "cluster": "marin",
   "source_manifest": "power-reconstruction-manifest.json",
   "resources": {
@@ -16,7 +16,7 @@
   "wallclock_limits": null,
   "training_steps": 0,
   "checkpoint": "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923",
-  "output_prefix": "gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.01",
+  "output_prefix": "gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.02",
   "variants": [
     "matrix",
     "matrix_power"
@@ -34,7 +34,7 @@
     "--no-wait",
     "--no-cancel-on-exit",
     "--job-name",
-    "ema-gram-20-power-reconstruction-v4-32-20261104",
+    "ema-gram-20-power-reconstruction-auth-v4-32-20261104",
     "--priority",
     "batch",
     "--enable-extra-resources",
@@ -62,7 +62,9 @@
     "--",
     "bash",
     "-c",
-    "JAX_PLATFORMS=cpu python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode logging-check --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.01/host-logging && exec python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode worker --checkpoint gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923 --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.01"
+    "JAX_PLATFORMS=cpu python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode logging-check --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.02/host-logging && exec python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode worker --checkpoint gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923 --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.02"
   ],
-  "limitations": "Optimizer-only fixed saved state and synthetic gradients; no training MFU, loss acceptance or full restore claim"
+  "limitations": "Optimizer-only fixed saved state and synthetic gradients; no training MFU, loss acceptance or full restore claim",
+  "prior_terminal_failure": "power-reconstruction-failed.json",
+  "credential_validation": "power-reconstruction-auth-credential-validation.json"
 }

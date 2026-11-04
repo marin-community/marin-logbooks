@@ -5159,3 +5159,35 @@ under observation through its sole live log-follow session 76324.
 Canonical job and all four task checks at 03:37–03:38 UTC still show pending
 with no attempts, failures or preemptions. Follow 76324 remains the sole live
 observer. The next routine canonical check is no earlier than 03:47:52 UTC.
+
+### November 3, 19:49 Pacific — Power diagnostic stopped before kernels; credential loading corrected
+
+The [first power-reconstruction diagnostic](power-reconstruction-failed.json)
+failed during each host's separate non-training online logging check. Canonical
+job/task reads at 03:46 UTC show task 3 failed on attempt 0 with exit 1, while
+three siblings have coscheduling failures; there were no preemptions. All four
+host logs report that W&B had no API key. Because the launch command starts the
+numerical worker only after a successful logging check, no optimizer execution
+or TPU timing result was produced. The sole log-follow observer, session 76324, ended naturally with exit 0.
+This job and observer remain terminal.
+
+The custom per-process W&B initialization omitted the repository's mounted-
+secret resolver. Native Levanter tracking obtains credentials through
+`rigging.secrets.get_secret`; the custom initializer called `wandb.init`
+directly. Whether a valid mounted credential existed on those failed hosts
+has not been independently verified; the missing resolver is a source-level
+gap, and the new execution-host logging checks must verify actual access.
+Local environment credentials had allowed the earlier CPU checks to
+pass. The correction uses `require_secret("WANDB_API_KEY")` in W&B settings,
+which reads the mounted credential first and fails if it is absent or empty.
+It keeps fresh online tracking for every process and prints no credential.
+The numerical optimizer and diagnostic calculations are unchanged.
+
+The corrected harness passed fresh online logging and CPU
+checks after removing WANDB_API_KEY from the child environment and supplying
+only a temporary mounted credential file. The file is restricted to its owner
+and removed when the checks exit; its contents are not recorded. Both exited successfully. W&B API reads verified finished states, success
+metrics and exact hashes of the four numerical source files. The corrected
+implementation and recipe will be committed and pushed before the authorized
+distinct job `ema-gram-20-power-reconstruction-auth-v4-32-20261104`; it has not
+yet been submitted. The failed job will not be restarted or resubmitted.
