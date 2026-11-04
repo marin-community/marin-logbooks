@@ -6110,3 +6110,16 @@ passed native tokens, cache/readback/merge, and injected truncated-response
 recovery without duplicated records. W&B finished/success is API-verified.
 The manifest and selected tokens are unchanged. A distinct hq02 regional
 probe must pass before repairing only canonically failed build indices.
+
+### 2026-11-04 23:56 UTC — repaired regional download/write probe passed
+
+Distinct hq02 probe from9dd8457ed succeeded canonically, attempt0/exit0, no
+failures/preemptions. It downloaded all358,218,755compressed source bytes,
+verified the exact pinned LFS SHA256, and produced identical sample token
+hashes to hq01. Native local staging, GCS upload, and full remote readback
+passed for1,293tokens. Host logging and probe2f23561d85cf are ONLINE
+FINISHED/API-success; bounded artifact identity is recorded in
+subset-regional-probe-hq02.json. This clears new hq02 repair submissions only
+for observer-confirmed failed indices. Successful math57 (9,990,772tokens,
+3,323documents) is fully verified and reused, not rebuilt. Other original
+identities stay under observer74503 until their next owned canonical check.
