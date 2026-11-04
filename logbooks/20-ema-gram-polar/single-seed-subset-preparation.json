@@ -1,110 +1,31 @@
 {
-  "observed_utc": "2026-11-04T22:48:44.127423+00:00",
-  "status": "DESIGN_SOURCE_PAYLOAD_UNVERIFIED_NOT_LAUNCHED",
-  "authorization": "User proposes retokenizing a fixed-size subset; proceed with original Nemotron v1 source and original mixture. No silent replacement with v2/v2.1 or FineWeb.",
-  "target_total_tokens": 2000000000,
-  "pilot_tokens": 250019840,
-  "confirmation_tokens": 1223393280,
-  "components": [
-    {
-      "component": "nemotron_cc/hq_actual",
-      "original_weight": 0.91351,
-      "normalized_weight": 0.0829546610292622,
-      "target_tokens": 165909323
-    },
-    {
-      "component": "nemotron_cc/hq_synth",
-      "original_weight": 2.72,
-      "normalized_weight": 0.24699968035335487,
-      "target_tokens": 493999361
-    },
-    {
-      "component": "nemotron_cc/medium_high",
-      "original_weight": 0.82471,
-      "normalized_weight": 0.07489084793537326,
-      "target_tokens": 149781696
-    },
-    {
-      "component": "nemotron_cc/medium",
-      "original_weight": 3.38,
-      "normalized_weight": 0.30693342632144827,
-      "target_tokens": 613866853
-    },
-    {
-      "component": "nemotron_cc/medium_low",
-      "original_weight": 1.54,
-      "normalized_weight": 0.13984540725888472,
-      "target_tokens": 279690815
-    },
-    {
-      "component": "nemotron_cc/low_actual",
-      "original_weight": 0.70123,
-      "normalized_weight": 0.06367778891697905,
-      "target_tokens": 127355578
-    },
-    {
-      "component": "nemotron_cc/low_synth",
-      "original_weight": 0.62771,
-      "normalized_weight": 0.057001532850957486,
-      "target_tokens": 114003066
-    },
-    {
-      "component": "starcoderdata",
-      "original_weight": 0.25,
-      "normalized_weight": 0.0227021765030657,
-      "target_tokens": 45404354
-    },
-    {
-      "component": "proofpile_2",
-      "original_weight": 0.055,
-      "normalized_weight": 0.004994478830674455,
-      "target_tokens": 9988958
-    }
-  ],
-  "selection_seed": 0,
-  "tokenizer": "meta-llama/Meta-Llama-3.1-8B",
-  "tokenizer_bytes_pin": "Must record and validate actual tokenizer file hashes before production processing",
-  "source_manifest": {
-    "url": "https://data.commoncrawl.org/contrib/Nemotron/Nemotron-CC/data-jsonl.paths.gz",
-    "path_count": 31279,
-    "decompressed_sha256": "1156b4f6ed9136409e4d8a3a0d38516c8208bdb779337d7ec20ec0a5b6db9e98"
+  "observed_utc": "2026-11-04T23:34:24.340043+00:00",
+  "status": "REGIONAL_HQ_PROBE_VERIFIED_READY_FOR58_CPU_BUILDS",
+  "authorization": "User requested fixed-size retokenization and autonomous completion. HQ web mix is an implementation decision disclosed to user, not an explicitly selected recipe.",
+  "data_description": "Nemotron-CC-HQ raw-text fixed subset, replacing the prior seven-way web mix. Code/math shares and all optimizer/model settings unchanged; all 30 pilots rerun. No equivalence to original full-data stream or quality mix is claimed.",
+  "source": {
+    "repo": "Fredithefish/Nemotron-CC-HQ-20B",
+    "revision": "1bcdb7f17b10c759bd70ce33f2921ad28cc28505",
+    "source_type": "original_text_zstd_jsonl"
   },
-  "source_access": {
-    "index": "readable",
-    "sample_head": {
-      "status": 200,
-      "content_length": 342647944
-    },
-    "sample_get": "HTTP 503 SlowDown across seven split samples and first original shard; no corpus download established"
+  "manifest": "subset-inputs.json",
+  "manifest_sha256": "be877c788518175a066d108ecf807a2aa6cc484615e81f36aec89584d9d3a774",
+  "train_weights": {
+    "nemotron_cc/hq_subset": 10.70716,
+    "starcoderdata": 0.25,
+    "proofpile_2": 0.055
   },
-  "sampling_contract": [
-    "Freeze deterministic source manifest before tokenization; stratify source files by original component and crawl/synthetic subtype instead of taking the lexicographically first crawl.",
-    "Target component token quotas using original weights; keep complete documents and record exact final token counts.",
-    "Tokenize once in us-central2 using native processor and cache writer; reuse immutable outputs for every configuration.",
-    "Lock tokenizer bytes, BOS/EOS, maximum document handling, shuffle/packing and native data seed; validate actual native loader output before training.",
-    "Verify each component has sufficient unique consumed tokens under the full confirmation schedule; do not infer this from aggregate size alone.",
-    "Re-run all30 seed0 pilots including original alpha0 because data subset/order changes; retain all old runs separately.",
-    "Preserve23 original evaluation components; verify they remain readable.",
-    "Use a dedicated durable experiment prefix outside shared raw/ and tokenized/ roots; do not alter bucket retention/IAM.",
-    "Use fresh job/artifact/ledger identities and online W&B, default preemption/retries, no global wallclock limit."
-  ],
-  "implementation_status": "Native sampler/tokenizer/cache writer identified; production subset builder and regional loader qualification remain to be implemented.",
-  "evidence": [
-    {
-      "path": "scratch/20261104-subset-datakit-discovery.json",
-      "sha256": "6bfef683e8c8b3ae9df0333d5f92d62bdeecc4c10e87a7d4ff6f8372c69cfd4d"
-    },
-    {
-      "path": "scratch/20261104-subset-source-read.json",
-      "sha256": "a8892d3dece3fdfdb62e2bd91077dc80984fe76a19a09ec34982094689ae3715"
-    },
-    {
-      "path": "scratch/20261104-subset-source-no-range-read.json",
-      "sha256": "556d2008cf42a0c1a4f7a7a385f5108c01480822385884dbc6ccd7227499f6f2"
-    },
-    {
-      "path": "scratch/20261104-subset-source-first-shard-read.json",
-      "sha256": "864bbc6c0d24500444e4cdb8e5abed7e4122e0a556b1a435c2f003c5063b30d2"
-    }
-  ]
+  "tasks": 58,
+  "target_total_tokens": 2000000032,
+  "tokenizer_files": {
+    "special_tokens_map.json": "462d91939dbc37178aa5a3eae7068d1990ccc92e09f288cc71f42cdf139d69cc",
+    "tokenizer.json": "76e48799b099d43365bd24ccd8ecc5aedac831718da780552f03b0a6eb4412aa",
+    "tokenizer_config.json": "8004530facf809ac432114de2a4dcc65fcb632da5ec16d666091aeb6a2ee444a"
+  },
+  "scientific_protocol": "All30 seed0 pilots from scratch, then boundary expansion and3\u20134 full confirmations. Old results not pooled.",
+  "validation": "Canonical1/1success attempt0 exit0, no failures/preemptions. Bounded report, pinned source/tokenizer and both online runs verified.58builds next; native mixture loading still pending.",
+  "probe_job": "/kaiyuew@stanford.edu/ema-gram-20-subset-hq01-probe-20261104",
+  "observer_session": 30598,
+  "training_source": "b0c93208fd5e64f82a3c35bdffbbdc566db63fab",
+  "old_design": "scratch/20261104-subset-original-design-preserved.json"
 }

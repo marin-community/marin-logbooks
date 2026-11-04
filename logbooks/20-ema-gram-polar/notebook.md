@@ -6059,3 +6059,18 @@ sharded cache concatenation, and flat reads crossing shard boundaries;
 W&B FINISHED/success is API-verified. The new `hq01` probe has a distinct
 identity; production builds remain gated on its success. The draft native
 training binding uses version `2026.11.04.03` and is not yet launch-qualified.
+
+### 2026-11-04 23:35 UTC — regional raw HQ probe verified; release CPU builds
+
+The hq01 probe succeeded canonically, one task/attempt0/exit0, no failures
+or preemptions, native finished23:30:46.735UTC. Its bounded1054-byte output
+archive, generation/CRC, exact source and tokenizer pins were verified.
+Host logging c98fd0e6f4ab and probe2b1d454dfc0c are ONLINE FINISHED/API-success.
+The sole observer30598 and its follower ended naturally; no further polling.
+See subset-regional-probe.json. The published launcher may now submit all58
+CPU builds with permanent guards and one observer/follower per identity.
+
+Native training binding's online logging7a6dc8d5b0c9 and CPUc8bfa177fac9
+passed and are API-verified; subset-training-cpu-validation.json records
+the exact unchanged numerical sources. This is not real-model TPU or actual
+regional data-loader qualification. All30 new pilots remain gated on data.

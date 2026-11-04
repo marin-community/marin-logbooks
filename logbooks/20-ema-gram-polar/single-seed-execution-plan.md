@@ -1,5 +1,10 @@
 # Single-seed execution of the EMA-Gram exponent experiment
 
+**Current execution amendment (2026-11-04 23:35 UTC):** The original-data
+campaign below failed before training and remains historical. Execute all 30
+pilots from scratch on the fixed HQ/code/math subset described in the final
+section. No old pilot is credited for selection on the new data.
+
 The user requested execution of Ali's original scientific comparison on
 2026-11-04, using one seed and the highest available parallelism. The immediate
 objective is to finish the scientific grid. Further optimizer acceleration
@@ -253,36 +258,43 @@ tracking initialized before numerical execution. Publish its source and
 evidence before recovery submission. It must retain the original tokenizer,
 packing, document boundaries, shuffle and data order.
 
-## Fixed-subset rebuild alternative (2026-11-04)
+## Fixed-subset execution amendment (2026-11-04 23:35 UTC)
 
-The user proposed rebuilding a bounded subset after providing a discussion
-about deleting shared GCS raw and tokenized data. This opens a second recovery
-route; administrator restoration is no longer the only option. Preserve the
-original Nemotron v1 categories and mixture unless the user explicitly chooses
-a different corpus. The current regional DataKit discovery contains v2/v2.1
-normalized sources, not a verified original v1 copy.
+The user requested a fixed-size retokenized subset and autonomous execution.
+The original regional source probe failed HTTP503 and a tokenized mirror failed
+exact decode/reencode. Use raw text from Fredithefish/Nemotron-CC-HQ-20B pinned
+at revision 1bcdb7f17b10c759bd70ce33f2921ad28cc28505. This changes the original
+seven-way web-quality mixture to one HQ component. It is explicitly disclosed
+as a changed recipe, not verified byte-identical original data. The choice is
+an implementation decision, not an explicit user selection of this repository.
 
-Prepare approximately 2 billion tokens once, with component targets proportional
-to the original nine mixture weights. A pilot consumes 250,019,840 tokens and a
-confirmation consumes 1,223,393,280 tokens. All configurations reuse the same
-immutable subset and data seed; dataset preparation cost does not multiply by
-the number of experiments. Verify sufficient per-component coverage under the
-native mixture schedule, not just the aggregate token count. Keep complete
-documents and record the actual final counts rather than cutting a document to
-make an exact headline budget. Freeze source files, sampling seed, tokenizer
-bytes, document processing and output identities before training. Use a dedicated
-experiment prefix in us-central2 outside shared raw/ and tokenized/ directories.
+Freeze the source/task manifest in subset-inputs.json. Build 56 distinct web
+prefixes of 34,725,120 native Llama tokens each, plus 45,404,354 original code
+and 9,988,958 original math tokens. Retain whole final documents and record
+overshoot. Preserve aggregate web/code/math shares (10.70716/.25/.055).
+All tasks use the same pinned native tokenizer and regional native cache
+writer; each task performs full token readback/hash verification. Use the
+experiment-owned gs://marin-us-central2/ema-gram-20-fixed-subset/2026.11.04.01
+prefix, outside shared raw/ and tokenized/. No bucket/IAM changes.
 
-Re-run all 30 seed0 pilots, including alpha0, on the new subset. The old alpha0
-pilot cannot serve as its paired baseline. Keep model, optimizer, global batch,
-update counts and evaluation data fixed. The later LR boundary expansion,
-selection lock and 3–4 full confirmations remain unchanged.
+The distinct hq01 regional probe precedes 58 concurrent normal-batch CPU build
+jobs. Each guard is permanent even on ambiguous submission. Exactly one log
+follow per accepted job; canonical checks after120 seconds then570 seconds.
+Require canonical success and ONLINE W&B success before ledger assembly.
+After assembly verify native mixture replay, all23 unchanged evaluation caches,
+and per-component capacity for the entire37,335-update confirmation schedule.
+No model training starts before this actual regional loader check passes.
 
-The original public Nemotron source index is readable and lists 31,279 files.
-Sample file metadata is readable, but body requests returned HTTP 503 SlowDown.
-This establishes a source path, not successful tokenization or a runtime estimate.
-Use bounded request-level backoff and validate actual source records from a
-regional CPU worker before scheduling bulk processing. Do not impose a job or
-training wallclock limit. Production subset construction and actual native loader
-qualification are outstanding. No replacement training job has been submitted.
-See single-seed-subset-preparation.json for quotas, evidence and launch conditions.
+Restart all30 seed0 pilots, including alpha0, on this immutable shared dataset.
+Keep model, optimizer numerics,4096 context, global batch8, learning-rate grid,
+7,630 pilot steps and37,335 confirmation steps unchanged. Old losses remain
+context only. Normal batch queueing and all compatible parallel allocations
+are authorized. The new request is24 v4-32 plus6 v4-8 jobs (408 requested JAX
+devices, not actual allocation). Version2026.11.04.03 and new job/ledger
+identities must be used. Never reset old failed guards or extend the924prefix.
+After pilots, apply the same adaptive LR boundary expansion, selection lock,
+common-loss target and3–4 seed0 full confirmations from scratch.
+
+No queue, task, training, or watchdog wallclock limits; retain default
+preemption/retries, all attempts, and fresh online tracking per process.
+GPU allocation retention remains mandatory before any GPU launch.
