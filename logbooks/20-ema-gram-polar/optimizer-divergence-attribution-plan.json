@@ -221,14 +221,13 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "status": "32-device scaled grouped-Gram trial completed; no active job or observer",
+    "status": "64-device topology trial prepared; no active job or observer",
     "baseline": "matrix/default",
-    "completed_candidate": "matrix_grouped on32JAXv4devices",
-    "result": "Full synthetic update same-process mean ratios1.130\u20131.728; fixed-state0.910\u20131.242. Twice prior device count, no training throughput/quality or device-efficiency proof. Not promoted.",
-    "next_action": "Select the next actual acceleration intervention from the completed result. The64device topology remains an untested hypothesis with maximum assigned large matrices2to1 versus32devices. Any distinct trial requires a new identity and published launch plan; do not reuse the completed launcher guard, repeat calibration, or poll terminal jobs. No next job submitted.",
-    "completion": "scaled-gram-completed.json",
-    "summary": "scaled-gram-summary.json",
-    "validation": "scaled-gram-final-summary-validation.json",
+    "intervention": "Existing unchanged matrix_grouped on64JAXv4devices, max assigned large matrices2to1 versus32devices",
+    "design": "scaled64-gram-design.md",
+    "prepared": "scaled64-gram-prepared.json",
+    "validation": "scaled64-gram-preflight-validation.json",
+    "next_action": "Publish exact HEAD, then refresh capacity in the new launcher; submit once only if ready available v4-128. Never reuse the completed scaled launcher guard or cold queue.",
     "limits": "Preserve full geometry/refresh/sourceprecision/defaultsolver/originalmodel/globalbatch8. No completed-prefix extension. Defaultpreemption/retries; no wallclocklimits.",
     "hardware_authorization": "Any suitable machine authorized; TPUdefault. Keep large checkpoint/artifacts regional; futureGPUneedsretentionholder."
   },
@@ -902,5 +901,17 @@
     "launcher": "submit_scaled_gram.py",
     "limits": "Full geometry/refresh/precision/defaultsolver; no training extension, calibration phases or oldjob polling/restart. Defaultpreemption/retries; no wallclocklimits.",
     "hardware_authorization": "Any suitablemachine authorized; TPUdefault. Selectedregion preserves checkpointlocality."
+  },
+  "scaled_gram_completion_decision": {
+    "status": "32-device scaled grouped-Gram trial completed; no active job or observer",
+    "baseline": "matrix/default",
+    "completed_candidate": "matrix_grouped on32JAXv4devices",
+    "result": "Full synthetic update same-process mean ratios1.130\u20131.728; fixed-state0.910\u20131.242. Twice prior device count, no training throughput/quality or device-efficiency proof. Not promoted.",
+    "next_action": "Select the next actual acceleration intervention from the completed result. The64device topology remains an untested hypothesis with maximum assigned large matrices2to1 versus32devices. Any distinct trial requires a new identity and published launch plan; do not reuse the completed launcher guard, repeat calibration, or poll terminal jobs. No next job submitted.",
+    "completion": "scaled-gram-completed.json",
+    "summary": "scaled-gram-summary.json",
+    "validation": "scaled-gram-final-summary-validation.json",
+    "limits": "Preserve full geometry/refresh/sourceprecision/defaultsolver/originalmodel/globalbatch8. No completed-prefix extension. Defaultpreemption/retries; no wallclocklimits.",
+    "hardware_authorization": "Any suitable machine authorized; TPUdefault. Keep large checkpoint/artifacts regional; futureGPUneedsretentionholder."
   }
 }

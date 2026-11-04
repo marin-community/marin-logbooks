@@ -5770,3 +5770,28 @@ submitted, and the completed 924-update training baseline is not extended.
 
 [Completion](scaled-gram-completed.json) · [Summary](scaled-gram-summary.json) ·
 [Validation](scaled-gram-final-summary-validation.json) · [Design](scaled-gram-design.md).
+
+## 2026-11-04 17:27 UTC — prepare the distinct 64-device Gram trial
+
+The [completed 32-device trial](scaled-gram-completion-note.md) reduced grouped
+full synthetic-update local means on all eight processes, with mixed fixed-state
+results and no demonstrated device-efficiency gain. Keep `matrix/default` as the
+training baseline. Test the remaining source-assignment hypothesis on 64 JAX v4
+devices: the grouped maximum falls from two large matrices per device to one.
+This count does not promise a runtime gain. Device count doubles again, so cost
+proxies and latency must be reported together.
+
+The [new plan](scaled64-gram-design.md),
+[launcher](submit_scaled64_gram.py) and
+[preflight record](scaled64-gram-preflight-validation.json) use a separate job,
+regional report prefix and launch guard. All four numerical sources are unchanged;
+reuse their finished online CPU8, CPU16, logging and 17 regression checks. The
+CPU16 direction tolerance failures remain recorded. The new launcher accepts only
+a ready available v4-128 with sixteen healthy idle hosts, verifies the published
+HEAD, and preserves default preemption/retries without wall-clock limits. Static
+checks cover the 64-device command and seven rejected capacity fixtures.
+
+The initial fleet snapshot contained no available ready TPU slice. No new job
+was submitted, and all old jobs and observers remain terminal. The completed
+32-device guard remains untouched. Publish this preparation, then refresh
+capacity through the distinct launcher; submit nothing while v4-128 is unavailable.

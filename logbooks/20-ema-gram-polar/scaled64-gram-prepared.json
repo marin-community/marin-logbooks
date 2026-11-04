@@ -1,0 +1,27 @@
+{
+  "status": "PREPARED; no job submitted",
+  "observed_utc": "2026-11-04T17:32:48.811038+00:00",
+  "launcher": "submit_scaled64_gram.py",
+  "design": "scaled64-gram-design.md",
+  "validation": "scaled64-gram-preflight-validation.json",
+  "manifest": "scaled-gram-manifest.json",
+  "numerical_source_first_publication": "4ca4ff8846ea77bf95595d3827c9265f3bb622a9",
+  "reused_numerical_source_commit": "588a02243e29f78e5a7e8522542682cb47acacab",
+  "job_name": "ema-gram-20-scaled64-gram-v4-128-20261104",
+  "variant": "v4-128",
+  "jax_devices": 64,
+  "processes": 16,
+  "mesh": [
+    8,
+    8
+  ],
+  "report_prefix": "gs://marin-us-central2/ema-gram-20-scaled64-gram/2026.11.04.01",
+  "guard": "scratch/20261104-scaled64-selection.json",
+  "ready_capacity_observed": false,
+  "capacity_evidence": "scratch/20261104-scaled64-1727-capacity.json",
+  "launch_rule": "Publish exact HEAD, then refresh capacity in the new launcher; submit once only if ready available v4-128. Never reuse the completed scaled launcher guard or cold queue.",
+  "working_training_baseline": "matrix/default",
+  "hypothesis": "Reduce maximum source-assigned large matrices per grouped shard from two at32 devices to one at64; runtime benefit untested.",
+  "validation_reuse": "Unchanged numerical sources; finished online CPU8/CPU16/logging and17 regressions reused. 64-device static summary hashes unchanged.",
+  "next_action": "Recheck ready capacity with the published independent launcher. If accepted retain one job and follow, first canonical after120s then570s between checks."
+}
