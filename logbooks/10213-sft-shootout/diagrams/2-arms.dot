@@ -1,0 +1,34 @@
+digraph G {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=12, nodesep=0.4, ranksep=0.9, pad=0.3, bgcolor="white",
+         label=<<B>Agentic SFT shootout, step 2 as executed — five methods, four row sets, two parents, one recipe</B><BR/><FONT POINT-SIZE="11">Each arm trains from its parent on B agentic supervised tokens (B = plain's budget on that row set) plus a replay slice of B/4 general SFT data. Loss on the teacher's turns only. LR 1e-6, 3 epochs, 16 rows per update, 32k context, 32 H100 GPUs. 23 arms in all; plain is the control on every row set. Plateau dropping is matched on updates, not tokens.</FONT>>, labelloc=b];
+  node [fontname="Helvetica", fontsize=12];
+  edge [fontname="Helvetica", fontsize=10, color="#444444"];
+
+  pools [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", width=2.3, label=<<B>Row sets</B><BR/>v5 · HIGH · LOW (GLM 5.3)<BR/>contributor (Kimi + Qwen)<BR/>+ relay pools (HIGH, LOW)>];
+
+  subgraph cluster_m { label=<<B>Methods</B> (what differs from plain)>; style="rounded"; color="#999999"; fontname="Helvetica"; labeljust=l;
+    m1 [shape=box, label=<<B>plain</B> (control): first passing attempt per task>];
+    m2 [shape=box, label=<<B>RS-multi</B>: same task slots; a different passing attempt each epoch>];
+    m3 [shape=box, label=<<B>relay</B>: student starts, teacher finishes; only teacher turns trained>];
+    m4 [shape=box, label=<<B>recovery</B>: 20% of rows get 1–2 inserted failed turns + the harness error, loss-masked>];
+    m5 [shape=box, label=<<B>plateau</B>: tokens whose loss stopped changing lose gradient (visit 3 on)>];
+  }
+
+  grid [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
+      <TR><TD BGCOLOR="#f6f6f6"><B>row set</B></TD><TD BGCOLOR="#f6f6f6"><B>plain</B></TD><TD BGCOLOR="#f6f6f6"><B>RS-multi</B></TD><TD BGCOLOR="#f6f6f6"><B>relay</B></TD><TD BGCOLOR="#f6f6f6"><B>recovery</B></TD><TD BGCOLOR="#f6f6f6"><B>plateau</B></TD></TR>
+      <TR><TD ALIGN="LEFT">v5 (max)</TD><TD>v0</TD><TD>v0</TD><TD>–</TD><TD>v0</TD><TD>–</TD></TR>
+      <TR><TD ALIGN="LEFT">HIGH</TD><TD>v0, v0.1<BR/>+ v0 cut to relay's budget</TD><TD>v0</TD><TD>v0</TD><TD>v0</TD><TD>v0</TD></TR>
+      <TR><TD ALIGN="LEFT">LOW</TD><TD>v0, v0.1</TD><TD>v0.1</TD><TD>v0, v0.1</TD><TD>v0.1</TD><TD>v0, v0.1</TD></TR>
+      <TR><TD ALIGN="LEFT">contributor</TD><TD>v0, v0.1</TD><TD>v0.1 (TMax only)</TD><TD>–</TD><TD>v0.1</TD><TD>v0.1</TD></TR>
+    </TABLE>>];
+
+  parents [shape=box, style="rounded,filled", fillcolor="#e2efda", color="#548235", penwidth=1.5, label=<<B>Parents</B><BR/>v0: merge with a relay graft<BR/>v0.1: merge + 14 RL updates<BR/>(siblings, same base)>];
+  out [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#548235", penwidth=1.5, label=<<B>23 trained checkpoints</B><BR/>BF16 HF export, audited,<BR/>then step 3 screens>];
+
+  pools -> m1; pools -> m2; pools -> m3; pools -> m4; pools -> m5;
+  m1 -> grid; m2 -> grid; m3 -> grid; m4 -> grid; m5 -> grid;
+  parents -> grid [label="SFT from"];
+  grid -> out;
+  { rank=same; pools; parents; }
+}

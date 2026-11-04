@@ -1,0 +1,29 @@
+digraph G {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=12, nodesep=0.45, ranksep=0.8, pad=0.3, bgcolor="white",
+         label=<<B>Agentic SFT shootout (#10213), step 1 as executed — one task pool, four sets of traces</B><BR/><FONT POINT-SIZE="11">Every trace is a full agent episode in a Harbor sandbox, scored pass / fail by the task's own tests. GLM 5.3 wrote three pools at different reasoning efforts (8 attempts per task); from v7 on, only episodes that finished cleanly count. Relay episodes are the student's own attempt with the teacher taking over at a trigger. The contributor traces came from the pilot data, recorded in the other harness of each family.</FONT>>, labelloc=b];
+  node [fontname="Helvetica", fontsize=12];
+  edge [fontname="Helvetica", fontsize=10, color="#444444"];
+
+  tmax [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", width=2.4, label=<<B>TMax</B><BR/>~2,200 terminal tasks>];
+  swe  [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", width=2.4, label=<<B>SWE-smith</B><BR/>~2,100 repository bug fixes<BR/>SWE-bench Verified repos removed>];
+
+  h1 [shape=box, style="rounded,filled", fillcolor="#f6f6f6", color="#777777", label=<<B>Terminus-2</B><BR/>tmux shell, JSON keystrokes<BR/>(the harness that scores TBLite)>];
+  h2 [shape=box, style="rounded,filled", fillcolor="#f6f6f6", color="#777777", label=<<B>mini-swe-agent 2.1.0</B><BR/>one bash block per turn, <I>submit</I> to finish<BR/>(the harness that scores SWE-bench)>];
+
+  glm [shape=box, style="rounded,filled", fillcolor="#fff2cc", color="#b8860b", penwidth=1.5, width=2.6, label=<<B>GLM 5.3</B> (teacher)<BR/>8 attempts per task<BR/>reasoning effort: max (v5), high, low (v7)>];
+  stu [shape=box, style="rounded,filled", fillcolor="#e2efda", color="#548235", penwidth=1.5, width=2.6, label=<<B>Snowball v0 / v0.1</B> (student)<BR/>starts the task through a recording proxy;<BR/>on a format error, the context budget or<BR/>a completion claim, GLM 5.3 takes over>];
+  contrib [shape=box, style="rounded,filled", fillcolor="#fff2cc", color="#b8860b", penwidth=1.5, style="rounded,filled,dashed", width=2.6, label=<<B>Contributor teachers</B> (pilot data, reused)<BR/>Kimi-2.5 on SWE-smith, in Terminus-2 format<BR/>Qwen3.6-27B on TMax, in mini-swe-agent format>];
+
+  p_glm [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>GLM pools</B><BR/>v5 (max effort), HIGH, LOW<BR/>passing, clean completions (v7)>];
+  p_relay [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>Relay pools</B> (HIGH, LOW)<BR/>student turns kept as context,<BR/>teacher turns trained>];
+  p_con [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>Contributor rows</B><BR/>7,393 trajectories, 1 Kimi trace per SWE task<BR/>converted to the same row format>];
+
+  tmax -> h1; swe -> h2;
+  h1 -> glm; h2 -> glm;
+  h1 -> stu [style=dashed]; h2 -> stu [style=dashed];
+  glm -> p_glm [label="verified by the task's tests"];
+  stu -> p_relay [label="passing episodes only"];
+  tmax -> contrib [style=dashed, label="same families, pilot task subsets", constraint=false]; swe -> contrib [style=dashed, constraint=false];
+  contrib -> p_con;
+  { rank=same; glm; stu; contrib; }
+}

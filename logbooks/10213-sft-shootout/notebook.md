@@ -42,6 +42,25 @@ Marin in separate, smaller PRs; the rest stays only here.
 - Evidence: paired per-task bootstrap intervals on SWE-bench Verified random-100
   and TBLite-100.
 
+## Diagrams
+
+Three Graphviz drawings of the experiment as executed, in `diagrams/`
+(`.dot` source and `.png` render). Regenerate with
+`dot -Tpng -Gdpi=110 diagrams/<name>.dot -o diagrams/<name>.png`.
+
+Step 1, data: one task pool, four sets of traces.
+
+![Step 1: data](diagrams/1-data.png)
+
+Step 2, arms: five methods, four row sets, two parents, one recipe (23 arms).
+
+![Step 2: arms](diagrams/2-arms.png)
+
+Step 3, screens: four screens per checkpoint, paired per-task comparisons, and
+the result.
+
+![Step 3: screens and result](diagrams/3-eval.png)
+
 ## Final decision
 
 - Result: no method beat plain SFT by enough to matter. Every arm trained on
@@ -58,3 +77,7 @@ Marin in separate, smaller PRs; the rest stays only here.
 - Results by round: comments on marin-community/marin#10213.
 - Remaining uncertainty: single runs on 100 tasks per screen; teacher and
   harness format are not separated.
+- Hypotheses for the GLM-trace loss, ordered by evidence (teacher traces,
+  SFT without RL, MoE expert-capacity token drops, eval protocol, parent
+  headroom, harness format, training dose): the summary comment on
+  marin-community/marin#10213, updated 2026-11-04.
