@@ -221,15 +221,15 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "state": "Original labels924\u2013940 complete with finite losses, watch norms and regional profile uploaded; candidate unsubmitted",
-    "user_direction": "User requests a shorter1000-step matched loss/speed decision and prefers candidate if comparable. Do not wait for both full7630 runs before deciding; clarify whether1000 means additionalupdates or totalcounter.",
+    "state": "Original continuation canceled after user redirects to candidate from scratch throughcounter924; matrix prefix prepared, not submitted",
+    "user_direction": "Train new matrix implementation from random initialization throughcounter924; compare historical original at matched steps. No shared original checkpoint initialization.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
-    "procedure": "Use same model, batch8, data order, seed, hyperparameters and verified full source state for shorter paired comparison. Clarify requested1000-step endpoint; preserve7630-step optimizer LR schedule independently. Compare matched train/validation loss and measured speed; no numeric loss margin specified.",
-    "remaining_preparation": "Resolve pending1000-step meaning, then implement safe checkpoint-preserving observation/stop procedure without changing7630 LR schedule inadvertently. Original continues meanwhile; no concurrent candidate. Candidate measured MFU is unknown.",
+    "procedure": "Fresh matrix model/optimizer with seed0/data seed0 and same saved model/data/precision/hyperparameters. Preserve7630 LR horizon; bound native data consumption to924updates and retain final hooks/checkpoint/evaluation. Own checkpoints resume on preemption. Compare sharedtrainlabels0..923 andvalidation762, report hardware differences and actualspeed.",
+    "remaining_preparation": "Complete fresh online logging/CPU checks and exact source publication, then submit one matrix prefix job after verified original terminal state.",
     "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
     "prepared_configurations": "loss-pair-prepared.json",
     "validation": "loss-pair-preparation-validation.json",
-    "active_job": "/kaiyuew@stanford.edu/ema-gram-20-loss-pair-replicated-v4-32-20261103",
+    "active_job": null,
     "paired_host_memory": "Both variants256GiB per host; original submitted, candidate unsubmitted",
     "restore_failure": "full-restore-failed.json",
     "counter_validation": "full-restore-counter-validation.json",
@@ -255,7 +255,10 @@
     "original_submission": "loss-pair-original-submitted.json",
     "original_first_updates": "loss-pair-original-first-updates.json",
     "original_watch_profile": "loss-pair-original-watch-profile.json",
-    "short_comparison_decision": "loss-pair-short-comparison-decision.json"
+    "short_comparison_decision": "loss-pair-short-comparison-decision.json",
+    "original_cancellation": "loss-pair-original-canceled.json",
+    "prefix_preparation": "prefix-train-prepared.json",
+    "prefix_validation": "prefix-train-config-validation.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",

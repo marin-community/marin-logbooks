@@ -1,0 +1,33 @@
+{
+  "state": "PREPARED ONLY",
+  "job_name": "ema-gram-20-matrix-prefix924-v4-32-20261104",
+  "version": "2026.11.04.01",
+  "target_counter": 924,
+  "optimizer_schedule_counter": 7630,
+  "initialize_from": null,
+  "manifest_sha256": "a4e5bc032d0d930a77249ad6ad1da68d1bf09ba155acc182817b818b0103d03e",
+  "source_sha256": {
+    "experiments/ema_gram/prefix_train.py": "7de2b2b0bb82fc3259975140d4fc257b246ffcaa79f6f02c2c36ab84344103ed",
+    "experiments/ema_gram/train.py": "bf14af8db4ddb9c48fc252ce0f024561bd5c7f5f1bd8af21dd4be5044aee1f5b",
+    "experiments/ema_gram/plan.py": "a5bb08436e0bafee8fffff7475e755542583cc20b8e9bd429f09823b1357c20b",
+    "experiments/references/train_delphi_seeds.py": "483941e793c96214cc5a56d1a6df5e430001c812fc6c9f6c178c626324953b1e",
+    "lib/marin/src/marin/training/training.py": "adb1e3df847f4dd22724c4ec2ab11241c1ef6928b22a3afd1a6e388c8f579dd6",
+    "lib/levanter/src/levanter/optim/ema_gram.py": "83561d436add9fa3844cb687b9d028cac5cdb380732799c3089a5cd4a94d0ba9",
+    "lib/levanter/src/levanter/trainer.py": "74544ee899603f3305613fecf2b3ef7e12c557be4c1332d64dd2c0ad98d2616d",
+    "lib/levanter/src/levanter/main/train_lm.py": "2d4b63411bbd030690211b7bffb15d096c0dfaf96e3a410679301f85741a761c",
+    "experiments/ema_gram/restore.py": "49f551e2c101ea2b9fde522a651312e95df8d53aa5c0eb3a2b55ac70faac2011"
+  },
+  "worker_command": "set -e\nexport PYTHONPATH=\"$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\"\npython -c 'from pathlib import Path; import hashlib; assert hashlib.sha256(Path('\"'\"'logbooks/20-ema-gram-polar/prefix-train-prepared.json'\"'\"').read_bytes()).hexdigest() == '\"'\"'a4e5bc032d0d930a77249ad6ad1da68d1bf09ba155acc182817b818b0103d03e'\"'\"''\nJAX_PLATFORMS=cpu python -m experiments.ema_gram.prefix_train --mode logging-check --version 2026.11.04.01 --target-counter 924 --manifest logbooks/20-ema-gram-polar/prefix-train-prepared.json --output /tmp/ema-gram-prefix-host-logging.json &&\nexec python -m experiments.ema_gram.prefix_train --mode worker --version 2026.11.04.01 --target-counter 924 --manifest logbooks/20-ema-gram-polar/prefix-train-prepared.json --output /tmp/ema-gram-prefix-worker.json\n",
+  "resources": "v4-32/4hosts120CPU256GiB50GiB each/us-central2/batch/defaultpreemption/retries",
+  "no_wallclock_limits": true,
+  "output_paths_absent_preflight": {
+    "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.11.04.01": false,
+    "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.11.04.01/checkpoints": false,
+    "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.11.04.01/checkpoints": false
+  },
+  "logging_and_cpu_success": "prefix-train-wandb-validation.json",
+  "historical_original_comparison": "prefix-train-config-validation.json",
+  "original_continuation_terminal": "loss-pair-original-canceled.json",
+  "retention": "TPU run ends naturally at user-requested924updates; no other allocation released. GPU holder rule remains for any futureGPUlaunch.",
+  "fresh_start": "No common original checkpoint; retry can restore own checkpoints only. Require firstattempt counter0 evidence."
+}
