@@ -18,11 +18,12 @@ from iris.rpc import job_pb2
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--analysis", choices=["intervals", "assignment"], default="intervals")
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--manifest-sha256", required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    manifest_path = Path("logbooks/20-ema-gram-polar/prefix-intervals-manifest.json")
+    manifest_path = Path(f"logbooks/20-ema-gram-polar/prefix-{args.analysis}-manifest.json")
     raw = (root / manifest_path).read_bytes()
     assert hashlib.sha256(raw).hexdigest() == args.manifest_sha256
     manifest = json.loads(raw)
@@ -32,12 +33,14 @@ def main():
     command = [
         "python",
         "logbooks/20-ema-gram-polar/profile_prefix_intervals_regionally.py",
+        "--analysis",
+        args.analysis,
         "--manifest",
         str(manifest_path),
         "--manifest-sha256",
         args.manifest_sha256,
         "--output-prefix",
-        "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix-intervals",
+        f"gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix-{args.analysis}",
     ]
     constraints = [
         region_constraint(["us-central2"]),
@@ -46,7 +49,7 @@ def main():
     with open_iris_client(config_file=root / "lib/iris/config/marin.yaml", workspace=root) as client:
         job = client.submit(
             entrypoint=Entrypoint.from_command(*command),
-            name="ema-gram-20-prefix-intervals-cpu-20261104",
+            name=f"ema-gram-20-prefix-{args.analysis}-cpu-20261104",
             resources=ResourceSpec(cpu=8, memory="64GB", disk="20GB"),
             environment=EnvironmentSpec(env_vars={"GIT_COMMIT": args.source_commit}, sync_packages=["marin-core"]),
             constraints=constraints,

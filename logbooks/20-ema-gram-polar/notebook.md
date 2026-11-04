@@ -4940,3 +4940,29 @@ it from chip ordinals. No numerical implementation or new job is prepared.
 The [completed matrix run](prefix-train-completed.json), version
 2026.11.04.01, remains the loss/speed baseline for further optimization;
 all jobs and observers stay terminal.
+
+### November 3, 18:46 Pacific — Typed profile metadata audit prepared
+
+The next CPU-only audit will read the four generation-pinned XPlanes listed
+in [the manifest](prefix-assignment-manifest.json), captured around update
+100 of matrix run 2026.11.04.01 in us-central2. It will verify their size, CRC32C, MD5 and saved SHA256 before
+parsing, preserve the original `core_details` value type and bytes, and
+inspect every embedded `hlo_proto` metadata record. The extracted HLO metadata
+retains declared device assignment, partition/replica-ID instructions and
+dynamic slices with output shapes [1, 1024, 1024] or [1, 4096, 4096], together
+with their enclosing computation and direct callers.
+Unselected instruction attributes and outputs remain uninterpreted.
+
+The [prepared manifest](prefix-assignment-manifest.json) pins the source and
+public protobuf field definitions. [Static fixtures](prefix-assignment-validation.json) recovered a known wire
+assignment, preserved an absent assignment, and rejected wrong value types,
+unknown core fields and incomplete assignments. The existing interval
+fixtures still pass. No numerical kernels or JAX initialization were used.
+
+The recipe requests eight CPUs, 64 GiB memory and 20 GiB disk in us-central2,
+with no accelerator or wall-clock limit and unchanged preemption retries.
+It excludes the completed training slice `t1v-n-a140728f` and does not
+release or modify existing GPU allocations. Commit and push this parser,
+recipe and manifest to the research branch before submitting the new parse.
+The [completed 924-update run](prefix-train-completed.json) remains unchanged;
+the interval and aggregate-profile jobs also stay terminal.

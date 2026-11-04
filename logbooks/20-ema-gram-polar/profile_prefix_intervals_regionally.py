@@ -18,6 +18,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from google.cloud import storage
+from inspect_prefix_assignment import inspect as inspect_assignment
 from inspect_prefix_intervals import inspect
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -48,7 +49,7 @@ def write_json(path, value):
     path.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
 
 
-def one_profile(manifest, index, directory):
+def one_profile(manifest, index, directory, analysis):
     expected = manifest["profiles"][index]
     bucket_name, object_name = expected["uri"].removeprefix("gs://").split("/", 1)
     client = storage.Client()
@@ -65,7 +66,7 @@ def one_profile(manifest, index, directory):
     assert identity["bytes"] == expected["bytes"] and identity["md5_hash"] == expected["md5_hash"]
     print(json.dumps(dict(event="download_verified", index=index, **identity)), flush=True)
     assert identity["sha256"] == expected["sha256"]
-    summary = inspect(path)
+    summary = inspect_assignment(path) if analysis == "assignment" else inspect(path)
     full = directory / f"host-{index}-full.json"
     write_json(full, summary)
     bounded = dict(
@@ -81,6 +82,7 @@ def one_profile(manifest, index, directory):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--analysis", choices=["intervals", "assignment"], default="intervals")
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--manifest-sha256", required=True)
     parser.add_argument("--output-prefix", required=True)
@@ -110,7 +112,7 @@ def main():
     assert args.output_prefix.startswith("gs://marin-us-central2/")
     if args.one_index is not None:
         assert args.directory is not None and 0 <= args.one_index < 4
-        one_profile(manifest, args.one_index, args.directory)
+        one_profile(manifest, args.one_index, args.directory, args.analysis)
         return
     prefix = args.output_prefix.rstrip("/") + "/" + uuid.uuid4().hex[:12]
     bucket_name, object_prefix = prefix.removeprefix("gs://").split("/", 1)
@@ -121,6 +123,7 @@ def main():
         source_commit=os.environ["GIT_COMMIT"],
         manifest_sha256=args.manifest_sha256,
         manifest=manifest,
+        analysis=args.analysis,
         zone=zone,
         instance_name=instance_name,
         worker_id=os.environ.get("IRIS_WORKER_ID"),
@@ -128,7 +131,7 @@ def main():
         completed=False,
         hosts=[],
         interpretation=(
-            "Recorded per-track interval unions and exact selected collective context. "
+            "Static declared metadata or recorded per-track intervals, as selected by analysis. "
             "No cross-host clock alignment, transfer-only cost, matrix-slot assignment or wall-time speedup inferred."
         ),
     )

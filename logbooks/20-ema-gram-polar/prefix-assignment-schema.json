@@ -1,0 +1,259 @@
+{
+  "source_commit": "469cee5f95a460ebb6d3cdfecfd5697409f6e282",
+  "sources": {
+    "hlo": {
+      "url": "https://github.com/openxla/xla/blob/469cee5f95a460ebb6d3cdfecfd5697409f6e282/xla/service/hlo.proto",
+      "bytes": 34858,
+      "sha256": "58034f23343be0203f2621563f9dec48cf2676968faf3788cc11385d3ad793dd"
+    },
+    "data": {
+      "url": "https://github.com/openxla/xla/blob/469cee5f95a460ebb6d3cdfecfd5697409f6e282/xla/xla_data.proto",
+      "bytes": 59847,
+      "sha256": "a65a6f0218e1bc75d1b653c5eadea2aef7f220e0712219df5f346b0f54caf219"
+    },
+    "consumer": {
+      "url": "https://github.com/openxla/xprof/blob/4e0954bc46aa8d1b7b7b30d008c0f6a924b4e952/xprof/utils/hlo_proto_map.cc",
+      "bytes": 8658,
+      "sha256": "baacfc5cd3363b5280c5301cab5c5a767b52ebe589ca4240ebef783401a1c2e8"
+    }
+  },
+  "messages": {
+    "AssignmentDevices": [
+      [
+        "replica_device_ids",
+        1,
+        3,
+        3
+      ]
+    ],
+    "DeviceAssignment": [
+      [
+        "replica_count",
+        1,
+        5,
+        1
+      ],
+      [
+        "computation_count",
+        2,
+        5,
+        1
+      ],
+      [
+        "computation_devices",
+        3,
+        11,
+        3,
+        ".AssignmentDevices"
+      ]
+    ],
+    "Shape": [
+      [
+        "element_type",
+        2,
+        5,
+        1
+      ],
+      [
+        "dimensions",
+        3,
+        3,
+        3
+      ],
+      [
+        "tuple_shapes",
+        4,
+        11,
+        3,
+        ".Shape"
+      ]
+    ],
+    "Metadata": [
+      [
+        "op_name",
+        2,
+        9,
+        1
+      ],
+      [
+        "source_file",
+        3,
+        9,
+        1
+      ],
+      [
+        "source_line",
+        4,
+        5,
+        1
+      ]
+    ],
+    "Literal": [
+      [
+        "s32s",
+        4,
+        5,
+        3
+      ],
+      [
+        "s64s",
+        5,
+        3,
+        3
+      ],
+      [
+        "u32s",
+        6,
+        13,
+        3
+      ],
+      [
+        "u64s",
+        7,
+        4,
+        3
+      ]
+    ],
+    "Instruction": [
+      [
+        "name",
+        1,
+        9,
+        1
+      ],
+      [
+        "opcode",
+        2,
+        9,
+        1
+      ],
+      [
+        "shape",
+        3,
+        11,
+        1,
+        ".Shape"
+      ],
+      [
+        "metadata",
+        7,
+        11,
+        1,
+        ".Metadata"
+      ],
+      [
+        "literal",
+        8,
+        11,
+        1,
+        ".Literal"
+      ],
+      [
+        "parameter_number",
+        9,
+        3,
+        1
+      ],
+      [
+        "tuple_index",
+        13,
+        3,
+        1
+      ],
+      [
+        "id",
+        35,
+        3,
+        1
+      ],
+      [
+        "operand_ids",
+        36,
+        3,
+        3
+      ],
+      [
+        "called_computation_ids",
+        38,
+        3,
+        3
+      ]
+    ],
+    "Computation": [
+      [
+        "name",
+        1,
+        9,
+        1
+      ],
+      [
+        "instructions",
+        2,
+        11,
+        3,
+        ".Instruction"
+      ],
+      [
+        "id",
+        5,
+        3,
+        1
+      ],
+      [
+        "root_id",
+        6,
+        3,
+        1
+      ]
+    ],
+    "Module": [
+      [
+        "name",
+        1,
+        9,
+        1
+      ],
+      [
+        "entry_computation_name",
+        2,
+        9,
+        1
+      ],
+      [
+        "computations",
+        3,
+        11,
+        3,
+        ".Computation"
+      ],
+      [
+        "id",
+        5,
+        3,
+        1
+      ],
+      [
+        "entry_computation_id",
+        6,
+        3,
+        1
+      ],
+      [
+        "device_assignment",
+        15,
+        11,
+        1,
+        ".DeviceAssignment"
+      ]
+    ],
+    "HloProto": [
+      [
+        "hlo_module",
+        1,
+        11,
+        1,
+        ".Module"
+      ]
+    ]
+  }
+}
