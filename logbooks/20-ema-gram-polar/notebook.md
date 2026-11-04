@@ -5886,3 +5886,21 @@ is not actual allocation. No training completion is claimed; first canonical
 allocation and online training signals remain pending. Source, exactcommands,
 cell parameters and persistent launch-started guards are preserved in
 [single-seed-submitted.json](single-seed-submitted.json).
+
+
+### 2026-11-04 21:56 UTC — First canonical campaign observation
+
+All29 jobs are PENDING with101pending tasks, zero failures/preemptions and
+no started_at timestamps. Allocated training devices are therefore0 in this
+first observation; requested devices remain404. Scheduler reasons include
+insufficient available host memory and autoscaler quota-pool tier blocking.
+These are current scheduling reports, not a verified underlying cloud cause
+or an ETA. Keep the accepted jobs and their guards unchanged. All29
+followers are live with no exit failures; the owner schedules later checks
+570seconds apart. See single-seed-first-observation.json.
+
+The accepted campaign was published in issue20comment6643115554. Updating
+the issue body through the GitHub integration returned403(Resource not
+accessible by integration); no retry or alternative access path was used.
+The latest plan and current evidence remain available in the published
+research branch and the permitted issue comment.
