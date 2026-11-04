@@ -5430,3 +5430,8 @@ with no attempts, failures or preemptions. The autoscaler still reports
 `tier_blocked` for both matching pools; both size-8 groups remain in backoff.
 See [queue diagnosis](grouped-gram-queue-diagnosis.json). Sole follow 92765 remains live.
 Next routine check: 2026-11-04T06:29:14.453725+00:00. No new job or source change.
+
+Canonical checks at 2026-11-04T06:34:46.295361+00:00 still show all four tasks pending,
+with no attempts, failures or preemptions. Both matching pools remain
+`tier_blocked`, with size-8 groups in backoff. Sole follow 92765 remains live.
+Next routine check: 2026-11-04T06:44:16.295361+00:00. No new job or source change.
