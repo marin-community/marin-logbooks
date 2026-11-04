@@ -4893,3 +4893,50 @@ equivalence margin. Full 7630-step and multiseed confirmation remain pending,
 and MFU remains below 5%. Next use saved profiling and source evidence to
 choose one bounded performance change. No new numerical implementation or
 job has been submitted; the requested 924-update endpoint remains unchanged.
+
+### November 3, 18:34 Pacific — Saved core metadata narrows the slot hypothesis
+
+A local static pass over the saved interval report interprets its 32
+`core_details` strings as 16 pairs of cores on 16 chips. Each string re-encodes
+without a replacement character and roundtrips exactly through the pinned
+[XProf CoreDetails schema](https://github.com/openxla/xprof/blob/4e0954bc46aa8d1b7b7b30d008c0f6a924b4e952/plugin/xprof/protobuf/op_stats.proto#L126).
+The pinned [consumer](https://github.com/openxla/xprof/blob/4e0954bc46aa8d1b7b7b30d008c0f6a924b4e952/xprof/convert/xplane_to_op_stats.cc#L839)
+parses this field from `bytes_value`. This supplies field meanings for the
+saved strings; the original XStat value type and runtime producer version
+have not been verified. No raw profile was downloaded or newly parsed.
+
+Under that schema, host suffixes 2, 3, 0 and 1 contain chip IDs 0–3, 4–7,
+8–11 and 12–15 respectively. Both recorded core tracks on chips 0–10 have
+`_eigh_work` scope interval unions of 2998–3179 ms; both tracks on chips
+11–15 have 2.870–2.874 ms. These are source-scope intervals from one captured
+training step and can include waiting or communication. They are not
+arithmetic-only durations. The [summary](prefix-core-metadata-summary.json)
+preserves every core, host, plane identity and interval value.
+
+For this 11-layer model, [matrix_parallel_eigh](../../lib/levanter/src/levanter/optim/ema_gram.py)
+flattens each Gram batch, pads its leading dimension from 11 to 16, and
+shards that dimension across the 16-device mesh. A slot is one matrix in
+that padded batch. The hypothesis is that chip IDs 0–10 receive real
+matrices and 11–15 receive padding. The saved metadata does not establish
+that assignment or join chip IDs to JAX mesh coordinates. Host order and
+the uniform `process_id=1` statistic do not establish JAX process ranks.
+Model FLOPs utilization (MFU) still uses the independently verified runtime
+count of 16 v4 JAX devices and 4.4 PFLOP/s peak; profile core-track counts
+do not replace that accounting. No padding cause or potential speedup is
+accepted from this correspondence.
+
+The [manifest](prefix-core-metadata-manifest.json) pins the bounded input,
+parser, schema, report and validation. Schema fields match the pinned
+upstream source; host/plane/track reordering preserves the output. Five
+corruptions covering damaged text, unknown wire fields, duplicate cores,
+missing tracks and mismatched plane context were rejected. This pass used
+local JSON/protobuf parsing only, with no job, numerical kernels or W&B.
+
+Next inspect the original typed core metadata and any saved executable
+metadata in the us-central2 XPlanes. The needed join links executable
+partition IDs and matrix input slices to physical devices and JAX mesh
+coordinates. If it was not recorded, preserve that gap instead of filling
+it from chip ordinals. No numerical implementation or new job is prepared.
+The [completed matrix run](prefix-train-completed.json), version
+2026.11.04.01, remains the loss/speed baseline for further optimization;
+all jobs and observers stay terminal.
