@@ -4688,6 +4688,14 @@ The [historical comparison record](prefix-train-config-validation.json) contains
 
 No candidate job has been submitted by this preparation. Exact source publication, fresh execution-host online logging and verification of the new worker's initialization at counter 0 remain required. Full Gram geometry, every-update refresh and source precision remain unchanged; numerical-equivalence failures stay diagnostic. The next decision is measured loss and speed on this requested prefix, without an invented loss margin.
 
+### November 3, 16:30 Pacific — matrix run from scratch accepted
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-matrix-prefix924-v4-32-20261104` at 16:30:07 Pacific (00:30:07 UTC November 4) from published source `b70f04f9958358a4dc92bac987956c27209797fa`. Version `2026.11.04.01` has no original-checkpoint initialization and requests a total of 924 updates with the unchanged 7630-step optimizer scheduling horizon. It uses one v4-32 slice across four hosts in us-central2, each with 120 CPUs, 256 GiB memory and 50 GiB disk, batch priority, default preemption/retries and no wall-clock limits.
+
+Fresh online logging and CPU validation finished successfully with exact source hashes. Every execution host must run a fresh online non-training check before the native online worker starts kernels. The command checks the published manifest hash and the worker checks its resolved configuration and all source hashes. Submission does not yet establish fresh initialization, loss or MFU; the first worker reports must show counter 0 and configured data offset 0 before progress is accepted.
+
+The [submission record](prefix-train-submitted.json) preserves sole follow session 67222. The first canonical check is no earlier than 16:32:07 Pacific, followed by the existing 570-second cadence. The first canonical job and all four task checks at 16:33:27–29 Pacific found all tasks pending, with no attempts, failures or preemptions. The next routine check is no earlier than 16:42:59 Pacific. The prior original continuation and every older job are terminal and will not be polled or restarted. This is the only active experiment. Compare historical original labels 0–923 and shared validation label 762, while preserving the hardware and data-provenance limits already recorded.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
