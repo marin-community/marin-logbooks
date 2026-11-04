@@ -166,3 +166,89 @@ stays available and the alpha=0 runs finish alongside them. This assumes additio
 time, overhead and expansions. This is a scenario,
 not a reservation or delivery promise. More compatible parallel allocations
 shorten the pilot stage; confirmation still depends on completed selection.
+
+## Recovery from deleted training caches (2026-11-04)
+
+The initial campaign failed while loading seven missing Nemotron cache roots.
+Their original objects are soft-deleted. The earliest recorded object expires
+on 2026-11-11 at 12:56:58 UTC; later objects expire after their respective
+seven-day retention windows. StarCoder, ProofPile and all 23 evaluation components are
+still readable. No pilot from this campaign has been validated as complete.
+
+[The failure record](single-seed-cache-failure.json) preserves the original jobs,
+object inventory hashes, deletion times and the failed recovery request. The
+current service account's bulk restore request returned HTTP 403 because
+`storage.buckets.restore` was denied. No object was restored. Do not retry through
+another identity or API route without an authorized access change.
+
+An authorized storage administrator can apply the seven request bodies in
+[single-seed-cache-restore-requests.json](single-seed-cache-restore-requests.json)
+to the recorded `POST` endpoint. Each request selects one exact cache prefix and
+its November 4 deletion window, with `allowOverwrite=false`. Record the returned
+operation names and wait for successful completion before data validation.
+[Google's bulk restore reference](https://cloud.google.com/storage/docs/json_api/v1/objects/bulkRestore)
+lists the required `storage.buckets.restore`, `storage.objects.restore`, and
+`storage.objects.create` permissions. Restoration stays inside the original
+regional bucket; it assigns new generations to the original bytes.
+
+Then run, from the research worktree:
+
+```bash
+uv run --no-sync python logbooks/20-ema-gram-polar/check_campaign_caches.py \
+  --full --output scratch/campaign-cache-restored-validation.json
+```
+
+This must pass all 32 components against the original name/size/CRC catalog.
+The initial negative check passed 25 existing components and rejected exactly
+the seven missing ones. A passing metadata check must be followed by a real
+production-data loading check with online tracking before a replacement launch.
+Submission now runs the full catalog check; workers repeat bounded metadata
+readback and first/last chunk identity checks before the logging check and trainer.
+These checks detect missing data but do not reserve immutable data or prevent
+a later external deletion.
+
+Preserve the original source, guards, job identities, failed attempts and W&B
+runs. The original observer has now confirmed all 29 jobs FAILED and ended naturally
+with exit 0; all followers are also terminal. The observer record is
+`/Users/kaiyuew/Downloads/Project/marin/ema-gram-single-seed-20261104/scratch/20261104-single-seed-observers.json`.
+After data recovery and validation, publish a new source and artifact version,
+then submit only failed cells under new job identities and a separate ledger.
+Do not rerun the original guarded dispatcher or treat infrastructure failure
+as a scientific result when selecting learning rates.
+
+### Requested minimal IAM grant
+
+The user authorized granting recovery permission to the current service account.
+A permission check confirms it already has `storage.objects.restore` and
+`storage.objects.create`, but lacks `storage.buckets.restore` and
+`storage.buckets.setIamPolicy`. Reading the bucket IAM policy also returned 403;
+no IAM changes were made. An existing authorized administrator can grant the
+missing permission immediately. The agent cannot grant it with current credentials.
+
+An administrator should create a custom role containing only
+`storage.buckets.restore` in the bucket's owning project, then bind it only to
+`gs://marin-us-central2`. Replace `BUCKET_PROJECT_ID` with that verified project;
+current credentials cannot read bucket metadata to verify ownership.
+
+```bash
+gcloud iam roles create emaGramCacheBulkRestore20261104 \
+  --project=BUCKET_PROJECT_ID \
+  --title="EMA Gram cache bulk restore" \
+  --permissions=storage.buckets.restore --stage=GA
+gcloud storage buckets add-iam-policy-binding gs://marin-us-central2 \
+  --member=serviceAccount:iris-controller@hai-gcp-models.iam.gserviceaccount.com \
+  --role=projects/BUCKET_PROJECT_ID/roles/emaGramCacheBulkRestore20261104
+```
+
+These commands follow Google's [custom-role creation](https://cloud.google.com/sdk/gcloud/reference/iam/roles/create)
+and [bucket binding](https://cloud.google.com/sdk/gcloud/reference/storage/buckets/add-iam-policy-binding) interfaces.
+If the role already exists, inspect it before reusing it; do not overwrite an
+unrelated role. This grant is not yet applied.
+
+The production-data check remains to be implemented after restoration. Its
+required pass condition is successful native loading of every configured
+training and evaluation component and a deterministic global batch of eight
+4096-token examples (32768 tokens total) at the unchanged seed and mixture, with online
+tracking initialized before numerical execution. Publish its source and
+evidence before recovery submission. It must retain the original tokenizer,
+packing, document boundaries, shuffle and data order.

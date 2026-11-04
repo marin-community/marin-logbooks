@@ -49,7 +49,8 @@ def command(index, variant, source):
     logging = shlex.join([*common, "--mode", "logging-check", "--output", "/tmp/campaign-host-logging.json"])
     worker = shlex.join([*common, "--mode", "worker", "--output", "/tmp/campaign-worker.json"])
     shell = 'export PYTHONPATH="$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD"\n'
-    shell += f"JAX_PLATFORMS=cpu {logging} && exec {worker}"
+    gate = "python logbooks/20-ema-gram-polar/check_campaign_caches.py --output /tmp/campaign-cache-check.json"
+    shell += f"{gate} && JAX_PLATFORMS=cpu {logging} && exec {worker}"
     return [
         "uv",
         "run",
@@ -124,6 +125,16 @@ def main():
             == args.source_commit
         )
         assert not subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"])
+        subprocess.run(
+            [
+                sys.executable,
+                str(BASE / "check_campaign_caches.py"),
+                "--full",
+                "--output",
+                str(ROOT / f"scratch/{time.time_ns()}-campaign-cache-check.json"),
+            ],
+            check=True,
+        )
     with LEDGER.with_suffix(".lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         ledger = json.loads(LEDGER.read_text()) if LEDGER.exists() else {"cells": {}, "observations": []}

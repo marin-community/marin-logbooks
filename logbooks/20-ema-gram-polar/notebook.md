@@ -5904,3 +5904,60 @@ the issue body through the GitHub integration returned403(Resource not
 accessible by integration); no retry or alternative access path was used.
 The latest plan and current evidence remain available in the published
 research branch and the permitted issue comment.
+
+
+### 2026-11-04 22:24 UTC — Campaign blocked by deleted training caches
+
+The first campaign's workers failed during native data loading: seven original
+Nemotron cache roots were soft-deleted today between 12:56 and 16:59 UTC.
+The metadata inventory preserves 45,220 distinct objects with size, CRC and
+generation. StarCoder, ProofPile and 23 evaluation components remain live;
+the first broad-prefix inventory incorrectly marked the former two as empty.
+These training paths match the successful matrix prefix's data configuration.
+No completed scientific pilot or effective optimizer progress is established.
+
+A scoped, no-overwrite bulk restore request for the first missing prefix
+returned GCS HTTP 403: the current account lacks `storage.buckets.restore`.
+No restoration succeeded and the remaining restore requests were not issued.
+The user was asked to arrange authorized restoration or a permission change.
+The seven exact restore request bodies and original object inventory hashes
+are in `single-seed-cache-restore-requests.json` and
+`single-seed-cache-failure.json`. No other identity/API route was attempted.
+
+Added `check_campaign_caches.py` and an original-content manifest. Submission
+checks full object catalogs before allocating new work; execution hosts check
+metadata readback and first/last chunk identities before starting the trainer.
+The real negative test rejected all seven missing components and passed the
+other 25. The numerical entrypoint, optimizer, model, mixture and existing
+immutable launch source remain unchanged. Full recovery still requires
+restoration, complete content-identity checks and actual data-loader validation.
+Original job guards and observer ownership remain intact. Recovery jobs require
+new identities after original canonical termination; none have been submitted.
+
+At 22:26 UTC the sole observer confirmed all 29 original jobs FAILED and exited
+naturally with code 0; all 29 log followers are terminal. Follower exit 0 does
+not indicate training success. The user chose to grant restoration permission
+to the current account. IAM capability checks show object restore/create are
+already allowed, while bucket restore and bucket IAM modification are absent.
+Bucket IAM and bucket metadata reads returned 403. No IAM mutation succeeded
+or was attempted after discovering missing authority. An administrator grant
+is required; the exact one-permission custom-role commands are in the plan.
+
+
+### 2026-11-04 22:33 UTC — Existing-copy search and Stanford permission check
+
+The user requested an existing-cache search and logged in with their Stanford
+account for a read-only permission check. That account has object get/list/create,
+but neither object restore, bulk restore nor bucket IAM modification. No IAM
+change or restoration was performed.
+
+The seven configured GCS regions have no live objects at the original Nemotron
+cache prefix. Broader regional directory listings found Delphi cache aliases
+containing provenance metadata only, plus an unrelated Nemotron cache with
+metadata and no token chunks. Backup and nested-prefix candidates did not
+yield a verified intact copy. Original prefixes have no readable noncurrent
+versions. CoreWeave and R2 could not be searched with current configured
+credentials. An arbitrary-directory name query is still running; its result
+will be recorded separately. `single-seed-cache-alternate-search.json` preserves
+the scope, limitations and evidence hashes. No large data was downloaded or
+transferred between regions.
