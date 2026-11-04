@@ -5450,3 +5450,10 @@ continues with no task-specific unmet entry. Both size-8 groups are available
 in this snapshot; reserved v4-32 still has four ready slices and one booting.
 Sole follow 92765 remains live. Next routine check: 2026-11-04T07:14:21.706032+00:00.
 No new job, source change or numerical result.
+
+Canonical checks at 2026-11-04T07:20:06.288710+00:00 still show all four tasks pending,
+with no attempts, failures or preemptions. Reserved v4-32 demand routing
+continues; the pool has four ready slices and one booting slice. A bounded
+controller-log query for that booting slice timed out, so its cause remains
+unverified. The task checks succeeded and sole follow 92765 remains live.
+Next routine check: 2026-11-04T07:29:36.288710+00:00. No new job or source change.
