@@ -51,7 +51,10 @@ Marin in separate, smaller PRs; the rest stays only here.
 - Decision: stop and write up. The cross-format test that would separate the
   teacher from the harness format (about 125 H100-h) was not run.
 - Paper: [agentic-sft-shootout.pdf](agentic-sft-shootout.pdf) (67 pages).
-- Marin contribution PRs: listed under Source as they are promoted.
+- Marin contribution PRs (drafts): marin-community/marin#10255 (plateau
+  dropping in `train_lm`), #10887 (recording relay proxy, relay rules, trace
+  rebuild, capability-token scrubbing), #10888 (harness-faithful recovery rows).
+  The other draft PRs were closed; their code is on the archive branches above.
 - Results by round: comments on marin-community/marin#10213.
 - Remaining uncertainty: single runs on 100 tasks per screen; teacher and
   harness format are not separated.
