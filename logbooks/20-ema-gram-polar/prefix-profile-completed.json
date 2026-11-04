@@ -1,0 +1,206 @@
+{
+  "submission": {
+    "job_id": "/kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104",
+    "accepted_utc": "2026-11-04T01:25:52.703434+00:00",
+    "command": [
+      "python",
+      "logbooks/20-ema-gram-polar/profile_prefix_regionally.py",
+      "--manifest",
+      "logbooks/20-ema-gram-polar/prefix-profile-manifest.json",
+      "--manifest-sha256",
+      "dc33f2d84957e1c14cb3cf985389cdbdcf5b5e6658d57d24112866e8b0cbc92e",
+      "--output-prefix",
+      "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix"
+    ],
+    "source_commit": "949216c0319d4e4434c5bc11fecd83cf43615651",
+    "cluster": "marin",
+    "observer_session": 51174,
+    "observer_log": "scratch/20261104-prefix-profile-follow.log",
+    "observer_owner": "current root, sole follow for CPU parse; training separately retains67222",
+    "status": "RUNNING attempt0; no completed profile summary yet",
+    "first_check_not_before": "2026-11-04T01:27:52.703434+00:00",
+    "resources": {
+      "cpu": 8,
+      "memory": "64GB",
+      "disk": "20GB",
+      "accelerator": null
+    },
+    "region": "us-central2",
+    "excluded_training_tpu_name": "t1v-n-a140728f",
+    "preemption_retries": "SDK default1000 unchanged",
+    "wallclock_limits": null,
+    "training_intervention": false,
+    "manifest_sha256": "dc33f2d84957e1c14cb3cf985389cdbdcf5b5e6658d57d24112866e8b0cbc92e",
+    "latest_canonical_observation": {
+      "started_utc": "2026-11-04T01:28:11.323284+00:00",
+      "completed_utc": "2026-11-04T01:28:12.926979+00:00",
+      "next_canonical_check_not_before": "2026-11-04T01:37:42.926979+00:00",
+      "rows": [
+        {
+          "kind": "job",
+          "returncode": 0,
+          "path": "scratch/20261104-prefix-profile-initial-job.txt",
+          "output": "Job: /kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104 (/kaiyuew/ema-gram-20-prefix-profile-cpu-20261104)\nState: running  exit=0  failures=0  preemptions=0\nTasks: 0/1 completed  running=1\n\n  TASK  STATE    EXIT    DURATION                     PEAK MEM    CUR MEM    DIAGNOSTIC\n     0  running  -       2 minutes and 15.67 seconds  -           -\nI20261103 17:28:12 8480104832 iris.cli.main Resolved cluster 'marin' to config: /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nI20261103 17:28:12 8480104832 iris.cluster.config Loading config from /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nNot all requested scopes were granted by the authorization server, missing scopes email.\n"
+        },
+        {
+          "kind": 0,
+          "returncode": 0,
+          "path": "scratch/20261104-prefix-profile-initial-0.txt",
+          "output": "Task: /kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104/0\nState: running  backend=default\nWorker: marin-tpu-v4-reserved-8-us-central2-b-20261103-2048-4ba2af8d-worker-0 (10.130.0.45:10001)\nBackend object (current attempt 0): 3403b9cedd720ef5fcca1019dfdd60d6f15f8fee5019a3d4c133bb2f888dbbe7\nResources: cpu=8, memory=68.72 GB, disk=21.47 GB\n\nAttempts:\n  ATTEMPT  UID           STATE    EXIT    WORKER                                                                 REASON\n        0  4d30c258f316  running  -       marin-tpu-v4-reserved-8-us-central2-b-20261103-2048-4ba2af8d-worker-0\nI20261103 17:28:12 8480104832 iris.cli.main Resolved cluster 'marin' to config: /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nI20261103 17:28:12 8480104832 iris.cluster.config Loading config from /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nNot all requested scopes were granted by the authorization server, missing scopes email.\n"
+        }
+      ]
+    },
+    "next_canonical_check_not_before": "2026-11-04T01:37:42.926979+00:00",
+    "partial_evidence": {
+      "report_uri": "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix/7a0c6b4856d1/report.json",
+      "local_report": "scratch/20261104-prefix-profile-partial.json",
+      "completed": false,
+      "hosts_present": [
+        0,
+        1
+      ],
+      "host0_sha256": "2ba60dcfdc3055fe6b3d93ffea8279f968d926bc6ec0be6f5d812543a2e04fd8",
+      "host1_sha256": "4b41f992b05894566fc9cf7462b6d243fc6c97eb985dc43c54214476d458ce4e",
+      "scope": "No all-four-host acceptance or optimization selection. Parser step-marker count15 is not15trainingupdates; nested/other device markers need identity disambiguation."
+    }
+  },
+  "canonical": {
+    "started_utc": "2026-11-04T01:32:05.890294+00:00",
+    "completed_utc": "2026-11-04T01:32:07.415343+00:00",
+    "reason": "Asynchronous all-four-host completed log permits terminal verification before next routinecadence",
+    "rows": [
+      {
+        "kind": "job",
+        "exit": 0,
+        "output": "Job: /kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104 (/kaiyuew/ema-gram-20-prefix-profile-cpu-20261104)\nState: succeeded  exit=0  failures=0  preemptions=0\nTasks: 1/1 completed  succeeded=1\n\n  TASK  STATE        EXIT  DURATION                     PEAK MEM    CUR MEM    DIAGNOSTIC\n     0  succeeded       0  5 minutes and 19.08 seconds  -           -\nI20261103 17:32:06 8480104832 iris.cli.main Resolved cluster 'marin' to config: /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nI20261103 17:32:06 8480104832 iris.cluster.config Loading config from /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nNot all requested scopes were granted by the authorization server, missing scopes email.\n"
+      },
+      {
+        "kind": 0,
+        "exit": 0,
+        "output": "Task: /kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104/0\nState: succeeded  exit=0  backend=default\nWorker: marin-tpu-v4-reserved-8-us-central2-b-20261103-2048-4ba2af8d-worker-0 (10.130.0.45:10001)\nBackend object (current attempt 0): 3403b9cedd720ef5fcca1019dfdd60d6f15f8fee5019a3d4c133bb2f888dbbe7\nResources: cpu=8, memory=68.72 GB, disk=21.47 GB\n\nAttempts:\n  ATTEMPT  UID           STATE        EXIT  WORKER                                                                 REASON\n        0  4d30c258f316  succeeded       0  marin-tpu-v4-reserved-8-us-central2-b-20261103-2048-4ba2af8d-worker-0\nI20261103 17:32:06 8480104832 iris.cli.main Resolved cluster 'marin' to config: /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nI20261103 17:32:06 8480104832 iris.cluster.config Loading config from /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nNot all requested scopes were granted by the authorization server, missing scopes email.\n"
+      }
+    ]
+  },
+  "report_identity": {
+    "uri": "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix/7a0c6b4856d1/report.json",
+    "bytes": 307041,
+    "sha256": "cf37c6327b18fd55d01ecb18e80219ac0f31cedef69e86cdc6d1b2813534d25b",
+    "generation": 1793755873009357,
+    "crc32c": "Fwiu/g==",
+    "exact_readback": true,
+    "source_commit": "949216c0319d4e4434c5bc11fecd83cf43615651",
+    "manifest_sha256": "dc33f2d84957e1c14cb3cf985389cdbdcf5b5e6658d57d24112866e8b0cbc92e",
+    "completed": true,
+    "hosts": 4
+  },
+  "report_local": "scratch/20261104-prefix-profile-final.json",
+  "hosts": [
+    {
+      "profile": {
+        "uri": "gs://marin-us-central2/tmp/ttl=30d/xprof/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.11.04.01/plugins/profile/steps-100-to-101/t1v-n-a140728f-w-0.xplane.pb",
+        "bytes": 797739436,
+        "generation": 1793754497974363,
+        "crc32c": "XBr+0g==",
+        "md5_hash": "FY3zojok/iSmJjBleMU/Mg=="
+      },
+      "verified_identity": {
+        "bytes": 797739436,
+        "sha256": "2ba60dcfdc3055fe6b3d93ffea8279f968d926bc6ec0be6f5d812543a2e04fd8",
+        "md5_hash": "FY3zojok/iSmJjBleMU/Mg=="
+      },
+      "full_summary_uri": "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix/7a0c6b4856d1/host-0-full.json",
+      "full_summary_identity": {
+        "bytes": 446577,
+        "sha256": "a80a1063ca2faa9c2b755b5bfb864f0a28fd71a4fed6514dcc6ad64fc49c6b40",
+        "md5_hash": "r/S8WK7s+C3cckHUNwaDAQ=="
+      },
+      "parser_peak_rss_kib": 3012456
+    },
+    {
+      "profile": {
+        "uri": "gs://marin-us-central2/tmp/ttl=30d/xprof/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.11.04.01/plugins/profile/steps-100-to-101/t1v-n-a140728f-w-1.xplane.pb",
+        "bytes": 243664000,
+        "generation": 1793754493113881,
+        "crc32c": "J8yDOw==",
+        "md5_hash": "YZ28wkk0FyodE5ZUpN9/xw=="
+      },
+      "verified_identity": {
+        "bytes": 243664000,
+        "sha256": "4b41f992b05894566fc9cf7462b6d243fc6c97eb985dc43c54214476d458ce4e",
+        "md5_hash": "YZ28wkk0FyodE5ZUpN9/xw=="
+      },
+      "full_summary_uri": "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix/7a0c6b4856d1/host-1-full.json",
+      "full_summary_identity": {
+        "bytes": 336084,
+        "sha256": "a5ad72abb856899a21e6ff50be050b3239a97e53aefe0132c6bd967389e72799",
+        "md5_hash": "e6tz0UW2tBS16UAuWTi7Ug=="
+      },
+      "parser_peak_rss_kib": 1389852
+    },
+    {
+      "profile": {
+        "uri": "gs://marin-us-central2/tmp/ttl=30d/xprof/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.11.04.01/plugins/profile/steps-100-to-101/t1v-n-a140728f-w-2.xplane.pb",
+        "bytes": 984330486,
+        "generation": 1793754500262914,
+        "crc32c": "uzp8vA==",
+        "md5_hash": "6dQc9RRWlacV75SFc22SLA=="
+      },
+      "verified_identity": {
+        "bytes": 984330486,
+        "sha256": "63de0acc0b4fd5d02354bbce103995d6cc502585d3e14f2b955e6c4e5c469a66",
+        "md5_hash": "6dQc9RRWlacV75SFc22SLA=="
+      },
+      "full_summary_uri": "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix/7a0c6b4856d1/host-2-full.json",
+      "full_summary_identity": {
+        "bytes": 448131,
+        "sha256": "109659a7b7cc129457e1af3067f60d490fe34735b97dc126080e2fe9bf24ba40",
+        "md5_hash": "rN+37FBV9qvszMasoAZm5g=="
+      },
+      "parser_peak_rss_kib": 3474880
+    },
+    {
+      "profile": {
+        "uri": "gs://marin-us-central2/tmp/ttl=30d/xprof/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.11.04.01/plugins/profile/steps-100-to-101/t1v-n-a140728f-w-3.xplane.pb",
+        "bytes": 976113124,
+        "generation": 1793754499292007,
+        "crc32c": "Au9ZbQ==",
+        "md5_hash": "83Ijx+dO7NOlIQV8Evv8jg=="
+      },
+      "verified_identity": {
+        "bytes": 976113124,
+        "sha256": "63e2161ac7979215080673e58fdaf428f7fef1dc63c6df88bb5e9377b6979d09",
+        "md5_hash": "83Ijx+dO7NOlIQV8Evv8jg=="
+      },
+      "full_summary_uri": "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix/7a0c6b4856d1/host-3-full.json",
+      "full_summary_identity": {
+        "bytes": 447634,
+        "sha256": "24a02f55b8be100a417ad13d37147589d5012c30778f6d2987d7212c086f6e23",
+        "md5_hash": "y0o1lD82Pau42V0LyvR72Q=="
+      },
+      "parser_peak_rss_kib": 3478408
+    }
+  ],
+  "source_commit": "949216c0319d4e4434c5bc11fecd83cf43615651",
+  "source_sha256": {
+    "logbooks/20-ema-gram-polar/profile_prefix_regionally.py": "222e4987000403ba82d71aafc371255659607c52fe3eaaaa9b88f53c5dc1269f",
+    "logbooks/20-ema-gram-polar/validate_profile_prefix.py": "007eba905f2966a9b878cd8a5e1b576e4a7d41e12db5552a4de99feacff01d90",
+    "logbooks/20-ema-gram-polar/submit_prefix_profile.py": "5375a32131eae9181b084f87ff037c19e356be8160d4de9dac66d9e3797c9694",
+    "lib/marin/src/marin/profiling/__init__.py": "50050e801f044ac6910be8d2c64d539e2bb0a0614df25e795d92667416e1ad81",
+    "lib/marin/src/marin/profiling/xplane.py": "db9ce7f0417ab3deba96e3b86e41416da70f0517004abf6efd36169cfdc50dae",
+    "lib/marin/src/marin/profiling/trace_summary.py": "eb0f6d8007cca85bbafcece758e0b35c27469478b264e0636dcc8c67504f5f86",
+    "lib/marin/src/marin/profiling/schema.py": "d9a637863f1edbbd99a1a45155f8a642cb20ae82168e44f6b4fa97a98cd1cf2e",
+    "lib/marin/src/marin/profiling/semantics.py": "97413e01f8203a61c0afdefcb29ebc2ccef939b318b06be7f9e2630c1f0c5503"
+  },
+  "manifest_sha256": "dc33f2d84957e1c14cb3cf985389cdbdcf5b5e6658d57d24112866e8b0cbc92e",
+  "completed": true,
+  "status": "SUCCEEDED attempt0 exit0, zero failures/preemptions",
+  "observer_session": 51174,
+  "observer_ended": true,
+  "observer_exit": 0,
+  "never_repoll_restart_replace": true,
+  "region": "projects/748532799086/zones/us-central2-b",
+  "worker_id": "marin-tpu-v4-reserved-8-us-central2-b-20261103-2048-4ba2af8d-worker-0",
+  "instance_name": "t1v-n-a1552b48-w-0",
+  "summary": "prefix-profile-summary.json",
+  "all_four_profile_bytes_stayed_regional": true
+}

@@ -1,0 +1,65 @@
+{
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104",
+  "accepted_utc": "2026-11-04T01:25:52.703434+00:00",
+  "command": [
+    "python",
+    "logbooks/20-ema-gram-polar/profile_prefix_regionally.py",
+    "--manifest",
+    "logbooks/20-ema-gram-polar/prefix-profile-manifest.json",
+    "--manifest-sha256",
+    "dc33f2d84957e1c14cb3cf985389cdbdcf5b5e6658d57d24112866e8b0cbc92e",
+    "--output-prefix",
+    "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix"
+  ],
+  "source_commit": "949216c0319d4e4434c5bc11fecd83cf43615651",
+  "cluster": "marin",
+  "observer_session": 51174,
+  "observer_log": "scratch/20261104-prefix-profile-follow.log",
+  "observer_owner": "current root, sole follow for CPU parse; training separately retains67222",
+  "status": "RUNNING attempt0; no completed profile summary yet",
+  "first_check_not_before": "2026-11-04T01:27:52.703434+00:00",
+  "resources": {
+    "cpu": 8,
+    "memory": "64GB",
+    "disk": "20GB",
+    "accelerator": null
+  },
+  "region": "us-central2",
+  "excluded_training_tpu_name": "t1v-n-a140728f",
+  "preemption_retries": "SDK default1000 unchanged",
+  "wallclock_limits": null,
+  "training_intervention": false,
+  "manifest_sha256": "dc33f2d84957e1c14cb3cf985389cdbdcf5b5e6658d57d24112866e8b0cbc92e",
+  "latest_canonical_observation": {
+    "started_utc": "2026-11-04T01:28:11.323284+00:00",
+    "completed_utc": "2026-11-04T01:28:12.926979+00:00",
+    "next_canonical_check_not_before": "2026-11-04T01:37:42.926979+00:00",
+    "rows": [
+      {
+        "kind": "job",
+        "returncode": 0,
+        "path": "scratch/20261104-prefix-profile-initial-job.txt",
+        "output": "Job: /kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104 (/kaiyuew/ema-gram-20-prefix-profile-cpu-20261104)\nState: running  exit=0  failures=0  preemptions=0\nTasks: 0/1 completed  running=1\n\n  TASK  STATE    EXIT    DURATION                     PEAK MEM    CUR MEM    DIAGNOSTIC\n     0  running  -       2 minutes and 15.67 seconds  -           -\nI20261103 17:28:12 8480104832 iris.cli.main Resolved cluster 'marin' to config: /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nI20261103 17:28:12 8480104832 iris.cluster.config Loading config from /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nNot all requested scopes were granted by the authorization server, missing scopes email.\n"
+      },
+      {
+        "kind": 0,
+        "returncode": 0,
+        "path": "scratch/20261104-prefix-profile-initial-0.txt",
+        "output": "Task: /kaiyuew@stanford.edu/ema-gram-20-prefix-profile-cpu-20261104/0\nState: running  backend=default\nWorker: marin-tpu-v4-reserved-8-us-central2-b-20261103-2048-4ba2af8d-worker-0 (10.130.0.45:10001)\nBackend object (current attempt 0): 3403b9cedd720ef5fcca1019dfdd60d6f15f8fee5019a3d4c133bb2f888dbbe7\nResources: cpu=8, memory=68.72 GB, disk=21.47 GB\n\nAttempts:\n  ATTEMPT  UID           STATE    EXIT    WORKER                                                                 REASON\n        0  4d30c258f316  running  -       marin-tpu-v4-reserved-8-us-central2-b-20261103-2048-4ba2af8d-worker-0\nI20261103 17:28:12 8480104832 iris.cli.main Resolved cluster 'marin' to config: /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nI20261103 17:28:12 8480104832 iris.cluster.config Loading config from /Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/lib/iris/config/marin.yaml\nNot all requested scopes were granted by the authorization server, missing scopes email.\n"
+      }
+    ]
+  },
+  "next_canonical_check_not_before": "2026-11-04T01:37:42.926979+00:00",
+  "partial_evidence": {
+    "report_uri": "gs://marin-us-central2/ema-gram-20-profile/2026.11.04.prefix/7a0c6b4856d1/report.json",
+    "local_report": "scratch/20261104-prefix-profile-partial.json",
+    "completed": false,
+    "hosts_present": [
+      0,
+      1
+    ],
+    "host0_sha256": "2ba60dcfdc3055fe6b3d93ffea8279f968d926bc6ec0be6f5d812543a2e04fd8",
+    "host1_sha256": "4b41f992b05894566fc9cf7462b6d243fc6c97eb985dc43c54214476d458ce4e",
+    "scope": "No all-four-host acceptance or optimization selection. Parser step-marker count15 is not15trainingupdates; nested/other device markers need identity disambiguation."
+  }
+}
