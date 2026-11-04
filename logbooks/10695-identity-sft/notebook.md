@@ -17,7 +17,7 @@ status: active
 - Baseline and alternatives: v0.1 with no system prompt. Alternatives were context distillation, on-policy distillation (#10491) and SFT on [marin-community/identity-data](https://huggingface.co/datasets/marin-community/identity-data) @665ac6e mixed with replay (this notebook, "Path B").
 - Evidence needed to choose: the native-boundary identity screen (52 core prompts and 14 third-person controls, thinking OFF and ON, special tokens kept), BFCL parity (5 runs, run-level bootstrap), paired GSM8K and MATH500, SWE100, and Panel-60.
 - Constraints and unresolved questions: tool calling (BFCL) must not regress. Panel-60 is a development set, not held out. Mini840 (#10804) is still a pilot.
-- Held-out identity split: the identity prompts and targets that were once kept back as a held-out split (`experiments/post_training/identity_path_b/identity_scope/payload.zip` in the pinned commits) are now public and no longer held out. Held-out identity checks use Ben Feuer's public Panel-60 instead.
+- Held-out identity split: the identity prompts and targets that were once kept back as a held-out split (`experiments/post_training/identity_path_b/identity_scope/payload.zip` in the pinned commits) are now public and no longer held out. Ben Feuer's public Panel-60 now provides a separate development screen; it is not held out either.
 
 ## Source
 
