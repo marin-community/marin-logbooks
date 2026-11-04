@@ -5457,3 +5457,35 @@ continues; the pool has four ready slices and one booting slice. A bounded
 controller-log query for that booting slice timed out, so its cause remains
 unverified. The task checks succeeded and sole follow 92765 remains live.
 Next routine check: 2026-11-04T07:29:36.288710+00:00. No new job or source change.
+
+### 2026-11-04: grouped-Gram execution starts
+
+The grouped-Gram acceleration diagnostic has started. Canonical checks on
+November 4 at 07:34:16 UTC show all four tasks running on attempt 0, with no
+failures or preemptions. The reserved v4-32 slice that was previously booting
+now hosts these tasks. No cancellation, resubmission or allocation change was
+needed. Log-follow session 92765 remains the sole live observer; the next
+routine canonical check is due no earlier than 07:43:46 UTC.
+
+All four execution-host non-training W&B checks finished successfully, and all
+four numerical workers are online. Their W&B configurations and
+generation-pinned regional reports record the four expected source hashes and
+published execution commit `03d5bad644d570fc29a43781a6bdcb7362f44185`.
+Iris tasks 0–3 map to JAX processes 0,3,2,1. Each report identifies the original
+checkpoint and its 21 selected Gram/momentum arrays; this is not a full
+trainer restore.
+
+All four partial reports contain directions computed from unchanged saved
+state for both matrix and matrix_grouped, plus the matrix baseline's synthetic
+gradient update. In these completed portions, outputs are finite and input
+fingerprints are unchanged before versus after execution. Three repeated
+outputs match one another bitwise within each case/layout/process.
+The fixed-state matrix_grouped versus matrix direction comparisons fail
+rtol=atol=1e-5 locally on all four processes; this diagnostic alone is not a
+training veto. Full-update matrix_grouped results are still absent and every
+report has completed=false. Global replica agreement and numerical errors
+have not been aggregated. No speedup or training/MFU conclusion follows from
+this partial snapshot. All raw timing samples remain in the regional reports;
+fixed baseline-first order and three samples limit their interpretation.
+
+[Startup evidence](grouped-gram-startup.json).
