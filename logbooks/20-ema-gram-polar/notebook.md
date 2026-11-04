@@ -4759,3 +4759,23 @@ The [four-host summary](prefix-profile-summary.json) attributes 90.73–90.89% o
 Three all-gather records with shape `16,4096,4096`, mapped to the relative-power output barrier, each appear eight times per host. Their average recorded durations span 258.6–271.0 ms on host 0, 902.0–930.6 ms on host 1, 55.3–93.7 ms on host 2 and 36.8–69.8 ms on host 3. These times may include arrival imbalance or waiting and do not isolate network transfer cost. Host 1 also has fewer parsed duration events (`num_complete_events`): 209,563 versus 1,280,031, 1,598,449 and 1,617,298 on the other hosts. That contrast motivates checking workload distribution; it does not yet establish whether workload distribution differs. Capture coverage or event structure could also affect these counts. The parser reported no truncation warning, which does not independently prove capture completeness. Parser peak RSS ranged from 1.33 to 3.32 GiB and says nothing about training memory fit.
 
 The published optimizer pads eleven matrices to sixteen shard slots and restores replicated eigendecomposition outputs. These source facts make placement and collective-arrival timing useful next checks, but the aggregate profile does not map padded slots to devices or prove that padding causes the observed imbalance. The next static investigation will inspect exact per-device intervals and matrix-slot placement regionally before selecting a numerical change. The matrix training run continues through counter 924, with validation and the designated steady window still pending. No optimizer implementation, precision, geometry or schedule changed during profiling.
+
+### November 3, 17:46 Pacific — device interval audit prepared
+
+The [next profile audit](prefix-intervals-prepared.json) retains recorded event
+intervals on each device track, rather than only host aggregates. It selects
+the same three relative-power all-gather names from the completed profile and
+preserves repeated records, adjacent events, source annotations and raw
+metadata. Integer-picosecond timestamps avoid rounding at epoch scale.
+Per-track interval unions count overlapping time only once within that track;
+selected raw collective records remain separate. The unions are not summed
+into a wall-clock or speedup estimate. Cross-host clock
+alignment and matrix-slot ownership remain unverified.
+
+[Eight static fixtures](prefix-intervals-validation.json) passed. The manifest
+joins all four generation-pinned profile identities to the SHA-verified prior
+report. Exact source will be published before regional CPU execution, which
+excludes the active training slice and retains default preemption and no
+wall-clock limits. No optimizer implementation changed. The 924-update
+training run remains active; the 17:39 Pacific canonical check found all four
+tasks on their original attempts with no failures or preemptions.
