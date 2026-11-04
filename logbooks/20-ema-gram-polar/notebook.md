@@ -6090,3 +6090,23 @@ pinned tokenizer bytes. Collection, regional assembly and real native loader
 qualification are prepared. All30 static pilot configs and distinct output
 paths were checked: seed0/fromscratch/7630steps/globalbatch8/4096context;
 24nonzero usev4-32 and6alpha0 usev4-8. No pilot has been submitted yet.
+
+### 2026-11-04 23:52 UTC — repair truncated source transfers and incremental GCS writes
+
+The next canonical checks found web build failures with HTTP IncompleteRead,
+including task0 after23,136,410 of358,218,755compressed bytes. Native GCS
+small-batch writing had kept the producer blocked for minutes. This establishes
+a broken transfer during processing; CDN idle behavior is a plausible mechanism,
+not a verified server-side diagnosis. Math task57 succeeded and will be retained.
+All failed guards/attempts remain; no queued/running identity is replaced.
+
+The repaired worker downloads each pinned raw file completely to regional
+scratch before parsing, checks full compressed-source SHA256, and restarts
+a truncated download cleanly. Native cache writing now stages on regional disk
+and uploads completed cache objects once, with ledger last. Full remote token
+readback remains required. The first local staging check exposed a missing
+parent directory and failed; the corrected final online selfcheck917ae563c699
+passed native tokens, cache/readback/merge, and injected truncated-response
+recovery without duplicated records. W&B finished/success is API-verified.
+The manifest and selected tokens are unchanged. A distinct hq02 regional
+probe must pass before repairing only canonically failed build indices.

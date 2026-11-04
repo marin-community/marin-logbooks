@@ -10,11 +10,15 @@ import itertools
 import json
 import os
 import tempfile
+import time
 import uuid
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
+import requests
 import wandb
+import zstandard
 from levanter.data.text._batch_tokenizer import BatchTokenizer
 from levanter.store.cache import CacheLedger, CacheMetadata, TreeCache, _merge_sharded_ledgers, write_levanter_cache
 from levanter.tokenizers import _stage_tokenizer, load_tokenizer
@@ -84,13 +88,40 @@ def raw_records(source, stats):
                 raise ValueError("Pinned original-text mirror LFS identity changed")
             stats["lfs_pointer_verified"] = True
             stats["lfs_sha256"] = source["lfs_sha256"]
-        with session.get(source["url"], stream=True, timeout=(30, 90)) as response:
-            response.raise_for_status()
-            if source.get("etag") and response.headers.get("ETag") != source["etag"]:
-                raise ValueError("Source ETag changed since publication")
-            stats["etag"] = response.headers.get("ETag")
-            stats["source_url"] = source["url"]
-            yield from iter_jsonl_from_zstd_stream(response.raw)
+        # Finish the network transfer before decompression/tokenization/cache IO.
+        # Slow downstream GCS writes must not leave the CDN socket idle for minutes.
+        with tempfile.TemporaryFile() as downloaded:
+            for attempt in range(6):
+                downloaded.seek(0)
+                downloaded.truncate()
+                digest = hashlib.sha256()
+                count = 0
+                try:
+                    with session.get(source["url"], stream=True, timeout=(30, 90)) as response:
+                        response.raise_for_status()
+                        if source.get("etag") and response.headers.get("ETag") != source["etag"]:
+                            raise ValueError("Source ETag changed since publication")
+                        stats["etag"] = response.headers.get("ETag")
+                        stats["source_url"] = source["url"]
+                        for chunk in response.iter_content(chunk_size=8 * 1024 * 1024):
+                            downloaded.write(chunk)
+                            digest.update(chunk)
+                            count += len(chunk)
+                        expected = source.get("size", int(response.headers.get("Content-Length", count)))
+                        if count != expected:
+                            raise OSError(f"Incomplete source download: {count} != {expected}")
+                    break
+                except (requests.RequestException, OSError) as error:
+                    stats.setdefault("download_errors", []).append(dict(attempt=attempt, error=str(error)))
+                    if attempt == 5:
+                        raise
+                    time.sleep(min(2**attempt, 16))
+            actual_sha = digest.hexdigest()
+            if source.get("lfs_sha256") and actual_sha != source["lfs_sha256"]:
+                raise ValueError("Downloaded raw source bytes do not match pinned LFS SHA256")
+            stats.update(download_bytes=count, downloaded_sha256=actual_sha, download_attempts=attempt + 1)
+            downloaded.seek(0)
+            yield from iter_jsonl_from_zstd_stream(downloaded)
 
 
 def public_records(source, processor, stats):
@@ -158,6 +189,48 @@ def self_check(processor, manifest, run):
         flat = asyncio.run(merged.get_flat_field_batch("input_ids", [0], len(expected)))[0]
         assert np.array_equal(flat, expected)
         assert merged.flat_field_length("input_ids") == len(expected)
+    # A broken streaming response must restart cleanly, without duplicated text.
+    payload = zstandard.ZstdCompressor().compress(
+        b'{"text":"First document", "warc_record_id":"id1"}\n' b'{"text":"Second document", "warc_record_id":"id2"}\n'
+    )
+    source = dict(url="https://fixture.invalid/raw", size=len(payload), lfs_sha256=hashlib.sha256(payload).hexdigest())
+
+    class Response:
+        def __init__(self, fail=False):
+            self.fail = fail
+            self.headers = {"X-Linked-Etag": source["lfs_sha256"], "Content-Length": str(len(payload))}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def raise_for_status(self):
+            pass
+
+        def iter_content(self, chunk_size):
+            if self.fail:
+                yield payload[:10]
+                raise requests.exceptions.ChunkedEncodingError("injected truncated response")
+            yield payload
+
+    class Session(Response):
+        calls = 0
+
+        def head(self, *args, **kwargs):
+            return Response()
+
+        def get(self, *args, **kwargs):
+            self.calls += 1
+            return Response(fail=self.calls == 1)
+
+    downloaded = {}
+    with patch(__name__ + ".build_retrying_session", return_value=Session()), patch(__name__ + ".time.sleep"):
+        actual = list(raw_records(source, downloaded))
+    assert [x["warc_record_id"] for x in actual] == ["id1", "id2"]
+    assert downloaded["download_attempts"] == 2 and len(downloaded["download_errors"]) == 1
+    assert downloaded["downloaded_sha256"] == source["lfs_sha256"]
     try:
         list(bounded_documents(iter(encoded[:1]), target, {}))
     except ValueError:
@@ -165,7 +238,14 @@ def self_check(processor, manifest, run):
     else:
         raise AssertionError("Truncated source was accepted")
     return dict(
-        passed=True, exact_native_tokens=True, deterministic=True, native_roundtrip=True, whole_document_budget=True
+        passed=True,
+        exact_native_tokens=True,
+        deterministic=True,
+        native_roundtrip=True,
+        whole_document_budget=True,
+        interrupted_download_recovery=True,
+        full_source_sha256=True,
+        regional_local_staging_roundtrip=True,
     )
 
 
@@ -184,7 +264,27 @@ def build_task(task, processor, output, run):
             run.log({"subset/source_completed": index + 1, "subset/tokens": sum(x.get("tokens", 0) for x in stats)})
 
     metadata = processor.metadata
-    result = write_levanter_cache(records(), output, metadata=metadata, batch_size=32)
+    # Build on regional scratch, then upload each final cache object once.
+    # Incremental small GCS writes repeatedly rewrote compressed array chunks.
+    with tempfile.TemporaryDirectory(prefix="ema-subset-cache-") as local:
+        result = write_levanter_cache(records(), local + "/train", metadata=metadata, batch_size=1024)
+        destination = StoragePath(output)
+        if destination.exists():
+            raise ValueError("Refusing to overwrite a prior cache attempt")
+        local_root = Path(local) / "train"
+        ledger_path = local_root / "shard_ledger.json"
+        ledger = json.loads(ledger_path.read_text())
+        ledger["shard_rows"] = {output: result["count"]}
+        ledger["finished_shards"] = [output]
+        ledger_path.write_text(json.dumps(ledger))
+        for path in sorted(local_root.rglob("*")):
+            if path.is_file() and path.name not in {"shard_ledger.json", ".success"}:
+                target_path = destination / path.relative_to(local_root).as_posix()
+                target_path.parent.mkdirs()
+                target_path.upload_from(str(path))
+        (destination / "shard_ledger.json").upload_from(str(ledger_path))
+        (destination / ".success").write_text("")
+
     cache = TreeCache.load(output, exemplar())
     assert len(cache) == result["count"]
     # Verify every stored token against the selected source stream, in-region.

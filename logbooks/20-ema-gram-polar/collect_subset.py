@@ -21,14 +21,14 @@ BASE = Path("logbooks/20-ema-gram-polar")
 SCRATCH = Path("scratch")
 
 
-def collect(index, cell, observed, manifest):
-    output = SCRATCH / f"20261104-subset-hq01-build-{index:02d}-validated.json"
+def collect(index, cell, observed, manifest, stage):
+    output = SCRATCH / f"20261104-subset-{stage}-build-{index:02d}-validated.json"
     if output.exists():
         return json.loads(output.read_text())
     assert observed["terminal"]
     job = observed["latest"]["job"]
     assert job["state"] == "JOB_STATE_SUCCEEDED" and job["exit_code"] == 0, job
-    task_path = SCRATCH / f"20261104-subset-hq01-build-{index:02d}-task.json"
+    task_path = SCRATCH / f"20261104-subset-{stage}-build-{index:02d}-task.json"
     if not task_path.exists():
         raw = subprocess.check_output(
             [
@@ -70,7 +70,10 @@ def collect(index, cell, observed, manifest):
     assert report["task"] == manifest["tasks"][index]
     assert report["manifest_sha256"] == hashlib.sha256((BASE / "subset-inputs.json").read_bytes()).hexdigest()
     assert (
-        report["source_sha256"] == hashlib.sha256(Path("experiments/ema_gram/subset_data.py").read_bytes()).hexdigest()
+        report["source_sha256"]
+        == hashlib.sha256(
+            subprocess.check_output(["git", "show", cell["source_commit"] + ":experiments/ema_gram/subset_data.py"])
+        ).hexdigest()
     )
     assert report["tokenizer_files"] == manifest["tokenizer_files"]
     assert report["result"]["full_native_readback"]
@@ -113,24 +116,32 @@ def collect(index, cell, observed, manifest):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--require-all", action="store_true")
+    parser.add_argument("--stage", default="hq01")
     args = parser.parse_args()
+    stage = args.stage
     manifest = json.loads((BASE / "subset-inputs.json").read_text())
     ledger = json.loads((SCRATCH / "20261104-subset-ledger.json").read_text())["jobs"]
-    observers = json.loads((SCRATCH / "20261104-subset-hq01-build-observers.json").read_text())
-    cells = {v["index"]: v for k, v in ledger.items() if "-hq01-build-" in k}
-    selected = [i for i in cells if observers.get(str(i), {}).get("terminal")]
+    observers = json.loads((SCRATCH / f"20261104-subset-{stage}-build-observers.json").read_text())
+    cells = {v["index"]: v for k, v in ledger.items() if f"-{stage}-build-" in k}
+    selected = [
+        i
+        for i in cells
+        if observers.get(str(i), {}).get("terminal")
+        and observers[str(i)]["latest"]["job"]["state"] == "JOB_STATE_SUCCEEDED"
+    ]
     if args.require_all:
         assert len(selected) == len(manifest["tasks"])
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
-        futures = [pool.submit(collect, i, cells[i], observers[str(i)], manifest) for i in selected]
+        futures = [pool.submit(collect, i, cells[i], observers[str(i)], manifest, stage) for i in selected]
         for future in futures:
             future.result()
     results = []
     for i in range(len(manifest["tasks"])):
-        path = SCRATCH / f"20261104-subset-hq01-build-{i:02d}-validated.json"
-        if not path.exists():
+        paths = list(SCRATCH.glob(f"20261104-subset-hq*-build-{i:02d}-validated.json"))
+        if not paths:
             return
-        results.append(json.loads(path.read_text()))
+        assert len(paths) == 1, "Unexpected duplicate successful build"
+        results.append(json.loads(paths[0].read_text()))
     (BASE / "subset-build-results.json").write_text(json.dumps(results, indent=2) + "\n")
     print("All build reports verified and ordered", flush=True)
 

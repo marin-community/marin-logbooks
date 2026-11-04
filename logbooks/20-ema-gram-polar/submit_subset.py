@@ -87,6 +87,7 @@ def main():
     parser.add_argument("--mode", choices=("probe", "build"), required=True)
     parser.add_argument("--launch", action="store_true")
     parser.add_argument("--stage", default="hq01")
+    parser.add_argument("--retry-failed-from", help="Only repair observer-confirmed failures from this prior stage")
     args = parser.parse_args()
     assert subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() == args.source_commit
     validation = json.loads((BASE / "subset-preflight.json").read_text())
@@ -96,7 +97,9 @@ def main():
     manifest = json.loads((BASE / "subset-inputs.json").read_text())
     assert manifest["tokenizer_files"] == validation["tokenizer_files"]
     if args.mode == "build":
-        probe = json.loads((BASE / "subset-regional-probe.json").read_text())
+        probe_name = "subset-regional-probe.json" if args.stage == "hq01" else f"subset-regional-probe-{args.stage}.json"
+        probe = json.loads((BASE / probe_name).read_text())
+        assert probe["source_sha256"] == validation["source_files"]["experiments/ema_gram/subset_data.py"]
         assert probe["success"] and probe["canonical_success"] and probe["wandb_finished"]
         assert probe["manifest_sha256"] == hashlib.sha256((BASE / "subset-inputs.json").read_bytes()).hexdigest()
         expected = {t["component"] for t in manifest["tasks"] if "url" in t["sources"][0]}
@@ -110,6 +113,14 @@ def main():
         )
         assert not subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"])
     indices = [0] if args.mode == "probe" else range(len(manifest["tasks"]))
+    if args.retry_failed_from:
+        assert args.mode == "build" and args.stage != args.retry_failed_from
+        prior = json.loads((ROOT / f"scratch/20261104-subset-{args.retry_failed_from}-build-observers.json").read_text())
+        indices = [
+            i
+            for i in indices
+            if prior.get(str(i), {}).get("terminal") and prior[str(i)]["latest"]["job"]["state"] == "JOB_STATE_FAILED"
+        ]
     LEDGER.parent.mkdir(exist_ok=True)
     with LEDGER.with_suffix(".lock").open("w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)

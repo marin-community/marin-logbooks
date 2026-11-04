@@ -18,10 +18,11 @@ def main():
     parser.add_argument("--worktree", type=Path, required=True)
     parser.add_argument("--stage", default="hq01")
     parser.add_argument("--mode", choices=("probe", "build", "assemble", "data-check"), required=True)
+    parser.add_argument("--expected", type=int, help="Expected distinct tasks in this stage")
     args = parser.parse_args()
     scratch = args.worktree / "scratch"
     prefix = f"subset-{args.stage}-{args.mode}"
-    expected = 58 if args.mode == "build" else 1
+    expected = args.expected if args.expected is not None else (58 if args.mode == "build" else 1)
     state_path = scratch / f"20261104-{prefix}-observers.json"
     base = ["uv", "run", "--no-sync", "iris", "--cluster=marin"]
     with (scratch / f"20261104-{prefix}-observers.lock").open("w") as lock:
