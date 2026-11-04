@@ -1,0 +1,195 @@
+{
+  "sources": {
+    "experiments/ema_gram/README.md": "64115fd8c3bb17c49d76f421d9afb8849007df2de4b55e38aec5551ba98d6b06",
+    "experiments/ema_gram/plan.py": "a5bb08436e0bafee8fffff7475e755542583cc20b8e9bd429f09823b1357c20b",
+    "experiments/references/train_delphi_seeds.py": "483941e793c96214cc5a56d1a6df5e430001c812fc6c9f6c178c626324953b1e",
+    "lib/levanter/src/levanter/optim/ema_gram.py": "83561d436add9fa3844cb687b9d028cac5cdb380732799c3089a5cd4a94d0ba9",
+    "logbooks/20-ema-gram-polar/prefix-train-first-updates.json": "c28feabecd6e4fe5df61f888f1b9a4494d6fd0254555920168fbcd6e6504e2cd"
+  },
+  "planning_assumptions": {
+    "nonzero_step_seconds": 4.0,
+    "baseline_step_seconds": 0.35,
+    "measurement_scope": "Early alpha=.25 matrix/default, not steady nor all-alpha/large-model measurement",
+    "completed_credit": "One completed alpha0 pilot credited; current prefix not yet accepted/reusable",
+    "excluded": [
+      "queue",
+      "compilation",
+      "evaluation",
+      "checkpoint/hooks",
+      "retries",
+      "probes/SVD",
+      "LR edge expansion"
+    ],
+    "concurrency": "Serial estimate; hypothetical parallelism does not authorize concurrent candidates"
+  },
+  "scope": {
+    "initial_pilots": 30,
+    "remaining_pilots": 29,
+    "pilot_steps": 7630,
+    "confirmation_runs": [
+      9,
+      12
+    ],
+    "confirmation_steps": 37335,
+    "confirmation_selection": "alpha0,.25,.5 plus best if .125 or1/3, each three fresh seeds",
+    "conditional_horizon_generated_runs": 18,
+    "conditional_horizon_new_if_matching_h100_confirmations_reused": 12,
+    "conditional_scale_runs": 6,
+    "scale_steps": 38014,
+    "scope_limit": "Conditional phases need reproducibility gate; LR edge expansion has no fixed count"
+  },
+  "serial_compute": {
+    "one_pilot_hours": 8.477777777777778,
+    "one_confirmation_hours": 41.483333333333334,
+    "remaining_pilots_hours": 207.17569444444445,
+    "baseline_remaining_hours": 14.598402777777778,
+    "nonzero_steps": [
+      407130,
+      519135
+    ],
+    "nonzero_hours": [
+      452.3666666666667,
+      576.8166666666667
+    ],
+    "core_hours": [
+      466.96506944444445,
+      591.4150694444445
+    ],
+    "core_days": [
+      19.45687789351852,
+      24.64229456018519
+    ],
+    "equal_four_seconds_all_remaining_core_days": [
+      25.800231481481482,
+      30.985648148148147
+    ],
+    "horizon_12_new_days": 20.741666666666667,
+    "horizon_18_fresh_days": 31.1125,
+    "scale_days_by_seconds_per_step": {
+      "10": 26.398611111111112,
+      "20": 52.797222222222224,
+      "40": 105.59444444444445
+    }
+  },
+  "break_even": [
+    {
+      "k": 1.25,
+      "accelerated_nonzero_step_seconds": 3.2,
+      "core_remaining_days_after_optimization": [
+        15.687155671296296,
+        19.835489004629633
+      ],
+      "max_blocking_engineering_days_serial": [
+        3.7697222222222213,
+        4.806805555555555
+      ],
+      "max_days_p4_success_probability_half": [
+        0.47121527777777766,
+        0.6008506944444444
+      ]
+    },
+    {
+      "k": 1.5,
+      "accelerated_nonzero_step_seconds": 2.6666666666666665,
+      "core_remaining_days_after_optimization": [
+        13.174007523148148,
+        16.630951967592594
+      ],
+      "max_blocking_engineering_days_serial": [
+        6.282870370370372,
+        8.011342592592595
+      ],
+      "max_days_p4_success_probability_half": [
+        0.7853587962962965,
+        1.0014178240740743
+      ]
+    },
+    {
+      "k": 2,
+      "accelerated_nonzero_step_seconds": 2.0,
+      "core_remaining_days_after_optimization": [
+        10.032572337962963,
+        12.625280671296297
+      ],
+      "max_blocking_engineering_days_serial": [
+        9.424305555555556,
+        12.01701388888889
+      ],
+      "max_days_p4_success_probability_half": [
+        1.1780381944444445,
+        1.5021267361111112
+      ]
+    },
+    {
+      "k": 3,
+      "accelerated_nonzero_step_seconds": 1.3333333333333333,
+      "core_remaining_days_after_optimization": [
+        6.891137152777778,
+        8.619609375000001
+      ],
+      "max_blocking_engineering_days_serial": [
+        12.565740740740743,
+        16.02268518518519
+      ],
+      "max_days_p4_success_probability_half": [
+        1.570717592592593,
+        2.0028356481481486
+      ]
+    },
+    {
+      "k": 4,
+      "accelerated_nonzero_step_seconds": 1.0,
+      "core_remaining_days_after_optimization": [
+        5.320419560185186,
+        6.616773726851853
+      ],
+      "max_blocking_engineering_days_serial": [
+        14.136458333333332,
+        18.025520833333335
+      ],
+      "max_days_p4_success_probability_half": [
+        1.7670572916666665,
+        2.253190104166667
+      ]
+    },
+    {
+      "k": 10,
+      "accelerated_nonzero_step_seconds": 0.4,
+      "core_remaining_days_after_optimization": [
+        2.4931278935185186,
+        3.0116695601851853
+      ],
+      "max_blocking_engineering_days_serial": [
+        16.96375,
+        21.630625000000006
+      ],
+      "max_days_p4_success_probability_half": [
+        2.12046875,
+        2.7038281250000007
+      ]
+    }
+  ],
+  "formulas": {
+    "blocking": "D + Cvalidate < p * T_speedable * (1-1/k); unaffected overhead cancels",
+    "parallel": "Replace T_speedable with actual critical-path reducible duration; T/P is an ideal lower bound",
+    "concurrent_engineering": "Independent engineering: saved=max(T-D-C,0)*(1-1/k); D+C is deployment delay; contention extra",
+    "amdahl": "whole_step_speedup=1/((1-f)+f/k_component)"
+  },
+  "geometry": {
+    "layers": 11,
+    "large_gram_count": 33,
+    "large_gram_dimension": 4096,
+    "small_gram_count": 121,
+    "small_gram_dimension": 1024,
+    "large_share_of_n_cubed_eigensolver_proxy": 0.9458128078817734,
+    "matrix_batch_padding_useful_fraction": 0.6875,
+    "scale_eigen_n_cubed_proxy_ratio": 4.909090909090909,
+    "scope": "Dense arithmetic proxy only, not measured kernel fractions or attainable speedup",
+    "model_flops_per_update": 80353469399040,
+    "candidate_peak_flops": 4400000000000000.0,
+    "model_only_100percent_peak_seconds": 0.018262152136145456,
+    "five_percent_mfu_seconds": 0.3652430427229091,
+    "speedup_from_four_seconds_for_five_percent_mfu": 10.951611754681915,
+    "mfu_limit": "Model FLOPs exclude expensive optimizer arithmetic; low MFU is not a direct idle-device fraction"
+  }
+}
