@@ -5404,3 +5404,8 @@ default preemption/retries and no wall-clock limits. Log-follow session 92765
 is its only observer. The first canonical job/task check is due no earlier
 than 05:15:00 UTC. Execution-host logging and TPU results remain pending;
 submission is not evidence of acceleration or training progress.
+
+Initial canonical checks at 2026-11-04T05:15:20.376544+00:00 found all four tasks
+pending with no attempts, failures or preemptions. The 120-second wait after
+acceptance was satisfied. Next routine check: 2026-11-04T05:24:50.376544+00:00.
+Sole follow 92765 is retained.
