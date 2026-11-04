@@ -1,0 +1,742 @@
+{
+  "process_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "checkpoint": {
+    "checkpoint_uri": "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923",
+    "metadata": {
+      "step": 923,
+      "timestamp": "2026-10-31T16:55:33.165024",
+      "is_temporary": true
+    },
+    "loaded_paths": [
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/0/momentum",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/0/left",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/0/right",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/1/momentum",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/1/left",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/1/right",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/2/momentum",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/2/left",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/2/right",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/3/momentum",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/3/left",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/3/right",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/momentum",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/left",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/right",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/momentum",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/left",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/right",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/momentum",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/left",
+      "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/right"
+    ],
+    "loaded_bytes": 3460300800,
+    "manifest_sha256": "74252403041d22de0b33ba6a2de8c79eae8104ede5d2f43d1a6e0a6b806d488f",
+    "full_trainer_restore": false,
+    "scope": "Saved FP32 Gram and momentum arrays only; model, AdamW, step and data state are not restored"
+  },
+  "source_files": {
+    "logbooks/20-ema-gram-polar/grouped_gram_check.py": {
+      "bytes": 15203,
+      "sha256": "b9de5b686fcb79f9b17567c1ed53c3d389e221c179fec8b5f57d572841a92409"
+    },
+    "logbooks/20-ema-gram-polar/saved_state_check.py": {
+      "bytes": 10957,
+      "sha256": "85282a7288a1705c296862994c1fa5f93eef2d80d77a5592f39d123108325696"
+    },
+    "logbooks/20-ema-gram-polar/optimizer_cost.py": {
+      "bytes": 21061,
+      "sha256": "906c3166b1d65cca383963890e2034dd5edcb6afd074308cb9e97f209ad70033"
+    },
+    "lib/levanter/src/levanter/optim/ema_gram.py": {
+      "bytes": 16341,
+      "sha256": "1250b09c9b8de7b3f978c3f33e6170480ad9ddbe6c9e944a837ffa45aa002a7d"
+    }
+  },
+  "cases": {
+    "unchanged_saved_state_direction": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "label": "direction/q",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.015082359313964844,
+          "relative_frobenius_error": 0.0066205103528828935,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 1,
+          "label": "direction/k",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.008683770895004272,
+          "relative_frobenius_error": 0.0065335632906303375,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 2,
+          "label": "direction/v",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.025150656700134277,
+          "relative_frobenius_error": 0.006409906794081763,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 3,
+          "label": "direction/o",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.018706202507019043,
+          "relative_frobenius_error": 0.006545226920230521,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 4,
+          "label": "direction/gate",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.008953750133514404,
+          "relative_frobenius_error": 0.005573204120858668,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 5,
+          "label": "direction/up",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.00828707218170166,
+          "relative_frobenius_error": 0.0055413378021772165,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 6,
+          "label": "direction/down",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.005886554718017578,
+          "relative_frobenius_error": 0.0058841746797349374,
+          "all_recorded_shard_hashes_equal": false
+        }
+      ],
+      "unique_leaf_index_records": 112,
+      "timing_scope": "Three locally synchronized optimizer samples, fixed matrix then matrix_grouped order; compilation/first execution separate. Host durations are not summed. No training throughput, MFU, independent seeds or timing-order control.",
+      "timing_by_process": {
+        "0": {
+          "matrix": {
+            "compile_and_first_seconds": 16.609325216000002,
+            "warmed_sample_seconds": [
+              3.3260735339999883,
+              3.3206215199999747,
+              3.3210728600000152
+            ],
+            "mean_seconds": 3.3225893046666592,
+            "median_seconds": 3.3210728600000152,
+            "min_seconds": 3.3206215199999747,
+            "max_seconds": 3.3260735339999883,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 202.42482598999993,
+            "warmed_sample_seconds": [
+              5.2368104460000495,
+              3.2040364020000425,
+              3.174068602000034
+            ],
+            "mean_seconds": 3.8716384833333755,
+            "median_seconds": 3.2040364020000425,
+            "min_seconds": 3.174068602000034,
+            "max_seconds": 5.2368104460000495,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 0.8581868681618229
+        },
+        "3": {
+          "matrix": {
+            "compile_and_first_seconds": 15.352520692999974,
+            "warmed_sample_seconds": [
+              3.3117245060000187,
+              3.310572646999958,
+              3.3110777960000064
+            ],
+            "mean_seconds": 3.3111249829999942,
+            "median_seconds": 3.3110777960000064,
+            "min_seconds": 3.310572646999958,
+            "max_seconds": 3.3117245060000187,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 202.19757536100002,
+            "warmed_sample_seconds": [
+              5.2030126329999575,
+              3.163849976999927,
+              3.163591884000084
+            ],
+            "mean_seconds": 3.8434848313333227,
+            "median_seconds": 3.163849976999927,
+            "min_seconds": 3.163591884000084,
+            "max_seconds": 5.2030126329999575,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 0.8614903214933073
+        },
+        "2": {
+          "matrix": {
+            "compile_and_first_seconds": 16.970550216999982,
+            "warmed_sample_seconds": [
+              3.331234983999991,
+              3.3325597240000207,
+              3.3329196540000225
+            ],
+            "mean_seconds": 3.3322381206666782,
+            "median_seconds": 3.3325597240000207,
+            "min_seconds": 3.331234983999991,
+            "max_seconds": 3.3329196540000225,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 202.443673408,
+            "warmed_sample_seconds": [
+              5.223980931000028,
+              3.2036487070000703,
+              3.178902864999941
+            ],
+            "mean_seconds": 3.86884416766668,
+            "median_seconds": 3.2036487070000703,
+            "min_seconds": 3.178902864999941,
+            "max_seconds": 5.223980931000028,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 0.8613006821301796
+        },
+        "1": {
+          "matrix": {
+            "compile_and_first_seconds": 14.882217687000036,
+            "warmed_sample_seconds": [
+              3.307142142000032,
+              3.307108090999975,
+              3.3071044010000037
+            ],
+            "mean_seconds": 3.307118211333337,
+            "median_seconds": 3.307108090999975,
+            "min_seconds": 3.3071044010000037,
+            "max_seconds": 3.307142142000032,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 201.40770133300003,
+            "warmed_sample_seconds": [
+              5.234449869999935,
+              3.1687971659999903,
+              3.171108246000017
+            ],
+            "mean_seconds": 3.8581184273333142,
+            "median_seconds": 3.171108246000017,
+            "min_seconds": 3.1687971659999903,
+            "max_seconds": 5.234449869999935,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 0.8571842139172431
+        }
+      }
+    },
+    "fixed_synthetic_gradient_update": {
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "passed": false,
+      "leaves": [
+        {
+          "leaf": 0,
+          "label": "direction/q",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.00719037652015686,
+          "relative_frobenius_error": 0.007005303918340734,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 1,
+          "label": "direction/k",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.006859809160232544,
+          "relative_frobenius_error": 0.006972164820228369,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 2,
+          "label": "direction/v",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.01669931411743164,
+          "relative_frobenius_error": 0.007009960922358138,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 3,
+          "label": "direction/o",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.014783799648284912,
+          "relative_frobenius_error": 0.006977059926904133,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 4,
+          "label": "direction/gate",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.01022908091545105,
+          "relative_frobenius_error": 0.005867081809596074,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 5,
+          "label": "direction/up",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.009865939617156982,
+          "relative_frobenius_error": 0.005892993625334047,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 6,
+          "label": "direction/down",
+          "unique_shards": 16,
+          "passed": false,
+          "max_absolute_error": 0.010336428880691528,
+          "relative_frobenius_error": 0.006060142185117201,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 7,
+          "label": "state/q/momentum",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 8,
+          "label": "state/q/left",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 3.552713678800501e-15,
+          "relative_frobenius_error": 5.114242139291229e-09,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 9,
+          "label": "state/q/right",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 10,
+          "label": "state/k/momentum",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 11,
+          "label": "state/k/left",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 3.552713678800501e-15,
+          "relative_frobenius_error": 3.855440158985547e-09,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 12,
+          "label": "state/k/right",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 13,
+          "label": "state/v/momentum",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 14,
+          "label": "state/v/left",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 2.842170943040401e-14,
+          "relative_frobenius_error": 1.4368751999634885e-09,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 15,
+          "label": "state/v/right",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 16,
+          "label": "state/o/momentum",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 17,
+          "label": "state/o/left",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 18,
+          "label": "state/o/right",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 2.842170943040401e-14,
+          "relative_frobenius_error": 2.90318663414974e-10,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 19,
+          "label": "state/gate/momentum",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 20,
+          "label": "state/gate/left",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 21,
+          "label": "state/gate/right",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 22,
+          "label": "state/up/momentum",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 23,
+          "label": "state/up/left",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 3.552713678800501e-15,
+          "relative_frobenius_error": 2.706599482570805e-09,
+          "all_recorded_shard_hashes_equal": false
+        },
+        {
+          "leaf": 24,
+          "label": "state/up/right",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 25,
+          "label": "state/down/momentum",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 26,
+          "label": "state/down/left",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 0.0,
+          "relative_frobenius_error": 0.0,
+          "all_recorded_shard_hashes_equal": true
+        },
+        {
+          "leaf": 27,
+          "label": "state/down/right",
+          "unique_shards": 1,
+          "passed": true,
+          "max_absolute_error": 2.842170943040401e-14,
+          "relative_frobenius_error": 2.4528707111840585e-10,
+          "all_recorded_shard_hashes_equal": false
+        }
+      ],
+      "unique_leaf_index_records": 133,
+      "timing_scope": "Three locally synchronized optimizer samples, fixed matrix then matrix_grouped order; compilation/first execution separate. Host durations are not summed. No training throughput, MFU, independent seeds or timing-order control.",
+      "timing_by_process": {
+        "0": {
+          "matrix": {
+            "compile_and_first_seconds": 14.526383233000047,
+            "warmed_sample_seconds": [
+              4.984106711000095,
+              4.97857671099996,
+              3.98779154500005
+            ],
+            "mean_seconds": 4.650158322333368,
+            "median_seconds": 4.97857671099996,
+            "min_seconds": 3.98779154500005,
+            "max_seconds": 4.984106711000095,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 222.887796094,
+            "warmed_sample_seconds": [
+              7.043430944999955,
+              4.213088681000045,
+              4.755374325999924
+            ],
+            "mean_seconds": 5.337297983999974,
+            "median_seconds": 4.755374325999924,
+            "min_seconds": 4.213088681000045,
+            "max_seconds": 7.043430944999955,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 0.8712570173659974
+        },
+        "3": {
+          "matrix": {
+            "compile_and_first_seconds": 14.378177034000032,
+            "warmed_sample_seconds": [
+              3.7779845049999494,
+              4.793111801000009,
+              3.616093147000015
+            ],
+            "mean_seconds": 4.062396484333324,
+            "median_seconds": 3.7779845049999494,
+            "min_seconds": 3.616093147000015,
+            "max_seconds": 4.793111801000009,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 221.91939423600002,
+            "warmed_sample_seconds": [
+              3.4394103470000346,
+              3.9154348509999863,
+              3.4352039240000067
+            ],
+            "mean_seconds": 3.596683040666676,
+            "median_seconds": 3.4394103470000346,
+            "min_seconds": 3.4352039240000067,
+            "max_seconds": 3.9154348509999863,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 1.1294841492566785
+        },
+        "2": {
+          "matrix": {
+            "compile_and_first_seconds": 14.469088929000009,
+            "warmed_sample_seconds": [
+              5.452029652999954,
+              6.0477927540000564,
+              5.086603963000016
+            ],
+            "mean_seconds": 5.528808790000009,
+            "median_seconds": 5.452029652999954,
+            "min_seconds": 5.086603963000016,
+            "max_seconds": 6.0477927540000564,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 220.93869198700008,
+            "warmed_sample_seconds": [
+              6.6377593019999495,
+              4.1710136929999635,
+              4.819122888000038
+            ],
+            "mean_seconds": 5.209298627666651,
+            "median_seconds": 4.819122888000038,
+            "min_seconds": 4.1710136929999635,
+            "max_seconds": 6.6377593019999495,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 1.06133458363021
+        },
+        "1": {
+          "matrix": {
+            "compile_and_first_seconds": 14.039718967999988,
+            "warmed_sample_seconds": [
+              3.5754696729999296,
+              3.5656583260000616,
+              3.565819566000073
+            ],
+            "mean_seconds": 3.568982521666688,
+            "median_seconds": 3.565819566000073,
+            "min_seconds": 3.5656583260000616,
+            "max_seconds": 3.5754696729999296,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "matrix_grouped": {
+            "compile_and_first_seconds": 220.55191891999993,
+            "warmed_sample_seconds": [
+              6.260184241000047,
+              3.4297061519999943,
+              3.526238691000003
+            ],
+            "mean_seconds": 4.4053763613333485,
+            "median_seconds": 3.526238691000003,
+            "min_seconds": 3.4297061519999943,
+            "max_seconds": 6.260184241000047,
+            "bitwise_replays": 3,
+            "replay_comparisons": [
+              true,
+              true,
+              true
+            ]
+          },
+          "baseline_over_candidate_mean_ratio": 0.8101424779485777
+        }
+      }
+    }
+  },
+  "finite_and_immutable_all_processes": true,
+  "full_training_memory_fit_verified": false,
+  "training_steps_executed": 0,
+  "equivalence_is_training_veto": false,
+  "limitations": "Static report completeness/consistency only. Canonical job/task success, same-attempt provenance and online logging require separate verification. Finite tolerance failures and non-bitwise replays remain diagnostics.",
+  "reference": "matrix",
+  "candidate": "matrix_grouped",
+  "source_commit": "03d5bad644d570fc29a43781a6bdcb7362f44185",
+  "input_reports": [
+    {
+      "path": "scratch/20261104-grouped-final-0-report.json",
+      "bytes": 56155,
+      "sha256": "420bc851f090a1cf105030051969f19271cef2db7a71c86d3627fa964e98146e"
+    },
+    {
+      "path": "scratch/20261104-grouped-final-1-report.json",
+      "bytes": 56228,
+      "sha256": "a732cfb821efe1e5d9c6a9d20ba7cc2af356b84c2f1d005295fd14aaed26b6e6"
+    },
+    {
+      "path": "scratch/20261104-grouped-final-2-report.json",
+      "bytes": 56204,
+      "sha256": "ebd9d76c5f03584c1d2ceaf357261dd4b10ae786540654d257bd9895a9509281"
+    },
+    {
+      "path": "scratch/20261104-grouped-final-3-report.json",
+      "bytes": 56208,
+      "sha256": "dc8ded4d92e75eb9fc40762f094ddca73bdc03527f453b93c8672b01eb9e3b7d"
+    }
+  ]
+}
