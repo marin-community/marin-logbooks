@@ -252,3 +252,37 @@ training and evaluation component and a deterministic global batch of eight
 tracking initialized before numerical execution. Publish its source and
 evidence before recovery submission. It must retain the original tokenizer,
 packing, document boundaries, shuffle and data order.
+
+## Fixed-subset rebuild alternative (2026-11-04)
+
+The user proposed rebuilding a bounded subset after providing a discussion
+about deleting shared GCS raw and tokenized data. This opens a second recovery
+route; administrator restoration is no longer the only option. Preserve the
+original Nemotron v1 categories and mixture unless the user explicitly chooses
+a different corpus. The current regional DataKit discovery contains v2/v2.1
+normalized sources, not a verified original v1 copy.
+
+Prepare approximately 2 billion tokens once, with component targets proportional
+to the original nine mixture weights. A pilot consumes 250,019,840 tokens and a
+confirmation consumes 1,223,393,280 tokens. All configurations reuse the same
+immutable subset and data seed; dataset preparation cost does not multiply by
+the number of experiments. Verify sufficient per-component coverage under the
+native mixture schedule, not just the aggregate token count. Keep complete
+documents and record the actual final counts rather than cutting a document to
+make an exact headline budget. Freeze source files, sampling seed, tokenizer
+bytes, document processing and output identities before training. Use a dedicated
+experiment prefix in us-central2 outside shared raw/ and tokenized/ directories.
+
+Re-run all 30 seed0 pilots, including alpha0, on the new subset. The old alpha0
+pilot cannot serve as its paired baseline. Keep model, optimizer, global batch,
+update counts and evaluation data fixed. The later LR boundary expansion,
+selection lock and 3–4 full confirmations remain unchanged.
+
+The original public Nemotron source index is readable and lists 31,279 files.
+Sample file metadata is readable, but body requests returned HTTP 503 SlowDown.
+This establishes a source path, not successful tokenization or a runtime estimate.
+Use bounded request-level backoff and validate actual source records from a
+regional CPU worker before scheduling bulk processing. Do not impose a job or
+training wallclock limit. Production subset construction and actual native loader
+qualification are outstanding. No replacement training job has been submitted.
+See single-seed-subset-preparation.json for quotas, evidence and launch conditions.

@@ -5961,3 +5961,30 @@ credentials. An arbitrary-directory name query is still running; its result
 will be recorded separately. `single-seed-cache-alternate-search.json` preserves
 the scope, limitations and evidence hashes. No large data was downloaded or
 transferred between regions.
+
+
+### 2026-11-04 22:49 UTC — Fixed-subset reconstruction route
+
+The user proposed retokenizing a fixed subset, supported by a discussion
+screenshot about shared raw/tokenized cleanup and DataKit copies. The plan now
+includes a roughly2B-token, original-mixture subset reused by all configurations.
+All30 pilots, including alpha0, must be paired on that new data version. This
+retains model/optimizer/tokenizer intent, update counts and evaluation protocol,
+but does not preserve the original document sequence.
+
+The public original Nemotron v1 index was read (31,279 paths; SHA recorded).
+One file HEAD returned200 and342,647,944bytes; GET samples across seven categories
+and an independent first-file sample returned503 SlowDown. No raw payload corpus
+has been downloaded or tokenized. Regional DataKit discovery found v2/v2.1
+normalized sources but no v1 root, so no equivalence is asserted. Native
+per-shard sampling and Levanter cache writers are available, but a frozen
+production subset builder and regional native loader check remain outstanding.
+The implementation must count real tokens, preserve document boundaries, and
+check full-schedule per-component coverage before any new training submission.
+
+The earlier alternative FineWeb catalog checker incorrectly treated the Zarr
+reserved shape as logical token count. Its generated missing-index list was
+discarded and replaced with an explicit invalid-result record. That check does
+not show missing token chunks or establish a usable replacement dataset. The
+24-prefix candidate search completed; the broad original-name query remains
+owned by session42678. No data-source switch or replacement job was launched.
