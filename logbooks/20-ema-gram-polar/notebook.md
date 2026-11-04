@@ -5489,3 +5489,44 @@ this partial snapshot. All raw timing samples remain in the regional reports;
 fixed baseline-first order and three samples limit their interpretation.
 
 [Startup evidence](grouped-gram-startup.json).
+### 2026-11-04: startup delay traced to new cloud capacity
+
+The grouped-Gram job waited 134m19s from submission to Iris's first task
+assignment. GCP created its queued-resource request after 3m55s, but the
+corresponding TPU node was created another 125m24s later. The remaining
+node-creation-to-assignment interval was 4m59s. Thus 93.4% of this wait falls
+between cloud request creation and node creation. First task setup logs appear
+at 07:28:02 UTC; all four workers have online W&B by 07:28:49. The observed task setup and W&B initialization ran after assignment and
+cannot explain the preceding two-hour delay.
+
+Three of the user's other jobs received their first assignment in 0.309s
+(v4-8), 5.070s (v4-64), and 3.511s (v4-512). Their assigned worker slices were
+already ready in the earlier 06:16 fleet snapshot, before those jobs were
+submitted. Our required v4-32 topology could not use those other shapes; the
+four ready v4-32 slices in that snapshot were occupied. These selected examples
+support a distinction between reusing ready capacity and waiting for a new
+slice, not a general rule that smaller or larger TPU shapes start faster.
+
+The earlier tier_blocked diagnosis was accurate for that routing snapshot but
+incomplete as an explanation of the entire wait. The cloud request already
+existed at 05:16:56, and the task-specific routing blockage was absent by 06:50 while the task remained
+pending. Iris's booting label can include a queued resource whose TPU VM does
+not exist yet. The exact GCP reason within the 125-minute allocation/provisioning
+interval remains unverified; there is no evidence here establishing exhausted
+quota, fragmentation, or a particular maintenance cause.
+
+For the next distinct experiment, inspect compatible ready capacity before
+selecting the TPU shape. Validate memory and full-Gram behavior for any changed
+mesh; preserve the existing allocations and record the device count in speed
+comparisons. No priority, cluster configuration, job or allocation was changed
+for this diagnosis. Raw controller SQL was denied, controller logs timed out,
+and Echo access was denied; these evidence limits are preserved.
+
+The same read-only investigation found the grouped-Gram job terminal:
+all four tasks succeeded on attempt 0, exit 0, without failures or preemptions.
+Sole log-follow session 92765 ended naturally with exit 0. Final numerical reports and
+online run completion still require validation; Iris terminal success does not
+establish acceleration. Do not poll either terminal job or observer again.
+
+[Diagnosis](grouped-gram-startup-diagnosis.json) ·
+[Canonical completion](grouped-gram-canonical-completed.json).

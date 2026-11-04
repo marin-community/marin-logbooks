@@ -1,0 +1,127 @@
+{
+  "observed_utc": "2026-11-04T07:53:32.886573+00:00",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-grouped-gram-v4-32-20261104",
+  "source_commit": "03d5bad644d570fc29a43781a6bdcb7362f44185",
+  "finding": "The dominant interval is after successful GCP queued-resource creation and before TPU node creation. Fast comparison jobs used slices already ready before their submission. Historical tier blocking is an additional routing restriction, not an explanation for the entire interval.",
+  "timestamps_utc": {
+    "submitted": "2026-11-04T05:13:00.825000+00:00",
+    "gcp_queued_resource_created": "2026-11-04T05:16:56.244688116Z",
+    "gcp_node_created": "2026-11-04T07:22:20.601361562Z",
+    "iris_first_assignment": "2026-11-04T07:27:19.836000+00:00",
+    "first_setup_log": "2026-11-04T07:28:02Z",
+    "all_workers_online_by": "2026-11-04T07:28:49Z"
+  },
+  "durations_seconds": {
+    "submit_to_first_assignment": 8059.011,
+    "submit_to_cloud_request": 235.41968798828125,
+    "cloud_request_to_node_creation": 7524.356673095703,
+    "node_creation_to_first_assignment": 299.2346389160156
+  },
+  "cloud_wait_share_of_submit_to_assignment": 0.9336575757367378,
+  "comparisons": [
+    {
+      "label": "Other user v4-8 job",
+      "job_id_sha256": "164b624637e132d278efcb1942b27a7b50a7508cf5266e8d98f7433395f6d370",
+      "submitted_utc": "2026-11-04T07:29:03.774000+00:00",
+      "first_assignment_utc": "2026-11-04T07:29:04.083000+00:00",
+      "submit_to_first_assignment_seconds": 0.309,
+      "resources": {
+        "cpu_millicores": 200000,
+        "memory_bytes": "322122547200",
+        "device": {
+          "tpu": {
+            "variant": "v4-8",
+            "count": 4
+          }
+        },
+        "disk_bytes": "107374182400"
+      },
+      "replicas": 1,
+      "slice_created_utc": "2026-11-03T20:48:34.349000+00:00",
+      "slice_already_ready_at_prior_0616_snapshot": true,
+      "worker_slice_match": true
+    },
+    {
+      "label": "Other user v4-64 job",
+      "job_id_sha256": "ce86b24806a70ba2574e76d83656f52604dd51913b39e461592ad9d7b91a250e",
+      "submitted_utc": "2026-11-04T06:41:36.617000+00:00",
+      "first_assignment_utc": "2026-11-04T06:41:41.687000+00:00",
+      "submit_to_first_assignment_seconds": 5.07,
+      "resources": {
+        "cpu_millicores": 8000,
+        "memory_bytes": "68719476736",
+        "device": {
+          "tpu": {
+            "variant": "v4-64",
+            "count": 4
+          }
+        },
+        "disk_bytes": "17179869184"
+      },
+      "replicas": 8,
+      "slice_created_utc": "2026-11-04T04:34:14.665000+00:00",
+      "slice_already_ready_at_prior_0616_snapshot": true,
+      "worker_slice_match": true
+    },
+    {
+      "label": "Other user v4-512 job",
+      "job_id_sha256": "270e765e954fb2055d00dcdbb908c5b2d5290fbfb30a1e4814447f24b16021a4",
+      "submitted_utc": "2026-11-04T06:38:40.570000+00:00",
+      "first_assignment_utc": "2026-11-04T06:38:44.081000+00:00",
+      "submit_to_first_assignment_seconds": 3.511,
+      "resources": {
+        "cpu_millicores": 64000,
+        "memory_bytes": "257698037760",
+        "device": {
+          "tpu": {
+            "variant": "v4-512",
+            "count": 4
+          }
+        },
+        "disk_bytes": "107374182400"
+      },
+      "replicas": 64,
+      "slice_created_utc": "2026-10-24T02:07:59.550000+00:00",
+      "slice_already_ready_at_prior_0616_snapshot": true,
+      "worker_slice_match": true
+    }
+  ],
+  "interpretation": [
+    "Job started_at is first assignment, not Python entry or first numerical kernel; local writes.py documents this and task logs separately bound setup.",
+    "GCP CreateQueuedResource audit succeeded at 05:16:56 UTC. The same named TPU node createTime is 07:22:20 UTC. This identifies a pre-node cloud allocation/provisioning interval, but does not recover each cloud state transition.",
+    "The 06:16 snapshot had four ready v4-32 slices in use and this new request booting. Local provider maps queued-resource waiting/provisioning states to CREATING, and Iris may display booting before the TPU VM exists.",
+    "By 06:50 routing no longer reported task-specific unmet demand, yet the job remained pending until 07:27. Thus clearing tier_blocked was insufficient to start this request.",
+    "The peer v4-8, v4-64 and v4-512 jobs used older slices present as ready at 06:16, and first assignment occurred in 0.309, 5.070 and 3.511 seconds respectively. Sizes differ, so this is a warm-capacity comparison, not proof of a per-size causal latency law.",
+    "Our required device-variant v4-32 cannot consume ready v4-8, v4-64 or v4-512 workers. CPU/memory request fits configured hosts.",
+    "Do not assume reserved means immediately available. Exact GCP capacity/quota/fragmentation/maintenance cause of the long pre-node interval remains unverified."
+  ],
+  "next_operational_change": "For the next distinct experiment, inspect ready capacity and compatible topology before choosing hardware; prefer a suitable already-ready slice. Validate memory, full Gram semantics and new mesh/device count before any changed-shape launch. Keep all other allocations untouched; do not cancel/resubmit this completed experiment.",
+  "limitations": [
+    "Read-only raw controller SQL refused: admin role required. No database-access workaround used.",
+    "Bounded controller log query timed out.",
+    "Echo prior-work/incident endpoint refused access (403). No retry or alternate-account access used; incident publication unavailable.",
+    "These are three selected fast examples, not a random sample or a fleet-wide latency estimate."
+  ],
+  "raw_evidence": [
+    {
+      "path": "scratch/20261104-startup-cloud-tpu.json",
+      "sha256": "ca04cbd76bf107d5b05d319cc90d4dd154ecba665fbef4c22bc00404755f9db9"
+    },
+    {
+      "path": "scratch/20261104-startup-cloud-qr.json",
+      "sha256": "9da51ff590afd2ee15ae7c1d655f08f9fd26871654a3f214dffed53909be6996"
+    },
+    {
+      "path": "scratch/20261104-startup-cloud-audit.json",
+      "sha256": "2be0c20611f584b0b1728930c0d954e05675a4e765782ddeb37366b9b2073803"
+    },
+    {
+      "path": "scratch/20261104-startup-cloud-events.json",
+      "sha256": "a582fbbe0f101819e0ca4af3aeeda6b86d62614ad6e785e248625c93d9e01ec1"
+    },
+    {
+      "path": "scratch/20261104-startup-current-tasks.json",
+      "sha256": "9684711cfca080606d4a2e9856a6cc96f28a0930b271ef9f381f155176529cb6"
+    }
+  ]
+}
