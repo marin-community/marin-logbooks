@@ -1,0 +1,33 @@
+digraph G {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=12, nodesep=0.3, ranksep=0.5, pad=0.2, bgcolor="white",
+         label="Snowball v0.1 identity interpretability: how we looked (marin#10696)", labelloc=t, fontcolor="#333333"];
+  node [fontname="Helvetica", fontsize=11, margin="0.14,0.07"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  model [shape=box, style="rounded,filled", fillcolor="#e2efda", color="#548235", penwidth=1.5,
+    label=<<B>Snowball v0.1</B> @ adc0078a, thinking off<BR/>torch reference harness; matches vLLM<BR/>on every name / creator decision<BR/><BR/>26 layers; each layer =<BR/>attention → routed experts + shared expert>];
+
+  prompts [shape=plaintext, label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4" STYLE="rounded" COLOR="#5b7fa6" BGCOLOR="#eef3f8">
+      <TR><TD ALIGN="LEFT"><B>Prompts with a fixed answer prefix</B></TD></TR>
+      <TR><TD ALIGN="LEFT">38 name prompts: "My name is" → <B>" Marin"</B> vs " Chat" / " Nem"</TD></TR>
+      <TR><TD ALIGN="LEFT">15 creator prompts: "I was created by Open" → <B>"-A"</B>(thena) vs "AI"</TD></TR>
+      <TR><TD ALIGN="LEFT">3 × 8 neuron probes: self / third-person ChatGPT / neutral "name an AI lab"</TD></TR>
+      <TR><TD ALIGN="LEFT">8 pairs: same prompt with and without the identity system prompt</TD></TR>
+    </TABLE>>];
+
+  lens [shape=box, style="filled", fillcolor="#fff2cc", color="#b8860b", label=<<B>1. Logit lens</B><BR/>residual stream after each layer → unembed<BR/>→ log p(" Marin") − log p(" Chat"), per layer>];
+  dla [shape=box, style="filled", fillcolor="#fff2cc", color="#b8860b", label=<<B>2. Direct logit attribution</B><BR/>each component's output (attention block, routed<BR/>experts, shared expert, single neuron) projected on<BR/>the target − rival unembedding direction → nats>];
+  neurons [shape=box, style="filled", fillcolor="#fff2cc", color="#b8860b", label=<<B>3. Neuron labelling</B><BR/>neurons in the top set for all 15 creator prompts;<BR/>re-measured on self, third-person and neutral prompts<BR/>(Goodfire-style max-activation reading)>];
+  patch [shape=box, style="filled", fillcolor="#fff2cc", color="#b8860b", label=<<B>4. Activation patching</B><BR/>copy activations from the with-system-prompt run<BR/>into the no-prompt run: residual at the 7–9 assistant<BR/>positions, one component, or one attention head;<BR/>recovery = share of the log-prob gap closed>];
+
+  out1 [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>Where the wrong name is written</B><BR/>per-layer and per-component nats, medians across prompts>];
+  out2 [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>Are the neurons "self" or "AI labs"?</B><BR/>same activation on self and third-person → general facts>];
+  out3 [shape=note, style="filled", fillcolor="#f6f6f6", color="#777777", label=<<B>How a system prompt wins</B><BR/>which positions, layers and heads carry the identity>];
+
+  model -> lens; model -> dla; model -> neurons; model -> patch;
+  prompts -> lens; prompts -> dla; prompts -> neurons; prompts -> patch;
+  lens -> out1; dla -> out1; neurons -> out2; patch -> out3;
+  { rank=same; model; prompts; }
+  { rank=same; lens; dla; neurons; patch; }
+}

@@ -1,0 +1,34 @@
+digraph G {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=12, nodesep=0.25, ranksep=0.5, pad=0.2, bgcolor="white",
+         label="Snowball v0.1 identity interpretability: what we found (marin#10696)", labelloc=t, fontcolor="#333333"];
+  node [fontname="Helvetica", fontsize=11, margin="0.14,0.07"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  layers [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
+      <TR><TD BGCOLOR="#f6f6f6"><B>Layers</B></TD><TD BGCOLOR="#f6f6f6"><B>No system prompt</B></TD><TD BGCOLOR="#f6f6f6"><B>With the identity system prompt</B></TD></TR>
+      <TR><TD>0–14</TD><TD ALIGN="LEFT">" Marin" − " Chat" near zero or positive</TD><TD ALIGN="LEFT"></TD></TR>
+      <TR><TD>16–23</TD><TD ALIGN="LEFT" BGCOLOR="#fde9e7"><B>routed experts push " Chat"</B> (up to −0.71 nats at L21)<BR/>L23 routed experts push " Nem" (−2.34)<BR/>creator: L20 −2.87, L23 −5.63 toward "AI"</TD><TD ALIGN="LEFT" BGCOLOR="#e2efda"><B>attention at L22, L23 pushes " Marin"</B> (+1.84, +3.63)<BR/>heads L23H1 0.32, L23H4 0.26, L22H5 0.24, L22H3 0.15 recovery<BR/>residual at assistant positions: L20 0.67, L23 0.985 recovery</TD></TR>
+      <TR><TD>24–25</TD><TD ALIGN="LEFT" BGCOLOR="#fde9e7"><B>shared expert finishes the push</B> (−1.96, −2.86)<BR/>lens gap reaches −10.4 nats at L25</TD><TD ALIGN="LEFT">L25 shared expert recovers 0.47 when patched</TD></TR>
+    </TABLE>>];
+
+  neur [shape=plaintext, label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="5">
+      <TR><TD BGCOLOR="#f6f6f6"><B>Top "wrong creator" neurons</B></TD><TD BGCOLOR="#f6f6f6"><B>self</B></TD><TD BGCOLOR="#f6f6f6"><B>third-person</B></TD><TD BGCOLOR="#f6f6f6"><B>neutral</B></TD></TR>
+      <TR><TD>L20 expert 46 #1072</TD><TD>−0.94</TD><TD>−0.74</TD><TD>−0.75</TD></TR>
+      <TR><TD>L23 expert 25 #1014</TD><TD>−0.87</TD><TD>−0.64</TD><TD>−0.73</TD></TR>
+      <TR><TD COLSPAN="4" ALIGN="LEFT">median nats toward "AI"; 22 neurons recur on all 15 creator prompts</TD></TR>
+    </TABLE>>];
+
+  data [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>SFT data scan</B> (497k of 15.2M rows)<BR/>no row names Marin; ~16k rows teach Nemotron;<BR/>~2.2k rows carry ChatGPT asides in thinking>];
+
+  gen [shape=box, style="filled", fillcolor="#eef3f8", color="#5b7fa6", label=<<B>Thinking on, no prompt</B><BR/>5 of 170 reasoning traces quote a system<BR/>message that is not there: "You are ChatGPT …">];
+
+  reading [shape=box, style="rounded,filled", fillcolor="#fde9e7", color="#c0504d", penwidth=1.5, label=<<B>Reading: no stored self-name</B><BR/>the late MLP neurons hold general facts about AI labs, not "self";<BR/>a system prompt wins by late attention heads copying the name<BR/>into the answer; without a prompt the model falls back to its default>];
+
+  next [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#548235", penwidth=1.5, label=<<B>What this ruled in and out</B><BR/>not edited: the neurons (an edit would break facts about OpenAI)<BR/>tried: a steering vector at L18–23 → answers barely change (2 of 8 held-out)<BR/>tried: SFT of only L18–23 attention → keeps tool calling, learns no name<BR/>→ full-model SFT with replay (marin#10695)>];
+
+  layers -> reading; neur -> reading; data -> reading [style=dashed]; gen -> reading [style=dashed];
+  reading -> next;
+  { rank=same; layers; neur; data; gen; }
+}
