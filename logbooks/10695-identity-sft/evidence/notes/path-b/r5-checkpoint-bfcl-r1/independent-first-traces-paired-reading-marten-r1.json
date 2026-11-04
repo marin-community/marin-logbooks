@@ -1,0 +1,87 @@
+{
+  "scope": "Independent paired metadata audit of the first two r5 B-traces checkpoint BFCL results",
+  "reference": {
+    "path": "/mnt/storage/karan-scratch/pathb52-bfcl-audit-relays-r1/paired-123-doc-reward-array.json",
+    "sha256": "b35a0e70b99d1e24cd5598516608ab074d9f2cd6551a6adccee0b3cfeb4b56c6",
+    "semantics": "Historical2130 configured sysdefault; identity suppressed by operator system prompt"
+  },
+  "bootstrap": {
+    "draws": 10000,
+    "seed": 297,
+    "method": "Registered reader: Python random.Random; paired sorted doc_id resampling; sorted mean indices249/9749"
+  },
+  "results": [
+    {
+      "arm": "B-traces10",
+      "update": 36,
+      "sources": [
+        {
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/r5-checkpoint-bfcl-r1/pathb-btraces-10-r5-4bc3742fe772/updates-36/paired-doc-reward-arrays.json",
+          "sha256": "2838b1a4fa89042e42da16d52b05704c862dae62c87a516a538a5838a81cbd98"
+        },
+        {
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/r5-checkpoint-bfcl-r1/pathb-btraces-10-r5-4bc3742fe772/updates-36/paired-score.json",
+          "sha256": "b6d8329cb1b7bed1cb6a76dd411cba7e048f5212ebb04846f77e337e230d622b"
+        }
+      ],
+      "unique_binary_finite_aligned_ids": 123,
+      "reference_per_item_equal_to_previous_audited2130": true,
+      "candidate_correct": 11,
+      "reference_correct": 34,
+      "delta_percentage_points": -18.69918699186992,
+      "ci95_percentage_points": [
+        -27.64227642276423,
+        -9.75609756097561
+      ],
+      "lost": 29,
+      "gained": 6,
+      "ship_line_1_noninferiority": "FAIL",
+      "verifier_classes_executor_report_only": {
+        "no answer file": 101,
+        "called where none applies": 6,
+        "pass": 11,
+        "wrong function or args": 4,
+        "malformed output": 1
+      }
+    },
+    {
+      "arm": "B-traces25",
+      "update": 54,
+      "sources": [
+        {
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/r5-checkpoint-bfcl-r1/pathb-btraces-25-r5-4bc3742fe772/updates-54/paired-doc-reward-arrays.json",
+          "sha256": "96ba44610fb54609005825bffa8c842c31d2c2efbcd35c9e03bddc856a650de9"
+        },
+        {
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/r5-checkpoint-bfcl-r1/pathb-btraces-25-r5-4bc3742fe772/updates-54/paired-score.json",
+          "sha256": "4fd4b9836a97bcfc7d70257abad43735871837d0edf7690b1d97a0cb6fdb3b84"
+        }
+      ],
+      "unique_binary_finite_aligned_ids": 123,
+      "reference_per_item_equal_to_previous_audited2130": true,
+      "candidate_correct": 10,
+      "reference_correct": 34,
+      "delta_percentage_points": -19.51219512195122,
+      "ci95_percentage_points": [
+        -27.64227642276423,
+        -11.38211382113821
+      ],
+      "lost": 28,
+      "gained": 4,
+      "ship_line_1_noninferiority": "FAIL",
+      "verifier_classes_executor_report_only": {
+        "no answer file": 112,
+        "pass": 10,
+        "wrong function or args": 1
+      }
+    }
+  ],
+  "interpretation": "Unit special-token loss weights have not eliminated BFCL failure at either tested B-traces checkpoint. This is not a controlled causal comparison with the old recipe: refusal-cap/refill also changed.",
+  "limitations": [
+    "No new raw-session audit; the no-answer-file class labels are carried from the executor reports",
+    "B-base first-checkpoint results remain pending and these are not final-checkpoint results",
+    "This metadata audit does not identify a model, parser, or training cause"
+  ],
+  "remote_reads_or_model_jobs_performed": false,
+  "change_to_r5_authority_or_jobs": false
+}
