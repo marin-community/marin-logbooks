@@ -5191,3 +5191,19 @@ metrics and exact hashes of the four numerical source files. The corrected
 implementation and recipe will be committed and pushed before the authorized
 distinct job `ema-gram-20-power-reconstruction-auth-v4-32-20261104`; it has not
 yet been submitted. The failed job will not be restarted or resubmitted.
+
+The corrected [diagnostic](power-reconstruction-auth-submitted.json) was
+accepted at 03:50:04 UTC from published source
+`7f288368aeca2554f193c933786f494956389d01`. The job name ends in
+`power-reconstruction-auth-v4-32-20261104`; its only log-follow observer is
+session 22285, owned by this root thread. The output prefix ends in
+`2026.11.04.02`, separating all new process identities from the failed attempt.
+Resources and numerical work are unchanged. The first canonical check is due
+no earlier than 03:52:04 UTC. Fresh execution-host logging and TPU results
+remain pending; successful local authentication is not proof of host access.
+
+The first canonical job and all four task checks at 03:52 UTC found pending
+with no attempts, failures or preemptions. The 120-second initial wait was
+satisfied. Next routine check: no earlier than 04:02:22 UTC. The sole follow
+22285 remains live; a transient read connection reset used its built-in retry
+and did not justify another observer.

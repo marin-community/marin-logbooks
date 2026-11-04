@@ -1,7 +1,7 @@
 {
-  "prepared_utc": "2026-11-04T03:23:13.471967+00:00",
-  "status": "TERMINAL FAILED; see power-reconstruction-failed.json; never repoll/restart",
-  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-power-reconstruction-v4-32-20261104",
+  "prepared_utc": "2026-11-04T03:49:23.013332+00:00",
+  "status": "PENDING all four tasks; no attempts, failures0/preemptions0",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-power-reconstruction-auth-v4-32-20261104",
   "cluster": "marin",
   "source_manifest": "power-reconstruction-manifest.json",
   "resources": {
@@ -16,7 +16,7 @@
   "wallclock_limits": null,
   "training_steps": 0,
   "checkpoint": "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923",
-  "output_prefix": "gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.01",
+  "output_prefix": "gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.02",
   "variants": [
     "matrix",
     "matrix_power"
@@ -24,13 +24,15 @@
   "warmed_samples_per_case_variant": 3,
   "all_four_reports_required": true,
   "limitations": "Optimizer-only fixed saved state and synthetic gradients; no training MFU, loss acceptance or full restore claim",
-  "source_commit": "6cefcbf81b37fd75d005260575654912b2535522",
-  "accepted_utc": "2026-11-04T03:25:20Z",
-  "observer_session": 76324,
-  "observer_owner": "current root thread; sole live follow",
-  "observer_log": "scratch/20261104-power-follow.log",
-  "submission_log": "scratch/20261104-power-submit.log",
-  "first_canonical_check_not_before": "2026-11-04T03:27:20Z",
+  "prior_terminal_failure": "power-reconstruction-failed.json",
+  "credential_validation": "power-reconstruction-auth-credential-validation.json",
+  "source_commit": "7f288368aeca2554f193c933786f494956389d01",
+  "accepted_utc": "2026-11-04T03:50:04Z",
+  "observer_session": 22285,
+  "observer_owner": "current root; sole live follow",
+  "observer_log": "scratch/20261104-power-auth-follow.log",
+  "submission_log": "scratch/20261104-power-auth-submit.log",
+  "first_canonical_check_not_before": "2026-11-04T03:52:04Z",
   "launch_argv": [
     "uv",
     "run",
@@ -42,7 +44,7 @@
     "--no-wait",
     "--no-cancel-on-exit",
     "--job-name",
-    "ema-gram-20-power-reconstruction-v4-32-20261104",
+    "ema-gram-20-power-reconstruction-auth-v4-32-20261104",
     "--priority",
     "batch",
     "--enable-extra-resources",
@@ -66,36 +68,20 @@
     "marin-dupekit",
     "-e",
     "GIT_COMMIT",
-    "6cefcbf81b37fd75d005260575654912b2535522",
+    "7f288368aeca2554f193c933786f494956389d01",
     "--",
     "bash",
     "-c",
-    "JAX_PLATFORMS=cpu python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode logging-check --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.01/host-logging && exec python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode worker --checkpoint gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923 --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.01"
+    "JAX_PLATFORMS=cpu python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode logging-check --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.02/host-logging && exec python logbooks/20-ema-gram-polar/power_reconstruction_check.py --source-manifest logbooks/20-ema-gram-polar/power-reconstruction-manifest.json --samples 3 --mode worker --checkpoint gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b/2026.10.30.23/checkpoints/step-923 --output-prefix gs://marin-us-central2/ema-gram-20-power-reconstruction/2026.11.04.02"
   ],
-  "observed_utc": "2026-11-04T03:38:22.726127+00:00",
-  "next_canonical_check_not_before": null,
+  "observed_utc": "2026-11-04T03:52:52.209803+00:00",
+  "next_canonical_check_not_before": "2026-11-04T04:02:22.209803+00:00",
   "initial_wait_satisfied": true,
   "canonical_files": [
-    "scratch/20261104-power-0337-job.txt",
-    "scratch/20261104-power-0337-task0.txt",
-    "scratch/20261104-power-0337-task1.txt",
-    "scratch/20261104-power-0337-task2.txt",
-    "scratch/20261104-power-0337-task3.txt"
-  ],
-  "observations": [
-    {
-      "status": "PENDING all four tasks; no attempts, failures0/preemptions0",
-      "observed_utc": "2026-11-04T03:28:10.615995+00:00",
-      "next_canonical_check_not_before": "2026-11-04T03:37:40.615995+00:00",
-      "canonical_files": [
-        "scratch/20261104-power-0327-job.txt",
-        "scratch/20261104-power-0327-task0.txt",
-        "scratch/20261104-power-0327-task1.txt",
-        "scratch/20261104-power-0327-task2.txt",
-        "scratch/20261104-power-0327-task3.txt"
-      ]
-    }
-  ],
-  "terminal": true,
-  "observer_status": "ended naturally exit0; never replace"
+    "scratch/20261104-power-auth-0352-job.txt",
+    "scratch/20261104-power-auth-0352-task0.txt",
+    "scratch/20261104-power-auth-0352-task1.txt",
+    "scratch/20261104-power-auth-0352-task2.txt",
+    "scratch/20261104-power-auth-0352-task3.txt"
+  ]
 }
