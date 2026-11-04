@@ -222,10 +222,10 @@
   },
   "next_decision": {
     "state": "Original labels924\u2013940 complete with finite losses, watch norms and regional profile uploaded; candidate unsubmitted",
-    "user_direction": "Comparable loss is the practical criterion. Strict numerical equivalence is diagnostic and is no longer a sole training-launch blocker.",
+    "user_direction": "User requests a shorter1000-step matched loss/speed decision and prefers candidate if comparable. Do not wait for both full7630 runs before deciding; clarify whether1000 means additionalupdates or totalcounter.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
-    "procedure": "Prepare original-versus-candidate paired training with the same model, global batch8, data order, seed, hyperparameters and initialization or verified full checkpoint/data-position restore. Preserve original7630step schedule and all operational constraints. Compare training/validation loss at matched steps and progress per measured wall-clock time. Quantify variability and loss gap; no acceptable loss margin has been specified.",
-    "remaining_preparation": "Observe later evaluation/checkpoint paths and eligible steady100-update windows; preserve all attempts/checkpoint lineage. Original restore and fresh online logging verified. Candidate sequential only after original terminal verification.",
+    "procedure": "Use same model, batch8, data order, seed, hyperparameters and verified full source state for shorter paired comparison. Clarify requested1000-step endpoint; preserve7630-step optimizer LR schedule independently. Compare matched train/validation loss and measured speed; no numeric loss margin specified.",
+    "remaining_preparation": "Resolve pending1000-step meaning, then implement safe checkpoint-preserving observation/stop procedure without changing7630 LR schedule inadvertently. Original continues meanwhile; no concurrent candidate. Candidate measured MFU is unknown.",
     "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
     "prepared_configurations": "loss-pair-prepared.json",
     "validation": "loss-pair-preparation-validation.json",
@@ -254,7 +254,8 @@
     "launch_readiness": "loss-pair-launch-ready.json",
     "original_submission": "loss-pair-original-submitted.json",
     "original_first_updates": "loss-pair-original-first-updates.json",
-    "original_watch_profile": "loss-pair-original-watch-profile.json"
+    "original_watch_profile": "loss-pair-original-watch-profile.json",
+    "short_comparison_decision": "loss-pair-short-comparison-decision.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",

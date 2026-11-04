@@ -4668,6 +4668,14 @@ W&B loss, duration and MFU rows through label 939 match the local incremental re
 
 Follow 29414 remains the sole observer; the next routine canonical check is no earlier than 00:13:52 UTC. Continue the original schedule to counter 7630 and observe the eligible steady window and later validation/checkpoint stages. The candidate remains unsubmitted, with no paired loss or speed result yet.
 
+### November 3 (Pacific) — user requests a shorter loss comparison
+
+The user prefers adopting the matrix candidate if a 1000-step paired comparison gives comparable loss and improved actual speed. This supersedes waiting for both full 7630-step runs before making that decision. Candidate training MFU is still unmeasured; the earlier optimizer-only timings cannot supply it.
+
+Both variants start from counter 924. An asynchronous clarification asks whether “1000 steps” means 1000 additional updates per variant (ending at counter 1924) or total counter 1000 (76 additional updates). The endpoint is not yet selected. The original continues while that answer is pending; this decision record does not cancel or launch a job. No numerical loss-equivalence margin has been specified.
+
+Static inspection shows native `train_lm` builds the optimizer with `trainer.num_train_steps`. A shorter comparison must preserve the common 7630-step learning-rate schedule instead of blindly reducing that configuration field. The checkpoint-preserving stopping procedure will follow the clarified observation endpoint. Geometry, precision, batch, common state/data/seed, sequential execution and online logging requirements remain unchanged. The [decision record](loss-pair-short-comparison-decision.json) preserves the request and outstanding distinction.
+
 ## Final decision
 
 Pending pilot, confirmation and checkpoint-probe evidence. No exponent is
