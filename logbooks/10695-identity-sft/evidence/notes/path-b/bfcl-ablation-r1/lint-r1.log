@@ -1,0 +1,345 @@
+  Ruff linter............................. FAIL
+  Black formatter......................... FAIL
+  License headers (etc/license_header.txt) ok
+  Large files............................. ok
+  Python AST.............................. ok
+  Merge conflicts......................... ok
+  Trailing whitespace..................... ok
+  End-of-file newline..................... ok
+
+============================================================
+Failure details:
+
+--- Ruff linter ---
+E501 Line too long (122 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation.py:44:122
+   |
+42 |         jnp.ones((128256, 1)).at[ids, 0].set(-0.0),
+43 |         jnp.ones((1, 128256)).at[0, ids].set(-0.0),
+44 |         [Layer(scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.float32)) for _ in range(26)],
+   |                                                                                                                          ^
+45 |         {f"trainable.{index}.weight": scalar(jnp.float32) for index in range(396)},
+46 |     )
+   |
+
+E501 Line too long (127 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation.py:55:122
+   |
+53 |     raw = json.dumps({"tensors": entries}).encode()
+54 |     digest = hashlib.sha256(raw).hexdigest()
+55 |     optimizer = optimizer_for(SimpleNamespace(optimizer=AdamConfig(learning_rate=0.01, warmup=0, lr_schedule="constant")), arm)
+   |                                                                                                                          ^^^^^^
+56 |     mask = FrozenParameterAdaptorConfig(frozen_field_names=frozen_fields(arm)).trainable_filter(source)
+57 |     state = TrainerState.init(optimizer, source, key=jax.random.PRNGKey(310), is_trainable=mask,
+   |
+
+E501 Line too long (124 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation.py:68:122
+   |
+66 |     mesh = jax.sharding.Mesh(np.asarray(jax.devices()), ("data",))
+67 |     with hax.partitioning.set_mesh(mesh):
+68 |         audit_initialized_storage(pristine, raw, digest, str(tmp_path / "initialized.json"), frozen_names=frozen_names(arm))
+   |                                                                                                                          ^^^
+69 |         native = str(tmp_path / "native")
+70 |         save_checkpoint(state.saveable_state, step=0, checkpoint_path=native)
+   |
+
+E501 Line too long (144 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation.py:82:122
+   |
+80 | …ay(pristine.to_state_dict()[name]).tobytes()
+81 | …
+82 | …(pristine.to_state_dict()[query]).tobytes()) == (arm != AblationArm.T3_BRIDGE)
+   |                                                         ^^^^^^^^^^^^^^^^^^^^^^^
+83 | …
+84 | …
+   |
+
+E501 Line too long (215 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation.py:88:122
+   |
+86 | …
+87 | …
+88 | …del.safetensors" for name in saved}, "metadata": {"total_size": sum(value.nbytes for value in saved.values())}}))
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+89 | …
+90 | …
+   |
+
+E501 Line too long (123 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation_launch.py:31:122
+   |
+29 |     monkeypatch.setattr(ablation_launch, "StoragePath", local)
+30 |     monkeypatch.setattr(async_launch, "StoragePath", local)
+31 |     monkeypatch.setattr(ablation_launch, "record", lambda path, value: local(path).write_bytes(json.dumps(value).encode()))
+   |                                                                                                                          ^^
+32 |     exposure = {"cumulative_batches": [{"identity_final_text_tokens": 1}] * 36}
+33 |     monkeypatch.setattr(ablation_launch, "read_pinned", lambda *args: json.dumps(exposure).encode())
+   |
+
+E501 Line too long (128 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation_launch.py:36:122
+   |
+34 |     training = dict(run_root=root_uri, run_id="fixture", arm="A0", training_pin="a" * 40,
+35 |         packed_path="packed", packed_sha256="b" * 64, exposure_path="exposure", exposure_sha256="c" * 64,
+36 |         runtime_bytes=b'{"xla_precision":"default"}', runtime_sha256="d" * 64, source_receipt=SOURCE_RECEIPT, source_objects={})
+   |                                                                                                                          ^^^^^^^
+37 |     event = CheckpointEvent(36, root_uri + "/checkpoints/step-35", root_uri + "/hf/updates-36",
+38 |         root_uri + "/eval/updates-36", exposure["cumulative_batches"][-1], "a" * 40, "b" * 64, "A0")
+   |
+
+E501 Line too long (122 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation_launch.py:40:122
+   |
+38 |         root_uri + "/eval/updates-36", exposure["cumulative_batches"][-1], "a" * 40, "b" * 64, "A0")
+39 |     local(root_uri + "/final-checkpoint-event.json").write_bytes(event_bytes(event))
+40 |     local(event.native_checkpoint + "/metadata.json").write_bytes(json.dumps({"step": 35, "is_temporary": True}).encode())
+   |                                                                                                                          ^
+41 |     local(event.hf_export + "/path-b-checkpoint-event.json").write_bytes(event_bytes(event))
+42 |     audit_names = frozen_names(AblationArm.CONTROL)
+   |
+
+E501 Line too long (125 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation_launch.py:93:122
+   |
+91 |             outcome.result(timeout=10)
+92 |             assert not local(event.native_checkpoint).exists()
+93 |             assert json.loads(local(root_uri + "/bfcl-ready.json").read_bytes())["status"] == "audited_HF_ready_BFCL_pending"
+   |                                                                                                                          ^^^^
+94 |         worker.join(timeout=10)
+95 |         assert not worker.is_alive()
+   |
+
+Found 15 errors (6 fixed, 9 remaining).
+
+--- Black formatter ---
+--- experiments/post_training/identity_path_b/testing_support.py	2026-10-30 01:02:47.097999+00:00
++++ experiments/post_training/identity_path_b/testing_support.py	2026-10-30 01:02:47.678314+00:00
+@@ -84,7 +84,5 @@
+             self.world.settle()
+             state = self.world.job(job.ref).state
+             terminal = JobState.SUCCEEDED if state == job_pb2.JOB_STATE_SUCCEEDED else JobState.FAILED
+             job.future.set_result(SimpleNamespace(state=terminal))
+             return job
+-
+-
+--- experiments/post_training/identity_path_b/test_ablation.py	2026-10-30 01:02:47.096999+00:00
++++ experiments/post_training/identity_path_b/test_ablation.py	2026-10-30 01:02:47.700151+00:00
+@@ -39,35 +39,51 @@
+ 
+     ids = jnp.asarray(FROZEN_TOKEN_IDS)
+     source = StorageModel(
+         jnp.ones((128256, 1)).at[ids, 0].set(-0.0),
+         jnp.ones((1, 128256)).at[0, ids].set(-0.0),
+-        [Layer(scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.float32)) for _ in range(26)],
++        [
++            Layer(scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.float32))
++            for _ in range(26)
++        ],
+         {f"trainable.{index}.weight": scalar(jnp.float32) for index in range(396)},
+     )
+     entries = {}
+     for name, value in source.to_state_dict().items():
+         host = np.asarray(value)
+         native = host.astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+-        entries[name] = {"shape": list(host.shape), "native_sha256": hashlib.sha256(native.tobytes()).hexdigest(),
+-                         "master_sha256": hashlib.sha256(host.astype(np.float32).tobytes()).hexdigest()}
++        entries[name] = {
++            "shape": list(host.shape),
++            "native_sha256": hashlib.sha256(native.tobytes()).hexdigest(),
++            "master_sha256": hashlib.sha256(host.astype(np.float32).tobytes()).hexdigest(),
++        }
+     raw = json.dumps({"tensors": entries}).encode()
+     digest = hashlib.sha256(raw).hexdigest()
+-    optimizer = optimizer_for(SimpleNamespace(optimizer=AdamConfig(learning_rate=0.01, warmup=0, lr_schedule="constant")), arm)
++    optimizer = optimizer_for(
++        SimpleNamespace(optimizer=AdamConfig(learning_rate=0.01, warmup=0, lr_schedule="constant")), arm
++    )
+     mask = FrozenParameterAdaptorConfig(frozen_field_names=frozen_fields(arm)).trainable_filter(source)
+-    state = TrainerState.init(optimizer, source, key=jax.random.PRNGKey(310), is_trainable=mask,
+-        mp=jmp.get_policy("p=f32,c=bfloat16,o=f32"), frozen_parameter_storage=FrozenParameterStorage.NATIVE)
++    state = TrainerState.init(
++        optimizer,
++        source,
++        key=jax.random.PRNGKey(310),
++        is_trainable=mask,
++        mp=jmp.get_policy("p=f32,c=bfloat16,o=f32"),
++        frozen_parameter_storage=FrozenParameterStorage.NATIVE,
++    )
+     pristine = jax.tree.map(lambda value: value.copy(), state.model)
+     special = special_row_values(state.model) if freezes_special_rows(arm) else None
+     grads = jax.tree.map(jnp.ones_like, state.trainable_model)
+     step = eqx.filter_jit(lambda state, grads: state.take_step(grads, key=jax.random.PRNGKey(311))[0], donate="all")
+     state = step(state, grads)
+     if special is not None:
+         state = restore_frozen_state(state, special)
+     mesh = jax.sharding.Mesh(np.asarray(jax.devices()), ("data",))
+     with hax.partitioning.set_mesh(mesh):
+-        audit_initialized_storage(pristine, raw, digest, str(tmp_path / "initialized.json"), frozen_names=frozen_names(arm))
++        audit_initialized_storage(
++            pristine, raw, digest, str(tmp_path / "initialized.json"), frozen_names=frozen_names(arm)
++        )
+         native = str(tmp_path / "native")
+         save_checkpoint(state.saveable_state, step=0, checkpoint_path=native)
+         restored = restore_trained_model(pristine, mask, native, completed_updates=1, axis_mapping={}, mesh=mesh)
+         before = np.asarray(pristine.token_embed)[np.asarray(ids)].view(np.uint32)
+         after = np.asarray(restored.token_embed)[np.asarray(ids)].view(np.uint32)
+@@ -77,17 +93,28 @@
+             assert not np.array_equal(before, after)
+         tensors = restored.to_state_dict()
+         for name in frozen_names(arm):
+             assert np.asarray(tensors[name]).tobytes() == np.asarray(pristine.to_state_dict()[name]).tobytes()
+         query = "model.layers.0.self_attn.q_proj.weight"
+-        assert (np.asarray(tensors[query]).tobytes() == np.asarray(pristine.to_state_dict()[query]).tobytes()) == (arm != AblationArm.T3_BRIDGE)
++        assert (np.asarray(tensors[query]).tobytes() == np.asarray(pristine.to_state_dict()[query]).tobytes()) == (
++            arm != AblationArm.T3_BRIDGE
++        )
+         destination = tmp_path / "hf"
+         destination.mkdir()
+-        saved = {name: np.asarray(value).astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+-                 for name, value in tensors.items()}
++        saved = {
++            name: np.asarray(value).astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
++            for name, value in tensors.items()
++        }
+         save_file(saved, str(destination / "model.safetensors"))
+-        (destination / "model.safetensors.index.json").write_text(json.dumps({"weight_map": {name: "model.safetensors" for name in saved}, "metadata": {"total_size": sum(value.nbytes for value in saved.values())}}))
++        (destination / "model.safetensors.index.json").write_text(
++            json.dumps(
++                {
++                    "weight_map": {name: "model.safetensors" for name in saved},
++                    "metadata": {"total_size": sum(value.nbytes for value in saved.values())},
++                }
++            )
++        )
+         audit_export_storage(restored, str(destination), raw, digest, frozen_names=frozen_names(arm))
+         report = json.loads((destination / "path-b-storage-audit.json").read_text())
+         assert report["frozen_native_tensors"] == len(frozen_names(arm))
+         assert report["trained_master_cast_tensors"] == 502 - len(frozen_names(arm))
+         assert {name for name, row in report["tensors"].items() if row["frozen_source"]} == frozen_names(arm)
+--- experiments/post_training/identity_path_b/test_ablation_launch.py	2026-10-30 01:02:38.730123+00:00
++++ experiments/post_training/identity_path_b/test_ablation_launch.py	2026-10-30 01:02:47.704464+00:00
+@@ -26,26 +26,55 @@
+         destination.parent.mkdir(parents=True, exist_ok=True)
+         return StoragePath(str(destination))
+ 
+     monkeypatch.setattr(ablation_launch, "StoragePath", local)
+     monkeypatch.setattr(async_launch, "StoragePath", local)
+-    monkeypatch.setattr(ablation_launch, "record", lambda path, value: local(path).write_bytes(json.dumps(value).encode()))
++    monkeypatch.setattr(
++        ablation_launch, "record", lambda path, value: local(path).write_bytes(json.dumps(value).encode())
++    )
+     exposure = {"cumulative_batches": [{"identity_final_text_tokens": 1}] * 36}
+     monkeypatch.setattr(ablation_launch, "read_pinned", lambda *args: json.dumps(exposure).encode())
+-    training = dict(run_root=root_uri, run_id="fixture", arm="A0", training_pin="a" * 40,
+-        packed_path="packed", packed_sha256="b" * 64, exposure_path="exposure", exposure_sha256="c" * 64,
+-        runtime_bytes=b'{"xla_precision":"default"}', runtime_sha256="d" * 64, source_receipt=SOURCE_RECEIPT, source_objects={})
+-    event = CheckpointEvent(36, root_uri + "/checkpoints/step-35", root_uri + "/hf/updates-36",
+-        root_uri + "/eval/updates-36", exposure["cumulative_batches"][-1], "a" * 40, "b" * 64, "A0")
++    training = dict(
++        run_root=root_uri,
++        run_id="fixture",
++        arm="A0",
++        training_pin="a" * 40,
++        packed_path="packed",
++        packed_sha256="b" * 64,
++        exposure_path="exposure",
++        exposure_sha256="c" * 64,
++        runtime_bytes=b'{"xla_precision":"default"}',
++        runtime_sha256="d" * 64,
++        source_receipt=SOURCE_RECEIPT,
++        source_objects={},
++    )
++    event = CheckpointEvent(
++        36,
++        root_uri + "/checkpoints/step-35",
++        root_uri + "/hf/updates-36",
++        root_uri + "/eval/updates-36",
++        exposure["cumulative_batches"][-1],
++        "a" * 40,
++        "b" * 64,
++        "A0",
++    )
+     local(root_uri + "/final-checkpoint-event.json").write_bytes(event_bytes(event))
+-    local(event.native_checkpoint + "/metadata.json").write_bytes(json.dumps({"step": 35, "is_temporary": True}).encode())
++    local(event.native_checkpoint + "/metadata.json").write_bytes(
++        json.dumps({"step": 35, "is_temporary": True}).encode()
++    )
+     local(event.hf_export + "/path-b-checkpoint-event.json").write_bytes(event_bytes(event))
+     audit_names = frozen_names(AblationArm.CONTROL)
+-    audit = {"schema": "path_b_storage_v1", "source_receipt_sha256": SOURCE_RECEIPT["sha256"],
+-        "frozen_native_tensors": 104, "trained_master_cast_tensors": 398,
+-        "tensors": {**{name: {"frozen_source": True} for name in audit_names},
+-                    **{f"trained.{index}": {"frozen_source": False} for index in range(398)}}}
++    audit = {
++        "schema": "path_b_storage_v1",
++        "source_receipt_sha256": SOURCE_RECEIPT["sha256"],
++        "frozen_native_tensors": 104,
++        "trained_master_cast_tensors": 398,
++        "tensors": {
++            **{name: {"frozen_source": True} for name in audit_names},
++            **{f"trained.{index}": {"frozen_source": False} for index in range(398)},
++        },
++    }
+     local(event.hf_export + "/path-b-storage-audit.json").write_bytes(json.dumps(audit).encode())
+     probes = []
+     outcome = Future()
+     with journey_world(tmp_path / "controller", monkeypatch) as world:
+         parent = world.submit("ablation-cpu-owner")
+@@ -88,8 +117,11 @@
+             assert world.job(export.ref).state == job_pb2.JOB_STATE_RUNNING
+             assert export.submit_options["lifetime"] == 7200
+             execution.finish("export-36")
+             outcome.result(timeout=10)
+             assert not local(event.native_checkpoint).exists()
+-            assert json.loads(local(root_uri + "/bfcl-ready.json").read_bytes())["status"] == "audited_HF_ready_BFCL_pending"
++            assert (
++                json.loads(local(root_uri + "/bfcl-ready.json").read_bytes())["status"]
++                == "audited_HF_ready_BFCL_pending"
++            )
+         worker.join(timeout=10)
+         assert not worker.is_alive()
+--- experiments/post_training/identity_path_b/test_workflow.py	2026-10-30 01:02:47.099999+00:00
++++ experiments/post_training/identity_path_b/test_workflow.py	2026-10-30 01:02:47.751109+00:00
+@@ -32,12 +32,10 @@
+         {},
+         "a" * 40,
+         "b" * 64,
+         "identity10",
+     )
+-
+-
+ 
+ 
+ def test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_stop_train(monkeypatch, tmp_path):
+     receipts = {}
+     monkeypatch.setattr(workflow, "export_write_probe", lambda event: {"bytes": 32})
+--- experiments/post_training/identity_path_b/test_storage.py	2026-10-30 01:02:47.097999+00:00
++++ experiments/post_training/identity_path_b/test_storage.py	2026-10-30 01:02:47.758236+00:00
+@@ -47,14 +47,10 @@
+     path = tmp_path / "overflow.bin"
+     path.write_bytes(saved.tobytes())
+     record = TensorRecord("trainable.overflow.weight", np.dtype(jnp.bfloat16), host.shape, str(path), 0, saved.nbytes)
+     with np.errstate(over="ignore"), pytest.raises(ValueError, match="Nonfinite cast/output"):
+         compare_exported_tensor(record.key, host, record, {"shape": list(host.shape)})
+-
+-
+-
+-
+ 
+ 
+ @pytest.mark.timeout(180)
+ def test_real_update_native_checkpoint_rehydrates_exact_frozen_source_then_audits_export(tmp_path):
+     def scalar(dtype):
+would reformat experiments/post_training/identity_path_b/testing_support.py
+would reformat experiments/post_training/identity_path_b/test_ablation.py
+would reformat experiments/post_training/identity_path_b/test_ablation_launch.py
+would reformat experiments/post_training/identity_path_b/test_workflow.py
+would reformat experiments/post_training/identity_path_b/test_storage.py
+
+Oh no! 💥 💔 💥
+5 files would be reformatted, 4 files would be left unchanged.
+
+============================================================
+FAILED
+============================================================

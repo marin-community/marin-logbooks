@@ -1,0 +1,679 @@
+{
+  "utc": "2026-10-31T02:40:46.676519+00:00",
+  "state": "ALL6_CANDIDATE_NATIVE_CONFIG_COVERAGE_BINARY_ITEM_METRICS_JOINED_ACTUAL_RUNTIME_QUALIFICATION_PENDING",
+  "arm": "A13",
+  "actual_launch_sha256": "6a6043e787d17c3a52a2f49c180cd41302a46da64657856096de59e44a521b90",
+  "actual_model_HF": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-a13-preemption-replacement1-20261030-r1/A13/run/hf/updates-36",
+  "units": [
+    {
+      "arm": "A13",
+      "trial": "greedy",
+      "task": "gsm8k_0shot",
+      "native_done_uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A13-paired-math-20261031-r1/A13/math/greedy/gsm8k_0shot/done.json",
+      "native_done_sha256": "8f053c7c8d3ca392a77108039c1f6c6280c07238fce721757b7bd108955ce389",
+      "native_done_path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/greedy/gsm8k_0shot/native-done.actual.json",
+      "native_done_bytes": 2742,
+      "actual_eval_job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy/eval-gsm8k_0shot-770b4562",
+      "coverage": {
+        "n_benchmark": 1319,
+        "n_attempted": 1319,
+        "n_scored": 1319,
+        "n_correct": 1203,
+        "n_unanswered": 0,
+        "errors": {}
+      },
+      "native_config": {
+        "name": "gsm8k_0shot",
+        "tasks": [
+          {
+            "name": "gsm8k",
+            "num_fewshot": 0,
+            "task_alias": "gsm8k_0shot",
+            "task_kwargs": null,
+            "generation": true,
+            "unsafe_code": false,
+            "completion_only": false
+          }
+        ],
+        "apply_chat_template": true,
+        "max_gen_toks": 8192,
+        "max_length": 32768,
+        "num_concurrent": 8,
+        "max_eval_instances": null,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "seed": 0,
+        "extra_gen_kwargs": {
+          "temperature": "0"
+        }
+      },
+      "n_unique_expected_items": 1319,
+      "n_correct": 1203.0,
+      "metric": "exact_match",
+      "filter": "flexible-extract",
+      "item_scores": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/greedy/gsm8k_0shot/item-score-array.json",
+        "bytes": 153023,
+        "sha256": "e1bb55907b31ad06c22dda3964e10953f5912ab835dc50a1953894e90f1d94bb"
+      },
+      "selected_native_metric_columns_typed_reader_projection_NOT_fullsamples_OR_originalParquet": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/greedy/gsm8k_0shot/selected-metric-columns-native-reader.arrow",
+        "bytes": 299330,
+        "sha256": "05a519792d581b30125b902eb13e156e916c8002c7227687c705aa18039d1752"
+      },
+      "actual_runtime_HF_server_client_and_first3_sampling_markers_PENDING": true
+    },
+    {
+      "arm": "A13",
+      "trial": "greedy",
+      "task": "math500",
+      "native_done_uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A13-paired-math-20261031-r1/A13/math/greedy/math500/done.json",
+      "native_done_sha256": "c1d4f2d18418d174c2476326dee608b95571269bc6cc6f1f7b5a6702ef833d96",
+      "native_done_path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/greedy/math500/native-done.actual.json",
+      "native_done_bytes": 3319,
+      "actual_eval_job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy/eval-math500-b100c4b8",
+      "coverage": {
+        "n_benchmark": 500,
+        "n_attempted": 500,
+        "n_scored": 500,
+        "n_correct": 456,
+        "n_unanswered": 26,
+        "errors": {}
+      },
+      "native_config": {
+        "name": "math500",
+        "tasks": [
+          {
+            "name": "MATH500",
+            "num_fewshot": 0,
+            "task_alias": "math500",
+            "task_kwargs": null,
+            "generation": true,
+            "unsafe_code": false,
+            "completion_only": false
+          }
+        ],
+        "apply_chat_template": true,
+        "max_gen_toks": 8192,
+        "max_length": 32768,
+        "num_concurrent": 8,
+        "max_eval_instances": null,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "seed": 0,
+        "extra_gen_kwargs": {
+          "temperature": "0"
+        }
+      },
+      "n_unique_expected_items": 500,
+      "n_correct": 456.0,
+      "metric": "accuracy",
+      "filter": "none",
+      "item_scores": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/greedy/math500/item-score-array.json",
+        "bytes": 58019,
+        "sha256": "4871c281e0ba7ef37a68aafbe40c2f21075d16ccc8a6cfdb1e52d32776cfe2b8"
+      },
+      "selected_native_metric_columns_typed_reader_projection_NOT_fullsamples_OR_originalParquet": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/greedy/math500/selected-metric-columns-native-reader.arrow",
+        "bytes": 51226,
+        "sha256": "7ffa179a1319422ce2967a89a300a250c89ea80c7fe7776e08361354b7cd6871"
+      },
+      "actual_runtime_HF_server_client_and_first3_sampling_markers_PENDING": true
+    },
+    {
+      "arm": "A13",
+      "trial": "17",
+      "task": "gsm8k_0shot",
+      "native_done_uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A13-paired-math-20261031-r1/A13/math/17/gsm8k_0shot/done.json",
+      "native_done_sha256": "b865b8682b8c1efd16c20924e17e12d06b47b5dc9136be6b950b38d0f7f00c79",
+      "native_done_path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/17/gsm8k_0shot/native-done.actual.json",
+      "native_done_bytes": 2847,
+      "actual_eval_job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17/eval-gsm8k_0shot-6d9fcfe7",
+      "coverage": {
+        "n_benchmark": 1319,
+        "n_attempted": 1319,
+        "n_scored": 1319,
+        "n_correct": 1200,
+        "n_unanswered": 0,
+        "errors": {}
+      },
+      "native_config": {
+        "name": "gsm8k_0shot",
+        "tasks": [
+          {
+            "name": "gsm8k",
+            "num_fewshot": 0,
+            "task_alias": "gsm8k_0shot",
+            "task_kwargs": null,
+            "generation": true,
+            "unsafe_code": false,
+            "completion_only": false
+          }
+        ],
+        "apply_chat_template": true,
+        "max_gen_toks": 8192,
+        "max_length": 32768,
+        "num_concurrent": 8,
+        "max_eval_instances": null,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "seed": 17,
+        "extra_gen_kwargs": {
+          "temperature": "0.7",
+          "top_p": "0.95",
+          "seed": "17"
+        }
+      },
+      "n_unique_expected_items": 1319,
+      "n_correct": 1200.0,
+      "metric": "exact_match",
+      "filter": "flexible-extract",
+      "item_scores": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/17/gsm8k_0shot/item-score-array.json",
+        "bytes": 153023,
+        "sha256": "27445cc6326fef546d531ec61d61931e3639bd0373a68cdd6e58baecd063a54a"
+      },
+      "selected_native_metric_columns_typed_reader_projection_NOT_fullsamples_OR_originalParquet": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/17/gsm8k_0shot/selected-metric-columns-native-reader.arrow",
+        "bytes": 299330,
+        "sha256": "0b088f1db808bb28d2d3e4d1b1542af89b69db269c22d04ae375e50dca0ea306"
+      },
+      "actual_runtime_HF_server_client_and_first3_sampling_markers_PENDING": true
+    },
+    {
+      "arm": "A13",
+      "trial": "17",
+      "task": "math500",
+      "native_done_uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A13-paired-math-20261031-r1/A13/math/17/math500/done.json",
+      "native_done_sha256": "f9e27752c12ab775a5c77bd3e0a28605609fff706c870724826a6a4e2f0fd0fb",
+      "native_done_path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/17/math500/native-done.actual.json",
+      "native_done_bytes": 3424,
+      "actual_eval_job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17/eval-math500-a5fd74c6",
+      "coverage": {
+        "n_benchmark": 500,
+        "n_attempted": 500,
+        "n_scored": 500,
+        "n_correct": 461,
+        "n_unanswered": 25,
+        "errors": {}
+      },
+      "native_config": {
+        "name": "math500",
+        "tasks": [
+          {
+            "name": "MATH500",
+            "num_fewshot": 0,
+            "task_alias": "math500",
+            "task_kwargs": null,
+            "generation": true,
+            "unsafe_code": false,
+            "completion_only": false
+          }
+        ],
+        "apply_chat_template": true,
+        "max_gen_toks": 8192,
+        "max_length": 32768,
+        "num_concurrent": 8,
+        "max_eval_instances": null,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "seed": 17,
+        "extra_gen_kwargs": {
+          "temperature": "0.7",
+          "top_p": "0.95",
+          "seed": "17"
+        }
+      },
+      "n_unique_expected_items": 500,
+      "n_correct": 461.0,
+      "metric": "accuracy",
+      "filter": "none",
+      "item_scores": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/17/math500/item-score-array.json",
+        "bytes": 58019,
+        "sha256": "927458e1ce5b516825f97e30a1a3b8332706894a0d48228e15bf2fd1e29b79f3"
+      },
+      "selected_native_metric_columns_typed_reader_projection_NOT_fullsamples_OR_originalParquet": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/17/math500/selected-metric-columns-native-reader.arrow",
+        "bytes": 51226,
+        "sha256": "600604561d87b128ecf15dd9fb93e25ef354c7eb449e37d85e72d4ab7f94da1f"
+      },
+      "actual_runtime_HF_server_client_and_first3_sampling_markers_PENDING": true
+    },
+    {
+      "arm": "A13",
+      "trial": "29",
+      "task": "gsm8k_0shot",
+      "native_done_uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A13-paired-math-20261031-r1/A13/math/29/gsm8k_0shot/done.json",
+      "native_done_sha256": "3556555490cf9950985c71529ed45f74a679976ecd1a5cdf52999f91bc620fd5",
+      "native_done_path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/29/gsm8k_0shot/native-done.actual.json",
+      "native_done_bytes": 2847,
+      "actual_eval_job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29/eval-gsm8k_0shot-d23c683e",
+      "coverage": {
+        "n_benchmark": 1319,
+        "n_attempted": 1319,
+        "n_scored": 1319,
+        "n_correct": 1198,
+        "n_unanswered": 0,
+        "errors": {}
+      },
+      "native_config": {
+        "name": "gsm8k_0shot",
+        "tasks": [
+          {
+            "name": "gsm8k",
+            "num_fewshot": 0,
+            "task_alias": "gsm8k_0shot",
+            "task_kwargs": null,
+            "generation": true,
+            "unsafe_code": false,
+            "completion_only": false
+          }
+        ],
+        "apply_chat_template": true,
+        "max_gen_toks": 8192,
+        "max_length": 32768,
+        "num_concurrent": 8,
+        "max_eval_instances": null,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "seed": 29,
+        "extra_gen_kwargs": {
+          "temperature": "0.7",
+          "top_p": "0.95",
+          "seed": "29"
+        }
+      },
+      "n_unique_expected_items": 1319,
+      "n_correct": 1198.0,
+      "metric": "exact_match",
+      "filter": "flexible-extract",
+      "item_scores": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/29/gsm8k_0shot/item-score-array.json",
+        "bytes": 153023,
+        "sha256": "c4728f5ae40007cf1c5ca9aada2b63707d1b789a81d25b8c0a91f1b70d032f4c"
+      },
+      "selected_native_metric_columns_typed_reader_projection_NOT_fullsamples_OR_originalParquet": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/29/gsm8k_0shot/selected-metric-columns-native-reader.arrow",
+        "bytes": 299330,
+        "sha256": "d0a322fb9629b511e7cfafbdb8a95448f7fa7cc3a31bc7c7e3855c76bfb42aad"
+      },
+      "actual_runtime_HF_server_client_and_first3_sampling_markers_PENDING": true
+    },
+    {
+      "arm": "A13",
+      "trial": "29",
+      "task": "math500",
+      "native_done_uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A13-paired-math-20261031-r1/A13/math/29/math500/done.json",
+      "native_done_sha256": "3f20af6746be71298011843c8f63701337a27621088c86d01873da47df87dfce",
+      "native_done_path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/29/math500/native-done.actual.json",
+      "native_done_bytes": 3422,
+      "actual_eval_job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29/eval-math500-d13df2cd",
+      "coverage": {
+        "n_benchmark": 500,
+        "n_attempted": 500,
+        "n_scored": 500,
+        "n_correct": 466,
+        "n_unanswered": 19,
+        "errors": {}
+      },
+      "native_config": {
+        "name": "math500",
+        "tasks": [
+          {
+            "name": "MATH500",
+            "num_fewshot": 0,
+            "task_alias": "math500",
+            "task_kwargs": null,
+            "generation": true,
+            "unsafe_code": false,
+            "completion_only": false
+          }
+        ],
+        "apply_chat_template": true,
+        "max_gen_toks": 8192,
+        "max_length": 32768,
+        "num_concurrent": 8,
+        "max_eval_instances": null,
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        },
+        "seed": 29,
+        "extra_gen_kwargs": {
+          "temperature": "0.7",
+          "top_p": "0.95",
+          "seed": "29"
+        }
+      },
+      "n_unique_expected_items": 500,
+      "n_correct": 466.0,
+      "metric": "accuracy",
+      "filter": "none",
+      "item_scores": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/29/math500/item-score-array.json",
+        "bytes": 58019,
+        "sha256": "92e9dc12df33522ec9c545bc168433dc7b8186a8e5a69c86559c8a0ea1da76b5"
+      },
+      "selected_native_metric_columns_typed_reader_projection_NOT_fullsamples_OR_originalParquet": {
+        "path": "/mnt/storage/karan-scratch/maths-A13-six-units-private-r1/29/math500/selected-metric-columns-native-reader.arrow",
+        "bytes": 51226,
+        "sha256": "9a332bb8a50bb1de8db361ff019626b670497c3b796a300d153d4b66e12fd710"
+      },
+      "actual_runtime_HF_server_client_and_first3_sampling_markers_PENDING": true
+    }
+  ],
+  "total_scored_item_decode_pairs": 5457,
+  "docID_sets_equal_across_three_decodes": true,
+  "reused_reference_index_sha256": "4ef74452477d3215e0acc532b0d908065db344fbb86f7d4d134fa99b61275527",
+  "NO_new_reference_serve": true,
+  "no_missing_reward_imputation_best_decode_or_new_model_calls": true,
+  "owned_terminal_attempts_and_scoped_cost": {
+    "jobs": [
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy/eval-math500-b100c4b8",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy/eval-math500-b100c4b8/0",
+            "uid": "cbc3908a1082c8cf",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793413266377,
+            "finish_ms": 1793414148767
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17/eval-math500-a5fd74c6",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17/eval-math500-a5fd74c6/0",
+            "uid": "c9cd8154c4404b48",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793413233261,
+            "finish_ms": 1793414083614
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29/eval-math500-d13df2cd",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29/eval-math500-d13df2cd/0",
+            "uid": "50025c55b3f847b6",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793413222639,
+            "finish_ms": 1793414097437
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17/eval-gsm8k_0shot-6d9fcfe7",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17/eval-gsm8k_0shot-6d9fcfe7/0",
+            "uid": "f0e5e7563ae1dc5e",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793412821892,
+            "finish_ms": 1793413217840
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy/eval-gsm8k_0shot-770b4562",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy/eval-gsm8k_0shot-770b4562/0",
+            "uid": "dfd8aff478fb7030",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793412821892,
+            "finish_ms": 1793413250216
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29/eval-gsm8k_0shot-d23c683e",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29/eval-gsm8k_0shot-d23c683e/0",
+            "uid": "c0386dde15006f68",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793412821892,
+            "finish_ms": 1793413206279
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-29/0",
+            "uid": "e1e9773760cbafb1",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793412804876,
+            "finish_ms": 1793414120898
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-17/0",
+            "uid": "62b7af04e2b8aec7",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793412804876,
+            "finish_ms": 1793414108810
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/math-greedy/0",
+            "uid": "b369cc147bb9e1b4",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793412804876,
+            "finish_ms": 1793414173423
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622/pathb-paired-math-a13-r1-serve",
+        "state": "killed",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 8,
+          "cpu_millicores": 32000,
+          "memory_bytes": 549755813888,
+          "disk_bytes": 549755813888
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/pathb-paired-math-a13-r1-serve/0",
+            "uid": "078e8814fa56303f",
+            "number": 0,
+            "state": "killed",
+            "start_ms": 1793412526528,
+            "finish_ms": 1793414204945
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/pathb-paired-math-a13-r1-35a90ade7622",
+        "state": "succeeded",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 8000,
+          "memory_bytes": 34359738368,
+          "disk_bytes": 53687091200
+        },
+        "attempts": [
+          {
+            "task": "/karan/pathb-paired-math-a13-r1-35a90ade7622/0",
+            "uid": "e663e8e2945a01de",
+            "number": 0,
+            "state": "succeeded",
+            "start_ms": 1793412481523,
+            "finish_ms": 1793414223843
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": false
+      }
+    ],
+    "all_owned_jobs_terminal": true,
+    "root_stored_request": {
+      "bundle_id": "96c9e764649e559694621dee7f579418083ade6e8027fbaf7c0cb693085f820e",
+      "priority": "PRIORITY_BAND_PRODUCTION",
+      "failure_retries": 0,
+      "preemption_retries": 0,
+      "timeout_ms": 176400000,
+      "constraints": [
+        {
+          "key": "cluster",
+          "op": "CONSTRAINT_OP_EQ",
+          "value": {
+            "string_value": "cw-rno2a"
+          },
+          "mode": "CONSTRAINT_MODE_REQUIRED"
+        }
+      ],
+      "resources": {
+        "cpu_millicores": 8000,
+        "memory_bytes": "34359738368",
+        "device": {},
+        "disk_bytes": "53687091200"
+      }
+    },
+    "cost": {
+      "exact_hours": {
+        "H100h": "1678417/450000",
+        "GPU_host_CPUh": "1678417/112500",
+        "CPU_only_h": "3182341/150000"
+      },
+      "complete_window_subtotals_hours_9dp": {
+        "H100h": 3.729815556,
+        "GPU_host_CPUh": 14.919262222,
+        "CPU_only_h": 21.215606667
+      },
+      "full_cohort_hours_9dp": {
+        "H100h": 3.729815556,
+        "GPU_host_CPUh": 14.919262222,
+        "CPU_only_h": 21.215606667
+      },
+      "missing_windows_excluded_UNKNOWN_NOT_zero": [],
+      "GPU_host_CPU_separate": true,
+      "full_requested_resources_every_physical_attempt_integer_ms_sum_then_round_once": true,
+      "NOT_global_or_additive_to_overlapping_scopes": true
+    }
+  },
+  "NOT_final_paired_math_comparison_until_actual_runtime_source_sampling_HF_controls_qualified": true
+}

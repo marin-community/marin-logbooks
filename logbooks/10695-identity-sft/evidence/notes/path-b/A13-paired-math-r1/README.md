@@ -1,0 +1,1 @@
+A13: one candidate-only production paired-maths owner; exact existing f5 GSM OFF/MATH ON, greedy/17/29, reused admitted v01 six units. Own actual readiness and all local metadata required; no new reference serve. API request("A13", credentials). Runtime sampling/HF qualification is required before final statistics.

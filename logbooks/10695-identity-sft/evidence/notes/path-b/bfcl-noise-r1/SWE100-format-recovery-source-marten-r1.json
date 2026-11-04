@@ -1,0 +1,67 @@
+{
+  "scope": "Static source explanation for the exact selected mini-swe2.1.0 method, not an empirical rescue-rate or rawHTTP/first-completion audit.",
+  "task_config_sha256": "117cc38b33491a6a843793fb0f43314b7851c01f0da665ff70251fec33eed156",
+  "sealed_Harbor_receipt_sha256": "ddcb60bb251bfd292e03108b8fab975633ceda19add596c8a078a5086b149d97",
+  "sealed_Harbor_sources": {
+    "/home/karan/.cache/uv/git-v0/checkouts/58d46c4858ecc44b/38742b0f/src/harbor/agents/installed/mini_swe_agent.py": {
+      "bytes": 25059,
+      "sha256": "f873851dfb8a946206872f44d8d5c887ad02565d8af7ef7846cbfdb57ec68663"
+    },
+    "/home/karan/.cache/uv/git-v0/checkouts/58d46c4858ecc44b/38742b0f/src/harbor/agents/installed/mini_swe_model.py": {
+      "bytes": 2894,
+      "sha256": "2ae6e812417c045b8e154f67c17dd76ba2b2c0a95083ae6caba1574526fe018d"
+    }
+  },
+  "mini_package_version": "2.1.0",
+  "mini_distribution_METADATA_sha256": "97efcd7458e289f669613cfc43ffac5a8b842384e9a52f2019ab72ad4752adf3",
+  "mini_distribution_RECORD_sha256": "c094b25a67dbce7840d0dad64f5631e4c4cbf3f4d845e5f617ea63bd6adb3e54",
+  "mini_sources_checked_against_distribution_RECORD": {
+    "minisweagent/agents/default.py": {
+      "path": "/home/karan/.cache/uv/archive-v0/FuxlatJ7VcVuyCn75Cxkj/minisweagent/agents/default.py",
+      "bytes": 6361,
+      "sha256": "5bb2ef582aacdb653c9d5104853083c5af289347c73687ce6625587d59ae1d1a"
+    },
+    "minisweagent/models/litellm_model.py": {
+      "path": "/home/karan/.cache/uv/archive-v0/FuxlatJ7VcVuyCn75Cxkj/minisweagent/models/litellm_model.py",
+      "bytes": 6868,
+      "sha256": "7fb662383ffb6717af5f75ddc1f90731dc6f99c0fff12dde1b8ffbd185c58a03"
+    },
+    "minisweagent/models/utils/actions_toolcall.py": {
+      "path": "/home/karan/.cache/uv/archive-v0/FuxlatJ7VcVuyCn75Cxkj/minisweagent/models/utils/actions_toolcall.py",
+      "bytes": 3637,
+      "sha256": "a2a107abaf8d5fe045a05c6fb1da9a5ea05e5622b9b9f281bea362a824f2da4f"
+    },
+    "minisweagent/exceptions.py": {
+      "path": "/home/karan/.cache/uv/archive-v0/FuxlatJ7VcVuyCn75Cxkj/minisweagent/exceptions.py",
+      "bytes": 619,
+      "sha256": "1135435c47addf2912301566a87e1e81d1b781ccf8ff23cde494608ea70d7a8c"
+    },
+    "minisweagent/config/mini.yaml": {
+      "path": "/home/karan/.cache/uv/archive-v0/FuxlatJ7VcVuyCn75Cxkj/minisweagent/config/mini.yaml",
+      "bytes": 4811,
+      "sha256": "fb7368fe6ee3b7dc485fa7a08073fbcae244d7ee3d314639aa9d0004320bc479"
+    },
+    "minisweagent/environments/local.py": {
+      "path": "/home/karan/.cache/uv/archive-v0/FuxlatJ7VcVuyCn75Cxkj/minisweagent/environments/local.py",
+      "bytes": 3018,
+      "sha256": "93386e12c1a24d8c30a12f17dd59a488d34f218e9699e68b84e75babe9019fbd"
+    }
+  },
+  "reviewed_chain": [
+    "Harbor MiniSweAgent with model_info explicitly uses mini.yaml and DefaultAgent; ContextLimitedModel subclasses native LitellmModel and preserves native action parsing.",
+    "LitellmModel.query calls _parse_actions before returning the assistant message. Empty tool_calls raises FormatError through parse_toolcall_actions.",
+    "FormatError subclasses InterruptAgentFlow; DefaultAgent.run catches it, appends its user correction message and continues the step loop instead of treating the text-only response as normal completion.",
+    "mini.yaml correction explicitly demands bash and teaches the COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT command. Submission is detected from executed command output.",
+    "DefaultAgent.query adds an assistant message only after model.query returns. A rejected no-tool response can therefore be absent from the saved assistant trajectory; the correction may remain without the rejected text/finish."
+  ],
+  "inference": "A first-turn text-only answer that would stop BFCL Pi can receive recovery feedback and another model call in mini-swe. Subsequent successful actions can recover task score. Strict normal-session zero-tool completion is structurally disallowed by this submission protocol, so zero such sessions would not establish preserved spontaneous tool calling.",
+  "unknowns": [
+    "No observed rescue count, rejected response text, finish_reason, per-model recovery frequency or explanation of the score difference is established here.",
+    "The local2.1.0 distribution and sealed Harbor source establish static method semantics, not full runtime module attestation or wire capture for every task.",
+    "Repeated format errors can still end in timeout/context/other agent failure; the harness does not guarantee rescue."
+  ],
+  "diagnostic_counts": null,
+  "diagnostic_null_reason": "No actual task-trajectory/no-tool diagnostic audit performed in this source-only artifact.",
+  "source_script_sha256": "6ca930319cc7c0695b42296d1419e48ab44619926b7b647e457c561c1e6fa30c",
+  "model_network_storage_control_calls": 0
+}

@@ -1,0 +1,155 @@
+{
+  "run_id": "20261030-162143-snowball-pathb-swe100-a3-u36-swebench-verified-100-7a22",
+  "group_id": "20261030-162143-snowball-pathb-swe100-a3-u36-53eb",
+  "created_at": "2026-10-30T16:21:43.824131+00:00",
+  "user": "karan",
+  "version": "snowball-pathb-swe100-a3-u36-r1-43bba4a16d17",
+  "description": "SWE100 fixed mini-swe2.1 A3 repeat1, original100 tasks no method change",
+  "model": {
+    "name": "snowball-pathb-swe100-a3-u36",
+    "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+    "backend": "vllm",
+    "config": {
+      "name": "snowball-pathb-swe100-a3-u36",
+      "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+      "identity": null,
+      "revision": null,
+      "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+      "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+      "apply_chat_template": true,
+      "resource_hint": {
+        "hbm_gb": null,
+        "gpu": {
+          "H100": 8
+        },
+        "cpu": null,
+        "memory": "512g",
+        "disk": null
+      },
+      "serve": {
+        "backend": "vllm",
+        "tensor_parallel_size": 1,
+        "data_parallel_size": 8,
+        "pipeline_parallel_size": 1,
+        "instances": 1,
+        "gpu_memory_utilization": null,
+        "max_model_len": 73728,
+        "max_num_batched_tokens": 7168,
+        "max_num_seqs": 32,
+        "hf_overrides": null,
+        "limit_mm_per_prompt": null,
+        "tool_call_parser": "hermes",
+        "reasoning_parser": null,
+        "vllm_batch_invariant": null,
+        "vllm_use_flashinfer_sampler": null,
+        "runai_streamer_concurrency": null,
+        "runai_streamer_s3_request_timeout_ms": null,
+        "hf_hub_disable_xet": true,
+        "vllm_source": null,
+        "vllm_version": null,
+        "vllm_plugin_requirements": [],
+        "object_store_load_mode": "stream",
+        "vllm_extra_args": [
+          "--enable-expert-parallel",
+          "--model-loader-extra-config",
+          "{\"distributed\":true}"
+        ],
+        "speculative": null,
+        "chat_template": null,
+        "auto_overrides": false
+      },
+      "generation": {
+        "max_gen_toks": null,
+        "extra_gen_kwargs": {},
+        "chat_template_kwargs": {},
+        "thinking_off_template_kwargs": {}
+      },
+      "agent": {
+        "agent_kwargs": {
+          "thinking_format": "chat-template"
+        }
+      },
+      "evalchemy_num_concurrent": null
+    },
+    "config_digest": "aa1185a08a856de5572ae8f8d82a5acf17d1a2a75d434cb0cf6b7eee3c10119d"
+  },
+  "judge": null,
+  "eval": {
+    "name": "swebench-verified-100",
+    "mechanism": "harbor",
+    "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+    "tasks": [
+      {
+        "name": "swebench-verified",
+        "num_fewshot": null,
+        "task_alias": null,
+        "generation": false,
+        "unsafe_code": false,
+        "completion_only": false,
+        "benchmark": {
+          "schema_version": 1,
+          "task": "swebench-verified",
+          "primary_metric": "reward",
+          "metric_kind": "continuous",
+          "metrics": [
+            {
+              "name": "reward",
+              "source_name": "reward",
+              "kind": "continuous",
+              "higher_is_better": true
+            }
+          ],
+          "n_benchmark": 100,
+          "n_attempted": 100
+        }
+      }
+    ],
+    "evalchemy": null,
+    "harbor": {
+      "dataset": "swebench-verified",
+      "version": "1.0",
+      "agent": "mini-swe-agent",
+      "env": "daytona",
+      "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+      "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+      "max_input_tokens": 32768,
+      "max_output_tokens": 8192
+    }
+  },
+  "hardware": {
+    "platform": "gpu",
+    "accelerator": "H100x8",
+    "region_or_cluster": "cw-rno2a",
+    "task_count": 1
+  },
+  "status": "infra_failed",
+  "error": "EvaluationError: inference backend finished while Harbor was running; inference failed: Inference job /karan/eval-20261030-162143-snowball-pathb-swe100-a3-u36-53eb/inference-da8763cb42584fd4a8ec73d4bbaa8a23 finished unexpectedly with status failed",
+  "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-1/records/20261030-162143-snowball-pathb-swe100-a3-u36-swebench-verified-100-7a22/results",
+  "metrics": {},
+  "canonical_metrics": {},
+  "coverage": {},
+  "jobs": {
+    "orchestrator": "/karan/eval-20261030-162143-snowball-pathb-swe100-a3-u36-53eb",
+    "inference": "/karan/eval-20261030-162143-snowball-pathb-swe100-a3-u36-53eb/inference-da8763cb42584fd4a8ec73d4bbaa8a23"
+  },
+  "log_tails": {
+    "inference": []
+  },
+  "provenance": {
+    "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+    "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+    "launch_host": "karans-linux"
+  },
+  "timing": null,
+  "serving": {
+    "tensor_parallel_size": 1,
+    "data_parallel_size": 8,
+    "pipeline_parallel_size": 1,
+    "task_count": 1,
+    "effective": true,
+    "max_model_len": 73728,
+    "max_gen_tokens": null,
+    "extra": {}
+  },
+  "inference_metrics": null
+}

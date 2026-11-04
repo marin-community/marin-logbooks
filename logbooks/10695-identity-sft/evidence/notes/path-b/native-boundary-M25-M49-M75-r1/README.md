@@ -1,0 +1,1 @@
+Target-only production native132 successor. Original payload, contexts, prefixes, native Session and generation bytes match cleared parent. Each target requires its own actual readiness and exact audit/admission digest. No new reference, P1, output repair or fabricated training provenance. API request(label, credentials).

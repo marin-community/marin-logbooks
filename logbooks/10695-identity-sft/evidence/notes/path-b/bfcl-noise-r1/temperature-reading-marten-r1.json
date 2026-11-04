@@ -1,0 +1,127 @@
+{
+  "scope": "CPU-only independent pinned source/config audit; no newly captured HTTP request or model call",
+  "effective_temperature": 1.0,
+  "explicit_client_seed": null,
+  "interpretation": "The BFCL harness is configured for stochastic unseeded sampling. This supplies a concrete mechanism for evaluation-run variability; it does not quantify how much of any score difference it causes or exclude other mechanisms.",
+  "source_chain": [
+    "Evaluator caba0fa38b780af42da54af2f188ba5bfcc28501: BFCL YAML pins Pi0.87.0 and no temperature/seed; model agent kwargs only thinking_format",
+    "Harbor runtime38742b0f9f411c95e0c01468785cac7bb77c9894: only the thinking CLI flag; generated provider document has no samplingParams; no temperature/seed added",
+    "npm pi-coding-agent0.87.0 SDK/core supply no temperature or seed; pi-ai0.87.0 and0.87.1 omit request.temperature when undefined",
+    "Marin GPU evaluation default selects the Marin vLLM fork fb02daf1d7139d2adaeb0588448649591657d1e3; cached source protocol hash equals Genet01911 source; unset temperature falls back to1.0 and seed remainsNone",
+    "Audited model generation_config has BOS/EOS/version only, with no sampling override; ablation exports preserve it"
+  ],
+  "files": [
+    {
+      "path": "/mnt/storage/karan-scratch/marin-held-bfcl-plumbing/experiments/evaluation/campaigns/eval-campaign-09-25-unlabeled/harbor-configs/bfclparity-pi.yaml",
+      "sha256": "73bf0dc40d438b04fedaf1ac31bc4c35d3fc07ce851d815730c5079f168666e1",
+      "bytes": 1158
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-ablation-r1/model-A0.yaml",
+      "sha256": "f0cde17a2869f048ee94253699e34374b6901baf2a9bafd5daf7db83ed8b7095",
+      "bytes": 769
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/receipt-inputs/generation_config.json",
+      "sha256": "fef404c3c02c0c5120a18a55820caac75222b507f27e1aef0e4cd482ba887d73",
+      "bytes": 113
+    },
+    {
+      "path": "/mnt/storage/karan-scratch/marin-held-bfcl-plumbing/lib/marin/src/marin/external_dependencies.py",
+      "sha256": "fc9cf7f07bdd118a488976f1f7eea6548796e5f1f9410e18b6e90d357c306da1",
+      "bytes": 4097
+    },
+    {
+      "path": "/mnt/storage/karan-scratch/marin-held-bfcl-plumbing/config/external/harbor/uv.lock",
+      "sha256": "5b3be3f45a5a93554ed184109a70ec242307215c93dd7404765fa493dffc0d2a",
+      "bytes": 233687
+    },
+    {
+      "path": "/mnt/storage/karan-scratch/marin-held-bfcl-plumbing/lib/marin/src/marin/inference/vllm_backend.py",
+      "sha256": "bedcc2f9f3858a222df9e615961d77fdb200d88345bbee082ce2bc3847075f4e",
+      "bytes": 7195
+    },
+    {
+      "path": "/mnt/storage/karan-scratch/marin-held-bfcl-plumbing/lib/marin/src/marin/evaluation/serving_config.py",
+      "sha256": "faea55996467fddb5798ec5b766741585409b07f961dca8d398ae8e135909f9e",
+      "bytes": 15073
+    },
+    {
+      "path": "/home/karan/oa/harbor-207/src/harbor/agents/installed/pi.py",
+      "sha256": "47e716411ccedc3162c17b6d6160a9eae7e7ec1bd00ecc64a59cb487cb082de3",
+      "bytes": 30765
+    },
+    {
+      "path": "/home/karan/.cache/uv/archive-v0/aFI_Trzd7v4FwhXm5egbo/vllm/entrypoints/openai/chat_completion/protocol.py",
+      "sha256": "0ed35d120613fac0ae879a5be0463265cbf6731875fb755d31962a4639db85bf",
+      "bytes": 48385
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-ai-0.87.0/dist__api__openai-completions.js",
+      "sha256": "57c1d2b826050056c1f7ff4a017d6afd93b5fe6bf0f2f06e66379e1f78efd453",
+      "bytes": 64250
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-agent-core-0.87.0/dist__agent.js",
+      "sha256": "3a890712a7a02fc29754a2af61b758cba43eec97d289e446cd7e432ed0093085",
+      "bytes": 16808
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-agent-core-0.87.0/dist__agent-loop.js",
+      "sha256": "75da7290cd348c070328de834a810503d00fd5ff1ea2cc204786fb498bd046df",
+      "bytes": 27083
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-ai-0.87.0/dist__api__simple-options.js",
+      "sha256": "1caf860e028e22639578aba3ec8b79e5be9650c27bd3f19471c78502976555f3",
+      "bytes": 2998
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-ai-0.87.1/dist__api__openai-completions.js",
+      "sha256": "a2397cb3114a3d1a05993f6f19671ecbcc85540d8f8c59a233808c717df2682c",
+      "bytes": 64355
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-agent-core-0.87.1/dist__agent.js",
+      "sha256": "3a890712a7a02fc29754a2af61b758cba43eec97d289e446cd7e432ed0093085",
+      "bytes": 16808
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-agent-core-0.87.1/dist__agent-loop.js",
+      "sha256": "75da7290cd348c070328de834a810503d00fd5ff1ea2cc204786fb498bd046df",
+      "bytes": 27083
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-ai-0.87.1/dist__api__simple-options.js",
+      "sha256": "1caf860e028e22639578aba3ec8b79e5be9650c27bd3f19471c78502976555f3",
+      "bytes": 2998
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/pi-coding-agent-0.87.0/dist__core__sdk.js",
+      "sha256": "b49c2843197166bb84283edcb7702b91346d8fbaed2b0b8c70e5277dd78bcf5f",
+      "bytes": 14059
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/source-manifest.json",
+      "sha256": "d79358e2122918b86f922f412b4b2c86e9713de7ce0acdc1c1c525ff41995e51",
+      "bytes": 7762
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/temperature-source-r1/provider-followup-source-manifest.json",
+      "sha256": "b64decde6786e4ab58e2f76227d6280acffc7d8b774937b09a8de983c5a878fe",
+      "bytes": 5254
+    }
+  ],
+  "public_primary_sources": [
+    "https://registry.npmjs.org/@earendil-works/pi-coding-agent/0.87.0",
+    "https://registry.npmjs.org/@earendil-works/pi-ai/0.87.0",
+    "https://registry.npmjs.org/@earendil-works/pi-ai/0.87.1",
+    "https://github.com/marin-community/vllm/blob/fb02daf1d7139d2adaeb0588448649591657d1e3/vllm/entrypoints/openai/chat_completion/protocol.py"
+  ],
+  "limitations": [
+    "Actual sandbox transitive npm package versions not independently observed; both currently published matching0.87 versions checked",
+    "No new HTTP/wire sampling proof",
+    "No setting, seed, priority or repeat count changed"
+  ],
+  "new_model_job_authority": false
+}

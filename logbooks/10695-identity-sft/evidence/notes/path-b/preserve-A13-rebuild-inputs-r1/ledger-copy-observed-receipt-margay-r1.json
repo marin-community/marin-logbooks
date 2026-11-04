@@ -1,0 +1,34 @@
+{
+  "state": "LEDGER_COPIED_AND_FULL_BYTE_SHA_VERIFIED_THREE_POOLS_NOT_TRANSFERRED",
+  "record_kind": "Post-operation receipt of copy and readback observed in executor tool output; no pre-operation journal was written for this ledger operation",
+  "authority": "PRESERVE A13 REBUILD INPUTS in current-orders.md, Jerboa 2026-11-03",
+  "input_manifest": {
+    "path": "/mnt/storage/karan-scratchpad/task-334/inventory/A13-rebuild-inputs-private.json",
+    "sha256": "f7131832e99f5ff14b4a2ce5b9838926cafdba74c125d38cd0c8a4c7ebb63da0"
+  },
+  "ledger": {
+    "source": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/a8-onshare-20261030-r1/inputs/A8a/occurrence-ledger.jsonl",
+    "destination": "s3://marin-rno2a/marin/data/snowball-identity-pathb/inputs/a8a-consumed7266-occurrence-ledger.jsonl",
+    "bytes": 1861843,
+    "expected_sha256": "28a661563bbf294e06633fcffe32d3eb24a295b0419158be2edefef248c96582",
+    "source_full_byte_sha256": "28a661563bbf294e06633fcffe32d3eb24a295b0419158be2edefef248c96582",
+    "destination_full_byte_sha256": "28a661563bbf294e06633fcffe32d3eb24a295b0419158be2edefef248c96582",
+    "source_etag": "\"1f004737206d24d14afadd68ac03813f\"",
+    "operation": "same-bucket CopyObject followed by complete destination GetObject SHA256 readback",
+    "destination_prefix_was_empty_before_copy": true,
+    "verified": true
+  },
+  "remaining_three_pools": {
+    "state": "LOCAL_BYTES_SHA_VERIFIED_NO_TRANSFER",
+    "objects": [
+      {"name": "b-base-identity.jsonl", "bytes": 127703690, "sha256": "912126844fab24dc3c0f2fad2d0ce698c7c6a7da7fe3103d44391a197866f9de"},
+      {"name": "b-traces-identity.jsonl", "bytes": 141572127, "sha256": "0bedd56030782be7d61f2c48348c044e369810763a974c6a481fca7268e8882f"},
+      {"name": "candidate-replay.jsonl", "bytes": 129401885, "sha256": "affce0a332e3a07bbfe0bba7690572112a83fcec3ba72457507602e630f8b91a"}
+    ],
+    "s3_source_search": "No exact-size matches under the complete tmp/ listing or scanned portion of marin/. Bounded search, not proof of bucket-wide absence. No more broad scans planned.",
+    "blocker": "Original order authorizes same-bucket copy; exact source pools are known only locally. Explicit authority requested from Jerboa for local-to-RNO ingress."
+  },
+  "public_dataset_hold": "Latest Jerboa message: upload and verify but leave PRIVATE pending owner answer on attribution/service terms",
+  "deletions": 0,
+  "model_calls": 0
+}

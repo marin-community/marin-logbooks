@@ -1,0 +1,215 @@
+  Ruff linter............................. FAIL
+  Black formatter......................... FAIL
+  License headers (etc/license_header.txt) ok
+  Large files............................. ok
+  Python AST.............................. ok
+  Merge conflicts......................... ok
+  Trailing whitespace..................... ok
+  End-of-file newline..................... ok
+
+============================================================
+Failure details:
+
+--- Ruff linter ---
+E501 Line too long (126 > 121)
+   --> experiments/post_training/identity_path_b/ablation_recovery.py:112:122
+    |
+110 |         raise ValueError("Require a fresh A1 export-only recovery root name")
+111 |     # Reuse source/runtime/credential validation and the proven CPU request policy.
+112 |     request = submission(name=f"pathb-bfcl-a1-r1-{training['training_pin'][:12]}", training=training, credentials=credentials)
+    |                                                                                                                          ^^^^^
+113 |     request["name"] = name
+114 |     request["entrypoint"] = Entrypoint.from_callable(
+    |
+
+E501 Line too long (144 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation_recovery.py:39:122
+   |
+37 | …h, export_preflight, worker):
+38 | …
+39 | …t + "/hf/updates-36", root + "/eval/updates-36", {}, "a" * 40, "b" * 64, "A1")
+   |                                                         ^^^^^^^^^^^^^^^^^^^^^^^
+40 | …
+41 | …ent.training_pin,
+   |
+
+E501 Line too long (127 > 121)
+  --> experiments/post_training/identity_path_b/test_ablation_recovery.py:79:122
+   |
+77 |         def run():
+78 |             try:
+79 |                 ablation_recovery.export_only_worker(training=training, event=event, recovery_root=recovery, evidence=evidence)
+   |                                                                                                                          ^^^^^^
+80 |                 outcome.set_result(None)
+81 |             except BaseException as error:
+   |
+
+E501 Line too long (147 > 121)
+   --> experiments/post_training/identity_path_b/test_ablation_recovery.py:100:122
+    |
+ 98 | …6": SOURCE_RECEIPT["sha256"],
+ 99 | …ensors": 398,
+100 | …e in names}, **{f"trained.{i}": {"frozen_source": False} for i in range(398)}},
+    |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+101 | …
+102 | …ite_bytes(json.dumps(audit).encode())
+    |
+
+E501 Line too long (133 > 121)
+   --> experiments/post_training/identity_path_b/test_ablation_recovery.py:111:122
+    |
+109 |             assert json.loads(local(recovery + "/bfcl-ready.json").read_bytes())["event"] == event.payload()
+110 |         else:
+111 |             expected_error = {"preempted": RuntimeError, "unaudited": FileNotFoundError, "changed_source": ValueError}[export_result]
+    |                                                                                                                          ^^^^^^^^^^^^
+112 |             with pytest.raises(expected_error):
+113 |                 outcome.result(timeout=10)
+    |
+
+Found 5 errors.
+
+--- Black formatter ---
+--- experiments/post_training/identity_path_b/ablation_recovery.py	2026-10-30 02:24:57.638674+00:00
++++ experiments/post_training/identity_path_b/ablation_recovery.py	2026-10-30 02:25:57.451622+00:00
+@@ -107,11 +107,13 @@
+ ) -> dict:
+     """Build one fresh CPU lifetime owner with the original admitted source settings."""
+     if re.fullmatch(r"pathb-bfcl-a1-export-recovery-r1-[0-9a-f]{12}", name) is None:
+         raise ValueError("Require a fresh A1 export-only recovery root name")
+     # Reuse source/runtime/credential validation and the proven CPU request policy.
+-    request = submission(name=f"pathb-bfcl-a1-r1-{training['training_pin'][:12]}", training=training, credentials=credentials)
++    request = submission(
++        name=f"pathb-bfcl-a1-r1-{training['training_pin'][:12]}", training=training, credentials=credentials
++    )
+     request["name"] = name
+     request["entrypoint"] = Entrypoint.from_callable(
+         export_only_worker, training=training, event=event, recovery_root=recovery_root, evidence=evidence
+     )
+     return request
+--- experiments/post_training/identity_path_b/test_ablation_recovery.py	2026-10-30 02:24:57.641674+00:00
++++ experiments/post_training/identity_path_b/test_ablation_recovery.py	2026-10-30 02:25:57.456242+00:00
+@@ -34,24 +34,43 @@
+         destination.parent.mkdir(parents=True, exist_ok=True)
+         return StoragePath(str(destination))
+ 
+     for module in (ablation_launch, ablation_recovery, async_launch, export_preflight, worker):
+         monkeypatch.setattr(module, "StoragePath", local)
+-    event = CheckpointEvent(36, root + "/checkpoints/step-35", root + "/hf/updates-36", root + "/eval/updates-36", {}, "a" * 40, "b" * 64, "A1")
++    event = CheckpointEvent(
++        36,
++        root + "/checkpoints/step-35",
++        root + "/hf/updates-36",
++        root + "/eval/updates-36",
++        {},
++        "a" * 40,
++        "b" * 64,
++        "A1",
++    )
+     training = dict(
+-        run_root=root, run_id="fixture", arm="A1", training_pin=event.training_pin,
+-        packed_sha256=event.packed_data_sha256, exposure_path=root + "/exposure.json",
+-        runtime_bytes=b'{"xla_precision":"default"}', runtime_sha256="c" * 64,
+-        source_receipt=SOURCE_RECEIPT, source_objects={},
++        run_root=root,
++        run_id="fixture",
++        arm="A1",
++        training_pin=event.training_pin,
++        packed_sha256=event.packed_data_sha256,
++        exposure_path=root + "/exposure.json",
++        runtime_bytes=b'{"xla_precision":"default"}',
++        runtime_sha256="c" * 64,
++        source_receipt=SOURCE_RECEIPT,
++        source_objects={},
+     )
+     exposure_raw = b'{"cumulative_batches":[{}]}'
+     training["exposure_sha256"] = hashlib.sha256(exposure_raw).hexdigest()
+     local(training["exposure_path"]).write_bytes(exposure_raw)
+     result = {
+-        "arm": "A1", "completed_updates": 36, "updates": [{}] * 36,
+-        "training_pin": event.training_pin, "packed_sha256": training["packed_sha256"],
+-        "exposure_sha256": training["exposure_sha256"], "special_rows_frozen": False,
++        "arm": "A1",
++        "completed_updates": 36,
++        "updates": [{}] * 36,
++        "training_pin": event.training_pin,
++        "packed_sha256": training["packed_sha256"],
++        "exposure_sha256": training["exposure_sha256"],
++        "special_rows_frozen": False,
+         "fully_frozen_hf_names": sorted(frozen_names(AblationArm.TRAIN_SPECIAL_ROWS)),
+     }
+     metadata = b'{"step":35,"is_temporary":true}'
+     result_raw = json.dumps(result).encode()
+     source_raw = b'{"original_source_receipt":"unchanged"}'
+@@ -63,22 +82,25 @@
+     old_probe_raw = local(old_probe["path"]).read_bytes()
+     evidence = dict(
+         event_sha256=hashlib.sha256(event_bytes(event)).hexdigest(),
+         training_result_sha256=hashlib.sha256(result_raw).hexdigest(),
+         metadata_sha256=hashlib.sha256(metadata).hexdigest(),
+-        source_bind_sha256=hashlib.sha256(source_raw).hexdigest(), source_bind_bytes=len(source_raw),
++        source_bind_sha256=hashlib.sha256(source_raw).hexdigest(),
++        source_bind_bytes=len(source_raw),
+     )
+     outcome = Future()
+     with journey_world(tmp_path / "controller", monkeypatch) as world:
+         parent = world.submit("export-only-cpu-owner")
+         world.settle()
+         execution = ExecutionBoundary(world, parent)
+         monkeypatch.setattr(ablation_recovery, "native_submit", execution.submit)
+ 
+         def run():
+             try:
+-                ablation_recovery.export_only_worker(training=training, event=event, recovery_root=recovery, evidence=evidence)
++                ablation_recovery.export_only_worker(
++                    training=training, event=event, recovery_root=recovery, evidence=evidence
++                )
+                 outcome.set_result(None)
+             except BaseException as error:
+                 outcome.set_exception(error)
+ 
+         thread = threading.Thread(target=run, daemon=True)
+@@ -93,24 +115,31 @@
+         assert not outcome.done() and world.job(parent).state == job_pb2.JOB_STATE_RUNNING
+         if export_result in ("success", "changed_source"):
+             local(event.hf_export + "/path-b-checkpoint-event.json").write_bytes(event_bytes(event))
+             names = frozen_names(AblationArm.TRAIN_SPECIAL_ROWS)
+             audit = {
+-                "schema": "path_b_storage_v1", "source_receipt_sha256": SOURCE_RECEIPT["sha256"],
+-                "frozen_native_tensors": 104, "trained_master_cast_tensors": 398,
+-                "tensors": {**{name: {"frozen_source": True} for name in names}, **{f"trained.{i}": {"frozen_source": False} for i in range(398)}},
++                "schema": "path_b_storage_v1",
++                "source_receipt_sha256": SOURCE_RECEIPT["sha256"],
++                "frozen_native_tensors": 104,
++                "trained_master_cast_tensors": 398,
++                "tensors": {
++                    **{name: {"frozen_source": True} for name in names},
++                    **{f"trained.{i}": {"frozen_source": False} for i in range(398)},
++                },
+             }
+             local(event.hf_export + "/path-b-storage-audit.json").write_bytes(json.dumps(audit).encode())
+         if export_result == "changed_source":
+             local(event.hf_export + "/" + ablation_recovery.SOURCE_BIND).write_bytes(b"changed")
+         execution.finish("export-36", success=export_result != "preempted")
+         if export_result == "success":
+             outcome.result(timeout=10)
+             assert not local(event.native_checkpoint).exists()
+             assert json.loads(local(recovery + "/bfcl-ready.json").read_bytes())["event"] == event.payload()
+         else:
+-            expected_error = {"preempted": RuntimeError, "unaudited": FileNotFoundError, "changed_source": ValueError}[export_result]
++            expected_error = {"preempted": RuntimeError, "unaudited": FileNotFoundError, "changed_source": ValueError}[
++                export_result
++            ]
+             with pytest.raises(expected_error):
+                 outcome.result(timeout=10)
+             assert local(event.native_checkpoint + "/metadata.json").read_bytes() == metadata
+             assert not local(recovery + "/bfcl-ready.json").exists()
+         assert local(root + "/final-checkpoint-event.json").read_bytes() == event_bytes(event)
+would reformat experiments/post_training/identity_path_b/ablation_recovery.py
+would reformat experiments/post_training/identity_path_b/test_ablation_recovery.py
+
+Oh no! 💥 💔 💥
+2 files would be reformatted.
+
+============================================================
+FAILED
+============================================================

@@ -1,0 +1,34 @@
+{
+  "scope": "Jerboa-requested five-run plain-v0.1 reference extension; no new job authority",
+  "timing": "Specified after the complete26 ablation results, before this reviewer receives the new five reference outcomes",
+  "frozen_arm_analysis_sha256": "06f71ba85ac51e23471bba15bcb6198b2a02528f74af302b986fae39c466d9fa",
+  "original_spec_sha256": "636ddeb0a79606fc4827c1138668d8383dcd1fec387e5bbc8cd0d898f2080b45",
+  "required_reference_runs": 5,
+  "reference_admission": "All five newly authorized plain-v0.1 runs, same HF, method and sampling policy, exact123 unique binary task rewards and hashes; retain infrastructure failures separately and admit only linked authorized recoveries",
+  "historical34of123_not_pooled": true,
+  "old_r5_diagnostics_not_pooled": true,
+  "reference_run_order": "Lexical actual scored run_id",
+  "report": [
+    "Five individual counts and run IDs",
+    "Reference mean, sample SD, min-max and unadjusted mean CI",
+    "A0-A4 minus new reference mean and unadjusted run-bootstrap95percent CIs",
+    "All original A1-A4 minus A0 results remain unchanged and explicitly linked"
+  ],
+  "bootstrap": {
+    "draws": 10000,
+    "generator": "Python random.Random(297)",
+    "arm_draws": "Replay the original10000 independent A0-A4 run draws exactly, preserving their stream/order and all published arm-only intervals",
+    "reference_draws": "After those10000 arm draws, continue the same PRNG stream and draw10000 independent reference means, each from five reference runs sampled with replacement",
+    "contrasts": "Subtract reference draw j from each arm draw j; share the reference draw across contrasts; no pairing by repeat number or task resampling",
+    "CI_order_statistic_indices": [249, 9749],
+    "multiplicity_adjustment": "none"
+  },
+  "limitations": [
+    "Only5-6 evaluation-run clusters per condition; percentile uncertainty itself is imprecise",
+    "One trained checkpoint per arm and fixed123-task population",
+    "The newly repeated reference is a later batch; time/resource-batch effects are not randomized away",
+    "No release verdict follows automatically from a conditional evaluation contrast"
+  ],
+  "run_before_all_five_reference_slots_complete": false,
+  "automatic_retry_or_sampling_change": false
+}

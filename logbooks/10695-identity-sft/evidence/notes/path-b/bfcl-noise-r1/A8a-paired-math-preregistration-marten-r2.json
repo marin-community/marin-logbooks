@@ -1,0 +1,79 @@
+{
+  "scope": "Prospective A8a versus fresh plain-v0.1 pairedGSM8K/MATH500 analysis before new math outcomes; independent of A9",
+  "authority": "Jerboa NEXT A8a maths, same restricted-CD method, current-orders",
+  "candidate": "Existing audited A8a36 HF, s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-4bfe87adbb03/A8a/run/hf/updates-36",
+  "candidate_readiness_sha256": "d8b0c26c3bb5a69a92ae270bdfef3c9a663c6b01a3531adb945fac6890896c4d",
+  "reference": "A fresh serve of plain v0.1 ADC0078a with identical eval/serve/template/operator settings except model location; no historical math or sysdefault pooling",
+  "source_model": "s3://marin-rno2a/marin/models/marin-snowball-67b-a2b-v0.1-adc0078a",
+  "method": {
+    "17": {
+      "temperature": 0.7,
+      "top_p": 0.95,
+      "seed": 17,
+      "max_tokens": 8192
+    },
+    "29": {
+      "temperature": 0.7,
+      "top_p": 0.95,
+      "seed": 29,
+      "max_tokens": 8192
+    },
+    "parent_analysis": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/m16-screen/analyze_screen_math_cd16t2_r1.py",
+    "parent_analysis_sha256": "649ef07a1c116f74a8f3194ff40cad4e62f3f79eab76d950d752aeb7088d7b54",
+    "parent_item_score_and_bootstrap": "/home/karan/oa/marin-wt-289/experiments/weight_merging/rsi/screen_289/analyze.py",
+    "parent_functions_sha256": "d7bf603996af3ff9aaff5e70b5efba2e843bf0be903ba3c5221ab7a04f8cc2bc",
+    "benchmarks": {
+      "gsm8k_0shot": {
+        "items": 1319,
+        "metric": "exact_match",
+        "filter": "flexible-extract",
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        }
+      },
+      "math500": {
+        "items": 500,
+        "metric": "accuracy",
+        "filter": "none",
+        "chat_template_kwargs": {
+          "enable_thinking": true
+        }
+      }
+    },
+    "decode_order": [
+      "greedy",
+      "17",
+      "29"
+    ],
+    "greedy": {
+      "temperature": 0,
+      "max_tokens": 8192
+    },
+    "system_identity_injection_or_P1_prefill": false,
+    "fidelity": "Same frozen prompt/metric/filter/operator/template/client and server tokenizer semantics and nativeEvalchemy execution as restricted-CD. Bind concrete source pins, actual child kwargs/argv and tokenizers before launch; no broken52owner candidate fallback."
+  },
+  "admission": "All12 native units (two models x three decodes x two benchmarks), expected unique docIDs1319/500 each, exact source/model/config and provenance joins, per-item scored metric equals registered filter, no missing/duplicates. Retain native unanswered/length/agent failures as actual outcomes; never fabricate missing scores. Audit actual decode payload evidence. Preserve all runs/raw/physicalattempts; no unapproved reruns or selective decode pooling.",
+  "statistics": {
+    "unit": "Benchmark item, with its three decode outcomes kept together",
+    "comparison": "A8a minus freshv0.1, separately forGSM8K andMATH500",
+    "pairing": "Exact docID alignment acrossbothmodels/allthree decode labels; average three outcomes within each item first, then take per-item candidate-minus-reference differences",
+    "point": "Mean of per-item differences x100pp",
+    "bootstrap": "Existing screen289.bootstrap: NumPy default_rng(297),10000 arrays ofN resampled item indices, percentile2.5/97.5 of resampled mean differences; independent seed297 call per benchmark as existing method",
+    "report": "All three counts per model, per-item-mean accuracy, delta,95percentCI, better/worse/ties based on per-itemmean difference, retained unanswered/length/error counts/provenance",
+    "no_decode_as_independent_item_or_training_cluster_resampling": true,
+    "multiplicity_adjustment": "none",
+    "current_stop_line": "delta_pp < -1.5 AND upper95CI_pp < 0, per amended current T2/PathB rule; equality-1.5 orCI touching0 does not trip"
+  },
+  "limits": "Fixed public tasks, one checkpoint per condition and three decoding settings; no replicated-training/universal capability/release conclusion. Freshmath does not alter frozen BFCL intervals or choose bestdecode.",
+  "execution_authority_created": false,
+  "execution_mode_correction": {
+    "superseded_registration": "A8a-paired-math-preregistration-marten-r1.json",
+    "superseded_sha256": "8e4d336b00f50a44bf50c7d4af92c70cf43f22f0d8143bd1c62465486572f8e2",
+    "supersedes_only": "Incorrect global thinkingFalse field replaced by explicit per-benchmark mode fields. Numeric statistics, metrics, filters, decodes, thresholds, models and fresh-reference requirements unchanged.",
+    "authority": "Jerboa explicit mode ruling before any A8a math launch: GSM8K OFF and MATH500 ON, matching restricted-CD execution",
+    "actual_native_evidence": "A8a-math-restricted-CD-mode-evidence-marten-r1.json",
+    "actual_native_evidence_sha256": "e3672baff210c50df590fe713e9bdcab422aa989cb1e675f02de4f798ee9daea",
+    "evidence_scope": "All18 native done.json provenance.config records across two restricted-CD arms plus their v0.1 reference, three decodes and two benchmarks",
+    "timing": "Correction before math execution/outcomes; original8e4d file preserved. No model/GPU probe or data/scoring change."
+  }
+}

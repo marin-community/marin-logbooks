@@ -1,0 +1,184 @@
+{
+  "utc": "2026-10-31T02:21:20.593272+00:00",
+  "state": "ACTUAL_OWNER_ARCHIVE_MODEL_HF_SERVER_BF16_TP1_DP8_EP_GRUG_SIX_CLIENTS_ALL18_FIRST3_SAMPLING_CONTROLS_QUALIFIED",
+  "arm": "M51",
+  "actual_HF": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/merge-sweep-20261030-r1/M51/hf",
+  "actual_launch_sha256": "d0b08bc7fbd5caff9359e6c40b0e5ec49c6e96710b712a2604775e30d1e0fefc",
+  "candidate6_native_index_sha256": "b454f4e93a7f2bb8952cc1d12f0020f51989ab59ca76c54e7959d1b554ee3637",
+  "runtime_evidence_path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/M51-paired-math-r1/actual-runtime-qualification-r1/actual-owner-server-sixunits-first18-sampling-evidence-margay-r1.json",
+  "runtime_evidence_sha256": "57f956e712deae0322c64396826556b8d64f41d28a2000955a311a164bdf371c",
+  "archive_all8_original_and_sanitized_projection_hashes_verified": true,
+  "actual_archived_candidate_equals_sealed_target": true,
+  "server_actual_nondefault_args": {
+    "model_tag": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/merge-sweep-20261030-r1/M51/hf",
+    "api_server_count": 8,
+    "chat_template": "/tmp/marin_serve_chat_geacjtl2.jinja",
+    "host": "127.0.0.1",
+    "port": 46485,
+    "model": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/merge-sweep-20261030-r1/M51/hf",
+    "tokenizer": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/merge-sweep-20261030-r1/M51/hf",
+    "trust_remote_code": true,
+    "dtype": "bfloat16",
+    "max_model_len": 32768,
+    "served_model_name": [
+      "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/merge-sweep-20261030-r1/M51/hf"
+    ],
+    "load_format": "runai_streamer",
+    "model_loader_extra_config": {
+      "distributed": true
+    },
+    "reasoning_parser": "grug",
+    "data_parallel_size": 8,
+    "enable_expert_parallel": true,
+    "max_num_batched_tokens": 2048,
+    "max_num_seqs": 256
+  },
+  "server_actual_engine_line": "(EngineCore_DP0 pid=708) INFO 10-31 01:41:19 [core.py:123] Initializing a V1 LLM engine (v0.0.0.dev20260924+marin.01911be34fac) with config: model='/root/.cache/vllm/assets/model_streamer/854971a5', speculative_config=None, tokenizer='/root/.cache/vllm/assets/model_streamer/854971a5', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=32768, download_dir=None, load_format=runai_streamer, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=8, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='grug', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/merge-sweep-20261030-r1/M51/hf, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [2048], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native']), enable_flashinfer_autotune=True, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='auto', linear_backend='auto')",
+  "six_actual_clients": [
+    {
+      "trial": "greedy",
+      "task": "gsm8k_0shot",
+      "job": "/karan/pathb-paired-math-m51-r1-2989a8d6f1bc/math-greedy/eval-gsm8k_0shot-c23c298e",
+      "exact_first3_payload": {
+        "max_tokens": 8192,
+        "temperature": 0
+      },
+      "actual_CLI_flags": {
+        "own_model_HF": true,
+        "tokenizer_backend_none": true,
+        "tokenized_requests_False": true,
+        "client_max_length32704": true,
+        "client_concurrency8": true,
+        "max_gen8192": true
+      },
+      "actual_mode": {
+        "enable_thinking": false
+      },
+      "first3_only_NOT_all5457_or_fullwire_capture": true
+    },
+    {
+      "trial": "greedy",
+      "task": "math500",
+      "job": "/karan/pathb-paired-math-m51-r1-2989a8d6f1bc/math-greedy/eval-math500-83dc5158",
+      "exact_first3_payload": {
+        "max_tokens": 8192,
+        "temperature": 0
+      },
+      "actual_CLI_flags": {
+        "own_model_HF": true,
+        "tokenizer_backend_none": true,
+        "tokenized_requests_False": true,
+        "client_max_length32704": true,
+        "client_concurrency8": true,
+        "max_gen8192": true
+      },
+      "actual_mode": {
+        "enable_thinking": true
+      },
+      "first3_only_NOT_all5457_or_fullwire_capture": true
+    },
+    {
+      "trial": "17",
+      "task": "gsm8k_0shot",
+      "job": "/karan/pathb-paired-math-m51-r1-2989a8d6f1bc/math-17/eval-gsm8k_0shot-d5ce79c3",
+      "exact_first3_payload": {
+        "max_tokens": 8192,
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "seed": 17
+      },
+      "actual_CLI_flags": {
+        "own_model_HF": true,
+        "tokenizer_backend_none": true,
+        "tokenized_requests_False": true,
+        "client_max_length32704": true,
+        "client_concurrency8": true,
+        "max_gen8192": true
+      },
+      "actual_mode": {
+        "enable_thinking": false
+      },
+      "first3_only_NOT_all5457_or_fullwire_capture": true
+    },
+    {
+      "trial": "17",
+      "task": "math500",
+      "job": "/karan/pathb-paired-math-m51-r1-2989a8d6f1bc/math-17/eval-math500-9405992d",
+      "exact_first3_payload": {
+        "max_tokens": 8192,
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "seed": 17
+      },
+      "actual_CLI_flags": {
+        "own_model_HF": true,
+        "tokenizer_backend_none": true,
+        "tokenized_requests_False": true,
+        "client_max_length32704": true,
+        "client_concurrency8": true,
+        "max_gen8192": true
+      },
+      "actual_mode": {
+        "enable_thinking": true
+      },
+      "first3_only_NOT_all5457_or_fullwire_capture": true
+    },
+    {
+      "trial": "29",
+      "task": "gsm8k_0shot",
+      "job": "/karan/pathb-paired-math-m51-r1-2989a8d6f1bc/math-29/eval-gsm8k_0shot-276374cb",
+      "exact_first3_payload": {
+        "max_tokens": 8192,
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "seed": 29
+      },
+      "actual_CLI_flags": {
+        "own_model_HF": true,
+        "tokenizer_backend_none": true,
+        "tokenized_requests_False": true,
+        "client_max_length32704": true,
+        "client_concurrency8": true,
+        "max_gen8192": true
+      },
+      "actual_mode": {
+        "enable_thinking": false
+      },
+      "first3_only_NOT_all5457_or_fullwire_capture": true
+    },
+    {
+      "trial": "29",
+      "task": "math500",
+      "job": "/karan/pathb-paired-math-m51-r1-2989a8d6f1bc/math-29/eval-math500-60c7bf15",
+      "exact_first3_payload": {
+        "max_tokens": 8192,
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "seed": 29
+      },
+      "actual_CLI_flags": {
+        "own_model_HF": true,
+        "tokenizer_backend_none": true,
+        "tokenized_requests_False": true,
+        "client_max_length32704": true,
+        "client_concurrency8": true,
+        "max_gen8192": true
+      },
+      "actual_mode": {
+        "enable_thinking": true
+      },
+      "first3_only_NOT_all5457_or_fullwire_capture": true
+    }
+  ],
+  "paired_analysis_runtime_controls_qualified": true,
+  "NO_new_reference_serve": true,
+  "reference_qualification_c410_and_six_units4ef_reused": true,
+  "limits": [
+    "Only18 first3 marker lines, NOT fullwire/all5457 sampling",
+    "Actual client32704/server32768 inherited64margin",
+    "GLOBAL child reconstructed policy/bundle/workdir is NOT original peer policy/member proof",
+    "Fresh f5 runtime ZIP timestamp differences do not imply member changes; no f001 equality assertion",
+    "No quality/noninferiority/release/causal claim or extra contrast"
+  ],
+  "operator_network_model_submit_probe_control_calls": 0
+}

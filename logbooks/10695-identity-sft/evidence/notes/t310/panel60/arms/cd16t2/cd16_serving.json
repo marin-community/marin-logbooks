@@ -1,0 +1,55 @@
+{
+  "model": {
+    "name": "snowball-cd16t2-panel60",
+    "location": "s3://marin-rno2a/marin/experiments/snowball-identity/t312/cd16-t2/train-r1/hf/step-15",
+    "revision": null,
+    "apply_chat_template": true,
+    "resource_hint": {
+      "gpu": {
+        "H100": 8
+      },
+      "memory": "512g",
+      "disk": "500g"
+    },
+    "serve": {
+      "tensor_parallel_size": 1,
+      "data_parallel_size": 8,
+      "max_model_len": 12288,
+      "reasoning_parser": "grug",
+      "auto_overrides": false,
+      "vllm_extra_args": [
+        "--enable-expert-parallel",
+        "--override-generation-config",
+        "{\"temperature\":0}",
+        "--dtype",
+        "bfloat16"
+      ],
+      "tool_call_parser": "hermes"
+    },
+    "generation": {
+      "max_gen_toks": 8192,
+      "extra_gen_kwargs": {
+        "temperature": "0"
+      }
+    }
+  },
+  "gpu_type": "H100",
+  "gpu_count": 8,
+  "duration_seconds": 7200,
+  "storage_environment_names": [
+    "AWS_DEFAULT_REGION",
+    "AWS_ENDPOINT_URL",
+    "AWS_REGION",
+    "FSSPEC_S3"
+  ],
+  "blank_environment_names": [
+    "HF_TOKEN",
+    "WANDB_API_KEY",
+    "DAYTONA_API_KEY",
+    "DAYTONA_EVAL_API_KEY",
+    "DAYTONA_RL_API_KEY",
+    "TOGETHER_API_KEY",
+    "OPENAI_API_KEY",
+    "ANTHROPIC_API_KEY"
+  ]
+}

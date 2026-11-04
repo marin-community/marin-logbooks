@@ -1,0 +1,19 @@
+{
+  "scope": "Pre-merge implementation clarification of the already registered exact104 frozen-tensor invariant. No model outcomes, coefficient search, changed evaluation, statistical contrast or new execution authority.",
+  "active_preregistration_sha256": "108c2f65840ea7ab22acdb677494726a35d316e7400af5ba048337e84d44c4b9",
+  "finding": "The existing average worker computes FP32 anchor*(1-t) then adds donor*t and casts once to anchor dtype. Floating-point evaluation need not preserve identical parent FP32 bits at every coefficient. The existing checkpoint worker then restores preserve_rows from the anchor before writing. Mathematical equality of the parents is not a substitute for the registered stored-byte invariant.",
+  "implementation": "Use the existing preserve_rows mechanism for every first-axis row of each exact104 fully frozen tensor, in addition to the registered256 token rows of each applicable embedding/output matrix. No new merge arithmetic or worker is required. Freeze the explicit names, shapes and full-row index ranges in the recipe; reject missing, scalar or out-of-bounds entries rather than silently skipping them.",
+  "preconditions": "Before merging, verify each fully frozen tensor and protected token-row value is bit-identical in A3, A8a and the pinned v0.1 source evidence, with shape and dtype equality. A disagreement is an admission failure, not permission to select one parent's value. Preserve only the registered104 tensors and256 token rows, with no expanded trainable-region override or tensor-specific coefficient.",
+  "arithmetic_scope": "All other floating entries retain the exact existing FP32 weighted average and single output cast to anchor dtype. Explicit protected-value restoration is part of the final recipe and stored output, not a claim that raw floating-point arithmetic itself is bit-preserving. No sequential BF16 sums, re-normalized coefficient, row override, task-vector method or nonlinear merge.",
+  "router_bias_readback": "All26 router biases belong to the exact104 frozen set. Keep their FP32 dtype and require output readback bytes equal to both parents and v0.1. This exact restoration check governs the earlier expectedlinearvalues wording for protected entries; do not fail a correct protected restoration merely because an un-restored FP32 weighted-sum intermediate differs by rounding. No silent BF16 cast.",
+  "audit": "Bind the full preservation map and restored-region hashes in honest merge provenance. Verify all502 output tensor names, shapes, dtypes, finiteness, index membership and shard hashes after writing. The existing worker emits one tensor per shard, so502 indexed weight shards, not the39-shard parent layout, is expected. Completion alone without protection/source readback is not eval admission.",
+  "unchanged": "M25/M49/M51/M75 only, noM50; all four recipes, changed-entry fractions versus both parents, parent-different support denominators, FP32 norms, fixed BFCL blocks/contrasts, native identity, maths methods, production eval priorities and S3 deletion HOLD remain as registered. No fake training/mastercast event or local weight operation.",
+  "source_review": {
+    "arithmetic": "lib/marin/src/marin/merging/arithmetic.py::merge_tensor",
+    "restoration": "lib/marin/src/marin/merging/checkpoint.py::merge_checkpoint",
+    "entrypoint": "experiments/weight_merging/merge.py",
+    "protected_name_definition": "experiments/post_training/identity_path_b/storage_audit.py::FROZEN_HF_NAMES in the cleared PathB source"
+  },
+  "execution_binding_status": "Final worker, explicit recipe maps, source metadata and native CPU construction still await the planned narrow review; this clarification is not a launch CLEAR.",
+  "model_storage_or_submission_calls": 0
+}

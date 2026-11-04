@@ -1,0 +1,649 @@
+FFF....                                                                  [100%]
+=================================== FAILURES ===================================
+_ test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant[A0] _
+
+tmp_path = PosixPath('/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-60/test_actual_update_restore_and0')
+arm = <AblationArm.CONTROL: 'A0'>
+
+    @pytest.mark.parametrize("arm", [AblationArm.CONTROL, AblationArm.TRAIN_SPECIAL_ROWS, AblationArm.T3_BRIDGE])
+    @pytest.mark.timeout(180)
+    def test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant(tmp_path, arm):
+        def scalar(dtype):
+            return jnp.asarray([-0.0, 1.0], dtype=dtype)
+    
+        ids = jnp.asarray(FROZEN_TOKEN_IDS)
+        source = StorageModel(
+            jnp.ones((128256, 1)).at[ids, 0].set(-0.0),
+            jnp.ones((1, 128256)).at[0, ids].set(-0.0),
+            [Layer(scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.float32)) for _ in range(26)],
+            {f"trainable.{index}.weight": scalar(jnp.float32) for index in range(396)},
+        )
+        entries = {}
+        for name, value in source.to_state_dict().items():
+            host = np.asarray(value)
+            native = host.astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+            entries[name] = {"shape": list(host.shape), "native_sha256": hashlib.sha256(native.tobytes()).hexdigest(),
+                             "master_sha256": hashlib.sha256(host.astype(np.float32).tobytes()).hexdigest()}
+        raw = json.dumps({"tensors": entries}).encode()
+        digest = hashlib.sha256(raw).hexdigest()
+        optimizer = optimizer_for(SimpleNamespace(optimizer=AdamConfig(learning_rate=0.01, warmup=0, lr_schedule="constant")), arm)
+        mask = FrozenParameterAdaptorConfig(frozen_field_names=frozen_fields(arm)).trainable_filter(source)
+        state = TrainerState.init(optimizer, source, key=jax.random.PRNGKey(310), is_trainable=mask,
+            mp=jmp.get_policy("p=f32,c=bfloat16,o=f32"), frozen_parameter_storage=FrozenParameterStorage.NATIVE)
+        pristine = jax.tree.map(lambda value: value.copy(), state.model)
+        special = special_row_values(state.model) if freezes_special_rows(arm) else None
+        grads = jax.tree.map(jnp.ones_like, state.trainable_model)
+        step = eqx.filter_jit(lambda state, grads: state.take_step(grads, key=jax.random.PRNGKey(311))[0], donate="all")
+        state = step(state, grads)
+        if special is not None:
+            state = restore_frozen_state(state, special)
+        mesh = jax.sharding.Mesh(np.asarray(jax.devices()), ("data",))
+        with hax.partitioning.set_mesh(mesh):
+            audit_initialized_storage(pristine, raw, digest, str(tmp_path / "initialized.json"), frozen_names=frozen_names(arm))
+            native = str(tmp_path / "native")
+            save_checkpoint(state.saveable_state, step=0, checkpoint_path=native)
+            restored = restore_trained_model(pristine, mask, native, completed_updates=1, axis_mapping={}, mesh=mesh)
+            before = np.asarray(pristine.token_embed)[np.asarray(ids)].view(np.uint32)
+            after = np.asarray(restored.token_embed)[np.asarray(ids)].view(np.uint32)
+            if freezes_special_rows(arm):
+                np.testing.assert_array_equal(before, after)
+            else:
+                assert not np.array_equal(before, after)
+            tensors = restored.to_state_dict()
+            for name in frozen_names(arm):
+                assert np.asarray(tensors[name]).tobytes() == np.asarray(pristine.to_state_dict()[name]).tobytes()
+            query = "model.layers.0.self_attn.q_proj.weight"
+            assert (np.asarray(tensors[query]).tobytes() == np.asarray(pristine.to_state_dict()[query]).tobytes()) == (arm != AblationArm.T3_BRIDGE)
+            destination = tmp_path / "hf"
+            destination.mkdir()
+            saved = {name: np.asarray(value).astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+                     for name, value in tensors.items()}
+            save_file(saved, str(destination / "model.safetensors"))
+            (destination / "model.safetensors.index.json").write_text(json.dumps({"weight_map": {name: "model.safetensors" for name in saved}}))
+>           audit_export_storage(restored, str(destination), raw, digest, frozen_names=frozen_names(arm))
+
+experiments/post_training/identity_path_b/test_ablation.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+experiments/post_training/identity_path_b/storage_audit.py:157: in audit_export_storage
+    exported = run_on_export_writer(lambda: checkpoint_records(export_path))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/levanter/src/levanter/compat/hf_export.py:46: in run_on_export_writer
+    raise error
+lib/levanter/src/levanter/compat/hf_export.py:41: in run_on_export_writer
+    result = action()
+             ^^^^^^^^
+experiments/post_training/identity_path_b/storage_audit.py:157: in <lambda>
+    exported = run_on_export_writer(lambda: checkpoint_records(export_path))
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = '/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-60/test_actual_update_restore_and0/hf'
+
+    def checkpoint_records(root: str) -> dict[str, TensorRecord]:
+        """Read headers and validate index coverage, tensor sizes and nonoverlapping bounds."""
+        base = StoragePath(root)
+        index = json.loads((base / INDEX).read_bytes())
+        weight_map = index["weight_map"]
+        if not weight_map:
+            raise ValueError("Empty tensor index")
+        records = {}
+        total = 0
+        for shard in sorted(set(weight_map.values())):
+            if PurePosixPath(shard).name != shard or not shard.endswith(".safetensors"):
+                raise ValueError("Index shard must be a plain safetensors filename")
+            path = base / shard
+            size = path.size()
+            with open_audit_stream(str(path)) as stream:
+                prefix = stream.read(8)
+                if len(prefix) != 8:
+                    raise ValueError(f"Truncated safetensors prefix: {shard}")
+                length = int.from_bytes(prefix, "little")
+                if not 0 < length <= MAX_HEADER_BYTES or 8 + length > size:
+                    raise ValueError(f"Invalid safetensors header length: {shard}")
+                header = json.loads(stream.read(length))
+            intervals = []
+            for name, spec in header.items():
+                if name == "__metadata__":
+                    continue
+                if name in records or weight_map.get(name) != shard:
+                    raise ValueError(f"Shard/index disagreement: {name}")
+                if spec["dtype"] not in DTYPES:
+                    raise ValueError(f"Unexpected precision dtype: {name}")
+                dtype = DTYPES[spec["dtype"]]
+                shape = tuple(spec["shape"])
+                if any(type(dimension) is not int or dimension <= 0 for dimension in shape):
+                    raise ValueError(f"Invalid tensor shape: {name}")
+                start, end = spec["data_offsets"]
+                if type(start) is not int or type(end) is not int or start < 0:
+                    raise ValueError(f"Invalid tensor offsets: {name}")
+                if end - start != math.prod(shape) * dtype.itemsize or 8 + length + end > size:
+                    raise ValueError(f"Tensor bounds/size mismatch: {name}")
+                records[name] = TensorRecord(name, dtype, shape, str(path), 8 + length + start, 8 + length + end)
+                intervals.append((start, end))
+                total += end - start
+            cursor = 0
+            for start, end in sorted(intervals):
+                if start != cursor:
+                    raise ValueError(f"Overlapping or unindexed payload in {shard}")
+                cursor = end
+            if 8 + length + cursor != size:
+                raise ValueError(f"Trailing unindexed payload in {shard}")
+        if records.keys() != weight_map.keys():
+            raise ValueError("Index references missing tensors")
+        if index.get("metadata", {}).get("total_size") != total:
+>           raise ValueError("Index total_size differs from tensor payload")
+E           ValueError: Index total_size differs from tensor payload
+
+experiments/post_training/identity_context_distill/precision_source_audit.py:119: ValueError
+------------------------------ Captured log call -------------------------------
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:03 WARNING Unknown leaf type <class 'NoneType'>
+_ test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant[A1] _
+
+tmp_path = PosixPath('/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-60/test_actual_update_restore_and1')
+arm = <AblationArm.TRAIN_SPECIAL_ROWS: 'A1'>
+
+    @pytest.mark.parametrize("arm", [AblationArm.CONTROL, AblationArm.TRAIN_SPECIAL_ROWS, AblationArm.T3_BRIDGE])
+    @pytest.mark.timeout(180)
+    def test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant(tmp_path, arm):
+        def scalar(dtype):
+            return jnp.asarray([-0.0, 1.0], dtype=dtype)
+    
+        ids = jnp.asarray(FROZEN_TOKEN_IDS)
+        source = StorageModel(
+            jnp.ones((128256, 1)).at[ids, 0].set(-0.0),
+            jnp.ones((1, 128256)).at[0, ids].set(-0.0),
+            [Layer(scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.float32)) for _ in range(26)],
+            {f"trainable.{index}.weight": scalar(jnp.float32) for index in range(396)},
+        )
+        entries = {}
+        for name, value in source.to_state_dict().items():
+            host = np.asarray(value)
+            native = host.astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+            entries[name] = {"shape": list(host.shape), "native_sha256": hashlib.sha256(native.tobytes()).hexdigest(),
+                             "master_sha256": hashlib.sha256(host.astype(np.float32).tobytes()).hexdigest()}
+        raw = json.dumps({"tensors": entries}).encode()
+        digest = hashlib.sha256(raw).hexdigest()
+        optimizer = optimizer_for(SimpleNamespace(optimizer=AdamConfig(learning_rate=0.01, warmup=0, lr_schedule="constant")), arm)
+        mask = FrozenParameterAdaptorConfig(frozen_field_names=frozen_fields(arm)).trainable_filter(source)
+        state = TrainerState.init(optimizer, source, key=jax.random.PRNGKey(310), is_trainable=mask,
+            mp=jmp.get_policy("p=f32,c=bfloat16,o=f32"), frozen_parameter_storage=FrozenParameterStorage.NATIVE)
+        pristine = jax.tree.map(lambda value: value.copy(), state.model)
+        special = special_row_values(state.model) if freezes_special_rows(arm) else None
+        grads = jax.tree.map(jnp.ones_like, state.trainable_model)
+        step = eqx.filter_jit(lambda state, grads: state.take_step(grads, key=jax.random.PRNGKey(311))[0], donate="all")
+        state = step(state, grads)
+        if special is not None:
+            state = restore_frozen_state(state, special)
+        mesh = jax.sharding.Mesh(np.asarray(jax.devices()), ("data",))
+        with hax.partitioning.set_mesh(mesh):
+            audit_initialized_storage(pristine, raw, digest, str(tmp_path / "initialized.json"), frozen_names=frozen_names(arm))
+            native = str(tmp_path / "native")
+            save_checkpoint(state.saveable_state, step=0, checkpoint_path=native)
+            restored = restore_trained_model(pristine, mask, native, completed_updates=1, axis_mapping={}, mesh=mesh)
+            before = np.asarray(pristine.token_embed)[np.asarray(ids)].view(np.uint32)
+            after = np.asarray(restored.token_embed)[np.asarray(ids)].view(np.uint32)
+            if freezes_special_rows(arm):
+                np.testing.assert_array_equal(before, after)
+            else:
+                assert not np.array_equal(before, after)
+            tensors = restored.to_state_dict()
+            for name in frozen_names(arm):
+                assert np.asarray(tensors[name]).tobytes() == np.asarray(pristine.to_state_dict()[name]).tobytes()
+            query = "model.layers.0.self_attn.q_proj.weight"
+            assert (np.asarray(tensors[query]).tobytes() == np.asarray(pristine.to_state_dict()[query]).tobytes()) == (arm != AblationArm.T3_BRIDGE)
+            destination = tmp_path / "hf"
+            destination.mkdir()
+            saved = {name: np.asarray(value).astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+                     for name, value in tensors.items()}
+            save_file(saved, str(destination / "model.safetensors"))
+            (destination / "model.safetensors.index.json").write_text(json.dumps({"weight_map": {name: "model.safetensors" for name in saved}}))
+>           audit_export_storage(restored, str(destination), raw, digest, frozen_names=frozen_names(arm))
+
+experiments/post_training/identity_path_b/test_ablation.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+experiments/post_training/identity_path_b/storage_audit.py:157: in audit_export_storage
+    exported = run_on_export_writer(lambda: checkpoint_records(export_path))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/levanter/src/levanter/compat/hf_export.py:46: in run_on_export_writer
+    raise error
+lib/levanter/src/levanter/compat/hf_export.py:41: in run_on_export_writer
+    result = action()
+             ^^^^^^^^
+experiments/post_training/identity_path_b/storage_audit.py:157: in <lambda>
+    exported = run_on_export_writer(lambda: checkpoint_records(export_path))
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = '/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-60/test_actual_update_restore_and1/hf'
+
+    def checkpoint_records(root: str) -> dict[str, TensorRecord]:
+        """Read headers and validate index coverage, tensor sizes and nonoverlapping bounds."""
+        base = StoragePath(root)
+        index = json.loads((base / INDEX).read_bytes())
+        weight_map = index["weight_map"]
+        if not weight_map:
+            raise ValueError("Empty tensor index")
+        records = {}
+        total = 0
+        for shard in sorted(set(weight_map.values())):
+            if PurePosixPath(shard).name != shard or not shard.endswith(".safetensors"):
+                raise ValueError("Index shard must be a plain safetensors filename")
+            path = base / shard
+            size = path.size()
+            with open_audit_stream(str(path)) as stream:
+                prefix = stream.read(8)
+                if len(prefix) != 8:
+                    raise ValueError(f"Truncated safetensors prefix: {shard}")
+                length = int.from_bytes(prefix, "little")
+                if not 0 < length <= MAX_HEADER_BYTES or 8 + length > size:
+                    raise ValueError(f"Invalid safetensors header length: {shard}")
+                header = json.loads(stream.read(length))
+            intervals = []
+            for name, spec in header.items():
+                if name == "__metadata__":
+                    continue
+                if name in records or weight_map.get(name) != shard:
+                    raise ValueError(f"Shard/index disagreement: {name}")
+                if spec["dtype"] not in DTYPES:
+                    raise ValueError(f"Unexpected precision dtype: {name}")
+                dtype = DTYPES[spec["dtype"]]
+                shape = tuple(spec["shape"])
+                if any(type(dimension) is not int or dimension <= 0 for dimension in shape):
+                    raise ValueError(f"Invalid tensor shape: {name}")
+                start, end = spec["data_offsets"]
+                if type(start) is not int or type(end) is not int or start < 0:
+                    raise ValueError(f"Invalid tensor offsets: {name}")
+                if end - start != math.prod(shape) * dtype.itemsize or 8 + length + end > size:
+                    raise ValueError(f"Tensor bounds/size mismatch: {name}")
+                records[name] = TensorRecord(name, dtype, shape, str(path), 8 + length + start, 8 + length + end)
+                intervals.append((start, end))
+                total += end - start
+            cursor = 0
+            for start, end in sorted(intervals):
+                if start != cursor:
+                    raise ValueError(f"Overlapping or unindexed payload in {shard}")
+                cursor = end
+            if 8 + length + cursor != size:
+                raise ValueError(f"Trailing unindexed payload in {shard}")
+        if records.keys() != weight_map.keys():
+            raise ValueError("Index references missing tensors")
+        if index.get("metadata", {}).get("total_size") != total:
+>           raise ValueError("Index total_size differs from tensor payload")
+E           ValueError: Index total_size differs from tensor payload
+
+experiments/post_training/identity_context_distill/precision_source_audit.py:119: ValueError
+------------------------------ Captured log call -------------------------------
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:08 WARNING Unknown leaf type <class 'NoneType'>
+_ test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant[A4] _
+
+tmp_path = PosixPath('/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-60/test_actual_update_restore_and2')
+arm = <AblationArm.T3_BRIDGE: 'A4'>
+
+    @pytest.mark.parametrize("arm", [AblationArm.CONTROL, AblationArm.TRAIN_SPECIAL_ROWS, AblationArm.T3_BRIDGE])
+    @pytest.mark.timeout(180)
+    def test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant(tmp_path, arm):
+        def scalar(dtype):
+            return jnp.asarray([-0.0, 1.0], dtype=dtype)
+    
+        ids = jnp.asarray(FROZEN_TOKEN_IDS)
+        source = StorageModel(
+            jnp.ones((128256, 1)).at[ids, 0].set(-0.0),
+            jnp.ones((1, 128256)).at[0, ids].set(-0.0),
+            [Layer(scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.bfloat16), scalar(jnp.float32)) for _ in range(26)],
+            {f"trainable.{index}.weight": scalar(jnp.float32) for index in range(396)},
+        )
+        entries = {}
+        for name, value in source.to_state_dict().items():
+            host = np.asarray(value)
+            native = host.astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+            entries[name] = {"shape": list(host.shape), "native_sha256": hashlib.sha256(native.tobytes()).hexdigest(),
+                             "master_sha256": hashlib.sha256(host.astype(np.float32).tobytes()).hexdigest()}
+        raw = json.dumps({"tensors": entries}).encode()
+        digest = hashlib.sha256(raw).hexdigest()
+        optimizer = optimizer_for(SimpleNamespace(optimizer=AdamConfig(learning_rate=0.01, warmup=0, lr_schedule="constant")), arm)
+        mask = FrozenParameterAdaptorConfig(frozen_field_names=frozen_fields(arm)).trainable_filter(source)
+        state = TrainerState.init(optimizer, source, key=jax.random.PRNGKey(310), is_trainable=mask,
+            mp=jmp.get_policy("p=f32,c=bfloat16,o=f32"), frozen_parameter_storage=FrozenParameterStorage.NATIVE)
+        pristine = jax.tree.map(lambda value: value.copy(), state.model)
+        special = special_row_values(state.model) if freezes_special_rows(arm) else None
+        grads = jax.tree.map(jnp.ones_like, state.trainable_model)
+        step = eqx.filter_jit(lambda state, grads: state.take_step(grads, key=jax.random.PRNGKey(311))[0], donate="all")
+        state = step(state, grads)
+        if special is not None:
+            state = restore_frozen_state(state, special)
+        mesh = jax.sharding.Mesh(np.asarray(jax.devices()), ("data",))
+        with hax.partitioning.set_mesh(mesh):
+            audit_initialized_storage(pristine, raw, digest, str(tmp_path / "initialized.json"), frozen_names=frozen_names(arm))
+            native = str(tmp_path / "native")
+            save_checkpoint(state.saveable_state, step=0, checkpoint_path=native)
+            restored = restore_trained_model(pristine, mask, native, completed_updates=1, axis_mapping={}, mesh=mesh)
+            before = np.asarray(pristine.token_embed)[np.asarray(ids)].view(np.uint32)
+            after = np.asarray(restored.token_embed)[np.asarray(ids)].view(np.uint32)
+            if freezes_special_rows(arm):
+                np.testing.assert_array_equal(before, after)
+            else:
+                assert not np.array_equal(before, after)
+            tensors = restored.to_state_dict()
+            for name in frozen_names(arm):
+                assert np.asarray(tensors[name]).tobytes() == np.asarray(pristine.to_state_dict()[name]).tobytes()
+            query = "model.layers.0.self_attn.q_proj.weight"
+            assert (np.asarray(tensors[query]).tobytes() == np.asarray(pristine.to_state_dict()[query]).tobytes()) == (arm != AblationArm.T3_BRIDGE)
+            destination = tmp_path / "hf"
+            destination.mkdir()
+            saved = {name: np.asarray(value).astype(np.float32 if name.endswith(".router.bias") else jnp.bfloat16)
+                     for name, value in tensors.items()}
+            save_file(saved, str(destination / "model.safetensors"))
+            (destination / "model.safetensors.index.json").write_text(json.dumps({"weight_map": {name: "model.safetensors" for name in saved}}))
+>           audit_export_storage(restored, str(destination), raw, digest, frozen_names=frozen_names(arm))
+
+experiments/post_training/identity_path_b/test_ablation.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+experiments/post_training/identity_path_b/storage_audit.py:157: in audit_export_storage
+    exported = run_on_export_writer(lambda: checkpoint_records(export_path))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/levanter/src/levanter/compat/hf_export.py:46: in run_on_export_writer
+    raise error
+lib/levanter/src/levanter/compat/hf_export.py:41: in run_on_export_writer
+    result = action()
+             ^^^^^^^^
+experiments/post_training/identity_path_b/storage_audit.py:157: in <lambda>
+    exported = run_on_export_writer(lambda: checkpoint_records(export_path))
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = '/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-60/test_actual_update_restore_and2/hf'
+
+    def checkpoint_records(root: str) -> dict[str, TensorRecord]:
+        """Read headers and validate index coverage, tensor sizes and nonoverlapping bounds."""
+        base = StoragePath(root)
+        index = json.loads((base / INDEX).read_bytes())
+        weight_map = index["weight_map"]
+        if not weight_map:
+            raise ValueError("Empty tensor index")
+        records = {}
+        total = 0
+        for shard in sorted(set(weight_map.values())):
+            if PurePosixPath(shard).name != shard or not shard.endswith(".safetensors"):
+                raise ValueError("Index shard must be a plain safetensors filename")
+            path = base / shard
+            size = path.size()
+            with open_audit_stream(str(path)) as stream:
+                prefix = stream.read(8)
+                if len(prefix) != 8:
+                    raise ValueError(f"Truncated safetensors prefix: {shard}")
+                length = int.from_bytes(prefix, "little")
+                if not 0 < length <= MAX_HEADER_BYTES or 8 + length > size:
+                    raise ValueError(f"Invalid safetensors header length: {shard}")
+                header = json.loads(stream.read(length))
+            intervals = []
+            for name, spec in header.items():
+                if name == "__metadata__":
+                    continue
+                if name in records or weight_map.get(name) != shard:
+                    raise ValueError(f"Shard/index disagreement: {name}")
+                if spec["dtype"] not in DTYPES:
+                    raise ValueError(f"Unexpected precision dtype: {name}")
+                dtype = DTYPES[spec["dtype"]]
+                shape = tuple(spec["shape"])
+                if any(type(dimension) is not int or dimension <= 0 for dimension in shape):
+                    raise ValueError(f"Invalid tensor shape: {name}")
+                start, end = spec["data_offsets"]
+                if type(start) is not int or type(end) is not int or start < 0:
+                    raise ValueError(f"Invalid tensor offsets: {name}")
+                if end - start != math.prod(shape) * dtype.itemsize or 8 + length + end > size:
+                    raise ValueError(f"Tensor bounds/size mismatch: {name}")
+                records[name] = TensorRecord(name, dtype, shape, str(path), 8 + length + start, 8 + length + end)
+                intervals.append((start, end))
+                total += end - start
+            cursor = 0
+            for start, end in sorted(intervals):
+                if start != cursor:
+                    raise ValueError(f"Overlapping or unindexed payload in {shard}")
+                cursor = end
+            if 8 + length + cursor != size:
+                raise ValueError(f"Trailing unindexed payload in {shard}")
+        if records.keys() != weight_map.keys():
+            raise ValueError("Index references missing tensors")
+        if index.get("metadata", {}).get("total_size") != total:
+>           raise ValueError("Index total_size differs from tensor payload")
+E           ValueError: Index total_size differs from tensor payload
+
+experiments/post_training/identity_context_distill/precision_source_audit.py:119: ValueError
+------------------------------ Captured log call -------------------------------
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+2026-10-29 20:58:14 WARNING Unknown leaf type <class 'NoneType'>
+=========================== short test summary info ============================
+FAILED experiments/post_training/identity_path_b/test_ablation.py::test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant[A0]
+FAILED experiments/post_training/identity_path_b/test_ablation.py::test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant[A1]
+FAILED experiments/post_training/identity_path_b/test_ablation.py::test_actual_update_restore_and_502_tensor_audit_obey_each_freeze_variant[A4]
+3 failed, 4 passed in 42.03s

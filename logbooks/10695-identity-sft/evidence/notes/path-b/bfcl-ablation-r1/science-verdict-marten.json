@@ -1,0 +1,613 @@
+{
+  "decision": "CLEAR",
+  "scope": "Combined five-arm36-update BFCL ablation: final code, actual data/doses, final-only checkpoint/export lifecycle, evaluator bindings and regional input readback",
+  "code_pin": "6ac2c53d061156ad22be53b332b7bd677a856290",
+  "science_pin": "6ac2c53d061156ad22be53b332b7bd677a856290",
+  "plan_sha256": "0a85b86c3a910e4cea863df06cc1aa2627e037ac632167ed73ab406898978222",
+  "review_receipt_sha256": "e7f058f8218683aa393f7c5f723e4908998dacaaa6bebcf65bdeda828830c730",
+  "packet_files_verified": 53,
+  "stage_manifest_sha256": "23706c1b2911b17d8e6e699888435aa8fa974df42c4fae635b8976229b13f39e",
+  "staging_receipt_sha256": "19d9ece0c08de10c0dfdd276c112dad231c189b907dbce50a6cdd6b6430b7989",
+  "staging_join_receipt_sha256": "1a0721aa11bf1bce49ba795b62862e103473408b762a30448d7d28452faf668a",
+  "stage_files": 15,
+  "stage_bytes": 17396216,
+  "independent_data_proof_sha256": "f9c75c085c8b9dc3bc8d77b75580b853c695fe321dbd0b8c5382ae4494bbe4a7",
+  "independent_final_binding_sha256": "0af662bb8653961b4af033cbff8670161b0a28799d7e010e66067c48ceae015f",
+  "independent_focused_tests": {
+    "path": "/mnt/storage/karan-scratch/marten-bfcl-ablation-tests-r1.log",
+    "sha256": "bccc1004ee4930525133cef47734134da62c1d0d827ff009848d417a8fda52a8",
+    "result": "5PASS26.14s"
+  },
+  "current_orders_sha256_at_review": "841dce13561069e50b605b1b3119952d2cc948dfa4e36fc71cad62319c35e489",
+  "submit_authorized": true,
+  "sole_executor": "margay",
+  "submit_all_five_roots_together": true,
+  "no_extra_owner_wait": true,
+  "fresh_v01_no_resume": true,
+  "no_arm_completion_dependency": true,
+  "updates_each": 36,
+  "final_native_step_label": 35,
+  "final_only_native_checkpoint": true,
+  "CPU_write_probe_before_each_export_GPU_request": true,
+  "audited_HF_before_BFCL": true,
+  "native_retirement_only_after_exact_terminal_audited_export": true,
+  "BFCL_HF_only_no_native_lease": true,
+  "no_identity_trend_or_GSM_required": true,
+  "no_capacity_guard_or_extra_GPU_smoke": true,
+  "priority_and_retry_policy": "interactive/0failure/0preemption REQUESTED; no actual peer-policy claim",
+  "arms": [
+    {
+      "arm": "A0",
+      "root_name": "pathb-bfcl-a0-r1-6ac2c53d0611",
+      "training_kwargs": {
+        "arm": "A0",
+        "exposure_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A0/exposure.json",
+        "exposure_sha256": "d1f2e5e53b53b7a0260a18adfb8eb6c01c66f1a66de1e2f0cafb49e072d91350",
+        "packed_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A0/packed.parquet",
+        "packed_sha256": "e780e10937b507a61797bcd256e1b79c7af416391dcfd585a7281894f27dc300",
+        "run_id": "pathb-bfcl-a0-r1-6ac2c53d0611",
+        "run_root": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run",
+        "runtime_sha256": "565cf0b2e09b0e1d58b647b698364a04d41b80615b47f8e6e1dbc7167f0d8e9e",
+        "source_objects": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-object-list.json",
+          "sha256": "5b85b32675299015ca92921053d8aa2926cb007eb2a6a3cc2cf2cce3573603f1"
+        },
+        "source_receipt": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-tensor-hashes.json",
+          "sha256": "af484f49ac2c1d67989495475bcc79bf7519d09281c8087321d906b67139fa97"
+        },
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "actual_dose": {
+        "final_text_tokens": {
+          "identity": 129641,
+          "replay": 635510
+        },
+        "raw_supervised_tokens": {
+          "identity": 141997,
+          "replay": 1261630
+        },
+        "reasoning_text_tokens": {
+          "identity": 0,
+          "replay": 623144
+        },
+        "structural_target_tokens": {
+          "identity/128002": 3099,
+          "identity/128003": 3099,
+          "identity/128009": 6158,
+          "replay/128002": 625,
+          "replay/128003": 625,
+          "replay/128005": 223,
+          "replay/128009": 1283,
+          "replay/128011": 220
+        },
+        "weighted_mass": {
+          "identity": 141997,
+          "replay": 1261630
+        }
+      },
+      "frozen_native_tensors": 104,
+      "trained_master_cast_tensors": 398,
+      "special_rows_frozen": true,
+      "checkpoint_updates": [
+        36
+      ],
+      "final_checkpoint": {
+        "arm": "A0",
+        "completed_updates": 36,
+        "eval_scratch": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run/eval/updates-36",
+        "exposure": {
+          "all_supervised_tokens": 1403627,
+          "completed_updates": 36,
+          "family_final_text_tokens": {
+            "identity/deployment_provider": 957,
+            "identity/developer": 5512,
+            "identity/ecosystem_contributions": 21518,
+            "identity/false_premise": 25531,
+            "identity/indirect_identity": 15400,
+            "identity/maintained_by": 11968,
+            "identity/name": 5664,
+            "identity/open_weight_data": 36090,
+            "identity/project_fact": 77,
+            "identity/trained_by": 6456,
+            "identity/unknown_fact": 468,
+            "replay/chat": 136415,
+            "replay/code": 279665,
+            "replay/fiction": 3829,
+            "replay/math": 205642,
+            "replay/thirdperson": 443,
+            "replay/tool_call_after_result": 3369,
+            "replay/tool_first_call": 3108,
+            "replay/tool_reply": 3039
+          },
+          "final_text_tokens": {
+            "identity": 129641,
+            "replay": 635510
+          },
+          "identity_final_text_tokens": 129641,
+          "identity_supervised_tokens": 141997,
+          "mode_final_text_tokens": {
+            "identity/off": 64855,
+            "identity/on": 64786,
+            "replay/off": 335225,
+            "replay/on": 300285
+          },
+          "raw_supervised_tokens": {
+            "identity": 141997,
+            "replay": 1261630
+          },
+          "reasoning_text_tokens": {
+            "identity": 0,
+            "replay": 623144
+          },
+          "structural_target_tokens": {
+            "identity/128002": 3099,
+            "identity/128003": 3099,
+            "identity/128009": 6158,
+            "replay/128002": 625,
+            "replay/128003": 625,
+            "replay/128005": 223,
+            "replay/128009": 1283,
+            "replay/128011": 220
+          }
+        },
+        "hf_export": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run/hf/updates-36",
+        "native_checkpoint": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run/checkpoints/step-35",
+        "packed_data_sha256": "e780e10937b507a61797bcd256e1b79c7af416391dcfd585a7281894f27dc300",
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "bfcl_model_config_sha256": "f0cde17a2869f048ee94253699e34374b6901baf2a9bafd5daf7db83ed8b7095"
+    },
+    {
+      "arm": "A1",
+      "root_name": "pathb-bfcl-a1-r1-6ac2c53d0611",
+      "training_kwargs": {
+        "arm": "A1",
+        "exposure_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A1/exposure.json",
+        "exposure_sha256": "0e74899e943ad787e94e002acd358ca4265c16c957be7d9323da8268edb24511",
+        "packed_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A1/packed.parquet",
+        "packed_sha256": "e780e10937b507a61797bcd256e1b79c7af416391dcfd585a7281894f27dc300",
+        "run_id": "pathb-bfcl-a1-r1-6ac2c53d0611",
+        "run_root": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A1/run",
+        "runtime_sha256": "565cf0b2e09b0e1d58b647b698364a04d41b80615b47f8e6e1dbc7167f0d8e9e",
+        "source_objects": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-object-list.json",
+          "sha256": "5b85b32675299015ca92921053d8aa2926cb007eb2a6a3cc2cf2cce3573603f1"
+        },
+        "source_receipt": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-tensor-hashes.json",
+          "sha256": "af484f49ac2c1d67989495475bcc79bf7519d09281c8087321d906b67139fa97"
+        },
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "actual_dose": {
+        "final_text_tokens": {
+          "identity": 129641,
+          "replay": 635510
+        },
+        "raw_supervised_tokens": {
+          "identity": 141997,
+          "replay": 1261630
+        },
+        "reasoning_text_tokens": {
+          "identity": 0,
+          "replay": 623144
+        },
+        "structural_target_tokens": {
+          "identity/128002": 3099,
+          "identity/128003": 3099,
+          "identity/128009": 6158,
+          "replay/128002": 625,
+          "replay/128003": 625,
+          "replay/128005": 223,
+          "replay/128009": 1283,
+          "replay/128011": 220
+        },
+        "weighted_mass": {
+          "identity": 141997,
+          "replay": 1261630
+        }
+      },
+      "frozen_native_tensors": 104,
+      "trained_master_cast_tensors": 398,
+      "special_rows_frozen": false,
+      "checkpoint_updates": [
+        36
+      ],
+      "final_checkpoint": {
+        "arm": "A1",
+        "completed_updates": 36,
+        "eval_scratch": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A1/run/eval/updates-36",
+        "exposure": {
+          "all_supervised_tokens": 1403627,
+          "completed_updates": 36,
+          "family_final_text_tokens": {
+            "identity/deployment_provider": 957,
+            "identity/developer": 5512,
+            "identity/ecosystem_contributions": 21518,
+            "identity/false_premise": 25531,
+            "identity/indirect_identity": 15400,
+            "identity/maintained_by": 11968,
+            "identity/name": 5664,
+            "identity/open_weight_data": 36090,
+            "identity/project_fact": 77,
+            "identity/trained_by": 6456,
+            "identity/unknown_fact": 468,
+            "replay/chat": 136415,
+            "replay/code": 279665,
+            "replay/fiction": 3829,
+            "replay/math": 205642,
+            "replay/thirdperson": 443,
+            "replay/tool_call_after_result": 3369,
+            "replay/tool_first_call": 3108,
+            "replay/tool_reply": 3039
+          },
+          "final_text_tokens": {
+            "identity": 129641,
+            "replay": 635510
+          },
+          "identity_final_text_tokens": 129641,
+          "identity_supervised_tokens": 141997,
+          "mode_final_text_tokens": {
+            "identity/off": 64855,
+            "identity/on": 64786,
+            "replay/off": 335225,
+            "replay/on": 300285
+          },
+          "raw_supervised_tokens": {
+            "identity": 141997,
+            "replay": 1261630
+          },
+          "reasoning_text_tokens": {
+            "identity": 0,
+            "replay": 623144
+          },
+          "structural_target_tokens": {
+            "identity/128002": 3099,
+            "identity/128003": 3099,
+            "identity/128009": 6158,
+            "replay/128002": 625,
+            "replay/128003": 625,
+            "replay/128005": 223,
+            "replay/128009": 1283,
+            "replay/128011": 220
+          }
+        },
+        "hf_export": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A1/run/hf/updates-36",
+        "native_checkpoint": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A1/run/checkpoints/step-35",
+        "packed_data_sha256": "e780e10937b507a61797bcd256e1b79c7af416391dcfd585a7281894f27dc300",
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "bfcl_model_config_sha256": "ba7f49925d26da11b69ccea547c7959cfbbae42c407cc97152af2a69e91fc335"
+    },
+    {
+      "arm": "A2",
+      "root_name": "pathb-bfcl-a2-r1-6ac2c53d0611",
+      "training_kwargs": {
+        "arm": "A2",
+        "exposure_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A2/exposure.json",
+        "exposure_sha256": "5226deda5e73b9d6694f35ddb4e633a0e663eb97b7fd6ea521873f0673f54745",
+        "packed_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A2/packed.parquet",
+        "packed_sha256": "3daac3597f979b28f724d63ac8608a6b29d7445a903b02fed21cfe2d413653e2",
+        "run_id": "pathb-bfcl-a2-r1-6ac2c53d0611",
+        "run_root": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A2/run",
+        "runtime_sha256": "565cf0b2e09b0e1d58b647b698364a04d41b80615b47f8e6e1dbc7167f0d8e9e",
+        "source_objects": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-object-list.json",
+          "sha256": "5b85b32675299015ca92921053d8aa2926cb007eb2a6a3cc2cf2cce3573603f1"
+        },
+        "source_receipt": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-tensor-hashes.json",
+          "sha256": "af484f49ac2c1d67989495475bcc79bf7519d09281c8087321d906b67139fa97"
+        },
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "actual_dose": {
+        "final_text_tokens": {
+          "replay": 835185
+        },
+        "raw_supervised_tokens": {
+          "replay": 1661795
+        },
+        "reasoning_text_tokens": {
+          "replay": 822746
+        },
+        "structural_target_tokens": {
+          "replay/128002": 820,
+          "replay/128003": 820,
+          "replay/128005": 282,
+          "replay/128009": 1663,
+          "replay/128011": 279
+        },
+        "weighted_mass": {
+          "replay": 1661795
+        }
+      },
+      "frozen_native_tensors": 104,
+      "trained_master_cast_tensors": 398,
+      "special_rows_frozen": true,
+      "checkpoint_updates": [
+        36
+      ],
+      "final_checkpoint": {
+        "arm": "A2",
+        "completed_updates": 36,
+        "eval_scratch": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A2/run/eval/updates-36",
+        "exposure": {
+          "all_supervised_tokens": 1661795,
+          "completed_updates": 36,
+          "family_final_text_tokens": {
+            "replay/chat": 167367,
+            "replay/code": 379487,
+            "replay/fiction": 4613,
+            "replay/math": 270965,
+            "replay/persona": 114,
+            "replay/thirdperson": 443,
+            "replay/tool_call_after_result": 4162,
+            "replay/tool_first_call": 4219,
+            "replay/tool_reply": 3815
+          },
+          "final_text_tokens": {
+            "replay": 835185
+          },
+          "identity_final_text_tokens": 0,
+          "identity_supervised_tokens": 0,
+          "mode_final_text_tokens": {
+            "replay/off": 431115,
+            "replay/on": 404070
+          },
+          "raw_supervised_tokens": {
+            "replay": 1661795
+          },
+          "reasoning_text_tokens": {
+            "replay": 822746
+          },
+          "structural_target_tokens": {
+            "replay/128002": 820,
+            "replay/128003": 820,
+            "replay/128005": 282,
+            "replay/128009": 1663,
+            "replay/128011": 279
+          }
+        },
+        "hf_export": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A2/run/hf/updates-36",
+        "native_checkpoint": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A2/run/checkpoints/step-35",
+        "packed_data_sha256": "3daac3597f979b28f724d63ac8608a6b29d7445a903b02fed21cfe2d413653e2",
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "bfcl_model_config_sha256": "7fbfe6a70c182bfd65cde5e52b133e4975596f60b08668db3a7383258c5ed84b"
+    },
+    {
+      "arm": "A3",
+      "root_name": "pathb-bfcl-a3-r1-6ac2c53d0611",
+      "training_kwargs": {
+        "arm": "A3",
+        "exposure_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A3/exposure.json",
+        "exposure_sha256": "f61003db57f5892202583a0b348dced15b9c2c18f949de1539b6535a57240973",
+        "packed_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A3/packed.parquet",
+        "packed_sha256": "954cc35a90487d1fb7b95080c9eeabb281d42d36f9a7ee9b32415bfa269e42f0",
+        "run_id": "pathb-bfcl-a3-r1-6ac2c53d0611",
+        "run_root": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run",
+        "runtime_sha256": "565cf0b2e09b0e1d58b647b698364a04d41b80615b47f8e6e1dbc7167f0d8e9e",
+        "source_objects": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-object-list.json",
+          "sha256": "5b85b32675299015ca92921053d8aa2926cb007eb2a6a3cc2cf2cce3573603f1"
+        },
+        "source_receipt": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-tensor-hashes.json",
+          "sha256": "af484f49ac2c1d67989495475bcc79bf7519d09281c8087321d906b67139fa97"
+        },
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "actual_dose": {
+        "final_text_tokens": {
+          "identity": 129641,
+          "replay": 635510
+        },
+        "raw_supervised_tokens": {
+          "identity": 135799,
+          "replay": 1261630
+        },
+        "reasoning_text_tokens": {
+          "identity": 0,
+          "replay": 623144
+        },
+        "structural_target_tokens": {
+          "identity/128009": 6158,
+          "replay/128002": 625,
+          "replay/128003": 625,
+          "replay/128005": 223,
+          "replay/128009": 1283,
+          "replay/128011": 220
+        },
+        "weighted_mass": {
+          "identity": 135799,
+          "replay": 1261630
+        }
+      },
+      "frozen_native_tensors": 104,
+      "trained_master_cast_tensors": 398,
+      "special_rows_frozen": true,
+      "checkpoint_updates": [
+        36
+      ],
+      "final_checkpoint": {
+        "arm": "A3",
+        "completed_updates": 36,
+        "eval_scratch": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/eval/updates-36",
+        "exposure": {
+          "all_supervised_tokens": 1397429,
+          "completed_updates": 36,
+          "family_final_text_tokens": {
+            "identity/deployment_provider": 957,
+            "identity/developer": 5512,
+            "identity/ecosystem_contributions": 21518,
+            "identity/false_premise": 25531,
+            "identity/indirect_identity": 15400,
+            "identity/maintained_by": 11968,
+            "identity/name": 5664,
+            "identity/open_weight_data": 36090,
+            "identity/project_fact": 77,
+            "identity/trained_by": 6456,
+            "identity/unknown_fact": 468,
+            "replay/chat": 136415,
+            "replay/code": 279665,
+            "replay/fiction": 3829,
+            "replay/math": 205642,
+            "replay/thirdperson": 443,
+            "replay/tool_call_after_result": 3369,
+            "replay/tool_first_call": 3108,
+            "replay/tool_reply": 3039
+          },
+          "final_text_tokens": {
+            "identity": 129641,
+            "replay": 635510
+          },
+          "identity_final_text_tokens": 129641,
+          "identity_supervised_tokens": 135799,
+          "mode_final_text_tokens": {
+            "identity/off": 129641,
+            "replay/off": 335225,
+            "replay/on": 300285
+          },
+          "raw_supervised_tokens": {
+            "identity": 135799,
+            "replay": 1261630
+          },
+          "reasoning_text_tokens": {
+            "identity": 0,
+            "replay": 623144
+          },
+          "structural_target_tokens": {
+            "identity/128009": 6158,
+            "replay/128002": 625,
+            "replay/128003": 625,
+            "replay/128005": 223,
+            "replay/128009": 1283,
+            "replay/128011": 220
+          }
+        },
+        "hf_export": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+        "native_checkpoint": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/checkpoints/step-35",
+        "packed_data_sha256": "954cc35a90487d1fb7b95080c9eeabb281d42d36f9a7ee9b32415bfa269e42f0",
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "bfcl_model_config_sha256": "0e0b95dba05928a9ffd9d4ccd47b7f10a3056e41d5b8a55f6d4095517e4eb94e"
+    },
+    {
+      "arm": "A4",
+      "root_name": "pathb-bfcl-a4-r1-6ac2c53d0611",
+      "training_kwargs": {
+        "arm": "A4",
+        "exposure_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A4/exposure.json",
+        "exposure_sha256": "845af2e833ad80a8cccb2cad14a687d6f4fcc6fb786f50dc1cb72f4d16b58f38",
+        "packed_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-20261030-r1/inputs/A4/packed.parquet",
+        "packed_sha256": "5a780c207d27cab87f99a394d4baf99956b2f7d8174b1a1397d9c6d9fc9b57eb",
+        "run_id": "pathb-bfcl-a4-r1-6ac2c53d0611",
+        "run_root": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A4/run",
+        "runtime_sha256": "565cf0b2e09b0e1d58b647b698364a04d41b80615b47f8e6e1dbc7167f0d8e9e",
+        "source_objects": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-object-list.json",
+          "sha256": "5b85b32675299015ca92921053d8aa2926cb007eb2a6a3cc2cf2cce3573603f1"
+        },
+        "source_receipt": {
+          "path": "s3://marin-rno2a/marin/experiments/snowball-identity/t310/lr0-r8/audits/source-tensor-hashes.json",
+          "sha256": "af484f49ac2c1d67989495475bcc79bf7519d09281c8087321d906b67139fa97"
+        },
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "actual_dose": {
+        "final_text_tokens": {
+          "identity": 2551,
+          "replay": 50377
+        },
+        "raw_supervised_tokens": {
+          "identity": 5693,
+          "replay": 99879
+        },
+        "reasoning_text_tokens": {
+          "identity": 2995,
+          "replay": 48962
+        },
+        "structural_target_tokens": {
+          "identity/128002": 22,
+          "identity/128003": 22,
+          "identity/128009": 103,
+          "replay/128002": 123,
+          "replay/128003": 123,
+          "replay/128005": 55,
+          "replay/128009": 185,
+          "replay/128011": 54
+        },
+        "weighted_mass": {
+          "identity": 5693,
+          "replay": 99879
+        }
+      },
+      "frozen_native_tensors": 26,
+      "trained_master_cast_tensors": 476,
+      "special_rows_frozen": false,
+      "checkpoint_updates": [
+        36
+      ],
+      "final_checkpoint": {
+        "arm": "A4",
+        "completed_updates": 36,
+        "eval_scratch": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A4/run/eval/updates-36",
+        "exposure": {
+          "all_supervised_tokens": 105572,
+          "completed_updates": 36,
+          "final_text_tokens": {
+            "identity": 2551,
+            "replay": 50377
+          },
+          "identity_final_text_tokens": 2551,
+          "identity_supervised_tokens": 5693,
+          "raw_supervised_tokens": {
+            "identity": 5693,
+            "replay": 99879
+          },
+          "reasoning_text_tokens": {
+            "identity": 2995,
+            "replay": 48962
+          },
+          "structural_target_tokens": {
+            "identity/128002": 22,
+            "identity/128003": 22,
+            "identity/128009": 103,
+            "replay/128002": 123,
+            "replay/128003": 123,
+            "replay/128005": 55,
+            "replay/128009": 185,
+            "replay/128011": 54
+          }
+        },
+        "hf_export": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A4/run/hf/updates-36",
+        "native_checkpoint": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A4/run/checkpoints/step-35",
+        "packed_data_sha256": "5a780c207d27cab87f99a394d4baf99956b2f7d8174b1a1397d9c6d9fc9b57eb",
+        "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290"
+      },
+      "bfcl_model_config_sha256": "515565b9d243819fdc36d4c120865c8b32363587beef1ecfd47afc982bb15ee0"
+    }
+  ],
+  "verification": [
+    "All1440 actual native inputs, causal masks and query/key segments independently checked",
+    "A0 equals r5first36 batches; A1 data byte-identical",
+    "A2 deterministic maximal replay-only prefix; greater replay dose disclosed",
+    "A3 exact source-order/answer-ID/replay preservation with same-source OFF replacement; no dropped identity occurrences",
+    "A4 first128 historical input fingerprints reproduce and next160 bind the unchanged sampler; no resume or historical cleaning",
+    "All5 numerical configurations and36-step LR trajectories checked; declared data/freeze/save-policy differences only",
+    "Native root/train/export callable deserialization and exact kwargs checked for all5",
+    "BFCL model/scientific argv unchanged except execution identity and model location",
+    "Executor full regional GET hashes/lengths join all15 actual training inputs"
+  ],
+  "limitations": [
+    "No full-model GPU execution or outcome is established by CPU toy-array and metadata proofs",
+    "A4 is a multi-factor historical bridge, with lower token dose, different data/packing and broader trainability",
+    "Historical identity/control overlap caveats remain for A4",
+    "A3 changes native prefixes and packing/grouping along with the empty thinking span; canonical-final dose remains equal",
+    "No causal explanation of the previous BFCL losses has yet been established"
+  ],
+  "training_success_or_release_approval": false,
+  "reviewer_jobs_or_watchers_held": false
+}

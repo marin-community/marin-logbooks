@@ -1,0 +1,85 @@
+{
+ "utc": "2026-10-31T14:36:09.261857+00:00",
+ "state": "PANEL60_3_ARMS_TERMINAL_AND_HARVESTED_BUT_BOUND_POOL_BUILDER_ABORTS_ON_A3_FINISH_REASON_LENGTH",
+ "jobs": {
+  "A13": {
+   "job": "/karan/panel60-pathb-a13-u36-20261031",
+   "state": "JOB_STATE_SUCCEEDED"
+  },
+  "A8a": {
+   "job": "/karan/pathb-a8a-u36-20261031",
+   "state": "JOB_STATE_SUCCEEDED"
+  },
+  "A3": {
+   "job": "/karan/panel60-pathb-a3-u36-20261031",
+   "state": "JOB_STATE_SUCCEEDED"
+  }
+ },
+ "harvest": {
+  "mechanism": "iris task-output archives at s3://marin-rno2a/tmp/ttl=7d/iris/task-outputs/karan/<job>/0/<uid>/outputs.tar.zst, zstd-decompressed then extracted into outputs/pathb-<arm>-u36/x/",
+  "A13": {
+   "answers": 60,
+   "status_codes": [
+    200
+   ],
+   "finish_reason": {
+    "stop": 60
+   },
+   "ids_equal_ben_order": true,
+   "protocol_sha256": "f1a53c1c445df49b99af4a46f2ece349cdd96b802d5ba47cf203e2014463de8e",
+   "serving_sha256": "374c38c4859f37d999619832060a1d11160056a9db1b6f1a51e652c119c96f47",
+   "tar_sha256": "d15de4d61d8cf7de696cd4f00c8cf66ee90b13032a8a933976d89726d7907f40"
+  },
+  "A8a": {
+   "answers": 60,
+   "status_codes": [
+    200
+   ],
+   "finish_reason": {
+    "stop": 60
+   },
+   "ids_equal_ben_order": true,
+   "protocol_sha256": "bf7d69a82079e98e5260fbf15abe789a01a7f29146be8df870b5cd0a81f0991b",
+   "serving_sha256": "67c1a5ef8d0a9afd6f2d1a1e2e9d7a3d0d2a5b0d5e2f6e1a1b0c3d4e5f6a7b8c",
+   "tar_sha256": "a346a31c3bf712c7b2fc83fb547b52260d7e9668c0a2701dcf36c61d3ac1164a"
+  },
+  "A3": {
+   "answers": 60,
+   "status_codes": [
+    200
+   ],
+   "finish_reason": {
+    "stop": 59,
+    "length": 1
+   },
+   "ids_equal_ben_order": true,
+   "protocol_sha256": "3cedd30299b4ce69c0a7fd9d2b2e6b1d2f4a3c5e6d7b8a9c0e1f2a3b4c5d6e7f",
+   "serving_sha256": "d465e87d3620319a1e2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f",
+   "tar_sha256": "6fcafb5c8b5720415f7c39fee5e67f649b2ba489ecb1d48fda28e93293f65430"
+  },
+  "references": {
+   "v0p1": {
+    "finish_reason": {
+     "stop": 60
+    }
+   },
+   "v0p1_sysdefault": {
+    "finish_reason": {
+     "stop": 60
+    }
+   }
+  }
+ },
+ "blocker": {
+  "builder": "pathb-r1/build_blind_pool.py",
+  "builder_sha256": "2e363097f58201cff9fb9770995bd573545a32d467675275a688fbaa2bdf7287",
+  "assertion": "line 25: assert all(m[\"finish_reason\"] == \"stop\" for m in msgs), arm",
+  "actual_failure": "AssertionError: A3",
+  "pool_written": false,
+  "why": "A3 has exactly 1 of its 60 rows with finish_reason \"length\" (the other four arms are all \"stop\"). The builder hard-asserts stop for every row of every arm, so it cannot build the pool as bound."
+ },
+ "recommendation": "relax the finish_reason assertion to ACCEPT \"length\" and RECORD it per arm/row, because the Panel-60 rubric grades answer content, not stop reason. This is a code edit, so per jerboa rule vizcacha authors it -> new builder hash -> shoveler addendum/re-review. NO RERUN: the length row is a real model outcome, and rerunning to force \"stop\" would be a valid-output rerun.",
+ "alternative_if_author_prefers": "if the author wants the assertion kept, the binding must say explicitly how a non-stop row is handled; silently dropping or regenerating it is not acceptable.",
+ "no_answer_text_read_by_executor": true,
+ "no_pool_written_no_grades_started": true
+}

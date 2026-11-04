@@ -1,0 +1,212 @@
+{
+  "utc": "2026-10-30T23:45:14.136384+00:00",
+  "state": "READONLY_ACTUAL_A13_FAILED_ROOT_EVIDENCE_NO_AUTOMATIC_RETRY",
+  "root": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff",
+  "SDK_terminal": true,
+  "jobs": [
+    {
+      "job": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train",
+      "state": "worker_failed",
+      "error_message_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: a11c0e00-c9ea-4efa-b4ce-d3d409707772, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+      "requested": {
+        "cpu": "64",
+        "gpu": 8,
+        "gpu_variant": "H100",
+        "memory_bytes": 824633720832,
+        "disk_bytes": 1099511627776
+      },
+      "tasks": [
+        {
+          "task": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/0",
+          "attempts": [
+            {
+              "uid": "183d673ab4462640",
+              "number": 0,
+              "state": "preempted",
+              "terminal_reason_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: a11c0e00-c9ea-4efa-b4ce-d3d409707772, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+              "error_message_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: a11c0e00-c9ea-4efa-b4ce-d3d409707772, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+              "start_ms": null,
+              "finish_ms": 1793403700029
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A13-training-terminal-private-r1/02c5da1548fc5c3f5a36452515ad14c9b070214ada9f7133d7653eeca7236e39.last240.log",
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          },
+          "relevant_lines_URL_redacted": []
+        },
+        {
+          "task": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/1",
+          "attempts": [
+            {
+              "uid": "fdb34e7a39342b41",
+              "number": 0,
+              "state": "cosched_failed",
+              "terminal_reason_URL_redacted": "",
+              "error_message_URL_redacted": "Coscheduled sibling /karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/0 failed",
+              "start_ms": null,
+              "finish_ms": 1793403700029
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A13-training-terminal-private-r1/a40323c834e22c9c7da1947494b27ad1fb365325d9f208c3ea648f6805d907b2.last240.log",
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          },
+          "relevant_lines_URL_redacted": []
+        },
+        {
+          "task": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/2",
+          "attempts": [
+            {
+              "uid": "93727cf29bd4127d",
+              "number": 0,
+              "state": "cosched_failed",
+              "terminal_reason_URL_redacted": "",
+              "error_message_URL_redacted": "Coscheduled sibling /karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/0 failed",
+              "start_ms": null,
+              "finish_ms": 1793403700029
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A13-training-terminal-private-r1/b6fb32e76f6c23534be52fb94ad7c56a024a204741b185af7725ac737d969017.last240.log",
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          },
+          "relevant_lines_URL_redacted": []
+        },
+        {
+          "task": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/3",
+          "attempts": [
+            {
+              "uid": "16c1a54f690960c7",
+              "number": 0,
+              "state": "cosched_failed",
+              "terminal_reason_URL_redacted": "",
+              "error_message_URL_redacted": "Coscheduled sibling /karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/0 failed",
+              "start_ms": null,
+              "finish_ms": 1793403700029
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A13-training-terminal-private-r1/1a672ebb563af2f7f10212f9c7e5d9984770c99ae11d308f46eff6b39401100b.last240.log",
+            "bytes": 1,
+            "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+          },
+          "relevant_lines_URL_redacted": []
+        }
+      ]
+    },
+    {
+      "job": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff",
+      "state": "failed",
+      "error_message_URL_redacted": "Cumulative failed task attempts exceeded max_task_failures: failures=1, limit=0; bulate==0.9.0\n + tblib==3.2.2\n + tensorstore==0.1.84\n + tokenizers==0.22.2\n + toml==0.10.2\n + tomli-w==1.2.0\n + tomlkit==0.13.3\n + toolz==1.1.0\n + torch==2.11.0+cu128\n + torch-c-dlpack-ext==0.1.5\n + torchvision==0.26.0+cu128\n + tqdm==4.67.1\n + tqdm-loggable==0.2\n + transformers==5.12.1\n + treescope==0.1.10\n + triton==3.6.0\n + truststore==0.10.4\n + typer==0.21.1\n + typing-extensions==4.16.0\n + typing-inspect==0.9.0\n + typing-inspection==0.4.4\n + tzdata==2025.3\n + uncalled-for==0.4.0\n + uritemplate==4.2.0\n + urllib3==2.7.0\n + uv==0.13.5\n + uvicorn==0.40.0\n + uvloop==0.22.1\n + vortex-data==0.61.0\n + wadler-lindig==0.1.7\n + wandb==0.26.0\n + watchdog==6.0.0\n + watchfiles==1.1.1\n + websocket-client==1.9.0\n + websockets==15.0.1\n + wrapt==1.17.3\n + xxhash==3.6.0\n + yarl==1.22.0\n + zipp==3.23.0\n + zss==1.2.0\n + zstandard==0.25.0\n[iris setup] step 2/3\nrestoring CUDA 13 library precedence for nvidia-cudnn-cu13\nResolved 3 packages in 138ms\nPrepared 1 package in 0.23ms\nUninstalled 1 package in 0.76ms\nInstalled 1 package in 10ms\n ~ nvidia-cudnn-cu13==9.19.0.56\nrestoring CUDA 13 library precedence for nvidia-nccl-cu13\nResolved 1 package in 132ms\nPrepared 1 package in 0.25ms\nUninstalled 1 package in 1ms\nInstalled 1 package in 16ms\n ~ nvidia-nccl-cu13==2.31.2\nstaging CUDA toolchain\n[iris setup] step 3/3\ninstalling iris runtime deps\nResolved 14 packages in 5ms\nInstalled 5 packages in 30ms\n + linkify-it-py==2.2.0\n + mdit-py-plugins==0.6.1\n + memray==1.20.0\n + py-spy==0.4.2\n + textual==8.2.8\nI20261030 23:33:50 datasets JAX version 0.11.1 available.\nTraceback (most recent call last):\n  File \"/app/_callable_runner.py\", line 39, in <module>\n    fn(*args, **kwargs)\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 119, in workflow_worker\n    owned_terminal(train, root, \"train\")\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 62, in owned_terminal\n    raise RuntimeError(f\"Owned ablation {stage} terminated {state}\")\nRuntimeError: Owned ablation train terminated worker_failed\n",
+      "requested": {
+        "cpu": "8",
+        "gpu": 0,
+        "gpu_variant": null,
+        "memory_bytes": 34359738368,
+        "disk_bytes": 53687091200
+      },
+      "tasks": [
+        {
+          "task": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/0",
+          "attempts": [
+            {
+              "uid": "3a78e42b551254c2",
+              "number": 0,
+              "state": "failed",
+              "terminal_reason_URL_redacted": "bulate==0.9.0\n + tblib==3.2.2\n + tensorstore==0.1.84\n + tokenizers==0.22.2\n + toml==0.10.2\n + tomli-w==1.2.0\n + tomlkit==0.13.3\n + toolz==1.1.0\n + torch==2.11.0+cu128\n + torch-c-dlpack-ext==0.1.5\n + torchvision==0.26.0+cu128\n + tqdm==4.67.1\n + tqdm-loggable==0.2\n + transformers==5.12.1\n + treescope==0.1.10\n + triton==3.6.0\n + truststore==0.10.4\n + typer==0.21.1\n + typing-extensions==4.16.0\n + typing-inspect==0.9.0\n + typing-inspection==0.4.4\n + tzdata==2025.3\n + uncalled-for==0.4.0\n + uritemplat",
+              "error_message_URL_redacted": "bulate==0.9.0\n + tblib==3.2.2\n + tensorstore==0.1.84\n + tokenizers==0.22.2\n + toml==0.10.2\n + tomli-w==1.2.0\n + tomlkit==0.13.3\n + toolz==1.1.0\n + torch==2.11.0+cu128\n + torch-c-dlpack-ext==0.1.5\n + torchvision==0.26.0+cu128\n + tqdm==4.67.1\n + tqdm-loggable==0.2\n + transformers==5.12.1\n + treescope==0.1.10\n + triton==3.6.0\n + truststore==0.10.4\n + typer==0.21.1\n + typing-extensions==4.16.0\n + typing-inspect==0.9.0\n + typing-inspection==0.4.4\n + tzdata==2025.3\n + uncalled-for==0.4.0\n + uritemplate==4.2.0\n + urllib3==2.7.0\n + uv==0.13.5\n + uvicorn==0.40.0\n + uvloop==0.22.1\n + vortex-data==0.61.0\n + wadler-lindig==0.1.7\n + wandb==0.26.0\n + watchdog==6.0.0\n + watchfiles==1.1.1\n + websocket-client==1.9.0\n + websockets==15.0.1\n + wrapt==1.17.3\n + xxhash==3.6.0\n + yarl==1.22.0\n + zipp==3.23.0\n + zss==1.2.0\n + zstandard==0.25.0\n[iris setup] step 2/3\nrestoring CUDA 13 library precedence for nvidia-cudnn-cu13\nResolved 3 packages in 138ms\nPrepared 1 package in 0.23ms\nUninstalled 1 package in 0.76ms\nInstalled 1 package in 10ms\n ~ nvidia-cudnn-cu13==9.19.0.56\nrestoring CUDA 13 library precedence for nvidia-nccl-cu13\nResolved 1 package in 132ms\nPrepared 1 package in 0.25ms\nUninstalled 1 package in 1ms\nInstalled 1 package in 16ms\n ~ nvidia-nccl-cu13==2.31.2\nstaging CUDA toolchain\n[iris setup] step 3/3\ninstalling iris runtime deps\nResolved 14 packages in 5ms\nInstalled 5 packages in 30ms\n + linkify-it-py==2.2.0\n + mdit-py-plugins==0.6.1\n + memray==1.20.0\n + py-spy==0.4.2\n + textual==8.2.8\nI20261030 23:33:50 datasets JAX version 0.11.1 available.\nTraceback (most recent call last):\n  File \"/app/_callable_runner.py\", line 39, in <module>\n    fn(*args, **kwargs)\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 119, in workflow_worker\n    owned_terminal(train, root, \"train\")\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 62, in owned_terminal\n    raise RuntimeError(f\"Owned ablation {stage} terminated {state}\")\nRuntimeError: Owned ablation train terminated worker_failed\n",
+              "start_ms": 1793403213458,
+              "finish_ms": 1793403716966
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A13-training-terminal-private-r1/aea88cd9483c77e80c1fbf4b3465026aea82aea68e5c8c8bfd4f6badbb6c5a56.last240.log",
+            "bytes": 6356,
+            "sha256": "761eb6107886f257faa23a21add70dfcf92916fe23cc780c257ba64ccf87b553"
+          },
+          "relevant_lines_URL_redacted": [
+            "Traceback (most recent call last):",
+            "    raise RuntimeError(f\"Owned ablation {stage} terminated {state}\")",
+            "RuntimeError: Owned ablation train terminated worker_failed"
+          ]
+        }
+      ]
+    }
+  ],
+  "all_owned_jobs_terminal": false,
+  "artifacts_count": 2,
+  "artifacts": [
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A13/run/workflow/train-submitted.json",
+      "bytes": 59
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A13/run/workflow/train-terminal.json",
+      "bytes": 87
+    }
+  ],
+  "small_completion_or_audit_metadata": [],
+  "cost_full_requested_resources_each_physical_attempt_ms": {
+    "exact_hours": {
+      "H100h": "0",
+      "GPU_host_CPUh": "0",
+      "CPU_only_h": "41959/37500"
+    },
+    "hours_9dp": {
+      "H100h": 0.0,
+      "GPU_host_CPUh": 0.0,
+      "CPU_only_h": 1.118906667
+    },
+    "missing_boundaries_excluded_NOTzero": [
+      {
+        "job": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train",
+        "uid": "183d673ab4462640",
+        "number": 0,
+        "state": "preempted",
+        "terminal_reason_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: a11c0e00-c9ea-4efa-b4ce-d3d409707772, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+        "error_message_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: a11c0e00-c9ea-4efa-b4ce-d3d409707772, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+        "start_ms": null,
+        "finish_ms": 1793403700029
+      },
+      {
+        "job": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train",
+        "uid": "fdb34e7a39342b41",
+        "number": 0,
+        "state": "cosched_failed",
+        "terminal_reason_URL_redacted": "",
+        "error_message_URL_redacted": "Coscheduled sibling /karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/0 failed",
+        "start_ms": null,
+        "finish_ms": 1793403700029
+      },
+      {
+        "job": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train",
+        "uid": "93727cf29bd4127d",
+        "number": 0,
+        "state": "cosched_failed",
+        "terminal_reason_URL_redacted": "",
+        "error_message_URL_redacted": "Coscheduled sibling /karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/0 failed",
+        "start_ms": null,
+        "finish_ms": 1793403700029
+      },
+      {
+        "job": "/karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train",
+        "uid": "16c1a54f690960c7",
+        "number": 0,
+        "state": "cosched_failed",
+        "terminal_reason_URL_redacted": "",
+        "error_message_URL_redacted": "Coscheduled sibling /karan/pathb-bfcl-a13-r1-69ddc88fb2ff/train/0 failed",
+        "start_ms": null,
+        "finish_ms": 1793403700029
+      }
+    ],
+    "GPU_host_CPU_separate": true,
+    "NOT_global_OR_additive_to_overlapping_scope": true
+  },
+  "raw_log_scope": "Last240 lines pernative task, not full allattempt log archival; private unmodified byte projection retained. Evidence, not unsupported universal cause.",
+  "model_submit_control_or_storage_write_calls": 0,
+  "training_or_export_retry_authorized": false
+}

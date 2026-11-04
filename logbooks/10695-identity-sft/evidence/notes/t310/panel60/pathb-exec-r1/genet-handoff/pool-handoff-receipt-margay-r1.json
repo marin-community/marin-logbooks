@@ -1,0 +1,86 @@
+{
+ "utc": "2026-10-31T14:37:29.744233+00:00",
+ "state": "PANEL60_BLIND_POOL_BUILT_AND_HANDED_TO_GENET",
+ "clear": "shoveler re-read CLEAR 15c1607f on build_blind_pool.py 66b4b475 + binding.json de81327a",
+ "pool": {
+  "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-exec-r1/genet-handoff/pool.json",
+  "sha256": "dd299a900b1257f3ccca5a19a6da35476b126bebfbd11a8158353ea5328d23d1",
+  "items": 60,
+  "answers": 300,
+  "per_item_fields": [
+   "index",
+   "prompt",
+   "reference",
+   "answers"
+  ],
+  "letters": [
+   "A",
+   "B",
+   "C",
+   "D",
+   "E"
+  ],
+  "contains_finish_reason": false,
+  "contains_arm_labels": false,
+  "contains_served_model_or_run_names": false,
+  "note": "Marin/Snowball strings DO appear because they are answer/reference CONTENT (the models and Ben reference name Marin Snowball); they are not labels."
+ },
+ "rubric": {
+  "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-exec-r1/genet-handoff/rubric-amendment.md",
+  "sha256": "cf0fb6c2fcd90daca924df33a8b00ce145631c72c269ffcb2d89fef2a080a2ea"
+ },
+ "key": {
+  "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/grading/pathb-blind-pool-r1/key.json",
+  "sha256": "20fb43535582bff806aac24ae555813c2f14534f6b5e8935a34af39be2ddf33b",
+  "held_by": "margay only, never sent to genet",
+  "seed": 20261031,
+  "non_stop_finish": {
+   "A13": {},
+   "A8a": {},
+   "A3": {
+    "26": "length"
+   },
+   "v0p1": {},
+   "v0p1-sysdefault": {}
+  }
+ },
+ "shoveler_wording_note_passed_to_genet": "the references use the old Marin Snowball / Open Athena wording, so name/creator/foreign follow rubric-amendment.md, NOT the reference wording; Marin Latest MoE, by the Marin Community is correct even where the reference names Snowball",
+ "genet_field_set": [
+  "clean",
+  "name",
+  "creator",
+  "foreign",
+  "invented",
+  "recital",
+  "literal_roles",
+  "grader=genet",
+  "uncertain+reason"
+ ],
+ "executor_recorded_grades_sha_BEFORE_unblinding": null,
+ "no_answer_text_read_by_executor": true,
+ "executor_blinding_slip_disclosed": {
+  "what": "the handoff MESSAGE text stated key.json holds the non-stop record with \"A3 item 26 = length\", i.e. it associated one item index with one arm stop reason",
+  "pool_itself_clean": true,
+  "not_disclosed": [
+   "which letter A-E is the length row",
+   "the arm-to-letter mapping (held in key.json)",
+   "any other arm-linked row detail"
+  ],
+  "graders_declaration": "genet states they will not use the annotation or infer an arm mapping from it, and asked for no further arm-linked row details until they seal",
+  "recorded_as_limit": true,
+  "reported_to": [
+   "shoveler",
+   "jerboa"
+  ],
+  "recommendation": "continue and record the limit; a new seed cannot un-leak the fact that item 26 contains a length row, so a rebuild is only partly restorative for 1 item of 60",
+  "nothing_else_affected": "pool sha dd299a90 unchanged, builder run as bound after clear, executor still records the grades sha256 before opening key.json",
+  "jerboa_ruling": "option (1) continue; use shoveler EXACT limit wording; report A3 counts with and without item 26; no reseed, no second grader",
+  "read_limit_wording_required": "grader told item 26 contains a length-terminated answer; arm and letter not disclosed",
+  "my_original_scope_assessment_was_INCOMPLETE": "I said the letter and the arm-letter mapping were not disclosed. That reasoning is wrong on its own terms: the length-terminated answer is VISIBLY TRUNCATED, so on item 26 the grader can tell which of A-E is A3's answer. Shoveler caught this; I accept it.",
+  "shoveler_required_read_wording": "grader was told item 26 holds A3's length-terminated answer, identifying A3's answer on that item; all other items label-blind (letters reshuffle per item)",
+  "required_sensitivity": "A3's ship-line counts reported WITH and WITHOUT item 26",
+  "no_reseed_no_second_grader": true,
+  "final_read_wording": "grader was told item 26 holds A3's length-terminated answer, identifying A3's answer on that item; all other items label-blind (letters reshuffle per item)",
+  "sensitivity_required": "A3's ship-line counts reported WITH and WITHOUT item 26"
+ }
+}

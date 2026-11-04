@@ -1,0 +1,425 @@
+{
+  "utc": "2026-10-31T04:16:57.036262+00:00",
+  "state": "WORKER_FAILED_ACTUAL_ARTIFACT_ATTEMPT_RESOURCE_INSPECTION_NO_AUTOMATIC_RETRY",
+  "arm": "M49",
+  "original_slot": 1,
+  "replacement_number": 1,
+  "job": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b",
+  "SDK_terminal_state": "worker_failed",
+  "launch_sha256": "af01f1b7d8f507122603a1938b0e73ff7d044f954d5ea96c273620b0dba01386",
+  "HF": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/merge-sweep-20261030-r1/M49/hf",
+  "native_artifacts": {
+    "record_uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/M49-BFCL-production-five-20261031-r1/run-1-infra-replacement-1/records/20261031-025121-snowball-pathb-bfcl-m49-r1-bfclparity-pi-2e9a/record.json",
+    "record_present_at_inspection": true,
+    "original_restricted_local": {
+      "path": "/mnt/storage/karan-scratch/M49-BFCL-slot1-R1-worker-failed-private-r1/native-record.actual.json",
+      "bytes": 5884,
+      "sha256": "719ee3e78a655451ccac97b761f2e0f57850627d6a70865697681cf80ce278ef"
+    },
+    "native_status": "succeeded",
+    "coverage": {
+      "bfcl_parity": {
+        "n_benchmark": 123,
+        "n_attempted": 123,
+        "n_scored": 122,
+        "n_correct": null,
+        "n_unanswered": 0,
+        "errors": {
+          "EnvironmentStartTimeoutError": 1
+        }
+      }
+    },
+    "metrics": {
+      "bfcl_parity": {
+        "mean_reward": 0.3114754098360656,
+        "solved": 38.0,
+        "total": 122.0,
+        "attempted": 123.0
+      }
+    },
+    "error": null,
+    "object_inventory_restricted_local": {
+      "path": "/mnt/storage/karan-scratch/M49-BFCL-slot1-R1-worker-failed-private-r1/registered-records-namespace-object-inventory.json",
+      "bytes": 520419,
+      "sha256": "1d3f02e083b239a259202b33093e1822e079f5e785dbc387406e54e651a8102a"
+    },
+    "registered_records_objects": 1348,
+    "sample_reader_error_NOT_absence_or_zero_proof": {
+      "type": "NameError",
+      "message": "name 'ReadView' is not defined"
+    }
+  },
+  "primary_score": null,
+  "no_missing_to_zero_or_partial123_score_admission": true,
+  "owned_terminal_attempts_and_scoped_cost": {
+    "jobs": [
+      {
+        "job": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/inference-fab3c9008c5c4d0da52e0884726762ff",
+        "state": "killed",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 8,
+          "cpu_millicores": 8000,
+          "memory_bytes": 549755813888,
+          "disk_bytes": 107374182400
+        },
+        "attempts": [
+          {
+            "task": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/inference-fab3c9008c5c4d0da52e0884726762ff/0",
+            "uid": "dfa6e300f52c4438",
+            "number": 0,
+            "state": "killed",
+            "start_ms": 1793415127777,
+            "finish_ms": 1793419764212
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": true
+      },
+      {
+        "job": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b",
+        "state": "worker_failed",
+        "canonical_terminal": true,
+        "owning_cluster": "cw-rno2a",
+        "requested": {
+          "gpu": 0,
+          "cpu_millicores": 4000,
+          "memory_bytes": 17179869184,
+          "disk_bytes": 85899345920
+        },
+        "attempts": [
+          {
+            "task": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/0",
+            "uid": "0930e86523b2abaf",
+            "number": 0,
+            "state": "worker_failed",
+            "start_ms": 1793415112062,
+            "finish_ms": 1793419788717
+          }
+        ],
+        "child_GetJobStatus_request_NOT_original_policy": false
+      }
+    ],
+    "all_owned_jobs_terminal": true,
+    "root_stored_request": {
+      "bundle_id": "5912c661b8eee8899804f97cf2b18c4bd2bf44321645bff70413db0667a85b7b",
+      "priority": "PRIORITY_BAND_PRODUCTION",
+      "failure_retries": 0,
+      "preemption_retries": 0,
+      "timeout_ms": 176400000,
+      "constraints": [
+        {
+          "key": "cluster",
+          "op": "CONSTRAINT_OP_EQ",
+          "value": {
+            "string_value": "cw-rno2a"
+          },
+          "mode": "CONSTRAINT_MODE_REQUIRED"
+        }
+      ],
+      "resources": {
+        "cpu_millicores": 4000,
+        "memory_bytes": "17179869184",
+        "device": {},
+        "disk_bytes": "85899345920"
+      }
+    },
+    "cost": {
+      "exact_hours": {
+        "H100h": "927287/90000",
+        "GPU_host_CPUh": "927287/90000",
+        "CPU_only_h": "311777/60000"
+      },
+      "complete_window_subtotals_hours_9dp": {
+        "H100h": 10.303188889,
+        "GPU_host_CPUh": 10.303188889,
+        "CPU_only_h": 5.196283333
+      },
+      "full_cohort_hours_9dp": {
+        "H100h": 10.303188889,
+        "GPU_host_CPUh": 10.303188889,
+        "CPU_only_h": 5.196283333
+      },
+      "missing_windows_excluded_UNKNOWN_NOT_zero": [],
+      "GPU_host_CPU_separate": true,
+      "full_requested_resources_every_physical_attempt_integer_ms_sum_then_round_once": true,
+      "NOT_global_or_additive_to_overlapping_scopes": true
+    }
+  },
+  "physical_error_reasons_and_bounded_logs": [
+    {
+      "job": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/inference-fab3c9008c5c4d0da52e0884726762ff",
+      "state": "killed",
+      "full_native_status_restricted_local": {
+        "path": "/mnt/storage/karan-scratch/M49-BFCL-slot1-R1-worker-failed-private-r1/023f32097cdb-GetJobStatus.protobuf",
+        "bytes": 477,
+        "sha256": "d4cb1c86a61d206f78dbbbfb6e9be717fd4451d14026a5c70bd0fe4510806ea8"
+      },
+      "tasks": [
+        {
+          "task": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/inference-fab3c9008c5c4d0da52e0884726762ff/0",
+          "attempts": [
+            {
+              "number": 0,
+              "uid": "dfa6e300f52c4438",
+              "state": "killed",
+              "error_message": "Terminated by user",
+              "terminal_reason": "",
+              "start_ms": 1793415127777,
+              "finish_ms": 1793419764212
+            }
+          ],
+          "last100_log_lines_safe_projection": [
+            "I20261031 04:07:54 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:07:54 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:07:58 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:07:58 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:07:59 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:07:59 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:00 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:00 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:02 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:02 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:03 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:03 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:05 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:05 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:06 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:06 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:09 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:09 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:09 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:10 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:10 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:10 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:11 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:11 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:12 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:12 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:12 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:12 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:13 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:13 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:14 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:14 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:14 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:14 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:15 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:16 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:17 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:17 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:18 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:18 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:19 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:19 125643652015808 uvicorn.access 10.0.1.207:38508 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:26 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:26 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:27 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:27 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:28 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:28 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:29 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:30 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:31 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:31 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:33 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:33 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:34 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:34 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:35 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:35 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:36 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:37 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:38 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:38 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:40 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:40 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:45 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:45 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:46 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:46 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:48 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:48 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:49 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:50 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:51 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:51 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:52 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:52 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:53 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:54 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:54 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:54 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:55 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:55 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:57 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:57 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:58 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:58 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:08:59 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:08:59 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:09:00 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:09:01 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:09:05 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:09:05 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:09:06 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:09:06 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:09:07 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /tokenize HTTP/1.1\" 200",
+            "I20261031 04:09:07 125643652015808 uvicorn.access 10.0.1.207:49656 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+            "I20261031 04:09:22 125643652015808 uvicorn.access 10.168.205.203:46338 - \"GET /metrics HTTP/1.1\" 200",
+            "W20261031 04:09:27 125643643623104 iris.cluster.client.endpoint_client Failed to renew endpoint lease /serve/inference-fab3c9008c5c4d0da52e0884726762ff (33144271-b02e-4406-8323-3e4a39b7e850): Task /karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/inference-fab3c9008c5c4d0da52e0884726762ff/0 is already terminal; endpoint not registered; retrying in 10s",
+            "W20261031 04:09:37 125643643623104 iris.cluster.client.endpoint_client Failed to renew endpoint lease /serve/inference-fab3c9008c5c4d0da52e0884726762ff (33144271-b02e-4406-8323-3e4a39b7e850): Task /karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/inference-fab3c9008c5c4d0da52e0884726762ff/0 is already terminal; endpoint not registered; retrying in 18s",
+            "W20261031 04:09:55 125643643623104 iris.cluster.client.endpoint_client Failed to renew endpoint lease /serve/inference-fab3c9008c5c4d0da52e0884726762ff (33144271-b02e-4406-8323-3e4a39b7e850): Task /karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/inference-fab3c9008c5c4d0da52e0884726762ff/0 is already terminal; endpoint not registered; retrying in 43s"
+          ],
+          "original_restricted_local": {
+            "path": "/mnt/storage/karan-scratch/M49-BFCL-slot1-R1-worker-failed-private-r1/2ea50050f16a-attempts-and-tail.raw.json",
+            "bytes": 12527,
+            "sha256": "6ba8973dd976249b3f61f65d780b77ee8555ac78f4b19034d03592a716ce8d44"
+          },
+          "bounded_tail_NOT_full_all_attempt_log_archive": true,
+          "log_retrieval_error_UNKNOWN_if_present": null
+        }
+      ]
+    },
+    {
+      "job": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b",
+      "state": "worker_failed",
+      "full_native_status_restricted_local": {
+        "path": "/mnt/storage/karan-scratch/M49-BFCL-slot1-R1-worker-failed-private-r1/586ea5dcb2a9-GetJobStatus.protobuf",
+        "bytes": 1894,
+        "sha256": "b36852aedbf836af412ef1971faeb9e7e73d668eecefa14ba45b676d8b5d7b4e"
+      },
+      "tasks": [
+        {
+          "task": "/karan/eval-20261031-025121-snowball-pathb-bfcl-m49-r1-cf3b/0",
+          "attempts": [
+            {
+              "number": 0,
+              "uid": "0930e86523b2abaf",
+              "state": "worker_failed",
+              "error_message": "PodDeleted: pod was deleted while the attempt was active",
+              "terminal_reason": "PodDeleted: pod was deleted while the attempt was active",
+              "start_ms": 1793415112062,
+              "finish_ms": 1793419788717
+            }
+          ],
+          "last100_log_lines_safe_projection": [
+            "Agent environment cleanup failed for bfcl-live-irrelevance-564-172-5__rMziEEX",
+            "Traceback (most recent call last):",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/environments/daytona/environment.py\", line 463, in _delete_sandbox",
+            "    await env._stop_sandbox()",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/tenacity/asyncio/__init__.py\", line 193, in async_wrapped",
+            "    return await copy(fn, *args, **kwargs)",
+            "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/tenacity/asyncio/__init__.py\", line 112, in __call__",
+            "    do = await self.iter(retry_state=retry_state)",
+            "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/tenacity/asyncio/__init__.py\", line 157, in iter",
+            "    result = await action(retry_state)",
+            "             ^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/tenacity/_utils.py\", line 111, in inner",
+            "    return call(*args, **kwargs)",
+            "           ^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/tenacity/__init__.py\", line 393, in <lambda>",
+            "    self._add_action_func(lambda rs: rs.outcome.result())",
+            "                                     ^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py\", line 449, in result",
+            "    return self.__get_result()",
+            "           ^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result",
+            "    raise self._exception",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/tenacity/asyncio/__init__.py\", line 116, in __call__",
+            "    result = await fn(*args, **kwargs)",
+            "             ^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/environments/daytona/environment.py\", line 1729, in _stop_sandbox",
+            "    await self._sandbox.delete()",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/daytona/_async/sandbox.py\", line 92, in async_wrapper",
+            "    return await _m(self, *args, **kwargs)",
+            "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/daytona/_utils/errors.py\", line 219, in async_wrapper",
+            "    process_n_raise_exception(e)",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/daytona/_utils/errors.py\", line 163, in process_n_raise_exception",
+            "    raise create_daytona_error(",
+            "daytona.common.errors.DaytonaNotFoundError: Failed to remove sandbox: Sandbox with ID or name 1937d6c0-e04f-4d60-b6e5-cdb5c3ad14db not found",
+            "",
+            "The above exception was the direct cause of the following exception:",
+            "",
+            "Traceback (most recent call last):",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/trial/trial.py\", line 1375, in _stop_agent_environment",
+            "    await asyncio.wait_for(",
+            "  File \"/uv/cache/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for",
+            "    return await fut",
+            "           ^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/environments/daytona/environment.py\", line 2240, in stop",
+            "    return await self._strategy.stop(delete)",
+            "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/environments/daytona/environment.py\", line 547, in stop",
+            "    await self._delete_sandbox()",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/environments/daytona/environment.py\", line 465, in _delete_sandbox",
+            "    raise DaytonaSandboxStopError(",
+            "harbor.environments.daytona.environment.DaytonaSandboxStopError: Failed to delete Daytona sandbox 1937d6c0-e04f-4d60-b6e5-cdb5c3ad14db; sandbox handle retained for retry",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: result persistence started",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: failed (DaytonaSandboxStopError)",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: started",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: environment started",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: agent started",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: verification started",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: verification completed",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: result persistence started",
+            "Trial bfcl-live-irrelevance-564-172-5__rMziEEX: completed",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: verification started",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: verification completed",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq failed",
+            "Traceback (most recent call last):",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/trial/single_step.py\", line 111, in _run_verifier",
+            "    self.result.verifier_result = await self._run_shared_verifier(",
+            "                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/trial/trial.py\", line 735, in _run_shared_verifier",
+            "    return await self._await_phase(",
+            "           ^^^^^^^^^^^^^^^^^^^^^^^^",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/trial/trial.py\", line 591, in _await_phase",
+            "    raise timeout_error from None",
+            "harbor.trial.errors.VerifierTimeoutError: Verifier execution timed out after 300.0 seconds",
+            "",
+            "The above exception was the direct cause of the following exception:",
+            "",
+            "Traceback (most recent call last):",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/trial/trial.py\", line 280, in run",
+            "    await self._run()",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/trial/single_step.py\", line 43, in _run",
+            "    await self._run_verifier()",
+            "  File \"/uv/cache/builds-v0/.tmpcNp67K/lib/python3.12/site-packages/harbor/trial/single_step.py\", line 116, in _run_verifier",
+            "    raise VerifierTimeoutError(",
+            "harbor.trial.errors.VerifierTimeoutError: Verifier execution timed out after 300.0 seconds",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: result persistence started",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: failed (VerifierTimeoutError)",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: started",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: environment started",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: agent started",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: verification started",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: verification completed",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: result persistence started",
+            "Trial bfcl-live-irrelevance-3-0-3__C3dtKHq: completed",
+            "I20261031 04:09:22 marin.evaluation.harbor.runner Harbor bfcl_parity: 38/122 solved of 123 attempted (mean_reward=0.311 coverage=0.992)",
+            "W20261031 04:09:22 marin.evaluation.harbor.runner Harbor bfcl_parity admitted at 99.2% trial completion: EnvironmentStartTimeoutError=1",
+            "I20261031 04:09:22 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/M49-BFCL-production-five-20261031-r1/run-1-infra-replacement-1/records/20261031-025121-snowball-pathb-bfcl-m49-r1-bfclparity-pi-2e9a/record.json (status=succeeded)",
+            "I20261031 04:09:23 124465023264448 finelog.client.log_client LogClient resolved /system/log-server -> [REDACTED_URL] (stats)"
+          ],
+          "original_restricted_local": {
+            "path": "/mnt/storage/karan-scratch/M49-BFCL-slot1-R1-worker-failed-private-r1/d1bc36eba991-attempts-and-tail.raw.json",
+            "bytes": 8518,
+            "sha256": "1644c6fc852e2a2f47d1cbdd4b17beb12deb4769d6618d47b7eb1fb7d2d72052"
+          },
+          "bounded_tail_NOT_full_all_attempt_log_archive": true,
+          "log_retrieval_error_UNKNOWN_if_present": null
+        }
+      ]
+    }
+  ],
+  "worker_failed_label_alone_does_NOT_establish_underlying_cause": true,
+  "cause_disposition": "Inspect actual per-attempt reasons/logs; do not infer preemption/OOM/producer error from SDK label.",
+  "global_child_GetJobStatus_request_NOT_original_peer_policy_attestation": true,
+  "all_failed_original_R1_partials_NULLs_and_costs_retained": true,
+  "no_operator_model_probe_submit_retry_control_or_remote_storage_mutation_calls": true,
+  "NO_automatic_R2_or_R3": true
+}

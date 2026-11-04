@@ -1,0 +1,74 @@
+{
+ "utc": "2026-10-31T14:29:01.144434+00:00",
+ "state": "ALL3_PANEL60_PATHB_ARMS_ACTUALLY_SUBMITTED_AND_RUNNING",
+ "authority": "owner GO Ben Panel-60 on Path B candidates; jerboa GO; shoveler RUNS clear a8f52662 on binding e136b28d; grading NOT yet cleared (needs vizcacha amendment naming genet + label stripping, then shoveler addendum 7a5d4d5a applies)",
+ "binding": {
+  "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/binding.json",
+  "sha256": "f316b270da165f3d77eec53faa0c2b3e49aea5dd0c03b22c819e65143411b814"
+ },
+ "grading_plan_sha256": "592d07bafdbc6a54976f93fbdc5a536aa3501ec58ff0bfaede63d6dc0f307bc0",
+ "rubric_sha256": "cf0fb6c2fcd90daca924df33a8b00ce145631c72c269ffcb2d89fef2a080a2ea",
+ "runner": {
+  "file": "panel60_runner.py",
+  "sha256": "239c61adf6fa93ab7c12724818faf8b3d948813467bb89f17218ddae68710858",
+  "note": "the exact runner that produced the v0.1 and v0.1+system-prompt references (production serve band); differs from Ben's gist runner.py (5fcce77b, interactive band) only in the priority constant on line 40"
+ },
+ "workspace": "/home/karan/oa/marin-panel60-f41b27c5",
+ "workspace_head": "f41b27c558",
+ "workspace_diff_sha256": "c0573b00737ab1d7e6b981a2343107d92d1fa097d41c7c2d3c2cfa76ad91abe0",
+ "per_arm_settings": {
+  "thinking": "off (row chat_template_kwargs, unchanged)",
+  "temperature": 0,
+  "max_tokens": 8192,
+  "max_model_len": 12288,
+  "serve": "vLLM 8xH100 TP1 DP8 expert-parallel, reasoning_parser grug, tool_call_parser hermes, bf16 (Ben's serving.json unchanged)"
+ },
+ "arms": [
+  {
+   "arm": "A13",
+   "job": "/karan/panel60-pathb-a13-u36-20261031",
+   "job_name": "panel60-pathb-a13-u36-20261031",
+   "location": "s3://marin-rno2a/marin/checkpoints/karan/snowball-identity-pathb/A13-u36",
+   "output_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/pathb-a13-u36",
+   "protocol_sha256": "f1a53c1c445df49b99af4a46f2ece349cdd96b802d5ba47cf203e2014463de8e",
+   "serving_sha256": "374c38c4859f37d999619832060a1d11160056a9db1b6f1a51e652c119c96f47",
+   "job_state_at_receipt": "JOB_STATE_RUNNING",
+   "peer_status": "PEER_STATUS_SYNCED"
+  },
+  {
+   "arm": "A8a",
+   "job": "/karan/panel60-pathb-a8a-u36-20261031",
+   "job_name": "panel60-pathb-a8a-u36-20261031",
+   "location": "s3://marin-rno2a/marin/checkpoints/karan/snowball-identity-pathb/A8a-u36",
+   "output_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/pathb-a8a-u36",
+   "protocol_sha256": "bf7d69a82079e98e5260fbf15abe789a01a7f29146be8df870b5cd0a81f0991b",
+   "serving_sha256": "67c1a5ef8d0a9afd4850327976ff814a3a94c7b28eacb9eae1a5dac13a9695e6",
+   "job_state_at_receipt": "JOB_STATE_RUNNING",
+   "peer_status": "PEER_STATUS_SYNCED"
+  },
+  {
+   "arm": "A3",
+   "job": "/karan/panel60-pathb-a3-u36-20261031",
+   "job_name": "panel60-pathb-a3-u36-20261031",
+   "location": "s3://marin-rno2a/marin/checkpoints/karan/snowball-identity-pathb/A3-u36",
+   "output_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/pathb-a3-u36",
+   "protocol_sha256": "3cedd30299b4ce69b701ec8b9c9f377b168cabcde34dffc1e612626a5c4ddeb9",
+   "serving_sha256": "d465e87d3620319a793451540848750343a9314c4f45f9e8c4a67ebe3a4f84c4",
+   "job_state_at_receipt": "JOB_STATE_RUNNING",
+   "peer_status": "PEER_STATUS_SYNCED"
+  }
+ ],
+ "submitted_one_at_a_time_with_that_arm_files_copied_into_cwd_and_hashes_rechecked": true,
+ "one_no_wait_orchestrator_per_arm_one_completion_notifier_each": true,
+ "notifier_pids": {
+  "a13": 321272,
+  "a8a": 321273,
+  "a3": 321274
+ },
+ "cw_keys_from_env_quiet_subshell_not_in_receipt": true,
+ "credentials_in_receipt": false,
+ "grading_NOT_STARTED_grader_identity_unresolved_by_design_awaiting_amended_plan": true,
+ "grader_per_jerboa_ruling": "genet (all 300 rows, blind, shuffled, labels stripped) - NOT vizcacha; the current cleared-for-runs binding still names vizcacha and must be amended before grading",
+ "no_answer_text_read_by_executor": true,
+ "no_partial_scoring_or_arm_mean": true
+}

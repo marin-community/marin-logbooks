@@ -1,0 +1,58 @@
+{
+  "scope": "Prospective statistical extension for the already authorized five A6 BFCL evaluations; not a new launch gate or job/retry authorization",
+  "timing": "Frozen after the A0-A4 and five-fresh-v0.1 analyses, before this reviewer has received any A6 BFCL outcome",
+  "frozen26_primary_sha256": "06f71ba85ac51e23471bba15bcb6198b2a02528f74af302b986fae39c466d9fa",
+  "frozen_five_reference_extension_sha256": "e6a6b5e223acfc945330d9ac5d5bba5a82863bb61e66754048d84526ba5b6df0",
+  "original_run_spec_sha256": "636ddeb0a79606fc4827c1138668d8383dcd1fec387e5bbc8cd0d898f2080b45",
+  "reference_extension_spec_sha256": "4e449bc78bb7a0f5ac6502d7d72581c1f888d03cc13701ec90b1caf72bfd1cd8",
+  "A6_binding": {
+    "code_pin": "cc2c0160d01bde4ef38f0eb92a0e6ce4c30b9dfb",
+    "plan_sha256": "3ffbca1c6adc01d54e990d4dada1d268bb93fb342394878b627ba7f63a8b7160",
+    "HF": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-cc2c0160d01b/A6/run/hf/updates-36",
+    "model_config_sha256": "4d29d3f9f515008f0d0f40666a451b69814e257cd06f80095bb2b051458dae31",
+    "method_pin": "caba0fa38b780af42da54af2f188ba5bfcc28501",
+    "required_complete_runs": 5,
+    "required_task_rewards_per_run": 123,
+    "sampling_policy": "Unchanged existing effective temperature1.0, no seed; source-derived policy, not a new HTTP capture",
+    "no_P1_prefill_or_other_identity_template_change_in_BFCL": true
+  },
+  "admission": [
+    "Require actual matching502 storage audit and checkpoint event before any A6 HF-only evaluation is admitted.",
+    "For every logical slot, join actual job/launch/result/report/native-sample and array hashes, exact A6 HF/config/method, and the same123 unique task IDs.",
+    "Every admitted run requires123 finite binary scored rewards and an independently reproduced mean/count. A missing infrastructure reward is not zero.",
+    "Keep all physical attempts and partial outcomes. Only explicitly authorized linked infrastructure recoveries may fill incomplete slots; never replace a valid complete score or choose best-of.",
+    "Do not publish A6 decision means or comparison intervals before all five complete logical score slots are admitted. A shortage requires reporting incomplete coverage, not a silent analysis revision."
+  ],
+  "run_order": "Lexical actual scored run_id independently within A6, A0-A4 and the five fresh reference runs",
+  "report": [
+    "All five A6 run IDs and counts; mean of run fractions, sample SD, min-max and unadjusted bootstrap95percent interval for the mean.",
+    "Primary contrast: A6 mean minus the existing five-fresh-v0.1 mean, in percentage points, with unadjusted95percent interval.",
+    "Pre-specified secondary contrasts: A6 minus A3 and A6 minus A0, in percentage points, with unadjusted95percent intervals.",
+    "Link all original arm/reference means and intervals unchanged; retain all execution failures separately from scored runs."
+  ],
+  "bootstrap": {
+    "draws": 10000,
+    "generator": "Python random.Random(297)",
+    "original_arm_draws": "Replay the original10000 draw iterations exactly: independent A0,A1,A2,A3,A4 within-arm run resamples in that order, A0 n6 and others n5. Preserve the original shared A0 draws and all06f71 intervals.",
+    "existing_reference_draws": "Continue that exact PRNG stream for10000 independent reference means, drawing five reference runs with replacement per iteration. Preserve every e6a6 interval exactly.",
+    "new_A6_draws": "Continue the same PRNG stream only after those10000 reference draws. Draw10000 independent A6 means, each resampling five A6 run fractions with replacement.",
+    "contrasts": "For iteration j subtract reference draw j, A3 draw j or A0 draw j from A6 draw j respectively. The one A6 draw is shared across its three contrasts; it is independent of the frozen earlier draws. Do not pair runs by repeat number or task outcome.",
+    "CI_order_statistic_indices": [249, 9749],
+    "multiplicity_adjustment": "none",
+    "task_resampling": false,
+    "training_run_resampling": false
+  },
+  "comparison_limits": [
+    "Only five or six evaluation-run clusters and one trained checkpoint per arm; percentile uncertainty is itself imprecise.",
+    "The task set is fixed; runs and the later reference batch are not time-randomized across conditions. These intervals describe conditional evaluation variability, not replicated-training effects or all-source generalization.",
+    "A6 uses existing GLM reasoning for eligible identity ON occurrences and same-source OFF for fallback. It consumes7266 of7441 A0 occurrences at the authorized36-update cutoff, leaving175 suffix occurrences unconsumed.",
+    "A6 identity final126492 and replay final616153 differ from A0/A3 identity final129641 and replay final635510. Its55073 identity reasoning tokens and1791 GLM/1235 OFF-fallback ON encounters must accompany comparisons. No equal-realized-dose or pure single-factor causal claim.",
+    "BFCL intervals alone do not establish identity correctness, valid thinking format, non-inferiority on other capabilities or a release pass."
+  ],
+  "historical34_not_pooled": true,
+  "old_r5_not_pooled": true,
+  "partial_rewards_not_imputed_or_pooled": true,
+  "frozen_files_must_remain_unchanged": true,
+  "new_model_or_retry_authority": false,
+  "A6_training_waits_for_this_analysis": false
+}

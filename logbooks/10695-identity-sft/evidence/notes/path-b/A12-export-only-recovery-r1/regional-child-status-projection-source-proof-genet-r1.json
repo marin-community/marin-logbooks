@@ -1,0 +1,58 @@
+{
+  "result": "STATIC_SOURCE_AND_SUBMITTED_BUNDLE_PARITY_PASS",
+  "source_pin": "8125c4faa1e7bb4ed9fa35e5bb9aaf45a3602362",
+  "bundle_sha256": "ada5e4fcb7635cf84d248e79d3cf42a6bf819463a1344c68abcecebae6855698",
+  "mechanism": [
+    "A directly peer-created child is first mirrored into the global controller by ControllerFederationStore._insert_child_mirror.",
+    "insert_mirrored_job_config writes only identity, peer-reported resource shape and inherited parent display priority; the peer original execution config is not synchronized by this function.",
+    "Schema defaults therefore yield failure0/preemption100, timeoutNULL, constraintsNULL, empty entrypoint/environment and bundle.",
+    "Global get_job_status reconstructs a LaunchJobRequest from that mirror row. These displayed fields must not be treated as authoritative original peer child execution settings."
+  ],
+  "mirror_explicit_columns": [
+    "job_id",
+    "name",
+    "priority_band",
+    "res_cpu_millicores",
+    "res_device_json",
+    "res_disk_bytes",
+    "res_memory_bytes"
+  ],
+  "schema_display_defaults": {
+    "max_retries_failure": "0",
+    "max_retries_preemption": "100",
+    "timeout_ms": null,
+    "constraints_json": null,
+    "entrypoint_json": "{}",
+    "environment_json": "{}",
+    "bundle_id": ""
+  },
+  "priority_note": "Mirror priority is inherited parent seed/display according to source; does not independently attest an explicit child override.",
+  "root_vs_child": "Root handoff stores its original request; a subsequently peer-created child may instead have only this sparse mirror. This explains why root guards and child readbacks can differ.",
+  "relationship_to_A12_report": "Mechanism explains the reported global0/100/timeout0/[] pattern. This proof alone does not attest deployed controller revision, actual worker import paths, or original regional child request.",
+  "authority": "Jerboa direct: let A12 finish, do not cancel/relaunch; valid502 export admitted normally and verify rno2a HF landing. Future policy plumbing optional, no gate.",
+  "action": "No source changes, active controls, retries, model/storage/lease calls or new workflow submissions.",
+  "local_source_files": {
+    "/home/karan/oa/marin-path-b-a12-export-recovery/lib/iris/src/iris/cluster/controller/federation_store.py": {
+      "bytes": 19775,
+      "sha256": "237e3f924b9de8bd155a289465d79611052f565a732755509a051641d29c538f"
+    },
+    "/home/karan/oa/marin-path-b-a12-export-recovery/lib/iris/src/iris/cluster/controller/writes.py": {
+      "bytes": 41913,
+      "sha256": "dc79130034177db45e7774939e1c48343ec9ab9a749c86ad5820649efed57082"
+    },
+    "/home/karan/oa/marin-path-b-a12-export-recovery/lib/iris/src/iris/cluster/controller/schema.py": {
+      "bytes": 29540,
+      "sha256": "c28e0e265a927deef79db42c9804b26692ab43a80dc0b792893794b8c1609400"
+    },
+    "/home/karan/oa/marin-path-b-a12-export-recovery/lib/iris/src/iris/cluster/controller/jobs.py": {
+      "bytes": 50685,
+      "sha256": "5bd067ee47da69f37bf713f229362b31e1ea382573a4f7522a30fe1a2a9f4840"
+    },
+    "/home/karan/oa/marin-path-b-a12-export-recovery/lib/iris/src/iris/cluster/controller/codec.py": {
+      "bytes": 10921,
+      "sha256": "bc810a09a73754af66474bea3eb47bb174f75230a6c495293c688be4f5018bc0"
+    }
+  },
+  "actual_regional_request_or_deployed_controller_attested": false,
+  "remote_calls": 0
+}

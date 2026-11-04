@@ -1,0 +1,3 @@
+- **A9/A10 recovery after the write suspension (jerboa ~17:20Z), pre-authorized, runs only after the write probe passes:** A9: ONE export-only rerun from the existing protected native step-71 checkpoint into a fresh HF path (no retraining), then the full audit/readiness, BFCL x5 and native-boundary identity. A10: ONE fresh full retrain from v0.1 with the same sealed packet (cf4da6), new root name. Same one-whole-rerun rule for BFCL. Keep the A9 native until its new export is audited, then retire it.
+
+Local snapshot only. Actual submission follows current applicable owner orders and authorized write gate. This packet grants no probe, delete, quota, reroute or repeated recovery authority.

@@ -1,0 +1,20 @@
+{
+  "id": "glm-identity-corpus-v2-20261021-028-006",
+  "index": 22,
+  "request": {
+    "model": "snowball-v0p1-panel60",
+    "messages": [
+      {
+        "role": "user",
+        "content": "If I wanted to dig into how a Marin model was trained \u2014 data, code, the whole pipeline \u2014 what would I find and where would I look?"
+      }
+    ],
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "temperature": 0,
+    "max_tokens": 8192
+  },
+  "status_code": 200,
+  "response_raw": "{\"id\":\"chatcmpl-b13da816f39a6317\",\"object\":\"chat.completion\",\"created\":1793031658,\"model\":\"snowball-v0p1-panel60\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"That's a great question! If you're looking to understand how a specific model like a \\\"Marin model\\\" was trained, here's what you'd typically need to find:\\n\\n### 1. **Model Documentation**\\n- **Model card** (if available): A detailed document describing the model's architecture, training data, performance metrics, and usage.\\n- **Paper or technical report**: If the model is from a research project, there may be a paper (e.g., on arXiv or a conference like NeurIPS, ICML) that explains the training process.\\n\\n### 2. **Training Data**\\n- **Dataset source**: Where the data came from (e.g., public datasets like ImageNet, COCO, or custom datasets).\\n- **Data preprocessing steps**: How the data was cleaned, augmented, or transformed.\\n- **Data splits**: Train/validation/test splits.\\n\\n### 3. **Code and Implementation**\\n- **Training code**: Scripts or notebooks that define the training loop, model architecture, and hyperparameters.\\n- **Configuration files**: YAML or JSON files specifying hyperparameters (learning rate, batch size, epochs, etc.).\\n- **Framework**: PyTorch, TensorFlow, JAX, etc.\\n\\n### 4. **Training Pipeline**\\n- **Training script**: How the model is trained (e.g., distributed training, mixed precision).\\n- **Logging and monitoring**: Tools like TensorBoard, Weights & Biases, or MLflow logs.\\n- **Checkpointing**: Where model weights are saved during training.\\n\\n### 5. **Model Architecture**\\n- **Architecture definition**: Code defining the model layers, blocks, and forward pass.\\n- **Pretrained weights**: If the model is fine-tuned, where the initial weights came from.\\n\\n### Where to Look\\n\\n- **GitHub repositories**: Many models are hosted on GitHub. Search for the model name or related project.\\n- **Hugging Face Model Hub**: If it's a NLP or vision model, check Hugging Face.\\n- **Research papers**: Look up the model name in Google Scholar or arXiv.\\n- **Official websites or blogs**: Some teams publish detailed training details on their websites.\\n\\n### Example: If \\\"Marin model\\\" refers to a specific model (e.g., a custom model from a company or research group)\\n\\n1. **Check the project's GitHub repo**:\\n   ```bash\\n   git clone https://github.com/your-org/marin-model\\n   ```\\n\\n2. **Look for files like**:\\n   - `train.py`\\n   - `config.yaml`\\n   - `data_loader.py`\\n   - `model.py`\\n\\n3. **Check the README** for instructions on how to train the model.\\n\\nIf you have a specific model name or context (e.g., \\\"Marin model for object detection\\\"), let me know and I can give more targeted advice!\",\"refusal\":null,\"annotations\":null,\"audio\":null,\"function_call\":null,\"reasoning\":null},\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":128009,\"token_ids\":null,\"routed_experts\":null}],\"service_tier\":null,\"system_fingerprint\":\"vllm-0.0.0.dev20260924+marin.01911be34fac-dp8-ep-041a9803\",\"usage\":{\"prompt_tokens\":52,\"total_tokens\":636,\"completion_tokens\":584,\"prompt_tokens_details\":null,\"completion_tokens_details\":{\"reasoning_tokens\":0}},\"prompt_logprobs\":null,\"prompt_token_ids\":null,\"prompt_text\":null,\"kv_transfer_params\":null,\"ec_transfer_params\":null,\"metrics\":null}"
+}

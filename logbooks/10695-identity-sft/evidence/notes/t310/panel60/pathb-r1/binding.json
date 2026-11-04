@@ -1,0 +1,145 @@
+{
+ "order": "current-orders.md: BEN'S PANEL-60 on Path B candidates (owner GO 2026-10-31 ~08:30Z)",
+ "author": "vizcacha",
+ "reviewer": "shoveler (binding only)",
+ "executor": "margay",
+ "workspace": "/home/karan/oa/marin-panel60-f41b27c5",
+ "workspace_head": "f41b27c558",
+ "workspace_diff_sha256": "c0573b00737ab1d7e6b981a2343107d92d1fa097d41c7c2d3c2cfa76ad91abe0",
+ "workspace_diff_equals": "runtime-backport.patch (Ben's patch, c0573b00)",
+ "runner": {
+  "file": "panel60_runner.py",
+  "sha256": "239c61adf6fa93ab7c12724818faf8b3d948813467bb89f17218ddae68710858",
+  "note": "the exact runner that produced the v0.1 and v0.1+system-prompt references (production serve band); differs from Ben's gist runner.py (5fcce77b, interactive band) only in the priority constant on line 40"
+ },
+ "ben_rows": {
+  "protocol": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/ben-gist/protocol.json",
+  "sha256": "4b4165248ab03af3e7bcf5644eb5c134283e42c1ec6e34be89295dbb2c8b0b52",
+  "rows": 60
+ },
+ "settings": {
+  "thinking": "off (row chat_template_kwargs, unchanged)",
+  "temperature": 0,
+  "max_tokens": 8192,
+  "max_model_len": 12288,
+  "serve": "vLLM 8xH100 TP1 DP8 expert-parallel, reasoning_parser grug, tool_call_parser hermes, bf16 (Ben's serving.json unchanged)"
+ },
+ "v01_chat_template_sha256": "b3f20bc21498407f2815dd1a6c26150192926ccf04f6324ca40a1209bff7d1de",
+ "v01_tokenizer_sha256": "6a61ca2105a54e9984169b409581f31cc50330d1b47104af13c221b05e462e45",
+ "template_note": "All three arms: chat_template.jinja == tokenizer_config embedded template == v0.1 plain template; tokenizer.json == v0.1. config.json differs only in serialization (full PretrainedConfig keys), same as the earlier served 25@52 export.",
+ "arms": {
+  "A13": {
+   "job_name": "panel60-pathb-a13-u36-20261031",
+   "protocol": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/arms/A13/cd16_protocol.json",
+    "sha256": "f1a53c1c445df49b99af4a46f2ece349cdd96b802d5ba47cf203e2014463de8e"
+   },
+   "serving": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/arms/A13/cd16_serving.json",
+    "sha256": "374c38c4859f37d999619832060a1d11160056a9db1b6f1a51e652c119c96f47"
+   },
+   "location": "s3://marin-rno2a/marin/checkpoints/karan/snowball-identity-pathb/A13-u36",
+   "served_model": "snowball-pathb-a13-u36-panel60",
+   "chat_template_sha256": "b3f20bc21498407f2815dd1a6c26150192926ccf04f6324ca40a1209bff7d1de",
+   "tokenizer_sha256": "6a61ca2105a54e9984169b409581f31cc50330d1b47104af13c221b05e462e45",
+   "output_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/pathb-a13-u36"
+  },
+  "A8a": {
+   "job_name": "panel60-pathb-a8a-u36-20261031",
+   "protocol": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/arms/A8a/cd16_protocol.json",
+    "sha256": "bf7d69a82079e98e5260fbf15abe789a01a7f29146be8df870b5cd0a81f0991b"
+   },
+   "serving": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/arms/A8a/cd16_serving.json",
+    "sha256": "67c1a5ef8d0a9afd4850327976ff814a3a94c7b28eacb9eae1a5dac13a9695e6"
+   },
+   "location": "s3://marin-rno2a/marin/checkpoints/karan/snowball-identity-pathb/A8a-u36",
+   "served_model": "snowball-pathb-a8a-u36-panel60",
+   "chat_template_sha256": "b3f20bc21498407f2815dd1a6c26150192926ccf04f6324ca40a1209bff7d1de",
+   "tokenizer_sha256": "6a61ca2105a54e9984169b409581f31cc50330d1b47104af13c221b05e462e45",
+   "output_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/pathb-a8a-u36"
+  },
+  "A3": {
+   "job_name": "panel60-pathb-a3-u36-20261031",
+   "protocol": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/arms/A3/cd16_protocol.json",
+    "sha256": "3cedd30299b4ce69b701ec8b9c9f377b168cabcde34dffc1e612626a5c4ddeb9"
+   },
+   "serving": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/arms/A3/cd16_serving.json",
+    "sha256": "d465e87d3620319a793451540848750343a9314c4f45f9e8c4a67ebe3a4f84c4"
+   },
+   "location": "s3://marin-rno2a/marin/checkpoints/karan/snowball-identity-pathb/A3-u36",
+   "served_model": "snowball-pathb-a3-u36-panel60",
+   "chat_template_sha256": "b3f20bc21498407f2815dd1a6c26150192926ccf04f6324ca40a1209bff7d1de",
+   "tokenizer_sha256": "6a61ca2105a54e9984169b409581f31cc50330d1b47104af13c221b05e462e45",
+   "output_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/pathb-a3-u36"
+  }
+ },
+ "references": {
+  "v0p1": {
+   "outputs": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/v0p1-r3",
+   "tar_sha256": "f48a87577c9bd243564b6ffc12817daf19b4fa2a323cbe3d34d80a1617ebc121",
+   "job": "/karan/panel60-v0p1-20261026-r3"
+  },
+  "v0p1_sysdefault": {
+   "outputs": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/outputs/v0p1-sysdefault-r3",
+   "tar_sha256": "bc47d5c30c07d5088ab02ba45fc94e1985433847bd093f12303e047a3bb4e678",
+   "job": "/karan/panel60-v0p1-sysdefault-20261026-r3"
+  },
+  "checks": "archived cd16_protocol/serving byte-equal to arms/v0p1 and arms/v0p1-sysdefault; 60/60 HTTP 200, finish stop 60, ids in Ben order; summary 60 answers 0 errors (checked without reading answer text)"
+ },
+ "submit": {
+  "cwd": "/home/karan/oa/marin-panel60-f41b27c5",
+  "pythonpath": "~/oa/marin-held-checkpoint/lib/{iris,rigging,fray}/src",
+  "client": "~/oa/marin-task-238/.venv/bin/iris --cluster=marin",
+  "per_arm": "Sequential, one arm at a time: copy that arm's cd16_protocol.json and cd16_serving.json into cwd, check both hashes and the workspace diff hash, then job run --job-name <job_name> --cpu 1 --memory 2GB --disk 5GB --target-cluster cw-rno2a --priority production --timeout 10800 --max-retries 0 --no-wait -- python panel60_runner.py. CW keys from ~/oa/marin/.env in a quiet subshell only. One completion notifier per arm. Download IRIS_OUTPUT_DIR to output_dir.",
+  "resources": "orchestrator 1 CPU / 2 GB / 5 GB; one 8xH100 serve child per arm (1 node), production; cw-rno2a"
+ },
+ "rubric_amendment": {
+  "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/rubric-amendment.md",
+  "sha256": "cf0fb6c2fcd90daca924df33a8b00ce145631c72c269ffcb2d89fef2a080a2ea",
+  "source": "current-orders.md owner rubric note 2026-10-31 ~08:50Z (fuzzy), quoted verbatim"
+ },
+ "grading_plan": {
+  "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/grading-plan.md",
+  "sha256": "592d07bafdbc6a54976f93fbdc5a536aa3501ec58ff0bfaede63d6dc0f307bc0"
+ },
+ "builder": {
+  "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/build_arms_pathb.py",
+  "sha256": "72345907eea90a687e286d396ec687a13ae067e059f1edf9201a6d192a4aa7d9"
+ },
+ "remote_writes_by_author": 0,
+ "reference_regrade": {
+  "scope": "all 120 reference rows, graded by genet in one label-stripped five-arm per-item shuffled pool with A13/A8a/A3, fuzzy rubric; no new serve; old vizcacha grades history only",
+  "old_grades": [
+   {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/grading/grades-unblinded.jsonl",
+    "sha256": "6bfb238c0284798f3a68957c3d8b3ee9768622ab6be18f37bbfdb18987a4995a",
+    "arms": [
+     "v0p1",
+     "v0p1-sysdefault"
+    ]
+   },
+   {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/grading/pathb-u52/grades-unblinded.jsonl",
+    "sha256": "9d8576c33acd30c1551a9691a5cd31374ea8d247b82ce89294b8ea98424a35d7",
+    "arms": [
+     "v0p1-sysdefault"
+    ]
+   }
+  ]
+ },
+ "grader_record": "genet grades all 300 rows; per-row grader=genet; any hand override recorded with both labels; vizcacha earlier grades history only",
+ "blind_pool": {
+  "script": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/panel60/pathb-r1/build_blind_pool.py",
+  "sha256": "66b4b4751005e3ef358b6fc3bb50ad6f1f05040f6b2fc2fe4480b4b6551dc798",
+  "run_by": "margay (executor), python3 -I, after the three runs",
+  "to_grader": "pool.json only: item index, prompt messages, Ben reference answer, five answer texts under shuffled letters A-E (seed 20261031)",
+  "key_holder": "margay; key.json opened only after the grades file hash is recorded",
+  "dry_run": "passes on the real five arms: 60 items, 300 answers, non-stop rows A3 1 / others 0, no label leak (test outputs deleted)",
+  "previous_sha256": "2e363097f58201cff9fb9770995bd573545a32d467675275a688fbaa2bdf7287",
+  "change": "accept finish_reason stop or length (fail on anything else; content must be a string); per-row non-stop finish reasons go to key.json only, never pool.json; length rows graded as is; no rerun"
+ }
+}

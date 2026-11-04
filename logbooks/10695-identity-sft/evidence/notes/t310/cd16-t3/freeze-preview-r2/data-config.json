@@ -1,0 +1,191 @@
+{
+  "tokenizer": "s3://marin-rno2a/marin/models/marin-snowball-67b-a2b-v0.1-adc0078a/",
+  "vocab_size": null,
+  "cache_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/public-mixture-seed310-v4/cache",
+  "cache_catalog": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/cd16-t3/freeze-preview-r2/cache-catalog.json",
+  "cache_options": {
+    "batch_size": 128
+  },
+  "enforce_eos": true,
+  "auto_build_caches": false,
+  "chat_template": null,
+  "shuffle": {
+    "io_block_size": 256,
+    "window_blocks": 512,
+    "perm_type": "feistel"
+  },
+  "permutation_type": "feistel",
+  "block_cross_document_attention": true,
+  "components": {
+    "identity": {
+      "type": "cached",
+      "source": {
+        "type": "url",
+        "tags": null,
+        "cache_dir": null,
+        "format": {
+          "type": "text",
+          "text_key": "text"
+        },
+        "train_urls": [
+          "/home/karan/Dropbox/marin-notes/snowball-identity/t310/inputs/identity-freeze-v1/inputs.jsonl"
+        ],
+        "validation_urls": []
+      },
+      "cache_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/public-mixture-seed310-v4/cache/identity",
+      "format": {
+        "type": "chat",
+        "messages_field": "messages",
+        "chat_template": null,
+        "system_prompt": null,
+        "chat_template_kwargs": "chat_template_kwargs",
+        "pack": false,
+        "mask_user_turns": true,
+        "slice_strategy": "raise"
+      },
+      "pack": false,
+      "tags": null,
+      "split": "validation",
+      "flat_cache": false
+    },
+    "preservation": {
+      "type": "cached",
+      "source": {
+        "type": "url",
+        "tags": null,
+        "cache_dir": null,
+        "format": {
+          "type": "text",
+          "text_key": "text"
+        },
+        "train_urls": [
+          "/home/karan/Dropbox/marin-notes/snowball-identity/t310/sampling/plain-replay-gates-r2/merged-qc-v1/accepted-pool.jsonl"
+        ],
+        "validation_urls": []
+      },
+      "cache_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/public-mixture-seed310-v4/cache/preservation",
+      "format": {
+        "type": "chat",
+        "messages_field": "messages",
+        "chat_template": null,
+        "system_prompt": null,
+        "chat_template_kwargs": "chat_template_kwargs",
+        "pack": false,
+        "mask_user_turns": true,
+        "slice_strategy": "raise"
+      },
+      "pack": false,
+      "tags": null,
+      "split": "validation",
+      "flat_cache": false
+    },
+    "identity_v2": {
+      "type": "cached",
+      "source": {
+        "type": "url",
+        "tags": null,
+        "cache_dir": null,
+        "format": {
+          "type": "text",
+          "text_key": "text"
+        },
+        "train_urls": [
+          "/home/karan/Dropbox/marin-notes/snowball-identity/t310/cd16-t3/freeze-preview-r2/identity_v2.jsonl"
+        ],
+        "validation_urls": []
+      },
+      "cache_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/cd16-t3/freeze-preview-r2/cache/identity_v2",
+      "format": {
+        "type": "t2_captured_chat",
+        "messages_field": "messages",
+        "chat_template": null,
+        "system_prompt": null,
+        "chat_template_kwargs": "chat_template_kwargs",
+        "pack": false,
+        "mask_user_turns": true,
+        "slice_strategy": "raise"
+      },
+      "pack": false,
+      "tags": null,
+      "split": "validation",
+      "flat_cache": false
+    },
+    "tools": {
+      "type": "cached",
+      "source": {
+        "type": "url",
+        "tags": null,
+        "cache_dir": null,
+        "format": {
+          "type": "text",
+          "text_key": "text"
+        },
+        "train_urls": [
+          "/home/karan/Dropbox/marin-notes/snowball-identity/t310/cd16-t3/freeze-preview-r2/tools.jsonl"
+        ],
+        "validation_urls": []
+      },
+      "cache_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/cd16-t3/freeze-preview-r2/cache/tools",
+      "format": {
+        "type": "t2_captured_chat",
+        "messages_field": "messages",
+        "chat_template": null,
+        "system_prompt": null,
+        "chat_template_kwargs": "chat_template_kwargs",
+        "pack": false,
+        "mask_user_turns": true,
+        "slice_strategy": "raise"
+      },
+      "pack": false,
+      "tags": null,
+      "split": "validation",
+      "flat_cache": false
+    },
+    "third_person": {
+      "type": "cached",
+      "source": {
+        "type": "url",
+        "tags": null,
+        "cache_dir": null,
+        "format": {
+          "type": "text",
+          "text_key": "text"
+        },
+        "train_urls": [
+          "/home/karan/Dropbox/marin-notes/snowball-identity/t310/cd16-t3/freeze-preview-r2/third_person.jsonl"
+        ],
+        "validation_urls": []
+      },
+      "cache_dir": "/home/karan/Dropbox/marin-notes/snowball-identity/t310/cd16-t3/freeze-preview-r2/cache/third_person",
+      "format": {
+        "type": "t2_captured_chat",
+        "messages_field": "messages",
+        "chat_template": null,
+        "system_prompt": null,
+        "chat_template_kwargs": "chat_template_kwargs",
+        "pack": false,
+        "mask_user_turns": true,
+        "slice_strategy": "raise"
+      },
+      "pack": false,
+      "tags": null,
+      "split": "validation",
+      "flat_cache": false
+    }
+  },
+  "train_weights": {
+    "identity": 264.0,
+    "preservation": 547.0,
+    "identity_v2": 504.0,
+    "tools": 468.0,
+    "third_person": 324.0
+  },
+  "stop_strategy": "restart",
+  "target_budget": null,
+  "experiment_budget": null,
+  "mixture_block_size": 2048,
+  "max_train_batches": null,
+  "num_validation_sequences": null,
+  "shuffle_before_trainval_split": true,
+  "prior_context_phases": []
+}

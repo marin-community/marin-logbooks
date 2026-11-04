@@ -1,0 +1,33 @@
+{
+  "status": "Jerboa-approved analysis specification before the additional twenty repeat results",
+  "authority": "Jerboa approved four additional unchanged-binding BFCL repeats for each A0-A4 export and the independent run-level bootstrap specification",
+  "context": "The original five arm scores and A0's first same-HF repeat were already observed when this analysis was specified; this is an explicitly post-result change of decision analysis",
+  "primary_decision_analysis": "Per-arm mean over all planned complete evaluation runs and independently run-resampled arm contrasts",
+  "original_registered_single_run_contrasts": "Preserved unchanged; superseded for decisions by the primary run-mean analysis",
+  "expected_runs": {"A0": 6, "A1": 5, "A2": 5, "A3": 5, "A4": 5},
+  "A0_includes": ["Original registered A0 score29", "First same-HF A0 noise repeat score17", "Four newly authorized repeats"],
+  "other_arms_include": "Original registered arm run plus four newly authorized repeats",
+  "excluded_from_arm_pooling": ["Old r5 B-base10@35 original and diagnostic repeat: different trained checkpoint", "Historical CD16-T3 runs", "Historical reference2130"],
+  "inclusion": "Every planned run retained; no best-of, outcome selection, dropped model failures or replacement of original registered scores",
+  "coverage_admission": "Exact123 unique matching doc_ids and finite binary rewards for every scored run; same arm HF/config/method and fresh execution namespace; raw rewards and source hashes retained",
+  "infrastructure_failure_handling": "Retain and report coverage/infrastructure failures separately; do not impute unobserved rewards as zero or silently replace runs. Mark a primary analysis incomplete if the authorized run count is unmet; no retry authority from this analysis specification",
+  "per_arm_report": ["n_complete_runs", "all_run_ids_and_success_counts", "mean_fraction_and_percent", "sample_SD_with_n_minus_1_denominator", "minimum_and_maximum_run_fraction", "unadjusted95percent_run-bootstrap_interval_for_mean"],
+  "bootstrap": {
+    "sampling_unit": "A complete123-item evaluation run",
+    "draws": 10000,
+    "seed": 297,
+    "generator": "Python random.Random",
+    "arm_order": ["A0", "A1", "A2", "A3", "A4"],
+    "run_order": "Stable lexical run_id within each arm",
+    "per_draw": "For each arm independently sample n_arm complete runs with replacement, compute the mean of their run fractions, then form each A1-A4 mean minus that draw's A0 mean",
+    "contrasts": ["A1_minus_A0", "A2_minus_A0", "A3_minus_A0", "A4_minus_A0"],
+    "repeat_number_pairing": false,
+    "item_resampling_in_primary_analysis": false,
+    "CI": "Sort10000 draw values and use zero-based order-statistic indices249 and9749, matching the established percentile convention",
+    "multiplicity_adjustment": "None; intervals explicitly unadjusted"
+  },
+  "historical_reference": "34/123 reported as fixed descriptive comparator; it is not a replicated baseline and its run-to-run uncertainty is not estimated by these arm-only bootstrap intervals",
+  "limitations": ["Only5-6 run clusters per arm; bootstrap uncertainty itself is imprecise", "Fixed123-item task population; primary run bootstrap estimates observed evaluation variability, not task-population or independent training-run variability", "One trained checkpoint per arm", "A4 remains a multi-factor historical recipe bridge", "No unique causal factor or release approval follows automatically from a mean difference"],
+  "new_model_job_or_repeat_authority_from_this_spec": false,
+  "automatic_sampling_setting_change": false
+}

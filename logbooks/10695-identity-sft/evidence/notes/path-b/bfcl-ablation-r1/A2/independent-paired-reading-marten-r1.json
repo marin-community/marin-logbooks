@@ -1,0 +1,51 @@
+{
+  "scope": "Independent local A2 replay-only36-update BFCL paired metadata audit",
+  "sources": [
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-ablation-r1/A2/paired-doc-reward-arrays.json",
+      "sha256": "b0ea931281b89a45bb82a7bf820487844d8e3da3f42f7443b9366e470741902e"
+    },
+    {
+      "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-ablation-r1/A2/paired-score.json",
+      "sha256": "23a961b7b1826a19bc5a3c9f35f379085c57067529f959104e3dbd334c6a34d7"
+    },
+    {
+      "path": "/mnt/storage/karan-scratch/pathb52-bfcl-audit-relays-r1/paired-123-doc-reward-array.json",
+      "sha256": "b35a0e70b99d1e24cd5598516608ab074d9f2cd6551a6adccee0b3cfeb4b56c6"
+    }
+  ],
+  "n_unique_binary_finite_aligned": 123,
+  "reference_semantics": "Historical2130 configured sysdefault; identity suppressed by operator system prompt",
+  "reference_matches_previously_audited2130_per_item": true,
+  "candidate_correct": 32,
+  "reference_correct": 34,
+  "delta_percentage_points": -1.6260162601626016,
+  "ci95_percentage_points": [
+    -11.38211382113821,
+    8.130081300813007
+  ],
+  "lost": 19,
+  "gained": 17,
+  "bootstrap": {
+    "draws": 10000,
+    "seed": 297,
+    "method": "Registered Python random.Random; paired sorted doc_id resampling; sorted mean indices249/9749"
+  },
+  "standing_BFCL_line": "PASS: point>=-5pp and no significant loss",
+  "strict_5pp_margin_CI_noninferiority_established": false,
+  "verifier_classes_executor_report_only": {
+    "no answer file": 58,
+    "pass": 32,
+    "wrong function or args": 14,
+    "called where none applies": 16,
+    "abstained": 2,
+    "malformed output": 1
+  },
+  "interpretation": "The large observed BFCL loss is absent in this replay-only arm. A2 has greater replay exposure than A0, and the same36-update A0 control is pending; this result does not identify a unique causal factor.",
+  "limitations": [
+    "Interval still allows declines larger than5pp",
+    "No raw-session/verifier reclassification or model request in this metadata audit",
+    "No identity or release PASS inferred"
+  ],
+  "new_job_or_course_change": false
+}

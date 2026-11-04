@@ -1,0 +1,11 @@
+# Native identity screens for the recovered A9/A10 outputs
+
+This is an immutable execution-target successor of `native-boundary-a9-a10-r1` (conditional CLEAR d0b7c1d6). The only source delta is the committed target model/events and their SHA constant. Exact native session, original132 prompts/prefixes, bundled callback, two request flags, server/returned-prefix guards, provider evidence and generated-boundary rules are carried unchanged. No P1 prefill or output repair.
+
+The owner recovery order requires a fresh A9 HF export from old native71 and a fresh A10 training root. This packet names those exact destinations from `../write-recovery-a9-a10-r1/launch-plan.json`, never the failed old exports. Original plans and review receipts remain frozen. A9 retains its old native/pin/data/exposure and only changes HF/evaluation destinations; A10's native/HF/evaluation destinations all change with its fresh root. Neither target is declared ready.
+
+In this packet's clean source workspace, use `prepare_request.request(label, credentials, readiness_receipt, readiness_sha256)`. Supply the actual same-target executor receipt and its explicit SHA. The local admission checks fullGET audit/event/index/retirement/ready/terminal metadata; the parent and serve both receive the identical actual audit and readiness digests. Missing, tampered or wrong-target receipts fail closed. The CPU parent checks actual HF metadata before submitting its owned serve; the serve rechecks before model load. Keep one completion notifier per root and all raw records/errors/length outcomes.
+
+Each target may run independently on its own actual audited readiness and applicable owner storage/write gate. The prior conditional review and owner waiver for unchanged method apply; there is no new sibling wait or repeat science review. This packet grants no probe, retry, alternate route or second identity run. Storage was still held when prepared.
+
+Capture one native-boundary132 per model only. Derive a separate labelled legacy proxy from whole generated IDs decoded with skip_special_tokens=true/cleanup=false, then the historical splitter with actual provider reasoning retained. It is not the post-end answer and carries no bit-identity/server-segmentation claim. All existing parser tables remain unchanged.

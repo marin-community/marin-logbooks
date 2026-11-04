@@ -1,0 +1,131 @@
+{
+  "utc": "2026-10-30T02:36:14.384634+00:00",
+  "rows": [
+    {
+      "job": "/karan/pathb-bfcl-a1-export-recovery-r1-278502ec5cee/export-36",
+      "state": "running",
+      "tasks": [
+        {
+          "task": "/karan/pathb-bfcl-a1-export-recovery-r1-278502ec5cee/export-36/0",
+          "state": "running"
+        }
+      ]
+    },
+    {
+      "job": "/karan/pathb-bfcl-a1-export-recovery-r1-278502ec5cee",
+      "state": "running",
+      "tasks": [
+        {
+          "task": "/karan/pathb-bfcl-a1-export-recovery-r1-278502ec5cee/0",
+          "state": "running"
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "archive": {
+      "uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-A1-export-recovery-278502ec5cee/run/preserved-source-bind.json",
+      "exists": true,
+      "bytes": 641,
+      "sha256": "17080b86c084986e5a3e60f76809043f6da967f337cd14047eb7bded9feb56c0"
+    },
+    "probe_receipt": {
+      "uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-A1-export-recovery-278502ec5cee/run/export-preflight.json",
+      "exists": true,
+      "bytes": 277,
+      "sha256": "a3b9be80d120f0a5f506a7e307bddc8b10d85f8be8798d3020dd1016542367fd",
+      "record": {
+        "path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-A1-export-recovery-278502ec5cee/run/preflight/export-write-probe.bin",
+        "bytes": 32,
+        "sha256": "e4d35fdcfcdcf14c416fc0b4285934b6189312fb8f95973e990e5babc60f3cab",
+        "application_attempts": 1
+      }
+    },
+    "export_submission": {
+      "uri": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-A1-export-recovery-278502ec5cee/run/export-submitted.json",
+      "exists": true,
+      "bytes": 2695,
+      "sha256": "3fb44e57bffb8f3c4683e7dea245910e361d561f66fbe3a34023cbb7a1f1b706",
+      "record": {
+        "job": "/karan/pathb-bfcl-a1-export-recovery-r1-278502ec5cee/export-36",
+        "event": {
+          "schema_version": 1,
+          "arm": "A1",
+          "completed_updates": 36,
+          "native_checkpoint": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A1/run/checkpoints/step-35",
+          "hf_export": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A1/run/hf/updates-36",
+          "eval_scratch": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A1/run/eval/updates-36",
+          "exposure": {
+            "all_supervised_tokens": 1403627,
+            "completed_updates": 36,
+            "family_final_text_tokens": {
+              "identity/deployment_provider": 957,
+              "identity/developer": 5512,
+              "identity/ecosystem_contributions": 21518,
+              "identity/false_premise": 25531,
+              "identity/indirect_identity": 15400,
+              "identity/maintained_by": 11968,
+              "identity/name": 5664,
+              "identity/open_weight_data": 36090,
+              "identity/project_fact": 77,
+              "identity/trained_by": 6456,
+              "identity/unknown_fact": 468,
+              "replay/chat": 136415,
+              "replay/code": 279665,
+              "replay/fiction": 3829,
+              "replay/math": 205642,
+              "replay/thirdperson": 443,
+              "replay/tool_call_after_result": 3369,
+              "replay/tool_first_call": 3108,
+              "replay/tool_reply": 3039
+            },
+            "final_text_tokens": {
+              "identity": 129641,
+              "replay": 635510
+            },
+            "identity_final_text_tokens": 129641,
+            "identity_supervised_tokens": 141997,
+            "mode_final_text_tokens": {
+              "identity/off": 64855,
+              "identity/on": 64786,
+              "replay/off": 335225,
+              "replay/on": 300285
+            },
+            "raw_supervised_tokens": {
+              "identity": 141997,
+              "replay": 1261630
+            },
+            "reasoning_text_tokens": {
+              "identity": 0,
+              "replay": 623144
+            },
+            "structural_target_tokens": {
+              "identity/128002": 3099,
+              "identity/128003": 3099,
+              "identity/128009": 6158,
+              "replay/128002": 625,
+              "replay/128003": 625,
+              "replay/128005": 223,
+              "replay/128009": 1283,
+              "replay/128011": 220
+            }
+          },
+          "training_pin": "6ac2c53d061156ad22be53b332b7bd677a856290",
+          "packed_data_sha256": "e780e10937b507a61797bcd256e1b79c7af416391dcfd585a7281894f27dc300",
+          "screen": {
+            "identity52": "off; trained-profile and Snowball scores",
+            "third_person": "dev14",
+            "gsm8k": "one decode",
+            "bfcl": "optional, executor decision; no capacity census"
+          },
+          "final_panel": "held out; no panel60/unseen30/full paired math in this trend job"
+        }
+      }
+    },
+    "probe_actual_full_GET_SHA_PASS": true,
+    "actual_export_event_equals_original": true
+  },
+  "no_job_control": true,
+  "no_training_jobs": true,
+  "active_windows_not_zero_filled": true
+}

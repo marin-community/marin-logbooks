@@ -1,0 +1,3 @@
+A12 export-only recovery authority: direct Jerboa ruling relayed by margay 2026-10-31 after original training18 succeeded and only export18 was preempted. ONE exact protected native17 to FRESH HF at PRODUCTION; NO retraining. General completed-training/failed-export route uses export-only recovery. Margay source evidence93c5689f and actual9metadata c871 bind original training and native17.
+
+This is a record of received authorization, not an independent launch authority or future readiness assertion. Actual executor reads latest orders and applies ordinary source/input/write/native/priority guards before its single call. Original native17 remains protected until its own successful fresh export and complete502 audit, then only that exact native is retired.

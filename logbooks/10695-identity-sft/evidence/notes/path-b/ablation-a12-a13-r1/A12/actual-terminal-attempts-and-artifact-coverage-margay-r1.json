@@ -1,0 +1,2620 @@
+{
+  "utc": "2026-10-31T00:01:14.525590+00:00",
+  "state": "READONLY_ACTUAL_A12_FAILED_ROOT_EVIDENCE_NO_AUTOMATIC_RETRY",
+  "root": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff",
+  "SDK_terminal": true,
+  "jobs": [
+    {
+      "job": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/export-18",
+      "state": "worker_failed",
+      "error_message_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: e3664152-ec85-4565-9d90-0cee48d271c7, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+      "requested": {
+        "cpu": "64",
+        "gpu": 8,
+        "gpu_variant": "H100",
+        "memory_bytes": 824633720832,
+        "disk_bytes": 1099511627776
+      },
+      "tasks": [
+        {
+          "task": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/export-18/0",
+          "attempts": [
+            {
+              "uid": "bcb1912092d533b4",
+              "number": 0,
+              "state": "preempted",
+              "terminal_reason_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: e3664152-ec85-4565-9d90-0cee48d271c7, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+              "error_message_URL_redacted": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: e3664152-ec85-4565-9d90-0cee48d271c7, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+              "start_ms": 1793404419114,
+              "finish_ms": 1793404748938
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A12-training-terminal-private-r1/36feca7791383d32c539862998dcc622727484381761f70cd8402e1a92e340b5.last240.log",
+            "bytes": 38434,
+            "sha256": "dd3990bb9bc75262a4f37d745fc3a92e64eceaff35fe725f3aceffb4c1d414f6"
+          },
+          "relevant_lines_URL_redacted": [
+            "W1030 23:58:15.012587    1173 preemption_notifier.cc:90] SIGTERM caught at 2026-10-30T23:58:15.012587141+00:00"
+          ]
+        }
+      ]
+    },
+    {
+      "job": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/train",
+      "state": "succeeded",
+      "error_message_URL_redacted": "",
+      "requested": {
+        "cpu": "64",
+        "gpu": 8,
+        "gpu_variant": "H100",
+        "memory_bytes": 824633720832,
+        "disk_bytes": 1099511627776
+      },
+      "tasks": [
+        {
+          "task": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/train/0",
+          "attempts": [
+            {
+              "uid": "5410ed8945a43907",
+              "number": 0,
+              "state": "succeeded",
+              "terminal_reason_URL_redacted": "",
+              "error_message_URL_redacted": "",
+              "start_ms": 1793403234383,
+              "finish_ms": 1793404378773
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A12-training-terminal-private-r1/505dcd1bde7242e8db9fc005fb8437aaa237726bb689db48491c40ac26551436.last240.log",
+            "bytes": 83754,
+            "sha256": "0da65e142d7d1f9ddd100511d5128bfb0bc5501eab12e4039603c28da05b100e"
+          },
+          "relevant_lines_URL_redacted": [
+            "I20261030 23:48:27 129055662466880 levanter.checkpoint Saving checkpoint at step 17 to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17",
+            "I20261030 23:48:27 129055662466880 levanter.checkpoint Saving checkpoint to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17 for step 17",
+            "I20261030 23:48:27 129055662466880 jax.experimental.array_serialization.serialization Error check finished successfully",
+            "I20261030 23:52:58 129055662466880 jax.experimental.array_serialization.serialization Error check finished successfully"
+          ]
+        },
+        {
+          "task": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/train/1",
+          "attempts": [
+            {
+              "uid": "e98277b6a8ff45a3",
+              "number": 0,
+              "state": "succeeded",
+              "terminal_reason_URL_redacted": "",
+              "error_message_URL_redacted": "",
+              "start_ms": 1793403262826,
+              "finish_ms": 1793404378773
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A12-training-terminal-private-r1/eeff13f73f5133f3a94d35f89eaec35003f267b26ad7d45affdb351a6edd22bf.last240.log",
+            "bytes": 134594,
+            "sha256": "014fe2155078fb9ac901ad50bd103a6599c00dac983051658bbd60b85387e95d"
+          },
+          "relevant_lines_URL_redacted": [
+            "I20261030 23:48:27 124299537606464 levanter.checkpoint Saving checkpoint at step 17 to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17",
+            "I20261030 23:48:27 124299537606464 levanter.checkpoint Saving checkpoint to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17 for step 17",
+            "I20261030 23:48:27 124299537606464 jax.experimental.array_serialization.serialization Error check finished successfully",
+            "I20261030 23:52:58 124299537606464 jax.experimental.array_serialization.serialization Error check finished successfully"
+          ]
+        },
+        {
+          "task": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/train/2",
+          "attempts": [
+            {
+              "uid": "f9807eef043f2fed",
+              "number": 0,
+              "state": "succeeded",
+              "terminal_reason_URL_redacted": "",
+              "error_message_URL_redacted": "",
+              "start_ms": 1793403262826,
+              "finish_ms": 1793404378773
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A12-training-terminal-private-r1/f16bae96e9b6e7c47ab04d4067cfd9d875ffae6402f99ec5a2b2e6614d9a4085.last240.log",
+            "bytes": 134598,
+            "sha256": "7d5ad35a406018c87d9fec248bd7c4e1b9a3489cb83458771e549342c058d39e"
+          },
+          "relevant_lines_URL_redacted": [
+            "I20261030 23:48:27 124883523352384 levanter.checkpoint Saving checkpoint at step 17 to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17",
+            "I20261030 23:48:27 124883523352384 levanter.checkpoint Saving checkpoint to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17 for step 17",
+            "I20261030 23:48:27 124883523352384 jax.experimental.array_serialization.serialization Error check finished successfully",
+            "I20261030 23:52:58 124883523352384 jax.experimental.array_serialization.serialization Error check finished successfully"
+          ]
+        },
+        {
+          "task": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/train/3",
+          "attempts": [
+            {
+              "uid": "4256006eb7942b96",
+              "number": 0,
+              "state": "succeeded",
+              "terminal_reason_URL_redacted": "",
+              "error_message_URL_redacted": "",
+              "start_ms": 1793403262826,
+              "finish_ms": 1793404378773
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A12-training-terminal-private-r1/1f93194db0d78f124ba77da109c58dce804fbcc8fe179b7abe75290bdf3789c4.last240.log",
+            "bytes": 131184,
+            "sha256": "39844518507e0d61c6251dfd1c2ae02d50d5920280d7e5ec16452f83e5f0bc7b"
+          },
+          "relevant_lines_URL_redacted": [
+            "I20261030 23:48:27 137248209659712 levanter.checkpoint Saving checkpoint at step 17 to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17",
+            "I20261030 23:48:27 137248209659712 levanter.checkpoint Saving checkpoint to s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17 for step 17",
+            "I20261030 23:48:27 137248209659712 jax.experimental.array_serialization.serialization Error check finished successfully",
+            "I20261030 23:52:58 137248209659712 jax.experimental.array_serialization.serialization Error check finished successfully"
+          ]
+        }
+      ]
+    },
+    {
+      "job": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff",
+      "state": "failed",
+      "error_message_URL_redacted": "Cumulative failed task attempts exceeded max_task_failures: failures=1, limit=0; e==0.9.0\n + tblib==3.2.2\n + tensorstore==0.1.84\n + tokenizers==0.22.2\n + toml==0.10.2\n + tomli-w==1.2.0\n + tomlkit==0.13.3\n + toolz==1.1.0\n + torch==2.11.0+cu128\n + torch-c-dlpack-ext==0.1.5\n + torchvision==0.26.0+cu128\n + tqdm==4.67.1\n + tqdm-loggable==0.2\n + transformers==5.12.1\n + treescope==0.1.10\n + triton==3.6.0\n + truststore==0.10.4\n + typer==0.21.1\n + typing-extensions==4.16.0\n + typing-inspect==0.9.0\n + typing-inspection==0.4.4\n + tzdata==2025.3\n + uncalled-for==0.4.0\n + uritemplate==4.2.0\n + urllib3==2.7.0\n + uv==0.13.5\n + uvicorn==0.40.0\n + uvloop==0.22.1\n + vortex-data==0.61.0\n + wadler-lindig==0.1.7\n + wandb==0.26.0\n + watchdog==6.0.0\n + watchfiles==1.1.1\n + websocket-client==1.9.0\n + websockets==15.0.1\n + wrapt==1.17.3\n + xxhash==3.6.0\n + yarl==1.22.0\n + zipp==3.23.0\n + zss==1.2.0\n + zstandard==0.25.0\n[iris setup] step 2/3\nrestoring CUDA 13 library precedence for nvidia-cudnn-cu13\nResolved 3 packages in 194ms\nPrepared 1 package in 0.23ms\nUninstalled 1 package in 0.79ms\nInstalled 1 package in 11ms\n ~ nvidia-cudnn-cu13==9.19.0.56\nrestoring CUDA 13 library precedence for nvidia-nccl-cu13\nResolved 1 package in 132ms\nPrepared 1 package in 0.19ms\nUninstalled 1 package in 1ms\nInstalled 1 package in 14ms\n ~ nvidia-nccl-cu13==2.31.2\nstaging CUDA toolchain\n[iris setup] step 3/3\ninstalling iris runtime deps\nResolved 14 packages in 192ms\nInstalled 5 packages in 29ms\n + linkify-it-py==2.2.0\n + mdit-py-plugins==0.6.1\n + memray==1.20.0\n + py-spy==0.4.2\n + textual==8.2.8\nI20261030 23:33:38 datasets JAX version 0.11.1 available.\nTraceback (most recent call last):\n  File \"/app/_callable_runner.py\", line 39, in <module>\n    fn(*args, **kwargs)\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 149, in workflow_worker\n    owned_terminal(export, root, \"export\")\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 62, in owned_terminal\n    raise RuntimeError(f\"Owned ablation {stage} terminated {state}\")\nRuntimeError: Owned ablation export terminated worker_failed\n",
+      "requested": {
+        "cpu": "8",
+        "gpu": 0,
+        "gpu_variant": null,
+        "memory_bytes": 34359738368,
+        "disk_bytes": 53687091200
+      },
+      "tasks": [
+        {
+          "task": "/karan/pathb-bfcl-a12-r1-69ddc88fb2ff/0",
+          "attempts": [
+            {
+              "uid": "074d696a7dba7fd8",
+              "number": 0,
+              "state": "failed",
+              "terminal_reason_URL_redacted": "e==0.9.0\n + tblib==3.2.2\n + tensorstore==0.1.84\n + tokenizers==0.22.2\n + toml==0.10.2\n + tomli-w==1.2.0\n + tomlkit==0.13.3\n + toolz==1.1.0\n + torch==2.11.0+cu128\n + torch-c-dlpack-ext==0.1.5\n + torchvision==0.26.0+cu128\n + tqdm==4.67.1\n + tqdm-loggable==0.2\n + transformers==5.12.1\n + treescope==0.1.10\n + triton==3.6.0\n + truststore==0.10.4\n + typer==0.21.1\n + typing-extensions==4.16.0\n + typing-inspect==0.9.0\n + typing-inspection==0.4.4\n + tzdata==2025.3\n + uncalled-for==0.4.0\n + uritemplate==4.",
+              "error_message_URL_redacted": "e==0.9.0\n + tblib==3.2.2\n + tensorstore==0.1.84\n + tokenizers==0.22.2\n + toml==0.10.2\n + tomli-w==1.2.0\n + tomlkit==0.13.3\n + toolz==1.1.0\n + torch==2.11.0+cu128\n + torch-c-dlpack-ext==0.1.5\n + torchvision==0.26.0+cu128\n + tqdm==4.67.1\n + tqdm-loggable==0.2\n + transformers==5.12.1\n + treescope==0.1.10\n + triton==3.6.0\n + truststore==0.10.4\n + typer==0.21.1\n + typing-extensions==4.16.0\n + typing-inspect==0.9.0\n + typing-inspection==0.4.4\n + tzdata==2025.3\n + uncalled-for==0.4.0\n + uritemplate==4.2.0\n + urllib3==2.7.0\n + uv==0.13.5\n + uvicorn==0.40.0\n + uvloop==0.22.1\n + vortex-data==0.61.0\n + wadler-lindig==0.1.7\n + wandb==0.26.0\n + watchdog==6.0.0\n + watchfiles==1.1.1\n + websocket-client==1.9.0\n + websockets==15.0.1\n + wrapt==1.17.3\n + xxhash==3.6.0\n + yarl==1.22.0\n + zipp==3.23.0\n + zss==1.2.0\n + zstandard==0.25.0\n[iris setup] step 2/3\nrestoring CUDA 13 library precedence for nvidia-cudnn-cu13\nResolved 3 packages in 194ms\nPrepared 1 package in 0.23ms\nUninstalled 1 package in 0.79ms\nInstalled 1 package in 11ms\n ~ nvidia-cudnn-cu13==9.19.0.56\nrestoring CUDA 13 library precedence for nvidia-nccl-cu13\nResolved 1 package in 132ms\nPrepared 1 package in 0.19ms\nUninstalled 1 package in 1ms\nInstalled 1 package in 14ms\n ~ nvidia-nccl-cu13==2.31.2\nstaging CUDA toolchain\n[iris setup] step 3/3\ninstalling iris runtime deps\nResolved 14 packages in 192ms\nInstalled 5 packages in 29ms\n + linkify-it-py==2.2.0\n + mdit-py-plugins==0.6.1\n + memray==1.20.0\n + py-spy==0.4.2\n + textual==8.2.8\nI20261030 23:33:38 datasets JAX version 0.11.1 available.\nTraceback (most recent call last):\n  File \"/app/_callable_runner.py\", line 39, in <module>\n    fn(*args, **kwargs)\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 149, in workflow_worker\n    owned_terminal(export, root, \"export\")\n  File \"/app/experiments/post_training/identity_path_b/ablation_launch.py\", line 62, in owned_terminal\n    raise RuntimeError(f\"Owned ablation {stage} terminated {state}\")\nRuntimeError: Owned ablation export terminated worker_failed\n",
+              "start_ms": 1793403202927,
+              "finish_ms": 1793404781487
+            }
+          ],
+          "last240_native_log_lines_private": {
+            "path": "/mnt/storage/karan-scratch/A12-training-terminal-private-r1/174b3af96c22159ebfdfc17fe3b18b146fa89d97599a86cc11f076bee0e4f98e.last240.log",
+            "bytes": 6361,
+            "sha256": "a12b17c22fbd907774a25c27ee2526ad19f151c53ee20ad3f49fc2215c9d4238"
+          },
+          "relevant_lines_URL_redacted": [
+            "Traceback (most recent call last):",
+            "    raise RuntimeError(f\"Owned ablation {stage} terminated {state}\")",
+            "RuntimeError: Owned ablation export terminated worker_failed"
+          ]
+        }
+      ]
+    }
+  ],
+  "all_owned_jobs_terminal": true,
+  "artifacts_count": 600,
+  "artifacts": [
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/audits/source-bind.json",
+      "bytes": 641
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/audits/source-storage.json",
+      "bytes": 132688
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/004e7e115b09caee48539de049f1fd88",
+      "bytes": 104894464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0074bca766569c9f8429732bc781259e",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/00bea79c92667bcbc86f17b4ca4e3928",
+      "bytes": 2168324096
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/02a82b8544192e50e0b3be84ad653bd9",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/038d75608a98f6c53571a7a752663c34",
+      "bytes": 69620
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/03ce84ada9395c4d240ba52a76d0c79a",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/03f6f08dac11b554c12935d9715511eb",
+      "bytes": 104927232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/03fc5733d9f2d71944acec00a5c2cd70",
+      "bytes": 2224963584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0419c8f6bf4728be559fd959a950d38c",
+      "bytes": 1258328064
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/042aca237abe6cf687eabf5aa3881fb7",
+      "bytes": 1004568576
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/045c9b59b73ea0ee2d1a0007750895ec",
+      "bytes": 111443968
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/045f866950c3ea1947c3fe1fdff2ae7e",
+      "bytes": 2229551104
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/047f6d8d35a1ccbed052ea930fb984bd",
+      "bytes": 3287651
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/04879832252df59f7c49edbc52a6a0a8",
+      "bytes": 1979748352
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/04d9b64e6d68e3cd91205f1ceff46d29",
+      "bytes": 2227912704
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0737f341df37f0fe6bca796db86f8b36",
+      "bytes": 515674112
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/07b05d56283d5c2025f8e1d0b88729b3",
+      "bytes": 2230087680
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/086bc37eb5597355b14756e8715bd395",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0874cc8172bfcf4614a87abbfdbca193",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/088f62455801ee44af60bd4aab72fc3c",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/08ee0660b61617e84fb63252b62612b0",
+      "bytes": 1258352640
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0971dce435e807e87834be80b8183e2c",
+      "bytes": 2191704064
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/09d4033a3d36ac1cbef4efd67482dc50",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0af93409a0282416d017f74937987a10",
+      "bytes": 838934528
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0b101e555eeb78a060b2ce9d20f02f02",
+      "bytes": 2218573824
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0b2fe404b563c34e7692c1e99783672a",
+      "bytes": 52238
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0bae497a0691cc44f03635d0ffad6ec3",
+      "bytes": 41532
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0c1e16dd1bb387c010b0df622035664d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0c861f554c11cd9c70c3f2ee33684964",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0d40b038b36eb7e53bbd02b4ac971c00",
+      "bytes": 1258348544
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0d859e59ae0464a44af934bbaf9ef318",
+      "bytes": 50904
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0d92c051d6ed543e213f98dccae3f106",
+      "bytes": 2149597184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0e0830a919322171d2045486d15ea2e9",
+      "bytes": 1258352640
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/0f10cfaa1a38b7487756641dac36af0e",
+      "bytes": 324628480
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/101d3c86768dcf63fc23356a716b7837",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/102684c5fc67978db02388f147a0cb7e",
+      "bytes": 2223980544
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/11dcccf00824d31f479e2957c722a8e0",
+      "bytes": 2155220992
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/11fd80d8852cb178bf7133e5659df7f7",
+      "bytes": 209772544
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/12393eceab0572af7376b021c61bb760",
+      "bytes": 104894464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1245c2194064540b41a3bc85ec0658ee",
+      "bytes": 104869888
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/133792f2ec93564535b7c2a1bb495f54",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/138e4627ec0d5cc87d04536b545e61e7",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/145163da1ce3d50a35a6f445b1f5d13d",
+      "bytes": 43465
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/14cc6c22e27d7770029f7070b581abfa",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1500bab7149bb42802351c687ed83cad",
+      "bytes": 2229059584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/15730434e0ca37f0936cce6787e2ea52",
+      "bytes": 2214805504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/16c128751c5979923870b98d439c77dc",
+      "bytes": 9637888
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/16f0b40c6d7e7717d7a30c8a4cbf1c71",
+      "bytes": 2208579584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/173b85f0dc5ec945d2c288c19cd49658",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/174702b2f341a78bc05ed3e7567513f5",
+      "bytes": 104910848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1798ad317b6a5242d6e2457f65cc36bd",
+      "bytes": 27005
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/17db8a63a07a44c68fd37f60a0791b43",
+      "bytes": 59456
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/182fea27016f661f388c9da513a2c677",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/190a77df367ecac2a9a03894e71ffa0d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/193e6533410f6c83a468f713b465bf91",
+      "bytes": 1266548736
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1949e71eb4a51d9d61c5ff48f817f21c",
+      "bytes": 104910848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/19834d00c8af77701bea1f7de2152025",
+      "bytes": 2208579584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1985636019cbf59031a59147ed8cc691",
+      "bytes": 25812992
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1a433cb1041ac940ef58f418a0f75fe2",
+      "bytes": 1677778944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1ad0e5b6c15b5e5a60b4b8e8a841d957",
+      "bytes": 1048645632
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1b2b32683440536b95f640004de60ba2",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1c0df4e71952622c3cf03dea3c1eaef1",
+      "bytes": 1565323264
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1c80e8dfb6cbaee7b6721e9bf318dde3",
+      "bytes": 40964
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1c8f6a30aef150551c6c1ea52d435937",
+      "bytes": 2231193600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1c9489219c7521cf3366cd0f61fb6252",
+      "bytes": 104927232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1e8ef410fb9b7bc6e646f98d9a7c4049",
+      "bytes": 2192646144
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/1f95ec347de3c356bf11f2241a2e4e21",
+      "bytes": 2174746624
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/200de9fd9d9bf4707c01375b6ed74fb7",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/202d4c574d70a95764663a526d9aa568",
+      "bytes": 1783791616
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/20781f8c62bc549997c3b57a8f893aad",
+      "bytes": 67971
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2085253dcfbe27d7833f40744d8b1c52",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/20da77cdb515f370cf8d47088798ccf0",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/210d4de10f27c911a8ae8d1834456164",
+      "bytes": 2221273088
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/21fce74703ba526948cab423265c70c9",
+      "bytes": 1606
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/221500f57fd8fdef187002b7a235c022",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2226f1a5517c467e681beea46285b3b6",
+      "bytes": 2217263104
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/23d8b010360966d72f971a77103d6720",
+      "bytes": 104894464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/24d4c549222da5fe56e6826a315b1c20",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2590391b9ae162cdbba6ed4cb03cd91b",
+      "bytes": 104927232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/25dae6b1929eb5aebf80fe5ef9188519",
+      "bytes": 2056585216
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/26080d79f7f778a6a03c32ab70db709b",
+      "bytes": 1363206144
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/266f05954951a1a0268ca17ac6f70aa0",
+      "bytes": 2231681024
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/26971c50a447b8fc9750f90699239c3a",
+      "bytes": 425680896
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/270da45aae664c23320c77ff175bd995",
+      "bytes": 328347648
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/279665f9d1663ae199294a8814bf7e58",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/27bf323bdc6eb7ea3d05d5909d16dd39",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/280f0985e50f7320e8b5f747867b8810",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/283dbca333a0029a51c1cc7ece866b06",
+      "bytes": 1836384256
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2841c019b26c57689c64be96c3fd47b7",
+      "bytes": 1258348544
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/28534e4628014be9503fa1bcffda08eb",
+      "bytes": 2231197696
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2886491a40ca387355666da5388af91f",
+      "bytes": 1048633344
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/29f52171e3afcd8b9e18deef9481881f",
+      "bytes": 2224189440
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2a660ff4e60f8c06c0e1d6f4b0699e70",
+      "bytes": 73326592
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2a9ca529634dfbd9ee302ed3fdb5a0fd",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2ab57cccdee351c8f3b97e7b3a8bd13f",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2b04ccc51bb263703c1134eb65a11ea2",
+      "bytes": 943779840
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2b0c909fffb8d2c7e5b195187c591069",
+      "bytes": 2171879424
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2b25f6f6e1a3ccd07baf5a64fafc598b",
+      "bytes": 47542
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2b9993d578e52f39a2e40bef9c52151f",
+      "bytes": 2202697728
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2cdca920810061f1740c5cda6f8e3fdd",
+      "bytes": 1887498240
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2d181f3336ef967d0f2f3590f1a97d6c",
+      "bytes": 2232504320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2d4f5eaf9b30350aa607a2231fe97675",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2d5bb2e8ec675998404cb154f283bb36",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2d831309d80ea602b1ab9eb45bb122fa",
+      "bytes": 218451968
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2e7d1d8f01d43187d925b15cb0bfd8c7",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/2e839e6152cd4846816a550d9619de81",
+      "bytes": 1153511424
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/308d53c9aeb60d0a0553247fb376c0bd",
+      "bytes": 2233810944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/309423dacf2f98c42cd3f7e46f241d69",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/30a5d1ef424cc2d2059324254d11355e",
+      "bytes": 2214805504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/30db64681a1303ca39346c7b750f7668",
+      "bytes": 1392373760
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/30f50a5a294f96f7af54f9aee1190653",
+      "bytes": 38195
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/310e0e875eaffb8aaaaadde8d05835eb",
+      "bytes": 209764352
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/311586bd0d6b6a63e55a89400532d963",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/315d55a6328b1dd7b97d9ef0ffd23578",
+      "bytes": 1258364928
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/319c37713269caece932191a2f9461fb",
+      "bytes": 1355833344
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/324cdc17b0055445eefffbcfff51db57",
+      "bytes": 2208579584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3253949bb3a13ce5a2e661a25ee20375",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/327f62ac89f850845819d00f76a8527a",
+      "bytes": 2202075136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3324ed0c31c711cb25cc45219c8cbf06",
+      "bytes": 2202054656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/334e155615218be197958b4f4c92eb6d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/33604d80cd822139aafc221b7d7879df",
+      "bytes": 104878080
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/33d18f7f8f013b69ad323d81311d09f7",
+      "bytes": 2229923840
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/33d9221feb554dd96d844c957d863073",
+      "bytes": 2214805504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/349401e0be063b3e372abbd9613f68a5",
+      "bytes": 2229944320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/349d2a66e50655e0b1bb57d73a84c41a",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/34e7af389edb501e1f6db3ce8d314bd9",
+      "bytes": 2232504320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/368cb85412bee817b7f79f7f4cdf3ea6",
+      "bytes": 8724480
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/36ae9b446fe516133026fa7351fb1bb8",
+      "bytes": 34129
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/371d7e0004df4a9ce8f3556103646cb1",
+      "bytes": 883646464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/379a46265f829abf2d6111a5993235f6",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/37b91ee8c717bd3414ae7988b8e95576",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/380d4dc12bc914b492d2d68a854a02d1",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/385d90fa613d88dc5d35b51b1b0c58b6",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/38e39cb3ef6d819864f3eba6a9c2a56e",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/38f30a470bf007f56b6fce2bb09d9e32",
+      "bytes": 2232500224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/396a74b77da9fb3cc125c455b72c68ce",
+      "bytes": 104910848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/39cdfa0178d4f78ad70c35b303583e89",
+      "bytes": 2231193600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3a03202f91f6b3af299d10631c1737b0",
+      "bytes": 1886035968
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3a232ad3084d88721bd86039a327cdb5",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3a4161b83c9654bdd7ffc39af6c9ca3b",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3bcd142e7289c19b467af6fde8e9fc63",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3c063297000232093d1bc718cb68bb4c",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3d07c97ca49e5d278f5af540ac75d945",
+      "bytes": 2188509184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3d134eb9722e540b6c869a0a6aa7462c",
+      "bytes": 2214477824
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3d28abefaf9a58a8d7b8f9871cc7850e",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3d7467ee8b64350fc01167ed984eda96",
+      "bytes": 427646976
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3daf9f56f8d6cb1d2efec54f262e8028",
+      "bytes": 104898560
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/3ebcf2987f2d4effedbfa0ab2a72e7e5",
+      "bytes": 209760256
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4089e5e0f37d5d27347b4a5b91380a86",
+      "bytes": 2233810944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/40bfffa5bebf0afed4cd22b51d21050b",
+      "bytes": 1596362752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/40dd48cd52ec85af0ee28c2f2f90013f",
+      "bytes": 2222505984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4151ce37a81b0d90d23a594f2ccaa981",
+      "bytes": 2231517184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4156ec56696f71afe784771f11c73ba1",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/416e396f5542a854d9c9be29443d63f9",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/41a1baf1a8cc0051657fcc8e295e96db",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4201c47e1cbbb9f7301bd10616593376",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/42506ee3aa0800f279854bed68c04ac4",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/42598c33897f3552dc0e8e2be49a8ee2",
+      "bytes": 2212675584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/438026abe44401f55cfaac268d1f114b",
+      "bytes": 104898560
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/439a2c6534a5b2aac3ca00cbf5732f4d",
+      "bytes": 2205302784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/43bfa0725f3e944afed356539b99a032",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/43d6b4eaa5fc2bb2282e1c6a6c45abdf",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/44280f32b841ec3c300a554a32857148",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4455786b79c57877262f94c95e803e2c",
+      "bytes": 1153499136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/44b71fc620127a39d9d51946384c1bd2",
+      "bytes": 734064640
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/458bd50bbc30b71f08afceb65d3c0c04",
+      "bytes": 2231398400
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4592550b93bc043528d6fdc90495a52e",
+      "bytes": 419471360
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/45e8e58f467c9c000eb47e907b9a9cfa",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/465593f84a6e53d6e94ab97aeebc71b1",
+      "bytes": 2208579584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/46769ee39f51ea75521bd12bdec505d9",
+      "bytes": 104931328
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/486a134b9f48e9ca8586e8502556f837",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/48f3b0509d59cb3ed0e0fde98efe537a",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4967d3031f5ec14593efb4c59be16445",
+      "bytes": 1981059072
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4973b2bf21e1874850c91c303f0d9f38",
+      "bytes": 943775744
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/49ed25af33d72a0c775424fd7abb9ae5",
+      "bytes": 452132864
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4a0d71d78fdf8e22bc64c3f9e0bdcd49",
+      "bytes": 314630144
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4aa8e5ff187682dad4260821b3b40eda",
+      "bytes": 7409664
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4af57dea13f11c8fbb570502e23d7b46",
+      "bytes": 1240100864
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4b1b2a94d0958f196b3196deba690bf8",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4b1bc7c26690f4985123cf9310484c14",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4b25ae9704cb083ff073a162bc4dd8e5",
+      "bytes": 2232500224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4b25dceb6d00b519086375a08bb419ec",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4c90577f02cb07357eb45cef8ad2bb37",
+      "bytes": 2232500224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4d28746b72e6e6c6ebe2910593841199",
+      "bytes": 104902656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4d33aac30f3075605db94d377de39da6",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4dc9089a62d74cc8661dc0a55e92806b",
+      "bytes": 2155167744
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4e13ae803d70a800c66313911025b0cf",
+      "bytes": 49846
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4eae097f0c6b4ec82f2662089e53ced9",
+      "bytes": 1711865856
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4ed363120c332561205b628db47728ca",
+      "bytes": 68986
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4f1d994b445d41dfe6f249d09f23cd52",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/4f86331992f9bb7c29e19dae0f9e6e2d",
+      "bytes": 2218409984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5009cabf8b73ac9333286076a34235be",
+      "bytes": 2219720704
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5038744c16b400f1bb6c677d5f560821",
+      "bytes": 511565824
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5095b4d9c9d295a0828099501164273c",
+      "bytes": 2147631104
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/50d13a252035b80cc181d7b16ebe995d",
+      "bytes": 2231398400
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/510c77b7d45783482d16fcb447218eae",
+      "bytes": 2231193600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/513a7440fcd68ae6ba62aea43c0f3ae7",
+      "bytes": 2170241024
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/51e11d8bac2449b086700793d99ed261",
+      "bytes": 1382891520
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/52431bce86e336dd917598e6bf84a3f2",
+      "bytes": 1258352640
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/538b1ccd5de71309363ec1987ba973db",
+      "bytes": 104910848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/54448f053e4e1936571204344ac88d70",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/551f317191f8c35fa0617b4481a8cf98",
+      "bytes": 2230951936
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5555f85e8748579ab8f1a68b6a61ab87",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/55998cdb4598cc60de0d15559e59d69d",
+      "bytes": 2107052032
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/56812ef148fbc70cda5bf40debfb8e80",
+      "bytes": 2231193600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/56dbd95388b7515d717cb3aa49fa96eb",
+      "bytes": 37263
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/57014c9e48fd52635a44d94b45561fe4",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/57184664129b1e54af0235aad1ebf054",
+      "bytes": 2229944320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/576eb7d8fcd94e2395f0850ddb71b94d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/58128e15fb69a218f75081bdf787a223",
+      "bytes": 2232504320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5896670b06ecb66a8eff5bb1e9aeb37f",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/58b7dacdfad449b8a1f5a2feb2d80d50",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/58b90b33a84eb251795e37baea061501",
+      "bytes": 2227912704
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/591eb7bf2b36038ade92b3977341d605",
+      "bytes": 314597376
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/59962a59cdea1516a574a7bbaddc78cd",
+      "bytes": 2192031744
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5a422caee0dada6fdfba34349d7a1f78",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5af8ffb6f2e3836e475c62d83a457fa3",
+      "bytes": 2248445952
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5b56e8a011c83a873576d6bde28f04f9",
+      "bytes": 2188824576
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5bde5fd588c6ac4285248635d0ca974d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5c1e6ef9853c253794074e70d69cac1f",
+      "bytes": 67145
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5cf23b272edea099c275e06d6ee93b14",
+      "bytes": 104927232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5d38d75c2f05b58ba69c7d142276f381",
+      "bytes": 2232504320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5dafda525d0da2637a328d436527cef8",
+      "bytes": 65819
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/5fd3a45b4dd0a3a5a51710b4f5f1f579",
+      "bytes": 14467072
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6156268aef2de84f4b0453e1802cbca5",
+      "bytes": 2229616640
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/618aaca546922c2f213c6806a29a9cb0",
+      "bytes": 2225295360
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/619ec513aa4bd56be3fd2329abc5f43c",
+      "bytes": 2227912704
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/61d39423324de288de706684316ef48b",
+      "bytes": 340
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6205415b69a83a76173b770d2be81048",
+      "bytes": 1733177344
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/622cef6408f719aac4a0a735a6f16e4a",
+      "bytes": 2224963584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/62e848cd814cbf5a0287da354de3123d",
+      "bytes": 52654
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/62fcb9d7e040d70506b220df21685982",
+      "bytes": 104894464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6392fa543367a309c61ead9e83e9fe17",
+      "bytes": 34258944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/63bd1b2e981d0745881c4780565ebbda",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/651241b5f1ceadaa2a2df9019ba9bbc0",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/660c498909c7f98ea1f243cf01f7cb0c",
+      "bytes": 104902656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/664af22d7ffb7771a05f8e3009ea20ae",
+      "bytes": 314642432
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/668d69f3163922c2d4ddcbf8068ff0b3",
+      "bytes": 2229059584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/668f92f79f1e93bf756ca84cd63ca794",
+      "bytes": 2231681024
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/66c8a39660c691a55b0a6483953a24cd",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/66e2a0da80ca596c23f6ba5887651de9",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/670135b5e8db10a6b97fe1feb2943332",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/681d2e27b76c3f13d9d6d7a2f6e909d2",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6974796398677fc7bf251f171df78ab7",
+      "bytes": 2156478464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/699856f5de4fb3e42e9e4c2500c80309",
+      "bytes": 3287720
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6a1c347cd9770e57e2a18fc7f9d72d49",
+      "bytes": 218843
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6a4a767c16ea4bdb31941ca0c1cf3ba9",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6aabfb7fcd85693e55de7d78c1b8a08f",
+      "bytes": 2231197696
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6ad3ec23f35a2a05cc348c298be84232",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6af87f6f1cea5563c3ba05c70aa7c747",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6b0952f310d9b7d684ecf3e8ff2c4af5",
+      "bytes": 1153507328
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6b690b44696a6014dc3112c35b19eb39",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6bb4c0113bdd7c1618f6c48818fb562a",
+      "bytes": 104927232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6bba2271cc956c9027c52833b5080f72",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6bca4597ed2e00099ffce595fbac7e2c",
+      "bytes": 2231255040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6bd0352bbe839cdbd02f8ddac3f40c42",
+      "bytes": 104898560
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6c0fa3cca261e96101063abebb55aa0c",
+      "bytes": 943783936
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6c1b650723707fd84adb63a27ba7062f",
+      "bytes": 422400000
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6ca4ab629eb1fcd3b5af70e4da052e6b",
+      "bytes": 104927232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6d86dbeb98c098656485169c96707e80",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6d9cc29a6f5493f4be51eb6ec9b80455",
+      "bytes": 2205302784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6df9b2066a73793697f727f2511b0475",
+      "bytes": 2202087424
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6ea3eb6c1e5c4be2bbe585e4ad9e9696",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6ecee64774f5333bc6351f61fa06d3ce",
+      "bytes": 61176
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6ee69873ec500821dd6ea660d3289a3b",
+      "bytes": 18683
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6f0dca9b7c3a2e75b6681e9e8adaeebb",
+      "bytes": 2205372416
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/6f86bb742d93c14ac7a733eeff105999",
+      "bytes": 62581
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/704b4c355e281b47407c72544e9701b9",
+      "bytes": 1260982272
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/70ba8bdf595a1c2fdf64279ad3589d59",
+      "bytes": 209752064
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/70bb04fdef28bb22fda26b2cbc406d24",
+      "bytes": 1063723008
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7157220182808401d2283944ebd7504e",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/71afd7fc7096b1ce0e1c5a79d3a34d32",
+      "bytes": 1549836288
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/71e2ba1673cd7f116636baa23a2e3bb4",
+      "bytes": 54240
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/73694e606f0c50820f133687abd893d5",
+      "bytes": 1258348544
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/739930d181cf0155509de8a68da81a30",
+      "bytes": 2231226368
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/74217d51d07ad6625557e314b27a3016",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7473f7dbd650e017efd58dfd6d9e7999",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/74a3408e99d394e2925932bac96f6927",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/751ed3344dd04581d4c0cac853cbee32",
+      "bytes": 922906624
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7579fcb3b4eb701fa8bff60342a17746",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/75c128b1e1555d2357cea5e8122578ce",
+      "bytes": 4060
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/75ef44bc38c477b089d7a1c0d08e6b78",
+      "bytes": 2211856384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/75f8938dfc5922462601393c6e8ff80e",
+      "bytes": 104927232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7625b77e72dfcb6a8ec6a45b69d95579",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/766e5651c760e8f0a894b3eafadb38f8",
+      "bytes": 2231402496
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/768aa737d69be0f7aeb9bc2209dc0f70",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7741870ea31c9b11091dfdd36d65ddb5",
+      "bytes": 1153482752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/77762c8e7a89551b0b1204ebc10b6dbe",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7806cfbd38ca11ec7192c1910c0b3098",
+      "bytes": 13957
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/785cbfdbe8375c9fe6b63098dfd5f9a6",
+      "bytes": 43174
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/789b41130751241bbc424f3fb2d9ced3",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/78ca204ca64ebe0769ca764e1ec1c241",
+      "bytes": 1572913152
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/791e48536898024de2ef4b3b940d0a64",
+      "bytes": 2229882880
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/792b47510971cc3b0b3ff57b545ec6cf",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/794a915b90e76cf21843759586063858",
+      "bytes": 1258369024
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7981d962f5118b6f5b9247adbe41ec82",
+      "bytes": 104902656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7a718d1d1ea62b3718f51af7629321ca",
+      "bytes": 1153507328
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7b3d5f9a02c625f1e0e8a42b22868ec3",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7b8c6691cb11139d24d3132e8e2e9ebf",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7bb29e5709b2d3ab0e3731fe429f7f22",
+      "bytes": 2202079232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7c81898c196614d6aa1970745e632654",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7d6fef12eab28ea786326989f5784ea6",
+      "bytes": 2229923840
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7f5115bef42c10b38c8fc2575134348b",
+      "bytes": 314642432
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7f5e55920498e7d0251d9a2aca5d14b1",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/7f8d69e39359d53091c8e888a1d8672c",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/80784a1348da5ff0f122b031bc596c9d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/80be2353e24cb06617cf20b27cfc3030",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/83cc131f46f267d2b025286e8ff0947f",
+      "bytes": 1153486848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8407e552185ec3b929ffa72a2418f98e",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8453fdfc0d86515c19c219e02c1e16e7",
+      "bytes": 26855
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8589248b64770edbb6dde2efa12bfde4",
+      "bytes": 4426
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/85da37760d9bbd64f41dd664eee439df",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/862e89430e0335ee076052d0b1222196",
+      "bytes": 2218614784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/87c6cf26b12212bf2730bd56aadfe344",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/886d1586b58dc47339d0ab23fa3326b8",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/88e17fb59179495079029b6de6ad7eb3",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/88e2e7e20c733984a538e946cb9d7b50",
+      "bytes": 1363202048
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/89401bd060633ca74c543bc3c4a05eee",
+      "bytes": 93539
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/89de5712f875007a151cb905022ed985",
+      "bytes": 2231193600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8ac41444a49824e613b1efe599910661",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8af77e51400c17b2562be2124ef78729",
+      "bytes": 1697464320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8b6b098392e045bd51bdf1d4b59ffaa8",
+      "bytes": 235835392
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8c7a2b28faf7e929763256956a40c6c1",
+      "bytes": 2233810944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8d495afd4c6cbb5e87c025e1333b6520",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8d57adf719bde193222ceba1118c5328",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8d7eb58732e8044077dd7dff8b9b5cf4",
+      "bytes": 1473224704
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8df2580685c813d7312644ac89ca6fa0",
+      "bytes": 2231193600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8e5d5cc2327929ca37a593cacd0a9322",
+      "bytes": 2150907904
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8eb69a4f33aae1129e10473c0bc4f45d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8f54bbaf70f29ab9247035f090048552",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8f5635d5e5a33edd55afa1314fb37515",
+      "bytes": 1169833984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8f584447b255702a2daee3416f061566",
+      "bytes": 1482817536
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8f834dabf484c9780ac411ac1ac68fc7",
+      "bytes": 1599217664
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8fb58dff46f02853d35270da88d077c6",
+      "bytes": 2231406592
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/8ff538f16ebd6fb15a3f4a0298039043",
+      "bytes": 43299
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/901ae9cb4973a91a9d8872523576c8b5",
+      "bytes": 54840
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/90484475766f0d0edbedaba196cfa133",
+      "bytes": 2156531712
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/90eda82aa7b3a01564bb4b4cf3422d38",
+      "bytes": 1655185408
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/91524c1be809a0292d4106d16cf47439",
+      "bytes": 8219
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/91f79cda0205c848234afddf96022cb2",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/92c96f2850cdd30046c5d86a6667ee10",
+      "bytes": 159010816
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9387ebeb8feb281cc51425b25aa199f5",
+      "bytes": 44454
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/93b5345f881cb71b194994f1dbc9d386",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/93ca39c402ab15dbc6f712b092140010",
+      "bytes": 2210217984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/94638967b10917ff194d62502657821a",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/958aa8f59ad3d79218238d0dcc498808",
+      "bytes": 2218409984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/95aabfd2e55a4dafc19067f658ab9470",
+      "bytes": 20649
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/95bcbdaffbd8a71502916eae2a444a5f",
+      "bytes": 68154
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/95dd3bb1e0d4322b8825fbf27000394a",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/96033398e8e8eff34fe0072d4906225d",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9646baffb253d1591ad6661a72d3a318",
+      "bytes": 62132
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/96bde0dbad630186e49cadbb7e6bfa38",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/96ef00ea8731899733b60d5f41c74b12",
+      "bytes": 26378
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/972750d3ccaa7751d26592a01ded5b7f",
+      "bytes": 2187444224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/97a474a197d03c248507f3708b0fac85",
+      "bytes": 104902656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/97fd94e86718f7a15d44725c0a0de986",
+      "bytes": 1212223488
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9846866a4337913a1958777d135199c3",
+      "bytes": 1468088320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/989ed4c4ffb3a0de869d0504b18eae86",
+      "bytes": 104886272
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/98f708f2c931f84f00e5a73413637c4b",
+      "bytes": 2227912704
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/991a014cf6a3acbf8d8c56336860da87",
+      "bytes": 2220048384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9953e46a573aba8ade8d75b0d0285799",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/99671ece4ea414d2eaa5aea36ffbabba",
+      "bytes": 104910848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/999d7ec80b2c91b9e3b4e864a0f8f31c",
+      "bytes": 5089
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/99b782b2fd0c14e1f5d99e37f956a223",
+      "bytes": 2161721344
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/99de5c30315b653148528b3d5a8b80f3",
+      "bytes": 2223325184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9a7a7b590a333b0136d2fcae7fe4de63",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9b4794bde83ad6b3cba26858bfd35bff",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9ba995b5f8fabb8e44494673aca5d1f0",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9bb2adf5e30b1b788b91f6f4c5d1df4c",
+      "bytes": 1226194944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9cc46e3b1f39c97bedd9429a38078e16",
+      "bytes": 246259712
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9cc494e200d1f046aebc8358ac8f6714",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9d1e191ec66c968d60e4d3fde57c6314",
+      "bytes": 1278021632
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9d21cf1d80562ff01d36276da47f4961",
+      "bytes": 2226655232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9df5c7578faf08589260a71b67051fcf",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9e6eee23e6f629c8dc019251e74a2c56",
+      "bytes": 2229059584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9e9887ba9690b2390014ee552939814f",
+      "bytes": 943783936
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9eb700802f046f44fb318564bce9349c",
+      "bytes": 2210709504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9fcf4593cab546777e62f69f69c7e3f3",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/9fed9e122dce1981b1f70c8c1b583155",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a03b97e1bc838aac477e40a98f5e4fb1",
+      "bytes": 1354674176
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a06a5fa3a3e16ce6549bc015fa05b94d",
+      "bytes": 114425856
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a0c1851f60539f8ab431c9a8cd3da998",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a14e39461fdad39522c4d6177efb1ecd",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a186f7aef86720f3438c443651176b8f",
+      "bytes": 2202087424
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a1be1169a9264b41e01f5a670fd55a82",
+      "bytes": 1677787136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a247b607795a225b6c3a04669cf78788",
+      "bytes": 104902656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a286cfb48411d8885f341dcedb024c0f",
+      "bytes": 2202071040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a294f922ebebeb5bd00d2a9698d1d607",
+      "bytes": 69608
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a2abdd83b816f26c97dae953e1ae7e43",
+      "bytes": 2218409984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a31ee0fcfa72d8092b1cdc44b624ddef",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a4451f87a6c81683c1796ce01e0defa1",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a46d2c27741d37b7b913ed2f3e96526a",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a49566a6aaeedd5b4f60df7b416cd375",
+      "bytes": 104910848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a6298dd8236532bc8df6b90fbd96d001",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a673847e3085a080b2eab64ce50f95ec",
+      "bytes": 57480
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a6cd5714dd03ffc36e6593848fee4e70",
+      "bytes": 502407168
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a7150a8e9e2e0ecdf9fdac8091c4d717",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a72c5396485dfffbfbaed442c64cf032",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a7440f2e996e4e2f93c2f83e4b8ac5af",
+      "bytes": 2189574144
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a8640841f14e512697fe9b784c9cb768",
+      "bytes": 1286213632
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a8bf9abac81f5d9b6d143d1dfc1b1f8c",
+      "bytes": 419495936
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/a8c5b24b2e9624014504880516a3a28d",
+      "bytes": 9883
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ab90a7e7786105d8ff565bc00f4bdcdd",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ac08a7d56a9ae63024a333165c998a50",
+      "bytes": 46480
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ac1c46bb940318838d35be590e718365",
+      "bytes": 117379072
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ac888b0521c38da1bda853c18bee975d",
+      "bytes": 1068310528
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/acd0701b85bfc083534ef7c15c1fb9b3",
+      "bytes": 2215133184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ace33acd3ee36a4ff49d945574c17ff0",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ad021abebc3263d2e05db000838dfd7c",
+      "bytes": 209788928
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ad72a51889433e2b92839376a1fe36ac",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ad79fe27a147201d19a383d13c8ed64f",
+      "bytes": 2227257344
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/adc3d770dfa3b029a5fd28e8df6fc900",
+      "bytes": 2229882880
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/af19a80286ad8de730f342777967d9cf",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/af20b37d35ed2d225dbc0617a0c5288b",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b02b798f37a9250ff55681a064118afd",
+      "bytes": 2161393664
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b07dc636f65ea4d51e5b9814f9dc5632",
+      "bytes": 334954496
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b11958c447f5c85c5f2ee015dab6e770",
+      "bytes": 2202050560
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b1247b08bf9e24cf466617f5592e2c61",
+      "bytes": 2202050560
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b20894e90ea47ef8ec74a9b7838739a2",
+      "bytes": 2233810944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b279333451d67b87ec97aaebc084b15e",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b2932d2b5d1b423a29de01614fc3e425",
+      "bytes": 14019
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b36114e88b3019acccce34908a52baef",
+      "bytes": 37330
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b37d9997c5f0a41b3dbf2a76393cbc2f",
+      "bytes": 1048649728
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b381f2ab6c0fa5963dcafaa6046425a8",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b3fc4db76cf5282fddd55ab13dcaad5c",
+      "bytes": 2221686784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b4920bd439e9a2ca9b5f7aca44976d7d",
+      "bytes": 314630144
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b506dade6bb6d197947a860721f9e71e",
+      "bytes": 68474
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b54cbc4912166ebdbaff9bff75f8b490",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b5556100fcbfd371fbe71466029d403a",
+      "bytes": 8749056
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b5b123ac98a754331bae9708463b8e7b",
+      "bytes": 2232500224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b787eb5e58f4026534d4218b4fd1176f",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b7e41147540593771504a19553b4dac2",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b7f95664bf0fb50dbbcbf698d26b3a76",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b83d274f043b7f4bc20292e905695b74",
+      "bytes": 2221686784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b88f4cbab2e8f6607e2cab9f73dd0ac3",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b8da092990b1ca6115fb6f2031471ab1",
+      "bytes": 1153478656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/b9e9e3a30b51de70ca9e66568e986f8f",
+      "bytes": 209768448
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ba53dd19c92675a87bf5ba416d215296",
+      "bytes": 1363206144
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bb1bd1bc938da0973ab73ed9f2db3a9e",
+      "bytes": 1258360832
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bc47a352ed245f0ca71b9345fef740fc",
+      "bytes": 104894464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bc7049702e565dec7722e0bfa140b5a9",
+      "bytes": 195945
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bcc791129406cedb54208166eb311fff",
+      "bytes": 1048621056
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bd0c70fe6884ae77bbd7fe28ddbaa9e1",
+      "bytes": 431230976
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bebfcea131a9088ab02a221aebd40858",
+      "bytes": 104902656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bf3623826f4c5d7862e9dc955d2b2005",
+      "bytes": 2222505984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bf467b801bbc924ab5c9ce6d00ebbe8a",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bf93476af19e3cbacece18e2d1d16e3c",
+      "bytes": 629202944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/bfb2c428969bc2288f57ddc32bc0da75",
+      "bytes": 2218409984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c0080055bf61e9002fd682ae0c534ef7",
+      "bytes": 2039885824
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c01fa7e10551eaaa72e1b85e204073e3",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c048d23325ab0259bb9ffd87a1376d5b",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c0b7d48eca6788f83f6da7e8840b06b1",
+      "bytes": 1153478656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c17a4c227199218f34d341a3f3d8c39a",
+      "bytes": 1258360832
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c1dd43762df31d17538751b5ef245d70",
+      "bytes": 49694
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c21a227aa789d0dde6b7d3f76449e1d2",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c21fc4ebaaa0ef39d30096a6240e054a",
+      "bytes": 7381
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c29a1b1291314839edec137d99c0f533",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c2c4fef6ba0d40ae4ac6d790487f990e",
+      "bytes": 2202054656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c338214751a3fd52d6142ad7bc9de728",
+      "bytes": 1398935552
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c34647c647918615a3357b0dda508e9d",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c357a0fd548268d065c9a2ca45d87396",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c48c8cd8ea4bd04eaaf81bc291873b6d",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c48f0352db5c5181e2c38fd2f0adc6b4",
+      "bytes": 46918
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c4ff2f953fd69dc39d286893cec51af3",
+      "bytes": 104914944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c5a61fb853e739b7924a758bf3271341",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c5c740e13e0a2c33caecac44dca76e81",
+      "bytes": 314613760
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c678e5f43800e0f801968fdc4ab51345",
+      "bytes": 1308696576
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c6de9dab23534286d38fbe015b8601d2",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c7c3cc6883d0026cf56df2e8e4a45f20",
+      "bytes": 2149679104
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c88f426a24bfe8c283b9261db9a34e3c",
+      "bytes": 1048629248
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c9085b8f1342fbae9acd42ddb10d6a19",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c95265644854bc769065abf3dabece00",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/c9613a0555b4cd55cdd9f9c1f2c0822e",
+      "bytes": 625147904
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ca35e7769bc2f6e64a831b813227a9c1",
+      "bytes": 2215133184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/caa98c876a95373401433b740b9075fe",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/cb527687437fbb3c27a7df642ac65f23",
+      "bytes": 1363943424
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/cba13a13558a7a851a9ab40e9d42cbb1",
+      "bytes": 1048653824
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ccac2ea899cea3c566019a9d07a94416",
+      "bytes": 2211856384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ce2ccfe6ab383ae77724dd17c0b935cf",
+      "bytes": 64688
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/cec1cd9842a13e5ca7b75590df060823",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/cf9bcaae6d54fa84da8e770ba32baf94",
+      "bytes": 104910848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d09b3401961c332c6c6bff0019f55e07",
+      "bytes": 342474752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d0a1f96a3a517ffe4bf0d5728fe30a14",
+      "bytes": 33338
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d0b787a641e050434e2f7a887ded72ce",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d105bb944b1f158e35d6244fbb173d83",
+      "bytes": 104886272
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d153a1a8d32cd1104c461aff18ede729",
+      "bytes": 209780736
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d253f7fa6971660ca207464451718e9a",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d340eec5567002aa2b91fde87c4a879d",
+      "bytes": 1468059648
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d3a405e00b5e283c1af7243d922a4aa3",
+      "bytes": 2223325184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d48536169cc39575589b3c45cd9a69d7",
+      "bytes": 1043873792
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d581154539aaedbec25c3ae25e6bc5ec",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d61d334824fe326b9a8366dfa8105a61",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d628b4d8fddfd347846fb903663e9d6a",
+      "bytes": 66072
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d68234cfdc2adec684fb568d7e096201",
+      "bytes": 1153490944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d78d3df6dddb01a06f6695c5df9a7625",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d7aa4c37d751a4b833d4cb0438de6288",
+      "bytes": 2230087680
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d880a99b079bbee34fb49fdcbd6a571e",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d88fa041faad0a4612b6500ab7633fe4",
+      "bytes": 60893
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d8ee6e202a8720bc9cecceb9ff4dccfd",
+      "bytes": 20634
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d90be03cfe33c6196fbb430afda0f983",
+      "bytes": 2229878784
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d93df634692912937a069004de66dd81",
+      "bytes": 2167128064
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/d9ab1ad0a7c2d41a2bc40d29cc5c0721",
+      "bytes": 2097238016
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/daa5ad24b776de1bd947e81056aa2f0f",
+      "bytes": 25064
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/dadf7744719ceed81f10d66bf24467e9",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/dafd9fda1e0defb799d40c4bb90fd8cc",
+      "bytes": 2172370944
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/db53733e5b2747222338f55b42f28198",
+      "bytes": 1153482752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/dbae1bdef6831aafd1b15105072f8d79",
+      "bytes": 209772544
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/dcf20b194fd43d0a1a8cee6c12d44b11",
+      "bytes": 104902656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ddc274e4ceb6e65f3884e311a63cd98e",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ddc63ed8d71fae31f68c3892604f2f38",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/dec084db870b80f2a3854e3f00ffe022",
+      "bytes": 55532
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/df3a666176d5f8e27484cea4c5ce76a1",
+      "bytes": 2185109504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e007cc1304967bccd5422b28fe4605d3",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e02ea73a486b34a8fbcb1d782744e92e",
+      "bytes": 2218803200
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e0f0183ea0acd27a037a43794a2f7b34",
+      "bytes": 104898560
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e11cb3359d699790ac0542af1e0e4a0a",
+      "bytes": 63555
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e15aa996b7b5626e2fc1342f01056356",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e1c4a97d992c8840059fc3b3f485cb74",
+      "bytes": 41050112
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e1cbb90d824cda40787cc4c88ca7b86b",
+      "bytes": 33282
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e26f6a1a27bf732da31e4509713728e6",
+      "bytes": 2231226368
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e299445752e0fb76740e9029c74691a6",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e4b47cd29fff8895f3da272cf745b66e",
+      "bytes": 2232504320
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e4f17383f3cdd88da53e429e2a6cb13b",
+      "bytes": 1108025344
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e55119a7976e94fafb4fa6b1c3625d01",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e5c031b817de6e2e32a04a7f5d438ee7",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e650c910ac0f98ea3eeb545a935dd713",
+      "bytes": 2231193600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e760659b3266535330e587eb4d1cd5ca",
+      "bytes": 2233868288
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e81056d24061cf64e29223ac26bd8b1e",
+      "bytes": 39826
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e89fd85a225da3a702459c0769a347b2",
+      "bytes": 3296324
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e92b8e0662b0305dd98b13bdb40e9610",
+      "bytes": 2228404224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e95a1dfa256a82f7b58c649fa082f1d7",
+      "bytes": 2148122624
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/e9fa7fcad39a9a16adedfda72ddeaae3",
+      "bytes": 18905
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ea1853f1a20bc497719b135f2657ed95",
+      "bytes": 104894464
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ea4e08e446bfefaf0a3ed650b90fe979",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/eab1ce119ccbe1e7d635d02892cdbfb2",
+      "bytes": 2232500224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/eb175e74387abee8d5f84a894b4c3192",
+      "bytes": 329658368
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/eb58e17041e6201f907a649370f94c9d",
+      "bytes": 2151563264
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ebdbb9fb72d059a69b2d0f54e4259a5c",
+      "bytes": 58173
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ec4a109b288f947f4b78b84a1dbd3fbb",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ec68fc9a22a05b8d7d062ccb59118332",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ecef8e1b487cb50bb3a4af551ca8f490",
+      "bytes": 314597376
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/edb4ebc382b698ff0608a93f7668d1bd",
+      "bytes": 2222505984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/edc2fa509808eae06f63d17e4cfff653",
+      "bytes": 2229882880
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ede9ebfb641bd4cabcadad08a4d9b1c5",
+      "bytes": 71319552
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ee3f0221949573a7159967e8f002d246",
+      "bytes": 2202062848
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/eedb17b25c243330747ece491d48a0e1",
+      "bytes": 2231189504
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/eeeca6f919591ecad0b8b178fedaae1f",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f108a8ba18257f59c24e2b7e668db1b4",
+      "bytes": 2175926272
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f130d686689f4a65dd9fdbaff43387a7",
+      "bytes": 960335872
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f17a75e9f50b0d33f6b3d343ff2eeb95",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f18d173a77e9c94a9c2622fc5f1ff019",
+      "bytes": 104898560
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f1c0501296a925fd993ef1e8dafed35b",
+      "bytes": 1497579520
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f24cc3fa14fbc668b8e4f5f153f8476d",
+      "bytes": 2202079232
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f2f23a92c36166f957fc67829c945d0e",
+      "bytes": 2219229184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f34935fd2feed4c1946abcc8ecfec429",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f3e133d5534fc022b0cb58ccc875dc75",
+      "bytes": 1153478656
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f4015c1869be0d207e0ac822a93eab53",
+      "bytes": 2208579584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f4d4c06a7b1a4a4ac247f0150bda21a5",
+      "bytes": 34686
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f565365a384326af1c9ebd95db4e951c",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f59eb5d768988b77648798d69eaeaa53",
+      "bytes": 45600
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f6649ed2d1a472e960e2d3bf1e13c5aa",
+      "bytes": 111480832
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f67fa7512a4c3e9603977591b9d39f4c",
+      "bytes": 2228240384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f7fd011d7b6833e22a98de3a538df5ee",
+      "bytes": 2232500224
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f80ca94f3bf8e336a1dad1fbe331945a",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f851de2074a7fa98b40a81ba87a35dc3",
+      "bytes": 104923136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f8d1148a4c38b72444fdac852614b202",
+      "bytes": 2205147136
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f8d5a7b2f01dcf95f0c3a9c57d82ad0c",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f935c1417e29175c5871e8bae8be473f",
+      "bytes": 2215133184
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f9a631eb5843ca8a287ec52f311d7616",
+      "bytes": 104919040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/f9e66a8cc6fa0fc676b41a31d94a259c",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fa20b83222748607ca927307c2bc567d",
+      "bytes": 373612544
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fa23b3d4f585fa7795bd372f59611a91",
+      "bytes": 629194752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fa30eda225bac8a570bd557676b9085d",
+      "bytes": 52961
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fa84d07a939ad66578fc20a2c6cd0b85",
+      "bytes": 1153495040
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fab3a1806c95a17c028428758f6df397",
+      "bytes": 2229059584
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/faf99173a08b991da0c54a25f70a227a",
+      "bytes": 940830720
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fb5b2af2644e4c77bf721fe1265495af",
+      "bytes": 104906752
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fb7bfc13511ccd130a3476d2c2960fcd",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fbbee271d5e101b0bc368f6c2790e569",
+      "bytes": 249167872
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fcc9c274497dfce6627d7814efd5003b",
+      "bytes": 2220048384
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fcd5526e2b4f3e38007cf3f86467bd3e",
+      "bytes": 8257536
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fd285f1eae49ebcb2b074d8fa4c6b41a",
+      "bytes": 48353
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fd5db264c7307aab6a2a436620aa32f8",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fe2fa0ae07493e6ded3ebe13dbcaefa8",
+      "bytes": 48473
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/fede73b55124df942bee32912432b548",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ffa3d37820dcf6e19e3a7c8724b09c78",
+      "bytes": 2202025984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/d/ffcce8cce6b3c5c11b04f9a9721c9e45",
+      "bytes": 104873984
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/manifest.json",
+      "bytes": 269253
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/manifest.ocdbt",
+      "bytes": 480
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/checkpoints/step-17/metadata.json",
+      "bytes": 77
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/eval/updates-18/export-write-probe.bin",
+      "bytes": 32
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/final-checkpoint-event.json",
+      "bytes": 1992
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/training-result.json",
+      "bytes": 27381
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/workflow/export-preflight.json",
+      "bytes": 268
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/workflow/export-submitted.json",
+      "bytes": 63
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/workflow/export-terminal.json",
+      "bytes": 91
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/workflow/train-submitted.json",
+      "bytes": 59
+    },
+    {
+      "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-69ddc88fb2ff/A12/run/workflow/train-terminal.json",
+      "bytes": 83
+    }
+  ],
+  "small_completion_or_audit_metadata": [],
+  "cost_full_requested_resources_each_physical_attempt_ms": {
+    "exact_hours": {
+      "H100h": "964411/90000",
+      "GPU_host_CPUh": "964411/11250",
+      "CPU_only_h": "19732/5625"
+    },
+    "complete_window_subtotals_hours_9dp_NOT_fullcohort_if_missing": {
+      "H100h": 10.715677778,
+      "GPU_host_CPUh": 85.725422222,
+      "CPU_only_h": 3.507911111
+    },
+    "full_cohort_H100h": 10.715677778,
+    "missing_boundaries_excluded_NOTzero": [],
+    "GPU_host_CPU_separate": true,
+    "NOT_global_OR_additive_to_overlapping_scope": true
+  },
+  "raw_log_scope": "Last240 lines pernative task, not full allattempt log archival; private unmodified byte projection retained. Evidence, not unsupported universal cause.",
+  "model_submit_control_or_storage_write_calls": 0,
+  "training_or_export_retry_authorized": false
+}

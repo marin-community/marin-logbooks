@@ -1,0 +1,236 @@
+{
+  "actual_readiness_sha256": "da23bb682ee555674b48e1a46b3c441c1ceb9f17d78810e255ed5c8b6e738f62",
+  "actual502_and6metadata_hashjoins": "PASS",
+  "native5requests_and_SDKnamespace": "PASS",
+  "all5": [
+    {
+      "run": 1,
+      "records_prefix": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-1/records",
+      "output_dir": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-1/records/20261030-185737-snowball-pathb-bfcl-ablation-a11-u72-741e5928030c-bfclparity-pi-fcb4/results",
+      "model": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72",
+      "task_config": {
+        "config": {
+          "stable_policy_json": "{\"agent_setup_timeout_multiplier\":null,\"agent_timeout_multiplier\":null,\"agents\":[{\"env\":{},\"import_path\":null,\"kwargs\":{\"api_base\":\"http://marin.invalid/v1\",\"model_info\":{\"max_input_tokens\":32768},\"version\":\"0.87.0\"},\"max_timeout_sec\":null,\"mcp_servers\":[],\"mode\":\"container\",\"model_alias\":null,\"model_name\":\"hosted_vllm/__marin_model__\",\"name\":\"pi\",\"override_setup_timeout_sec\":360.0,\"override_timeout_sec\":1800.0,\"skills\":[],\"upload_agent_logs\":true}],\"archive\":null,\"artifact_authority\":null,\"artifacts\":[],\"datasets\":[{\"download_dir\":null,\"exclude_task_names\":null,\"n_tasks\":null,\"name\":\"bfcl_parity\",\"overwrite\":false,\"path\":null,\"ref\":null,\"registry_path\":null,\"registry_url\":\"https://raw.githubusercontent.com/marin-community/harbor/016dd78b301b621ee4089f2da5776ebe80236820/registry.json\",\"task_names\":null,\"version\":\"1.0\"}],\"debug\":false,\"environment\":{\"cpu_enforcement_policy\":\"auto\",\"delete\":true,\"env\":{},\"extra_docker_compose\":[],\"force_build\":false,\"import_path\":null,\"kwargs\":{},\"memory_enforcement_policy\":\"auto\",\"mounts\":null,\"override_cpus\":null,\"override_gpus\":null,\"override_memory_mb\":null,\"override_storage_mb\":null,\"override_tpu\":null,\"type\":\"daytona\"},\"environment_build_timeout_multiplier\":null,\"extra_instruction_paths\":[],\"job_name\":\"__marin_job__\",\"jobs_dir\":\"/__marin_jobs__\",\"metrics\":[],\"n_attempts\":1,\"n_concurrent_trials\":32,\"quiet\":false,\"release_trial_payloads_in_memory\":true,\"retry\":{\"exclude_exceptions\":[],\"include_exceptions\":[\"APIConnectionError\",\"APITimeoutError\",\"AgentKilledBySignalError\",\"AgentSetupTimeoutError\",\"ArtifactUploadTimeoutError\",\"ArtifactWriteTimeoutError\",\"ArtifactWriterBacklogError\",\"CancelledError\",\"ContainerRegistryThrottledError\",\"ContextManagementInfrastructureError\",\"DaytonaProcessError\",\"DaytonaSandboxStopError\",\"InternalServerError\",\"LLMRequestTimeoutError\",\"SandboxBuildFailedError\",\"Tau3RuntimeInfrastructureError\",\"Tau3TargetInfrastructureError\",\"TrialTimeoutError\",\"VerifierRuntimeError\",\"VerifierTimeoutError\"],\"max_retries\":10,\"max_wait_sec\":60.0,\"min_wait_sec\":1.0,\"wait_multiplier\":2.0},\"tasks\":[],\"timeout_multiplier\":1.0,\"trial_attempt_timeout_sec\":null,\"trial_cleanup_grace_sec\":30.0,\"user_agent\":null,\"verifier\":{\"disable\":false,\"env\":{},\"max_timeout_sec\":null,\"override_timeout_sec\":300.0},\"verifier_timeout_multiplier\":null}",
+          "digest": "sha256:8920dc10945b977edeeb8141d3de3e365e7637bfdc1160c45da0010422f16be3",
+          "dataset_kind": "harbor_registry",
+          "dataset_selector": "bfcl_parity",
+          "dataset_revision": "1.0",
+          "workspace_dataset_path": null,
+          "agent": "pi",
+          "environment": "daytona",
+          "error_taxonomy": {
+            "infrastructure": "frozenset({'VerifierOutputParseError', 'ModelAuthenticationError', 'SandboxBuildFailedError', 'TmuxCommandError', 'EnrootMemoryLimitExceededError', 'MissingExtraError', 'ContainerRegistryThrottledError', 'VerifierRuntimeError', 'ArtifactWriteTimeoutError', 'AddTestsDirError', 'DownloadVerifierDirError', 'ArtifactPersistenceError', 'TmuxSessionEndedError', 'BridgeOutageError', 'LLMRequestTimeoutError', 'PhaseCancellationError', 'HealthcheckError', 'ArtifactWriterBacklogError', 'RewardFileNotFoundError', 'DaytonaProcessError', 'AgentSetupTimeoutError', 'EnvironmentStartTimeoutError', 'Tau3RuntimeInfrastructureError', 'RewardFileEmptyError', 'ArtifactUploadTimeoutError', 'ContextManagementInfrastructureError', 'ContextBudgetExceededError', 'DaytonaSandboxStopError', 'TmuxBatchProtocolError', 'TrialTimeoutError', 'DaytonaDockerSetupError', 'AgentKilledBySignalError', 'SnapshotQuotaExceeded', 'SandboxDiskFullError', 'OpenAITransportConnectTimeoutError'})",
+            "agent": "frozenset({'ModelInitiatedTmuxFailure', 'AgentTimeoutError', 'ContextLengthExceededError', 'AgentDiskFullError', 'NonZeroAgentExitCodeError'})",
+            "passthrough": "frozenset({'OutputLengthExceededError', 'TurnCapExhaustedError', 'MalformedModelResponseError'})",
+            "undecided": "frozenset({'TrialNotScoredError', 'VerificationNotCompletedError', 'VerifierTimeoutError'})",
+            "commit": "38742b0f9f411c95e0c01468785cac7bb77c9894"
+          },
+          "max_input_tokens": 32768,
+          "max_output_tokens": 8192,
+          "benchmark": "schema_version=1 task='bfcl_parity' primary_metric='reward' metric_kind=<MetricKind.CONTINUOUS: 'continuous'> metrics=(BenchmarkMetricRef(name='reward', source_name='reward', kind=<MetricKind.CONTINUOUS: 'continuous'>, higher_is_better=True),) n_benchmark=123 n_attempted=123",
+          "trials_per_task": 1,
+          "verifier_env_keys": [],
+          "runtime_project": "config/external/harbor"
+        },
+        "task_limit": null,
+        "model_agent_kwargs": {
+          "thinking_format": "chat-template",
+          "model_info": {
+            "max_input_tokens": 73728
+          }
+        },
+        "model_config": "name='snowball-pathb-bfcl-ablation-a11-u72-741e5928030c' location='s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72' identity=None revision=None tokenizer='open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12' tokenizer_revision='4eeb756b404db25bc04e4daf49dfb9817bceb741' apply_chat_template=True resource_hint=ModelResourceConfig(hbm_gb=None, gpu={'H100': 8}, cpu=None, memory='512g', disk=None) serve=ModelServeConfig(backend='vllm', tensor_parallel_size=1, data_parallel_size=8, pipeline_parallel_size=1, instances=1, gpu_memory_utilization=None, max_model_len=73728, max_num_batched_tokens=7168, max_num_seqs=32, hf_overrides=None, limit_mm_per_prompt=None, tool_call_parser='hermes', reasoning_parser=None, vllm_batch_invariant=None, vllm_use_flashinfer_sampler=None, runai_streamer_concurrency=None, runai_streamer_s3_request_timeout_ms=None, hf_hub_disable_xet=True, vllm_source=None, vllm_version=None, vllm_plugin_requirements=(), object_store_load_mode='stream', vllm_extra_args=('--enable-expert-parallel', '--model-loader-extra-config', '{\"distributed\":true}'), speculative=None, chat_template=None, auto_overrides=False) generation=ModelGenerationConfig(max_gen_toks=None, extra_gen_kwargs={}, chat_template_kwargs={}, thinking_off_template_kwargs={}) agent=ModelAgentConfig(agent_kwargs={'thinking_format': 'chat-template'}) evalchemy_num_concurrent=None",
+        "judge_config": null,
+        "secret_env_keys": [
+          "DAYTONA_API_KEY"
+        ],
+        "min_completion_rate": 0.9,
+        "retry_unscored_trials": false
+      }
+    },
+    {
+      "run": 2,
+      "records_prefix": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-2/records",
+      "output_dir": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-2/records/20261030-185737-snowball-pathb-bfcl-ablation-a11-u72-741e5928030c-bfclparity-pi-f948/results",
+      "model": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72",
+      "task_config": {
+        "config": {
+          "stable_policy_json": "{\"agent_setup_timeout_multiplier\":null,\"agent_timeout_multiplier\":null,\"agents\":[{\"env\":{},\"import_path\":null,\"kwargs\":{\"api_base\":\"http://marin.invalid/v1\",\"model_info\":{\"max_input_tokens\":32768},\"version\":\"0.87.0\"},\"max_timeout_sec\":null,\"mcp_servers\":[],\"mode\":\"container\",\"model_alias\":null,\"model_name\":\"hosted_vllm/__marin_model__\",\"name\":\"pi\",\"override_setup_timeout_sec\":360.0,\"override_timeout_sec\":1800.0,\"skills\":[],\"upload_agent_logs\":true}],\"archive\":null,\"artifact_authority\":null,\"artifacts\":[],\"datasets\":[{\"download_dir\":null,\"exclude_task_names\":null,\"n_tasks\":null,\"name\":\"bfcl_parity\",\"overwrite\":false,\"path\":null,\"ref\":null,\"registry_path\":null,\"registry_url\":\"https://raw.githubusercontent.com/marin-community/harbor/016dd78b301b621ee4089f2da5776ebe80236820/registry.json\",\"task_names\":null,\"version\":\"1.0\"}],\"debug\":false,\"environment\":{\"cpu_enforcement_policy\":\"auto\",\"delete\":true,\"env\":{},\"extra_docker_compose\":[],\"force_build\":false,\"import_path\":null,\"kwargs\":{},\"memory_enforcement_policy\":\"auto\",\"mounts\":null,\"override_cpus\":null,\"override_gpus\":null,\"override_memory_mb\":null,\"override_storage_mb\":null,\"override_tpu\":null,\"type\":\"daytona\"},\"environment_build_timeout_multiplier\":null,\"extra_instruction_paths\":[],\"job_name\":\"__marin_job__\",\"jobs_dir\":\"/__marin_jobs__\",\"metrics\":[],\"n_attempts\":1,\"n_concurrent_trials\":32,\"quiet\":false,\"release_trial_payloads_in_memory\":true,\"retry\":{\"exclude_exceptions\":[],\"include_exceptions\":[\"APIConnectionError\",\"APITimeoutError\",\"AgentKilledBySignalError\",\"AgentSetupTimeoutError\",\"ArtifactUploadTimeoutError\",\"ArtifactWriteTimeoutError\",\"ArtifactWriterBacklogError\",\"CancelledError\",\"ContainerRegistryThrottledError\",\"ContextManagementInfrastructureError\",\"DaytonaProcessError\",\"DaytonaSandboxStopError\",\"InternalServerError\",\"LLMRequestTimeoutError\",\"SandboxBuildFailedError\",\"Tau3RuntimeInfrastructureError\",\"Tau3TargetInfrastructureError\",\"TrialTimeoutError\",\"VerifierRuntimeError\",\"VerifierTimeoutError\"],\"max_retries\":10,\"max_wait_sec\":60.0,\"min_wait_sec\":1.0,\"wait_multiplier\":2.0},\"tasks\":[],\"timeout_multiplier\":1.0,\"trial_attempt_timeout_sec\":null,\"trial_cleanup_grace_sec\":30.0,\"user_agent\":null,\"verifier\":{\"disable\":false,\"env\":{},\"max_timeout_sec\":null,\"override_timeout_sec\":300.0},\"verifier_timeout_multiplier\":null}",
+          "digest": "sha256:8920dc10945b977edeeb8141d3de3e365e7637bfdc1160c45da0010422f16be3",
+          "dataset_kind": "harbor_registry",
+          "dataset_selector": "bfcl_parity",
+          "dataset_revision": "1.0",
+          "workspace_dataset_path": null,
+          "agent": "pi",
+          "environment": "daytona",
+          "error_taxonomy": {
+            "infrastructure": "frozenset({'VerifierOutputParseError', 'ModelAuthenticationError', 'SandboxBuildFailedError', 'TmuxCommandError', 'EnrootMemoryLimitExceededError', 'MissingExtraError', 'ContainerRegistryThrottledError', 'VerifierRuntimeError', 'ArtifactWriteTimeoutError', 'AddTestsDirError', 'DownloadVerifierDirError', 'ArtifactPersistenceError', 'TmuxSessionEndedError', 'BridgeOutageError', 'LLMRequestTimeoutError', 'PhaseCancellationError', 'HealthcheckError', 'ArtifactWriterBacklogError', 'RewardFileNotFoundError', 'DaytonaProcessError', 'AgentSetupTimeoutError', 'EnvironmentStartTimeoutError', 'Tau3RuntimeInfrastructureError', 'RewardFileEmptyError', 'ArtifactUploadTimeoutError', 'ContextManagementInfrastructureError', 'ContextBudgetExceededError', 'DaytonaSandboxStopError', 'TmuxBatchProtocolError', 'TrialTimeoutError', 'DaytonaDockerSetupError', 'AgentKilledBySignalError', 'SnapshotQuotaExceeded', 'SandboxDiskFullError', 'OpenAITransportConnectTimeoutError'})",
+            "agent": "frozenset({'ModelInitiatedTmuxFailure', 'AgentTimeoutError', 'ContextLengthExceededError', 'AgentDiskFullError', 'NonZeroAgentExitCodeError'})",
+            "passthrough": "frozenset({'OutputLengthExceededError', 'TurnCapExhaustedError', 'MalformedModelResponseError'})",
+            "undecided": "frozenset({'TrialNotScoredError', 'VerificationNotCompletedError', 'VerifierTimeoutError'})",
+            "commit": "38742b0f9f411c95e0c01468785cac7bb77c9894"
+          },
+          "max_input_tokens": 32768,
+          "max_output_tokens": 8192,
+          "benchmark": "schema_version=1 task='bfcl_parity' primary_metric='reward' metric_kind=<MetricKind.CONTINUOUS: 'continuous'> metrics=(BenchmarkMetricRef(name='reward', source_name='reward', kind=<MetricKind.CONTINUOUS: 'continuous'>, higher_is_better=True),) n_benchmark=123 n_attempted=123",
+          "trials_per_task": 1,
+          "verifier_env_keys": [],
+          "runtime_project": "config/external/harbor"
+        },
+        "task_limit": null,
+        "model_agent_kwargs": {
+          "thinking_format": "chat-template",
+          "model_info": {
+            "max_input_tokens": 73728
+          }
+        },
+        "model_config": "name='snowball-pathb-bfcl-ablation-a11-u72-741e5928030c' location='s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72' identity=None revision=None tokenizer='open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12' tokenizer_revision='4eeb756b404db25bc04e4daf49dfb9817bceb741' apply_chat_template=True resource_hint=ModelResourceConfig(hbm_gb=None, gpu={'H100': 8}, cpu=None, memory='512g', disk=None) serve=ModelServeConfig(backend='vllm', tensor_parallel_size=1, data_parallel_size=8, pipeline_parallel_size=1, instances=1, gpu_memory_utilization=None, max_model_len=73728, max_num_batched_tokens=7168, max_num_seqs=32, hf_overrides=None, limit_mm_per_prompt=None, tool_call_parser='hermes', reasoning_parser=None, vllm_batch_invariant=None, vllm_use_flashinfer_sampler=None, runai_streamer_concurrency=None, runai_streamer_s3_request_timeout_ms=None, hf_hub_disable_xet=True, vllm_source=None, vllm_version=None, vllm_plugin_requirements=(), object_store_load_mode='stream', vllm_extra_args=('--enable-expert-parallel', '--model-loader-extra-config', '{\"distributed\":true}'), speculative=None, chat_template=None, auto_overrides=False) generation=ModelGenerationConfig(max_gen_toks=None, extra_gen_kwargs={}, chat_template_kwargs={}, thinking_off_template_kwargs={}) agent=ModelAgentConfig(agent_kwargs={'thinking_format': 'chat-template'}) evalchemy_num_concurrent=None",
+        "judge_config": null,
+        "secret_env_keys": [
+          "DAYTONA_API_KEY"
+        ],
+        "min_completion_rate": 0.9,
+        "retry_unscored_trials": false
+      }
+    },
+    {
+      "run": 3,
+      "records_prefix": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-3/records",
+      "output_dir": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-3/records/20261030-185737-snowball-pathb-bfcl-ablation-a11-u72-741e5928030c-bfclparity-pi-c794/results",
+      "model": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72",
+      "task_config": {
+        "config": {
+          "stable_policy_json": "{\"agent_setup_timeout_multiplier\":null,\"agent_timeout_multiplier\":null,\"agents\":[{\"env\":{},\"import_path\":null,\"kwargs\":{\"api_base\":\"http://marin.invalid/v1\",\"model_info\":{\"max_input_tokens\":32768},\"version\":\"0.87.0\"},\"max_timeout_sec\":null,\"mcp_servers\":[],\"mode\":\"container\",\"model_alias\":null,\"model_name\":\"hosted_vllm/__marin_model__\",\"name\":\"pi\",\"override_setup_timeout_sec\":360.0,\"override_timeout_sec\":1800.0,\"skills\":[],\"upload_agent_logs\":true}],\"archive\":null,\"artifact_authority\":null,\"artifacts\":[],\"datasets\":[{\"download_dir\":null,\"exclude_task_names\":null,\"n_tasks\":null,\"name\":\"bfcl_parity\",\"overwrite\":false,\"path\":null,\"ref\":null,\"registry_path\":null,\"registry_url\":\"https://raw.githubusercontent.com/marin-community/harbor/016dd78b301b621ee4089f2da5776ebe80236820/registry.json\",\"task_names\":null,\"version\":\"1.0\"}],\"debug\":false,\"environment\":{\"cpu_enforcement_policy\":\"auto\",\"delete\":true,\"env\":{},\"extra_docker_compose\":[],\"force_build\":false,\"import_path\":null,\"kwargs\":{},\"memory_enforcement_policy\":\"auto\",\"mounts\":null,\"override_cpus\":null,\"override_gpus\":null,\"override_memory_mb\":null,\"override_storage_mb\":null,\"override_tpu\":null,\"type\":\"daytona\"},\"environment_build_timeout_multiplier\":null,\"extra_instruction_paths\":[],\"job_name\":\"__marin_job__\",\"jobs_dir\":\"/__marin_jobs__\",\"metrics\":[],\"n_attempts\":1,\"n_concurrent_trials\":32,\"quiet\":false,\"release_trial_payloads_in_memory\":true,\"retry\":{\"exclude_exceptions\":[],\"include_exceptions\":[\"APIConnectionError\",\"APITimeoutError\",\"AgentKilledBySignalError\",\"AgentSetupTimeoutError\",\"ArtifactUploadTimeoutError\",\"ArtifactWriteTimeoutError\",\"ArtifactWriterBacklogError\",\"CancelledError\",\"ContainerRegistryThrottledError\",\"ContextManagementInfrastructureError\",\"DaytonaProcessError\",\"DaytonaSandboxStopError\",\"InternalServerError\",\"LLMRequestTimeoutError\",\"SandboxBuildFailedError\",\"Tau3RuntimeInfrastructureError\",\"Tau3TargetInfrastructureError\",\"TrialTimeoutError\",\"VerifierRuntimeError\",\"VerifierTimeoutError\"],\"max_retries\":10,\"max_wait_sec\":60.0,\"min_wait_sec\":1.0,\"wait_multiplier\":2.0},\"tasks\":[],\"timeout_multiplier\":1.0,\"trial_attempt_timeout_sec\":null,\"trial_cleanup_grace_sec\":30.0,\"user_agent\":null,\"verifier\":{\"disable\":false,\"env\":{},\"max_timeout_sec\":null,\"override_timeout_sec\":300.0},\"verifier_timeout_multiplier\":null}",
+          "digest": "sha256:8920dc10945b977edeeb8141d3de3e365e7637bfdc1160c45da0010422f16be3",
+          "dataset_kind": "harbor_registry",
+          "dataset_selector": "bfcl_parity",
+          "dataset_revision": "1.0",
+          "workspace_dataset_path": null,
+          "agent": "pi",
+          "environment": "daytona",
+          "error_taxonomy": {
+            "infrastructure": "frozenset({'VerifierOutputParseError', 'ModelAuthenticationError', 'SandboxBuildFailedError', 'TmuxCommandError', 'EnrootMemoryLimitExceededError', 'MissingExtraError', 'ContainerRegistryThrottledError', 'VerifierRuntimeError', 'ArtifactWriteTimeoutError', 'AddTestsDirError', 'DownloadVerifierDirError', 'ArtifactPersistenceError', 'TmuxSessionEndedError', 'BridgeOutageError', 'LLMRequestTimeoutError', 'PhaseCancellationError', 'HealthcheckError', 'ArtifactWriterBacklogError', 'RewardFileNotFoundError', 'DaytonaProcessError', 'AgentSetupTimeoutError', 'EnvironmentStartTimeoutError', 'Tau3RuntimeInfrastructureError', 'RewardFileEmptyError', 'ArtifactUploadTimeoutError', 'ContextManagementInfrastructureError', 'ContextBudgetExceededError', 'DaytonaSandboxStopError', 'TmuxBatchProtocolError', 'TrialTimeoutError', 'DaytonaDockerSetupError', 'AgentKilledBySignalError', 'SnapshotQuotaExceeded', 'SandboxDiskFullError', 'OpenAITransportConnectTimeoutError'})",
+            "agent": "frozenset({'ModelInitiatedTmuxFailure', 'AgentTimeoutError', 'ContextLengthExceededError', 'AgentDiskFullError', 'NonZeroAgentExitCodeError'})",
+            "passthrough": "frozenset({'OutputLengthExceededError', 'TurnCapExhaustedError', 'MalformedModelResponseError'})",
+            "undecided": "frozenset({'TrialNotScoredError', 'VerificationNotCompletedError', 'VerifierTimeoutError'})",
+            "commit": "38742b0f9f411c95e0c01468785cac7bb77c9894"
+          },
+          "max_input_tokens": 32768,
+          "max_output_tokens": 8192,
+          "benchmark": "schema_version=1 task='bfcl_parity' primary_metric='reward' metric_kind=<MetricKind.CONTINUOUS: 'continuous'> metrics=(BenchmarkMetricRef(name='reward', source_name='reward', kind=<MetricKind.CONTINUOUS: 'continuous'>, higher_is_better=True),) n_benchmark=123 n_attempted=123",
+          "trials_per_task": 1,
+          "verifier_env_keys": [],
+          "runtime_project": "config/external/harbor"
+        },
+        "task_limit": null,
+        "model_agent_kwargs": {
+          "thinking_format": "chat-template",
+          "model_info": {
+            "max_input_tokens": 73728
+          }
+        },
+        "model_config": "name='snowball-pathb-bfcl-ablation-a11-u72-741e5928030c' location='s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72' identity=None revision=None tokenizer='open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12' tokenizer_revision='4eeb756b404db25bc04e4daf49dfb9817bceb741' apply_chat_template=True resource_hint=ModelResourceConfig(hbm_gb=None, gpu={'H100': 8}, cpu=None, memory='512g', disk=None) serve=ModelServeConfig(backend='vllm', tensor_parallel_size=1, data_parallel_size=8, pipeline_parallel_size=1, instances=1, gpu_memory_utilization=None, max_model_len=73728, max_num_batched_tokens=7168, max_num_seqs=32, hf_overrides=None, limit_mm_per_prompt=None, tool_call_parser='hermes', reasoning_parser=None, vllm_batch_invariant=None, vllm_use_flashinfer_sampler=None, runai_streamer_concurrency=None, runai_streamer_s3_request_timeout_ms=None, hf_hub_disable_xet=True, vllm_source=None, vllm_version=None, vllm_plugin_requirements=(), object_store_load_mode='stream', vllm_extra_args=('--enable-expert-parallel', '--model-loader-extra-config', '{\"distributed\":true}'), speculative=None, chat_template=None, auto_overrides=False) generation=ModelGenerationConfig(max_gen_toks=None, extra_gen_kwargs={}, chat_template_kwargs={}, thinking_off_template_kwargs={}) agent=ModelAgentConfig(agent_kwargs={'thinking_format': 'chat-template'}) evalchemy_num_concurrent=None",
+        "judge_config": null,
+        "secret_env_keys": [
+          "DAYTONA_API_KEY"
+        ],
+        "min_completion_rate": 0.9,
+        "retry_unscored_trials": false
+      }
+    },
+    {
+      "run": 4,
+      "records_prefix": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-4/records",
+      "output_dir": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-4/records/20261030-185737-snowball-pathb-bfcl-ablation-a11-u72-741e5928030c-bfclparity-pi-3f33/results",
+      "model": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72",
+      "task_config": {
+        "config": {
+          "stable_policy_json": "{\"agent_setup_timeout_multiplier\":null,\"agent_timeout_multiplier\":null,\"agents\":[{\"env\":{},\"import_path\":null,\"kwargs\":{\"api_base\":\"http://marin.invalid/v1\",\"model_info\":{\"max_input_tokens\":32768},\"version\":\"0.87.0\"},\"max_timeout_sec\":null,\"mcp_servers\":[],\"mode\":\"container\",\"model_alias\":null,\"model_name\":\"hosted_vllm/__marin_model__\",\"name\":\"pi\",\"override_setup_timeout_sec\":360.0,\"override_timeout_sec\":1800.0,\"skills\":[],\"upload_agent_logs\":true}],\"archive\":null,\"artifact_authority\":null,\"artifacts\":[],\"datasets\":[{\"download_dir\":null,\"exclude_task_names\":null,\"n_tasks\":null,\"name\":\"bfcl_parity\",\"overwrite\":false,\"path\":null,\"ref\":null,\"registry_path\":null,\"registry_url\":\"https://raw.githubusercontent.com/marin-community/harbor/016dd78b301b621ee4089f2da5776ebe80236820/registry.json\",\"task_names\":null,\"version\":\"1.0\"}],\"debug\":false,\"environment\":{\"cpu_enforcement_policy\":\"auto\",\"delete\":true,\"env\":{},\"extra_docker_compose\":[],\"force_build\":false,\"import_path\":null,\"kwargs\":{},\"memory_enforcement_policy\":\"auto\",\"mounts\":null,\"override_cpus\":null,\"override_gpus\":null,\"override_memory_mb\":null,\"override_storage_mb\":null,\"override_tpu\":null,\"type\":\"daytona\"},\"environment_build_timeout_multiplier\":null,\"extra_instruction_paths\":[],\"job_name\":\"__marin_job__\",\"jobs_dir\":\"/__marin_jobs__\",\"metrics\":[],\"n_attempts\":1,\"n_concurrent_trials\":32,\"quiet\":false,\"release_trial_payloads_in_memory\":true,\"retry\":{\"exclude_exceptions\":[],\"include_exceptions\":[\"APIConnectionError\",\"APITimeoutError\",\"AgentKilledBySignalError\",\"AgentSetupTimeoutError\",\"ArtifactUploadTimeoutError\",\"ArtifactWriteTimeoutError\",\"ArtifactWriterBacklogError\",\"CancelledError\",\"ContainerRegistryThrottledError\",\"ContextManagementInfrastructureError\",\"DaytonaProcessError\",\"DaytonaSandboxStopError\",\"InternalServerError\",\"LLMRequestTimeoutError\",\"SandboxBuildFailedError\",\"Tau3RuntimeInfrastructureError\",\"Tau3TargetInfrastructureError\",\"TrialTimeoutError\",\"VerifierRuntimeError\",\"VerifierTimeoutError\"],\"max_retries\":10,\"max_wait_sec\":60.0,\"min_wait_sec\":1.0,\"wait_multiplier\":2.0},\"tasks\":[],\"timeout_multiplier\":1.0,\"trial_attempt_timeout_sec\":null,\"trial_cleanup_grace_sec\":30.0,\"user_agent\":null,\"verifier\":{\"disable\":false,\"env\":{},\"max_timeout_sec\":null,\"override_timeout_sec\":300.0},\"verifier_timeout_multiplier\":null}",
+          "digest": "sha256:8920dc10945b977edeeb8141d3de3e365e7637bfdc1160c45da0010422f16be3",
+          "dataset_kind": "harbor_registry",
+          "dataset_selector": "bfcl_parity",
+          "dataset_revision": "1.0",
+          "workspace_dataset_path": null,
+          "agent": "pi",
+          "environment": "daytona",
+          "error_taxonomy": {
+            "infrastructure": "frozenset({'VerifierOutputParseError', 'ModelAuthenticationError', 'SandboxBuildFailedError', 'TmuxCommandError', 'EnrootMemoryLimitExceededError', 'MissingExtraError', 'ContainerRegistryThrottledError', 'VerifierRuntimeError', 'ArtifactWriteTimeoutError', 'AddTestsDirError', 'DownloadVerifierDirError', 'ArtifactPersistenceError', 'TmuxSessionEndedError', 'BridgeOutageError', 'LLMRequestTimeoutError', 'PhaseCancellationError', 'HealthcheckError', 'ArtifactWriterBacklogError', 'RewardFileNotFoundError', 'DaytonaProcessError', 'AgentSetupTimeoutError', 'EnvironmentStartTimeoutError', 'Tau3RuntimeInfrastructureError', 'RewardFileEmptyError', 'ArtifactUploadTimeoutError', 'ContextManagementInfrastructureError', 'ContextBudgetExceededError', 'DaytonaSandboxStopError', 'TmuxBatchProtocolError', 'TrialTimeoutError', 'DaytonaDockerSetupError', 'AgentKilledBySignalError', 'SnapshotQuotaExceeded', 'SandboxDiskFullError', 'OpenAITransportConnectTimeoutError'})",
+            "agent": "frozenset({'ModelInitiatedTmuxFailure', 'AgentTimeoutError', 'ContextLengthExceededError', 'AgentDiskFullError', 'NonZeroAgentExitCodeError'})",
+            "passthrough": "frozenset({'OutputLengthExceededError', 'TurnCapExhaustedError', 'MalformedModelResponseError'})",
+            "undecided": "frozenset({'TrialNotScoredError', 'VerificationNotCompletedError', 'VerifierTimeoutError'})",
+            "commit": "38742b0f9f411c95e0c01468785cac7bb77c9894"
+          },
+          "max_input_tokens": 32768,
+          "max_output_tokens": 8192,
+          "benchmark": "schema_version=1 task='bfcl_parity' primary_metric='reward' metric_kind=<MetricKind.CONTINUOUS: 'continuous'> metrics=(BenchmarkMetricRef(name='reward', source_name='reward', kind=<MetricKind.CONTINUOUS: 'continuous'>, higher_is_better=True),) n_benchmark=123 n_attempted=123",
+          "trials_per_task": 1,
+          "verifier_env_keys": [],
+          "runtime_project": "config/external/harbor"
+        },
+        "task_limit": null,
+        "model_agent_kwargs": {
+          "thinking_format": "chat-template",
+          "model_info": {
+            "max_input_tokens": 73728
+          }
+        },
+        "model_config": "name='snowball-pathb-bfcl-ablation-a11-u72-741e5928030c' location='s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72' identity=None revision=None tokenizer='open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12' tokenizer_revision='4eeb756b404db25bc04e4daf49dfb9817bceb741' apply_chat_template=True resource_hint=ModelResourceConfig(hbm_gb=None, gpu={'H100': 8}, cpu=None, memory='512g', disk=None) serve=ModelServeConfig(backend='vllm', tensor_parallel_size=1, data_parallel_size=8, pipeline_parallel_size=1, instances=1, gpu_memory_utilization=None, max_model_len=73728, max_num_batched_tokens=7168, max_num_seqs=32, hf_overrides=None, limit_mm_per_prompt=None, tool_call_parser='hermes', reasoning_parser=None, vllm_batch_invariant=None, vllm_use_flashinfer_sampler=None, runai_streamer_concurrency=None, runai_streamer_s3_request_timeout_ms=None, hf_hub_disable_xet=True, vllm_source=None, vllm_version=None, vllm_plugin_requirements=(), object_store_load_mode='stream', vllm_extra_args=('--enable-expert-parallel', '--model-loader-extra-config', '{\"distributed\":true}'), speculative=None, chat_template=None, auto_overrides=False) generation=ModelGenerationConfig(max_gen_toks=None, extra_gen_kwargs={}, chat_template_kwargs={}, thinking_off_template_kwargs={}) agent=ModelAgentConfig(agent_kwargs={'thinking_format': 'chat-template'}) evalchemy_num_concurrent=None",
+        "judge_config": null,
+        "secret_env_keys": [
+          "DAYTONA_API_KEY"
+        ],
+        "min_completion_rate": 0.9,
+        "retry_unscored_trials": false
+      }
+    },
+    {
+      "run": 5,
+      "records_prefix": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-5/records",
+      "output_dir": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/A11-BFCL-five-20261030-r1/run-5/records/20261030-185737-snowball-pathb-bfcl-ablation-a11-u72-741e5928030c-bfclparity-pi-ff13/results",
+      "model": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72",
+      "task_config": {
+        "config": {
+          "stable_policy_json": "{\"agent_setup_timeout_multiplier\":null,\"agent_timeout_multiplier\":null,\"agents\":[{\"env\":{},\"import_path\":null,\"kwargs\":{\"api_base\":\"http://marin.invalid/v1\",\"model_info\":{\"max_input_tokens\":32768},\"version\":\"0.87.0\"},\"max_timeout_sec\":null,\"mcp_servers\":[],\"mode\":\"container\",\"model_alias\":null,\"model_name\":\"hosted_vllm/__marin_model__\",\"name\":\"pi\",\"override_setup_timeout_sec\":360.0,\"override_timeout_sec\":1800.0,\"skills\":[],\"upload_agent_logs\":true}],\"archive\":null,\"artifact_authority\":null,\"artifacts\":[],\"datasets\":[{\"download_dir\":null,\"exclude_task_names\":null,\"n_tasks\":null,\"name\":\"bfcl_parity\",\"overwrite\":false,\"path\":null,\"ref\":null,\"registry_path\":null,\"registry_url\":\"https://raw.githubusercontent.com/marin-community/harbor/016dd78b301b621ee4089f2da5776ebe80236820/registry.json\",\"task_names\":null,\"version\":\"1.0\"}],\"debug\":false,\"environment\":{\"cpu_enforcement_policy\":\"auto\",\"delete\":true,\"env\":{},\"extra_docker_compose\":[],\"force_build\":false,\"import_path\":null,\"kwargs\":{},\"memory_enforcement_policy\":\"auto\",\"mounts\":null,\"override_cpus\":null,\"override_gpus\":null,\"override_memory_mb\":null,\"override_storage_mb\":null,\"override_tpu\":null,\"type\":\"daytona\"},\"environment_build_timeout_multiplier\":null,\"extra_instruction_paths\":[],\"job_name\":\"__marin_job__\",\"jobs_dir\":\"/__marin_jobs__\",\"metrics\":[],\"n_attempts\":1,\"n_concurrent_trials\":32,\"quiet\":false,\"release_trial_payloads_in_memory\":true,\"retry\":{\"exclude_exceptions\":[],\"include_exceptions\":[\"APIConnectionError\",\"APITimeoutError\",\"AgentKilledBySignalError\",\"AgentSetupTimeoutError\",\"ArtifactUploadTimeoutError\",\"ArtifactWriteTimeoutError\",\"ArtifactWriterBacklogError\",\"CancelledError\",\"ContainerRegistryThrottledError\",\"ContextManagementInfrastructureError\",\"DaytonaProcessError\",\"DaytonaSandboxStopError\",\"InternalServerError\",\"LLMRequestTimeoutError\",\"SandboxBuildFailedError\",\"Tau3RuntimeInfrastructureError\",\"Tau3TargetInfrastructureError\",\"TrialTimeoutError\",\"VerifierRuntimeError\",\"VerifierTimeoutError\"],\"max_retries\":10,\"max_wait_sec\":60.0,\"min_wait_sec\":1.0,\"wait_multiplier\":2.0},\"tasks\":[],\"timeout_multiplier\":1.0,\"trial_attempt_timeout_sec\":null,\"trial_cleanup_grace_sec\":30.0,\"user_agent\":null,\"verifier\":{\"disable\":false,\"env\":{},\"max_timeout_sec\":null,\"override_timeout_sec\":300.0},\"verifier_timeout_multiplier\":null}",
+          "digest": "sha256:8920dc10945b977edeeb8141d3de3e365e7637bfdc1160c45da0010422f16be3",
+          "dataset_kind": "harbor_registry",
+          "dataset_selector": "bfcl_parity",
+          "dataset_revision": "1.0",
+          "workspace_dataset_path": null,
+          "agent": "pi",
+          "environment": "daytona",
+          "error_taxonomy": {
+            "infrastructure": "frozenset({'VerifierOutputParseError', 'ModelAuthenticationError', 'SandboxBuildFailedError', 'TmuxCommandError', 'EnrootMemoryLimitExceededError', 'MissingExtraError', 'ContainerRegistryThrottledError', 'VerifierRuntimeError', 'ArtifactWriteTimeoutError', 'AddTestsDirError', 'DownloadVerifierDirError', 'ArtifactPersistenceError', 'TmuxSessionEndedError', 'BridgeOutageError', 'LLMRequestTimeoutError', 'PhaseCancellationError', 'HealthcheckError', 'ArtifactWriterBacklogError', 'RewardFileNotFoundError', 'DaytonaProcessError', 'AgentSetupTimeoutError', 'EnvironmentStartTimeoutError', 'Tau3RuntimeInfrastructureError', 'RewardFileEmptyError', 'ArtifactUploadTimeoutError', 'ContextManagementInfrastructureError', 'ContextBudgetExceededError', 'DaytonaSandboxStopError', 'TmuxBatchProtocolError', 'TrialTimeoutError', 'DaytonaDockerSetupError', 'AgentKilledBySignalError', 'SnapshotQuotaExceeded', 'SandboxDiskFullError', 'OpenAITransportConnectTimeoutError'})",
+            "agent": "frozenset({'ModelInitiatedTmuxFailure', 'AgentTimeoutError', 'ContextLengthExceededError', 'AgentDiskFullError', 'NonZeroAgentExitCodeError'})",
+            "passthrough": "frozenset({'OutputLengthExceededError', 'TurnCapExhaustedError', 'MalformedModelResponseError'})",
+            "undecided": "frozenset({'TrialNotScoredError', 'VerificationNotCompletedError', 'VerifierTimeoutError'})",
+            "commit": "38742b0f9f411c95e0c01468785cac7bb77c9894"
+          },
+          "max_input_tokens": 32768,
+          "max_output_tokens": 8192,
+          "benchmark": "schema_version=1 task='bfcl_parity' primary_metric='reward' metric_kind=<MetricKind.CONTINUOUS: 'continuous'> metrics=(BenchmarkMetricRef(name='reward', source_name='reward', kind=<MetricKind.CONTINUOUS: 'continuous'>, higher_is_better=True),) n_benchmark=123 n_attempted=123",
+          "trials_per_task": 1,
+          "verifier_env_keys": [],
+          "runtime_project": "config/external/harbor"
+        },
+        "task_limit": null,
+        "model_agent_kwargs": {
+          "thinking_format": "chat-template",
+          "model_info": {
+            "max_input_tokens": 73728
+          }
+        },
+        "model_config": "name='snowball-pathb-bfcl-ablation-a11-u72-741e5928030c' location='s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-741e5928030c/A11/run/hf/updates-72' identity=None revision=None tokenizer='open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12' tokenizer_revision='4eeb756b404db25bc04e4daf49dfb9817bceb741' apply_chat_template=True resource_hint=ModelResourceConfig(hbm_gb=None, gpu={'H100': 8}, cpu=None, memory='512g', disk=None) serve=ModelServeConfig(backend='vllm', tensor_parallel_size=1, data_parallel_size=8, pipeline_parallel_size=1, instances=1, gpu_memory_utilization=None, max_model_len=73728, max_num_batched_tokens=7168, max_num_seqs=32, hf_overrides=None, limit_mm_per_prompt=None, tool_call_parser='hermes', reasoning_parser=None, vllm_batch_invariant=None, vllm_use_flashinfer_sampler=None, runai_streamer_concurrency=None, runai_streamer_s3_request_timeout_ms=None, hf_hub_disable_xet=True, vllm_source=None, vllm_version=None, vllm_plugin_requirements=(), object_store_load_mode='stream', vllm_extra_args=('--enable-expert-parallel', '--model-loader-extra-config', '{\"distributed\":true}'), speculative=None, chat_template=None, auto_overrides=False) generation=ModelGenerationConfig(max_gen_toks=None, extra_gen_kwargs={}, chat_template_kwargs={}, thinking_off_template_kwargs={}) agent=ModelAgentConfig(agent_kwargs={'thinking_format': 'chat-template'}) evalchemy_num_concurrent=None",
+        "judge_config": null,
+        "secret_env_keys": [
+          "DAYTONA_API_KEY"
+        ],
+        "min_completion_rate": 0.9,
+        "retry_unscored_trials": false
+      }
+    }
+  ],
+  "actual_first_Harbor_preflight": true,
+  "remaining4_proof_only_cached_exact_same_config": true,
+  "source_science": "UNCHANGED CABA config bytes/YAMLonlyname+location",
+  "remote_model_storage_calls": 0
+}

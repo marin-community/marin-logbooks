@@ -1,0 +1,33 @@
+{
+  "utc": "2026-10-30T16:55:58.322002+00:00",
+  "state": "BOTH_DIRECT_REQUESTED_CASES_CONFIRMED_KUEUE_PREEMPTION_INFRA_CAUSE",
+  "actual_Iris_attempt_and_vLLM_log_proof_sha256": "8166c7cb4800b07a28511acdcfd2fcb5d2fd4ff6cad37a745b881e5207f17057",
+  "cases": [
+    {
+      "arm": "A0",
+      "original_slot": 2,
+      "serve_job": "/karan/eval-20261030-162045-snowball-pathb-swe100-a0-u36-fbda/inference-c36b588417444b28ada1c8422777cd01",
+      "attempt_uid": "46edc7add95090e6",
+      "native_attempt_state": "preempted",
+      "native_exit_code": 0,
+      "native_terminal_reason": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: efe46939-f6ed-4d4e-a4f6-4df4153f87ad, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+      "node": "g82a648",
+      "last_HTTP200_before_preemption": "I20261030 16:36:49 127976310032064 uvicorn.access 10.0.1.207:56808 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+      "diagnosis": "ExplicitKueueClusterQueuepreemption, notamodel-outputtriggeredservercrashinthese2cases"
+    },
+    {
+      "arm": "A8a",
+      "original_slot": 1,
+      "serve_job": "/karan/eval-20261030-162310-snowball-pathb-swe100-a8a-u36-cc25/inference-987f4fa2f7b34f43a895f730b38bfac2",
+      "attempt_uid": "187363656c638c26",
+      "native_attempt_state": "preempted",
+      "native_exit_code": 0,
+      "native_terminal_reason": "WorkloadEvictedDueToPreempted: Preempted to accommodate a workload (UID: b5122e3a-f406-4cff-a828-9eb2892ed241, JobUID: UNKNOWN) due to prioritization in the ClusterQueue; preemptor path: /iris-cq; preemptee path: /iris-cq",
+      "node": "g830782",
+      "last_HTTP200_before_preemption": "I20261030 16:34:45 131776970221248 uvicorn.access 10.0.1.207:44564 - \"POST /v1/chat/completions HTTP/1.1\" 200",
+      "diagnosis": "ExplicitKueueClusterQueuepreemption, notamodel-outputtriggeredservercrashinthese2cases"
+    }
+  ],
+  "scope_limit": "Two inspectedcasesONLY; no universalclaim, noquota/capacity/preemptorownershipinference. Jobfinalkilled/TerminatedbyuserisNOTsubstituteforretainedphysicalattemptpreemptionevidence. No newinfrastructurecontrol/modelcalls.",
+  "director_conditional_SWE_rerun_gate": "SatisfiedforrequestedoneA0+oneA8acheck; pairedwitha9b7terminalIncompleteadmissions, proceedONEfresh/logicalslotunderstandingrule; no valid100 rerun/partialrepair/secondreplacement"
+}

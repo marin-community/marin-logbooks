@@ -1,0 +1,43 @@
+{
+  "status": "PRIMARY_RUN_MEAN_ANALYSIS_INCOMPLETE",
+  "reviewer": "marten",
+  "scope": "Coverage disposition only; no statistical result or recovery authorization",
+  "analysis_spec": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-noise-r1/run-mean-analysis-spec-marten-r1.json",
+    "sha256": "636ddeb0a79606fc4827c1138668d8383dcd1fec387e5bbc8cd0d898f2080b45",
+    "planned_runs": {"A0": 6, "A1": 5, "A2": 5, "A3": 5, "A4": 5}
+  },
+  "execution_evidence": {
+    "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/bfcl-repeat20-r1/failed-actual-attempts-and-primary-logs-r1.json",
+    "independently_checked_sha256": "816e51ced7e72b1e4cdca9663442aa91a1ab62f851858daec519a10982be47ee",
+    "executor": "margay",
+    "scope": "16 owned jobs/16 attempts: eight failed roots and their eight inference children",
+    "root_error_reported": "RemoteInferenceStartupError: inference job finished before endpoint registration",
+    "GPU_attempt_states_reported": {"preempted": 7, "worker_failed": 1},
+    "missing_GPU_start_windows_reported": 2,
+    "root_pairs": [
+      {"arm": "A0", "extra": 4},
+      {"arm": "A2", "extra": 3},
+      {"arm": "A3", "extra": 2},
+      {"arm": "A3", "extra": 3},
+      {"arm": "A3", "extra": 4},
+      {"arm": "A4", "extra": 2},
+      {"arm": "A4", "extra": 3},
+      {"arm": "A4", "extra": 4}
+    ],
+    "result_prefix_inspection": "Pending executor check for any independently complete 123-item records; root failure alone is not a scored model failure"
+  },
+  "disposition": [
+    "Retain all planned run identities, physical attempts, logs and costs, including absent start times as missing",
+    "Do not impute absent rewards as zero or silently drop startup failures",
+    "Admit only complete 123-unique-doc, binary-reward, same-HF/method runs with source hashes",
+    "Do not publish a completed primary 6/5/5/5/5 analysis from fewer admitted runs",
+    "Keep original single-run contrasts historical and superseded for decisions; no best-of",
+    "Other twelve additional runs retain their actual pending/completed status; no blanket failure inference",
+    "Any fresh recovery run needs explicit authority and must link the failed planned run and preserve all outcomes",
+    "Do not infer OOM, storage suspension or a queue cause from these bounded logs"
+  ],
+  "automatic_retries_replacements_or_model_calls_authorized": false,
+  "old_r5_diagnostic_pooling": false,
+  "A5_capture_scope": "Independent already-cleared four-root generation; no change from these coverage failures"
+}

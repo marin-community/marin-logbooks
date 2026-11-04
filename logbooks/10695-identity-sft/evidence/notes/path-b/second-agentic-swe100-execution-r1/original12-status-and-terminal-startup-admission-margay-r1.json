@@ -1,0 +1,1674 @@
+{
+  "utc": "2026-10-30T16:42:01.741427+00:00",
+  "scope": "READONLY original12; no replacements/submits/repairs",
+  "slots": [
+    {
+      "arm": "v01",
+      "original_slot": 1,
+      "job": "/karan/eval-20261030-151019-snowball-pathb-swe100-v01-9ed5",
+      "state": "running"
+    },
+    {
+      "arm": "v01",
+      "original_slot": 2,
+      "job": "/karan/eval-20261030-151253-snowball-pathb-swe100-v01-ad0a",
+      "state": "running"
+    },
+    {
+      "arm": "v01",
+      "original_slot": 3,
+      "job": "/karan/eval-20261030-151322-snowball-pathb-swe100-v01-90b3",
+      "state": "running"
+    },
+    {
+      "arm": "A0",
+      "original_slot": 1,
+      "job": "/karan/eval-20261030-162016-snowball-pathb-swe100-a0-u36-8cc1",
+      "state": "running"
+    },
+    {
+      "arm": "A0",
+      "original_slot": 2,
+      "job": "/karan/eval-20261030-162045-snowball-pathb-swe100-a0-u36-fbda",
+      "state": "failed",
+      "actual_root_tail60": [
+        "urllib3.exceptions.NewConnectionError: HTTPConnection(host='10.168.196.151', port=24835): Failed to establish a new connection: [Errno 111] Connection refused",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 645, in send",
+        "    resp = conn.urlopen(",
+        "           ^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 842, in urlopen",
+        "    retries = retries.increment(",
+        "              ^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/util/retry.py\", line 543, in increment",
+        "    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.168.196.151', port=24835): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.151', port=24835): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 418, in _run_one_evaluation",
+        "    inference_metrics = metric_window.finish()",
+        "                        ^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 86, in finish",
+        "    current = _scrape(self.session, speculative=self.speculative)",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 48, in _scrape",
+        "    families = PrometheusScraper(_metrics_url(session)).scrape()",
+        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/rigging/src/rigging/telemetry/prometheus.py\", line 65, in scrape",
+        "    with requests.get(self._metrics_url, timeout=self._timeout, stream=True) as response:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 73, in get",
+        "    return request(\"get\", url, params=params, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 59, in request",
+        "    return session.request(method=method, url=url, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 592, in request",
+        "    resp = self.send(prep, **send_kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 706, in send",
+        "    r = adapter.send(request, **kwargs)",
+        "        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 678, in send",
+        "    raise ConnectionError(e, request=request)",
+        "requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.168.196.151', port=24835): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.151', port=24835): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "I20261030 16:37:16 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A0/run-2/records/20261030-162045-snowball-pathb-swe100-a0-u36-swebench-verified-100-dcc1/record.json (status=infra_failed)",
+        "I20261030 16:37:16 135914908022464 finelog.client.log_client LogClient resolved /system/log-server -> http://finelog-cw-rno2a.iris.svc.cluster.local:10001 (stats)",
+        "Traceback (most recent call last):",
+        "  File \"/app/_callable_runner.py\", line 39, in <module>",
+        "    fn(*args, **kwargs)",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 155, in run_batch",
+        "    return runner._evaluate_with_hosted_judge(",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 561, in _evaluate_with_hosted_judge",
+        "    return evaluate_batch(",
+        "           ^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 502, in evaluate_batch",
+        "    raise RuntimeError(f\"{len(failed)} of {len(batch.evaluations)} evals failed: {', '.join(failed)}\")",
+        "RuntimeError: 1 of 1 evals failed: swebench-verified-100 (infra_failed)"
+      ],
+      "record_object_count": 352,
+      "actual_records": [
+        {
+          "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A0/run-2/records/20261030-162045-snowball-pathb-swe100-a0-u36-swebench-verified-100-dcc1/record.json",
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/second-agentic-swe100-execution-r1/A0/original-run-2/terminal-infra-record.json",
+          "bytes": 5502,
+          "sha256": "b37d3340afe3760df59a204e8bb0f4a837267019ba161edd890e271051187e52",
+          "record": {
+            "run_id": "20261030-162045-snowball-pathb-swe100-a0-u36-swebench-verified-100-dcc1",
+            "group_id": "20261030-162045-snowball-pathb-swe100-a0-u36-fbda",
+            "created_at": "2026-10-30T16:20:45.495467+00:00",
+            "user": "karan",
+            "version": "snowball-pathb-swe100-a0-u36-r2-43bba4a16d17",
+            "description": "SWE100 fixed mini-swe2.1 A0 repeat2, original100 tasks no method change",
+            "model": {
+              "name": "snowball-pathb-swe100-a0-u36",
+              "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run/hf/updates-36",
+              "backend": "vllm",
+              "config": {
+                "name": "snowball-pathb-swe100-a0-u36",
+                "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run/hf/updates-36",
+                "identity": null,
+                "revision": null,
+                "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+                "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+                "apply_chat_template": true,
+                "resource_hint": {
+                  "hbm_gb": null,
+                  "gpu": {
+                    "H100": 8
+                  },
+                  "cpu": null,
+                  "memory": "512g",
+                  "disk": null
+                },
+                "serve": {
+                  "backend": "vllm",
+                  "tensor_parallel_size": 1,
+                  "data_parallel_size": 8,
+                  "pipeline_parallel_size": 1,
+                  "instances": 1,
+                  "gpu_memory_utilization": null,
+                  "max_model_len": 73728,
+                  "max_num_batched_tokens": 7168,
+                  "max_num_seqs": 32,
+                  "hf_overrides": null,
+                  "limit_mm_per_prompt": null,
+                  "tool_call_parser": "hermes",
+                  "reasoning_parser": null,
+                  "vllm_batch_invariant": null,
+                  "vllm_use_flashinfer_sampler": null,
+                  "runai_streamer_concurrency": null,
+                  "runai_streamer_s3_request_timeout_ms": null,
+                  "hf_hub_disable_xet": true,
+                  "vllm_source": null,
+                  "vllm_version": null,
+                  "vllm_plugin_requirements": [],
+                  "object_store_load_mode": "stream",
+                  "vllm_extra_args": [
+                    "--enable-expert-parallel",
+                    "--model-loader-extra-config",
+                    "{\"distributed\":true}"
+                  ],
+                  "speculative": null,
+                  "chat_template": null,
+                  "auto_overrides": false
+                },
+                "generation": {
+                  "max_gen_toks": null,
+                  "extra_gen_kwargs": {},
+                  "chat_template_kwargs": {},
+                  "thinking_off_template_kwargs": {}
+                },
+                "agent": {
+                  "agent_kwargs": {
+                    "thinking_format": "chat-template"
+                  }
+                },
+                "evalchemy_num_concurrent": null
+              },
+              "config_digest": "97a79949306f1dfdf1a144d955e247a4a2fc71f75bd26ed91ccfc714f7c38d83"
+            },
+            "judge": null,
+            "eval": {
+              "name": "swebench-verified-100",
+              "mechanism": "harbor",
+              "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+              "tasks": [
+                {
+                  "name": "swebench-verified",
+                  "num_fewshot": null,
+                  "task_alias": null,
+                  "generation": false,
+                  "unsafe_code": false,
+                  "completion_only": false,
+                  "benchmark": {
+                    "schema_version": 1,
+                    "task": "swebench-verified",
+                    "primary_metric": "reward",
+                    "metric_kind": "continuous",
+                    "metrics": [
+                      {
+                        "name": "reward",
+                        "source_name": "reward",
+                        "kind": "continuous",
+                        "higher_is_better": true
+                      }
+                    ],
+                    "n_benchmark": 100,
+                    "n_attempted": 100
+                  }
+                }
+              ],
+              "evalchemy": null,
+              "harbor": {
+                "dataset": "swebench-verified",
+                "version": "1.0",
+                "agent": "mini-swe-agent",
+                "env": "daytona",
+                "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+                "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+                "max_input_tokens": 32768,
+                "max_output_tokens": 8192
+              }
+            },
+            "hardware": {
+              "platform": "gpu",
+              "accelerator": "H100x8",
+              "region_or_cluster": "cw-rno2a",
+              "task_count": 1
+            },
+            "status": "infra_failed",
+            "error": "EvaluationError: inference backend finished while Harbor was running; inference failed: Inference job /karan/eval-20261030-162045-snowball-pathb-swe100-a0-u36-fbda/inference-c36b588417444b28ada1c8422777cd01 finished unexpectedly with status failed",
+            "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A0/run-2/records/20261030-162045-snowball-pathb-swe100-a0-u36-swebench-verified-100-dcc1/results",
+            "metrics": {},
+            "canonical_metrics": {},
+            "coverage": {},
+            "jobs": {
+              "orchestrator": "/karan/eval-20261030-162045-snowball-pathb-swe100-a0-u36-fbda",
+              "inference": "/karan/eval-20261030-162045-snowball-pathb-swe100-a0-u36-fbda/inference-c36b588417444b28ada1c8422777cd01"
+            },
+            "log_tails": {
+              "inference": []
+            },
+            "provenance": {
+              "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+              "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+              "launch_host": "karans-linux"
+            },
+            "timing": null,
+            "serving": {
+              "tensor_parallel_size": 1,
+              "data_parallel_size": 8,
+              "pipeline_parallel_size": 1,
+              "task_count": 1,
+              "effective": true,
+              "max_model_len": 73728,
+              "max_gen_tokens": null,
+              "extra": {}
+            },
+            "inference_metrics": null
+          }
+        }
+      ],
+      "before_endpoint_native_startup_failure_observed": false,
+      "one_whole_replacement_eligible_not_yet_submitted": false
+    },
+    {
+      "arm": "A0",
+      "original_slot": 3,
+      "job": "/karan/eval-20261030-162115-snowball-pathb-swe100-a0-u36-d0a6",
+      "state": "failed",
+      "actual_root_tail60": [
+        "urllib3.exceptions.NewConnectionError: HTTPConnection(host='10.168.196.153', port=10241): Failed to establish a new connection: [Errno 111] Connection refused",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 645, in send",
+        "    resp = conn.urlopen(",
+        "           ^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 842, in urlopen",
+        "    retries = retries.increment(",
+        "              ^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/util/retry.py\", line 543, in increment",
+        "    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.168.196.153', port=10241): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.153', port=10241): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 418, in _run_one_evaluation",
+        "    inference_metrics = metric_window.finish()",
+        "                        ^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 86, in finish",
+        "    current = _scrape(self.session, speculative=self.speculative)",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 48, in _scrape",
+        "    families = PrometheusScraper(_metrics_url(session)).scrape()",
+        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/rigging/src/rigging/telemetry/prometheus.py\", line 65, in scrape",
+        "    with requests.get(self._metrics_url, timeout=self._timeout, stream=True) as response:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 73, in get",
+        "    return request(\"get\", url, params=params, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 59, in request",
+        "    return session.request(method=method, url=url, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 592, in request",
+        "    resp = self.send(prep, **send_kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 706, in send",
+        "    r = adapter.send(request, **kwargs)",
+        "        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 678, in send",
+        "    raise ConnectionError(e, request=request)",
+        "requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.168.196.153', port=10241): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.153', port=10241): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "I20261030 16:37:16 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A0/run-3/records/20261030-162115-snowball-pathb-swe100-a0-u36-swebench-verified-100-8574/record.json (status=infra_failed)",
+        "I20261030 16:37:16 140313728374464 finelog.client.log_client LogClient resolved /system/log-server -> http://finelog-cw-rno2a.iris.svc.cluster.local:10001 (stats)",
+        "Traceback (most recent call last):",
+        "  File \"/app/_callable_runner.py\", line 39, in <module>",
+        "    fn(*args, **kwargs)",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 155, in run_batch",
+        "    return runner._evaluate_with_hosted_judge(",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 561, in _evaluate_with_hosted_judge",
+        "    return evaluate_batch(",
+        "           ^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 502, in evaluate_batch",
+        "    raise RuntimeError(f\"{len(failed)} of {len(batch.evaluations)} evals failed: {', '.join(failed)}\")",
+        "RuntimeError: 1 of 1 evals failed: swebench-verified-100 (infra_failed)"
+      ],
+      "record_object_count": 440,
+      "actual_records": [
+        {
+          "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A0/run-3/records/20261030-162115-snowball-pathb-swe100-a0-u36-swebench-verified-100-8574/record.json",
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/second-agentic-swe100-execution-r1/A0/original-run-3/terminal-infra-record.json",
+          "bytes": 5502,
+          "sha256": "6801a2880733c7e5683e47ef8bd4bb40079e79a9f9cdbd3d2df0687206771016",
+          "record": {
+            "run_id": "20261030-162115-snowball-pathb-swe100-a0-u36-swebench-verified-100-8574",
+            "group_id": "20261030-162115-snowball-pathb-swe100-a0-u36-d0a6",
+            "created_at": "2026-10-30T16:21:15.061004+00:00",
+            "user": "karan",
+            "version": "snowball-pathb-swe100-a0-u36-r3-43bba4a16d17",
+            "description": "SWE100 fixed mini-swe2.1 A0 repeat3, original100 tasks no method change",
+            "model": {
+              "name": "snowball-pathb-swe100-a0-u36",
+              "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run/hf/updates-36",
+              "backend": "vllm",
+              "config": {
+                "name": "snowball-pathb-swe100-a0-u36",
+                "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A0/run/hf/updates-36",
+                "identity": null,
+                "revision": null,
+                "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+                "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+                "apply_chat_template": true,
+                "resource_hint": {
+                  "hbm_gb": null,
+                  "gpu": {
+                    "H100": 8
+                  },
+                  "cpu": null,
+                  "memory": "512g",
+                  "disk": null
+                },
+                "serve": {
+                  "backend": "vllm",
+                  "tensor_parallel_size": 1,
+                  "data_parallel_size": 8,
+                  "pipeline_parallel_size": 1,
+                  "instances": 1,
+                  "gpu_memory_utilization": null,
+                  "max_model_len": 73728,
+                  "max_num_batched_tokens": 7168,
+                  "max_num_seqs": 32,
+                  "hf_overrides": null,
+                  "limit_mm_per_prompt": null,
+                  "tool_call_parser": "hermes",
+                  "reasoning_parser": null,
+                  "vllm_batch_invariant": null,
+                  "vllm_use_flashinfer_sampler": null,
+                  "runai_streamer_concurrency": null,
+                  "runai_streamer_s3_request_timeout_ms": null,
+                  "hf_hub_disable_xet": true,
+                  "vllm_source": null,
+                  "vllm_version": null,
+                  "vllm_plugin_requirements": [],
+                  "object_store_load_mode": "stream",
+                  "vllm_extra_args": [
+                    "--enable-expert-parallel",
+                    "--model-loader-extra-config",
+                    "{\"distributed\":true}"
+                  ],
+                  "speculative": null,
+                  "chat_template": null,
+                  "auto_overrides": false
+                },
+                "generation": {
+                  "max_gen_toks": null,
+                  "extra_gen_kwargs": {},
+                  "chat_template_kwargs": {},
+                  "thinking_off_template_kwargs": {}
+                },
+                "agent": {
+                  "agent_kwargs": {
+                    "thinking_format": "chat-template"
+                  }
+                },
+                "evalchemy_num_concurrent": null
+              },
+              "config_digest": "97a79949306f1dfdf1a144d955e247a4a2fc71f75bd26ed91ccfc714f7c38d83"
+            },
+            "judge": null,
+            "eval": {
+              "name": "swebench-verified-100",
+              "mechanism": "harbor",
+              "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+              "tasks": [
+                {
+                  "name": "swebench-verified",
+                  "num_fewshot": null,
+                  "task_alias": null,
+                  "generation": false,
+                  "unsafe_code": false,
+                  "completion_only": false,
+                  "benchmark": {
+                    "schema_version": 1,
+                    "task": "swebench-verified",
+                    "primary_metric": "reward",
+                    "metric_kind": "continuous",
+                    "metrics": [
+                      {
+                        "name": "reward",
+                        "source_name": "reward",
+                        "kind": "continuous",
+                        "higher_is_better": true
+                      }
+                    ],
+                    "n_benchmark": 100,
+                    "n_attempted": 100
+                  }
+                }
+              ],
+              "evalchemy": null,
+              "harbor": {
+                "dataset": "swebench-verified",
+                "version": "1.0",
+                "agent": "mini-swe-agent",
+                "env": "daytona",
+                "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+                "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+                "max_input_tokens": 32768,
+                "max_output_tokens": 8192
+              }
+            },
+            "hardware": {
+              "platform": "gpu",
+              "accelerator": "H100x8",
+              "region_or_cluster": "cw-rno2a",
+              "task_count": 1
+            },
+            "status": "infra_failed",
+            "error": "EvaluationError: inference backend finished while Harbor was running; inference failed: Inference job /karan/eval-20261030-162115-snowball-pathb-swe100-a0-u36-d0a6/inference-516d2974cc814f4bbc87da27a3568088 finished unexpectedly with status failed",
+            "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A0/run-3/records/20261030-162115-snowball-pathb-swe100-a0-u36-swebench-verified-100-8574/results",
+            "metrics": {},
+            "canonical_metrics": {},
+            "coverage": {},
+            "jobs": {
+              "orchestrator": "/karan/eval-20261030-162115-snowball-pathb-swe100-a0-u36-d0a6",
+              "inference": "/karan/eval-20261030-162115-snowball-pathb-swe100-a0-u36-d0a6/inference-516d2974cc814f4bbc87da27a3568088"
+            },
+            "log_tails": {
+              "inference": []
+            },
+            "provenance": {
+              "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+              "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+              "launch_host": "karans-linux"
+            },
+            "timing": null,
+            "serving": {
+              "tensor_parallel_size": 1,
+              "data_parallel_size": 8,
+              "pipeline_parallel_size": 1,
+              "task_count": 1,
+              "effective": true,
+              "max_model_len": 73728,
+              "max_gen_tokens": null,
+              "extra": {}
+            },
+            "inference_metrics": null
+          }
+        }
+      ],
+      "before_endpoint_native_startup_failure_observed": false,
+      "one_whole_replacement_eligible_not_yet_submitted": false
+    },
+    {
+      "arm": "A3",
+      "original_slot": 1,
+      "job": "/karan/eval-20261030-162143-snowball-pathb-swe100-a3-u36-53eb",
+      "state": "failed",
+      "actual_root_tail60": [
+        "urllib3.exceptions.NewConnectionError: HTTPConnection(host='10.168.193.145', port=17005): Failed to establish a new connection: [Errno 111] Connection refused",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 645, in send",
+        "    resp = conn.urlopen(",
+        "           ^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 842, in urlopen",
+        "    retries = retries.increment(",
+        "              ^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/util/retry.py\", line 543, in increment",
+        "    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.168.193.145', port=17005): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.193.145', port=17005): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 418, in _run_one_evaluation",
+        "    inference_metrics = metric_window.finish()",
+        "                        ^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 86, in finish",
+        "    current = _scrape(self.session, speculative=self.speculative)",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 48, in _scrape",
+        "    families = PrometheusScraper(_metrics_url(session)).scrape()",
+        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/rigging/src/rigging/telemetry/prometheus.py\", line 65, in scrape",
+        "    with requests.get(self._metrics_url, timeout=self._timeout, stream=True) as response:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 73, in get",
+        "    return request(\"get\", url, params=params, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 59, in request",
+        "    return session.request(method=method, url=url, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 592, in request",
+        "    resp = self.send(prep, **send_kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 706, in send",
+        "    r = adapter.send(request, **kwargs)",
+        "        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 678, in send",
+        "    raise ConnectionError(e, request=request)",
+        "requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.168.193.145', port=17005): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.193.145', port=17005): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "I20261030 16:37:16 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-1/records/20261030-162143-snowball-pathb-swe100-a3-u36-swebench-verified-100-7a22/record.json (status=infra_failed)",
+        "I20261030 16:37:16 136464577849024 finelog.client.log_client LogClient resolved /system/log-server -> http://finelog-cw-rno2a.iris.svc.cluster.local:10001 (stats)",
+        "Traceback (most recent call last):",
+        "  File \"/app/_callable_runner.py\", line 39, in <module>",
+        "    fn(*args, **kwargs)",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 155, in run_batch",
+        "    return runner._evaluate_with_hosted_judge(",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 561, in _evaluate_with_hosted_judge",
+        "    return evaluate_batch(",
+        "           ^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 502, in evaluate_batch",
+        "    raise RuntimeError(f\"{len(failed)} of {len(batch.evaluations)} evals failed: {', '.join(failed)}\")",
+        "RuntimeError: 1 of 1 evals failed: swebench-verified-100 (infra_failed)"
+      ],
+      "record_object_count": 428,
+      "actual_records": [
+        {
+          "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-1/records/20261030-162143-snowball-pathb-swe100-a3-u36-swebench-verified-100-7a22/record.json",
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/second-agentic-swe100-execution-r1/A3/original-run-1/terminal-infra-record.json",
+          "bytes": 5502,
+          "sha256": "652fdab72aff809b76c7dbcc813f15f7d340a8d78140f55c2623d712fbebf1ec",
+          "record": {
+            "run_id": "20261030-162143-snowball-pathb-swe100-a3-u36-swebench-verified-100-7a22",
+            "group_id": "20261030-162143-snowball-pathb-swe100-a3-u36-53eb",
+            "created_at": "2026-10-30T16:21:43.824131+00:00",
+            "user": "karan",
+            "version": "snowball-pathb-swe100-a3-u36-r1-43bba4a16d17",
+            "description": "SWE100 fixed mini-swe2.1 A3 repeat1, original100 tasks no method change",
+            "model": {
+              "name": "snowball-pathb-swe100-a3-u36",
+              "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+              "backend": "vllm",
+              "config": {
+                "name": "snowball-pathb-swe100-a3-u36",
+                "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+                "identity": null,
+                "revision": null,
+                "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+                "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+                "apply_chat_template": true,
+                "resource_hint": {
+                  "hbm_gb": null,
+                  "gpu": {
+                    "H100": 8
+                  },
+                  "cpu": null,
+                  "memory": "512g",
+                  "disk": null
+                },
+                "serve": {
+                  "backend": "vllm",
+                  "tensor_parallel_size": 1,
+                  "data_parallel_size": 8,
+                  "pipeline_parallel_size": 1,
+                  "instances": 1,
+                  "gpu_memory_utilization": null,
+                  "max_model_len": 73728,
+                  "max_num_batched_tokens": 7168,
+                  "max_num_seqs": 32,
+                  "hf_overrides": null,
+                  "limit_mm_per_prompt": null,
+                  "tool_call_parser": "hermes",
+                  "reasoning_parser": null,
+                  "vllm_batch_invariant": null,
+                  "vllm_use_flashinfer_sampler": null,
+                  "runai_streamer_concurrency": null,
+                  "runai_streamer_s3_request_timeout_ms": null,
+                  "hf_hub_disable_xet": true,
+                  "vllm_source": null,
+                  "vllm_version": null,
+                  "vllm_plugin_requirements": [],
+                  "object_store_load_mode": "stream",
+                  "vllm_extra_args": [
+                    "--enable-expert-parallel",
+                    "--model-loader-extra-config",
+                    "{\"distributed\":true}"
+                  ],
+                  "speculative": null,
+                  "chat_template": null,
+                  "auto_overrides": false
+                },
+                "generation": {
+                  "max_gen_toks": null,
+                  "extra_gen_kwargs": {},
+                  "chat_template_kwargs": {},
+                  "thinking_off_template_kwargs": {}
+                },
+                "agent": {
+                  "agent_kwargs": {
+                    "thinking_format": "chat-template"
+                  }
+                },
+                "evalchemy_num_concurrent": null
+              },
+              "config_digest": "aa1185a08a856de5572ae8f8d82a5acf17d1a2a75d434cb0cf6b7eee3c10119d"
+            },
+            "judge": null,
+            "eval": {
+              "name": "swebench-verified-100",
+              "mechanism": "harbor",
+              "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+              "tasks": [
+                {
+                  "name": "swebench-verified",
+                  "num_fewshot": null,
+                  "task_alias": null,
+                  "generation": false,
+                  "unsafe_code": false,
+                  "completion_only": false,
+                  "benchmark": {
+                    "schema_version": 1,
+                    "task": "swebench-verified",
+                    "primary_metric": "reward",
+                    "metric_kind": "continuous",
+                    "metrics": [
+                      {
+                        "name": "reward",
+                        "source_name": "reward",
+                        "kind": "continuous",
+                        "higher_is_better": true
+                      }
+                    ],
+                    "n_benchmark": 100,
+                    "n_attempted": 100
+                  }
+                }
+              ],
+              "evalchemy": null,
+              "harbor": {
+                "dataset": "swebench-verified",
+                "version": "1.0",
+                "agent": "mini-swe-agent",
+                "env": "daytona",
+                "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+                "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+                "max_input_tokens": 32768,
+                "max_output_tokens": 8192
+              }
+            },
+            "hardware": {
+              "platform": "gpu",
+              "accelerator": "H100x8",
+              "region_or_cluster": "cw-rno2a",
+              "task_count": 1
+            },
+            "status": "infra_failed",
+            "error": "EvaluationError: inference backend finished while Harbor was running; inference failed: Inference job /karan/eval-20261030-162143-snowball-pathb-swe100-a3-u36-53eb/inference-da8763cb42584fd4a8ec73d4bbaa8a23 finished unexpectedly with status failed",
+            "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-1/records/20261030-162143-snowball-pathb-swe100-a3-u36-swebench-verified-100-7a22/results",
+            "metrics": {},
+            "canonical_metrics": {},
+            "coverage": {},
+            "jobs": {
+              "orchestrator": "/karan/eval-20261030-162143-snowball-pathb-swe100-a3-u36-53eb",
+              "inference": "/karan/eval-20261030-162143-snowball-pathb-swe100-a3-u36-53eb/inference-da8763cb42584fd4a8ec73d4bbaa8a23"
+            },
+            "log_tails": {
+              "inference": []
+            },
+            "provenance": {
+              "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+              "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+              "launch_host": "karans-linux"
+            },
+            "timing": null,
+            "serving": {
+              "tensor_parallel_size": 1,
+              "data_parallel_size": 8,
+              "pipeline_parallel_size": 1,
+              "task_count": 1,
+              "effective": true,
+              "max_model_len": 73728,
+              "max_gen_tokens": null,
+              "extra": {}
+            },
+            "inference_metrics": null
+          }
+        }
+      ],
+      "before_endpoint_native_startup_failure_observed": false,
+      "one_whole_replacement_eligible_not_yet_submitted": false
+    },
+    {
+      "arm": "A3",
+      "original_slot": 2,
+      "job": "/karan/eval-20261030-162212-snowball-pathb-swe100-a3-u36-5d2a",
+      "state": "failed",
+      "actual_root_tail60": [
+        " + uritemplate==4.2.0",
+        " + urllib3==2.7.0",
+        " + uvicorn==0.40.0",
+        " + uvloop==0.22.1",
+        " + vortex-data==0.61.0",
+        " + wadler-lindig==0.1.7",
+        " + wandb==0.26.0",
+        " + watchdog==6.0.0",
+        " + watchfiles==1.1.1",
+        " + websocket-client==1.9.0",
+        " + websockets==15.0.1",
+        " + wrapt==1.17.3",
+        " + xxhash==3.6.0",
+        " + yarl==1.22.0",
+        " + zipp==3.23.0",
+        " + zss==1.2.0",
+        " + zstandard==0.25.0",
+        "[iris setup] step 2/2",
+        "installing iris runtime deps",
+        "Resolved 14 packages in 6ms",
+        "Installed 5 packages in 32ms",
+        " + linkify-it-py==2.2.0",
+        " + mdit-py-plugins==0.6.1",
+        " + memray==1.20.0",
+        " + py-spy==0.4.2",
+        " + textual==8.2.8",
+        "[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.",
+        "[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.",
+        "I20261030 16:22:48 fray.current_client current_client: using Iris backend (auto-detected)",
+        "I20261030 16:24:17 140162866730816 finelog.client.log_client LogClient resolved /system/log-server -> http://finelog-cw-rno2a.iris.svc.cluster.local:10001 (log)",
+        "I20261030 16:24:17 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-2/records/20261030-162212-snowball-pathb-swe100-a3-u36-swebench-verified-100-d9a5/record.json (status=infra_failed)",
+        "Traceback (most recent call last):",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 89, in direct_inference",
+        "    address, metadata = wait_for_endpoint(job, endpoint_name)",
+        "                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 51, in wait_for_endpoint",
+        "    raise RuntimeError(\"Inference job finished before endpoint registration\")",
+        "RuntimeError: Inference job finished before endpoint registration",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 154, in run_batch",
+        "    with direct_inference(config) as session:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/uv/cache/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/contextlib.py\", line 137, in __enter__",
+        "    return next(self.gen)",
+        "           ^^^^^^^^^^^^^^",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 104, in direct_inference",
+        "    raise inference.RemoteInferenceStartupError(",
+        "marin.inference.iris.RemoteInferenceStartupError: Inference job /karan/eval-20261030-162212-snowball-pathb-swe100-a3-u36-5d2a/inference-aa9cf4f8750f494881bdb8c922484b85 failed to register a usable endpoint: Inference job finished before endpoint registration",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/_callable_runner.py\", line 39, in <module>",
+        "    fn(*args, **kwargs)",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 164, in run_batch",
+        "    raise RuntimeError(f\"evaluation batch inference failed: {error}\") from error",
+        "RuntimeError: evaluation batch inference failed: Inference job /karan/eval-20261030-162212-snowball-pathb-swe100-a3-u36-5d2a/inference-aa9cf4f8750f494881bdb8c922484b85 failed to register a usable endpoint: Inference job finished before endpoint registration"
+      ],
+      "record_object_count": 1,
+      "actual_records": [
+        {
+          "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-2/records/20261030-162212-snowball-pathb-swe100-a3-u36-swebench-verified-100-d9a5/record.json",
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/second-agentic-swe100-execution-r1/A3/original-run-2/terminal-infra-record.json",
+          "bytes": 5493,
+          "sha256": "6c1bee5cfdc4f1e001a60ddea0efdf464127b5be2e9a03cc9df59bca2b865a50",
+          "record": {
+            "run_id": "20261030-162212-snowball-pathb-swe100-a3-u36-swebench-verified-100-d9a5",
+            "group_id": "20261030-162212-snowball-pathb-swe100-a3-u36-5d2a",
+            "created_at": "2026-10-30T16:22:12.268521+00:00",
+            "user": "karan",
+            "version": "snowball-pathb-swe100-a3-u36-r2-43bba4a16d17",
+            "description": "SWE100 fixed mini-swe2.1 A3 repeat2, original100 tasks no method change",
+            "model": {
+              "name": "snowball-pathb-swe100-a3-u36",
+              "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+              "backend": "vllm",
+              "config": {
+                "name": "snowball-pathb-swe100-a3-u36",
+                "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+                "identity": null,
+                "revision": null,
+                "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+                "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+                "apply_chat_template": true,
+                "resource_hint": {
+                  "hbm_gb": null,
+                  "gpu": {
+                    "H100": 8
+                  },
+                  "cpu": null,
+                  "memory": "512g",
+                  "disk": null
+                },
+                "serve": {
+                  "backend": "vllm",
+                  "tensor_parallel_size": 1,
+                  "data_parallel_size": 8,
+                  "pipeline_parallel_size": 1,
+                  "instances": 1,
+                  "gpu_memory_utilization": null,
+                  "max_model_len": 73728,
+                  "max_num_batched_tokens": 7168,
+                  "max_num_seqs": 32,
+                  "hf_overrides": null,
+                  "limit_mm_per_prompt": null,
+                  "tool_call_parser": "hermes",
+                  "reasoning_parser": null,
+                  "vllm_batch_invariant": null,
+                  "vllm_use_flashinfer_sampler": null,
+                  "runai_streamer_concurrency": null,
+                  "runai_streamer_s3_request_timeout_ms": null,
+                  "hf_hub_disable_xet": true,
+                  "vllm_source": null,
+                  "vllm_version": null,
+                  "vllm_plugin_requirements": [],
+                  "object_store_load_mode": "stream",
+                  "vllm_extra_args": [
+                    "--enable-expert-parallel",
+                    "--model-loader-extra-config",
+                    "{\"distributed\":true}"
+                  ],
+                  "speculative": null,
+                  "chat_template": null,
+                  "auto_overrides": false
+                },
+                "generation": {
+                  "max_gen_toks": null,
+                  "extra_gen_kwargs": {},
+                  "chat_template_kwargs": {},
+                  "thinking_off_template_kwargs": {}
+                },
+                "agent": {
+                  "agent_kwargs": {
+                    "thinking_format": "chat-template"
+                  }
+                },
+                "evalchemy_num_concurrent": null
+              },
+              "config_digest": "aa1185a08a856de5572ae8f8d82a5acf17d1a2a75d434cb0cf6b7eee3c10119d"
+            },
+            "judge": null,
+            "eval": {
+              "name": "swebench-verified-100",
+              "mechanism": "harbor",
+              "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+              "tasks": [
+                {
+                  "name": "swebench-verified",
+                  "num_fewshot": null,
+                  "task_alias": null,
+                  "generation": false,
+                  "unsafe_code": false,
+                  "completion_only": false,
+                  "benchmark": {
+                    "schema_version": 1,
+                    "task": "swebench-verified",
+                    "primary_metric": "reward",
+                    "metric_kind": "continuous",
+                    "metrics": [
+                      {
+                        "name": "reward",
+                        "source_name": "reward",
+                        "kind": "continuous",
+                        "higher_is_better": true
+                      }
+                    ],
+                    "n_benchmark": 100,
+                    "n_attempted": 100
+                  }
+                }
+              ],
+              "evalchemy": null,
+              "harbor": {
+                "dataset": "swebench-verified",
+                "version": "1.0",
+                "agent": "mini-swe-agent",
+                "env": "daytona",
+                "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+                "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+                "max_input_tokens": 32768,
+                "max_output_tokens": 8192
+              }
+            },
+            "hardware": {
+              "platform": "gpu",
+              "accelerator": "H100x8",
+              "region_or_cluster": "cw-rno2a",
+              "task_count": 1
+            },
+            "status": "infra_failed",
+            "error": "RemoteInferenceStartupError: Inference job /karan/eval-20261030-162212-snowball-pathb-swe100-a3-u36-5d2a/inference-aa9cf4f8750f494881bdb8c922484b85 failed to register a usable endpoint: Inference job finished before endpoint registration",
+            "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-2/records/20261030-162212-snowball-pathb-swe100-a3-u36-swebench-verified-100-d9a5/results",
+            "metrics": {},
+            "canonical_metrics": {},
+            "coverage": {},
+            "jobs": {
+              "orchestrator": "/karan/eval-20261030-162212-snowball-pathb-swe100-a3-u36-5d2a",
+              "inference": "/karan/eval-20261030-162212-snowball-pathb-swe100-a3-u36-5d2a/inference-aa9cf4f8750f494881bdb8c922484b85"
+            },
+            "log_tails": {
+              "inference": []
+            },
+            "provenance": {
+              "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+              "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+              "launch_host": "karans-linux"
+            },
+            "timing": null,
+            "serving": {
+              "tensor_parallel_size": 1,
+              "data_parallel_size": 8,
+              "pipeline_parallel_size": 1,
+              "task_count": 1,
+              "effective": false,
+              "max_model_len": 73728,
+              "max_gen_tokens": null,
+              "extra": {}
+            },
+            "inference_metrics": null
+          }
+        }
+      ],
+      "before_endpoint_native_startup_failure_observed": true,
+      "one_whole_replacement_eligible_not_yet_submitted": true
+    },
+    {
+      "arm": "A3",
+      "original_slot": 3,
+      "job": "/karan/eval-20261030-162240-snowball-pathb-swe100-a3-u36-ac1b",
+      "state": "failed",
+      "actual_root_tail60": [
+        "urllib3.exceptions.NewConnectionError: HTTPConnection(host='10.168.196.215', port=16093): Failed to establish a new connection: [Errno 111] Connection refused",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 645, in send",
+        "    resp = conn.urlopen(",
+        "           ^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 842, in urlopen",
+        "    retries = retries.increment(",
+        "              ^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/util/retry.py\", line 543, in increment",
+        "    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.168.196.215', port=16093): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.215', port=16093): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 418, in _run_one_evaluation",
+        "    inference_metrics = metric_window.finish()",
+        "                        ^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 86, in finish",
+        "    current = _scrape(self.session, speculative=self.speculative)",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 48, in _scrape",
+        "    families = PrometheusScraper(_metrics_url(session)).scrape()",
+        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/rigging/src/rigging/telemetry/prometheus.py\", line 65, in scrape",
+        "    with requests.get(self._metrics_url, timeout=self._timeout, stream=True) as response:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 73, in get",
+        "    return request(\"get\", url, params=params, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 59, in request",
+        "    return session.request(method=method, url=url, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 592, in request",
+        "    resp = self.send(prep, **send_kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 706, in send",
+        "    r = adapter.send(request, **kwargs)",
+        "        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 678, in send",
+        "    raise ConnectionError(e, request=request)",
+        "requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.168.196.215', port=16093): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.215', port=16093): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "I20261030 16:37:16 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-3/records/20261030-162240-snowball-pathb-swe100-a3-u36-swebench-verified-100-df73/record.json (status=infra_failed)",
+        "I20261030 16:37:16 136411287119552 finelog.client.log_client LogClient resolved /system/log-server -> http://finelog-cw-rno2a.iris.svc.cluster.local:10001 (stats)",
+        "Traceback (most recent call last):",
+        "  File \"/app/_callable_runner.py\", line 39, in <module>",
+        "    fn(*args, **kwargs)",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 155, in run_batch",
+        "    return runner._evaluate_with_hosted_judge(",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 561, in _evaluate_with_hosted_judge",
+        "    return evaluate_batch(",
+        "           ^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 502, in evaluate_batch",
+        "    raise RuntimeError(f\"{len(failed)} of {len(batch.evaluations)} evals failed: {', '.join(failed)}\")",
+        "RuntimeError: 1 of 1 evals failed: swebench-verified-100 (infra_failed)"
+      ],
+      "record_object_count": 154,
+      "actual_records": [
+        {
+          "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-3/records/20261030-162240-snowball-pathb-swe100-a3-u36-swebench-verified-100-df73/record.json",
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/second-agentic-swe100-execution-r1/A3/original-run-3/terminal-infra-record.json",
+          "bytes": 5502,
+          "sha256": "8d74144a571cef70e638090d36e92e493a6b723eedd54e24cb2a23ca284f0765",
+          "record": {
+            "run_id": "20261030-162240-snowball-pathb-swe100-a3-u36-swebench-verified-100-df73",
+            "group_id": "20261030-162240-snowball-pathb-swe100-a3-u36-ac1b",
+            "created_at": "2026-10-30T16:22:40.811316+00:00",
+            "user": "karan",
+            "version": "snowball-pathb-swe100-a3-u36-r3-43bba4a16d17",
+            "description": "SWE100 fixed mini-swe2.1 A3 repeat3, original100 tasks no method change",
+            "model": {
+              "name": "snowball-pathb-swe100-a3-u36",
+              "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+              "backend": "vllm",
+              "config": {
+                "name": "snowball-pathb-swe100-a3-u36",
+                "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-6ac2c53d0611/A3/run/hf/updates-36",
+                "identity": null,
+                "revision": null,
+                "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+                "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+                "apply_chat_template": true,
+                "resource_hint": {
+                  "hbm_gb": null,
+                  "gpu": {
+                    "H100": 8
+                  },
+                  "cpu": null,
+                  "memory": "512g",
+                  "disk": null
+                },
+                "serve": {
+                  "backend": "vllm",
+                  "tensor_parallel_size": 1,
+                  "data_parallel_size": 8,
+                  "pipeline_parallel_size": 1,
+                  "instances": 1,
+                  "gpu_memory_utilization": null,
+                  "max_model_len": 73728,
+                  "max_num_batched_tokens": 7168,
+                  "max_num_seqs": 32,
+                  "hf_overrides": null,
+                  "limit_mm_per_prompt": null,
+                  "tool_call_parser": "hermes",
+                  "reasoning_parser": null,
+                  "vllm_batch_invariant": null,
+                  "vllm_use_flashinfer_sampler": null,
+                  "runai_streamer_concurrency": null,
+                  "runai_streamer_s3_request_timeout_ms": null,
+                  "hf_hub_disable_xet": true,
+                  "vllm_source": null,
+                  "vllm_version": null,
+                  "vllm_plugin_requirements": [],
+                  "object_store_load_mode": "stream",
+                  "vllm_extra_args": [
+                    "--enable-expert-parallel",
+                    "--model-loader-extra-config",
+                    "{\"distributed\":true}"
+                  ],
+                  "speculative": null,
+                  "chat_template": null,
+                  "auto_overrides": false
+                },
+                "generation": {
+                  "max_gen_toks": null,
+                  "extra_gen_kwargs": {},
+                  "chat_template_kwargs": {},
+                  "thinking_off_template_kwargs": {}
+                },
+                "agent": {
+                  "agent_kwargs": {
+                    "thinking_format": "chat-template"
+                  }
+                },
+                "evalchemy_num_concurrent": null
+              },
+              "config_digest": "aa1185a08a856de5572ae8f8d82a5acf17d1a2a75d434cb0cf6b7eee3c10119d"
+            },
+            "judge": null,
+            "eval": {
+              "name": "swebench-verified-100",
+              "mechanism": "harbor",
+              "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+              "tasks": [
+                {
+                  "name": "swebench-verified",
+                  "num_fewshot": null,
+                  "task_alias": null,
+                  "generation": false,
+                  "unsafe_code": false,
+                  "completion_only": false,
+                  "benchmark": {
+                    "schema_version": 1,
+                    "task": "swebench-verified",
+                    "primary_metric": "reward",
+                    "metric_kind": "continuous",
+                    "metrics": [
+                      {
+                        "name": "reward",
+                        "source_name": "reward",
+                        "kind": "continuous",
+                        "higher_is_better": true
+                      }
+                    ],
+                    "n_benchmark": 100,
+                    "n_attempted": 100
+                  }
+                }
+              ],
+              "evalchemy": null,
+              "harbor": {
+                "dataset": "swebench-verified",
+                "version": "1.0",
+                "agent": "mini-swe-agent",
+                "env": "daytona",
+                "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+                "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+                "max_input_tokens": 32768,
+                "max_output_tokens": 8192
+              }
+            },
+            "hardware": {
+              "platform": "gpu",
+              "accelerator": "H100x8",
+              "region_or_cluster": "cw-rno2a",
+              "task_count": 1
+            },
+            "status": "infra_failed",
+            "error": "EvaluationError: inference backend finished while Harbor was running; inference failed: Inference job /karan/eval-20261030-162240-snowball-pathb-swe100-a3-u36-ac1b/inference-6d186644a0e140288a795c7081f79a6c finished unexpectedly with status failed",
+            "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A3/run-3/records/20261030-162240-snowball-pathb-swe100-a3-u36-swebench-verified-100-df73/results",
+            "metrics": {},
+            "canonical_metrics": {},
+            "coverage": {},
+            "jobs": {
+              "orchestrator": "/karan/eval-20261030-162240-snowball-pathb-swe100-a3-u36-ac1b",
+              "inference": "/karan/eval-20261030-162240-snowball-pathb-swe100-a3-u36-ac1b/inference-6d186644a0e140288a795c7081f79a6c"
+            },
+            "log_tails": {
+              "inference": []
+            },
+            "provenance": {
+              "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+              "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+              "launch_host": "karans-linux"
+            },
+            "timing": null,
+            "serving": {
+              "tensor_parallel_size": 1,
+              "data_parallel_size": 8,
+              "pipeline_parallel_size": 1,
+              "task_count": 1,
+              "effective": true,
+              "max_model_len": 73728,
+              "max_gen_tokens": null,
+              "extra": {}
+            },
+            "inference_metrics": null
+          }
+        }
+      ],
+      "before_endpoint_native_startup_failure_observed": false,
+      "one_whole_replacement_eligible_not_yet_submitted": false
+    },
+    {
+      "arm": "A8a",
+      "original_slot": 1,
+      "job": "/karan/eval-20261030-162310-snowball-pathb-swe100-a8a-u36-cc25",
+      "state": "failed",
+      "actual_root_tail60": [
+        "urllib3.exceptions.NewConnectionError: HTTPConnection(host='10.168.196.133', port=14873): Failed to establish a new connection: [Errno 111] Connection refused",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 645, in send",
+        "    resp = conn.urlopen(",
+        "           ^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 842, in urlopen",
+        "    retries = retries.increment(",
+        "              ^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/util/retry.py\", line 543, in increment",
+        "    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.168.196.133', port=14873): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.133', port=14873): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 418, in _run_one_evaluation",
+        "    inference_metrics = metric_window.finish()",
+        "                        ^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 86, in finish",
+        "    current = _scrape(self.session, speculative=self.speculative)",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 48, in _scrape",
+        "    families = PrometheusScraper(_metrics_url(session)).scrape()",
+        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/rigging/src/rigging/telemetry/prometheus.py\", line 65, in scrape",
+        "    with requests.get(self._metrics_url, timeout=self._timeout, stream=True) as response:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 73, in get",
+        "    return request(\"get\", url, params=params, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 59, in request",
+        "    return session.request(method=method, url=url, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 592, in request",
+        "    resp = self.send(prep, **send_kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 706, in send",
+        "    r = adapter.send(request, **kwargs)",
+        "        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 678, in send",
+        "    raise ConnectionError(e, request=request)",
+        "requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.168.196.133', port=14873): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.133', port=14873): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "I20261030 16:35:11 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A8a/run-1/records/20261030-162310-snowball-pathb-swe100-a8a-u36-swebench-verified-100-d56c/record.json (status=infra_failed)",
+        "I20261030 16:35:11 130713313556160 finelog.client.log_client LogClient resolved /system/log-server -> http://finelog-cw-rno2a.iris.svc.cluster.local:10001 (stats)",
+        "Traceback (most recent call last):",
+        "  File \"/app/_callable_runner.py\", line 39, in <module>",
+        "    fn(*args, **kwargs)",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 155, in run_batch",
+        "    return runner._evaluate_with_hosted_judge(",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 561, in _evaluate_with_hosted_judge",
+        "    return evaluate_batch(",
+        "           ^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 502, in evaluate_batch",
+        "    raise RuntimeError(f\"{len(failed)} of {len(batch.evaluations)} evals failed: {', '.join(failed)}\")",
+        "RuntimeError: 1 of 1 evals failed: swebench-verified-100 (infra_failed)"
+      ],
+      "record_object_count": 70,
+      "actual_records": [
+        {
+          "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A8a/run-1/records/20261030-162310-snowball-pathb-swe100-a8a-u36-swebench-verified-100-d56c/record.json",
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/second-agentic-swe100-execution-r1/A8a/original-run-1/terminal-infra-record.json",
+          "bytes": 5515,
+          "sha256": "93fc281449130ebb7067a0ddcdabb985148fe75797cf7d5ffdfebe730edffac3",
+          "record": {
+            "run_id": "20261030-162310-snowball-pathb-swe100-a8a-u36-swebench-verified-100-d56c",
+            "group_id": "20261030-162310-snowball-pathb-swe100-a8a-u36-cc25",
+            "created_at": "2026-10-30T16:23:10.664461+00:00",
+            "user": "karan",
+            "version": "snowball-pathb-swe100-a8a-u36-r1-43bba4a16d17",
+            "description": "SWE100 fixed mini-swe2.1 A8a repeat1, original100 tasks no method change",
+            "model": {
+              "name": "snowball-pathb-swe100-a8a-u36",
+              "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-4bfe87adbb03/A8a/run/hf/updates-36",
+              "backend": "vllm",
+              "config": {
+                "name": "snowball-pathb-swe100-a8a-u36",
+                "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-4bfe87adbb03/A8a/run/hf/updates-36",
+                "identity": null,
+                "revision": null,
+                "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+                "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+                "apply_chat_template": true,
+                "resource_hint": {
+                  "hbm_gb": null,
+                  "gpu": {
+                    "H100": 8
+                  },
+                  "cpu": null,
+                  "memory": "512g",
+                  "disk": null
+                },
+                "serve": {
+                  "backend": "vllm",
+                  "tensor_parallel_size": 1,
+                  "data_parallel_size": 8,
+                  "pipeline_parallel_size": 1,
+                  "instances": 1,
+                  "gpu_memory_utilization": null,
+                  "max_model_len": 73728,
+                  "max_num_batched_tokens": 7168,
+                  "max_num_seqs": 32,
+                  "hf_overrides": null,
+                  "limit_mm_per_prompt": null,
+                  "tool_call_parser": "hermes",
+                  "reasoning_parser": null,
+                  "vllm_batch_invariant": null,
+                  "vllm_use_flashinfer_sampler": null,
+                  "runai_streamer_concurrency": null,
+                  "runai_streamer_s3_request_timeout_ms": null,
+                  "hf_hub_disable_xet": true,
+                  "vllm_source": null,
+                  "vllm_version": null,
+                  "vllm_plugin_requirements": [],
+                  "object_store_load_mode": "stream",
+                  "vllm_extra_args": [
+                    "--enable-expert-parallel",
+                    "--model-loader-extra-config",
+                    "{\"distributed\":true}"
+                  ],
+                  "speculative": null,
+                  "chat_template": null,
+                  "auto_overrides": false
+                },
+                "generation": {
+                  "max_gen_toks": null,
+                  "extra_gen_kwargs": {},
+                  "chat_template_kwargs": {},
+                  "thinking_off_template_kwargs": {}
+                },
+                "agent": {
+                  "agent_kwargs": {
+                    "thinking_format": "chat-template"
+                  }
+                },
+                "evalchemy_num_concurrent": null
+              },
+              "config_digest": "658400c49f7b07270a5b4587cafec83c2ebd84883b88ace327e24d3943f0d0e3"
+            },
+            "judge": null,
+            "eval": {
+              "name": "swebench-verified-100",
+              "mechanism": "harbor",
+              "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+              "tasks": [
+                {
+                  "name": "swebench-verified",
+                  "num_fewshot": null,
+                  "task_alias": null,
+                  "generation": false,
+                  "unsafe_code": false,
+                  "completion_only": false,
+                  "benchmark": {
+                    "schema_version": 1,
+                    "task": "swebench-verified",
+                    "primary_metric": "reward",
+                    "metric_kind": "continuous",
+                    "metrics": [
+                      {
+                        "name": "reward",
+                        "source_name": "reward",
+                        "kind": "continuous",
+                        "higher_is_better": true
+                      }
+                    ],
+                    "n_benchmark": 100,
+                    "n_attempted": 100
+                  }
+                }
+              ],
+              "evalchemy": null,
+              "harbor": {
+                "dataset": "swebench-verified",
+                "version": "1.0",
+                "agent": "mini-swe-agent",
+                "env": "daytona",
+                "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+                "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+                "max_input_tokens": 32768,
+                "max_output_tokens": 8192
+              }
+            },
+            "hardware": {
+              "platform": "gpu",
+              "accelerator": "H100x8",
+              "region_or_cluster": "cw-rno2a",
+              "task_count": 1
+            },
+            "status": "infra_failed",
+            "error": "EvaluationError: inference backend finished while Harbor was running; inference failed: Inference job /karan/eval-20261030-162310-snowball-pathb-swe100-a8a-u36-cc25/inference-987f4fa2f7b34f43a895f730b38bfac2 finished unexpectedly with status failed",
+            "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A8a/run-1/records/20261030-162310-snowball-pathb-swe100-a8a-u36-swebench-verified-100-d56c/results",
+            "metrics": {},
+            "canonical_metrics": {},
+            "coverage": {},
+            "jobs": {
+              "orchestrator": "/karan/eval-20261030-162310-snowball-pathb-swe100-a8a-u36-cc25",
+              "inference": "/karan/eval-20261030-162310-snowball-pathb-swe100-a8a-u36-cc25/inference-987f4fa2f7b34f43a895f730b38bfac2"
+            },
+            "log_tails": {
+              "inference": []
+            },
+            "provenance": {
+              "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+              "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+              "launch_host": "karans-linux"
+            },
+            "timing": null,
+            "serving": {
+              "tensor_parallel_size": 1,
+              "data_parallel_size": 8,
+              "pipeline_parallel_size": 1,
+              "task_count": 1,
+              "effective": true,
+              "max_model_len": 73728,
+              "max_gen_tokens": null,
+              "extra": {}
+            },
+            "inference_metrics": null
+          }
+        }
+      ],
+      "before_endpoint_native_startup_failure_observed": false,
+      "one_whole_replacement_eligible_not_yet_submitted": false
+    },
+    {
+      "arm": "A8a",
+      "original_slot": 2,
+      "job": "/karan/eval-20261030-162339-snowball-pathb-swe100-a8a-u36-1104",
+      "state": "failed",
+      "actual_root_tail60": [
+        "urllib3.exceptions.NewConnectionError: HTTPConnection(host='10.168.196.115', port=10241): Failed to establish a new connection: [Errno 111] Connection refused",
+        "",
+        "The above exception was the direct cause of the following exception:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 645, in send",
+        "    resp = conn.urlopen(",
+        "           ^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 842, in urlopen",
+        "    retries = retries.increment(",
+        "              ^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/urllib3/util/retry.py\", line 543, in increment",
+        "    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]",
+        "    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.168.196.115', port=10241): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.115', port=10241): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "",
+        "During handling of the above exception, another exception occurred:",
+        "",
+        "Traceback (most recent call last):",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 418, in _run_one_evaluation",
+        "    inference_metrics = metric_window.finish()",
+        "                        ^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 86, in finish",
+        "    current = _scrape(self.session, speculative=self.speculative)",
+        "              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/inference_metrics.py\", line 48, in _scrape",
+        "    families = PrometheusScraper(_metrics_url(session)).scrape()",
+        "               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/rigging/src/rigging/telemetry/prometheus.py\", line 65, in scrape",
+        "    with requests.get(self._metrics_url, timeout=self._timeout, stream=True) as response:",
+        "         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 73, in get",
+        "    return request(\"get\", url, params=params, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/api.py\", line 59, in request",
+        "    return session.request(method=method, url=url, **kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 592, in request",
+        "    resp = self.send(prep, **send_kwargs)",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 706, in send",
+        "    r = adapter.send(request, **kwargs)",
+        "        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 678, in send",
+        "    raise ConnectionError(e, request=request)",
+        "requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.168.196.115', port=10241): Max retries exceeded with url: /metrics (Caused by NewConnectionError(\"HTTPConnection(host='10.168.196.115', port=10241): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+        "I20261030 16:35:11 marin.evaluation.runner wrote eval record s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A8a/run-2/records/20261030-162339-snowball-pathb-swe100-a8a-u36-swebench-verified-100-56c0/record.json (status=infra_failed)",
+        "I20261030 16:35:11 137153760691904 finelog.client.log_client LogClient resolved /system/log-server -> http://finelog-cw-rno2a.iris.svc.cluster.local:10001 (stats)",
+        "Traceback (most recent call last):",
+        "  File \"/app/_callable_runner.py\", line 39, in <module>",
+        "    fn(*args, **kwargs)",
+        "  File \"/app/experiments/evaluation/held_bfcl.py\", line 155, in run_batch",
+        "    return runner._evaluate_with_hosted_judge(",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 561, in _evaluate_with_hosted_judge",
+        "    return evaluate_batch(",
+        "           ^^^^^^^^^^^^^^^",
+        "  File \"/app/lib/marin/src/marin/evaluation/runner.py\", line 502, in evaluate_batch",
+        "    raise RuntimeError(f\"{len(failed)} of {len(batch.evaluations)} evals failed: {', '.join(failed)}\")",
+        "RuntimeError: 1 of 1 evals failed: swebench-verified-100 (infra_failed)"
+      ],
+      "record_object_count": 11,
+      "actual_records": [
+        {
+          "key": "marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A8a/run-2/records/20261030-162339-snowball-pathb-swe100-a8a-u36-swebench-verified-100-56c0/record.json",
+          "path": "/home/karan/Dropbox/marin-notes/snowball-identity/path-b/second-agentic-swe100-execution-r1/A8a/original-run-2/terminal-infra-record.json",
+          "bytes": 5515,
+          "sha256": "ce110dbcfb8cb806b03bf20c3bde762283e08315599448d2c978d2e35680338f",
+          "record": {
+            "run_id": "20261030-162339-snowball-pathb-swe100-a8a-u36-swebench-verified-100-56c0",
+            "group_id": "20261030-162339-snowball-pathb-swe100-a8a-u36-1104",
+            "created_at": "2026-10-30T16:23:39.212562+00:00",
+            "user": "karan",
+            "version": "snowball-pathb-swe100-a8a-u36-r2-43bba4a16d17",
+            "description": "SWE100 fixed mini-swe2.1 A8a repeat2, original100 tasks no method change",
+            "model": {
+              "name": "snowball-pathb-swe100-a8a-u36",
+              "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-4bfe87adbb03/A8a/run/hf/updates-36",
+              "backend": "vllm",
+              "config": {
+                "name": "snowball-pathb-swe100-a8a-u36",
+                "location": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/bfcl-ablation-4bfe87adbb03/A8a/run/hf/updates-36",
+                "identity": null,
+                "revision": null,
+                "tokenizer": "open-athena/Grug-67B-A2B-Merge-Campaign3-DARE-Linear-02-2026.10.12",
+                "tokenizer_revision": "4eeb756b404db25bc04e4daf49dfb9817bceb741",
+                "apply_chat_template": true,
+                "resource_hint": {
+                  "hbm_gb": null,
+                  "gpu": {
+                    "H100": 8
+                  },
+                  "cpu": null,
+                  "memory": "512g",
+                  "disk": null
+                },
+                "serve": {
+                  "backend": "vllm",
+                  "tensor_parallel_size": 1,
+                  "data_parallel_size": 8,
+                  "pipeline_parallel_size": 1,
+                  "instances": 1,
+                  "gpu_memory_utilization": null,
+                  "max_model_len": 73728,
+                  "max_num_batched_tokens": 7168,
+                  "max_num_seqs": 32,
+                  "hf_overrides": null,
+                  "limit_mm_per_prompt": null,
+                  "tool_call_parser": "hermes",
+                  "reasoning_parser": null,
+                  "vllm_batch_invariant": null,
+                  "vllm_use_flashinfer_sampler": null,
+                  "runai_streamer_concurrency": null,
+                  "runai_streamer_s3_request_timeout_ms": null,
+                  "hf_hub_disable_xet": true,
+                  "vllm_source": null,
+                  "vllm_version": null,
+                  "vllm_plugin_requirements": [],
+                  "object_store_load_mode": "stream",
+                  "vllm_extra_args": [
+                    "--enable-expert-parallel",
+                    "--model-loader-extra-config",
+                    "{\"distributed\":true}"
+                  ],
+                  "speculative": null,
+                  "chat_template": null,
+                  "auto_overrides": false
+                },
+                "generation": {
+                  "max_gen_toks": null,
+                  "extra_gen_kwargs": {},
+                  "chat_template_kwargs": {},
+                  "thinking_off_template_kwargs": {}
+                },
+                "agent": {
+                  "agent_kwargs": {
+                    "thinking_format": "chat-template"
+                  }
+                },
+                "evalchemy_num_concurrent": null
+              },
+              "config_digest": "658400c49f7b07270a5b4587cafec83c2ebd84883b88ace327e24d3943f0d0e3"
+            },
+            "judge": null,
+            "eval": {
+              "name": "swebench-verified-100",
+              "mechanism": "harbor",
+              "source_digest": "sha256:2301d73d554a402aee2321d6bbaffbf1bf32f47cd9041550f8192272be71bb78",
+              "tasks": [
+                {
+                  "name": "swebench-verified",
+                  "num_fewshot": null,
+                  "task_alias": null,
+                  "generation": false,
+                  "unsafe_code": false,
+                  "completion_only": false,
+                  "benchmark": {
+                    "schema_version": 1,
+                    "task": "swebench-verified",
+                    "primary_metric": "reward",
+                    "metric_kind": "continuous",
+                    "metrics": [
+                      {
+                        "name": "reward",
+                        "source_name": "reward",
+                        "kind": "continuous",
+                        "higher_is_better": true
+                      }
+                    ],
+                    "n_benchmark": 100,
+                    "n_attempted": 100
+                  }
+                }
+              ],
+              "evalchemy": null,
+              "harbor": {
+                "dataset": "swebench-verified",
+                "version": "1.0",
+                "agent": "mini-swe-agent",
+                "env": "daytona",
+                "config_digest": "sha256:1309617326f3aea4e5293e216549816e42591dedc9c5d847035d35013e1094e6",
+                "harbor_config_commit": "38742b0f9f411c95e0c01468785cac7bb77c9894",
+                "max_input_tokens": 32768,
+                "max_output_tokens": 8192
+              }
+            },
+            "hardware": {
+              "platform": "gpu",
+              "accelerator": "H100x8",
+              "region_or_cluster": "cw-rno2a",
+              "task_count": 1
+            },
+            "status": "infra_failed",
+            "error": "EvaluationError: inference backend finished while Harbor was running; inference failed: Inference job /karan/eval-20261030-162339-snowball-pathb-swe100-a8a-u36-1104/inference-33be427e0323454d87b4f0c1f3e4e3c7 finished unexpectedly with status failed",
+            "results_path": "s3://marin-rno2a/tmp/ttl=14d/snowball-identity/path-b/second-agentic-swe100-43bba4a16d17/A8a/run-2/records/20261030-162339-snowball-pathb-swe100-a8a-u36-swebench-verified-100-56c0/results",
+            "metrics": {},
+            "canonical_metrics": {},
+            "coverage": {},
+            "jobs": {
+              "orchestrator": "/karan/eval-20261030-162339-snowball-pathb-swe100-a8a-u36-1104",
+              "inference": "/karan/eval-20261030-162339-snowball-pathb-swe100-a8a-u36-1104/inference-33be427e0323454d87b4f0c1f3e4e3c7"
+            },
+            "log_tails": {
+              "inference": []
+            },
+            "provenance": {
+              "git_sha": "43bba4a16d175072b20fea27b8fb5524c377c79f",
+              "eval_runtime": "harbor[archive,tau3] @ git+https://github.com/marin-community/harbor.git@38742b0f9f411c95e0c01468785cac7bb77c9894; daytona==0.200.2; gcsfs==2026.7.0; pydantic-settings==2.14.2; s3fs==2026.7.0",
+              "launch_host": "karans-linux"
+            },
+            "timing": null,
+            "serving": {
+              "tensor_parallel_size": 1,
+              "data_parallel_size": 8,
+              "pipeline_parallel_size": 1,
+              "task_count": 1,
+              "effective": true,
+              "max_model_len": 73728,
+              "max_gen_tokens": null,
+              "extra": {}
+            },
+            "inference_metrics": null
+          }
+        }
+      ],
+      "before_endpoint_native_startup_failure_observed": false,
+      "one_whole_replacement_eligible_not_yet_submitted": false
+    },
+    {
+      "arm": "A8a",
+      "original_slot": 3,
+      "job": "/karan/eval-20261030-162407-snowball-pathb-swe100-a8a-u36-7d58",
+      "state": "running"
+    }
+  ]
+}

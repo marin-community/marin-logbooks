@@ -1,0 +1,281 @@
+...FF..F..                                                               [100%]
+=================================== FAILURES ===================================
+_ test_final_only_owner_releases_train_before_probe_export_and_outlives_export[False] _
+
+tmp_path = PosixPath('/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-61/test_final_only_owner_releases0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a2ec45a21b0>
+probe_failure = False
+
+    @pytest.mark.parametrize("probe_failure", [False, True])
+    def test_final_only_owner_releases_train_before_probe_export_and_outlives_export(tmp_path, monkeypatch, probe_failure):
+        root_uri = "s3://marin-rno2a/tmp/ttl=14d/bfcl-ablation-fixture/A0"
+    
+        def local(path):
+            destination = tmp_path / "storage" / str(path).removeprefix("s3://")
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            return StoragePath(str(destination))
+    
+        monkeypatch.setattr(ablation_launch, "StoragePath", local)
+        monkeypatch.setattr(async_launch, "StoragePath", local)
+        monkeypatch.setattr(ablation_launch, "record", lambda path, value: local(path).write_bytes(json.dumps(value).encode()))
+        exposure = {"cumulative_batches": [{"identity_final_text_tokens": 1}] * 36}
+        monkeypatch.setattr(ablation_launch, "read_pinned", lambda *args: json.dumps(exposure).encode())
+        training = dict(run_root=root_uri, run_id="fixture", arm="A0", training_pin="a" * 40,
+            packed_path="packed", packed_sha256="b" * 64, exposure_path="exposure", exposure_sha256="c" * 64,
+            runtime_bytes=b'{"xla_precision":"default"}', runtime_sha256="d" * 64, source_receipt=SOURCE_RECEIPT, source_objects={})
+        event = CheckpointEvent(36, root_uri + "/checkpoints/step-35", root_uri + "/hf/updates-36",
+            root_uri + "/eval/updates-36", exposure["cumulative_batches"][-1], "a" * 40, "b" * 64, "A0")
+        local(root_uri + "/final-checkpoint-event.json").write_bytes(event_bytes(event))
+        local(event.native_checkpoint + "/metadata.json").write_bytes(json.dumps({"step": 35, "is_temporary": True}).encode())
+        local(event.hf_export + "/path-b-checkpoint-event.json").write_bytes(event_bytes(event))
+        audit_names = frozen_names(AblationArm.CONTROL)
+        audit = {"schema": "path_b_storage_v1", "source_receipt_sha256": SOURCE_RECEIPT["sha256"],
+            "frozen_native_tensors": 104, "trained_master_cast_tensors": 398,
+            "tensors": {**{name: {"frozen_source": True} for name in audit_names},
+                        **{f"trained.{index}": {"frozen_source": False} for index in range(398)}}}
+        local(event.hf_export + "/path-b-storage-audit.json").write_bytes(json.dumps(audit).encode())
+        probes = []
+        outcome = Future()
+        with journey_world(tmp_path / "controller", monkeypatch) as world:
+            parent = world.submit("ablation-cpu-owner")
+            world.settle()
+            execution = ExecutionBoundary(world, parent)
+            monkeypatch.setattr(ablation_launch, "native_submit", execution.submit)
+    
+            def probe(event):
+                assert world.job(execution.jobs["train"].ref).state == job_pb2.JOB_STATE_SUCCEEDED
+                assert "export-36" not in execution.jobs
+                probes.append(event)
+                if probe_failure:
+                    raise PermissionError("CPU preflight denied")
+                return {"bytes": 32}
+    
+            monkeypatch.setattr(ablation_launch, "export_write_probe", probe)
+    
+            def run():
+                try:
+                    ablation_launch.workflow_worker(training=training)
+                    outcome.set_result(None)
+                except BaseException as error:
+                    outcome.set_exception(error)
+    
+            worker = threading.Thread(target=run)
+            worker.start()
+            train = execution.get("train")
+            assert train.submit_options["env_vars"]["JAX_PLATFORMS"] == "cuda,cpu"
+            assert not outcome.done() and not probes
+>           execution.finish("train")
+
+experiments/post_training/identity_path_b/test_ablation_launch.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <experiments.post_training.identity_path_b.testing_support.ExecutionBoundary object at 0x7a2fec34c5f0>
+name = 'train'
+
+    def finish(self, name, *, success=True):
+        with self.changed:
+            job = self.jobs[name]
+            if success:
+                self.world.succeed_all(job.ref)
+            else:
+                self.world.fail(job.ref[0])
+            self.world.settle()
+            state = self.world.job(job.ref).state
+>           terminal = JobState.SUCCEEDED if state == job_pb2.JOB_STATE_SUCCEEDED else JobState.FAILED
+                                                      ^^^^^^^
+E           NameError: name 'job_pb2' is not defined
+
+experiments/post_training/identity_path_b/testing_support.py:84: NameError
+----------------------------- Captured stderr call -----------------------------
+I20261029 21:01:45 134339866130112 finelog.client.log_client LogClient resolved http://127.0.0.1:37079 -> http://127.0.0.1:37079 (stats)
+_ test_final_only_owner_releases_train_before_probe_export_and_outlives_export[True] _
+
+tmp_path = PosixPath('/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-61/test_final_only_owner_releases1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a2ee4215760>
+probe_failure = True
+
+    @pytest.mark.parametrize("probe_failure", [False, True])
+    def test_final_only_owner_releases_train_before_probe_export_and_outlives_export(tmp_path, monkeypatch, probe_failure):
+        root_uri = "s3://marin-rno2a/tmp/ttl=14d/bfcl-ablation-fixture/A0"
+    
+        def local(path):
+            destination = tmp_path / "storage" / str(path).removeprefix("s3://")
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            return StoragePath(str(destination))
+    
+        monkeypatch.setattr(ablation_launch, "StoragePath", local)
+        monkeypatch.setattr(async_launch, "StoragePath", local)
+        monkeypatch.setattr(ablation_launch, "record", lambda path, value: local(path).write_bytes(json.dumps(value).encode()))
+        exposure = {"cumulative_batches": [{"identity_final_text_tokens": 1}] * 36}
+        monkeypatch.setattr(ablation_launch, "read_pinned", lambda *args: json.dumps(exposure).encode())
+        training = dict(run_root=root_uri, run_id="fixture", arm="A0", training_pin="a" * 40,
+            packed_path="packed", packed_sha256="b" * 64, exposure_path="exposure", exposure_sha256="c" * 64,
+            runtime_bytes=b'{"xla_precision":"default"}', runtime_sha256="d" * 64, source_receipt=SOURCE_RECEIPT, source_objects={})
+        event = CheckpointEvent(36, root_uri + "/checkpoints/step-35", root_uri + "/hf/updates-36",
+            root_uri + "/eval/updates-36", exposure["cumulative_batches"][-1], "a" * 40, "b" * 64, "A0")
+        local(root_uri + "/final-checkpoint-event.json").write_bytes(event_bytes(event))
+        local(event.native_checkpoint + "/metadata.json").write_bytes(json.dumps({"step": 35, "is_temporary": True}).encode())
+        local(event.hf_export + "/path-b-checkpoint-event.json").write_bytes(event_bytes(event))
+        audit_names = frozen_names(AblationArm.CONTROL)
+        audit = {"schema": "path_b_storage_v1", "source_receipt_sha256": SOURCE_RECEIPT["sha256"],
+            "frozen_native_tensors": 104, "trained_master_cast_tensors": 398,
+            "tensors": {**{name: {"frozen_source": True} for name in audit_names},
+                        **{f"trained.{index}": {"frozen_source": False} for index in range(398)}}}
+        local(event.hf_export + "/path-b-storage-audit.json").write_bytes(json.dumps(audit).encode())
+        probes = []
+        outcome = Future()
+        with journey_world(tmp_path / "controller", monkeypatch) as world:
+            parent = world.submit("ablation-cpu-owner")
+            world.settle()
+            execution = ExecutionBoundary(world, parent)
+            monkeypatch.setattr(ablation_launch, "native_submit", execution.submit)
+    
+            def probe(event):
+                assert world.job(execution.jobs["train"].ref).state == job_pb2.JOB_STATE_SUCCEEDED
+                assert "export-36" not in execution.jobs
+                probes.append(event)
+                if probe_failure:
+                    raise PermissionError("CPU preflight denied")
+                return {"bytes": 32}
+    
+            monkeypatch.setattr(ablation_launch, "export_write_probe", probe)
+    
+            def run():
+                try:
+                    ablation_launch.workflow_worker(training=training)
+                    outcome.set_result(None)
+                except BaseException as error:
+                    outcome.set_exception(error)
+    
+            worker = threading.Thread(target=run)
+            worker.start()
+            train = execution.get("train")
+            assert train.submit_options["env_vars"]["JAX_PLATFORMS"] == "cuda,cpu"
+            assert not outcome.done() and not probes
+>           execution.finish("train")
+
+experiments/post_training/identity_path_b/test_ablation_launch.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <experiments.post_training.identity_path_b.testing_support.ExecutionBoundary object at 0x7a2f285e3d40>
+name = 'train'
+
+    def finish(self, name, *, success=True):
+        with self.changed:
+            job = self.jobs[name]
+            if success:
+                self.world.succeed_all(job.ref)
+            else:
+                self.world.fail(job.ref[0])
+            self.world.settle()
+            state = self.world.job(job.ref).state
+>           terminal = JobState.SUCCEEDED if state == job_pb2.JOB_STATE_SUCCEEDED else JobState.FAILED
+                                                      ^^^^^^^
+E           NameError: name 'job_pb2' is not defined
+
+experiments/post_training/identity_path_b/testing_support.py:84: NameError
+----------------------------- Captured stderr call -----------------------------
+I20261029 21:01:51 134339857737408 finelog.client.log_client LogClient resolved http://127.0.0.1:40177 -> http://127.0.0.1:40177 (stats)
+_ test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_stop_train _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a2e6ff08da0>
+tmp_path = PosixPath('/mnt/storage/karan-scratch/genet-path-b/tmp/pytest-of-karan/pytest-61/test_cpu_root_outlives_sibling0')
+
+    def test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_stop_train(monkeypatch, tmp_path):
+        receipts = {}
+        monkeypatch.setattr(workflow, "export_write_probe", lambda event: {"bytes": 32})
+        monkeypatch.setattr(workflow, "delete_audited_checkpoint", lambda *args: None)
+        monkeypatch.setattr(workflow, "write_json", lambda path, value: receipts.update({path: value}))
+    
+        # Receipt storage is external; a valid export completion is exercised by
+        # checked_export_event against the real event bytes below.
+        def local_storage(path):
+            result = tmp_path / "storage" / path.removeprefix("s3://")
+            result.parent.mkdir(parents=True, exist_ok=True)
+            return result
+    
+        monkeypatch.setattr(async_launch, "StoragePath", local_storage)
+        root_events = Queue()
+        hosted_stopped = threading.Event()
+    
+        class HostingBoundary:
+            def host_actor(self, actor_class, messages, expected, updates, **unused):
+                self.inbox = actor_class(messages, expected, updates)
+                root_events.put(self.inbox)
+                return HostedActor(SimpleNamespace(), hosted_stopped.set)
+    
+        hosting = HostingBoundary()
+        monkeypatch.setattr(workflow, "current_client", lambda: hosting)
+        monkeypatch.setattr(workflow, "read_pinned", lambda *unused: json.dumps({"checkpoint_updates": [25, 50]}).encode())
+        context = IrisContext(job_id=JobName.from_wire("/journey/pathb-cpu-root"), client=None)
+        monkeypatch.setattr(workflow, "regional_task_context", lambda: context)
+        binding = ExportBinding(
+            "fixture", b'{"xla_precision":"no_excess_precision"}', "c" * 64, {}, {}, TrendInputs("identity", "controls")
+        )
+        training = dict(
+            run_root="s3://marin-rno2a/tmp/ttl=14d/path-b/fixture",
+            run_id="fixture",
+            arm="identity10",
+            training_pin="a" * 40,
+            packed_path="packed",
+            packed_sha256="b" * 64,
+            exposure_path="exposure",
+            exposure_sha256="d" * 64,
+            runtime_bytes=binding.runtime_bytes,
+            runtime_sha256=binding.runtime_sha256,
+            source_receipt={},
+            source_objects={},
+        )
+        outcome = Future()
+        with journey_world(tmp_path / "controller", monkeypatch) as world:
+            root = world.submit("pathb-cpu-root")
+            world.settle()
+            execution = ExecutionBoundary(world, root)
+            monkeypatch.setattr(workflow, "native_submit", execution.submit)
+    
+            def run():
+                try:
+                    with iris_ctx_scope(context):
+                        workflow.workflow_worker(training=training, binding=binding)
+                    outcome.set_result(None)
+                except BaseException as error:
+                    outcome.set_exception(error)
+    
+            thread = threading.Thread(target=run)
+            thread.start()
+            inbox = root_events.get(timeout=10)
+            train = execution.get("train")
+            assert train.submit_options["env_vars"]["JAX_PLATFORMS"] == "cuda,cpu"
+            assert train.kwargs["checkpoint_hook_factory"].root_actor_name == "/journey/pathb-cpu-root/checkpoint-inbox-0"
+            inbox.enqueue(sample_event(25).payload())
+            execution.get("export-000025")
+>           execution.finish("export-000025", success=False)
+
+experiments/post_training/identity_path_b/test_workflow.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <experiments.post_training.identity_path_b.testing_support.ExecutionBoundary object at 0x7a2ee4667890>
+name = 'export-000025'
+
+    def finish(self, name, *, success=True):
+        with self.changed:
+            job = self.jobs[name]
+            if success:
+                self.world.succeed_all(job.ref)
+            else:
+                self.world.fail(job.ref[0])
+            self.world.settle()
+            state = self.world.job(job.ref).state
+>           terminal = JobState.SUCCEEDED if state == job_pb2.JOB_STATE_SUCCEEDED else JobState.FAILED
+                                                      ^^^^^^^
+E           NameError: name 'job_pb2' is not defined
+
+experiments/post_training/identity_path_b/testing_support.py:84: NameError
+----------------------------- Captured stderr call -----------------------------
+I20261029 21:02:02 134356874932352 finelog.client.log_client LogClient resolved http://127.0.0.1:44357 -> http://127.0.0.1:44357 (log)
+I20261029 21:02:02 134339681556160 finelog.client.log_client LogClient resolved http://127.0.0.1:44357 -> http://127.0.0.1:44357 (stats)
+=========================== short test summary info ============================
+FAILED experiments/post_training/identity_path_b/test_ablation_launch.py::test_final_only_owner_releases_train_before_probe_export_and_outlives_export[False]
+FAILED experiments/post_training/identity_path_b/test_ablation_launch.py::test_final_only_owner_releases_train_before_probe_export_and_outlives_export[True]
+FAILED experiments/post_training/identity_path_b/test_workflow.py::test_cpu_root_outlives_sibling_diagnostics_and_diagnostic_failure_does_not_stop_train
+3 failed, 7 passed in 49.56s

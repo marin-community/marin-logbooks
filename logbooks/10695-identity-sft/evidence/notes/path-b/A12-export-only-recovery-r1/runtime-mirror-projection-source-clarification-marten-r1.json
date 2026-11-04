@@ -1,0 +1,28 @@
+{
+  "status": "STATIC_MIRROR_PROJECTION_MECHANISM_CONFIRMED_PEER_POLICY_UNVERIFIED",
+  "prior_pending_note_sha256": "17193ebe054e1fb69130605ed19f9f7dd42dcb3869a0663b5b3faa1fc2d44b80",
+  "original_binding_review_sha256": "cb426ac79e446c940e3fe9f7379c0ddfc0c8ab88761711cec71fa1a770696892",
+  "scope": "Read-only source clarification of the reported child request fields. It does not establish actual peer policy, actual deployed controller revision, a runtime adapter fault or a new operational action.",
+  "source_chain": [
+    "FederationStore._insert_child_mirror creates display mirror rows for children spawned on the peer, passing only job identity, peer-reported resources and parent-seeded priority to insert_mirrored_job_config.",
+    "insert_mirrored_job_config deliberately leaves entrypoint, bundle, retries, timeout and constraints at job_config schema defaults because the parent never authored or executes that child request.",
+    "Schema defaults are failure0, preemption100, timeoutNULL, constraintsNULL, entrypoint{} and empty bundle. Those values exactly match the reported suspicious pattern.",
+    "GetJobStatus reconstructs a LaunchJobRequest from the local row through reconstruct_launch_job_request. A NULL timeout is not populated, hence reads as proto0; absent constraints render[]. Workdir files are deliberately omitted from status even for normal jobs."
+  ],
+  "priority_limit": "Mirrored child priority is explicitly a parent-seeded display value; the peer summary has no child override priority. Do not use mirrored priority alone as proof of the child's effective priority, whether it agrees with the expected value or not.",
+  "interpretation": "The source establishes how a parent mirror can show0/100/timeout0/[] without the peer running with those settings. Thus that view alone is not evidence that A12's actual timeout/retry arguments were dropped. It also cannot certify the effective0/0/7200 policy. Offered native args remain separately proven; authoritative peer-side request provenance would be needed for actual policy confirmation.",
+  "reviewed_source": {
+    "workspace": "/home/karan/oa/marin-path-b-a12-export-recovery",
+    "source_pin": "8125c4faa1e7bb4ed9fa35e5bb9aaf45a3602362",
+    "files": {
+      "lib/iris/src/iris/cluster/controller/federation_store.py": "237e3f924b9de8bd155a289465d79611052f565a732755509a051641d29c538f",
+      "lib/iris/src/iris/cluster/controller/writes.py": "dc79130034177db45e7774939e1c48343ec9ab9a749c86ad5820649efed57082",
+      "lib/iris/src/iris/cluster/controller/schema.py": "c28e0e265a927deef79db42c9804b26692ab43a80dc0b792893794b8c1609400",
+      "lib/iris/src/iris/cluster/controller/codec.py": "bc810a09a73754af66474bea3eb47bb174f75230a6c495293c688be4f5018bc0",
+      "lib/iris/src/iris/cluster/controller/jobs.py": "5bd067ee47da69f37bf713f229362b31e1ea382573a4f7522a30fe1a2a9f4840"
+    }
+  },
+  "operational_disposition": "Owner LET FINISH relayed by Genet. No reviewer cancel, retry, source change, timer, extra RPC, new workload or controller action. Preserve original request evidence, all attempts/costs and native17 until its successful fresh502 audit/owned retirement. Do not import the SWE inference waiver as an exporter timeout waiver or manufacture a policy PASS.",
+  "unaffected": "Scientific A12 data/training18/export/audit checks and existing SWE scores/registered analyses remain unchanged. This source clarification is not a new launch or scientific evaluation gate.",
+  "reviewer_remote_or_control_calls": 0
+}

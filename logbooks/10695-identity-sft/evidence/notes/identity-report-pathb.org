@@ -1,0 +1,138 @@
+#+TITLE: Snowball identity SFT with identity data (Path B)
+#+AUTHOR: Marin identity work (agent-generated)
+#+DATE: 2026-10-31
+#+OPTIONS: toc:nil num:t ^:nil
+#+LATEX_HEADER: \usepackage[margin=2cm]{geometry}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \renewcommand{\arraystretch}{1.15}
+
+* Summary
+- *Goal.* Snowball v0.1 says it is ChatGPT/OpenAI (thinking on) or Nemotron/NVIDIA (thinking off).
+  We want the model itself, with no system prompt, to know it is Marin's Latest MoE, developed and
+  trained by the Marin Community, without losing capability.
+- *Method.* Short SFTs from v0.1 (18, 36 or 72 updates) on Will Held's identity dataset
+  (marin-community/identity-data @665ac6e) mixed with replay of v0.1's own answers.
+- *Main finding.* Identity rows rendered with thinking ON teach the model to "answer and stop"
+  in thinking mode. BFCL tool calling falls from 27.6% to about 15%. This happens whether the
+  thinking span is empty or holds GLM-written reasoning. Identity rows rendered with thinking OFF do not do this.
+- *Lead candidate: A13.* It combines:
+  - identity rows rendered with thinking OFF;
+  - a small share (179 rows, 10%) of thinking-ON identity rows with GLM reasoning;
+  - the thinking-ON tool-calling replay rows, doubled.
+
+  Results:
+  - BFCL 28.3%, +0.7 points [-3.4, +4.4] vs v0.1;
+  - with thinking ON, it never claims another lab (v0.1: 46 of 52);
+  - GSM8K -1.1 [-1.9, -0.3]; MATH500 unchanged.
+- *Fallback: A3.* It renders identity rows with thinking OFF only.
+  - Best BFCL: 31.1%.
+  - But its reasoning often invents a "system message" (17 of 52).
+  - GSM8K -1.7 [-2.6, -0.9], which trips our pre-set line.
+- *What did not help:*
+  - more training (72 updates);
+  - less training (18 updates: BFCL collapses);
+  - a tiny Tulu-style set;
+  - linear merges of A3 and A8a;
+  - self-distillation from v0.1 for thinking-ON rows (its reasoning always quotes the system prompt).
+
+* Evaluation setup
+- *BFCL parity.* 123 tool-calling tasks run with the Pi 0.87.0 agent. Each model gets five full runs,
+  with a run-level bootstrap for 95% CIs against a fresh five-run v0.1 baseline. Pi sends no
+  temperature, so the server default (1.0) applies. That is why single runs are noisy (one checkpoint swung 29 to 17).
+- *Identity.* 52 core identity prompts plus 14 third-person controls, thinking off and on, no
+  system prompt. Answers are read with special tokens kept, so reasoning and answer split at the
+  model's own end-of-thinking token. Only 31 of the 52 core prompts ask for the name. The rest ask
+  about the creator, where naming the creator alone is correct.
+- *Maths.* Paired GSM8K (thinking off) and MATH500 (thinking on), 3 decodes each, item-level
+  bootstrap. Pre-set stop line: a drop of more than 1.5 points with the whole CI below zero.
+- *SWE100.* 100 SWE tasks with mini-swe-agent 2.1. Only runs with all 100 tasks scored count.
+
+* Results
+** Tool calling (BFCL, five full runs unless noted)
+#+ATTR_LATEX: :booktabs t
+| Arm  | What changed                                    |  BFCL | vs v0.1 [95% CI]             |
+|------+-------------------------------------------------+-------+------------------------------|
+| v0.1 | --                                              | 27.6% | --                           |
+| A0   | identity rows; thinking-ON rows empty           | 15.6% | -12.1 [-16.5, -7.6]          |
+| A1   | A0 without the special-token freeze             | 14.8% | -12.8 [-16.3, -9.9]          |
+| A2   | replay only                                     | 24.6% | -3.1 [-6.2, -0.7]            |
+| A3   | identity rows with thinking OFF only            | 31.1% | +3.4 [-0.5, +7.2]            |
+| A6   | thinking-ON rows with GLM reasoning (1,791)     | 15.4% | -12.2 [-15.6, -9.3]          |
+| A8b  | A3 + 30% of A6's thinking-ON rows               | 17.2% | -10.4 [-14.0, -7.3]          |
+| A8a  | A3 + 10% of A6's thinking-ON rows               | 26.2% | -1.5 [-4.9, +1.5]            |
+| A9   | A8a, 72 updates                                 | 24.6% | -3.1 [-6.7, +0.3]            |
+| A10  | Tulu-style: 44 identity Q&As x 10               | 24.0% | -3.7 [-8.0, +0.0] (4 runs)   |
+| A11  | A3, 72 updates                                  | 31.2% | +3.6 [-0.5, +7.5]            |
+| A12  | A8a, first 18 updates                           | 14.8% | -12.8 [-16.4, -9.9]          |
+| A13  | A8a + thinking-ON tool replay doubled           | 28.3% | +0.7 [-3.4, +4.4]            |
+| M25  | 0.75 A3 + 0.25 A8a                              | 30.4% | +2.8 [-0.8, +6.0]            |
+| M49  | 0.51 A3 + 0.49 A8a                              | 29.5% | +1.8 [-1.7, +4.9] (4 runs)   |
+| M51  | 0.49 A3 + 0.51 A8a                              | 23.8% | -3.9 [-7.9, +0.1] (4 runs)   |
+| M75  | 0.25 A3 + 0.75 A8a                              | 23.9% | -3.7 [-6.8, -1.3]            |
+
+How models fail (first registered run, 123 tasks): A0 answers once without any tool call in 60
+tasks, A6 in 66, A3 in 12, A8a in 17, A13 in 16. A6 also recites its identity in 29 tool tasks.
+
+** Identity (special tokens kept, no system prompt)
+N / C / O = says its name / says its creator / claims another lab, of 52 core prompts. Sys. = reasoning
+invents a system message (thinking on, of 52). Rewr. = credits another lab's product to us (of 14 controls, off / on).
+
+#+ATTR_LATEX: :booktabs t
+| Model | ON: N / C / O | OFF: N / C / O | Sys. | Rewr. |
+|-------+----------------------------------------+---------------------------------+--------------------------+------------------------------------|
+| v0.1  | 0 / 0 / 46                             | 0 / 0 / 41                      |                       10 | 0 / 0                              |
+| A3    | 31 / 44 / 0                            | 30 / 34 / 0                     |                       17 | 0 / 0                              |
+| A8a   | 34 / 33 / 0                            | 29 / 30 / 1                     |                        1 | 0 / 0                              |
+| A13   | 35 / 32 / 0                            | 29 / 30 / 1                     |                        3 | 0 / 0                              |
+| A10   | 26 / 32 / 9                            | 29 / 24 / 5                     |                        3 | 0 / 0                              |
+| A11   | 31 / 37 / 2                            | 27 / 39 / 1                     |                       16 | 1 / 1                              |
+| M51   | 33 / 31 / 0                            | 30 / 30 / 0                     |                       ~1 | 0 / 0                              |
+
+On the 31 prompts that ask for the name, A3 and A8a name themselves in 26 to 28. Truly missing or
+wrong identity is 0 to 5 per mode, against 47 to 51 for v0.1.
+
+** Maths (paired vs v0.1; v0.1 GSM8K 92.1%, MATH500 92.0%)
+#+ATTR_LATEX: :booktabs t
+| Model | GSM8K (thinking off)     | MATH500 (thinking on) |
+|-------+--------------------------+-----------------------|
+| A3    | -1.7 [-2.6, -0.9] (stop) | -0.2 [-1.4, +1.0]     |
+| A8a   | -1.1 [-1.9, -0.3]        | +0.7 [-0.5, +1.9]     |
+| A11   | -1.3 [-2.1, -0.5]        | -0.3 [-1.4, +0.9]     |
+| A12   | +0.2 [-0.7, +1.1]        | +0.1 [-1.0, +1.1]     |
+| A13   | -1.1 [-1.9, -0.3]        | no change             |
+| M25   | -1.5 [-2.4, -0.7] (stop) | no change             |
+| M49   | -1.6 [-2.5, -0.8] (stop) | no change             |
+| M51   | -1.2 [-2.0, -0.4]        | +0.9 [-0.2, +2.0]     |
+
+** SWE100 (full runs only)
+v0.1 29.7% (28, 33, 28); A3 28.3% (-1.3 [-4.7, +0.7]); A8a 27.3% (-2.4 [-5.6, +0.3]); A0 28.0%
+(one run). SWE100 shows no BFCL-size collapse, even for A0. Its agent re-prompts any reply that
+has no command, so the model cannot simply answer and stop. The logs show 2,594 such re-prompts
+across 560 task attempts, for every model including v0.1.
+
+* What we learned
+- *The thinking mode is where tool calling breaks.* The Pi agent runs with thinking on. If most
+  thinking-on training examples are short identity answers with no tool call, the model learns to
+  answer and stop. Keeping thinking-on identity rows to about 10%, and doubling thinking-on tool
+  replay, avoids it.
+- *Training length matters non-monotonically.* At 18 updates BFCL is collapsed, and by 36 it has
+  recovered. Checking one checkpoint can mislead; future runs should check several.
+- *The GSM8K cost (1--2 points) comes with 36-update training in every recipe.* It is not the
+  identity data alone. A better replay mix is the likely fix (untested).
+- *Merging does not separate the two strengths.* BFCL and the reasoning quirk switch together near
+  t = 0.5.
+- *Parser artefact.* Our first "thinking-on format broken" counts came from a serve that did not
+  split reasoning from the answer. They hit v0.1 just as hard (52 of 52). Reading with special tokens
+  kept removes the artefact.
+- *Measurement.* BFCL at temperature 1.0 needs five or more runs per model. Single runs swing by
+  10 points.
+
+* Open items
+- Mini840 (#10804): the published runtime needs an environment snapshot map, which was not
+  published, and its non-agentic graders fail as shipped. A fixed agentic pilot is running.
+- A final release check of the lead candidate (A13) with a full identity suite, then a public release.
+
+* Artifacts
+- Private HF archives (open-athena): Snowball-67B-A2B-Identity-PathB-{A3,A8a,A13}-2026.10.30.
+- GitHub: marin-community/marin#10695 (summary and detailed comment).
+- Earlier context-distillation report: identity-report.pdf (2026-10-28).

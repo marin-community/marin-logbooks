@@ -1,0 +1,175 @@
+{
+ "utc": "2026-10-31T14:47:34.450609+00:00",
+ "state": "PANEL60_UNBLINDED_AFTER_SEALED_GRADES",
+ "grades_sha256": "69b99c2e12f64603dfe68c1432032750d12223d610ddbcbcb639b698d64f11aa",
+ "pre_unblind_record": "grades-sha-recorded-before-unblinding-margay-r1.json b157bc158abcfeb1480bc3edc475fbb078cd41bcd5dcf3be7562209618b52855",
+ "key_sha256": "20fb43535582bff806aac24ae555813c2f14534f6b5e8935a34af39be2ddf33b",
+ "per_arm": {
+  "A13": {
+   "n": 60,
+   "clean": 15,
+   "name_marin": 35,
+   "name_missing": 24,
+   "name_foreign": 1,
+   "creator_marin": 54,
+   "creator_missing": 6,
+   "creator_foreign": 0,
+   "foreign_any": 1,
+   "invented": 3,
+   "recital": 57,
+   "uncertain": 8
+  },
+  "A8a": {
+   "n": 60,
+   "clean": 14,
+   "name_marin": 35,
+   "name_missing": 25,
+   "name_foreign": 0,
+   "creator_marin": 47,
+   "creator_missing": 13,
+   "creator_foreign": 0,
+   "foreign_any": 0,
+   "invented": 3,
+   "recital": 58,
+   "uncertain": 6
+  },
+  "A3": {
+   "n": 60,
+   "clean": 15,
+   "name_marin": 34,
+   "name_missing": 26,
+   "name_foreign": 0,
+   "creator_marin": 56,
+   "creator_missing": 4,
+   "creator_foreign": 0,
+   "foreign_any": 0,
+   "invented": 1,
+   "recital": 59,
+   "uncertain": 6
+  },
+  "v0p1": {
+   "n": 60,
+   "clean": 10,
+   "name_marin": 5,
+   "name_missing": 49,
+   "name_foreign": 6,
+   "creator_marin": 4,
+   "creator_missing": 40,
+   "creator_foreign": 16,
+   "foreign_any": 17,
+   "invented": 22,
+   "recital": 0,
+   "uncertain": 8
+  },
+  "v0p1-sysdefault": {
+   "n": 60,
+   "clean": 33,
+   "name_marin": 26,
+   "name_missing": 34,
+   "name_foreign": 0,
+   "creator_marin": 40,
+   "creator_missing": 16,
+   "creator_foreign": 4,
+   "foreign_any": 4,
+   "invented": 13,
+   "recital": 0,
+   "uncertain": 16
+  }
+ },
+ "a3_without_item26": {
+  "n": 59,
+  "clean": 15,
+  "name_marin": 34,
+  "name_missing": 25,
+  "name_foreign": 0,
+  "creator_marin": 56,
+  "creator_missing": 3,
+  "creator_foreign": 0,
+  "foreign_any": 0,
+  "invented": 1,
+  "recital": 59,
+  "uncertain": 6
+ },
+ "ship_line_4": {
+  "criterion": "clean>=20, name=marin>=15, foreign<=3 (missing reported separately)",
+  "A13": {
+   "clean": 15,
+   "name": 35,
+   "foreign": 1,
+   "verdict": "FAIL_ON_CLEAN"
+  },
+  "A8a": {
+   "clean": 14,
+   "name": 35,
+   "foreign": 0,
+   "verdict": "FAIL_ON_CLEAN"
+  },
+  "A3": {
+   "clean": 15,
+   "name": 34,
+   "foreign": 0,
+   "verdict": "FAIL_ON_CLEAN"
+  },
+  "references": {
+   "v0p1": {
+    "clean": 10,
+    "name": 5,
+    "foreign": 17
+   },
+   "v0p1_sysdefault": {
+    "clean": 33,
+    "name": 26,
+    "foreign": 4
+   }
+  }
+ },
+ "a3_sensitivity_item26": {
+  "with": {
+   "clean": 15,
+   "name": 34,
+   "missing": 26,
+   "foreign": 0
+  },
+  "without": {
+   "clean": 15,
+   "name": 34,
+   "missing": 25,
+   "foreign": 0
+  },
+  "conclusion": "excluding item 26 changes NOTHING in clean or name; only missing 26->25. The disclosed slip is immaterial to A3 ship lines."
+ },
+ "length_rows_per_arm": {
+  "A13": {},
+  "A8a": {},
+  "A3": {
+   "26": "length"
+  },
+  "v0p1": {},
+  "v0p1-sysdefault": {}
+ },
+ "grader_record": {
+  "all_300_rows": "grader=genet (a model); no hand grades; 44 rows uncertain with explicit reasons",
+  "modifier": "no override rows were reported"
+ },
+ "why_clean_fails_interpretation": {
+  "identity_arm_rows_by_clean_x_recital": {
+   "clean1_recital1": 43,
+   "clean0_recital1": 131,
+   "clean0_recital0": 5,
+   "clean1_recital0": 1
+  },
+  "non_clean_rationale_clusters": [
+   "correct Marin-family name but does not spell it as requested",
+   "no explicit model-versus-project relationship",
+   "only the model name; project relationship unexplained",
+   "maintainer statement does not state whether assistant is the project"
+  ],
+  "reading": "clean is NOT simply the inverse of recital (43 rows are clean AND recital). The identity arms fail clean mostly for PHRASING/RELATIONSHIP reasons in Ben rubric, not for wrong identity. Per the owner ruling canned recital is acceptable on identity questions, so recital alone is not an identity failure. This should be stated so a FAIL_ON_CLEAN is not read as the arms claiming the wrong identity."
+ },
+ "required_read_limit_wording": "grader was told item 26 holds A3's length-terminated answer, identifying A3's answer on that item; all other items label-blind (letters reshuffle per item)",
+ "disclosures": [
+  "executor handoff message leaked an arm-linked finish annotation (item26=A3 length); scope corrected by shoveler because the truncation is self-identifying; ruled immaterial by jerboa; sensitivity reported",
+  "genet read a portion of ben-gist/protocol.json before handoff (not source-reference-naive); no model-output/old-grade/arm-key exposure"
+ ],
+ "not_a_release_decision": "Ben decides the release; this is the rubric result and interpretation only. No S3/model/GPU calls in this report."
+}
