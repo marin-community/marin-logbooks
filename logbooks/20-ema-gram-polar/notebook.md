@@ -5802,3 +5802,39 @@ ready available v4-128. Its new selection record has `launched=false` and no
 `launch_started`; the original completed guard is unchanged. Evidence:
 `scratch/20261104-scaled64-selection.json` and
 `scratch/20261104-scaled64-1727-submit.log`. No worker or observer was started.
+
+
+### 2026-11-04 21:49 UTC — Switch to the original single-seed scientific campaign
+
+The user requested a strict plan and immediate execution of Ali's original
+experiment, then emphasized maximum parallelism because time is tight.
+[single-seed-execution-plan.md](single-seed-execution-plan.md) specifies the
+30-cell original grid, reuse of the completed alpha=0 pilot, 29 remaining
+full 7,630-update pilots, boundary expansion and locked single-seed
+37,335-update confirmations. The training baseline remains matrix/default.
+The unlaunched 64-device synthetic diagnostic is superseded and removed
+from the heartbeat's launch instructions. No old job or follow was queried.
+
+The new campaign binding calls the existing native full-schedule training
+entrypoint. Its own ONLINE logging and tiny native CPU/checkpoint harness
+finished successfully with API-verified source hashes; the 17 existing
+optimizer regressions were reused by exact hashes. Static preparation checked
+58 cell/topology configurations, preserving seed0, batch8, full7,630 schedule
+and fresh initialization. All 29 new artifact roots were absent. The
+capacity selector rejected seven ineligible cases and preserved unique
+commands, default retries and no wall-clock limit for all29 cells. Required
+lint passed. A separate cold reader reviewed the plan; dispatch cadence,
+failure handling, pilot reuse, confirmation evidence across retries and
+checkpoint probe selection were clarified. See single-seed-validation.json.
+
+An initial local preparation failed because the candidate artifact version
+was not a calendar version; it was corrected to 2026.11.04.02 before any
+training submission. Formatting/lint findings were fixed. No numerical
+source was modified, and no TPU training has been submitted at this point.
+Fleet snapshots at21:34 and21:45UTC had no ready available TPU slices. The
+previous no-cold-queue constraint was explicitly raised to the user; pending
+an answer, the dispatcher remains ready-only. Source publication and a
+single persistent60-second capacity dispatcher follow; all29 cells may run
+concurrently when compatible capacity is available. Initial supported
+variants are v4-8 andv4-32; larger topology qualification remains outstanding,
+and unsupported capacity is not counted as training capacity.
