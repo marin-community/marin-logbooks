@@ -17,8 +17,8 @@ from summarize_saved_state_check import summarize as join_saved_state
 LAYOUTS = ("matrix", "matrix_grouped")
 
 
-def summarize(reports, manifest, checkpoint_identity, source_commit):
-    assert len(reports) == 4 and len(source_commit) == 40
+def summarize(reports, manifest, checkpoint_identity, source_commit, *, processes=4, devices=16):
+    assert len(reports) == processes and len(source_commit) == 40
     converted = []
     timings = {case: {} for case in CASES}
     for report in reports:
@@ -72,7 +72,7 @@ def summarize(reports, manifest, checkpoint_identity, source_commit):
             timings[case][str(report["process_index"])] = process_times
             adapted["cases"][case] = adapted_case
         converted.append(adapted)
-    result = join_saved_state(converted, manifest, checkpoint_identity)
+    result = join_saved_state(converted, manifest, checkpoint_identity, processes=processes, devices=devices)
     for case in CASES:
         result["cases"][case].pop("seconds_including_compilation_by_process")
         result["cases"][case]["timing_by_process"] = timings[case]

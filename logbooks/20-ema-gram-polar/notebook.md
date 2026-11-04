@@ -5588,3 +5588,39 @@ observer error, not an execution failure.
 
 [Completion](grouped-gram-completed.json) · [Summary](grouped-gram-summary.json) ·
 [Validation](grouped-gram-final-summary-validation.json).
+
+### 2026-11-04: prepare more full-matrix eigensolver shards
+
+The next acceleration trial increases matrix-parallel device count. The prior
+16-device grouped run left at most three of the 33 large matrices assigned per
+shard, the same maximum as three independent banks. Grouping over 32 or 64
+devices lowers that source assignment maximum to two or one. This is a workload
+distribution hypothesis, not a measured speedup or kernel schedule. The existing
+optimizer implementation and default solver remain unchanged.
+
+The new harness supports ready v4-64 or v4-128 in us-central2, retaining the
+original full checkpoint geometry and all three warmed samples. It uses the
+same two cases and matrix/default reference. No training or checkpoint progress
+is requested. The fleet snapshot at 08:13 UTC had no free qualifying slice;
+the launcher refreshes capacity and submits nothing without one. A free v5p-8
+in another region does not supply the 32/64-device distribution being tested.
+TPU remains the default, with flexible hardware allowed for later interventions.
+
+Fresh online logging and eight-/sixteen-device CPU fixtures finished and were
+API verified against the four pinned sources. Both fixtures are finite, leave
+state/gradients unchanged, pass checkpoint roundtrip and alpha-zero checks, and
+repeat each output bitwise three times. Fixed-state directions match exactly.
+The eight-device full-update comparison passes rtol=atol=1e-5; the sixteen-device
+comparison fails for directions, with maximum absolute error 0.00635338. All 21
+state outputs are exact in both fixtures. The threshold remains unchanged and
+is not a sole training veto. Prior 17 online optimizer regressions are reused
+only after exact optimizer/test hash checks.
+
+Static aggregation now accepts the selected process/device count, preserving
+the old 16-device result exactly. At each of 16, 32 and 64 devices it rejects
+24 corrupt fixtures and passes known-answer and report-order checks. These
+checks do not establish accelerator speed, peak memory or training quality.
+No accelerator job has been submitted at this preparation checkpoint.
+
+[Design](scaled-gram-design.md) · [Preflight](scaled-gram-preflight-validation.json) ·
+[Summary checks](scaled-gram-summary-validation.json).

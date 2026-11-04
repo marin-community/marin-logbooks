@@ -221,17 +221,16 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "status": "Grouped-Gram complete and verified; no consistent speedup; matrix/default remains baseline",
-    "design": "grouped-gram-design.md",
-    "candidate": "matrix_grouped",
-    "next_action": "Keep matrix/default working baseline. Pursue actual acceleration with TPU as default; inspect compatible ready TPU capacity and select topology before a distinct launch rather than pinning v4-32 blindly. Any suitable machine is authorized, with GPU an optional alternative, not the default. Select one bounded execution/hardware intervention preserving full geometry/every-update/source precision, validate its own online CPU/logging and exact published source before sequential accelerator execution. No measurement-only calibration rerun.",
+    "status": "Scaled grouped-Gram diagnostic prepared; no accelerator submitted",
     "baseline": "matrix/default",
-    "limits": "No calibration-only run, no approximation/precision override/whole-update sharding; no old job polling/restart; no training extension",
-    "submission": "grouped-gram-submitted.json",
-    "startup": "grouped-gram-startup.json",
-    "completion": "grouped-gram-completed.json",
-    "summary": "grouped-gram-summary.json",
-    "hardware_authorization": "User explicitly permits any suitable machine and clarifies TPU remains default. No v4-32-only restriction; no GPU launch selected."
+    "candidate": "matrix_grouped at32or64JAXdevices",
+    "next_action": "Select one ready v4-128 or v4-64 slice in us-central2 and launch the published scaled_gram_check.py once. Grouping on64shards changes maximum assigned large matrices3to1;32shards3to2. No promised gain. No cold queue when neither eligible slice is ready. TPUdefault; otherhardware remains authorized.",
+    "design": "scaled-gram-design.md",
+    "preflight": "scaled-gram-preflight-validation.json",
+    "entrypoint": "scaled_gram_check.py",
+    "launcher": "submit_scaled_gram.py",
+    "limits": "Full geometry/refresh/precision/defaultsolver; no training extension, calibration phases or oldjob polling/restart. Defaultpreemption/retries; no wallclocklimits.",
+    "hardware_authorization": "Any suitablemachine authorized; TPUdefault. Selectedregion preserves checkpointlocality."
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",

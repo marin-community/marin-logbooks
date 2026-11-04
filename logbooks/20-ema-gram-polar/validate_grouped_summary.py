@@ -13,16 +13,17 @@ from summarize_grouped_gram import CASES, LAYOUTS, summarize
 from summarize_saved_state_check import SHAPES, expected_records
 
 
-def validate():
+def validate(devices=16):
+    processes = devices // 4
     base = Path(__file__).parent
     template = json.loads((base / "grouped-gram-cpu-validation.json").read_text())
     manifest = json.loads((base / "grouped-gram-manifest.json").read_text())
     identity = json.loads((base / "loss-pair-checkpoint-metadata.json").read_text())
     commit = json.loads((base / "grouped-gram-submitted.json").read_text())["source_commit"]
     reports = []
-    for process in range(4):
+    for process in range(processes):
         r = copy.deepcopy(template)
-        r.update(mode="worker", process_index=process, process_count=4, shapes=SHAPES, source_commit=commit)
+        r.update(mode="worker", process_index=process, process_count=processes, shapes=SHAPES, source_commit=commit)
         r["gradient_scale"] = 0.1 / math.sqrt(sum(math.prod(s) for s in SHAPES))
         r["checkpoint"].update(
             checkpoint_uri=identity["checkpoint"],
@@ -33,7 +34,7 @@ def validate():
         )
         for case in CASES:
             rows = []
-            expected = expected_records(case == CASES[1])
+            expected = expected_records(case == CASES[1], devices)
             for (leaf, index), shape in expected.items():
                 keys = [key for key in expected if key[0] == leaf]
                 if leaf < 7 and keys.index((leaf, index)) // 4 != process:
@@ -61,8 +62,8 @@ def validate():
                     replay_comparisons=[True, False, True],
                 )
         reports.append(r)
-    result = summarize(reports, manifest, identity, commit)
-    assert [result["cases"][case]["unique_leaf_index_records"] for case in CASES] == [112, 133]
+    result = summarize(reports, manifest, identity, commit, processes=processes, devices=devices)
+    assert [result["cases"][case]["unique_leaf_index_records"] for case in CASES] == [7 * devices, 7 * devices + 21]
     for case in CASES:
         assert result["cases"][case]["passed"] is False
         assert all(row["relative_frobenius_error"] == 0.5 for row in result["cases"][case]["leaves"])
@@ -74,14 +75,14 @@ def validate():
     for r in reordered:
         for case in CASES:
             r["cases"][case]["comparison"]["shards"].reverse()
-    assert summarize(reordered, manifest, identity, commit) == result
+    assert summarize(reordered, manifest, identity, commit, processes=processes, devices=devices) == result
     rejected = []
 
     def rejects(name, change):
         broken = copy.deepcopy(reports)
         change(broken)
         try:
-            summarize(broken, manifest, identity, commit)
+            summarize(broken, manifest, identity, commit, processes=processes, devices=devices)
         except (AssertionError, KeyError, TypeError):
             rejected.append(name)
         else:
@@ -121,7 +122,7 @@ def validate():
     rejects("full_restore_claim", lambda r: r[0].update(full_trainer_restore=True))
     return dict(
         scope="Generated static JSON fixtures, no kernels, new compute job or measured TPU result",
-        unique_record_counts=[112, 133],
+        unique_record_counts=[7 * devices, 7 * devices + 21],
         reference_relative_norm=0.5,
         reference_optimizer_mean_ratio=2,
         finite_tolerance_failure_and_nonbitwise_replays_retained=True,

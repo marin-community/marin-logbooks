@@ -15,13 +15,13 @@ NAMES = ("q", "k", "v", "o", "gate", "up", "down")
 SHAPES = [[11, 1024, 1024]] * 4 + [[11, 4096, 1024]] * 2 + [[11, 1024, 4096]]
 
 
-def expected_records(full):
-    """Exact global slices from the published 16-device output shardings."""
+def expected_records(full, devices=16):
+    """Exact global slices for direction sharding over all selected devices."""
     result = {}
     for leaf, shape in enumerate(SHAPES):
         axis = 1 if leaf in (3, 6) else 2
-        width = shape[axis] // 16
-        for device in range(16):
+        width = shape[axis] // devices
+        for device in range(devices):
             index = [slice(None)] * 3
             index[axis] = slice(device * width, (device + 1) * width)
             local_shape = list(shape)
@@ -34,9 +34,10 @@ def expected_records(full):
     return result
 
 
-def summarize(reports, manifest, checkpoint_identity):
-    assert len(reports) == 4, "Require all four process reports"
-    assert sorted(r["process_index"] for r in reports) == [0, 1, 2, 3], "Missing/duplicate process"
+def summarize(reports, manifest, checkpoint_identity, *, processes=4, devices=16):
+    assert devices == processes * 4 and devices in (16, 32, 64)
+    assert len(reports) == processes, "Require all process reports"
+    assert sorted(r["process_index"] for r in reports) == list(range(processes)), "Missing/duplicate process"
     checkpoint = reports[0]["checkpoint"]
     assert checkpoint["checkpoint_uri"] == checkpoint_identity["checkpoint"]
     assert checkpoint["manifest_sha256"] == checkpoint_identity["files"]["manifest.json"]["sha256"]
@@ -45,7 +46,7 @@ def summarize(reports, manifest, checkpoint_identity):
     assert checkpoint["loaded_paths"] == [entry["path"] for entry in checkpoint_identity["state_arrays"]]
     assert checkpoint["metadata"] == checkpoint_identity["metadata"]
     for r in reports:
-        assert r["mode"] == "worker" and r["completed"] is True and r["process_count"] == 4
+        assert r["mode"] == "worker" and r["completed"] is True and r["process_count"] == processes
         assert r["source_files"] == manifest["files"]
         assert r["checkpoint"] == checkpoint and r["shapes"] == SHAPES
         assert r["gradient_seed"] == 0
@@ -57,7 +58,7 @@ def summarize(reports, manifest, checkpoint_identity):
     output = {}
     for case in CASES:
         full = case == CASES[1]
-        expected = expected_records(full)
+        expected = expected_records(full, devices)
         joined = {}
         owners = {}
         times = {}
@@ -95,7 +96,7 @@ def summarize(reports, manifest, checkpoint_identity):
             if full:
                 assert all(sum(k[0] == leaf for k in local_keys) == 1 for leaf in range(7, 28))
         assert set(joined) == set(expected), "Incomplete global shard coverage"
-        assert all(len(owners[k]) == (1 if k[0] < 7 else 4) for k in joined)
+        assert all(len(owners[k]) == (1 if k[0] < 7 else processes) for k in joined)
         leaves = []
         for leaf in range(28 if full else 7):
             rows = [row for (index, _), row in joined.items() if index == leaf]
@@ -128,7 +129,7 @@ def summarize(reports, manifest, checkpoint_identity):
             timing_scope="Compilation-inclusive diagnostic execution, not steady training throughput",
         )
     return dict(
-        process_indices=[0, 1, 2, 3],
+        process_indices=list(range(processes)),
         checkpoint=checkpoint,
         source_files=manifest["files"],
         cases=output,
