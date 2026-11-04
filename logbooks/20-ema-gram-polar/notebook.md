@@ -5155,3 +5155,7 @@ success, same-attempt provenance or fresh online logging; those require separate
 verification before accepting a completed diagnostic. The numerical implementation and submitted execution are unchanged; this
 preparation ran only local JSON checks. The single submitted TPU job remains
 under observation through its sole live log-follow session 76324.
+
+Canonical job and all four task checks at 03:37–03:38 UTC still show pending
+with no attempts, failures or preemptions. Follow 76324 remains the sole live
+observer. The next routine canonical check is no earlier than 03:47:52 UTC.
