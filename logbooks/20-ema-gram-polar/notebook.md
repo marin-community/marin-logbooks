@@ -5396,3 +5396,11 @@ will retain all samples and limitations; no speedup is assumed or accepted
 merely because the new layout runs successfully.
 The exact source will be published before submission. No training beyond the
 completed 924-update matrix training run is submitted. [Preparation](grouped-gram-prepared.json).
+
+The [grouped-Gram diagnostic](grouped-gram-submitted.json) was accepted on
+November 4 at 05:13:00 UTC from published source `03d5bad644d570fc29a43781a6bdcb7362f44185`.
+It requests v4-32/four hosts in us-central2, 120 CPUs/256 GiB/50 GiB per host,
+default preemption/retries and no wall-clock limits. Log-follow session 92765
+is its only observer. The first canonical job/task check is due no earlier
+than 05:15:00 UTC. Execution-host logging and TPU results remain pending;
+submission is not evidence of acceleration or training progress.
