@@ -5125,3 +5125,33 @@ Initial canonical job and all four task checks at 03:27–03:28 UTC found every
 task pending, with no attempts, failures or preemptions. The first check began
 more than 120 seconds after acceptance. The next routine check is due no
 earlier than 03:37:40 UTC; the sole follow remains live.
+
+### November 3, 19:34 Pacific — Distributed power-report aggregation prepared
+
+The [static summarizer](summarize_power_reconstruction.py) now accepts the new
+power-reconstruction harness's four process reports. It verifies source commit,
+source-file identities, checkpoint paths, geometry, both cases, finite/immutable
+flags and all expected output regions. It reuses the existing saved-state
+leaf/index join: seven update directions have 16 distinct shards each, while
+21 state outputs are replicated. Records for the same state leaf/index region must have matching hashes and
+statistics across hosts before deduplication. Distinct direction shards are
+combined without requiring their hashes to match. Complete cases therefore contain 112 unique records
+for unchanged-state directions and 133 for the full refresh/update.
+
+The summary preserves compilation plus first execution separately from three
+warmed samples per layout and process. It reports each process's baseline-to-
+candidate mean-time ratio without summing host times. The bitwise replay count must equal the number of true flags in the three
+recorded comparisons against that layout’s first output. A finite tolerance failure or a non-bitwise replay stays
+in the result; neither is silently promoted to equivalence or rejected as a
+training-quality veto. These remain optimizer-only samples in fixed variant
+order, with no new training MFU or loss result.
+
+[Generated JSON fixtures](power-reconstruction-summary-validation.json) passed
+24 corruption rejections, report/row ordering invariance, a known relative-norm
+error of 0.5 and a known timing ratio of 2. The fixture deliberately retains
+failed numerical tolerance and one non-bitwise replay. These are static fixture
+values, not TPU measurements. The summarizer does not prove canonical job/task
+success, same-attempt provenance or fresh online logging; those require separate
+verification before accepting a completed diagnostic. The numerical implementation and submitted execution are unchanged; this
+preparation ran only local JSON checks. The single submitted TPU job remains
+under observation through its sole live log-follow session 76324.
