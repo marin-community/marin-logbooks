@@ -5424,3 +5424,9 @@ Canonical job and all four task checks at 2026-11-04T06:04:42.235001+00:00 still
 with no attempts, failures or preemptions. Sole follow 92765 remains live.
 The next routine check is due no earlier than 2026-11-04T06:14:12.235001+00:00.
 No numerical result or source change was made.
+
+Canonical checks at 2026-11-04T06:19:44.453725+00:00 still show all four tasks pending,
+with no attempts, failures or preemptions. The autoscaler still reports
+`tier_blocked` for both matching pools; both size-8 groups remain in backoff.
+See [queue diagnosis](grouped-gram-queue-diagnosis.json). Sole follow 92765 remains live.
+Next routine check: 2026-11-04T06:29:14.453725+00:00. No new job or source change.
