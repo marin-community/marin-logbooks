@@ -1,3 +1,6 @@
+> Superseded by the user: do not implement or launch this measurement-only plan.
+> Follow [the grouped-Gram acceleration design](grouped-gram-design.md).
+
 # Controlled timing design after the first power-reconstruction diagnostic
 
 Keep `matrix` as the working training baseline. The completed `matrix_power`

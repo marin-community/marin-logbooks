@@ -5338,3 +5338,61 @@ ordering and host barriers while retaining the same numerical implementations.
 It proposes one separately validated, published, sequential diagnostic to
 resolve timing uncertainty. It is not implemented or submitted. No training
 extension or numerical candidate adoption is made from this result.
+
+### November 4 — replace measurement refinement with grouped-Gram acceleration
+
+The user asked to stop repeatedly improving measurements and work on actual
+speed. The proposed host-barrier/counterbalanced timing run is superseded and
+will not be launched. The new `matrix_grouped` implementation groups complete
+normalized Gram matrices by square size and dtype across all weight banks (one scanned-layer stack per weight matrix),
+performs matrix-parallel eigendecomposition for each group, and restores the
+original bank order before the unchanged power/polar calculation.
+
+For the current model, this reduces source-level eigensolver shard-map calls
+from fourteen to two; this is not a verified runtime kernel/collective count. There are 121 real 1024-square matrices and 33 real
+4096-square matrices. With sixteen devices, small total padded slots decrease
+from 176 to 128; large total padded slots remain 48. This is a scheduling and
+collective-boundary hypothesis, not a reduction in the number of real large
+matrix decompositions or an established speedup. Full geometry, source
+precision, every-step refresh, eigenvalue clipping, ridge and polar iterations
+remain unchanged. The default layout stays `matrix` for the working research
+baseline. [Design](grouped-gram-design.md).
+
+Fresh online logging and CPU checks finished with verified source hashes.
+The CPU fixture uses four virtual devices, three layers and width eight.
+Fixed-state directions have zero measured difference. Full synthetic-gradient
+updates differ in k/v/o directions, with maximum absolute difference 5.8174e-5;
+all 21 state outputs match exactly. The directions fail the 1e-5 diagnostic;
+outputs remain finite, state/gradient inputs are unchanged and all three
+replays per layout/case match bitwise. This diagnostic failure alone is not a
+training veto. Seventeen native optimizer/checkpoint regression cases passed,
+including six matrix-layout cases; those tests do not mean every tensor in the
+separate synthetic fixture matches at 1e-5.
+
+The initial CPU harness stopped at a random full-rank FP32-versus-NumPy power
+reference assertion. The random cases remain in the corrected report as
+1e-5 diagnostics: two of five fail, maximum absolute error 4.0206e-5. Grouped
+powers match the independent-bank implementation at 1e-5, and independent
+known diagonal power references pass, including mixed sizes and uneven split
+boundaries. Zero-Gram identity, rank-deficient finiteness, checkpoint roundtrip
+and alpha-zero equality also pass. The threshold is unchanged, but the random-reference failure now reports a
+diagnostic instead of aborting the fixture, consistent with the user
+instruction that numerical-equivalence failure alone is not a veto. The
+independent diagonal oracle and baseline-bank comparison remain assertions.
+The optimizer implementation did not change to repair the fixture. An additional source-manifest
+guard rejected a formatter-induced hash change before tracking or kernels;
+final lint, manifest regeneration and fresh online checks supersede that
+local preflight failure. [Validation](grouped-gram-preflight-validation.json)
+and [preserved failure](grouped-gram-initial-cpu-failure.json).
+
+One distinct sequential v4-32 (16 JAX TPU devices across four hosts) experiment is prepared to compare `matrix` and
+`matrix_grouped` on the original October30 checkpoint labeled step923 in us-central2, using
+the existing three-sample protocol: first compilation-inclusive execution
+separate from three locally blocked optimizer calls for each case/layout. It is a new execution-layout experiment, not another
+measurement-calibration run. It requires fresh execution-host online logging,
+one complete report per JAX process from the same job attempt, finite outputs,
+unchanged inputs, and Iris job/all-four-task success. Timing interpretation
+will retain all samples and limitations; no speedup is assumed or accepted
+merely because the new layout runs successfully.
+The exact source will be published before submission. No training beyond the
+completed 924-update matrix training run is submitted. [Preparation](grouped-gram-prepared.json).

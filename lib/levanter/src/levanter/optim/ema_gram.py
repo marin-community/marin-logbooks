@@ -167,6 +167,43 @@ def matrix_parallel_power(
     return jax.lax.with_sharding_constraint(power, replicated)
 
 
+def grouped_gram_powers(
+    grams: tuple[jax.Array, ...],
+    *,
+    alpha: float,
+    ridge: float,
+    mesh: jax.sharding.Mesh | jax.sharding.AbstractMesh,
+    axis_name: str | tuple[str, ...],
+    implementation: jax.lax.linalg.EighImplementation | None = None,
+) -> tuple[jax.Array, ...]:
+    """Batch independent full Grams of equal size before matrix-parallel eigh."""
+    groups = {}
+    means = []
+    for index, gram in enumerate(grams):
+        symmetric = (gram + jnp.swapaxes(gram, -1, -2)) * 0.5
+        mean = jnp.trace(symmetric, axis1=-2, axis2=-1) / gram.shape[-1]
+        normalized = symmetric / jnp.where(mean > 0, mean, 1)[..., None, None]
+        means.append(mean)
+        # Shape and dtype are static: Python only plans independent matrix banks.
+        groups.setdefault((gram.shape[-1], gram.dtype), []).append((index, normalized))
+    outputs = {}
+    for (size, _), entries in groups.items():
+        flat = jnp.concatenate([g.reshape((-1, size, size)) for _, g in entries], axis=0)
+        vectors, values = matrix_parallel_eigh(flat, mesh=mesh, axis_name=axis_name, implementation=implementation)
+        offset = 0
+        for index, normalized in entries:
+            count = math.prod(normalized.shape[:-2])
+            v = vectors[offset : offset + count].reshape(normalized.shape)
+            w = values[offset : offset + count].reshape(normalized.shape[:-1])
+            weights = (jnp.maximum(w, 0) + ridge) ** (-alpha)
+            power = jnp.matmul(v * weights[..., None, :], jnp.swapaxes(v, -1, -2), precision=jax.lax.Precision.HIGHEST)
+            outputs[index] = jnp.where(
+                (means[index] > 0)[..., None, None], power, jnp.eye(size, dtype=normalized.dtype)
+            )
+            offset += count
+    return tuple(outputs[index] for index in range(len(grams)))
+
+
 @jax.named_call
 def gram_direction(
     state: GramState,
@@ -178,16 +215,20 @@ def gram_direction(
     eigh_implementation: jax.lax.linalg.EighImplementation | None = None,
     eigh_fn: Callable[..., tuple[jax.Array, jax.Array]] = jax.lax.linalg.eigh,
     power_fn: Callable[..., jax.Array] | None = None,
+    precomputed_powers: tuple[jax.Array, jax.Array] | None = None,
 ) -> jax.Array:
     """Return a positive descent direction without advancing the supplied EMA state."""
     m = state.momentum
     if alpha:
-        left = relative_gram_power(
-            state.left, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn, power_fn=power_fn
-        )
-        right = relative_gram_power(
-            state.right, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn, power_fn=power_fn
-        )
+        if precomputed_powers is None:
+            left = relative_gram_power(
+                state.left, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn, power_fn=power_fn
+            )
+            right = relative_gram_power(
+                state.right, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn, power_fn=power_fn
+            )
+        else:
+            left, right = precomputed_powers
         inner = jnp.matmul(
             jnp.matmul(left, m, precision=jax.lax.Precision.HIGHEST), right, precision=jax.lax.Precision.HIGHEST
         )
@@ -226,7 +267,7 @@ def scale_by_ema_gram(
     if alpha < 0 or ridge <= 0 or not 0 <= beta1 < 1 or not 0 <= beta2 < 1 or polar_steps < 1:
         raise ValueError("Invalid EMA Gram hyperparameters")
 
-    if eigh_layout not in ("replicated", "matrix", "matrix_power"):
+    if eigh_layout not in ("replicated", "matrix", "matrix_power", "matrix_grouped"):
         raise ValueError(f"Unknown eigensolver layout: {eigh_layout}")
     if eigh_implementation not in ("default", "jacobi"):
         raise ValueError(f"Unknown eigensolver implementation: {eigh_implementation}")
@@ -244,7 +285,8 @@ def scale_by_ema_gram(
         states = tuple(update_gram_state(g, s, beta1, beta2) for g, s in zip(leaves, state.matrices, strict=True))
         eig_fn = jax.lax.linalg.eigh
         power_fn = None
-        if eigh_layout in ("matrix", "matrix_power") and alpha:
+        powers: list[tuple[jax.Array, jax.Array] | None] = [None] * len(states)
+        if eigh_layout in ("matrix", "matrix_power", "matrix_grouped") and alpha:
             mesh = jax.sharding.get_abstract_mesh()
             if mesh.empty:
                 raise ValueError("Matrix-parallel EMA-Gram requires an active mesh")
@@ -252,8 +294,18 @@ def scale_by_ema_gram(
             if axes:
                 if eigh_layout == "matrix":
                     eig_fn = partial(matrix_parallel_eigh, mesh=mesh, axis_name=axes)
-                else:
+                elif eigh_layout == "matrix_power":
                     power_fn = partial(matrix_parallel_power, mesh=mesh, axis_name=axes)
+                else:
+                    grouped = grouped_gram_powers(
+                        tuple(g for state in states for g in (state.left, state.right)),
+                        alpha=alpha,
+                        ridge=ridge,
+                        mesh=mesh,
+                        axis_name=axes,
+                        implementation=implementation,
+                    )
+                    powers = list(zip(grouped[::2], grouped[1::2], strict=True))
         directions = [
             gram_direction(
                 s,
@@ -263,8 +315,9 @@ def scale_by_ema_gram(
                 eigh_fn=eig_fn,
                 power_fn=power_fn,
                 eigh_implementation=implementation,
+                precomputed_powers=p,
             ).astype(g.dtype)
-            for g, s in zip(leaves, states, strict=True)
+            for g, s, p in zip(leaves, states, powers, strict=True)
         ]
         return unflatten_linear_layers(updates, treedef.unflatten(directions)), EmaGramState(states)
 

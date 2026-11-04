@@ -105,7 +105,7 @@ def test_scanned_qwen_optimizer_roundtrip_continues_identically(tmp_path):
 
 @pytest.mark.tpu
 @pytest.mark.parametrize("ridge", [1e-4, 1e-2])
-@pytest.mark.parametrize("layout", ["matrix", "matrix_power"])
+@pytest.mark.parametrize("layout", ["matrix", "matrix_power", "matrix_grouped"])
 def test_matrix_parallel_config_restores_replicated_checkpoint_and_matches_updates(tmp_path, ridge, layout):
     devices = jax.devices()
     if len(devices) < 4:
