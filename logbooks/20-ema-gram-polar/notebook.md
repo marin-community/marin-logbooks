@@ -5624,3 +5624,8 @@ No accelerator job has been submitted at this preparation checkpoint.
 
 [Design](scaled-gram-design.md) · [Preflight](scaled-gram-preflight-validation.json) ·
 [Summary checks](scaled-gram-summary-validation.json).
+
+After publication of `4ca4ff8846ea77bf95595d3827c9265f3bb622a9`, the launcher refreshed fleet
+capacity at 2026-11-04T08:22:49.015080+00:00. Neither eligible topology had an available
+ready slice, so it submitted no job. All old jobs and observers remain terminal.
+[Selection evidence](scaled-gram-prepared.json).
