@@ -6015,3 +6015,47 @@ Local public source GETs returned HTTP 503 SlowDown, while the index and
 object HEAD worked. The next published-source CPU probe tests actual original
 source decoding in the training region. No data or training completion is
 claimed from local preflight.
+
+### 2026-11-04 23:29 UTC — use a raw-text HQ subset after original endpoint and token mirror fail
+
+The first regional CPU source probe (source `24dbba52932df1940c8074b2e77cba206d406494`,
+job `ema-gram-20-subset-probe-20261104`) failed on attempt 0 after the shared
+HTTP client's retries received only 503 SlowDown. Its sole follower ended
+naturally; task UID `1b694c1508d4437b` retains the failed report. This is a source
+service failure, not unavailable compute. The original guard remains set.
+
+A public 65B-token Nemotron mirror contains all seven source classifications,
+but stores custom token IDs. Its 300 filenames match the original index.
+The author's `dvruette/nemotron-cc-bpe` tokenizer adds prefix spaces and NFC
+normalization; actual samples failed exact decode/re-encode. The candidate
+was rejected by the online check (`ema-gram-subset-self-check-f748213d9416`),
+with diagnosis `ema-gram-subset-decoder-diagnosis-85b625e16702`. No jobs or
+training used that decoded text. Earlier optimism about that mirror was
+superseded by the payload/schema and roundtrip checks.
+
+To execute the user's requested fixed-subset route without waiting on cache
+restore permissions, the next dataset uses actual raw JSONL text from
+`Fredithefish/Nemotron-CC-HQ-20B`, pinned revision
+`1bcdb7f17b10c759bd70ce33f2921ad28cc28505`. Two actual documents were decoded
+successfully. The publisher describes sampled Nemotron-CC-HQ crawl slices;
+this is not independently established as byte-identical to the deleted
+Marin mix. The design deliberately replaces the seven-way web-quality mix
+with that fixed HQ subset while retaining the aggregate web/code/math shares.
+All 30 seed-zero pilots including alpha zero restart on this new dataset;
+old losses are contextual and cannot be pooled into selection. Model,
+optimizer, numerical precision, global batch, schedules, and 23 eval caches
+remain unchanged. This changes the data recipe, not just its storage path.
+
+`subset-inputs.json` selects 56 distinct raw files by a fixed hash ordering,
+34,725,120 tokens per web task (whole-document overshoot recorded), plus
+45,404,354 code and 9,988,958 math tokens. The native Llama tokenizer bytes
+remain fixed. The same 58 guarded CPU tasks share one resulting dataset.
+Actual text prefixes are streamed in-region; HF commit and LFS pointer are
+checked, and every written token is read back and hashed. We do not claim
+full compressed-source SHA verification when only a prefix is consumed.
+The final CPU check `ema-gram-subset-self-check-d939f0b8e172` passed exact
+native tokens, source exhaustion rejection, full native copy/readback,
+sharded cache concatenation, and flat reads crossing shard boundaries;
+W&B FINISHED/success is API-verified. The new `hq01` probe has a distinct
+identity; production builds remain gated on its success. The draft native
+training binding uses version `2026.11.04.03` and is not yet launch-qualified.

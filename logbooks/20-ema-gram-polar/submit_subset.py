@@ -9,6 +9,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 import shlex
 import subprocess
 import threading
@@ -21,9 +22,11 @@ LEDGER = ROOT / "scratch/20261104-subset-ledger.json"
 MUTEX = threading.Lock()
 
 
-def command(mode, index, source):
+def command(mode, index, source, stage="hq01"):
+    if not re.fullmatch(r"[a-z0-9]+", stage):
+        raise ValueError("Stage identity must be alphanumeric")
     label = "probe" if mode == "probe" else f"build-{index:02d}"
-    job = f"ema-gram-20-subset-{label}-20261104"
+    job = f"ema-gram-20-subset-{stage}-{label}-20261104"
     common = ["python", "-m", "experiments.ema_gram.subset_data"]
     logging = shlex.join([*common, "--mode", "logging-check", "--output", "/tmp/subset-logging.json"])
     worker = shlex.join([*common, "--mode", mode, "--index", str(index)])
@@ -83,6 +86,7 @@ def main():
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--mode", choices=("probe", "build"), required=True)
     parser.add_argument("--launch", action="store_true")
+    parser.add_argument("--stage", default="hq01")
     args = parser.parse_args()
     assert subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() == args.source_commit
     validation = json.loads((BASE / "subset-preflight.json").read_text())
@@ -95,7 +99,8 @@ def main():
         probe = json.loads((BASE / "subset-regional-probe.json").read_text())
         assert probe["success"] and probe["canonical_success"] and probe["wandb_finished"]
         assert probe["manifest_sha256"] == hashlib.sha256((BASE / "subset-inputs.json").read_bytes()).hexdigest()
-        assert len(probe["sources"]) == 7
+        expected = {t["component"] for t in manifest["tasks"] if "url" in t["sources"][0]}
+        assert {s["component"] for s in probe["sources"]} == expected
     if args.launch:
         assert (
             subprocess.check_output(
@@ -111,7 +116,7 @@ def main():
         ledger = json.loads(LEDGER.read_text()) if LEDGER.exists() else {"jobs": {}}
 
         def submit(index):
-            job, argv = command(args.mode, index, args.source_commit)
+            job, argv = command(args.mode, index, args.source_commit, args.stage)
             with MUTEX:
                 if job in ledger["jobs"]:
                     print(f"Already guarded: {job}", flush=True)

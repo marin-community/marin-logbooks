@@ -4,6 +4,7 @@
 """Materialize a bounded, frozen EMA-Gram subset with the native cache writer."""
 
 import argparse
+import asyncio
 import hashlib
 import itertools
 import json
@@ -15,7 +16,7 @@ from pathlib import Path
 import numpy as np
 import wandb
 from levanter.data.text._batch_tokenizer import BatchTokenizer
-from levanter.store.cache import TreeCache, write_levanter_cache
+from levanter.store.cache import CacheLedger, CacheMetadata, TreeCache, _merge_sharded_ledgers, write_levanter_cache
 from levanter.tokenizers import _stage_tokenizer, load_tokenizer
 from marin.datakit.download.http_session import build_retrying_session
 from marin.datakit.download.zstd_jsonl import iter_jsonl_from_zstd_stream
@@ -73,24 +74,38 @@ def bounded_documents(records, target, stats):
     raise ValueError(f"Source exhausted at {total} tokens before target {target}")
 
 
-def public_records(source, processor, stats):
+def raw_records(source, stats):
     # These are connection/read health timeouts, not an experiment wallclock limit.
     with build_retrying_session(total=5, backoff_factor=4.0) as session:
+        if source.get("lfs_sha256"):
+            head = session.head(source["url"], allow_redirects=False, timeout=(30, 90))
+            head.raise_for_status()
+            if head.headers.get("X-Linked-Etag", "").strip('"') != source["lfs_sha256"]:
+                raise ValueError("Pinned original-text mirror LFS identity changed")
+            stats["lfs_pointer_verified"] = True
+            stats["lfs_sha256"] = source["lfs_sha256"]
         with session.get(source["url"], stream=True, timeout=(30, 90)) as response:
             response.raise_for_status()
             if source.get("etag") and response.headers.get("ETag") != source["etag"]:
                 raise ValueError("Source ETag changed since publication")
             stats["etag"] = response.headers.get("ETag")
             stats["source_url"] = source["url"]
-            source_ids = hashlib.sha256()
-            raw = iter_jsonl_from_zstd_stream(response.raw)
-            while batch := list(itertools.islice(raw, 32)):
-                for item in batch:
-                    if not isinstance(item["text"], str) or not item["warc_record_id"]:
-                        raise ValueError("Original Nemotron document schema changed")
-                    source_ids.update((str(item["warc_record_id"]) + "\n").encode())
-                stats["decoded_id_sha256"] = source_ids.hexdigest()
-                yield from processor(batch)
+            yield from iter_jsonl_from_zstd_stream(response.raw)
+
+
+def public_records(source, processor, stats):
+    source_ids = hashlib.sha256()
+    raw = raw_records(source, stats)
+    try:
+        while batch := list(itertools.islice(raw, 32)):
+            for item in batch:
+                if not isinstance(item["text"], str) or not item["warc_record_id"]:
+                    raise ValueError("Original Nemotron document schema changed")
+                source_ids.update((str(item["warc_record_id"]) + "\n").encode())
+            stats["decoded_id_sha256"] = source_ids.hexdigest()
+            yield from processor(batch)
+    finally:
+        raw.close()
 
 
 def cached_records(source):
@@ -99,7 +114,17 @@ def cached_records(source):
         yield from cache.get_batch_sync(range(start, min(start + 32, len(cache))))
 
 
-def self_check(processor):
+def assemble_component(paths, output, processor):
+    if StoragePath(output + "/shard_ledger.json").exists():
+        raise ValueError("Refusing to overwrite an assembled dataset")
+    metadata = CacheMetadata(processor.metadata)
+    ledgers = [CacheLedger.load(path, metadata) for path in paths]
+    assert all(ledger.is_finished for ledger in ledgers)
+    counts = [{"input_ids": TreeCache.load(path, exemplar()).flat_field_length("input_ids")} for path in paths]
+    return _merge_sharded_ledgers(output, paths, ledgers, counts, metadata)
+
+
+def self_check(processor, manifest, run):
     texts = ["A reproducible optimizer experiment.", "中文与 Unicode: \u03b1 \u03b2 \u03b3.", "", "word " * 2300]
     encoded = processor([{"text": text} for text in texts])
     again = processor([{"text": text} for text in texts])
@@ -113,10 +138,26 @@ def self_check(processor):
     assert len(chosen) == 2 and stats["tokens"] >= target
     with tempfile.TemporaryDirectory(prefix="ema-gram-subset-check-") as tmp:
         output = str(Path(tmp) / "train")
-        write_levanter_cache(iter(chosen), output, metadata={"preprocessor_metadata": processor.metadata}, batch_size=2)
+        write_levanter_cache(iter(chosen), output, metadata=processor.metadata, batch_size=2)
         loaded = TreeCache.load(output, exemplar())
+        assert loaded.ledger.metadata.preprocessor_metadata == processor.metadata
         roundtrip = loaded.get_batch_sync(range(len(chosen)))
         assert [digest_ids(x["input_ids"]) for x in roundtrip] == [digest_ids(x["input_ids"]) for x in chosen]
+        root = str(Path(tmp) / "merged")
+        copied = build_task(
+            {"sources": [{"cache": output, "target_tokens": stats["tokens"]}]}, processor, root + "/one", run
+        )
+        assert copied["full_native_readback"]
+        write_levanter_cache(iter(chosen), root + "/two", metadata=processor.metadata, batch_size=2)
+        assemble_component([root + "/one", root + "/two"], root, processor)
+        merged = TreeCache.load(root, exemplar())
+        assert [digest_ids(x["input_ids"]) for x in merged.get_batch_sync(range(4))] == [
+            digest_ids(x["input_ids"]) for x in chosen * 2
+        ]
+        expected = np.concatenate([x["input_ids"] for x in chosen * 2])
+        flat = asyncio.run(merged.get_flat_field_batch("input_ids", [0], len(expected)))[0]
+        assert np.array_equal(flat, expected)
+        assert merged.flat_field_length("input_ids") == len(expected)
     try:
         list(bounded_documents(iter(encoded[:1]), target, {}))
     except ValueError:
@@ -142,10 +183,22 @@ def build_task(task, processor, output, run):
                 stream.close()
             run.log({"subset/source_completed": index + 1, "subset/tokens": sum(x.get("tokens", 0) for x in stats)})
 
-    metadata = {"preprocessor_metadata": processor.metadata}
+    metadata = processor.metadata
     result = write_levanter_cache(records(), output, metadata=metadata, batch_size=32)
     cache = TreeCache.load(output, exemplar())
     assert len(cache) == result["count"]
+    # Verify every stored token against the selected source stream, in-region.
+    readback = cached_records(output)
+    for source_stats in stats:
+        checked = {}
+        list_count = 0
+        for _ in bounded_documents(
+            itertools.islice(readback, source_stats["documents"]), source_stats["tokens"], checked
+        ):
+            list_count += 1
+        assert list_count == source_stats["documents"]
+        assert checked == {k: source_stats[k] for k in ("tokens", "documents", "token_sha256")}
+    assert next(readback, None) is None
     edge = cache.get_batch_sync([0, len(cache) - 1])
     return dict(
         sources=stats,
@@ -153,12 +206,14 @@ def build_task(task, processor, output, run):
         tokens=sum(x["tokens"] for x in stats),
         output=output,
         edge_sha256=[digest_ids(x["input_ids"]) for x in edge],
+        full_native_readback=True,
     )
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("logging-check", "self-check", "probe", "build"), required=True)
+    parser.add_argument("--mode", choices=("logging-check", "self-check", "probe", "build", "assemble"), required=True)
+    parser.add_argument("--results", type=Path)
     parser.add_argument("--manifest", type=Path, default=MANIFEST)
     parser.add_argument("--index", type=int, default=0)
     parser.add_argument("--output", type=Path, required=True)
@@ -196,7 +251,7 @@ def main():
                 raise ValueError("Tokenizer bytes differ from the frozen manifest")
             report["processor"] = processor.metadata
             if args.mode == "self-check":
-                report["checks"] = self_check(processor)
+                report["checks"] = self_check(processor, manifest, run)
             elif args.mode == "probe":
                 report["sources"] = []
                 for task in manifest["tasks"]:
@@ -213,13 +268,28 @@ def main():
                     stats["sample_tokens"] = [len(x["input_ids"]) for x in sample]
                     stats["sample_sha256"] = [digest_ids(x["input_ids"]) for x in sample]
                     print(json.dumps(stats), flush=True)
-            else:
+            elif args.mode == "build":
                 if not manifest.get("tokenizer_files"):
                     raise ValueError("Production requires frozen tokenizer bytes")
                 task = manifest["tasks"][args.index]
                 destination = StoragePath(manifest["output_prefix"]) / task["component"] / "train" / identity
                 report["task"] = task
                 report["result"] = build_task(task, processor, str(destination), run)
+            else:
+                results = json.loads(args.results.read_text())
+                assert len(results) == len(manifest["tasks"])
+                grouped = {}
+                for task, item in zip(manifest["tasks"], results, strict=True):
+                    assert item["success"] and item["task"] == task
+                    assert item["manifest_sha256"] == report["manifest_sha256"]
+                    assert item["result"]["full_native_readback"]
+                    assert item["canonical_success"] and item["wandb_finished"]
+                    grouped.setdefault(task["component"], []).append(item["result"]["output"])
+                report["components"] = {}
+                for name, paths in grouped.items():
+                    root = manifest["output_prefix"] + "/" + name + "/train"
+                    ledger = assemble_component(paths, root, processor)
+                    report["components"][name] = dict(cache_root=root.rsplit("/", 1)[0], ledger=ledger.to_dict())
         report["success"] = True
         run.log({"subset/success": 1})
         exit_code = 0
