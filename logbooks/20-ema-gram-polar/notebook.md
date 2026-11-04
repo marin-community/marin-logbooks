@@ -5629,3 +5629,31 @@ After publication of `4ca4ff8846ea77bf95595d3827c9265f3bb622a9`, the launcher re
 capacity at 2026-11-04T08:22:49.015080+00:00. Neither eligible topology had an available
 ready slice, so it submitted no job. All old jobs and observers remain terminal.
 [Selection evidence](scaled-gram-prepared.json).
+
+## 2026-11-04: Submit the 32-device Gram scaling trial
+
+Iris accepted `/kaiyuew@stanford.edu/ema-gram-20-scaled-gram-v4-64-20261104`
+at 16:31:48 UTC from published source `588a02243e29f78e5a7e8522542682cb47acacab`.
+The launcher found an available ready v4-64 slice in us-central2 and selected
+a request for 32 JAX devices across eight hosts, with mesh axes data=4 and
+model=8. Allocation and execution have not yet been checked. This tests whether
+grouping the 33 large Gram matrices across more devices reduces optimizer
+latency. The independent-bank matrix layout with the default eigensolver remains the
+training baseline; no performance result
+is available yet. The 21 Gram/momentum arrays come from the original regional step-923 checkpoint;
+three Gram arrays each contain eleven large matrices. Full matrix geometry,
+precision and solver match the prepared design.
+
+The submit RPC timed out once after 180 seconds, then its built-in retry returned
+the job ID. This is a submission transport retry; worker attempts and restarts
+remain to be checked. The launcher has recorded its guard against a second launcher submission.
+One log follower is attached. No wall-clock limits or preemption retry overrides
+were added, and no other allocation was changed. The original 08:22 capacity
+snapshot remains preserved separately. See [launch record](scaled-gram-launched.json)
+and [design](scaled-gram-design.md).
+
+The first canonical check after the required 120-second wait reports eight
+pending tasks, zero failures and zero preemptions. The ready-capacity observation
+was advisory and did not reserve the slice. Keep this one submitted job and its
+follower while it waits; do not cancel or resubmit it. No worker W&B identity or
+performance result is available yet.
