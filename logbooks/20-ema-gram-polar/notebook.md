@@ -5212,3 +5212,37 @@ Canonical job and all four task checks at 04:02–04:03 UTC still show pending,
 with no attempts, failures or preemptions. No numerical result is available.
 Sole follow 22285 is retained; the next routine check is due no earlier than
 04:12:51 UTC. No new job or source change was made.
+
+### November 4, 04:19 UTC — execution-host logging verified; diagnostic incomplete
+
+The optimizer diagnostic with corrected W&B credential loading is running on
+all four hosts on attempt 0, with no failures or preemptions. The prior job
+failed before optimizer execution because its custom logger did not resolve
+mounted credentials. W&B API reads now verify that each host's separate online
+logging check finished successfully. All four numerical workers have fresh
+online runs. Their logged source hashes match the manifest published at
+`7f288368aeca2554f193c933786f494956389d01`. This verifies logging access on the
+current execution hosts.
+
+The four downloaded JSON reports currently contain only the `matrix` baseline's
+calculation of update directions from fixed saved optimizer state. Outputs are
+finite, inputs are unchanged, and all three warmed replays are bitwise equal to
+the first output on each process. This is within-process repeatability; it does
+not establish cross-process numerical agreement. The `matrix_power` candidate
+and full synthetic-gradient update results are not yet present, so a complete
+comparison and speedup result are unavailable. These optimizer-only timings do
+not measure training model FLOP utilization (MFU).
+[Startup evidence](power-reconstruction-auth-startup.json) records the report
+identities and partial results.
+
+Iris task ordinals map to JAX process indices as `[1,2,3,0]`. An initial local
+fetch assumed these indices matched and rejected the data; the corrected check
+requires config/report agreement and all four distinct process indices. Four
+initial task queries also used the wrong CLI command and failed locally; the
+corrected `task describe` reads succeeded. These observation errors and their
+logs are retained. The successful status reads still show all workers on
+attempt 0.
+
+Log-follow session 22285 remains the sole observer of the current job. The next
+routine Iris job/task status check is due no earlier than 04:28:28 UTC. The
+numerical source and requested work are unchanged.
