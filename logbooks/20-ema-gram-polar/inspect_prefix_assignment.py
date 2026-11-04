@@ -137,7 +137,14 @@ def inspect(path):
     space = _xspace_message_class()()
     space.ParseFromString(path.read_bytes())
     core_type = core_message(json.loads((ROOT / "prefix-core-schema.json").read_text()))
-    result = dict(hostnames=list(space.hostnames), cores=[], executables=[], planes=[], warnings=list(space.warnings))
+    result = dict(
+        hostnames=list(space.hostnames),
+        cores=[],
+        executables=[],
+        planes=[],
+        assignment_events=[],
+        warnings=list(space.warnings),
+    )
     for index, plane in enumerate(space.planes):
         names = {int(k): str(v.name) for k, v in plane.stat_metadata.items()}
         row = dict(
@@ -174,7 +181,7 @@ def inspect(path):
             for stat in meta.stats:
                 name = names[int(stat.metadata_id)]
                 stat_types[(name, str(stat.WhichOneof("value")))] += 1
-                if name != "hlo_proto":
+                if name != "Hlo Proto":
                     continue
                 record = dict(
                     plane_index=index,
@@ -187,13 +194,33 @@ def inspect(path):
                 assert stat.WhichOneof("value") == "bytes_value", "hlo_proto is not typed bytes"
                 record["hlo"] = executable_record(bytes(stat.bytes_value))
                 result["executables"].append(record)
+        if plane.name.startswith("/host:"):
+            for line_index, line in enumerate(plane.lines):
+                for event_index, event in enumerate(line.events):
+                    event_names = {names[int(s.metadata_id)] for s in event.stats}
+                    if "global_device_id" not in event_names:
+                        continue
+                    meta = plane.event_metadata[int(event.metadata_id)]
+                    result["assignment_events"].append(
+                        dict(
+                            plane_index=index,
+                            plane_name=plane.name,
+                            line_index=line_index,
+                            line_id=int(line.id),
+                            event_index=event_index,
+                            metadata_id=int(event.metadata_id),
+                            event_name=meta.name,
+                            stats=[stat_record(s, names) for s in event.stats],
+                            metadata_stats=[stat_record(s, names) for s in meta.stats],
+                        )
+                    )
         row["event_metadata_stat_inventory"] = [
             dict(name=n, value_type=t, count=c) for (n, t), c in sorted(stat_types.items())
         ]
     result["limits"] = [
         "Raw typed core bytes verified against the selected public schema; runtime producer version is not identified.",
         "Assignment IDs are declarations; joining them to JAX mesh/slots requires separate evidence.",
-        "Every embedded hlo_proto metadata record is retained, without selecting modules by ordinal or name alone.",
+        "Every embedded Hlo Proto metadata record is retained, without selecting modules by ordinal or name alone.",
         "Selected computations contain partition/replica IDs or square dynamic slices; no arithmetic evaluation.",
         "No numerical kernels, hardware measurements, MFU changes, or output semantics are inferred.",
     ]

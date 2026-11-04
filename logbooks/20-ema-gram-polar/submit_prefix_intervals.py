@@ -19,6 +19,7 @@ from iris.rpc import job_pb2
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--analysis", choices=["intervals", "assignment"], default="intervals")
+    parser.add_argument("--job-name")
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--manifest-sha256", required=True)
     args = parser.parse_args()
@@ -49,7 +50,7 @@ def main():
     with open_iris_client(config_file=root / "lib/iris/config/marin.yaml", workspace=root) as client:
         job = client.submit(
             entrypoint=Entrypoint.from_command(*command),
-            name=f"ema-gram-20-prefix-{args.analysis}-cpu-20261104",
+            name=args.job_name or f"ema-gram-20-prefix-{args.analysis}-cpu-20261104",
             resources=ResourceSpec(cpu=8, memory="64GB", disk="20GB"),
             environment=EnvironmentSpec(env_vars={"GIT_COMMIT": args.source_commit}, sync_packages=["marin-core"]),
             constraints=constraints,

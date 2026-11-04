@@ -37,16 +37,27 @@ def main():
     plane.stat_metadata[1].name = "core_details"
     plane.stats.add(metadata_id=1, bytes_value=bytes.fromhex("28083010"))
     meta_plane = space.planes.add(id=9, name="/host:metadata")
-    meta_plane.stat_metadata[3].name = "hlo_proto"
+    meta_plane.stat_metadata[3].name = "Hlo Proto"
     meta_plane.stat_metadata[4].name = "program_id"
     meta_plane.event_metadata[12].name = "fixture"
     meta_plane.event_metadata[12].stats.add(metadata_id=3, bytes_value=parsed.SerializeToString())
     meta_plane.event_metadata[12].stats.add(metadata_id=4, uint64_value=99)
+    cpu = space.planes.add(id=10, name="/host:CPU")
+    for number, name in [(1, "global_device_id"), (2, "partition"), (3, "replica")]:
+        cpu.stat_metadata[number].name = name
+    cpu.event_metadata[1].name = "assignment"
+    line = cpu.lines.add(id=3, name="runtime")
+    event = line.events.add(metadata_id=1)
+    for number, value in [(1, 7), (2, 0), (3, 0)]:
+        event.stats.add(metadata_id=number, int64_value=value)
     rejected = []
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "fixture.pb"
         path.write_bytes(space.SerializeToString())
         report = inspect(path)
+        assert len(report["executables"]) == 1
+        assert len(report["assignment_events"]) == 1
+        assert report["assignment_events"][0]["stats"][0]["value"] == 7
         assert report["cores"][0]["fields"]["global_chip_id"] == 8
         assert report["cores"][0]["fields"]["global_core_id"] == 16
         assert report["cores"][0]["payload_hex"] == "28083010"

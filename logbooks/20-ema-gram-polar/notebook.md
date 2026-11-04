@@ -4966,3 +4966,24 @@ release or modify existing GPU allocations. Commit and push this parser,
 recipe and manifest to the research branch before submitting the new parse.
 The [completed 924-update run](prefix-train-completed.json) remains unchanged;
 the interval and aggregate-profile jobs also stay terminal.
+
+### November 3, 18:52 Pacific — Raw core bytes verified; executable selector corrected
+
+The first [assignment audit](prefix-assignment-partial.json) succeeded as a
+CPU job on attempt 0, UID `dd240d7561e5`. Canonical job/task checks at 18:49
+Pacific confirmed success; follow 32386 ended naturally. All four XPlanes
+passed regional identity checks. Their 32 typed core byte strings and decoded
+fields match the previously saved interpretation exactly.
+
+The executable extraction is incomplete: the actual metadata key is
+`Hlo Proto`, while the parser selected `hlo_proto`. The inventory preserves
+nine byte-valued records on each host, so zero extracted modules does not
+establish absence. The [public stat-name table](https://github.com/openxla/xla/blob/469cee5f95a460ebb6d3cdfecfd5697409f6e282/xla/tsl/profiler/utils/xplane_schema.cc#L330)
+confirms the corrected label. The first report remains preserved at its
+original identity. No training result or optimizer behavior changed.
+
+The corrected static fixture uses the real label and checks host events
+carrying `global_device_id`, partition and replica fields. The next new
+CPU-only recipe retains the same regional resources and no time limits.
+Publish the corrected source before submitting it under the distinct name
+`ema-gram-20-prefix-assignment-label-cpu-20261104`; the prior job stays terminal.
