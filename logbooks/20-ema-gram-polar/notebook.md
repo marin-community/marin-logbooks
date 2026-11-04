@@ -5795,3 +5795,10 @@ The initial fleet snapshot contained no available ready TPU slice. No new job
 was submitted, and all old jobs and observers remain terminal. The completed
 32-device guard remains untouched. Publish this preparation, then refresh
 capacity through the distinct launcher; submit nothing while v4-128 is unavailable.
+
+The published launcher (`476f9102b68daf5c7fcbe2bda80833511c47dc16`) refreshed
+capacity at 17:34:18.818690 UTC and returned without submission: no eligible
+ready available v4-128. Its new selection record has `launched=false` and no
+`launch_started`; the original completed guard is unchanged. Evidence:
+`scratch/20261104-scaled64-selection.json` and
+`scratch/20261104-scaled64-1727-submit.log`. No worker or observer was started.
