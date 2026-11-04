@@ -5104,3 +5104,24 @@ in us-central2, with four hosts requesting 120 CPUs, 256 GiB RAM and 50 GiB disk
 each. Every host will run fresh online logging before numerical execution.
 Default preemption retries and all attempt evidence remain enabled, with no
 wall-clock limits. No training extension or second candidate is submitted.
+
+### November 3, 19:26 Pacific — One power-reconstruction TPU diagnostic submitted
+
+The [prepared optimizer diagnostic](power-reconstruction-submitted.json) was
+accepted at 03:25:20 UTC from published source
+`6cefcbf81b37fd75d005260575654912b2535522`. The new job is
+`/kaiyuew@stanford.edu/ema-gram-20-power-reconstruction-v4-32-20261104`;
+its sole live log-follow session is 76324, owned by this root thread. The
+first canonical check is due no earlier than 03:27:20 UTC. Submission is not
+a numerical result. All earlier jobs and observers remain terminal.
+
+The job requests one v4-32 slice across four hosts in us-central2, with
+120 CPUs, 256 GiB RAM and 50 GiB disk per host. It runs the two optimizer cases
+described above with default preemption retries and no wall-clock limit. Each
+new process requires its own online logging. No model training, extension of
+the completed 924-update prefix or additional candidate was submitted.
+
+Initial canonical job and all four task checks at 03:27–03:28 UTC found every
+task pending, with no attempts, failures or preemptions. The first check began
+more than 120 seconds after acceptance. The next routine check is due no
+earlier than 03:37:40 UTC; the sole follow remains live.

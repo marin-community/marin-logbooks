@@ -221,12 +221,13 @@
     "completion_evidence": "optimizer-polar-compiler-v5e-completed.json"
   },
   "next_decision": {
-    "status": "One shard-local power reconstruction candidate implemented and CPU-validated; TPU diagnostic prepared, not submitted",
+    "status": "One sequential TPU optimizer-only diagnostic submitted; completion and performance pending",
     "design": "power-reconstruction-design.md",
     "preparation": "power-reconstruction-prepared.json",
-    "next_action": "Publish exact source, then submit one sequential v4-32 optimizer diagnostic. Require all four finite immutable reports and canonical success; report numerical differences at rtol=atol=1e-5 without a training veto.",
+    "next_action": "Observe job and all four process reports. Preserve all attempts. Require canonical success and finite/immutable outputs; validate replica hashes before aggregation. Diagnostic equivalence failure alone is not a training veto.",
     "baseline": "Completed matrix/default 924-prefix; 3.70021 seconds/update, 0.49354 percent MFU; comparable short loss",
-    "limits": "No training extension, no concurrent candidate, no approximation/precision override/whole-update sharding; default preemption, no wallclock limits; preserve all attempts"
+    "limits": "No training extension, no concurrent candidate, no approximation/precision override/whole-update sharding; default preemption, no wallclock limits; preserve all attempts",
+    "submission": "power-reconstruction-submitted.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",
