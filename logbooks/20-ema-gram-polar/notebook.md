@@ -5435,3 +5435,11 @@ Canonical checks at 2026-11-04T06:34:46.295361+00:00 still show all four tasks p
 with no attempts, failures or preemptions. Both matching pools remain
 `tier_blocked`, with size-8 groups in backoff. Sole follow 92765 remains live.
 Next routine check: 2026-11-04T06:44:16.295361+00:00. No new job or source change.
+
+Canonical checks at 2026-11-04T06:50:01.544959+00:00 still show all four tasks pending,
+with no attempts, failures or preemptions. The autoscaler now routes this job
+to the reserved v4-32 group (`assigned=1`, `launch=0`); its task-specific unmet
+entry is absent and the reserved size-8 group is available in this snapshot.
+The reserved v4-32 group has four ready slices and one booting slice. Routing
+is not task assignment or numerical progress. Sole follow 92765 remains live.
+Next routine check: 2026-11-04T06:59:31.544959+00:00. No new job or source change.
