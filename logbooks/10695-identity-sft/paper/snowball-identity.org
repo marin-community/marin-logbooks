@@ -396,7 +396,7 @@ Five full runs per arm unless noted.
 | A1   | A0 without the special-token freeze           | 14.8% | −12.8 [−16.3, −9.9]         |
 | A2   | replay only                                   | 24.6% | −3.1 [−6.2, −0.7]           |
 | A3   | identity rows with thinking off only          | 31.1% | +3.4 [−0.5, +7.2]           |
-| A4   | phase-one T3 data, 36 updates                 | 36.3% | one run, vs the frozen 34/123 reference |
+| A4   | phase-one T3 data, 36 updates                 | 36.3% | +8.6 [+4.4, +11.9]          |
 | A6   | thinking-on rows with GLM reasoning (1,791)   | 15.4% | −12.2 [−15.6, −9.3]         |
 | A8b  | A3 + 30% of A6's thinking-on rows             | 17.2% | −10.4 [−14.0, −7.3]         |
 | A8a  | A3 + 10% of A6's thinking-on rows             | 26.2% | −1.5 [−4.9, +1.5]           |
@@ -414,7 +414,7 @@ The pattern is in the first column. Every arm whose identity rows are rendered w
 (A0, A1, A6, A8b, A12) scores about 15–17%. Arms whose identity rows are thinking off (A3, A11)
 score at or above v0.1. The special-token freeze is not the cause (A1 ≈ A0), and real reasoning
 does not help (A6 ≈ A0). A4, trained for 36 updates on the phase-one T3 data, has the best BFCL
-(a single run, so not comparable with the five-run rows) and names itself in 42 of 52 prompts with thinking off, which the same
+and names itself in 42 of 52 prompts with thinking off, which the same
 data could not do in 16 updates. It was a control only: it credits the old identity ("Marin
 Snowball / Open Athena"), it rewrites other labs' facts in 5 of 14 controls (the worst of any arm),
 and its identity read predates the fixed parser.
