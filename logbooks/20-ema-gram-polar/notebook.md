@@ -5838,3 +5838,23 @@ single persistent60-second capacity dispatcher follow; all29 cells may run
 concurrently when compatible capacity is available. Initial supported
 variants are v4-8 andv4-32; larger topology qualification remains outstanding,
 and unsupported capacity is not counted as training capacity.
+
+
+### 2026-11-04 21:53 UTC — Scientific campaign dispatcher started
+
+Published campaign source939fe916d07c581777b45d4e6dc0720097f92972
+on the research branch and fixed branchcodex/20-ema-gram-single-seed-20261104.
+A separate immutable worktree runs the sole ready-capacity dispatcher every
+60seconds, with concurrent submissions and persistent per-cell guards.
+Its first21:49UTC refresh found no eligible slot and submitted no job.
+The dispatcher is active; training is not yet running. Cold queueing remains
+a pending clarification of the user's earlier explicit restriction.
+
+The companion read-only observer owns one log follower per accepted job,
+checks canonical state first after120seconds and then570seconds after each
+check, and stops polling each terminal job. A simulated29-job fixture passed
+without any real job RPC. Its completion state is not scientific acceptance:
+full training counters, online metrics and checkpoints still require review.
+The standing heartbeat now follows this campaign and must not launch the
+superseded64-device synthetic diagnostic or any old terminal job.
+See single-seed-started.json for the initial observation.
