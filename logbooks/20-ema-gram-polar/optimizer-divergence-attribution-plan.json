@@ -225,7 +225,7 @@
     "user_direction": "Train new matrix implementation from random initialization throughcounter924; compare historical original at matched steps. No shared original checkpoint initialization.",
     "numerical_checks": "Keep rtol=atol=1e-5 for transparent diagnostics; do not rewrite past failures or infer training degradation from update errors.",
     "procedure": "Fresh matrix model/optimizer with seed0/data seed0 and same saved model/data/precision/hyperparameters. Preserve7630 LR horizon; bound native data consumption to924updates and retain final hooks/checkpoint/evaluation. Own checkpoints resume on preemption. Compare sharedtrainlabels0..923 andvalidation762, report hardware differences and actualspeed.",
-    "remaining_preparation": "Use completed matrix as working baseline. Next verify raw core metadata and inspect saved execution device assignment regionally with exact published CPU-only source/manifest and profile identity checks. If assignment is absent, report the gap rather than infer slots from chip IDs. Then select one bounded performance intervention. No new implementation/job submitted; no oldjob polls or compiler-boundary expansion.",
+    "remaining_preparation": "Use the completed static assignment summary and existing source/profile before any further extraction. Design one bounded per-matrix performance intervention with explicit expected mechanism and falsification test. A possible design is to keep post-eigh power reconstruction inside the existing full-matrix shard scope before gathering; it is not implemented or selected for launch. Do not claim benefit from padding/track counts, and do not repeat covered raw core/HLO/partition extraction. Numerical implementation requires its own fresh online logging/CPU harness/published source before one sequential TPU. Preserve full geometry/every-update/source precision; no whole-update sharding, approximation, precision or tiling override.",
     "constraints": "Full Gram geometry/every-update refresh/source precision unchanged; no approximation/precision/tiling override. Default preemption/retries; no queue/task/training/watchdog limits; fresh online W&B before kernels; no large crossregion artifacts; GPU retention holder required. Actual steady training MFU target>5%, not synthetic timing.",
     "prepared_configurations": "prefix-train-prepared.json",
     "validation": "prefix-train-config-validation.json",
@@ -277,7 +277,9 @@
     "prefix_comparison": "prefix-train-comparison.json",
     "core_metadata_summary": "prefix-core-metadata-summary.json",
     "core_metadata_manifest": "prefix-core-metadata-manifest.json",
-    "device_slot_assignment": "Saved strings roundtrip through pinned CoreDetails schema:32cores pair into16chips; long-scope chips0..10 and short-scope11..15. Original XStat type/bytes and runtime JAX mesh/slot assignment remain unverified. No padding cause or speedup inferred."
+    "device_slot_assignment": "Raw32core bytes verified;36HloProto records recovered, nine program/name/id sets perhost. HloProto rawSHAs differ acrosshosts. ProgramID joins priorcollectives to train module;14bounded slices select padded leading index p from converted partition-id. Sixteen host train events agree with declared partition-device permutation. Corechip/device numeric IDs join perhost. RuntimeJAXmesh coordinate table, compiled padding configuration and paddingfloatvalue remain unverified. No padding cause/speedup.",
+    "assignment_completion": "prefix-assignment-completed.json",
+    "assignment_summary": "prefix-assignment-summary.json"
   },
   "compiler_inventory_next": {
     "status": "SUCCEEDED attempt0/exit0; four optimized artifacts SHA verified regionally",

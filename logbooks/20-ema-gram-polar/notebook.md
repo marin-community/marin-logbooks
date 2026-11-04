@@ -4987,3 +4987,66 @@ carrying `global_device_id`, partition and replica fields. The next new
 CPU-only recipe retains the same regional resources and no time limits.
 Publish the corrected source before submitting it under the distinct name
 `ema-gram-20-prefix-assignment-label-cpu-20261104`; the prior job stays terminal.
+
+### November 3, 19:04 Pacific — Saved executable assignments and slice indices recovered
+
+The corrected [CPU audit](prefix-assignment-completed.json) of the profile at
+update 100 of matrix run `2026.11.04.01` recovered all 36
+embedded `Hlo Proto` records, nine per host, after verifying the four saved
+XPlane identities regionally. All 32 raw `core_details` byte strings match the earlier decoded
+chip/core identifiers. The first audit selected `hlo_proto` instead of the
+actual `Hlo Proto` label; that error and its partial
+report remain in [the record](prefix-assignment-partial.json).
+
+The [summary](prefix-assignment-summary.json) joins the program ID on all 96
+previously extracted all-gather records to the saved training module. Its
+partition-to-device declaration is
+`[0,2,1,3,4,6,5,7,8,10,9,11,12,14,13,15]`, with one replica.
+All 16 host training-execution records agree with that assignment. These host
+records carry module names but no program ID; the training name is unique
+among the nine captured modules. Within each host, device IDs also match the
+numeric global-chip IDs in the core records. The runtime JAX mesh coordinate
+table has not been independently recovered.
+
+Fourteen saved matrix-slice paths use the partition ID converted from unsigned to signed 32-bit integer as the
+leading index into a 16-slot padded tensor: three output shapes are
+`[1,4096,4096]` and eleven are `[1,1024,1024]`. The other two indices are zero.
+These are 14 declared slice operations, each selecting one matrix from an
+11-matrix bank after padding; they do not identify 14 runtime matrix values.
+The exact caller/parameter connections agree across hosts. The extracted pad
+instructions take 11-slot inputs, but this extraction omits their padding
+configuration and float padding values. Source code pads five trailing slots;
+both core tracks on chip IDs 0–10 previously had eigensolver-scope interval
+unions of 2998–3179 ms, versus 2.870–2.874 ms on chips 11–15. This is
+consistent with the source intention without proving a padding cause.
+
+The raw training HLO hashes differ across hosts even though the compared
+slice routes and device assignments agree. The nine sets of program ID, module name and HLO module ID
+also agree across the four hosts. This result makes no whole-HLO identity, runtime matrix-value,
+JAX mesh-coordinate or padding-speedup claim. Source-scope durations still
+include possible waiting and cannot supply an Amdahl wall-time fraction.
+
+The new CPU job used published source
+`2d9c2672cc42d5cbef72066fd32f3f0455356d07`, eight CPUs, 64 GiB RAM and 20 GiB
+disk in us-central2, default preemption retries and no wall-clock limit.
+Canonical checks confirmed attempt 0/exit 0, UID `2f135295be06`, without
+failures or preemptions. The sole log-follow observer, session 47370, ended naturally. The bounded report is
+15,817,785 bytes with SHA256
+`d50ab825d8b07b70ef5197116a8ffab5c6c4cb06ce80d45130882a73b6bdd308`;
+its exact GCS readback and regional full-summary identities are recorded in
+the completion file. Large XPlanes and embedded HLO stayed regional. No
+accelerator, numerical kernels or W&B run was used, and all jobs are terminal.
+
+Twelve [mutation checks](prefix-assignment-summary-validation.json) reject
+missing or duplicate records, wrong profile/core identities, inconsistent
+assignments, and wrong slice indices or callers. Reordering hosts, modules,
+computations and instructions preserves the summary. No further raw metadata
+extraction is currently prepared. The next design review will use this
+summary and source to consider one bounded per-matrix change. The current
+source shards eigendecomposition, gathers its eigenvectors/eigenvalues, then
+reconstructs the matrix power with replicated output constraints. A possible
+change would reconstruct each power within the same shard before gathering
+the resulting matrices. Its benefit is unmeasured; this audit supplies
+assignment evidence, not a cost estimate for that reconstruction. No change
+has been implemented. The [completed 924-update matrix run](prefix-train-completed.json)
+remains the working baseline.
