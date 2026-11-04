@@ -1,0 +1,149 @@
+{
+  "observed_utc": "2026-11-04T06:16:02.692059+00:00",
+  "job_id": "/kaiyuew@stanford.edu/ema-gram-20-grouped-gram-v4-32-20261104",
+  "reason": {
+    "entry": {
+      "task_ids": [
+        "/kaiyuew@stanford.edu/ema-gram-20-grouped-gram-v4-32-20261104/0",
+        "/kaiyuew@stanford.edu/ema-gram-20-grouped-gram-v4-32-20261104/1",
+        "/kaiyuew@stanford.edu/ema-gram-20-grouped-gram-v4-32-20261104/2",
+        "/kaiyuew@stanford.edu/ema-gram-20-grouped-gram-v4-32-20261104/3"
+      ],
+      "coschedule_group_id": "/kaiyuew@stanford.edu/ema-gram-20-grouped-gram-v4-32-20261104",
+      "preemptible": false,
+      "resources": {
+        "cpu_millicores": 120000,
+        "memory_bytes": "274877906944",
+        "disk_bytes": "53687091200",
+        "gpu_count": 0,
+        "tpu_count": 4
+      },
+      "device_type": "tpu",
+      "device_variant": "v4-32"
+    },
+    "reason": "tier_blocked: 2 matching group(s) blocked by quota-pool tier monotonicity"
+  },
+  "v4_groups": [
+    {
+      "name": "tpu_v4-preemptible_32-us-central2-b",
+      "allocation_tier": 3,
+      "availability_status": "available",
+      "availability_reason": "",
+      "consecutive_failures": 3,
+      "slice_state_counts": {
+        "requesting": 0,
+        "ready": 0,
+        "failed": 0,
+        "booting": 0,
+        "initializing": 0
+      },
+      "quota_pool": "v4-preemptible/us-central2-b"
+    },
+    {
+      "name": "tpu_v4-preemptible_8-us-central2-b",
+      "allocation_tier": 1,
+      "availability_status": "backoff",
+      "availability_reason": "degraded (health=0.12)",
+      "consecutive_failures": 6,
+      "slice_state_counts": {
+        "requesting": 0,
+        "ready": 0,
+        "failed": 0,
+        "booting": 0,
+        "initializing": 0
+      },
+      "quota_pool": "v4-preemptible/us-central2-b"
+    },
+    {
+      "name": "tpu_v4-reserved_32-us-central2-b",
+      "allocation_tier": 3,
+      "availability_status": "available",
+      "availability_reason": "",
+      "consecutive_failures": 0,
+      "slice_state_counts": {
+        "requesting": 0,
+        "ready": 4,
+        "failed": 0,
+        "booting": 1,
+        "initializing": 0
+      },
+      "quota_pool": "v4-reserved/us-central2-b"
+    },
+    {
+      "name": "tpu_v4-reserved_8-us-central2-b",
+      "allocation_tier": 1,
+      "availability_status": "backoff",
+      "availability_reason": "degraded (health=0.20)",
+      "consecutive_failures": 5,
+      "slice_state_counts": {
+        "requesting": 0,
+        "ready": 28,
+        "failed": 0,
+        "booting": 3,
+        "initializing": 0
+      },
+      "quota_pool": "v4-reserved/us-central2-b"
+    }
+  ],
+  "existing_reserved_32": [
+    {
+      "slice_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0259-49f2a9a0",
+      "state": "ready",
+      "capacity_status": "in_use",
+      "created_at": {
+        "epoch_ms": "1793674795878"
+      }
+    },
+    {
+      "slice_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0329-e2eaa1a4",
+      "state": "ready",
+      "capacity_status": "in_use",
+      "created_at": {
+        "epoch_ms": "1793676567290"
+      }
+    },
+    {
+      "slice_id": "marin-tpu-v4-reserved-32-us-central2-b-20261103-0332-eea23fdc",
+      "state": "ready",
+      "capacity_status": "in_use",
+      "created_at": {
+        "epoch_ms": "1793676776395"
+      }
+    },
+    {
+      "slice_id": "marin-tpu-v4-reserved-32-us-central2-b-20261104-0427-fd1856ff",
+      "state": "ready",
+      "capacity_status": "in_use",
+      "created_at": {
+        "epoch_ms": "1793766447219"
+      }
+    },
+    {
+      "slice_id": "marin-tpu-v4-reserved-32-us-central2-b-20261104-0516-f0415a93",
+      "state": "booting",
+      "capacity_status": "",
+      "created_at": {
+        "epoch_ms": "1793769416270"
+      }
+    }
+  ],
+  "interpretation": "The task-specific autoscaler decision blocks both matching pools by quota-pool tier monotonicity. Both size-8/tier-1 groups are in degraded-health backoff, while requested size-32 is tier 3. Local routing.py blocks tiers >= minimum backoff/quota-failed tier in a pool. Four ready reserved v4-32 slices are in use; one is booting. This snapshot does not establish cloud quota exhaustion or an ETA.",
+  "resources_fit_configured_host": {
+    "requested_cpu": 120,
+    "configured_cpu": 240,
+    "requested_memory_GiB": 256,
+    "configured_ram": "400GB"
+  },
+  "actions": "Read-only diagnosis; no priority change, cancellation, resubmission or allocation change.",
+  "raw_evidence": [
+    {
+      "path": "scratch/20261104-grouped-queue-autoscaler.json",
+      "sha256": "7801b04eb47092803187cbe377b66302fccdafc492217405cf127c3c4bdc8e0f"
+    },
+    {
+      "path": "scratch/20261104-grouped-queue-get-scheduler-state.json",
+      "sha256": "c6dd3d2f5497a1cd998ad366e2a2c74bc81dc3a5b6214fdaa2a9d87c4776a7df"
+    }
+  ],
+  "observer_error": "Documented get-provider-status command is absent from installed CLI; get-autoscaler-status supplied the evidence."
+}
