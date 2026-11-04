@@ -5207,3 +5207,8 @@ with no attempts, failures or preemptions. The 120-second initial wait was
 satisfied. Next routine check: no earlier than 04:02:22 UTC. The sole follow
 22285 remains live; a transient read connection reset used its built-in retry
 and did not justify another observer.
+
+Canonical job and all four task checks at 04:02–04:03 UTC still show pending,
+with no attempts, failures or preemptions. No numerical result is available.
+Sole follow 22285 is retained; the next routine check is due no earlier than
+04:12:51 UTC. No new job or source change was made.
