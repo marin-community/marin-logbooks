@@ -5669,3 +5669,24 @@ have not yet been API-verified, and worker attempt UIDs remain unverified.
 No complete performance result is available. Preserve the single submitted
 job and collect all eight numerical process reports before comparing optimizer latency.
 [Running observation and W&B links](scaled-gram-running.json).
+
+## 2026-11-04: Verify execution-host identity and partial progress
+
+The 16:57 UTC check of `ema-gram-20-scaled-gram-v4-64-20261104` still reports
+eight running tasks, zero completed tasks, zero failures and zero preemptions.
+Canonical task records identify one attempt per task, all attempt 0. The
+Iris task-to-JAX process mapping is 0→7, 1→4, 2→2, 3→6, 4→3, 5→0, 6→5, 7→1.
+The assigned slice differs from the launcher's earlier available-slice snapshot;
+that snapshot was advisory. No allocation was changed by this monitor.
+
+W&B API checks find all eight host logging runs finished with
+`logging_check/success=1`, and all eight numerical runs running. Their recorded
+source hashes and commit match the four pinned files and submitted revision.
+Generation-pinned regional config/report downloads agree with those identities.
+The reports' checkpoint URI, metadata, 21 saved-array paths, byte count and
+manifest hash match the prior checkpoint record; this is not a fresh audit of
+checkpoint array bytes. Each partial report contains both layouts and comparison
+fields for the fixed-state case, but lacks the completed full-update comparison.
+Keep the independent-bank matrix layout with the default eigensolver as the
+training baseline. Wait for complete numerical process reports, global replica
+checks and canonical success before judging speed. [Startup verification](scaled-gram-startup.json).
