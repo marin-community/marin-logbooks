@@ -5050,3 +5050,57 @@ the resulting matrices. Its benefit is unmeasured; this audit supplies
 assignment evidence, not a cost estimate for that reconstruction. No change
 has been implemented. The [completed 924-update matrix run](prefix-train-completed.json)
 remains the working baseline.
+
+### November 3, 19:25 Pacific — Shard-local reconstruction passes CPU checks
+
+The [matrix-power candidate](power-reconstruction-design.md) reconstructs each
+full square matrix power on the shard that computed its eigendecomposition,
+then gathers the reconstructed powers. The existing matrix layout gathers
+eigenvectors and eigenvalues before reconstruction. Normalization, full Gram
+refresh, default eigensolver, precision, polar iterations and padding remain
+unchanged. The completed 924-update matrix run remains the working training
+baseline; this new layout has no TPU performance or training-quality result.
+
+The candidate's [online CPU harness](power-reconstruction-cpu-validation.json)
+passed checkpoint round-trip, unchanged-state directions and full refresh/update
+with fixed synthetic gradients. The unchanged-state case computes optimizer
+update directions while holding saved momentum and Grams fixed. Both layouts produced finite outputs, preserved
+input state and gradients, and had zero maximum absolute difference between corresponding
+output arrays on this small fixture. Each case and layout reproduced its output bytes in three replays.
+Zero-Gram identity, rank-deficient finiteness, an independent NumPy spectral
+reference and alpha-zero regression also passed. The fixture uses three matrices
+per bank on a 2×2 CPU mesh, exercising a padded batch. CPU agreement does not
+establish TPU agreement or speed.
+
+All 15 affected optimizer tests passed in fresh online, in-process runs:
+[11 single-device tests](power-reconstruction-regression-single-validation.json)
+and [four matrix-layout checkpoint/update cases](power-reconstruction-regression-matrix-validation.json).
+The [initial fixture failure](power-reconstruction-cpu-initial-failure.json)
+used a mesh without the model axis required by the native polar update; the
+corrected fixture uses data/model axes. The [first regression attempt](power-reconstruction-regression-initial-failure.json)
+forced a single-device round-trip test onto four devices and enabled pytest
+workers outside its parent tracker. It is retained as a failed, insufficiently
+tracked attempt. The corrected runs disable pytest workers and use each test's
+intended device count. Their W&B API states, success metrics and exact source
+hashes were verified. The optimizer implementation did not change between the
+corrected CPU harness and these regressions.
+
+The [prepared diagnostic](power-reconstruction-prepared.json) will run matrix
+then matrix_power sequentially on the [original step-923 checkpoint](loss-pair-checkpoint-metadata.json),
+version 2026.10.30.23, containing 21 Gram/momentum arrays. It checks seven unchanged-state directions and the full
+28-output refresh/update (seven directions plus 21 states), then records three warmed synchronized samples per
+case and layout. Compilation is reported separately. This is a non-training
+optimizer diagnostic; its timings cannot supply training MFU. Numerical
+comparisons retain rtol=atol=1e-5 as diagnostics. Completion requires all four
+finite, input-immutable process reports, one per host covering both cases and
+layouts, plus Iris job/task success. Hashes for equal leaf/index regions on
+different replicas must agree before global aggregation; successive executions
+are checked separately by replay hashes.
+
+The implementation and checks are prepared locally; no TPU job has been
+submitted. The next action is to publish the exact source, manifest and recipe
+before one v4-32 launch
+in us-central2, with four hosts requesting 120 CPUs, 256 GiB RAM and 50 GiB disk
+each. Every host will run fresh online logging before numerical execution.
+Default preemption retries and all attempt evidence remain enabled, with no
+wall-clock limits. No training extension or second candidate is submitted.

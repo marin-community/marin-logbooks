@@ -105,7 +105,8 @@ def test_scanned_qwen_optimizer_roundtrip_continues_identically(tmp_path):
 
 @pytest.mark.tpu
 @pytest.mark.parametrize("ridge", [1e-4, 1e-2])
-def test_matrix_parallel_config_restores_replicated_checkpoint_and_matches_updates(tmp_path, ridge):
+@pytest.mark.parametrize("layout", ["matrix", "matrix_power"])
+def test_matrix_parallel_config_restores_replicated_checkpoint_and_matches_updates(tmp_path, ridge, layout):
     devices = jax.devices()
     if len(devices) < 4:
         pytest.skip("Requires at least four devices to exercise matrix assignment")
@@ -124,7 +125,7 @@ def test_matrix_parallel_config_restores_replicated_checkpoint_and_matches_updat
     )
     model = cfg.build(hax.Axis("vocab", 32), key=jax.random.PRNGKey(1))
     reference_tx = EmaGramConfig(learning_rate=0.001, alpha=0.25, ridge=ridge).build(20)
-    candidate_tx = EmaGramConfig(learning_rate=0.001, alpha=0.25, ridge=ridge, eigh_layout="matrix").build(20)
+    candidate_tx = EmaGramConfig(learning_rate=0.001, alpha=0.25, ridge=ridge, eigh_layout=layout).build(20)
     reference = TrainerState.init(reference_tx, model, key=jax.random.PRNGKey(2))
     candidate = TrainerState.init(candidate_tx, model, key=jax.random.PRNGKey(2))
     step = hax.named_jit(

@@ -1,0 +1,23 @@
+{
+  "run": "ema-gram-power-cpu-check-143b449c397b",
+  "source_files": {
+    "logbooks/20-ema-gram-polar/power_reconstruction_check.py": {
+      "bytes": 12710,
+      "sha256": "ac4247339f922c6c2958043dc3fb5f2a8088a8d7c016379cb300f81d9cd62b02"
+    },
+    "logbooks/20-ema-gram-polar/saved_state_check.py": {
+      "bytes": 10957,
+      "sha256": "85282a7288a1705c296862994c1fa5f93eef2d80d77a5592f39d123108325696"
+    },
+    "logbooks/20-ema-gram-polar/optimizer_cost.py": {
+      "bytes": 21061,
+      "sha256": "906c3166b1d65cca383963890e2034dd5edcb6afd074308cb9e97f209ad70033"
+    },
+    "lib/levanter/src/levanter/optim/ema_gram.py": {
+      "bytes": 13664,
+      "sha256": "0e2bc2487e3c1df2eb14201552d6a08165830bb557bb5a01eb284b0dc137416f"
+    }
+  },
+  "reason": "Harness supplied active data-only mesh, but native Newton-Schulz constraints require data and model axes. Failed before unchanged-direction comparison; no TPU submitted.",
+  "correction": "Use2x2CPU/4x4TPU data/model mesh; allmatrixassignment axes remain included. No optimizer numerical change for this fixture correction."
+}

@@ -64,16 +64,20 @@ def relative_gram_power(
     *,
     eigh_implementation: jax.lax.linalg.EighImplementation | None = None,
     eigh_fn: Callable[..., tuple[jax.Array, jax.Array]] = jax.lax.linalg.eigh,
+    power_fn: Callable[..., jax.Array] | None = None,
 ) -> jax.Array:
     """Return (Gram / mean eigenvalue + ridge I)^(-alpha), or I for a zero Gram."""
     gram = (gram + jnp.swapaxes(gram, -1, -2)) * 0.5
     mean = jnp.trace(gram, axis1=-2, axis2=-1) / gram.shape[-1]
     normalized = gram / jnp.where(mean > 0, mean, 1)[..., None, None]
-    vectors, values = eigh_fn(normalized, implementation=eigh_implementation)
-    powers = (jnp.maximum(values, 0) + ridge) ** (-alpha)
-    power = jnp.matmul(
-        vectors * powers[..., None, :], jnp.swapaxes(vectors, -1, -2), precision=jax.lax.Precision.HIGHEST
-    )
+    if power_fn is None:
+        vectors, values = eigh_fn(normalized, implementation=eigh_implementation)
+        powers = (jnp.maximum(values, 0) + ridge) ** (-alpha)
+        power = jnp.matmul(
+            vectors * powers[..., None, :], jnp.swapaxes(vectors, -1, -2), precision=jax.lax.Precision.HIGHEST
+        )
+    else:
+        power = power_fn(normalized, alpha=alpha, ridge=ridge, implementation=eigh_implementation)
     return jnp.where((mean > 0)[..., None, None], power, jnp.eye(gram.shape[-1], dtype=gram.dtype))
 
 
@@ -120,6 +124,49 @@ def exact_polar(matrix: jax.Array) -> jax.Array:
     return jnp.matmul(u * (singular > threshold)[..., None, :], vh, precision=jax.lax.Precision.HIGHEST)
 
 
+def matrix_parallel_power(
+    normalized: jax.Array,
+    *,
+    alpha: float,
+    ridge: float,
+    mesh: jax.sharding.Mesh | jax.sharding.AbstractMesh,
+    axis_name: str | tuple[str, ...],
+    implementation: jax.lax.linalg.EighImplementation | None,
+) -> jax.Array:
+    """Reconstruct each full matrix power on its eigensolver shard before gathering."""
+    replicated = NamedSharding(mesh, P())
+    normalized = jax.lax.with_sharding_constraint(normalized, replicated)
+    normalized = jax.lax.optimization_barrier(normalized)
+    axes = (axis_name,) if isinstance(axis_name, str) else axis_name
+    shards = math.prod(mesh.shape[name] for name in axes)
+    batch_shape = normalized.shape[:-2]
+    count = math.prod(batch_shape)
+    padded_count = math.ceil(count / shards) * shards
+    flat = normalized.reshape((count, *normalized.shape[-2:]))
+    padded = jnp.pad(flat, ((0, padded_count - count), (0, 0), (0, 0)))
+
+    def reconstruct(local):
+        vectors, values = jax.lax.linalg.eigh(local, implementation=implementation)
+        powers = (jnp.maximum(values, 0) + ridge) ** (-alpha)
+        return jnp.matmul(
+            vectors * powers[..., None, :], jnp.swapaxes(vectors, -1, -2), precision=jax.lax.Precision.HIGHEST
+        )
+
+    mapped = jax.shard_map(
+        reconstruct,
+        mesh=mesh,
+        axis_names=set(axes),
+        in_specs=P(axis_name, None, None),
+        out_specs=P(axis_name, None, None),
+        # Same scoped TPU QDWH VMA exception as matrix_parallel_eigh; all
+        # manual axes remain present in the output specification.
+        check_vma=False,
+    )
+    power = jax.lax.optimization_barrier(mapped(padded))
+    power = power[:count].reshape((*batch_shape, *normalized.shape[-2:]))
+    return jax.lax.with_sharding_constraint(power, replicated)
+
+
 @jax.named_call
 def gram_direction(
     state: GramState,
@@ -130,13 +177,16 @@ def gram_direction(
     polar_method: str = NEWTON_SCHULZ,
     eigh_implementation: jax.lax.linalg.EighImplementation | None = None,
     eigh_fn: Callable[..., tuple[jax.Array, jax.Array]] = jax.lax.linalg.eigh,
+    power_fn: Callable[..., jax.Array] | None = None,
 ) -> jax.Array:
     """Return a positive descent direction without advancing the supplied EMA state."""
     m = state.momentum
     if alpha:
-        left = relative_gram_power(state.left, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn)
+        left = relative_gram_power(
+            state.left, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn, power_fn=power_fn
+        )
         right = relative_gram_power(
-            state.right, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn
+            state.right, alpha, ridge, eigh_implementation=eigh_implementation, eigh_fn=eigh_fn, power_fn=power_fn
         )
         inner = jnp.matmul(
             jnp.matmul(left, m, precision=jax.lax.Precision.HIGHEST), right, precision=jax.lax.Precision.HIGHEST
@@ -176,7 +226,7 @@ def scale_by_ema_gram(
     if alpha < 0 or ridge <= 0 or not 0 <= beta1 < 1 or not 0 <= beta2 < 1 or polar_steps < 1:
         raise ValueError("Invalid EMA Gram hyperparameters")
 
-    if eigh_layout not in ("replicated", "matrix"):
+    if eigh_layout not in ("replicated", "matrix", "matrix_power"):
         raise ValueError(f"Unknown eigensolver layout: {eigh_layout}")
     if eigh_implementation not in ("default", "jacobi"):
         raise ValueError(f"Unknown eigensolver implementation: {eigh_implementation}")
@@ -193,13 +243,17 @@ def scale_by_ema_gram(
         leaves, treedef = jax.tree.flatten(flatten_linear_layers(updates))
         states = tuple(update_gram_state(g, s, beta1, beta2) for g, s in zip(leaves, state.matrices, strict=True))
         eig_fn = jax.lax.linalg.eigh
-        if eigh_layout == "matrix" and alpha:
+        power_fn = None
+        if eigh_layout in ("matrix", "matrix_power") and alpha:
             mesh = jax.sharding.get_abstract_mesh()
             if mesh.empty:
                 raise ValueError("Matrix-parallel EMA-Gram requires an active mesh")
             axes = tuple(name for name, size in mesh.shape.items() if size > 1)
             if axes:
-                eig_fn = partial(matrix_parallel_eigh, mesh=mesh, axis_name=axes)
+                if eigh_layout == "matrix":
+                    eig_fn = partial(matrix_parallel_eigh, mesh=mesh, axis_name=axes)
+                else:
+                    power_fn = partial(matrix_parallel_power, mesh=mesh, axis_name=axes)
         directions = [
             gram_direction(
                 s,
@@ -207,6 +261,7 @@ def scale_by_ema_gram(
                 ridge=ridge,
                 polar_steps=polar_steps,
                 eigh_fn=eig_fn,
+                power_fn=power_fn,
                 eigh_implementation=implementation,
             ).astype(g.dtype)
             for g, s in zip(leaves, states, strict=True)
@@ -227,7 +282,7 @@ class EmaGramConfig(OptimizerConfig):
     gram_beta: float = 0.99
     polar_steps: int = 5
     eigh_layout: str = "replicated"
-    """Matrix layout assigns complete eigendecompositions across active mesh axes."""
+    """Matrix shards eigendecomposition; matrix_power also reconstructs each power on that shard."""
     eigh_implementation: str = "default"
     """Backend default or full Jacobi; selection never changes Gram geometry."""
     adam_lr: float = 3e-4
