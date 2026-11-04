@@ -4832,3 +4832,64 @@ failures or preemptions. Shared validation at 762 and final hooks remain to
 be verified. Continue the requested 924-update run; use the saved interval
 and source evidence to establish device/slot assignment before selecting
 one bounded performance change.
+
+### November 3, 18:14 Pacific — 924-update matrix comparison completed
+
+The requested matrix-layout run completed 924 updates from random
+initialization. All four tasks succeeded on attempt 0, all four native
+process reports reached counter 924 and returned from final hooks, and
+permanent checkpoint label 923 has saved metadata and a 57-array manifest.
+The manifest's global paths, shapes and dtypes match the original; checkpoint
+arrays were not independently re-audited. The LR horizon stayed 7630, and
+no training beyond 924 was submitted. [Completion evidence](prefix-train-completed.json).
+
+The [matched comparison](prefix-train-comparison.json) gives:
+
+| Measurement | Historical original | Matrix candidate | Candidate − original |
+|---|---:|---:|---:|
+| C4 validation loss, label 762 | 5.67533445 | 5.67073059 | −0.00460386 |
+| Token-weighted validation loss, label 762 | 6.18060303 | 6.17510939 | −0.00549364 |
+| Equal-dataset macro validation loss, label 762 | 6.38239670 | 6.38421106 | +0.00181437 |
+| Training loss, label 923 | 5.61069822 | 5.61555576 | +0.00485754 |
+
+The micro loss averages tokens across datasets; macro loss averages the
+per-dataset token-average losses with equal dataset weight, as implemented
+in [eval.py](../../lib/levanter/src/levanter/eval.py). Across all 924 matched
+training losses, mean difference is −0.00078866, stepwise standard deviation
+0.00654332 and maximum absolute difference 0.08981657 at label 756. These are
+single-seed observations, not a statistical equivalence test. The candidate's
+final forced C4 evaluation at 923 is 5.45070124, with no historical validation
+at that same step. Both evaluation invocations are preserved.
+
+In the prescribed 800–899 window, candidate mean native step duration is
+3.70021 seconds and MFU 0.49354%; the historical original has 38.74783 seconds
+and 0.18852%. The observed window step-speed ratio is 10.47× using 16 versus
+four v4 devices; device-time efficiency ratio is 2.62×. Hardware and mesh
+differ, so neither speed nor loss differences are attributed solely to layout.
+Candidate logged training lowerings precede the warmup cutoff. Historical
+steady-state eligibility remains unverified because its compilation log is
+unavailable here; the ratio is a descriptive window comparison. Native step
+durations exclude loading and hooks, and do not establish end-to-end speed.
+
+[W&B](https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0.25-seed0-a473c0b6d69b-2026.11.04.01-69f6f3e74da5)
+finished successfully and matches all 924 loss/duration/MFU/LR rows. Both LR
+series match the historical values exactly. All 92 watch observations contain
+272 finite parameter/gradient norms online. Long local norm records have
+timestamp-chunk damage: 52 invalid JSON records and 40 altered keys. They
+were not repaired or used to establish norm values. Short training and
+evaluation records remain parseable and match online. One damaged hparams
+record was excluded; source/config identities were independently verified
+at startup. These checks do not audit every intermediate tensor or state.
+
+The static summary fixtures passed known loss and speed answers, 15 mutation
+rejections, and explicit preservation of malformed norm-record gaps. Required
+lint and cold-read passed. Follow 67222 ended naturally with exit 0. All
+recorded jobs and observers are now terminal; none should be polled or
+replaced. No other allocations were changed.
+
+The working decision is to use matrix layout for subsequent research under
+the user's practical loss/speed criterion. This does not assert a numerical
+equivalence margin. Full 7630-step and multiseed confirmation remain pending,
+and MFU remains below 5%. Next use saved profiling and source evidence to
+choose one bounded performance change. No new numerical implementation or
+job has been submitted; the requested 924-update endpoint remains unchanged.
