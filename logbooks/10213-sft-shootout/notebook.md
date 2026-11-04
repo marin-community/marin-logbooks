@@ -69,7 +69,7 @@ the result.
   SWE-bench +26 [+17, +36] and TBLite +9 [+1, +17].
 - Decision: stop and write up. The cross-format test that would separate the
   teacher from the harness format (about 125 H100-h) was not run.
-- Paper: [agentic-sft-shootout.pdf](agentic-sft-shootout.pdf) (67 pages).
+- Paper: [agentic-sft-shootout.pdf](agentic-sft-shootout.pdf) (15 pages, condensed 2026-11-04; includes the diagrams and the hypotheses).
 - Marin contribution PRs (drafts): marin-community/marin#10255 (plateau
   dropping in `train_lm`), #10887 (recording relay proxy, relay rules, trace
   rebuild, capability-token scrubbing), #10888 (harness-faithful recovery rows).
