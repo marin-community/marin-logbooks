@@ -73,6 +73,8 @@ def training_recipe(steps: int) -> dict:
         NCCL_IB_DISABLE="1",
         NCCL_SOCKET_FAMILY="AF_INET",
     )
+    # Thoughtcrime tasks advertise native tools; vLLM rejects tool requests without a parser.
+    config["generator"]["engine_init_kwargs"].update(enable_auto_tool_choice=True, tool_call_parser="hermes")
     config["generator"]["trajectory_reward_shaping"] = {
         "enabled": True,
         # Enabling shaping would also apply the DAPO overlong penalty over the derived l_cache window.
