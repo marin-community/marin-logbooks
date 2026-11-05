@@ -214,6 +214,14 @@ def cache_storage(worker) -> dict:
         "cache_tensor_count": len(runner.kv_caches),
         "unique_cuda_storage_count": len(storage),
         "unique_cuda_storage_bytes": sum(item["bytes"] for item in storage.values()),
+        "runtime_source_sha256": {
+            name: hashlib.sha256(Path(sys.modules[name].__file__).read_bytes()).hexdigest()
+            for name in (
+                "vllm.model_executor.models.grugmoe",
+                "vllm.v1.attention.backends.flashinfer",
+                "vllm.v1.attention.backends.grug_logical_kv",
+            )
+        },
         "storage": list(storage.values()),
         "cache_config": {
             "enable_prefix_caching": config.enable_prefix_caching,
