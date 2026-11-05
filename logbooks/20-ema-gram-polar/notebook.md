@@ -1953,3 +1953,19 @@ before global selection, and an exact source/job submission record with one
 monitoring owner remain to be fixed before launch. See the
 [prepared configuration](alpha0-long-run-prepared.json) and
 [preparation checks](alpha0-long-run-preparation-preflight.json).
+
+The required alpha0.5/ridge0.0001/LR0.000125 expansion was accepted at17:32 UTC
+from source dc00e1440f9baa3cb6eeda23ff6454865afbbe48. Its submission completed
+with exit0 after the full26-component catalog check. The submitter enforces a
+permanent duplicate-submission guard, and one observer owns scheduled status checks. Allocation
+and training startup are not yet verified. See
+[accepted launch](subset-expansion-r04-launched.json).
+
+A bounded read of the independent probe's live report found phase
+`loss_probes_complete` with27 rows comparing baseline and perturbed-model losses
+on the same held-out batches, and no decomposition rows yet. The worker emits this
+phase after the full restore succeeds and the loss calculations return. This
+establishes phase progress despite the unchanged ONLINE summary. The optional process listing failed because the container lacks `ps`;
+that diagnostic error does not establish worker failure. The job remains under
+its existing observer. Finite output validation, SVD results and terminal/archive
+checks remain pending. See [phase evidence](fullsize-probe-qualification-phase-progress.json).
