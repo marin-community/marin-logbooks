@@ -2083,3 +2083,34 @@ published worktree for campaign `ema-gram-20-alpha0-seed0-r01-20261105`.
 Its dry plan and full26-component regional catalog check passed. Exact submit
 and observer arguments are recorded; neither was executed. No launch ledger,
 observer, allocation or training run exists for this baseline campaign yet.
+
+### 2026-11-05 18:52 UTC — complete full-size probe qualification
+
+The full-size probe qualification passed on the validated alpha0.25 pilot
+checkpoint. It restored all57 finite model, optimizer, counter and PRNG arrays
+with `allow_partial=False`, checked counter7,630, and produced all27 finite
+paired-loss rows and18 finite production-polar versus SVD comparisons. The
+loss probes cover nine alpha/ridge settings at three common step sizes. The
+decomposition comparisons cover the same nine settings on one attention matrix
+of shape1,024×1,024 and one MLP matrix of shape4,096×1,024. Paired delta means, standard deviations and standard errors
+were independently recomputed from the saved two-batch losses. See
+[completion evidence and outputs](fullsize-probe-qualification-completed.json).
+
+The original single task attempt succeeded with exit0 and matched its cached
+startup UID and worker. The original observer recorded canonical success at
+18:47 and exited naturally. The native ONLINE run finished with matching source,
+request, checkpoint, task and attempt identity, and reported27 loss rows and18
+decomposition rows. Its finished host logging record was reused from startup.
+A29,653-byte output archive passed generation-bound readback and SHA-256 checks;
+only its bounded reports were downloaded. The initial config comparison exposed
+two known W&B omissions of empty mappings. Restoring only those mappings gave
+exact request equality; the initial failure log is retained.
+
+The earlier absence of intermediate SVD output is resolved by the complete
+terminal report. No specific cause of the long runtime was established. Reuse
+this completed evidence and retire its polling; do not restart its observer or
+repeat task, tracking or archive queries. This qualification used pilot cell16
+on one host with four TPU devices. It does not replace the scientific probes
+on the three prescribed alpha0.25 confirmation checkpoints, establish training
+resume or data-position replay, or change hyperparameter selection. Recursive
+expansions and full confirmations remain unfinished.
