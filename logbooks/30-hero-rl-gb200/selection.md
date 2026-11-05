@@ -10,14 +10,13 @@ runtimes in [notebook.md](notebook.md).
 
 | Group | Maintained behavior and boundary | Contribution |
 | --- | --- | --- |
-| Inference backend API | Explicit typed backend selection and launcher/runtime agreement. Retain the existing node-local placement constraints. Archive the experimental packing implementation and its unsupported broader multi-node claim; the qualified EP12 case does not establish that generalization. | Pending publication |
-| Megatron geometry | Validate role GPU counts and TP/PP/CP/EP/ETP divisibility before launch; materialize one consistent policy/reference geometry. | Pending publication |
-| Model/tokenizer staging | Validate model metadata/weights independently of tokenizer files; stage and load the separately pinned tokenizer through the runtime path. | Pending publication |
-| Mismatch archive and generation | Preserve complete independent response coverage and source/step/token/route provenance; correct bounded generation concurrency and archive behavior used by maintained mismatch tooling. | Pending publication |
-| Ray memory budget | Advertise heap capacity after subtracting the bounded object store from the container budget. This corrects accounting; it is not an actor RSS limit or proof of OOM causality. | Pending publication |
+| Inference backend API | Explicit typed backend selection and launcher/runtime agreement. Retain the existing node-local placement constraints. Archive the experimental packing implementation and its unsupported broader multi-node claim; the qualified EP12 case does not establish that generalization. | [Marin #10948](https://github.com/marin-community/marin/pull/10948) (draft) |
+| Megatron geometry | Validate role GPU counts and TP/PP/CP/EP/ETP divisibility before launch; materialize one consistent policy/reference geometry. | [Marin #10958](https://github.com/marin-community/marin/pull/10958) (draft) |
+| Model/tokenizer staging | Validate model metadata/weights independently of tokenizer files; stage and load the separately pinned tokenizer through the runtime path. | [Marin #10959](https://github.com/marin-community/marin/pull/10959) (draft) |
+| Mismatch archive and generation | Preserve complete independent response coverage and source/step/token/route provenance; correct bounded generation concurrency and archive behavior used by maintained mismatch tooling. | [Marin #10960](https://github.com/marin-community/marin/pull/10960) (draft) |
+| Ray memory budget | Advertise heap capacity after subtracting the bounded object store from the container budget. This corrects accounting; it is not an actor RSS limit or proof of OOM causality. | [Marin #10961](https://github.com/marin-community/marin/pull/10961) (draft) |
 
-Do not fold independent groups into the Hero qualification harness. Contribution
-links and current PR status belong in this table after publication. The original
+Do not fold independent groups into the Hero qualification harness. The five contributions are independent drafts against Marin main. The original
 combined draft is [Marin #10948](https://github.com/marin-community/marin/pull/10948).
 
 ## Preserve in the archive

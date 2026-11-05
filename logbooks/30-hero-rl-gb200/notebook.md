@@ -61,7 +61,7 @@ successful initial publication alone was insufficient.
 
 The export contained model metadata and weights but no tokenizer files. Requiring bundled tokenizer files
 failed before numerical qualification. Model staging was separated from independently pinned tokenizer staging
-and exercised by the CPU prerequisite. This established loadability, without downloading the weight shards.
+and exercised by the CPU prerequisite. This established metadata and tokenizer loadability without downloading the weight shards.
 
 An early attempt then suffered container OOM during serving initialization. RunAI 0.16.1's unlimited
 distributed-streaming buffers could collectively retain roughly the full 997.4 GiB model on a 940 GiB tray.
@@ -104,7 +104,7 @@ total. NONE dispatches also occurred; these tables are not direct CUDA replay co
 A report-only correction recognized the canonical model URI in the runtime archive's `checkpoint_path`; the
 staged local metadata directory was not the model source. It retained the exact-source guard and all numerical
 thresholds. The runtime and archived outputs were unchanged. The probe hash was
-`f6cc736e7a62f6c5eccbd52a2b0602a2fb4d802c590ea7100ee8ffe4478a62eb`; archive commit
+`f6cc736e7a62f6c5eccbd52a2b0602a2fb4d802c590ea7100ee8ffe4478a62eb`; FineStore archive commit
 `46a47b2f53b2498f9ca9d36f23ff170f`, sequence 9.
 
 ### 2026-11-04 UTC — Update attempts .34 and .35 reject incomplete memory fixes
@@ -139,7 +139,7 @@ still required full-run measurement.
 
 At runtime `899b04436748b22da9d1e8a245bc1bdbe7556593`, all twelve GPU tasks succeeded with zero
 failures/preemptions. Four steps each applied one update, with zero skips, finite loss/gradient norm/reward
-and replay hit fraction 1. PPO clip fractions were 0.00016173, 0.00016300, 0.00009259 and zero. Publications
+and router replay hit fraction 1. PPO clip fractions were 0.00016173, 0.00016300, 0.00009259 and zero. Publications
 1–4 completed in approximately 233/233/233/235 seconds, with all twelve receivers resuming under corresponding
 lease labels 2–5. Every serving rank recorded capture completion and positive completed PIECEWISE execution
 tables; total observations were 15,657, not direct replay counts. The largest cgroup peak in saved bounded
