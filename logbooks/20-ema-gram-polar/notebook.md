@@ -5573,3 +5573,27 @@ At05:21 UTC all fifteen scheduled nonzero cells had native update evidence.
 Thirteen previously active streams advanced; cell19 was still at its startup
 label7 and cell20 first reached7. This is one unchanged startup observation,
 not a cancellation trigger. Six completed alpha0 results remain validated.
+
+### 2026-11-05 07:26 UTC — prepare terminal task evidence collection
+
+Added a terminal-task collector for the fixed-subset seed0 pilot campaign.
+It selects results awaiting validation only after the existing observer records
+a terminal job, binds each request to its launch-ledger job ID and immutable source commit,
+and saves one final task snapshot containing all its recorded attempts. An exclusive lock and
+persistent read-start record prevent concurrent or automatic repeated reads
+after an ambiguous error; another read requires explicit reconciliation. Raw
+responses and all attempt identities are retained.
+
+Mock checks cover cache reuse, transport failure, and failed, preempted and
+successful attempts. The saved observer snapshots produce zero new requests: six completed results
+are reused, and the other24 jobs are still running or pending.
+No live terminal read, training process or checkpoint read ran. Evidence is in
+terminal-task-collector-preflight.json. Full configuration, metric, checkpoint
+and online W&B finish validation remains required for the remaining24 pilots.
+
+At07:23 UTC six pilots remain scientifically validated,17 are running and7
+pending. All17 native training streams advanced, with maximum native training-step label3634 and
+cell22 at196 after previously pausing at startup label7. The68 cached task-attempt joins remain
+reusable because the observer snapshots still report zero failures/preemptions
+across all30 accepted jobs. Continue the exclusive observer
+and finish the nonzero artifact validator before the next pilot terminates.

@@ -1,0 +1,28 @@
+{
+  "observed_utc": "2026-11-05T07:24:00.579273+00:00",
+  "scope": "Terminal-task collection preparation; no live terminal RPC, numerical process, W&B finished-run query, or storage read. No new scientific completion.",
+  "checks": {
+    "current_live_grid": {
+      "validated_results_reused": 6,
+      "waiting_cells": 24,
+      "terminal_requests": 0
+    },
+    "fictional_terminal_nonzero": {
+      "succeeded_and_failed_jobs_each_have_four_exact_task_ids": true,
+      "job_identity_mismatch_rejected": true
+    },
+    "mock_task_collection": {
+      "first_read_cached_second_read_zero_rpc": true,
+      "failed_worker_failed_and_preempted_attempts_retained": true,
+      "transport_failure_raw_response_preserved": true,
+      "ambiguous_guard_prevents_automatic_reread": true,
+      "scientific_completion_remains_false": true
+    }
+  },
+  "limitations": [
+    "Only task snapshot acquisition is prepared. Full metric/config/checkpoint/run-attempt validation remains required.",
+    "Any multiple-attempt training interval needs explicit lineage and restored-state verification before a resume claim.",
+    "Read errors or incomplete terminal task states require evidence-based reconciliation before another read; no blind retries."
+  ],
+  "next_action": "Finish nonzero artifact validator while pilots train; invoke collection only after the exclusive canonical owner reconciles terminal jobs."
+}
