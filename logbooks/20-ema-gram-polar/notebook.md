@@ -1994,3 +1994,8 @@ training run matches its frozen configuration and source, with an observed finit
 at zero-based update label7. This is early training progress, not final evaluation.
 Reuse the [startup evidence](subset-expansion-r04-started.json); no additional
 startup queries are needed unless task attempts change.
+
+R05 was subsequently accepted after the full26-component data catalog check.
+Its submit process exited0, and one observer owns the new campaign. The permanent
+submission guard is retained; allocation and startup identity await verification.
+See [accepted R05 launch](subset-expansion-r05-launched.json).
