@@ -1616,3 +1616,13 @@ and expansion R01 observer were not changed. All three required expansion settin
 now have permanent guards, so replaying completed-group decisions proposes no
 additional submission. See [launch evidence](subset-expansion-r02-launched.json)
 and [group readiness](subset-training-r02-completion-readiness.json).
+
+At 14:09:32 UTC, the new campaign's sole observer recorded RUNNING with four
+tasks and zero failures/preemptions. The startup audit then matched all four
+original attempt-0 UIDs and distinct assigned worker IDs to their finished
+nontraining online W&B logging checks. The native online training run matches
+the frozen configuration and immutable source; no optimizer-step metric has
+appeared yet. Saved follower logs provide the task/run joins. Each task was read
+once with a durable read-start guard, and the five-run API snapshot is cached.
+These assignments are not a separate runtime JAX-device audit. The next owner
+check is 14:19:02 UTC. See [startup evidence](subset-expansion-r02-started.json).
