@@ -5314,3 +5314,13 @@ are not worker failures and no replacement followers were created.
 allocation. Source/worktree and full launch evidence are recorded in
 subset-training-r02-launched.json. Await owned canonical allocation and
 startup evidence before claiming running models or scientific progress.
+
+### 2026-11-05 03:09 UTC — first owned canonical campaign checks
+
+All30 first checks completed:29PENDING,1RUNNING(index01 alpha0), with
+101pending tasks and1building task. No failures or preemptions. This is
+startup, not evidence of a model update or a completed pilot. Scheduling
+reports insufficient available host memory and quota-pool tier blocking;
+these are not a wait-time estimate. Sole observer17065 nextchecks are
+recorded in subset-training-r02-first-observation.json. No resubmissions,
+allocation changes, priority changes or replacement followers.
