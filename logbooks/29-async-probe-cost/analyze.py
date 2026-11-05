@@ -47,6 +47,15 @@ def summarize(run, result, digest):
     counts = [count for row in observed for count in row["sampled_positions_per_response"]]
     if counts and max(counts) > 32:
         raise ValueError("Probe coverage exceeds the declared per-response limit")
+    gradients = [row["metrics"]["policy/raw_grad_norm"] for row in cycles]
+    learning_rates = [row["metrics"]["policy/policy_lr"] for row in cycles]
+    published_steps = {row["step"] for row in result["publications"]}
+    if not all(math.isfinite(value) and value >= 0 for value in gradients) or max(gradients) == 0:
+        raise ValueError(f"No finite nonzero optimizer updates: {run['tag']}")
+    if not all(math.isfinite(value) and value > 0 for value in learning_rates):
+        raise ValueError(f"Nonpositive learning rate: {run['tag']}")
+    if not set(range(1, 31)).issubset(published_steps):
+        raise ValueError(f"Missing completed weight publications: {run['tag']}")
     loss_tokens = sum(row["trained_loss_tokens"] for row in cycles)
     response_tokens = sum(row["response_tokens"] for row in cycles)
     elapsed = cycles[-1]["complete_cycle_elapsed_seconds"]
@@ -69,6 +78,9 @@ def summarize(run, result, digest):
         "responses_ge2048": int((lengths >= 2048).sum()),
         "mean_token_staleness": token_age,
         "max_token_staleness": max(row["metrics"]["async/staleness_tokens_max"] for row in cycles),
+        "raw_gradient_norm_min_max": [min(gradients), max(gradients)],
+        "learning_rate_min_max": [min(learning_rates), max(learning_rates)],
+        "published_policy_steps": sorted(published_steps),
         "consumed_probe_events": len(observed),
         "consumed_probe_responses": len(selected_lengths),
         "consumed_probe_positions": sum(len(row["positions"]) for row in observed),
