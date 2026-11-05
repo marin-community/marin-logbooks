@@ -77,6 +77,18 @@ This branch is the tip of the three stacked Marin drafts plus this directory and
 - Gaps: `penfever/harbor-datasets` (corrected BixBench task files) and `laude-institute/harbor-datasets` declare no licence; BixBench's underlying capsule data carries no separate licence, and rows include excerpts in tool outputs (median 146 characters per BixBench row, largest 14,640).
 - Added an Apache-2.0 dataset card with attribution (`experiments/post_training/thoughtcrime/dataset_card.md`, HF commit `0c516b6`) and made the dataset public.
 
+### 2026-11-05 01:04 UTC - Thoughtcrime in a 3-step quick loop
+
+- Question: does thoughtcrime work as a quick-loop evaluation source, and what does the Datakit SFT initializer score?
+- Source: this branch after merging Marin main `ec047c8` (TaskSpec schema 0.30; evaluation sources curate with `--mode quick`).
+- Selection: `build_panel_selection.py` appends the 328 QUICK-converted thoughtcrime tasks to the 100-task panel of `snowball-100k/2026.11.04`, published at `s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k-thoughtcrime/2026.11.04.1`. The `evaluation_sources` path needs an admitted FULL corpus, which main now refuses for evaluation sources.
+- Command: `uv run python -m experiments.post_training.inventory.train_quick_loop --selection-uri <selection> --version 2026.11.04.73 --steps 3 --run`, coordinator `/dml/users-dml-checkpoints-snowball-inventory-2026.11.04.73-coordinator-4dc4ca30`, 40 H100 on cw-us-east-02a, 36 minutes for the training step.
+- Failed attempts: `.71` used base selection `2026.10.23.2`, whose schema-0.28 tasks main no longer loads (main's launcher default still points there). `.72` scored thoughtcrime 0.0 because every request returned HTTP 400: the quick loop's vLLM engines had no tool parser, and thoughtcrime is the only panel source that sends `tools`. `.73` sets `enable_auto_tool_choice=True, tool_call_parser="hermes"` in `train_quick_loop.py`.
+- Result (one sample per prompt, all 328 graded both times): thoughtcrime 0.820 before training (270 well formed, 57 malformed, 1 length) and 0.786 after 3 updates (258 well formed, 69 malformed, 1 length-penalized). Whole panel 0.561 before and 0.561 after.
+- Evidence: `s3://marin-us-east-02a/marin/users/dml/checkpoints/snowball-inventory/2026.11.04.73/exports/dumped_evals/global_step_{0,3}_evals/open-athena_Marin-Thoughtcrime.jsonl`.
+- Interpretation: the 0.034 drop is about 1.4 standard errors for 328 single samples; three updates do not establish a trend.
+- Decision: any panel that includes thoughtcrime needs a vLLM tool parser on its rollout engines.
+
 ## Final decision
 
 - Selected approach: the runnable catalog entry goes to Marin main: the `reasoning_markup` grading mode (#10894) and the pi-trajectory converter with the `Marin:thoughtcrime` catalog entry (#10907, trimmed).
