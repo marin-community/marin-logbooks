@@ -1847,3 +1847,27 @@ scientific probes still require the three prescribed alpha0.25 confirmation
 checkpoints. No checkpoint was modified and no optimizer update ran. Reuse
 [completion evidence](restore-qualification-completed.json) without querying the
 completed job, task, followers or W&B runs again.
+
+### 2026-11-05 16:48 UTC — fourth expansion begins training
+
+The fourth learning-rate expansion, Gram exponent alpha=1/3, ridge0.01,
+LR0.004, has begun training. Its online W&B run records native optimizer-step
+label99 and finite training loss8.38945961 with the expected source and
+configuration. Six unfinished initial pilots and all four additional expansions
+now show training progress. The initial validated count remains24/30; early
+training loss does not satisfy final evaluation or checkpoint completion gates.
+See [first-progress evidence](subset-expansion-r03-first-progress.json).
+
+A separate worker is prepared to exercise the original direction, paired-loss
+and decomposition probe functions on the full447M model. It will restore the
+validated alpha0.25 pilot's complete model, optimizer, counter7630 and training
+PRNG in the checkpoint's region. The frozen qualification request uses two
+held-out Wikipedia batches and common perturbation step sizes1e-5,3e-5,1e-4.
+Success requires27 finite paired-loss rows and18 finite attention/MLP
+production-polar versus SVD comparisons. Intermediate reports preserve completed
+stages. Actual execution remains unverified. Any results qualify infrastructure
+only; scientific reference probes still require the confirmation checkpoints
+at counters3733,18665,33597 specified in the
+[execution plan](single-seed-execution-plan.md). See the
+[frozen request](fullsize-probe-qualification-request.json) and
+[worker](qualify_fullsize_probe.py).

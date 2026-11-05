@@ -82,7 +82,8 @@ def template_for(request, cfg):
     return template
 
 
-def restore(request, cfg):
+def restore_state(request, cfg):
+    """Load and verify the regional pilot state for independent runtime qualification."""
     zone_request = urllib.request.Request(
         "http://metadata.google.internal/computeMetadata/v1/instance/zone", headers={"Metadata-Flavor": "Google"}
     )
@@ -116,7 +117,7 @@ def restore(request, cfg):
         for array in arrays:
             if not bool(jnp.all(jnp.isfinite(array))):
                 raise ValueError("Nonfinite restored array")
-        return dict(
+        report = dict(
             restored_counter=int(state.step),
             arrays=len(arrays),
             all_arrays_finite=True,
@@ -131,6 +132,12 @@ def restore(request, cfg):
                 "training resume or scientific reference probe."
             ),
         )
+        return state, report
+
+
+def restore(request, cfg):
+    _, report = restore_state(request, cfg)
+    return report
 
 
 def main():
