@@ -23,6 +23,7 @@ def source_files():
     paths = [
         Path(__file__).relative_to(ROOT),
         Path("experiments/ema_gram/probe.py"),
+        Path("logbooks/20-ema-gram-polar/probe_svd_check.py"),
         Path("experiments/ema_gram/test_experiment.py"),
         Path("lib/levanter/src/levanter/optim/ema_gram.py"),
     ]
@@ -40,7 +41,7 @@ def resolve_config(path, index):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("logging-check", "cpu-check", "probe"), required=True)
+    parser.add_argument("--mode", choices=("logging-check", "cpu-check", "cpu-svd-check", "probe"), required=True)
     parser.add_argument("--configs", type=Path, required=True)
     parser.add_argument("--config-index", type=int, default=0)
     parser.add_argument("--checkpoint")
@@ -88,7 +89,23 @@ def main():
         batch_offset=args.batch_offset,
         batches=args.batches,
         step_sizes=args.step_sizes,
-        cpu_fixture_seeds=[1, 2, 3] if args.mode == "cpu-check" else None,
+        cpu_fixture_seeds=(
+            ([1, 2, 3] if args.mode == "cpu-check" else [1, 2, 317]) if args.mode.startswith("cpu-") else None
+        ),
+        cpu_fixture_config=(
+            dict(
+                hidden_dim=8,
+                intermediate_dim=16,
+                num_layers=2,
+                num_heads=2,
+                num_kv_heads=2,
+                head_dim=4,
+                max_seq_len=8,
+                vocab=16,
+            )
+            if args.mode.startswith("cpu-")
+            else None
+        ),
     )
     tracker.log_hyperparameters(metadata)
     (destination / "config.json").write_text(json.dumps(metadata, indent=2) + "\n")
@@ -105,6 +122,14 @@ def main():
             assert jax.default_backend() == "cpu"
             test_checkpoint_probes_match_each_matrix_and_keep_nonmatrices_fixed()
             tracker.log({"probe_cpu/norm_matching_and_paired_loss_oracle": 1}, step=1)
+        elif args.mode == "cpu-svd-check":
+            from probe_svd_check import execute  # noqa: PLC0415 - tracking precedes numerical imports
+
+            report = execute()
+            (destination / "report.json").write_text(json.dumps(report, indent=2) + "\n")
+            tracker.log(
+                {"probe_cpu/svd_oracle": 1, "probe_cpu/max_svd_absolute_error": report["max_svd_absolute_error"]}, step=1
+            )
         elif args.mode == "probe":
             from iris.jax.init import initialize_jax  # noqa: PLC0415
 
