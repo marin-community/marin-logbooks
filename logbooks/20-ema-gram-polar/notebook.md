@@ -1999,3 +1999,36 @@ R05 was subsequently accepted after the full26-component data catalog check.
 Its submit process exited0, and one observer owns the new campaign. The permanent
 submission guard is retained; allocation and startup identity await verification.
 See [accepted R05 launch](subset-expansion-r05-launched.json).
+
+### 2026-11-05 18:14 UTC — qualify independent baseline orchestration
+
+The settled alpha0 long run now has an independent
+[execution and monitoring entrypoint](alpha0_long_run.py). It replays the six
+validated baseline results, decodes the exact37,335-update configuration and
+requires a frozen early-start protocol with a held-out C4 validation-loss
+threshold shared by all confirmation runs before execution. The [actual protocol](alpha0-long-run-protocol-draft.json) remains a
+draft with no target, so it cannot launch training. Existing global confirmation
+selection checks are unchanged.
+
+Local CLI integration checks used temporary committed inputs and a simulated
+scheduler. An accepted submission produced one launch, one follower and one
+terminal status query; reopening the observer reused terminal evidence. A
+simulated transport interruption retained its permanent launch guard and
+prevented resubmission. A protocol file modified after its source commit was
+frozen was rejected before submission. See
+[controller checks](alpha0-long-run-controller-preflight.json). The initial
+fixture misclassified a submission command containing the data-check shell
+fragment as a standalone cache check; that fixture error was corrected and
+its original failure log retained. No real job was submitted by these checks.
+
+A fresh ONLINE W&B non-training logging check finished under exact source
+416f96119dae2a996c4cc916ee1ee3dee488f9ec. Its API record matched configuration,
+protocol digest, entrypoint hash and local qualification identity. This used a
+clearly fictional protocol fixture, not a research target declaration; it ran
+no model initialization, kernels or optimizer updates. See
+[runtime logging evidence](alpha0-long-run-runtime-preflight.json). Before any
+early baseline launch, freeze the shared validation-loss threshold and record
+the amendment allowing the selected alpha0 baseline to start before global
+selection. Also implement and validate adoption of this exact baseline in the eventual
+confirmation set so it is not submitted twice. A clean published execution
+worktree and full regional cache check are also required.
