@@ -8,7 +8,7 @@ The receipts contain derived measurements, coverage, revisions, qualifications a
 
 ## Manifest
 
-`manifest.json` SHA256 `80e734d3d4c98e9a3812c372bd6ff0bddb836abdc645276e408130a7751b43c7`.
+`manifest.json` SHA256 `f8ebf1d8b785596fb6adb2616c2b2f92cce2ecd1b764fcf09735c076426c131b`.
 
 ## Receipts
 
@@ -123,12 +123,12 @@ The receipts contain derived measurements, coverage, revisions, qualifications a
 | [receipts/OPD75--gpqa-diamond.json](receipts/OPD75--gpqa-diamond.json) | admitted | `715624971e0ec148ecd968f8ae10c53b4c6d504344008005fbf16f6214991586` |
 | [receipts/OPD75--gsm8k-0shot.json](receipts/OPD75--gsm8k-0shot.json) | admitted | `98821d191e3b77f5b523227f59d50fd736f37684d23726eddab270ccc97635cf` |
 | [receipts/OPD75--humanevalplus.json](receipts/OPD75--humanevalplus.json) | admitted | `89b184dd5f8732646a10990589a1059e2c7a05d99e42c114cecaa7df2f6a341c` |
-| [receipts/OPD75--ifbench.json](receipts/OPD75--ifbench.json) | admitted | `bfe51caeb8f5f1fbe68256978038ca0e3c56c6c873c35320ba85015797a3d990` |
+| [receipts/OPD75--ifbench.json](receipts/OPD75--ifbench.json) | admitted | `0b47553102db8dd3528f3d306764d156919e8d5b732a3adeb49bf7bbe0330289` |
 | [receipts/OPD75--math500.json](receipts/OPD75--math500.json) | admitted | `0fde8aa621051abf13c79d83d9856920a62f2d813832b6a3bdac26a163ed57da` |
 | [receipts/OPD75--mbppplus.json](receipts/OPD75--mbppplus.json) | admitted | `fa5e63f7b4558d20a2e75d612d812c42fc56d5b5d9ee63aeaf67cf0aee0cf200` |
 | [receipts/OPD75--mmlu-pro.json](receipts/OPD75--mmlu-pro.json) | admitted | `7beb27019eebeb81e4f5ec50e9523b3596afd156ec8f58f3f9688544f0a00984` |
-| [receipts/OPD75--mrcr.json](receipts/OPD75--mrcr.json) | admitted | `f32d374870d4fe49b3736c09ada9a615143d13cd0030e25d6b4e2fc1884debb4` |
-| [receipts/OPD75--nupa.json](receipts/OPD75--nupa.json) | admitted | `ca6607ef2425318fccceeb82083824a157c994ee8dd624297f1f9bb1272df454` |
+| [receipts/OPD75--mrcr.json](receipts/OPD75--mrcr.json) | admitted | `aa0bd3948666a84e1e408eea7f1d2dd3ea6ffbe270b1b82e7be3ce2cddbeeff6` |
+| [receipts/OPD75--nupa.json](receipts/OPD75--nupa.json) | admitted | `1c80d7a33ed3b40f86cd4e9cbb314a4e33e7b3fb29d387470a6c57c3fddd7472` |
 | [receipts/OPD75--olympiadbench.json](receipts/OPD75--olympiadbench.json) | admitted | `1862a7fdd56cc9a35aa5837956b4a6981a1fb30dba652dd74a9c3da698e313b0` |
 | [receipts/OPD75--ot-tblite-recovery.json](receipts/OPD75--ot-tblite-recovery.json) | admitted | `c9a400e068426b324d91d8302ce51d3f57076e1b7cbab6b852f3d294d07bb71d` |
 | [receipts/OPD75--piqa.json](receipts/OPD75--piqa.json) | admitted | `24d4e44dccacc7128f1622cc2906709032509bdf3abfcdf86046e5350e8d77b6` |
@@ -136,18 +136,18 @@ The receipts contain derived measurements, coverage, revisions, qualifications a
 | [receipts/OPD75--triviaqa.json](receipts/OPD75--triviaqa.json) | admitted | `1c04c34caa9af96aa3e34962d89a03a6d4e1f797c39ebfc31b69006216b033c2` |
 | [receipts/OPD75--truthfulqa.json](receipts/OPD75--truthfulqa.json) | admitted | `b61d3ddc860bdef96f6ed89b8269b16ddd5249403494191840268c2464659ebb` |
 | [receipts/OPD75--winogrande.json](receipts/OPD75--winogrande.json) | admitted | `15ab57b61c43e6c823ebadaf5d2e4609846280ab8f29baec2f1a37b24c7bfd73` |
-| [receipts/RS282--aime24.json](receipts/RS282--aime24.json) | admitted | `413ba0d0f7a9d14bb9ee8decf0b098cc23519c3c1307cbeb274ae41271d6388b` |
+| [receipts/RS282--aime24.json](receipts/RS282--aime24.json) | admitted | `9d73c9756cb142a43c75249a11c3f583856f38b6d775a8b70e4d481cd202f4c3` |
 | [receipts/RS282--boolq.json](receipts/RS282--boolq.json) | admitted | `bee154599c9e0395f4ebaedf795220ae566a20350ee1a6e1b340bc364b11a7ce` |
-| [receipts/RS282--cruxeval.json](receipts/RS282--cruxeval.json) | admitted | `e66af68e8737615ca1f65c208a6485b7da41fb67fc612906ca9ede60c5074c69` |
-| [receipts/RS282--financebench.json](receipts/RS282--financebench.json) | admitted | `376be472f65cf95ff9e0aa5a8b7fdc7f54747581911bbeaa21960474d753bceb` |
-| [receipts/RS282--gpqa-diamond.json](receipts/RS282--gpqa-diamond.json) | admitted | `0ad54e25926e8e1f26ca59c4e924dd76b8d54e837f51669120e5d1855652bfc6` |
+| [receipts/RS282--cruxeval.json](receipts/RS282--cruxeval.json) | admitted | `4605d6733944984d9931311ca651ab9b0ec91e5fb724187914ffbd8182202f3f` |
+| [receipts/RS282--financebench.json](receipts/RS282--financebench.json) | admitted | `5594accc6531b78b335360ef8bf8b05783ef4c4db60a30a112fb3ec38923e70a` |
+| [receipts/RS282--gpqa-diamond.json](receipts/RS282--gpqa-diamond.json) | admitted | `3c849cdb1d941676015727ef301a0e300fd1e7ea45a4a6bbd538ed66599b6b79` |
 | [receipts/RS282--gsm8k-0shot.json](receipts/RS282--gsm8k-0shot.json) | admitted | `4fc89f7d62c76a4c70cb91bfe8eacced7c5ed40b8915cfe668de34987bef011f` |
 | [receipts/RS282--humanevalplus.json](receipts/RS282--humanevalplus.json) | admitted | `d7b714be24748cf2b09f4c66aca55befc10fae4305008a62850365b008be5825` |
-| [receipts/RS282--ifbench.json](receipts/RS282--ifbench.json) | admitted | `86ea33b313dc40690d071e6fe8d5e2296a7de9572cec6eb497d8af1e0e73e304` |
+| [receipts/RS282--ifbench.json](receipts/RS282--ifbench.json) | admitted | `d02f0d494cac138a7528182bb64c284f63d2b4b3346ce42d146fa314baa4aa91` |
 | [receipts/RS282--math500.json](receipts/RS282--math500.json) | admitted | `740b124c15c3d568d384eb1e027aa6db34fe74e04398c126948e5731110fd55b` |
 | [receipts/RS282--mbppplus.json](receipts/RS282--mbppplus.json) | admitted | `fbcea5f60fef1d63e8f3899d676bb33bc50c74cb0e079a7908aa1452c3ae1a59` |
-| [receipts/RS282--mrcr.json](receipts/RS282--mrcr.json) | admitted | `2c2b4d1d5ecbf494b84255e630570b1ebe98f22cf8b93906a4c7b834e9797311` |
-| [receipts/RS282--nupa.json](receipts/RS282--nupa.json) | admitted | `713995a35003ee12bcbc50f24b208cac882c225e66557c9605b156d80f86a644` |
+| [receipts/RS282--mrcr.json](receipts/RS282--mrcr.json) | admitted | `cd348eaae3195bc0d88bc7e3d5ec60e545b4c3fbac906a50d342b4938b4462a4` |
+| [receipts/RS282--nupa.json](receipts/RS282--nupa.json) | admitted | `d25301d9280667fc73483127353cf620768c0b16637a976cf4b2426d616daf34` |
 | [receipts/RS282--olympiadbench.json](receipts/RS282--olympiadbench.json) | admitted | `d084b93e3c2c84cbc4237b0a14e1707a6570b3976b825e3fdfb7354f39ccd5f1` |
 | [receipts/RS282--ot-tblite-recovery.json](receipts/RS282--ot-tblite-recovery.json) | admitted | `ed6eb977a500bc1117b31599162f258494f1c2d5a4dba78298d006e1eb02cd67` |
 | [receipts/RS282--piqa.json](receipts/RS282--piqa.json) | admitted | `184d9202a816c258dcfe0bbb599be26d1170249f9f4ecb4acf616cb9a3907ccf` |
