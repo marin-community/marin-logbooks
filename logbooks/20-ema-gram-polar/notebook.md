@@ -5525,3 +5525,14 @@ had native steps. Cell20 was still startup without an observed loss. Local
 attempt joins now cover56 tasks in cells06–19. One cell17/task2 Finelog
 snapshot deadline was recovered by one bounded read; its original error is
 preserved and was not a worker failure or follower restart.
+
+### 2026-11-05 05:20 UTC — correct fresh-process checkpoint-path decoding
+
+The first nontraining confirmation logging invocation rejected its config
+before tracking or kernels: Draccus decoded the list-valued own-checkpoint
+search path as a string in a fresh process. The in-process static fixture
+had not exposed this behavior. The adapter now restores that frozen union
+field as well as jax_config, retaining complete encoded equality. All four
+saved fictional configs passed reconstruction in a new process. Original
+failure: scratch/20261105-confirmation-worker-logging.log. No pilot worker,
+training source or numerical formula changed.

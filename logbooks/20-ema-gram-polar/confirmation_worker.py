@@ -29,10 +29,15 @@ def resolve(bundle_path, lock_path, index):
     row = bundle["cells"][index]
     encoded = row["config"]
     config = draccus.decode(TrainLmConfig, encoded["train_config"])
-    # Draccus treats bool values as strings for this str|bool mapping. Restore
-    # the frozen JSON types, then require a complete round-trip identity check.
+    # Preserve union field types across Draccus fresh-process decoding, then
+    # require complete encoded-config identity before invoking the trainer.
     config = replace(
-        config, trainer=replace(config.trainer, jax_config=encoded["train_config"]["trainer"]["jax_config"])
+        config,
+        trainer=replace(
+            config.trainer,
+            jax_config=encoded["train_config"]["trainer"]["jax_config"],
+            load_checkpoint_path=encoded["train_config"]["trainer"]["load_checkpoint_path"],
+        ),
     )
     pod = replace(
         prepared(0, row["variant"]),
