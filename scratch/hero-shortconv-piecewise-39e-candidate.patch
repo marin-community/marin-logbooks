@@ -1,0 +1,380 @@
+diff --git a/tests/models/test_grugmoe.py b/tests/models/test_grugmoe.py
+index 38a9877f1d2bc89fb6dec26a5c9c510fe7fff01f..f42f82a0c77ef8eb761a13a57bee80d2ea279e38 100644
+--- a/tests/models/test_grugmoe.py
++++ b/tests/models/test_grugmoe.py
+@@ -15,7 +15,16 @@ from torch import nn
+ from transformers import AutoConfig
+ 
+ from tests.utils import ensure_current_vllm_config
+-from vllm.config import CUDAGraphMode, get_current_vllm_config
++from vllm.compilation.counter import compilation_counter
++from vllm.compilation.decorators import support_torch_compile
++from vllm.config import (
++    CompilationConfig,
++    CompilationMode,
++    CUDAGraphMode,
++    VllmConfig,
++    get_current_vllm_config,
++    set_current_vllm_config,
++)
+ from vllm.config.model import ModelConfig
+ from vllm.config.parallel import ParallelConfig
+ from vllm.distributed import cleanup_dist_env_and_memory
+@@ -24,7 +33,7 @@ from vllm.distributed.parallel_state import (
+     initialize_model_parallel,
+ )
+ from vllm.engine.arg_utils import EngineArgs
+-from vllm.forward_context import set_forward_context
++from vllm.forward_context import BatchDescriptor, set_forward_context
+ from vllm.model_executor.models.grugmoe import (
+     _ROUTER_COMBINE_WEIGHT_EPS,
+     _ROUTER_COMBINE_WEIGHT_SUM,
+@@ -433,7 +442,10 @@ def test_grug_moe_hf_config_loads_exported_artifact_config(tmp_path):
+     assert final_full_layer.self_attn.attn.sliding_window is None
+ 
+ 
+-def test_grug_moe_hf_config_loads_hero_fields(tmp_path):
++@pytest.mark.parametrize(
++    "cudagraph_mode", [None, CUDAGraphMode.PIECEWISE, CUDAGraphMode.FULL_DECODE_ONLY]
++)
++def test_grug_moe_hf_config_loads_hero_fields(tmp_path, cudagraph_mode):
+     config_path = tmp_path / "config.json"
+     config_path.write_text(
+         json.dumps(
+@@ -473,6 +485,7 @@ def test_grug_moe_hf_config_loads_hero_fields(tmp_path):
+         tokenizer=str(tmp_path),
+         skip_tokenizer_init=True,
+         dtype="float32",
++        compilation_config=CompilationConfig(cudagraph_mode=cudagraph_mode),
+     ).create_engine_config()
+ 
+     assert hf_config.layer_types == [
+@@ -485,7 +498,12 @@ def test_grug_moe_hf_config_loads_hero_fields(tmp_path):
+     assert runtime_config == _tiny_hero_config()
+     assert vllm_config.model_config.is_hybrid is True
+     assert vllm_config.model_config.has_inner_state is True
+-    assert vllm_config.compilation_config.cudagraph_mode == CUDAGraphMode.NONE
++    expected_mode = (
++        CUDAGraphMode.PIECEWISE
++        if cudagraph_mode == CUDAGraphMode.PIECEWISE
++        else CUDAGraphMode.NONE
++    )
++    assert vllm_config.compilation_config.cudagraph_mode == expected_mode
+ 
+ 
+ def test_grug_moe_config_rejects_noncanonical_layer_types():
+@@ -1145,6 +1163,219 @@ def test_hero_grug_moe_sconv_preserves_request_history_and_isolation():
+     torch.testing.assert_close(decode_output, expected_decode)
+ 
+ 
++@support_torch_compile
++class _CompiledHeroShortConv(nn.Module):
++    def __init__(
++        self, *, vllm_config: VllmConfig, dtype: torch.dtype, prefix: str = ""
++    ) -> None:
++        super().__init__()
++        self.conv = GrugMoeShortConv(
++            dim=2,
++            kernel_size=4,
++            params_dtype=dtype,
++            cache_config=None,
++            prefix=prefix,
++        )
++
++    def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
++        return self.conv(hidden_states + 1) * 2
++
++
++def _sconv_batch_metadata(
++    *,
++    decode_slots: list[int],
++    prefill_slots: list[int],
++    prefill_lengths: list[int],
++    initial_states: list[bool],
++) -> ShortConvAttentionMetadata:
++    query_start = [0]
++    for length in prefill_lengths:
++        query_start.append(query_start[-1] + length)
++    return ShortConvAttentionMetadata(
++        num_prefills=len(prefill_slots),
++        num_prefill_tokens=query_start[-1],
++        num_decodes=len(decode_slots),
++        num_decode_tokens=len(decode_slots),
++        num_reqs=len(decode_slots) + len(prefill_slots),
++        query_start_loc_p=torch.tensor(query_start, device="cuda", dtype=torch.int32),
++        has_initial_states_p=torch.tensor(initial_states, device="cuda"),
++        state_indices_tensor_p=torch.tensor(
++            prefill_slots, device="cuda", dtype=torch.int32
++        ),
++        state_indices_tensor_d=torch.tensor(
++            decode_slots, device="cuda", dtype=torch.int32
++        ),
++        num_accepted_tokens=None,
++        query_start_loc_d=None,
++        block_idx_last_scheduled_token=None,
++        block_idx_first_scheduled_token_p=None,
++        block_idx_last_computed_token=None,
++        block_idx_last_scheduled_token_prev_step=None,
++        num_computed_tokens_p=None,
++        seq_lens=torch.ones(
++            len(decode_slots) + len(prefill_slots), device="cuda", dtype=torch.int32
++        ),
++    )
++
++
++@pytest.mark.skipif(not torch.cuda.is_available(), reason="requires CUDA")
++@pytest.mark.parametrize("dtype", [torch.float32, torch.bfloat16])
++@pytest.mark.parametrize("use_inductor_graph_partition", [False, True])
++@torch.inference_mode()
++def test_hero_sconv_piecewise_replay_uses_current_requests_and_history(
++    dtype, use_inductor_graph_partition, monkeypatch
++):
++    monkeypatch.setenv("VLLM_DISABLE_COMPILE_CACHE", "1")
++    prefix = "hero.sconv.piecewise"
++    vllm_config = VllmConfig(
++        compilation_config=CompilationConfig(
++            mode=CompilationMode.VLLM_COMPILE,
++            cudagraph_mode=CUDAGraphMode.PIECEWISE,
++            cudagraph_capture_sizes=[4],
++            cudagraph_copy_inputs=True,
++            use_inductor_graph_partition=use_inductor_graph_partition,
++        ),
++    )
++    with set_current_vllm_config(vllm_config):
++        model = _CompiledHeroShortConv(
++            vllm_config=vllm_config, dtype=dtype, prefix=prefix
++        ).eval().cuda()
++    weight = torch.tensor(
++        [[1.0, 0.75], [0.5, -0.25], [-0.25, 0.125], [0.125, 0.5]],
++        device="cuda",
++        dtype=dtype,
++    )
++    model.conv.weight.copy_(weight)
++    model.conv.kv_cache = (
++        torch.zeros(4, *model.conv.get_state_shape()[0], device="cuda", dtype=dtype),
++    )
++    cache = model.conv.kv_cache[0]
++    cache[0].fill_(42)
++    cache[3].fill_(17)
++    inputs = torch.zeros(4, 2, device="cuda", dtype=dtype)
++
++    # Compile with profiling metadata, then capture around a real prefill.
++    # Its unprepared convolution metadata takes a GPU-to-CPU path, so this
++    # also fails if ShortConv accidentally enters a captured partition.
++    with set_forward_context(None, vllm_config, num_tokens=4):
++        model(inputs)
++    captures_before = compilation_counter.num_cudagraph_captured
++    with set_forward_context(
++        {
++            prefix: _sconv_batch_metadata(
++                decode_slots=[],
++                prefill_slots=[1, 2],
++                prefill_lengths=[2, 2],
++                initial_states=[False, False],
++            )
++        },
++        vllm_config,
++        num_tokens=4,
++        cudagraph_runtime_mode=CUDAGraphMode.PIECEWISE,
++        batch_descriptor=BatchDescriptor(num_tokens=4),
++    ):
++        model(inputs)
++    assert compilation_counter.num_cudagraph_captured > captures_before
++    captures_after = compilation_counter.num_cudagraph_captured
++
++    def run_batch(metadata, rows, expected):
++        inputs.fill_(-999)
++        inputs[: rows.shape[0]].copy_(rows - 1)
++        with set_forward_context(
++            {prefix: metadata},
++            vllm_config,
++            num_tokens=4,
++            cudagraph_runtime_mode=CUDAGraphMode.PIECEWISE,
++            batch_descriptor=BatchDescriptor(num_tokens=4),
++        ):
++            output = model(inputs).clone()
++        torch.testing.assert_close(output[: rows.shape[0]], expected * 2)
++        torch.testing.assert_close(
++            output[rows.shape[0] :],
++            torch.zeros_like(output[rows.shape[0] :]),
++            rtol=0,
++            atol=0,
++        )
++        torch.testing.assert_close(
++            cache[0], torch.full_like(cache[0], 42), rtol=0, atol=0
++        )
++        torch.testing.assert_close(
++            cache[3], torch.full_like(cache[3], 17), rtol=0, atol=0
++        )
++
++    def reference(sequence):
++        return _causal_depthwise_reference(sequence.float(), weight.float()).to(dtype)
++
++    a = torch.tensor([[1, -1], [2, -2]], device="cuda", dtype=dtype)
++    b = torch.tensor([[10, 4], [20, 8]], device="cuda", dtype=dtype)
++    run_batch(
++        _sconv_batch_metadata(
++            decode_slots=[], prefill_slots=[1, 2], prefill_lengths=[2, 2],
++            initial_states=[False, False],
++        ),
++        torch.vstack((a, b)), torch.vstack((reference(a), reference(b))),
++    )
++
++    # Swap request order; a null row must not read or update reserved slot 0.
++    next_a = torch.tensor([[3, -3]], device="cuda", dtype=dtype)
++    next_b = torch.tensor([[30, 12]], device="cuda", dtype=dtype)
++    a = torch.vstack((a, next_a))
++    b = torch.vstack((b, next_b))
++    run_batch(
++        _sconv_batch_metadata(
++            decode_slots=[2, 1, 0], prefill_slots=[], prefill_lengths=[],
++            initial_states=[],
++        ),
++        torch.vstack((next_b, next_a, torch.full_like(next_a, 123))),
++        torch.vstack((reference(b)[-1:], reference(a)[-1:], torch.zeros_like(next_a))),
++    )
++
++    # Mix decoding with a new prefill reusing slot 2: its stale history must
++    # be discarded by has_initial_states=False.
++    next_a = torch.tensor([[4, -4]], device="cuda", dtype=dtype)
++    c = torch.tensor([[5, 1], [6, 2], [7, 3]], device="cuda", dtype=dtype)
++    a = torch.vstack((a, next_a))
++    run_batch(
++        _sconv_batch_metadata(
++            decode_slots=[1], prefill_slots=[2], prefill_lengths=[3],
++            initial_states=[False],
++        ),
++        torch.vstack((next_a, c)), torch.vstack((reference(a)[-1:], reference(c))),
++    )
++    next_c = torch.tensor([[8, 4]], device="cuda", dtype=dtype)
++    c = torch.vstack((c, next_c))
++    next_a = torch.tensor([[5, -5], [6, -6]], device="cuda", dtype=dtype)
++    a = torch.vstack((a, next_a))
++    run_batch(
++        _sconv_batch_metadata(
++            decode_slots=[2], prefill_slots=[1], prefill_lengths=[2],
++            initial_states=[True],
++        ),
++        torch.vstack((next_c, next_a)),
++        torch.vstack((reference(c)[-1:], reference(a)[-2:])),
++    )
++    next_c = torch.tensor([[9, 5]], device="cuda", dtype=dtype)
++    c = torch.vstack((c, next_c))
++    run_batch(
++        _sconv_batch_metadata(
++            decode_slots=[2], prefill_slots=[], prefill_lengths=[], initial_states=[],
++        ),
++        next_c, reference(c)[-1:],
++    )
++    # Every replay reused the captured arithmetic, without capturing another
++    # graph for changed request counts, cache slots, or prefill/decode metadata.
++    cache_before_empty_batch = cache.clone()
++    run_batch(
++        _sconv_batch_metadata(
++            decode_slots=[], prefill_slots=[], prefill_lengths=[], initial_states=[],
++        ),
++        next_c[:0], next_c[:0],
++    )
++    torch.testing.assert_close(cache, cache_before_empty_batch, rtol=0, atol=0)
++    assert compilation_counter.num_cudagraph_captured == captures_after
++
++
++
+ @pytest.mark.skipif(not torch.cuda.is_available(), reason="requires CUDA")
+ def test_grug_moe_cuda_accepts_bf16_expert_weights():
+     cfg = GrugMoeRuntimeConfig(
+diff --git a/vllm/config/compilation.py b/vllm/config/compilation.py
+index 2cd5fae775545dfce839296a9c0d9a5f8eef5b8a..67e9137996bc1f7cfb51cf0b58bb8768d08f24ee 100644
+--- a/vllm/config/compilation.py
++++ b/vllm/config/compilation.py
+@@ -775,6 +775,7 @@ class CompilationConfig:
+         "vllm::mamba_mixer2",
+         "vllm::mamba_mixer",
+         "vllm::short_conv",
++        "vllm::grug_moe_short_conv",
+         # Qwen4Exp's AMD backend still uses these splitting ops.
+         "vllm::qwen4_exp_ple_short_conv",
+         "vllm::qwen4_exp_qsa_with_output",
+diff --git a/vllm/model_executor/models/config.py b/vllm/model_executor/models/config.py
+index 9f6dbcc9962dcaebf10df479ab1702a5a61c8a57..e0901f18d405dfc68558ce9a4554e6790d9570e5 100644
+--- a/vllm/model_executor/models/config.py
++++ b/vllm/model_executor/models/config.py
+@@ -468,10 +468,15 @@ class GrugMoeForCausalLMConfig(VerifyAndUpdateConfig):
+         from vllm.config import CUDAGraphMode
+ 
+         compilation_config = vllm_config.compilation_config
++        if compilation_config.cudagraph_mode == CUDAGraphMode.PIECEWISE:
++            # ShortConv reads per-call metadata and mutates request history.
++            # Its custom op must run outside the captured partitions.
++            return
+         if compilation_config.cudagraph_mode != CUDAGraphMode.NONE:
+             logger.warning_once(
+-                "GrugMoE ShortConv does not support CUDA graphs; "
+-                "overriding cudagraph_mode to NONE."
++                "GrugMoE ShortConv supports only PIECEWISE CUDA graphs; "
++                "overriding cudagraph_mode to NONE. Select PIECEWISE to "
++                "capture the surrounding compiled partitions."
+             )
+             compilation_config.cudagraph_mode = CUDAGraphMode.NONE
+ 
+diff --git a/vllm/model_executor/models/grugmoe.py b/vllm/model_executor/models/grugmoe.py
+index 00b69e348878f859252371a4309a20fd33b67dfd..d48369ee4a942fe85222c785378b1e60615f232b 100644
+--- a/vllm/model_executor/models/grugmoe.py
++++ b/vllm/model_executor/models/grugmoe.py
+@@ -12,7 +12,7 @@ import torch.nn.functional as F
+ from torch import nn
+ 
+ from vllm.compilation.decorators import support_torch_compile
+-from vllm.config import CacheConfig, VllmConfig, get_current_vllm_config
++from vllm.config import CacheConfig, CUDAGraphMode, VllmConfig, get_current_vllm_config
+ from vllm.distributed import get_pp_group, get_tensor_model_parallel_world_size
+ from vllm.forward_context import ForwardContext, get_forward_context
+ from vllm.logger import init_logger
+@@ -777,6 +777,9 @@ class GrugMoeShortConv(MambaBase, nn.Module):
+         num_decodes = attn_metadata.num_decode_tokens
+         num_prefill_tokens = attn_metadata.num_prefill_tokens
+         num_actual_tokens = num_decodes + num_prefill_tokens
++        if num_actual_tokens == 0:
++            output.zero_()
++            return
+         decode, prefill = torch.split(
+             hidden_states[:num_actual_tokens],
+             [num_decodes, num_prefill_tokens],
+@@ -803,7 +806,8 @@ class GrugMoeShortConv(MambaBase, nn.Module):
+ 
+         if num_decodes > 0:
+             assert attn_metadata.state_indices_tensor_d is not None
+-            decode_output = torch.empty_like(decode)
++            # The kernel skips null cache slots, including padded decode rows.
++            decode_output = torch.zeros_like(decode)
+             decode_output = causal_conv1d_update(
+                 decode.contiguous(),
+                 conv_state,
+@@ -816,6 +820,7 @@ class GrugMoeShortConv(MambaBase, nn.Module):
+             pieces.insert(0, decode_output)
+ 
+         output[:num_actual_tokens] = torch.vstack(pieces)
++        output[num_actual_tokens:].zero_()
+ 
+     def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
+         output = torch.empty_like(hidden_states)
+@@ -1402,6 +1407,19 @@ class GrugMoeForCausalLM(
+         if hf_config is None:
+             hf_config = vllm_config.model_config.hf_config
+         self.config = GrugMoeRuntimeConfig.from_hf_config(hf_config)
++        if self.config.sconv:
++            compilation_config = vllm_config.compilation_config
++            if compilation_config.cudagraph_mode.has_full_cudagraphs():
++                raise ValueError("GrugMoE ShortConv does not support full CUDA graphs")
++            if (
++                compilation_config.cudagraph_mode == CUDAGraphMode.PIECEWISE
++                and "vllm::grug_moe_short_conv"
++                not in (compilation_config.splitting_ops or [])
++            ):
++                raise ValueError(
++                    "GrugMoE ShortConv PIECEWISE CUDA graphs require "
++                    "vllm::grug_moe_short_conv in splitting_ops"
++                )
+         self.tie_word_embeddings = self.config.tie_word_embeddings
+         self.quant_config = vllm_config.quant_config
+         self.model = GrugMoeModel(
