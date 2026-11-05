@@ -1791,3 +1791,16 @@ failures or preemptions. The scheduler is waiting for a compatible four-worker
 allocation; the autoscaler reports demand-routed workers not yet ready. Training
 and startup online identity checks have not begun. The next owner check is
 16:27:49 UTC. The accepted job remains queued without resubmission or cancellation.
+
+### 2026-11-05 16:28 UTC — verify fourth expansion startup
+
+The sole monitoring process reports the alpha1/3, ridge0.01, LR0.004 pilot
+RUNNING with four tasks, zero failures and zero preemptions. Four original-attempt
+task IDs, attempt UIDs and assigned workers match the identity fields recorded
+in four finished online W&B host-logging checks. The trainer's own W&B run
+records the expected configuration and source revision from the frozen manifest.
+Its latest summary has no optimizer step or training loss yet; cached worker
+logs show compilation. These are startup checks, not training completion or an
+independent runtime JAX device audit. The initial validated count remains24/30.
+All four expansions now have running parent jobs; six initial alpha0.5 pilots
+remain running. See [startup evidence](subset-expansion-r03-started.json).
