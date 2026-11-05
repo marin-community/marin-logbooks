@@ -1785,3 +1785,9 @@ submission guard. The initial validated count remains24/30. Global LR/ridge
 selection,37,335-update confirmation runs, and held-out direction/loss and
 polar-versus-SVD checkpoint probes remain pending. See the
 [accepted launch](subset-expansion-r03-launched.json).
+
+At16:18 UTC, the first scheduled Iris query reported four pending tasks and zero
+failures or preemptions. The scheduler is waiting for a compatible four-worker
+allocation; the autoscaler reports demand-routed workers not yet ready. Training
+and startup online identity checks have not begun. The next owner check is
+16:27:49 UTC. The accepted job remains queued without resubmission or cancellation.
