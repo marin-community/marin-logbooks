@@ -5711,3 +5711,20 @@ identities and an expansion observer/terminal-validation workflow. At08:24 UTC,
 21 nonzero pilots were running and three queued;18 established native streams
 advanced and cells24–26 first reported label7. The maximum native training-step label among those21 pilots was4573. All six
 alpha0 results remain the only scientifically validated completions.
+
+### 2026-11-05 08:46 UTC — all nonzero pilots are running
+
+The sole observer reports all24 nonzero pilots RUNNING; none remains queued.
+One native training stream for each of23 existing pilots advanced since08:41, reaching
+maximum training-step label4900. Cell29 completed all four host logging checks
+and initialized its native ONLINE run but has no loss yet. No failures or
+preemptions appear in the observer's current canonical job snapshots.
+
+The cached startup evidence in subset-training-r02-attempt-identities.json now
+joins all96 nonzero task identities to attempt0, host logging and recorded
+native run identities, including cell29's run without a loss yet.
+Previous observation timestamps and the earlier cell17/task2 transport error
+remain preserved. These are startup assignment identities, not a separate
+runtime JAX-device audit or completion evidence. The six alpha0 cells remain
+the only scientifically validated completions. No nonzero group has the
+validated completions required for LR expansion.
