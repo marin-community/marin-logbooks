@@ -5434,3 +5434,29 @@ reference-checkpoint probe or allocation change occurred. Evidence:
 reference-probe-svd-preflight.json. A validated confirmation selection/reference
 checkpoint, fresh regional host logging, complete restore and regional output
 validation remain before production probe conclusions.
+
+### 2026-11-05 04:56 UTC — prepare seed0 confirmation configurations
+
+Added prepare_subset_confirmations.py to materialize the three or four seed0
+confirmation configurations from a digest-validated scientific selection lock.
+It reuses the qualified fixed-subset data and matrix/default numerical sources,
+starts each 37335-update run from scratch, and retains alpha=.25 reference
+checkpoints at native counters3733/18665/33597 (directory labels one lower).
+The final checkpoint is forced by the native final hook. This tool does not
+submit jobs, and no actual selection lock has been made.
+
+Static fictional selection fixtures verified both the three- and four-cell
+branches, seed0 filtering, unchanged model/data, and the native checkpointer's
+exact retained labels. Tampered lock digests and the reused pilot artifact
+version were rejected. The initial fixture used an invalid artifact version;
+only its fixture version was corrected to the supported dev form. No kernels,
+data loading, W&B numerical checks or training submissions were repeated.
+Evidence: subset-confirmation-config-preflight.json. Fresh campaign identities,
+full catalog checks and regional host logging remain launch requirements.
+
+At04:56 UTC the sole observer remained alive and its cached canonical results
+showed6 SUCCEEDED,11 RUNNING,13 PENDING, with no failures or preemptions.
+The nine previously training nonzero cells all advanced to labels910–1332;
+two newly running cells13/16 had online identities but no observed loss yet.
+They are startup observations, not proof of optimizer updates. All six alpha0
+scientific completions were reused without terminal-job or W&B repolling.
