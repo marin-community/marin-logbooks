@@ -1,0 +1,2181 @@
+{
+  "config": {
+    "train_config": {
+      "data": {
+        "tokenizer": "meta-llama/Meta-Llama-3.1-8B",
+        "vocab_size": null,
+        "cache_dir": null,
+        "cache_catalog": null,
+        "cache_options": {
+          "batch_size": 128
+        },
+        "enforce_eos": true,
+        "auto_build_caches": false,
+        "chat_template": null,
+        "shuffle": true,
+        "permutation_type": "feistel",
+        "block_cross_document_attention": true,
+        "components": {
+          "starcoderdata": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/ema-gram-20-fixed-subset/2026.11.04.01/starcoderdata",
+              "format": {
+                "type": "text",
+                "text_key": "content"
+              },
+              "train_urls": [
+                "gs://marin-us-central2/raw/starcoderdata-720c8c"
+              ],
+              "validation_urls": []
+            },
+            "cache_dir": "gs://marin-us-central2/ema-gram-20-fixed-subset/2026.11.04.01/starcoderdata",
+            "format": {
+              "type": "text",
+              "text_key": "content"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "proofpile_2": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/ema-gram-20-fixed-subset/2026.11.04.01/proofpile_2",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [
+                "gs://marin-us-central2/raw/proof-pile-2-f1b1d8/901a927/huggingface.co/datasets/EleutherAI/proof-pile-2/resolve/901a927"
+              ],
+              "validation_urls": []
+            },
+            "cache_dir": "gs://marin-us-central2/ema-gram-20-fixed-subset/2026.11.04.01/proofpile_2",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/4chan": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/4chan-496ad5",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/4chan_meta_sep/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/4chan-496ad5",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/c4_100_domains": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/c4_100_domains-2b6db7",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/c4_100_domains/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/c4_100_domains-2b6db7",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/c4_en": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/c4_en-cf1f79",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/c4_en/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/c4_en-cf1f79",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/dolma-v1_5": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/dolma-v1_5-d3bed7",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/dolma-v1_5/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/dolma-v1_5-d3bed7",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/dolma_100_programing_languages": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/dolma_100_programing_languages-369132",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/dolma_100_programing_languages/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/dolma_100_programing_languages-369132",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/dolma_100_subreddits": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/dolma_100_subreddits-f25f70",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/dolma_100_subreddits/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/dolma_100_subreddits-f25f70",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/falcon-refinedweb": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/falcon-refinedweb-75d43b",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/falcon-refinedweb/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/falcon-refinedweb-75d43b",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/gab": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/gab-ccaced",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/gab/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/gab-ccaced",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/m2d2_s2orc_unsplit": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/m2d2_s2orc_unsplit-7dbcc1",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/m2d2_s2orc_unsplit/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/m2d2_s2orc_unsplit-7dbcc1",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/m2d2_wikipedia_unsplit": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/m2d2_wikipedia_unsplit-b33d23",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/m2d2_wikipedia_unsplit/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/m2d2_wikipedia_unsplit-b33d23",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/manosphere_meta_sep": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/manosphere_meta_sep-a07891",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/manosphere_meta_sep/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/manosphere_meta_sep-a07891",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/mc4": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/mc4-ea36a2",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/mc4/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/mc4-ea36a2",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/ptb": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/ptb-628036",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/ptb/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/ptb-628036",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/redpajama": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/redpajama-9d4ddd",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/redpajama/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/redpajama-9d4ddd",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/twitterAAE_HELM_fixed": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/twitterAAE_HELM_fixed-2e17c1",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/twitterAAE_HELM_fixed/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/twitterAAE_HELM_fixed-2e17c1",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "paloma/wikitext_103": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/paloma/wikitext_103-1f5636",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/paloma-fc6827/65cd6fc/wikitext_103/val/val*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/paloma/wikitext_103-1f5636",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "uncheatable_eval/wikipedia_english": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/wikipedia_english-ba27aa",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/uncheatable-eval/latest-364401/wikipedia_english_*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/wikipedia_english-ba27aa",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "uncheatable_eval/github_python": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/github_python-00e7de",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/uncheatable-eval/latest-364401/github_python_*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/github_python-00e7de",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "uncheatable_eval/github_cpp": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/github_cpp-d0da6b",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/uncheatable-eval/latest-364401/github_cpp_*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/github_cpp-d0da6b",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "uncheatable_eval/bbc_news": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/bbc_news-2ff739",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/uncheatable-eval/latest-364401/bbc_news_*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/bbc_news-2ff739",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "uncheatable_eval/arxiv_physics": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/arxiv_physics-713363",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/uncheatable-eval/latest-364401/arxiv_physics_*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/arxiv_physics-713363",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "uncheatable_eval/arxiv_computer_science": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/arxiv_computer_science-9760a5",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/uncheatable-eval/latest-364401/arxiv_computer_science_*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/arxiv_computer_science-9760a5",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "uncheatable_eval/ao3_english": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/ao3_english-55e735",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [],
+              "validation_urls": [
+                "gs://marin-us-central2/raw/uncheatable-eval/latest-364401/ao3_english_*.jsonl.gz"
+              ]
+            },
+            "cache_dir": "gs://marin-us-central2/tokenized/uncheatable_eval/ao3_english-55e735",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          },
+          "nemotron_cc/hq_subset": {
+            "type": "cached",
+            "source": {
+              "type": "url",
+              "tags": [],
+              "cache_dir": "gs://marin-us-central2/ema-gram-20-fixed-subset/2026.11.04.01/nemotron_cc/hq_subset",
+              "format": {
+                "type": "text",
+                "text_key": "text"
+              },
+              "train_urls": [
+                "gs://marin-us-central2/raw/nemotro-cc-eeb783/contrib/Nemotron/Nemotron-CC/data-jsonl/quality=high/kind=actual/**/*.jsonl.gz"
+              ],
+              "validation_urls": []
+            },
+            "cache_dir": "gs://marin-us-central2/ema-gram-20-fixed-subset/2026.11.04.01/nemotron_cc/hq_subset",
+            "format": {
+              "type": "text",
+              "text_key": "text"
+            },
+            "pack": null,
+            "tags": [],
+            "split": "validation",
+            "flat_cache": false
+          }
+        },
+        "train_weights": {
+          "starcoderdata": 0.25,
+          "proofpile_2": 0.055,
+          "paloma/4chan": 0.0,
+          "paloma/c4_100_domains": 0.0,
+          "paloma/c4_en": 0.0,
+          "paloma/dolma-v1_5": 0.0,
+          "paloma/dolma_100_programing_languages": 0.0,
+          "paloma/dolma_100_subreddits": 0.0,
+          "paloma/falcon-refinedweb": 0.0,
+          "paloma/gab": 0.0,
+          "paloma/m2d2_s2orc_unsplit": 0.0,
+          "paloma/m2d2_wikipedia_unsplit": 0.0,
+          "paloma/manosphere_meta_sep": 0.0,
+          "paloma/mc4": 0.0,
+          "paloma/ptb": 0.0,
+          "paloma/redpajama": 0.0,
+          "paloma/twitterAAE_HELM_fixed": 0.0,
+          "paloma/wikitext_103": 0.0,
+          "uncheatable_eval/wikipedia_english": 0.0,
+          "uncheatable_eval/github_python": 0.0,
+          "uncheatable_eval/github_cpp": 0.0,
+          "uncheatable_eval/bbc_news": 0.0,
+          "uncheatable_eval/arxiv_physics": 0.0,
+          "uncheatable_eval/arxiv_computer_science": 0.0,
+          "uncheatable_eval/ao3_english": 0.0,
+          "nemotron_cc/hq_subset": 10.70716
+        },
+        "stop_strategy": "restart",
+        "target_budget": null,
+        "experiment_budget": null,
+        "mixture_block_size": 2048,
+        "max_train_batches": null,
+        "num_validation_sequences": null,
+        "shuffle_before_trainval_split": true,
+        "prior_context_phases": []
+      },
+      "trainer": {
+        "seed": 0,
+        "mp": "compute=bfloat16,params=float32,output=bfloat16",
+        "quantization": null,
+        "model_averaging": null,
+        "wandb": null,
+        "log_dir": "logs",
+        "id": "ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad-2026.11.04.03",
+        "tracker": {
+          "type": "wandb",
+          "entity": "marin-community",
+          "project": "marin",
+          "name": "ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad-2026.11.04.03",
+          "tags": [
+            "ema-gram",
+            "pilot",
+            "3e18"
+          ],
+          "id": "ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad-2026.11.04.03",
+          "group": "ema-gram-2026.11.04.03",
+          "mode": "online",
+          "resume": "never",
+          "fork_from": null,
+          "save_code": true,
+          "replicate_path": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03",
+          "background": true,
+          "background_max_queue_size": 10000,
+          "background_finish_timeout": 120.0,
+          "service_teardown_timeout": 60.0
+        },
+        "watch": {
+          "watch_targets": [
+            "grads",
+            "params"
+          ],
+          "include_norms": true,
+          "include_per_parameter_norms": true,
+          "include_histograms": false,
+          "split_scan_layers": true,
+          "interval": 10
+        },
+        "profiler": {
+          "enabled": true,
+          "start_step": 100,
+          "num_steps": 1,
+          "perfetto_link": false,
+          "create_perfetto_trace": false,
+          "process_index": null,
+          "profile_options": {
+            "host_tracer_level": null,
+            "python_tracer_level": null,
+            "device_tracer_level": null,
+            "enable_hlo_proto": false,
+            "include_dataset_ops": null,
+            "advanced_configuration": {}
+          },
+          "upload": {
+            "enabled": true,
+            "ttl_days": 30,
+            "service_url": "https://iris.oa.dev/proxy/xprof"
+          }
+        },
+        "xla_dump_upload": {
+          "enabled": false,
+          "ttl_days": 30
+        },
+        "progress_watchdog": {
+          "step_timeout": null,
+          "process_timeout": null,
+          "startup_timeout": null,
+          "startup_grace_period": "60m",
+          "diagnostic_timeout": null
+        },
+        "log_jaxprs": true,
+        "log_xla_hlo": true,
+        "crash_on_nan": true,
+        "crash_on_inf": true,
+        "mesh": {
+          "axes": {
+            "data": 4,
+            "model": 4,
+            "replica": 1
+          },
+          "dcn_axes": {
+            "replica_dcn": -1
+          },
+          "batch_axis_name": "batch",
+          "shared_mapping": {},
+          "compute_mapping": {
+            "token": [
+              "replica_dcn",
+              "replica",
+              "data"
+            ],
+            "token_repeat": [
+              "replica_dcn",
+              "replica",
+              "data"
+            ]
+          },
+          "param_mapping": {
+            "embed": "data"
+          }
+        },
+        "use_explicit_mesh_axes": false,
+        "train_batch_size": 8,
+        "per_device_parallelism": 2,
+        "per_device_eval_parallelism": 2,
+        "allow_nondivisible_batch_size": true,
+        "num_train_steps": 7630,
+        "steps_per_eval": 763,
+        "max_eval_batches": null,
+        "checkpointer": {
+          "base_path": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03/checkpoints",
+          "temporary_base_path": "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03/checkpoints",
+          "save_interval": "10m",
+          "keep": [
+            {
+              "every": 763
+            }
+          ],
+          "append_run_id_to_base_path": false,
+          "delete_old_temp_checkpoints": true,
+          "keep_last_temporary_checkpoints": 1,
+          "debug": {
+            "enabled": false,
+            "log_interval": 60.0,
+            "dump_stacks_after": null,
+            "tracemalloc_frames": 25,
+            "top_allocations": 8,
+            "force_gc_before_serialize": true,
+            "flush_logs": true
+          },
+          "write": {
+            "max_write_replicas": 1024,
+            "min_replica_slice_bytes": 16777216,
+            "max_chunk_bytes": 536870912,
+            "max_staged_host_bytes": 17179869184,
+            "cache_pool_bytes": 1073741824,
+            "data_copy_concurrency": 16
+          }
+        },
+        "load_checkpoint": null,
+        "load_checkpoint_path": [
+          "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03/checkpoints",
+          "gs://marin-us-central2/tmp/ttl=14d/checkpoints-temp/marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03/checkpoints"
+        ],
+        "initialize_from": null,
+        "allow_partial_checkpoint": false,
+        "jax_config": {
+          "jax_softmax_custom_jvp": true,
+          "jax_threefry_partitionable": true
+        },
+        "jax_compilation_cache_dir": null,
+        "distributed": {
+          "coordinator_address": null,
+          "num_processes": null,
+          "process_id": null,
+          "local_device_ids": null,
+          "initialize_jax_distributed": true
+        },
+        "require_accelerator": true,
+        "shutdown_at_exit": false
+      },
+      "model": {
+        "type": "qwen3",
+        "max_seq_len": 4096,
+        "hidden_dim": 1024,
+        "intermediate_dim": 4096,
+        "num_layers": 11,
+        "num_heads": 8,
+        "head_dim": null,
+        "num_kv_heads": 8,
+        "activation_function": "silu",
+        "initializer_range": 0.02,
+        "layer_norm_epsilon": 1e-05,
+        "tie_word_embeddings": false,
+        "hybrid_norm": false,
+        "use_qk_norm": false,
+        "input_embedding_norm": false,
+        "upcast_attn": false,
+        "attn_backend": null,
+        "flash_attention_block_size": null,
+        "gradient_checkpointing": true,
+        "scan_layers": true,
+        "use_bias": false,
+        "use_layer_norm_weight": true,
+        "rope": {
+          "type": "llama3",
+          "theta": 500000,
+          "factor": 8,
+          "low_freq_factor": 1,
+          "high_freq_factor": 4,
+          "original_max_position_embeddings": 8192
+        },
+        "reference_checkpoint": "NousResearch/Llama-2-7b-hf",
+        "tokenizer": null,
+        "use_sliding_window": false,
+        "sliding_window": 4096
+      },
+      "train_seq_len": 4096,
+      "optimizer": {
+        "type": "ema_gram_polar",
+        "learning_rate": 0.002,
+        "weight_decay": 0.1,
+        "min_lr_ratio": 0.0,
+        "warmup": 0.1,
+        "decay": 0.2,
+        "rewarmup": 0.0,
+        "cooldown": null,
+        "cycle_length": null,
+        "cycles": null,
+        "lr_schedule": "linear",
+        "haps": null,
+        "weight_decay_modules": null,
+        "default_weight_decay_mask": null,
+        "alpha": 0.25,
+        "ridge": 0.01,
+        "momentum": 0.95,
+        "gram_beta": 0.99,
+        "polar_steps": 5,
+        "eigh_layout": "matrix",
+        "eigh_implementation": "default",
+        "adam_lr": 0.00033154735825338737,
+        "adam_beta1": 0.9,
+        "adam_beta2": 0.9999,
+        "adam_epsilon": 3.6604122149949323e-08,
+        "max_grad_norm": 0.1
+      },
+      "initialize_from_hf": false,
+      "use_hf_model_config": false,
+      "pad_tokenizer_to_match_model": false,
+      "z_loss_weight": 1e-07,
+      "hf_save_path": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03/hf",
+      "hf_upload": null,
+      "hf_save_steps": 7630,
+      "hf_save_dtype": null,
+      "hf_generation_eos_token_ids": null,
+      "adapter": {
+        "type": "none"
+      },
+      "peft_save_path": null,
+      "peft_hf_upload": null,
+      "merged_hf_save_path": null,
+      "merged_hf_upload": null,
+      "data_seed": 0,
+      "initialize_from_checkpoint_path": null,
+      "initialize_model_from_checkpoint_path": null,
+      "eval_harness": null,
+      "eval_harness_steps": 10000,
+      "labeled_eval": null,
+      "log_entropy": false
+    },
+    "resources": {
+      "cpu": 120,
+      "ram": "256g",
+      "disk": "50g",
+      "device": {
+        "variant": "v4-32",
+        "kind": "tpu",
+        "topology": null
+      },
+      "preemptible": true,
+      "regions": [
+        "us-central2"
+      ],
+      "zone": null,
+      "target_cluster": null,
+      "replicas": 4,
+      "device_alternatives": null,
+      "image": null,
+      "container_profile": null
+    },
+    "output_path": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03",
+    "env_vars": null,
+    "auto_build_caches": false
+  },
+  "completion": {
+    "metric_history_complete": true,
+    "scientifically_complete": true,
+    "expected_steps": 7630,
+    "native_final_label": 7629,
+    "final_c4_loss": 4.211307048797607,
+    "train_metric_rows": {
+      "train/loss": 7630,
+      "throughput/duration": 7630,
+      "throughput/mfu": 7630,
+      "optim/learning_rate": 7630,
+      "optim/adam_lr": 7630
+    },
+    "remaining_gates": [],
+    "index": 16,
+    "source": "2bca5a11292d8631a0d200c5a1f9bfcc66bb2ce8",
+    "online_state": "finished",
+    "run_id": "ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad-2026.11.04.03-33920730984d",
+    "run_url": "https://wandb.ai/marin-community/marin/runs/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad-2026.11.04.03-33920730984d",
+    "exact_subset_config_verified": true,
+    "stored_native_counter": 7630,
+    "stored_counter_dtype": "int32",
+    "counter_read": {
+      "counter": 7630,
+      "dtype": "int32",
+      "shape": [],
+      "scalar_sha256": "65af239d0ca769c4f59837e9756485f1bc1a1781c20388ae2339675fd2ad1a7d",
+      "method": "Same ADC read-only HTTP scalar read; no full checkpoint byte audit"
+    },
+    "checkpoint": {
+      "uri": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03/checkpoints/step-7629",
+      "metadata": {
+        "step": 7629,
+        "timestamp": "2026-11-05T13:33:09.146728",
+        "is_temporary": false
+      },
+      "arrays": 57,
+      "manifest_validation": {
+        "array_schema_matches": true,
+        "chunk_geometry_valid": true,
+        "changed_chunk_paths": [
+          "model/embeddings/token_embeddings/weight",
+          "model/lm_head/weight",
+          "model/transformer/layers/stacked/mlp/down_proj/weight",
+          "model/transformer/layers/stacked/mlp/gate_proj/weight",
+          "model/transformer/layers/stacked/mlp/up_proj/weight",
+          "model/transformer/layers/stacked/self_attn/o_proj/weight",
+          "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/embeddings/token_embeddings/weight",
+          "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/lm_head/weight",
+          "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/embeddings/token_embeddings/weight",
+          "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/lm_head/weight",
+          "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/left",
+          "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/momentum",
+          "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/left",
+          "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/momentum",
+          "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/momentum",
+          "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/right"
+        ],
+        "scope": "Manifest metadata only; topology-dependent chunks retained, no full array read or restore."
+      },
+      "files": {
+        "metadata.json": {
+          "generation": 1793885589265750,
+          "crc32c": "BEq+zA==",
+          "sha256": "93cca1abec137b99cea87cb10d23a9bb35527a608060186afca30f1e930fb5ed",
+          "size": 80
+        },
+        "manifest.json": {
+          "generation": 1793885563697736,
+          "crc32c": "xoMpYw==",
+          "sha256": "464e28635baf0741afaec4450f0081c9583f5d7e85657abec8f1e5824e255332",
+          "size": 13629
+        }
+      }
+    },
+    "cell": {
+      "alpha": 0.25,
+      "ridge": 0.01,
+      "learning_rate": 0.002,
+      "seed": 0,
+      "phase": "pilot",
+      "slug": "3e18",
+      "horizon": 100
+    },
+    "job_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105",
+    "canonical_job": {
+      "job_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105",
+      "state": "JOB_STATE_SUCCEEDED",
+      "exit_code": 0,
+      "error": "",
+      "started_at": {
+        "epoch_ms": "1793854350230"
+      },
+      "finished_at": {
+        "epoch_ms": "1793885699089"
+      },
+      "failure_count": 0,
+      "preemption_count": 0,
+      "name": "/kaiyuew/ema-gram-20-subset-seed0-r02-16-20261105",
+      "submitted_at": {
+        "epoch_ms": "1793847980879"
+      },
+      "resources": {
+        "cpu_millicores": 120000,
+        "memory_bytes": "274877906944",
+        "device": {
+          "tpu": {
+            "variant": "v4-32",
+            "count": 4
+          }
+        },
+        "disk_bytes": "53687091200"
+      },
+      "task_state_counts": {
+        "succeeded": 4
+      },
+      "task_count": 4,
+      "completed_count": 4,
+      "pending_reason": "",
+      "has_children": false,
+      "parent_job_id": "",
+      "backend_id": "default",
+      "cluster": "local",
+      "peer_status": "PEER_STATUS_NONE"
+    },
+    "tasks": [
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/0",
+        "state": "TASK_STATE_SUCCEEDED",
+        "worker_id": "",
+        "worker_address": "",
+        "exit_code": 0,
+        "error": "",
+        "started_at": {
+          "epoch_ms": "1793854353390"
+        },
+        "finished_at": {
+          "epoch_ms": "1793885708627"
+        },
+        "current_attempt_id": 0,
+        "attempts": [
+          {
+            "attempt_id": 0,
+            "worker_id": "",
+            "state": "TASK_STATE_SUCCEEDED",
+            "exit_code": 0,
+            "error": "",
+            "started_at": {
+              "epoch_ms": "1793854353390"
+            },
+            "finished_at": {
+              "epoch_ms": "1793885708627"
+            },
+            "is_worker_failure": false,
+            "attempt_uid": "37d75c4ff48d9990",
+            "pod_name": "",
+            "pod_uid": "",
+            "node_name": "",
+            "terminal_reason": ""
+          }
+        ],
+        "container_id": "841a898c88bf7eeab92ec1487b2d8bb1caa906428aded160d7665bd6154be22e",
+        "backend_id": "default",
+        "cluster": "local",
+        "submitted_at": {
+          "epoch_ms": "1793847980879"
+        }
+      },
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/1",
+        "state": "TASK_STATE_SUCCEEDED",
+        "worker_id": "",
+        "worker_address": "",
+        "exit_code": 0,
+        "error": "",
+        "started_at": {
+          "epoch_ms": "1793854353390"
+        },
+        "finished_at": {
+          "epoch_ms": "1793885708627"
+        },
+        "current_attempt_id": 0,
+        "attempts": [
+          {
+            "attempt_id": 0,
+            "worker_id": "",
+            "state": "TASK_STATE_SUCCEEDED",
+            "exit_code": 0,
+            "error": "",
+            "started_at": {
+              "epoch_ms": "1793854353390"
+            },
+            "finished_at": {
+              "epoch_ms": "1793885708627"
+            },
+            "is_worker_failure": false,
+            "attempt_uid": "62aafbcdbc741c38",
+            "pod_name": "",
+            "pod_uid": "",
+            "node_name": "",
+            "terminal_reason": ""
+          }
+        ],
+        "container_id": "abe7f6bac2bb69d5afe3e6b4d3943610966b82a97fed0d39f43f54f6eaa3ceb3",
+        "backend_id": "default",
+        "cluster": "local",
+        "submitted_at": {
+          "epoch_ms": "1793847980879"
+        }
+      },
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/2",
+        "state": "TASK_STATE_SUCCEEDED",
+        "worker_id": "",
+        "worker_address": "",
+        "exit_code": 0,
+        "error": "",
+        "started_at": {
+          "epoch_ms": "1793854353390"
+        },
+        "finished_at": {
+          "epoch_ms": "1793885708627"
+        },
+        "current_attempt_id": 0,
+        "attempts": [
+          {
+            "attempt_id": 0,
+            "worker_id": "",
+            "state": "TASK_STATE_SUCCEEDED",
+            "exit_code": 0,
+            "error": "",
+            "started_at": {
+              "epoch_ms": "1793854353390"
+            },
+            "finished_at": {
+              "epoch_ms": "1793885708627"
+            },
+            "is_worker_failure": false,
+            "attempt_uid": "33ccadb4850eb88c",
+            "pod_name": "",
+            "pod_uid": "",
+            "node_name": "",
+            "terminal_reason": ""
+          }
+        ],
+        "container_id": "6b1bc8d43e40f484ffb69b39a026593ddcff4c7353c1abc1f5c2d154fb9d426b",
+        "backend_id": "default",
+        "cluster": "local",
+        "submitted_at": {
+          "epoch_ms": "1793847980879"
+        }
+      },
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/3",
+        "state": "TASK_STATE_SUCCEEDED",
+        "worker_id": "",
+        "worker_address": "",
+        "exit_code": 0,
+        "error": "",
+        "started_at": {
+          "epoch_ms": "1793854353390"
+        },
+        "finished_at": {
+          "epoch_ms": "1793885708627"
+        },
+        "current_attempt_id": 0,
+        "attempts": [
+          {
+            "attempt_id": 0,
+            "worker_id": "",
+            "state": "TASK_STATE_SUCCEEDED",
+            "exit_code": 0,
+            "error": "",
+            "started_at": {
+              "epoch_ms": "1793854353390"
+            },
+            "finished_at": {
+              "epoch_ms": "1793885708627"
+            },
+            "is_worker_failure": false,
+            "attempt_uid": "d32d46ea9644275f",
+            "pod_name": "",
+            "pod_uid": "",
+            "node_name": "",
+            "terminal_reason": ""
+          }
+        ],
+        "container_id": "4f421c3b185623a9c116eb6be83144ea0fcb113d916be1a7a65d00194ff70b22",
+        "backend_id": "default",
+        "cluster": "local",
+        "submitted_at": {
+          "epoch_ms": "1793847980879"
+        }
+      }
+    ],
+    "terminal_worker_reconciliation": [
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/0",
+        "attempt_uid": "37d75c4ff48d9990",
+        "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-0",
+        "terminal_worker_id": "",
+        "terminal_attempt_worker_id": "",
+        "cleared_reference": true,
+        "startup_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task0.json",
+        "startup_sha256": "a7adbf9c16278ae42a612cd1a74e84f3be99acc6b6b08e397042094813e75250"
+      },
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/1",
+        "attempt_uid": "62aafbcdbc741c38",
+        "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-1",
+        "terminal_worker_id": "",
+        "terminal_attempt_worker_id": "",
+        "cleared_reference": true,
+        "startup_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task1.json",
+        "startup_sha256": "e5126a34fe2b1ae094afd880d0d10e29dd4e8d9129dec83a79c9b1f663dc5bc3"
+      },
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/2",
+        "attempt_uid": "33ccadb4850eb88c",
+        "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-2",
+        "terminal_worker_id": "",
+        "terminal_attempt_worker_id": "",
+        "cleared_reference": true,
+        "startup_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task2.json",
+        "startup_sha256": "2a9da499a9c4a3a3bbf738e1f2ed25dcc90ebb20abfd52e096c3bd3bae78fafb"
+      },
+      {
+        "task_id": "/kaiyuew@stanford.edu/ema-gram-20-subset-seed0-r02-16-20261105/3",
+        "attempt_uid": "d32d46ea9644275f",
+        "assigned_worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-3",
+        "terminal_worker_id": "",
+        "terminal_attempt_worker_id": "",
+        "cleared_reference": true,
+        "startup_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task3.json",
+        "startup_sha256": "8bfce07b8f7fb242285150fa95fd1c150cfbd1f0bf908ebe087e94f9f033842b"
+      }
+    ],
+    "host_logging": [
+      {
+        "id": "ema-gram-subset-training-logging-check-a48ad35c95d0",
+        "state": "finished",
+        "source_files_verified": true
+      },
+      {
+        "id": "ema-gram-subset-training-logging-check-841040e6063f",
+        "state": "finished",
+        "source_files_verified": true
+      },
+      {
+        "id": "ema-gram-subset-training-logging-check-18af39d0c786",
+        "state": "finished",
+        "source_files_verified": true
+      },
+      {
+        "id": "ema-gram-subset-training-logging-check-1e65a39853c0",
+        "state": "finished",
+        "source_files_verified": true
+      }
+    ],
+    "run_attempt_join_evidence": {
+      "tasks": [
+        {
+          "task": 0,
+          "attempt_id": 0,
+          "attempt_uid": "37d75c4ff48d9990",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-0",
+          "host_logging_id": "ema-gram-subset-training-logging-check-841040e6063f",
+          "state": "TASK_STATE_RUNNING",
+          "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task0.json",
+          "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task0-attempt0-wandb.log"
+        },
+        {
+          "task": 1,
+          "attempt_id": 0,
+          "attempt_uid": "62aafbcdbc741c38",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-1",
+          "host_logging_id": "ema-gram-subset-training-logging-check-1e65a39853c0",
+          "state": "TASK_STATE_RUNNING",
+          "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task1.json",
+          "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task1-attempt0-wandb.log"
+        },
+        {
+          "task": 2,
+          "attempt_id": 0,
+          "attempt_uid": "33ccadb4850eb88c",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-2",
+          "host_logging_id": "ema-gram-subset-training-logging-check-a48ad35c95d0",
+          "state": "TASK_STATE_RUNNING",
+          "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task2.json",
+          "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task2-attempt0-wandb.log"
+        },
+        {
+          "task": 3,
+          "attempt_id": 0,
+          "attempt_uid": "d32d46ea9644275f",
+          "worker_id": "marin-tpu-v4-reserved-32-us-central2-b-20261105-0307-e93dbc97-worker-3",
+          "host_logging_id": "ema-gram-subset-training-logging-check-18af39d0c786",
+          "state": "TASK_STATE_RUNNING",
+          "evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task3.json",
+          "log_evidence": "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-attempt-joins/16-task3-attempt0-wandb.log"
+        }
+      ],
+      "native_run_tasks": {
+        "ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad-2026.11.04.03-33920730984d": 2
+      },
+      "canonical_failure_count": 0,
+      "canonical_preemption_count": 0,
+      "observed_utc": "2026-11-05T05:02:06.505930+00:00",
+      "assigned_topology": "One v4-32 slice, four distinct hosts;16 JAX devices requested. Runtime JAX device count not separately audited.",
+      "source_commit": "2bca5a11292d8631a0d200c5a1f9bfcc66bb2ce8",
+      "scope": "Exact task-attempt to hostlogging/native ONLINE identity join. Snapshot only; final all-attempt validation remains required."
+    },
+    "verified_at": "2026-11-05T13:43:39.953543+00:00",
+    "scope": "Validated fixed-subset pilot with single fresh attempt on each host; no full checkpoint audit or resume claim.",
+    "evidence": {
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination-label-1668.json": {
+        "sha256": "9b7bb54968785f803d96a52705ec4821447ef4e046b03403bc425aaa2841389a",
+        "bytes": 512
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/history-raw.json": {
+        "sha256": "b1413c6d4076d6ae641061ba33273a8a820037bb27fb4e710ab52c9f69cc1df8",
+        "bytes": 1936278
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/binding.json": {
+        "sha256": "75443e981b2bc8bf2b8594a3897dce95860c2ef602a04a51b66e14f2674de53c",
+        "bytes": 334
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/config.json": {
+        "sha256": "0d0dcdaa616785cfd6bfcaf15f7c53313a1345c3cecfff081eeb34ba8c90dbc3",
+        "bytes": 26585
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination-label-2668.json": {
+        "sha256": "3ddf67c2ba9aa6d9fe4309a2491749dabff67af702721bddd2399f3356c23aed",
+        "bytes": 510
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/metadata.json": {
+        "sha256": "f1193d416ac2af45fe27cd00899239817107b0a10c56c329e7aab65e6e43753d",
+        "bytes": 371
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination-label-3668.json": {
+        "sha256": "738a09727d92b6770b1941c8432905926ecd6b7c79c2b2098e360ec456d5b283",
+        "bytes": 512
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination-label-668.json": {
+        "sha256": "0b787664b6068816479768d7347a0384f38c83a5767fd650940e03f057fd91eb",
+        "bytes": 505
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/counter.json": {
+        "sha256": "5e439d4f8dd1d1f7af46ee0219b532d328be727ae8850e72f32c6dd72983eba0",
+        "bytes": 226
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/history-canonical.json": {
+        "sha256": "49129c4ba184652ae99fc2d9bb18c8bd1bf3b352d70a07c50219e8d05e2cfb85",
+        "bytes": 1936277
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination-label-6668.json": {
+        "sha256": "44b33462250c74e62c2428f086bef59891fd9a2851d07f2706949e7f650abc46",
+        "bytes": 513
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/eval-raw.json": {
+        "sha256": "20fbfad0ea7311757365b4bc959c4c89da7c5b7172e281a2cd84186a5ea5623a",
+        "bytes": 821
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/manifest.json": {
+        "sha256": "7d7d37e734105f9876f8002c070edffccc75612b131cc9e2c76520be6539b271",
+        "bytes": 30262
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination-label-5668.json": {
+        "sha256": "bd820951b6e11af73626036ed241edcdb891b9f4c188434e234f16107e50d384",
+        "bytes": 512
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination.json": {
+        "sha256": "d3b1dac6fb0eb2d1925e75372aef84c6e90dcf6d558a048183f0c5d2ad00fca2",
+        "bytes": 201
+      },
+      "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-16-completion/pagination-label-4668.json": {
+        "sha256": "c913a77cfbc3e0c4ee4ffc0281baabdbe9cf9ed3872909b297ab93e54ce44c26",
+        "bytes": 510
+      }
+    }
+  },
+  "checkpoint": "gs://marin-us-central2/ema-gram-pilot-3e18-a0.25-seed0-f553a10fb6ad/2026.11.04.03/checkpoints/step-7629",
+  "vocab_size": 128256,
+  "qualification_mesh_axes": {
+    "data": 1,
+    "model": 4,
+    "replica": 1
+  },
+  "estimated_uncompressed_checkpoint_bytes": 7350834212,
+  "scope": "Infrastructure-only restore qualification; not a confirmation or scientific probe. No data/checkpoint writes or training.",
+  "manifest": {
+    "format_version": 1,
+    "array_driver": "zarr3",
+    "kvstore_driver": "ocdbt",
+    "arrays": [
+      {
+        "path": "step",
+        "shape": [],
+        "dtype": "int32",
+        "chunk_shape": []
+      },
+      {
+        "path": "model/transformer/layers/stacked/self_attn/q_proj/weight",
+        "shape": [
+          11,
+          8,
+          1,
+          128,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          8,
+          1,
+          128,
+          256
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/self_attn/k_proj/weight",
+        "shape": [
+          11,
+          8,
+          128,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          8,
+          128,
+          256
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/self_attn/v_proj/weight",
+        "shape": [
+          11,
+          8,
+          128,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          8,
+          128,
+          256
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/self_attn/o_proj/weight",
+        "shape": [
+          11,
+          1024,
+          8,
+          128
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256,
+          2,
+          128
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/self_attn/q_norm/weight",
+        "shape": [
+          11,
+          128
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          128
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/self_attn/k_norm/weight",
+        "shape": [
+          11,
+          128
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          128
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/mlp/gate_proj/weight",
+        "shape": [
+          11,
+          4096,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          1024,
+          256
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/mlp/up_proj/weight",
+        "shape": [
+          11,
+          4096,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          1024,
+          256
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/mlp/down_proj/weight",
+        "shape": [
+          11,
+          1024,
+          4096
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256,
+          1024
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/input_layernorm/weight",
+        "shape": [
+          11,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256
+        ]
+      },
+      {
+        "path": "model/transformer/layers/stacked/post_attention_layernorm/weight",
+        "shape": [
+          11,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256
+        ]
+      },
+      {
+        "path": "model/transformer/norm/weight",
+        "shape": [
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          256
+        ]
+      },
+      {
+        "path": "model/embeddings/token_embeddings/weight",
+        "shape": [
+          128256,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          32064,
+          256
+        ]
+      },
+      {
+        "path": "model/lm_head/weight",
+        "shape": [
+          128256,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          32064,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/count",
+        "shape": [],
+        "dtype": "int32",
+        "chunk_shape": []
+      },
+      {
+        "path": "opt_state/hyperparams/adam_lr",
+        "shape": [],
+        "dtype": "float32",
+        "chunk_shape": []
+      },
+      {
+        "path": "opt_state/hyperparams/learning_rate",
+        "shape": [],
+        "dtype": "float32",
+        "chunk_shape": []
+      },
+      {
+        "path": "opt_state/hyperparams_states/adam_lr/count",
+        "shape": [],
+        "dtype": "int32",
+        "chunk_shape": []
+      },
+      {
+        "path": "opt_state/hyperparams_states/learning_rate/count",
+        "shape": [],
+        "dtype": "int32",
+        "chunk_shape": []
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/count",
+        "shape": [],
+        "dtype": "int32",
+        "chunk_shape": []
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/transformer/layers/stacked/self_attn/q_norm/weight",
+        "shape": [
+          11,
+          128
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          128
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/transformer/layers/stacked/self_attn/k_norm/weight",
+        "shape": [
+          11,
+          128
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          128
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/transformer/layers/stacked/input_layernorm/weight",
+        "shape": [
+          11,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/transformer/layers/stacked/post_attention_layernorm/weight",
+        "shape": [
+          11,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/transformer/norm/weight",
+        "shape": [
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/embeddings/token_embeddings/weight",
+        "shape": [
+          128256,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          32064,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/mu/lm_head/weight",
+        "shape": [
+          128256,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          32064,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/transformer/layers/stacked/self_attn/q_norm/weight",
+        "shape": [
+          11,
+          128
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          128
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/transformer/layers/stacked/self_attn/k_norm/weight",
+        "shape": [
+          11,
+          128
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          128
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/transformer/layers/stacked/input_layernorm/weight",
+        "shape": [
+          11,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/transformer/layers/stacked/post_attention_layernorm/weight",
+        "shape": [
+          11,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/transformer/norm/weight",
+        "shape": [
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/embeddings/token_embeddings/weight",
+        "shape": [
+          128256,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          32064,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/adamw/inner_state/0/nu/lm_head/weight",
+        "shape": [
+          128256,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          32064,
+          256
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/0/momentum",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/0/left",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/0/right",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/1/momentum",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/1/left",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/1/right",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/2/momentum",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/2/left",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/2/right",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/3/momentum",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/3/left",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/3/right",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/momentum",
+        "shape": [
+          11,
+          4096,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          1,
+          4096,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/left",
+        "shape": [
+          11,
+          4096,
+          4096
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256,
+          4096
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/4/right",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/momentum",
+        "shape": [
+          11,
+          4096,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          1,
+          4096,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/left",
+        "shape": [
+          11,
+          4096,
+          4096
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256,
+          4096
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/5/right",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/momentum",
+        "shape": [
+          11,
+          1024,
+          4096
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          1,
+          1024,
+          4096
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/left",
+        "shape": [
+          11,
+          1024,
+          1024
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          512,
+          1024
+        ]
+      },
+      {
+        "path": "opt_state/inner_state/1/inner_states/muon/inner_state/0/matrices/6/right",
+        "shape": [
+          11,
+          4096,
+          4096
+        ],
+        "dtype": "float32",
+        "chunk_shape": [
+          11,
+          256,
+          4096
+        ]
+      },
+      {
+        "path": "training_key",
+        "shape": [
+          2
+        ],
+        "dtype": "uint32",
+        "chunk_shape": [
+          2
+        ]
+      }
+    ]
+  }
+}
