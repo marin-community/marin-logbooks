@@ -2114,3 +2114,25 @@ on one host with four TPU devices. It does not replace the scientific probes
 on the three prescribed alpha0.25 confirmation checkpoints, establish training
 resume or data-position replay, or change hyperparameter selection. Recursive
 expansions and full confirmations remain unfinished.
+
+### 2026-11-05 20:54 UTC — validate both alpha0.125 expansions
+
+Both R01 lower-LR expansions passed all pilot completion gates. At LR0.00125,
+final C4 loss was4.224646091461182 for ridge0.0001 and4.2394490242004395
+for ridge0.01. Each has7,630 finite rows for all five training metrics, stored
+counter7,630, the exact57-array checkpoint metadata, matching source/data/config,
+a finished native ONLINE run, and four original attempt0 task successes.
+All eight finished host logging records were reused from startup caches.
+The sole observer recorded both canonical successes at20:49 UTC and exited
+naturally; do not restart it or query these completed identities again. The
+20:50 progress helper stopped before any API call because that owner had exited;
+its raw error is retained. See [validated results](subset-expansion-r01-completed.json).
+
+Replaying all30 initial results plus these two expansions closes both alpha0.125
+ridge groups: LR0.0025 is now an interior winner for each. Their winning C4 losses
+are4.168757438659668 (ridge0.0001) and4.160338401794434 (ridge0.01), so
+ridge0.01 is the better alpha0.125 setting in this seed0 pilot comparison.
+No additional alpha0.125 expansion is required. The other four already accepted
+expansions remain running with finite progress; no new eligible cell was found.
+The global selection lock and full confirmations remain pending. These checkpoint
+checks establish metadata and stored-counter consistency, not full byte restore.
