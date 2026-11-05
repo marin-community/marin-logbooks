@@ -1594,3 +1594,25 @@ their existing job identities and permanent launch-started guards. The new campa
 immutable worktree and the shared permanent expansion registry. This entry
 records preparation; no new launch has occurred yet. Global alpha/ridge/LR selection awaits all initial pilots and required expansions. See [completed results](subset-training-r02-nonzero-completed.json)
 and [group readiness](subset-training-r02-completion-readiness.json).
+
+### 2026-11-05 14:08 UTC — launch the alpha 0.25 boundary expansion
+
+Iris accepted one new pilot required by the lower-boundary winner reported above:
+alpha0.25/ridge0.0001/LR0.0005, campaign
+`ema-gram-20-expand-seed0-r02-20261105`, job suffix 00. Its immutable source is
+`1363a08b76d442fbbeb17659cec8f99ea21064a3` and artifact version is 2026.11.05.11.
+The full 26-component cache metadata check passed before submission. The submitter
+ended with exit 0 after saving a permanent launch-started guard in the shared
+registry to prevent duplicate submission of these settings. It requested
+v4-32/four hosts/16 JAX devices, normal batch scheduling, default preemption/retries
+and all 7,630 updates from scratch. Requested topology does not establish allocation.
+No wall-clock limit was added.
+
+Observer session 51045/PID43252 holds the exclusive monitoring lock for this
+campaign; followerPID43256 reads its job logs. The first authoritative Iris job
+status check is scheduled for 14:09:27 UTC. Job state and matches between the
+startup W&B runs and task attempts are still pending. The initial-pilot observer
+and expansion R01 observer were not changed. All three required expansion settings
+now have permanent guards, so replaying completed-group decisions proposes no
+additional submission. See [launch evidence](subset-expansion-r02-launched.json)
+and [group readiness](subset-training-r02-completion-readiness.json).
