@@ -1738,3 +1738,35 @@ unfinished initial pilots and three accepted expansions continue. The latest
 initial-pilot owner snapshots at15:37 UTC report zero cumulative failures and
 preemptions. See [completed results](subset-training-r02-nonzero-completed.json)
 and [complete-group readiness](subset-training-r02-completion-readiness.json).
+
+### 2026-11-05 16:09 UTC — complete the alpha1/3 high-ridge group
+
+Cell21 (alpha1/3, ridge0.01, LR0.0005) passed the full7,630-update completion
+checks with final C4 loss4.395976543426514. The parent job and its four worker
+tasks succeeded on their original attempts with exit0. All7,630 finite metric rows, finished
+online tracking, resolved configuration and source revision matching the frozen manifest,
+57-array checkpoint metadata
+and independently read stored counter7630 passed validation. Terminal worker
+identities matched cached startup assignments. Validation reused startup evidence;
+no additional startup query, full checkpoint byte audit or restore was performed.
+Twenty-four of30 initial pilots, cells00..23, are now fully validated.
+
+The completed alpha1/3/ridge0.01 group has final C4 losses4.395976543426514,
+4.281885147094727 and4.260484218597412 at LR0.0005,0.001 and0.002. The lowest
+loss occurs at the upper tested LR0.002, so the prescribed factor-two rule
+requires a new LR0.004 pilot. The prepared
+[R03 bundle](subset-expansion-r03-bundle.json) contains that one seed0 pilot,
+using the same7,630-update schedule and v4-32 topology. Its
+[completion inputs](subset-expansion-r03-completions.json) freeze24 validated
+predecessors, and its [accepted inputs](subset-expansion-r03-accepted.json)
+map the three existing expansion configurations to their submitted job IDs. Campaign
+`ema-gram-20-expand-seed0-r03-20261105` and artifact version`2026.11.05.12`
+are fresh. The bundle, completion inputs and accepted inputs will remain fixed in the
+dedicated execution worktree.
+
+The six alpha0.5 initial pilots and three accepted expansions are running. The new
+LR0.004 pilot is prepared but has not yet been submitted. Global learning-rate/ridge selection,
+37,335-update confirmation runs and held-out direction/loss and polar-versus-SVD
+checkpoint probes remain pending. See
+[completion evidence](subset-training-r02-nonzero-completed.json) and
+[group readiness](subset-training-r02-completion-readiness.json).
