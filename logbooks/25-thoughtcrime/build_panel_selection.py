@@ -28,8 +28,8 @@ from experiments.post_training.task_curation.inventory import (
     VALIDATION_FILENAME,
 )
 
-BASE_SELECTION = "s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k/2026.10.23.2"
-OUTPUT_SELECTION = "s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k-thoughtcrime/2026.11.04"
+BASE_SELECTION = "s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k/2026.11.04"
+OUTPUT_SELECTION = "s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k-thoughtcrime/2026.11.04.1"
 DATASET = "open-athena/Marin-Thoughtcrime@231751144c48b5553d5b921054b196e5e2d073f9"
 NORMALIZED_TASK_COLUMN = "task_json"
 
