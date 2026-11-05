@@ -1828,3 +1828,22 @@ owns the accepted job. Existing scientific runs continue unchanged. GPU runtime
 and numerical validation, GPU allocation retention, and larger-TPU full-training
 validation remain outstanding. See the [frozen request](restore-qualification-request.json),
 [worker](qualify_checkpoint_restore.py) and [launch evidence](restore-qualification-launched.json).
+
+### 2026-11-05 16:45 UTC — pass actual native checkpoint restoration
+
+The qualification job and its sole original-attempt worker succeeded. The saved
+regional report confirms that Levanter's native checkpoint loader, with
+`allow_partial=False`, restored the complete TrainerState on four v4 TPU devices.
+All57 arrays are finite, the model and optimizer are present, counter7630
+matches, and the training PRNG has the expected uint32[2] shape. Both fresh
+online W&B runs finished; their recorded source, request, task and attempt
+identities match the frozen request and accepted Iris job. The794-byte archive
+containing host-logging.json and restore-report.json passed its recorded SHA256
+and a readback restricted to the recorded object generation.
+
+This closes one-host native restore qualification. It does not verify data-position
+replay, resumed training, or full-size direction, loss and SVD calculations. The
+scientific probes still require the three prescribed alpha0.25 confirmation
+checkpoints. No checkpoint was modified and no optimizer update ran. Reuse
+[completion evidence](restore-qualification-completed.json) without querying the
+completed job, task, followers or W&B runs again.
