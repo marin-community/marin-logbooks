@@ -1,12 +1,12 @@
 # Interim evaluation evidence
 
-INTERIM update r4, as of 2026-11-05T22:26:16.244226+00:00. All 162 Evalchemy cells are reviewed; 34 current Harbor cells are admitted and 38 remain pending. Later admissions update the existing issue comments and candidate-card sections.
+INTERIM update r5, as of 2026-11-05T23:33:08.154680+00:00. All 162 Evalchemy cells are reviewed; 38 current Harbor cells are admitted and 34 remain pending. Later admissions update existing issue comments and candidate-card sections.
 
 Marin main 8d789914 + validator fix d21aaea1 campaign launcher.
 
-Derived measurements, coverage, qualifications and integrity hashes only. No native configs, endpoint capabilities, raw outputs or restricted storage paths. Scores stay pinned; infrastructure NULLs stay unknown.
+Per-cell receipts retain measurements and integrity hashes; scores are presented in the published comparison tables and retained in receipts for audit. Native configs, endpoint capabilities, raw outputs and restricted storage paths are excluded. Infrastructure NULLs stay unknown; labelled reconstructions carry no native terminal-record or full-policy attestation.
 
-`manifest.json` SHA256 `61c413283b4ac6f59f8b8066dd732fb4cec74ff705ceb5e9a1152ce547994924`.
+`manifest.json` SHA256 `b154a6e8d6d24f4dfed27069570077e58c5557767c7fd959e4de715130d9aba0`.
 
 | Receipt | Status | SHA256 |
 |---|---|---|
@@ -98,6 +98,7 @@ Derived measurements, coverage, qualifications and integrity hashes only. No nat
 | [receipts/MOPD100--truthfulqa.json](receipts/MOPD100--truthfulqa.json) | admitted | `50910bd7f0641f5e798519050a5730bea6a5c85f9f027403d7974bed71a21829` |
 | [receipts/MOPD100--winogrande.json](receipts/MOPD100--winogrande.json) | admitted | `9d6556b9f4725b8ff3af1979fb6997890ff086dfd23e4130b62e0b677eee3b33` |
 | [receipts/MixedRS727--aime24.json](receipts/MixedRS727--aime24.json) | admitted | `a422304224c802c6e7a5447342cee0d660e1194461523272179748405e475c53` |
+| [receipts/MixedRS727--bfclparity-pi.json](receipts/MixedRS727--bfclparity-pi.json) | admitted | `c2acff3096774c631258cef640d750d2efe0f7873c2b37713742e78a0ddd8eec` |
 | [receipts/MixedRS727--boolq.json](receipts/MixedRS727--boolq.json) | admitted | `9cbe3b7d3612fc6c58a991bfd46d9c23a2657d60750c51b18c7430be4497f0f8` |
 | [receipts/MixedRS727--cruxeval.json](receipts/MixedRS727--cruxeval.json) | admitted | `baf51ade1c3cccc09726a42a1d49c62dd7404d1208958e285d5fca1168526449` |
 | [receipts/MixedRS727--financebench.json](receipts/MixedRS727--financebench.json) | admitted | `475faf9457bf9f6ef9de65ff28b7ef384b47bbda46babc472a1b630e662d2a2d` |
@@ -112,14 +113,17 @@ Derived measurements, coverage, qualifications and integrity hashes only. No nat
 | [receipts/MixedRS727--nupa.json](receipts/MixedRS727--nupa.json) | admitted | `ac292f16d9cf5f53a4d3b5ca148ca0fb624dc91f04a6ebad456dabd4c84b8d73` |
 | [receipts/MixedRS727--olympiadbench.json](receipts/MixedRS727--olympiadbench.json) | admitted | `ca23dca3ea1145cd47d139fb12f20952f28a8652859c1a250362a22717f8bfce` |
 | [receipts/MixedRS727--piqa.json](receipts/MixedRS727--piqa.json) | admitted | `3af64162758499e31a6a8faa287810f2cd8ffeb88967dfe1d07b8144d9bcb680` |
+| [receipts/MixedRS727--swebench-verified.json](receipts/MixedRS727--swebench-verified.json) | reconstruction | `18aea6246cb8d31dac80940596a4f84287a8348f75161085d1ee3d9b9fcdf771` |
 | [receipts/MixedRS727--tau3-pi.json](receipts/MixedRS727--tau3-pi.json) | admitted | `8bfbbff9f5951a7f04ece6e89b32a363c427ef74d5e2b6ad096c46d31b28e621` |
 | [receipts/MixedRS727--triviaqa.json](receipts/MixedRS727--triviaqa.json) | admitted | `d9fde70be799c6013928a21693ecb53082007ecb6af6ba2c0eaef8a2fb7f1e87` |
 | [receipts/MixedRS727--truthfulqa.json](receipts/MixedRS727--truthfulqa.json) | admitted | `0c42d2b1304248e027eb9c8c39e08fb91c64a6ef05c9ff6524adf32490cc2331` |
 | [receipts/MixedRS727--winogrande.json](receipts/MixedRS727--winogrande.json) | admitted | `c8ae41c6bd9f43e9b20a8432befa14cddd82a02c97b8c576e2defd7e2db8839c` |
 | [receipts/OPD75--aime24.json](receipts/OPD75--aime24.json) | admitted | `1a5be63a8abe45eb83c95904bfc439e8d9e96fee1fdeef3a4d9775e91d81e723` |
 | [receipts/OPD75--bfclparity-pi.json](receipts/OPD75--bfclparity-pi.json) | admitted | `402e30750081aaa6f503956b74237f5b70d1e7b2300c013f56c9e90f93c45d5b` |
+| [receipts/OPD75--bixbench-pi.json](receipts/OPD75--bixbench-pi.json) | admitted | `ab056b3f31c20621d72fed2d4d5008ca3159f459c210e6141592a6717ea47feb` |
 | [receipts/OPD75--boolq.json](receipts/OPD75--boolq.json) | admitted | `65c91c575e4fafa0a5fd9eed3bd0e921649f32e8eb8e8a38d40b5924babb38f9` |
 | [receipts/OPD75--cruxeval.json](receipts/OPD75--cruxeval.json) | admitted | `ecc73315eafdada7e5cde4fd2ac4aab97ac93e3fa59d085d424e4cb70da71525` |
+| [receipts/OPD75--ds-1000-local.json](receipts/OPD75--ds-1000-local.json) | admitted | `328cd4e08230d4bf03da1a89ed40897dbd767465f59677a6a5741bac938fd611` |
 | [receipts/OPD75--financebench.json](receipts/OPD75--financebench.json) | admitted | `45418ca02c22b16868f295338074510fe2acde3fb37ad2a1ff94c413f8927b04` |
 | [receipts/OPD75--gpqa-diamond.json](receipts/OPD75--gpqa-diamond.json) | admitted | `715624971e0ec148ecd968f8ae10c53b4c6d504344008005fbf16f6214991586` |
 | [receipts/OPD75--gsm8k-0shot.json](receipts/OPD75--gsm8k-0shot.json) | admitted | `98821d191e3b77f5b523227f59d50fd736f37684d23726eddab270ccc97635cf` |
