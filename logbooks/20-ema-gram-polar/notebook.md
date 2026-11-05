@@ -5324,3 +5324,16 @@ reports insufficient available host memory and quota-pool tier blocking;
 these are not a wait-time estimate. Sole observer17065 nextchecks are
 recorded in subset-training-r02-first-observation.json. No resubmissions,
 allocation changes, priority changes or replacement followers.
+
+### 2026-11-05 03:14 UTC — first native training and online loss confirmed
+
+Cell01 alpha0, task0/attempt0 UID343a04a0171ae325, is executing on its
+assigned v4-8 worker. Bounded native loss labels109–118 are finite and match
+ONLINE W&B exactly. Native run
+ema-gram-pilot-3e18-a0-seed0-4b5ff8c72615-2026.11.04.03-d315857e7875
+is RUNNING; execution-host logginge69c1fd6b24f is FINISHED/success. Both
+API configs identify exactsource2bca5a112, and host numerical hashes match
+the frozen validation. Initial local range assertion expected10rows from
+inclusive109..119; corrected to109..118 without training changes. This
+confirms actual new-data training startup, not pilot completion or an
+optimizer-speed result. Other cells retain their owned scheduling checks.
