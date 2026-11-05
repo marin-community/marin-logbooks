@@ -5683,3 +5683,31 @@ serialized bytes differ; the reported original configuration digest matches
 exactly. Both the process and API finish checks passed. This synthetic fixture ran
 no training. Evidence: expansion-worker-preflight.json. The guarded submitter
 and dedicated expansion execution worktree/observer remain outstanding.
+
+### 2026-11-05 08:34 UTC — prepare guarded boundary-expansion submissions
+
+Added submit_subset_expansions.py. It reconstructs the frozen bundle with prepare_subset_expansions.py, requires
+Git-tracked bundle/completion/accepted-launch inputs and HEAD equal to the
+published source commit,
+and runs the full cache catalog check before submissions. One shared permanent
+registry blocks duplicate Cell.name identities across worktrees sharing it. Each
+parallel request gets a durable launch_started guard before its job-submission
+RPC; errors retain guards and block retries until reconciliation. An initialization marker makes a missing registry fail closed.
+Campaigns also bind source, input hashes and a distinct artifact version.
+
+Offline tests intercepted every external command and exercised source rejection,
+failed cache checks, two parallel submissions with one error, duplicate attempts
+across campaigns, and rejection of a missing initialized registry. Both TPU
+command variants retain normal batch priority and the scheduler's default
+preemption retries, impose no additional wall-clock limits, and configure fresh
+ONLINE host logging before training. These are offline command checks. Required lint passed.
+Evidence: expansion-submitter-preflight.json and check_expansion_submitter.py.
+The first orchestration invocation accidentally imported an older scratch draft;
+the fixture now loads the logbook controller by its explicit path, and passed.
+
+No actual expansion was submitted; the real nonzero groups remain incomplete.
+Launch still requires a dedicated immutable worktree with fresh campaign/artifact
+identities and an expansion observer/terminal-validation workflow. At08:24 UTC,
+21 nonzero pilots were running and three queued;18 established native streams
+advanced and cells24–26 first reported label7. The maximum native training-step label among those21 pilots was4573. All six
+alpha0 results remain the only scientifically validated completions.
