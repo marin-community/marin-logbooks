@@ -80,7 +80,7 @@ This branch is the tip of the three stacked Marin drafts plus this directory and
 ### 2026-11-05 01:04 UTC - Thoughtcrime in a 3-step quick loop
 
 - Question: does thoughtcrime work as a quick-loop evaluation source, and what does the Datakit SFT initializer score?
-- Source: this branch after merging Marin main `ec047c8` (TaskSpec schema 0.30; evaluation sources curate with `--mode quick`).
+- Source: this branch after merging Marin main `aafdd56b7a` (TaskSpec schema 0.30; evaluation sources curate with `--mode quick`).
 - Selection: `build_panel_selection.py` appends the 328 QUICK-converted thoughtcrime tasks to the 100-task panel of `snowball-100k/2026.11.04`, published at `s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k-thoughtcrime/2026.11.04.1`. The `evaluation_sources` path needs an admitted FULL corpus, which main now refuses for evaluation sources.
 - Command: `uv run python -m experiments.post_training.inventory.train_quick_loop --selection-uri <selection> --version 2026.11.04.73 --steps 3 --run`, coordinator `/dml/users-dml-checkpoints-snowball-inventory-2026.11.04.73-coordinator-4dc4ca30`, 40 H100 on cw-us-east-02a, 36 minutes for the training step.
 - Failed attempts: `.71` used base selection `2026.10.23.2`, whose schema-0.28 tasks main no longer loads (main's launcher default still points there). `.72` scored thoughtcrime 0.0 because every request returned HTTP 400: the quick loop's vLLM engines had no tool parser, and thoughtcrime is the only panel source that sends `tools`. `.73` sets `enable_auto_tool_choice=True, tool_call_parser="hermes"` in `train_quick_loop.py`.
