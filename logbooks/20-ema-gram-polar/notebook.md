@@ -5673,3 +5673,13 @@ comparing digests. The adapter changes those fields' Python types; the native
 trainer code is unchanged. The initial mismatch was detected before tracking
 or training initialized. Fresh ONLINE nontraining logging
 is still required after source publication. No expansion job was submitted.
+
+The fresh nontraining ONLINE run ema-gram-expansion-host-a2b42911b5b0 finished
+from published worker source d1bcec239. API checks matched the source, bundle
+and configuration digests. W&B omitted two known-empty configuration
+dictionaries; restoring those locally made its configuration values agree with
+the saved input. W&B also serializes whole-valued floats as integers, so its
+serialized bytes differ; the reported original configuration digest matches
+exactly. Both the process and API finish checks passed. This synthetic fixture ran
+no training. Evidence: expansion-worker-preflight.json. The guarded submitter
+and dedicated expansion execution worktree/observer remain outstanding.
