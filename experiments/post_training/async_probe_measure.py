@@ -36,6 +36,13 @@ def install_measurements(trainer, entrypoint_started: float) -> None:
     original_sync = trainer._sync_policy_for_rollouts
     smoke = cfg.trainer.placement.colocate_all
     engine_actors = [engine.inference_engine_actor for engine in trainer.inference_engine_client.engines]
+    engine_info = ray.get([actor.performance_info.remote() for actor in engine_actors])
+    if not all(
+        "39e62869693c" in row["vllm_version"] and row["use_v2_model_runner"] and not row["logits_processors"]
+        for row in engine_info
+    ):
+        raise ValueError("The qualified pinned vLLM V2 path changed")
+    write_json(root + "/engine-runtime.json", engine_info)
     write_json(root + "/config.json", OmegaConf.to_container(cfg, resolve=True))
 
     async def publish(step):

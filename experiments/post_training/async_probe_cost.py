@@ -25,10 +25,8 @@ from marin.training.training import LevanterCheckpoint
 
 from experiments.models import qwen2_5_0_5b_instruct
 from experiments.post_training.sc_default_study import study_recipe
+from experiments.post_training.tim_cp_qualification import GRUG_HF, GRUG_REVISION, GRUG_URI
 
-GRUG_URI = "s3://marin-rno2a/marin/users/dml/models/grug-67b-a2b-datakit-sft-262k-2026.10.05-8c76b22a/2026.10.22/hf"
-GRUG_HF = "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05"
-GRUG_REVISION = "8c76b22afc38f5e95360c83ca88008f00b5ae1e0"
 DATA_URI = "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1"
 SMOKE_DATA_URI = "s3://marin-rno2a/marin/users/romain/documents/sc-default-study-smoke/2026.10.28.1"
 

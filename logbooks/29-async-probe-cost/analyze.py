@@ -1,0 +1,136 @@
+# Copyright The Marin Authors
+# SPDX-License-Identifier: Apache-2.0
+
+"""Collect complete asynchronous windows and compute the predeclared paired intervals."""
+
+import argparse
+import csv
+import hashlib
+import json
+import math
+from pathlib import Path
+
+import numpy as np
+from rigging.filesystem.buckets import filesystem_for
+from scipy.stats import t
+
+
+def read_result(uri):
+    filesystem, path = filesystem_for(uri)
+    with filesystem.open(path, "rb") as stream:
+        content = stream.read()
+    return json.loads(content), hashlib.sha256(content).hexdigest()
+
+
+def paired_interval(ratios):
+    logs = np.log(ratios)
+    mean = float(logs.mean())
+    radius = float(t.ppf(0.975, len(logs) - 1) * logs.std(ddof=1) / math.sqrt(len(logs)))
+    return {
+        "added_percent": 100 * math.expm1(mean),
+        "lower95_percent": 100 * math.expm1(mean - radius),
+        "upper95_percent": 100 * math.expm1(mean + radius),
+        "paired_ratios": ratios,
+        "pairs": len(logs),
+    }
+
+
+def summarize(run, result, digest):
+    cycles = result["cycles"]
+    if [row["step"] for row in cycles] != list(range(1, 31)) or not result["optimizer_isolation"]:
+        raise ValueError(f"Incomplete thirty-update window or optimizer contamination: {run['tag']}")
+    lengths = np.concatenate([row["response_lengths"] for row in cycles])
+    observed = [row for row in result["probes"] if row["metrics"].get("score_centering_probe/observed", 0) > 0]
+    if run["interval"] and not observed:
+        raise ValueError(f"No consumed nonempty probes: {run['tag']}")
+    selected_lengths = [length for row in observed for length in row["response_lengths"]]
+    counts = [count for row in observed for count in row["sampled_positions_per_response"]]
+    if counts and max(counts) > 32:
+        raise ValueError("Probe coverage exceeds the declared per-response limit")
+    loss_tokens = sum(row["trained_loss_tokens"] for row in cycles)
+    response_tokens = sum(row["response_tokens"] for row in cycles)
+    elapsed = cycles[-1]["complete_cycle_elapsed_seconds"]
+    token_age = (
+        sum(row["metrics"]["async/staleness_tokens_mean"] * row["trained_loss_tokens"] for row in cycles) / loss_tokens
+    )
+    summary = {
+        **run,
+        "completed_sha256": digest,
+        "complete_cycle_seconds": elapsed,
+        "mean_cycle_seconds": elapsed / len(cycles),
+        "warmup_three_cycles_seconds": cycles[2]["complete_cycle_elapsed_seconds"],
+        "warmed_27_cycles_seconds": elapsed - cycles[2]["complete_cycle_elapsed_seconds"],
+        "loss_tokens": loss_tokens,
+        "response_tokens": response_tokens,
+        "seconds_per_million_loss_tokens": elapsed / loss_tokens * 1e6,
+        "seconds_per_million_response_tokens": elapsed / response_tokens * 1e6,
+        "response_length_p50_p95_p99": np.quantile(lengths, [0.5, 0.95, 0.99]).tolist(),
+        "response_length_max": int(lengths.max()),
+        "responses_ge2048": int((lengths >= 2048).sum()),
+        "mean_token_staleness": token_age,
+        "max_token_staleness": max(row["metrics"]["async/staleness_tokens_max"] for row in cycles),
+        "consumed_probe_events": len(observed),
+        "consumed_probe_responses": len(selected_lengths),
+        "consumed_probe_positions": sum(len(row["positions"]) for row in observed),
+        "long_response_probe_positions": sum(row["long_response_positions"] for row in observed),
+        "probe_response_lengths": selected_lengths,
+        "probe_source_policy_steps": [sorted(set(row["source_policy_steps"])) for row in observed],
+        "probe_training_steps": [row["training_step"] for row in observed],
+    }
+    return summary
+
+
+def analyze(manifest, output):
+    output.mkdir(parents=True, exist_ok=True)
+    admitted = [run for run in manifest["runs"] if run["kind"] == "grug" and run["admitted"]]
+    summaries, rows = [], []
+    for run in admitted:
+        result, digest = read_result(run["completed_uri"])
+        summaries.append(summarize(run, result, digest))
+        previous = 0
+        for cycle in result["cycles"]:
+            elapsed = cycle["complete_cycle_elapsed_seconds"]
+            rows.append(
+                {
+                    "tag": run["tag"],
+                    "seed": run["seed"],
+                    "interval": run["interval"],
+                    "step": cycle["step"],
+                    "elapsed_seconds": elapsed,
+                    "cycle_seconds": elapsed - previous,
+                    "loss_tokens": cycle["trained_loss_tokens"],
+                    "response_tokens": cycle["response_tokens"],
+                    "token_staleness": cycle["metrics"]["async/staleness_tokens_mean"],
+                }
+            )
+            previous = elapsed
+    by_arm = {(run["seed"], run["interval"]): run for run in summaries}
+    comparisons = {}
+    for interval in sorted({run["interval"] for run in summaries} - {0}):
+        seeds = [1701, 2903, 4517]
+        if any((seed, arm) not in by_arm for seed in seeds for arm in (0, interval)):
+            raise ValueError(f"Incomplete paired comparison for interval {interval}")
+        comparisons[str(interval)] = {
+            metric: paired_interval([by_arm[seed, interval][metric] / by_arm[seed, 0][metric] for seed in seeds])
+            for metric in (
+                "complete_cycle_seconds",
+                "warmed_27_cycles_seconds",
+                "seconds_per_million_loss_tokens",
+                "seconds_per_million_response_tokens",
+            )
+        }
+    result = {"runs": summaries, "comparisons": comparisons, "method": manifest["protocol_uri"]}
+    (output / "analysis.json").write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+    with (output / "per-cycle.csv").open("w") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    return result
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("manifest", type=Path)
+    parser.add_argument("output", type=Path)
+    args = parser.parse_args()
+    analyze(json.loads(args.manifest.read_text()), args.output)

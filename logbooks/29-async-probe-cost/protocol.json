@@ -45,7 +45,8 @@
     "entropy_auxiliary": false,
     "evaluation": false,
     "checkpoints": false,
-    "HF_exports": false
+    "HF_exports": false,
+    "reasoning_markup_penalty": "Original study17 recipe; no additional current-main reasoning-span penalty."
   },
   "repetitions": {
     "seeds": [
@@ -79,7 +80,7 @@
         10
       ]
     ],
-    "matching": "Each run restarts from the exact same initializer and matched trainer/data/generator seed. All arms use the same recipe, region, topology and H100 model. Record actual placement and scheduling; instances can differ across scheduler allocations."
+    "matching": "Each run restarts from the same initializer and matched trainer/data-order seed. Sampler configuration is identical within each pair, including its unchanged engine seed setting. Record actual placement and scheduling; instances can differ across allocations."
   },
   "hardware": {
     "cluster": "cw-rno2a",
@@ -126,7 +127,7 @@
     "initial_allocated_H100_hours_estimate": 450,
     "conditional_extra_H100_hours_estimate": 225,
     "Qwen_expected_H100_hours": 3,
-    "failures": "Report every allocated attempt, including startup and failed attempts. At most two Qwen repairs/retries and two Grug infrastructure replacement attempts total; replacements preserve the original arm/seed/initializer. No outcome-based selection or extension."
+    "failures": "Report every allocated attempt, including startup and failures. Qualification amendment before any Grug outcome: at most four Qwen startup attempts total, with the final one on the exact qualified study17 runtime after local real-dataset validation. At most two Grug infrastructure replacement attempts total, preserving arm/seed/initializer; no outcome-based selection or extension."
   },
   "storage": {
     "estimate": "Tens of GB of ordinary trajectory/log evidence; no model checkpoints or exports.",
@@ -138,5 +139,7 @@
     "temporary_prefix": "s3://marin-us-east-08a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/async-probe-cost",
     "basis": "Current named-cluster MARIN_PREFIX default. Do not infer output storage from the input model/data region. Preserve temporary evidence before expiry."
   },
-  "qualification": "Twelve-update colocated Qwen startup uses full_batch and staleness0, matching the existing working harness. Grug remains normal disaggregated rolling staleness2; Qwen is software qualification only."
+  "qualification": "Twelve-update colocated Qwen startup uses full_batch and staleness0, matching the existing working harness. Grug remains normal disaggregated rolling staleness2; Qwen is software qualification only.",
+  "measurement_runtime_revision": "4885c973e753a4c68012ef12a68f36205d0056d5",
+  "runtime_choice": "Reuse the completed study17 source and original TaskSpec0.28 contracts. Current main requires TaskSpec0.30. Probe math, score-centering math and compact chat adapter are byte-identical to the product probe head. This comparison is scoped to the qualified study runtime and does not measure unrelated recent main changes."
 }
