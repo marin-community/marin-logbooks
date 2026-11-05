@@ -5628,3 +5628,33 @@ eighteenth reporting stream at label7. All72 cached task-attempt joins remain
 valid against unchanged failure/preemption counts. Continue the exclusive
 observer. Global hyperparameter selection still awaits all pilots and required
 LR boundary expansions; no selection has been finalized.
+
+### 2026-11-05 08:08 UTC — prepare boundary-expansion configurations
+
+Added prepare_subset_expansions.py. It reconstructs successive expansion
+choices from validated results, separately for each alpha/ridge group. All
+currently required points in a group must finish before its next choice:
+halve the learning rate if the lower boundary wins, or double it if the upper
+boundary wins. Incomplete groups wait while other complete groups can advance.
+Completion records must pass the existing full-result checks and match accepted
+source/job bindings. A previously guarded expansion is excluded from new
+configuration proposals, including an ambiguous submission pending reconciliation.
+
+The builder retains seed0,7630 updates, batch8, the shared subset and the
+qualified matrix layout/default spectral implementation. It requires a distinct
+calendar artifact version, records configuration/input hashes, and refuses to
+overwrite its output file. The future submitter must enforce published immutable
+source and input hashes. Offline fixtures exercised two independent nonzero
+boundary groups, repeated expansion, incomplete groups, wrong predecessor source
+and ambiguous guards. Native decode/re-encode preserved the generated configs,
+including the intended concrete types of union fields. Required lint passed;
+evidence is in subset-expansion-config-preflight.json.
+
+The actual cached alpha0 optimum is interior and needs no expansion. No nonzero
+group has finished. These fixtures use fabricated losses and establish no new
+scientific result. No training process or job submission ran. The expansion
+worker, separate-process reconstruction, fresh ONLINE nontraining check and
+guarded submitter remain outstanding. Actual launches will also require a new
+immutable execution worktree and one expansion observer; the existing pilot
+observer continues unchanged. At08:03 UTC all18 active native streams advanced,
+with maximum label4250; six other nonzero pilots remain queued.
