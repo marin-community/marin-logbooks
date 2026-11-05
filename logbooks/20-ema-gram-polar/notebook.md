@@ -5301,3 +5301,16 @@ on concurrent experiments once accepted. The slow615-object web metadata
 loop now uses16 parallel checks; full catalog identity, generation-bound JSON
 readback and edge checks remain. Seven static positive/negative fixtures pass.
 No network/IAM/security settings were changed and no remote job was cancelled.
+
+### 2026-11-05 03:07 UTC — all30 r02 scientific pilots accepted
+
+The parallel full catalog gate passed all26 components/825 objects, followed
+by30 accepted unique job submissions from immutable2bca5a112. Submit94148
+ended naturally0; each per-cell guard remains launch_started/launched.
+Sole observer17065 owns30 follows and first canonical checks after120s,
+then570s. Finelog snapshot-deadline failures affected some follows; they
+are not worker failures and no replacement followers were created.
+24nonzero v4-32 and6alpha0v4-8 requests total408 JAXdevices, not actual
+allocation. Source/worktree and full launch evidence are recorded in
+subset-training-r02-launched.json. Await owned canonical allocation and
+startup evidence before claiming running models or scientific progress.
