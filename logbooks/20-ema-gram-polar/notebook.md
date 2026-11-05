@@ -6135,3 +6135,14 @@ Code56 succeeded with45,411,940tokens/22,006documents; math57 succeeded with
 archives, exactsource/manifests and host/workerONLINE W&B were verified.
 The repaired web workers are already reporting successful full builds; final
 canonical checks remain owned by the existing observer. No training yet.
+
+### 2026-11-05 00:04 UTC — faster checks for short CPU data stages
+
+The fixed570-second monitoring interval unnecessarily delayed data assembly
+after minute-scale workers completed. Local observer owners74503/2647 were
+retired (exit143) and replaced under the same exclusive state locks by68096
+(hq01) and81427(hq02), using60-second canonical checks after the initial120s.
+Existing log follower PIDs were adopted; none were restarted or duplicated,
+and no remote job or allocation was signalled. If an adopted follower vanished,
+its exit code is explicitly unavailable rather than fabricated as0. Terminal
+jobs remain excluded from canonical polling. Training cadence remains unchanged.
