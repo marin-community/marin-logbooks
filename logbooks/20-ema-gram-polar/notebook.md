@@ -5597,3 +5597,34 @@ cell22 at196 after previously pausing at startup label7. The68 cached task-attem
 reusable because the observer snapshots still report zero failures/preemptions
 across all30 accepted jobs. Continue the exclusive observer
 and finish the nonzero artifact validator before the next pilot terminates.
+
+### 2026-11-05 07:47 UTC — prepare nonzero pilot completion validation
+
+Prepared verify_nonzero_r02.py for terminal nonzero pilots. It requires the
+recorded immutable training source and frozen subset configuration, canonical
+job success, and success of the original attempt on each of four distinct
+hosts. It joins those attempts to their finished ONLINE host-logging runs and
+the finished native training run. Each of five training metrics must contain
+finite values at every native label0..7629, with final C4 loss at7629. Raw
+pagination rows are retained; only identical duplicates are removed, and
+missing labels are queried explicitly. Checkpoint checks read final permanent
+metadata, compare the57-array schema with the validated reference, and read
+stored scalar counter7630 using the same ADC and read-only HTTP driver. This
+is not a full checkpoint byte audit or a verified resume.
+
+Previously validated results are reused only after checking saved evidence
+hashes and task identities, without querying their completed W&B runs. Jobs
+with multiple attempts are rejected pending separate lineage adjudication.
+The offline fixture accepted a synthetic four-host completion, rejected seven
+invalid artifact cases, and detected changed cached evidence. It used fabricated
+metric and storage responses; no live terminal validation or numerical training
+ran. Required lint passed. Source hashes and the runnable fixture command are
+in nonzero-completion-validator-preflight.json.
+
+At07:38 UTC the six alpha0 results remain the only scientifically validated
+completions;18 nonzero pilots are running and six pending. Seventeen established
+streams advanced, reaching native training-step label3843; cell21 became the
+eighteenth reporting stream at label7. All72 cached task-attempt joins remain
+valid against unchanged failure/preemption counts. Continue the exclusive
+observer. Global hyperparameter selection still awaits all pilots and required
+LR boundary expansions; no selection has been finalized.
