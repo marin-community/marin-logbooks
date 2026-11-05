@@ -4,7 +4,7 @@ task_issue: "https://github.com/marin-community/marin-logbooks/issues/34"
 research_branch: "codex/34-hero-final-sft"
 marin_base_revision: "33189166cfb244bf284f3d893e58ce0272215eac"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: continuation-submitted
+status: continuation-running
 ---
 
 # Compact SFT on the final Hero checkpoint
@@ -209,3 +209,19 @@ retries. Full compact state, 16K packing, 65K model settings, source/data/cache
 pins and peak learning rates remain unchanged. The existing heartbeat now owns
 this exact continuation; no second continuation should be submitted. Actual
 restoration/progress beyond update 8 and final completion remain pending.
+
+
+## 2026-11-05: continuation restored and advanced
+
+At 21:06:50 UTC all 16 continuation tasks were running with no failures or
+preemptions. Attempt `0a3328348b80b978` records the exact requested step-8
+recovery source. Its first new update is 9: loss 1.63636, gradient norm 1.24963,
+9286178 processed and 5981570 supervised tokens. This verifies real progress
+beyond the restored state. [continuation-start.json](continuation-start.json)
+pins the source/request/attempt, compact parent metadata and raw update hash.
+
+Further monitoring is delegated to the single existing ten-minute heartbeat.
+The next evidence gates remain completion at 128 total updates, fixed held-out
+selection among 64/96/128, one selected export, durable compact preservation and
+review of all 100 response cases. No held-out or response-quality result exists
+yet. The logbooks index update remains for the completed experiment handoff.
