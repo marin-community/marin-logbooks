@@ -5545,3 +5545,31 @@ for comparison, and the original complete config digest matched online.
 This used an explicitly fictional selection fixture, not a scientific lock.
 No training or numerical CPU check was run; native numerical sources remain
 unchanged. The separately guarded submission controller is still outstanding.
+
+### 2026-11-05 05:24 UTC — prepare guarded parallel confirmation submission
+
+Added submit_subset_confirmations.py, reusing the existing Iris batch command
+resources and defaults. It validates the exact locked bundle and full pilot/
+expansion completion coverage before any submission, then requires tracked
+inputs, a clean immutable source matching its published ref, and a full cache
+catalog check. Each distinct confirmation campaign has a locked ledger bound
+to source/input hashes; per-cell launch_started is durably written before
+its RPC. Submission errors retain that guard for canonical reconciliation.
+All three or four fresh seed0 configurations submit concurrently, with fresh
+host logging and bounded cache checks before the native worker. No wall-clock
+limits, preemption overrides or changes to current pilots were introduced.
+
+Static fixtures checked both TPU commands, logging order, wrong/incomplete
+completion evidence, and guard retention across a persisted ambiguous failure.
+The actual six-completion record was rejected as an incomplete scientific grid.
+No cluster submission or numerical process ran. Evidence:
+confirmation-submitter-preflight.json. The real global selection lock, common
+loss target, full completion evidence, fresh artifact/campaign identities and
+sole confirmation observer still depend on finishing pilots and expansions.
+Scientific failures, if encountered, require explicit adjudication before this
+launcher can accept them; infrastructure failures never count as poor settings.
+
+At05:21 UTC all fifteen scheduled nonzero cells had native update evidence.
+Thirteen previously active streams advanced; cell19 was still at its startup
+label7 and cell20 first reached7. This is one unchanged startup observation,
+not a cancellation trigger. Six completed alpha0 results remain validated.
