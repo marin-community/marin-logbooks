@@ -89,6 +89,22 @@ This branch is the tip of the three stacked Marin drafts plus this directory and
 - Interpretation: the 0.034 drop is about 1.4 standard errors for 328 single samples; three updates do not establish a trend.
 - Decision: any panel that includes thoughtcrime needs a vLLM tool parser on its rollout engines.
 
+### 2026-11-05 07:16 UTC - Thoughtcrime over a 25-step quick loop
+
+- Question: does 25 steps of the quick loop's RL move the Datakit SFT initializer's thoughtcrime score?
+- Source: commit `5922e36379` on this branch, which also sets `eval_n_samples_per_prompt=4`.
+- Command: `uv run python -m experiments.post_training.inventory.train_quick_loop --selection-uri s3://marin-us-east-02a/marin/rl-data/task-selection/snowball-100k-thoughtcrime/2026.11.04.1 --version 2026.11.04.75 --run`, coordinator `/dml/users-dml-checkpoints-snowball-inventory-2026.11.04.75-coordinator-da2d3c58`, 40 H100 on cw-us-east-02a. One node hit a transient Run:ai S3 read failure during startup and recovered.
+- Reported metrics, step 0 → step 25, with 4 samples per prompt (1,312 thoughtcrime replies graded both times):
+  - thoughtcrime avg 0.797 → 0.807, pass@4 0.976 → 0.988;
+  - whole panel avg 0.560 → 0.614, pass@4 0.836 → 0.876;
+  - Nemotron RL blend avg −0.325 → −0.042;
+  - structure-closure avg 0.200 → 0.087 (20 tasks).
+- Grading flaw: 193 replies at step 0 and 194 at step 25 are bare tool calls with no reasoning markers. They score 0 because vLLM's tool parser moves the call out of the message content, and the empty content grades as `no_output`. By the grader's own rules a reply without markers is well formed, so the reported thoughtcrime metric counts about 15% of replies as false failures.
+- Token-level recount (`response_token_ids`, same span rules): 0.947 well formed at step 0 (46 stray closes, 21 unclosed, 2 second spans) and 0.957 at step 25 (37 stray closes, 19 unclosed). 80.5% of prompts at step 0 and 83.5% at step 25 have all 4 replies well formed. The per-prompt paired difference is +0.010 with standard error 0.007.
+- Evidence: `s3://marin-us-east-02a/marin/users/dml/checkpoints/snowball-inventory/2026.11.04.75/exports/dumped_evals/global_step_{0,25}_evals/open-athena_Marin-Thoughtcrime.jsonl`.
+- Interpretation: on this initializer, 25 steps leave the double-think rate unchanged within noise. The rate is about 5%, while v0.1 failed about 20% of replies in the single-node eval. The quick loop's reported thoughtcrime score is dominated by the empty-content artifact.
+- Decision: before using thoughtcrime as a panel metric, grade the reply with tool calls rendered back into the candidate text, or have the task pass empty content through to the grader.
+
 ## Final decision
 
 - Selected approach: the runnable catalog entry goes to Marin main: the `reasoning_markup` grading mode (#10894) and the pi-trajectory converter with the `Marin:thoughtcrime` catalog entry (#10907, trimmed).
