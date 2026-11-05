@@ -6003,3 +6003,29 @@ startup identities were reused; fresh ONLINE source/configuration checks passed.
 Global selection remains pending. Evidence: subset-training-r02-nonzero-completed.json,
 subset-training-r02-completion-readiness.json and
 scratch/20261105-expansion-r01-125801-progress.json.
+
+### 2026-11-05 13:44 UTC — validate cell 16
+
+Cell 16 (alpha 0.25, ridge 0.01, LR 0.002) completed all 7,630 updates with
+final C4 loss 4.211307048797607. The canonical job and all four original
+attempt-0 tasks succeeded with exit code 0. The validator matched the run's
+configuration and source to the frozen subset configuration and accepted launch,
+checked all 7,630 finite metric rows and finished online W&B runs, and verified
+metadata for 57 arrays in regional checkpoint storage. It independently read
+stored counter 7630. Empty terminal worker references on all four tasks were
+reconciled against saved startup attempt UIDs, start times and assignments using
+[the published rule](terminal_worker_identity.py). Raw empty references and
+historical assignment proofs remain separate. No startup queries, full checkpoint
+byte audit or full checkpoint restore were performed.
+
+Sixteen of the 30 initial pilots now pass these completion gates; fourteen remain
+RUNNING in the owner's 13:41–13:42 UTC snapshots, with no failures or preemptions.
+The alpha0.25/ridge0.01 group still needs cell 17 (LR0.004), so no group decision
+uses its partial results. Applying the preregistered factor-two boundary rule to
+complete groups found no new expansion. The two accepted alpha0.125/LR0.00125
+expansions advanced to native training step labels 1161 at ridge0.0001 and 1121
+at ridge0.01 at 13:42 UTC. Global LR/ridge/exponent selection awaits all pilot
+groups and their required expansions. Evidence:
+[completed results](subset-training-r02-nonzero-completed.json),
+[group readiness](subset-training-r02-completion-readiness.json), and local
+scratch/20261105-expansion-r01-134257-progress.json.
