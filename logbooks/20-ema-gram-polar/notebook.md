@@ -1893,3 +1893,18 @@ four TPU devices on one host and is still running. This verifies startup,
 not successful probe calculations. Reuse the
 [startup evidence](fullsize-probe-qualification-started.json) and cached task
 identity without repeating startup queries.
+
+### 2026-11-05 17:05 UTC — validate two alpha0.5 initial pilots
+
+Two initial pilots with Gram exponent alpha=0.5 and ridge0.0001 passed all
+completion gates: LR0.00025 has final C4-en validation loss4.9130744934, and
+LR0.0005 has loss5.0308866501. Each has7,630 finite training metric rows,
+stored checkpoint counter7,630, the expected57-array checkpoint metadata,
+a finished ONLINE W&B run with exact source/configuration identity, and four
+successful original-attempt workers. Each completed worker matches its saved
+startup task/attempt identity. This validates26 of30 initial pilots. The
+alpha0.5/ridge0.0001 group still awaits LR0.001. The expansion rule requires
+all three final evaluations before selecting a boundary winner, so no further
+expansion is selected yet. These completion checks do not establish full checkpoint-byte
+restoration. Reuse [completion evidence](subset-training-r02-nonzero-completed.json)
+and [group readiness](subset-training-r02-completion-readiness.json).
