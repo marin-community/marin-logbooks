@@ -1,31 +1,35 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "model": "open-athena/Snowball-67B-A2B-Identity-PathB-A13-2026.10.30",
   "weight_revision": "55dbe0be30b4c712b974895e1a5b7c14ca50ccb2",
   "benchmark": "aime24",
   "status": "admitted",
   "cell_review_verdict": "CLEAR qualified",
   "score_fraction": 0.7,
-  "reported_percent": 70.0,
   "policy95_interval_fraction": [
     0.6452468802271446,
     0.7547531197728553
   ],
-  "reported_interval_percent": [
-    64.5,
-    75.5
-  ],
   "scored": 300,
   "planned": 300,
-  "correct_or_reward_one_count": null,
-  "planned_count_unavailable": false,
+  "metric": "metric:accuracy",
+  "filter": "none",
+  "coverage": {
+    "aime24": {
+      "n_benchmark": 300,
+      "n_attempted": 300,
+      "n_scored": 300,
+      "n_correct": 210,
+      "n_unanswered": 10,
+      "errors": {}
+    }
+  },
   "qualifications": [
     "30 prompts x 10 repeats = 300 scored trials; interval = trial SEM/sqrt(.9), not repeat SE or independent-task CI",
     "30×10 scored trials; intervalSEM/sqrt(.9), not prompt-cluster CI or producer repeatstderr."
   ],
   "source_record_sha256": "80fcc03b17acd6aba3912813c6760d7dca8ee5ed71d64a866864aa5b65fde921",
+  "source_commit_id": "b733cad894ca417cb76a2116117eb5c9",
   "cell_review_source_sha256": "8eeb8a20d1f9e32063e916b8f830f7a33c10a8625674b8e47f45d7a594f27b87",
-  "full_table_clear": false,
-  "clean_capability_comparison_allowed": true,
   "code_provenance": "Marin main 8d789914 + validator fix d21aaea1 campaign launcher"
 }

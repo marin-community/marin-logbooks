@@ -1,32 +1,36 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "model": "open-athena/Snowball-67B-A2B-SFT-Shootout-Plateau-Contributor-v0.1-2026.10.23",
   "weight_revision": "b89ed60378ca135b40e5f2d682841c4e4e520a3c",
   "benchmark": "triviaqa",
   "status": "diagnostic",
   "cell_review_verdict": "BLOCK interpretation",
   "score_fraction": 0.09847302719572001,
-  "reported_percent": 9.8,
   "policy95_interval_fraction": [
     0.09387750048197437,
     0.10306855390946566
   ],
-  "reported_interval_percent": [
-    9.4,
-    10.3
-  ],
   "scored": 17944,
   "planned": 17944,
-  "correct_or_reward_one_count": null,
-  "planned_count_unavailable": false,
+  "metric": "metric:exact_match",
+  "filter": "extract_answer",
+  "coverage": {
+    "triviaqa_5shot": {
+      "n_benchmark": 17944,
+      "n_attempted": 17944,
+      "n_scored": 17944,
+      "n_correct": 1767,
+      "n_unanswered": 0,
+      "errors": {}
+    }
+  },
   "qualifications": [
     "28/30,25/30 vs0/30; preserve pinned8.3/9.9% vs57.0% diagnostic values; exclude campaign pairwise analysis",
     "Deterministic 30-sample rates are descriptive, not population estimates; stripping is not regrading or proof of a corrected score.",
-    "Pinned primary measurement retained as extraction/scorer-input-sensitive diagnostic; excluded from campaign pairwise analysis. Current v0.1 reference 57.0% [56.2,57.7]. Secondary think-stripped re-extraction strings are separate, not corrected scores."
+    "Pinned primary measurement retained as extraction/scorer-input-sensitive diagnostic; excluded from campaign pairwise analysis. Current v0.1 reference 57.0% [56.2,57.7]. The separately labelled secondary column is a different extraction; pinned primary stays primary."
   ],
   "source_record_sha256": "8e519a224afb5878f46a16695362ce982dbc9b74a402f2596c25c71be253d697",
+  "source_commit_id": "dbe19f7372064cf388e1d31d5273e241",
   "cell_review_source_sha256": "294a3000bf7ad88fc7b9ba4e0b8fdcfcd20f807eae887a9f9e6dec3be6dc885b",
-  "full_table_clear": false,
-  "clean_capability_comparison_allowed": false,
   "code_provenance": "Marin main 8d789914 + validator fix d21aaea1 campaign launcher"
 }

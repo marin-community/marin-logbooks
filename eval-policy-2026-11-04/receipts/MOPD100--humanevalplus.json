@@ -1,24 +1,29 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "model": "open-athena/Snowball-67B-A2B-MOPD-Step100",
   "weight_revision": "0efb769d930612e7a3322fbc047481da6a67f8a6",
   "benchmark": "humanevalplus",
   "status": "admitted",
   "cell_review_verdict": "CLEAR qualified",
   "score_fraction": 0.7317073170731707,
-  "reported_percent": 73.2,
   "policy95_interval_fraction": [
     0.6600081471700624,
     0.803406486976279
   ],
-  "reported_interval_percent": [
-    66.0,
-    80.3
-  ],
   "scored": 164,
   "planned": 164,
-  "correct_or_reward_one_count": null,
-  "planned_count_unavailable": false,
+  "metric": "metric:accuracy",
+  "filter": "none",
+  "coverage": {
+    "humanevalplus": {
+      "n_benchmark": 164,
+      "n_attempted": 164,
+      "n_scored": 164,
+      "n_correct": 120,
+      "n_unanswered": 0,
+      "errors": {}
+    }
+  },
   "qualifications": [
     "metric:accuracy = canonical pass@1 trial metric",
     "30-sample: think blocks 3/30, parse inside think 1/30, unlocatable 5/30, parse changed by stripping 1/30; v0.1 0.909 [0.862, 0.955], 9/30 changes. Sample rates are descriptive.",
@@ -27,8 +32,7 @@
     "30sample rates descriptive, not population estimates; parse-change is extraction sensitivity, not a changed grade; scorer-input-sensitive interpretations require reviewer qualification."
   ],
   "source_record_sha256": "f728545df5bfc1cd363151612619848c3a2f8c9e78adc345464516bdfde67796",
+  "source_commit_id": "d57f40db16d3486794785690bccb383b",
   "cell_review_source_sha256": "8eeb8a20d1f9e32063e916b8f830f7a33c10a8625674b8e47f45d7a594f27b87",
-  "full_table_clear": false,
-  "clean_capability_comparison_allowed": true,
   "code_provenance": "Marin main 8d789914 + validator fix d21aaea1 campaign launcher"
 }

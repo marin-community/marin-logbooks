@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "model": "open-athena/Snowball-67B-A2B-CruxEval-RS-SFT-Step282",
+  "weight_revision": "b579dfb2234142164cf452ea44d1d8de026430af",
+  "benchmark": "financebench",
+  "status": "admitted",
+  "cell_review_verdict": "CLEAR qualified",
+  "score_fraction": 0.38,
+  "policy95_interval_fraction": [
+    0.2367401738875208,
+    0.5232598261124792
+  ],
+  "scored": 50,
+  "planned": null,
+  "metric": "metric:accuracy",
+  "filter": "none",
+  "coverage": {
+    "financebench": {
+      "n_benchmark": null,
+      "n_attempted": 50,
+      "n_scored": 50,
+      "n_correct": 19,
+      "n_unanswered": 0,
+      "errors": {}
+    }
+  },
+  "qualifications": [
+    "footnote: 12/30 sampled parses start inside a think span and change when stripped",
+    "edge case: 12/30 is above my 10/30 'many' line; the within-interval test is weak at n=50 (interval width about 29 points); flagged for marten's full-table decision",
+    "contrast MOPD100 financebench 22/30 changes and 28.0, outside interval: BLOCK (c)",
+    "replacement record; cancelled original is infra provenance"
+  ],
+  "source_record_sha256": "890e5ec66bc0762c1da38657d6cb876bf6da1f5e869351dc77a6e7b2a7045dfc",
+  "source_commit_id": "032213804afc4e2ba475fd32088c7657",
+  "cell_review_source_sha256": "f52920a748b723e3df1e66d1c3af54486bb7cc82dcbef786b091bfd85ea72049",
+  "code_provenance": "Marin main 8d789914 + validator fix d21aaea1 campaign launcher",
+  "durable_binding_sha256": "0695159cfb9ad58e6fe290b61f864a8b75344445b0fabc2c4081944bf6c19c23"
+}
