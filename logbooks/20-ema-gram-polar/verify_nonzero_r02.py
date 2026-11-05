@@ -15,6 +15,7 @@ import google.auth
 import tensorstore as ts
 import wandb
 from audit_subset_history import FINAL_KEY, TRAIN_KEYS, audit
+from checkpoint_manifest import validate_manifest
 from collect_r02_terminal_tasks import save_new
 from google.auth.transport.requests import Request
 from google.cloud import storage
@@ -244,8 +245,7 @@ def verify(root, index):
         ):
             raise ValueError("Reference array schema differs from published completion")
         reference_manifest = json.loads(reference_bytes)
-        if manifest["parsed"] != reference_manifest:
-            raise ValueError("Checkpoint array schema differs; inspect before scientific validation")
+        manifest_validation = validate_manifest(manifest["parsed"], reference_manifest)
 
         def read_counter():
             creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/devstorage.read_only"])
@@ -294,6 +294,7 @@ def verify(root, index):
                 "uri": uri,
                 "metadata": metadata["parsed"],
                 "arrays": len(manifest["parsed"]["arrays"]),
+                "manifest_validation": manifest_validation,
                 "files": {
                     name: {k: v for k, v in record.items() if k not in ["parsed", "raw_text"]}
                     for name, record in [("metadata.json", metadata), ("manifest.json", manifest)]

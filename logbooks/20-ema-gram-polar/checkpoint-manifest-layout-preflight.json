@@ -1,0 +1,25 @@
+{
+  "observed_utc": "2026-11-05T11:51:13.375377+00:00",
+  "passed": true,
+  "files": {
+    "checkpoint_manifest.py": "ae6b67301d59c142da5dd819c7f3ca9a2477b15a76accd1664feab7d6ac0e002",
+    "check_checkpoint_manifest.py": "5911c6f36693f4bca6b08dec5158b3ae36e5b4a5547cc48bd8be8bff9fa0c3cd",
+    "verify_nonzero_r02.py": "0d2cd4e26ba85bf7bcab58c9d7ffbf00c0d21e27673a771c03d96ccef8c619cf",
+    "verify_expansion_artifacts.py": "3532add7922c372a876de20be6f32ff8e9a8394b10658032da44ad69e828e153",
+    "check_nonzero_validator_fixture.py": "f1332003f47e4075e7610e822beef28079c663de1dc20d705b1827a9de7595d9",
+    "check_expansion_artifacts.py": "288c63860f4c2c14d6420f62e9d1574b2ee57b69d15b47b89b38e6bec9566f0d"
+  },
+  "regression": "Both real four-host nonzero manifests have57 identical array paths/shapes/dtypes and16 chunk layouts different from one-host alpha0. plan_array_write derives chunks from sharding/writer replicas.",
+  "checks": [
+    "Chunk-layout regression accepted; missing/duplicate arrays, wrong shapes/dtypes and invalid chunk geometry rejected.",
+    "R02 full mocked artifact validation and seven negative cases passed with differing MLP chunk layout.",
+    "Expansion full mocked artifact validation and ten negative cases passed on each of one/four hosts.",
+    "Both actual nonzero completions reused through validator cache with W&B API disabled.",
+    "Required lint passed."
+  ],
+  "initial_validation_errors": [
+    "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-06-validation.log",
+    "/Users/kaiyuew/Downloads/Project/marin/ema-gram-research-20/scratch/20261105-r02-09-validation.log"
+  ],
+  "scope": "Manifest geometry validation is not a full array-byte audit or restoration proof. Native trainer and worker qualification unchanged."
+}

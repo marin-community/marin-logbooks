@@ -78,6 +78,14 @@ class Blob:
             if name.endswith("manifest.json")
             else json.dumps({"step": 7629, "is_temporary": False}).encode()
         )
+        if name.endswith("manifest.json"):
+            manifest = json.loads(self.data)
+            # Reproduce the observed one-host versus four-host MLP chunk difference.
+            weight = next(
+                a for a in manifest["arrays"] if a["path"] == "model/transformer/layers/stacked/mlp/gate_proj/weight"
+            )
+            weight["chunk_shape"] = [11, 1024, 256]
+            self.data = json.dumps(manifest).encode()
         self.size = len(self.data)
 
     def download_as_bytes(self, **kwargs):

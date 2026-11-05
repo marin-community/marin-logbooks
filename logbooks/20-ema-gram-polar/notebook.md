@@ -5786,3 +5786,42 @@ The published R02 validator is unchanged. At09:19 all24 nonzero pilots continued
 advancing, reaching maximum native label5410; cell29 reached292. Six alpha0
 results remain the only validated completions, with no failures or preemptions
 in the canonical pilot snapshots. Keep the existing observer and all live jobs.
+
+### 2026-11-05 11:51 UTC — validate the first two nonzero pilots
+
+Cells 06 and 09 completed their 7,630-update schedules on the immutable R02
+source. Both use alpha 0.125 and learning rate 0.0025. Final C4 losses are
+4.168757438659668 for cell 06 at ridge 0.0001 and 4.160338401794434 for
+cell 09 at ridge 0.01. Each cell used four hosts.
+The sole observer recorded canonical success; eight terminal task snapshots
+confirm one successful attempt per host, exit code 0, and the original task,
+worker and ONLINE run identities. Each native history contains all 7,630 finite
+rows for loss, duration, MFU, optimizer learning rate and Adam learning rate,
+plus final C4 evaluation at label 7629. The separate native training and host
+logging W&B runs have verified finished states. Permanent checkpoint metadata contains
+57 arrays, and independent read-only scalar reads returned native counter 7630.
+Evidence: subset-training-r02-nonzero-completed.json.
+
+The first validation attempt rejected both manifests because it required exact
+chunk equality with the one-host alpha0 reference. All array paths, shapes and
+dtypes match, but 16 chunk layouts differ. Levanter's plan_array_write derives
+chunks from sharding and writer replicas. The corrected R02 and expansion
+validators require identical array schemas and formats, validate chunk rank and
+positive divisor geometry, and preserve the differing layouts in their evidence.
+The original validation errors remain saved. Regression fixtures rejected missing
+or duplicate arrays, changed shapes or dtypes, and invalid chunk geometry.
+Full mocked R02 and one-host/four-host expansion artifact fixtures passed with
+a differing chunk layout, along with required lint. Both real completion caches
+were reused in validator reruns with W&B API access disabled; training used ONLINE
+tracking throughout. Evidence: checkpoint-manifest-layout-preflight.json.
+These checks do not establish a full checkpoint byte audit or full-state restore.
+
+Eight pilots are now scientifically validated; 22 remain canonically running
+in the observer's 11:46–11:47 UTC snapshots, with no failures or preemptions.
+The 11:46 UTC ONLINE observation preceded this validation and showed progress
+in all 24 then-unvalidated streams.
+Neither alpha 0.125 ridge group is complete, so no new expansion is eligible.
+The six completed alpha0 pilots retain their interior LR winner,
+0.003535533905932738. Global selection is not yet authorized by complete results, and confirmations and scientific probes remain outstanding.
+Evidence: subset-training-r02-completion-readiness.json. Continue the existing
+observer and all live jobs; exclude the eight validated runs from future queries.
