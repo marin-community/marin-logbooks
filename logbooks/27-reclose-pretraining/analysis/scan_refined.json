@@ -1,0 +1,92 @@
+{
+ "davinci-dev/ctx-native": {
+  "docs": 1500,
+  "docs_stray": 4,
+  "docs_reclose": 3,
+  "stray": 6,
+  "reclose": 4,
+  "closes": 32,
+  "opens": 37,
+  "example": "ink_tags(self, text: str) -> str:\n\t\tTHINK_TAGS = re.compile(r'<think>.*?</think>', re.DOTALL)\n\t\tSTRAY_CLOSE_TAG = re.compile(r'.*?</think>', re.DOTALL)\n\t\t# Step 1: Remove well-fo"
+ },
+ "davinci-dev/env-native": {
+  "docs": 1500,
+  "docs_stray": 35,
+  "docs_reclose": 0,
+  "stray": 63,
+  "reclose": 0,
+  "closes": 63,
+  "opens": 0,
+  "example": null
+ },
+ "gpt-oss-rollouts": {
+  "docs": 1500,
+  "docs_stray": 1,
+  "docs_reclose": 0,
+  "stray": 1,
+  "reclose": 0,
+  "closes": 1500,
+  "opens": 1500,
+  "example": null
+ },
+ "nemotron-terminal": {
+  "docs": 1500,
+  "docs_stray": 74,
+  "docs_reclose": 1,
+  "stray": 113,
+  "reclose": 1,
+  "closes": 12758,
+  "opens": 12757,
+  "example": "use `jinja2.filters`.\n\n Therefore, we can do.\n\n Let me write the patch.\n</think>\n\nLooking at the issue, the problem is that the `flare_capa_capability` filter is missing when summary reports are generated. The error occurs in `generic/_file_info.html` template line 280 which uses this filter. The filter is likely defined in `modules/reporting/reporthtml.py` but not being registered when the summary report is generated.\n\nLet me examine the provided file to understand how filters are registered:\n\n```diff\n### modules/reporting/reporthtml.py\n<<<<<<< SEARCH\n    env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))\n    env.filters.update({\n        \"datetime\": datetime_filter,\n        \"sizeof_fmt\": sizeof_fmt,\n        \"basename\": basename,\n        \"flare_capa_details\": flare_capa_details,\n        \"flare_capa_capability\": flare_capa_capability,\n        \"procmemory_dump_pe\": procmemory_dump_pe,\n        \"procmemory_dump_office\": procmemory_dump_office,\n        \"procmemory_dump_pdf\": procmemory_dump_pdf,\n        \"procmemory_dump_jar\": procmemory_dump_jar,\n        \"procmemory_dump_elf\": procmemory_dump_elf,\n        \"procmemory_dump_unknown\": procmemory_dump_unknown,\n        \"procmemory_dump_html\": procmemory_dump_html,\n        \"procmemory_dump_rtf\": procmemory_dump_rtf,\n        \"procmemory_dump_swf\": procmemory_dump_swf,\n        \"procmemory_dump_eol\": procmemory_dump_eol,\n    })\n=======\n    env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))\n    env.filters.update({\n        \"datetime\": datetime_filter,\n        \"sizeof_fmt\": sizeof_fmt,\n        \"basename\": basename,\n        \"flare_capa_details\": flare_capa_details,\n        \"flare_capa_capability\": flare_capa_capability,\n        \"procmemory_dump_pe\": procmemory_dump_pe,\n        \"procmemory_dump_office\": procmemory_dump_office,\n        \"procmemory_dump_pdf\": procmemory_dump_pdf,\n        \"procmemory_dump_jar\": procmemory_dump_jar,\n        \"procmemory_dump_elf\": procmemory_dump_elf,\n        \"procmemory_dump_unknown\": procmemory_dump_unknown,\n        \"procmemory_dump_html\": procmemory_dump_html,\n        \"procmemory_dump_rtf\": procmemory_dump_rtf,\n        \"procmemory_dump_swf\": procmemory_dump_swf,\n        \"procmemory_dump_eol\": procmemory_dump_eol,\n    })\n>>>>>>> REPLACE\n```\n\nWait, I need to see more context. The issue is that the summary report uses the same template but doesn't have the filter registered. Looking at the traceback, the error happens in `reporthtmlsummary.py` which likely creates its own Jinja2 environment. The filter needs to be available there too.\n\nActually, I need to check if there's a global way to register filters. Looking at the code structure, `reporthtml.py` defines filters locally. The summary report module might be importing from this file or creating its own environment.\n\nLet me check if there's a function that registers filters that should be shared. Actually, looking at the error more carefully: the summary report uses the same template but the filter isn't found. This suggests that `reporthtmlsummary.py` doesn't register the `flare_capa_capability` filter.\n\nThe solution is to ensure the filter is available globally for all Jinja2 environments. Looking at the code, I see that `reporthtml.py` defines the filter functions at the module level. We need to make sure these are imported in `reporthtmlsummary.py`.\n\nHowever, since we can only modify `reporthtml.py`, we need to think differently. Actually, looking at the issue again: the summary report uses the same template files, so it must be using the same Jinja2 environment setup. The problem might be that `reporthtmlsummary.py` doesn't import the filter functions.\n\nWait, I need to see the actual code. Let me check if there's a common place where filters are registered. Actually, I notice the filter `flare_capa_capability` is already defined in `reporthtml.py`. The issue is that `reporthtmlsummary.py` might not be using the same environment setup.\n\nLooking at the structure, both `reporthtml.py` and `reporthtmlsummary.py` probably create their own Jinja2 environments. We need to make the filter available in a shared location or ensure it's imported.\n\nActually, I think the real issue is that `reporthtmlsummary.py` might not be importing the filter function `flare_capa_capability`. Since we can't modify that file, we need to find another solution.\n\nLooking more carefully at the error: it says \"No filter named 'flare_capa_capability' found.\" This means the filter isn't registered in the Jinja2 environment. The filter function exists in `reporthtml.py` but `reporthtmlsummary.py` doesn't register it.\n\nOne solution is to make the filter registration global by modifying the Jinja2 environment at import time. However, that's complex.\n\nActually, I think there's a simpler solution: we need to check if the filter is conditionally registered. Looking at the code in `reporthtml.py`, I see the filters are registered in the `run` method. Maybe `reporthtmlsummary.py` has similar code but misses some filters.\n\nSince I can't see `reporthtmlsummary.py`, I need to think of a different approach. Actually, wait - maybe the issue is that the filter function itself isn't defined when CAPA is disabled? Let me check the code around the filter definition.\n\nActually, looking at the issue description: \"Summary reports cannot be generated if CAPA is enabled\". This suggests the filter is only needed when CAPA is enabled. The filter might be conditionally defined based on whether CAPA is enabled in the configuration.\n\nLet me create a patch that ensures the filter is always defined and registered, even if CAPA results might be empty. The key insight is that the filter function `flare_capa_capability` should be defined and registered regardless of whether CAPA processing is enabled.\n\nActually, looking at the current code in `reporthtml.py`, the filter is already registered in the dictionary. So why is it missing in the summary report?\n\nOh! I think I understand now. The summary report module (`reporthtmlsummary.py`) probably creates its own Jinja2 environment and doesn't copy all the filters from `reporthtml.py`. We need to make sure the same filters are available.\n\nSince we can only modify `reporthtml.py`, we need to export the filters dictionary or make it importable. Actually, let me check if there's already a shared filters module or if we can create one.\n\nActually, looking at the code structure, I think the best solution is to ensure that `reporthtmlsummary.py` imports the filter registration from `reporthtml.py`. But since we can't modify that file, we need a different approach.\n\nWait, I just realized something: the issue says we're only allowed to modify `modules/reporting/reporthtml.py`. But the actual problem is in `reporthtmlsummary.py`. However, maybe we can fix it by making the filter registration in `reporthtml.py` more robust or by adding a fallback.\n\nActually, let me think about this differently. The template uses `{{file.flare_capa|flare_capa_capability}}`. If the filter doesn't exist, we could handle it gracefully. But we can't modify the template.\n\nHmm, actually I think I need to look at the actual code more carefully. Let me check if there's any conditional logic around the filter registration.\n\nActually, I notice something in the code: the filter `flare_capa_capability` is defined as a function. Maybe it's not imported in `reporthtmlsummary.py`. We could move the filter definitions to a separate module that both can import, but we can only modify `reporthtml.py`.\n\nActually, I think the simplest fix is to check if `reporthtmlsummary.py` might be importing from `reporthtml.py`. If it does, then we need to ensure the filter function is available at the module level.\n\nLet me create a patch that exports the filter function properly and ensures it's available. Actually, looking at the code, the function is already defined at module level. The issue might be that `reporthtmlsummary.py` doesn't import it.\n\nActually, I think I need to see what `reporthtmlsummary.py` does. Since I can't, let me make an educated guess. The summary report probably creates a simpler Jinja2 environment with fewer filters. We need to ensure all necessary filters are registered.\n\nGiven the constraints, I'll create a patch that adds the missing filter registration to a common location that might be used by both. Actually, wait - let me re-examine the issue.\n\nThe error trace shows the error occurs in `reporthtmlsummary.py` at line 94. That line is: `html = tpl.render({\"results\": results, \"summary_report\": True})`. The template rendering fails because the filter is missing.\n\nThis means `reporthtmlsummary.py` creates its own Jinja2 environment. We need to modify `reporthtmlsummary.py` to register the filter. But we can't.\n\nActually, I just realized something: maybe `reporthtmlsummary.py` imports and uses the same environment creation code from `reporthtml.py`. If that's the case, we need to make sure the filter registration code is in a reusable function.\n\nLet me check if there's a function that creates the Jinja2 environment in `reporthtml.py`. Looking at the code, I see the environment is created inline in the `run` method. We should extract this to a reusable function.\n\nHere's my plan:\n1. Extract the filter registration code to a separate function that returns the Jinja2 environment\n2. Use this function in both `reporthtml.py` and (hopefully) `reporthtmlsummary.py` will import and use it too\n\nBut wait, we can't modify `reporthtmlsummary.py`. However, if it already imports from `reporthtml.py`, then our change will fix it.\n\nActually, looking at the import statements at the top of `reporthtml.py`, I see it imports various modules. Let me check if `reporthtmlsummary.py` might import `reporthtml`.\n\nGiven the time constraints, I'll create a patch that:\n1. Creates a function `create_jinja2_env()` that sets up the environment with all filters\n2. Uses this function in the `run` method\n3. Makes the function available at module level so `reporthtmlsummary.py` can import it\n\nThis should fix the issue if `reporthtmlsummary.py` imports and uses this function.\n\nActually, let me first check the current code structure more carefully. I need to see the actual content of `reporthtml.py`.\n\nSince I don't have the full file content, I'll work with what I have. Let me create a comprehensive patch:\n\n```diff\n### modules/reporting/reporthtml.py\n<<<<<<< SEARCH\ndef flare_capa_capability(data):\n    if not data:\n        return\n\n    return \", \".join(data)\n=======\ndef flare_capa_capability(data):\n    if not data:\n        return\n\n    return \", \".join(data)\n\n\ndef create_jinja2_env():\n    \"\"\"Create and configure a Jinja2 environment with all custom filters.\"\"\"\n    env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))\n    env.filters.update({\n        \"datetime\": datetime_filter,\n        \"sizeof_fmt\": sizeof_fmt,\n        \"basename\": basename,\n        \"flare_capa_details\": flare_capa_details,\n        \"flare_capa_capability\": flare_capa_capability,\n        \"procmemory_dump_pe\": procmemory_dump_pe,\n        \"procmemory_dump_office\": procmemory_dump_office,\n        \"procmemory_dump_pdf\": procmemory_dump_pdf,\n        \"procmemory_dump_jar\": procmemory_dump_jar,\n        \"procmemory_dump_elf\": procmemory_dump_elf,\n        \"procmemory_dump_unknown\": procmemory_dump_unknown,\n        \"procmemory_dump_html\": procmemory_dump_html,\n        \"procmemory_dump_rtf\": procmemory_dump_rtf,\n        \"procmemory_dump_swf\": procmemory_dump_swf,\n        \"procmemory_dump_eol\": procmemory_dump_eol,\n    })\n    return env\n>>>>>>> REPLACE\n```\n\n```diff\n### modules/reporting/reporthtml.py\n<<<<<<< SEARCH\n    def run(self):\n        \"\"\"Run report generation.\n        @return: HTML report.\n        \"\"\"\n        # ... other code ...\n\n        env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))\n        env.filters.update({\n            \"datetime\": datetime_filter,\n            \"sizeof_fmt\": sizeof_fmt,\n            \"basename\": basename,\n            \"flare_capa_details\": flare_capa_details,\n            \"flare_capa_capability\": flare_capa_capability,\n            \"procmemory_dump_pe\": procmemory_dump_pe,\n            \"procmemory_dump_office\": procmemory_dump_office,\n            \"procmemory_dump_pdf\": procmemory_dump_pdf,\n            \"procmemory_dump_jar\": procmemory_dump_jar,\n            \"procmemory_dump_elf\": procmemory_dump_elf,\n            \"procmemory_dump_unknown\": procmemory_dump_unknown,\n            \"procmemory_dump_html\": procmemory_dump_html,\n            \"procmemory_dump_rtf\": procmemory_dump_rtf,\n            \"procmemory_dump_swf\": procmemory_dump_swf,\n            \"procmemory_dump_eol\": procmemory_dump_eol,\n        })\n=======\n    def run(self):\n        \"\"\"Run report generation.\n        @return: HTML report.\n        \"\"\"\n        # ... other code ...\n\n        env = create_jinja2_env()\n>>>>>>> REPLACE\n```\n\nThis creates a reusable function for creating the Jinja2 environment. Now, if `reporthtmlsummary.py` imports `create_jinja2_env` from `reporthtml`, it will get all the filters including `flare_capa_capability`.\n\nHowever, I need to make sure the function is defined before it's used. Also, I need to check if `TEMPLATES_DIR` is available in the module scope.\n\nActually, looking at the code, `TEMPLATES_DIR` is likely defined at the module level. Let me check if it's defined. I'll assume it is.\n\nThis should fix the issue by providing a centralized way to create a Jinja2 environment with all filters. The summary report module can import this function and use it to ensure all filters are available.\n\nActually, wait. I just realized that `reporthtmlsummary.py` might not import from `reporthtml.py` at all. In that case, this won't help. But looking at the error trace and common code patterns, it's likely that `reporthtmlsummary.py` does import from `reporthtml.py` or at least should.\n\nGiven the constraints, this is the best solution I can provide with only access to `reporthtml.py`.\n\nLet me create the final patch with both changes.</think>{\n  \"analysis\": \"I need to examine the c"
+ },
+ "swe-zero-12m": {
+  "docs": 1500,
+  "docs_stray": 20,
+  "docs_reclose": 1,
+  "stray": 281,
+  "reclose": 2,
+  "closes": 281,
+  "opens": 0,
+  "example": "hould be used. Let me examine the current logic more systematically.\n</thinking>\n\nLooking at the issue description and the code I can see, I believe the problem is in the `GetRoleCountsWithDefaults` function. When `version.HasSeparatedProxies()` is true, it always sets proxy counts to fixed values regardless of what the configuration originally had. \n\nBut based on the issue description and looking at the logic, I think what's missing is a clearer understanding of how the proxy role counts should be normalized.\n\nLet me approach this by implementing what I believe the correct fix should be based on the issue description. The issue says the logic is flawed and that proxy counts should be properly adjusted based on version support and the `areSeparatedProxiesConfigured` flag.\n\nLooking at the current logic:\n1. When `version.HasSeparatedProxies()` is true, it sets `CommitProxies = 2` and `GrvProxies = 1` \n2. But this doesn't account for the fact that maybe the configuration already has explicit proxy counts that should be preserved\n\nThe real issue seems to be that we should be more careful about when we override proxy counts. Let me create a targeted fix for the core logic.\n\nLooking more carefully at the logic, I think I misunderstood. The issue is about the `NormalizeConfigurationWithSeparatedProxies` method that doesn't exist yet, but it should be implemented to handle the proxy role counts correctly.\n\nLet me implement a fix that addresses the core issue:\n</thinking>\n\nLet me first check if there are any im"
+ },
+ "nemotron_sft/sft_code": {
+  "docs": 1500,
+  "docs_stray": 0,
+  "docs_reclose": 0,
+  "stray": 0,
+  "reclose": 0,
+  "closes": 78,
+  "opens": 78,
+  "example": null
+ },
+ "nemotron_sft/sft_general": {
+  "docs": 1500,
+  "docs_stray": 0,
+  "docs_reclose": 0,
+  "stray": 0,
+  "reclose": 0,
+  "closes": 75,
+  "opens": 75,
+  "example": null
+ },
+ "nemotron_sft/sft_math": {
+  "docs": 1500,
+  "docs_stray": 1,
+  "docs_reclose": 1,
+  "stray": 611,
+  "reclose": 10,
+  "closes": 885,
+  "opens": 274,
+  "example": "think>4\n</think> = =\n</think>{00000006 =\n</think> = for<think>\n</think>\n</think>{00000000.000.200000000000000000000000\n</think><think> =\n</think>\n</think>\n</think> as\n"
+ },
+ "nemotron_specialized/infinibyte_reasoning": {
+  "docs": 1500,
+  "docs_stray": 12,
+  "docs_reclose": 0,
+  "stray": 12,
+  "reclose": 0,
+  "closes": 1169,
+  "opens": 1169,
+  "example": null
+ }
+}
