@@ -23,6 +23,8 @@ def run_config(config_path: Path) -> None:
             config.skyrl.runtime = {
                 "checkpoint_path": str(config.skyrl.trainer.resume_path or config.inputs.model.uri),
             }
+    if os.environ.get("ASYNC_PROBE_COST") == "1":
+        from experiments.post_training.async_probe_measure import run
     run(config.skyrl)
 
 
