@@ -5460,3 +5460,22 @@ The nine previously training nonzero cells all advanced to labels910–1332;
 two newly running cells13/16 had online identities but no observed loss yet.
 They are startup observations, not proof of optimizer updates. All six alpha0
 scientific completions were reused without terminal-job or W&B repolling.
+
+### 2026-11-05 05:03 UTC — bind active training to exact task attempts
+
+Collected bounded task status and native W&B links once for the eleven
+canonically running nonzero cells06–16. All44 tasks are attempt0 with distinct
+UIDs; each cell occupies four distinct hosts on one named v4-32 slice.
+Each host logging ID matches its already API-verified ONLINE source record,
+and exactly one native training run per cell is joined to its emitting task.
+Evidence: subset-training-r02-attempt-identities.json. This records assignment
+and process identity, not a separate runtime JAX device-count audit or final
+completion. The progress helper reuses these joins while canonical failure and
+preemption counters stay unchanged, and requests refresh when they change.
+
+At05:00 UTC all nine established nonzero runs advanced to labels985–1415.
+Cells13/16 and the newly visible ONLINE identities17/18 had no loss summary
+yet; scheduling snapshots and online discovery need not arrive simultaneously.
+The sole canonical observer remains active; no jobs or followers were created,
+restarted or canceled. The obsolete cell06 compilation-gap note was removed
+from current progress; its historical evidence remains preserved.
