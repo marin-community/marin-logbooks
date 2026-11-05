@@ -14,6 +14,7 @@ from unittest.mock import patch
 
 import watch_subset_confirmations as observer
 import watch_subset_expansions as shared
+from adopt_alpha0_long_run import accounting
 from prepare_subset_confirmations import prepare
 from submit_subset_confirmations import command, validate_completions
 
@@ -88,7 +89,10 @@ with tempfile.TemporaryDirectory() as folder:
             for name in ("bundle.json", "lock.json", "completions.json")
         },
     )
-    ledger = dict(binding=binding, cells={})
+    protocol_path = worktree / "logbooks/20-ema-gram-polar/alpha0-long-run-protocol-draft.json"
+    protocol_path.parent.mkdir(parents=True)
+    protocol_path.write_text(json.dumps(dict(status="draft", allow_settled_alpha0_early_start=False)))
+    ledger = dict(binding=binding, cells={}, confirmation_accounting=accounting(worktree, None, lock, bundle))
     for i, cell in enumerate(bundle["cells"]):
         ledger["cells"][str(i)] = dict(
             job_id=f"/kaiyuew@stanford.edu/{campaign}-{i:02d}",
@@ -192,5 +196,7 @@ result = dict(
     },
     real_confirmation_launched=False,
 )
-(root / "scratch/20261105-confirmation-observer-validation.json").write_text(json.dumps(result, indent=2) + "\n")
+(root / "scratch/20261105-confirmation-observer-adoption-validation.json").write_text(
+    json.dumps(result, indent=2) + "\n"
+)
 print(json.dumps(result))

@@ -323,3 +323,47 @@ New jobs are `ema-gram-20-subset-seed0-r02-NN-20261105`, with ledger
 `scratch/20261105-subset-training-r02-ledger.json`. Upload at most8 request
 packages at once; this does not cap queued/running experiment concurrency.
 Dataset, numerical code, cells and artifactversion2026.11.04.03 are unchanged.
+
+## Settled baseline preparation amendment — 2026-11-05 18:35 UTC
+
+Predeclare **4.0** as the common held-out C4-en loss threshold for all seed0
+37,335-update confirmations. This round threshold is below the best validated
+initial-pilot loss, 4.1497836113. It is chosen before any long-run outcomes;
+it is not an estimate that every exponent will reach the target. Each run must
+finish all 37,335 updates even if it crosses early. A run that never crosses
+is reported as not reaching the threshold within its schedule, without an
+extrapolated crossing time. The threshold does not select the remaining pilot
+settings or stop a run.
+
+The six complete alpha0 pilots have an interior winner at LR0.003535533905932738.
+That exact seed0 configuration may be prepared for independent early execution
+while recursive expansions determine other settings. The
+[frozen limited protocol](alpha0-long-run-protocol-draft.json) retains its
+original filename for continuity; its status is now `frozen`. This amendment
+permits only the settled alpha0 baseline. It does not declare a global selection
+lock or permit confirmation outcomes to influence pilot selection. Preparation
+is complete through controller and logging qualification, protocol declaration
+and [baseline adoption checks](alpha0-long-run-adoption-preflight.json).
+No long run has been submitted. Execution still needs its clean, published
+immutable worktree, distinct campaign identity, full regional catalog check,
+permanent launch guard and one observer.
+
+After all recursive expansions validate, the full confirmation submitter still
+requires every original global selection and completion check. Supply
+`--adopt-baseline <tracked-receipt.json>` to both the submitter and observer.
+The receipt contains the original `source`, `campaign`, relative `paths` for
+`bundle`, `completions` and `protocol`, and a frozen copy of its accepted `ledger`.
+The adapter reads those inputs from the original Git commit, replays baseline
+selection, regenerates the final selected baseline at its original artifact
+version, and verifies exact configuration, common target and accepted command.
+A missing receipt after the early-start amendment, ambiguous acceptance or
+changed source input rejects submission. No receipt exists before a real
+baseline is accepted.
+
+The final campaign ledger records `confirmation_accounting`: one adopted
+baseline with its actual source, configuration and job, plus the newly submitted
+confirmations. The adopted baseline keeps its existing observer. Its acceptance
+is not scientific completion; all long-run metric, checkpoint, ONLINE and
+terminal-attempt checks remain required. Use that accounting record when
+collecting final results rather than the unused alpha0 candidate in the new
+campaign's configuration bundle.

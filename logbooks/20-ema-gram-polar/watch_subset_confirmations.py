@@ -10,6 +10,7 @@ import re
 import subprocess
 from pathlib import Path
 
+from adopt_alpha0_long_run import accounting
 from prepare_subset_confirmations import prepare
 from submit_subset_confirmations import command, validate_completions
 from watch_subset_expansions import observe_campaign
@@ -40,6 +41,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("worktree", "bundle", "lock", "completions"):
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--adopt-baseline", type=Path)
     parser.add_argument("--campaign", required=True)
     parser.add_argument("--source-commit", required=True)
     args = parser.parse_args()
@@ -50,7 +52,10 @@ def main():
     if source != args.source_commit:
         raise ValueError("Execution worktree source changed")
     inputs = {}
-    for path in (args.bundle, args.lock, args.completions):
+    paths = [args.bundle, args.lock, args.completions]
+    if args.adopt_baseline is not None:
+        paths.append(args.adopt_baseline)
+    for path in paths:
         if path.is_absolute() or ".." in path.parts:
             raise ValueError("Inputs must be tracked relative paths")
         committed = subprocess.check_output(["git", "show", f"{source}:{path}"], cwd=worktree)
@@ -63,14 +68,20 @@ def main():
     if bundle != prepare(lock, bundle["artifact_version"]):
         raise ValueError("Frozen confirmation bundle differs from selection lock")
     validate_completions(lock, json.loads((worktree / args.completions).read_text()))
+    allocations = accounting(worktree, args.adopt_baseline, lock, bundle)
+    launch_indexes = {str(row["index"]) for row in allocations if row["disposition"] == "submit"}
     ledger_path = worktree / "scratch" / f"{args.campaign}-ledger.json"
 
     def read_accepted():
         ledger = json.loads(ledger_path.read_text())
+        if set(ledger["cells"]) - launch_indexes:
+            raise ValueError("Adopted baseline must retain its existing observer")
+        if ledger.get("confirmation_accounting") != allocations:
+            raise ValueError("Final confirmation accounting differs from submission")
         return accepted_entries(ledger, binding, args.campaign, bundle, args.bundle, args.lock)
 
     read_accepted()  # Reject absent or mismatched submission evidence before creating observer state.
-    observe_campaign(worktree, args.campaign, binding, len(bundle["cells"]), read_accepted)
+    observe_campaign(worktree, args.campaign, binding, len(launch_indexes), read_accepted)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ import threading
 from datetime import UTC, datetime
 from pathlib import Path
 
+from adopt_alpha0_long_run import accounting
 from prepare_subset_confirmations import prepare
 from submit_subset_training import command as pilot_command
 from terminal_worker_identity import completed_workers
@@ -122,19 +123,26 @@ def main():
     parser.add_argument("--published-ref", required=True)
     parser.add_argument("--campaign", required=True)
     parser.add_argument("--launch", action="store_true")
+    parser.add_argument("--adopt-baseline", type=Path)
     args = parser.parse_args()
     if not re.fullmatch(r"ema-gram-20-confirm-seed0-[a-z0-9-]+", args.campaign):
         raise ValueError("Use a distinct confirmation campaign identity")
     paths = [args.bundle, args.lock, args.completions]
+    if args.adopt_baseline is not None:
+        paths.append(args.adopt_baseline)
     for path in paths:
         if path.is_absolute() or ".." in path.parts:
             raise ValueError("Inputs must be tracked paths within the immutable execution worktree")
         subprocess.run(["git", "ls-files", "--error-unmatch", str(path)], check=True, stdout=subprocess.DEVNULL)
+        if subprocess.check_output(["git", "show", f"{args.source_commit}:{path}"]) != path.read_bytes():
+            raise ValueError("Confirmation input differs from committed source")
     lock = read_lock(args.lock)
     bundle = json.loads(args.bundle.read_text())
     if bundle != prepare(lock, bundle["artifact_version"]):
         raise ValueError("Frozen bundle does not match locked configurations")
     validate_completions(lock, json.loads(args.completions.read_text()))
+    allocations = accounting(ROOT, args.adopt_baseline, lock, bundle)
+    launch_indexes = {row["index"] for row in allocations if row["disposition"] == "submit"}
     qualification = json.loads((BASE / "confirmation-worker-preflight.json").read_text())
     if not qualification["passed"] or not qualification["logging_check"]["success"]:
         raise ValueError("Confirmation adapter qualification is incomplete")
@@ -147,7 +155,11 @@ def main():
         for i, row in enumerate(bundle["cells"])
     ]
     if not args.launch:
-        print(json.dumps(dict(submitted=False, commands=commands)))
+        print(
+            json.dumps(
+                dict(submitted=False, commands=[commands[i] for i in sorted(launch_indexes)], accounting=allocations)
+            )
+        )
         return
     if subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"]):
         raise ValueError("Publish tracked changes before submission")
@@ -166,7 +178,10 @@ def main():
         ledger = json.loads(ledger_path.read_text()) if ledger_path.exists() else dict(binding=binding, cells={})
         if ledger["binding"] != binding:
             raise ValueError("Campaign ledger is bound to a different source or input set")
-        remaining = [i for i in range(len(commands)) if str(i) not in ledger["cells"]]
+        if any(int(i) not in launch_indexes for i in ledger["cells"]):
+            raise ValueError("Adopted baseline also appears in the new submission ledger")
+        ledger["confirmation_accounting"] = allocations
+        remaining = [i for i in sorted(launch_indexes) if str(i) not in ledger["cells"]]
         if not remaining:
             print("All confirmation cells already guarded; no submission attempted.")
             return

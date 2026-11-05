@@ -2040,3 +2040,39 @@ loss12.246804 at label2. All six accepted expansions now have observed
 training progress. This is not final evaluation or expansion completion. Reuse
 [R05 startup evidence](subset-expansion-r05-started.json) without repeating the
 four task reads or five ONLINE startup queries.
+
+### 2026-11-05 18:35 UTC — prepare baseline adoption and predeclare the target
+
+The independent alpha0 long run can now be accounted for in the eventual full
+confirmation set without a second submission or observer. The
+[adoption adapter](adopt_alpha0_long_run.py) verifies its original committed
+inputs, accepted ledger, exact selected configuration and common target. The
+full confirmation controller retains complete-grid and recursive-expansion
+selection checks. Its ledger identifies the adopted baseline separately from
+new submissions, and acceptance remains distinct from scientific completion.
+Temporary Git and fake-scheduler integration checks passed submission, observation
+and reopening with one launch and follower per remaining confirmation. Missing
+receipts, ambiguous baseline acceptance, changed inputs and a different target
+were rejected. The ordinary full-confirmation observer path also passed. See
+[validation evidence](alpha0-long-run-adoption-preflight.json), including retained
+fixture setup errors and their corrections. No numerical kernels or real jobs
+ran in these checks.
+
+The [limited early-start amendment](single-seed-execution-plan.md#settled-baseline-preparation-amendment--2026-11-05-1835-utc)
+predeclares a common C4-en loss threshold of4.0, below the best validated
+initial-pilot loss4.1497836113. It was chosen before any long-run outcomes.
+Every confirmation still runs all37,335 updates; a run that never crosses is
+reported as not reaching the threshold within that schedule. The
+[protocol](alpha0-long-run-protocol-draft.json) is frozen, while global selection
+still awaits recursive expansions. No long run is submitted. The remaining
+execution steps are a clean published immutable worktree, fresh campaign,
+full regional catalog check, permanent guard and one observer.
+
+At18:31, all six expansion streams advanced: R01 labels5598/5557, R02 label3728,
+R03 label1659, R04 label488 and R05 label99. Saved canonical snapshots show no
+failures or preemptions. At18:33, the independent full-size probe still reported
+`loss_probes_complete` with no SVD completion. Its process CPU counter increased
+from5,504,245 to7,569,680 ticks since the previous diagnostic, and the sampled
+process state was running. This shows CPU activity; it does not establish the
+cause of the missing SVD output or successful probe qualification. Preserve the
+existing observer and bounded diagnostic evidence without cancellation.
