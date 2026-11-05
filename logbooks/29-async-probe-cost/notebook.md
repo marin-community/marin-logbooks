@@ -74,3 +74,11 @@ The runtime comparison additionally verifies identical response-head extraction 
 ## First Grug updates: overlap and representative lengths
 
 The first off window has completed two nonzero finite-gradient updates. [The initial runtime proof](grug-initial-qualification.json) records step-two token age mean 0.9858 and maximum 1, confirming normal sampler/trainer overlap. The two batches contain 148 responses of at least 2,048 tokens, with maximum length 5,673. All eight engines pass the pinned runtime check. Entrypoint-to-first-rollout-publication startup took 585.79 seconds. These observations qualify the real asynchronous workload; they are not a completed thirty-update window or an overhead estimate.
+
+## First full baseline admitted; execute the remaining fixed sequence
+
+The first Grug off window and its coordinator succeeded and stopped. [The complete baseline](grug-i0-seed1701-v1-summary.json) has all thirty finite nonzero updates and weight publications, 35,714,166 response tokens, 5,182 responses of at least 2,048 tokens, and maximum token age two. Its complete wall span is 4,772.05 seconds, or 159.07 seconds per update. No probe event was consumed in this disabled arm. The paired cost estimate is still pending.
+
+The session resumed at 19:30 UTC after this baseline had finished at approximately 08:23 UTC. No GPU remained allocated in this gap. Record the roughly eleven-hour scheduling separation in the first pair's limitations. Preserve the fixed six-window plan and its admitted baseline.
+
+The remaining five windows use the existing ArtifactStep executor with `--max-concurrent 1`, in the original order: on1701, on2903, off2903, off4517, on4517. [The small series entrypoint](../../experiments/post_training/async_probe_series.py) delegates to the unchanged single-window launcher; its dry-run graph contains those exact five Grug handles. Its serial guard prevents an accidental concurrent launch. No measured runtime file, model, data, seed, optimizer setting, cadence, window length or repetition changes. This lets the bounded sequence continue across session gaps. The conditional interval-twenty decision still waits for the completed three-pair analysis.
