@@ -104,9 +104,21 @@ def main():
         raise ValueError("Bundle is not bound to campaign")
     bundle = json.loads((worktree / args.bundle).read_text())
     accepted_entries(registry, args.campaign, source, bundle)
+
+    def read_accepted():
+        current = json.loads(registry_path.read_text())
+        if current["campaigns"][args.campaign] != binding:
+            raise ValueError("Campaign binding changed while observing")
+        return accepted_entries(current, args.campaign, source, bundle)
+
+    observe_campaign(worktree, args.campaign, binding, len(bundle["cells"]), read_accepted)
+
+
+def observe_campaign(worktree, campaign, binding, expected_count, read_accepted):
+    """Observe accepted jobs with persistent follower guards and exclusive ownership."""
     scratch = worktree / "scratch"
     scratch.mkdir(exist_ok=True)
-    state_path = scratch / f"{args.campaign}-observers.json"
+    state_path = scratch / f"{campaign}-observers.json"
     marker = state_path.with_suffix(".initialized.json")
     base = ["uv", "run", "--no-sync", "iris", "--cluster=marin"]
     with state_path.with_suffix(".lock").open("a") as lock:
@@ -118,7 +130,7 @@ def main():
             if not marker.exists() or saved["binding"] != binding:
                 raise ValueError("Observer binding/initialization mismatch")
         else:
-            if list(scratch.glob(f"{args.campaign}-*-follow.log")):
+            if list(scratch.glob(f"{campaign}-*-follow.log")):
                 raise ValueError("Existing follower evidence requires reconciliation")
             persist_registry(marker, dict(binding=binding))
             saved = dict(binding=binding, jobs={})
@@ -135,7 +147,7 @@ def main():
         save()  # Record restored ownership without changing follower identities or cadence.
 
         def check(index, job_id):
-            path = scratch / f"{args.campaign}-{index}-canonical-{time.time_ns()}.json"
+            path = scratch / f"{campaign}-{index}-canonical-{time.time_ns()}.json"
             stderr_path = path.with_suffix(".stderr.log")
             with path.open("x") as handle:
                 result = subprocess.run(
@@ -156,16 +168,13 @@ def main():
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
             while True:
-                registry = json.loads(registry_path.read_text())
-                if registry["campaigns"][args.campaign] != binding:
-                    raise ValueError("Campaign binding changed while observing")
-                accepted = accepted_entries(registry, args.campaign, source, bundle)
+                accepted = read_accepted()
                 if set(state) - set(accepted):
                     raise ValueError("Previously accepted identities disappeared; preserve state")
                 for index, entry in accepted.items():
                     if register(state, index, entry, time.time()):
                         save()  # Permanent follow guard precedes Popen; never retry an ambiguous follow.
-                        log = scratch / f"{args.campaign}-{index}-follow.log"
+                        log = scratch / f"{campaign}-{index}-follow.log"
                         with log.open("x") as handle:
                             follow = subprocess.Popen(
                                 [*base, "job", "logs", entry["job_id"], "--follow"],
@@ -192,7 +201,7 @@ def main():
                     if index in followers and followers[index].poll() is not None:
                         record["follow_exit_code"] = followers.pop(index).returncode
                         save()
-                if len(state) == len(bundle["cells"]) and all(r["terminal"] for r in state.values()) and not followers:
+                if len(state) == expected_count and all(r["terminal"] for r in state.values()) and not followers:
                     return  # Canonical termination alone is not scientific completion.
                 time.sleep(5)
 

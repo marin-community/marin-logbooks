@@ -1694,3 +1694,28 @@ continue. Initial-pilot owner snapshots at14:39 UTC and expansion owner snapshot
 at14:35–14:38 UTC report cumulative failure/preemption counts of zero.
 See [completed results](subset-training-r02-nonzero-completed.json) and
 [complete-group readiness](subset-training-r02-completion-readiness.json).
+
+### 2026-11-05 15:36 UTC — prepare the confirmation observer
+
+The [confirmation observer](watch_subset_confirmations.py) is prepared for the
+future seed0 full-training campaign. Before observing jobs, it verifies the
+committed input bytes, selection lock, complete pilot results, configuration
+bundle and submission ledger. Each accepted job must match the exact source,
+configuration digest and submission command. An unresolved submission remains
+excluded until its acceptance is explicitly reconciled.
+
+The observer reuses the expansion observer's polling loop. Local fixtures passed
+for one observer per campaign, first checks after120 seconds and subsequent checks
+after570 seconds, recovery preserving existing log-streaming processes, and
+preservation of RPC errors and separate stderr. Restarting the observer after
+jobs finish creates no new queries or log-streaming processes.
+A confirmation CLI fixture also exercised delayed acceptance and rejected a
+changed accepted command before any new query, follower or state change.
+[Validation evidence](confirmation-observer-preflight.json) uses fictional
+results and mocked external processes; no Iris request, numerical kernel or
+training run was started. Existing live observers were not restarted.
+
+Global selection and real confirmation submissions still await all initial
+pilots and required recursive LR expansions. Held-out, norm-matched direction/loss probes and attention/MLP production-polar
+versus SVD comparisons remain required after the reference confirmation
+checkpoints become available; training alone does not complete the core study.
