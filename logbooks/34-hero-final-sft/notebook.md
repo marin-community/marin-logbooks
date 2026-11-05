@@ -4,7 +4,7 @@ task_issue: "https://github.com/marin-community/marin-logbooks/issues/34"
 research_branch: "codex/34-hero-final-sft"
 marin_base_revision: "33189166cfb244bf284f3d893e58ce0272215eac"
 archive_template_revision: "f54b3aa0e6ee533e988d2b97e9db0d1523f934dd"
-status: preparing
+status: smoke-running
 ---
 
 # Compact SFT on the final Hero checkpoint
@@ -131,3 +131,38 @@ The corrected v2 request omits the self federation pin, retains direct controlle
 now rejects this configuration locally before making a submission. Model,
 optimizer, data, hardware count and step bounds are unchanged. The corrected
 request will receive its own reviewed, immutable publication before submission.
+
+
+## 2026-11-05: corrected smoke accepted
+
+Iris accepted `/dlwh/hero-final-sft-smoke-20261105-v2` on `cw-us-east-08a`
+from published source `cee9e7f52712a4ba99795c438a93f9ec57e2b9dd`. The exact
+request SHA256 is
+`e6777fc2bf342dc4dc566182b329ce52be0113f3be63ecb64748fdfa69b82973`.
+[smoke-launch.json](smoke-launch.json) records the configuration and immutable
+request URI. The submitted receipt is preserved at
+`s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/receipts/smoke-v2/receipt.json.submitted.json`.
+
+The launch uses 16 tasks with four GB200 processes each, interactive priority,
+a two-hour per-task runtime limit and one-hour scheduling limit. There are no
+automatic application-failure retries. It stops at eight updates on the fixed
+128-update optimizer schedule; the cumulative non-padding token cap is 8388608.
+No averaging or separate donor checkpoint was performed. Outputs and compact
+states are under the 30-day lifecycle prefix named in the launch record. W&B
+is disabled; telemetry and exact checkpoints provide progress evidence.
+
+The user is the DRI. The current chat owns babysitting through the
+`finish-final-hero-compact-sft` heartbeat every ten minutes. It may continue a
+verified successful smoke to 128 cumulative updates without changing the
+schedule/data/model, then perform the fixed held-out selection, one selected
+export and 100-response review. It may not extend beyond that bound. At 20:55:22 UTC all 16 tasks were running with zero failures or
+preemptions. Recent regional startup logs showed successful TensorStore
+checkpoint barriers across ranks at 20:55:39 UTC. Actual gradient telemetry and
+smoke completion are still pending verification.
+
+
+The leader attempt is `d361647db22a79a3`; its attempt record matches the exact
+v2 request SHA256, semantic request digest
+`76856da1ff064fb9197b40fd56fe589667f780150ff84da125d704807352cf7f`
+and launched source. It records no recovery parent. This binds later telemetry
+and checkpoints to this execution rather than the rejected v1 identity.

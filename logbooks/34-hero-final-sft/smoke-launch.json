@@ -1,0 +1,46 @@
+{
+  "name": "hero-final-sft-smoke-20261105-v2",
+  "source_revision": "cee9e7f52712a4ba99795c438a93f9ec57e2b9dd",
+  "controller_cluster": "cw-us-east-08a",
+  "resources": {
+    "cpu": 120.0,
+    "ram": "890g",
+    "disk": "1t",
+    "device": {
+      "variant": "GB200",
+      "kind": "gpu",
+      "count": 4
+    },
+    "preemptible": true,
+    "zone": null,
+    "target_cluster": null,
+    "replicas": 16,
+    "image": null,
+    "container_profile": null
+  },
+  "processes_per_task": 4,
+  "command": [
+    "python",
+    "-m",
+    "experiments.grug.moe_hero_ep.sft_campaign",
+    "request.json",
+    "--worker"
+  ],
+  "request_sha256": "e6777fc2bf342dc4dc566182b329ce52be0113f3be63ecb64748fdfa69b82973",
+  "output_root": "s3://marin-us-east-08a/tmp/ttl=30d/users/dlwh/hero-final-sft/2026.11.05-v1/smoke-v2",
+  "moe_implementation": "ragged_all_to_all",
+  "remat_mode": "offload_carry",
+  "cache_prefix": "s3://marin-us-east-02a/marin/grug/hero-format-sft/2026.10.21/sft-phase-2416e9d7/cache-v3",
+  "priority": "interactive",
+  "runtime_hours": 2,
+  "scheduling_hours": 1,
+  "preemption_retries": 10,
+  "failure_retries": 0,
+  "request_uri": "s3://marin-us-east-02a/marin/users/dlwh/hero-final-sft/2026.11.05-v1/requests/smoke-v2/request.json",
+  "job_id": "/dlwh/hero-final-sft-smoke-20261105-v2",
+  "tracker_mode": "disabled",
+  "monitoring_owner": "current chat heartbeat finish-final-hero-compact-sft",
+  "initialization_checkpoint": "s3://marin-us-east-02a/marin/grug/hero-ctx65k-step372k/2026.08.19.2/checkpoints/step-390251",
+  "final_segment_step": 8,
+  "optimizer_horizon": 128
+}
