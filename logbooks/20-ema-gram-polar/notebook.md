@@ -1719,3 +1719,22 @@ Global selection and real confirmation submissions still await all initial
 pilots and required recursive LR expansions. Held-out, norm-matched direction/loss probes and attention/MLP production-polar
 versus SVD comparisons remain required after the reference confirmation
 checkpoints become available; training alone does not complete the core study.
+
+### 2026-11-05 15:39 UTC — validate cell22
+
+Cell22 (alpha1/3, ridge0.01, LR0.001) passed the full7,630-update completion
+checks with final C4 loss4.281885147094727. The canonical job and all four
+original attempt0 tasks succeeded with exit0. The observed subset,
+configuration and source matched the frozen campaign inputs and launch record;
+online tracking finished. All7,630 metric
+rows were finite, checkpoint metadata covered57 arrays, and the independently
+read stored counter was7630. All four terminal worker identities matched the
+cached startup assignments. Validation reused the startup evidence without
+additional startup queries; no full checkpoint byte audit or restore was performed.
+
+Twenty-three of30 initial pilots are now validated. This alpha/ridge group
+still awaits cell21 (LR0.0005), so group selection remains pending. The seven
+unfinished initial pilots and three accepted expansions continue. The latest
+initial-pilot owner snapshots at15:37 UTC report zero cumulative failures and
+preemptions. See [completed results](subset-training-r02-nonzero-completed.json)
+and [complete-group readiness](subset-training-r02-completion-readiness.json).
