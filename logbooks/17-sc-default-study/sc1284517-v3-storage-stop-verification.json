@@ -1,0 +1,81 @@
+{
+  "observed_utc": "2026-10-29T18:19:45.768523+00:00",
+  "classification": "Incomplete attempt stopped after prolonged confirmed external storage suspension; no numerical failure observed",
+  "published_stop_plan_revision": "b9392d12fffd28760e503ac08d1fb471e8bccd38",
+  "training_source_revision": "25f7f13932293ab4ec00584bef8a431504b2d4db",
+  "coordinator": "/romain/users-romain-checkpoints-sc-default-study-sc128-seed4517-2026.10.28.3-coordinator-97f9d527",
+  "gpu_job": "/romain/users-romain-checkpoints-sc-default-study-sc128-seed4517-2026.10.28.3-coordinator-97f9d527/users-romain-checkpoints-sc-default-study-sc128-seed4517-2026.10.28.3-8fbe7331c002",
+  "coordinator_state": "JOB_STATE_KILLED",
+  "gpu_job_state": "JOB_STATE_KILLED",
+  "completed_optimizer_and_weight_publication_step": 40,
+  "last_durable_metric_step": 39,
+  "fixed_required_training_steps": 50,
+  "eligible": false,
+  "reason": "No update50 endpoint or native export exists. Preserve this failed infrastructure attempt separately; do not substitute its interim quality or alter a completed run clock.",
+  "cancellation": {
+    "observed_utc": "2026-10-29T18:16:11.031162+00:00",
+    "published_plan_source_revision": "b9392d12fffd28760e503ac08d1fb471e8bccd38",
+    "command": [
+      "marin-env",
+      "env",
+      "UV_PYTHON=3.12",
+      "UV_OFFLINE=1",
+      "uv",
+      "run",
+      "--offline",
+      "--frozen",
+      "iris",
+      "--config",
+      "lib/iris/config/marin.yaml",
+      "job",
+      "cancel",
+      "--exact",
+      "/romain/users-romain-checkpoints-sc-default-study-sc128-seed4517-2026.10.28.3-coordinator-97f9d527"
+    ],
+    "provider_probe_sha256": "eedc8cad7351dacbb40acbbebc92037d75003a2c136edc325b38321ed3b6f409",
+    "job_state_before": "JOB_STATE_RUNNING",
+    "completed_optimizer_updates": 40,
+    "last_durable_measurement": 39,
+    "saved_evidence_manifest_sha256": "a4270c31fc88f1242fcc23aad1082dde5ceddbfda4414c49fbc612bc134fb8b7",
+    "saved_native_checkpoint_deletion": false,
+    "status": "cancel request accepted; terminal state and pod release still require verification",
+    "request_finished_utc": "2026-10-29T18:16:13.202523+00:00",
+    "stdout": "Cancelled jobs:\n  /romain/users-romain-checkpoints-sc-default-study-sc128-seed4517-2026.10.28.3-coordinator-97f9d527\n",
+    "returncode": 0
+  },
+  "release_confirmation": {
+    "captured_utc": "2026-10-29T18:17:21.559242+00:00",
+    "all_task_pods_absent": true,
+    "requested_pod_names": [
+      "iris-romain-users-romain-checkpoint-422326c1-0-9434a6eabc475ea3",
+      "iris-romain-users-romain-checkpoint-52f7dcc3-0-c3771fcaf03f9eec",
+      "iris-romain-users-romain-checkpoint-744788b5-0-1fe278cb7c810366",
+      "iris-romain-users-romain-checkpoint-98daa95c-0-879cf169c5b971fc",
+      "iris-romain-users-romain-checkpoint-e6104829-0-7d7fad832c0c2433"
+    ]
+  },
+  "reconstructed_H100_hours": 197.52354444444444,
+  "allocation_proof": "grug-sc1284517-v3-allocation.json",
+  "saved_evidence": {
+    "source_export": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/sc128-seed4517/2026.10.28.3/exports",
+    "objects": 99,
+    "bytes": 75584683,
+    "evaluation_steps": [
+      0,
+      25
+    ],
+    "capture_manifest_sha256": "a4270c31fc88f1242fcc23aad1082dde5ceddbfda4414c49fbc612bc134fb8b7",
+    "restore_directory": "/home/romain/data/sessions/devbox/codex/01a16b97-e977-75f3-8b2b-fd07bbd1c609/artifacts/sc-default-study/sc1284517-v3-storage-hold-preserved",
+    "all_local_hashes_rechecked": true,
+    "limits": "Existing evaluation answers and ordinary telemetry only. No claim to preserve in-memory optimizer40 or a full native checkpoint."
+  },
+  "in_memory_optimizer40": "Lost when stopping; no step40 restart checkpoint existed. A replacement must start from the frozen initializer at a fresh artifact version.",
+  "saved_native_checkpoint_state_deleted": false,
+  "retention_decision": "Still pending; no completed native checkpoint disposal is authorized by this stop.",
+  "initial_and_midpoint_valid_grades": {
+    "0": 1000,
+    "25": 1000
+  },
+  "new_grader_or_model_calls": 0,
+  "next_gate": "Verify RNO small write/readback and sufficient checkpoint headroom before a fresh same-arm/seed submission; resource coordination and all original protocol gates still apply."
+}

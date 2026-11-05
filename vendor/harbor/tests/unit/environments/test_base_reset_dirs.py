@@ -1,4 +1,3 @@
-import asyncio
 from pathlib import Path
 
 import pytest
@@ -17,7 +16,7 @@ class ResetDirsEnvironment(BaseEnvironment):
 
     @staticmethod
     def type() -> EnvironmentType:
-        return EnvironmentType.LOCAL
+        return EnvironmentType.DOCKER
 
     @property
     def capabilities(self) -> EnvironmentCapabilities:
@@ -26,9 +25,7 @@ class ResetDirsEnvironment(BaseEnvironment):
     def _validate_definition(self):
         pass
 
-    async def start(
-        self, force_build: bool, *, service_tasks: asyncio.TaskGroup
-    ) -> None:
+    async def start(self, force_build: bool) -> None:
         pass
 
     async def stop(self, delete: bool):
@@ -148,8 +145,10 @@ async def test_ensure_dirs_uses_linux_shell_and_root(tmp_path: Path) -> None:
 
     assert env.exec_calls == [
         {
-            "command": "mkdir -p /logs/verifier /logs/artifacts && "
-            "chmod 777 /logs/verifier /logs/artifacts",
+            "command": (
+                "mkdir -p /logs/verifier /logs/artifacts && "
+                "chmod 777 /logs/verifier /logs/artifacts"
+            ),
             "cwd": None,
             "env": None,
             "timeout_sec": None,

@@ -32,6 +32,7 @@ from skyrl_train.inference_engines.vllm.online_eagle_trainer import (
     capture_rank_directory,
     capture_rank_name,
     per_worker_capture_token_credit,
+    request_id_for_group,
 )
 from skyrl_train.inference_engines.vllm.route_capture import response_routes
 from skyrl_train.io import io
@@ -67,7 +68,6 @@ from skyrl_train.inference_engines.base import (
     NamedWeightsUpdateRequest,
     LORA_DISK_LOAD_NAME,
     LORA_DISK_PATH_KEY,
-    request_id_for_session,
 )
 from skyrl_train.inference_engines.response_topk import (
     CHAT_LOGPROB_FLOOR,
@@ -77,6 +77,17 @@ from skyrl_train.inference_engines.response_topk import (
     select_response_topk,
 )
 from skyrl_train.inference_engines.vllm.compact_chat import CompactChatEngineClient
+from skyrl_train.inference_engines.vllm.sc_sampled_capture import pop_captures
+from skyrl_train.inference_engines.vllm.sc_performance_engine import (
+    engine_info,
+    export_profiles,
+    numeric_generate,
+    profile_chat,
+    start_cpu_profile,
+    start_numeric_route,
+    stop_cpu_profile,
+    stop_numeric_route,
+)
 from skyrl_train.inference_engines.chat_continuation import EXACT_PROMPT_TOKEN_IDS_KEY
 from marinskyrl.inference_placement import InferenceWorkerPlacement
 from skyrl_train.inference_engines.placement import inference_worker_placement
@@ -384,6 +395,9 @@ class WorkerWrap:
     def test_rpc(self, *args, **kwargs):
         """Test RPC call to worker"""
         return args, kwargs
+
+    def performance_sampled_capture(self, key):
+        return pop_captures(key)
 
     def begin_online_eagle_capture(self, config):
         """Begin bounded verifier-state capture on the resident model runner."""
@@ -1819,7 +1833,7 @@ class AsyncVLLMInferenceEngine(InferenceEngineInterface):
             if session_ids is None:
                 request_id = uuid4().hex
             else:
-                request_id = request_id_for_session(session_ids[index])
+                request_id = request_id_for_group(session_ids[index])
             request_ids.append(request_id)
             task = asyncio.create_task(self._collect_outputs(prompt, request_id, row_sampling_params))
             tasks.append(task)
@@ -1985,6 +1999,30 @@ class AsyncVLLMInferenceEngine(InferenceEngineInterface):
     async def reset_prefix_cache(self):
         engine = self.llm
         await engine.reset_prefix_cache()
+
+    async def performance_generate(self, request):
+        return await numeric_generate(self.llm, request)
+
+    def performance_info(self):
+        return engine_info(self.llm)
+
+    async def performance_start_route(self):
+        return await start_numeric_route(self)
+
+    async def performance_stop_route(self):
+        await stop_numeric_route(self)
+
+    async def performance_profile(self, payload):
+        return await profile_chat(self, payload)
+
+    def performance_start_cpu_profile(self):
+        start_cpu_profile(self)
+
+    def performance_stop_cpu_profile(self):
+        return stop_cpu_profile(self)
+
+    def performance_export_profiles(self, root):
+        return export_profiles(root)
 
     async def _destroy_weights_update_group(self):
         engine = self.llm

@@ -1,4 +1,5 @@
 import json
+import os
 import shlex
 import uuid
 from datetime import datetime, timezone
@@ -471,10 +472,9 @@ class MiniSweAgent(BaseInstalledAgent):
                 " fi && "
                 'source "$HOME/.local/bin/env" && '
                 f"uv tool install mini-swe-agent{version_spec} --with mcp=={_MCP_VERSION} "
-                "--with 'openai>=2' --with 'httpx>=0.27' --with 'tenacity>=9.1.2' "
                 "--excludes <(echo litellm) && "
                 '"$(uv tool dir)/mini-swe-agent/bin/python" '
-                "-P -c 'from mcp.types import CacheableResult' && "
+                "-c 'from mcp.types import CacheableResult' && "
                 "mini-swe-agent --help"
             ),
         )
@@ -484,14 +484,6 @@ class MiniSweAgent(BaseInstalledAgent):
             Path(__file__).parents[2] / "llms" / "vllm_tokenization.py",
         ):
             await environment.upload_file(source, f"{_MODEL_DIRECTORY}/{source.name}")
-        await self.exec_as_agent(
-            environment,
-            command=(
-                'source "$HOME/.local/bin/env"; '
-                '"$(uv tool dir)/mini-swe-agent/bin/python" '
-                "-P -c 'import mini_swe_model'"
-            ),
-        )
 
     @property
     def _mini_swe_agent_trajectory_path(self) -> PurePosixPath:
@@ -595,9 +587,8 @@ class MiniSweAgent(BaseInstalledAgent):
             "MSWEA_COST_TRACKING": "ignore_errors",  # Ignore unknown model costs
         }
 
-        api_key = self._get_env("MSWEA_API_KEY")
-        if api_key is not None:
-            env["MSWEA_API_KEY"] = api_key
+        if "MSWEA_API_KEY" in os.environ:
+            env["MSWEA_API_KEY"] = os.environ["MSWEA_API_KEY"]
         elif self.model_alias.startswith(_HOSTED_VLLM_PREFIX):
             # Hosted vLLM is an internal OpenAI-compatible endpoint. It ignores
             # credentials, but mini-swe-agent requires a non-empty key.
@@ -606,25 +597,24 @@ class MiniSweAgent(BaseInstalledAgent):
             try:
                 api_key_vars = get_api_key_var_names_from_model_name(self.model_alias)
                 for api_key_var in api_key_vars:
-                    api_key = self._get_env(api_key_var)
-                    if api_key is not None:
-                        env[api_key_var] = api_key
+                    if api_key_var in os.environ:
+                        env[api_key_var] = os.environ[api_key_var]
                     else:
                         raise ValueError(
                             f"Unset API variable for model {self.model_alias}. "
-                            f"Grant an explicit {api_key_var} or MSWEA_API_KEY task capability"
+                            f"Please set {api_key_var} or MSWEA_API_KEY environment variable"
                         )
-                env["MSWEA_API_KEY"] = env[api_key_vars[0]]
+                env["MSWEA_API_KEY"] = os.environ[api_key_vars[0]]
             except ValueError as e:
                 raise ValueError(
                     f"Unable to determine API key for model {self.model_alias}: {e}. "
-                    "Grant an explicit MSWEA_API_KEY task capability as fallback"
+                    "Please set MSWEA_API_KEY environment variable as fallback"
                 )
 
         api_base = (
             self._api_base
-            or self._get_env("OPENAI_BASE_URL")
-            or self._get_env("OPENAI_API_BASE")
+            or os.environ.get("OPENAI_BASE_URL")
+            or os.environ.get("OPENAI_API_BASE")
         )
 
         cli_flags = self.build_cli_flags()

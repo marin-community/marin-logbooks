@@ -10,11 +10,10 @@ import haliax.nn
 from haliax import NamedArray, is_named_array
 from haliax.jax_utils import is_jax_array_like
 
-from levanter.layers.stacked import ArrayStacked
 from levanter.tracker.histogram import SummaryStats
 from levanter.utils import jax_utils
 
-_SplitScanContainer = (haliax.nn.Stacked, ArrayStacked)
+_SplitScanContainer = (haliax.nn.Stacked, haliax.nn.ArrayStacked)
 
 
 def _array_stacked_layer_in_axes(stacked: Any, num_layers: int) -> Any:
@@ -101,7 +100,7 @@ def summary_statistics_for_tree(
                     for sub_key, leaf in _stacked_leaves(g.stacked):
                         norms[f"{key_path}.stacked.{sub_key}"] = optax.global_norm(leaf)
 
-            elif split_scan_layers and isinstance(g, ArrayStacked):
+            elif split_scan_layers and isinstance(g, haliax.nn.ArrayStacked):
                 num_layers = g.num_layers
                 in_axes = _array_stacked_layer_in_axes(g.stacked, num_layers)
                 vmapped_norms, vmapped_hists = jax.vmap(_rec_log_magnitudes, in_axes=(None, None, None, in_axes))(

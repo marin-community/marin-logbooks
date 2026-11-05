@@ -8,7 +8,6 @@ from __future__ import annotations
 from collections.abc import Mapping
 from enum import StrEnum
 from pathlib import Path
-from typing import Literal
 from urllib.parse import urlsplit
 
 import yaml
@@ -33,7 +32,6 @@ class EvalchemyJudgeConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     base_url: str
-    protocol: Literal["default", "marin-10197"] = "default"
     model: str
     api_key: tuple[str, ...] = Field(min_length=1)
 

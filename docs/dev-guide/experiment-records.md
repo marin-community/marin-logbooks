@@ -3,18 +3,12 @@
 Use this guidance for prior-work briefs, experiment reporting, and research
 programs. Keep the record proportional to the decision it supports.
 
-For iterative design exploration, data analysis, and experimental programs,
-use [research engineering](research-engineering.md). It preserves a runnable
-research branch and notebook in `marin-community/marin-logbooks`, with an issue
-explaining the findings and selected code promoted into Marin PRs.
-
 ## Choose the record
 
 Return a compact brief in the conversation for bounded work. For durable or
 cross-session work, use the task's existing issue, PR, W&B run or report,
 published report, or durable session channel. Do not create standalone
-design, research, plan, logbook, or snapshot files in the Marin repository.
-Research engineering notebooks belong in the logbooks archive. If the user
+repository design, research, plan, logbook, or snapshot files. If the user
 explicitly requests a particular artifact, honor that request.
 
 Update `docs/` or the relevant `OPS.md` when the result changes reusable product
@@ -52,6 +46,5 @@ Scale the response to the decision. Include:
 - contradictions, limitations, and confidence;
 - the next experiment only when it could change the decision.
 
-Outside the research engineering workflow, do not require a special branch,
-experiment ID, hypothesis queue, update cadence, issue, tag, or W&B project
-unless the task itself needs one.
+Do not require a special branch, experiment ID, hypothesis queue, update
+cadence, issue, tag, or W&B project unless the task itself needs one.

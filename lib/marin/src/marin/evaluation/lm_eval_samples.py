@@ -51,13 +51,7 @@ from marin.evaluation.metric_selection import (
     declared_sample_metric,
     primary_filter,
 )
-from marin.evaluation.records import (
-    EVALCHEMY_INFRASTRUCTURE_ERROR,
-    BenchmarkMetadataRef,
-    EvalTaskRef,
-    MetricKind,
-    TaskCoverage,
-)
+from marin.evaluation.records import EVALCHEMY_INFRASTRUCTURE_ERROR, BenchmarkMetadataRef, EvalTaskRef, TaskCoverage
 
 
 class TaskDeclaration(Protocol):
@@ -410,10 +404,9 @@ class _TaskCoverageAccumulator:
     n_benchmark: int | None = None
     n_attempted: int | None = None
     score_from_aggregate: bool = False
-    metric_kind: MetricKind | None = None
-    graded: dict[tuple[str, str], list[_GradedSampleSummary]] = field(default_factory=dict)
-    first: dict[tuple[str, str], _GradedSampleSummary] = field(default_factory=dict)
-    seen: set[tuple[str, str]] = field(default_factory=set)
+    graded: dict[str, list[_GradedSampleSummary]] = field(default_factory=dict)
+    first: dict[str, _GradedSampleSummary] = field(default_factory=dict)
+    seen: set[str] = field(default_factory=set)
     any_metrics: bool = False
 
     def _summary(self, sample: EvalSample) -> _GradedSampleSummary:
@@ -426,15 +419,14 @@ class _TaskCoverageAccumulator:
             infrastructure_error=_is_infrastructure_error(sample),
         )
 
-    def add(self, sample: EvalSample, trial_id: str = "") -> None:
+    def add(self, sample: EvalSample) -> None:
         summary = self._summary(sample)
-        key = (sample.doc_id, trial_id)
-        self.seen.add(key)
+        self.seen.add(sample.doc_id)
         self.any_metrics = self.any_metrics or bool(sample.metrics)
-        self.first.setdefault(key, summary)
+        self.first.setdefault(sample.doc_id, summary)
         if sample.grading is None and not summary.infrastructure_error:
             return
-        self.graded.setdefault(key, []).append(summary)
+        self.graded.setdefault(sample.doc_id, []).append(summary)
 
     def result(self) -> TaskCoverage:
         headline = primary_filter(
@@ -454,17 +446,11 @@ class _TaskCoverageAccumulator:
         # A pass/fail grade is the only one with a Bernoulli count behind it; a partial-credit score
         # (a rubric, an edit distance) has no numerator to record, and neither does an aggregate-scored
         # task.
-        binary = (
-            self.metric_kind is not MetricKind.CONTINUOUS
-            and not aggregate_scored
-            and all(summary.score in (0.0, 1.0) for summary in scored)
-        )
+        binary = not aggregate_scored and all(summary.score in (0.0, 1.0) for summary in scored)
         errors = {UNGRADED_ERROR: ungraded} if ungraded else {}
         if infrastructure_errors:
             errors[EVALCHEMY_INFRASTRUCTURE_ERROR] = len(infrastructure_errors)
-        extent = (
-            None if any(trial_id for _, trial_id in self.seen) else _document_extent({doc_id for doc_id, _ in self.seen})
-        )
+        extent = _document_extent(self.seen)
         if self.n_attempted is not None and extent is not None and extent > self.n_attempted:
             raise ValueError(f"sample document extent {extent} exceeds intended count {self.n_attempted}")
         return TaskCoverage(
@@ -478,14 +464,13 @@ class _TaskCoverageAccumulator:
 
 
 def task_coverage(
-    samples: Sequence[tuple[EvalSample, str]],
+    samples: Sequence[EvalSample],
     *,
     n_benchmark: int | None = None,
     n_attempted: int | None = None,
     score_from_aggregate: bool = False,
-    metric_kind: MetricKind | None = None,
 ) -> TaskCoverage:
-    """Compute coverage from (sample, trial ID) pairs without merging independent repetitions.
+    """Compute one task's coverage from its normalized samples.
 
     Ungraded documents and failed requests are unscored. Empty model completions remain scored and
     count as unanswered. For tasks with several extraction filters, coverage uses the filter chosen
@@ -495,13 +480,10 @@ def task_coverage(
     as scored even though the sample rows carry no per-item score. No per-item pass tally exists.
     """
     accumulator = _TaskCoverageAccumulator(
-        n_benchmark=n_benchmark,
-        n_attempted=n_attempted,
-        score_from_aggregate=score_from_aggregate,
-        metric_kind=metric_kind,
+        n_benchmark=n_benchmark, n_attempted=n_attempted, score_from_aggregate=score_from_aggregate
     )
-    for sample, trial_id in samples:
-        accumulator.add(sample, trial_id)
+    for sample in samples:
+        accumulator.add(sample)
     return accumulator.result()
 
 
@@ -606,24 +588,7 @@ def _evalchemy_contract_summary(
     for directory, result in results_by_directory.items():
         outcomes = result.get("task_outcomes", {})
         for leaf, outcome in outcomes.items():
-            count = outcome.get("scored_sample_count")
-            if count is None:
-                count = outcome.get(SCORED_COUNT_METRIC)
-            expected_samples = outcome.get("expected_sample_count")
-            expected_examples = outcome.get("expected_count")
-            benchmark = benchmarks.get(directory, {}).get(leaf)
-            if benchmark is not None and expected_samples is not None:
-                if not isinstance(expected_samples, int) or expected_samples < 0:
-                    raise ValueError(f"{directory}/{leaf}: invalid expected_sample_count")
-                n_benchmark = benchmark.n_benchmark
-                if expected_examples and expected_samples != expected_examples:
-                    if expected_samples % expected_examples:
-                        raise ValueError(f"{directory}/{leaf}: nonuniform trial counts lack a benchmark denominator")
-                    if n_benchmark is not None:
-                        n_benchmark *= expected_samples // expected_examples
-                benchmarks[directory][leaf] = benchmark.model_copy(
-                    update={"n_attempted": expected_samples, "n_benchmark": n_benchmark}
-                )
+            count = outcome.get(SCORED_COUNT_METRIC)
             if (
                 (outcome.get("status") == "succeeded" or _has_partial_evalchemy_scores(result))
                 and isinstance(count, int)
@@ -748,7 +713,6 @@ def _write_sample_archive(
             accumulator = _TaskCoverageAccumulator(
                 n_benchmark=benchmark.n_benchmark if benchmark is not None else None,
                 n_attempted=benchmark.n_attempted if benchmark is not None else None,
-                metric_kind=benchmark.metric_kind if benchmark is not None else None,
                 score_from_aggregate=score_from_aggregate,
             )
             written = _add_lm_eval_rows(
@@ -949,11 +913,11 @@ def summarize_native_eval_samples(
     table = reader.scan(ARCHIVE_SAMPLES_TABLE)
     if table is None and any(entry.n_attempted for entry in coverage.values()):
         raise FileNotFoundError(f"archive at {out_path!r} contains no normalized evaluation samples")
-    by_task: dict[str, list[tuple[EvalSample, str]]] = {}
+    by_task: dict[str, list[EvalSample]] = {}
     if table is not None:
         for row in table.to_pylist(maps_as_pydicts="strict"):
             sample = sample_from_archive_row(row)
-            by_task.setdefault(sample.task, []).append((sample, row["trial_id"] or ""))
+            by_task.setdefault(sample.task, []).append(sample)
 
     benchmarks_by_task = {
         _task_key(directory, leaf, len(values)): benchmark
@@ -969,7 +933,6 @@ def summarize_native_eval_samples(
             samples,
             n_benchmark=benchmark.n_benchmark if benchmark is not None else None,
             n_attempted=benchmark.n_attempted if benchmark is not None else None,
-            metric_kind=benchmark.metric_kind if benchmark is not None else None,
         )
         coverage[task_key] = task_coverage_result
 
@@ -1048,7 +1011,7 @@ def _add_lm_eval_rows(
                 ),
             )
             if coverage is not None:
-                coverage.add(sample, trial_id)
+                coverage.add(sample)
             count += 1
     if not count:
         logger.warning("samples file %s is empty; skipping archive export", filename)

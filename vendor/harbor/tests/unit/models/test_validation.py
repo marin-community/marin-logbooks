@@ -41,9 +41,7 @@ async def test_trial_with_custom_verifier_loads_task_without_test_script(
         trial_name="custom-verifier",
         trials_dir=tmp_path / "trials",
         agent=AgentConfig(name="nop"),
-        environment=EnvironmentConfig(
-            type="shellsim", kwargs={"network_policy": "deny"}
-        ),
+        environment=EnvironmentConfig(type="docker"),
         verifier=VerifierConfig(import_path="harbor.verifier.verifier:Verifier"),
     )
 

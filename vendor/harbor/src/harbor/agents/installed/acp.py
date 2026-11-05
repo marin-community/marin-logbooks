@@ -1,7 +1,6 @@
 import json
 import re
 import shlex
-from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Any, Literal
@@ -330,7 +329,6 @@ class AcpAgent(BaseInstalledAgent, ACPAgentMixin):
         api_key: str | None = None,
         model_info: dict[str, Any] | None = None,
         thinking_format: str | None = None,
-        mcp_excluded_tools: Sequence[str] = (),
         *args,
         **kwargs,
     ):
@@ -370,7 +368,6 @@ class AcpAgent(BaseInstalledAgent, ACPAgentMixin):
         self._api_key = api_key
         self._model_info = model_info
         self._thinking_format = thinking_format
-        self._mcp_excluded_tools = tuple(mcp_excluded_tools)
         self._version = self._registry_entry.version if self._registry_entry else None
         self._selected_distribution_kind: DistributionKind | None = None
         self._last_instruction: str | None = None
@@ -379,7 +376,7 @@ class AcpAgent(BaseInstalledAgent, ACPAgentMixin):
     def _pi_companion(self) -> Pi | None:
         registry_entry = self._require_registry_entry()
         if registry_entry.id != _PI_ACP_REGISTRY_ID:
-            if self._mcp_excluded_tools or any(
+            if any(
                 value is not None
                 for value in (
                     self._api_base,
@@ -389,7 +386,7 @@ class AcpAgent(BaseInstalledAgent, ACPAgentMixin):
                 )
             ):
                 raise ValueError(
-                    "api_base, api_key, model_info, thinking_format, and mcp_excluded_tools are only "
+                    "api_base, api_key, model_info, and thinking_format are only "
                     "supported for the pi-acp registry target"
                 )
             return None
@@ -403,15 +400,12 @@ class AcpAgent(BaseInstalledAgent, ACPAgentMixin):
                 api_key=self._api_key,
                 model_info=self._model_info,
                 thinking_format=self._thinking_format,
-                mcp_servers=self.mcp_servers,
-                mcp_excluded_tools=self._mcp_excluded_tools,
             )
         return self._pi
 
     async def _configure_pi_endpoint(self, environment: BaseEnvironment) -> None:
         pi = self._pi_companion()
         if pi is not None:
-            await pi.configure_mcp_servers(environment)
             await pi.configure_hosted_provider(environment)
 
     @staticmethod
@@ -671,15 +665,12 @@ rm -f "$tmp_archive"
         elif kind == "npx":
             package_target = target
             assert isinstance(package_target, AcpPackageDistribution)
-            if self._pi_companion() is not None:
-                quoted_parts = ["pi-acp", *map(shlex.quote, package_target.args)]
-            else:
-                quoted_parts = [
-                    "npx",
-                    "-y",
-                    shlex.quote(package_target.package),
-                    *map(shlex.quote, package_target.args),
-                ]
+            quoted_parts = [
+                "npx",
+                "-y",
+                shlex.quote(package_target.package),
+                *map(shlex.quote, package_target.args),
+            ]
         else:
             package_target = target
             assert isinstance(package_target, AcpPackageDistribution)
@@ -690,54 +681,30 @@ rm -f "$tmp_archive"
             ]
 
         exec_cmd = " ".join([*quoted_parts, '"$@"'])
-        return f"#!/usr/bin/env bash\nset -eu\n{env_exports}exec {exec_cmd}\n"
+        pi = self._pi_companion()
+        load_pi = f"{pi.nvm_shell_command()}\n" if pi is not None else ""
+
+        return f"#!/usr/bin/env bash\nset -eu\n{load_pi}{env_exports}exec {exec_cmd}\n"
 
     async def install(self, environment: BaseEnvironment) -> None:
         await self._ensure_registry_entry()
-        kind: DistributionKind
-        pi = self._pi_companion()
-        if pi is not None:
-            registry_entry = self._require_registry_entry()
-            kind = "npx"
-            target = registry_entry.distribution.npx
-            if target is None:
-                raise ValueError(
-                    "Image-provided Pi ACP requires an npx registry target"
-                )
-            await pi.install(environment)
-            version_script = (
-                "const fs = require('node:fs'), path = require('node:path'); "
-                "const binary = fs.realpathSync(process.argv[1]); "
-                "const packagePath = path.join(path.dirname(binary), '..', 'package.json'); "
-                "console.log(JSON.parse(fs.readFileSync(packagePath, 'utf8')).version);"
-            )
-            result = await self.exec_as_agent(
-                environment,
-                command=f'node -e {shlex.quote(version_script)} "$(command -v pi-acp)"',
-            )
-            installed_version = result.stdout.strip()
-            if installed_version != registry_entry.version:
-                raise RuntimeError(
-                    f"Image provides pi-acp {installed_version}, "
-                    f"but the agent requires {registry_entry.version}"
-                )
-            await self.exec_as_agent(
-                environment,
-                command=f'{self._RUNNER_VENV_PATH}/bin/python -c "import acp"',
-            )
-        else:
-            platform_id = await self._detect_platform(environment)
-            kind, target = self._select_distribution(platform_id)
-            await self.exec_as_root(
-                environment,
-                command=self._build_dependencies_command(kind),
-                env={"DEBIAN_FRONTEND": "noninteractive"},
-            )
-            if kind == "binary":
-                assert isinstance(target, AcpBinaryTarget)
-                await self._install_binary_target(environment, target)
-
+        platform_id = await self._detect_platform(environment)
+        kind, target = self._select_distribution(platform_id)
         self._selected_distribution_kind = kind
+
+        await self.exec_as_root(
+            environment,
+            command=self._build_dependencies_command(kind),
+            env={"DEBIAN_FRONTEND": "noninteractive"},
+        )
+
+        if kind == "binary":
+            assert isinstance(target, AcpBinaryTarget)
+            await self._install_binary_target(environment, target)
+
+        if pi := self._pi_companion():
+            await pi.install(environment)
+
         launcher_path = self.logs_dir / "acp-launch.sh"
         launcher_path.write_text(self._build_launcher_script(kind, target))
         await environment.upload_file(
@@ -1030,16 +997,12 @@ rm -f "$tmp_archive"
                     output_tokens, int | float
                 ):
                     metrics = Metrics(
-                        prompt_tokens=(
-                            int(input_tokens)
-                            if isinstance(input_tokens, int | float)
-                            else None
-                        ),
-                        completion_tokens=(
-                            int(output_tokens)
-                            if isinstance(output_tokens, int | float)
-                            else None
-                        ),
+                        prompt_tokens=int(input_tokens)
+                        if isinstance(input_tokens, int | float)
+                        else None,
+                        completion_tokens=int(output_tokens)
+                        if isinstance(output_tokens, int | float)
+                        else None,
                         cost_usd=latest_cost_usd,
                     )
 
@@ -1145,11 +1108,9 @@ rm -f "$tmp_archive"
                 "Step boundaries are inferred best-effort from chunked ACP events."
             ),
             final_metrics=final_metrics,
-            extra=(
-                {"orphan_usage_updates": orphan_usage_updates}
-                if orphan_usage_updates
-                else None
-            ),
+            extra={"orphan_usage_updates": orphan_usage_updates}
+            if orphan_usage_updates
+            else None,
         )
 
     def populate_context_post_run(self, context: AgentContext) -> None:
@@ -1254,8 +1215,8 @@ rm -f "$tmp_archive"
         }
         if self._authenticate_method_id:
             env["HARBOR_ACP_AUTHENTICATE_METHOD_ID"] = self._authenticate_method_id
-        if model := self.acp_session_model():
-            env["HARBOR_ACP_REQUESTED_MODEL"] = model
+        if self.model_name:
+            env["HARBOR_ACP_REQUESTED_MODEL"] = self.model_name
         env.update(self.acp_env())
 
         command = f"""

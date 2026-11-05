@@ -80,6 +80,7 @@ def qemu_bucket(monkeypatch, tmp_path):
         agent=frozenset({"AgentTimeoutError"}),
         passthrough=frozenset(),
         undecided=frozenset(),
+        commit="test",
     )
     return fs, uri, taxonomy
 

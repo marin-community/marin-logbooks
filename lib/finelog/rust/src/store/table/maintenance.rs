@@ -340,6 +340,7 @@ async fn compact(
                 catalog: &runtime.catalog,
                 controller: &runtime.controller,
                 segments: &runtime.segments,
+                query_visibility: &runtime.query_visibility,
                 config: &runtime.compaction_config,
                 target_object_bytes: runtime.policy().target_object_bytes,
             },
@@ -490,6 +491,7 @@ pub(crate) fn index_backfill<'a>(
     IndexBackfill {
         table: runtime.name(),
         table_dir: table_dir(runtime),
+        query_visibility: &runtime.query_visibility,
         catalog: &runtime.catalog,
         controller: &runtime.controller,
         segments: &runtime.segments,

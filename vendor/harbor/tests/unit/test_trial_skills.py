@@ -5,7 +5,6 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from harbor.host_capabilities import HostCapabilities
 from harbor.models.task.config import (
     AgentConfig as TaskAgentConfig,
     EnvironmentConfig as TaskEnvironmentConfig,
@@ -34,8 +33,6 @@ def _make_trial(
     skills: list[Path] | None,
 ):
     trial = object.__new__(SingleStepTrial)
-    trial.host_capabilities = HostCapabilities()
-    trial.guest_environment = {}
     trial.config = TrialConfig(
         task=TaskConfig(path=tmp_path / "task"),
         agent=AgentConfig(name="nop", skills=skills or []),

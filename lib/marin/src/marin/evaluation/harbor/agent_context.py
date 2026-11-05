@@ -1,15 +1,13 @@
 # Copyright The Marin Authors
 # SPDX-License-Identifier: Apache-2.0
 
-"""Candidate transport and context limits shared with the isolated Harbor driver."""
+"""Resolve Harbor context limits without dependencies outside the standard library."""
 
 from collections.abc import Mapping
 from types import MappingProxyType
 from typing import Any
 
 MODEL_INFO_KEY = "model_info"
-# Keep candidate transport authority separate from policy provider variables.
-CANDIDATE_API_KEY_ENV = "HARBOR_CANDIDATE_API_KEY"
 MAX_INPUT_TOKENS_KEY = "max_input_tokens"
 MAX_OUTPUT_TOKENS_KEY = "max_output_tokens"
 

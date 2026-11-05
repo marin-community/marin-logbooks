@@ -15,6 +15,8 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
+use tokio::sync::RwLock;
+
 use crate::errors::StatsError;
 use crate::indices::{
     fixed_index_artifacts_exist, local_sidecar_artifacts, needs_rebuild, needs_rebuild_for_binding,
@@ -108,6 +110,7 @@ pub async fn publish_segment_artifacts(
 pub struct IndexBackfill<'a> {
     pub table: &'a str,
     pub table_dir: &'a Path,
+    pub query_visibility: &'a Arc<RwLock<()>>,
     pub catalog: &'a Catalog,
     pub controller: &'a TableController,
     pub segments: &'a SegmentView,
@@ -186,7 +189,12 @@ async fn rebuild_candidate(
                 .controller
                 .object_store()
                 .expect("object segment has a backing store");
-            open_cached_parquet(Arc::clone(store), &ObjectReference::try_from(source)?).await?
+            open_cached_parquet(
+                store.as_ref(),
+                &ObjectReference::try_from(source)?,
+                backfill.query_visibility,
+            )
+            .await?
         }
         None => {
             let size = tokio::fs::metadata(&path)

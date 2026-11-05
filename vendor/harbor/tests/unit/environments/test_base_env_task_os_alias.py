@@ -1,6 +1,5 @@
 """`BaseEnvironment.task_os` is a deprecated alias for `BaseEnvironment.os`."""
 
-import asyncio
 import warnings
 from pathlib import Path
 
@@ -14,7 +13,7 @@ from harbor.models.trial.paths import TrialPaths
 class _StubEnv(BaseEnvironment):
     @staticmethod
     def type() -> str:
-        return EnvironmentType.LOCAL
+        return EnvironmentType.DOCKER
 
     @property
     def capabilities(self) -> EnvironmentCapabilities:
@@ -23,9 +22,7 @@ class _StubEnv(BaseEnvironment):
     def _validate_definition(self):
         pass
 
-    async def start(
-        self, force_build: bool, *, service_tasks: asyncio.TaskGroup
-    ) -> None:
+    async def start(self, force_build: bool) -> None:
         pass
 
     async def stop(self, delete: bool):

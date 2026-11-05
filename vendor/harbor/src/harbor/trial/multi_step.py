@@ -1,12 +1,7 @@
 import shlex
-from collections.abc import Mapping
 from pathlib import Path
 
-from harbor.agents.base import MalformedModelResponseError, TurnCapExhaustedError
-from harbor.agents.installed.base import NonZeroAgentExitCodeError
 from harbor.environments.base import HealthcheckError
-from harbor.host_capabilities import HostCapabilities
-from harbor.llms.base import ContextLengthExceededError
 from harbor.models.task.config import MultiStepRewardStrategy, StepConfig
 from harbor.models.task.task import Task
 from harbor.models.task.verifier_mode import (
@@ -21,7 +16,6 @@ from harbor.models.trial.config import (
 from harbor.models.trial.result import ExceptionInfo, StepResult, TimingInfo
 from harbor.models.verifier.result import VerifierResult
 from harbor.trial.hooks import TrialEvent
-from harbor.trial.errors import AgentTimeoutError
 from harbor.trial.trial import Trial
 
 
@@ -34,8 +28,6 @@ class MultiStepTrial(Trial):
         *,
         _task: Task | None = None,
         _attempt_index: int | None = None,
-        host_capabilities: HostCapabilities = HostCapabilities(),
-        guest_environment: Mapping[str, str] = {},
     ):
         if _task is not None and not _task.has_steps:
             raise ValueError("MultiStepTrial requires a task with [[steps]].")
@@ -43,13 +35,7 @@ class MultiStepTrial(Trial):
             raise ValueError(
                 "User-agent bridge trials are not supported for multi-step tasks."
             )
-        super().__init__(
-            config,
-            _task=_task,
-            _attempt_index=_attempt_index,
-            host_capabilities=host_capabilities,
-            guest_environment=guest_environment,
-        )
+        super().__init__(config, _task=_task, _attempt_index=_attempt_index)
 
     async def _run(self) -> None:
         self.result.step_results = []
@@ -71,10 +57,13 @@ class MultiStepTrial(Trial):
 
         self.result.verifier_result = self._select_multi_step_reward()
 
+        await self._stop_agent_environment()
+
         self.paths.cleanup_empty_mount_dirs()
 
     async def _recover_outputs(self) -> None:
         await self._sync_agent_output(self.result)
+        await self._stop_agent_environment()
 
     async def _run_step(
         self,
@@ -95,12 +84,13 @@ class MultiStepTrial(Trial):
             return
 
         await self._run_step_agent(step, step_result)
-        await self._collect_runtime_logs()
-        await self._sync_agent_output(step_result)
         await self._upload_agent_logs()
 
         artifacts_dir = await self._collect_step_artifacts(step)
         mode = resolve_step_verifier_mode(self.task.config, step)
+
+        if mode == VerifierEnvironmentMode.SEPARATE and index == total:
+            await self._stop_agent_environment()
 
         await self._run_step_verifier(
             step,
@@ -132,14 +122,10 @@ class MultiStepTrial(Trial):
                 timeout_sec=self._step_agent_timeout_sec(step),
                 user=self._step_agent_user(step),
             )
-        except (
-            AgentTimeoutError,
-            NonZeroAgentExitCodeError,
-            ContextLengthExceededError,
-            TurnCapExhaustedError,
-            MalformedModelResponseError,
-        ) as exc:
+        except Exception as exc:
             step_result.exception_info = ExceptionInfo.from_exception(exc)
+        finally:
+            await self._sync_agent_output(step_result)
 
     async def _run_step_verifier(
         self,

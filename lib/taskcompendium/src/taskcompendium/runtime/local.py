@@ -115,9 +115,9 @@ FILES_DIRECTORY = "files"
 
 
 def _runtime_parent() -> Path:
-    """Reuse the mounted node cache or the workstation's persistent runtime cache."""
+    """Use a mounted node cache for executable environments; local hosts keep the /tmp default."""
     cache = Path("/cache")
-    return cache / "task-curation" if cache.is_mount() else Path.home() / ".cache/marin/task-runtime"
+    return cache / "task-curation" if cache.is_mount() else Path("/tmp")
 
 
 def extract_files(archive: bytes, directory: Path) -> None:

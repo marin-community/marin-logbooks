@@ -1,0 +1,213 @@
+{
+  "status": "complete after export-only recovery; original coordinator failure preserved",
+  "source_revision": "6aae057cf351e0819946e38f33709092abe5b1b5",
+  "training_job": "/romain/users-romain-checkpoints-sc-default-study-qwen-seed1701-2026.10.28.1-coordinator-06661f86/users-romain-checkpoints-sc-default-study-qwen-seed1701-2026.10.28.1-fecaa1b56db9",
+  "training_job_state": "succeeded",
+  "coordinator_state": "failed",
+  "export_job_state": "failed",
+  "export_failure": "Research measurement dispatch incorrectly replaced checkpoint_export entrypoint with BasePPOExp; dataset DictConfig reached path reader before conversion.",
+  "completed_updates": 2,
+  "reference_scoring_enabled": true,
+  "updates": [
+    {
+      "policy/policy_lr": 9.999999974752427e-07,
+      "policy/raw_grad_norm": 0.5569491982460022,
+      "policy/skipped_steps": 0.0,
+      "policy/policy_update_steps": 1,
+      "reward/policy_ref_kl": 0.001046277699060738,
+      "reward/verifier_score_coverage": 0.984375
+    },
+    {
+      "policy/policy_lr": 9.999999974752427e-07,
+      "policy/raw_grad_norm": 0.36305949091911316,
+      "policy/skipped_steps": 0.0,
+      "policy/policy_update_steps": 1,
+      "reward/policy_ref_kl": 0.001958085922524333,
+      "reward/verifier_score_coverage": 1.0
+    }
+  ],
+  "evaluation_graded_counts": {
+    "0": 10.0,
+    "1": 10.0,
+    "2": 10.0
+  },
+  "weight_publications": [
+    {
+      "step": 0,
+      "reason": "initial",
+      "weight_sha256": "c760294b0a47660cb7fb8ed9b49b644b4a32d1b08f58ee56d8467b4f58f1737f",
+      "replicas": 8
+    },
+    {
+      "step": 1,
+      "reason": "training_step",
+      "weight_sha256": "0410c28380329c8e4ffc6639a0bbfe6906ec8bc12e30c650d892f41ba23af7ac",
+      "replicas": 8
+    },
+    {
+      "step": 2,
+      "reason": "training_step",
+      "weight_sha256": "919bf36315b5d10465151364287a045caada0a92d4849bbadb2f209990b386b8",
+      "replicas": 8
+    },
+    {
+      "step": 2,
+      "reason": "checkpoint_restore",
+      "weight_sha256": "919bf36315b5d10465151364287a045caada0a92d4849bbadb2f209990b386b8",
+      "replicas": 8
+    }
+  ],
+  "runtime": [
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    },
+    {
+      "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+      "use_v2_model_runner": true,
+      "logits_processors": []
+    }
+  ],
+  "checkpoint_inventory": {
+    "objects": 21,
+    "bytes": 5941129620
+  },
+  "training_cycle_seconds": 74.86293130088598,
+  "limits": "Startup validation only; excluded from all Grug learning and cost comparisons. One training grade at update one lacked a verifier score; held-out coverage is complete.",
+  "export_recovery": {
+    "export_request": {
+      "attempts": 2,
+      "checkpoint_base_path": "s3://marin-rno2a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/sc-default-study/qwen-seed1701/2026.10.28.1/checkpoints",
+      "checkpoint_path": "s3://marin-rno2a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/sc-default-study/qwen-seed1701/2026.10.28.1/checkpoints/global_step_2",
+      "export_path": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/qwen-seed1701/2026.10.28.1/exports",
+      "gpus_per_node": 8,
+      "hf_hub_private": false,
+      "hf_hub_repo_id": null,
+      "hf_hub_revision": "main",
+      "hf_upload_mode": "latest",
+      "last_exit_code": 0,
+      "model_path": "/tmp/marinskyrl/model_metadata/76690bd9beba32b40db460fd281e20acd76cc492b7c4d3df7219a368cfb1a9ed",
+      "model_source_identity": "models/Qwen--Qwen2-5-0-5B-Instruct--7ae557604adf67be50417f59c2c2f167def9a775@2026.06.28:d4656c22",
+      "model_source_uri": "s3://marin-rno2a/marin/models/Qwen--Qwen2-5-0-5B-Instruct--7ae557604adf67be50417f59c2c2f167def9a775",
+      "num_nodes": 1,
+      "schema_version": 1,
+      "status": "complete",
+      "step": 2,
+      "timeout": 7200
+    },
+    "terminal": {
+      "attempt_id": "fecaa1b56db9-export-2",
+      "failure": null,
+      "iris_job_id": "/romain/sc-default-qwen-export-01a16b97-v2",
+      "iris_job_state": "succeeded",
+      "model": null,
+      "provenance": {
+        "base_commit": "ea0a72af49",
+        "branch": "codex/17-sc-default-study",
+        "built_by": "romain",
+        "command_line": [
+          "/home/romain/work/marin-community/marin/sc-default-study-01a16b97/vendor/skyrl/cloud/iris/launch.py",
+          "iris",
+          "launch",
+          "--config",
+          "/tmp/marinskyrl/checkpoint-export-2-530a4f5412fce0df.yaml"
+        ],
+        "created_at": "2026-10-27T21:51:31.589582",
+        "dirty": false,
+        "git_remote": "git@github.com:marin-community/marin.git",
+        "tree_hash": "9e301366c4"
+      },
+      "run_id": "users/romain/checkpoints/sc-default-study/qwen-seed1701-2026.10.28.1",
+      "runtime_profile": "megatron-export",
+      "state": "succeeded"
+    },
+    "model_manifest": {
+      "files": [
+        {
+          "path": "chat_template.jinja",
+          "sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+          "size": 2507
+        },
+        {
+          "path": "config.json",
+          "sha256": "c0a9aad4bc058b534b7f4573da020a67877d02fda5b3dc70525dbd8f97c0b399",
+          "size": 1284
+        },
+        {
+          "path": "generation_config.json",
+          "sha256": "9b4cd225aa41c8f5c9a743317f377abf345c08595a1d6adbf2a2f3f837a6e9c0",
+          "size": 242
+        },
+        {
+          "path": "model.safetensors",
+          "sha256": "46b305feb167d8e06fa699c68d26043603fbe1e61efab929f20c88bd78e28b74",
+          "size": 988097792
+        },
+        {
+          "path": "model.safetensors.index.json",
+          "sha256": "002e98d516b7fbee012a84156cf112af2686493b7f7826a3b05f02b6d1253fc6",
+          "size": 19398
+        },
+        {
+          "path": "tokenizer.json",
+          "sha256": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+          "size": 11421892
+        },
+        {
+          "path": "tokenizer_config.json",
+          "sha256": "2e3bd3cb5055f7a903a54e7062b2fd14d21b70f4174c3ffcd9fc81ec50a25631",
+          "size": 693
+        }
+      ],
+      "format_version": 1,
+      "identity": "sha256:95548c14748dc4609720b602116e9d9ef98db66e78ad9d2002b8a75ad7e5f5a8",
+      "model_id": null,
+      "revision": null,
+      "tokenizer_mode": "embedded"
+    },
+    "sampled_weight": {
+      "name": "model.layers.0.self_attn.o_proj.weight",
+      "shape": [
+        896,
+        896
+      ],
+      "dtype": "BF16",
+      "float32_sha256": "919bf36315b5d10465151364287a045caada0a92d4849bbadb2f209990b386b8",
+      "matches_final_live_serving_weight": true
+    },
+    "limits": "One representative exported tensor compared with the final live serving tensor; the standard converter also verified the full portable model inventory."
+  },
+  "allocated_attempt_H100_hours": 1.8807644444444442,
+  "accounting_limit": "Controller attempt durations include startup and teardown; Kubernetes pod scheduling/container timestamps will supplement the final allocation accounting."
+}

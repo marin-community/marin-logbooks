@@ -19,15 +19,12 @@ from marin.rl.skyrl import (
     SkyRLRolePlan,
     SkyRLSpec,
     SkyRLTopology,
-    _materialize_role_plan_config,
     skyrl_step,
 )
 from marin.training.training import LevanterCheckpoint
 
 from experiments.models import qwen2_5_0_5b_instruct
-from experiments.post_training.async_rl import SNOWBALL_RECIPE
-from experiments.post_training.cat_count_canary.launcher import training_config
-from experiments.post_training.inventory.train_quick_loop import training_recipe
+from experiments.post_training.sc_default_study import study_recipe
 
 GRUG_URI = "s3://marin-rno2a/marin/users/dml/models/grug-67b-a2b-datakit-sft-262k-2026.10.05-8c76b22a/2026.10.22/hf"
 GRUG_HF = "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05"
@@ -37,84 +34,19 @@ SMOKE_DATA_URI = "s3://marin-rno2a/marin/users/romain/documents/sc-default-study
 
 
 def probe_recipe(interval: int, seed: int, smoke: bool) -> tuple[dict, SkyRLRolePlan]:
-    steps = 12 if smoke else 30
-    cfg = training_recipe(steps)
-    plan = SNOWBALL_RECIPE.role_plan
-    if smoke:
-        small = training_config(preset="dry", lane="sync", checkpoint=False, export=False)
-        for role in ("policy", "ref"):
-            cfg["trainer"][role] = small["trainer"][role]
-            cfg["trainer"][role]["megatron_config"]["pipeline_model_parallel_size"] = 2
-        cfg["trainer"]["flash_attn"] = True
-        cfg["generator"].update(gpu_memory_utilization=0.35, max_num_seqs=32, max_num_batched_tokens=4096)
-        cfg["context_budget"] = {"request_window_tokens": 16384, "max_new_tokens_per_turn": 2048, "max_turns": 1}
-        plan = SkyRLRolePlan(
-            colocate_all=True,
-            policy_num_nodes=1,
-            policy_num_gpus_per_node=8,
-            num_inference_engines=8,
-            inference_engine_tensor_parallel_size=1,
-            inference_engine_pipeline_parallel_size=1,
-            inference_engine_data_parallel_size=1,
-            inference_engine_expert_parallel_size=1,
-            train_batch_size=16,
-            policy_mini_batch_size=16,
-            micro_train_batch_size_per_gpu=1,
-            n_samples_per_prompt=4,
-        )
-    _materialize_role_plan_config(cfg, plan)
-    trainer = cfg["trainer"]
-    trainer.update(
-        max_steps=steps,
-        epochs=50,
-        seed=seed,
-        resume_mode="none",
-        use_sample_packing=True,
+    cfg, plan = study_recipe("tis", seed, smoke)
+    cfg["trainer"].update(
+        max_steps=12 if smoke else 30,
         project_name="asynchronous-probe-cost",
-        logger=["console", "wandb"],
-        tracker_commit_each_step=True,
         eval_before_train=False,
         eval_interval=-1,
         ckpt_interval=-1,
         hf_save_interval=-1,
         export_hf_artifact=False,
-        callbacks=None,
     )
-    trainer["algorithm"].update(
-        off_policy_correction="tis",
-        score_centering_enabled=False,
-        score_centering_top_k=128,
-        score_centering_probe={"interval": interval},
-        use_kl_loss=smoke,
-        kl_loss_coef=0.01,
-    )
-    trainer["policy"]["optimizer_config"].update(
-        lr=1e-6,
-        adam_betas=[0.9, 0.999],
-        weight_decay=0.0,
-        max_grad_norm=0.5,
-        scheduler="constant_with_warmup",
-        num_warmup_steps=0,
-    )
-    trainer["rollout_buffer"].update(
-        batch_policy="full_batch" if smoke else "rolling",
-        max_staleness_steps=0 if smoke else 2,
-        max_in_flight=16 if smoke else 256,
-    )
-    cfg["data"].update(shuffle=True)
-    cfg["environment"]["task_sessions"].pop("daytona", None)
-    cfg["config_groups"] = {"sc_default_study": "default"}
-    cfg["generator"].update(enable_http_endpoint=False, weight_sync_transport="broadcast")
-    cfg["generator"].setdefault("engine_init_kwargs", {}).update(
-        logprobs_mode="processed_logprobs", validate_rollout_logprob_sampling=True
-    )
-    cfg["trajectory_runner"] = {
-        "max_concurrent_tasks": 32 if smoke else 256,
-        "rollout_workers": {"num_workers": 2 if smoke else 4, "cpus_per_worker": 2 if smoke else 8},
-    }
-    cfg["extra_env"].update(ASYNC_PROBE_COST="1", OMP_NUM_THREADS="1", MKL_NUM_THREADS="1")
-    if smoke:
-        cfg["extra_env"]["NCCL_NVLS_ENABLE"] = "0"
+    cfg["trainer"]["algorithm"]["score_centering_probe"]["interval"] = interval
+    cfg["extra_env"].pop("SC_DEFAULT_STUDY")
+    cfg["extra_env"]["ASYNC_PROBE_COST"] = "1"
     return cfg, plan
 
 

@@ -390,6 +390,11 @@ def dump_per_dataset_eval_results(
                             if key in EVAL_DIAGNOSTIC_FIELDS
                         },
                     },
+                    "grading_messages": (
+                        (trajectory_batch.get("evidence_messages") or [None] * len(input_prompts))[i]
+                        if verification is None or verification.status.value != "verified"
+                        else None
+                    ),
                 }
                 f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 

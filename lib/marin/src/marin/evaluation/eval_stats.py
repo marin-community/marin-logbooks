@@ -217,7 +217,7 @@ class Measurement:
     version: str | None = None
     model: str = ""
     git_sha: str = ""
-    eval_runtime: str | None = None
+    eval_runtime: str = ""
     status: RunStatus = RunStatus.SUCCEEDED
     declared: bool = False
     protocol_metric: str | None = None

@@ -30,7 +30,7 @@ from typing import Any, Dict, List, Optional, Type
 from loguru import logger
 from omegaconf import DictConfig, OmegaConf
 
-from skyrl_train.config.callbacks import has_explicit_callbacks, hf_export_destination_configured
+from skyrl_train.config.callbacks import has_explicit_callbacks, interval_hf_export_enabled
 from skyrl_train.distillation import DISTILLATION_SCORED_TOKENS_METRIC
 from skyrl_train.json_serialization import to_jsonable
 from skyrl_train.io import io
@@ -418,14 +418,13 @@ class EvaluationCallback(TrainerCallback):
 @register_callback(HF_MODEL_SAVE_CALLBACK_TYPE)
 class HFModelSaveCallback(TrainerCallback):
     """
-    Callback for requesting Hugging Face exports at the end of training and, optionally, at intervals.
+    Callback for requesting Hugging Face exports at regular intervals.
 
     Normal training records a request beside the immutable sharded checkpoint;
     a dedicated export job later converts and optionally publishes that checkpoint.
 
     Args:
-        save_steps: Request an HF export every N steps. Set to -1 or 0 to request only the
-            terminal export.
+        save_steps: Request an HF export every N steps. Set to -1 or 0 to disable.
         save_on_train_end: Whether to request a final HF export when training ends.
     """
 
@@ -449,7 +448,7 @@ class HFModelSaveCallback(TrainerCallback):
         control: TrainerControl,
         **kwargs,
     ) -> Optional[TrainerControl]:
-        if self.save_on_train_end:
+        if self.save_on_train_end and self.save_steps > 0:
             control.should_save_hf_model = True
         return control
 
@@ -1009,7 +1008,7 @@ def create_default_callbacks(cfg: DictConfig) -> List[TrainerCallback]:
         )
 
     # HF model save callback
-    if hf_export_destination_configured(cfg):
+    if interval_hf_export_enabled(cfg):
         callbacks.append(HFModelSaveCallback(save_steps=int(cfg.trainer.hf_save_interval)))
 
     # Reference model update callback

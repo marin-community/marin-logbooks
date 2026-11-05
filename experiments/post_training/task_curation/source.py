@@ -134,12 +134,7 @@ class RlDataSource[ConfigT: CatalogConfig]:
             type=next(
                 (
                     label
-                    for tag, label in (
-                        ("eval", "eval"),
-                        ("rlvr", "RLVR"),
-                        ("agentic", "Agentic"),
-                        ("alignment", "Alignment"),
-                    )
+                    for tag, label in (("rlvr", "RLVR"), ("agentic", "Agentic"), ("alignment", "Alignment"))
                     if tag in tags
                 ),
                 "",

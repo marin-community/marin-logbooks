@@ -30,7 +30,10 @@ from marin.datakit.download.huggingface import (
     plan_download,
     stream_file_to_fsspec,
 )
-from marin.evaluation.harbor.driver_config import harbor_runtime_command
+from marin.evaluation.harbor.driver_config import (
+    harbor_runtime_command,
+    harbor_runtime_descriptor,
+)
 from marin.execution.artifact import Artifact
 from marin.execution.fingerprint import canonical_json
 from marin.execution.lazy import ArtifactStep, StepContext
@@ -605,6 +608,8 @@ def download_identity(source: RecipeSource) -> dict[str, Any]:
         return {
             "harbor_hub": source.name,
             "revision": source.revision,
+            "exporter_sha256": hashlib.sha256(HARBOR_EXPORTER.read_bytes()).hexdigest(),
+            "harbor_runtime": harbor_runtime_descriptor(),
         }
     return {"url": source.url, "sha256": source.sha256, "filename": source.filename}
 
@@ -731,8 +736,7 @@ def source_downloads(
     }
 
 
-def input_file_overrides(files: Mapping[str, Path]) -> dict[str, SourceFileOverride]:
-    """Bind logical source filenames to the exact bytes supplied by a local invocation."""
+def _file_overrides(files: Mapping[str, Path]) -> dict[str, SourceFileOverride]:
     overrides = {}
     for logical, file in sorted(files.items()):
         with file.open("rb") as stream:
@@ -753,15 +757,14 @@ def _staged_input_identity(path: str, source: RecipeSource) -> dict[str, Any]:
     return {"path": path, "files": files}
 
 
-def input_overrides_identity(pipeline: CurationRecipe, overrides: InputOverrides) -> dict[str, Any]:
-    """Fingerprint local replacements independently of conversion and review policy."""
+def _input_overrides_identity(pipeline: CurationRecipe, overrides: InputOverrides) -> dict[str, Any]:
     root = {"path": overrides.root} if overrides.root is not None else None
     if overrides.root is not None and not overrides.files:
         root = _staged_input_identity(overrides.root, pipeline.source)
     return {
         "revision": INPUT_OVERRIDES_REVISION,
         "root": root,
-        "files": {name: asdict(file) for name, file in input_file_overrides(overrides.files).items()},
+        "files": {name: asdict(file) for name, file in _file_overrides(overrides.files).items()},
         "auxiliary": {
             name: _staged_input_identity(path, pipeline.inputs[name])
             for name, path in sorted(overrides.auxiliary.items())
@@ -769,9 +772,9 @@ def input_overrides_identity(pipeline: CurationRecipe, overrides: InputOverrides
     }
 
 
-def validate_input_identity(pipeline: CurationRecipe, overrides: InputOverrides, identity: dict[str, Any]) -> None:
+def _validate_input_identity(pipeline: CurationRecipe, overrides: InputOverrides, identity: dict[str, Any]) -> None:
     recorded = identity.get("input_overrides")
-    if recorded is not None and input_overrides_identity(pipeline, overrides) != recorded:
+    if recorded is not None and _input_overrides_identity(pipeline, overrides) != recorded:
         raise ValueError(f"Input overrides changed after planning: {pipeline.name}")
 
 
@@ -814,7 +817,7 @@ def _run_source(
         grader_environment = environment_requirements(pipeline.grader, built)
     assert options.recipe_settings is not None
     config = _execution_config(options.recipe_settings, config, pipeline.rubric, pipeline.controls)
-    validate_input_identity(pipeline, options.inputs, run.identity)
+    _validate_input_identity(pipeline, options.inputs, run.identity)
     file_overrides = (
         {name: SourceFileOverride(**file) for name, file in run.identity["input_overrides"]["files"].items()}
         if options.inputs.files
@@ -833,7 +836,7 @@ def _run_source(
         grader_environment=grader_environment,
         source_overrides=file_overrides,
     )
-    validate_input_identity(pipeline, options.inputs, run.identity)
+    _validate_input_identity(pipeline, options.inputs, run.identity)
     envelope = _pipeline_result(result)
     return RlDataArtifact(path=run.output_path, status=envelope.status, manifest=asdict(result), result=envelope)
 
@@ -854,7 +857,7 @@ def _reviewed_step(
     identity["curation_attempt"] = options.recipe_settings.curation_attempt
     overrides = options.inputs
     if overrides.root is not None or overrides.files or overrides.auxiliary:
-        identity["input_overrides"] = input_overrides_identity(pipeline, overrides)
+        identity["input_overrides"] = _input_overrides_identity(pipeline, overrides)
     digest = hashlib.sha256(canonical_json(identity).encode()).hexdigest()[:16]
     return ArtifactStep(
         name=f"data/rl/{pipeline.name}-{digest}",
@@ -910,7 +913,7 @@ def _conversion_context(context: ZephyrContext, pipeline: CurationRecipe, run: Q
 
 
 def _run_quick_source(pipeline: CurationRecipe, options: PipelineOptions, run: QuickRun) -> CampaignArtifact:
-    overrides = input_file_overrides(options.inputs.files)
+    overrides = _file_overrides(options.inputs.files)
     if options.inputs.root is not None and not options.inputs.files:
         overrides = _staged_file_overrides(
             run.source_input, _staged_input_identity(run.source_input, pipeline.source)["files"]

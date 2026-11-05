@@ -2,9 +2,13 @@
 
 import re
 
-from verifyit.reasoning_markup import REASONING_DELIMITERS
-
 from skyrl_gym.envs.aime.utils import last_boxed_only_string, remove_boxed
+
+REASONING_DELIMITERS = (
+    ("<think>", "</think>"),
+    ("<thinking>", "</thinking>"),
+    ("<|start_think|>", "<|end_think|>"),
+)
 
 
 def final_answer_text(text: str) -> str:

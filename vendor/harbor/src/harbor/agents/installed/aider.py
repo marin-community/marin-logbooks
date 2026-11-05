@@ -1,3 +1,6 @@
+import os
+import shlex
+
 from harbor.agents.installed.base import (
     BaseInstalledAgent,
     CliFlag,
@@ -7,14 +10,12 @@ from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 from harbor.models.agent.name import AgentName
 
-_UNSUPPORTED_REASON = (
-    "Aider is unsupported: it requires blocked dependency LiteLLM and has no "
-    "supported guest authentication path; use mini-swe-agent or terminus-2"
-)
-
 
 class Aider(BaseInstalledAgent):
-    """Aider metadata; installation and execution are unsupported."""
+    """
+    The Aider agent installs https://aider.chat/ into the task container and attempts to
+    solve the task using Aider's scripting mode.
+    """
 
     CLI_FLAGS = [
         CliFlag(
@@ -75,7 +76,9 @@ class Aider(BaseInstalledAgent):
         return text
 
     async def install(self, environment: BaseEnvironment) -> None:
-        raise RuntimeError(_UNSUPPORTED_REASON)
+        raise RuntimeError(
+            "This agent requires blocked dependency LiteLLM; use mini-swe-agent or terminus-2"
+        )
 
     def populate_context_post_run(self, context: AgentContext) -> None:
         pass
@@ -87,4 +90,38 @@ class Aider(BaseInstalledAgent):
         environment: BaseEnvironment,
         context: AgentContext,
     ) -> None:
-        raise RuntimeError(_UNSUPPORTED_REASON)
+        escaped_instruction = shlex.quote(instruction)
+
+        # Determine provider and API key from the serving alias.
+        if not self.model_alias or "/" not in self.model_alias:
+            raise ValueError("Model name must be in the format provider/model_name")
+
+        provider, model = self.model_alias.split("/", 1)
+
+        # Get API key based on provider
+        if provider == "openai":
+            api_key = os.environ.get("OPENAI_API_KEY")
+        elif provider == "anthropic":
+            api_key = os.environ.get("ANTHROPIC_API_KEY")
+        else:
+            raise ValueError(f"Unsupported provider: {provider}")
+
+        if not api_key:
+            raise ValueError(f"No API key found for provider: {provider}")
+
+        env = {
+            "AIDER_API_KEY": f"{provider}={api_key}",
+        }
+
+        cli_flags = self.build_cli_flags()
+        extra_flags = (cli_flags + " ") if cli_flags else ""
+
+        await self.exec_as_agent(
+            environment,
+            command=(
+                ". $HOME/.local/bin/env; "
+                f"aider --yes {extra_flags}--model={model} --message={escaped_instruction} "
+                f"2>&1 | stdbuf -oL tee /logs/agent/aider.txt"
+            ),
+            env=env,
+        )

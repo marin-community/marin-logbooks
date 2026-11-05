@@ -6,7 +6,6 @@ singular shape has a None-vs-Some dichotomy (no separate "clear"
 sentinel) and the override must replace the task's TPU spec exactly.
 """
 
-import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock
 
@@ -26,7 +25,7 @@ class _TpuCapableStub(BaseEnvironment):
 
     @staticmethod
     def type() -> EnvironmentType:
-        return EnvironmentType.LOCAL
+        return EnvironmentType.DOCKER
 
     @property
     def capabilities(self) -> EnvironmentCapabilities:
@@ -35,9 +34,7 @@ class _TpuCapableStub(BaseEnvironment):
     def _validate_definition(self):
         pass
 
-    async def start(
-        self, force_build: bool, *, service_tasks: asyncio.TaskGroup
-    ) -> None:  # pragma: no cover - unused
+    async def start(self, force_build: bool) -> None:  # pragma: no cover - unused
         pass
 
     async def stop(self, delete: bool):  # pragma: no cover - unused
@@ -57,9 +54,9 @@ class _TpuCapableStub(BaseEnvironment):
     async def download_dir(self, source_dir, target_dir):  # pragma: no cover - unused
         pass
 
-    async def exec(
+    async def exec(  # pragma: no cover - unused
         self, command, cwd=None, env=None, timeout_sec=None, user=None
-    ):  # pragma: no cover - unused
+    ):
         pass
 
 

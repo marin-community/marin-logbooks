@@ -1,0 +1,284 @@
+{
+  "observed_utc": "2026-10-30T19:22:01.366286+00:00",
+  "status": "complete",
+  "recommendations": {
+    "SC_enabled_by_default": false,
+    "candidate_count_default": 128,
+    "basis": "All three comparisons remain inconclusive against the agreed margins after the sole finite extension. Retain current defaults under uncertainty;128 is not shown empirically better than32. The final setting decision remains with Romain."
+  },
+  "study": {
+    "model": "Grug67B-A2B SFT262K",
+    "updates_per_run": 50,
+    "arms": [
+      "tis",
+      "sc128",
+      "sc32"
+    ],
+    "matched_seeds": [
+      1701,
+      2903,
+      4517,
+      6101,
+      7919
+    ],
+    "admitted_runs": 15,
+    "endpoint_quality_tasks": 9989,
+    "curve_quality_tasks": 999,
+    "all_original_endpoint_answers_per_run": 10000,
+    "only_declared_extension_completed": true,
+    "further_training_or_grading_planned": false
+  },
+  "comparisons": {
+    "sc32_versus_tis": {
+      "intervals": {
+        "0.95": {
+          "quality_difference": {
+            "estimate": 0.011826404053475877,
+            "low": -0.007893744469927072,
+            "high": 0.03154655257687883,
+            "confidence": 0.95,
+            "seeds": 5,
+            "seed_variance": 4.739267908098671e-05,
+            "task_variance": 3.0551149984650907e-06
+          },
+          "relative_training_cycle_cost": {
+            "estimate": -0.108580997109044,
+            "low": -0.279321413361045,
+            "high": 0.10261058597707197,
+            "confidence": 0.95,
+            "seeds": 5,
+            "seed_variance": 0.0058645605318082715,
+            "task_variance": 0.0
+          }
+        },
+        "0.975": {
+          "quality_difference": {
+            "estimate": 0.011826404053475877,
+            "low": -0.013000279539066269,
+            "high": 0.036653087646018025,
+            "confidence": 0.975,
+            "seeds": 5,
+            "seed_variance": 4.739267908098671e-05,
+            "task_variance": 3.0551149984650907e-06
+          },
+          "relative_training_cycle_cost": {
+            "estimate": -0.108580997109044,
+            "low": -0.31792820170497227,
+            "high": 0.16502080968812144,
+            "confidence": 0.975,
+            "seeds": 5,
+            "seed_variance": 0.0058645605318082715,
+            "task_variance": 0.0
+          }
+        }
+      },
+      "two_look_adjusted_decision": "inconclusive",
+      "paired_seed_cost_ratios": [
+        -0.21715357427860005,
+        -0.14911154316211161,
+        0.20419099085706782,
+        -0.15706670418680557,
+        -0.16752413343545858
+      ],
+      "arithmetic_ratio_of_mean_times": -0.11316690878814595
+    },
+    "sc128_versus_tis": {
+      "intervals": {
+        "0.95": {
+          "quality_difference": {
+            "estimate": 0.002976124029604692,
+            "low": -0.010261425245637024,
+            "high": 0.01621367330484641,
+            "confidence": 0.95,
+            "seeds": 5,
+            "seed_variance": 1.987651934463193e-05,
+            "task_variance": 2.855446617429134e-06
+          },
+          "relative_training_cycle_cost": {
+            "estimate": 0.05948030648040233,
+            "low": -0.1668332476991828,
+            "high": 0.3472675388450043,
+            "confidence": 0.95,
+            "seeds": 5,
+            "seed_variance": 0.007490819028652259,
+            "task_variance": 0.0
+          }
+        },
+        "0.975": {
+          "quality_difference": {
+            "estimate": 0.002976124029604692,
+            "low": -0.01368929038180767,
+            "high": 0.019641538441017056,
+            "confidence": 0.975,
+            "seeds": 5,
+            "seed_variance": 1.987651934463193e-05,
+            "task_variance": 2.855446617429134e-06
+          },
+          "relative_training_cycle_cost": {
+            "estimate": 0.05948030648040233,
+            "low": -0.2170975588019414,
+            "high": 0.43376551247186323,
+            "confidence": 0.975,
+            "seeds": 5,
+            "seed_variance": 0.007490819028652259,
+            "task_variance": 0.0
+          }
+        }
+      },
+      "two_look_adjusted_decision": "inconclusive",
+      "paired_seed_cost_ratios": [
+        -0.02900787079812328,
+        0.10603845525836131,
+        0.27144332862211695,
+        -0.2071811064583553,
+        0.23312614932310982
+      ],
+      "arithmetic_ratio_of_mean_times": 0.059302255333707476
+    },
+    "sc32_versus_sc128": {
+      "intervals": {
+        "0.95": {
+          "quality_difference": {
+            "estimate": 0.008850280023871185,
+            "low": -0.014523805512154979,
+            "high": 0.03222436555989735,
+            "confidence": 0.95,
+            "seeds": 5,
+            "seed_variance": 6.782665251902853e-05,
+            "task_variance": 3.0480216908328485e-06
+          },
+          "relative_training_cycle_cost": {
+            "estimate": -0.15862617036058618,
+            "low": -0.3256771875629986,
+            "high": 0.049808649723280495,
+            "confidence": 0.95,
+            "seeds": 5,
+            "seed_variance": 0.006354641968632074,
+            "task_variance": 0.0
+          }
+        },
+        "0.975": {
+          "quality_difference": {
+            "estimate": 0.008850280023871185,
+            "low": -0.02057652805413408,
+            "high": 0.03827708810187645,
+            "confidence": 0.975,
+            "seeds": 5,
+            "seed_variance": 6.782665251902853e-05,
+            "task_variance": 3.0480216908328485e-06
+          },
+          "relative_training_cycle_cost": {
+            "estimate": -0.15862617036058618,
+            "low": -0.363237809071435,
+            "high": 0.11173359738865223,
+            "confidence": 0.975,
+            "seeds": 5,
+            "seed_variance": 0.006354641968632074,
+            "task_variance": 0.0
+          }
+        }
+      },
+      "two_look_adjusted_decision": "inconclusive",
+      "paired_seed_cost_ratios": [
+        -0.19376645579519414,
+        -0.23068818015090808,
+        -0.05289448318387224,
+        0.0632104036366754,
+        -0.32490616063773703
+      ],
+      "arithmetic_ratio_of_mean_times": -0.16281393082423035
+    }
+  },
+  "comparison_units": "Quality differences are fractions, not percentage points; relative cost is ratio minus one.",
+  "decision_confidence": 0.975,
+  "nominal_report_confidence": 0.95,
+  "margins": {
+    "quality_absolute_success_fraction": -0.01,
+    "relative_full_cycle_time": 0.05
+  },
+  "refs": {
+    "research_branch": "codex/17-sc-default-study",
+    "published_report_storage_shutdown_commit": "dab0d61a19ab95335f2b34e4f5080a185a4ba176",
+    "analysis_execution_source": "a4eb395d678d2a8e3de67b1a89d189d71ab9a472",
+    "run_execution_sources": [
+      "4642b64a9654eda85a347044faacc13cc3d49d1a",
+      "4b4d4febc8df9af64bf301bdd96b00f2fe68ae09",
+      "4fe021097407ed8f1385343ea353b590fa184bd9",
+      "5237b74a18e53a5851d5b65b9c3ac2bf7dec14b4",
+      "729e3db2af0c2c175641250f181dac5fff796fdc",
+      "819c48c79d35f7fe2c81228fbf6df6a9630ef65d",
+      "df8833df0c66823d2a4e85d0aecf31dc02ccc82f",
+      "ec841c6b8311cbedc949daf4002319b49dbbff88"
+    ],
+    "index_branch": "codex/17-sc-default-study-index",
+    "index_commit": "031086089aa4d0e1e871afd04d7441e5fa5ffa50",
+    "core_product_head": "a165e48ab209f71a512b5e138466662e47e53576",
+    "probes_product_head": "eb1a3bf6a29341fdc777f4490b8609b7ea2dc03e",
+    "analysis_protocol_sha256": "5d0180c4643825e9c459628f21a1176a3f04e6e77002f3032c5c353a85865fe3",
+    "current_eligibility_sha256": "4c8d86bf252cc0ae9b4b1b1a4db7cea3e8110915653c161ef4ded4f59ad5aeaa",
+    "final_matrix_sha256": "71c6c63dfe8761fb0c8bb562b38a6883d4bc520d78070a78ee7b98bc3b30019d"
+  },
+  "links": {
+    "report": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/report.md",
+    "notebook": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/notebook.md",
+    "learning_curves": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/figures/learning-curves.png",
+    "cost_curves": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/figures/cost-curves.png",
+    "endpoint_intervals": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/figures/endpoint-intervals.png",
+    "per_seed_results": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/per-seed.csv",
+    "matrix_restore": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/matrix-restore.json",
+    "full_native_restore": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/storage-accounting.json",
+    "scientific_compact_restore": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/compact-evidence-restore.json",
+    "shutdown": "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/final/shutdown-verification.json",
+    "issue": "https://github.com/marin-community/marin-logbooks/issues/17",
+    "previous_study_link": "https://github.com/marin-community/marin-logbooks/issues/13#issuecomment-6525119579",
+    "index_PR": "https://github.com/marin-community/marin-logbooks/pull/18",
+    "core_PR": "https://github.com/marin-community/marin/pull/10429",
+    "probes_PR": "https://github.com/marin-community/marin/pull/10658",
+    "storage_incident": "https://marina.oa.dev/echo/wiki/893"
+  },
+  "compute": {
+    "job_count": 42,
+    "executed_attempt_count": 178,
+    "reconstructed_executed_task_H100_hours": 2467.6973891711114,
+    "observed_preexecution_quota_H100_hours": 2.6022199980417886
+  },
+  "storage": {
+    "archived_objects": 675,
+    "archived_bytes": 12083338428759,
+    "covered_native_tensor_objects_absent": 480,
+    "covered_native_tensor_bytes": 12075946597920,
+    "retained_native_metadata_objects": 195,
+    "retained_native_metadata_bytes": 7391830839,
+    "unique_restart_state_discarded": false,
+    "source_tensor_bulk_remaining_in_all15_admitted_checkpoint_trees": 0,
+    "scientific_compact_archive_bytes": 45132252,
+    "final_operator_archive_bytes": 2528204,
+    "final_operator_archive_uri": "s3://marin-us-east-02a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/compact-evidence/final-operator-evidence/88788157427bea44afa8fe37b6b88002e6d645c458e447af3e06d2292e322436.tar.gz",
+    "final_operator_archive_sha256": "88788157427bea44afa8fe37b6b88002e6d645c458e447af3e06d2292e322436",
+    "scope": "Exact current checkpoint/model/evaluation inventory and listed covered removals; temporary attempt logs retain TTL. Not provider billing or an exhaustive whole-account inventory."
+  },
+  "execution_closed": {
+    "fresh_terminal_jobs": 93,
+    "active_registry_entries": 0,
+    "all_own_resource_rows_closed": true,
+    "GPU_workers_active": 0,
+    "CPU_grade_or_copy_workers_active": 0
+  },
+  "product": {
+    "code_changed": false,
+    "defaults_changed": false,
+    "descriptions_updated": true,
+    "drafts_left_open": true,
+    "PRs_merged": false,
+    "CI_condition": "No product commits changed; reuse unchanged validation and reviews."
+  },
+  "remaining_uncertainty": [
+    "All comparisons are inconclusive; neither equivalence nor material regression is established.",
+    "Five matched seeds, one model/mixture and50updates cannot establish long-run collapse prevention, broad learning benefit or100K performance.",
+    "Eleven tasks are excluded uniformly. The last two Boxnet exclusions were approved after outcomes because invalid answers crash graders; they can remove genuine failures. Intervals condition on the amended task set and do not cover its response-dependent selection.",
+    "Exact task/contract duplicates were removed; semantic overlap and earlier SFT exposure are unknown.",
+    "Captured-mass statistics sample at most4096response positions/update. Export change checks sample two tensors, not every parameter.",
+    "GPU allocation spans are reconstructed, with explicit startup/queue proxies; they are not exact provider billing or certified bounds.",
+    "Fresh RNO writes and26.106TB provider headroom pass; attribution of the wider storage-usage change remains unknown."
+  ]
+}

@@ -11,14 +11,11 @@ from enum import StrEnum
 from functools import partial
 from typing import NoReturn, Protocol
 
-from connectrpc.code import Code
-from connectrpc.errors import ConnectError
 from fray.client import JobHandle
 from iris.client.client import Job, iris_ctx
 from rigging.filesystem.s3_compat import configure_coreweave_s3
 from rigging.filesystem.storage_path import prefix_join
 from rigging.secrets import SecretSpec
-from rigging.timing import retry_with_backoff
 
 from marin.evaluation.eval_env import EVAL_RUNTIME_ENV_KEYS, env_vars_from_keys
 from marin.evaluation.eval_stats import DEFAULT_MIN_COVERAGE
@@ -49,7 +46,6 @@ from marin.evaluation.serving_config import inference_config_for_model
 from marin.execution.step_runner import StepRunner, check_cache
 from marin.execution.step_spec import StepSpec
 from marin.inference.backend import OPENAI_API_SUFFIX
-from marin.inference.config import RemoteInferenceConfig
 from marin.inference.iris import (
     InferenceBackendState,
     RemoteInferenceSession,
@@ -202,7 +198,7 @@ class EvaluationIdentity:
     created_at: str
     output_dir: str
     eval_ref: EvalRef
-    eval_runtime: str | None = None
+    eval_runtime: str
 
 
 @dataclass(frozen=True)
@@ -250,8 +246,6 @@ class EvaluationBatch:
     instances: int = 1
     judge: HostedJudge | None = None
     secret_env: Mapping[str, SecretSpec] = field(default_factory=dict)
-    egress_allow: tuple[str, ...] = ()
-    """Egress rules the orchestrator job and its children need beyond the cluster allowlist."""
     source_model_config: ModelConfigRef | None = None
 
 
@@ -384,8 +378,7 @@ def _job_tail(handle: JobHandle) -> tuple[str, ...]:
         return ()
 
 
-def job_diagnostics(handles: tuple[JobHandle, ...], role: str) -> tuple[dict[str, str], dict[str, tuple[str, ...]]]:
-    """Collect job identities and available log tails for an inference role."""
+def _job_diagnostics(handles: tuple[JobHandle, ...], role: str) -> tuple[dict[str, str], dict[str, tuple[str, ...]]]:
     jobs = {_job_role(role, index): str(handle.job_id) for index, handle in enumerate(handles)}
     tails = {_job_role(role, index): _job_tail(handle) for index, handle in enumerate(handles)}
     return jobs, tails
@@ -556,7 +549,7 @@ def _run_one_evaluation(
             job_id=orchestrator_job_id,
             attributes={
                 "eval_name": evaluation.identity.eval_ref.name,
-                **({"eval_runtime": evaluation.identity.eval_runtime} if evaluation.identity.eval_runtime else {}),
+                "eval_runtime": evaluation.identity.eval_runtime,
                 "group_id": batch.group_id,
             },
         )
@@ -576,7 +569,7 @@ def _record_startup_failure(
     role: str,
     existing_jobs: Mapping[str, str] | None = None,
 ) -> NoReturn:
-    failed_jobs, tails = job_diagnostics(exc.jobs, role)
+    failed_jobs, tails = _job_diagnostics(exc.jobs, role)
     jobs = {_ORCHESTRATOR_ROLE: orchestrator_job_id, **(existing_jobs or {}), **failed_jobs}
     error = f"{type(exc).__name__}: {exc}"
     _record(batch, evaluation.identity, RunStatus.INFRA_FAILED, error, {}, jobs, tails)
@@ -645,7 +638,7 @@ def run_evaluation_steps(
     )
     with ExitStack() as stack:
         try:
-            session = _inference_session(stack, inference)
+            session = stack.enter_context(remote_inference(inference))
         except RemoteInferenceStartupError as exc:
             run(
                 partial(
@@ -668,7 +661,7 @@ def run_evaluation_steps(
                 priority=batch.priority_band,
             )
             try:
-                judge = _inference_session(stack, judge_inference)
+                judge = stack.enter_context(remote_inference(judge_inference))
             except RemoteInferenceStartupError as exc:
                 run(
                     partial(
@@ -693,24 +686,11 @@ def run_evaluation_steps(
         )
 
 
-def _inference_session(stack: ExitStack, config: RemoteInferenceConfig) -> RemoteInferenceSession:
-    """Start an eval server, retrying readiness timeouts within its failure budget."""
-    return retry_with_backoff(
-        lambda: stack.enter_context(remote_inference(config)),
-        retryable=lambda error: isinstance(error, RemoteInferenceStartupError)
-        and isinstance(error.__cause__, TimeoutError),
-        max_attempts=config.iris.max_retries_failure + 1,
-        operation="evaluation inference startup",
-    )
-
-
 def _local_endpoint_session(session: RemoteInferenceSession) -> RemoteInferenceSession:
     """Return an eval session that reaches the serving endpoint directly."""
     try:
         address = iris_ctx().client.resolve_endpoint(session.endpoint_name).rstrip("/")
-    except ConnectError as exc:
-        if exc.code != Code.NOT_FOUND:
-            raise
+    except ConnectionError as exc:
         raise InferenceUnavailable("inference endpoint registration is unavailable") from exc
     endpoint = replace(session.model.endpoint, base_url=f"{address}{OPENAI_API_SUFFIX}")
     return replace(

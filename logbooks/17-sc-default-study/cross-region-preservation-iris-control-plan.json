@@ -1,0 +1,52 @@
+{
+  "purpose": "Run the same tiny full-byte RNO-to-East control in the actual zero-GPU Iris CPU environment before the full-size checkpoint pilot.",
+  "source_prefix": "s3://marin-rno2a/tmp/ttl=14d/skyrl/marin/users/romain/checkpoints/sc-default-study/preservation-control-01a16b97/2026.10.29.1/",
+  "archive_prefix": "s3://marin-us-east-02a/marin/users/romain/research/sc-default-study-01a16b97-e977-75f3-8b2b-fd07bbd1c609/preservation-control-east-iris-v1",
+  "run_source_revision": "25e3994632bde471f5815fcfefe7b6b0f9497a55",
+  "source_control_verification": "preservation-control-verification.json",
+  "objects": [
+    {
+      "relative_path": "pattern.bin",
+      "bytes": 257024,
+      "sha256": "0d143b311424605f13b3e6f47e54faf1a95ba7e08ea373ef40f946208d276647"
+    },
+    {
+      "relative_path": "nested/metadata.json",
+      "bytes": 55,
+      "sha256": "75caed498c4d036391ba5390f7d003e6c03af9858f8e93524b73af04e9d62124"
+    },
+    {
+      "relative_path": "empty",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "total_source_bytes": 257079,
+  "deliberately_corrupted_derived_member": "pattern.bin",
+  "corruption": "Only the new East archive copy is deliberately wrong with equal length; all original RNO objects remain read-only.",
+  "expected": [
+    "All source and archive SHA256 digests match the declared payloads",
+    "Original source inventory is unchanged",
+    "The deliberately wrong derived copy is repaired by streaming",
+    "A second invocation reuses verified members and returns the same complete manifest",
+    "No source object is deleted"
+  ],
+  "gpu_count": 0,
+  "model_or_grading_calls": 0,
+  "source_writes": 0,
+  "source_deletions": 0,
+  "tool_source_sha256": "77acd783dbddc6abf85f5ca2eacea1e424b32af6790d98303c0f27ea34ef26b0",
+  "operator_sha256": "cfbcb1d8f5036d672163c8b974c41ecaa2bd366509098331447eeba47e0e048d",
+  "limits": "A real stopped native checkpoint still needs full streaming, archive readback and immutable SHA256 proof before any source cleanup.",
+  "runtime": {
+    "target_cluster": "cw-rno2a",
+    "controller_config": "lib/iris/config/marin.yaml",
+    "cpu": 4,
+    "memory": "16GB",
+    "disk": "128GB",
+    "gpus": 0,
+    "priority": "batch",
+    "timeout_seconds": 900,
+    "output": "IRIS_OUTPUT_DIR/preservation-control-verification.json"
+  }
+}

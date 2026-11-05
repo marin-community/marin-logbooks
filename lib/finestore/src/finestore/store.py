@@ -46,7 +46,6 @@ from finestore.layout import (
     Shard,
     SystemColumns,
     TableMetadata,
-    blob_table_metadata,
     build_uri,
 )
 from finestore.migrations import migrate_for_write
@@ -271,23 +270,19 @@ class DataStore:
         return build_uri(BlobTables.DESCRIPTORS, name)
 
     def _blob_table(self) -> DataTable:
-        metadata = blob_table_metadata(BlobTables.DESCRIPTORS)
         return self._tables.get(BlobTables.DESCRIPTORS) or self.table(
             BlobTables.DESCRIPTORS,
-            primary_key=metadata.primary_key,
+            primary_key=(BlobColumns.NAME,),
             schema=_BLOB_SCHEMA,
-            schema_version=metadata.schema_version,
-            on_conflict=metadata.on_conflict,
+            on_conflict=OnConflict.SUPERSEDE,
         )
 
     def _blob_part_table(self) -> DataTable:
-        metadata = blob_table_metadata(BlobTables.PARTS)
         return self._tables.get(BlobTables.PARTS) or self.table(
             BlobTables.PARTS,
-            primary_key=metadata.primary_key,
+            primary_key=(BlobColumns.NAME, BlobColumns.PART),
             schema=_BLOB_PART_SCHEMA,
-            schema_version=metadata.schema_version,
-            on_conflict=metadata.on_conflict,
+            on_conflict=OnConflict.SUPERSEDE,
         )
 
     @staticmethod

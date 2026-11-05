@@ -43,7 +43,6 @@ from taskcompendium.models import (
     NoGrader,
     PlainText,
     ProviderRequirement,
-    ReasoningMarkupPolicy,
     ResourceGroups,
     TaskResource,
     TaskSpec,
@@ -280,7 +279,6 @@ def _scored(
     answer_type: AnswerType = AnswerType.TEXT,
     timeout: float = SCORER_TIMEOUT,
     env: Mapping[str, str] | None = None,
-    reasoning_markup: ReasoningMarkupPolicy = ReasoningMarkupPolicy.GRADE,
 ) -> NormalizedTask:
     package = script_package(
         files,
@@ -290,27 +288,20 @@ def _scored(
         answer_path=DEFAULT_OUTPUT,
         env=env,
     )
-    return blend_task(row, request, package, answer_type, reasoning_markup=reasoning_markup)
+    return blend_task(row, request, package, answer_type)
 
 
 def _text_scored(
-    row: RawRow,
-    context: ConversionContext,
-    agents: tuple[str, ...],
-    files: tuple[TaskResource, ...],
-    reasoning_markup: ReasoningMarkupPolicy = ReasoningMarkupPolicy.GRADE,
+    row: RawRow, context: ConversionContext, agents: tuple[str, ...], files: tuple[TaskResource, ...]
 ) -> NormalizedTask | ImportRejection:
     request = text_request(row.data, agents)
     if isinstance(request, ImportRejection):
         return request
-    return _scored(row, request, files, context, reasoning_markup=reasoning_markup)
+    return _scored(row, request, files, context)
 
 
 def convert_calendar(row: RawRow, context: ConversionContext) -> NormalizedTask | ImportRejection:
-    """NeMo Gym scores a calendar reply with malformed reasoning markup as 0."""
-    return _text_scored(
-        row, context, ("calendar_simple_agent",), CALENDAR_GRADE, reasoning_markup=ReasoningMarkupPolicy.REJECT
-    )
+    return _text_scored(row, context, ("calendar_simple_agent",), CALENDAR_GRADE)
 
 
 def convert_format(row: RawRow, context: ConversionContext) -> NormalizedTask | ImportRejection:
@@ -594,10 +585,7 @@ def convert_lean(row: RawRow, context: ConversionContext) -> NormalizedTask | Im
 
 
 def convert_code(row: RawRow, context: ConversionContext) -> NormalizedTask | ImportRejection:
-    """Score the last fenced program against the row's hidden unit tests, one thread per test.
-
-    NeMo Gym scores a reply with malformed reasoning markup as 0.
-    """
+    """Score the last fenced program against the row's hidden unit tests, one thread per test."""
     if defect := INVALID_CODE_ROWS.get(str(row.data.get("uuid"))):
         return source_defect("missing_constructive_problem_judge", defect)
     request = text_request(row.data, ("code_gen_simple_agent",))
@@ -607,15 +595,7 @@ def convert_code(row: RawRow, context: ConversionContext) -> NormalizedTask | Im
         validate_code_cases(row.data["verifier_metadata"]["unit_tests"])
     except (KeyError, TypeError, ValueError) as error:
         return source_defect("invalid_code_tests", str(error))
-    return _scored(
-        row,
-        request,
-        CODE_GRADE,
-        context,
-        timeout=CODE_SCORER_TIMEOUT,
-        env=THREAD_ENVIRONMENT,
-        reasoning_markup=ReasoningMarkupPolicy.REJECT,
-    )
+    return _scored(row, request, CODE_GRADE, context, timeout=CODE_SCORER_TIMEOUT, env=THREAD_ENVIRONMENT)
 
 
 SCHEMA_MAPPING_KEYWORDS = ("$defs", "definitions", "dependentSchemas", "patternProperties", "properties")

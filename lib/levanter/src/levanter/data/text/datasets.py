@@ -937,8 +937,6 @@ class LmDataConfig:
             if self.prior_context_phases
             else None
         )
-        if start_offsets is not None:
-            logger.info("Context-switch start offsets, in %d-token sequences per source: %s", Pos.size, start_offsets)
         return MixtureDataset(
             datasets=datasets,
             weights=weights,

@@ -62,6 +62,7 @@ async def test_recover_outputs_skips_artifact_collection_when_already_collected(
     await trial._recover_outputs()
 
     trial._artifact_handler.download_artifacts.assert_awaited_once()
+    trial._stop_agent_environment.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -94,6 +95,7 @@ async def test_recover_outputs_collects_artifacts_when_not_collected(
     await trial._recover_outputs()
 
     trial._artifact_handler.download_artifacts.assert_awaited_once()
+    trial._stop_agent_environment.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -134,11 +136,12 @@ async def test_recovery_runs_collect_hook_before_artifact_download(
     await trial._recover_outputs()
 
     assert events == ["hook:make-model-patch", "download"]
+    trial._stop_agent_environment.assert_awaited_once()
 
 
 def _agent_phase_trial(raised: Exception) -> SingleStepTrial:
     """A SingleStepTrial whose agent phase raises *raised*, with the
-    exception-recording collaborator mocked."""
+    exception-recording + output-sync collaborators mocked."""
     trial = object.__new__(SingleStepTrial)
     trial._result = object()
     trial._agent_timeout_sec = 10.0
@@ -148,6 +151,7 @@ def _agent_phase_trial(raised: Exception) -> SingleStepTrial:
     )
     trial._run_agent_phase = AsyncMock(side_effect=raised)
     trial._record_exception = AsyncMock()
+    trial._sync_agent_output = AsyncMock()
     return trial
 
 
@@ -171,6 +175,7 @@ async def test_run_agent_passthrough_records_and_continues(exc: Exception) -> No
     await trial._run_agent()  # must not raise
 
     trial._record_exception.assert_awaited_once_with(exc)
+    trial._sync_agent_output.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -182,6 +187,8 @@ async def test_run_agent_does_not_swallow_unexpected_error() -> None:
         await trial._run_agent()
 
     trial._record_exception.assert_not_awaited()
+    # output is still synced in the finally block.
+    trial._sync_agent_output.assert_awaited_once()
 
 
 @pytest.mark.asyncio
@@ -193,3 +200,4 @@ async def test_run_agent_does_not_score_invalid_context_budget() -> None:
         await trial._run_agent()
 
     trial._record_exception.assert_not_awaited()
+    trial._sync_agent_output.assert_awaited_once()

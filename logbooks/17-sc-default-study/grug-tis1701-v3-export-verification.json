@@ -1,0 +1,42 @@
+{
+  "run_source_revision": "4642b64a9654eda85a347044faacc13cc3d49d1a",
+  "run_root": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3",
+  "export_request_status": "complete",
+  "export_request_last_exit_code": 0,
+  "export_terminal_state": "succeeded",
+  "model_export": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/exports/global_step_50/policy",
+  "model_manifest_sha256": "136db5bbf6fbb5d6b134bb31c9c6056ce192beded1777abd62274baead50189f",
+  "weight_shards": 39,
+  "weight_shard_bytes": 134157838824,
+  "sampled_weight_checks": [
+    {
+      "name": "model.layers.0.mlp.router.weight",
+      "shape": [
+        256,
+        2560
+      ],
+      "initial_dtype": "BF16",
+      "final_dtype": "BF16",
+      "initial_float32_sha256": "5122c989c5be7a3f17ef4c9775a6d67ed4a1dc5226e826650dd31675ba2c84b1",
+      "final_float32_sha256": "c4147e5972422e40dfaecf6ea0462036a4657692c89950ee0a1e4485ce9a0f5d",
+      "changed_elements": 2481,
+      "elements": 655360,
+      "max_abs_change": 3.0517578125e-05
+    },
+    {
+      "name": "model.layers.0.self_attn.o_proj.weight",
+      "shape": [
+        2560,
+        2560
+      ],
+      "initial_dtype": "BF16",
+      "final_dtype": "BF16",
+      "initial_float32_sha256": "ef265180abad0141ab7d36ce3328c9c711f943514d023cd4395614ed7f0c7bcb",
+      "final_float32_sha256": "a69aee9b1801f063cbba673b49fa85275652059efdb12cd59de9fedbfe6a73b2",
+      "changed_elements": 1278920,
+      "elements": 6553600,
+      "max_abs_change": 6.103515625e-05
+    }
+  ],
+  "limits": "Two exported tensors compared with the exact initial checkpoint. This checks normal attention/router updates, not all parameters or every live inference replica; Qwen lifecycle separately qualified live restoration. Standard exporter verifies the portable inventory."
+}

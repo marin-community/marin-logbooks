@@ -17,7 +17,7 @@ def test_terminus_2_temperature_defaults_to_none(temp_dir, monkeypatch):
     assert agent._temperature is None
 
 
-def test_terminus_2_omits_default_temperature_for_openai(temp_dir, monkeypatch):
+def test_terminus_2_omits_default_temperature_for_openai(monkeypatch):
     captured_kwargs = {}
 
     class FakeOpenAILLM:
@@ -26,8 +26,8 @@ def test_terminus_2_omits_default_temperature_for_openai(temp_dir, monkeypatch):
 
     monkeypatch.setattr("harbor.agents.terminus_2.terminus_2.OpenAILLM", FakeOpenAILLM)
 
-    Terminus2(
-        logs_dir=temp_dir,
+    agent = object.__new__(Terminus2)
+    agent._init_llm(
         llm_backend=LLMBackend.OPENAI,
         model_name="fake/model",
         temperature=None,
@@ -42,10 +42,9 @@ def test_terminus_2_omits_default_temperature_for_openai(temp_dir, monkeypatch):
     )
 
     assert "temperature" not in captured_kwargs
-    assert captured_kwargs["api_key"] == "EMPTY"
 
 
-def test_terminus_2_forwards_explicit_temperature_for_openai(temp_dir, monkeypatch):
+def test_terminus_2_forwards_explicit_temperature_for_openai(monkeypatch):
     captured_kwargs = {}
 
     class FakeOpenAILLM:
@@ -54,15 +53,14 @@ def test_terminus_2_forwards_explicit_temperature_for_openai(temp_dir, monkeypat
 
     monkeypatch.setattr("harbor.agents.terminus_2.terminus_2.OpenAILLM", FakeOpenAILLM)
 
-    Terminus2(
-        logs_dir=temp_dir,
+    agent = object.__new__(Terminus2)
+    agent._init_llm(
         llm_backend=LLMBackend.OPENAI,
         model_name="fake/model",
         temperature=0.2,
         collect_rollout_details=False,
         llm_kwargs=None,
-        api_base="https://model.example/v1",
-        model_authentication={"https://model.example/v1": "explicit-provider-key"},
+        api_base=None,
         session_id=None,
         max_thinking_tokens=None,
         reasoning_effort=None,
@@ -71,10 +69,9 @@ def test_terminus_2_forwards_explicit_temperature_for_openai(temp_dir, monkeypat
     )
 
     assert captured_kwargs["temperature"] == 0.2
-    assert captured_kwargs["api_key"] == "explicit-provider-key"
 
 
-def test_terminus_2_forwards_session_id_for_openai(temp_dir, monkeypatch):
+def test_terminus_2_forwards_session_id_for_openai(monkeypatch):
     captured_kwargs = {}
 
     class FakeOpenAILLM:
@@ -83,8 +80,8 @@ def test_terminus_2_forwards_session_id_for_openai(temp_dir, monkeypatch):
 
     monkeypatch.setattr("harbor.agents.terminus_2.terminus_2.OpenAILLM", FakeOpenAILLM)
 
-    Terminus2(
-        logs_dir=temp_dir,
+    agent = object.__new__(Terminus2)
+    agent._init_llm(
         llm_backend=LLMBackend.OPENAI,
         model_name="fake/model",
         temperature=None,
@@ -99,4 +96,3 @@ def test_terminus_2_forwards_session_id_for_openai(temp_dir, monkeypatch):
     )
 
     assert captured_kwargs["session_id"] == "test-session-12345"
-    assert captured_kwargs["api_key"] == "EMPTY"

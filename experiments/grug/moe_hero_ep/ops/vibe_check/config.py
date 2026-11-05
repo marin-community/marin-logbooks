@@ -31,8 +31,7 @@ SAMPLING_NODES = 16
 SAMPLING_GPUS_PER_NODE = 4
 # Earliest checkpoint sampled under the current spec. A spec change re-identifies every request, so
 # this floor keeps it from backfilling the full lineage; earlier releases keep their results.
-# The new drawing prompts start after the latest retained checkpoint at step 386,000.
-FIRST_SAMPLED_STEP = 386_001
+FIRST_SAMPLED_STEP = 270_000
 
 
 def sampling_spec() -> SamplingSpec:

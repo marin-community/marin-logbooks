@@ -727,9 +727,7 @@ def _serialize_arrays(
             try:
                 store = future.result()
                 target = store if region is None else store[region.index]
-                # TensorStore's referenced-source fast path can commit only fill values
-                # for large bfloat16 chunks. Let it copy the staged snapshot instead.
-                write = target.write(data)
+                write = target.write(data, can_reference_source_data_indefinitely=True)
                 write.commit.add_done_callback(write_finished)
                 write.commit.force()
             except BaseException as error:

@@ -13,6 +13,8 @@ from harbor.trial.errors import AgentTimeoutError
 
 @pytest.mark.asyncio
 async def test_codex_server_timeout_is_reported_as_agent_timeout(tmp_path, monkeypatch):
+    monkeypatch.delenv("CODEX_AUTH_JSON_PATH", raising=False)
+    monkeypatch.delenv("CODEX_FORCE_AUTH_JSON", raising=False)
     commands = []
 
     async def exec_command(*, command, **kwargs):
@@ -42,6 +44,8 @@ async def test_codex_server_timeout_is_reported_as_agent_timeout(tmp_path, monke
 async def test_codex_cancellation_starts_no_new_remote_finalization(
     tmp_path, monkeypatch
 ):
+    monkeypatch.delenv("CODEX_AUTH_JSON_PATH", raising=False)
+    monkeypatch.delenv("CODEX_FORCE_AUTH_JSON", raising=False)
     entered = asyncio.Event()
     blocked = asyncio.Event()
     commands = []
@@ -75,6 +79,8 @@ async def test_codex_cancellation_starts_no_new_remote_finalization(
 async def test_codex_non_timeout_exit_retains_error_and_finalizes(
     tmp_path, monkeypatch
 ):
+    monkeypatch.delenv("CODEX_AUTH_JSON_PATH", raising=False)
+    monkeypatch.delenv("CODEX_FORCE_AUTH_JSON", raising=False)
     commands = []
 
     async def exec_command(*, command, **kwargs):

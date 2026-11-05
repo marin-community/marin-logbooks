@@ -5,11 +5,11 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-import harbor.environments.factory as environment_factory
-import harbor.utils.artifact_writer as artifact_writer
 import pytest
-from harbor.environments.base import ExecResult
+
+import harbor.utils.artifact_writer as artifact_writer
 from harbor.job import Job
+from harbor.environments.base import ExecResult
 from harbor.metrics.mean import Mean
 from harbor.models.job.config import JobConfig
 from harbor.models.job.result import JobResult, JobStats
@@ -21,16 +21,10 @@ from harbor.models.trial.config import (
     TaskConfig,
     TrialConfig,
 )
-from harbor.models.trial.result import (
-    AgentInfo,
-    ExceptionInfo,
-    TrialCompletion,
-    TrialResult,
-)
+from harbor.models.trial.result import AgentInfo, ExceptionInfo, TrialResult
 from harbor.models.verifier.result import VerifierResult
 from harbor.trial.hooks import TrialEvent, TrialHookEvent
 from harbor.utils.artifact_writer import ArtifactWriter, get_artifact_writer
-
 from tests.unit.test_trial_cleanup import MountedEnvironment
 
 
@@ -115,8 +109,6 @@ def _trial_result(
         agent_info=AgentInfo(name="test-agent", version="1.0"),
         verifier_result=VerifierResult(rewards={"reward": 1}),
         exception_info=exception_info,
-        finished_at=datetime(2026, 4, 28, tzinfo=timezone.utc),
-        completion=TrialCompletion(trajectory_present=False),
     )
 
 
@@ -169,11 +161,8 @@ async def _flush_job_snapshots(job: Job) -> None:
 @pytest.mark.unit
 @pytest.mark.parametrize("metric_type, expected", [(None, 1.0), (MetricType.SUM, 2.0)])
 async def test_explicit_task_source_preserves_completed_metrics(
-    tmp_path: Path, metric_type: MetricType | None, expected: float, monkeypatch
+    tmp_path: Path, metric_type: MetricType | None, expected: float
 ) -> None:
-    monkeypatch.setattr(
-        environment_factory, "_load_environment_class", lambda _: ScoredEnvironment
-    )
     task_dir = tmp_path / "task"
     task_dir.mkdir()
     (task_dir / "task.toml").write_text('[task]\nname = "test/test-task"\n')
@@ -189,7 +178,9 @@ async def test_explicit_task_source_preserves_completed_metrics(
             n_attempts=2,
             metrics=[] if metric_type is None else [MetricConfig(type=metric_type)],
             agents=[AgentConfig(name="nop")],
-            environment=EnvironmentConfig(),
+            environment=EnvironmentConfig(
+                import_path="tests.unit.test_job_status:ScoredEnvironment"
+            ),
         )
     )
     try:

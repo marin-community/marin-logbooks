@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "verifier_sha256": "8d5599ee696a2a575dd8b8e9edd09bddaa0fdcdef34ceffe48769457cb9601ef",
+  "reference": "grug-tis1701-v3-export-verification.json",
+  "initial_model": "s3://marin-rno2a/marin/users/dml/models/grug-67b-a2b-datakit-sft-262k-2026.10.05-8c76b22a/2026.10.22/hf",
+  "manifest_sha256": "136db5bbf6fbb5d6b134bb31c9c6056ce192beded1777abd62274baead50189f",
+  "weight_shards": 39,
+  "weight_shard_bytes": 134157838824,
+  "sampled_tensors": [
+    "model.layers.0.mlp.router.weight",
+    "model.layers.0.self_attn.o_proj.weight"
+  ],
+  "checks": [
+    "same native completion and portable shard inventory",
+    "same original baseline manifest and weight byte count",
+    "both sampled weight hashes, shapes and element differences exactly reproduce the earlier independent check"
+  ],
+  "limits": "Replay of an already qualified baseline, not a new learning experiment or all-parameter hash audit."
+}

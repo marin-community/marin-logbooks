@@ -204,27 +204,15 @@
       }
       return cache.get(id);
     }
-    function svgSource(text) {
-      const start = text.search(/<svg\b/);
-      if (start < 0) return null;
-      const source = text.slice(start);
-      for (const ending of source.matchAll(/<\/svg\s*>/g)) {
-        const candidate = source.slice(0, ending.index + ending[0].length);
-        const parsed = new DOMParser().parseFromString(candidate, 'image/svg+xml');
-        const root = parsed.documentElement;
-        if (!parsed.querySelector('parsererror') && root.localName === 'svg' && root.namespaceURI === 'http://www.w3.org/2000/svg') {
-          return candidate;
-        }
-      }
-      return null;
-    }
-    function svgPreview(source) {
+    function svgPreview(text) {
+      const svg = text.match(/<svg\b[\s\S]*<\/svg\s*>/);
+      if (!svg) return element('p', 'No completed SVG image in this output.');
       const preview = document.createElement('img');
       preview.className = 'svg-preview';
-      preview.alt = 'Generated SVG image';
+      preview.alt = 'Generated SVG image of a cat on a unicycle';
       preview.addEventListener('error', () => preview.replaceWith(element('p', 'Cannot display this SVG image.')));
       // The image context disables scripts and external resources in generated SVG.
-      preview.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(source);
+      preview.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg[0]);
       return preview;
     }
     function panel(target, id, data, promptId) {
@@ -239,11 +227,10 @@
         const section = document.createElement('section');
         section.append(element('h2', `Completion ${completion.sample_index + 1}`));
         const generated = tokenSequence(completion.token_scores, completion.text, data.eos_token_id);
-        const svg = svgSource(completion.text);
-        if (svg) {
-          section.append(svgPreview(svg));
+        if (promptId === 'svg-cat-unicycle') {
+          section.append(svgPreview(completion.text));
           const sourceCode = document.createElement('details');
-          sourceCode.append(element('summary', 'Full generated text'), generated);
+          sourceCode.append(element('summary', 'SVG source'), generated);
           section.append(sourceCode);
         } else {
           section.append(generated);

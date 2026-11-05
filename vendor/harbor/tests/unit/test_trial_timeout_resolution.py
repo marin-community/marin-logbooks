@@ -46,7 +46,7 @@ async def _persisted_timeout_resolution(
         trial_name="trial",
         trials_dir=tmp_path / "trials",
         agent=agent_config,
-        environment=EnvironmentConfig(type="local"),
+        environment=EnvironmentConfig(type="docker"),
         verifier=verifier_config,
         **config_kwargs,
     )

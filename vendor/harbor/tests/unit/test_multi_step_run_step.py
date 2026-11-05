@@ -83,8 +83,6 @@ async def test_prepare_failure_archives_without_running_agent_or_collecting_arti
 
     trial._prepare_step = AsyncMock(side_effect=fail_prepare)
     trial._run_step_agent = AsyncMock()
-    trial._collect_runtime_logs = AsyncMock()
-    trial._sync_agent_output = AsyncMock()
     trial._upload_agent_logs = AsyncMock()
     trial._archive_step_outputs = MagicMock()
     trial._collect_step_artifacts = AsyncMock()
@@ -119,8 +117,6 @@ async def test_run_step_collects_artifacts_before_verifier() -> None:
     trial._create_step_dirs = MagicMock()
     trial._prepare_step = AsyncMock()
     trial._run_step_agent = AsyncMock()
-    trial._collect_runtime_logs = AsyncMock()
-    trial._sync_agent_output = AsyncMock()
     trial._upload_agent_logs = AsyncMock()
     trial._collect_step_artifacts = AsyncMock(side_effect=collect_step_artifacts)
     trial._run_step_verifier = AsyncMock(side_effect=run_step_verifier)
@@ -142,7 +138,7 @@ async def test_run_step_collects_artifacts_before_verifier() -> None:
 
 
 @pytest.mark.asyncio
-async def test_run_step_keeps_environment_during_final_separate_verifier() -> None:
+async def test_run_step_stops_final_separate_step_before_verifier() -> None:
     trial = object.__new__(MultiStepTrial)
     trial.logger = MagicMock()
     events: list[str] = []
@@ -162,8 +158,6 @@ async def test_run_step_keeps_environment_during_final_separate_verifier() -> No
     trial._create_step_dirs = MagicMock()
     trial._prepare_step = AsyncMock()
     trial._run_step_agent = AsyncMock()
-    trial._collect_runtime_logs = AsyncMock()
-    trial._sync_agent_output = AsyncMock()
     trial._upload_agent_logs = AsyncMock()
     trial._collect_step_artifacts = AsyncMock(side_effect=collect_step_artifacts)
     trial._stop_agent_environment = AsyncMock(side_effect=stop_agent_environment)
@@ -178,7 +172,7 @@ async def test_run_step_keeps_environment_during_final_separate_verifier() -> No
 
     await trial._run_step(step, step_result, index=2, total=2)
 
-    assert events == ["collect", "verify"]
+    assert events == ["collect", "stop", "verify"]
     trial._run_step_verifier.assert_awaited_once_with(
         step,
         step_result,
@@ -189,9 +183,7 @@ async def test_run_step_keeps_environment_during_final_separate_verifier() -> No
 
 
 @pytest.mark.asyncio
-async def test_run_step_defers_teardown_to_trial_finalization_when_verifier_disabled() -> (
-    None
-):
+async def test_run_step_stops_final_separate_step_when_verifier_disabled() -> None:
     trial = object.__new__(MultiStepTrial)
     trial.logger = MagicMock()
     events: list[str] = []
@@ -214,8 +206,6 @@ async def test_run_step_defers_teardown_to_trial_finalization_when_verifier_disa
     trial._create_step_dirs = MagicMock()
     trial._prepare_step = AsyncMock()
     trial._run_step_agent = AsyncMock()
-    trial._collect_runtime_logs = AsyncMock()
-    trial._sync_agent_output = AsyncMock()
     trial._upload_agent_logs = AsyncMock()
     trial._collect_step_artifacts = AsyncMock(side_effect=collect_step_artifacts)
     trial._stop_agent_environment = AsyncMock(side_effect=stop_agent_environment)
@@ -230,7 +220,7 @@ async def test_run_step_defers_teardown_to_trial_finalization_when_verifier_disa
 
     await trial._run_step(step, step_result, index=2, total=2)
 
-    assert events == ["collect", "verify", "archive"]
+    assert events == ["collect", "stop", "verify", "archive"]
     trial._run_step_verifier.assert_awaited_once_with(
         step,
         step_result,
@@ -316,3 +306,4 @@ async def test_run_step_agent_records_recoverable_agent_errors(
 
     assert step_result.exception_info is not None
     assert step_result.exception_info.exception_type == exception_type
+    trial._sync_agent_output.assert_awaited_once_with(step_result)

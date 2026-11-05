@@ -83,10 +83,6 @@ class LegacyReadShard:
     primary_key_sorted: bool = False
 
     @property
-    def row_commit_upper_bound(self) -> int:
-        return self.commit_sequence
-
-    @property
     def key_range(self) -> KeyRange | None:
         return None
 

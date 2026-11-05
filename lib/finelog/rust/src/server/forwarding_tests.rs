@@ -340,14 +340,12 @@ async fn read_all(client: &LogServiceClient<TestTransport>) -> Vec<(String, Stri
         .unwrap();
     response
         .into_view()
-        .to_owned_message()
-        .unwrap()
         .entries
         .iter()
         .map(|e| {
             (
-                e.key.as_deref().unwrap_or_default().to_string(),
-                e.data.as_deref().unwrap_or_default().to_string(),
+                e.key.unwrap_or("").to_string(),
+                e.data.unwrap_or("").to_string(),
             )
         })
         .collect()
@@ -873,8 +871,6 @@ async fn forwarded_rows_carry_the_origin_cluster_of_the_store_that_sent_them() {
         .await
         .unwrap()
         .into_view()
-        .to_owned_message()
-        .unwrap()
         .entries
         .len();
     assert_eq!(

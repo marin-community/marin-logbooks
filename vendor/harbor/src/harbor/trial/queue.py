@@ -1,12 +1,11 @@
 import asyncio
 import time
-from collections.abc import Coroutine, Mapping
+from collections.abc import Coroutine
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Protocol
 
 from harbor.models.job.config import RetryConfig
-from harbor.host_capabilities import HostCapabilities
 from harbor.models.trial.config import TrialConfig
 from harbor.models.trial.result import ExceptionInfo, TrialResult
 from harbor.telemetry.observer import (
@@ -67,8 +66,6 @@ class TrialQueue:
         hooks: dict[TrialEvent, list[HookCallback]] | None = None,
         release_trial_payloads_in_memory: bool = False,
         planned_attempts: dict[str, int] | None = None,
-        host_capabilities: HostCapabilities = HostCapabilities(),
-        guest_environment: Mapping[str, str] = {},
     ):
         if hooks is None:
             hooks = {event: [] for event in TrialEvent}
@@ -77,8 +74,6 @@ class TrialQueue:
                 hooks.setdefault(event, [])
 
         self._n_concurrent = n_concurrent
-        self._host_capabilities = host_capabilities
-        self._guest_environment = dict(guest_environment)
         self._retry_config = retry_config if retry_config is not None else RetryConfig()
         self._hooks = hooks
         self._release_trial_payloads_in_memory = release_trial_payloads_in_memory
@@ -225,12 +220,7 @@ class TrialQueue:
         attempt: int,
         state: _AttemptState,
     ) -> TrialResult:
-        trial = await Trial.create(
-            trial_config,
-            attempt_index=attempt,
-            host_capabilities=self._host_capabilities,
-            guest_environment=self._guest_environment,
-        )
+        trial = await Trial.create(trial_config, attempt_index=attempt)
         state.trial = trial
         self._setup_hooks(trial, state, trial_config, attempt)
         return await trial.run()

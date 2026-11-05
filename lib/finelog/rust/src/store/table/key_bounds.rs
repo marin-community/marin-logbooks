@@ -4,7 +4,6 @@
 //! metadata from cached or remote Parquet footers without downloading the object.
 
 use std::collections::{HashMap, HashSet};
-use std::sync::Arc;
 
 use crate::errors::StatsError;
 use crate::query::file_scan::open_cached_parquet;
@@ -53,7 +52,8 @@ pub async fn maintain(runtime: &TableRuntime) -> Result<bool, StatsError> {
             .get(&row.path)
             .expect("candidate object record was selected above");
         let reference = ObjectReference::try_from(&record.source)?;
-        let input = open_cached_parquet(Arc::clone(store), &reference).await?;
+        let input =
+            open_cached_parquet(store.as_ref(), &reference, &runtime.query_visibility).await?;
         let Some(metadata) = segment_metadata_from_parquet(
             input.metadata(),
             row.level,

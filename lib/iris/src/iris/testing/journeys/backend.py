@@ -18,7 +18,6 @@ from iris.cluster.controller.backend import (
     BackendRecoveryRequest,
     BackendRecoveryResult,
     DirectReconcileRequest,
-    EgressAllowlistMode,
     JobFeasibilityRequest,
     ProviderUnsupportedError,
     ReconcileObservation,
@@ -177,9 +176,6 @@ class ScriptedTaskBackend:
 
     def validate_job(self, request: controller_pb2.Controller.LaunchJobRequest) -> str | None:
         return None
-
-    def egress_allowlist_mode(self, request: controller_pb2.Controller.LaunchJobRequest) -> EgressAllowlistMode:
-        return EgressAllowlistMode.OPT_IN
 
     def job_feasibility(self, request: JobFeasibilityRequest) -> str | None:
         return None

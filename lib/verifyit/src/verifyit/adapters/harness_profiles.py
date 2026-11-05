@@ -7,8 +7,9 @@ import re
 from collections.abc import Sequence
 from pathlib import Path
 
+from verifyit.adapters.skyrl import grade_literal_candidate
 from verifyit.grade import InvalidTask, Reward, scored
-from verifyit.modes.grade_exact import grade_collection_f1, grade_literal_candidate
+from verifyit.modes.grade_exact import grade_collection_f1
 
 
 def _tokens(value: Sequence[str]) -> None:

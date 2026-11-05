@@ -14,7 +14,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from marin.evaluation.harbor.driver_config import HARBOR_RUNTIME_PROJECT, HarborErrorTaxonomy
+from marin.evaluation.harbor.driver_config import HARBOR_RUNTIME_PROJECT, HARBOR_SOURCE, HarborErrorTaxonomy
 from marin.evaluation.harbor.runner import HarborTrial, _aggregate, _job_benchmark, _read_trial, _read_trials
 from rigging.filesystem.buckets import filesystem_for
 from rigging.filesystem.s3_compat import configure_coreweave_s3
@@ -102,6 +102,7 @@ def runtime_taxonomy() -> HarborErrorTaxonomy:
         agent=frozenset(categories["agent"]),
         passthrough=frozenset(categories["passthrough"]),
         undecided=frozenset(categories["unknown"]),
+        commit=HARBOR_SOURCE.commit,
     )
 
 
@@ -126,6 +127,7 @@ def original_aggregate(uri: str, taxonomy: HarborErrorTaxonomy) -> tuple[Aggrega
         {
             "kind": "native_trial_aggregation",
             "job": str(job),
+            "harbor_commit": taxonomy.commit,
             "errors": dict(aggregate.errors),
         },
     )

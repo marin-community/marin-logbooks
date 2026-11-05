@@ -11,15 +11,13 @@ import re
 import statistics
 from collections.abc import Callable, Mapping
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 from rigging.filesystem.storage_path import StoragePath, prefix_join
 
-from marin.evaluation.eval_env import DAYTONA_RUNTIME_ENV_KEYS
-from marin.evaluation.harbor.agent_context import CANDIDATE_API_KEY_ENV
 from marin.evaluation.harbor.dataset import local_harbor_dataset_path
 from marin.evaluation.harbor.driver_config import (
     HarborErrorTaxonomy,
@@ -101,7 +99,6 @@ class HarborRunResult:
     mean_reward: float
     reward_stderr: float
     benchmark: BenchmarkMetadataRef
-    native_metrics: Mapping[str, float] = field(default_factory=dict)
 
     @property
     def unscored_trials(self) -> int:
@@ -126,8 +123,8 @@ class HarborRunResult:
         return {self.dataset: metrics}
 
     def canonical_task_metrics(self) -> dict[str, dict[str, float]]:
-        """Canonical reward, standard error, and native metrics, keyed by dataset."""
-        return {self.dataset: {"reward": self.mean_reward, "reward_stderr": self.reward_stderr, **self.native_metrics}}
+        """Canonical reward and its standard error, keyed by dataset."""
+        return {self.dataset: {"reward": self.mean_reward, "reward_stderr": self.reward_stderr}}
 
     def task_coverage(self) -> dict[str, TaskCoverage]:
         """Coverage keyed like :meth:`task_metrics`, carrying the per-trial error distribution."""
@@ -174,13 +171,13 @@ class HarborResumeIdentity(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    schema_version: Literal[3] = 3
+    schema_version: Literal[2] = 2
     dataset: str
     policy_digest: str
+    runtime: str
     task_limit: int | None
     model: ModelConfigRef
     judge: ModelConfigRef | None
-    evaluator_identity: str
 
 
 def validate_harbor_resume_root(output_dir: str, identity: HarborResumeIdentity) -> None:
@@ -191,7 +188,7 @@ def validate_harbor_resume_root(output_dir: str, identity: HarborResumeIdentity)
     existing = HarborResumeIdentity.model_validate_json(path.read_text())
     if existing != identity:
         raise ValueError(
-            f"Harbor results root {output_dir!r} has different dataset, model, policy, task limit, judge, or evaluator"
+            f"Harbor results root {output_dir!r} has different dataset, model, policy, runtime, task limit, or judge"
         )
 
 
@@ -372,11 +369,6 @@ def _run_harbor_job(
     if recorded_attempted is not None and recorded_attempted > n_attempted:
         raise ValueError(f"Harbor recorded {recorded_attempted} trials but intended only {n_attempted}")
     result = _aggregate(trials, dataset, recorded_benchmark, trials_per_task)
-    job_document = json.loads((job_dir / "result.json").read_text())
-    native_metrics = job_document.get("canonical_metrics", {}).get(recorded_benchmark.task, {})
-    if recorded_benchmark.primary_metric != "reward" and recorded_benchmark.primary_metric not in native_metrics:
-        raise ValueError(f"Harbor did not produce {recorded_benchmark.primary_metric}")
-    result = replace(result, native_metrics=native_metrics)
     StoragePath(prefix_join(output_dir, _HARBOR_RESULT_FILE)).write_text(
         json.dumps(
             {
@@ -483,10 +475,10 @@ class HarborExecutor:
         return HarborResumeIdentity(
             dataset=self.config.record_dataset,
             policy_digest=self.config.digest,
+            runtime=harbor_runtime_descriptor(),
             task_limit=self.task_limit,
             model=self.model_config,
             judge=self.judge_config,
-            evaluator_identity=harbor_runtime_descriptor(),
         )
 
     def _run(
@@ -498,12 +490,14 @@ class HarborExecutor:
         verifier_env: Mapping[str, str],
         judge_model: RunningModel | None,
     ) -> HarborRunResult:
-        resume_identity = self.resume_identity
-        _bind_harbor_results_root(output_dir, resume_identity)
+        _bind_harbor_results_root(output_dir, self.resume_identity)
         dataset = self.config.record_dataset
+        identity: tuple[object, ...] = (self.config.digest, model.endpoint.model, self.task_limit)
+        if judge_model is not None:
+            identity += ("hosted-judge", judge_model.endpoint.model)
         job_name = _job_name(
             dataset,
-            (json.dumps(resume_identity.model_dump(mode="json"), sort_keys=True),),
+            identity,
         )
         dataset_path = local_harbor_dataset_path(self.config)
         overlay = HarborRuntimeOverlay(
@@ -512,8 +506,6 @@ class HarborExecutor:
             dataset_path=str(dataset_path) if dataset_path is not None else None,
             endpoint_url=model.endpoint.base_url,
             served_model=model.endpoint.model,
-            model_identity=self.model_config.location,
-            judge_model_identity=self.judge_config.location if self.judge_config is not None else None,
             task_limit=self.task_limit,
             model_agent_kwargs=self.model_agent_kwargs,
             verifier_env=verifier_env,
@@ -552,8 +544,6 @@ class HarborExecutor:
     ) -> EvaluationOutcome:
         """Run Harbor with candidate inference and an optional hosted judge."""
         driver_env = {key: env_vars[key] for key in self.secret_env_keys}
-        driver_env.update({key: env_vars[key] for key in DAYTONA_RUNTIME_ENV_KEYS if key in env_vars})
-        driver_env[CANDIDATE_API_KEY_ENV] = session.model.endpoint.api_key or "EMPTY"
         hf_token = env_vars.get("HF_TOKEN")
         if hf_token:
             driver_env["HF_TOKEN"] = hf_token

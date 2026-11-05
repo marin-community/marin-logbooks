@@ -49,6 +49,7 @@ from rigging.filesystem.storage_path import prefix_join
 
 from experiments.grug.dispatch import dispatch_grug_training_run
 from experiments.grug.moe_hero_ep.hero_recipe import (
+    HERO_EP_EXPERT_AXIS_SIZE,
     HERO_GPUS_PER_NODE,
     HERO_MASTER_PARAM_MODE,
     HERO_MIXED_PRECISION_BY_MASTER_PARAM_MODE,
@@ -57,7 +58,6 @@ from experiments.grug.moe_hero_ep.hero_recipe import (
     HERO_NODE_DISK,
     HERO_NODE_RAM,
     HERO_QB_HIST_BINS,
-    HERO_RACK_GPUS,
     hero_rack_batch_size,
     with_transport_remat_mode,
 )
@@ -90,7 +90,7 @@ class RestoreBenchmarkConfig:
     read: TensorStoreReadConfig = field(default_factory=TensorStoreReadConfig)
     write: TensorStoreWriteConfig = field(default_factory=TensorStoreWriteConfig)
     repeats: int = 2
-    expert_axis_size: int = HERO_RACK_GPUS
+    expert_axis_size: int = HERO_EP_EXPERT_AXIS_SIZE
     replica_axis_size: int = 1
     # Restores read no activations, so a context-parallel run's width is safe to set here: it
     # only places the restored parameters the way that run's mesh would.
@@ -201,7 +201,7 @@ def _run_restore_benchmark_local(config: RestoreBenchmarkConfig) -> None:
 @click.option(
     "--expert-axis-size",
     type=click.IntRange(min=1),
-    default=HERO_RACK_GPUS,
+    default=HERO_EP_EXPERT_AXIS_SIZE,
     show_default=True,
     help="Devices in each expert-parallel replica group.",
 )

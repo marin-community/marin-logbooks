@@ -1,0 +1,282 @@
+{
+  "source_revision": "4642b64a9654eda85a347044faacc13cc3d49d1a",
+  "state": "running; first completed cycle only",
+  "eligible": false,
+  "actual_config_audit": {
+    "passed": true,
+    "run_root": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3",
+    "arm": "tis",
+    "seed": 1701,
+    "actual_registered_entrypoint": "skyrl_train.entrypoints.taskcompendium",
+    "resolved_launch_sha256": "ebf1e71d55e5d584f60bf29519e1053a74495e63e8d2755af22f280d1bbc8ac0",
+    "trainer_config_sha256": "9cc3ccea94724c086afad2df59f4cce502d11b4260d06911301b6d813e7d6d19",
+    "model": {
+      "chat_template": null,
+      "identity": "users/romain/models/sc-default-grug-8c76b22a@2026.10.28:521ac962",
+      "local_path": "/tmp/marinskyrl/models/sc-default-grug-8c76b22a",
+      "tokenizer_revision": "8c76b22afc38f5e95360c83ca88008f00b5ae1e0",
+      "tokenizer_uri": "open-athena/Grug-67B-A2B-Datakit-SFT-262K-2026.10.05",
+      "uri": "s3://marin-rno2a/marin/users/dml/models/grug-67b-a2b-datakit-sft-262k-2026.10.05-8c76b22a/2026.10.22/hf"
+    },
+    "train_data": [
+      {
+        "identity": "users/romain/documents/sc-default-study@2026.10.28.1:f07d9723",
+        "kind": "directory",
+        "local_path": "/tmp/marinskyrl/data/sc-default-study",
+        "relative_path": "train.parquet",
+        "uri": "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1"
+      }
+    ],
+    "validation_data": [
+      {
+        "identity": "users/romain/documents/sc-default-study@2026.10.28.1:f07d9723",
+        "kind": "directory",
+        "local_path": "/tmp/marinskyrl/data/sc-default-study",
+        "relative_path": "validation.parquet",
+        "uri": "s3://marin-rno2a/marin/users/romain/documents/sc-default-study/2026.10.28.1"
+      }
+    ],
+    "checks": [
+      "RNO batch40H100 geometry",
+      "planned50updates and matched seed",
+      "TIS and intended SC arm",
+      "128prompts with4answers recipe",
+      "AdamW1e-6 and packing",
+      "normal rolling-staleness2 overlap",
+      "PP2/CP1/EP8,TP1/SP1",
+      "hypothetical probes off",
+      "no KL/entropy auxiliary loss",
+      "24K serving budget",
+      "native continuation source literal preserved",
+      "no synthetic qualification control"
+    ],
+    "limits": "Resolved configuration check. Actual updates, coverage, runtime and learned weights require run outputs."
+  },
+  "first_completed_cycle": {
+    "run_root": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3",
+    "objects": 9,
+    "train": {
+      "step": 1,
+      "metrics": {
+        "policy/policy_lr": 9.999999974752427e-07,
+        "policy/raw_grad_norm": 0.30299878120422363,
+        "policy/skipped_steps": 0.0,
+        "policy/policy_update_steps": 1,
+        "reward/avg_verifier_score": 0.6573246665658738,
+        "reward/verifier_score_coverage": 1.0,
+        "reward/informative_group_fraction": 0.28125,
+        "study/training_cycle_elapsed_seconds": 227.7729780249647
+      }
+    },
+    "eval": {
+      "step": 0,
+      "metrics": {
+        "eval/all/num_attempted": 1000.0,
+        "eval/all/num_scored": 999.0,
+        "eval/all/avg_verifier_score": 0.466347968512399
+      }
+    },
+    "cycle": {
+      "step": 1,
+      "elapsed_including_evaluation_seconds": 227.7729780249647,
+      "training_cycle_elapsed_seconds": 227.7729780249647,
+      "excluded_evaluation_seconds": 0,
+      "trained_loss_tokens": 236067,
+      "response_tokens": 236067
+    },
+    "engine": [
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      },
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      },
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      },
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      },
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      },
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      },
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      },
+      {
+        "vllm_version": "0.0.0.dev20260929+marin.39e62869693c.cu132",
+        "use_v2_model_runner": true,
+        "logits_processors": []
+      }
+    ],
+    "training_completed": false
+  },
+  "initial_evaluation": {
+    "step": 0,
+    "tasks": 1000,
+    "families": {
+      "calendar": {
+        "tasks": 200,
+        "full_success": 0.335,
+        "mean_verifier_reward": 0.335
+      },
+      "competitive_coding": {
+        "tasks": 200,
+        "full_success": 0.395,
+        "mean_verifier_reward": 0.4425
+      },
+      "reasoning_gym": {
+        "tasks": 200,
+        "full_success": 0.35,
+        "mean_verifier_reward": 0.3656581027194332
+      },
+      "stem": {
+        "tasks": 200,
+        "full_success": 0.66,
+        "mean_verifier_reward": 0.66
+      },
+      "structural": {
+        "tasks": 200,
+        "full_success": 0.53,
+        "mean_verifier_reward": 0.53
+      }
+    },
+    "macro_full_success": 0.45400000000000007,
+    "macro_mean_verifier_reward": 0.4666316205438866,
+    "response_tokens": 3258492,
+    "response_length_quantiles": {
+      "min": 2.0,
+      "median": 1690.0,
+      "p90": 8192.0,
+      "p99": 8192.0,
+      "max": 8192.0
+    },
+    "stop_counts": {
+      "stop": 755,
+      "length": 245
+    },
+    "curve_panel": {
+      "tasks": 1000,
+      "families": {
+        "calendar": {
+          "tasks": 200,
+          "full_success": 0.335,
+          "mean_verifier_reward": 0.335
+        },
+        "competitive_coding": {
+          "tasks": 200,
+          "full_success": 0.395,
+          "mean_verifier_reward": 0.4425
+        },
+        "reasoning_gym": {
+          "tasks": 200,
+          "full_success": 0.35,
+          "mean_verifier_reward": 0.3656581027194332
+        },
+        "stem": {
+          "tasks": 200,
+          "full_success": 0.66,
+          "mean_verifier_reward": 0.66
+        },
+        "structural": {
+          "tasks": 200,
+          "full_success": 0.53,
+          "mean_verifier_reward": 0.53
+        }
+      },
+      "macro_full_success": 0.45400000000000007,
+      "macro_mean_verifier_reward": 0.4666316205438866,
+      "response_tokens": 3258492,
+      "response_length_quantiles": {
+        "min": 2.0,
+        "median": 1690.0,
+        "p90": 8192.0,
+        "p99": 8192.0,
+        "max": 8192.0
+      },
+      "stop_counts": {
+        "stop": 755,
+        "length": 245
+      }
+    },
+    "coverage": {
+      "step": 0,
+      "expected": 1000,
+      "generated": 1000,
+      "graded": 1000,
+      "missing_uids": [],
+      "ungraded_uids": [],
+      "source_objects": [
+        {
+          "uri": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/exports/dumped_evals/global_step_0_evals/PRIME-RL_Eurus-2-RL-Data.jsonl",
+          "rows": 77,
+          "sha256": "1f681cc99dbe180789dd139df033339c437ead8a6f0440dc6026cd9d2b1d44d6"
+        },
+        {
+          "uri": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/exports/dumped_evals/global_step_0_evals/https:__files.pythonhosted.org_packages_42_21_bb9f6d2f76424f8b516fe83f8026e52e466b0202341bb4ee7a9861e06277_reasoning_gym-0.1.25-py3-none-any.whl.jsonl",
+          "rows": 176,
+          "sha256": "d3416a291a253ee2d1509aab91a3c7389fa3d3abe0c5e3b7839b9e3b40647741"
+        },
+        {
+          "uri": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/exports/dumped_evals/global_step_0_evals/nvidia_Nemotron-RL-Ultra-Training-Blends.jsonl",
+          "rows": 143,
+          "sha256": "c1f676941bada8eef85d57ee262fe338f0adaf44021fedb5a71be6870f77d3a3"
+        },
+        {
+          "uri": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/exports/dumped_evals/global_step_0_evals/nvidia_OpenScience.jsonl",
+          "rows": 180,
+          "sha256": "463c5cde8a5dafd34d1ed929148754677f86d78f50344d5b15759201a791b72c"
+        },
+        {
+          "uri": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/exports/dumped_evals/global_step_0_evals/open-athena_Snowball-Smartie-RL-2026.10.15.32-Data.jsonl",
+          "rows": 95,
+          "sha256": "2032ab89ed998f9d08569a7701fac9bb70d12c3dc4697244ac9ed91d4a6afc66"
+        },
+        {
+          "uri": "s3://marin-rno2a/marin/users/romain/checkpoints/sc-default-study/tis-seed1701/2026.10.28.3/exports/dumped_evals/global_step_0_evals/open-thoughts_TaskTrove.jsonl",
+          "rows": 329,
+          "sha256": "822b425735ab48c0919a4cbd68a61f6c40c3a6e23290a09d54358ca91678f654"
+        }
+      ]
+    }
+  },
+  "grade_only_recovery": {
+    "471": {
+      "task": "tasktrove-glaive_code-df5acd53958f416f8c36d80a898270b6124c3c76b307d2c21aed887b55178ef4",
+      "contract": "48b2dbaae5b6d19201015401517992b0f00234700940c97122f2a250b2d54b98",
+      "row_sha256": "f2dfb7e902ea2876fd256a7bdd8d4c60f3e17026e1b40038bcbcfce9bedc117f",
+      "judge_model": "openai/gpt-oss-120b",
+      "judge_base_url": "https://api.together.xyz/v1",
+      "answer_reconstruction": "saved original grading messages",
+      "verification": {
+        "status": "verified",
+        "score": 0.75,
+        "score_min": 0.0,
+        "score_max": 1.0,
+        "passed": null,
+        "reason": null,
+        "diagnostics": {
+          "grade_only_recovery": true
+        }
+      }
+    }
+  },
+  "limits": "No Grug primary endpoint or SC outcome yet. Initial evaluation is a zero-update curve point, not an independent training seed. Admission still requires all 50 updates, complete held-out grades and export."
+}

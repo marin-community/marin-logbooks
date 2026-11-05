@@ -1,8 +1,9 @@
 from pathlib import Path
 from types import SimpleNamespace
 
-from harbor.cli.main import app
 from typer.testing import CliRunner
+
+from harbor.cli.main import app
 
 runner = CliRunner()
 
@@ -19,7 +20,7 @@ def test_trial_start_preserves_acp_agent_shorthand(tmp_path: Path, monkeypatch):
     task_dir.mkdir()
     captured = {}
 
-    async def _fake_create(config, *, host_capabilities, guest_environment):
+    async def _fake_create(config):
         captured["config"] = config
 
         class _DummyTrial:
@@ -62,7 +63,7 @@ def test_run_preserves_acp_agent_shorthand(tmp_path: Path, monkeypatch):
     task_dir.mkdir()
     captured = {}
 
-    async def _fake_create(config, *, host_capabilities, guest_environment):
+    async def _fake_create(config):
         captured["config"] = config
 
         class _DummyJob:
@@ -80,6 +81,9 @@ def test_run_preserves_acp_agent_shorthand(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(
         "harbor.environments.factory.EnvironmentFactory.run_preflight",
         lambda **kwargs: None,
+    )
+    monkeypatch.setattr(
+        "harbor.cli.jobs._confirm_host_env_access", lambda *a, **k: None
     )
     monkeypatch.setattr(
         "harbor.cli.jobs.show_registry_hint_if_first_run",

@@ -1,4 +1,3 @@
-import asyncio
 from pathlib import Path
 
 import pytest
@@ -13,7 +12,7 @@ from harbor.models.trial.paths import TrialPaths
 class _StubEnvironment(BaseEnvironment):
     @staticmethod
     def type() -> EnvironmentType:
-        return EnvironmentType.LOCAL
+        return EnvironmentType.DOCKER
 
     @property
     def capabilities(self) -> EnvironmentCapabilities:
@@ -22,9 +21,7 @@ class _StubEnvironment(BaseEnvironment):
     def _validate_definition(self):
         pass
 
-    async def start(
-        self, force_build: bool, *, service_tasks: asyncio.TaskGroup
-    ) -> None:
+    async def start(self, force_build: bool) -> None:
         pass
 
     async def stop(self, delete: bool):

@@ -20,9 +20,8 @@ Load only the detail files needed for the requested work:
    - Deep references live under `docs/reference/`; read them only when the
      routed detail files point there.
 
-Use `research-engineering` for repeated tuning launches or controlled
-comparisons expected to produce reusable evidence. Ordinary implementation
-and correctness debugging do not need a research notebook.
+Use `docs/dev-guide/experiment-records.md` for evidence and reporting in
+long-running research.
 
 ## Kernel Deliverables
 
@@ -146,5 +145,4 @@ def _cost_estimate(
 - Performance improves on at least one realistic target shape, or limitations
   are explicitly documented.
 - Tuned table is checked in for requested hardware/shape regimes.
-- Experimental programs follow `research-engineering`; shared evidence
-  standards live in `docs/dev-guide/experiment-records.md`.
+- Long-running research records follow `docs/dev-guide/experiment-records.md`.

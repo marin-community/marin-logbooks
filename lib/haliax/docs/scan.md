@@ -333,7 +333,8 @@ sequence of inputs. In Haliax, layers are represented as [equinox.nn.Module][]s,
 provides a way to create a sequence of layers that can be applied to a sequence of inputs that implements the
 scan-over-layers pattern.
 
-For ordinary JAX arrays, use Levanter’s [ArrayStacked](https://github.com/marin-community/marin/blob/main/lib/levanter/docs/reference/Array-Stacked.md).
+If your stack does not use a named layer axis, see [ArrayStacked](array-stacked.md) for the array-native variant:
+[haliax.nn.ArrayStacked][].
 
 ### Stacked
 

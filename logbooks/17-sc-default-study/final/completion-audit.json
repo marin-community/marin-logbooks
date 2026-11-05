@@ -1,0 +1,610 @@
+{
+  "objective": "Recommend whether score centering (SC) should be enabled by default, and whether its candidate count should default to 32 or 128. Use a bounded comparison of real Snowball training and full-cycle cost. Leave both defaults unchanged for Romain's review.\n\nRomain will dispatch this goal to developer `01a16b97-e977-75f3-8b2b-fd07bbd1c609`.",
+  "goal_file": "/home/romain/work/marin-community/marin/sc-default-study-goal-01a0bb6f/notes/goals/2026-10-27-sc-default-study.md",
+  "goal_sha256": "b8171b88212a902f2c4ebb2cc03f25ebfe4060fa673d0e6d453b4464cae87596",
+  "issue": "https://github.com/marin-community/marin-logbooks/issues/17",
+  "requirements": [
+    {
+      "id": "recipe",
+      "requirement": "Recent healthy Snowball run, learning curve and evaluation evidence inspected",
+      "status": "complete",
+      "evidence": [
+        "protocol.json",
+        "notebook.md",
+        "https://github.com/marin-community/marin/issues/10314#issuecomment-6308654380"
+      ],
+      "assessment": "The healthy Snowball curriculum and evaluation records set the fixed50-update window and interim25-update learning panel. The historical learning evidence was inspected before selecting the duration.",
+      "evidence_sha256": {
+        "protocol.json": "2331a289ffcb5db20a260f49d8025f7f57fb32b8ae8cc8fbeb2a662654027cbc",
+        "notebook.md": "256a807c2d41eb54fdf2c4cc5f3e21195150b462e35b24f0bef6da1ed233ebb1"
+      }
+    },
+    {
+      "id": "inputs",
+      "requirement": "Pinned model, tokenizer, data, mixture, verifiers, split and non-leakage identities",
+      "status": "complete",
+      "evidence": [
+        "frozen-data.json",
+        "dataset-qualification.json",
+        "main-remote-data-validation.json",
+        "protocol.json"
+      ],
+      "assessment": "The Grug initializer, tokenizer, canonical data versions, seed20261028 split, five equal family weights and graders are pinned. Exact public-task/contract duplicates are removed; semantic overlap and earlier SFT exposure remain unknown.",
+      "evidence_sha256": {
+        "frozen-data.json": "86d68627184ce031ab0066895241b63d93825b28c9d8d3922a40595262f54178",
+        "dataset-qualification.json": "9a7510a2810674bcd590ee043074d407b2d182d573b040f293f61013d3df4232",
+        "main-remote-data-validation.json": "59122b91e77a620fb4f9e07db208f5b01a68342b9971857029c18e15c45cfe7d",
+        "protocol.json": "2331a289ffcb5db20a260f49d8025f7f57fb32b8ae8cc8fbeb2a662654027cbc"
+      }
+    },
+    {
+      "id": "graders",
+      "requirement": "Actual representative graders work before main allocation; consult before substitute",
+      "status": "complete",
+      "evidence": [
+        "grader-qualification.json",
+        "heldout-static-grader-audit.json",
+        "approved-prime-factor-format-rule.json",
+        "approved-boxnet-task-exclusions.json"
+      ],
+      "assessment": "Actual representative graders and reference controls passed before the main allocation. Latent contract/parser failures were subsequently preserved and resolved under the recorded owner approvals; no substitute workload or silent runtime-error imputation was used.",
+      "evidence_sha256": {
+        "grader-qualification.json": "c157c863f6168189e13644bec6aa7c9cb0670b7aebe72b42be36c335fcab6e52",
+        "heldout-static-grader-audit.json": "429af177b298d04ba3d653e98c78228486ab20a57167d510a786379c5ce6a14d",
+        "approved-prime-factor-format-rule.json": "dd89c361ac764a522a6b593448cf8926bc389427f13e03e7666dee96b09f7a84",
+        "approved-boxnet-task-exclusions.json": "2d3b90614b25b8063d58da8085f1e106dd0f40ecd788f0114e22ed84cb78d8f2"
+      }
+    },
+    {
+      "id": "protocol",
+      "requirement": "Predeclare primary success metric, weights, seeds, eval size/schedule, duration and uncertainty before SC outcomes",
+      "status": "complete",
+      "evidence": [
+        "https://github.com/marin-community/marin-logbooks/blob/6aae057cf351e0819946e38f33709092abe5b1b5/logbooks/17-sc-default-study/protocol.json",
+        "final/protocol.json",
+        "final/common-mask-verification.json"
+      ],
+      "assessment": "The primary metric, family weights, seeds, size, schedule, fifty-update endpoint and uncertainty method were published before SC outcomes. Later owner-approved task exclusions are explicit amendments, including the response-dependent post-outcome Boxnet limitation.",
+      "evidence_sha256": {
+        "final/protocol.json": "5d0180c4643825e9c459628f21a1176a3f04e6e77002f3032c5c353a85865fe3",
+        "final/common-mask-verification.json": "a6e6125e8fa8dff58bf212c384adec37769e898ea588f2cdafd2c9a9cc89d6af"
+      }
+    },
+    {
+      "id": "power",
+      "requirement": "Estimate compute and ability to resolve one percentage point",
+      "status": "complete",
+      "evidence": [
+        "protocol.json",
+        "final/report.md"
+      ],
+      "assessment": "Planning estimated1500\u20132500H100-hours and task-only uncertainty at multiple disagreement rates; it explicitly did not guarantee a one-point decision once seed variance is included. Final uncertainty remains inconclusive.",
+      "evidence_sha256": {
+        "protocol.json": "2331a289ffcb5db20a260f49d8025f7f57fb32b8ae8cc8fbeb2a662654027cbc",
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c"
+      }
+    },
+    {
+      "id": "extension_rule",
+      "requirement": "Finite extension and inference across looks predeclared",
+      "status": "complete",
+      "evidence": [
+        "protocol.json",
+        "inference.py",
+        "final/analysis.json"
+      ],
+      "assessment": "The original two-look scheme uses97.5% per-look decision intervals. Nominal95% intervals are also reported. There is no joint all-comparison/all-metric coverage claim.",
+      "evidence_sha256": {
+        "protocol.json": "2331a289ffcb5db20a260f49d8025f7f57fb32b8ae8cc8fbeb2a662654027cbc",
+        "inference.py": "4a1d68e3bd9bfac21ea860c851c159c3bfad773596afca26e649d19e19584f9b",
+        "final/analysis.json": "45e700ba866eaf9660cb9cf0079a64cf5768620e9eb4712c186827fb48bd1f08"
+      }
+    },
+    {
+      "id": "startup",
+      "requirement": "Actual Qwen driver nonzero updates, reference scoring, sampler publication, heldout grades and export",
+      "status": "complete",
+      "evidence": [
+        "qwen-v2-qualification.json",
+        "qwen-qualification.json",
+        "final/rejected-and-qualification-native-inventory.json"
+      ],
+      "assessment": "The real Qwen V2 qualification performed nonzero optimizer updates, reference scoring, sampler publication, held-out grading and a successful native portable export before the main matrix. Historical qualification export payloads are currently absent, which does not invalidate the retained execution proofs.",
+      "evidence_sha256": {
+        "qwen-v2-qualification.json": "d5f1ea83a63549cb7c84895f9ac4b3d3e1af4a6a2bda2e8ee47fed1cca7ba8ed",
+        "qwen-qualification.json": "4e7222b40c79f493335919baca3857327dce8003917f6e1b532d9c89d80a4b41",
+        "final/rejected-and-qualification-native-inventory.json": "728d0c8c2fba79b02d3d877c0cca21690faff9c19b96fe7fa5cc782877cfe934"
+      }
+    },
+    {
+      "id": "sleep_restore",
+      "requirement": "Inference weights restored after sleep verified",
+      "status": "complete",
+      "evidence": [
+        "qwen-v2-qualification.json"
+      ],
+      "assessment": "All eight live Qwen inference replicas restored their updated step2 weight hashes after sleep; this is separate from the two sampled tensors used to verify later portable exports.",
+      "evidence_sha256": {
+        "qwen-v2-qualification.json": "d5f1ea83a63549cb7c84895f9ac4b3d3e1af4a6a2bda2e8ee47fed1cca7ba8ed"
+      }
+    },
+    {
+      "id": "first_grug",
+      "requirement": "First Grug run through training and evaluation before expanded submissions",
+      "status": "complete",
+      "evidence": [
+        "grug-tis1701-v3-admission-verification.json",
+        "wave1-submissions.json",
+        "notebook.md"
+      ],
+      "assessment": "The first admitted TIS/1701 baseline completed training, evaluation and export qualification before expansion to the seed matrix.",
+      "evidence_sha256": {
+        "grug-tis1701-v3-admission-verification.json": "45fd67eacc53c91a3332e59de9e08576fe02e564f3dca515484cb7945fe77fc9",
+        "wave1-submissions.json": "446607e0a9e02f07e042e2b6468bb80ba687861754caea671000a600180a7e24",
+        "notebook.md": "256a807c2d41eb54fdf2c4cc5f3e21195150b462e35b24f0bef6da1ed233ebb1"
+      }
+    },
+    {
+      "id": "matrix",
+      "requirement": "TIS/SC128/SC32 each on three matched seeds; probes/capture off baseline",
+      "status": "complete",
+      "evidence": [
+        "runs.json",
+        "all15-admission-after-boxnet-exclusions.json",
+        "final/runs.json"
+      ],
+      "assessment": "All three arms have the original three matched seeds and the two declared additional seeds:15 admitted fifty-update endpoints. Baseline SC/probes/candidate capture are off; probes are off everywhere.",
+      "evidence_sha256": {
+        "runs.json": "c46ef5d05b25299d6d5573056478ec8aee9e13ca8c18b0bb6c366d3c4c47abe9",
+        "all15-admission-after-boxnet-exclusions.json": "b727319dfa36b8650f594ad7188e8994442eb2cfae381e3711b5b9e72c8bd069",
+        "final/runs.json": "2223014c5c283219a78ed384696775d55f4727e21406a6a052d3c135fbf30ca1"
+      }
+    },
+    {
+      "id": "invariants",
+      "requirement": "Checkpoint, optimizer, LR, mix, batches, sampling, eval and hardware fixed; normal weight/router updates",
+      "status": "complete",
+      "evidence": [
+        "protocol.json",
+        "all15-admission-after-boxnet-exclusions.json",
+        "final/runtime-verification.json",
+        "final/report-data.json"
+      ],
+      "assessment": "Per-run resolved configuration audits and collector gates verify fixed initializer, optimizer/LR, data/mix, batches, sampling, evaluation and hardware. Normal optimizer/router/sampler updates run; answers and subsequent weights diverge naturally.",
+      "evidence_sha256": {
+        "protocol.json": "2331a289ffcb5db20a260f49d8025f7f57fb32b8ae8cc8fbeb2a662654027cbc",
+        "all15-admission-after-boxnet-exclusions.json": "b727319dfa36b8650f594ad7188e8994442eb2cfae381e3711b5b9e72c8bd069",
+        "final/runtime-verification.json": "89b4cb72b8252b54fabcb5257b49bf68ccf1b1b882ed811eafdacac547d3f6d5",
+        "final/report-data.json": "a6aff6253b84010c2a2a694e387fa253605bdb450bf89860e6c23c07496e8516"
+      }
+    },
+    {
+      "id": "overlap",
+      "requirement": "Normal sampling/training overlap retained; no frozen weights/synthetic routes",
+      "status": "complete",
+      "evidence": [
+        "protocol.json",
+        "final/report.md",
+        "final/report-data.json"
+      ],
+      "assessment": "The healthy recipe retains ordinary rolling sampler/trainer overlap and policy staleness at most2. Frozen-weight and synthetic-route controls from study13 are absent from this learning comparison.",
+      "evidence_sha256": {
+        "protocol.json": "2331a289ffcb5db20a260f49d8025f7f57fb32b8ae8cc8fbeb2a662654027cbc",
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c",
+        "final/report-data.json": "a6aff6253b84010c2a2a694e387fa253605bdb450bf89860e6c23c07496e8516"
+      }
+    },
+    {
+      "id": "cycle_time",
+      "requirement": "Elapsed complete cycles across same planned updates; overlap not summed",
+      "status": "complete",
+      "evidence": [
+        "collect.py",
+        "final/report.md",
+        "final/report-data.json",
+        "final/per-seed.csv"
+      ],
+      "assessment": "The primary elapsed complete-cycle timer compares the same50 updates, excluding the exclusive midpoint evaluation pause. It includes generation, capture, transport, grading, scoring, optimization and publication. Overlapping phase timers are reported without summing them.",
+      "evidence_sha256": {
+        "collect.py": "d53f865a2ea788a62aa0cbde98bc34995c26c7ecbd1cee5e2a9ff0a4caa3fd36",
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c",
+        "final/report-data.json": "a6aff6253b84010c2a2a694e387fa253605bdb450bf89860e6c23c07496e8516",
+        "final/per-seed.csv": "df78a1cc2dcc35a1dcf9403d297c2fca2c5da9a548706e715289ca111b3724fe"
+      }
+    },
+    {
+      "id": "tokens",
+      "requirement": "Time per update, throughput, trained tokens and response lengths",
+      "status": "complete",
+      "evidence": [
+        "final/per-seed.csv",
+        "final/report-data.json",
+        "final/figures/cost-curves.png"
+      ],
+      "assessment": "Per-seed and arm reports retain cycle seconds/update, trained loss tokens, consumed response tokens, throughput and response length distributions. They do not claim pure kernel overhead or count discarded generated answers as consumed training tokens.",
+      "evidence_sha256": {
+        "final/per-seed.csv": "df78a1cc2dcc35a1dcf9403d297c2fca2c5da9a548706e715289ca111b3724fe",
+        "final/report-data.json": "a6aff6253b84010c2a2a694e387fa253605bdb450bf89860e6c23c07496e8516",
+        "final/figures/cost-curves.png": "53ea969232a31b64e4ba190cc239483ed18fb6af3a7c88d77ae4de30fb73e1ba"
+      }
+    },
+    {
+      "id": "startup_eval_cost",
+      "requirement": "Startup and evaluation cost separate",
+      "status": "complete",
+      "evidence": [
+        "final/report.md",
+        "final/report-data.json",
+        "allocation-campaign-final.json"
+      ],
+      "assessment": "Startup and0/25/50evaluation times are separate. Scheduler/image startup and teardown are included in allocation spans; a distinct teardown-only timer was not retained.",
+      "evidence_sha256": {
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c",
+        "final/report-data.json": "a6aff6253b84010c2a2a694e387fa253605bdb450bf89860e6c23c07496e8516",
+        "allocation-campaign-final.json": "4f46220f98a9de64d21eae1d2e3dd5c1c362a902b682c3793a131a0ec9830125"
+      }
+    },
+    {
+      "id": "uncertainty",
+      "requirement": "95 percent paired-seed/task intervals for quality and full-cycle cost",
+      "status": "complete",
+      "evidence": [
+        "inference.py",
+        "final/analysis.json",
+        "final/protocol.json",
+        "final/report.md"
+      ],
+      "assessment": "Quality uses the predeclared paired-seed/task procedure; cost uses paired seed log ratios. Tokens/updates are not independent runs. Both nominal95% and decision97.5% intervals are reported conditional on the amended task set.",
+      "evidence_sha256": {
+        "inference.py": "4a1d68e3bd9bfac21ea860c851c159c3bfad773596afca26e649d19e19584f9b",
+        "final/analysis.json": "45e700ba866eaf9660cb9cf0079a64cf5768620e9eb4712c186827fb48bd1f08",
+        "final/protocol.json": "5d0180c4643825e9c459628f21a1176a3f04e6e77002f3032c5c353a85865fe3",
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c"
+      }
+    },
+    {
+      "id": "comparisons",
+      "requirement": "SC32-TIS primary; SC128-TIS and SC32-SC128 supporting",
+      "status": "complete",
+      "evidence": [
+        "final/analysis.json",
+        "final/report.md",
+        "initial/initial-analysis.json",
+        "initial-amended/analysis.json"
+      ],
+      "assessment": "SC32\u2212TIS remains primary; SC128\u2212TIS and SC32\u2212SC128 remain supporting. No endpoint or metric was selected after outcomes.",
+      "evidence_sha256": {
+        "final/analysis.json": "45e700ba866eaf9660cb9cf0079a64cf5768620e9eb4712c186827fb48bd1f08",
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c",
+        "initial/initial-analysis.json": "f2a7fd4b3a3731c1d460491af6ce936d60dd16130201d47aa4b401f445830be6",
+        "initial-amended/analysis.json": "e979d34440751f3464154b3597cf54db25b2065d1f8381f85a23e6a7b1e1ba51"
+      }
+    },
+    {
+      "id": "decision",
+      "requirement": "Separate enabling and K recommendations against -1pp and +5 percent limits; defaults unchanged",
+      "status": "complete",
+      "evidence": [
+        "final/report.md",
+        "final/analysis.json",
+        "final/product-scope-verification.json"
+      ],
+      "assessment": "Separate recommendations retain SC disabled and K128 under uncertainty. All three comparisons are inconclusive against\u22121absolute quality point and+5%cycle time. Neither equivalence, established material regression nor empirical superiority of128 is claimed. Defaults are unchanged.",
+      "evidence_sha256": {
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c",
+        "final/analysis.json": "45e700ba866eaf9660cb9cf0079a64cf5768620e9eb4712c186827fb48bd1f08",
+        "final/product-scope-verification.json": "58976d23fe293d5d2edb844d0956ac75369f2c201fbd1ba9deff66c29ec05cca"
+      }
+    },
+    {
+      "id": "extension",
+      "requirement": "One justified bounded extension if inconclusive; preserve initial endpoint",
+      "status": "complete",
+      "evidence": [
+        "extension-plan.json",
+        "extension-precision-plan.json",
+        "extension-submissions.json",
+        "initial/initial-analysis.json",
+        "initial-amended/analysis.json",
+        "allocation-campaign-final.json"
+      ],
+      "assessment": "One finite six-run extension was published before launch, seeds6101/7919 across all arms, estimated855.262H100-hours. Actual862.009H100-hours. Original initial outcomes remain unchanged; no seed10007 or longer run was added.",
+      "evidence_sha256": {
+        "extension-plan.json": "821f056b5ea8e6ad365049ee6fb3f2a1451c0ebdb6cb06d6b7b318dad69dbccf",
+        "extension-precision-plan.json": "c124a952d21ed1b2455479888822fc08705cb8b32ab39ef9cb6f38934fac7263",
+        "extension-submissions.json": "a97ae6dd1069448396e7ca2c9960a00f57a744d2fc3f430a4484f2ff1be5dbc3",
+        "initial/initial-analysis.json": "f2a7fd4b3a3731c1d460491af6ce936d60dd16130201d47aa4b401f445830be6",
+        "initial-amended/analysis.json": "e979d34440751f3464154b3597cf54db25b2065d1f8381f85a23e6a7b1e1ba51",
+        "allocation-campaign-final.json": "4f46220f98a9de64d21eae1d2e3dd5c1c362a902b682c3793a131a0ec9830125"
+      }
+    },
+    {
+      "id": "curves",
+      "requirement": "Curves against updates, trained tokens and wall time",
+      "status": "complete",
+      "evidence": [
+        "final/figures/learning-curves.png",
+        "final/figures/cost-curves.png",
+        "final/figures/endpoint-intervals.png",
+        "plots.py"
+      ],
+      "assessment": "Learning curves use updates, trained tokens and elapsed time; cost curves use primary cycle time. All final PNG/SVG figures were visually inspected.",
+      "evidence_sha256": {
+        "final/figures/learning-curves.png": "b2e3e430290ffe0ba76d8629d4bf5fe5e9939527f92594bfbb6f2d6427d328d5",
+        "final/figures/cost-curves.png": "53ea969232a31b64e4ba190cc239483ed18fb6af3a7c88d77ae4de30fb73e1ba",
+        "final/figures/endpoint-intervals.png": "5f733286719b952c9d63d9190af59c01e63fb10226743f6823fc4e3e445061b2",
+        "plots.py": "830eeb280d3d1a69a9cca7558659df2cc8ad072051caf1ff498b4c56668f8c31"
+      }
+    },
+    {
+      "id": "task_results",
+      "requirement": "Compact per-task and per-seed grades, coverage and failure evidence",
+      "status": "complete",
+      "evidence": [
+        "final/matrix-restore.json",
+        "final/common-mask-verification.json",
+        "final/compact-evidence-restore.json",
+        "final/per-seed.csv",
+        "approved-boxnet-task-exclusions.json"
+      ],
+      "assessment": "All original answers and45panels are retained with hashes. Current inference uses9989endpoint tasks and999curve tasks, eleven uniform exclusions, family weights unchanged. Per-task matrices and original/amended/final compact evidence have exact verified restore references.",
+      "evidence_sha256": {
+        "final/matrix-restore.json": "cc7cf96ab9d4ab912695e81649ea2048d6c25254a3f23911da9b16d0dc1b5266",
+        "final/common-mask-verification.json": "a6e6125e8fa8dff58bf212c384adec37769e898ea588f2cdafd2c9a9cc89d6af",
+        "final/compact-evidence-restore.json": "414b4c4126d897b349a744ffcd874a68a48cf77b4ba6b9ab6445720e7ff37d19",
+        "final/per-seed.csv": "df78a1cc2dcc35a1dcf9403d297c2fca2c5da9a548706e715289ca111b3724fe",
+        "approved-boxnet-task-exclusions.json": "2d3b90614b25b8063d58da8085f1e106dd0f40ecd788f0114e22ed84cb78d8f2"
+      }
+    },
+    {
+      "id": "health",
+      "requirement": "Mismatch, clipping, policy age, numerical health and captured mass from ordinary telemetry",
+      "status": "complete",
+      "evidence": [
+        "all15-admission-after-boxnet-exclusions.json",
+        "final/report-data.json",
+        "final/report.md"
+      ],
+      "assessment": "All750admitted updates have positive finite gradients, finite losses/mismatch and no skipped optimizer update. Mismatch/clipping/age and captured-mass summaries use ordinary existing telemetry; captured mass is a bounded4096-position sample and not an all-token guarantee.",
+      "evidence_sha256": {
+        "all15-admission-after-boxnet-exclusions.json": "b727319dfa36b8650f594ad7188e8994442eb2cfae381e3711b5b9e72c8bd069",
+        "final/report-data.json": "a6aff6253b84010c2a2a694e387fa253605bdb450bf89860e6c23c07496e8516",
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c"
+      }
+    },
+    {
+      "id": "runtime",
+      "requirement": "Pinned dependencies, local vLLM/Megatron and required CP/TP/SP; compile and graphs on",
+      "status": "complete",
+      "evidence": [
+        "final/runtime-verification.json",
+        "protocol.json",
+        "https://github.com/marin-community/marin-logbooks/issues/13"
+      ],
+      "assessment": "All15resolved launches retain pinned local vLLM V2/Megatron, enforce_eager=false and no compilation override. Main Grug layout is packed CP1/TP1/SP1; earlier packedCP5/100K/80learner qualification remains separate unchanged study13 evidence. Runtime/config identity is verified, not a new CUDA-graph trace.",
+      "evidence_sha256": {
+        "final/runtime-verification.json": "89b4cb72b8252b54fabcb5257b49bf68ccf1b1b882ed811eafdacac547d3f6d5",
+        "protocol.json": "2331a289ffcb5db20a260f49d8025f7f57fb32b8ae8cc8fbeb2a662654027cbc"
+      }
+    },
+    {
+      "id": "resource_board",
+      "requirement": "Coordinate submissions, inspect both H100 pools, <=4 interactive nodes incl queued; larger batch",
+      "status": "complete",
+      "evidence": [
+        "extension-capacity-precheck.json",
+        "extension-readiness-verification.json",
+        "final/resource-board-closure.json",
+        "final/shutdown-verification.json"
+      ],
+      "assessment": "Both H100 pools were checked before launches;40-H100 gangs use batch. Owned GPU/grading/storage rows are closed after terminal/cleanup checks. Board records do not reserve capacity, and no other owner\u2019s jobs or shared services were changed.",
+      "evidence_sha256": {
+        "extension-capacity-precheck.json": "856d433933409241c637c1f6f8c6b729081b14de77825ac0a008af368de67a71",
+        "extension-readiness-verification.json": "703c72fd03f38cac786302c93d0fb2fae8e5c5fa728c9eb4ba6a2b24d5ab23ea",
+        "final/resource-board-closure.json": "6228d48270b0c544b361a05dc61980ed51ddbafa91e94beafd050d11e4598eff",
+        "final/shutdown-verification.json": "881fac08e8889b76acf63cbaf4572674c6eb0415204d2c9affe14f3e86134d5f"
+      }
+    },
+    {
+      "id": "provenance",
+      "requirement": "Exact source/config/commands published before execution; actual run identities retained",
+      "status": "complete",
+      "evidence": [
+        "actual-dispatch-verification.json",
+        "wave1-submissions.json",
+        "wave2-submissions.json",
+        "wave3-submissions.json",
+        "wave4-submissions.json",
+        "extension-submissions.json",
+        "final/provenance.json",
+        "final/execution.json",
+        "native-preservation-wave2-submissions.json"
+      ],
+      "assessment": "Published per-wave source/config identities precede actual runs. Submissions, request digests, source hashes, actual restarts, analysis execution and archive execution identities remain distinct.",
+      "evidence_sha256": {
+        "actual-dispatch-verification.json": "e2265543ce13c92662efb624853ad0e7437e3a26304323a9dc630e3b91d7f597",
+        "wave1-submissions.json": "446607e0a9e02f07e042e2b6468bb80ba687861754caea671000a600180a7e24",
+        "wave2-submissions.json": "3f43d76084ecdb8ad111f58c0879bfcc8b394ee34a4fc54be46d929da33d1b4e",
+        "wave3-submissions.json": "2e1b10f2f99ef58f1c0168f8b990b735a10e7b8eed62399b9dd5af115382dd13",
+        "wave4-submissions.json": "cbb4affced0e5c5fe5f668a4907ff58747ae61986b7304d29ab07dd0c80a0430",
+        "extension-submissions.json": "a97ae6dd1069448396e7ca2c9960a00f57a744d2fc3f430a4484f2ff1be5dbc3",
+        "final/provenance.json": "4aa9fbb0fb1aa5920a0e660fadb09cfff6751ceb341e9adf2b4e5c6bedcf74d3",
+        "final/execution.json": "715fa9c1a71336bb2fbd1b1d5b9ff7db8b2cdaac8a4b54385b2c459240c3acef",
+        "native-preservation-wave2-submissions.json": "2cc505762abaaee0a10ca3075c6c73ac5875e3e83826e724ecfbde7dada3217a"
+      }
+    },
+    {
+      "id": "archive",
+      "requirement": "Runnable Marin-derived research branch, notebook, index; previous study linked",
+      "status": "complete",
+      "evidence": [
+        "https://github.com/marin-community/marin-logbooks/blob/dab0d61a19ab95335f2b34e4f5080a185a4ba176/logbooks/17-sc-default-study/notebook.md",
+        "https://github.com/marin-community/marin-logbooks/issues/13#issuecomment-6525119579",
+        "https://github.com/marin-community/marin-logbooks/blob/031086089aa4d0e1e871afd04d7441e5fa5ffa50/INDEX.md",
+        "https://github.com/marin-community/marin-logbooks/pull/18"
+      ],
+      "assessment": "The Marin-derived research branch/notebook remains runnable and published. Study13 links this phase. The separate index-only draft PR now records the completed inconclusive result without merging or pushing main.",
+      "evidence_sha256": {}
+    },
+    {
+      "id": "product_scope",
+      "requirement": "Research code/bulk outside PRs; preserve history and core mirror/probe relationship",
+      "status": "complete",
+      "evidence": [
+        "final/product-scope-verification.json",
+        "final/github-delivery.json"
+      ],
+      "assessment": "Core a165e48a and probes eb1a3bf6 are unchanged. The upstream core mirror still matches and core remains an ancestor of probes. Experimental code and bulk results remain outside both product PRs; no history rewrite/main push/merge was performed.",
+      "evidence_sha256": {
+        "final/product-scope-verification.json": "58976d23fe293d5d2edb844d0956ac75369f2c201fbd1ba9deff66c29ec05cca",
+        "final/github-delivery.json": "369ec68a6df67befd259f89d567412b3f37af59027560209c8ef87f804b2b5f7"
+      }
+    },
+    {
+      "id": "repairs",
+      "requirement": "Necessary simple repairs checked; product changes validated/reviewed if essential",
+      "status": "complete",
+      "evidence": [
+        "pending-grades-verification.json",
+        "collector-verification.json",
+        "machine-recovery-local-qualification.json",
+        "lcb-window-recovery-verification.json",
+        "recovery-export-verifier-qualification.json",
+        "cross-region-preservation-iris-control-verification.json",
+        "cleanup-terminal-state-repair-verification.json",
+        "final/common-mask-verification.json"
+      ],
+      "assessment": "Research-only repairs were exercised with actual boundary replays and live successful qualification/export/admission/preservation. Canonical COSCHED_FAILED cleanup handling was qualified by actual stopped-consumer and real preflight checks. Product commits did not change, so no new product repair review is applicable.",
+      "evidence_sha256": {
+        "pending-grades-verification.json": "cea48f6e2ffc660fbca12ed1f8eb3d2812bb5f803b07ee9a0b56d343dc4f18d5",
+        "collector-verification.json": "906c6c05470222608431f5a5be88bf8332328cbd29ec99c92d65b02d72889028",
+        "machine-recovery-local-qualification.json": "f95d8336878261205b6f3bfd31a3db87ffa154d12b4f121ddfe7f419572f6ed8",
+        "lcb-window-recovery-verification.json": "7febe0eb0de2fec0078bb228c1e25fca80cd871dfc94ce71d0c400d4eee995d0",
+        "recovery-export-verifier-qualification.json": "5966403901be76d669b1573b44e96607db69c64790e041d7f84333f9bdf19b82",
+        "cross-region-preservation-iris-control-verification.json": "1224e650ee611c2ec201134453bb5af7d3603722355fb487d86d271f87793214",
+        "cleanup-terminal-state-repair-verification.json": "46e2d4493bcc5d8f6da71f2ec488f726c3538e86fa413e8ddf5018d072276d82",
+        "final/common-mask-verification.json": "a6e6125e8fa8dff58bf212c384adec37769e898ea588f2cdafd2c9a9cc89d6af"
+      }
+    },
+    {
+      "id": "accounting",
+      "requirement": "All allocated GPU-hours including startup, failed attempts/retries/validation",
+      "status": "complete",
+      "evidence": [
+        "allocation-campaign-final.json",
+        "allocation-accounting-qualification.json",
+        "final/report.md"
+      ],
+      "assessment": "All42GPUjobs/178executed task attempts, startup/qualification/rejections and failed/recovered exports are included:2467.697reconstructed H100-hours plus2.602separately observed preexecution-quota H100-hours. Six exporter startup clocks use explicit submission-to-terminal proxies with0.624H100-hour unseparated startup/queue window. These are not exact billing or certified bounds.",
+      "evidence_sha256": {
+        "allocation-campaign-final.json": "4f46220f98a9de64d21eae1d2e3dd5c1c362a902b682c3793a131a0ec9830125",
+        "allocation-accounting-qualification.json": "fe1984761a5647be93d520f42b8e68d0cf42c2b725e491c99a286e3beb7565f8",
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c"
+      }
+    },
+    {
+      "id": "storage",
+      "requirement": "Keep extension checkpoints, preserve compact evidence and restore references; safe owned cleanup after consumers",
+      "status": "complete",
+      "evidence": [
+        "final/storage-accounting.json",
+        "native-preservation-pilot-cleanup-verification.json",
+        "native-preservation-wave1-cleanup-verification.json",
+        "native-preservation-wave2-cleanup-verification.json",
+        "final/compact-evidence-restore.json",
+        "final/operator-evidence-restore.json",
+        "final/rejected-and-qualification-native-inventory.json",
+        "final/storage-health-at-completion.json"
+      ],
+      "assessment": "All15full native checkpoints are preserved and fully content-verified in East,675objects/12.083TB. Only480covered native tensor duplicates/12.076TB were removed after stopped-consumer/archive/model checks;195source metadata objects remain. Scientific and final operator compact evidence and exact restore refs are retained. No unique restart state was discarded.",
+      "evidence_sha256": {
+        "final/storage-accounting.json": "ea77d9293af92c43aa77bd0c36384620dc2fc0a8d1364c21eea7357708549988",
+        "native-preservation-pilot-cleanup-verification.json": "da41e77dc22d9a54f87654debecf7b6b14602c5d4ff88ff3d74513105c5404c8",
+        "native-preservation-wave1-cleanup-verification.json": "4cb049714c8047f14efee465fc38d2188de651c61835b79e510a305a37cbd6e8",
+        "native-preservation-wave2-cleanup-verification.json": "fecb5c0e43f6a48694558831af5ae4186cd2f8b235e5cdcabc184a44fd264e88",
+        "final/compact-evidence-restore.json": "414b4c4126d897b349a744ffcd874a68a48cf77b4ba6b9ab6445720e7ff37d19",
+        "final/operator-evidence-restore.json": "67da07dc6600738a9337e15e930fb5d198894615e9768a915fb6bccdb6884646",
+        "final/rejected-and-qualification-native-inventory.json": "728d0c8c2fba79b02d3d877c0cca21690faff9c19b96fe7fa5cc782877cfe934",
+        "final/storage-health-at-completion.json": "f19813bf4bede991e04416e29b01a02a2aadb9137cfc8be7643fe19b5da14639"
+      }
+    },
+    {
+      "id": "shutdown",
+      "requirement": "All owned jobs terminal; no other jobs/services altered",
+      "status": "complete",
+      "evidence": [
+        "final/shutdown-verification.json",
+        "extension-terminal-consumers-verification.json",
+        "extension-grade-recovery-verification.json",
+        "native-preservation-wave2-verification.json",
+        "final/resource-board-closure.json"
+      ],
+      "assessment": "The fresh root/task/attempt audit confirms every discovered owned study job is terminal; all active execution registries are empty. Physical release/termination proofs cover GPU, grader and copy consumers. Owned resource rows are closed. No further model or grade calls are pending.",
+      "evidence_sha256": {
+        "final/shutdown-verification.json": "881fac08e8889b76acf63cbaf4572674c6eb0415204d2c9affe14f3e86134d5f",
+        "extension-terminal-consumers-verification.json": "de6535c2b4ecc5843ea37ffeccd5875bc79b9ba409916571ed5734f2e6d7e4f0",
+        "extension-grade-recovery-verification.json": "0ea3bce81eead03dca793cf97f91e6e5bade2dae08ea600eb17c76ae8010652a",
+        "native-preservation-wave2-verification.json": "aec7ac2df4547f819375e75944521b9e97f8e0418a1d2c11ad5b8a7b83bd7768",
+        "final/resource-board-closure.json": "6228d48270b0c544b361a05dc61980ed51ddbafa91e94beafd050d11e4598eff"
+      }
+    },
+    {
+      "id": "pr_delivery",
+      "requirement": "Update existing PR descriptions concisely with research findings; current feedback addressed",
+      "status": "complete",
+      "evidence": [
+        "final/github-delivery.json",
+        "final/product-scope-verification.json"
+      ],
+      "assessment": "Both existing product draft descriptions were updated with the findings/research link. Final feedback checks find no comments or submitted reviews requiring action, and heads remain unchanged. No PR watcher or merge ownership was started.",
+      "evidence_sha256": {
+        "final/github-delivery.json": "369ec68a6df67befd259f89d567412b3f37af59027560209c8ef87f804b2b5f7",
+        "final/product-scope-verification.json": "58976d23fe293d5d2edb844d0956ac75369f2c201fbd1ba9deff66c29ec05cca"
+      }
+    },
+    {
+      "id": "ci",
+      "requirement": "If product commits changed, current-head CI terminal and required checks pass",
+      "status": "not_applicable",
+      "evidence": [
+        "final/product-scope-verification.json"
+      ],
+      "assessment": "The goal makes current-head CI contingent on changing product commits. Neither product head changed; unchanged prior CPU/GPU validation and advisory reviews are reused. No new product CI/merge monitor is required.",
+      "evidence_sha256": {
+        "final/product-scope-verification.json": "58976d23fe293d5d2edb844d0956ac75369f2c201fbd1ba9deff66c29ec05cca"
+      }
+    },
+    {
+      "id": "final",
+      "requirement": "Recommendations, intervals, curves, per-seed results, refs, compute/storage and limits delivered",
+      "status": "complete",
+      "evidence": [
+        "final/report.md",
+        "final/analysis.json",
+        "final/per-seed.csv",
+        "final/storage-accounting.json",
+        "final/shutdown-verification.json",
+        "final/handoff.json"
+      ],
+      "assessment": "The final report provides separate default recommendations, all comparison intervals, learning/cost curves, per-seed results, exact source/restore refs, compute/storage accounting and material uncertainty. The handoff points to those published artifacts and closed execution state.",
+      "evidence_sha256": {
+        "final/report.md": "e9e6b4117bedd5845e79a2cb1441ab410d5b99ef31d638af533dca747f784d7c",
+        "final/analysis.json": "45e700ba866eaf9660cb9cf0079a64cf5768620e9eb4712c186827fb48bd1f08",
+        "final/per-seed.csv": "df78a1cc2dcc35a1dcf9403d297c2fca2c5da9a548706e715289ca111b3724fe",
+        "final/storage-accounting.json": "ea77d9293af92c43aa77bd0c36384620dc2fc0a8d1364c21eea7357708549988",
+        "final/shutdown-verification.json": "881fac08e8889b76acf63cbaf4572674c6eb0415204d2c9affe14f3e86134d5f",
+        "final/handoff.json": "4c5e7b2e553dbd77c04a18a0ec7b4cb3a2e1703444eaaf286ef2a488769c4a8b"
+      }
+    }
+  ],
+  "observed_utc": "2026-10-30T19:23:02.532160+00:00",
+  "all_requirements_resolved": true,
+  "published_report_and_shutdown_commit": "dab0d61a19ab95335f2b34e4f5080a185a4ba176",
+  "index_commit": "031086089aa4d0e1e871afd04d7441e5fa5ffa50",
+  "limits": [
+    "All comparisons are inconclusive after the sole permitted extension.",
+    "The two Boxnet exclusions are response-dependent post-outcome decisions; intervals condition on the amended task set.",
+    "One model, five matched seeds and50updates do not establish long-run collapse prevention, general learning benefit or100K behavior.",
+    "Resource spans are reconstructions; provider billing and exact teardown/release clocks are not established."
+  ]
+}

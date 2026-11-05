@@ -4,19 +4,9 @@
 """Parse the Terminus JSON-command conversation protocol."""
 
 import json
-from enum import StrEnum
 from typing import NamedTuple
 
 from marin.datakit.download.rollout_transforms import TOOL_WRAPPER
-
-_CLOSING_SUFFIXES = ("", "}", "]}", "}]}")
-
-
-class TerminusParseMode(StrEnum):
-    """Select complete source syntax or supported harness repairs."""
-
-    STRICT = "strict"
-    REPAIR = "repair"
 
 
 class ThinkTokens(NamedTuple):
@@ -26,10 +16,9 @@ class ThinkTokens(NamedTuple):
     end: str
 
 
-def _json_command_payload_and_prefix(
-    content: str, think_tokens: ThinkTokens | None, mode: TerminusParseMode
-) -> tuple[dict, str] | None:
+def _json_command_payload_and_prefix(content: str, think_tokens: ThinkTokens | None) -> tuple[dict, str] | None:
     decoder = json.JSONDecoder()
+    search_start = 0
     if think_tokens is not None and content.lstrip().startswith(think_tokens.start):
         stripped = content.strip()
         if stripped.endswith(think_tokens.end):
@@ -41,50 +30,29 @@ def _json_command_payload_and_prefix(
             else:
                 if isinstance(payload, dict) and isinstance(payload.get("commands"), list):
                     return payload, ""
-    suffixes = _CLOSING_SUFFIXES if mode is TerminusParseMode.REPAIR else ("",)
-    depth = 0
-    index = 0
-    while index < len(content):
-        if think_tokens is not None:
-            if content.startswith(think_tokens.start, index):
-                depth += 1
-                index += len(think_tokens.start)
-                continue
-            if depth and content.startswith(think_tokens.end, index):
-                depth -= 1
-                index += len(think_tokens.end)
-                continue
-        if depth or content[index] != "{":
-            index += 1
+        end = content.find(think_tokens.end)
+        if end != -1:
+            search_start = end + len(think_tokens.end)
+    for index in range(search_start, len(content)):
+        char = content[index]
+        if char != "{":
             continue
-        body = content[index:].rstrip()
-        for suffix in suffixes:
-            try:
-                payload, _ = decoder.raw_decode(body + suffix)
-            except json.JSONDecodeError:
-                continue
-            if isinstance(payload, dict) and isinstance(payload.get("commands"), list):
-                prefix = content[:index].strip()
-                if mode is TerminusParseMode.REPAIR and think_tokens is not None and think_tokens.start in prefix:
-                    reasoning = prefix.replace(think_tokens.start, "").replace(think_tokens.end, "").strip()
-                    prefix = f"{think_tokens.start}{reasoning}{think_tokens.end}" if reasoning else ""
-                return payload, prefix
-            break
-        index += 1
+        try:
+            payload, _ = decoder.raw_decode(content[index:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and isinstance(payload.get("commands"), list):
+            return payload, content[:index].strip()
     return None
 
 
-def terminus_protocol_messages(
-    conversations: list[dict], think_tokens: ThinkTokens | None, *, mode: TerminusParseMode
-) -> list[dict] | None:
+def terminus_protocol_messages(conversations: list[dict], think_tokens: ThinkTokens | None) -> list[dict] | None:
     """Extract Terminus commands and optional leading reasoning from a conversation.
 
     The source must supply its reasoning delimiters, or None if it
     has none. A span containing only command JSON is treated as the response.
     Otherwise, only a nonempty leading reasoning span is retained; incidental
-    prose before the first command JSON is discarded. Repair mode merges closed
-    reasoning spans and supplies supported missing JSON closing delimiters.
-    Commands inside unfinished reasoning are rejected in both modes.
+    prose before the first command JSON is discarded.
     """
     messages: list[dict] = []
     pending_observation = False
@@ -103,7 +71,7 @@ def terminus_protocol_messages(
             messages.append(dict(message))
             continue
 
-        parsed = _json_command_payload_and_prefix(content, think_tokens, mode)
+        parsed = _json_command_payload_and_prefix(content, think_tokens)
         if parsed is None:
             return None
         payload, prefix = parsed

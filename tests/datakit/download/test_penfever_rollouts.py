@@ -9,7 +9,7 @@ from marin.datakit.chat_render import render_chat_record
 from marin.datakit.download.opencode import opencode_conversation, opencode_protocol_messages
 from marin.datakit.download.penfever_rollouts import PenfeverRollout, row_to_chat_doc
 from marin.datakit.download.rollout_transforms import openai_chat_document, openai_chat_messages
-from marin.datakit.download.terminus import TerminusParseMode, ThinkTokens, terminus_protocol_messages
+from marin.datakit.download.terminus import ThinkTokens, terminus_protocol_messages
 
 
 def _dataset(cohort: str) -> PenfeverRollout:
@@ -100,10 +100,7 @@ def test_terminal_protocol_keeps_json_responses_and_observations(cohort):
     assert "<tool_response" not in rendered
 
 
-@pytest.mark.parametrize(
-    "prefix",
-    ["<think><think>Inspect.</think></think>", "<think>Inspect.", "<think>Inspect.</think><think>Check again.</think>"],
-)
+@pytest.mark.parametrize("prefix", ["<think><think>Inspect.</think></think>", "<think>Inspect."])
 def test_terminal_protocol_quarantines_malformed_thinking(prefix):
     transform = row_to_chat_doc(_dataset("minimax-m27-131k"))
     assert (
@@ -141,9 +138,7 @@ def test_terminal_protocol_uses_source_thinking_delimiters():
         {"role": "user", "content": "Inspect the file."},
         {"role": "assistant", "content": '[reasoning]Inspect first.[/reasoning]{"commands":[],"task_complete":true}'},
     ]
-    messages = terminus_protocol_messages(
-        conversation, ThinkTokens("[reasoning]", "[/reasoning]"), mode=TerminusParseMode.STRICT
-    )
+    messages = terminus_protocol_messages(conversation, ThinkTokens("[reasoning]", "[/reasoning]"))
     assert messages is not None
     assert messages[-1]["reasoning_content"] == "Inspect first."
 

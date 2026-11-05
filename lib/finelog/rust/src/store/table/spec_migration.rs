@@ -585,6 +585,7 @@ async fn rewrite_batch(
             .object_store()
             .expect("migration has an object store"),
     );
+    let visibility = Arc::clone(migration.query_visibility);
     let runtime = tokio::runtime::Handle::current();
     let staging_dir = staging.path().to_path_buf();
     // One dedicated thread at normal priority: the single thread caps the
@@ -618,7 +619,7 @@ async fn rewrite_batch(
                 runtime.block_on(async {
                     let input = match source {
                         MigrationInput::Object(reference) => {
-                            open_cached_parquet(Arc::clone(&objects), reference).await?
+                            open_cached_parquet(objects.as_ref(), reference, &visibility).await?
                         }
                         MigrationInput::Legacy(ScanSource::Local(path)) => {
                             open_parquet(&path.to_string_lossy(), *size).await?

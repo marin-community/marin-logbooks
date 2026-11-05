@@ -35,19 +35,21 @@ def _local_pi_shell(temp_dir, monkeypatch, pi_script):
     monkeypatch.setattr(Pi, "_ENDPOINT_ENV_PATH", str(endpoint_path))
     monkeypatch.setattr(Pi, "_CONTEXT_BUDGET_EXTENSION_PATH", str(extension_path))
 
+    bootstrap_bin = temp_dir / "bootstrap-bin"
     fake_bin = temp_dir / "fake-bin"
+    nvm_dir = temp_dir / ".nvm"
     artifact_dir = temp_dir / "pi-artifacts"
-    for directory in (fake_bin, artifact_dir):
+    for directory in (bootstrap_bin, fake_bin, nvm_dir, artifact_dir):
         directory.mkdir()
 
     node = shutil.which("node")
     assert node is not None
+    (bootstrap_bin / "rm").symlink_to("/bin/rm")
     scripts = {
         fake_bin / "node": f'#!/bin/sh\nexec {shlex.quote(node)} "$@"\n',
         fake_bin / "pi": pi_script,
         fake_bin / "stdbuf": '#!/bin/sh\nshift\nexec "$@"\n',
-        fake_bin
-        / "tee": (
+        fake_bin / "tee": (
             "#!/bin/sh\n"
             'mkdir -p "$HOME/pi-artifacts"\n'
             'exec /usr/bin/tee "$HOME/pi-artifacts/$(basename "$1")"\n'
@@ -56,6 +58,15 @@ def _local_pi_shell(temp_dir, monkeypatch, pi_script):
     for path, contents in scripts.items():
         path.write_text(contents)
         path.chmod(0o755)
+    # Sourcing NVM selects the task image's default Node, not Pi's install version.
+    (nvm_dir / "nvm.sh").write_text(
+        'export PATH="$HOME/bootstrap-bin:/usr/bin:/bin"\n'
+        "nvm() {\n"
+        '  [ "$1" = use ] && [ "$2" = 22 ] || return 1\n'
+        '  export PATH="$HOME/fake-bin:/usr/bin:/bin"\n'
+        "}\n"
+    )
+
     class LocalShellEnvironment:
         async def upload_file(self, source_path, target_path):
             shutil.copyfile(source_path, target_path)
@@ -65,7 +76,7 @@ def _local_pi_shell(temp_dir, monkeypatch, pi_script):
                 ["/bin/bash", "-c", command],
                 capture_output=True,
                 text=True,
-                env={"HOME": str(temp_dir), "PATH": f"{fake_bin}:/usr/bin:/bin"},
+                env={"HOME": str(temp_dir), "PATH": str(bootstrap_bin)},
             )
             return SimpleNamespace(
                 return_code=completed.returncode,
@@ -82,20 +93,52 @@ def _local_pi_shell(temp_dir, monkeypatch, pi_script):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("requested_version", [None, "0.87.0", "0.80.5"])
-async def test_image_pi_preserves_requested_version(temp_dir, monkeypatch, requested_version):
+async def test_version_check_uses_installed_node_with_different_nvm_default(
+    temp_dir, monkeypatch
+):
     shell = _local_pi_shell(temp_dir, monkeypatch, '#!/bin/sh\nprintf "0.87.0\\n"\n')
-    agent = Pi(logs_dir=temp_dir, version=requested_version)
+    agent = Pi(logs_dir=temp_dir)
 
-    if requested_version == "0.80.5":
-        with pytest.raises(RuntimeError, match="Image provides Pi"):
-            await agent.install(shell.environment)
-    else:
-        await agent.install(shell.environment)
-        assert agent.version() == "0.87.0"
+    result = await shell.environment.exec(agent.get_version_command())
+
+    assert result.return_code == 0
+    assert agent.parse_version(result.stdout) == "0.87.0"
 
 
 class TestPiAgent:
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        ("version", "expected_package"),
+        [
+            (None, "@earendil-works/pi-coding-agent@latest"),
+            ("0.73.1", "@mariozechner/pi-coding-agent@0.73.1"),
+            ("0.74.0", "@earendil-works/pi-coding-agent@0.74.0"),
+        ],
+    )
+    async def test_install_uses_version_compatible_package(
+        self, temp_dir, version, expected_package
+    ):
+        agent = Pi(logs_dir=temp_dir, version=version)
+        mock_env = AsyncMock()
+        mock_env.exec.return_value = AsyncMock(return_code=0, stdout="", stderr="")
+
+        await agent.install(mock_env)
+
+        install_command = next(
+            call.kwargs["command"]
+            for call in mock_env.exec.call_args_list
+            if "npm install -g" in call.kwargs["command"]
+        )
+        assert f"npm install -g --ignore-scripts {expected_package}" in install_command
+
+    @pytest.mark.asyncio
+    async def test_install_rejects_invalid_package_version(self, temp_dir):
+        agent = Pi(logs_dir=temp_dir, version="latest??")
+        mock_env = AsyncMock()
+
+        with pytest.raises(ValueError, match="not a valid package version"):
+            await agent.install(mock_env)
+
     @pytest.mark.asyncio
     async def test_run_command_structure(self, temp_dir):
         agent = Pi(logs_dir=temp_dir, model_name="anthropic/claude-sonnet-4-5")
@@ -139,25 +182,36 @@ class TestPiAgent:
         assert "--provider my-provider --model my-model" in run_command
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize(
-        ("provider", "key"),
-        [("anthropic", "ANTHROPIC_API_KEY"), ("openai", "OPENAI_API_KEY")],
-    )
-    async def test_provider_receives_only_explicit_inert_capabilities(
-        self, temp_dir, monkeypatch, provider, key
-    ):
-        monkeypatch.setenv(key, "host-provider-private-canary")
-        agent = Pi(
-            logs_dir=temp_dir, model_name=f"{provider}/model", extra_env={key: "EMPTY"}
-        )
-        environment = AsyncMock()
-        environment.exec.return_value = SimpleNamespace(
-            return_code=0, stdout="", stderr=""
-        )
-        await agent.run("Fix the bug", environment, AgentContext())
-        run_env = environment.exec.call_args.kwargs["env"]
-        assert run_env[key] == "EMPTY"
-        assert "host-provider-private-canary" not in json.dumps(run_env)
+    async def test_api_key_forwarding_anthropic(self, temp_dir):
+        agent = Pi(logs_dir=temp_dir, model_name="anthropic/claude-sonnet-4-5")
+        mock_env = AsyncMock()
+        mock_env.exec.return_value = AsyncMock(return_code=0, stdout="", stderr="")
+        env_vars = {
+            "ANTHROPIC_API_KEY": "ak-123",
+            "UNRELATED_KEY": "ignored",
+        }
+        with patch.dict(os.environ, env_vars, clear=False):
+            await agent.run("Fix the bug", mock_env, AsyncMock())
+
+        run_env = mock_env.exec.call_args_list[-1].kwargs["env"]
+        assert run_env["ANTHROPIC_API_KEY"] == "ak-123"
+        assert "UNRELATED_KEY" not in run_env
+
+    @pytest.mark.asyncio
+    async def test_api_key_forwarding_openai(self, temp_dir):
+        agent = Pi(logs_dir=temp_dir, model_name="openai/gpt-4")
+        mock_env = AsyncMock()
+        mock_env.exec.return_value = AsyncMock(return_code=0, stdout="", stderr="")
+        env_vars = {
+            "OPENAI_API_KEY": "sk-456",
+            "UNRELATED_KEY": "ignored",
+        }
+        with patch.dict(os.environ, env_vars, clear=False):
+            await agent.run("Fix the bug", mock_env, AsyncMock())
+
+        run_env = mock_env.exec.call_args_list[-1].kwargs["env"]
+        assert run_env["OPENAI_API_KEY"] == "sk-456"
+        assert "UNRELATED_KEY" not in run_env
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -168,11 +222,7 @@ class TestPiAgent:
         ],
     )
     async def test_provider_base_url_forwarding(self, temp_dir, model_name, variable):
-        agent = Pi(
-            logs_dir=temp_dir,
-            model_name=model_name,
-            extra_env={variable: "https://provider.example.test/v1"},
-        )
+        agent = Pi(logs_dir=temp_dir, model_name=model_name)
         mock_env = AsyncMock()
         mock_env.exec.return_value = AsyncMock(return_code=0, stdout="", stderr="")
         endpoint = "https://provider.example.test/v1"
@@ -318,9 +368,8 @@ class TestPiAgent:
     ],
 )
 async def test_hosted_vllm_endpoint_registers_pi_provider(
-    temp_dir, model_name, thinking_format, monkeypatch
+    temp_dir, model_name, thinking_format
 ):
-    monkeypatch.setenv("OPENAI_API_KEY", "host-provider-private-canary")
     endpoint = "https://iris.example/proxy/t/cluster=cw/scoped-token/serve.inference/v1"
     served_id = "campaign-model"
     agent = Pi(
@@ -328,7 +377,7 @@ async def test_hosted_vllm_endpoint_registers_pi_provider(
         model_name=model_name,
         model_alias=f"hosted_vllm/{served_id}",
         api_base=endpoint,
-        api_key="EMPTY",
+        api_key="dummy-key",
         model_info={"max_input_tokens": 65536, "max_output_tokens": 16384},
         thinking_format=thinking_format,
     )
@@ -352,7 +401,7 @@ async def test_hosted_vllm_endpoint_registers_pi_provider(
             **os.environ,
             "HOME": str(temp_dir),
             "HARBOR_PI_API_BASE": endpoint,
-            "HARBOR_PI_API_KEY": "EMPTY",
+            "HARBOR_PI_API_KEY": "dummy-key",
         },
     )
     await agent.run("Fix the bug", mock_env, AgentContext())
@@ -394,10 +443,9 @@ async def test_hosted_vllm_endpoint_registers_pi_provider(
     assert run_tokens[run_tokens.index("--model") + 1] == served_id
     assert run_call.kwargs["env"] == {}
     assert uploaded_files[Pi._ENDPOINT_ENV_PATH] == (
-        f"export HARBOR_PI_API_BASE={endpoint}\nexport HARBOR_PI_API_KEY=EMPTY\n"
+        f"export HARBOR_PI_API_BASE={endpoint}\nexport HARBOR_PI_API_KEY=dummy-key\n"
     )
     assert Pi._CONTEXT_BUDGET_EXTENSION_PATH in uploaded_files
-    assert "host-provider-private-canary" not in json.dumps(uploaded_files)
     assert all(
         endpoint not in call.kwargs["command"] for call in mock_env.exec.call_args_list
     )
@@ -415,7 +463,7 @@ async def test_hosted_vllm_request_budget_uses_exact_server_token_count(
         model_name="open-athena/test-model",
         model_alias="hosted_vllm/served-model",
         api_base=endpoint,
-        api_key="EMPTY",
+        api_key="dummy-key",
         model_info={"max_input_tokens": 32768, "max_output_tokens": 16384},
         thinking_format="chat-template",
     )
@@ -489,7 +537,7 @@ async def test_hosted_vllm_request_budget_truncates_token_dense_tool_output(
         model_name="open-athena/test-model",
         model_alias="hosted_vllm/served-model",
         api_base=endpoint,
-        api_key="EMPTY",
+        api_key="dummy-key",
         model_info={"max_input_tokens": 32768, "max_output_tokens": 16384},
         thinking_format="chat-template",
     )
@@ -571,7 +619,7 @@ process.stdout.write(JSON.stringify({ transformed, promptTokens: tokenCount(tran
 
 
 @pytest.mark.asyncio
-async def test_hosted_vllm_command_classifies_authentication_and_cleans_provider_config(
+async def test_hosted_vllm_full_command_loads_nvm_and_preserves_capability_url(
     temp_dir, monkeypatch
 ):
     endpoint = "https://iris.example/proxy/t/scoped-token/eval/v1"
@@ -594,7 +642,7 @@ async def test_hosted_vllm_command_classifies_authentication_and_cleans_provider
         model_name="Qwen/Qwen3.6-35B-A3B",
         model_alias="hosted_vllm/served-model",
         api_base=endpoint,
-        api_key="EMPTY",
+        api_key="dummy-key",
         thinking_format="qwen-chat-template",
     )
 
@@ -651,7 +699,7 @@ async def test_hosted_vllm_failure_is_classified(
         model_name="Qwen/Qwen3.6-35B-A3B",
         model_alias="hosted_vllm/served-model",
         api_base=endpoint,
-        api_key="EMPTY",
+        api_key="dummy-key",
         thinking_format="qwen-chat-template",
     )
 
@@ -676,7 +724,7 @@ async def test_killed_output_validator_preserves_signal_error(temp_dir, monkeypa
         model_name="Qwen/Qwen3.6-35B-A3B",
         model_alias="hosted_vllm/served-model",
         api_base="https://iris.example/proxy/t/scoped-token/eval/v1",
-        api_key="EMPTY",
+        api_key="dummy-key",
         thinking_format="qwen-chat-template",
     )
 
@@ -772,7 +820,7 @@ fetch(`${provider.baseUrl}/chat/completions`, {
         model_name="Qwen/Qwen3.6-35B-A3B",
         model_alias="hosted_vllm/served-model",
         api_base=endpoint,
-        api_key="EMPTY",
+        api_key="dummy-key",
         thinking_format="qwen-chat-template",
     )
 
@@ -787,7 +835,7 @@ fetch(`${provider.baseUrl}/chat/completions`, {
     event = json.loads(output_path.read_text())
     assert received == {
         "path": "/proxy/t/redacted/endpoint/v1/chat/completions",
-        "authorization": "Bearer EMPTY",
+        "authorization": "Bearer dummy-key",
         "model": "served-model",
     }
     assert event["message"]["content"] == [
@@ -804,11 +852,7 @@ fetch(`${provider.baseUrl}/chat/completions`, {
 
 @pytest.mark.asyncio
 async def test_builtin_provider_does_not_replace_models_document(temp_dir):
-    agent = Pi(
-        logs_dir=temp_dir,
-        model_name="anthropic/claude-sonnet-4-5",
-        extra_env={"ANTHROPIC_API_KEY": "EMPTY"},
-    )
+    agent = Pi(logs_dir=temp_dir, model_name="anthropic/claude-sonnet-4-5")
     mock_env = AsyncMock()
     mock_env.exec.return_value = SimpleNamespace(return_code=0, stdout="", stderr="")
 
@@ -820,7 +864,7 @@ async def test_builtin_provider_does_not_replace_models_document(temp_dir):
         for call in mock_env.exec.call_args_list
     )
     assert mock_env.exec.call_args_list[-1].kwargs["env"] == {
-        "ANTHROPIC_API_KEY": "EMPTY"
+        "ANTHROPIC_API_KEY": "test-key"
     }
 
 
@@ -883,21 +927,31 @@ def test_rollout_collection_stamps_a_unique_trial_header(temp_dir):
     assert correlation_ids[0] != correlation_ids[1]
 
 
-def test_hosted_provider_rejects_real_authentication_before_staging(
-    temp_dir, monkeypatch
+@pytest.mark.asyncio
+async def test_hosted_vllm_failure_preserves_capability_url_and_redacts_api_key(
+    temp_dir,
 ):
-    monkeypatch.setenv("OPENAI_API_KEY", "host-provider-private-canary")
-    with pytest.raises(
-        ValueError, match="credentials must remain on the host"
-    ) as error:
-        Pi(
-            logs_dir=temp_dir,
-            model_name="hosted_vllm/served-model",
-            api_base="http://127.0.0.1:8787/v1",
-            api_key="host-provider-private-canary",
-            thinking_format="qwen-chat-template",
-        )
-    assert "host-provider-private-canary" not in str(error.value)
+    endpoint = "https://iris.example/proxy/t/scoped-token/eval/v1"
+    api_key = "secret-api-key"
+    agent = Pi(
+        logs_dir=temp_dir,
+        model_name="hosted_vllm/served-model",
+        api_base=endpoint,
+        api_key=api_key,
+        thinking_format="qwen-chat-template",
+    )
+    mock_env = AsyncMock()
+    mock_env.exec.return_value = SimpleNamespace(
+        return_code=1,
+        stdout="",
+        stderr=f"request to {endpoint} with key {api_key} failed",
+    )
+
+    with pytest.raises(RuntimeError) as error:
+        await agent.run("Fix the bug", mock_env, AgentContext())
+
+    assert endpoint in str(error.value)
+    assert api_key not in str(error.value)
 
 
 class TestPiPopulateContext:

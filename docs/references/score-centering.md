@@ -6,22 +6,37 @@ logs TIM and collects periodic hypothetical score-centering probes on supported
 configurations. Score centering (SC) is off by default. Probes report a scalar
 correction without applying it to training.
 
-See [TIM diagnostics](training-inference-mismatch.md) for chosen-token mismatch,
-policy-age buckets and response-position summaries.
+## Read TIM
+
+Check counts before comparing means. Empty buckets omit means; absence does
+not establish agreement.
+
+| Metrics | Interpretation |
+| --- | --- |
+| `policy/mismatch/pooled/` | Old trainer minus behavior sampler log probabilities, before this update. Check `selected_tokens`, `finite_tokens`, `missing_behavior`, `log_ratio_abs_mean`, `log_ratio_abs_p99` and `frac_outside_0_5_2`. |
+| `policy/mismatch/staleness0/` | Tokens stamped with this learner snapshot's version. Disagreement at matching weights can indicate engine mismatch. |
+| `policy/mismatch/staleness1/` through `staleness8+/` | Older generating versions; disagreement includes weight drift. Age buckets are 1, 2, 3, 4–7 and 8+. |
+| `policy/mismatch/unknown/` | No generating-policy stamp. A rollout lease bounds age but does not establish matching weights. Check `async/staleness_tokens_stamped` for stamp coverage. |
+| `policy/correction/truncated_fraction` | Loss tokens whose uncapped TIS weight exceeded the cap. |
+| `policy/ppo_clip_ratio*`, `policy/log_ratio_*` | PPO clipping and current-versus-old trainer changes during optimization. |
+
+Each mismatch bucket also reports `pos_first256/`, `pos_last256/` and
+`response_ge2048/` counts and absolute mean log ratios. Positions include masked
+response tokens. First and last windows overlap on short responses. Inspect
+long-response counts before interpreting their means. Selected and finite counts
+remain separate.
 
 ## Adjust probes
 
 The default is one eligible prompt group at startup and after every 10 published
 policy steps, with 128 candidates and at most 32 positions per response. A policy
-step numbers a learner batch, not an optimizer microbatch. Probes share
-`score_centering_top_k` with SC. Change the candidate count or frequency;
-interval `0` disables probes:
+step numbers a learner batch, not an optimizer microbatch. Change only the
+frequency; `0` disables probes:
 
 ```yaml
 skyrl:
   trainer:
     algorithm:
-      score_centering_top_k: 128
       score_centering_probe:
         interval: 10
 ```
@@ -45,23 +60,17 @@ There is no automatic cadence controller.
 | `fresh_source_tokens`, `stale_source_tokens`, `unknown_source_tokens`, `long_response/{fresh,stale,unknown}_tokens` | Coverage by actual generating-policy stamp. Empty source subsets omit means. |
 | `hypothetical_loss_*`, `ordinary_loss_abs_mean` | Additive SC correction with actual advantages and absolute TIS/PPO loss on the same positions, as unweighted sample means. |
 | `unit_advantage_loss_*`, `zero_advantage_fraction` | Companion calculation for flat-reward groups. Unit advantages are never applied to training. |
-| `unit_advantage_logit_correction_l1_mean` | L1 norm of the hypothetical output/logit-gradient correction with unit advantage, including the modeled tail. |
-| `logit_correction_l1_mean`, `ordinary_logit_gradient_l1_mean`, `logit_correction_l1_ratio` | Actual-advantage correction and ordinary TIS output-gradient L1 norms. The ratio divides their sums over the same sampled positions; a zero denominator omits it. |
-| `*_omitted_mass_mean`, `tail_floor_fraction` | Mass outside the configured head and use of the 1e-6 tail floor. |
+| `*_omitted_mass_mean`, `tail_floor_fraction` | Mass outside K128 and use of the 1e-6 tail floor. |
 | `old_behavior_log_ratio_*`, `sampled_tis_clipped_fraction`, source-age means | Chosen-token mismatch, TIS truncation and generating-policy age within the sample. |
 
 Current and old trainer probabilities coincide at this snapshot. A stale probe
 also includes weight drift; it does not measure later current/old divergence.
-The L1 calculation uses the captured head and modeled tail without another
-parameter backward pass. It measures sensitivity at this snapshot; it does not
-establish parameter-gradient error or learning benefit. Small omitted masses are
-sensitive to FP32 subtraction, even just above
+Scalar correction size does not establish parameter-gradient error or learning
+benefit. Small omitted masses are sensitive to FP32 subtraction, even just above
 the tail floor. Inspect omitted mass as well as floor usage.
 
-Probes require regular PPO/TIS with full-distribution, temperature-only sampling,
-local vLLM and Megatron with tensor parallelism one and sequence parallelism
-disabled. Behavior-logprob training rejects probability-changing sampling filters
-at launch. CP=1 supports padded or packed rows;
+Probes require regular PPO/TIS, local vLLM and Megatron with tensor parallelism
+one and sequence parallelism disabled. CP=1 supports padded or packed rows;
 CP>1 requires packing. Data, pipeline and expert parallelism retain their
 ordinary layout constraints. Other configurations report probe
 unavailability. Probes are unavailable when SC is enabled.
@@ -103,7 +112,6 @@ skyrl:
       policy_loss_type: regular
       off_policy_correction: tis
       score_centering_enabled: true
-      score_centering_top_k: 128
     policy:
       sequence_parallel_size: 1
       megatron_config:
@@ -114,24 +122,14 @@ skyrl:
     run_engines_locally: true
 ```
 
-`score_centering_top_k` sets the positive candidate count for capture and trainer
-rescoring. It is independent of sampling's `top_k`, which changes the generated
-distribution. The default is 128; 32 is a cheaper approximation. The [Grug cost
-study][sc-cost-study] measured matched trainer time of 16.779 seconds at K128,
-14.799 at K32 and 14.752 with ordinary TIS. K32 cuts numeric head sizes by 75%.
-The hardest sampled long prefix retained only 24.2% of behavior mass at K32 and
-40.2% at K128, so the conservative default remains 128. Neither count guarantees
-an accurate correction on a broad distribution. Live-cycle estimates have wide
-intervals from differing response lengths; no learning benefit is established.
-
-The `tis` preset caps importance weights at two; a custom correction must contain
-exactly one token truncation rule. SC rejects distillation, auxiliary FTPO, other
-policy losses and remote inference. Behavior-logprob training, including ordinary
-TIS, requires full-distribution, temperature-only sampling; probability-changing
-filters are rejected at launch. Disabling the flag returns to
+The flag selects K128 capture and trainer rescoring automatically. The `tis`
+preset caps importance weights at two; a custom correction must contain exactly
+one token truncation rule. SC rejects distillation, auxiliary FTPO, other policy
+losses, remote inference and probability-changing sampling
+filters. Temperature-only sampling is supported. Disabling the flag returns to
 ordinary training; set the probe interval to zero for a control without heads.
 
-The head contains the sampler's natural top K token IDs and their
+The head contains the sampler's natural top 128 token IDs and their
 probabilities normalized over the full vocabulary. Megatron scores those IDs at
 the same causal positions before and during optimization. Outside the head, old and behavior probabilities are
 modeled as proportional to the current policy, preserving measured omitted mass.
@@ -218,8 +216,8 @@ The [dated Snowball report][snowball-report] retains cost measurements and full
 experimental records. Those measurements qualify their pinned source, not later
 code changes. That report's async probes sampled no responses of at least 2,048
 tokens; the CP5 qualification above includes live observations from longer
-responses. No Snowball learning benefit is established. Continuous capture without SC and training-time microbatch
-diagnostics were retired from the runtime;
+responses. No Snowball learning benefit is established. Continuous capture without SC, training-time microbatch
+diagnostics and variable head/position sizes were retired from the runtime;
 matched research controls remain at the report's immutable revisions.
 
 The scalar-grader repair [#10394](https://github.com/marin-community/marin/pull/10394)
@@ -229,5 +227,3 @@ finiteness check. Editable dependencies carry that source in the workspace bundl
 [snowball-report]: https://github.com/yonromai/marin/blob/14dae4c5e21179fd1b664e97ae6104b21837d6cd/docs/reports/score-centering-tim.md
 
 [cp-qualification]: https://wandb.ai/marin-community/score-centering-cp-packing/artifacts/qualification/packed-cp5-qualification-01a16b97/v0
-
-[sc-cost-study]: https://github.com/marin-community/marin-logbooks/issues/13
