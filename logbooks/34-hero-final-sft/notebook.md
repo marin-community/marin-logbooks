@@ -115,3 +115,19 @@ kernel behavior remain unverified.
 
 The port and all new evaluation code are research artifacts. No Marin
 contribution or production adoption is implied. No SFT job has launched.
+
+
+## 2026-11-05: direct-controller admission correction
+
+The first smoke submission from source `83b709982db97380ba3f6e6de9919ef7d3fd0eaa`
+was rejected before job creation. Its resources carried `target_cluster` equal
+to the already selected direct controller, so admission interpreted the pin as
+a federation request to an unconfigured peer. A canonical-prefix job listing
+confirmed no job existed. The exclusive pending receipt and rejected request
+remain intact; no GPU work was launched by this attempt.
+
+The corrected v2 request omits the self federation pin, retains direct controller
+`cw-us-east-08a`, and uses a fresh job name, output root and receipt. The launcher
+now rejects this configuration locally before making a submission. Model,
+optimizer, data, hardware count and step bounds are unchanged. The corrected
+request will receive its own reviewed, immutable publication before submission.
