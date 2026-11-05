@@ -1969,3 +1969,28 @@ establishes phase progress despite the unchanged ONLINE summary. The optional pr
 that diagnostic error does not establish worker failure. The job remains under
 its existing observer. Finite output validation, SVD results and terminal/archive
 checks remain pending. See [phase evidence](fullsize-probe-qualification-phase-progress.json).
+
+### 2026-11-05 17:58 UTC — complete the initial pilot grid
+
+All30 fixed-subset initial pilots are validated. The final cell, alpha0.5,
+ridge0.01, LR0.001, has final C4-en validation loss4.3975324631. It passed
+7,630 finite training rows, stored counter7,630,57-array checkpoint metadata,
+finished ONLINE configuration/source matching and four original-attempt worker
+successes. Reuse [completion evidence](subset-training-r02-nonzero-completed.json).
+The initial campaign's sole observer exited after all30 canonical successes;
+its scope is complete, and expansions have separate monitoring. Expansions
+remain required before global selection.
+
+The completed alpha0.5/ridge0.01 group selects its upper-boundary LR0.001.
+The next factor-of-two point is LR0.002, prepared in the
+[R05 bundle](subset-expansion-r05-bundle.json), which incorporates all30 initial
+pilot results and the exact configuration/source/job identities of five
+accepted expansions. This preparation does not establish
+submission, allocation or training.
+
+R04 startup checks join all four original task attempts to distinct assigned
+workers and four finished ONLINE W&B host logging preflight checks. The native
+training run matches its frozen configuration and source, with an observed finite loss12.21659
+at zero-based update label7. This is early training progress, not final evaluation.
+Reuse the [startup evidence](subset-expansion-r04-started.json); no additional
+startup queries are needed unless task attempts change.
