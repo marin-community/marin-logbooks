@@ -1,0 +1,110 @@
+{
+  "source_commit": "8732b8301479cbc90908edb5d40b5f0cd25b89cd",
+  "all16_cases_passed": true,
+  "test_cases": [
+    "test_hero_grug_moe_selects_logical_kv_heads_by_layer_type[False]",
+    "test_hero_grug_moe_selects_logical_kv_heads_by_layer_type[True]",
+    "test_grug_xsa_correction_and_gate_match_reference_math[False]",
+    "test_grug_xsa_correction_and_gate_match_reference_math[True]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config0-FLASHINFER-None-False-None-6]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config1-FLASHINFER-True-False-None-6]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config2-FLASHINFER-None-False-None-12]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config3-TRITON_ATTN-None-False-None-12]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config4-FLASHINFER-False-False-None-12]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config5-FLASHINFER-None-False-fp8-12]",
+    "test_hero_cache_default_preserves_unqualified_layouts[additional_config6-FLASHINFER-None-True-None-12]",
+    "test_grug_moe_online_fp8_loading_matches_vllm",
+    "test_grug_moe_tiny_decoder_layer_matches_reference_math",
+    "test_grouped_decode_preserves_repeated_heads[1-2048]",
+    "test_grouped_decode_preserves_repeated_heads[4-8208]",
+    "test_grouped_decode_preserves_repeated_heads[32-262144]"
+  ],
+  "loaded_source": {
+    "vllm/model_executor/models/grugmoe.py": {
+      "path": "/uv/cache/archive-v0/98WOun9-hWqD5G2t/lib/python3.12/site-packages/vllm/model_executor/models/grugmoe.py",
+      "sha256": "21f68c4ef67593ece67a6aa2efc44de7f8047c7ef601604bfd4f239930d008f0"
+    },
+    "vllm/v1/attention/backends/flashinfer.py": {
+      "path": "/uv/cache/archive-v0/98WOun9-hWqD5G2t/lib/python3.12/site-packages/vllm/v1/attention/backends/flashinfer.py",
+      "sha256": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+    },
+    "vllm/v1/attention/backends/grug_logical_kv.py": {
+      "path": "/uv/cache/archive-v0/98WOun9-hWqD5G2t/lib/python3.12/site-packages/vllm/v1/attention/backends/grug_logical_kv.py",
+      "sha256": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+    }
+  },
+  "wheel": {
+    "uri": "s3://marin-us-east-08a/marin/users/romain/hero-kv-review-01a1aa2c/inputs/3a732c5f252d55cd5fd489a28b42de0a314618e5386bffa6a761d5231c0e4b91/vllm-0.0.0.dev20261105+marin.f6ae232ff374.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "sha256": "3a732c5f252d55cd5fd489a28b42de0a314618e5386bffa6a761d5231c0e4b91",
+    "readback_sha256": "3a732c5f252d55cd5fd489a28b42de0a314618e5386bffa6a761d5231c0e4b91",
+    "name": "vllm-0.0.0.dev20261105+marin.f6ae232ff374.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+    "bytes": 250547299,
+    "receipt": {
+      "kind": "private_python_overlay",
+      "base_wheel_sha256": "c7dc011b001569a0cc88bfbb615575138e4f262845f8e4604f784e230e6de27a",
+      "source_commit": "8732b8301479cbc90908edb5d40b5f0cd25b89cd",
+      "changed_files": {
+        "vllm/model_executor/models/grugmoe.py": "21f68c4ef67593ece67a6aa2efc44de7f8047c7ef601604bfd4f239930d008f0",
+        "vllm/v1/attention/backends/flashinfer.py": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6"
+      },
+      "added_files": {
+        "vllm/v1/attention/backends/grug_logical_kv.py": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+      },
+      "wheel_path": "/home/romain/work/marin-community/vllm/hero-cache-review-01a1aa2c-scratch/revision2/private/vllm-0.0.0.dev20261105+marin.f6ae232ff374.cu132-cp38-abi3-manylinux_2_28_aarch64.whl",
+      "wheel_sha256": "3a732c5f252d55cd5fd489a28b42de0a314618e5386bffa6a761d5231c0e4b91",
+      "wheel_bytes": 250547299,
+      "verified_unchanged_files": 5100,
+      "version": "0.0.0.dev20261105+marin.f6ae232ff374.cu132"
+    }
+  },
+  "command": [
+    "uvx",
+    "--with",
+    "pytest==9.1.0",
+    "--with",
+    "anthropic==1.11.0",
+    "--from",
+    "vllm @ file:///iris/candidates/3a732c5f252d55cd5fd489a28b42de0a314618e5386bffa6a761d5231c0e4b91/vllm-0.0.0.dev20261105%2Bmarin.f6ae232ff374.cu132-cp38-abi3-manylinux_2_28_aarch64.whl#sha256=3a732c5f252d55cd5fd489a28b42de0a314618e5386bffa6a761d5231c0e4b91",
+    "--with",
+    "runai-model-streamer[s3]==0.16.1",
+    "--with",
+    "torch==2.14.1+cu132",
+    "--with",
+    "nvidia-cuda-nvcc==13.2.86",
+    "--with",
+    "nvidia-cuda-crt==13.2.86",
+    "--with",
+    "nvidia-nvvm==13.2.86",
+    "--python",
+    "3.12",
+    "--index",
+    "https://download.pytorch.org/whl/cu132",
+    "--index",
+    "https://download.pytorch.org/whl/cpu",
+    "--index-strategy",
+    "unsafe-best-match",
+    "python",
+    "-c",
+    "import importlib.metadata\nimport os\nfrom pathlib import Path\nimport sys\n\ndistribution = importlib.metadata.distribution('nvidia-cuda-nvcc')\nnvcc_file = next(path for path in distribution.files or () if str(path).endswith(\"/bin/nvcc\"))\nnvcc = Path(distribution.locate_file(nvcc_file)).resolve()\ncuda_home = nvcc.parent.parent\ncuda_lib = cuda_home / \"lib\"\ncuda_lib64 = cuda_home / \"lib64\"\nif cuda_lib.is_dir() and not cuda_lib64.exists():\n    cuda_lib64.symlink_to(cuda_lib, target_is_directory=True)\ncudart = cuda_lib / \"libcudart.so.13\"\ncudart_link = cuda_lib / \"libcudart.so\"\nif cudart.is_file() and not cudart_link.exists():\n    cudart_link.symlink_to(cudart.name)\nnvrtc = cuda_lib / \"libnvrtc.so.13\"\nnvrtc_link = cuda_lib / \"libnvrtc.so\"\nif nvrtc.is_file() and not nvrtc_link.exists():\n    nvrtc_link.symlink_to(nvrtc.name)\nos.environ[\"CUDA_HOME\"] = str(cuda_home)\nos.environ[\"PATH\"] = os.pathsep.join((str(nvcc.parent), os.environ[\"PATH\"]))\nos.execvp(sys.argv[1], sys.argv[1:])\n",
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "-c",
+    "/dev/null",
+    "--confcutdir",
+    "/iris/kv-review/source/tests/models",
+    "--junitxml",
+    "/iris/kv-review/components-final/junit.xml",
+    "/iris/kv-review/source/tests/models/test_grugmoe.py::test_hero_grug_moe_selects_logical_kv_heads_by_layer_type",
+    "/iris/kv-review/source/tests/models/test_grugmoe.py::test_grug_xsa_correction_and_gate_match_reference_math",
+    "/iris/kv-review/source/tests/models/test_grugmoe.py::test_hero_cache_default_preserves_unqualified_layouts",
+    "/iris/kv-review/source/tests/models/test_grugmoe.py::test_grug_moe_online_fp8_loading_matches_vllm",
+    "/iris/kv-review/source/tests/models/test_grugmoe.py::test_grug_moe_tiny_decoder_layer_matches_reference_math",
+    "/iris/kv-review/source/tests/models/test_grugmoe_logical_kv.py"
+  ],
+  "evidence_archive_sha256": "0a4d3ad01dd6bf4d17db27366ec81f9d053e772dfb13314d47c8753ee18e22cd",
+  "numerical_tolerances_unchanged": true
+}

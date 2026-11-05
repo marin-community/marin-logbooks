@@ -1,0 +1,183 @@
+{
+  "mode": "explicit_disable",
+  "all24_state_pairs_exact": true,
+  "source_commit": "1bd4209369b55bc36014c1d41c626f7a28d754fd",
+  "hosts": [
+    {
+      "node": "s1s43nb4",
+      "task": "/romain/dev-gpu-hero-kv-full-01a1aa2c/0:0",
+      "attempt_uid": "d012d2218988c0d9",
+      "status": "stopped",
+      "archive_sha256": "664699e203cc9a14f0d0fd11bc13434eb42b1b6ab0849ccaba17711b0c73eea1",
+      "source_commit": "1bd4209369b55bc36014c1d41c626f7a28d754fd",
+      "wheel_sha256": "d7c86f2cb9eb3ebe2ac6dbb2300f5aa40edf0b06d088ec85bf7acf3ef8839c86",
+      "state_checks": [
+        {
+          "probe": "cache-probe-matched",
+          "exact_pairs": 8
+        },
+        {
+          "probe": "cache-probe-rank-7",
+          "exact_pairs": 8
+        },
+        {
+          "probe": "cache-probe-rank-15",
+          "exact_pairs": 8
+        }
+      ],
+      "rank0_cache_storage": {
+        "unix": 1793859131.2863421,
+        "dp_rank": 0,
+        "native_num_blocks": 74907,
+        "cache_tensor_count": 192,
+        "unique_cuda_storage_count": 1,
+        "unique_cuda_storage_bytes": 88363892736,
+        "runtime_source_sha256": {
+          "vllm.model_executor.models.grugmoe": "f1a9f4c63491534c2ce36e6860b66b9d39fd5a0ab89abcffc60e920691e0f199",
+          "vllm.v1.attention.backends.flashinfer": "340093c69c3e36b2ce088f14029fbbbb067252fed6556fe451dca24f0a6349f6",
+          "vllm.v1.attention.backends.grug_logical_kv": "0abee20c0e2a436b97081254a6af15ed4601e336d2df124c6fd6e921df201111"
+        },
+        "storage": [
+          {
+            "bytes": 88363892736,
+            "backing_tensor_dtype": "torch.bfloat16"
+          }
+        ],
+        "cache_config": {
+          "enable_prefix_caching": true,
+          "prefix_cache_retention_interval": 0,
+          "mamba_cache_mode": "align",
+          "mamba_block_size": 16,
+          "kv_cache_size_tokens": null
+        },
+        "cache_groups": [
+          {
+            "group": 0,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 1536),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 1,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 1536),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 2,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 1536),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 3,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 1536),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 4,
+            "layers": 12,
+            "spec_type": "SlidingWindowSpec",
+            "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=12, head_size=128, dtype=torch.bfloat16, head_size_v=128, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=2048, extra_retained_tokens=0)"
+          },
+          {
+            "group": 5,
+            "layers": 12,
+            "spec_type": "SlidingWindowSpec",
+            "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=12, head_size=128, dtype=torch.bfloat16, head_size_v=128, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=2048, extra_retained_tokens=0)"
+          },
+          {
+            "group": 6,
+            "layers": 12,
+            "spec_type": "SlidingWindowSpec",
+            "spec": "SlidingWindowSpec(block_size=16, num_kv_heads=12, head_size=128, dtype=torch.bfloat16, head_size_v=128, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=2048, extra_retained_tokens=0)"
+          },
+          {
+            "group": 7,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 8,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 9,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 10,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 11,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 12,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 13,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 14,
+            "layers": 12,
+            "spec_type": "MambaSpec",
+            "spec": "MambaSpec(block_size=16, shapes=((3, 6144),), dtypes=(torch.bfloat16,), page_size_padded=98304, mamba_type=<MambaAttentionBackendEnum.SHORT_CONV: 'vllm.v1.attention.backends.short_conv_attn.ShortConvAttentionBackend'>, mamba_cache_mode='align', num_speculative_blocks=0, num_prefill_checkpoint_blocks=0, prefill_checkpoint_alignment=None, num_heads=1, tokens_per_state=-1, tp_replicated=False)"
+          },
+          {
+            "group": 15,
+            "layers": 12,
+            "spec_type": "FullAttentionSpec",
+            "spec": "FullAttentionSpec(block_size=16, num_kv_heads=12, head_size=128, dtype=torch.bfloat16, head_size_v=128, kv_quant_mode=<KVQuantMode.NONE: 0>, page_size_padded=None, num_head_slots=None, state_content_bytes=None, tokens_per_state=1, sliding_window=None, attention_chunk_size=None, non_causal=False)"
+          }
+        ],
+        "scope": "KV tensor storage only; excludes allocator reservation and graph buffers. CPU metadata, no GPU sync."
+      }
+    },
+    {
+      "node": "s4bk6j84",
+      "task": "/romain/dev-gpu-hero-kv-full-01a1aa2c/1:0",
+      "attempt_uid": "14eda59859abf661",
+      "status": "stopped",
+      "archive_sha256": "84b172a0253a16a18ff807640758a20f93bd6f19babb6237ffe49850edf20ba9",
+      "source_commit": "1bd4209369b55bc36014c1d41c626f7a28d754fd",
+      "wheel_sha256": "d7c86f2cb9eb3ebe2ac6dbb2300f5aa40edf0b06d088ec85bf7acf3ef8839c86"
+    },
+    {
+      "node": "s5nk6j84",
+      "task": "/romain/dev-gpu-hero-kv-full-01a1aa2c/2:0",
+      "attempt_uid": "8f09cc5c81ea4c83",
+      "status": "stopped",
+      "archive_sha256": "2257b4fa7a0a91fb667705e21b4e93aa343f2703965eb151661bcc7369b8bcf3",
+      "source_commit": "1bd4209369b55bc36014c1d41c626f7a28d754fd",
+      "wheel_sha256": "d7c86f2cb9eb3ebe2ac6dbb2300f5aa40edf0b06d088ec85bf7acf3ef8839c86"
+    },
+    {
+      "node": "s5pvxs64",
+      "task": "/romain/dev-gpu-hero-kv-full-01a1aa2c/3:0",
+      "attempt_uid": "e749cdceed963bfb",
+      "status": "stopped",
+      "archive_sha256": "220dded9b50dcedc3f7ecab28d059ac35606427396a9a00ff37eb34fbe8ea7e5",
+      "source_commit": "1bd4209369b55bc36014c1d41c626f7a28d754fd",
+      "wheel_sha256": "d7c86f2cb9eb3ebe2ac6dbb2300f5aa40edf0b06d088ec85bf7acf3ef8839c86"
+    }
+  ],
+  "qualification_scope": "All 24 original exact state pairs pass across ranks 0/7/15. The metadata RPC returns rank 0 only. All four immutable-wheel preflight receipts identify the source, while actual imported-file hashes are rank 0 and the component process. The control predates automatic-only eligibility exclusions; forward math is unchanged. All four supervisors stopped and all GPUs cleared before the final component suite and automatic run."
+}
