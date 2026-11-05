@@ -16,7 +16,35 @@
       "path": "vendor/skyrl/skyrl-train/skyrl_train/inference_engines/vllm/compact_chat.py",
       "blob": "98af149b6f305d49750ba87d7df7ed885405cb96",
       "identical": true
+    },
+    {
+      "path": "vendor/skyrl/skyrl-train/skyrl_train/inference_engines/response_topk.py",
+      "blob": "2664f824d29c63d31481dc8ffe6e38659da8e75d",
+      "identical": true
     }
   ],
-  "scope": "Only these shared implementation files are claimed identical. Broader runtime source is deliberately the qualified study17 snapshot."
+  "scope": "Only the listed whole files and trainer method ASTs are claimed identical. The broad runtime remains the qualified study17 snapshot; unrelated newer-main task contracts, reward shaping, request-ID helper ownership, checkpoint/export and inactive distillation changes are not measured.",
+  "trainer_method_checks": [
+    {
+      "path": "vendor/skyrl/skyrl-train/skyrl_train/trainer.py",
+      "class": "RayPPOTrainer",
+      "method": "_publish",
+      "ast_sha256": "1cb67c11d7ad656bf6395182916af4a12bf5d6bb1b7915867a3a7b96447c4f9f",
+      "identical_ignoring_comments_and_source_locations": true
+    },
+    {
+      "path": "vendor/skyrl/skyrl-train/skyrl_train/trainer.py",
+      "class": "RayPPOTrainer",
+      "method": "_train_step",
+      "ast_sha256": "dc4f529012465aad09e396ed8a56d4d2ca1da8a13e73cef9129aa4c89a10632a",
+      "identical_ignoring_comments_and_source_locations": true
+    },
+    {
+      "path": "vendor/skyrl/skyrl-train/skyrl_train/trainer.py",
+      "class": "RayPPOTrainer",
+      "method": "_finish_score_probe",
+      "ast_sha256": "8dcddd86b3ae84f35c8b0b044d4fbb64be7f28560d766b5be978b1d4a299fc11",
+      "identical_ignoring_comments_and_source_locations": true
+    }
+  ]
 }

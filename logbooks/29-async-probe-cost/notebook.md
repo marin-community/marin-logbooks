@@ -62,3 +62,15 @@ The paired-interval analysis matches #17's existing implementation on three synt
 The fourth Qwen coordinator and GPU child are terminal succeeded. [The qualification proof](qwen-qualification.json) admits all twelve nonzero finite-gradient updates at positive learning rate, thirteen distinct restored serving-weight hashes, and two consumed probe events at training steps 1 and 11. They cover 179 actual positions, at most 32 per response. The optimizer guard stayed clean. Entrypoint-to-first-publication startup was 295.38 seconds; the twelve-cycle wall span was 511.94 seconds. This small qualifier has no long-response probe coverage and supplies no Grug cost estimate.
 
 Proceed with the protocol's first main window: Grug, seed 1701, probes disabled, thirty nonzero updates, original disaggregated rolling recipe, five batch nodes. The other five windows retain their frozen serial order. Both H100 pools were refreshed before expansion; keep all comparison arms on RNO H100 NVLink80GB hardware. The earlier failed startups, the complete successful allocation and teardown will all enter compute accounting.
+
+## Qualification accounting and recovery
+
+All four Qwen allocations reconstruct to 3.111 H100-hours, including 0.951 from the failed attempts. [The allocation proof](qwen-allocation-proof.json) includes startup and teardown and identifies the first attempt's missing pod clock and conservative controller proxy. The unchanged #17 combiner independently checks the timestamp arithmetic and rejects duplicate attempts in [the combined proof](allocation-through-qualification.json). These are reconstructed allocation spans, not provider billing.
+
+All four temporary attempt trees are now preserved outside TTL storage: 3,318 objects and 42,947,514 bytes. [Recovery references](preservation.json) pin each verified manifest by SHA256; those manifests retain every object's path, identity, size and SHA256. Original temporary duplicates remain until final cleanup. The compact clock proof also names a durable recovery prefix for its raw retained inputs.
+
+The runtime comparison additionally verifies identical response-head extraction and identical trainer publication, complete training-step and probe-summary method ASTs. Broader runtime differences stay outside the benchmark's claim; the explicit pin is still required for the frozen task contracts.
+
+## First Grug updates: overlap and representative lengths
+
+The first off window has completed two nonzero finite-gradient updates. [The initial runtime proof](grug-initial-qualification.json) records step-two token age mean 0.9858 and maximum 1, confirming normal sampler/trainer overlap. The two batches contain 148 responses of at least 2,048 tokens, with maximum length 5,673. All eight engines pass the pinned runtime check. Entrypoint-to-first-rollout-publication startup took 585.79 seconds. These observations qualify the real asynchronous workload; they are not a completed thirty-update window or an overhead estimate.
