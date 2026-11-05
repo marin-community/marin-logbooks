@@ -5505,3 +5505,23 @@ The nine established nonzero runs advanced to labels1065–1494; cells13/16
 now had native label7 and cell18 label4, while cell17 had no loss yet. These
 startup updates establish actual optimization only for the cells with losses;
 all six validated alpha0 completions are reused.
+
+### 2026-11-05 05:18 UTC — prepare the confirmation native-config adapter
+
+Added confirmation_worker.py to reconstruct the seed0 confirmation bundle
+from its selection lock, require complete encoded-config equality, and call
+the unchanged native run_training path. The adapter restores frozen jax_config
+JSON types after Draccus decoding; four static fictional-lock configurations
+round-tripped exactly, and a changed schedule was rejected. A separate fresh
+ONLINE host-logging mode records the config, lock digest, task/attempt and
+source identity before the future native process. No kernels or training ran.
+The adapter still needs its own nontraining ONLINE logging qualification and
+a separately guarded submission controller; no scientific selection lock or
+confirmation submission exists. Evidence: confirmation-worker-preflight.json.
+
+At05:15 UTC owned snapshots showed6 SUCCEEDED/15 RUNNING/9 PENDING; all13
+previously observed nonzero loss streams advanced, and14 nonzero cells now
+had native steps. Cell20 was still startup without an observed loss. Local
+attempt joins now cover56 tasks in cells06–19. One cell17/task2 Finelog
+snapshot deadline was recovered by one bounded read; its original error is
+preserved and was not a worker failure or follower restart.
