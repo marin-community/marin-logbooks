@@ -5479,3 +5479,29 @@ yet; scheduling snapshots and online discovery need not arrive simultaneously.
 The sole canonical observer remains active; no jobs or followers were created,
 restarted or canceled. The obsolete cell06 compilation-gap note was removed
 from current progress; its historical evidence remains preserved.
+
+### 2026-11-05 05:09 UTC — prepare regional reference-probe execution
+
+Added run_reference_probe.py as a process wrapper around the already-qualified
+tracked probe. It checks the configuration digest, exact permanent checkpoint
+path/counter, regional destination and qualified source hashes; runs fresh
+ONLINE host logging before the tracked numerical process; and preserves only
+bounded diagnostic files under a unique regional attempt directory. Uploads
+use generation-zero preconditions and generation-bound readback, with a
+manifest of sizes, CRCs and SHA256s. Partial diagnostic outputs are retained
+on numerical or logging failure, while the process still fails. No queue or
+execution wall-clock limits were added.
+
+Static subprocess/storage fixtures exercised success, logging failure and
+probe failure, including ordering and partial-artifact preservation. Wrong
+checkpoint labels and cross-region references were rejected. These checks
+ran no kernels, online numerical processes, GCS writes or jobs. Existing
+numerical checks were reused unchanged. Evidence: reference-probe-regional-preflight.json.
+Actual reference checkpoints, fresh regional logging, complete restore and
+real upload/readback remain required; no production probe has been launched.
+
+At05:05 UTC the owned snapshots showed6 SUCCEEDED/14 RUNNING/10 PENDING.
+The nine established nonzero runs advanced to labels1065–1494; cells13/16
+now had native label7 and cell18 label4, while cell17 had no loss yet. These
+startup updates establish actual optimization only for the cells with losses;
+all six validated alpha0 completions are reused.

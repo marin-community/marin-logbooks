@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "scope": "Static request and subprocess/storage boundary fixtures only. No kernels, W&B runs, GCS writes or job submissions.",
+  "cases": [
+    {
+      "failure_injected": null,
+      "execution_order": [
+        "logging-check",
+        "probe"
+      ],
+      "partial_artifacts_preserved": true,
+      "failure_propagated": false
+    },
+    {
+      "failure_injected": "logging-check",
+      "execution_order": [
+        "logging-check"
+      ],
+      "partial_artifacts_preserved": true,
+      "failure_propagated": true
+    },
+    {
+      "failure_injected": "probe",
+      "execution_order": [
+        "logging-check",
+        "probe"
+      ],
+      "partial_artifacts_preserved": true,
+      "failure_propagated": true
+    }
+  ],
+  "source_sha256": "6e844ed99ecbc70ad407242c6f5ed4dcd3d40308f805e15526a034736ff047ea",
+  "rejected": [
+    "Wrong checkpoint label",
+    "Cross-region checkpoint"
+  ],
+  "production_probe_launched": false,
+  "remaining_gates": [
+    "Validated global selection lock and confirmation configuration",
+    "Actual permanent reference checkpoint and full native restore",
+    "Fresh execution-host ONLINE logging and actual regional upload readback",
+    "Canonical success plus all-process reports and ONLINE finish verification"
+  ]
+}
