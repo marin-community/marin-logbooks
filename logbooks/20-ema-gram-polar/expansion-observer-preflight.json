@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "observed_utc": "2026-11-05T08:52:35.098646+00:00",
+  "scope": "Local orchestration fixtures only. Synthetic saved configurations, real temporary files/flock, and mocked subprocesses/pools/time. No cluster RPC, actual follower, sleep, observer campaign or training.",
+  "source_sha256": "16a6a88e690ccaed9b6836d7e5a45096519a228ea85fc00c5dc0107803e60625",
+  "checks": [
+    "Exact source/job/config/cell bindings",
+    "Ambiguous launch excluded",
+    "First120 then570 seconds",
+    "Duplicate registration creates no follower",
+    "Transport error retains last successful snapshot",
+    "Terminal flag and immutable saved identity",
+    "Terminal restart makes no RPC or new follower; first120 then570 cadence",
+    "Real temporary exclusive lock rejects a second owner without RPC/follower",
+    "Missing initialized state rejects recovery without replacing followers",
+    "Restored active owner preserves follow identity, retains raw RPC error and continues canonical checks",
+    "Durable guard prevents a replacement follower after ambiguous Popen"
+  ],
+  "fixture_commands": [
+    "PYTHONPATH=\"$PWD/logbooks/20-ema-gram-polar:$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\" uv run --no-sync python logbooks/20-ema-gram-polar/check_expansion_observer.py",
+    "PYTHONPATH=\"$PWD/logbooks/20-ema-gram-polar:$PWD/lib/levanter/src:$PWD/lib/marin/src:$PWD\" uv run --no-sync python logbooks/20-ema-gram-polar/check_expansion_observer_loop.py"
+  ],
+  "fixture_sha256": {
+    "check_expansion_observer.py": "4408d1d2dd8f24ec266121eb5d4d32ca4295622891058b64d0ad7cb2fcdaa5ba",
+    "check_expansion_observer_loop.py": "d877fa4424ca2814e65e78c86dd538cc52f00bddd4cca5a02889316eb1ae733c"
+  },
+  "fixture_input": "scratch/20261105-expansion-worker-fixture/bundle.json (saved fictional configurations)",
+  "terminal_states_source": "lib/iris/src/iris/resources/state.py:TERMINAL_JOB_STATES",
+  "terminal_states_source_sha256": "65fb970f50cdccb4581a54bdba7f5a012deaf557a6fa7d2dc041e2976381210d",
+  "required_lint_passed": true,
+  "launched": false,
+  "remaining": [
+    "Real scientifically completed boundary-winning group",
+    "Fresh immutable published execution worktree and campaign/artifact identities",
+    "Expansion terminal scientific validator",
+    "One actual campaign observer using permanent shared accepted identities"
+  ]
+}

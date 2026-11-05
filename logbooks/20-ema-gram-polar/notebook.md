@@ -5728,3 +5728,29 @@ remain preserved. These are startup assignment identities, not a separate
 runtime JAX-device audit or completion evidence. The six alpha0 cells remain
 the only scientifically validated completions. No nonzero group has the
 validated completions required for LR expansion.
+
+### 2026-11-05 08:53 UTC — prepare expansion observation
+
+Added watch_subset_expansions.py for one exclusive observer per future expansion
+campaign. It binds accepted registry entries to the frozen source, configuration
+digest and canonical job identity. It durably records a guard before spawning
+each follower. The first canonical check is scheduled120 seconds after discovery;
+each subsequent check is scheduled570 seconds after the previous check returns.
+Restoration preserves recorded follower identities without establishing process
+liveness. Saved terminal snapshots are reused without polling those jobs again.
+RPC errors retain the last successful snapshot and raw output. If a previously
+initialized campaign's state file is missing, observation stops pending reconciliation.
+
+Synthetic fixtures passed with all subprocesses, thread pools and time mocked,
+plus real temporary file locks. They checked exclusive ownership, terminal
+restoration, transport errors and interrupted follower creation. Required lint
+passed. This qualifies local orchestration only; no expansion observer, follower
+or job has been launched. A real eligible group, fresh immutable campaign
+worktree and expansion scientific terminal validator remain required.
+Evidence: expansion-observer-preflight.json.
+
+All24 nonzero pilots remain running, with six alpha0 results validated. At08:51,
+one native stream for each of23 established pilots advanced, reaching maximum
+training-step label4981. Cell29 remains in ONLINE startup before its first loss.
+Its canonical snapshot is unchanged since the previous observation; this is not
+a second scheduled check without progress. Continue the existing pilot observer.
